@@ -1,6 +1,6 @@
 using System;
 
-namespace Employer.Web.Models
+namespace Esfa.Recruit.Employer.Web.Models
 {
     public class ErrorViewModel
     {

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Employer.Web
+namespace Esfa.Recruit.Employer.Web
 {
     public class Startup
     {

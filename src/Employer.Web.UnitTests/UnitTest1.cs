@@ -1,7 +1,7 @@
 using System;
 using Xunit;
 
-namespace Employer.Web.UnitTests
+namespace Esfa.Recruit.Employer.Web.UnitTests
 {
     public class UnitTest1
     {
