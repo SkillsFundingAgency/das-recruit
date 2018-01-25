@@ -1,0 +1,75 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "environmentName": {
+      "type": "string"
+    },
+    "appServicePlanTier": {
+      "type": "string",
+      "defaultValue": "Free",
+      "allowedValues": [
+        "Free",
+        "Basic",
+        "Standard",
+        "Premium"
+      ]
+    },
+    "appServicePlanSkuLevel": {
+      "type": "string",
+      "defaultValue": "1",
+      "allowedValues": [
+        "1",
+        "2",
+        "3"
+      ]
+    }
+  },
+  "variables": {
+    "AppServicePlanName": "[concat('das-', toLower(parameters('environmentName')), '-rcrt-asp')]",
+    "EmployerRecruitAppServiceName": "[concat('das-', toLower(parameters('environmentName')), '-rcrt-as')]",
+    "CosmosDbName": "[concat('das-', toLower(parameters('environmentName')),'-rcrt-cdb')]"
+  },
+  "resources": [
+    {
+      "name": "[variables('AppServicePlanName')]",
+      "type": "Microsoft.Web/serverfarms",
+      "apiVersion": "2016-09-01",
+      "location": "[resourceGroup().location]",
+      "properties": {},
+      "sku": {
+        "tier": "[parameters('appServicePlanTier')]",
+        "name": "[concat(substring(parameters('appServicePlanTier'),0,1), parameters('appServicePlanSkuLevel'))]"
+      },
+      "dependsOn": []
+    },
+    {
+      "name": "[variables('EmployerRecruitAppServiceName')]",
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2016-08-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName'))]",
+        "siteConfig": {}
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName'))]"
+      ]
+    },
+    {
+      "name": "[variables('CosmosDbName')]",
+      "type": "Microsoft.DocumentDB/databaseAccounts",
+      "apiVersion": "2015-04-08",
+      "location": "[resourceGroup().location]",
+      "tags": {},
+      "kind": "MongoDB",
+      "properties": {
+        "consistencyPolicy": {
+          "defaultConsistencyLevel": "Eventual"
+        },
+        "databaseAccountOfferType": "Standard"
+      }
+    }
+  ],
+  "outputs": {}
+}
