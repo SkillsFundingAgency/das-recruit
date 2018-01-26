@@ -21,6 +21,14 @@ namespace Esfa.Recruit.Employer.Web
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
                 .UseUrls("http://localhost:5020")
+                .ConfigureAppConfiguration((hostingContext, config) =>
+                    {
+                        var hostingEnvironment = hostingContext.HostingEnvironment;
+                        if (hostingEnvironment.IsDevelopment())
+                        {
+                            config.AddUserSecrets<Startup>();
+                        }
+                    })
                 .Build();
     }
 }
