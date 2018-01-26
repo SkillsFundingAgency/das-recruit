@@ -13,6 +13,14 @@
     },
     "TestSettings:Title": {
       "value": ""
+    },
+    "Authentication": {
+      "value": {
+        "Authority": "",
+        "MetaDataAddress": "",
+        "ClientId": "",
+        "ClientSecret": ""
+      }
     }
   }
 }

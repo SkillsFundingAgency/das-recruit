@@ -27,6 +27,15 @@
     "TestSettings:Title": {
       "type": "string",
       "defaultValue": ""
+    },
+    "Authentication": {
+      "type": "object",
+      "defaultValue": {
+        "Authority": "",
+        "MetaDataAddress": "",
+        "ClientId": "",
+        "ClientSecret": ""
+      }
     }
   },
   "variables": {
@@ -59,6 +68,22 @@
             {
               "name": "TestSettings:Title",
               "value": "[parameters('TestSettings:Title')]"
+            },
+            {
+              "name": "Authentication:Authority",
+              "value": "[parameters('Authentication').Authority]"
+            },
+            {
+              "name": "Authentication:MetaDataAddress",
+              "value": "[parameters('Authentication').MetaDataAddress]"
+            },
+            {
+              "name": "Authentication:ClientId",
+              "value": "[parameters('Authentication').ClientId]"
+            },
+            {
+              "name": "Authentication:ClientSecret",
+              "value": "[parameters('Authentication').ClientSecret]"
             }
           ]
         }
