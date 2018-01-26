@@ -84,6 +84,11 @@ namespace Esfa.Recruit.Employer.Web
                 opts.AllowSameHostRedirectsToHttps();
                 opts.AllowedDestinations(_authConfig.Authority);
             }) ; //Register this earlier if there's middleware that might redirect.
+            
+            app.UseXDownloadOptions();
+            app.UseXRobotsTag(options => options.NoIndex().NoFollow()); 
+
+            //app.UseNoCacheHttpHeaders(); // Affectively forces the browser to always request dynamic pages
 
             app.UseMvc(routes =>
             {
