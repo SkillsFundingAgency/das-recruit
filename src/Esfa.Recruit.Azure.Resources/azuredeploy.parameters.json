@@ -10,6 +10,9 @@
     },
     "appServicePlanSkuLevel": {
       "value": "1"
+    },
+    "TestSettings:Title": {
+      "value": ""
     }
   }
 }

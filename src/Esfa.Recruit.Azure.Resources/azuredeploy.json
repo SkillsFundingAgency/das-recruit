@@ -2,10 +2,10 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "environmentName": {
+    "EnvironmentName": {
       "type": "string"
     },
-    "appServicePlanTier": {
+    "AppServicePlanTier": {
       "type": "string",
       "defaultValue": "Free",
       "allowedValues": [
@@ -15,7 +15,7 @@
         "Premium"
       ]
     },
-    "appServicePlanSkuLevel": {
+    "AppServicePlanSkuLevel": {
       "type": "string",
       "defaultValue": "1",
       "allowedValues": [
@@ -23,12 +23,16 @@
         "2",
         "3"
       ]
+    },
+    "TestSettings:Title": {
+      "type": "string",
+      "defaultValue": ""
     }
   },
   "variables": {
-    "AppServicePlanName": "[concat('das-', toLower(parameters('environmentName')), '-rcrt-asp')]",
-    "EmployerRecruitAppServiceName": "[concat('das-', toLower(parameters('environmentName')), '-rcrt-as')]",
-    "CosmosDbName": "[concat('das-', toLower(parameters('environmentName')),'-rcrt-cdb')]"
+    "AppServicePlanName": "[concat('das-', toLower(parameters('EnvironmentName')), '-rcrt-asp')]",
+    "EmployerRecruitAppServiceName": "[concat('das-', toLower(parameters('EnvironmentName')), '-rcrt-as')]",
+    "CosmosDbName": "[concat('das-', toLower(parameters('EnvironmentName')),'-rcrt-cdb')]"
   },
   "resources": [
     {
@@ -38,8 +42,8 @@
       "location": "[resourceGroup().location]",
       "properties": {},
       "sku": {
-        "tier": "[parameters('appServicePlanTier')]",
-        "name": "[concat(substring(parameters('appServicePlanTier'),0,1), parameters('appServicePlanSkuLevel'))]"
+        "tier": "[parameters('AppServicePlanTier')]",
+        "name": "[concat(substring(parameters('AppServicePlanTier'),0,1), parameters('AppServicePlanSkuLevel'))]"
       },
       "dependsOn": []
     },
@@ -50,7 +54,14 @@
       "location": "[resourceGroup().location]",
       "properties": {
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName'))]",
-        "siteConfig": {}
+        "siteConfig": {
+          "appSettings": [
+            {
+              "name": "TestSettings:Title",
+              "value": "[parameters('TestSettings:Title')]"
+            }
+          ]
+        }
       },
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName'))]"
