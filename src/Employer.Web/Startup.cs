@@ -13,23 +13,23 @@ namespace Esfa.Recruit.Employer.Web
 {
     public class Startup
     {
+        private IConfiguration _configuration { get; }
+        private IHostingEnvironment _hostingEnvironment { get; }
+        private AuthenticationConfiguration _authConfig { get; }
+
         public Startup(IConfiguration config, IHostingEnvironment env)
         {
-            Configuration = config;
-            HostingEnvironment = env;
+            _configuration = config;
+            _hostingEnvironment = env;
+            _authConfig = _configuration.GetSection("Authentication").Get<AuthenticationConfiguration>();
         }
-
-        public IConfiguration Configuration { get; }
-        public IHostingEnvironment HostingEnvironment { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var authConfig = Configuration.GetSection("Authentication").Get<AuthenticationConfiguration>();
-            
             services.AddMvc(opts =>
             {
-                if (!authConfig.IsEnabled)
+                if (!_authConfig.IsEnabled)
                 {
                     opts.Filters.Add(new AllowAnonymousFilter());
                 }
@@ -47,12 +47,12 @@ namespace Esfa.Recruit.Employer.Web
                 {
                     options.SignInScheme = "Cookies";
 
-                    options.Authority = authConfig.Authority;
-                    options.MetadataAddress = authConfig.MetaDataAddress;
+                    options.Authority = _authConfig.Authority;
+                    options.MetadataAddress = _authConfig.MetaDataAddress;
                     options.RequireHttpsMetadata = false;
                     options.ResponseType = "code";
-                    options.ClientId = authConfig.ClientId;
-                    options.ClientSecret = authConfig.ClientSecret;
+                    options.ClientId = _authConfig.ClientId;
+                    options.ClientSecret = _authConfig.ClientSecret;
                     options.Scope.Add("profile");
                     options.SaveTokens = true;
                 });
@@ -70,9 +70,20 @@ namespace Esfa.Recruit.Employer.Web
                 app.UseExceptionHandler("/Home/Error");
             }
 
-            app.UseAuthentication();
+            //Registered before static files to always set header
+            app.UseHsts(hsts => hsts.MaxAge(365));
+            app.UseXContentTypeOptions();
+            app.UseReferrerPolicy(opts => opts.NoReferrer());
 
+            app.UseAuthentication();
             app.UseStaticFiles();
+
+            //Registered after static files, to set headers for dynamic content.
+            app.UseXfo(xfo => xfo.Deny());
+            app.UseRedirectValidation(opts => {
+                opts.AllowSameHostRedirectsToHttps();
+                opts.AllowedDestinations(_authConfig.Authority);
+            }) ; //Register this earlier if there's middleware that might redirect.
 
             app.UseMvc(routes =>
             {
