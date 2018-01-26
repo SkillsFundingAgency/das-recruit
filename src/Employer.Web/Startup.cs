@@ -24,6 +24,8 @@ namespace Esfa.Recruit.Employer.Web
         {
             services.AddMvc();
 
+            var authConfig = Configuration.GetSection("Authentication").Get<AuthenticationConfiguration>();
+
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
             services.AddAuthentication(options =>
@@ -36,12 +38,12 @@ namespace Esfa.Recruit.Employer.Web
                 {
                     options.SignInScheme = "Cookies";
 
-                    options.Authority = "https://test-login.apprenticeships.sfa.bis.gov.uk/identity"; //TODO: LWA - Move into config
+                    options.Authority = authConfig.Authority;
+                    options.MetadataAddress = authConfig.MetaDataAddress;
                     options.RequireHttpsMetadata = false;
                     options.ResponseType = "code";
-                    options.ClientId = "raapocdev"; //TODO: LWA - Move into config
-                    options.ClientSecret = "super-secret"; // TODO: LWA - Move into config
-                    options.MetadataAddress = "https://test-login.apprenticeships.sfa.bis.gov.uk/identity/.well-known/openid-configuration"; //TODO: LWA - Move into config
+                    options.ClientId = authConfig.ClientId;
+                    options.ClientSecret = authConfig.ClientSecret;
                     options.Scope.Add("profile");
                     options.SaveTokens = true;
                 });
@@ -69,6 +71,14 @@ namespace Esfa.Recruit.Employer.Web
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+        }
+
+        private class AuthenticationConfiguration
+        {
+            public string Authority { get; set; }
+            public string MetaDataAddress { get; set; }
+            public string ClientId { get; set; }
+            public string ClientSecret { get; set; }
         }
     }
 }
