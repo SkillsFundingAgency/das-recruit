@@ -18,15 +18,17 @@
 </head>
 <body>
     <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Vacancy Service - Employer Recruit</a>
+        <div class="row">
+            <div class="container col-md-9">
+                <div class="navbar-header">
+                    <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Vacancy Service - Employer Recruit</a>
+                </div>
+            </div>
+            <div class="container col-md-3">
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <a asp-area="" asp-controller="Home" asp-action="Logout">Logout</a>
+                }
             </div>
         </div>
     </nav>

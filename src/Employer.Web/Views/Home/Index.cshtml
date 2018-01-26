@@ -1,9 +1,13 @@
-﻿@{
+﻿<!-- Temp injection to test config -->
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration config
+
+@{
     ViewData["Title"] = "Dashboard";
 }
 
 <div class="row">
     <div class="col-md-12">
-        <h2>Employer Recruit - Dashboard</h2>
+        <h2>Employer Recruit - Dashboard (@config["TestSettings:Title"])</h2>
     </div>
 </div>
