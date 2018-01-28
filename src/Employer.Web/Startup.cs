@@ -34,28 +34,10 @@ namespace Esfa.Recruit.Employer.Web
                     opts.Filters.Add(new AllowAnonymousFilter());
                 }
             });
-              
-            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
-            services.AddAuthentication(options =>
-                {
-                    options.DefaultScheme = "Cookies";
-                    options.DefaultChallengeScheme = "oidc";
-                })
-                .AddCookie("Cookies")
-                .AddOpenIdConnect("oidc", options =>
-                {
-                    options.SignInScheme = "Cookies";
+            services.AddApplicationInsightsTelemetry(_configuration);
 
-                    options.Authority = _authConfig.Authority;
-                    options.MetadataAddress = _authConfig.MetaDataAddress;
-                    options.RequireHttpsMetadata = false;
-                    options.ResponseType = "code";
-                    options.ClientId = _authConfig.ClientId;
-                    options.ClientSecret = _authConfig.ClientSecret;
-                    options.Scope.Add("profile");
-                    options.SaveTokens = true;
-                });
+            ConfigureAuthentication(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -96,6 +78,31 @@ namespace Esfa.Recruit.Employer.Web
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+        }
+
+        private void ConfigureAuthentication(IServiceCollection services)
+        {
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+            
+            services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = "Cookies";
+                options.DefaultChallengeScheme = "oidc";
+            })
+                            .AddCookie("Cookies")
+                            .AddOpenIdConnect("oidc", options =>
+                            {
+                                options.SignInScheme = "Cookies";
+
+                                options.Authority = _authConfig.Authority;
+                                options.MetadataAddress = _authConfig.MetaDataAddress;
+                                options.RequireHttpsMetadata = false;
+                                options.ResponseType = "code";
+                                options.ClientId = _authConfig.ClientId;
+                                options.ClientSecret = _authConfig.ClientSecret;
+                                options.Scope.Add("profile");
+                                options.SaveTokens = true;
+                            });
         }
 
         private class AuthenticationConfiguration
