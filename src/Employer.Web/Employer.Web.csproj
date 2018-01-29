@@ -4,13 +4,16 @@
     <UserSecretsId>5a1b2a3e-7e99-42c8-a521-85e5ae34ae58</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.5"/>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="2.0.1"/>
-    <PackageReference Include="NWebsec.AspNetCore.Middleware" Version="1.1.0"/>
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="2.0.1" />
+    <PackageReference Include="NWebsec.AspNetCore.Middleware" Version="1.1.0" />
   </ItemGroup>
   <ItemGroup>
-    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.2"/>
-    <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="2.0.0"/>
-    <DotNetCliToolReference Include="Microsoft.DotNet.Watcher.Tools" Version="2.0.0"/>
+    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.2" />
+    <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="2.0.0" />
+    <DotNetCliToolReference Include="Microsoft.DotNet.Watcher.Tools" Version="2.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Employer.Domain\Employer.Domain.csproj" />
   </ItemGroup>
 </Project>

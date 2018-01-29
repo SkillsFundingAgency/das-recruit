@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
+using Employer.Domain.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace Esfa.Recruit.Employer.Web
 {
@@ -38,10 +40,12 @@ namespace Esfa.Recruit.Employer.Web
             services.AddApplicationInsightsTelemetry(_configuration);
 
             ConfigureAuthentication(services);
+
+            services.Configure<ExternalLinksConfiguration>(_configuration.GetSection("ExternalLinks"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env,  IOptions<ExternalLinksConfiguration> externalLinks)
         {
             if (env.IsDevelopment())
             {
@@ -64,7 +68,7 @@ namespace Esfa.Recruit.Employer.Web
             app.UseXfo(xfo => xfo.Deny());
             app.UseRedirectValidation(opts => {
                 opts.AllowSameHostRedirectsToHttps();
-                opts.AllowedDestinations(_authConfig.Authority);
+                opts.AllowedDestinations(_authConfig.Authority, externalLinks.Value.ManageApprenticeshipSiteUrl);
             }) ; //Register this earlier if there's middleware that might redirect.
             
             app.UseXDownloadOptions();
