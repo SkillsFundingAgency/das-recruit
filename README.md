@@ -27,3 +27,7 @@ In order to run this solution locally you will need the following installed:
 * Open folder `/src/`
 * Select _**.Net Core Launch (web)**_ from debug configurations
 * F5 to run up the website
+
+## License
+
+Licensed under the [MIT license](LICENSE)
