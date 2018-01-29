@@ -11,9 +11,6 @@
     "AppServicePlanSkuLevel": {
       "value": "1"
     },
-    "TestSettings:Title": {
-      "value": ""
-    },
     "Authentication": {
       "value": {
         "Authority": "",
