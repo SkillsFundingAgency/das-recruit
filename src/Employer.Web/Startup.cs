@@ -105,7 +105,6 @@ namespace Esfa.Recruit.Employer.Web
                                 options.ClientId = _authConfig.ClientId;
                                 options.ClientSecret = _authConfig.ClientSecret;
                                 options.Scope.Add("profile");
-                                options.SaveTokens = true;
                             });
         }
 
