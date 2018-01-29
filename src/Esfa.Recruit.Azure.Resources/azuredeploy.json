@@ -24,10 +24,6 @@
         "3"
       ]
     },
-    "TestSettings:Title": {
-      "type": "string",
-      "defaultValue": ""
-    },
     "Authentication": {
       "type": "object",
       "defaultValue": {
@@ -41,7 +37,8 @@
   "variables": {
     "AppServicePlanName": "[concat('das-', toLower(parameters('EnvironmentName')), '-rcrt-asp')]",
     "EmployerRecruitAppServiceName": "[concat('das-', toLower(parameters('EnvironmentName')), '-rcrt-as')]",
-    "CosmosDbName": "[concat('das-', toLower(parameters('EnvironmentName')),'-rcrt-cdb')]"
+    "CosmosDbName": "[concat('das-', toLower(parameters('EnvironmentName')),'-rcrt-cdb')]",
+    "AppInsightsName": "[concat('das-', toLower(parameters('EnvironmentName')),'-rcrt-ai')]"
   },
   "resources": [
     {
@@ -57,6 +54,16 @@
       "dependsOn": []
     },
     {
+      "apiVersion": "2015-05-01",
+      "name": "[variables('AppInsightsName')]",
+      "type": "Microsoft.Insights/components",
+      "location": "[resourceGroup().location]",
+      "kind": "web",
+      "properties": {
+        "Application_Type": "web"
+      }
+    },
+    {
       "name": "[variables('EmployerRecruitAppServiceName')]",
       "type": "Microsoft.Web/sites",
       "apiVersion": "2016-08-01",
@@ -65,10 +72,6 @@
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName'))]",
         "siteConfig": {
           "appSettings": [
-            {
-              "name": "TestSettings:Title",
-              "value": "[parameters('TestSettings:Title')]"
-            },
             {
               "name": "Authentication:Authority",
               "value": "[parameters('Authentication').Authority]"
@@ -84,12 +87,28 @@
             {
               "name": "Authentication:ClientSecret",
               "value": "[parameters('Authentication').ClientSecret]"
+            },
+            {
+              "name": "ApplicationInsights:InstrumentationKey",
+              "value": "[reference(concat('microsoft.insights/components/', variables('AppInsightsName'))).InstrumentationKey]"
             }
           ]
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName'))]"
+        "[resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName'))]",
+        "[resourceId('microsoft.insights/components/', variables('AppInsightsName'))]"
+      ],
+      "resources": [
+        {
+          "apiVersion": "2015-08-01",
+          "name": "Microsoft.ApplicationInsights.AzureWebSites",
+          "type": "siteextensions",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/Sites', variables('EmployerRecruitAppServiceName'))]"
+          ],
+          "properties": {}
+        }
       ]
     },
     {
