@@ -57,7 +57,7 @@ namespace Esfa.Recruit.Employer.Web
             }
 
             //Registered before static files to always set header
-            app.UseHsts(hsts => hsts.MaxAge(365));
+            //app.UseHsts(hsts => hsts.MaxAge(365));
             app.UseXContentTypeOptions();
             app.UseReferrerPolicy(opts => opts.NoReferrer());
 
