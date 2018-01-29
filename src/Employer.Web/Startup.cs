@@ -31,15 +31,15 @@ namespace Esfa.Recruit.Employer.Web
         {
             services.AddMvc(opts =>
             {
-                if (!_authConfig.IsEnabled)
-                {
+                //if (!_authConfig.IsEnabled)
+                //{
                     opts.Filters.Add(new AllowAnonymousFilter());
-                }
+                //}
             });
 
             services.AddApplicationInsightsTelemetry(_configuration);
 
-            ConfigureAuthentication(services);
+            //ConfigureAuthentication(services);
 
             services.Configure<ExternalLinksConfiguration>(_configuration.GetSection("ExternalLinks"));
         }
@@ -61,7 +61,7 @@ namespace Esfa.Recruit.Employer.Web
             app.UseXContentTypeOptions();
             app.UseReferrerPolicy(opts => opts.NoReferrer());
 
-            app.UseAuthentication();
+            //app.UseAuthentication();
             app.UseStaticFiles();
 
             //Registered after static files, to set headers for dynamic content.
