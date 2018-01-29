@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 using Employer.Domain.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -31,6 +33,11 @@ namespace Esfa.Recruit.Employer.Web
         {
             services.AddMvc(opts =>
             {
+                if (!_hostingEnvironment.IsDevelopment())
+                {
+                    opts.Filters.Add(new RequireHttpsAttribute());
+                }
+
                 //if (!_authConfig.IsEnabled)
                 //{
                     opts.Filters.Add(new AllowAnonymousFilter());
@@ -53,9 +60,14 @@ namespace Esfa.Recruit.Employer.Web
             }
             else
             {
+                var rewriteOptions = new RewriteOptions()
+                    .AddRedirectToHttps();
+
+                app.UseRewriter(rewriteOptions);
+
                 app.UseExceptionHandler("/Home/Error");
             }
-
+            
             //Registered before static files to always set header
             //app.UseHsts(hsts => hsts.MaxAge(365));
             app.UseXContentTypeOptions();
