@@ -7,6 +7,7 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
 using NLog.Web;
 
 namespace Esfa.Recruit.Employer.Web
@@ -15,17 +16,17 @@ namespace Esfa.Recruit.Employer.Web
     {
         public static void Main(string[] args)
         {
-            // NLog: setup the logger first to catch all errors
             var logger = NLogBuilder.ConfigureNLog("NLog.config").GetCurrentClassLogger();
             try
             {
-                logger.Debug("About to Configure Host and Start.");
-                BuildWebHost(args).Run();
+                logger.Info("Starting up host");
+                var host = BuildWebHost(args);
+                host.Run();
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
                 //NLog: catch setup errors
-                logger.Error(e, "Stopped program because of exception");
+                logger.Error(ex, "Stopped program because of exception");
                 throw;
             }
         }

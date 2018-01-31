@@ -290,3 +290,6 @@ __pycache__/
 
 # NLog Internal Log
 internal-nlog.txt
+
+# NuGet config
+/src/nuget.config

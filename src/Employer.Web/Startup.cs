@@ -6,12 +6,15 @@ using System.Threading.Tasks;
 using Employer.Domain.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using NLog.Config;
+using NLog.Web;
 
 namespace Esfa.Recruit.Employer.Web
 {
@@ -48,13 +51,14 @@ namespace Esfa.Recruit.Employer.Web
                 {
                     opts.Filters.Add(new AllowAnonymousFilter());
                 }
-            });
+            });            
 
             services.AddApplicationInsightsTelemetry(_configuration);
 
             ConfigureAuthentication(services);
 
             services.Configure<ExternalLinksConfiguration>(_configuration.GetSection("ExternalLinks"));
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
