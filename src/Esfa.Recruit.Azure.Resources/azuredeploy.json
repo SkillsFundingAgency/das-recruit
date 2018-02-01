@@ -32,6 +32,10 @@
         "ClientId": "",
         "ClientSecret": ""
       }
+    },
+    "LoggingRedisConnectionString":{
+      "type": "securestring",
+      "defaultValue": ""
     }
   },
   "variables": {
@@ -91,9 +95,21 @@
             {
               "name": "ApplicationInsights:InstrumentationKey",
               "value": "[reference(concat('microsoft.insights/components/', variables('AppInsightsName'))).InstrumentationKey]"
+            },
+            {
+              "name": "Environment",
+              "value": "[toUpper(parameters('EnvironmentName'))]"
             }
           ]
-        }
+        },
+        "connectionStrings": [
+          {
+            "name": "Redis",
+            "connectionString": "[parameters('LoggingRedisConnectionString')]",
+            "type": "RedisCache"
+          }
+        ],
+        "alwaysOn": true
       },
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName'))]",

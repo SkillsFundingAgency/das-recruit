@@ -18,6 +18,9 @@
         "ClientId": "",
         "ClientSecret": ""
       }
+    },
+    "LoggingRedisConnectionString": {
+      "value": ""
     }
   }
 }
