@@ -33,7 +33,7 @@
         "ClientSecret": ""
       }
     },
-    "LoggingRedisConnectionString":{
+    "LoggingRedisConnectionString": {
       "type": "securestring",
       "defaultValue": ""
     }
@@ -100,16 +100,16 @@
               "name": "Environment",
               "value": "[toUpper(parameters('EnvironmentName'))]"
             }
-          ]
-        },
-        "connectionStrings": [
-          {
-            "name": "Redis",
-            "connectionString": "[parameters('LoggingRedisConnectionString')]",
-            "type": "RedisCache"
-          }
-        ],
-        "alwaysOn": true
+          ],
+          "connectionStrings": [
+            {
+              "name": "Redis",
+              "connectionString": "[parameters('LoggingRedisConnectionString')]",
+              "type": "RedisCache"
+            }
+          ],
+          "alwaysOn": true
+        }
       },
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName'))]",
