@@ -64,6 +64,8 @@ namespace Esfa.Recruit.Employer.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env,  IOptions<ExternalLinksConfiguration> externalLinks)
         {
+            app.UseStatusCodePagesWithReExecute("/Home/Error/{0}");
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -75,7 +77,14 @@ namespace Esfa.Recruit.Employer.Web
 
                 app.UseRewriter(rewriteOptions);
 
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler(exApp =>
+                {
+                    exApp.Run(ctx => 
+                    {
+                        ctx.Response.StatusCode = StatusCodes.Status500InternalServerError;
+                        return Task.CompletedTask;
+                    });
+                });
             }
             
             //Registered before static files to always set header
