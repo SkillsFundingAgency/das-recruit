@@ -287,3 +287,9 @@ __pycache__/
 *.odx.cs
 *.xsd.cs
 .DS_Store
+
+# NLog Internal Log
+internal-nlog.txt
+
+# NuGet config
+/src/nuget.config
