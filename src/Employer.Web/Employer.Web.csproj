@@ -9,7 +9,7 @@
     <PackageReference Include="NWebsec.AspNetCore.Middleware" Version="1.1.0"/>
     <PackageReference Include="NLog.Web.AspNetCore" Version="4.5.0-rc2"/>
     <PackageReference Include="NLog" Version="4.5.0-rc04"/>
-    <PackageReference Include="SFA.DAS.NLog.Targets.Redis" Version="1.0.0.56514"/>
+    <PackageReference Include="SFA.DAS.NLog.Targets.Redis" Version="1.0.0.56651"/>
   </ItemGroup>
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.2"/>
