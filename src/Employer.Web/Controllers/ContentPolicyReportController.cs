@@ -28,6 +28,11 @@ namespace Employer.Web.Controllers
     {
         [JsonProperty(PropertyName = "csp-report")]
         public CspReport CspReport { get; set; }
+
+        public override string ToString()
+        {
+          return $"Violated: {CspReport.ViolatedDirective} by {CspReport.BlockedUri}";
+        }
     }
 
     public class CspReport
