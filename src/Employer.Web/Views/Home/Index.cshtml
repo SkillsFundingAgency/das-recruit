@@ -3,11 +3,14 @@
 @inject IConfiguration config
 
 @{
-    ViewData["Title"] = "Dashboard";
+    ViewData["Title"] = "Employer Home";
 }
 
 <div class="row">
     <div class="col-md-12">
-        <h2>Employer Recruit - Dashboard (@config["TestSettings:Title"])</h2>
+        <h2>Employer Recruit - Employer Home</h2>
+    </div>
+    <div>
+        <a asp-controller="Dashboard" asp-action="Index">Recruit an Apprentice</a>
     </div>
 </div>
