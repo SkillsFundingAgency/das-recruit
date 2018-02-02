@@ -1,12 +1,15 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using Employer.Domain.Configuration;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Net.Http.Headers;
 
 namespace Esfa.Recruit.Employer.Web
 {
@@ -49,6 +52,13 @@ namespace Esfa.Recruit.Employer.Web
                          .Build();
                          
                 opts.Filters.Add(new AuthorizeFilter(policy));
+
+                var jsonInputFormatters = opts.InputFormatters.OfType<JsonInputFormatter>();
+                    foreach (var formatter in jsonInputFormatters)
+                {
+                    formatter.SupportedMediaTypes
+                        .Add(MediaTypeHeaderValue.Parse("application/csp-report"));
+                }
             });            
 
             services.AddApplicationInsightsTelemetry(_configuration);

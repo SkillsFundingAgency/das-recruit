@@ -1,5 +1,3 @@
-using System;
-
 namespace Esfa.Recruit.Employer.Web.Models
 {
     public class ErrorViewModel

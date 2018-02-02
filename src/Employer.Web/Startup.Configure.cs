@@ -38,6 +38,13 @@ namespace Esfa.Recruit.Employer.Web
                 });
             }
             
+             // Add Content Security Policy
+            app.UseCsp(options => options
+                .DefaultSources(s => s.Self())
+                .ScriptSources(s => s.Self().CustomSources("https://az416426.vo.msecnd.net").UnsafeInline()) // TODO: Look at moving AppInsights inline js code.
+                .ConnectSources(s => s.Self().CustomSources("https://dc.services.visualstudio.com"))
+                .ReportUris(r => r.Uris("/ContentPolicyReport/Report")));
+
             //Registered before static files to always set header
             app.UseHsts(hsts => hsts.MaxAge(365));
             app.UseXContentTypeOptions();
