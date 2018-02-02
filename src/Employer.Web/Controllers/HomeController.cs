@@ -13,7 +13,6 @@ using Microsoft.Extensions.Options;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
-    [Authorize]
     public class HomeController : Controller
     {
         private readonly ExternalLinksConfiguration _externalLinks;
