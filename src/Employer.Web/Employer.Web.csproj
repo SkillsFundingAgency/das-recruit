@@ -17,7 +17,7 @@
     <DotNetCliToolReference Include="Microsoft.DotNet.Watcher.Tools" Version="2.0.0"/>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Employer.Domain\Employer.Domain.csproj"/>
+    <ProjectReference Include="..\Employer.Core\Employer.Core.csproj"/>
   </ItemGroup>
   <ItemGroup>
     <None Update="nlog.config">

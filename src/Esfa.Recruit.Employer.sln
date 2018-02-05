@@ -8,7 +8,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Employer.Web.UnitTests", "E
 EndProject
 Project("{151D2E53-A2C4-4D7D-83FE-D05416EBD58E}") = "Esfa.Recruit.Azure.Resources", "Esfa.Recruit.Azure.Resources\Esfa.Recruit.Azure.Resources.deployproj", "{D39E21A9-E8C6-461E-87AE-74180559F2A5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Employer.Domain", "Employer.Domain\Employer.Domain.csproj", "{30EA176E-4CDC-4942-B0B9-A893196AB0BD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Employer.Core", "Employer.Core\Employer.Core.csproj", "{30EA176E-4CDC-4942-B0B9-A893196AB0BD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

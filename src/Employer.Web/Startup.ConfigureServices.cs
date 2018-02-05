@@ -1,6 +1,6 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using Employer.Domain.Configuration;
+using Employer.Core.Configuration;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -26,7 +26,7 @@ namespace Esfa.Recruit.Employer.Web
             _hostingEnvironment = env;
             _authConfig = _configuration.GetSection("Authentication").Get<AuthenticationConfiguration>();
 
-            if (env.IsDevelopment()  && _authConfig.IsDevEnabled == false)
+            if (env.IsDevelopment()  && _authConfig.IsEnabledForDev == false)
             {
                 _isAuthEnabled = false;
             }
@@ -66,7 +66,7 @@ namespace Esfa.Recruit.Employer.Web
             ConfigureAuthentication(services);
 
             services.Configure<ExternalLinksConfiguration>(_configuration.GetSection("ExternalLinks"));
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>(); // Used by NLog to log out traceidentifier value.
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -100,7 +100,7 @@ namespace Esfa.Recruit.Employer.Web
 
         class AuthenticationConfiguration
         {
-            public bool IsDevEnabled { get; set; } = false;
+            public bool IsEnabledForDev { get; set; } = false;
             public string Authority { get; set; }
             public string MetaDataAddress { get; set; }
             public string ClientId { get; set; }
