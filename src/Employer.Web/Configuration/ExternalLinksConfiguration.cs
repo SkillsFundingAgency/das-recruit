@@ -1,4 +1,4 @@
-namespace Employer.Core.Configuration
+namespace Employer.Web.Configuration
 {
     public sealed class ExternalLinksConfiguration
     {
