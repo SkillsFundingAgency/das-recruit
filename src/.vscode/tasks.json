@@ -14,6 +14,29 @@
                 "${workspaceFolder}/Esfa.Recruit.Employer.sln"
             ],
             "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "unit-tests",
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "test",
+                "${workspaceFolder}/UnitTests/UnitTests.csproj"
+            ]
+        },
+        {
+            "label": "integration-tests",
+            "group": "test",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "test",
+                "${workspaceFolder}/IntegrationTests/IntegrationTests.csproj"
+            ]
         }
     ]
 }
