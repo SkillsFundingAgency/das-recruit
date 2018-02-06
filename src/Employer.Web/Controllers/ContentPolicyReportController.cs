@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
-namespace Employer.Web.Controllers
+namespace Esfa.Recruit.Employer.Web.Controllers
 {
   public class ContentPolicyReportController : Controller
   {

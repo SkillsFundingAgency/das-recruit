@@ -17,7 +17,7 @@
     <DotNetCliToolReference Include="Microsoft.DotNet.Watcher.Tools" Version="2.0.0"/>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Employer.Core\Employer.Core.csproj"/>
+    <ProjectReference Include="..\Recruit.Storage.Client\Recruit.Storage.Client.csproj"/>
   </ItemGroup>
   <ItemGroup>
     <None Update="nlog.config">

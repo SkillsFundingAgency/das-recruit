@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PackageId>Esfa.Recruit.Storage.Client</PackageId>
+    <PackageVersion>1.0.0</PackageVersion>
+    <Authors>Esfa</Authors>
+    <Title>Client to store and retrieve vacancies</Title>
+    <Description>Client to store and retrieve vacancies</Description>
+    <PackageLicenseUrl>https://github.com/SkillsFundingAgency/das-recruit/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/SkillsFundingAgency/das-recruit/tree/master/src/Employer.Domain/Recruit.Storage.Client</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/SkillsFundingAgency/das-recruit</RepositoryUrl>
+    <PackageTags>Esfa;Das;Vacancy Service</PackageTags>
+    <PackageReleaseNotes>Initial release.</PackageReleaseNotes>
+  </PropertyGroup>
+</Project>
