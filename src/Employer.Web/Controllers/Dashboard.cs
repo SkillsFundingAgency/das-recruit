@@ -3,9 +3,9 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
+    [Route("/{accountId}/dashboard")]
     public class DashboardController : Controller
     {
-
         ILogger<DashboardController> _logger;
 
         public DashboardController(ILogger<DashboardController> logger)
@@ -13,9 +13,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string accountId)
         {
-            
             return View();
         }
     }
