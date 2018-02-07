@@ -114,17 +114,6 @@
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName'))]",
         "[resourceId('microsoft.insights/components/', variables('AppInsightsName'))]"
-      ],
-      "resources": [
-        {
-          "apiVersion": "2015-08-01",
-          "name": "Microsoft.ApplicationInsights.AzureWebSites",
-          "type": "siteextensions",
-          "dependsOn": [
-            "[resourceId('Microsoft.Web/Sites', variables('EmployerRecruitAppServiceName'))]"
-          ],
-          "properties": {}
-        }
       ]
     },
     {
