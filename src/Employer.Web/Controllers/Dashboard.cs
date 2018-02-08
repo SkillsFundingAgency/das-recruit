@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
-    [Route("/{accountId}/dashboard")]
+    [Route("/accounts/{accountId}/dashboard")]
     public class DashboardController : Controller
     {
         ILogger<DashboardController> _logger;
