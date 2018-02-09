@@ -1,0 +1,11 @@
+﻿@model Employer.Web.ViewModels.LocationAndPositions.IndexViewModel
+
+<h1>Role location and positions</h1>
+<h2>@Model.Title</h2>
+
+<form asp-action="Index">
+    <div class="form-group">
+        <a asp-controller="Sections" asp-action="Index">Return to vacancy</a>
+        <input type="submit" value="Continue" class="btn btn-primary" />
+    </div>
+</form>

@@ -1,0 +1,17 @@
+﻿@model Employer.Web.ViewModels.RoleDescription.IndexViewModel
+
+<h1>Role description</h1>
+<h2>@Model.CurrentVacancyTitle</h2>
+
+<form asp-action="Index">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="Title" class="control-label">Vacancy title</label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <a asp-controller="Sections" asp-action="Index">Return to vacancy</a>
+        <input type="submit" value="Continue" class="btn btn-primary" />
+    </div>
+</form>
