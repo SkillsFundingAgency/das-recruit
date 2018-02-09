@@ -18,7 +18,6 @@ namespace Employer.Web.Controllers
         }
 
         [HttpPost, Route("/role-description")]
-        [ValidateAntiForgeryToken]
         public IActionResult Index(IndexEditModel m)
         {
             if(!ModelState.IsValid)
