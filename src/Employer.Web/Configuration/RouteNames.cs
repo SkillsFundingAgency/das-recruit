@@ -2,7 +2,6 @@
 {
     public static class RouteNames
     {
-
         public const string ApplicationProcess_Index_Get = "ApplicationProcess_Index_Get";
         public const string ApplicationProcess_Index_Post = "ApplicationProcess_Index_Post";
 
@@ -12,12 +11,18 @@
         public const string CandidateProfile_Index_Get = "CandidateProfile_Index_Get";
         public const string CandidateProfile_Index_Post = "CandidateProfile_Index_Post";
 
+        public const string Dashboard_Index_Get = "Dashboard_Index_Get";
+
         public const string EmployerDetails_Index_Get = "EmployerDetails_Index_Get";
         public const string EmployerDetails_Index_Post = "EmployerDetails_Index_Post";
+
+        public const string Home_Index_Get = "Home_Index_Get";
+        public const string Home_Logout_Get = "Home_Logout_Get";
 
         public const string LocationAndPosition_Index_Get = "LocationAndPosition_Index_Get";
         public const string LocationAndPosition_Index_Post = "LocationAndPosition_Index_Post";
 
+        public const string NewVacancy_Index = "NewVacancy_Index";
         public const string NewVacancy_Index_Get = "NewVacancy_Index_Get";
         public const string NewVacancy_Index_Post = "NewVacancy_Index_Post";
 

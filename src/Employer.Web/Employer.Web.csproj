@@ -5,7 +5,10 @@
     <RootNamespace>Esfa.Recruit.Employer.Web</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="MediatR" Version="4.0.1" />
+    <Compile Remove="Startup.ConfigureAuthentication.cs" />
+  </ItemGroup>
+  <ItemGroup>
+  	<PackageReference Include="MediatR" Version="4.0.1" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="4.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="2.0.1" />
@@ -21,11 +24,17 @@
     <DotNetCliToolReference Include="Microsoft.DotNet.Watcher.Tools" Version="2.0.0" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Startup.ConfigureAuthentication.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Recruit.Storage.Client\Recruit.Storage.Client.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="nlog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\" />
   </ItemGroup>
 </Project>

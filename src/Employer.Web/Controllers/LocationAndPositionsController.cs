@@ -6,7 +6,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 {
     public class LocationAndPositionsController : Controller
     {
-        [HttpGet, Route("location-and-positions", Name = RouteNames.LocationAndPosition_Index_Get)]
+        [HttpGet, Route("accounts/{employerAccountId}/location-and-positions", Name = RouteNames.LocationAndPosition_Index_Get)]
         public IActionResult Index()
         {
             var vm = new IndexViewModel
@@ -16,7 +16,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             return View(vm);
         }
 
-        [HttpPost, Route("location-and-positions", Name = RouteNames.LocationAndPosition_Index_Post)]
+        [HttpPost, Route("accounts/{employerAccountId}/location-and-positions", Name = RouteNames.LocationAndPosition_Index_Post)]
         public IActionResult Index(IndexViewModel vm)
         {
             return RedirectToAction("Index", "RoleDescription");

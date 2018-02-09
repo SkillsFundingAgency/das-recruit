@@ -5,7 +5,7 @@ using Esfa.Recruit.Storage.Client.Core.Messaging;
 using Esfa.Recruit.Storage.Client.Core.Commands;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
-{
+{    
     public class NewVacancyController : Controller
     {
         private readonly IMessaging _messaging;
@@ -14,16 +14,15 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         {
             _messaging = messaging;
         }
-
-        [HttpGet, Route("/new-vacancy", Name = RouteNames.NewVacancy_Index_Get)]
+        
+        [HttpGet, Route("accounts/{employerAccountId}/new-vacancy", Name = RouteNames.NewVacancy_Index_Get)]
         public IActionResult Index()
         {
             var vm = new IndexViewModel();
             return View(vm);
         }
 
-
-        [HttpPost, Route("/new-vacancy", Name = RouteNames.NewVacancy_Index_Post)]
+        [HttpPost, Route("accounts/{employerAccountId}/new-vacancy", Name = RouteNames.NewVacancy_Index_Post)]
         public IActionResult Index(IndexViewModel vm)
         {
             if(!ModelState.IsValid)
@@ -43,6 +42,5 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             return RedirectToAction("Index", "Sections");
         }
-        
     }
 }

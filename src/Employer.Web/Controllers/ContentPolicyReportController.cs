@@ -16,7 +16,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
     }
 
     [AllowAnonymous]
-    [HttpPost]
+    [HttpPost, Route("contentpolicyreport/report")]
     [IgnoreAntiforgeryToken]
     public IActionResult Report([FromBody] CspReportRequest request)
     {

@@ -2,7 +2,6 @@
 
 <div class="grid-row">
     <div class="column-two-thirds">
-
         <div asp-validation-summary="All" class="error-summary" role="alert" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
             <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
                 Please fix these errors
@@ -12,7 +11,6 @@
         <h1 class="heading-large">Create new vacancy</h1>
 
         <form asp-route="@RouteNames.NewVacancy_Index_Post">
-
             <div class="form-group">
                 <label asp-for="Title" class="control-label form-label-bold">Vacancy title</label>
                 <span asp-validation-for="Title" class="error-message"></span>
