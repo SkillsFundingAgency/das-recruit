@@ -6,7 +6,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 {
     public class WageAndHoursController : Controller
     {
-        [HttpGet, Route("wage-and-hours", Name = RouteNames.WageAndhours_Index_Get)]
+        [HttpGet, Route("accounts/{employerAccountId}/wage-and-hours", Name = RouteNames.WageAndhours_Index_Get)]
         public IActionResult Index()
         {
             var vm = new IndexViewModel
@@ -16,7 +16,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             return View(vm);
         }
 
-        [HttpPost, Route("wage-and-hours", Name = RouteNames.WageAndhours_Index_Post)]
+        [HttpPost, Route("accounts/{employerAccountId}/wage-and-hours", Name = RouteNames.WageAndhours_Index_Post)]
         public IActionResult Index(IndexViewModel vm)
         {
             return RedirectToAction("Index", "ApplicationProcess");

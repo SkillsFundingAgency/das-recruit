@@ -7,7 +7,7 @@ namespace Employer.Web.Controllers
 {
     public class SectionsController : Controller
     {
-        [HttpGet, Route("sections", Name = RouteNames.Sections_Index_Get)]
+        [HttpGet, Route("accounts/{employerAccountId}/sections", Name = RouteNames.Sections_Index_Get)]
         public IActionResult Index()
         {
             var vm = new IndexViewModel

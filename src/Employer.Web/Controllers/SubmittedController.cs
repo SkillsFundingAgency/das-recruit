@@ -6,7 +6,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 {
     public class SubmittedController : Controller
     {
-        [HttpGet, Route("vacancy-submitted", Name = RouteNames.Submitted_Index_Get)]
+        [HttpGet, Route("accounts/{employerAccountId}/vacancy-submitted", Name = RouteNames.Submitted_Index_Get)]
         public IActionResult Index()
         {
             var vm = new IndexViewModel

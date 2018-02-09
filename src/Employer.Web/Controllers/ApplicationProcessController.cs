@@ -6,7 +6,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 {
     public class ApplicationProcessController : Controller
     {
-        [HttpGet, Route("application-process", Name = RouteNames.ApplicationProcess_Index_Get)]
+        [HttpGet, Route("accounts/{employerAccountId}/application-process", Name = RouteNames.ApplicationProcess_Index_Get)]
         public IActionResult Index()
         {
             var vm = new IndexViewModel
@@ -16,7 +16,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             return View(vm);
         }
 
-        [HttpPost, Route("application-process", Name = RouteNames.ApplicationProcess_Index_Post)]
+        [HttpPost, Route("accounts/{employerAccountId}/application-process", Name = RouteNames.ApplicationProcess_Index_Post)]
         public IActionResult Index(IndexViewModel vm)
         {
             return RedirectToAction("Index", "Sections");

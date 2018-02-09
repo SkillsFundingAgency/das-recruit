@@ -6,14 +6,14 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 {
     public class RoleDescriptionController : Controller
     {
-        [HttpGet, Route("/role-description", Name = RouteNames.RoleDescription_Index_Get)]
+        [HttpGet, Route("accounts/{employerAccountId}/role-description", Name = RouteNames.RoleDescription_Index_Get)]
         public IActionResult Index()
         {
             var vm = GetViewModel();
             return View(vm);
         }
 
-        [HttpPost, Route("/role-description", Name =  RouteNames.RoleDescription_Index_Post)]
+        [HttpPost, Route("accounts/{employerAccountId}/role-description", Name =  RouteNames.RoleDescription_Index_Post)]
         public IActionResult Index(IndexEditModel m)
         {
             if(!ModelState.IsValid)

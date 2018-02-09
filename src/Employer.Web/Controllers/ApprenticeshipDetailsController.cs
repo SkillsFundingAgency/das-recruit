@@ -6,7 +6,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 {
     public class ApprenticeshipDetailsController : Controller
     {
-        [HttpGet, Route("apprenticeship-details", Name = RouteNames.ApprenticeshipDetails_Index_Get)]
+        [HttpGet, Route("accounts/{employerAccountId}/apprenticeship-details", Name = RouteNames.ApprenticeshipDetails_Index_Get)]
         public IActionResult Index()
         {
             var vm = new IndexViewModel
@@ -16,7 +16,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             return View(vm);
         }
 
-        [HttpPost, Route("apprenticeship-details", Name = RouteNames.ApprenticeshipDetails_Index_Post)]
+        [HttpPost, Route("accounts/{employerAccountId}/apprenticeship-details", Name = RouteNames.ApprenticeshipDetails_Index_Post)]
         public IActionResult Index(IndexViewModel vm)
         {
             return RedirectToAction("Index", "TrainingProvider");
