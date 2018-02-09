@@ -19,7 +19,6 @@ namespace Employer.Web.Controllers
 
 
         [HttpPost, Route("/new-vacancy")]
-        [ValidateAntiForgeryToken]
         public IActionResult Index(IndexViewModel vm)
         {
             if(!ModelState.IsValid)

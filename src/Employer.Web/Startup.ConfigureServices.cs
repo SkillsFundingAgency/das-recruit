@@ -59,6 +59,8 @@ namespace Esfa.Recruit.Employer.Web
                     formatter.SupportedMediaTypes
                         .Add(MediaTypeHeaderValue.Parse("application/csp-report"));
                 }
+
+                opts.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
             });            
 
             services.AddApplicationInsightsTelemetry(_configuration);

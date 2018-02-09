@@ -17,6 +17,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
     [AllowAnonymous]
     [HttpPost]
+    [IgnoreAntiforgeryToken]
     public IActionResult Report([FromBody] CspReportRequest request)
     {
         _logger.LogWarning("CSP Violation: {cspReport}", request);
