@@ -1,7 +1,5 @@
-﻿using System.Diagnostics;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
-using Esfa.Recruit.Employer.Web.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -32,11 +30,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             await HttpContext.SignOutAsync("oidc");
 
             return Redirect(_externalLinks.ManageApprenticeshipSiteUrl);
-        }
-
-        public IActionResult Error(int id)
-        {
-            return View(new ErrorViewModel { StatusCode = id, RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

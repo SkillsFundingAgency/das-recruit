@@ -1,0 +1,11 @@
+﻿@model Employer.Web.ViewModels.ApprenticeshipDetails.IndexViewModel
+
+<h1>Apprenticeship details</h1>
+<h2>@Model.Title</h2>
+
+<form asp-action="Index">
+    <div class="form-group">
+        <a asp-controller="Sections" asp-action="Index">Return to vacancy</a>
+        <input type="submit" value="Continue" class="btn btn-primary" />
+    </div>
+</form>

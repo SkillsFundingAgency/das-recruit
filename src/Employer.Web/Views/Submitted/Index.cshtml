@@ -1,0 +1,30 @@
+﻿@model Employer.Web.ViewModels.Submitted.IndexViewModel
+
+<h1>Candidate profile</h1>
+<h2>@Model.Title</h2>
+
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <div class="govuk-box-highlight">
+            <h1 class="heading-xlarge">
+                Vacancy submitted for approval
+            </h1>
+            <p class="font-large">
+                The vacancy reference number is <br>
+                <strong class="bold">@Model.VacancyReference</strong>
+            </p>
+        </div>
+        <h2 class="heading-medium">Next steps</h2>
+        <p>Your vacancy advert will now be reviewed by an Education and Skills Funding Agency adviser.</p>
+        <p>You'll be notified via your recruitment home page if any changes are necessary before the advert goes live.</p>
+    </div>
+</div>
+
+<div class="form-group inline">
+    <div class="form-group">
+        <a asp-controller="NewVacancy" asp-action="Index">Create another vacancy</a>
+        <a href="#" onclick="alert('todo')" class="btn btn-primary">Return to dashboard</a>
+    </div>
+</div>
+
