@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Employer.Web.ViewModels.ApprenticeshipDetails;
+using Esfa.Recruit.Employer.Web.ViewModels.ApprenticeshipDetails;
 
-namespace Employer.Web.Controllers
+namespace Esfa.Recruit.Employer.Web.Controllers
 {
     public class ApprenticeshipDetailsController : Controller
     {

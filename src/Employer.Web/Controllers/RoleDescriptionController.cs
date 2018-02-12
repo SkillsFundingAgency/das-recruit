@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Employer.Web.ViewModels.RoleDescription;
+using Esfa.Recruit.Employer.Web.ViewModels.RoleDescription;
 
-namespace Employer.Web.Controllers
+namespace Esfa.Recruit.Employer.Web.Controllers
 {
     public class RoleDescriptionController : Controller
     {

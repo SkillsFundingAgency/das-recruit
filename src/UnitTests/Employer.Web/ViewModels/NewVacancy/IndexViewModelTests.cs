@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Xunit;
-using EmployerWeb = Employer.Web;
+using EmployerWeb = Esfa.Recruit.Employer.Web;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.NewVacancy
 {

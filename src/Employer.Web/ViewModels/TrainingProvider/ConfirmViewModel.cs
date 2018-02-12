@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Employer.Web.ViewModels.TrainingProvider
+namespace Esfa.Recruit.Employer.Web.ViewModels.TrainingProvider
 {
     public class ConfirmViewModel
     {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Employer.Web.ViewModels.WageAndHours;
+using Esfa.Recruit.Employer.Web.ViewModels.WageAndHours;
 
-namespace Employer.Web.Controllers
+namespace Esfa.Recruit.Employer.Web.Controllers
 {
     public class WageAndHoursController : Controller
     {
