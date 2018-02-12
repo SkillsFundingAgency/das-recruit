@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text;
 using Xunit;
 using EmployerWeb = Employer.Web;
 
-namespace UnitTests.Employer.Web.ViewModels.RoleDescription
+namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.RoleDescription
 {
     public class IndexEditModelTests
     {
