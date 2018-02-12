@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text;
 using Xunit;
 using EmployerWeb = Employer.Web;
 
-namespace UnitTests.Employer.Web.ViewModels.NewVacancy
+namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.NewVacancy
 {
     public class IndexEditModelTests
     {
