@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using FluentAssertions;
 using Xunit;
 using EmployerWeb = Employer.Web;
 
@@ -20,11 +21,11 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.NewVacancy
             var result = new List<ValidationResult>();
 
             // Act
-            var valid = Validator.TryValidateObject(vm, context, result, true);
+            var isValid = Validator.TryValidateObject(vm, context, result, true);
             
-            Assert.False(valid);
-            Assert.Single(result);
-            Assert.Equal("The Title field is required.", result.Single(r => r.MemberNames.Single() == "Title").ErrorMessage);
+            isValid.Should().BeFalse();
+            result.Should().HaveCount(1);
+            result.Single(r => r.MemberNames.Single() == "Title").ErrorMessage.Should().Be("The Title field is required.");
         }
 
         [Fact]
@@ -39,9 +40,9 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.NewVacancy
             var result = new List<ValidationResult>();
 
             // Act
-            var valid = Validator.TryValidateObject(vm, context, result, false);
+            var isValid = Validator.TryValidateObject(vm, context, result, false);
 
-            Assert.True(valid);
+            isValid.Should().BeTrue();
         }
     }
 }
