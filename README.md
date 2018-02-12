@@ -11,6 +11,7 @@ This solution represents the Employer Recruit code base currently in alpha.
 In order to run this solution locally you will need the following installed:
 
 * [.NET Core SDK >= 2.1.4](https://www.microsoft.com/net/download/)
+* (VS Code Only) [C# Extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode.csharp)
 
 ### Running - Command line
 
