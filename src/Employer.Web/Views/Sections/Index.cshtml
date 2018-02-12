@@ -10,82 +10,82 @@
     <tr>
         <td class="section-name">
             <h2>
-                <a asp-controller="EmployerDetails" asp-action="Index">Employer details</a>
+                <a asp-route="@RouteNames.EmployerDetails_Index_Get">Employer details</a>
             </h2>
         </td>
         <td class="section-status">
-            <a asp-controller="EmployerDetails" asp-action="Index" class="font-xsmall">Edit</a>
+            <a asp-route="@RouteNames.EmployerDetails_Index_Get" class="font-xsmall">Edit</a>
         </td>
     </tr>
     <tr>
         <td class="section-name">
             <h2>
-                <a asp-controller="LocationAndPositions" asp-action="Index">Role location and positions</a>
+                <a asp-route="@RouteNames.LocationAndPosition_Index_Get">Role location and positions</a>
             </h2>
         </td>
         <td class="section-status">
-            <a asp-controller="LocationAndPositions" asp-action="Index" class="font-xsmall">Edit</a>
+            <a asp-route="@RouteNames.LocationAndPosition_Index_Get" class="font-xsmall">Edit</a>
         </td>
     </tr>
     <tr>
         <td class="section-name">
             <h2>
-                <a asp-controller="RoleDescription" asp-action="Index">Role description</a>
+                <a asp-route="@RouteNames.RoleDescription_Index_Get">Role description</a>
             </h2>
         </td>
         <td class="section-status">
-            <a asp-controller="RoleDescription" asp-action="Index" class="font-xsmall">Edit</a>
+            <a  asp-route="@RouteNames.RoleDescription_Index_Get" class="font-xsmall">Edit</a>
         </td>
     </tr>
     <tr>
         <td class="section-name ">
             <h2>
-                <a asp-controller="CandidateProfile" asp-action="Index">Candidate profile</a>
+                <a asp-route="@RouteNames.CandidateProfile_Index_Get">Candidate profile</a>
             </h2>
         </td>
         <td class="section-status">
-            <a asp-controller="CandidateProfile" asp-action="Index" class="font-xsmall">Edit</a>
+            <a asp-route="@RouteNames.CandidateProfile_Index_Get" class="font-xsmall">Edit</a>
         </td>
     </tr>
 
     <tr>
         <td class="section-name ">
             <h2>
-                <a asp-controller="ApprenticeshipDetails" asp-action="Index">Apprenticeship details</a>
+                <a asp-route="@RouteNames.ApprenticeshipDetails_Index_Get">Apprenticeship details</a>
             </h2>
         </td>
         <td class="section-status">
-            <a asp-controller="ApprenticeshipDetails" asp-action="Index" class="font-xsmall">Edit</a>
+            <a asp-route="@RouteNames.ApprenticeshipDetails_Index_Get" class="font-xsmall">Edit</a>
         </td>
     </tr>
     <tr>
         <td class="section-name">
             <h2>
-                <a asp-controller="TrainingProvider" asp-action="Index">Training provider</a>
+                <a asp-route="@RouteNames.TrainingProvider_Index_Get">Training provider</a>
             </h2>
         </td>
         <td class="section-status">
-            <a asp-controller="TrainingProvider" asp-action="Index" class="font-xsmall">Edit</a>
+            <a asp-route="@RouteNames.TrainingProvider_Index_Get" class="font-xsmall">Edit</a>
         </td>
     </tr>
     <tr>
         <td class="section-name ">
             <h2>
-                <a asp-controller="WageAndHours" asp-action="Index">Wage and hours</a>
+                <a asp-route="@RouteNames.WageAndhours_Index_Get">Wage and hours</a>
             </h2>
         </td>
         <td class="section-status">
-            <a asp-controller="WageAndHours" asp-action="Index" class="font-xsmall">Edit</a>
+            <a asp-route="@RouteNames.WageAndhours_Index_Get" class="font-xsmall">Edit</a>
         </td>
     </tr>
     <tr>
         <td class="section-name ">
             <h2>
-                <a asp-controller="ApplicationProcess" asp-action="Index">Application process</a>
+                <a asp-route="@RouteNames.ApplicationProcess_Index_Get">Application process</a>
             </h2>
         </td>
         <td class="section-status">
-            <a asp-controller="ApplicationProcess" asp-action="Index" class="font-xsmall">Edit</a>
+            <a asp-route="@RouteNames.ApplicationProcess_Index_Get" class="font-xsmall">Edit</a>
         </td>
     </tr>
 </table>
@@ -93,6 +93,6 @@
 <div class="form-group inline">
     <div class="form-group">
         <a href="#" onclick="alert('todo')" class="button-link">Return to dashboard</a>
-        <a asp-controller="Preview" asp-action="Index" class="btn btn-primary">Preview and submit</a>
+        <a asp-route="@RouteNames.Preview_Index_Get" class="btn btn-primary">Preview and submit</a>
     </div>
 </div>  

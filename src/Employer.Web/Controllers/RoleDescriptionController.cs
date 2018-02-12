@@ -1,18 +1,19 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Employer.Web.ViewModels.RoleDescription;
+using Esfa.Recruit.Employer.Web.Configuration.Routes;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
     public class RoleDescriptionController : Controller
     {
-        [HttpGet, Route("/role-description")]
+        [HttpGet, Route("/role-description", Name = RouteNames.RoleDescription_Index_Get)]
         public IActionResult Index()
         {
             var vm = GetViewModel();
             return View(vm);
         }
 
-        [HttpPost, Route("/role-description")]
+        [HttpPost, Route("/role-description", Name =  RouteNames.RoleDescription_Index_Post)]
         public IActionResult Index(IndexEditModel m)
         {
             if(!ModelState.IsValid)

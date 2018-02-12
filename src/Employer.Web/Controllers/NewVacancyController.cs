@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Employer.Web.ViewModels.NewVacancy;
+using Esfa.Recruit.Employer.Web.Configuration.Routes;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
     public class NewVacancyController : Controller
     {
-        [HttpGet, Route("/new-vacancy")]
+        [HttpGet, Route("/new-vacancy", Name = RouteNames.NewVacancy_Index_Get)]
         public IActionResult Index()
         {
             var vm = new IndexViewModel();
@@ -13,7 +14,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         }
 
 
-        [HttpPost, Route("/new-vacancy")]
+        [HttpPost, Route("/new-vacancy", Name = RouteNames.NewVacancy_Index_Post)]
         public IActionResult Index(IndexViewModel vm)
         {
             if(!ModelState.IsValid)
