@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Employer.Web.ViewModels.ApplicationProcess;
+using Esfa.Recruit.Employer.Web.ViewModels.ApplicationProcess;
 
-namespace Employer.Web.Controllers
+namespace Esfa.Recruit.Employer.Web.Controllers
 {
     public class ApplicationProcessController : Controller
     {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Employer.Web.ViewModels.CandidateProfile;
+using Esfa.Recruit.Employer.Web.ViewModels.CandidateProfile;
 
-namespace Employer.Web.Controllers
+namespace Esfa.Recruit.Employer.Web.Controllers
 {
     public class CandidateProfileController : Controller
     {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Employer.Web.ViewModels.NewVacancy;
+using Esfa.Recruit.Employer.Web.ViewModels.NewVacancy;
 
-namespace Employer.Web.Controllers
+namespace Esfa.Recruit.Employer.Web.Controllers
 {
     public class NewVacancyController : Controller
     {

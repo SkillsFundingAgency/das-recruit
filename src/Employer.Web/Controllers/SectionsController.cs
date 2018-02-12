@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Employer.Web.ViewModels.Sections;
+using Esfa.Recruit.Employer.Web.ViewModels.Sections;
+using Esfa.Recruit.Employer.Web.Configuration.Routes;
 
 namespace Employer.Web.Controllers
 {

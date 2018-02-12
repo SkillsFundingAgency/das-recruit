@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Employer.Web.ViewModels.CandidateProfile
+namespace Esfa.Recruit.Employer.Web.ViewModels.CandidateProfile
 {
     public class IndexViewModel
     {
