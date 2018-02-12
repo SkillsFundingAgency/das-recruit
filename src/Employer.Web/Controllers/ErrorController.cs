@@ -1,11 +1,6 @@
 ﻿using System.Diagnostics;
-using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.ViewModels;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
