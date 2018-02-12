@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Employer.Web.ViewModels.TrainingProvider;
+using Esfa.Recruit.Employer.Web.Configuration.Routes;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
     public class TrainingProviderController : Controller
     {
-        [HttpGet, Route("training-provider")]
+        [HttpGet, Route("training-provider", Name = RouteNames.TrainingProvider_Index_Get)]
         public IActionResult Index()
         {
             var vm = new IndexViewModel
@@ -15,13 +16,13 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             return View(vm);
         }
 
-        [HttpPost, Route("training-provider")]
+        [HttpPost, Route("training-provider", Name = RouteNames.TrainingProvider_Index_Post)]
         public IActionResult Index(IndexViewModel vm)
         {
             return RedirectToAction("Confirm");
         }
 
-        [HttpGet, Route("training-provider-confirm")]
+        [HttpGet, Route("training-provider-confirm", Name = RouteNames.TrainingProvider_Confirm_Get)]
         public IActionResult Confirm()
         {
             var vm = new ConfirmViewModel
@@ -31,7 +32,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             return View(vm);
         }
 
-        [HttpPost, Route("training-provider-confirm")]
+        [HttpPost, Route("training-provider-confirm", Name = RouteNames.TrainingProvider_Confirm_Post)]
         public IActionResult Confirm(ConfirmViewModel vm)
         {
             return RedirectToAction("Index", "WageAndHours");

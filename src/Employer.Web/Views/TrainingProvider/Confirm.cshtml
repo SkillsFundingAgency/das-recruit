@@ -3,9 +3,9 @@
 <h1>Confirm training provider</h1>
 <h2>@Model.Title</h2>
 
-<form asp-action="Confirm">
+<form asp-route="@RouteNames.TrainingProvider_Confirm_Post">
     <div class="form-group">
-        <a asp-action="Index">Change training provider</a>
+        <a asp-route="@RouteNames.TrainingProvider_Index_Get">Change training provider</a>
         <input type="submit" value="Confirm training provider" class="btn btn-primary" />
     </div>
 </form>

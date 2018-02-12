@@ -6,7 +6,7 @@ namespace Employer.Web.Controllers
 {
     public class SectionsController : Controller
     {
-        [HttpGet, Route("sections")]
+        [HttpGet, Route("sections", Name = RouteNames.Sections_Index_Get)]
         public IActionResult Index()
         {
             var vm = new IndexViewModel
@@ -14,12 +14,6 @@ namespace Employer.Web.Controllers
                 Title = Dummy.VacancyTitle
             };
 
-            return View(vm);
-        }
-
-        [HttpPost, Route("sections")]
-        public IActionResult Index(IndexViewModel vm)
-        {
             return View(vm);
         }
     }
