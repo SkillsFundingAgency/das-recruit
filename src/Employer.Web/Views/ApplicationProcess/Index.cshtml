@@ -1,9 +1,9 @@
-﻿@model Employer.Web.ViewModels.ApplicationProcess.IndexViewModel
+﻿@model Esfa.Recruit.Employer.Web.ViewModels.ApplicationProcess.IndexViewModel
 
 <h1>Application process</h1>
 <h2>@Model.Title</h2>
 
-<form asp-action="Index">
+<form asp-route="@RouteNames.ApplicationProcess_Index_Post">
     <div class="form-group">
         <input type="submit" value="Continue" class="btn btn-primary" />
     </div>

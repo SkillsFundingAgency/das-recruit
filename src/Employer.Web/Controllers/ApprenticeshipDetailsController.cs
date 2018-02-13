@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Employer.Web.ViewModels.ApprenticeshipDetails;
+using Esfa.Recruit.Employer.Web.ViewModels.ApprenticeshipDetails;
+using Esfa.Recruit.Employer.Web.Configuration.Routes;
 
-namespace Employer.Web.Controllers
+namespace Esfa.Recruit.Employer.Web.Controllers
 {
     public class ApprenticeshipDetailsController : Controller
     {
-        [HttpGet, Route("apprenticeship-details")]
+        [HttpGet, Route("apprenticeship-details", Name = RouteNames.ApprenticeshipDetails_Index_Get)]
         public IActionResult Index()
         {
             var vm = new IndexViewModel
@@ -15,7 +16,7 @@ namespace Employer.Web.Controllers
             return View(vm);
         }
 
-        [HttpPost, Route("apprenticeship-details")]
+        [HttpPost, Route("apprenticeship-details", Name = RouteNames.ApprenticeshipDetails_Index_Post)]
         public IActionResult Index(IndexViewModel vm)
         {
             return RedirectToAction("Index", "TrainingProvider");

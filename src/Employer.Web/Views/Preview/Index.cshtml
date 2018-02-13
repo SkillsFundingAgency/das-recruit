@@ -1,11 +1,11 @@
-﻿@model Employer.Web.ViewModels.Preview.IndexViewModel
+﻿@model Esfa.Recruit.Employer.Web.ViewModels.Preview.IndexViewModel
 
 <h1>Vacancy preview</h1>
 <h2>@Model.Title</h2>
 
-<form asp-action="Index">
+<form asp-route="@RouteNames.Preview_Index_Post">
     <div class="form-group">
-        <a asp-controller="Sections" asp-action="Index">Return to vacancy</a>
+        <a asp-route="@RouteNames.Sections_Index_Get">Return to vacancy</a>
         <input type="submit" value="Submit" class="btn btn-primary" />
     </div>
 </form>

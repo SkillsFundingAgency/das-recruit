@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Employer.Web.ViewModels.ApplicationProcess;
+using Esfa.Recruit.Employer.Web.ViewModels.ApplicationProcess;
+using Esfa.Recruit.Employer.Web.Configuration.Routes;
 
-namespace Employer.Web.Controllers
+namespace Esfa.Recruit.Employer.Web.Controllers
 {
     public class ApplicationProcessController : Controller
     {
-        [HttpGet, Route("application-process")]
+        [HttpGet, Route("application-process", Name = RouteNames.ApplicationProcess_Index_Get)]
         public IActionResult Index()
         {
             var vm = new IndexViewModel
@@ -15,7 +16,7 @@ namespace Employer.Web.Controllers
             return View(vm);
         }
 
-        [HttpPost, Route("application-process")]
+        [HttpPost, Route("application-process", Name = RouteNames.ApplicationProcess_Index_Post)]
         public IActionResult Index(IndexViewModel vm)
         {
             return RedirectToAction("Index", "Sections");

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Employer.Web.ViewModels.EmployerDetails
+namespace Esfa.Recruit.Employer.Web.ViewModels.EmployerDetails
 {
     public class IndexViewModel
     {

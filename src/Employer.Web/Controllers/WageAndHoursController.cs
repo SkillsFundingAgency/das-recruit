@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Employer.Web.ViewModels.WageAndHours;
+using Esfa.Recruit.Employer.Web.ViewModels.WageAndHours;
+using Esfa.Recruit.Employer.Web.Configuration.Routes;
 
-namespace Employer.Web.Controllers
+namespace Esfa.Recruit.Employer.Web.Controllers
 {
     public class WageAndHoursController : Controller
     {
-        [HttpGet, Route("wage-and-hours")]
+        [HttpGet, Route("wage-and-hours", Name = RouteNames.WageAndhours_Index_Get)]
         public IActionResult Index()
         {
             var vm = new IndexViewModel
@@ -15,7 +16,7 @@ namespace Employer.Web.Controllers
             return View(vm);
         }
 
-        [HttpPost, Route("wage-and-hours")]
+        [HttpPost, Route("wage-and-hours", Name = RouteNames.WageAndhours_Index_Post)]
         public IActionResult Index(IndexViewModel vm)
         {
             return RedirectToAction("Index", "ApplicationProcess");
