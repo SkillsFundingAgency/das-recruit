@@ -31,6 +31,8 @@
     <!--[if IE 6]><link rel="stylesheet" media="screen" href="/lib/esfa-govuk/css/esfa-govuk-ie6.css"/><![endif]-->
     <!--[if IE 7]><link rel="stylesheet" media="screen" href="/lib/esfa-govuk/css/esfa-govuk-ie7.css"/><![endif]-->
     <!--[if IE 8]><link rel="stylesheet" media="screen" href="/lib/esfa-govuk/css/esfa-govuk-ie8.css"/><![endif]-->
+
+    <link rel="stylesheet" media="screen" href="/css/application.css"/>
   </head>
     
   <body>
@@ -61,15 +63,60 @@
         </div>
       </div>
     </header>
-    
-    <div id="global-header-bar"></div>
+<!--
+    <div id="floating-menu-holder">
+      <div class="account-information floating-menu" role="navigation">
+        <div class="js-float">
+          <p class="floating-head-text">Your employer account </p>
+          <nav id="user-nav">
+              <ul role="menubar">
+                <li><a href="/service/help">Help</a></li>
+                <li class="has-sub-menu">
+                    <a href="/" role="menuitem">Settings</a>
+                    <ul role="menu" class="js-hidden" id="settings-menu" aria-hidden="true">
+                        <li><a href="/service/accounts" role="menuitem" class="sub-menu-item">Your accounts</a></li>
+                        <li><a href="/accounts/LMXL9M/rename" role="menuitem" class="sub-menu-item">Rename account</a></li>
+                        <li><a href="" class="sub-menu-item">Change your password</a></li>
+                        <li><a href="" class="sub-menu-item">Change your email address</a></li>
+                        <li><a href="/settings/notifications" class="sub-menu-item">Notification settings</a></li>
+                    </ul>
+                </li>
+                <li><a href="/service/signOut" role="menuitem">Sign out</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
 
+    <div class="header-organisation" role="navigation">
+      <nav class="header-inner">
+        <ul role="menubar" id="global-nav-links">
+          <li><a href="/accounts/LMXL9M/teams" class="selected" role="menuitem">Home</a></li>
+          <li><a href="/accounts/LMXL9M/finance" class="" role="menuitem">Finance</a></li>
+          <li><a href="" class="" role="menuitem">Apprentices</a></li>
+          <li><a href="/accounts/LMXL9M/teams/view" class="" role="menuitem">Your team</a></li>
+          <li><a href="/accounts/LMXL9M/agreements" class="" role="menuitem">Your organisations and agreements</a></li>
+          <li class="menu-link"><a href="#">More</a>
+            <ul>
+              <li><a href="/accounts/LMXL9M/schemes" class="" role="menuitem">PAYE schemes</a></li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+    </div>
+-->
     @RenderBody()
 
     <footer class="group js-footer" id="footer" role="contentinfo">
       <div class="footer-wrapper">
         <div class="footer-meta">
           <div class="footer-meta-inner">
+            <ul class="platform-help-links">
+                <li><a href="/service/help">Help</a></li>
+                <li><a href="https://www.surveymonkey.co.uk/r/2JPLQ9T" target="_blank">Feedback</a></li>
+                <li><a href="/service/privacy">Privacy and cookies</a></li>
+                <li>Built by the <a href="http://gov.uk/sfa" target="_blank">Education and Skills Funding Agency</a></li>
+            </ul>
             <div class="open-government-licence">
               <p class="logo"><a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license">Open Government Licence</a></p>
                 <p>All content is available under the <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license">Open Government Licence v3.0</a>, except where otherwise stated</p>
@@ -85,6 +132,7 @@
     <div id="global-app-error" class="app-error hidden"></div>
 
     <script src="/lib/govuk_template/assets/javascripts/govuk-template.js"></script>
+    <script src="/javascripts/application.js"></script>
 
   </body>
 </html>
