@@ -1,98 +1,99 @@
 ﻿@model Esfa.Recruit.Employer.Web.ViewModels.Sections.IndexViewModel
 
-<h1>Create new vacancy</h1>
+<div class="grid-row">
+    <div class="column-two-thirds">
 
-<h2>@Model.Title</h2>
+        <h1 class="heading-large">Create new vacancy - @Model.Title</h1>
 
-<p>Complete the sections below</p>
+        <p>Complete the sections below</p>
 
-<table class="table-summary">
-    <tr>
-        <td class="section-name">
-            <h2>
-                <a asp-route="@RouteNames.EmployerDetails_Index_Get">Employer details</a>
-            </h2>
-        </td>
-        <td class="section-status">
-            <a asp-route="@RouteNames.EmployerDetails_Index_Get" class="font-xsmall">Edit</a>
-        </td>
-    </tr>
-    <tr>
-        <td class="section-name">
-            <h2>
-                <a asp-route="@RouteNames.LocationAndPosition_Index_Get">Role location and positions</a>
-            </h2>
-        </td>
-        <td class="section-status">
-            <a asp-route="@RouteNames.LocationAndPosition_Index_Get" class="font-xsmall">Edit</a>
-        </td>
-    </tr>
-    <tr>
-        <td class="section-name">
-            <h2>
-                <a asp-route="@RouteNames.RoleDescription_Index_Get">Role description</a>
-            </h2>
-        </td>
-        <td class="section-status">
-            <a  asp-route="@RouteNames.RoleDescription_Index_Get" class="font-xsmall">Edit</a>
-        </td>
-    </tr>
-    <tr>
-        <td class="section-name ">
-            <h2>
-                <a asp-route="@RouteNames.CandidateProfile_Index_Get">Candidate profile</a>
-            </h2>
-        </td>
-        <td class="section-status">
-            <a asp-route="@RouteNames.CandidateProfile_Index_Get" class="font-xsmall">Edit</a>
-        </td>
-    </tr>
+        <table class="table-summary data">
+            <tr>
+                <td class="section-name">
+                    <h2>
+                        <a asp-route="@RouteNames.EmployerDetails_Index_Get">Employer details</a>
+                    </h2>
+                </td>
+                <td class="section-status">
+                    <a asp-route="@RouteNames.EmployerDetails_Index_Get" class="font-xsmall">Edit</a>
+                </td>
+            </tr>
+            <tr>
+                <td class="section-name">
+                    <h2>
+                        <a asp-route="@RouteNames.LocationAndPosition_Index_Get">Role location and positions</a>
+                    </h2>
+                </td>
+                <td class="section-status">
+                    <a asp-route="@RouteNames.LocationAndPosition_Index_Get" class="font-xsmall">Edit</a>
+                </td>
+            </tr>
+            <tr>
+                <td class="section-name">
+                    <h2>
+                        <a asp-route="@RouteNames.RoleDescription_Index_Get">Role description</a>
+                    </h2>
+                </td>
+                <td class="section-status">
+                    <a  asp-route="@RouteNames.RoleDescription_Index_Get" class="font-xsmall">Edit</a>
+                </td>
+            </tr>
+            <tr>
+                <td class="section-name ">
+                    <h2>
+                        <a asp-route="@RouteNames.CandidateProfile_Index_Get">Candidate profile</a>
+                    </h2>
+                </td>
+                <td class="section-status">
+                    <a asp-route="@RouteNames.CandidateProfile_Index_Get" class="font-xsmall">Edit</a>
+                </td>
+            </tr>
 
-    <tr>
-        <td class="section-name ">
-            <h2>
-                <a asp-route="@RouteNames.ApprenticeshipDetails_Index_Get">Apprenticeship details</a>
-            </h2>
-        </td>
-        <td class="section-status">
-            <a asp-route="@RouteNames.ApprenticeshipDetails_Index_Get" class="font-xsmall">Edit</a>
-        </td>
-    </tr>
-    <tr>
-        <td class="section-name">
-            <h2>
-                <a asp-route="@RouteNames.TrainingProvider_Index_Get">Training provider</a>
-            </h2>
-        </td>
-        <td class="section-status">
-            <a asp-route="@RouteNames.TrainingProvider_Index_Get" class="font-xsmall">Edit</a>
-        </td>
-    </tr>
-    <tr>
-        <td class="section-name ">
-            <h2>
-                <a asp-route="@RouteNames.WageAndhours_Index_Get">Wage and hours</a>
-            </h2>
-        </td>
-        <td class="section-status">
-            <a asp-route="@RouteNames.WageAndhours_Index_Get" class="font-xsmall">Edit</a>
-        </td>
-    </tr>
-    <tr>
-        <td class="section-name ">
-            <h2>
-                <a asp-route="@RouteNames.ApplicationProcess_Index_Get">Application process</a>
-            </h2>
-        </td>
-        <td class="section-status">
-            <a asp-route="@RouteNames.ApplicationProcess_Index_Get" class="font-xsmall">Edit</a>
-        </td>
-    </tr>
-</table>
+            <tr>
+                <td class="section-name ">
+                    <h2>
+                        <a asp-route="@RouteNames.ApprenticeshipDetails_Index_Get">Apprenticeship details</a>
+                    </h2>
+                </td>
+                <td class="section-status">
+                    <a asp-route="@RouteNames.ApprenticeshipDetails_Index_Get" class="font-xsmall">Edit</a>
+                </td>
+            </tr>
+            <tr>
+                <td class="section-name">
+                    <h2>
+                        <a asp-route="@RouteNames.TrainingProvider_Index_Get">Training provider</a>
+                    </h2>
+                </td>
+                <td class="section-status">
+                    <a asp-route="@RouteNames.TrainingProvider_Index_Get" class="font-xsmall">Edit</a>
+                </td>
+            </tr>
+            <tr>
+                <td class="section-name ">
+                    <h2>
+                        <a asp-route="@RouteNames.WageAndhours_Index_Get">Wage and hours</a>
+                    </h2>
+                </td>
+                <td class="section-status">
+                    <a asp-route="@RouteNames.WageAndhours_Index_Get" class="font-xsmall">Edit</a>
+                </td>
+            </tr>
+            <tr>
+                <td class="section-name ">
+                    <h2>
+                        <a asp-route="@RouteNames.ApplicationProcess_Index_Get">Application process</a>
+                    </h2>
+                </td>
+                <td class="section-status">
+                    <a asp-route="@RouteNames.ApplicationProcess_Index_Get" class="font-xsmall">Edit</a>
+                </td>
+            </tr>
+        </table>
 
-<div class="form-group inline">
-    <div class="form-group">
-        <a href="#" onclick="alert('todo')" class="button-link">Return to dashboard</a>
-        <a asp-route="@RouteNames.Preview_Index_Get" class="btn btn-primary">Preview and submit</a>
+        <div class="form-group">
+            <a href="#" onclick="alert('todo')" class="button-link">Return to dashboard</a>
+            <a asp-route="@RouteNames.Preview_Index_Get" class="button">Preview and submit</a>
+        </div>
     </div>
-</div>  
+</div>
