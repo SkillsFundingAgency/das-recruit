@@ -1,0 +1,164 @@
+/*** Validation Styles ***/
+.validation-summary-valid {
+    display:none;
+}
+
+
+/*** Utility classes ***/
+.button-link {
+    display:inline-block;
+    padding:10px 15px 5px 0;
+  }
+
+/*** Floating menu styles ***/
+
+#floating-menu-holder {
+    background: #6f72af
+}
+
+#floating-menu-holder .fixed-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    max-width: 100%
+}
+
+#floating-menu-holder .width-adjust {
+    max-width: 960px;
+    margin: 0 auto
+}
+
+@media(min-width: 641px) {
+    #floating-menu-holder {
+        padding-left:30px;
+        padding-right: 30px
+    }
+}
+
+.floating-menu {
+    clear: both;
+    max-width: 960px;
+    width: 100%;
+    background: #6f72af;
+    color: #fff;
+    z-index: 1;
+    margin: 0 auto
+}
+
+.floating-menu nav#user-nav {
+    clear: both;
+    float: left;
+    margin: 0 0 0 20px
+}
+
+@media(min-width: 641px) {
+    .floating-menu nav#user-nav {
+        margin:0;
+        clear: none;
+        float: right
+    }
+}
+
+.floating-menu nav#user-nav li a {
+    border: 0;
+    color: #fff
+}
+
+.floating-menu nav#user-nav li .has-sub-menu a.menu-main {
+    border: 0;
+    color: #fff
+}
+
+.floating-menu nav#user-nav li .open a.menu-main {
+    color: #4c2c92
+}
+
+.floating-menu p.floating-head-text {
+    float: left;
+    margin: 10px 0 0 10px;
+    font-weight: bold;
+    font-size: 19px
+}
+
+@media(min-width: 641px) {
+    .floating-menu p.floating-head-text {
+        margin:10px 0 0 0
+    }
+}
+
+/*** Vacancy Styles ***/
+.table-summary .section-name h2,  {
+  font-size: 18px;
+  line-height: 1.2;
+  font-weight: 700;
+  text-transform: none;
+}
+
+.table-summary .section-name h2 a {
+  text-decoration: none;
+}
+
+.table-summary .section-name h2 a:hover {
+  text-decoration: underline;
+}
+
+.table-summary .section-name h2 a .section-number{
+  text-decoration: none;
+}
+
+@media (min-width: 641px) {
+  .table-summary .section-name h2 {
+    font-size: 24px;
+    line-height: 1.25;
+  }
+}
+
+.status {
+  text-transform: uppercase;
+  font-size: 14px;
+  background-color: black;
+  color: white;
+  padding: 3px 7px 2px 7px;
+}
+
+.status.incomplete {
+  background-color: orange;
+}
+
+.status.not-started {
+  background-color: grey;
+}
+
+.status.locked {
+  background-color: black;
+}
+
+.table-summary .section-status {
+  text-align: right;
+  font-weight:700;
+}
+
+.table-summary .section-status .status {
+  display: block;
+  padding-top: 5px;
+  margin-top: -5px;
+  float: right;
+}
+
+.actions {
+  margin-top: 60px;
+  margin-bottom: 15px;
+}
+
+.actions a {
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.actions a:hover {
+    text-decoration: underline;
+}
+
+.actions .action {
+  margin-bottom: 20px;
+}
