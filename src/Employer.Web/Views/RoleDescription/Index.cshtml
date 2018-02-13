@@ -1,17 +1,28 @@
 ﻿@model Esfa.Recruit.Employer.Web.ViewModels.RoleDescription.IndexViewModel
 
-<h1>Role description</h1>
-<h2>@Model.CurrentVacancyTitle</h2>
+<div class="grid-row">
+    <div class="column-two-thirds">
 
-<form asp-route="@RouteNames.RoleDescription_Index_Post">
-    <div asp-validation-summary="All" class="text-danger"></div>
-    <div class="form-group">
-        <label asp-for="Title" class="control-label">Vacancy title</label>
-        <input asp-for="Title" class="form-control" />
-        <span asp-validation-for="Title" class="text-danger"></span>
+        <div asp-validation-summary="All" class="error-summary" role="alert" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
+            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
+                Please fix these errors
+            </h2>
+        </div>
+
+        <h1 class="heading-large">@Model.CurrentVacancyTitle</h1>
+        <h1 class="heading-large">Role description</h1>
+
+        <form asp-route="@RouteNames.RoleDescription_Index_Post">
+            <div class="form-group">
+                <label asp-for="Title" class="form-label-bold">Vacancy title</label>
+                <span asp-validation-for="Title" class="error-message"></span>
+                <input asp-for="Title" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <a asp-route="@RouteNames.Sections_Index_Get" class="button-link">Return to vacancy</a>
+                <input type="submit" value="Continue" class="button" />
+            </div>
+        </form>
     </div>
-    <div class="form-group">
-        <a asp-route="@RouteNames.Sections_Index_Get">Return to vacancy</a>
-        <input type="submit" value="Continue" class="btn btn-primary" />
-    </div>
-</form>
+</div> 
