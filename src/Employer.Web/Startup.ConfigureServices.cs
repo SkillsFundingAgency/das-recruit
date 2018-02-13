@@ -35,6 +35,8 @@ namespace Esfa.Recruit.Employer.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddIoC(_configuration);
+
             services.AddMvc(opts =>
             {
                 if (!_hostingEnvironment.IsDevelopment())
@@ -67,8 +69,6 @@ namespace Esfa.Recruit.Employer.Web
 
             ConfigureAuthentication(services);
 
-            services.Configure<ExternalLinksConfiguration>(_configuration.GetSection("ExternalLinks"));
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>(); // Used by NLog to log out traceidentifier value.
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
