@@ -1,17 +1,28 @@
 ﻿@model Esfa.Recruit.Employer.Web.ViewModels.NewVacancy.IndexViewModel
 
-<h1>Create new vacancy</h1>
+<main id="content" role="main">
+    <div class="grid-row">
+        <div class="column-two-thirds">
 
-<form asp-route="@RouteNames.NewVacancy_Index_Post">
-    <div asp-validation-summary="All" class="text-danger"></div>
-    <div class="form-group">
-        <label asp-for="Title" class="control-label">Vacancy title</label>
-        <input asp-for="Title" class="form-control" />
-        <span asp-validation-for="Title" class="text-danger"></span>
+            <div asp-validation-summary="All"></div>
+
+
+            <h1 class="heading-large">
+                Create new vacancy
+            </h1>
+
+            <form asp-route="@RouteNames.NewVacancy_Index_Post">
+
+                <div class="form-group">
+                    <label asp-for="Title" class="control-label form-label-bold">Vacancy title</label>
+                    <span asp-validation-for="Title" class="error-message"></span>
+                    <input asp-for="Title" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <a href="#" onclick="alert('todo')" class="button-link">Return to dashboard</a>
+                    <input type="submit" value="Create" class="button" />
+                </div>
+            </form>
+        </div>
     </div>
-    <div class="form-group">
-        <a href="#" onclick="alert('todo')" class="button-link">Return to dashboard</a>
-        <input type="submit" value="Create" class="btn btn-primary" />
-    </div>
-</form>
-    
+</main>  
