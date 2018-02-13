@@ -1,9 +1,16 @@
+/*** Validation Styles ***/
+.validation-summary-valid {
+    display:none;
+}
+
+
+/*** Utility classes ***/
 .button-link {
     display:inline-block;
     padding:10px 15px 5px 0;
   }
 
-/*floating menu style - EMPLOYER */
+/*** Floating menu styles ***/
 
 #floating-menu-holder {
     background: #6f72af
@@ -78,4 +85,80 @@
         margin:10px 0 0 0
     }
 }
- /* - END floating menu style */
+
+/*** Vacancy Styles ***/
+.table-summary .section-name h2,  {
+  font-size: 18px;
+  line-height: 1.2;
+  font-weight: 700;
+  text-transform: none;
+}
+
+.table-summary .section-name h2 a {
+  text-decoration: none;
+}
+
+.table-summary .section-name h2 a:hover {
+  text-decoration: underline;
+}
+
+.table-summary .section-name h2 a .section-number{
+  text-decoration: none;
+}
+
+@media (min-width: 641px) {
+  .table-summary .section-name h2 {
+    font-size: 24px;
+    line-height: 1.25;
+  }
+}
+
+.status {
+  text-transform: uppercase;
+  font-size: 14px;
+  background-color: black;
+  color: white;
+  padding: 3px 7px 2px 7px;
+}
+
+.status.incomplete {
+  background-color: orange;
+}
+
+.status.not-started {
+  background-color: grey;
+}
+
+.status.locked {
+  background-color: black;
+}
+
+.table-summary .section-status {
+  text-align: right;
+  font-weight:700;
+}
+
+.table-summary .section-status .status {
+  display: block;
+  padding-top: 5px;
+  margin-top: -5px;
+  float: right;
+}
+
+.actions {
+  margin-top: 60px;
+  margin-bottom: 15px;
+}
+
+.actions a {
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.actions a:hover {
+    text-decoration: underline;
+}
+
+.actions .action {
+  margin-bottom: 20px;
+}
