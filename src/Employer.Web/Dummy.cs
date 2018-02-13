@@ -1,11 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System;
 
-namespace Microsoft.AspNetCore.Mvc
+namespace Esfa.Recruit.Employer.Web
 {
     /// <summary>
     /// Temporary class just persist some data to demonstrate sprint 1
