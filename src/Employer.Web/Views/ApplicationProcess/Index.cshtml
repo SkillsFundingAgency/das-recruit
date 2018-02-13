@@ -1,10 +1,14 @@
 ﻿@model Esfa.Recruit.Employer.Web.ViewModels.ApplicationProcess.IndexViewModel
 
-<h1>Application process</h1>
-<h2>@Model.Title</h2>
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <h1 class="heading-large">@Model.Title</h1>
+        <h1 class="heading-large">Application process</h1>
 
-<form asp-route="@RouteNames.ApplicationProcess_Index_Post">
-    <div class="form-group">
-        <input type="submit" value="Continue" class="btn btn-primary" />
+        <form asp-route="@RouteNames.ApplicationProcess_Index_Post">
+            <div class="form-group">
+                <input type="submit" value="Continue" class="button" />
+            </div>
+        </form>
     </div>
-</form>
+</div>

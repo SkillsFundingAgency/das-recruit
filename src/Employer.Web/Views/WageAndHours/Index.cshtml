@@ -1,11 +1,15 @@
 ﻿@model Esfa.Recruit.Employer.Web.ViewModels.WageAndHours.IndexViewModel
 
-<h1>Wage and hours</h1>
-<h2>@Model.Title</h2>
-
-<form asp-route="@RouteNames.WageAndhours_Index_Post">
-    <div class="form-group">
-        <a asp-route="@RouteNames.Sections_Index_Get">Return to vacancy</a>
-        <input type="submit" value="Continue" class="btn btn-primary" />
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <h1 class="heading-large">@Model.Title</h1>
+        <h1 class="heading-large">Wage and hours</h1>
+        
+        <form asp-route="@RouteNames.WageAndhours_Index_Post">
+            <div class="form-group">
+                <a asp-route="@RouteNames.Sections_Index_Get" class="button-link">Return to vacancy</a>
+                <input type="submit" value="Continue" class="button" />
+            </div>
+        </form>
     </div>
-</form>
+</div>

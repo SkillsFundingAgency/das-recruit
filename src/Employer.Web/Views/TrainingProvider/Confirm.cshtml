@@ -1,11 +1,15 @@
 ﻿@model Esfa.Recruit.Employer.Web.ViewModels.TrainingProvider.ConfirmViewModel
 
-<h1>Confirm training provider</h1>
-<h2>@Model.Title</h2>
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <h1 class="heading-large">@Model.Title</h1>
+        <h1 class="heading-large">Confirmtraining provider</h1>
 
-<form asp-route="@RouteNames.TrainingProvider_Confirm_Post">
-    <div class="form-group">
-        <a asp-route="@RouteNames.TrainingProvider_Index_Get">Change training provider</a>
-        <input type="submit" value="Confirm training provider" class="btn btn-primary" />
+        <form asp-route="@RouteNames.TrainingProvider_Confirm_Post">
+            <div class="form-group">
+                <a asp-route="@RouteNames.TrainingProvider_Index_Get" class="button-link">Change training provider</a>
+                <input type="submit" value="Confirm training provider" class="button" />
+            </div>
+        </form>
     </div>
-</form>
+</div>
