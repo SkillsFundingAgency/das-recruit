@@ -11,8 +11,6 @@ namespace Esfa.Recruit.Employer.Web
         {
             services.AddMvc(opts =>
             {
-                //opts.Conventions.Insert(0, new EmployerAccountRoutePrefixConvention());
-
                 if (!_hostingEnvironment.IsDevelopment())
                 {
                     opts.Filters.Add(new RequireHttpsAttribute());
