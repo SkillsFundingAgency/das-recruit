@@ -77,9 +77,9 @@ namespace Esfa.Recruit.Employer.Web
 
                     options.Events.OnTokenValidated = PopulateAccountsClaim;
                 });
+
+                services.AddAuthorizationService();
             }
-            
-            services.AddAuthorizationService();
         }
 
         private Task PopulateAccountsClaim(TokenValidatedContext ctx)

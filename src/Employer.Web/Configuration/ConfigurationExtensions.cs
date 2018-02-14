@@ -46,14 +46,16 @@ namespace Employer.Web.Configuration
                 {
                     opts.Filters.Add(new AllowAnonymousFilter());
                 }
+                else
+                {
+                    var policy = new AuthorizationPolicyBuilder()
+                             .RequireAuthenticatedUser()
+                             .Build();
 
-                var policy = new AuthorizationPolicyBuilder()
-                         .RequireAuthenticatedUser()
-                         .Build();
+                    opts.Filters.Add(new AuthorizeFilter(policy));
 
-                opts.Filters.Add(new AuthorizeFilter(policy));
-
-                opts.Filters.Add(new AuthorizeFilter("HasEmployerAccount"));
+                    opts.Filters.Add(new AuthorizeFilter("HasEmployerAccount"));
+                }
 
                 var jsonInputFormatters = opts.InputFormatters.OfType<JsonInputFormatter>();
                 foreach (var formatter in jsonInputFormatters)
