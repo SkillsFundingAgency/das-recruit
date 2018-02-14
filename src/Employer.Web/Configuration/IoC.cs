@@ -1,4 +1,5 @@
-﻿using Esfa.Recruit.Storage.Client.Core.Handlers;
+﻿using Employer.Web.Services;
+using Esfa.Recruit.Storage.Client.Core.Handlers;
 using Esfa.Recruit.Storage.Client.Core.Messaging;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -13,6 +14,8 @@ namespace Esfa.Recruit.Employer.Web.Configuration
         {
             services.Configure<ExternalLinksConfiguration>(configuration.GetSection("ExternalLinks"));
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>(); // Used by NLog to log out traceidentifier value.
+
+            services.AddTransient<IGetAssociatedEmployerAccountsService, GetAssociatedEmployerAccountsService>();
 
             //Mediatr
             services.AddMediatR(typeof(CreateVacancyCommandHandler).Assembly);
