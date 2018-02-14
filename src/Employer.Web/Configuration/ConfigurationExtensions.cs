@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Net.Http.Headers;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Employer.Web.Configuration
@@ -66,6 +67,48 @@ namespace Employer.Web.Configuration
 
                 opts.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
             });
+        }
+
+        public static void AddAuthenticationService(this IServiceCollection services, AuthenticationConfiguration authConfig, IGetAssociatedEmployerAccountsService accountsSvc)
+        {
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = "Cookies";
+                options.DefaultChallengeScheme = "oidc";
+            })
+            .AddCookie("Cookies", options =>
+            {
+                options.AccessDeniedPath = "/Error/403";
+            })
+            .AddOpenIdConnect("oidc", options =>
+            {
+                options.SignInScheme = "Cookies";
+
+                options.Authority = authConfig.Authority;
+                options.MetadataAddress = authConfig.MetaDataAddress;
+                options.RequireHttpsMetadata = false;
+                options.ResponseType = "code";
+                options.ClientId = authConfig.ClientId;
+                options.ClientSecret = authConfig.ClientSecret;
+                options.Scope.Add("profile");
+
+                options.Events.OnTokenValidated = (ctx) => PopulateAccountsClaim(ctx, accountsSvc);
+            });
+        }
+        
+        private static Task PopulateAccountsClaim(Microsoft.AspNetCore.Authentication.OpenIdConnect.TokenValidatedContext ctx, IGetAssociatedEmployerAccountsService accountsSvc)
+        {
+            var userId = ctx.Principal.Claims.First(c => c.Type.Equals(EmployerRecruitClaims.IdamsUserIdClaimTypeIdentifier)).Value;
+            var accounts = accountsSvc.GetAssociatedAccounts(userId);
+
+            var accountsConcatenated = string.Join(",", accounts);
+            var associatedAccountClaim = new Claim(EmployerRecruitClaims.AccountsClaimsTypeIdentifier, accountsConcatenated, ClaimValueTypes.String);
+
+            ctx.Principal.Identities.First().AddClaim(associatedAccountClaim);
+
+            return Task.CompletedTask;
         }
     }
 }
