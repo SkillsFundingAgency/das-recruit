@@ -6,6 +6,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Startup.ConfigureAuthentication.cs" />
+    <Compile Remove="Startup.ConfigureMvc.cs" />
   </ItemGroup>
   <ItemGroup>
   	<PackageReference Include="MediatR" Version="4.0.1" />
@@ -25,6 +26,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Startup.ConfigureAuthentication.cs" />
+    <None Include="Startup.ConfigureMvc.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Recruit.Storage.Client\Recruit.Storage.Client.csproj" />
