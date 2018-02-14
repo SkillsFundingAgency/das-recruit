@@ -1,8 +1,14 @@
-﻿using Employer.Web.Services;
+﻿using Employer.Web.Configuration;
+using Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.Configuration;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using System.Linq;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Esfa.Recruit.Employer.Web
 {
@@ -13,10 +19,6 @@ namespace Esfa.Recruit.Employer.Web
         private IHostingEnvironment _hostingEnvironment { get; }
         private AuthenticationConfiguration _authConfig { get; }
         private readonly IGetAssociatedEmployerAccountsService _accountsSvc;
-
-        partial void ConfigureMvc(IServiceCollection services);
-        partial void ConfigureAuthentication(IServiceCollection services);
-        partial void ConfigureAuthorization(IServiceCollection services);
         
         public Startup(IConfiguration config, IHostingEnvironment env)
         {
@@ -43,13 +45,54 @@ namespace Esfa.Recruit.Employer.Web
                 opt.LowercaseUrls = true;
                 opt.AppendTrailingSlash = true;
             });
-
-            ConfigureMvc(services);
+            
+            services.AddMvcService(_hostingEnvironment, _isAuthEnabled);
 
             services.AddApplicationInsightsTelemetry(_configuration);
+
+            if (_isAuthEnabled)
+            {
+                JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
+                services.AddAuthentication(options =>
+                {
+                    options.DefaultScheme = "Cookies";
+                    options.DefaultChallengeScheme = "oidc";
+                })
+                .AddCookie("Cookies", options =>
+                {
+                    options.AccessDeniedPath = "/Error/403";
+                })
+                .AddOpenIdConnect("oidc", options =>
+                {
+                    options.SignInScheme = "Cookies";
+
+                    options.Authority = _authConfig.Authority;
+                    options.MetadataAddress = _authConfig.MetaDataAddress;
+                    options.RequireHttpsMetadata = false;
+                    options.ResponseType = "code";
+                    options.ClientId = _authConfig.ClientId;
+                    options.ClientSecret = _authConfig.ClientSecret;
+                    options.Scope.Add("profile");
+
+                    options.Events.OnTokenValidated = PopulateAccountsClaim;
+                });
+            }
             
-            ConfigureAuthentication(services);
-            ConfigureAuthorization(services);
+            services.AddAuthorizationService();
+        }
+
+        private Task PopulateAccountsClaim(TokenValidatedContext ctx)
+        {
+            var userId = ctx.Principal.Claims.First(c => c.Type.Equals(EmployerRecruitClaims.IdamsUserIdClaimTypeIdentifier)).Value;
+            var accounts = _accountsSvc.GetAssociatedAccounts(userId);
+
+            var accountsConcatenated = string.Join(",", accounts);
+            var associatedAccountClaim = new Claim(EmployerRecruitClaims.AccountsClaimsTypeIdentifier, accountsConcatenated, ClaimValueTypes.String);
+
+            ctx.Principal.Identities.First().AddClaim(associatedAccountClaim);
+
+            return Task.CompletedTask;
         }
     }
 }
