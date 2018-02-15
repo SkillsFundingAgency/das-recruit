@@ -1,4 +1,6 @@
 ﻿using Esfa.Recruit.Storage.Client.Core.Commands;
+using Esfa.Recruit.Storage.Client.Core.Entities;
+using Esfa.Recruit.Storage.Client.Core.Repositories;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -10,11 +12,22 @@ namespace Esfa.Recruit.Storage.Client.Core.Handlers
 {
     public class CreateVacancyCommandHandler : IRequestHandler<CreateVacancyCommand>
     {
-        public Task Handle(CreateVacancyCommand message, CancellationToken cancellationToken)
-        {
-            //magic happens here
 
-            return Task.CompletedTask;
+        private readonly IVacancyRepository _repository;
+
+        public CreateVacancyCommandHandler(IVacancyRepository repository)
+        {
+            _repository = repository;
+        }
+
+        public async Task Handle(CreateVacancyCommand message, CancellationToken cancellationToken)
+        {
+            var vacancy = new MongoVacancy
+            {
+                Title = message.Title
+            };
+
+            await _repository.CreateVacancyAsync(vacancy);
         }
     }
 }

@@ -3,6 +3,7 @@ using Esfa.Recruit.Employer.Web.ViewModels.NewVacancy;
 using Esfa.Recruit.Employer.Web.Configuration.Routes;
 using Esfa.Recruit.Storage.Client.Core.Commands;
 using Esfa.Recruit.Employer.Web.Orchestrators;
+using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {    
@@ -15,22 +16,22 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             _orchestrator = orchestrator;
         }
         
-        [HttpGet, Route("accounts/{employerAccountId}/new-vacancy", Name = RouteNames.NewVacancy_Index_Get)]
+        [HttpGet("accounts/{employerAccountId}/new-vacancy", Name = RouteNames.NewVacancy_Index_Get)]
         public IActionResult Index()
         {
             var vm = _orchestrator.GetIndexViewModel();
             return View(vm);
         }
 
-        [HttpPost, Route("accounts/{employerAccountId}/new-vacancy", Name = RouteNames.NewVacancy_Index_Post)]
-        public IActionResult Index(IndexViewModel vm)
+        [HttpPost("accounts/{employerAccountId}/new-vacancy", Name = RouteNames.NewVacancy_Index_Post)]
+        public async Task<IActionResult> Index(IndexViewModel vm)
         {
             if(!ModelState.IsValid)
             {
                 return View(vm);
             }
 
-            _orchestrator.PostIndexViewModel(vm);
+            await _orchestrator.PostIndexViewModelAsync(vm);
 
             return RedirectToRoute(RouteNames.Sections_Index_Get);
         }

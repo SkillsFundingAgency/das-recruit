@@ -1,6 +1,7 @@
 ﻿using Esfa.Recruit.Employer.Web.ViewModels.NewVacancy;
 using Esfa.Recruit.Storage.Client.Core.Commands;
 using Esfa.Recruit.Storage.Client.Core.Messaging;
+using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
@@ -19,7 +20,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return vm;
         }
 
-        public void PostIndexViewModel(IndexViewModel vm)
+        public async Task PostIndexViewModelAsync(IndexViewModel vm)
         {
             //dummy code
             Dummy.VacancyTitle = vm.Title;
@@ -29,7 +30,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 Title = vm.Title
             };
 
-            _messaging.SendCommand(command);
+            await _messaging.SendCommandAsync(command);
         }
     }
 }
