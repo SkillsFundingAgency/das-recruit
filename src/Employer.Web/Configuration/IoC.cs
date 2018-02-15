@@ -1,4 +1,5 @@
 ﻿using Employer.Web.Services;
+using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Storage.Client.Core.Handlers;
 using Esfa.Recruit.Storage.Client.Core.Messaging;
 using MediatR;
@@ -20,6 +21,9 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             //Mediatr
             services.AddMediatR(typeof(CreateVacancyCommandHandler).Assembly);
             services.AddTransient<IMessaging, MediatrMessaging>();
+
+            //Orchestrators
+            services.AddTransient<INewVacancyOrchestrator, NewVacancyOrchestrator>();
         }
     }
 }
