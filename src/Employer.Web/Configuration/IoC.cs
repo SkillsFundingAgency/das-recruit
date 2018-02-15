@@ -16,7 +16,8 @@ namespace Esfa.Recruit.Employer.Web.Configuration
 
             //Configuration
             services.Configure<ExternalLinksConfiguration>(configuration.GetSection("ExternalLinks"));
-            
+            services.Configure<AuthenticationConfiguration>(configuration.GetSection("Authentication"));
+
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>(); // Used by NLog to log out traceidentifier value.
 
             services.AddTransient<IGetAssociatedEmployerAccountsService, GetAssociatedEmployerAccountsService>();

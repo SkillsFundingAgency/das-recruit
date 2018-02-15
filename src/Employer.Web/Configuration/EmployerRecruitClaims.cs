@@ -1,4 +1,4 @@
-﻿namespace Employer.Web.Configuration
+﻿namespace Esfa.Recruit.Employer.Web.Configuration
 {
     public static class EmployerRecruitClaims
     {

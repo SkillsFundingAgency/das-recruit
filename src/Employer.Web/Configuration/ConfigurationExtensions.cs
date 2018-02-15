@@ -1,8 +1,5 @@
-﻿using Employer.Web.Middleware;
+using Employer.Web.Middleware;
 using Employer.Web.Services;
-using Esfa.Recruit.Employer.Web;
-using Esfa.Recruit.Employer.Web.Configuration;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -11,11 +8,11 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Net.Http.Headers;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Linq;
 
-namespace Employer.Web.Configuration
+namespace Esfa.Recruit.Employer.Web.Configuration
 {
     public static class ConfigurationExtensions
     {
