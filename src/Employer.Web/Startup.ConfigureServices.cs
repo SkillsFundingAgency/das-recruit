@@ -1,14 +1,8 @@
-﻿using Employer.Web.Configuration;
-using Employer.Web.Services;
+﻿using Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.Configuration;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using System.Linq;
-using System.IdentityModel.Tokens.Jwt;
 
 namespace Esfa.Recruit.Employer.Web
 {
@@ -24,7 +18,7 @@ namespace Esfa.Recruit.Employer.Web
             _configuration = config;
             _hostingEnvironment = env;
             _authConfig = _configuration.GetSection("Authentication").Get<AuthenticationConfiguration>();
-            
+
             if (env.IsDevelopment()  && _authConfig.IsEnabledForDev == false)
             {
                 _isAuthEnabled = false;

@@ -1,49 +1,85 @@
-﻿<!DOCTYPE html>
-  <!--[if lt IE 9]><html class="lte-ie8" lang="en"><![endif]-->
-  <!--[if gt IE 8]><!--><html lang="en"><!--<![endif]-->
-  <head>
+﻿@using Microsoft.Extensions.Options;
+@using Esfa.Recruit.Employer.Web.Configuration;
+
+@inject IOptions<AuthenticationConfiguration> AuthConfig
+@inject IOptions<ExternalLinksConfiguration> ExternalLinks
+
+@{
+    var changePasswordLink = string.Empty;
+    var changeEmailLink = string.Empty;
+
+    var accountsFinanceLink = string.Empty;
+    var accountsTeamsLink = string.Empty;
+    var accountsTeamsViewLink = string.Empty;
+    var accountsAgreementLink = string.Empty;
+    var accountsSchemesLink = string.Empty;
+
+    if (Context.User.Identity.IsAuthenticated && Context.User.HasClaim(c => c.ValueType == EmployerRecruitClaims.AccountsClaimsTypeIdentifier))
+    {
+        var currentEmployerAccountId = Context.User.FindFirst(c => c.ValueType == EmployerRecruitClaims.AccountsClaimsTypeIdentifier).Value;
+
+        changePasswordLink = string.Format(ExternalLinks.Value.ManageApprenticeshipSiteChangePasswordUrl, AuthConfig.Value.ClientId, string.Empty);
+        changeEmailLink = string.Format(ExternalLinks.Value.ManageApprenticeshipSiteChangeEmailAddressUrl, AuthConfig.Value.ClientId, string.Empty);
+
+        accountsFinanceLink = string.Format(ExternalLinks.Value.ManageApprenticeshipSiteAccountsFinanceLink, currentEmployerAccountId);
+        accountsTeamsLink = string.Format(ExternalLinks.Value.ManageApprenticeshipSiteAccountsTeamsLink, currentEmployerAccountId);
+        accountsTeamsViewLink = string.Format(ExternalLinks.Value.ManageApprenticeshipSiteAccountsTeamsViewLink, currentEmployerAccountId);
+        accountsAgreementLink = string.Format(ExternalLinks.Value.ManageApprenticeshipSiteAccountsAgreementLink, currentEmployerAccountId);
+        accountsSchemesLink = string.Format(ExternalLinks.Value.ManageApprenticeshipSiteAccountsSchemesLink, currentEmployerAccountId);
+    }
+}
+
+<!DOCTYPE html>
+<!--[if lt IE 9]><html class="lte-ie8" lang="en"><![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]-->
+<head>
     <meta charset="utf-8" />
     <title>ESFA</title>
 
-    <!--[if gt IE 8]><!--><link rel="stylesheet" media="screen" href="/lib/govuk_template/assets/stylesheets/govuk-template.css"/><!--<![endif]-->
+    <!--[if gt IE 8]><!-->
+    <link rel="stylesheet" media="screen" href="/lib/govuk_template/assets/stylesheets/govuk-template.css" /><!--<![endif]-->
     <!--[if IE 6]><link rel="stylesheet" media="screen" href="/lib/govuk_template/assets/stylesheets/govuk-template-ie6.css"/><![endif]-->
     <!--[if IE 7]><link rel="stylesheet" media="screen" href="/lib/govuk_template/assets/stylesheets/govuk-template-ie7.css"/><![endif]-->
     <!--[if IE 8]><link rel="stylesheet" media="screen" href="/lib/govuk_template/assets/stylesheets/govuk-template-ie8.css"/><![endif]-->
-    <link rel="stylesheet" media="print" href="/lib/govuk_template/assets/stylesheets/govuk-template-print.css"/>
+    <link rel="stylesheet" media="print" href="/lib/govuk_template/assets/stylesheets/govuk-template-print.css" />
 
     <!--[if IE 8]><link rel="stylesheet" media="all" href="/lib/govuk_template/assets/stylesheets/fonts-ie8.css"/><![endif]-->
-    <!--[if gte IE 9]><!--><link rel="stylesheet" media="all" href="/lib/govuk_template/assets/stylesheets/fonts.css"/><!--<![endif]-->
+    <!--[if gte IE 9]><!-->
+    <link rel="stylesheet" media="all" href="/lib/govuk_template/assets/stylesheets/fonts.css" /><!--<![endif]-->
     <!--[if lt IE 9]><script src="/lib/govuk_template/assets/javascripts/ie.js"></script><![endif]-->
 
     <link rel="shortcut icon" href="/lib/govuk_template/assets/images/favicon.ico" type="image/x-icon" />
-    
+
     <link rel="mask-icon" href="/lib/govuk_template/assets/images/gov.uk_logotype_crown.svg" color="#0b0c0c">
     <link rel="apple-touch-icon" sizes="180x180" href="/lib/govuk_template/assets/images/apple-touch-icon-180x180.png">
     <link rel="apple-touch-icon" sizes="167x167" href="/lib/govuk_template/assets/images/apple-touch-icon-167x167.png">
     <link rel="apple-touch-icon" sizes="152x152" href="/lib/govuk_template/assets/images/apple-touch-icon-152x152.png">
-    <link rel="apple-touch-icon" href="/lib/govuk_template/assets/images/apple-touch-icon.png"> 
+    <link rel="apple-touch-icon" href="/lib/govuk_template/assets/images/apple-touch-icon.png">
     <meta name="theme-color" content="#0b0c0c" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex, nofollow"> <!-- GDS Guideline -->
     <meta property="og:image" content="/lib/govuk_template/assets/images/opengraph-image.png">
 
-    <!--[if gt IE 8]><!--><link rel="stylesheet" media="screen" href="/lib/esfa-govuk/css/esfa-govuk-base.css"/><!--<![endif]-->
+    <!--[if gt IE 8]><!-->
+    <link rel="stylesheet" media="screen" href="/lib/esfa-govuk/css/esfa-govuk-base.css" /><!--<![endif]-->
     <!--[if IE 6]><link rel="stylesheet" media="screen" href="/lib/esfa-govuk/css/esfa-govuk-ie6.css"/><![endif]-->
     <!--[if IE 7]><link rel="stylesheet" media="screen" href="/lib/esfa-govuk/css/esfa-govuk-ie7.css"/><![endif]-->
     <!--[if IE 8]><link rel="stylesheet" media="screen" href="/lib/esfa-govuk/css/esfa-govuk-ie8.css"/><![endif]-->
 
     <link rel="stylesheet" media="screen" href="/css/application.css"/>
-      <script src="/lib/jquery/dist/jquery.js"></script>
+    <script src="/lib/jquery/dist/jquery.js"></script>
     @Html.Raw(JavaScriptSnippet.FullScript) <!-- AppInsights script -->
   </head>
     
   <body>
     <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
     <div id="skiplink-container">
-      <div>
-        <a href="#content" class="skiplink">Skip to main content</a>
-      </div>
+        <div>
+            <a href="#content" class="skiplink">Skip to main content</a>
+        </div>
     </div>
 
     <div id="global-cookie-message">
@@ -51,88 +87,97 @@
     </div>
 
     <header role="banner" id="global-header" class="with-proposition">
-      <div class="header-wrapper">
-        <div class="header-global">
-          <div class="header-logo">
-            <a href="https://www.gov.uk/" title="Go to the GOV.UK homepage" id="logo" class="content">
-              <img src="/lib/govuk_template/assets/images/gov.uk_logotype_crown_invert_trans.png" width="36" height="32" alt=""> GOV.UK
-            </a>
-          </div>
+        <div class="header-wrapper">
+            <div class="header-global">
+                <div class="header-logo">
+                    <a href="https://www.gov.uk/" title="Go to the GOV.UK homepage" id="logo" class="content">
+                        <img src="/lib/govuk_template/assets/images/gov.uk_logotype_crown_invert_trans.png" width="36" height="32" alt=""> GOV.UK
+                    </a>
+                </div>
+            </div>
+            <div class='header-proposition'>
+                <div class='content'>
+                    <a href='/govuk_template/' id='proposition-name'>Manage apprenticeships</a>
+                </div>
+            </div>
         </div>
-        <div class='header-proposition'>
-          <div class='content'>
-            <a href='/govuk_template/' id='proposition-name'>Manage apprenticeships</a>
-          </div>
-        </div>
-      </div>
     </header>
 
     <div id="floating-menu-holder">
-      <div class="account-information floating-menu" role="navigation">
-        <div class="js-float">
-          <p class="floating-head-text">Your employer account </p>
-          <nav id="user-nav">
-              <ul role="menubar">
-                <li><a href="/service/help">Help</a></li>
-                <li class="has-sub-menu">
-                    <a href="/" role="menuitem">Settings</a>
-                    <ul role="menu" class="js-hidden" id="settings-menu" aria-hidden="true">
-                        <li><a href="/service/accounts" role="menuitem" class="sub-menu-item">Your accounts</a></li>
-                        <li><a href="/accounts/LMXL9M/rename" role="menuitem" class="sub-menu-item">Rename account</a></li>
-                        <li><a href="" class="sub-menu-item">Change your password</a></li>
-                        <li><a href="" class="sub-menu-item">Change your email address</a></li>
-                        <li><a href="/settings/notifications" class="sub-menu-item">Notification settings</a></li>
+        <div class="account-information floating-menu" role="navigation">
+            <div class="js-float">
+                <p class="floating-head-text">Your employer account</p>
+                <nav id="user-nav">
+                    <ul role="menubar">
+                        <li><a href="@ExternalLinks.Value.ManageApprenticeshipSiteHelpUrl" class="menu-main">Help</a></li>
+                        @if (Context.User.Identity.IsAuthenticated)
+                        {
+                            <li class="has-sub-menu">
+                                <a href="/" role="menuitem" class="menu-main">Settings</a>
+                                <ul role="menu" id="settings-menu" class="js-hidden">
+                                    <li><a href="@ExternalLinks.Value.ManageApprenticeshipSiteAccountsUrl" role="menuitem" class="sub-menu-item">Your accounts</a></li>
+                                    <li><a href="@changePasswordLink" class="sub-menu-item">Change your password</a></li>
+                                    <li><a href="@changeEmailLink" class="sub-menu-item">Change your email address</a></li>
+                                    @*<li><a href="@Url.ExternalUrlAction("settings", "notifications",true)" class="sub-menu-item">Notification settings</a></li>*@
+                                </ul>
+                            </li>
+                            <li><a asp-route="Home_Logout_Get" role="menuitem" class="menu-main">Sign out</a></li>
+                        }
+                        else
+                        {
+                            <li><a href="@ExternalLinks.Value.ManageApprenticeshipSiteSignInUrl" role="menuitem">Sign in / Register</a></li>
+                        }
                     </ul>
-                </li>
-                <li><a href="/service/signOut" role="menuitem">Sign out</a></li>
-            </ul>
-          </nav>
+                </nav>
+            </div>
         </div>
-      </div>
-    </div>
+    </div> <!--/floating-menu-holder-->
 
-    <div class="header-organisation" role="navigation">
-      <nav class="header-inner">
-        <ul role="menubar" id="global-nav-links">
-          <li><a href="/accounts/LMXL9M/teams" class="selected" role="menuitem">Home</a></li>
-          <li><a href="/accounts/LMXL9M/finance" class="" role="menuitem">Finance</a></li>
-          <li><a href="" class="" role="menuitem">Apprentices</a></li>
-          <li><a href="/accounts/LMXL9M/teams/view" class="" role="menuitem">Your team</a></li>
-          <li><a href="/accounts/LMXL9M/agreements" class="" role="menuitem">Your organisations and agreements</a></li>
-          <li class="menu-link"><a href="#">More</a>
-            <ul>
-              <li><a href="/accounts/LMXL9M/schemes" class="" role="menuitem">PAYE schemes</a></li>
-            </ul>
-          </li>
-        </ul>
-      </nav>
-    </div>
-    
+    @if (Context.User.Identity.IsAuthenticated)
+    {
+        <div class="header-organisation" role="navigation">
+            <nav class="header-inner">
+                <ul role="menubar" id="global-nav-links">
+                    <li><a href="@accountsTeamsLink" class="selected" role="menuitem">Home</a></li>
+                    <li><a href="@accountsFinanceLink" class="" role="menuitem">Finance</a></li>
+                    <li><a href="" class="" role="menuitem">Apprentices</a></li>
+                    <li><a href="@accountsTeamsLink" class="" role="menuitem">Your team</a></li>
+                    <li><a href="@accountsAgreementLink" class="" role="menuitem">Your organisations and agreements</a></li>
+                    <li class="menu-link">
+                        <a href="#">More</a>
+                        <ul>
+                            <li><a href="@accountsSchemesLink" class="" role="menuitem">PAYE schemes</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    }
 
     <main id="content" role="main">
-    @RenderBody()
+        @RenderBody()
     </main>
 
     <footer class="group js-footer" id="footer" role="contentinfo">
-      <div class="footer-wrapper">
-        <div class="footer-meta">
-          <div class="footer-meta-inner">
-            <ul class="platform-help-links">
-                <li><a href="/service/help">Help</a></li>
-                <li><a href="https://www.surveymonkey.co.uk/r/2JPLQ9T" target="_blank">Feedback</a></li>
-                <li><a href="/service/privacy">Privacy and cookies</a></li>
-                <li>Built by the <a href="http://gov.uk/sfa" target="_blank">Education and Skills Funding Agency</a></li>
-            </ul>
-            <div class="open-government-licence">
-              <p class="logo"><a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license">Open Government Licence</a></p>
-                <p>All content is available under the <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license">Open Government Licence v3.0</a>, except where otherwise stated</p>
+        <div class="footer-wrapper">
+            <div class="footer-meta">
+                <div class="footer-meta-inner">
+                    <ul class="platform-help-links">
+                        <li><a href="/service/help">Help</a></li>
+                        <li><a href="https://www.surveymonkey.co.uk/r/2JPLQ9T" target="_blank">Feedback</a></li>
+                        <li><a href="/service/privacy">Privacy and cookies</a></li>
+                        <li>Built by the <a href="http://gov.uk/sfa" target="_blank">Education and Skills Funding Agency</a></li>
+                    </ul>
+                    <div class="open-government-licence">
+                        <p class="logo"><a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license">Open Government Licence</a></p>
+                        <p>All content is available under the <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license">Open Government Licence v3.0</a>, except where otherwise stated</p>
+                    </div>
+                </div>
+                <div class="copyright">
+                    <a href="https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/copyright-and-re-use/crown-copyright/">© Crown copyright</a>
+                </div>
             </div>
-          </div>
-          <div class="copyright">
-            <a href="https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/copyright-and-re-use/crown-copyright/">© Crown copyright</a>
-          </div>
         </div>
-      </div>
     </footer>
 
     <div id="global-app-error" class="app-error hidden"></div>
@@ -140,5 +185,5 @@
     <script src="/lib/govuk_template/assets/javascripts/govuk-template.js"></script>
     <script src="/javascripts/application.js"></script>
 
-  </body>
+</body>
 </html>

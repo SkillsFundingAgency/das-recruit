@@ -1,5 +1,5 @@
-﻿using Employer.Web.Configuration;
-using Esfa.Recruit.Employer.Web;
+﻿using Esfa.Recruit.Employer.Web;
+using Esfa.Recruit.Employer.Web.Configuration;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Linq;
