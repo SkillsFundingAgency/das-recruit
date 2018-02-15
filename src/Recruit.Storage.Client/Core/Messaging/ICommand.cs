@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Esfa.Recruit.Storage.Client.Core.Messaging
 {
-    public interface ICommand
+    public interface ICommand<TResponse>
     {
     }
 }

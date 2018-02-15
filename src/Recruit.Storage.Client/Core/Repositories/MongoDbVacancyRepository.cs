@@ -3,6 +3,7 @@ using Esfa.Recruit.Storage.Client.Core.Mongo;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.IdGenerators;
 using MongoDB.Driver;
 using System;
 using System.Threading.Tasks;
@@ -53,7 +54,7 @@ namespace Esfa.Recruit.Storage.Client.Core.Repositories
         public static void RegisterMongoMappings()
         {
             BsonClassMap.RegisterClassMap<Vacancy>(vac => {
-                vac.MapIdMember(v => v.Id);
+                vac.MapIdMember(v => v.Id).SetIdGenerator(GuidGenerator.Instance);
                 vac.MapMember(v => v.VRN).SetElementName("vrn");
                 vac.MapMember(v => v.Title).SetElementName("title");
             });

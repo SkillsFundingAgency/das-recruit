@@ -6,7 +6,7 @@ using Esfa.Recruit.Storage.Client.Core.Entities;
 
 namespace Esfa.Recruit.Storage.Client.Core.Repositories
 {
-    public class StubRepository : IVacancyRepository
+    public class StubVacancyRepository : IVacancyRepository
     {
 
         private static Vacancy _vacancy;

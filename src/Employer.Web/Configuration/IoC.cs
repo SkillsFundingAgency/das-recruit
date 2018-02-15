@@ -37,7 +37,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
 
             if (mongoConfig.Get<MongoDbConnectionDetails>() == null)
             {
-                services.AddSingleton<IVacancyRepository, StubRepository>();
+                services.AddSingleton<IVacancyRepository, StubVacancyRepository>();
             }
             else
             {

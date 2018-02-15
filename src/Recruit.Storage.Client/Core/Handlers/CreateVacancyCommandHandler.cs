@@ -1,6 +1,7 @@
 ﻿using Esfa.Recruit.Storage.Client.Core.Commands;
 using Esfa.Recruit.Storage.Client.Core.Entities;
 using Esfa.Recruit.Storage.Client.Core.Repositories;
+using Esfa.Recruit.Storage.Client.Core.Responses;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Storage.Client.Core.Handlers
 {
-    public class CreateVacancyCommandHandler : IRequestHandler<CreateVacancyCommand>
+    public class CreateVacancyCommandHandler : IRequestHandler<CreateVacancyCommand, CreateVacancyCommandResponse>
     {
 
         private readonly IVacancyRepository _repository;
@@ -20,7 +21,7 @@ namespace Esfa.Recruit.Storage.Client.Core.Handlers
             _repository = repository;
         }
 
-        public async Task Handle(CreateVacancyCommand message, CancellationToken cancellationToken)
+        public async Task<CreateVacancyCommandResponse> Handle(CreateVacancyCommand message, CancellationToken cancellationToken)
         {
             var vacancy = new Vacancy
             {
@@ -28,6 +29,13 @@ namespace Esfa.Recruit.Storage.Client.Core.Handlers
             };
 
             await _repository.CreateVacancyAsync(vacancy);
+
+            var response = new CreateVacancyCommandResponse
+            {
+                Id = vacancy.Id
+            };
+
+            return response;
         }
     }
 }
