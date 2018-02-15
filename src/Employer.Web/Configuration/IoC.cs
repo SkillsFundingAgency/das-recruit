@@ -1,5 +1,6 @@
 ﻿using Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.Orchestrators;
+using Esfa.Recruit.Storage.Client.Core.Entities;
 using Esfa.Recruit.Storage.Client.Core.Handlers;
 using Esfa.Recruit.Storage.Client.Core.Messaging;
 using Esfa.Recruit.Storage.Client.Core.Mongo;
@@ -8,6 +9,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MongoDB.Bson.Serialization;
 
 namespace Esfa.Recruit.Employer.Web.Configuration
 {
@@ -17,8 +19,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
         {
             //Configuration
             services.Configure<ExternalLinksConfiguration>(configuration.GetSection("ExternalLinks"));
-            services.Configure<MongoDbConnectionDetails>(configuration.GetSection("MongoDbConnectionDetails"));
-
+            
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>(); // Used by NLog to log out traceidentifier value.
 
             services.AddTransient<IGetAssociatedEmployerAccountsService, GetAssociatedEmployerAccountsService>();
@@ -31,8 +32,19 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddTransient<INewVacancyOrchestrator, NewVacancyOrchestrator>();
 
             //Repositories
-            //todo: Add the mongo repo only if we have mongo configuration settings
-            services.AddTransient<IVacancyRepository, MongoDbVacancyRepository>();
+            var mongoConfig = configuration.GetSection("MongoDbConnectionDetails");
+            services.Configure<MongoDbConnectionDetails>(mongoConfig);
+
+            if (mongoConfig.Get<MongoDbConnectionDetails>() == null)
+            {
+                services.AddSingleton<IVacancyRepository, StubRepository>();
+            }
+            else
+            {
+                MongoDbVacancyRepository.RegisterMongoMappings();
+                services.AddTransient<IVacancyRepository, MongoDbVacancyRepository>();
+            }
+            
         }
     }
 }

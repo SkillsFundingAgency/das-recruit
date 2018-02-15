@@ -22,7 +22,7 @@ namespace Esfa.Recruit.Storage.Client.Core.Handlers
 
         public async Task Handle(CreateVacancyCommand message, CancellationToken cancellationToken)
         {
-            var vacancy = new MongoVacancy
+            var vacancy = new Vacancy
             {
                 Title = message.Title
             };
