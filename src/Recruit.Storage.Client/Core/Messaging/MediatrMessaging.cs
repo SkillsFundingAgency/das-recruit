@@ -15,11 +15,11 @@ namespace Esfa.Recruit.Storage.Client.Core.Messaging
             _mediator = mediator;
         }
 
-        public async Task<TResponse> SendCommandAsync<TResponse>(ICommand<TResponse> command)
+        public async Task SendCommandAsync(ICommand command)
         {
-            var request = command as IRequest<TResponse>;
+            var request = command as IRequest;
 
-            return await _mediator.Send(request);
+            await _mediator.Send(request);
         }
     }
 }

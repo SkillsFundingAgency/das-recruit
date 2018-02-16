@@ -7,6 +7,6 @@ namespace Esfa.Recruit.Storage.Client.Core.Messaging
 {
     public interface IMessaging
     {
-        Task<TResponse> SendCommandAsync<TResponse>(ICommand<TResponse> command);
+        Task SendCommandAsync(ICommand command);
     }
 }

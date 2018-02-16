@@ -5,6 +5,7 @@ using Esfa.Recruit.Storage.Client.Core.Handlers;
 using Esfa.Recruit.Storage.Client.Core.Messaging;
 using Esfa.Recruit.Storage.Client.Core.Mongo;
 using Esfa.Recruit.Storage.Client.Core.Repositories;
+using Esfa.Recruit.Storage.Client.Core.Services;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -30,6 +31,9 @@ namespace Esfa.Recruit.Employer.Web.Configuration
 
             //Orchestrators
             services.AddTransient<NewVacancyOrchestrator, NewVacancyOrchestrator>();
+
+            //Core Services
+            services.AddTransient<IdGenerator, IdGenerator>();
 
             //Repositories
             var mongoConfig = configuration.GetSection("MongoDbConnectionDetails");
