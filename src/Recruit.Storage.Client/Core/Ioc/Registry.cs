@@ -32,7 +32,7 @@ namespace Esfa.Recruit.Storage.Client.Core.Ioc
             }
             else
             {
-                MongoDbVacancyRepository.RegisterMongoMappings();
+                MongoDbConventions.RegisterMongoConventions();
                 services.AddTransient<IVacancyRepository, MongoDbVacancyRepository>();
             }
         }
