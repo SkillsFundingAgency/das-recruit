@@ -34,6 +34,7 @@
     <!--[if IE 8]><link rel="stylesheet" media="screen" href="/lib/esfa-govuk/css/esfa-govuk-ie8.css"/><![endif]-->
 
     <link rel="stylesheet" media="screen" href="/css/application.css"/>
+      <script src="/lib/jquery/dist/jquery.js"></script>
     @Html.Raw(JavaScriptSnippet.FullScript) <!-- AppInsights script -->
   </head>
     
@@ -65,7 +66,7 @@
         </div>
       </div>
     </header>
-<!--
+
     <div id="floating-menu-holder">
       <div class="account-information floating-menu" role="navigation">
         <div class="js-float">
@@ -106,7 +107,8 @@
         </ul>
       </nav>
     </div>
--->
+    
+
     <main id="content" role="main">
     @RenderBody()
     </main>
