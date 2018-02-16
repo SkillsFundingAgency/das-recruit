@@ -9,9 +9,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 {    
     public class NewVacancyController : Controller
     {
-        private readonly INewVacancyOrchestrator _orchestrator;
+        private readonly NewVacancyOrchestrator _orchestrator;
 
-        public NewVacancyController(INewVacancyOrchestrator orchestrator)
+        public NewVacancyController(NewVacancyOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
         }

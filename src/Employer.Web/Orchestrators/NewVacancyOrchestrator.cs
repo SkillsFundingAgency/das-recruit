@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
-    public class NewVacancyOrchestrator : INewVacancyOrchestrator
+    public class NewVacancyOrchestrator
     {
         private readonly IMessaging _messaging;
 

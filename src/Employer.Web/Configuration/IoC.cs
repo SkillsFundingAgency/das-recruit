@@ -29,7 +29,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddTransient<IMessaging, MediatrMessaging>();
 
             //Orchestrators
-            services.AddTransient<INewVacancyOrchestrator, NewVacancyOrchestrator>();
+            services.AddTransient<NewVacancyOrchestrator, NewVacancyOrchestrator>();
 
             //Repositories
             var mongoConfig = configuration.GetSection("MongoDbConnectionDetails");
