@@ -40,15 +40,15 @@ namespace Esfa.Recruit.Employer.Web
             // Add Content Security Policy
             app.UseCsp(options => options
                 .DefaultSources(s => s.Self())
-                .StyleSources(s => s.Self().CustomSources("https://ajax.aspnetcdn.com"))
+                .StyleSources(s => s.Self())
                 .ScriptSources(s => 
                     s.Self()
-                    .CustomSources("https://az416426.vo.msecnd.net", "https://ajax.aspnetcdn.com")
+                    .CustomSources("https://az416426.vo.msecnd.net")
                     .UnsafeInline()
                 ) // TODO: Look at moving AppInsights inline js code.
                 .FontSources(s => 
                     s.Self()
-                    .CustomSources("https://ajax.aspnetcdn.com", "data:")
+                    .CustomSources("data:")
                 )
                 .ConnectSources(s => 
                     s.Self()
