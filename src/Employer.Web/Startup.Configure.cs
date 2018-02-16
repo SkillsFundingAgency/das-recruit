@@ -48,7 +48,7 @@ namespace Esfa.Recruit.Employer.Web
                 ) // TODO: Look at moving AppInsights inline js code.
                 .FontSources(s => 
                     s.Self()
-                    .CustomSources("https://ajax.aspnetcdn.com")
+                    .CustomSources("https://ajax.aspnetcdn.com", "data:")
                 )
                 .ConnectSources(s => 
                     s.Self()
