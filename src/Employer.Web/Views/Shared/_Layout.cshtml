@@ -1,33 +1,8 @@
 ﻿@using Microsoft.Extensions.Options;
 @using Esfa.Recruit.Employer.Web.Configuration;
 
-@inject IOptions<AuthenticationConfiguration> AuthConfig
 @inject IOptions<ExternalLinksConfiguration> ExternalLinks
-
-@{
-    var changePasswordLink = string.Empty;
-    var changeEmailLink = string.Empty;
-
-    var accountsFinanceLink = string.Empty;
-    var accountsTeamsLink = string.Empty;
-    var accountsTeamsViewLink = string.Empty;
-    var accountsAgreementLink = string.Empty;
-    var accountsSchemesLink = string.Empty;
-
-    if (Context.User.Identity.IsAuthenticated && Context.User.HasClaim(c => c.ValueType == EmployerRecruitClaims.AccountsClaimsTypeIdentifier))
-    {
-        var currentEmployerAccountId = Context.User.FindFirst(c => c.ValueType == EmployerRecruitClaims.AccountsClaimsTypeIdentifier).Value;
-
-        changePasswordLink = string.Format(ExternalLinks.Value.ManageApprenticeshipSiteChangePasswordUrl, AuthConfig.Value.ClientId, string.Empty);
-        changeEmailLink = string.Format(ExternalLinks.Value.ManageApprenticeshipSiteChangeEmailAddressUrl, AuthConfig.Value.ClientId, string.Empty);
-
-        accountsFinanceLink = string.Format(ExternalLinks.Value.ManageApprenticeshipSiteAccountsFinanceLink, currentEmployerAccountId);
-        accountsTeamsLink = string.Format(ExternalLinks.Value.ManageApprenticeshipSiteAccountsTeamsLink, currentEmployerAccountId);
-        accountsTeamsViewLink = string.Format(ExternalLinks.Value.ManageApprenticeshipSiteAccountsTeamsViewLink, currentEmployerAccountId);
-        accountsAgreementLink = string.Format(ExternalLinks.Value.ManageApprenticeshipSiteAccountsAgreementLink, currentEmployerAccountId);
-        accountsSchemesLink = string.Format(ExternalLinks.Value.ManageApprenticeshipSiteAccountsSchemesLink, currentEmployerAccountId);
-    }
-}
+@inject ChangeUserDetailLinksViewModel changeUserDetailLinks
 
 <!DOCTYPE html>
 <!--[if lt IE 9]><html class="lte-ie8" lang="en"><![endif]-->
@@ -69,12 +44,12 @@
     <!--[if IE 7]><link rel="stylesheet" media="screen" href="/lib/esfa-govuk/css/esfa-govuk-ie7.css"/><![endif]-->
     <!--[if IE 8]><link rel="stylesheet" media="screen" href="/lib/esfa-govuk/css/esfa-govuk-ie8.css"/><![endif]-->
 
-    <link rel="stylesheet" media="screen" href="/css/application.css"/>
+    <link rel="stylesheet" media="screen" href="/css/application.css" />
     <script src="/lib/jquery/dist/jquery.js"></script>
     @Html.Raw(JavaScriptSnippet.FullScript) <!-- AppInsights script -->
-  </head>
-    
-  <body>
+</head>
+
+<body>
     <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
     <div id="skiplink-container">
         <div>
@@ -116,8 +91,8 @@
                                 <a href="/" role="menuitem" class="menu-main">Settings</a>
                                 <ul role="menu" id="settings-menu" class="js-hidden">
                                     <li><a href="@ExternalLinks.Value.ManageApprenticeshipSiteAccountsUrl" role="menuitem" class="sub-menu-item">Your accounts</a></li>
-                                    <li><a href="@changePasswordLink" class="sub-menu-item">Change your password</a></li>
-                                    <li><a href="@changeEmailLink" class="sub-menu-item">Change your email address</a></li>
+                                    <li><a href="@string.Concat(changeUserDetailLinks.ChangePasswordLink, Url.Content(Context.Request.Path))" class="sub-menu-item">Change your password</a></li>
+                                    <li><a href="@changeUserDetailLinks.ChangeEmailAddressLink" class="sub-menu-item">Change your email address</a></li>
                                     @*<li><a href="@Url.ExternalUrlAction("settings", "notifications",true)" class="sub-menu-item">Notification settings</a></li>*@
                                 </ul>
                             </li>
@@ -135,23 +110,8 @@
 
     @if (Context.User.Identity.IsAuthenticated)
     {
-        <div class="header-organisation" role="navigation">
-            <nav class="header-inner">
-                <ul role="menubar" id="global-nav-links">
-                    <li><a href="@accountsTeamsLink" class="selected" role="menuitem">Home</a></li>
-                    <li><a href="@accountsFinanceLink" class="" role="menuitem">Finance</a></li>
-                    <li><a href="" class="" role="menuitem">Apprentices</a></li>
-                    <li><a href="@accountsTeamsLink" class="" role="menuitem">Your team</a></li>
-                    <li><a href="@accountsAgreementLink" class="" role="menuitem">Your organisations and agreements</a></li>
-                    <li class="menu-link">
-                        <a href="#">More</a>
-                        <ul>
-                            <li><a href="@accountsSchemesLink" class="" role="menuitem">PAYE schemes</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </nav>
-        </div>
+        var menuBarContent = await Component.InvokeAsync("MenuBar");
+        <text>@menuBarContent</text>
     }
 
     <main id="content" role="main">

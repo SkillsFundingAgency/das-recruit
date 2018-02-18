@@ -1,0 +1,19 @@
+﻿@model MenuBarViewModel 
+
+<div class="header-organisation" role="navigation">
+    <nav class="header-inner">
+        <ul role="menubar" id="global-nav-links">
+            <li><a href="@Model.AccountsTeamsLink" class="selected" role="menuitem">Home</a></li>
+            <li><a href="@Model.AccountsFinanceLink" class="" role="menuitem">Finance</a></li>
+            <li><a href="" class="" role="menuitem">Apprentices</a></li>
+            <li><a href="@Model.AccountsTeamsLink" class="" role="menuitem">Your team</a></li>
+            <li><a href="@Model.AccountsAgreementLink" class="" role="menuitem">Your organisations and agreements</a></li>
+            <li class="menu-link">
+                <a href="#">More</a>
+                <ul>
+                    <li><a href="@Model.AccountsSchemesLink" class="" role="menuitem">PAYE schemes</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+</div>
