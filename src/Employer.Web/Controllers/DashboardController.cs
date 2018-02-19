@@ -20,56 +20,56 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             _authConfig = authConfig;
             _extLinksConfig = extLinksConfig;
         }
-
+        
         [HttpGet, Route("dashboard", Name = RouteNames.Dashboard_Index_Get)]
         public IActionResult Index()
         {
             return View();
         }
 
-        [HttpGet("accounts/{employerAccountId}/dashboard/change-password", Name = RouteNames.Dashboard_ChangePassword)]
+        [HttpGet("change-password", Name = RouteNames.Dashboard_ChangePassword)]
         public IActionResult ChangePassword(string returnUrl)
         {
             var url = string.Format(_extLinksConfig.Value.ManageApprenticeshipSiteChangePasswordUrl, _authConfig.Value.ClientId, $"{Request.GetRequestUrl()}{returnUrl}");
             return Redirect(url);
         }
 
-        [HttpGet("accounts/{employerAccountId}/dashboard/change-email", Name = RouteNames.Dashboard_ChangeEmail)]
+        [HttpGet("change-email", Name = RouteNames.Dashboard_ChangeEmail)]
         public IActionResult ChangeEmailAddress(string returnUrl)
         {
             var url = string.Format(_extLinksConfig.Value.ManageApprenticeshipSiteChangeEmailAddressUrl, _authConfig.Value.ClientId, $"{Request.GetRequestUrl()}{returnUrl}");
             return Redirect(url);
         }
 
-        [HttpGet("accounts/{employerAccountId}/dashboard/finance", Name = RouteNames.Dashboard_AccountsFinance)]
+        [HttpGet("finance", Name = RouteNames.Dashboard_AccountsFinance)]
         public IActionResult AccountsFinance(string employerAccountId)
         {
             var url = string.Format(_extLinksConfig.Value.ManageApprenticeshipSiteAccountsFinanceLink, employerAccountId);
             return Redirect(url);
         }
 
-        [HttpGet("accounts/{employerAccountId}/dashboard/apprentices", Name = RouteNames.Dashboard_AccountsApprentices)]
+        [HttpGet("apprentices", Name = RouteNames.Dashboard_AccountsApprentices)]
         public IActionResult AccountsApprentices(string employerAccountId)
         {
             var url = string.Format(_extLinksConfig.Value.ManageApprenticeshipSiteAccountsFinanceLink, employerAccountId);
             return Redirect(url);
         }
 
-        [HttpGet("accounts/{employerAccountId}/dashboard/teams", Name = RouteNames.Dashboard_AccountsTeams)]
+        [HttpGet("teams", Name = RouteNames.Dashboard_AccountsTeams)]
         public IActionResult AccountsTeams(string employerAccountId)
         {
             var url = string.Format(_extLinksConfig.Value.ManageApprenticeshipSiteAccountsTeamsViewLink, employerAccountId);
             return Redirect(url);
         }
 
-        [HttpGet("accounts/{employerAccountId}/dashboard/agreements", Name = RouteNames.Dashboard_AccountsAgreements)]
+        [HttpGet("agreements", Name = RouteNames.Dashboard_AccountsAgreements)]
         public IActionResult AccountsAgreements(string employerAccountId)
         {
             var url = string.Format(_extLinksConfig.Value.ManageApprenticeshipSiteAccountsAgreementsLink, employerAccountId);
             return Redirect(url);
         }
 
-        [HttpGet("accounts/{employerAccountId}/dashboard/schemes", Name = RouteNames.Dashboard_AccountsSchemes)]
+        [HttpGet("schemes", Name = RouteNames.Dashboard_AccountsSchemes)]
         public IActionResult AccountsSchemes(string employerAccountId)
         {
             var url = string.Format(_extLinksConfig.Value.ManageApprenticeshipSiteAccountsSchemesLink, employerAccountId);
