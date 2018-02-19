@@ -1,7 +1,6 @@
 ﻿using Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Storage.Client.Core.Ioc;
-using Esfa.Recruit.Employer.Web.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,8 +16,6 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             //Configuration
             services.Configure<ExternalLinksConfiguration>(configuration.GetSection("ExternalLinks"));
             services.Configure<AuthenticationConfiguration>(configuration.GetSection("Authentication"));
-
-            services.AddSingleton<ChangeUserDetailLinksViewModel>();
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>(); // Used by NLog to log out traceidentifier value.
 
