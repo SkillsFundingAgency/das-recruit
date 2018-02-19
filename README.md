@@ -23,12 +23,14 @@ In order to run this solution locally you will need the following installed:
 * Open solution _**/src/Esfa.Recruit.Employer.sln**_
 * Set start up project to _**Employer.Web**_
 * F5 to run up the website
+* Append /accounts/abc/dashboard to the url
 
 ### Running - Visual Studio Code
 
 * Open folder _**/src/**_
 * Select _**.Net Core Launch (web)**_ from debug configurations
 * F5 to run up the website
+* Append /accounts/abc/dashboard to the url
 
 ## License
 
