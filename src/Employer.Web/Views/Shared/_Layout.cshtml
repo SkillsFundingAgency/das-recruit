@@ -110,8 +110,6 @@
 
     @if (Context.User.Identity.IsAuthenticated)
     {
-        var menuBarContent = await Component.InvokeAsync("MenuBar");
-        <text>@menuBarContent</text>
     }
 
     <main id="content" role="main">
