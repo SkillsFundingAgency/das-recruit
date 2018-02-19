@@ -1,23 +1,24 @@
-﻿using Esfa.Recruit.Storage.Client.Core.Handlers;
-using Esfa.Recruit.Storage.Client.Core.Messaging;
+﻿using Esfa.Recruit.Storage.Client.Core.Messaging;
 using Esfa.Recruit.Storage.Client.Core.Mongo;
 using Esfa.Recruit.Storage.Client.Core.Repositories;
 using Esfa.Recruit.Storage.Client.Core.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MediatR;
+using Esfa.Recruit.Storage.Client.Core.Entities;
+using Esfa.Recruit.Storage.Client.Core.Handlers;
 
 namespace Esfa.Recruit.Storage.Client.Core.Ioc
 {
     public static class Registry
     {
-        public static void RegisterRecruitStorageClient(this IServiceCollection services, IConfiguration configuration)
+        public static void AddRecruitStorageClient(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddMediatR(typeof(CreateVacancyCommandHandler).Assembly);
+            services.AddMediatR(typeof(UpsertVacancyCommandHandler).Assembly);
             services.AddTransient<IMessaging, MediatrMessaging>();
             
             services.AddTransient<IdGenerator, IdGenerator>();
-
+            
             services.AddRepositories(configuration);
         }
 
@@ -28,12 +29,14 @@ namespace Esfa.Recruit.Storage.Client.Core.Ioc
 
             if (mongoConfig.Get<MongoDbConnectionDetails>() == null)
             {
-                services.AddSingleton<IVacancyRepository, StubVacancyRepository>();
+                services.AddSingleton<ICommandVacancyRepository, StubVacancyRepository>();
+                services.AddSingleton(x => (IQueryVacancyRepository)x.GetService<ICommandVacancyRepository>());
             }
             else
             {
                 MongoDbConventions.RegisterMongoConventions();
-                services.AddTransient<IVacancyRepository, MongoDbVacancyRepository>();
+                services.AddTransient<ICommandVacancyRepository, MongoDbVacancyRepository>();
+                services.AddTransient<IQueryVacancyRepository, MongoDbVacancyRepository>();
             }
         }
     }

@@ -11,8 +11,8 @@ namespace Esfa.Recruit.Employer.Web.Configuration
     {
         public static void AddIoC(this IServiceCollection services, IConfiguration configuration)
         {
-            //Register Recruit.Storage.Client IoC
-            services.RegisterRecruitStorageClient(configuration);
+            //Recruit.Storage.Client IoC
+            services.AddRecruitStorageClient(configuration);
 
             //Configuration
             services.Configure<ExternalLinksConfiguration>(configuration.GetSection("ExternalLinks"));

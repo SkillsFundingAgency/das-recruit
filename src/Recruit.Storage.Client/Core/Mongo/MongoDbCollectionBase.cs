@@ -28,5 +28,6 @@ namespace Esfa.Recruit.Storage.Client.Core.Mongo
 
             return collection;
         }
+        
     }
 }

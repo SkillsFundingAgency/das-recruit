@@ -1,39 +1,35 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Esfa.Recruit.Storage.Client.Core.Entities;
+using Esfa.Recruit.Storage.Client.Core.Entities.VacancyPatches;
 
 namespace Esfa.Recruit.Storage.Client.Core.Repositories
 {
-    public class StubVacancyRepository : IVacancyRepository
+    public class StubVacancyRepository : ICommandVacancyRepository, IQueryVacancyRepository
     {
 
         private static Vacancy _vacancy;
-
-        public Task CreateVacancyAsync(Vacancy vacancy)
+        
+        public Task<Vacancy> GetVacancyAsync(Guid vacancyId)
         {
-            _vacancy = vacancy;
-            return Task.CompletedTask;
-        }
-
-        public Task<Vacancy> GetVacancyAsync(Guid id)
-        {
-            if(_vacancy.Id == id)
-            {
-                return Task.FromResult(_vacancy);
-            }
-            
-            return null;
+            return Task.FromResult(_vacancy);   
         }
         
-        public Task UpdateVacancyAsync(Vacancy vacancy)
+        public async Task UpsertVacancyAsync(IVacancyPatch patch, Guid id)
         {
-            if(vacancy.Id == vacancy.Id)
+            if(_vacancy == null)
             {
-                _vacancy = vacancy;
+                _vacancy = new Vacancy
+                {
+                    Id = id
+                };
             }
-            return Task.CompletedTask;
+
+            foreach(var property in patch.GetType().GetProperties())
+            {
+                typeof(Vacancy).GetProperty(property.Name).SetValue(_vacancy, property.GetValue(patch));
+            }
+            
         }
     }
 }
