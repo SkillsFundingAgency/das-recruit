@@ -93,7 +93,7 @@ namespace Esfa.Recruit.Employer.Web
             var destinations = new List<string>();
             
             if (!string.IsNullOrWhiteSpace(authConfig?.Authority))
-                destinations.Add(authConfig.Authority);
+                destinations.Add(authConfig.Authority.Replace("identity", string.Empty));
             
             if (!string.IsNullOrWhiteSpace(linksConfig?.ManageApprenticeshipSiteUrl))
                 destinations.Add(linksConfig?.ManageApprenticeshipSiteUrl);

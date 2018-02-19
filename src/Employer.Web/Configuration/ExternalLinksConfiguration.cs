@@ -8,12 +8,11 @@ namespace Esfa.Recruit.Employer.Web.Configuration
         public string ManageApprenticeshipSiteChangePasswordUrl { get; set; }
         public string ManageApprenticeshipSiteChangeEmailAddressUrl { get; set; }
         public string ManageApprenticeshipSiteSignInUrl { get; set; }
-
-
         public string ManageApprenticeshipSiteAccountsFinanceLink { get; set; }
+        public string ManageApprenticeshipSiteAccountsApprenticesLink { get; set; }
         public string ManageApprenticeshipSiteAccountsTeamsLink { get; set; }
         public string ManageApprenticeshipSiteAccountsTeamsViewLink { get; set; }
-        public string ManageApprenticeshipSiteAccountsAgreementLink { get; set; }
+        public string ManageApprenticeshipSiteAccountsAgreementsLink { get; set; }
         public string ManageApprenticeshipSiteAccountsSchemesLink { get; set; }
     }
 }

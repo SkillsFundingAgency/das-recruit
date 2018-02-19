@@ -2,7 +2,6 @@
 @using Esfa.Recruit.Employer.Web.Configuration;
 
 @inject IOptions<ExternalLinksConfiguration> ExternalLinks
-@inject ChangeUserDetailLinksViewModel changeUserDetailLinks
 
 <!DOCTYPE html>
 <!--[if lt IE 9]><html class="lte-ie8" lang="en"><![endif]-->
@@ -91,8 +90,8 @@
                                 <a href="/" role="menuitem" class="menu-main">Settings</a>
                                 <ul role="menu" id="settings-menu" class="js-hidden">
                                     <li><a href="@ExternalLinks.Value.ManageApprenticeshipSiteAccountsUrl" role="menuitem" class="sub-menu-item">Your accounts</a></li>
-                                    <li><a href="@string.Concat(changeUserDetailLinks.ChangePasswordLink, Url.Content(Context.Request.Path))" class="sub-menu-item">Change your password</a></li>
-                                    <li><a href="@changeUserDetailLinks.ChangeEmailAddressLink" class="sub-menu-item">Change your email address</a></li>
+                                    <li><a asp-route="Dashboard_ChangePassword" asp-route-returnUrl="@Context.Request.Path" class="sub-menu-item">Change your password</a></li>
+                                    <li><a asp-route="Dashboard_ChangeEmail" asp-route-returnUrl="@Context.Request.Path" class="sub-menu-item">Change your email address</a></li>
                                     @*<li><a href="@Url.ExternalUrlAction("settings", "notifications",true)" class="sub-menu-item">Notification settings</a></li>*@
                                 </ul>
                             </li>
@@ -110,6 +109,24 @@
 
     @if (Context.User.Identity.IsAuthenticated)
     {
+        <div class="header-organisation" role="navigation">
+            <nav class="header-inner">
+                <ul role="menubar" id="global-nav-links">
+                    <li><a asp-route="Dashboard_AccountsTeams" class="selected" role="menuitem">Home</a></li>
+                    <li><a asp-route="Dashboard_AccountsFinance" class="" role="menuitem">Finance</a></li>
+                    <li><a href="" class="selected" role="menuitem">Recruit</a></li>
+                    <li><a asp-route="Dashboard_AccountsApprentices" class="" role="menuitem">Apprentices</a></li>
+                    <li><a asp-route="Dashboard_AccountsTeams" class="" role="menuitem">Your team</a></li>
+                    <li><a asp-route="Dashboard_AccountsAgreements" class="" role="menuitem">Your organisations and agreements</a></li>
+                    <li class="menu-link">
+                        <a href="#">More</a>
+                        <ul>
+                            <li><a asp-route="Dashboard_AccountsSchemes" class="" role="menuitem">PAYE schemes</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </div>
     }
 
     <main id="content" role="main">
