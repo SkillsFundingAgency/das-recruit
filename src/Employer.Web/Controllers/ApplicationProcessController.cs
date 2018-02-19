@@ -2,19 +2,25 @@
 using Esfa.Recruit.Employer.Web.ViewModels.ApplicationProcess;
 using Esfa.Recruit.Employer.Web.Configuration.Routes;
 using System;
+using Esfa.Recruit.Employer.Web.Orchestrators;
+using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
-    [Route("accounts/{employerAccountId}/vacancy/{vacancyId}")]
+    [Route("accounts/{employerAccountId}/vacancies/{vacancyId}")]
     public class ApplicationProcessController : Controller
     {
-        [HttpGet("application-process", Name = RouteNames.ApplicationProcess_Index_Get)]
-        public IActionResult Index()
+        private readonly ApplicationProcessOrchestrator _orchestrator;
+
+        public ApplicationProcessController(ApplicationProcessOrchestrator orchestrator)
         {
-            var vm = new IndexViewModel
-            {
-                Title = Dummy.VacancyTitle
-            };
+            _orchestrator = orchestrator;
+        }
+
+        [HttpGet("application-process", Name = RouteNames.ApplicationProcess_Index_Get)]
+        public async Task<IActionResult> Index(Guid vacancyId)
+        {
+            var vm = await _orchestrator.GetIndexViewModelAsync(vacancyId);
             return View(vm);
         }
 

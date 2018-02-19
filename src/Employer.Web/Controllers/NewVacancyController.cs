@@ -31,7 +31,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             {
                 return View(vm);
             }
-
+            
             var vacancyId = await _orchestrator.PostIndexViewModelAsync(vm);
             
             return RedirectToRoute(RouteNames.Sections_Index_Get, new { vacancyId });

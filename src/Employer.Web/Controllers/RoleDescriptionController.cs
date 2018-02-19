@@ -1,51 +1,42 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Employer.Web.ViewModels.RoleDescription;
 using Esfa.Recruit.Employer.Web.Configuration.Routes;
+using Esfa.Recruit.Employer.Web.Orchestrators;
+using System.Threading.Tasks;
+using System;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
-    [Route("accounts/{employerAccountId}/vacancy/{vacancyId}")]
+    [Route("accounts/{employerAccountId}/vacancies/{vacancyId}")]
     public class RoleDescriptionController : Controller
     {
-        [HttpGet("role-description", Name = RouteNames.RoleDescription_Index_Get)]
-        public IActionResult Index()
+        private readonly RoleDescriptionOrchestrator _orchestrator;
+
+        public RoleDescriptionController(RoleDescriptionOrchestrator orchestrator)
         {
-            var vm = GetViewModel();
+            _orchestrator = orchestrator;
+        }
+
+        [HttpGet("role-description", Name = RouteNames.RoleDescription_Index_Get)]
+        public async Task<IActionResult> Index(Guid vacancyId)
+        {
+            var vm = await _orchestrator.GetIndexViewModelAsync(vacancyId);
             return View(vm);
         }
 
         [HttpPost("role-description", Name =  RouteNames.RoleDescription_Index_Post)]
-        public IActionResult Index(IndexEditModel m)
+        public async Task<IActionResult> Index(IndexEditModel m)
         {
             if(!ModelState.IsValid)
             {
-                var vm = GetViewModel(m);
+                var vm = await _orchestrator.GetIndexViewModelAsync(m.VacancyId);
                 return View(vm);
             }
-
-            //dummy code
-            Dummy.VacancyTitle = m.Title;
+            
+            await _orchestrator.PostIndexEditModelAsync(m);
 
             return RedirectToRoute(RouteNames.CandidateProfile_Index_Get);
         }
-
-        private IndexViewModel GetViewModel(IndexEditModel overrides = null)
-        {
-            //populate view model's reference data, dropdown lists, etc
-            var vm = new IndexViewModel
-            {
-                CurrentVacancyTitle = Dummy.VacancyTitle,
-                Title = Dummy.VacancyTitle
-            };
-
-            //update vm with posted data if applicable
-            if(overrides != null)
-            {
-                vm.Title = overrides.Title;
-            }
-
-            return vm;
-        }
-
+        
     }
 }

@@ -17,7 +17,7 @@
                 <input asp-for="Title" class="form-control" />
             </div>
             <div class="form-group">
-                <a href="#" onclick="alert('todo')" class="button-link">Return to dashboard</a>
+                <a asp-route="@RouteNames.Dashboard_Index_Get" class="button-link">Return to dashboard</a>
                 <input type="submit" value="Create" class="button" />
             </div>
         </form>

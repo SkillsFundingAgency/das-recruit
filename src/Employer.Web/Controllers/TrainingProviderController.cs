@@ -1,19 +1,26 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Employer.Web.ViewModels.TrainingProvider;
 using Esfa.Recruit.Employer.Web.Configuration.Routes;
+using Esfa.Recruit.Employer.Web.Orchestrators;
+using System;
+using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
-    [Route("accounts/{employerAccountId}/vacancy/{vacancyId}")]
+    [Route("accounts/{employerAccountId}/vacancies/{vacancyId}")]
     public class TrainingProviderController : Controller
     {
-        [HttpGet("training-provider", Name = RouteNames.TrainingProvider_Index_Get)]
-        public IActionResult Index()
+        private TrainingProviderOrchestrator _orchestrator;
+
+        public TrainingProviderController(TrainingProviderOrchestrator orchestrator)
         {
-            var vm = new IndexViewModel
-            {
-                Title = Dummy.VacancyTitle
-            };
+            _orchestrator = orchestrator;
+        }
+
+        [HttpGet("training-provider", Name = RouteNames.TrainingProvider_Index_Get)]
+        public async Task<IActionResult> Index(Guid vacancyId)
+        {
+            var vm = await _orchestrator.GetIndexViewModelAsync(vacancyId);
             return View(vm);
         }
 
@@ -24,12 +31,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         }
 
         [HttpGet("training-provider-confirm", Name = RouteNames.TrainingProvider_Confirm_Get)]
-        public IActionResult Confirm()
+        public async Task<IActionResult> Confirm(Guid vacancyId)
         {
-            var vm = new ConfirmViewModel
-            {
-                Title = Dummy.VacancyTitle
-            };
+            var vm = await _orchestrator.GetConfirmViewModelAsync(vacancyId);
             return View(vm);
         }
 

@@ -1,5 +1,6 @@
 ﻿using Esfa.Recruit.Employer.Web.ViewModels.NewVacancy;
 using Esfa.Recruit.Storage.Client.Core.Commands;
+using Esfa.Recruit.Storage.Client.Core.Entities.VacancyPatches;
 using Esfa.Recruit.Storage.Client.Core.Messaging;
 using Esfa.Recruit.Storage.Client.Core.Services;
 using System;
@@ -26,17 +27,20 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public async Task<Guid> PostIndexViewModelAsync(IndexViewModel vm)
         {
-            //dummy code
-            Dummy.VacancyTitle = vm.Title;
+            var patch = new NewVacancyPatch
+            {
+                Title = vm.Title,
+                AuditVacancyCreated = DateTime.Now
+            };
 
-            var command = new CreateVacancyCommand
+            var command = new UpsertVacancyCommand
             {
                 Id = _idGenerator.CreateId(),
-                Title = vm.Title
+                Patch = patch
             };
 
             await _messaging.SendCommandAsync(command);
-
+            
             return command.Id;
         }
     }
