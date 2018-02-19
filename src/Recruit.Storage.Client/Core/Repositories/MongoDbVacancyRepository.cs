@@ -29,7 +29,7 @@ namespace Esfa.Recruit.Storage.Client.Core.Repositories
             return result.Single();
         }
 
-        public async Task UpsertVacancyAsync(IVacancyPatch patch, Guid id)
+        public async Task UpsertVacancyAsync(Guid vacancyId, IVacancyPatch patch)
         {
             var changesDocument = patch.ToBsonDocument();
 
@@ -38,16 +38,9 @@ namespace Esfa.Recruit.Storage.Client.Core.Repositories
 
             var update = new BsonDocumentUpdateDefinition<BsonDocument>(new BsonDocument("$set", changesDocument));
 
-            var filter = Builders<BsonDocument>.Filter.Eq("_id", id);
+            var filter = Builders<BsonDocument>.Filter.Eq("_id", vacancyId);
             var collection = GetCollection<BsonDocument>();
             var result = await collection.UpdateOneAsync(filter, update, new UpdateOptions {IsUpsert = true } );
-        }
-        
-        private async Task<Vacancy> FindSingleAsync(FilterDefinition<Vacancy> filter)
-        {
-            var collection = GetCollection<Vacancy>();
-            var result = await collection.FindAsync(filter);
-            return result.Single();
         }
     }
 }

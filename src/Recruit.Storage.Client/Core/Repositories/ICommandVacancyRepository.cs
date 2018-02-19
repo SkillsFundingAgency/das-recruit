@@ -7,6 +7,6 @@ namespace Esfa.Recruit.Storage.Client.Core.Repositories
 {
     public interface ICommandVacancyRepository
     {
-        Task UpsertVacancyAsync(IVacancyPatch patch, Guid id);
+        Task UpsertVacancyAsync(Guid vacancyId, IVacancyPatch patch);
     }
 }

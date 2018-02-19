@@ -15,13 +15,13 @@ namespace Esfa.Recruit.Storage.Client.Core.Repositories
             return Task.FromResult(_vacancy);   
         }
         
-        public async Task UpsertVacancyAsync(IVacancyPatch patch, Guid id)
+        public async Task UpsertVacancyAsync(Guid vacancyId, IVacancyPatch patch)
         {
             if(_vacancy == null)
             {
                 _vacancy = new Vacancy
                 {
-                    Id = id
+                    Id = vacancyId
                 };
             }
 

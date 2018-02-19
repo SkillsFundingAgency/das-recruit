@@ -18,7 +18,7 @@ namespace Esfa.Recruit.Storage.Client.Core.Handlers
 
         public async Task Handle(UpsertVacancyCommand message, CancellationToken cancellationToken)
         {
-            await _repository.UpsertVacancyAsync(message.Patch, message.Id);
+            await _repository.UpsertVacancyAsync(message.Id, message.Patch);
         }
     }
 }
