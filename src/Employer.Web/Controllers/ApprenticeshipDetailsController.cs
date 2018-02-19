@@ -4,9 +4,10 @@ using Esfa.Recruit.Employer.Web.Configuration.Routes;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
+    [Route("accounts/{employerAccountId}/vacancy/{vacancyId}")]
     public class ApprenticeshipDetailsController : Controller
     {
-        [HttpGet, Route("accounts/{employerAccountId}/apprenticeship-details", Name = RouteNames.ApprenticeshipDetails_Index_Get)]
+        [HttpGet("apprenticeship-details", Name = RouteNames.ApprenticeshipDetails_Index_Get)]
         public IActionResult Index()
         {
             var vm = new IndexViewModel
@@ -16,10 +17,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             return View(vm);
         }
 
-        [HttpPost, Route("accounts/{employerAccountId}/apprenticeship-details", Name = RouteNames.ApprenticeshipDetails_Index_Post)]
+        [HttpPost("apprenticeship-details", Name = RouteNames.ApprenticeshipDetails_Index_Post)]
         public IActionResult Index(IndexViewModel vm)
         {
-            return RedirectToAction("Index", "TrainingProvider");
+            return RedirectToRoute(RouteNames.TrainingProvider_Index_Get);
         }
     }
 }

@@ -2,13 +2,15 @@
 using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Employer.Web.ViewModels.Sections;
 using Esfa.Recruit.Employer.Web.Configuration.Routes;
+using System;
 
 namespace Employer.Web.Controllers
 {
+    [Route("accounts/{employerAccountId}/vacancy/{vacancyId}")]
     public class SectionsController : Controller
     {
-        [HttpGet, Route("accounts/{employerAccountId}/sections", Name = RouteNames.Sections_Index_Get)]
-        public IActionResult Index()
+        [HttpGet("sections", Name = RouteNames.Sections_Index_Get)]
+        public IActionResult Index(Guid vacancyId)
         {
             var vm = new IndexViewModel
             {

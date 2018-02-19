@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {    
+    [Route("accounts/{employerAccountId}")]
     public class NewVacancyController : Controller
     {
         private readonly NewVacancyOrchestrator _orchestrator;
@@ -16,14 +17,14 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             _orchestrator = orchestrator;
         }
         
-        [HttpGet("accounts/{employerAccountId}/new-vacancy", Name = RouteNames.NewVacancy_Index_Get)]
+        [HttpGet("new-vacancy", Name = RouteNames.NewVacancy_Index_Get)]
         public IActionResult Index()
         {
             var vm = _orchestrator.GetIndexViewModel();
             return View(vm);
         }
 
-        [HttpPost("accounts/{employerAccountId}/new-vacancy", Name = RouteNames.NewVacancy_Index_Post)]
+        [HttpPost("new-vacancy", Name = RouteNames.NewVacancy_Index_Post)]
         public async Task<IActionResult> Index(IndexViewModel vm)
         {
             if(!ModelState.IsValid)
@@ -31,11 +32,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 return View(vm);
             }
 
-            var newVacancyId = await _orchestrator.PostIndexViewModelAsync(vm);
-
-            //todo: Do something with the id
-
-            return RedirectToRoute(RouteNames.Sections_Index_Get);
+            var vacancyId = await _orchestrator.PostIndexViewModelAsync(vm);
+            
+            return RedirectToRoute(RouteNames.Sections_Index_Get, new { vacancyId });
         }
     }
 }

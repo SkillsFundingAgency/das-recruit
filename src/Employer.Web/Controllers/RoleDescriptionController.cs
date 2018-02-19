@@ -4,16 +4,17 @@ using Esfa.Recruit.Employer.Web.Configuration.Routes;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
+    [Route("accounts/{employerAccountId}/vacancy/{vacancyId}")]
     public class RoleDescriptionController : Controller
     {
-        [HttpGet, Route("accounts/{employerAccountId}/role-description", Name = RouteNames.RoleDescription_Index_Get)]
+        [HttpGet("role-description", Name = RouteNames.RoleDescription_Index_Get)]
         public IActionResult Index()
         {
             var vm = GetViewModel();
             return View(vm);
         }
 
-        [HttpPost, Route("accounts/{employerAccountId}/role-description", Name =  RouteNames.RoleDescription_Index_Post)]
+        [HttpPost("role-description", Name =  RouteNames.RoleDescription_Index_Post)]
         public IActionResult Index(IndexEditModel m)
         {
             if(!ModelState.IsValid)
@@ -25,7 +26,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             //dummy code
             Dummy.VacancyTitle = m.Title;
 
-            return RedirectToAction("Index", "CandidateProfile");
+            return RedirectToRoute(RouteNames.CandidateProfile_Index_Get);
         }
 
         private IndexViewModel GetViewModel(IndexEditModel overrides = null)

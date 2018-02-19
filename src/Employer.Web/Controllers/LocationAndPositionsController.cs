@@ -4,9 +4,10 @@ using Esfa.Recruit.Employer.Web.Configuration.Routes;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
+    [Route("accounts/{employerAccountId}/vacancy/{vacancyId}")]
     public class LocationAndPositionsController : Controller
     {
-        [HttpGet, Route("accounts/{employerAccountId}/location-and-positions", Name = RouteNames.LocationAndPosition_Index_Get)]
+        [HttpGet("location-and-positions", Name = RouteNames.LocationAndPosition_Index_Get)]
         public IActionResult Index()
         {
             var vm = new IndexViewModel
@@ -16,10 +17,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             return View(vm);
         }
 
-        [HttpPost, Route("accounts/{employerAccountId}/location-and-positions", Name = RouteNames.LocationAndPosition_Index_Post)]
+        [HttpPost("location-and-positions", Name = RouteNames.LocationAndPosition_Index_Post)]
         public IActionResult Index(IndexViewModel vm)
         {
-            return RedirectToAction("Index", "RoleDescription");
+            return RedirectToRoute(RouteNames.RoleDescription_Index_Get);
         }
     }
 }

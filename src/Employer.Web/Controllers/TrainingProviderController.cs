@@ -4,9 +4,10 @@ using Esfa.Recruit.Employer.Web.Configuration.Routes;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
+    [Route("accounts/{employerAccountId}/vacancy/{vacancyId}")]
     public class TrainingProviderController : Controller
     {
-        [HttpGet, Route("accounts/{employerAccountId}/training-provider", Name = RouteNames.TrainingProvider_Index_Get)]
+        [HttpGet("training-provider", Name = RouteNames.TrainingProvider_Index_Get)]
         public IActionResult Index()
         {
             var vm = new IndexViewModel
@@ -16,13 +17,13 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             return View(vm);
         }
 
-        [HttpPost, Route("accounts/{employerAccountId}/training-provider", Name = RouteNames.TrainingProvider_Index_Post)]
+        [HttpPost("training-provider", Name = RouteNames.TrainingProvider_Index_Post)]
         public IActionResult Index(IndexViewModel vm)
         {
-            return RedirectToAction("Confirm");
+            return RedirectToRoute(RouteNames.TrainingProvider_Confirm_Get);
         }
 
-        [HttpGet, Route("accounts/{employerAccountId}/training-provider-confirm", Name = RouteNames.TrainingProvider_Confirm_Get)]
+        [HttpGet("training-provider-confirm", Name = RouteNames.TrainingProvider_Confirm_Get)]
         public IActionResult Confirm()
         {
             var vm = new ConfirmViewModel
@@ -32,10 +33,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             return View(vm);
         }
 
-        [HttpPost, Route("accounts/{employerAccountId}/training-provider-confirm", Name = RouteNames.TrainingProvider_Confirm_Post)]
+        [HttpPost("training-provider-confirm", Name = RouteNames.TrainingProvider_Confirm_Post)]
         public IActionResult Confirm(ConfirmViewModel vm)
         {
-            return RedirectToAction("Index", "WageAndHours");
+            return RedirectToRoute(RouteNames.WageAndhours_Index_Get);
         }
     }
 }
