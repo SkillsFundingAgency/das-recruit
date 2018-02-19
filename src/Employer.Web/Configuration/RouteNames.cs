@@ -12,6 +12,15 @@
         public const string CandidateProfile_Index_Post = "CandidateProfile_Index_Post";
 
         public const string Dashboard_Index_Get = "Dashboard_Index_Get";
+        public const string Dashboard_ChangePassword = "Dashboard_ChangePassword";
+        public const string Dashboard_ChangeEmail = "Dashboard_ChangeEmail";
+
+        public const string Dashboard_AccountsHome = "Dashboard_AccountsHome";
+        public const string Dashboard_AccountsFinance = "Dashboard_AccountsFinance";
+        public const string Dashboard_AccountsApprentices = "Dashboard_AccountsApprentices";
+        public const string Dashboard_AccountsTeams = "Dashboard_AccountsTeams";
+        public const string Dashboard_AccountsAgreements = "Dashboard_AccountsAgreements";
+        public const string Dashboard_AccountsSchemes = "Dashboard_AccountsSchemes";
 
         public const string EmployerDetails_Index_Get = "EmployerDetails_Index_Get";
         public const string EmployerDetails_Index_Post = "EmployerDetails_Index_Post";
