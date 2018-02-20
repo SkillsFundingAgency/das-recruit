@@ -1,41 +1,46 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Employer.Web.ViewModels.TrainingProvider;
 using Esfa.Recruit.Employer.Web.Configuration.Routes;
+using Esfa.Recruit.Employer.Web.Orchestrators;
+using System;
+using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
+    [Route("accounts/{employerAccountId}/vacancies/{vacancyId}")]
     public class TrainingProviderController : Controller
     {
-        [HttpGet, Route("accounts/{employerAccountId}/training-provider", Name = RouteNames.TrainingProvider_Index_Get)]
-        public IActionResult Index()
+        private TrainingProviderOrchestrator _orchestrator;
+
+        public TrainingProviderController(TrainingProviderOrchestrator orchestrator)
         {
-            var vm = new IndexViewModel
-            {
-                Title = Dummy.VacancyTitle
-            };
+            _orchestrator = orchestrator;
+        }
+
+        [HttpGet("training-provider", Name = RouteNames.TrainingProvider_Index_Get)]
+        public async Task<IActionResult> Index(Guid vacancyId)
+        {
+            var vm = await _orchestrator.GetIndexViewModelAsync(vacancyId);
             return View(vm);
         }
 
-        [HttpPost, Route("accounts/{employerAccountId}/training-provider", Name = RouteNames.TrainingProvider_Index_Post)]
+        [HttpPost("training-provider", Name = RouteNames.TrainingProvider_Index_Post)]
         public IActionResult Index(IndexViewModel vm)
         {
-            return RedirectToAction("Confirm");
+            return RedirectToRoute(RouteNames.TrainingProvider_Confirm_Get);
         }
 
-        [HttpGet, Route("accounts/{employerAccountId}/training-provider-confirm", Name = RouteNames.TrainingProvider_Confirm_Get)]
-        public IActionResult Confirm()
+        [HttpGet("training-provider-confirm", Name = RouteNames.TrainingProvider_Confirm_Get)]
+        public async Task<IActionResult> Confirm(Guid vacancyId)
         {
-            var vm = new ConfirmViewModel
-            {
-                Title = Dummy.VacancyTitle
-            };
+            var vm = await _orchestrator.GetConfirmViewModelAsync(vacancyId);
             return View(vm);
         }
 
-        [HttpPost, Route("accounts/{employerAccountId}/training-provider-confirm", Name = RouteNames.TrainingProvider_Confirm_Post)]
+        [HttpPost("training-provider-confirm", Name = RouteNames.TrainingProvider_Confirm_Post)]
         public IActionResult Confirm(ConfirmViewModel vm)
         {
-            return RedirectToAction("Index", "WageAndHours");
+            return RedirectToRoute(RouteNames.WageAndhours_Index_Get);
         }
     }
 }

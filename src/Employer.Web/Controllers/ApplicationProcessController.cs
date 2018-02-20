@@ -1,25 +1,33 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Employer.Web.ViewModels.ApplicationProcess;
 using Esfa.Recruit.Employer.Web.Configuration.Routes;
+using System;
+using Esfa.Recruit.Employer.Web.Orchestrators;
+using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
+    [Route("accounts/{employerAccountId}/vacancies/{vacancyId}")]
     public class ApplicationProcessController : Controller
     {
-        [HttpGet, Route("accounts/{employerAccountId}/application-process", Name = RouteNames.ApplicationProcess_Index_Get)]
-        public IActionResult Index()
+        private readonly ApplicationProcessOrchestrator _orchestrator;
+
+        public ApplicationProcessController(ApplicationProcessOrchestrator orchestrator)
         {
-            var vm = new IndexViewModel
-            {
-                Title = Dummy.VacancyTitle
-            };
+            _orchestrator = orchestrator;
+        }
+
+        [HttpGet("application-process", Name = RouteNames.ApplicationProcess_Index_Get)]
+        public async Task<IActionResult> Index(Guid vacancyId)
+        {
+            var vm = await _orchestrator.GetIndexViewModelAsync(vacancyId);
             return View(vm);
         }
 
-        [HttpPost, Route("accounts/{employerAccountId}/application-process", Name = RouteNames.ApplicationProcess_Index_Post)]
+        [HttpPost("application-process", Name = RouteNames.ApplicationProcess_Index_Post)]
         public IActionResult Index(IndexViewModel vm)
         {
-            return RedirectToAction("Index", "Sections");
+            return RedirectToRoute(RouteNames.Sections_Index_Get);
         }
     }
 }

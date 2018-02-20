@@ -15,7 +15,7 @@ namespace Esfa.Recruit.Storage.Client.Core.Messaging
             _mediator = mediator;
         }
 
-        public async Task SendCommand(ICommand command)
+        public async Task SendCommandAsync(ICommand command)
         {
             var request = command as IRequest;
 
