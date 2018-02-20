@@ -1,12 +1,15 @@
-﻿using Esfa.Recruit.Storage.Client.Core.Messaging;
-using Esfa.Recruit.Storage.Client.Core.Mongo;
-using Esfa.Recruit.Storage.Client.Core.Repositories;
-using Esfa.Recruit.Storage.Client.Core.Services;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MediatR;
-using Esfa.Recruit.Storage.Client.Core.Entities;
-using Esfa.Recruit.Storage.Client.Core.Handlers;
+using Esfa.Recruit.Storage.Client.Application.Handlers;
+using Esfa.Recruit.Storage.Client.Domain.Messaging;
+using Esfa.Recruit.Storage.Client.Infrastructure.Messaging;
+using Esfa.Recruit.Storage.Client.Application.Services;
+using Esfa.Recruit.Storage.Client.Infrastructure.Mongo;
+using Esfa.Recruit.Storage.Client.Domain.Repositories;
+using Esfa.Recruit.Storage.Client.Infrastructure.Repositories;
+using Esfa.Recruit.Storage.Client.Domain.QueryStore;
+using Recruit.Vacancies.Client.Infrastructure.QueryStore;
 
 namespace Esfa.Recruit.Storage.Client.Core.Ioc
 {
@@ -14,7 +17,7 @@ namespace Esfa.Recruit.Storage.Client.Core.Ioc
     {
         public static void AddRecruitStorageClient(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddMediatR(typeof(UpsertVacancyCommandHandler).Assembly);
+            services.AddMediatR(typeof(CreateVacancyCommandHandler).Assembly);
             services.AddTransient<IMessaging, MediatrMessaging>();
             
             services.AddTransient<IdGenerator, IdGenerator>();
@@ -29,14 +32,14 @@ namespace Esfa.Recruit.Storage.Client.Core.Ioc
 
             if (mongoConfig.Get<MongoDbConnectionDetails>() == null)
             {
-                services.AddSingleton<ICommandVacancyRepository, StubVacancyRepository>();
-                services.AddSingleton(x => (IQueryVacancyRepository)x.GetService<ICommandVacancyRepository>());
+                services.AddSingleton<IVacancyRepository, StubVacancyRepository>();
+                services.AddSingleton<IQueryStoreReader, StubVacancyRepository>();
             }
             else
             {
                 MongoDbConventions.RegisterMongoConventions();
-                services.AddTransient<ICommandVacancyRepository, MongoDbVacancyRepository>();
-                services.AddTransient<IQueryVacancyRepository, MongoDbVacancyRepository>();
+                services.AddTransient<IVacancyRepository, MongoDbVacancyRepository>();
+                services.AddTransient<IQueryStoreReader, QueryStoreReader>();
             }
         }
     }

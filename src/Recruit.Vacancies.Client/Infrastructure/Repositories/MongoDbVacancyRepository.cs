@@ -1,15 +1,15 @@
-﻿using Esfa.Recruit.Storage.Client.Core.Entities;
-using Esfa.Recruit.Storage.Client.Core.Entities.VacancyPatches;
-using Esfa.Recruit.Storage.Client.Core.Mongo;
+﻿using Esfa.Recruit.Storage.Client.Domain.Entities;
+using Esfa.Recruit.Storage.Client.Domain.Repositories;
+using Esfa.Recruit.Storage.Client.Infrastructure.Mongo;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using System;
 using System.Threading.Tasks;
 
-namespace Esfa.Recruit.Storage.Client.Core.Repositories
+namespace Esfa.Recruit.Storage.Client.Infrastructure.Repositories
 {
-    public class MongoDbVacancyRepository : MongoDbCollectionBase, ICommandVacancyRepository, IQueryVacancyRepository
+    public class MongoDbVacancyRepository : MongoDbCollectionBase, IVacancyRepository
     {
 
         private const string Database = "recruit";
@@ -20,27 +20,19 @@ namespace Esfa.Recruit.Storage.Client.Core.Repositories
         {
         }
 
-        public async Task<Vacancy> GetVacancyAsync(Guid vacancyId)
+        public async Task CreateAsync(Vacancy vacancy)
         {
-            var filter = Builders<Vacancy>.Filter.Eq(v => v.Id, vacancyId);
-
             var collection = GetCollection<Vacancy>();
-            var result = await collection.FindAsync(filter);
-            return result.Single();
+            await collection.InsertOneAsync(vacancy);
         }
 
-        public async Task UpsertVacancyAsync(Guid vacancyId, IVacancyPatch patch)
+        public async Task UpdateAsync(Vacancy vacancy)
         {
-            var changesDocument = patch.ToBsonDocument();
-
-            //We don't want to change the type so remove the discriminator value from the update
-            changesDocument.Remove("_t");
-
-            var update = new BsonDocumentUpdateDefinition<BsonDocument>(new BsonDocument("$set", changesDocument));
-
-            var filter = Builders<BsonDocument>.Filter.Eq("_id", vacancyId);
-            var collection = GetCollection<BsonDocument>();
-            var result = await collection.UpdateOneAsync(filter, update, new UpdateOptions {IsUpsert = true } );
+            var filter = Builders<Vacancy>.Filter.Eq("_id", vacancy.Id);
+            var collection = GetCollection<Vacancy>();
+            await collection.ReplaceOneAsync(filter, vacancy);
         }
+
+        
     }
 }

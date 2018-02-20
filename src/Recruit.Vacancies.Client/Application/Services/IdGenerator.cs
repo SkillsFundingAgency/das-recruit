@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Esfa.Recruit.Storage.Client.Core.Services
+namespace Esfa.Recruit.Storage.Client.Application.Services
 {
     public class IdGenerator
     {

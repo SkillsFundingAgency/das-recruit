@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 
-namespace Esfa.Recruit.Storage.Client.Domain.Entities
+namespace Recruit.Vacancies.Client.Infrastructure.QueryStore.QueryModels
 {
-    public class Vacancy
+    public class VacancyForEdit
     {
         public Guid Id { get; set; }
         

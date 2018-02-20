@@ -1,10 +1,11 @@
-﻿using MediatR;
+﻿using Esfa.Recruit.Storage.Client.Domain.Messaging;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Esfa.Recruit.Storage.Client.Core.Messaging
+namespace Esfa.Recruit.Storage.Client.Infrastructure.Messaging
 {
     public class MediatrMessaging : IMessaging
     {

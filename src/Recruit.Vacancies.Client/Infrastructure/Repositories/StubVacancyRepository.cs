@@ -1,35 +1,34 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using Esfa.Recruit.Storage.Client.Core.Entities;
-using Esfa.Recruit.Storage.Client.Core.Entities.VacancyPatches;
+using Esfa.Recruit.Storage.Client.Domain.Entities;
+using Esfa.Recruit.Storage.Client.Domain.QueryStore;
+using Esfa.Recruit.Storage.Client.Domain.Repositories;
 
-namespace Esfa.Recruit.Storage.Client.Core.Repositories
+namespace Esfa.Recruit.Storage.Client.Infrastructure.Repositories
 {
-    public class StubVacancyRepository : ICommandVacancyRepository, IQueryVacancyRepository
+    public class StubVacancyRepository : IVacancyRepository, IQueryStoreReader
     {
 
-        private static Vacancy _vacancy;
-        
-        public Task<Vacancy> GetVacancyAsync(Guid vacancyId)
-        {
-            return Task.FromResult(_vacancy);   
-        }
-        
-        public async Task UpsertVacancyAsync(Guid vacancyId, IVacancyPatch patch)
-        {
-            if(_vacancy == null)
-            {
-                _vacancy = new Vacancy
-                {
-                    Id = vacancyId
-                };
-            }
+        private Dictionary<Guid, Vacancy> _vacancies = new Dictionary<Guid, Vacancy>(50);
 
-            foreach(var property in patch.GetType().GetProperties())
-            {
-                typeof(Vacancy).GetProperty(property.Name).SetValue(_vacancy, property.GetValue(patch));
-            }
-            
+        public Task CreateAsync(Vacancy vacancy)
+        {
+            _vacancies.Add(vacancy.Id, vacancy);
+
+            return Task.CompletedTask;
+        }
+
+        public Task<Vacancy> GetVacancyForEditAsync(Guid vacancyId)
+        {
+            return Task.FromResult(_vacancies[vacancyId]);   
+        }
+
+        public Task UpdateAsync(Vacancy vacancy)
+        {
+            _vacancies[vacancy.Id] = vacancy;
+
+            return Task.CompletedTask;
         }
     }
 }

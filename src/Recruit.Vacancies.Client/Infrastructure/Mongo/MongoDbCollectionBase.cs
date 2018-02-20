@@ -2,7 +2,7 @@
 using MongoDB.Driver;
 using System.Security.Authentication;
 
-namespace Esfa.Recruit.Storage.Client.Core.Mongo
+namespace Esfa.Recruit.Storage.Client.Infrastructure.Mongo
 {
     public abstract class MongoDbCollectionBase
     {

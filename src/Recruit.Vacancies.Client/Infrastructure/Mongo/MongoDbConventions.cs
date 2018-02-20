@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Esfa.Recruit.Storage.Client.Core.Mongo
+namespace Esfa.Recruit.Storage.Client.Infrastructure.Mongo
 {
     public static class MongoDbConventions
     {

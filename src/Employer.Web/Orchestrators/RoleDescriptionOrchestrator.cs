@@ -1,8 +1,7 @@
 ﻿using Esfa.Recruit.Employer.Web.ViewModels.RoleDescription;
-using Esfa.Recruit.Storage.Client.Core.Commands;
-using Esfa.Recruit.Storage.Client.Core.Entities.VacancyPatches;
-using Esfa.Recruit.Storage.Client.Core.Messaging;
-using Esfa.Recruit.Storage.Client.Core.Repositories;
+using Esfa.Recruit.Storage.Client.Application.Commands;
+using Esfa.Recruit.Storage.Client.Domain.Messaging;
+using Esfa.Recruit.Storage.Client.Domain.QueryStore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +12,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
     public class RoleDescriptionOrchestrator
     {
         private readonly IMessaging _messaging;
-        private readonly IQueryVacancyRepository _queryRepository;
+        private readonly IQueryStoreReader _queryRepository;
 
-        public RoleDescriptionOrchestrator(IMessaging messaging, IQueryVacancyRepository queryRepository)
+        public RoleDescriptionOrchestrator(IMessaging messaging, IQueryStoreReader queryRepository)
         {
             _messaging = messaging;
             _queryRepository = queryRepository;
@@ -23,7 +22,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public async Task<IndexViewModel> GetIndexViewModelAsync(Guid vacancyId)
         {
-            var vacancy = await _queryRepository.GetVacancyAsync(vacancyId);
+            var vacancy = await _queryRepository.GetVacancyForEditAsync(vacancyId);
 
             var vm = new IndexViewModel
             {
@@ -45,15 +44,13 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public async Task PostIndexEditModelAsync(IndexEditModel m)
         {
-            var patch = new RoleDescriptionPatch
-            {
-                Title = m.Title                
-            };
+            var vacancy = await _queryRepository.GetVacancyForEditAsync(m.VacancyId);
+            
+            vacancy.Title = m.Title;
 
-            var command = new UpsertVacancyCommand
+            var command = new UpdateVacancyCommand
             {
-                Id = m.VacancyId,
-                Patch = patch
+                Vacancy = vacancy
             };
 
             await _messaging.SendCommandAsync(command);

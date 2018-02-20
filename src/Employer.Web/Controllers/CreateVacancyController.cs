@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Employer.Web.ViewModels.CreateVacancy;
 using Esfa.Recruit.Employer.Web.Configuration.Routes;
-using Esfa.Recruit.Storage.Client.Core.Commands;
+using Esfa.Recruit.Storage.Client.Application.Commands;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using System.Threading.Tasks;
 

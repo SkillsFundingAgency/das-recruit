@@ -1,5 +1,5 @@
 ﻿using Esfa.Recruit.Employer.Web.ViewModels.EmployerDetails;
-using Esfa.Recruit.Storage.Client.Core.Repositories;
+using Esfa.Recruit.Storage.Client.Domain.QueryStore;
 using System;
 using System.Threading.Tasks;
 
@@ -7,16 +7,16 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
     public class EmployerDetailsOrchestrator
     {
-        private readonly IQueryVacancyRepository _queryRepository;
+        private readonly IQueryStoreReader _queryRepository;
 
-        public EmployerDetailsOrchestrator(IQueryVacancyRepository queryRepository)
+        public EmployerDetailsOrchestrator(IQueryStoreReader queryRepository)
         {
             _queryRepository = queryRepository;
         }
 
         public async Task<IndexViewModel> GetIndexViewModelAsync(Guid vacancyId)
         {
-            var vacancy = await _queryRepository.GetVacancyAsync(vacancyId);
+            var vacancy = await _queryRepository.GetVacancyForEditAsync(vacancyId);
 
             var vm = new IndexViewModel
             {

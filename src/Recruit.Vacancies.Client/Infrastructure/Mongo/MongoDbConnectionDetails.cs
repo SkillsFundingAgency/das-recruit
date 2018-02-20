@@ -1,4 +1,4 @@
-﻿namespace Esfa.Recruit.Storage.Client.Core.Mongo
+﻿namespace Esfa.Recruit.Storage.Client.Infrastructure.Mongo
 {
     public class MongoDbConnectionDetails
     {
