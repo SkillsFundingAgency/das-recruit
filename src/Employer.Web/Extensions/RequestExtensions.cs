@@ -4,7 +4,7 @@ namespace Esfa.Recruit.Employer.Web.Extensions
 {
     public static class RequestExtensions
     {
-        public static string GetRequestUrl(this HttpRequest request)
+        public static string GetRequestUrlRoot(this HttpRequest request)
         {
             var url = $"{request.Scheme}://{request.Host}";
             return url;
