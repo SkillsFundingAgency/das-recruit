@@ -12,7 +12,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.NewVacancy
         [Fact]
         public void ShouldErrorIfTitleIsNotSpecified()
         {
-            var vm = new EmployerWeb.ViewModels.NewVacancy.IndexViewModel
+            var vm = new EmployerWeb.ViewModels.CreateVacancy.IndexViewModel
             {
                 Title = null
             };
@@ -31,7 +31,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.NewVacancy
         [Fact]
         public void ShouldBeValidIfTitleIsSpecified()
         {
-            var vm = new EmployerWeb.ViewModels.NewVacancy.IndexViewModel
+            var vm = new EmployerWeb.ViewModels.CreateVacancy.IndexViewModel
             {
                 Title = "some text"
             };

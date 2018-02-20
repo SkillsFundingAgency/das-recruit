@@ -2,7 +2,7 @@
 
 namespace Esfa.Recruit.Storage.Client.Core.Entities.VacancyPatches
 {
-    public interface INewVacancyPatch : IVacancyPatch
+    public interface ICreateVacancyPatch : IVacancyPatch
     {
         string Title { get; set; }
 

@@ -12,7 +12,6 @@ namespace Esfa.Recruit.Employer.Web.Configuration
     {
         public static void AddIoC(this IServiceCollection services, IConfiguration configuration)
         {
-            //Recruit.Storage.Client IoC
             services.AddRecruitStorageClient(configuration);
 
             //Configuration
@@ -28,7 +27,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddTransient<CandidateProfileOrchestrator, CandidateProfileOrchestrator>();
             services.AddTransient<EmployerDetailsOrchestrator, EmployerDetailsOrchestrator>();
             services.AddTransient<LocationAndPositionsOrchestrator, LocationAndPositionsOrchestrator>();
-            services.AddTransient<NewVacancyOrchestrator, NewVacancyOrchestrator>();
+            services.AddTransient<CreateVacancyOrchestrator, CreateVacancyOrchestrator>();
             services.AddTransient<PreviewOrchestrator, PreviewOrchestrator>();
             services.AddTransient<RoleDescriptionOrchestrator, RoleDescriptionOrchestrator>();
             services.AddTransient<SectionsOrchestrator, SectionsOrchestrator>();

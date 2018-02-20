@@ -12,8 +12,8 @@ namespace Esfa.Recruit.Storage.Client.Core.Repositories
     public class MongoDbVacancyRepository : MongoDbCollectionBase, ICommandVacancyRepository, IQueryVacancyRepository
     {
 
-        private const string Database = "Recruit";
-        private const string Collection = "Vacancy";
+        private const string Database = "recruit";
+        private const string Collection = "vacancies";
 
         public MongoDbVacancyRepository(IOptions<MongoDbConnectionDetails> details) 
             : base(Database, Collection, details)

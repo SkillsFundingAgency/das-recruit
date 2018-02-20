@@ -5,7 +5,7 @@ namespace Esfa.Recruit.Storage.Client.Core.Entities
 {
     public class Vacancy : 
         IRoleDescriptionPatch, 
-        INewVacancyPatch
+        ICreateVacancyPatch
     {
         public Guid Id { get; set; }
         

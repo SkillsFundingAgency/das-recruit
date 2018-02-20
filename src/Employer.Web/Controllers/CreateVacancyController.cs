@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Esfa.Recruit.Employer.Web.ViewModels.NewVacancy;
+using Esfa.Recruit.Employer.Web.ViewModels.CreateVacancy;
 using Esfa.Recruit.Employer.Web.Configuration.Routes;
 using Esfa.Recruit.Storage.Client.Core.Commands;
 using Esfa.Recruit.Employer.Web.Orchestrators;
@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 namespace Esfa.Recruit.Employer.Web.Controllers
 {    
     [Route("accounts/{employerAccountId}")]
-    public class NewVacancyController : Controller
+    public class CreateVacancyController : Controller
     {
-        private readonly NewVacancyOrchestrator _orchestrator;
+        private readonly CreateVacancyOrchestrator _orchestrator;
 
-        public NewVacancyController(NewVacancyOrchestrator orchestrator)
+        public CreateVacancyController(CreateVacancyOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
         }

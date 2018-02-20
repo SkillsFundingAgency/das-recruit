@@ -1,4 +1,4 @@
-﻿using Esfa.Recruit.Employer.Web.ViewModels.NewVacancy;
+﻿using Esfa.Recruit.Employer.Web.ViewModels.CreateVacancy;
 using Esfa.Recruit.Storage.Client.Core.Commands;
 using Esfa.Recruit.Storage.Client.Core.Entities.VacancyPatches;
 using Esfa.Recruit.Storage.Client.Core.Messaging;
@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
-    public class NewVacancyOrchestrator
+    public class CreateVacancyOrchestrator
     {
         private readonly IMessaging _messaging;
         private readonly IdGenerator _idGenerator;
 
-        public NewVacancyOrchestrator(IMessaging messaging, IdGenerator idGenerator)
+        public CreateVacancyOrchestrator(IMessaging messaging, IdGenerator idGenerator)
         {
             _messaging = messaging;
             _idGenerator = idGenerator;
@@ -27,7 +27,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public async Task<Guid> PostIndexViewModelAsync(IndexViewModel vm)
         {
-            var patch = new NewVacancyPatch
+            var patch = new CreateVacancyPatch
             {
                 Title = vm.Title,
                 AuditVacancyCreated = DateTime.Now
