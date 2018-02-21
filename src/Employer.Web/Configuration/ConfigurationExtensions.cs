@@ -1,5 +1,6 @@
 using Employer.Web.Middleware;
 using Employer.Web.Services;
+using Esfa.Recruit.Employer.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -16,11 +17,13 @@ namespace Esfa.Recruit.Employer.Web.Configuration
 {
     public static class ConfigurationExtensions
     {
+        private const string HasEmployerAccountPolicyName = "HasEmployerAccount";
+
         public static void AddAuthorizationService(this IServiceCollection services)
         {
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("HasEmployerAccount", policy =>
+                options.AddPolicy(HasEmployerAccountPolicyName, policy =>
                 {
                     policy.RequireAuthenticatedUser();
                     policy.RequireClaim(EmployerRecruitClaims.AccountsClaimsTypeIdentifier);
