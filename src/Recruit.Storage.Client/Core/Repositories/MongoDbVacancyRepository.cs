@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Storage.Client.Core.Repositories
@@ -27,6 +28,16 @@ namespace Esfa.Recruit.Storage.Client.Core.Repositories
             var collection = GetCollection<Vacancy>();
             var result = await collection.FindAsync(filter);
             return result.Single();
+        }
+
+        public async Task<IEnumerable<Vacancy>> GetVacanciesAsync(string employerAccountId)
+        {
+            var filter = Builders<Vacancy>.Filter.Eq(v => v.EmployerAccountId, employerAccountId);
+
+            var collection = GetCollection<Vacancy>();
+            var result = await collection.FindAsync(filter);
+            
+            return result.ToEnumerable();
         }
 
         public async Task UpsertVacancyAsync(Guid vacancyId, IVacancyPatch patch)
