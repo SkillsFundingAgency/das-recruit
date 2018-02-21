@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Esfa.Recruit.Storage.Client.Core.Entities;
 using Esfa.Recruit.Storage.Client.Core.Entities.VacancyPatches;
 
 namespace Esfa.Recruit.Storage.Client.Core.Repositories
