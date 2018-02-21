@@ -1,5 +1,4 @@
 using Employer.Web.Middleware;
-using Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
@@ -55,7 +54,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
 
                     opts.Filters.Add(new AuthorizeFilter(policy));
 
-                    opts.Filters.Add(new AuthorizeFilter("HasEmployerAccount"));
+                    opts.Filters.Add(new AuthorizeFilter(HasEmployerAccountPolicyName));
                 }
 
                 var jsonInputFormatters = opts.InputFormatters.OfType<JsonInputFormatter>();
@@ -101,7 +100,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
         private static Task PopulateAccountsClaim(Microsoft.AspNetCore.Authentication.OpenIdConnect.TokenValidatedContext ctx, IGetAssociatedEmployerAccountsService accountsSvc)
         {
             var userId = ctx.Principal.Claims.First(c => c.Type.Equals(EmployerRecruitClaims.IdamsUserIdClaimTypeIdentifier)).Value;
-            var accounts = accountsSvc.GetAssociatedAccounts(userId);
+            var accounts = accountsSvc.GetAssociatedAccounts(userId).Result;
 
             var accountsConcatenated = string.Join(",", accounts);
             var associatedAccountClaim = new Claim(EmployerRecruitClaims.AccountsClaimsTypeIdentifier, accountsConcatenated, ClaimValueTypes.String);
