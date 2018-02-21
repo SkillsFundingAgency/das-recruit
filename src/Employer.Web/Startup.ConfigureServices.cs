@@ -1,5 +1,5 @@
-﻿using Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.Configuration;
+using Esfa.Recruit.Employer.Web.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,7 +36,7 @@ namespace Esfa.Recruit.Employer.Web
             // Routing has to come before adding Mvc
             services.AddRouting(opt =>
             {
-                opt.LowercaseUrls = true;
+                //opt.LowercaseUrls = true;
                 opt.AppendTrailingSlash = true;
             });
             
