@@ -36,14 +36,15 @@ namespace Recruit.Vacancies.Client.Infrastructure.Client
             return _repository.GetVacancyAsync(id);
         }
 
-        public async Task<Guid> CreateVacancyAsync(string title)
+        public async Task<Guid> CreateVacancyAsync(string title, string employerAccountId)
         {
             var command = new CreateVacancyCommand
             {
                 Vacancy = new Vacancy
                 {
                     Id = Guid.NewGuid(),
-                    Title = title
+                    Title = title,
+                    EmployerAccountId = employerAccountId
                 }
             };
 

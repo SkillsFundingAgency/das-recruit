@@ -21,9 +21,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return vm;
         }
 
-        public async Task<Guid> PostIndexViewModelAsync(IndexViewModel vm)
+        public async Task<Guid> PostIndexViewModelAsync(string employerAccountId, IndexViewModel vm)
         {
-            var id = await _client.CreateVacancyAsync(vm.Title);
+            var id = await _client.CreateVacancyAsync(vm.Title, employerAccountId);
             
             return id;
         }

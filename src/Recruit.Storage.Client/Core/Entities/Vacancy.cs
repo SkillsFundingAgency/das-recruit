@@ -7,10 +7,9 @@ namespace Esfa.Recruit.Storage.Client.Core.Entities
         IRoleDescriptionPatch, 
         ICreateVacancyPatch
     {
-        public Guid Id { get; set; }
-        
+        public Guid Id { get; set; }        
         public string Title { get; set; }
-        
+        public string EmployerAccountId { get; set; }
         public DateTime? AuditVacancyCreated { get; set; }
     }
 }

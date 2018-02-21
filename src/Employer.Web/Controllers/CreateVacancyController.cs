@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Employer.Web.ViewModels.CreateVacancy;
 using Esfa.Recruit.Employer.Web.Configuration.Routes;
 using Esfa.Recruit.Storage.Client.Application.Commands;
@@ -6,7 +6,7 @@ using Esfa.Recruit.Employer.Web.Orchestrators;
 using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
-{    
+{
     [Route("accounts/{employerAccountId}")]
     public class CreateVacancyController : Controller
     {
@@ -25,14 +25,14 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         }
 
         [HttpPost("new-vacancy", Name = RouteNames.NewVacancy_Index_Post)]
-        public async Task<IActionResult> Index(IndexViewModel vm)
+        public async Task<IActionResult> Index(string employerAccountId, IndexViewModel vm)
         {
             if(!ModelState.IsValid)
             {
                 return View(vm);
             }
             
-            var vacancyId = await _orchestrator.PostIndexViewModelAsync(vm);
+            var vacancyId = await _orchestrator.PostIndexViewModelAsync(employerAccountId, vm);
             
             return RedirectToRoute(RouteNames.Sections_Index_Get, new { vacancyId });
         }
