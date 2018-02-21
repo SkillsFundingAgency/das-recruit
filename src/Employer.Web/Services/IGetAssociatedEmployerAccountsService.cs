@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using SFA.DAS.EAS.Account.Api.Types;
 using System.Threading.Tasks;
 
-namespace Employer.Web.Services
+namespace Esfa.Recruit.Employer.Web.Services
 {
     public interface IGetAssociatedEmployerAccountsService
     {
-        string[] GetAssociatedAccounts(string userId);
+        Task<string[]> GetAssociatedAccounts(string userId);
+        Task<AccountDetailViewModel> GetEmployerAccountAsync(string employerAccountId);
     }
 }
