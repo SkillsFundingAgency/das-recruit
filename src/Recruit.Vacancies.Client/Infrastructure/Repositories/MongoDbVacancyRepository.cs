@@ -26,13 +26,20 @@ namespace Esfa.Recruit.Storage.Client.Infrastructure.Repositories
             await collection.InsertOneAsync(vacancy);
         }
 
+        public async Task<Vacancy> GetVacancyAsync(Guid id)
+        {
+            var filter = Builders<Vacancy>.Filter.Eq(v => v.Id, id);
+
+            var collection = GetCollection<Vacancy>();
+            var result = await collection.FindAsync(filter);
+            return result.SingleOrDefault();
+        }
+
         public async Task UpdateAsync(Vacancy vacancy)
         {
             var filter = Builders<Vacancy>.Filter.Eq("_id", vacancy.Id);
             var collection = GetCollection<Vacancy>();
             await collection.ReplaceOneAsync(filter, vacancy);
         }
-
-        
     }
 }

@@ -2,6 +2,7 @@
 using Esfa.Recruit.Storage.Client.Application.Commands;
 using Esfa.Recruit.Storage.Client.Domain.Messaging;
 using Esfa.Recruit.Storage.Client.Domain.QueryStore;
+using Recruit.Vacancies.Client.Infrastructure.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,18 +12,16 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
     public class RoleDescriptionOrchestrator
     {
-        private readonly IMessaging _messaging;
-        private readonly IQueryStoreReader _queryRepository;
+        private readonly IVacancyClient _client;
 
-        public RoleDescriptionOrchestrator(IMessaging messaging, IQueryStoreReader queryRepository)
+        public RoleDescriptionOrchestrator(IVacancyClient client)
         {
-            _messaging = messaging;
-            _queryRepository = queryRepository;
+            _client = client;
         }
 
         public async Task<IndexViewModel> GetIndexViewModelAsync(Guid vacancyId)
         {
-            var vacancy = await _queryRepository.GetVacancyForEditAsync(vacancyId);
+            var vacancy = await _client.GetVacancyForEditAsync(vacancyId);
 
             var vm = new IndexViewModel
             {
@@ -33,27 +32,13 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return vm;
         }
 
-        public async Task<IndexViewModel> GetIndexViewModelAsync(IndexEditModel m)
-        {
-            var vm = await GetIndexViewModelAsync(m.VacancyId);
-
-            vm.Title = m.Title;
-
-            return vm;
-        }
-
         public async Task PostIndexEditModelAsync(IndexEditModel m)
         {
-            var vacancy = await _queryRepository.GetVacancyForEditAsync(m.VacancyId);
+            var vacancy = await _client.GetVacancyForEditAsync(m.VacancyId);
             
             vacancy.Title = m.Title;
 
-            var command = new UpdateVacancyCommand
-            {
-                Vacancy = vacancy
-            };
-
-            await _messaging.SendCommandAsync(command);
+            await _client.UpdateVacancyAsync(vacancy);
         }
     }
 }

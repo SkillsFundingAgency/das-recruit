@@ -4,12 +4,12 @@ using MediatR;
 using Esfa.Recruit.Storage.Client.Application.Handlers;
 using Esfa.Recruit.Storage.Client.Domain.Messaging;
 using Esfa.Recruit.Storage.Client.Infrastructure.Messaging;
-using Esfa.Recruit.Storage.Client.Application.Services;
 using Esfa.Recruit.Storage.Client.Infrastructure.Mongo;
 using Esfa.Recruit.Storage.Client.Domain.Repositories;
 using Esfa.Recruit.Storage.Client.Infrastructure.Repositories;
 using Esfa.Recruit.Storage.Client.Domain.QueryStore;
 using Recruit.Vacancies.Client.Infrastructure.QueryStore;
+using Recruit.Vacancies.Client.Infrastructure.Client;
 
 namespace Esfa.Recruit.Storage.Client.Core.Ioc
 {
@@ -20,7 +20,7 @@ namespace Esfa.Recruit.Storage.Client.Core.Ioc
             services.AddMediatR(typeof(CreateVacancyCommandHandler).Assembly);
             services.AddTransient<IMessaging, MediatrMessaging>();
             
-            services.AddTransient<IdGenerator, IdGenerator>();
+            services.AddTransient<IVacancyClient, VacancyClient>();
             
             services.AddRepositories(configuration);
         }
@@ -33,13 +33,13 @@ namespace Esfa.Recruit.Storage.Client.Core.Ioc
             if (mongoConfig.Get<MongoDbConnectionDetails>() == null)
             {
                 services.AddSingleton<IVacancyRepository, StubVacancyRepository>();
-                services.AddSingleton<IQueryStoreReader, StubVacancyRepository>();
+                services.AddSingleton<IQueryStoreReader, StubQueryStore>();
             }
             else
             {
                 MongoDbConventions.RegisterMongoConventions();
                 services.AddTransient<IVacancyRepository, MongoDbVacancyRepository>();
-                services.AddTransient<IQueryStoreReader, QueryStoreReader>();
+                services.AddTransient<IQueryStoreReader, StubQueryStore>();
             }
         }
     }

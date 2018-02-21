@@ -17,7 +17,7 @@
             "internalConsoleOptions": "openOnSessionStart",
             "launchBrowser": {
                 "enabled": true,
-                "args": "${auto-detect-url}",
+                "args": "${auto-detect-url}/accounts/xyz/new-vacancy",
                 "windows": {
                     "command": "cmd.exe",
                     "args": "/C start ${auto-detect-url}"

@@ -7,7 +7,7 @@ using Esfa.Recruit.Storage.Client.Domain.Repositories;
 
 namespace Esfa.Recruit.Storage.Client.Infrastructure.Repositories
 {
-    public class StubVacancyRepository : IVacancyRepository, IQueryStoreReader
+    public class StubVacancyRepository : IVacancyRepository
     {
 
         private Dictionary<Guid, Vacancy> _vacancies = new Dictionary<Guid, Vacancy>(50);
@@ -17,6 +17,11 @@ namespace Esfa.Recruit.Storage.Client.Infrastructure.Repositories
             _vacancies.Add(vacancy.Id, vacancy);
 
             return Task.CompletedTask;
+        }
+
+        public Task<Vacancy> GetVacancyAsync(Guid id)
+        {
+            return Task.FromResult(_vacancies[id]);
         }
 
         public Task<Vacancy> GetVacancyForEditAsync(Guid vacancyId)

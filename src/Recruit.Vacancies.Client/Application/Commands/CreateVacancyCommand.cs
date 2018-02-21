@@ -7,6 +7,8 @@ namespace Esfa.Recruit.Storage.Client.Application.Commands
 {
     public class CreateVacancyCommand : ICommand, IRequest
     {
-        public Vacancy Vacancy { get; } = new Vacancy { Id = Guid.NewGuid(), AuditVacancyCreated = DateTime.UtcNow };
+        public CreateVacancyCommand(Vacancy vacancy) => Vacancy = vacancy;
+
+        public Vacancy Vacancy { get; }
     }
 }

@@ -8,5 +8,6 @@ namespace Esfa.Recruit.Storage.Client.Domain.Repositories
     {
         Task CreateAsync(Vacancy vacancy);
         Task UpdateAsync(Vacancy vacancy);
+        Task<Vacancy> GetVacancyAsync(Guid id);
     }
 }

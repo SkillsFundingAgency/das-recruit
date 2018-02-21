@@ -1,7 +1,8 @@
 ﻿using Esfa.Recruit.Employer.Web.ViewModels.CreateVacancy;
 using Esfa.Recruit.Storage.Client.Application.Commands;
-using Esfa.Recruit.Storage.Client.Application.Services;
+using Esfa.Recruit.Storage.Client.Domain.Entities;
 using Esfa.Recruit.Storage.Client.Domain.Messaging;
+using Recruit.Vacancies.Client.Infrastructure.Client;
 using System;
 using System.Threading.Tasks;
 
@@ -9,13 +10,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
     public class CreateVacancyOrchestrator
     {
-        private readonly IMessaging _messaging;
-        private readonly IdGenerator _idGenerator;
+        private readonly IVacancyClient _client;
 
-        public CreateVacancyOrchestrator(IMessaging messaging, IdGenerator idGenerator)
+        public CreateVacancyOrchestrator(IVacancyClient client)
         {
-            _messaging = messaging;
-            _idGenerator = idGenerator;
+            _client = client;
         }
 
         public IndexViewModel GetIndexViewModel()
@@ -26,13 +25,15 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public async Task<Guid> PostIndexViewModelAsync(IndexViewModel vm)
         {
-            var command = new CreateVacancyCommand();
+            var newVacancy = new Vacancy
+            {
+                Id = Guid.NewGuid(), // TODO: LWA - Should this be here??
+                Title = vm.Title
+            };
 
-            command.Vacancy.Title = vm.Title;
-
-            await _messaging.SendCommandAsync(command);
+            await _client.CreateVacancyAsync(newVacancy);
             
-            return command.Vacancy.Id;
+            return newVacancy.Id;
         }
     }
 }
