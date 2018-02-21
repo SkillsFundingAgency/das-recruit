@@ -1,9 +1,18 @@
-﻿@{
-    ViewData["Title"] = "Dashboard";
-}
+﻿@model DashboardViewModel
 
 <div class="grid-row">
     <div class="column-full">
-        <h1 class="heading-large">Employer Recruit - Dashboard</h1>
+        <h1 class="heading-large">Employer Recruit - @Model.EmployerName Dashboard</h1>
+
+        <a asp-route="@RouteNames.NewVacancy_Index_Get" class="button">Create vacancy</a>
+
+        <h2>Vacancies</h2>
+        <ul>
+            @foreach (var vacancy in Model.Vacancies)
+            {
+                <li><a asp-route="@RouteNames.Preview_Index_Get" asp-route-vacancyId="@vacancy.Id">@vacancy.Title</a></li>
+            }
+        </ul>
+
     </div>
 </div>
