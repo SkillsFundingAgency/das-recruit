@@ -1,5 +1,4 @@
-﻿using Employer.Web.Services;
-using Esfa.Recruit.Employer.Web.Orchestrators;
+﻿using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Storage.Client.Core.Ioc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -22,18 +21,20 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddTransient<IGetAssociatedEmployerAccountsService, GetAssociatedEmployerAccountsService>();
 
             //Orchestrators
-            services.AddTransient<ApplicationProcessOrchestrator, ApplicationProcessOrchestrator>();
-            services.AddTransient<ApprenticeshipDetailsOrchestrator, ApprenticeshipDetailsOrchestrator>();
-            services.AddTransient<CandidateProfileOrchestrator, CandidateProfileOrchestrator>();
-            services.AddTransient<EmployerDetailsOrchestrator, EmployerDetailsOrchestrator>();
-            services.AddTransient<LocationAndPositionsOrchestrator, LocationAndPositionsOrchestrator>();
-            services.AddTransient<CreateVacancyOrchestrator, CreateVacancyOrchestrator>();
-            services.AddTransient<PreviewOrchestrator, PreviewOrchestrator>();
-            services.AddTransient<RoleDescriptionOrchestrator, RoleDescriptionOrchestrator>();
-            services.AddTransient<SectionsOrchestrator, SectionsOrchestrator>();
-            services.AddTransient<SubmittedOrchestrator, SubmittedOrchestrator>();
-            services.AddTransient<TrainingProviderOrchestrator, TrainingProviderOrchestrator>();
-            services.AddTransient<WageAndHoursOrchestrator, WageAndHoursOrchestrator>();
+            services.AddTransient<ApplicationProcessOrchestrator>();
+            services.AddTransient<ApprenticeshipDetailsOrchestrator>();
+            services.AddTransient<CandidateProfileOrchestrator>();
+            services.AddTransient<DashboardOrchestrator>();
+
+            services.AddTransient<EmployerDetailsOrchestrator>();
+            services.AddTransient<LocationAndPositionsOrchestrator>();
+            services.AddTransient<CreateVacancyOrchestrator>();
+            services.AddTransient<PreviewOrchestrator>();
+            services.AddTransient<RoleDescriptionOrchestrator>();
+            services.AddTransient<SectionsOrchestrator>();
+            services.AddTransient<SubmittedOrchestrator>();
+            services.AddTransient<TrainingProviderOrchestrator>();
+            services.AddTransient<WageAndHoursOrchestrator>();
         }
     }
 }
