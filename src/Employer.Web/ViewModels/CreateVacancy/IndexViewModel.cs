@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.CreateVacancy
 {
@@ -10,5 +7,8 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.CreateVacancy
     {
         [Required]
         public string Title { get; set; }
+        [Required]
+        [FromRoute]
+        public string EmployerAccountId { get; set; }
     }
 }
