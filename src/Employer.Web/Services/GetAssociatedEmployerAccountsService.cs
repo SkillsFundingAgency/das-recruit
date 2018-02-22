@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using SFA.DAS.EAS.Account.Api.Client;
 using SFA.DAS.EAS.Account.Api.Types;
 using System;
@@ -11,21 +10,19 @@ namespace Esfa.Recruit.Employer.Web.Services
     public class GetAssociatedEmployerAccountsService : IGetAssociatedEmployerAccountsService
     {
         private readonly ILogger<GetAssociatedEmployerAccountsService> _logger;
-        private readonly IAccountApiConfiguration _accountApiConfig;
-        private readonly AccountApiClient _client;
+        private readonly IAccountApiClient _accountApiClient;
 
-        public GetAssociatedEmployerAccountsService(ILogger<GetAssociatedEmployerAccountsService> logger, IOptions<AccountApiConfiguration> accountApiConfig)
+        public GetAssociatedEmployerAccountsService(ILogger<GetAssociatedEmployerAccountsService> logger, IAccountApiClient accountApiClient)
         {
             _logger = logger;
-            _accountApiConfig = accountApiConfig.Value;
-            _client = new AccountApiClient(_accountApiConfig);
+            _accountApiClient = accountApiClient;
         }
 
         public async Task<string[]> GetAssociatedAccounts(string userId)
         {
             try
             {
-                var accounts = await _client.GetUserAccounts(userId);
+                var accounts = await _accountApiClient.GetUserAccounts(userId);
                 
                 return accounts.ToList().Select(acc => acc.HashedAccountId).ToArray();
             }
@@ -40,7 +37,7 @@ namespace Esfa.Recruit.Employer.Web.Services
         {
             try
             {
-                return await _client.GetAccount(employerAccountId);
+                return await _accountApiClient.GetAccount(employerAccountId);
             }
             catch (Exception ex)
             {
