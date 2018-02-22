@@ -5,7 +5,7 @@ namespace Esfa.Recruit.Employer.Web.Services
 {
     public interface IGetAssociatedEmployerAccountsService
     {
-        Task<string[]> GetAssociatedAccounts(string userId);
+        Task<string[]> GetAssociatedAccountsAsync(string userId);
         Task<AccountDetailViewModel> GetEmployerAccountAsync(string employerAccountId);
     }
 }
