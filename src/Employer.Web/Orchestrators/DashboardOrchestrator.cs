@@ -11,9 +11,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
     {
         private readonly IMessaging _messaging;
         private readonly IQueryVacancyRepository _queryRepository;
-        private readonly IGetAssociatedEmployerAccountsService _getAccountService;
+        private readonly IEmployerAccountService _getAccountService;
 
-        public DashboardOrchestrator(IMessaging messaging, IGetAssociatedEmployerAccountsService getAccountsService, IQueryVacancyRepository queryRepository)
+        public DashboardOrchestrator(IMessaging messaging, IEmployerAccountService getAccountsService, IQueryVacancyRepository queryRepository)
         {
             _messaging = messaging;
             _getAccountService = getAccountsService;
@@ -22,7 +22,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public async Task<DashboardViewModel> GetDashboardViewModelAsync(string employerAccountId)
         {
-            var account = _getAccountService.GetEmployerAccountAsync(employerAccountId);
+            var account = _getAccountService.GetAccountDetailAsync(employerAccountId);
             var vacancies = _queryRepository.GetVacanciesAsync(employerAccountId);
             await Task.WhenAll(account, vacancies);
             

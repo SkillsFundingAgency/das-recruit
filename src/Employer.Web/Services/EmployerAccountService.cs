@@ -7,18 +7,18 @@ using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Employer.Web.Services
 {
-    public class GetAssociatedEmployerAccountsService : IGetAssociatedEmployerAccountsService
+    public class EmployerAccountService : IEmployerAccountService
     {
-        private readonly ILogger<GetAssociatedEmployerAccountsService> _logger;
+        private readonly ILogger<EmployerAccountService> _logger;
         private readonly IAccountApiClient _accountApiClient;
 
-        public GetAssociatedEmployerAccountsService(ILogger<GetAssociatedEmployerAccountsService> logger, IAccountApiClient accountApiClient)
+        public EmployerAccountService(ILogger<EmployerAccountService> logger, IAccountApiClient accountApiClient)
         {
             _logger = logger;
             _accountApiClient = accountApiClient;
         }
 
-        public async Task<string[]> GetAssociatedAccountsAsync(string userId)
+        public async Task<string[]> GetAccountIdentifiersAsync(string userId)
         {
             try
             {
@@ -33,7 +33,7 @@ namespace Esfa.Recruit.Employer.Web.Services
             }
         }
 
-        public async Task<AccountDetailViewModel> GetEmployerAccountAsync(string employerAccountId)
+        public async Task<AccountDetailViewModel> GetAccountDetailAsync(string employerAccountId)
         {
             try
             {

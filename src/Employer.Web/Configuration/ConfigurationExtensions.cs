@@ -68,7 +68,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             });
         }
 
-        public static void AddAuthenticationService(this IServiceCollection services, AuthenticationConfiguration authConfig, IGetAssociatedEmployerAccountsService accountsSvc)
+        public static void AddAuthenticationService(this IServiceCollection services, AuthenticationConfiguration authConfig, IEmployerAccountService accountsSvc)
         {
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
@@ -93,21 +93,19 @@ namespace Esfa.Recruit.Employer.Web.Configuration
                 options.ClientSecret = authConfig.ClientSecret;
                 options.Scope.Add("profile");
 
-                options.Events.OnTokenValidated = (ctx) => PopulateAccountsClaim(ctx, accountsSvc);
+                options.Events.OnTokenValidated = async (ctx) => await PopulateAccountsClaim(ctx, accountsSvc);
             });
         }
         
-        private static Task PopulateAccountsClaim(Microsoft.AspNetCore.Authentication.OpenIdConnect.TokenValidatedContext ctx, IGetAssociatedEmployerAccountsService accountsSvc)
+        private static async Task PopulateAccountsClaim(Microsoft.AspNetCore.Authentication.OpenIdConnect.TokenValidatedContext ctx, IEmployerAccountService accountsSvc)
         {
             var userId = ctx.Principal.Claims.First(c => c.Type.Equals(EmployerRecruitClaims.IdamsUserIdClaimTypeIdentifier)).Value;
-            var accounts = accountsSvc.GetAssociatedAccounts(userId).Result;
+            var accounts = await accountsSvc.GetAccountIdentifiersAsync(userId);
 
             var accountsConcatenated = string.Join(",", accounts);
             var associatedAccountClaim = new Claim(EmployerRecruitClaims.AccountsClaimsTypeIdentifier, accountsConcatenated, ClaimValueTypes.String);
 
             ctx.Principal.Identities.First().AddClaim(associatedAccountClaim);
-
-            return Task.CompletedTask;
         }
     }
 }
