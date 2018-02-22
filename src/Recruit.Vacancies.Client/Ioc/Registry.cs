@@ -39,7 +39,7 @@ namespace Esfa.Recruit.Storage.Client.Core.Ioc
             {
                 MongoDbConventions.RegisterMongoConventions();
                 services.AddTransient<IVacancyRepository, MongoDbVacancyRepository>();
-                services.AddTransient<IQueryStoreReader, StubQueryStore>();
+                services.AddTransient<IQueryStoreReader, QueryStore>();
             }
         }
     }

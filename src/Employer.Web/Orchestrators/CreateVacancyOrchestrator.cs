@@ -23,7 +23,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public async Task<Guid> PostIndexViewModelAsync(IndexViewModel vm)
         {
-            var id = await _client.CreateVacancyAsync(vm.Title, employerAccountId);
+            var id = await _client.CreateVacancyAsync(vm.Title, vm.EmployerAccountId);
             
             return id;
         }

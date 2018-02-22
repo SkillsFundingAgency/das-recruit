@@ -44,7 +44,8 @@ namespace Recruit.Vacancies.Client.Infrastructure.Client
                 {
                     Id = Guid.NewGuid(),
                     Title = title,
-                    EmployerAccountId = employerAccountId
+                    EmployerAccountId = employerAccountId,
+                    AuditVacancyCreated = DateTime.UtcNow
                 }
             };
 
