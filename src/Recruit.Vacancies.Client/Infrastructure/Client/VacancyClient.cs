@@ -38,7 +38,7 @@ namespace Recruit.Vacancies.Client.Infrastructure.Client
 
         public async Task<Guid> CreateVacancyAsync(string title)
         {
-            var command = new UpdateVacancyCommand
+            var command = new CreateVacancyCommand
             {
                 Vacancy = new Vacancy
                 {

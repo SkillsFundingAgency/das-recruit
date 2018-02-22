@@ -6,8 +6,6 @@ namespace Esfa.Recruit.Storage.Client.Application.Commands
 {
     public class CreateVacancyCommand : ICommand, IRequest
     {
-        public CreateVacancyCommand(Vacancy vacancy) => Vacancy = vacancy;
-
-        public Vacancy Vacancy { get; }
+        public Vacancy Vacancy { get; set; }
     }
 }
