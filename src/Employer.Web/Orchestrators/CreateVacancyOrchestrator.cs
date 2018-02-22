@@ -1,4 +1,4 @@
-﻿using Esfa.Recruit.Employer.Web.ViewModels.CreateVacancy;
+using Esfa.Recruit.Employer.Web.ViewModels.CreateVacancy;
 using Esfa.Recruit.Storage.Client.Domain.Entities;
 using Recruit.Vacancies.Client.Infrastructure.Client;
 using System;
@@ -21,7 +21,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return vm;
         }
 
-        public async Task<Guid> PostIndexViewModelAsync(string employerAccountId, IndexViewModel vm)
+        public async Task<Guid> PostIndexViewModelAsync(IndexViewModel vm)
         {
             var id = await _client.CreateVacancyAsync(vm.Title, employerAccountId);
             

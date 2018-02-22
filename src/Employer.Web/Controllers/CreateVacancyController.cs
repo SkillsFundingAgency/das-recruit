@@ -24,15 +24,15 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             return View(vm);
         }
 
-        [HttpPost("new-vacancy", Name = RouteNames.NewVacancy_Index_Post)]
-        public async Task<IActionResult> Index(string employerAccountId, IndexViewModel vm)
+        [HttpPost("new-vacancy", Name = RouteNames.NewVacancy_Index_Post)]        
+        public async Task<IActionResult> Index(IndexViewModel vm)
         {
             if(!ModelState.IsValid)
             {
                 return View(vm);
             }
             
-            var vacancyId = await _orchestrator.PostIndexViewModelAsync(employerAccountId, vm);
+            var vacancyId = await _orchestrator.PostIndexViewModelAsync(vm);
             
             return RedirectToRoute(RouteNames.Sections_Index_Get, new { vacancyId });
         }
