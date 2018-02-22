@@ -14,7 +14,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.NewVacancy
         {
             var vm = new EmployerWeb.ViewModels.CreateVacancy.IndexViewModel
             {
-                Title = null
+                Title = null,
+                EmployerAccountId = null
             };
 
             var context = new ValidationContext(vm, null, null);
@@ -24,7 +25,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.NewVacancy
             var isValid = Validator.TryValidateObject(vm, context, result, true);
             
             isValid.Should().BeFalse();
-            result.Should().HaveCount(1);
+            result.Should().HaveCount(2);
             result.Single(r => r.MemberNames.Single() == "Title").ErrorMessage.Should().Be("The Title field is required.");
         }
 
@@ -33,7 +34,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.NewVacancy
         {
             var vm = new EmployerWeb.ViewModels.CreateVacancy.IndexViewModel
             {
-                Title = "some text"
+                Title = "some text",
+                EmployerAccountId = "scotty"
             };
 
             var context = new ValidationContext(vm, null, null);
