@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Storage.Client.Domain.Entities;
-using Esfa.Recruit.Storage.Client.Domain.QueryStore;
 using Esfa.Recruit.Storage.Client.Domain.Repositories;
 
 namespace Esfa.Recruit.Storage.Client.Infrastructure.Repositories

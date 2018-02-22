@@ -26,8 +26,6 @@ namespace Recruit.Vacancies.Client.Infrastructure.Client
             var command = new CreateVacancyCommand(vacancy);
 
             return _messaging.SendCommandAsync(command);
-
-            // TODO: LWA - Should the Guid be assigned and returned here?
         }
 
         public Task<Vacancy> GetVacancyForEditAsync(Guid id)

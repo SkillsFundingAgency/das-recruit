@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Storage.Client.Application.Handlers
 {
-    
     public class CreateVacancyCommandHandler: IRequestHandler<CreateVacancyCommand>
     {
         private readonly IVacancyRepository _repository;

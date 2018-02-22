@@ -1,11 +1,6 @@
 ﻿using Esfa.Recruit.Employer.Web.ViewModels.RoleDescription;
-using Esfa.Recruit.Storage.Client.Application.Commands;
-using Esfa.Recruit.Storage.Client.Domain.Messaging;
-using Esfa.Recruit.Storage.Client.Domain.QueryStore;
 using Recruit.Vacancies.Client.Infrastructure.Client;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators

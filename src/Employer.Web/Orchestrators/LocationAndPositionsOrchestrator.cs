@@ -1,5 +1,4 @@
 ﻿using Esfa.Recruit.Employer.Web.ViewModels.LocationAndPositions;
-using Esfa.Recruit.Storage.Client.Domain.QueryStore;
 using Recruit.Vacancies.Client.Infrastructure.Client;
 using System;
 using System.Threading.Tasks;

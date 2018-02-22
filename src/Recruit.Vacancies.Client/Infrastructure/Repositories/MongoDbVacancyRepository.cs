@@ -2,7 +2,6 @@
 using Esfa.Recruit.Storage.Client.Domain.Repositories;
 using Esfa.Recruit.Storage.Client.Infrastructure.Mongo;
 using Microsoft.Extensions.Options;
-using MongoDB.Bson;
 using MongoDB.Driver;
 using System;
 using System.Threading.Tasks;
@@ -11,7 +10,6 @@ namespace Esfa.Recruit.Storage.Client.Infrastructure.Repositories
 {
     public class MongoDbVacancyRepository : MongoDbCollectionBase, IVacancyRepository
     {
-
         private const string Database = "recruit";
         private const string Collection = "vacancies";
 
