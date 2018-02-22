@@ -22,12 +22,14 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public async Task<DashboardViewModel> GetDashboardViewModelAsync(string employerAccountId)
         {
-            var account = await _getAccountService.GetEmployerAccountAsync(employerAccountId);
-            var vacancies = await _queryRepository.GetVacanciesAsync(employerAccountId);
+            var account = _getAccountService.GetEmployerAccountAsync(employerAccountId);
+            var vacancies = _queryRepository.GetVacanciesAsync(employerAccountId);
+            await Task.WhenAll(account, vacancies);
+            
             var vm = new DashboardViewModel
             {
-                EmployerName = account.DasAccountName,
-                Vacancies = vacancies.OrderByDescending(v => v.AuditVacancyCreated).ToList()
+                EmployerName = account.Result.DasAccountName,
+                Vacancies = vacancies.Result.OrderByDescending(v => v.AuditVacancyCreated).ToList()
             };
 
             return vm;
