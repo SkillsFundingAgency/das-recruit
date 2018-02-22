@@ -1,21 +1,18 @@
 ﻿using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.ViewModels;
-using Esfa.Recruit.Storage.Client.Core.Messaging;
-using Esfa.Recruit.Storage.Client.Core.Repositories;
 using System.Threading.Tasks;
 using System.Linq;
+using Esfa.Recruit.Storage.Client.Domain.QueryStore;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
     public class DashboardOrchestrator
     {
-        private readonly IMessaging _messaging;
-        private readonly IQueryVacancyRepository _queryRepository;
+        private readonly IQueryStoreReader _queryRepository;
         private readonly IEmployerAccountService _getAccountService;
 
-        public DashboardOrchestrator(IMessaging messaging, IEmployerAccountService getAccountsService, IQueryVacancyRepository queryRepository)
+        public DashboardOrchestrator(IEmployerAccountService getAccountsService, IQueryStoreReader queryRepository)
         {
-            _messaging = messaging;
             _getAccountService = getAccountsService;
             _queryRepository = queryRepository;
         }
