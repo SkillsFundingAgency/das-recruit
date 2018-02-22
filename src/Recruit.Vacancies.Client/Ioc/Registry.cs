@@ -27,10 +27,14 @@ namespace Esfa.Recruit.Storage.Client.Core.Ioc
 
         private static void AddRepositories(this IServiceCollection services, IConfiguration configuration)
         {
-            IConfigurationSection mongoConfig = configuration.GetSection("MongoDbConnectionDetails");
-            services.Configure<MongoDbConnectionDetails>(mongoConfig);
-
-            if (mongoConfig.Get<MongoDbConnectionDetails>() == null)
+            var mongoConnectionString = configuration.GetConnectionString("MongoDb");
+            
+            services.Configure<MongoDbConnectionDetails>(options => 
+            {
+                options.ConnectionString = mongoConnectionString;
+            });
+            
+            if (string.IsNullOrWhiteSpace(mongoConnectionString))
             {
                 services.AddSingleton<IVacancyRepository, StubVacancyRepository>();
                 services.AddSingleton<IQueryStoreReader, StubQueryStore>();
