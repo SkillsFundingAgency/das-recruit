@@ -5,7 +5,6 @@ using Esfa.Recruit.Storage.Client.Core.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MediatR;
-using Esfa.Recruit.Storage.Client.Core.Entities;
 using Esfa.Recruit.Storage.Client.Core.Handlers;
 
 namespace Esfa.Recruit.Storage.Client.Core.Ioc

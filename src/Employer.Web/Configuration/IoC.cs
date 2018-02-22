@@ -4,6 +4,7 @@ using Esfa.Recruit.Storage.Client.Core.Ioc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using SFA.DAS.EAS.Account.Api.Client;
 
 namespace Esfa.Recruit.Employer.Web.Configuration
@@ -18,6 +19,8 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.Configure<ExternalLinksConfiguration>(configuration.GetSection("ExternalLinks"));
             services.Configure<AuthenticationConfiguration>(configuration.GetSection("Authentication"));
             services.Configure<AccountApiConfiguration>(configuration.GetSection("AccountApiConfiguration"));
+            
+            RegisterAccountApiClientDeps(services);
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>(); // Used by NLog to log out traceidentifier value.
 
@@ -30,12 +33,21 @@ namespace Esfa.Recruit.Employer.Web.Configuration
                 services.AddTransient<IGetAssociatedEmployerAccountsService, GetAssociatedEmployerAccountsService>();
             }
 
-            //Orchestrators
+            RegisterOrchestratorDeps(services);
+        }
+
+        private static void RegisterAccountApiClientDeps(IServiceCollection services)
+        {
+            services.AddSingleton<IAccountApiConfiguration>(kernal => kernal.GetService<IOptions<AccountApiConfiguration>>().Value);
+            services.AddTransient<IAccountApiClient, AccountApiClient>();
+        }
+
+        private static void RegisterOrchestratorDeps(IServiceCollection services)
+        {
             services.AddTransient<ApplicationProcessOrchestrator>();
             services.AddTransient<ApprenticeshipDetailsOrchestrator>();
             services.AddTransient<CandidateProfileOrchestrator>();
             services.AddTransient<DashboardOrchestrator>();
-
             services.AddTransient<EmployerDetailsOrchestrator>();
             services.AddTransient<LocationAndPositionsOrchestrator>();
             services.AddTransient<CreateVacancyOrchestrator>();
