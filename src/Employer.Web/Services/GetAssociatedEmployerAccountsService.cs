@@ -18,7 +18,7 @@ namespace Esfa.Recruit.Employer.Web.Services
             _accountApiClient = accountApiClient;
         }
 
-        public async Task<string[]> GetAssociatedAccounts(string userId)
+        public async Task<string[]> GetAssociatedAccountsAsync(string userId)
         {
             try
             {
