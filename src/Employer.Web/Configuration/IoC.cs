@@ -26,11 +26,11 @@ namespace Esfa.Recruit.Employer.Web.Configuration
 
             if (configuration.GetValue<bool>("UseStubs"))
             {
-                services.AddTransient<IGetAssociatedEmployerAccountsService, StubGetAssociatedEmployerAccountsService>();
+                services.AddTransient<IEmployerAccountService, StubEmployerAccountService>();
             }
             else
             {
-                services.AddTransient<IGetAssociatedEmployerAccountsService, GetAssociatedEmployerAccountsService>();
+                services.AddTransient<IEmployerAccountService, EmployerAccountService>();
             }
 
             RegisterOrchestratorDeps(services);

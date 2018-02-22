@@ -3,14 +3,14 @@ using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Employer.Web.Services
 {
-    public class StubGetAssociatedEmployerAccountsService : IGetAssociatedEmployerAccountsService
+    public class StubEmployerAccountService : IEmployerAccountService
     {
-        public Task<string[]> GetAssociatedAccountsAsync(string userId)
+        public Task<string[]> GetAccountIdentifiersAsync(string userId)
         {
             return Task.FromResult(new string[] { "abc", "xyz", "MYJR4X", "MB6YDY" });
         }
 
-        public Task<AccountDetailViewModel> GetEmployerAccountAsync(string employerAccountId)
+        public Task<AccountDetailViewModel> GetAccountDetailAsync(string employerAccountId)
         {
             return Task.FromResult(new AccountDetailViewModel
             {

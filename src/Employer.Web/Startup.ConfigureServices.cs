@@ -46,7 +46,7 @@ namespace Esfa.Recruit.Employer.Web
 
             if (_isAuthEnabled)
             {
-                services.AddAuthenticationService(_authConfig, sp.GetService<IGetAssociatedEmployerAccountsService>());
+                services.AddAuthenticationService(_authConfig, sp.GetService<IEmployerAccountService>());
                 services.AddAuthorizationService();
             }
         }
