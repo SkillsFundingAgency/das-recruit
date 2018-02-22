@@ -21,9 +21,12 @@ namespace Recruit.Vacancies.Client.Infrastructure.Client
             _messaging = messaging;
         }
 
-        public Task CreateVacancyAsync(Vacancy vacancy)
+        public Task UpdateVacancyAsync(Vacancy vacancy)
         {
-            var command = new CreateVacancyCommand(vacancy);
+            var command = new UpdateVacancyCommand
+            {
+                Vacancy = vacancy
+            };
 
             return _messaging.SendCommandAsync(command);
         }
@@ -33,14 +36,20 @@ namespace Recruit.Vacancies.Client.Infrastructure.Client
             return _repository.GetVacancyAsync(id);
         }
 
-        public Task UpdateVacancyAsync(Vacancy vacancy)
+        public async Task<Guid> CreateVacancyAsync(string title)
         {
             var command = new UpdateVacancyCommand
             {
-                Vacancy = vacancy
+                Vacancy = new Vacancy
+                {
+                    Id = Guid.NewGuid(),
+                    Title = title
+                }
             };
 
-            return _messaging.SendCommandAsync(command);
+            await _messaging.SendCommandAsync(command);
+
+            return command.Vacancy.Id;
         }
     }
 }

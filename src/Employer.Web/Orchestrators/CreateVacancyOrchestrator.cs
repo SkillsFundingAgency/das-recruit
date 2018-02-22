@@ -23,15 +23,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public async Task<Guid> PostIndexViewModelAsync(IndexViewModel vm)
         {
-            var newVacancy = new Vacancy
-            {
-                Id = Guid.NewGuid(), // TODO: LWA - Should this be here??
-                Title = vm.Title
-            };
-
-            await _client.CreateVacancyAsync(newVacancy);
+            var id = await _client.CreateVacancyAsync(vm.Title);
             
-            return newVacancy.Id;
+            return id;
         }
     }
 }
