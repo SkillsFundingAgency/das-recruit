@@ -4,7 +4,7 @@ using System.Security.Authentication;
 
 namespace Esfa.Recruit.Storage.Client.Infrastructure.Mongo
 {
-    public abstract class MongoDbCollectionBase
+    internal abstract class MongoDbCollectionBase
     {
         private readonly string _dbName;
         private readonly string _collectionName;

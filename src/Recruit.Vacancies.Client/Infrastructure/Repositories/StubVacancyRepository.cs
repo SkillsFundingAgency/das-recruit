@@ -6,7 +6,7 @@ using Esfa.Recruit.Storage.Client.Domain.Repositories;
 
 namespace Esfa.Recruit.Storage.Client.Infrastructure.Repositories
 {
-    public class StubVacancyRepository : IVacancyRepository
+    internal sealed class StubVacancyRepository : IVacancyRepository
     {
 
         private Dictionary<Guid, Vacancy> _vacancies = new Dictionary<Guid, Vacancy>(50);

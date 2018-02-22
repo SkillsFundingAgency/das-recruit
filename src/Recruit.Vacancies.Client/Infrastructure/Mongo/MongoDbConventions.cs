@@ -2,7 +2,7 @@
 
 namespace Esfa.Recruit.Storage.Client.Infrastructure.Mongo
 {
-    public static class MongoDbConventions
+    internal static class MongoDbConventions
     {
         public static void RegisterMongoConventions()
         {

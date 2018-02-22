@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Storage.Client.Infrastructure.Messaging
 {
-    public class MediatrMessaging : IMessaging
+    internal sealed class MediatrMessaging : IMessaging
     {
         private readonly IMediator _mediator;
 

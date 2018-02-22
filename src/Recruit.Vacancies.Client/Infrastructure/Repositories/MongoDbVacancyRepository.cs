@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Storage.Client.Infrastructure.Repositories
 {
-    public class MongoDbVacancyRepository : MongoDbCollectionBase, IVacancyRepository
+    internal sealed class MongoDbVacancyRepository : MongoDbCollectionBase, IVacancyRepository
     {
         private const string Database = "recruit";
         private const string Collection = "vacancies";
