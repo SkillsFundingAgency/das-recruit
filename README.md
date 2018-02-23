@@ -12,6 +12,23 @@ In order to run this solution locally you will need the following installed:
 
 * [.NET Core SDK >= 2.1.4](https://www.microsoft.com/net/download/)
 * (VS Code Only) [C# Extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode.csharp)
+* [Docker for X](https://docs.docker.com/install/#supported-platforms)
+
+### Environment Setup
+
+The default development environment uses docker containers to host it's dependencies.
+
+On first setup run the following command from /setup/containers/:
+
+`docker-compose build`
+
+To start the containers run:
+
+`docker-compose up -d`
+
+You can view the state of the running containers using:
+
+`docker ps -a`
 
 ### Running - Command line
 
