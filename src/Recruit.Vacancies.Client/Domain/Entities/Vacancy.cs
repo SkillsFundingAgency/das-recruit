@@ -8,7 +8,7 @@ namespace Esfa.Recruit.Storage.Client.Domain.Entities
         
         public string Title { get; set; }
         
-        public DateTime? AuditVacancyCreated { get; set; }
         public global::System.String EmployerAccountId { get; internal set; }
+        public DateTime? CreatedDate { get; set; }
     }
 }
