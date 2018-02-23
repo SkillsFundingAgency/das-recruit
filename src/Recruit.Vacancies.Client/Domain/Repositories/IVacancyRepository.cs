@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using System;
 using System.Threading.Tasks;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Vacancies.Client.Domain.Repositories
 {

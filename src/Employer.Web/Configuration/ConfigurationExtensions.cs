@@ -1,4 +1,3 @@
-using Employer.Web.Middleware;
 using Esfa.Recruit.Employer.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
@@ -8,9 +7,10 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Net.Http.Headers;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using System.Linq;
+using Esfa.Recruit.Employer.Web.Middleware;
 
 namespace Esfa.Recruit.Employer.Web.Configuration
 {

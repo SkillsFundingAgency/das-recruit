@@ -1,10 +1,10 @@
-﻿using System;
-using System.Threading.Tasks;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+﻿using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using System;
+using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 {
