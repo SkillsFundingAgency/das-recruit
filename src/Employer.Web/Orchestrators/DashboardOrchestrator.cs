@@ -2,7 +2,7 @@
 using Esfa.Recruit.Employer.Web.ViewModels;
 using System.Threading.Tasks;
 using System.Linq;
-using Esfa.Recruit.Storage.Client.Domain.QueryStore;
+using Esfa.Recruit.Vacancies.Client.Domain.QueryStore;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {

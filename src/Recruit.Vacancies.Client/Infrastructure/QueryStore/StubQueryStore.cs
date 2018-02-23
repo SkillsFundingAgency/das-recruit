@@ -1,10 +1,10 @@
-using Esfa.Recruit.Storage.Client.Domain.Entities;
-using Esfa.Recruit.Storage.Client.Domain.QueryStore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.QueryStore;
 
-namespace Recruit.Vacancies.Client.Infrastructure.QueryStore
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 {
     internal sealed class StubQueryStore : IQueryStoreReader, IQueryStoreWriter
     {

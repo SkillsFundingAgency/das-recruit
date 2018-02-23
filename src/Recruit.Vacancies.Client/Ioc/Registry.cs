@@ -1,17 +1,17 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Esfa.Recruit.Vacancies.Client.Application.Handlers;
+using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
+using Esfa.Recruit.Vacancies.Client.Domain.QueryStore;
+using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Messaging;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories;
 using MediatR;
-using Esfa.Recruit.Storage.Client.Application.Handlers;
-using Esfa.Recruit.Storage.Client.Domain.Messaging;
-using Esfa.Recruit.Storage.Client.Infrastructure.Messaging;
-using Esfa.Recruit.Storage.Client.Infrastructure.Mongo;
-using Esfa.Recruit.Storage.Client.Domain.Repositories;
-using Esfa.Recruit.Storage.Client.Infrastructure.Repositories;
-using Esfa.Recruit.Storage.Client.Domain.QueryStore;
-using Recruit.Vacancies.Client.Infrastructure.QueryStore;
-using Recruit.Vacancies.Client.Infrastructure.Client;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Esfa.Recruit.Storage.Client.Core.Ioc
+namespace Esfa.Recruit.Vacancies.Client.Ioc
 {
     public static class Registry
     {

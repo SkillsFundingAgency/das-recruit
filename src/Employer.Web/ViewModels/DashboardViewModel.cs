@@ -1,5 +1,5 @@
-﻿using Esfa.Recruit.Storage.Client.Domain.Entities;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels
 {

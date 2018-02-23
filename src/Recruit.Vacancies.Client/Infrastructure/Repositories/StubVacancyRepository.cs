@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Esfa.Recruit.Storage.Client.Domain.Entities;
-using Esfa.Recruit.Storage.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 
-namespace Esfa.Recruit.Storage.Client.Infrastructure.Repositories
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 {
     internal sealed class StubVacancyRepository : IVacancyRepository
     {

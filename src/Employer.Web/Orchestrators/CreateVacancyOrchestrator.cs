@@ -1,8 +1,7 @@
 using Esfa.Recruit.Employer.Web.ViewModels.CreateVacancy;
-using Esfa.Recruit.Storage.Client.Domain.Entities;
-using Recruit.Vacancies.Client.Infrastructure.Client;
 using System;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {

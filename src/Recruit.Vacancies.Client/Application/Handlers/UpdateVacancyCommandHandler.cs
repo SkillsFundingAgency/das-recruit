@@ -1,10 +1,10 @@
-﻿using Esfa.Recruit.Storage.Client.Application.Commands;
-using Esfa.Recruit.Storage.Client.Domain.Repositories;
-using MediatR;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Application.Commands;
+using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using MediatR;
 
-namespace Esfa.Recruit.Storage.Client.Application.Handlers
+namespace Esfa.Recruit.Vacancies.Client.Application.Handlers
 {
     public class UpdateVacancyCommandHandler: IRequestHandler<UpdateVacancyCommand>
     {
