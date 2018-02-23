@@ -1,0 +1,19 @@
+version: "2.2"
+
+services:
+  mongo:
+    container_name: dev-mongo
+    image: recruit-mongo:latest
+    build:
+      context: .
+      dockerfile: ./.docker/mongo.dockerfile
+    env_file:
+      - ./.docker/env/mongo.env
+    networks:
+      - recruit-network
+    ports:
+      - 27017:27017
+
+networks:
+  recruit-network:
+    driver: bridge
