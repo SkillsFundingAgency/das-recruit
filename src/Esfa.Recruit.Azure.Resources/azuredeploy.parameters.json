@@ -21,6 +21,9 @@
     },
     "LoggingRedisConnectionString": {
       "value": ""
+    },
+    "MongoDbConnectionString": {
+      "value": ""
     }
   }
 }
