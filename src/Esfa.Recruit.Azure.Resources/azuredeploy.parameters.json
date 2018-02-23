@@ -19,6 +19,15 @@
         "ClientSecret": ""
       }
     },
+    "AccountApiConfiguration": {
+      "value": {
+        "ApiBaseUrl": "",
+        "ClientId": "",
+        "ClientSecret": "",
+        "IdentifierUri": "",
+        "Tenant": ""
+      }
+    },
     "LoggingRedisConnectionString": {
       "value": ""
     }

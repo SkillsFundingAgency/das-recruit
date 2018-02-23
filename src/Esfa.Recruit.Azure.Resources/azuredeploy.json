@@ -33,6 +33,14 @@
         "ClientSecret": ""
       }
     },
+    "AccountApiConfiguration": {
+      "type": "object",
+      "ApiBaseUrl": "",
+      "ClientId": "",
+      "ClientSecret": "",
+      "IdentifierUri": "",
+      "Tenant": ""
+    },
     "LoggingRedisConnectionString": {
       "type": "securestring",
       "defaultValue": ""
@@ -105,6 +113,26 @@
             {
               "name": "Authentication:ClientSecret",
               "value": "[parameters('Authentication').ClientSecret]"
+            },
+            {
+              "name": "AccountApiConfiguration:ApiBaseUrl",
+              "value": "[parameters('AccountApiConfiguration').ApiBaseUrl]"
+            },
+            {
+              "name": "AccountApiConfiguration:ClientId",
+              "value": "[parameters('AccountApiConfiguration').ClientId]"
+            },
+            {
+              "name": "AccountApiConfiguration:ClientSecret",
+              "value": "[parameters('AccountApiConfiguration').ClientSecret]"
+            },
+            {
+              "name": "AccountApiConfiguration:IdentifierUri",
+              "value": "[parameters('AccountApiConfiguration').IdentifierUri]"
+            },
+            {
+              "name": "AccountApiConfiguration:Tenant",
+              "value": "[parameters('AccountApiConfiguration').Tenant]"
             },
             {
               "name": "ApplicationInsights:InstrumentationKey",
