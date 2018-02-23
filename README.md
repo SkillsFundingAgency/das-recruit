@@ -18,7 +18,12 @@ In order to run this solution locally you will need the following installed:
 
 The default development environment uses docker containers to host it's dependencies.
 
-On first setup run the following command from /setup/containers/:
+* Redis
+* Elasticsearch
+* Logstash
+* MongoDb
+
+On first setup run the following command from _**/setup/containers/**_ to create the docker container images:
 
 `docker-compose build`
 
@@ -29,6 +34,7 @@ To start the containers run:
 You can view the state of the running containers using:
 
 `docker ps -a`
+
 
 ### Running - Command line
 
@@ -48,6 +54,10 @@ You can view the state of the running containers using:
 * Select _**.Net Core Launch (web)**_ from debug configurations
 * F5 to run up the website
 * Append /accounts/abc/dashboard to the url
+
+### Application logs
+Application logs are logged to [Elasticsearch](https://www.elastic.co/products/elasticsearch) and can be viewed using [Kibana](https://www.elastic.co/products/kibana) at http://localhost:5601
+
 
 ## License
 
