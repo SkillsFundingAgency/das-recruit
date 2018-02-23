@@ -1,5 +1,5 @@
-﻿using Esfa.Recruit.Storage.Client.Domain.Entities;
-using Esfa.Recruit.Storage.Client.Domain.Enum;
+﻿using Esfa.Recruit.Storage.Client.Domain;
+using Esfa.Recruit.Storage.Client.Domain.Entities;
 using FluentAssertions;
 using Xunit;
 
@@ -8,25 +8,25 @@ namespace Esfa.Recruit.Employer.UnitTests.Core.Entities
     public class VacancyExtensionsTest
     {
         [Fact]
-        public void ShouldBeSubmitableIfStatusIsDraft()
+        public void ShouldBeAbleToSubmitIfStatusIsDraft()
         {
             var vacancy = new Vacancy
             {
                 Status = VacancyStatus.Draft
             };
 
-            vacancy.IsSubmittable().Should().BeTrue();
+            vacancy.CanSubmit.Should().BeTrue();
         }
 
         [Fact]
-        public void ShouldNotBeSubmitableIfStatusIsNotDraft()
+        public void ShouldNotBeAbleToSubmitIfStatusIsNotDraft()
         {
             var vacancy = new Vacancy
             {
                 Status = VacancyStatus.Submitted
             };
 
-            vacancy.IsSubmittable().Should().BeFalse();
+            vacancy.CanSubmit.Should().BeFalse();
         }
     }
 }

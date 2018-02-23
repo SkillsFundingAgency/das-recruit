@@ -2,8 +2,8 @@ using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Storage.Client.Application.Commands;
 using Esfa.Recruit.Storage.Client.Core.Commands;
+using Esfa.Recruit.Storage.Client.Domain;
 using Esfa.Recruit.Storage.Client.Domain.Entities;
-using Esfa.Recruit.Storage.Client.Domain.Enum;
 using Esfa.Recruit.Storage.Client.Domain.Messaging;
 using Esfa.Recruit.Storage.Client.Domain.QueryStore;
 using Esfa.Recruit.Storage.Client.Domain.Repositories;
@@ -48,7 +48,7 @@ namespace Recruit.Vacancies.Client.Infrastructure.Client
                     Title = title,
                     EmployerAccountId = employerAccountId,
                     Status = VacancyStatus.Draft,
-                    CreatedDate = DateTime.Now
+                    CreatedDate = DateTime.UtcNow
                 }
             };
 
@@ -62,13 +62,13 @@ namespace Recruit.Vacancies.Client.Infrastructure.Client
 
             var vacancy = await GetVacancyForEditAsync(id);
 
-            if(!vacancy.IsSubmittable())
+            if(!vacancy.CanSubmit)
             {
                 return false;
             }
 
             vacancy.Status = VacancyStatus.Submitted;
-            vacancy.SubmittedDate = DateTime.Now;
+            vacancy.SubmittedDate = DateTime.UtcNow;
 
             var command = new SubmitVacancyCommand
             {

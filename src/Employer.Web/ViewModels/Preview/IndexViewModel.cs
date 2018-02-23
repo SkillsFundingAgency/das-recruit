@@ -9,6 +9,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Preview
     {
         public string Title { get; set; }
 
-        public bool IsSubmittable { get; set; }
+        public bool CanSubmit { get; set; }
     }
 }

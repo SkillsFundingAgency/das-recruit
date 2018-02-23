@@ -22,7 +22,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             var vm = new IndexViewModel
             {
                 Title = vacancy.Title,
-                IsSubmittable = vacancy.IsSubmittable()
+                CanSubmit = vacancy.CanSubmit
             };
 
             return vm;

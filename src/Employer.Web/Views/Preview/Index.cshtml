@@ -11,7 +11,7 @@
         <div class="form-group">
             <a asp-route="@RouteNames.Sections_Index_Get" class="button-link">Return to vacancy</a>
 
-            @if (Model.IsSubmittable)
+            @if (Model.CanSubmit)
             {
             <form asp-route="@RouteNames.Preview_Submit_Post" class="form-inline">
                 <input type="submit" value="Submit" class="button" />
