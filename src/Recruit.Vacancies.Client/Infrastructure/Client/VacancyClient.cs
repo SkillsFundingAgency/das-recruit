@@ -1,7 +1,9 @@
 using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Storage.Client.Application.Commands;
+using Esfa.Recruit.Storage.Client.Core.Commands;
 using Esfa.Recruit.Storage.Client.Domain.Entities;
+using Esfa.Recruit.Storage.Client.Domain.Enum;
 using Esfa.Recruit.Storage.Client.Domain.Messaging;
 using Esfa.Recruit.Storage.Client.Domain.QueryStore;
 using Esfa.Recruit.Storage.Client.Domain.Repositories;
@@ -31,9 +33,9 @@ namespace Recruit.Vacancies.Client.Infrastructure.Client
             return _messaging.SendCommandAsync(command);
         }
 
-        public Task<Vacancy> GetVacancyForEditAsync(Guid id)
+        public async Task<Vacancy> GetVacancyForEditAsync(Guid id)
         {
-            return _repository.GetVacancyAsync(id);
+            return await _repository.GetVacancyAsync(id);
         }
 
         public async Task<Guid> CreateVacancyAsync(string title, string employerAccountId)
@@ -45,6 +47,7 @@ namespace Recruit.Vacancies.Client.Infrastructure.Client
                     Id = Guid.NewGuid(),
                     Title = title,
                     EmployerAccountId = employerAccountId,
+                    Status = VacancyStatus.Draft,
                     CreatedDate = DateTime.Now
                 }
             };
@@ -52,6 +55,29 @@ namespace Recruit.Vacancies.Client.Infrastructure.Client
             await _messaging.SendCommandAsync(command);
 
             return command.Vacancy.Id;
+        }
+
+        public async Task<bool> SubmitVacancyAsync(Guid id)
+        {
+
+            var vacancy = await GetVacancyForEditAsync(id);
+
+            if(!vacancy.IsSubmittable())
+            {
+                return false;
+            }
+
+            vacancy.Status = VacancyStatus.Submitted;
+            vacancy.SubmittedDate = DateTime.Now;
+
+            var command = new SubmitVacancyCommand
+            {
+                Vacancy = vacancy
+            };
+                
+            await _messaging.SendCommandAsync(command);
+
+            return true;
         }
     }
 }

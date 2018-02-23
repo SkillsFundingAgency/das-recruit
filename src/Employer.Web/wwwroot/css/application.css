@@ -497,3 +497,8 @@ li.menu-link.sub-menu-open ul li a {
 .actions .action {
   margin-bottom: 20px;
 }
+
+/***  Inline form ***/
+.form-inline{
+    display:inline;
+}

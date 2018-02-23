@@ -36,7 +36,7 @@
         public const string NewVacancy_Index_Post = "NewVacancy_Index_Post";
 
         public const string Preview_Index_Get = "Preview_Index_Get";
-        public const string Preview_Index_Post = "Preview_Index_Post";
+        public const string Preview_Submit_Post = "Preview_Submit_Post";
 
         public const string RoleDescription_Index_Get = "RoleDescription_Index_Get";
         public const string RoleDescription_Index_Post = "RoleDescription_Index_Post";
