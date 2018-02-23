@@ -68,6 +68,20 @@
       }
     },
     {
+      "name": "[variables('CosmosDbName')]",
+      "type": "Microsoft.DocumentDB/databaseAccounts",
+      "apiVersion": "2015-04-08",
+      "location": "[resourceGroup().location]",
+      "tags": {},
+      "kind": "MongoDB",
+      "properties": {
+        "consistencyPolicy": {
+          "defaultConsistencyLevel": "Session"
+        },
+        "databaseAccountOfferType": "Standard"
+      }
+    },
+    {
       "name": "[variables('EmployerRecruitAppServiceName')]",
       "type": "Microsoft.Web/sites",
       "apiVersion": "2016-08-01",
@@ -106,6 +120,11 @@
               "name": "Redis",
               "connectionString": "[parameters('LoggingRedisConnectionString')]",
               "type": "Custom"
+            },
+            {
+              "name": "MongoDb",
+              "connectionString": "[concat('mongodb://', variables('CosmosDbName'), ':', listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', variables('CosmosDbName')), '2015-11-06').primaryMasterKey,'@', variables('CosmosDbName'), '.documents.azure.com:10255/?ssl=true&replicaSet=globaldb')]",
+              "type": "Custom"
             }
           ],
           "alwaysOn": true
@@ -113,22 +132,9 @@
       },
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName'))]",
-        "[resourceId('microsoft.insights/components/', variables('AppInsightsName'))]"
+        "[resourceId('microsoft.insights/components', variables('AppInsightsName'))]",
+        "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('CosmosDbName'))]"
       ]
-    },
-    {
-      "name": "[variables('CosmosDbName')]",
-      "type": "Microsoft.DocumentDB/databaseAccounts",
-      "apiVersion": "2015-04-08",
-      "location": "[resourceGroup().location]",
-      "tags": {},
-      "kind": "MongoDB",
-      "properties": {
-        "consistencyPolicy": {
-          "defaultConsistencyLevel": "Session"
-        },
-        "databaseAccountOfferType": "Standard"
-      }
     }
   ],
   "outputs": {}
