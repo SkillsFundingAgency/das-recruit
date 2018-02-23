@@ -2,14 +2,23 @@
 
 <div class="grid-row">
     <div class="column-two-thirds">
+        <div asp-validation-summary="All" class="error-summary" role="alert" aria-labelledby="error-summary-heading-example-1" tabindex="-1"></div>
+
         <h1 class="heading-large">@Model.Title</h1>
         <h1 class="heading-large">Vacancy preview</h1>
 
-        <form asp-route="@RouteNames.Preview_Index_Post">
-            <div class="form-group">
-                <a asp-route="@RouteNames.Sections_Index_Get" class="button-link">Return to vacancy</a>
+        
+        <div class="form-group">
+            <a asp-route="@RouteNames.Sections_Index_Get" class="button-link">Return to vacancy</a>
+
+            @if (Model.CanSubmit)
+            {
+            <form asp-route="@RouteNames.Preview_Submit_Post" class="form-inline">
                 <input type="submit" value="Submit" class="button" />
-            </div>
-        </form>
+            </form>
+            }
+
+        </div>
+        
     </div>
 </div> 

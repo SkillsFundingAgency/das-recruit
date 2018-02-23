@@ -27,6 +27,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.NewVacancy
             isValid.Should().BeFalse();
             result.Should().HaveCount(2);
             result.Single(r => r.MemberNames.Single() == "Title").ErrorMessage.Should().Be("The Title field is required.");
+            result.Single(r => r.MemberNames.Single() == "EmployerAccountId").ErrorMessage.Should().Be("The EmployerAccountId field is required.");
         }
 
         [Fact]

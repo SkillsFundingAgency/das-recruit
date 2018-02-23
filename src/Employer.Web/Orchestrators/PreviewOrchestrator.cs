@@ -1,4 +1,5 @@
 ﻿using Esfa.Recruit.Employer.Web.ViewModels.Preview;
+using Esfa.Recruit.Storage.Client.Domain.Entities;
 using Recruit.Vacancies.Client.Infrastructure.Client;
 using System;
 using System.Threading.Tasks;
@@ -20,10 +21,16 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             var vm = new IndexViewModel
             {
-                Title = vacancy.Title
+                Title = vacancy.Title,
+                CanSubmit = vacancy.CanSubmit
             };
 
             return vm;
+        }
+
+        public async Task<bool> TrySubmitVacancyAsync(SubmitEditModel m)
+        {
+            return await _client.SubmitVacancyAsync(m.VacancyId);
         }
     }
 }

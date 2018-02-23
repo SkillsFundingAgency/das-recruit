@@ -9,5 +9,6 @@ namespace Recruit.Vacancies.Client.Infrastructure.Client
         Task<Vacancy> GetVacancyForEditAsync(Guid id);
         Task<Guid> CreateVacancyAsync(string title, string employerAccountId);
         Task UpdateVacancyAsync(Vacancy vacancy);
+        Task<bool> SubmitVacancyAsync(Guid id);
     }
 }

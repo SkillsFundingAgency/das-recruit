@@ -8,9 +8,10 @@ namespace Esfa.Recruit.Storage.Client.Infrastructure.Mongo
         {
             var pack = new ConventionPack
             {
-                new CamelCaseElementNameConvention()
+                new CamelCaseElementNameConvention(),
+                new EnumRepresentationConvention(MongoDB.Bson.BsonType.String)
             };
-            ConventionRegistry.Register("camelCase", pack, t => true);
+            ConventionRegistry.Register("recruit conventions", pack, t => true);
         }
     }
 }

@@ -1,6 +1,8 @@
 using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Storage.Client.Application.Commands;
+using Esfa.Recruit.Storage.Client.Core.Commands;
+using Esfa.Recruit.Storage.Client.Domain;
 using Esfa.Recruit.Storage.Client.Domain.Entities;
 using Esfa.Recruit.Storage.Client.Domain.Messaging;
 using Esfa.Recruit.Storage.Client.Domain.QueryStore;
@@ -31,9 +33,9 @@ namespace Recruit.Vacancies.Client.Infrastructure.Client
             return _messaging.SendCommandAsync(command);
         }
 
-        public Task<Vacancy> GetVacancyForEditAsync(Guid id)
+        public async Task<Vacancy> GetVacancyForEditAsync(Guid id)
         {
-            return _repository.GetVacancyAsync(id);
+            return await _repository.GetVacancyAsync(id);
         }
 
         public async Task<Guid> CreateVacancyAsync(string title, string employerAccountId)
@@ -45,13 +47,37 @@ namespace Recruit.Vacancies.Client.Infrastructure.Client
                     Id = Guid.NewGuid(),
                     Title = title,
                     EmployerAccountId = employerAccountId,
-                    AuditVacancyCreated = DateTime.UtcNow
+                    Status = VacancyStatus.Draft,
+                    CreatedDate = DateTime.UtcNow
                 }
             };
 
             await _messaging.SendCommandAsync(command);
 
             return command.Vacancy.Id;
+        }
+
+        public async Task<bool> SubmitVacancyAsync(Guid id)
+        {
+
+            var vacancy = await GetVacancyForEditAsync(id);
+
+            if(!vacancy.CanSubmit)
+            {
+                return false;
+            }
+
+            vacancy.Status = VacancyStatus.Submitted;
+            vacancy.SubmittedDate = DateTime.UtcNow;
+
+            var command = new SubmitVacancyCommand
+            {
+                Vacancy = vacancy
+            };
+                
+            await _messaging.SendCommandAsync(command);
+
+            return true;
         }
     }
 }

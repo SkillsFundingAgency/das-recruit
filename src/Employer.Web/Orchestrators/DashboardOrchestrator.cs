@@ -26,7 +26,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             var vm = new DashboardViewModel
             {
                 EmployerName = account.Result.DasAccountName,
-                Vacancies = vacancies.Result.OrderByDescending(v => v.AuditVacancyCreated).ToList()
+                Vacancies = vacancies.Result.OrderByDescending(v => v.CreatedDate).ToList()
             };
 
             return vm;
