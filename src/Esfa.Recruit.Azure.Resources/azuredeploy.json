@@ -35,11 +35,13 @@
     },
     "AccountApiConfiguration": {
       "type": "object",
-      "ApiBaseUrl": "",
-      "ClientId": "",
-      "ClientSecret": "",
-      "IdentifierUri": "",
-      "Tenant": ""
+      "defaultValue": {
+        "ApiBaseUrl": "",
+        "ClientId": "",
+        "ClientSecret": "",
+        "IdentifierUri": "",
+        "Tenant": ""
+      }
     },
     "LoggingRedisConnectionString": {
       "type": "securestring",
