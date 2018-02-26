@@ -22,7 +22,7 @@ namespace Employer.Web.Controllers
             _linkHelper = linkHelper;
         }
 
-        [HttpGet("change-password", Name = RouteNames.Dashboard_ChangePassword)]
+        [HttpGet("rename-account", Name = RouteNames.Dashboard_AccountsRename)]
         public IActionResult ChangePassword(string returnUrl)
         {
             var encodedReturnUrl = WebUtility.UrlEncode($"{Request.GetRequestUrlRoot()}{returnUrl}");            
@@ -35,6 +35,13 @@ namespace Employer.Web.Controllers
         {
             var encodedReturnUrl = WebUtility.UrlEncode($"{Request.GetRequestUrlRoot()}{returnUrl}");
             var url = string.Format(_linkHelper.ChangeEmail, _authConfig.ClientId, encodedReturnUrl);
+            return Redirect(url);
+        }
+
+        [HttpGet("change-password", Name = RouteNames.Dashboard_ChangePassword)]
+        public IActionResult RenameAccount(string employerAccountId)
+        {
+            var url = string.Format(_linkHelper.RenameAccount, employerAccountId);
             return Redirect(url);
         }
 

@@ -4,6 +4,8 @@ namespace Esfa.Recruit.Employer.Web.Configuration
     {
         public string ManageApprenticeshipSiteHelpRoute { get; set; }
         public string ManageApprenticeshipSiteAccountsRoute { get; set; }
+        public string ManageApprenticeshipSiteRenameAccountRoute { get; set; }
+        public string ManageApprenticeshipSiteNotificationsRoute { get; set; }
         public string ManageApprenticeshipSiteChangePasswordRoute { get; set; }
         public string ManageApprenticeshipSiteChangeEmailAddressRoute { get; set; }
         public string ManageApprenticeshipSiteAccountsFinanceRoute { get; set; }
