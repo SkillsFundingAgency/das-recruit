@@ -236,10 +236,15 @@ nav ul {
   margin-top: -5px
 }
 
+.js-enabled #user-nav li.has-sub-menu>a:before {
+  border-left-color: #fff;
+}
+
 .js-enabled #user-nav li.has-sub-menu.open>a {
   background: #f8f8f8;
   border-color: #bfc1c3;
-  border-bottom-color: #f8f8f8
+  border-bottom-color: #f8f8f8;
+  color: #4c2c92;
 }
 
 .js-enabled #user-nav li.has-sub-menu.open>a:before {
@@ -420,6 +425,12 @@ li.menu-link.sub-menu-open ul li a {
   }
 }
 
+
+@media(min-width: 641px) {
+  .floating-menu nav#user-nav #settings-menu a.sub-menu-item {
+      color:#4c2c92!important
+  }
+}
 
 /*** Vacancy Styles ***/
 .table-summary .section-name h2,  {
