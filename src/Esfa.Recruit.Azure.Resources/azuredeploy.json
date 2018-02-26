@@ -152,7 +152,7 @@
               "value": "[parameters('ExternalLinks').ManageApprenticeshipSiteUrl]"
             },
             {
-              "name": "ExternalLinks:ManageApprenticeshipSiteUrl",
+              "name": "ExternalLinks:EmployerIdamsSiteUrl",
               "value": "[parameters('ExternalLinks').EmployerIdamsSiteUrl]"
             },
             {
