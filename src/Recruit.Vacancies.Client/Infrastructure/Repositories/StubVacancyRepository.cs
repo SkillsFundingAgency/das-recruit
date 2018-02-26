@@ -2,14 +2,16 @@
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Domain.Enums;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 {
     internal sealed class StubVacancyRepository : IVacancyRepository
     {
 
-        private Dictionary<Guid, Vacancy> _vacancies = new Dictionary<Guid, Vacancy>(50);
+        private readonly Dictionary<Guid, Vacancy> _vacancies = new Dictionary<Guid, Vacancy>(50);
 
         public Task CreateAsync(Vacancy vacancy)
         {
@@ -20,12 +22,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 
         public Task<Vacancy> GetVacancyAsync(Guid id)
         {
-            return Task.FromResult(_vacancies[id]);
-        }
-
-        public Task<Vacancy> GetVacancyForEditAsync(Guid vacancyId)
-        {
-            return Task.FromResult(_vacancies[vacancyId]);   
+            var vacancy = _vacancies.Where(kv => kv.Key == id && kv.Value.IsDeleted == false)
+                .Select(kv => kv.Value)
+                .SingleOrDefault();
+            
+            return Task.FromResult(vacancy);
         }
 
         public Task UpdateAsync(Vacancy vacancy)
@@ -36,3 +37,4 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         }
     }
 }
+

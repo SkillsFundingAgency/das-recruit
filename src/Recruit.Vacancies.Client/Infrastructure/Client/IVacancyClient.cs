@@ -10,5 +10,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<Guid> CreateVacancyAsync(string title, string employerAccountId);
         Task UpdateVacancyAsync(Vacancy vacancy);
         Task<bool> SubmitVacancyAsync(Guid id);
+        Task<bool> DeleteVacancyAsync(Guid id);
     }
 }

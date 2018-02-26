@@ -17,6 +17,17 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
 
         public DateTime? SubmittedDate { get; set; }
 
-        public bool CanSubmit => Status == VacancyStatus.Draft;
+        public bool IsDeleted { get; set; }
+        public DateTime? DeletedDate { get; set; }
+
+        /// <summary>
+        /// We can only submit draft vacancies that have not been deleted
+        /// </summary>
+        public bool CanSubmit => Status == VacancyStatus.Draft && IsDeleted == false;
+
+        /// <summary>
+        /// We can only delete draft vacancies that have not been deleted
+        /// </summary>
+        public bool CanDelete => Status == VacancyStatus.Draft && IsDeleted == false;
     }
 }
