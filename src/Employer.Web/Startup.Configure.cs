@@ -36,6 +36,9 @@ namespace Esfa.Recruit.Employer.Web
                     });
                 });
             }
+
+            // Redirect requests to root to the MA site.
+            app.UseRootRedirect(externalLinks.Value.ManageApprenticeshipSiteAccountsUrl);            
             
             // Add Content Security Policy
             app.UseCsp(options => options
