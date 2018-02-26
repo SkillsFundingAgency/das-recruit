@@ -9,6 +9,8 @@ services:
       dockerfile: ./.docker/mongo.dockerfile
     env_file:
       - ./.docker/env/mongo.env
+    volumes:
+      - mongodata1:/data/db
     networks:
       - recruit-network
     ports:
@@ -64,6 +66,8 @@ services:
 
 volumes:
   esdata1:
+    driver: local
+  mongodata1:
     driver: local
 
 networks:
