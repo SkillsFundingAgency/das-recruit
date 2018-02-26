@@ -33,13 +33,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             {
                 return RedirectToRoute(RouteNames.Submitted_Index_Get);
             }
-            else
-            {
-                ModelState.AddModelError(string.Empty, "Vacancy has already been submitted");
-                var vm = await _orchestrator.GetIndexViewModelAsync(m.VacancyId);
-                return View("Index", vm);
-            }
-
+            
+            ModelState.AddModelError(string.Empty, "Vacancy has already been submitted");
+            var vm = await _orchestrator.GetIndexViewModelAsync(m.VacancyId);
+            return View("Index", vm);
         }
     }
 }
