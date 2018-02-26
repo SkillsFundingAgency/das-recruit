@@ -38,7 +38,7 @@ namespace Esfa.Recruit.Employer.Web
             }
 
             // Redirect requests to root to the MA site.
-            app.UseRootRedirect(externalLinks.Value.ManageApprenticeshipSiteAccountsUrl);            
+            app.UseRootRedirect(externalLinks.Value.ManageApprenticeshipSiteUrl);            
             
             // Add Content Security Policy
             app.UseCsp(options => options
