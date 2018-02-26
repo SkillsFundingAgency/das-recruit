@@ -48,12 +48,6 @@ namespace Esfa.Recruit.Employer.Web.Configuration
                 }
                 else
                 {
-                    var policy = new AuthorizationPolicyBuilder()
-                             .RequireAuthenticatedUser()
-                             .Build();
-
-                    opts.Filters.Add(new AuthorizeFilter(policy));
-
                     opts.Filters.Add(new AuthorizeFilter(HasEmployerAccountPolicyName));
                 }
 
