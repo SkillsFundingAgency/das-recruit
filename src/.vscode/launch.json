@@ -17,10 +17,10 @@
             "internalConsoleOptions": "openOnSessionStart",
             "launchBrowser": {
                 "enabled": true,
-                "args": "${auto-detect-url}/accounts/MB6YDY/dashboard",
+                "args": "${auto-detect-url}/accounts/MXD78R/dashboard",
                 "windows": {
                     "command": "cmd.exe",
-                    "args": "/C start ${auto-detect-url}/accounts/MB6YDY/dashboard"
+                    "args": "/C start ${auto-detect-url}/accounts/MXD78R/dashboard"
                 },
                 "osx": {
                     "command": "open"

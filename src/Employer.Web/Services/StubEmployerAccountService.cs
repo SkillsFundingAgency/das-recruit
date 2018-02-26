@@ -7,7 +7,7 @@ namespace Esfa.Recruit.Employer.Web.Services
     {
         public Task<string[]> GetAccountIdentifiersAsync(string userId)
         {
-            return Task.FromResult(new string[] { "abc", "xyz", "MYJR4X", "MB6YDY" });
+            return Task.FromResult(new string[] { "abc", "xyz", "MYJR4X", "MB6YDY", "MXD78R" });
         }
 
         public Task<AccountDetailViewModel> GetAccountDetailAsync(string employerAccountId)
