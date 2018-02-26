@@ -3,6 +3,8 @@
 <div class="grid-row">
     <div class="column-two-thirds">
 
+        <div asp-validation-summary="All" class="error-summary" role="alert" aria-labelledby="error-summary-heading-example-1" tabindex="-1"></div>
+
         <h1 class="heading-large">Create new vacancy - @Model.Title</h1>
 
         <p>Complete the sections below</p>
@@ -35,7 +37,7 @@
                     </h2>
                 </td>
                 <td class="section-status">
-                    <a  asp-route="@RouteNames.RoleDescription_Index_Get" class="font-xsmall">Edit</a>
+                    <a asp-route="@RouteNames.RoleDescription_Index_Get" class="font-xsmall">Edit</a>
                 </td>
             </tr>
             <tr>
@@ -93,6 +95,12 @@
 
         <div class="form-group">
             <a asp-route="@RouteNames.Dashboard_Index_Get" class="button-link">Return to dashboard</a>
+
+            @if (Model.CanDelete)
+            {
+            <a asp-route="@RouteNames.DeleteVacancy_Delete_Get" class="button-link">Delete</a>
+            }
+
             <a asp-route="@RouteNames.Preview_Index_Get" class="button">Preview and submit</a>
         </div>
     </div>
