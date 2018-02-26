@@ -15,6 +15,7 @@
         public const string Dashboard_ChangePassword = "Dashboard_ChangePassword";
         public const string Dashboard_ChangeEmail = "Dashboard_ChangeEmail";
 
+        public const string Dashboard_AccountsRename = "Dashboard_AccountsRename";
         public const string Dashboard_AccountsHome = "Dashboard_AccountsHome";
         public const string Dashboard_AccountsFinance = "Dashboard_AccountsFinance";
         public const string Dashboard_AccountsApprentices = "Dashboard_AccountsApprentices";

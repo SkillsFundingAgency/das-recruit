@@ -30,9 +30,6 @@ namespace Esfa.Recruit.Employer.Web
         {
             services.AddIoC(_configuration);
 
-            //A service provider for resolving services configured in IoC
-            var sp = services.BuildServiceProvider();
-
             // Routing has to come before adding Mvc
             services.AddRouting(opt =>
             {
@@ -46,6 +43,9 @@ namespace Esfa.Recruit.Employer.Web
 
             if (_isAuthEnabled)
             {
+                //A service provider for resolving services configured in IoC
+                var sp = services.BuildServiceProvider();
+
                 services.AddAuthenticationService(_authConfig, sp.GetService<IEmployerAccountService>());
                 services.AddAuthorizationService();
             }

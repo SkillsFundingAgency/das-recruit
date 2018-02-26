@@ -43,6 +43,13 @@
         "Tenant": ""
       }
     },
+    "ExternalLinks": {
+      "type": "object",
+      "defaultValue": {
+        "ManageApprenticeshipSiteUrl": "",
+        "EmployerIdamsSiteUrl": ""
+      }
+    },
     "LoggingRedisConnectionString": {
       "type": "securestring",
       "defaultValue": ""
@@ -139,6 +146,14 @@
             {
               "name": "ApplicationInsights:InstrumentationKey",
               "value": "[reference(concat('microsoft.insights/components/', variables('AppInsightsName'))).InstrumentationKey]"
+            },
+            {
+              "name": "ExternalLinks:ManageApprenticeshipSiteUrl",
+              "value": "[parameters('ExternalLinks').ManageApprenticeshipSiteUrl]"
+            },
+            {
+              "name": "ExternalLinks:ManageApprenticeshipSiteUrl",
+              "value": "[parameters('ExternalLinks').EmployerIdamsSiteUrl]"
             },
             {
               "name": "Environment",

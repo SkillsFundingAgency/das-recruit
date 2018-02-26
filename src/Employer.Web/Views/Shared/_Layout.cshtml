@@ -1,6 +1,6 @@
 ﻿@using Microsoft.Extensions.Options;
 @using Esfa.Recruit.Employer.Web.Configuration;
-@inject IOptions<ExternalLinksConfiguration> ExternalLinks
+@inject ManageApprenticeshipsLinkHelper ExternalLinks
 <!DOCTYPE html>
 <!--[if lt IE 9]><html class="lte-ie8" lang="en"><![endif]-->
 <!--[if gt IE 8]><!-->
@@ -81,23 +81,24 @@
                 <p class="floating-head-text">Your employer account</p>
                 <nav id="user-nav">
                     <ul role="menubar">
-                        <li><a href="@ExternalLinks.Value.ManageApprenticeshipSiteHelpUrl" class="menu-main">Help</a></li>
+                        <li><a href="@ExternalLinks.Help" class="menu-main">Help</a></li>
                         @if (Context.User.Identity.IsAuthenticated)
                         {
                             <li class="has-sub-menu">
                                 <a href="/" role="menuitem" class="menu-main">Settings</a>
                                 <ul role="menu" id="settings-menu" class="js-hidden">
-                                    <li><a href="@ExternalLinks.Value.ManageApprenticeshipSiteAccountsUrl" role="menuitem" class="sub-menu-item">Your accounts</a></li>
+                                    <li><a href="@ExternalLinks.Accounts" role="menuitem" class="sub-menu-item">Your accounts</a></li>
+                                    <li><a asp-route="@RouteNames.Dashboard_AccountsRename" asp-route-returnUrl="@Context.Request.Path" class="sub-menu-item">Rename account</a></li>
                                     <li><a asp-route="@RouteNames.Dashboard_ChangePassword" asp-route-returnUrl="@Context.Request.Path" class="sub-menu-item">Change your password</a></li>
                                     <li><a asp-route="@RouteNames.Dashboard_ChangeEmail" asp-route-returnUrl="@Context.Request.Path" class="sub-menu-item">Change your email address</a></li>
-                                    @*<li><a href="@Url.ExternalUrlAction("settings", "notifications",true)" class="sub-menu-item">Notification settings</a></li>*@
+                                    <li><a href="@ExternalLinks.Notifications" class="sub-menu-item">Notifications settings</a></li>
                                 </ul>
                             </li>
                             <li><a asp-route="Home_Logout_Get" role="menuitem" class="menu-main">Sign out</a></li>
                         }
                         else
                         {
-                            <li><a href="@ExternalLinks.Value.ManageApprenticeshipSiteSignInUrl" role="menuitem">Sign in / Register</a></li>
+                            <li><a href="@ExternalLinks.MaRoot" role="menuitem">Sign in / Register</a></li>
                         }
                     </ul>
                 </nav>

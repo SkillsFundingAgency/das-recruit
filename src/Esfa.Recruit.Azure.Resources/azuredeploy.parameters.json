@@ -28,6 +28,12 @@
         "Tenant": ""
       }
     },
+    "ExternalLinks": {
+      "value": {
+        "ManageApprenticeshipSiteUrl": "",
+        "EmployerIdamsSiteUrl": ""
+      }
+    },
     "LoggingRedisConnectionString": {
       "value": ""
     }

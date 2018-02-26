@@ -12,63 +12,71 @@ namespace Employer.Web.Controllers
     {
         ILogger<ExternalLinksController> _logger;
         private readonly AuthenticationConfiguration _authConfig;
-        private readonly ExternalLinksConfiguration _extLinksConfig;
+        private readonly ManageApprenticeshipsLinkHelper _linkHelper;
 
-        public ExternalLinksController(ILogger<ExternalLinksController> logger, IOptions<AuthenticationConfiguration> authConfig, IOptions<ExternalLinksConfiguration> extLinksConfig)
+        public ExternalLinksController(ILogger<ExternalLinksController> logger, IOptions<AuthenticationConfiguration> authConfig, ManageApprenticeshipsLinkHelper linkHelper)
         {
             _logger = logger;
             _authConfig = authConfig.Value;
-            _extLinksConfig = extLinksConfig.Value;
-        }
-
-        [HttpGet("change-password", Name = RouteNames.Dashboard_ChangePassword)]
-        public IActionResult ChangePassword(string returnUrl)
-        {
-            var encodedReturnUrl = WebUtility.UrlEncode($"{Request.GetRequestUrlRoot()}{returnUrl}");            
-            var url = string.Format(_extLinksConfig.ManageApprenticeshipSiteChangePasswordUrl, _authConfig.ClientId, encodedReturnUrl);
-            return Redirect(url);
+            _linkHelper = linkHelper;
         }
 
         [HttpGet("change-email", Name = RouteNames.Dashboard_ChangeEmail)]
         public IActionResult ChangeEmailAddress(string returnUrl)
         {
             var encodedReturnUrl = WebUtility.UrlEncode($"{Request.GetRequestUrlRoot()}{returnUrl}");
-            var url = string.Format(_extLinksConfig.ManageApprenticeshipSiteChangeEmailAddressUrl, _authConfig.ClientId, encodedReturnUrl);
+            var url = string.Format(_linkHelper.ChangeEmail, _authConfig.ClientId, encodedReturnUrl);
+            return Redirect(url);
+        }
+
+        [HttpGet("change-password", Name = RouteNames.Dashboard_ChangePassword)]
+        public IActionResult ChangePassword(string returnUrl)
+        {
+            var encodedReturnUrl = WebUtility.UrlEncode($"{Request.GetRequestUrlRoot()}{returnUrl}");            
+            var url = string.Format(_linkHelper.ChangePassword, _authConfig.ClientId, encodedReturnUrl);
+            return Redirect(url);
+        }
+
+        [HttpGet("rename-account", Name = RouteNames.Dashboard_AccountsRename)]
+        public IActionResult RenameAccount(string returnUrl)
+        {
+            var encodedReturnUrl = WebUtility.UrlEncode($"{Request.GetRequestUrlRoot()}{returnUrl}");            
+            var url = string.Format(_linkHelper.RenameAccount, _authConfig.ClientId);
             return Redirect(url);
         }
 
         [HttpGet("finance", Name = RouteNames.Dashboard_AccountsFinance)]
         public IActionResult AccountsFinance(string employerAccountId)
         {
-            var url = string.Format(_extLinksConfig.ManageApprenticeshipSiteAccountsFinanceLink, employerAccountId);
+            var url = string.Format(_linkHelper.Finance, employerAccountId);
             return Redirect(url);
         }
 
         [HttpGet("apprentices", Name = RouteNames.Dashboard_AccountsApprentices)]
         public IActionResult AccountsApprentices(string employerAccountId)
         {
-            var url = string.Format(_extLinksConfig.ManageApprenticeshipSiteAccountsFinanceLink, employerAccountId);
+            var url = string.Format(_linkHelper.Apprentices, employerAccountId);
             return Redirect(url);
         }
 
         [HttpGet("teams", Name = RouteNames.Dashboard_AccountsTeams)]
         public IActionResult AccountsTeams(string employerAccountId)
         {
-            var url = string.Format(_extLinksConfig.ManageApprenticeshipSiteAccountsTeamsViewLink, employerAccountId);
+            var url = string.Format(_linkHelper.Teams, employerAccountId);
             return Redirect(url);
         }
 
         [HttpGet("agreements", Name = RouteNames.Dashboard_AccountsAgreements)]
         public IActionResult AccountsAgreements(string employerAccountId)
         {
-            var url = string.Format(_extLinksConfig.ManageApprenticeshipSiteAccountsAgreementsLink, employerAccountId);
+            var url = string.Format(_linkHelper.Agreements, employerAccountId);
             return Redirect(url);
         }
 
         [HttpGet("schemes", Name = RouteNames.Dashboard_AccountsSchemes)]
         public IActionResult AccountsSchemes(string employerAccountId)
         {
-            var url = string.Format(_extLinksConfig.ManageApprenticeshipSiteAccountsSchemesLink, employerAccountId);
+            var url = string.Format(_linkHelper.Schemes, employerAccountId);
             return Redirect(url);
         }
     }
