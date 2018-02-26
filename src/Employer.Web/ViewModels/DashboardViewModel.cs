@@ -7,6 +7,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
     {
         public string EmployerName { get; set; }
 
-        public IList<Vacancy> Vacancies { get; set; }
+        public IList<VacancySummary> Vacancies { get; set; }
     }
 }

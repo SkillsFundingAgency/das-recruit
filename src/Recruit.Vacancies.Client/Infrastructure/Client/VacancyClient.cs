@@ -53,13 +53,23 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             };
 
             await _messaging.SendCommandAsync(command);
+            await UpdateDashboardAsync(command.Vacancy);
 
             return command.Vacancy.Id;
         }
 
+        private async Task UpdateDashboardAsync(Vacancy vacancy)
+        {
+            var command = new UpdateDashboardCommand
+            {
+                Vacancy = vacancy
+            };
+
+            await _messaging.SendCommandAsync(command);
+        }
+
         public async Task<bool> SubmitVacancyAsync(Guid id)
         {
-
             var vacancy = await GetVacancyForEditAsync(id);
 
             if(!vacancy.CanSubmit)

@@ -38,12 +38,16 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             {
                 services.AddSingleton<IVacancyRepository, StubVacancyRepository>();
                 services.AddSingleton<IQueryStoreReader, StubQueryStore>();
+                services.AddSingleton<IQueryStoreWriter, StubQueryStore>();
+
             }
             else
             {
                 MongoDbConventions.RegisterMongoConventions();
                 services.AddTransient<IVacancyRepository, MongoDbVacancyRepository>();
                 services.AddTransient<IQueryStoreReader, QueryStore>();
+                services.AddTransient<IQueryStoreWriter, QueryStore>();
+
             }
         }
     }
