@@ -22,14 +22,6 @@ namespace Employer.Web.Controllers
             _linkHelper = linkHelper;
         }
 
-        [HttpGet("rename-account", Name = RouteNames.Dashboard_AccountsRename)]
-        public IActionResult ChangePassword(string returnUrl)
-        {
-            var encodedReturnUrl = WebUtility.UrlEncode($"{Request.GetRequestUrlRoot()}{returnUrl}");            
-            var url = string.Format(_linkHelper.ChangePassword, _authConfig.ClientId, encodedReturnUrl);
-            return Redirect(url);
-        }
-
         [HttpGet("change-email", Name = RouteNames.Dashboard_ChangeEmail)]
         public IActionResult ChangeEmailAddress(string returnUrl)
         {
@@ -39,9 +31,18 @@ namespace Employer.Web.Controllers
         }
 
         [HttpGet("change-password", Name = RouteNames.Dashboard_ChangePassword)]
-        public IActionResult RenameAccount(string employerAccountId)
+        public IActionResult ChangePassword(string returnUrl)
         {
-            var url = string.Format(_linkHelper.RenameAccount, employerAccountId);
+            var encodedReturnUrl = WebUtility.UrlEncode($"{Request.GetRequestUrlRoot()}{returnUrl}");            
+            var url = string.Format(_linkHelper.ChangePassword, _authConfig.ClientId, encodedReturnUrl);
+            return Redirect(url);
+        }
+
+        [HttpGet("rename-account", Name = RouteNames.Dashboard_AccountsRename)]
+        public IActionResult RenameAccount(string returnUrl)
+        {
+            var encodedReturnUrl = WebUtility.UrlEncode($"{Request.GetRequestUrlRoot()}{returnUrl}");            
+            var url = string.Format(_linkHelper.RenameAccount, _authConfig.ClientId);
             return Redirect(url);
         }
 
