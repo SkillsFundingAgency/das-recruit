@@ -1,18 +1,36 @@
 ﻿@model DashboardViewModel
 
+<div class="grid-row dashboard-header">
+    <div class="column-two-thirds">
+        <h1 class="heading-large small-bottom-margin">Employer Recruit - @Model.EmployerName</h1>
+    </div>
+</div>
+
 <div class="grid-row">
     <div class="column-full">
-        <h1 class="heading-large">Employer Recruit - @Model.EmployerName Dashboard</h1>
-
         <a asp-route="@RouteNames.NewVacancy_Index_Get" class="button">Create vacancy</a>
-
-        <h2>Vacancies</h2>
-        <ul>
-            @foreach (var vacancy in Model.Vacancies)
-            {
-                <li><a asp-route="@RouteNames.Preview_Index_Get" asp-route-vacancyId="@vacancy.Id">@vacancy.Title</a></li>
-            }
-        </ul>
-
+        <hr>
     </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-full">
+		<table>
+			<thead>
+				<tr>
+					<th class="bold">Vacancy title</th>
+					<th class="bold">Status</th>
+				</tr>
+			</thead>
+			<tbody>
+			@foreach (var vacancy in Model.Vacancies)
+			{
+				<tr>
+					<td><a asp-route="@RouteNames.Preview_Index_Get" asp-route-vacancyId="@vacancy.Id">@vacancy.Title</a></td>
+					<td></td>
+				</tr>
+			}
+			</tbody>
+		</table>
+	</div>
 </div>
