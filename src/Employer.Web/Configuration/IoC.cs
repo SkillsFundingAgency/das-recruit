@@ -17,6 +17,8 @@ namespace Esfa.Recruit.Employer.Web.Configuration
 
             //Configuration
             services.Configure<ExternalLinksConfiguration>(configuration.GetSection("ExternalLinks"));
+            services.Configure<ManageApprenticeshipsRoutes>(configuration.GetSection("ManageApprenticeshipsRoutes"));
+            services.AddSingleton<ManageApprenticeshipsLinkHelper>();
             services.Configure<AuthenticationConfiguration>(configuration.GetSection("Authentication"));
             services.Configure<AccountApiConfiguration>(configuration.GetSection("AccountApiConfiguration"));
             
