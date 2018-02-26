@@ -1,7 +1,8 @@
-﻿using System.Diagnostics;
-using Esfa.Recruit.Employer.Web.ViewModels;
+﻿using Esfa.Recruit.Employer.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
+using Esfa.Recruit.Employer.Web.ViewModels.Error;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {

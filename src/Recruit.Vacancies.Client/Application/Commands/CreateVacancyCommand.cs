@@ -1,8 +1,8 @@
-﻿using Esfa.Recruit.Storage.Client.Domain.Entities;
-using Esfa.Recruit.Storage.Client.Domain.Messaging;
+﻿using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using MediatR;
 
-namespace Esfa.Recruit.Storage.Client.Application.Commands
+namespace Esfa.Recruit.Vacancies.Client.Application.Commands
 {
     public class CreateVacancyCommand : ICommand, IRequest
     {

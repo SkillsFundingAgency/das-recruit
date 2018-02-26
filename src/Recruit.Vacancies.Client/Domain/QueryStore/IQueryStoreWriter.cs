@@ -1,4 +1,4 @@
-namespace Esfa.Recruit.Storage.Client.Domain.QueryStore
+namespace Esfa.Recruit.Vacancies.Client.Domain.QueryStore
 {
     internal interface IQueryStoreWriter
     {

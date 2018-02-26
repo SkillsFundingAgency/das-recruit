@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using FluentAssertions;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using FluentAssertions;
 using Xunit;
 using EmployerWeb = Esfa.Recruit.Employer.Web;
 

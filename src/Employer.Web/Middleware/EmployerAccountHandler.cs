@@ -1,12 +1,11 @@
-﻿using Esfa.Recruit.Employer.Web;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Filters;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace Employer.Web.Middleware
+namespace Esfa.Recruit.Employer.Web.Middleware
 {
     public class EmployerAccountHandler : AuthorizationHandler<EmployerAccountRequirement>
     {

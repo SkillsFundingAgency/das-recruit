@@ -1,12 +1,12 @@
-using Esfa.Recruit.Storage.Client.Domain.Entities;
-using Esfa.Recruit.Storage.Client.Domain.QueryStore;
-using Esfa.Recruit.Storage.Client.Infrastructure.Mongo;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.QueryStore;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Recruit.Vacancies.Client.Infrastructure.QueryStore
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 {
     internal sealed class QueryStore : MongoDbCollectionBase, IQueryStoreReader, IQueryStoreWriter
     {
