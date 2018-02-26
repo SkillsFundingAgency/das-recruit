@@ -1,7 +1,10 @@
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using System.Threading.Tasks;
+
 namespace Esfa.Recruit.Vacancies.Client.Domain.QueryStore
 {
-    internal interface IQueryStoreWriter
+    public interface IQueryStoreWriter
     {
-         //E.g. Task UpdateDashboardAsync(string key, object dashboard); 
+         Task UpdateDashboardAsync(string key, Dashboard dashboard); 
     }
 }

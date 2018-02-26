@@ -1,23 +1,31 @@
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.QueryStore;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 {
     internal sealed class StubQueryStore : IQueryStoreReader, IQueryStoreWriter
     {
-        public Task<IEnumerable<Vacancy>> GetVacanciesAsync(string employerAccountId)
+        public Task<Dashboard> GetDashboardAsync(string employerAccountId)
         {
-            var vacancies = new List<Vacancy>
+            var dashboard = new Dashboard
             {
-                new Vacancy
+                EmployerAccountId = employerAccountId,
+                Vacancies = new List<VacancySummary>
                 {
-                    Title = "Ozzy Scott"
+                    new VacancySummary
+                    {
+                        Title = "Ozzy Scott"
+                    }
                 }
             };
-            return Task.FromResult(vacancies.AsEnumerable());
+            return Task.FromResult(dashboard);
+        }
+
+        public Task UpdateDashboardAsync(string key, Dashboard dashboard)
+        {
+            return Task.CompletedTask;
         }
     }
 }
