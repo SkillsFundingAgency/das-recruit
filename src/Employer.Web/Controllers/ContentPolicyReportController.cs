@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
-  public class ContentPolicyReportController : Controller
+    public class ContentPolicyReportController : Controller
   {
 
     ILogger<ContentPolicyReportController> _logger;

@@ -1,8 +1,8 @@
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using System;
 using System.Threading.Tasks;
-using Esfa.Recruit.Storage.Client.Domain.Entities;
 
-namespace Recruit.Vacancies.Client.Infrastructure.Client
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
     public interface IVacancyClient
     {

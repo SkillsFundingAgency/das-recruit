@@ -1,4 +1,4 @@
-﻿namespace Esfa.Recruit.Storage.Client.Domain
+﻿namespace Esfa.Recruit.Vacancies.Client.Domain.Enums
 {
     public enum VacancyStatus
     {

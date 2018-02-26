@@ -1,6 +1,6 @@
 ﻿using MongoDB.Bson.Serialization.Conventions;
 
-namespace Esfa.Recruit.Storage.Client.Infrastructure.Mongo
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
 {
     internal static class MongoDbConventions
     {

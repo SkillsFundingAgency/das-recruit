@@ -1,8 +1,8 @@
-using Esfa.Recruit.Storage.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Esfa.Recruit.Storage.Client.Domain.QueryStore
+namespace Esfa.Recruit.Vacancies.Client.Domain.QueryStore
 {
     public interface IQueryStoreReader
     {

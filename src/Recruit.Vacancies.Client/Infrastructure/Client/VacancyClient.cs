@@ -1,14 +1,13 @@
+using Esfa.Recruit.Vacancies.Client.Application.Commands;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Enums;
+using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
+using Esfa.Recruit.Vacancies.Client.Domain.QueryStore;
+using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using System;
 using System.Threading.Tasks;
-using Esfa.Recruit.Storage.Client.Application.Commands;
-using Esfa.Recruit.Storage.Client.Core.Commands;
-using Esfa.Recruit.Storage.Client.Domain;
-using Esfa.Recruit.Storage.Client.Domain.Entities;
-using Esfa.Recruit.Storage.Client.Domain.Messaging;
-using Esfa.Recruit.Storage.Client.Domain.QueryStore;
-using Esfa.Recruit.Storage.Client.Domain.Repositories;
 
-namespace Recruit.Vacancies.Client.Infrastructure.Client
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
     public class VacancyClient : IVacancyClient
     {

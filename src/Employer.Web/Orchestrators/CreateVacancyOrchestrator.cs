@@ -1,6 +1,5 @@
 using Esfa.Recruit.Employer.Web.ViewModels.CreateVacancy;
-using Esfa.Recruit.Storage.Client.Domain.Entities;
-using Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using System;
 using System.Threading.Tasks;
 

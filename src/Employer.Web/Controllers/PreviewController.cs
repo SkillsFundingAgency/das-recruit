@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Esfa.Recruit.Employer.Web.ViewModels.Preview;
-using Esfa.Recruit.Employer.Web.Configuration.Routes;
+﻿using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Orchestrators;
+using Esfa.Recruit.Employer.Web.ViewModels.Preview;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
 

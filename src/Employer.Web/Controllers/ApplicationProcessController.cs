@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Esfa.Recruit.Employer.Web.ViewModels.ApplicationProcess;
-using Esfa.Recruit.Employer.Web.Configuration.Routes;
-using System;
+﻿using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Orchestrators;
+using Esfa.Recruit.Employer.Web.ViewModels.ApplicationProcess;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Employer.Web.Controllers

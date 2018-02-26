@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Esfa.Recruit.Employer.Web.ViewModels.ApplicationProcess
+﻿namespace Esfa.Recruit.Employer.Web.ViewModels.ApplicationProcess
 {
     public class IndexViewModel
     {

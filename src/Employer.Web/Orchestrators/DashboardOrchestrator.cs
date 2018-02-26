@@ -1,8 +1,8 @@
 ﻿using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.ViewModels;
-using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Domain.QueryStore;
 using System.Linq;
-using Esfa.Recruit.Storage.Client.Domain.QueryStore;
+using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {

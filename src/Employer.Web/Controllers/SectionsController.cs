@@ -1,12 +1,10 @@
-﻿using Esfa.Recruit.Employer.Web;
-using Microsoft.AspNetCore.Mvc;
-using Esfa.Recruit.Employer.Web.ViewModels.Sections;
-using Esfa.Recruit.Employer.Web.Configuration.Routes;
-using System;
-using Esfa.Recruit.Employer.Web.Orchestrators;
+﻿using System;
 using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.Configuration;
+using Esfa.Recruit.Employer.Web.Orchestrators;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Employer.Web.Controllers
+namespace Esfa.Recruit.Employer.Web.Controllers
 {
     [Route("accounts/{employerAccountId}/vacancies/{vacancyId}")]
     public class SectionsController : Controller

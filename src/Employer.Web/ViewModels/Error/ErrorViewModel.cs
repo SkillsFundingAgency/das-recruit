@@ -1,4 +1,4 @@
-namespace Esfa.Recruit.Employer.Web.ViewModels
+namespace Esfa.Recruit.Employer.Web.ViewModels.Error
 {
     public class ErrorViewModel
     {

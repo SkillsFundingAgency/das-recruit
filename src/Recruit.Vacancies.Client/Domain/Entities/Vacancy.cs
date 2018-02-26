@@ -1,6 +1,7 @@
+using Esfa.Recruit.Vacancies.Client.Domain.Enums;
 using System;
 
-namespace Esfa.Recruit.Storage.Client.Domain.Entities
+namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
 {
     public class Vacancy
     {

@@ -14,7 +14,7 @@
     <RepositoryUrl>https://github.com/SkillsFundingAgency/das-recruit</RepositoryUrl>
     <PackageTags>Esfa;Das;Vacancy Service</PackageTags>
     <PackageReleaseNotes>Initial release.</PackageReleaseNotes>
-    <RootNamespace>Esfa.Recruit.Storage.Client</RootNamespace>
+    <RootNamespace>Esfa.Recruit.Vacancies.Client</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="MediatR" Version="4.0.1" />

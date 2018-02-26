@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Esfa.Recruit.Employer.Web.ViewModels.TrainingProvider;
-using Esfa.Recruit.Employer.Web.Configuration.Routes;
+﻿using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Orchestrators;
+using Esfa.Recruit.Employer.Web.ViewModels.TrainingProvider;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
 
@@ -10,7 +10,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
     [Route("accounts/{employerAccountId}/vacancies/{vacancyId}")]
     public class TrainingProviderController : Controller
     {
-        private TrainingProviderOrchestrator _orchestrator;
+        private readonly TrainingProviderOrchestrator _orchestrator;
 
         public TrainingProviderController(TrainingProviderOrchestrator orchestrator)
         {
