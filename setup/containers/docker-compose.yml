@@ -9,6 +9,8 @@ services:
       dockerfile: ./.docker/mongo.dockerfile
     env_file:
       - ./.docker/env/mongo.env
+    volumes:
+      - ./mongodata:/data/db
     networks:
       - recruit-network
     ports:
