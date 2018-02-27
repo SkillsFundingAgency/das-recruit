@@ -1,11 +1,12 @@
-﻿using SFA.DAS.EAS.Account.Api.Types;
+﻿using Esfa.Recruit.Employer.Web.Models;
+using SFA.DAS.EAS.Account.Api.Types;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Employer.Web.Services
 {
     public interface IEmployerAccountService
     {
-        Task<string[]> GetAccountIdentifiersAsync(string userId);
-        Task<AccountDetailViewModel> GetAccountDetailAsync(string employerAccountId);
+        Task<Dictionary<string, EmployerIdentifier>> GetEmployerIdentifiersAsync(string userId);
     }
 }

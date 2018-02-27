@@ -1,4 +1,5 @@
 using Esfa.Recruit.Employer.Web.Configuration;
+using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -19,9 +20,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         }
 
         [HttpGet("dashboard", Name = RouteNames.Dashboard_Index_Get)]
-        public async Task<IActionResult> Index(string employerAccountId)
+        public async Task<IActionResult> Index()
         {
-            var vm = await _orchestrator.GetDashboardViewModelAsync(employerAccountId);
+            var employerDetail = (EmployerIdentifier)HttpContext.Items[ContextItemKeys.EmployerIdentifier];
+            var vm = await _orchestrator.GetDashboardViewModelAsync(employerDetail);
 
             return View(vm);
         }
