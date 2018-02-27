@@ -3,6 +3,8 @@ using System.IO;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using NLog.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Jobs
 {
@@ -11,7 +13,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
         private static string _environmentName;
         private static bool _isDevelopment;
 
-        Program()
+        static Program()
         {
             _environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
             _isDevelopment = _environmentName?.Equals("Development", StringComparison.CurrentCultureIgnoreCase) ?? false;
@@ -19,16 +21,20 @@ namespace Esfa.Recruit.Vacancies.Jobs
 
         static void Main(string[] args)
         {
-            // TODO: LWA - try catch and logging
             try
             {
                 IServiceCollection serviceCollection = new ServiceCollection();
                 ConfigureServices(serviceCollection);
+                var serviceProvider = serviceCollection.BuildServiceProvider();
+
+                var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
+                loggerFactory.AddNLog(new NLogProviderOptions { CaptureMessageProperties = true, CaptureMessageTemplates = true });
+                loggerFactory.ConfigureNLog("nlog.config");
 
                 var jobConfiguration = new JobHostConfiguration();
                 jobConfiguration.Queues.MaxPollingInterval = TimeSpan.FromSeconds(10);
                 jobConfiguration.Queues.BatchSize = 1;
-                jobConfiguration.JobActivator = new CustomJobActivator(serviceCollection.BuildServiceProvider());
+                jobConfiguration.JobActivator = new CustomJobActivator(serviceProvider);
                 jobConfiguration.UseTimers();
 
                 if (_isDevelopment)
@@ -66,13 +72,20 @@ namespace Esfa.Recruit.Vacancies.Jobs
                 .Build();
 
             // Setup dependencies
+            serviceCollection.AddSingleton<ILoggerFactory, LoggerFactory>();
+            serviceCollection.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
+            serviceCollection.AddLogging((builder) => 
+            {
+                builder.SetMinimumLevel(LogLevel.Trace);
+                builder.AddConsole();
+                builder.AddDebug();
+            });
 
             // Setup Jobs
             serviceCollection.AddScoped<GenerateVacancyNumberJob, GenerateVacancyNumberJob>();
             
             Environment.SetEnvironmentVariable("AzureWebJobsDashboard", configuration.GetConnectionString("WebJobsDashboard"));
             Environment.SetEnvironmentVariable("AzureWebJobsStorage", configuration.GetConnectionString("WebJobsStorage"));  
-               
         }
     }
 }

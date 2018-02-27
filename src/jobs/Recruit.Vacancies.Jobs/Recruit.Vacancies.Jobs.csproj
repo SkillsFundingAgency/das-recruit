@@ -13,15 +13,23 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0"/>
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.0.0"/>
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="2.0.0"/>
+    <PackageReference Include="NLog" Version="4.5.0-rc06"/>
+    <PackageReference Include="NLog.Extensions.Logging" Version="1.0.0-rtm-rc7"/>
+    <PackageReference Include="SFA.DAS.NLog.Targets.Redis" Version="1.0.0.56651"/>
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="2.0.0"/>
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.0.0"/>
   </ItemGroup>
   <ItemGroup>
-    <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="2.0.0" />
+    <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="2.0.0"/>
   </ItemGroup>
   <ItemGroup>
     <None Update="appSettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="appSettings.Development.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="nlog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
