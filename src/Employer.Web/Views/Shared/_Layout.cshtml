@@ -6,40 +6,41 @@
 <!--[if gt IE 8]><!-->
 <html lang="en">
 <!--<![endif]-->
+
 <head>
     <meta charset="utf-8" />
     <title>ESFA</title>
 
-    <!--[if gt IE 8]><!-->
-    <link rel="stylesheet" media="screen" href="/lib/govuk_template/assets/stylesheets/govuk-template.css" /><!--<![endif]-->
-    <!--[if IE 6]><link rel="stylesheet" media="screen" href="/lib/govuk_template/assets/stylesheets/govuk-template-ie6.css"/><![endif]-->
-    <!--[if IE 7]><link rel="stylesheet" media="screen" href="/lib/govuk_template/assets/stylesheets/govuk-template-ie7.css"/><![endif]-->
-    <!--[if IE 8]><link rel="stylesheet" media="screen" href="/lib/govuk_template/assets/stylesheets/govuk-template-ie8.css"/><![endif]-->
-    <link rel="stylesheet" media="print" href="/lib/govuk_template/assets/stylesheets/govuk-template-print.css" />
+    <!-- TEMPLATE STYLES - START -->
+    <!--[if gt IE 8]><!--><link rel="stylesheet" media="screen" href="/lib/esfa-govuk/assets/stylesheets/govuk-template.min.css?0.23.0" /><!--<![endif]-->
+    <!--[if IE 6]><link rel="stylesheet" media="screen" href="/lib/esfa-govuk/assets/stylesheets/govuk-template-ie6.min.css?0.23.0" /><![endif]-->
+    <!--[if IE 7]><link rel="stylesheet" media="screen" href="/lib/esfa-govuk/assets/stylesheets/govuk-template-ie7.min.css?0.23.0" /><![endif]-->
+    <!--[if IE 8]><link rel="stylesheet" media="screen" href="/lib/esfa-govuk/assets/stylesheets/govuk-template-ie8.min.css?0.23.0" /><![endif]-->
+    <link rel="stylesheet" media="print" href="/lib/esfa-govuk/assets/stylesheets/govuk-template-print.min.css?0.23.0" />
+    <!--[if IE 8]><link rel="stylesheet" media="all" href="/lib/esfa-govuk/assets/stylesheets/fonts-ie8.min.css?0.23.0" /><![endif]-->
+    <!--[if gte IE 9]><!--><link rel="stylesheet" media="all" href="/lib/esfa-govuk/assets/stylesheets/fonts.min.css?0.23.0" /><!--<![endif]-->
+    <!-- TEMPLATE STYLES - END -->
 
-    <!--[if IE 8]><link rel="stylesheet" media="all" href="/lib/govuk_template/assets/stylesheets/fonts-ie8.css"/><![endif]-->
-    <!--[if gte IE 9]><!-->
-    <link rel="stylesheet" media="all" href="/lib/govuk_template/assets/stylesheets/fonts.css" /><!--<![endif]-->
-    <!--[if lt IE 9]><script src="/lib/govuk_template/assets/javascripts/ie.js"></script><![endif]-->
+    <!-- ELEMENTS AND TOOLKIT STYLES - START -->
+    <!--[if gt IE 8]><!--><link rel="stylesheet" media="screen" href="/lib/esfa-govuk/assets/stylesheets/esfa-govuk-base.min.css?3.1.2" /><!--<![endif]-->
+    <!--[if IE 6]><link rel="stylesheet" media="screen" href="/lib/esfa-govuk/assets/stylesheets/esfa-govuk-ie6.min.css?3.1.2" /><![endif]-->
+    <!--[if IE 7]><link rel="stylesheet" media="screen" href="/lib/esfa-govuk/assets/stylesheets/esfa-govuk-ie7.min.css?3.1.2" /><![endif]-->
+    <!--[if IE 8]><link rel="stylesheet" media="screen" href="/lib/esfa-govuk/assets/stylesheets/esfa-govuk-ie8.min.css?3.1.2" /><![endif]-->
+    <!-- ELEMENTS AND TOOLKIT STYLES - END -->
 
-    <link rel="shortcut icon" href="/lib/govuk_template/assets/images/favicon.ico" type="image/x-icon" />
+    <!--[if lt IE 9]><script src="/lib/esfa-govuk/assets/javascripts/ie.js?0.23.0"></script><![endif]-->
 
-    <link rel="mask-icon" href="/lib/govuk_template/assets/images/gov.uk_logotype_crown.svg" color="#0b0c0c">
-    <link rel="apple-touch-icon" sizes="180x180" href="/lib/govuk_template/assets/images/apple-touch-icon-180x180.png">
-    <link rel="apple-touch-icon" sizes="167x167" href="/lib/govuk_template/assets/images/apple-touch-icon-167x167.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="/lib/govuk_template/assets/images/apple-touch-icon-152x152.png">
-    <link rel="apple-touch-icon" href="/lib/govuk_template/assets/images/apple-touch-icon.png">
+    <link rel="shortcut icon" href="/lib/esfa-govuk/assets/images/favicon.ico" type="image/x-icon" />
+
+    <link rel="mask-icon" href="/lib/esfa-govuk/assets/images/gov.uk_logotype_crown.svg" color="#0b0c0c">
+    <link rel="apple-touch-icon" sizes="180x180" href="/lib/esfa-govuk/assets/images/apple-touch-icon-180x180.png">
+    <link rel="apple-touch-icon" sizes="167x167" href="/lib/esfa-govuk/assets/images/apple-touch-icon-167x167.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/lib/esfa-govuk/assets/images/apple-touch-icon-152x152.png">
+    <link rel="apple-touch-icon" href="/lib/esfa-govuk/assets/images/apple-touch-icon.png">
+
     <meta name="theme-color" content="#0b0c0c" />
-
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="robots" content="noindex, nofollow"> <!-- GDS Guideline -->
-    <meta property="og:image" content="/lib/govuk_template/assets/images/opengraph-image.png">
-
-    <!--[if gt IE 8]><!-->
-    <link rel="stylesheet" media="screen" href="/lib/esfa-govuk/css/esfa-govuk-base.css" /><!--<![endif]-->
-    <!--[if IE 6]><link rel="stylesheet" media="screen" href="/lib/esfa-govuk/css/esfa-govuk-ie6.css"/><![endif]-->
-    <!--[if IE 7]><link rel="stylesheet" media="screen" href="/lib/esfa-govuk/css/esfa-govuk-ie7.css"/><![endif]-->
-    <!--[if IE 8]><link rel="stylesheet" media="screen" href="/lib/esfa-govuk/css/esfa-govuk-ie8.css"/><![endif]-->
+    <meta property="og:image" content="/lib/esfa-govuk/assets/images/opengraph-image.png">
 
     <link rel="stylesheet" media="screen" href="/css/application.css" />
     <script src="/lib/jquery/dist/jquery.js"></script>
@@ -63,7 +64,7 @@
             <div class="header-global">
                 <div class="header-logo">
                     <a href="https://www.gov.uk/" title="Go to the GOV.UK homepage" id="logo" class="content">
-                        <img src="/lib/govuk_template/assets/images/gov.uk_logotype_crown_invert_trans.png" width="36" height="32" alt=""> GOV.UK
+                        <img src="/lib/esfa-govuk/assets/images/gov.uk_logotype_crown_invert_trans.png" width="36" height="32" alt=""> GOV.UK
                     </a>
                 </div>
             </div>
@@ -117,16 +118,11 @@
                     <li><a asp-route="@RouteNames.Dashboard_AccountsApprentices" class="" role="menuitem">Apprentices</a></li>
                     <li><a asp-route="@RouteNames.Dashboard_AccountsTeams" class="" role="menuitem">Your team</a></li>
                     <li><a asp-route="@RouteNames.Dashboard_AccountsAgreements" class="" role="menuitem">Your organisations and agreements</a></li>
-                    <li class="menu-link">
-                        <a href="#">More</a>
-                        <ul>
-                            <li><a asp-route="@RouteNames.Dashboard_AccountsSchemes" class="" role="menuitem">PAYE schemes</a></li>
-                        </ul>
-                    </li>
+                    <li><a asp-route="@RouteNames.Dashboard_AccountsSchemes" class="" role="menuitem">PAYE schemes</a></li>
                 </ul>
             </nav>
         </div>
-    }
+  }
 
     <main id="content" role="main">
         @RenderBody()
@@ -156,7 +152,7 @@
 
     <div id="global-app-error" class="app-error hidden"></div>
 
-    <script src="/lib/govuk_template/assets/javascripts/govuk-template.js"></script>
+    <script src="/lib/esfa-govuk/assets/javascripts/govuk-template.js"></script>
     <script src="/javascripts/application.js"></script>
 
 </body>
