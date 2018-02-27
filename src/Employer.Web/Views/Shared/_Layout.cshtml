@@ -117,16 +117,11 @@
                     <li><a asp-route="@RouteNames.Dashboard_AccountsApprentices" class="" role="menuitem">Apprentices</a></li>
                     <li><a asp-route="@RouteNames.Dashboard_AccountsTeams" class="" role="menuitem">Your team</a></li>
                     <li><a asp-route="@RouteNames.Dashboard_AccountsAgreements" class="" role="menuitem">Your organisations and agreements</a></li>
-                    <li class="menu-link">
-                        <a href="#">More</a>
-                        <ul>
-                            <li><a asp-route="@RouteNames.Dashboard_AccountsSchemes" class="" role="menuitem">PAYE schemes</a></li>
-                        </ul>
-                    </li>
+                    <li><a asp-route="@RouteNames.Dashboard_AccountsSchemes" class="" role="menuitem">PAYE schemes</a></li>
                 </ul>
             </nav>
         </div>
-    }
+  }
 
     <main id="content" role="main">
         @RenderBody()
