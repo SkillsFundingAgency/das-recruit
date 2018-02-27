@@ -5,7 +5,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Mappings
 {
     internal class VacancySummaryMapper
     {
-        internal VacancySummary MapFromVacancy(Vacancy updatedVacancy)
+        internal static VacancySummary MapFromVacancy(Vacancy updatedVacancy)
         {
             return new VacancySummary
             {

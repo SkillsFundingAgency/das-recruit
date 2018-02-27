@@ -16,7 +16,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Handlers
     {
         private readonly IQueryStoreReader _reader;
         private readonly IQueryStoreWriter _writer;
-        private readonly VacancySummaryMapper _summaryMapper = new VacancySummaryMapper();
 
         public UpdateDashboardCommandHandler(IQueryStoreReader reader, IQueryStoreWriter repository)
         {
@@ -30,7 +29,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Handlers
             var updatedVacancy = message.Vacancy;
             var dashboard = await _reader.GetDashboardAsync(key);
 
-            var updatedVacancySummary = _summaryMapper.MapFromVacancy(updatedVacancy);
+            var updatedVacancySummary = VacancySummaryMapper.MapFromVacancy(updatedVacancy);
 
             if (dashboard == null)
             {
