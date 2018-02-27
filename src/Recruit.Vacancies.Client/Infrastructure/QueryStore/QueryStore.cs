@@ -17,9 +17,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         {
         }
 
-        public async Task<Dashboard> GetDashboardAsync(string key)
+        public async Task<Dashboard> GetDashboardAsync(string viewKey)
         {
-            var filter = Builders<Dashboard>.Filter.Eq(d => d.ViewKey, key);
+            var filter = Builders<Dashboard>.Filter.Eq(d => d.Id, viewKey);
 
             var collection = GetCollection<Dashboard>();
             var result = await collection.FindAsync(filter);
@@ -27,18 +27,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             return result?.FirstOrDefault();
         }
 
-        public async Task UpdateDashboardAsync(string key, Dashboard dashboard)
+        public async Task UpdateDashboardAsync(Dashboard dashboard)
         {
-            var filter = Builders<Dashboard>.Filter.Eq(d => d.ViewKey, key);
+            var filter = Builders<Dashboard>.Filter.Eq(d => d.Id, dashboard.Id);
             var collection = GetCollection<Dashboard>();
-            var result = await collection.FindAsync(filter);
-
-            var existingDashboard = result?.FirstOrDefault();
-
-            if (existingDashboard != null)
-            {
-                dashboard.Id = existingDashboard.Id;
-            }
 
             await collection.ReplaceOneAsync(filter, dashboard, new UpdateOptions { IsUpsert = true });
         }

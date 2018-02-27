@@ -5,7 +5,6 @@ using Esfa.Recruit.Vacancies.Client.Domain.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using MediatR;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -26,20 +25,18 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Handlers
 
         public async Task Handle(UpdateDashboardCommand message, CancellationToken cancellationToken)
         {
-            var key = string.Format(QueryViewKeys.DashboardViewPrefix, message.EmployerAccountId);
             var employerVacancies = await _repository.GetVacanciesByEmployerAccountAsync(message.EmployerAccountId);
             var vacancySummaries = employerVacancies.Select(v => VacancySummaryMapper.MapFromVacancy(v));
             
-            var newDashboard = CreateNewDashboard(key, vacancySummaries);
-            await _writer.UpdateDashboardAsync(key, newDashboard);
+            var dashboard = CreateDashboard(message.EmployerAccountId, vacancySummaries);
+            await _writer.UpdateDashboardAsync(dashboard);
         }
 
-        private Dashboard CreateNewDashboard(string key, IEnumerable<VacancySummary> summaries)
+        private Dashboard CreateDashboard(string employerAccountId, IEnumerable<VacancySummary> summaries)
         {
             return new Dashboard
             {
-                ViewKey = key,
-                Id = Guid.NewGuid(),
+                Id = string.Format(QueryViewKeys.DashboardViewPrefix, employerAccountId),
                 Vacancies = summaries
             };
         }
