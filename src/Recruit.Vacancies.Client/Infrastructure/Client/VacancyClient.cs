@@ -24,7 +24,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _messaging = messaging;
         }
 
-        public async Task UpdateVacancyAsync(Vacancy vacancy)
+        public async Task UpdateVacancyAsync(Vacancy vacancy, bool canUpdateQueryStore = true)
         {
             var command = new UpdateVacancyCommand
             {
@@ -32,7 +32,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             };
 
             await _messaging.SendCommandAsync(command);
-            await UpdateDashboardAsync(vacancy.EmployerAccountId);
+
+            if (canUpdateQueryStore)
+                await UpdateDashboardAsync(vacancy.EmployerAccountId);
         }
 
         public async Task<Vacancy> GetVacancyForEditAsync(Guid id)
