@@ -47,7 +47,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                     Title = title,
                     EmployerAccountId = employerAccountId,
                     Status = VacancyStatus.Draft,
-                    CreatedDate = DateTime.UtcNow
+                    CreatedDate = DateTime.UtcNow,
+                    IsDeleted = false
                 }
             };
 
@@ -74,6 +75,28 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 Vacancy = vacancy
             };
                 
+            await _messaging.SendCommandAsync(command);
+
+            return true;
+        }
+
+        public async Task<bool> DeleteVacancyAsync(Guid id)
+        {
+            var vacancy = await GetVacancyForEditAsync(id);
+            
+            if (vacancy == null || vacancy.CanDelete == false)
+            {
+                return false;
+            }
+
+            vacancy.IsDeleted = true;
+            vacancy.DeletedDate = DateTime.UtcNow;
+
+            var command = new DeleteVacancyCommand
+            {
+                Vacancy = vacancy
+            };
+
             await _messaging.SendCommandAsync(command);
 
             return true;

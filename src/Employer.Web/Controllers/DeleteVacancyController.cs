@@ -1,0 +1,50 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.Configuration;
+using Esfa.Recruit.Employer.Web.Orchestrators;
+using Esfa.Recruit.Employer.Web.ViewModels.DeleteVacancy;
+using Esfa.Recruit.Employer.Web.ViewModels.Sections;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Esfa.Recruit.Employer.Web.Controllers
+{
+    [Route("accounts/{employerAccountId}/vacancies/{vacancyId}")]
+    public class DeleteVacancyController : Controller
+    {
+        private readonly DeleteVacancyOrchestrator _orchestrator;
+
+        public DeleteVacancyController(DeleteVacancyOrchestrator orchestrator)
+        {
+            _orchestrator = orchestrator;
+        }
+
+        [HttpGet("delete", Name = RouteNames.DeleteVacancy_Delete_Get)]
+        public async Task<IActionResult> Delete(Guid vacancyId)
+        {
+            var vm = await _orchestrator.GetDeleteViewModelAsync(vacancyId);
+            return View(vm);
+        }
+
+        [HttpPost("delete", Name = RouteNames.DeleteVacancy_Delete_Post)]
+        public async Task<IActionResult> Delete(DeleteEditModel m)
+        {
+            if (!m.ConfirmDeletion)
+            {
+                return RedirectToRoute(RouteNames.Sections_Index_Get);
+            }
+
+            var result = await _orchestrator.TryDeleteVacancyAsync(m);
+
+            if (!result)
+            {
+                ModelState.AddModelError(string.Empty, "This vacancy does not exist or has already been deleted.");
+                var vm = await _orchestrator.GetDeleteViewModelAsync(m.VacancyId);
+                return View(vm);
+            }
+            
+            return RedirectToRoute(RouteNames.Dashboard_Index_Get);
+        }
+    }
+}

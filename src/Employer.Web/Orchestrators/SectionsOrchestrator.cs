@@ -20,7 +20,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             var vm = new IndexViewModel
             {
-                Title = vacancy.Title
+                Title = vacancy.Title,
+                CanDelete = vacancy.CanDelete
             };
 
             return vm;

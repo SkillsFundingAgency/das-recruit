@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using System;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Domain.Enums;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 {
@@ -27,6 +28,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         public async Task<Vacancy> GetVacancyAsync(Guid id)
         {
             var filter = Builders<Vacancy>.Filter.Eq(v => v.Id, id);
+            filter = filter & Builders<Vacancy>.Filter.Eq(v => v.IsDeleted, false);
 
             var collection = GetCollection<Vacancy>();
             var result = await collection.FindAsync(filter);
@@ -35,7 +37,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 
         public async Task UpdateAsync(Vacancy vacancy)
         {
-            var filter = Builders<Vacancy>.Filter.Eq("_id", vacancy.Id);
+            var filter = Builders<Vacancy>.Filter.Eq(v => v.Id, vacancy.Id);
             var collection = GetCollection<Vacancy>();
             await collection.ReplaceOneAsync(filter, vacancy);
         }

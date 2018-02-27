@@ -44,6 +44,9 @@
 
         public const string Sections_Index_Get = "Sections_Index_Get";
 
+        public const string DeleteVacancy_Delete_Get = "DeleteVacancy_Delete_Get";
+        public const string DeleteVacancy_Delete_Post = "DeleteVacancy_Delete_Post";
+
         public const string Submitted_Index_Get = "Submitted_Index_Get";
 
         public const string TrainingProvider_Index_Get = "TrainingProvider_Index_Get";

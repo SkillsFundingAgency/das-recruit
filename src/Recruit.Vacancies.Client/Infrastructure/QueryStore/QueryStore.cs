@@ -21,6 +21,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         public async Task<IEnumerable<Vacancy>> GetVacanciesAsync(string employerAccountId)
         {
             var filter = Builders<Vacancy>.Filter.Eq(v => v.EmployerAccountId, employerAccountId);
+            filter = filter & Builders<Vacancy>.Filter.Eq(v => v.IsDeleted, false);
 
             var collection = GetCollection<Vacancy>();
             var result = await collection.FindAsync(filter);
