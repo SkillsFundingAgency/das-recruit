@@ -11,6 +11,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Middleware;
+using Newtonsoft.Json;
 
 namespace Esfa.Recruit.Employer.Web.Configuration
 {
@@ -94,12 +95,11 @@ namespace Esfa.Recruit.Employer.Web.Configuration
         private static async Task PopulateAccountsClaim(Microsoft.AspNetCore.Authentication.OpenIdConnect.TokenValidatedContext ctx, IEmployerAccountService accountsSvc)
         {
             var userId = ctx.Principal.Claims.First(c => c.Type.Equals(EmployerRecruitClaims.IdamsUserIdClaimTypeIdentifier)).Value;
-            var accounts = await accountsSvc.GetAccountIdentifiersAsync(userId);
+            var accounts = await accountsSvc.GetEmployerIdentifiersAsync(userId);
+            var accountsAsJson = JsonConvert.SerializeObject(accounts);
+            var associatedAccountsClaim = new Claim(EmployerRecruitClaims.AccountsClaimsTypeIdentifier, accountsAsJson, JsonClaimValueTypes.Json);
 
-            var accountsConcatenated = string.Join(",", accounts);
-            var associatedAccountClaim = new Claim(EmployerRecruitClaims.AccountsClaimsTypeIdentifier, accountsConcatenated, ClaimValueTypes.String);
-
-            ctx.Principal.Identities.First().AddClaim(associatedAccountClaim);
+            ctx.Principal.Identities.First().AddClaim(associatedAccountsClaim);
         }
     }
 }

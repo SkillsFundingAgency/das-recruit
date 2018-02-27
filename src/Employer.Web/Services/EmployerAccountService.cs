@@ -1,7 +1,8 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Esfa.Recruit.Employer.Web.Models;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.EAS.Account.Api.Client;
-using SFA.DAS.EAS.Account.Api.Types;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -18,26 +19,14 @@ namespace Esfa.Recruit.Employer.Web.Services
             _accountApiClient = accountApiClient;
         }
 
-        public async Task<string[]> GetAccountIdentifiersAsync(string userId)
+        public async Task<Dictionary<string, EmployerIdentifier>> GetEmployerIdentifiersAsync(string userId)
         {
             try
             {
                 var accounts = await _accountApiClient.GetUserAccounts(userId);
-                
-                return accounts.ToList().Select(acc => acc.HashedAccountId).ToArray();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogCritical(ex, "Failure connecting to Accounts API");
-                throw;
-            }
-        }
 
-        public async Task<AccountDetailViewModel> GetAccountDetailAsync(string employerAccountId)
-        {
-            try
-            {
-                return await _accountApiClient.GetAccount(employerAccountId);
+                return accounts.Select(acc => new EmployerIdentifier { AccountId = acc.HashedAccountId, EmployerName = acc.DasAccountName })
+                                .ToDictionary(item => item.AccountId);
             }
             catch (Exception ex)
             {

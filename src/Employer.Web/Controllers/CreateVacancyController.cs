@@ -23,7 +23,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             return View(vm);
         }
 
-        [HttpPost("new-vacancy", Name = RouteNames.NewVacancy_Index_Post)]        
+        [HttpPost("new-vacancy", Name = RouteNames.NewVacancy_Index_Post)]
         public async Task<IActionResult> Index(IndexViewModel vm)
         {
             if(!ModelState.IsValid)
