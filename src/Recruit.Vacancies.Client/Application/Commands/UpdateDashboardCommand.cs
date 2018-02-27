@@ -6,6 +6,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Commands
 {
     public class UpdateDashboardCommand : ICommand, IRequest
     {
-        public Vacancy Vacancy { get; set; }
+        public string EmployerAccountId { get; set; }
     }
 }

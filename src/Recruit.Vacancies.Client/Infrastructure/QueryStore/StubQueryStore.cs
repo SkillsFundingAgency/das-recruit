@@ -11,7 +11,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         {
             var dashboard = new Dashboard
             {
-                EmployerAccountId = employerAccountId,
+                ViewKey = employerAccountId,
                 Vacancies = new List<VacancySummary>
                 {
                     new VacancySummary
