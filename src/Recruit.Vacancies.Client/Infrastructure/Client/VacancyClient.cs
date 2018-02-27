@@ -2,6 +2,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Enums;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
+using Esfa.Recruit.Vacancies.Client.Domain.Projections;
 using Esfa.Recruit.Vacancies.Client.Domain.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using System;
@@ -12,13 +13,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
     public class VacancyClient : IVacancyClient
     {
         private readonly IMessaging _messaging;
-        private readonly IQueryStoreReader _queryStore;
+        private readonly IQueryStoreReader _reader;
         private readonly IVacancyRepository _repository;
 
-        public VacancyClient(IVacancyRepository repository, IQueryStoreReader queryStore, IMessaging messaging)
+        public VacancyClient(IVacancyRepository repository, IQueryStoreReader reader, IMessaging messaging)
         {
             _repository = repository;
-            _queryStore = queryStore;
+            _reader = reader;
             _messaging = messaging;
         }
 
@@ -110,6 +111,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             await _messaging.SendCommandAsync(command);
 
             return true;
+        }
+        
+        public async Task<Dashboard> GetDashboardAsync(string employerAccountId)
+        {
+            return await _reader.GetDashboardAsync(employerAccountId);
         }
     }
 }

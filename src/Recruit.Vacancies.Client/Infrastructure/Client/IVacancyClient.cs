@@ -1,4 +1,5 @@
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Projections;
 using System;
 using System.Threading.Tasks;
 
@@ -11,5 +12,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task UpdateVacancyAsync(Vacancy vacancy);
         Task<bool> SubmitVacancyAsync(Guid id);
         Task<bool> DeleteVacancyAsync(Guid id);
+        Task<Dashboard> GetDashboardAsync(string employerAccountId);
     }
 }
