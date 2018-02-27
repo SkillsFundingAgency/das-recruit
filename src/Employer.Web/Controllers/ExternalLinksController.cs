@@ -38,10 +38,9 @@ namespace Employer.Web.Controllers
         }
 
         [HttpGet("rename-account", Name = RouteNames.Dashboard_AccountsRename)]
-        public IActionResult RenameAccount(string returnUrl)
+        public IActionResult RenameAccount(string employerAccountId)
         {
-            var encodedReturnUrl = WebUtility.UrlEncode($"{Request.GetRequestUrlRoot()}{returnUrl}");            
-            var url = string.Format(_linkHelper.RenameAccount, _authConfig.ClientId);
+            var url = string.Format(_linkHelper.RenameAccount, employerAccountId);
             return Redirect(url);
         }
 
