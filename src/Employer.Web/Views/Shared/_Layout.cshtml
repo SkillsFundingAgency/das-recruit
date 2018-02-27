@@ -1,5 +1,4 @@
-﻿@using Microsoft.Extensions.Options;
-@using Esfa.Recruit.Employer.Web.Configuration;
+﻿@using Esfa.Recruit.Employer.Web.Configuration;
 @inject ManageApprenticeshipsLinkHelper ExternalLinks
 <!DOCTYPE html>
 <!--[if lt IE 9]><html class="lte-ie8" lang="en"><![endif]-->
@@ -114,7 +113,7 @@
                 <ul role="menubar" id="global-nav-links">
                     <li><a asp-route="@RouteNames.Dashboard_AccountsTeams" class="" role="menuitem">Home</a></li>
                     <li><a asp-route="@RouteNames.Dashboard_AccountsFinance" class="" role="menuitem">Finance</a></li>
-                    <li><a href="" class="selected" role="menuitem">Recruit</a></li>
+                    <li><a asp-route="@RouteNames.Dashboard_Index_Get" class="selected" role="menuitem">Recruit</a></li>
                     <li><a asp-route="@RouteNames.Dashboard_AccountsApprentices" class="" role="menuitem">Apprentices</a></li>
                     <li><a asp-route="@RouteNames.Dashboard_AccountsTeams" class="" role="menuitem">Your team</a></li>
                     <li><a asp-route="@RouteNames.Dashboard_AccountsAgreements" class="" role="menuitem">Your organisations and agreements</a></li>
