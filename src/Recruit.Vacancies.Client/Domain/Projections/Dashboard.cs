@@ -7,7 +7,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Projections
     {
         public Guid Id { get; set; }
 
-        public string EmployerAccountId { get; set; }
+        public string ViewKey { get; set; }
 
         public IEnumerable<VacancySummary> Vacancies { get; set; }
     }

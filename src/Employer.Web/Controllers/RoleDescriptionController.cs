@@ -37,6 +37,5 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             return RedirectToRoute(RouteNames.CandidateProfile_Index_Get);
         }
-        
     }
 }

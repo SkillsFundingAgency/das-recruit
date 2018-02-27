@@ -1,8 +1,9 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Mappings;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Projections;
 using Esfa.Recruit.Vacancies.Client.Domain.QueryStore;
+using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -14,47 +15,32 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Handlers
 {
     public class UpdateDashboardCommandHandler : IRequestHandler<UpdateDashboardCommand>
     {
-        private readonly IQueryStoreReader _reader;
         private readonly IQueryStoreWriter _writer;
+        private readonly IVacancyRepository _repository;
 
-        public UpdateDashboardCommandHandler(IQueryStoreReader reader, IQueryStoreWriter repository)
+        public UpdateDashboardCommandHandler(IQueryStoreWriter writer, IVacancyRepository repository)
         {
-            _reader = reader;
-            _writer = repository;
+            _writer = writer;
+            _repository = repository;
         }
 
         public async Task Handle(UpdateDashboardCommand message, CancellationToken cancellationToken)
         {
-            var key = message.Vacancy.EmployerAccountId;
-            var updatedVacancy = message.Vacancy;
-            var dashboard = await _reader.GetDashboardAsync(key);
-
-            var updatedVacancySummary = VacancySummaryMapper.MapFromVacancy(updatedVacancy);
-
-            if (dashboard == null)
-            {
-                var newDashboard = CreateNewDashboard(key, updatedVacancySummary);
-                await _writer.UpdateDashboardAsync(key, newDashboard);
-            }
-            else
-            {
-                dashboard.Vacancies = dashboard.Vacancies
-                                                .Where(v => v.Id != updatedVacancy.Id)
-                                                .Concat(new [] { updatedVacancySummary });
-                await _writer.UpdateDashboardAsync(key, dashboard);
-            }
+            var key = string.Format(QueryViewKeys.DashboardViewPrefix, message.EmployerAccountId);
+            var employerVacancies = await _repository.GetVacanciesByEmployerAccountAsync(message.EmployerAccountId);
+            var vacancySummaries = employerVacancies.Select(v => VacancySummaryMapper.MapFromVacancy(v));
+            
+            var newDashboard = CreateNewDashboard(key, vacancySummaries);
+            await _writer.UpdateDashboardAsync(key, newDashboard);
         }
 
-        private Dashboard CreateNewDashboard(string key, VacancySummary updatedVacancySummary)
+        private Dashboard CreateNewDashboard(string key, IEnumerable<VacancySummary> summaries)
         {
             return new Dashboard
             {
-                EmployerAccountId = key,
+                ViewKey = key,
                 Id = Guid.NewGuid(),
-                Vacancies = new List<VacancySummary>
-                {
-                    updatedVacancySummary
-                }
+                Vacancies = summaries
             };
         }
     }

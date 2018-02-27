@@ -5,6 +5,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Projections;
 using Esfa.Recruit.Vacancies.Client.Domain.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using System;
 using System.Threading.Tasks;
 
@@ -23,14 +24,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _messaging = messaging;
         }
 
-        public Task UpdateVacancyAsync(Vacancy vacancy)
+        public async Task UpdateVacancyAsync(Vacancy vacancy)
         {
             var command = new UpdateVacancyCommand
             {
                 Vacancy = vacancy
             };
 
-            return _messaging.SendCommandAsync(command);
+            await _messaging.SendCommandAsync(command);
+            await UpdateDashboardAsync(vacancy.EmployerAccountId);
         }
 
         public async Task<Vacancy> GetVacancyForEditAsync(Guid id)
@@ -54,19 +56,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             };
 
             await _messaging.SendCommandAsync(command);
-            await UpdateDashboardAsync(command.Vacancy);
+            await UpdateDashboardAsync(employerAccountId);
 
             return command.Vacancy.Id;
-        }
-
-        private async Task UpdateDashboardAsync(Vacancy vacancy)
-        {
-            var command = new UpdateDashboardCommand
-            {
-                Vacancy = vacancy
-            };
-
-            await _messaging.SendCommandAsync(command);
         }
 
         public async Task<bool> SubmitVacancyAsync(Guid id)
@@ -87,6 +79,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             };
                 
             await _messaging.SendCommandAsync(command);
+            await UpdateDashboardAsync(vacancy.EmployerAccountId);
 
             return true;
         }
@@ -109,13 +102,25 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             };
 
             await _messaging.SendCommandAsync(command);
+            await UpdateDashboardAsync(vacancy.EmployerAccountId);
 
             return true;
         }
         
         public async Task<Dashboard> GetDashboardAsync(string employerAccountId)
         {
-            return await _reader.GetDashboardAsync(employerAccountId);
+            var key = string.Format(QueryViewKeys.DashboardViewPrefix, employerAccountId);
+            return await _reader.GetDashboardAsync(key);
+        }
+
+        private async Task UpdateDashboardAsync(string employerAccountId)
+        {
+            var command = new UpdateDashboardCommand
+            {
+                EmployerAccountId = employerAccountId
+            };
+
+            await _messaging.SendCommandAsync(command);
         }
     }
 }
