@@ -1,4 +1,5 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Application.Commands;
+using Esfa.Recruit.Vacancies.Client.Application.Mappings;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Projections;
 using Esfa.Recruit.Vacancies.Client.Domain.QueryStore;
@@ -14,13 +15,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Handlers
     public class UpdateDashboardCommandHandler : IRequestHandler<UpdateDashboardCommand>
     {
         private readonly IQueryStoreReader _reader;
-
-        private readonly IQueryStoreWriter _repository;
+        private readonly IQueryStoreWriter _writer;
+        private readonly VacancySummaryMapper _summaryMapper = new VacancySummaryMapper();
 
         public UpdateDashboardCommandHandler(IQueryStoreReader reader, IQueryStoreWriter repository)
         {
             _reader = reader;
-            _repository = repository;
+            _writer = repository;
         }
 
         public async Task Handle(UpdateDashboardCommand message, CancellationToken cancellationToken)
@@ -29,19 +30,19 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Handlers
             var updatedVacancy = message.Vacancy;
             var dashboard = await _reader.GetDashboardAsync(key);
 
-            var updatedVacancySummary = GetUpdatedVacancySummary(updatedVacancy);
+            var updatedVacancySummary = _summaryMapper.MapFromVacancy(updatedVacancy);
 
             if (dashboard == null)
             {
                 var newDashboard = CreateNewDashboard(key, updatedVacancySummary);
-                await _repository.UpdateDashboardAsync(key, newDashboard);
+                await _writer.UpdateDashboardAsync(key, newDashboard);
             }
             else
             {
                 dashboard.Vacancies = dashboard.Vacancies
                                                 .Where(v => v.Id != updatedVacancy.Id)
                                                 .Concat(new [] { updatedVacancySummary });
-                await _repository.UpdateDashboardAsync(key, dashboard);
+                await _writer.UpdateDashboardAsync(key, dashboard);
             }
         }
 
@@ -55,18 +56,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Handlers
                 {
                     updatedVacancySummary
                 }
-            };
-        }
-
-        private VacancySummary GetUpdatedVacancySummary(Vacancy updatedVacancy)
-        {
-            return new VacancySummary
-            {
-                Id = updatedVacancy.Id,
-                Title = updatedVacancy.Title,
-                CreatedDate = updatedVacancy.CreatedDate,
-                Status = updatedVacancy.Status,
-                SubmittedDate = updatedVacancy.SubmittedDate
             };
         }
     }
