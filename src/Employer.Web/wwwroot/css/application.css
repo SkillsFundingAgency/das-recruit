@@ -3,6 +3,14 @@
     display:none;
 }
 
+/*** Overide GDS styles to match DAS ***/
+@media(min-width: 641px) {
+    #global-header .header-proposition #proposition-name {
+        margin-top:5px;
+        display: inline-block
+    }
+}
+
 
 /*** Utility classes ***/
 .button-link {
