@@ -77,7 +77,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             {
                 Vacancy = vacancy
             };
-                
+
             await _messaging.SendCommandAsync(command);
             await UpdateDashboardAsync(vacancy.EmployerAccountId);
 
@@ -117,7 +117,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         {
             var command = new UpdateDashboardCommand
             {
-                EmployerAccountId = employerAccountId
+                EmployerAccountId = employerAccountId,
             };
 
             await _messaging.SendCommandAsync(command);

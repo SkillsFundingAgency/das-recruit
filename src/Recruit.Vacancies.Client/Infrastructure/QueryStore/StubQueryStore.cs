@@ -11,7 +11,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         {
             var dashboard = new Dashboard
             {
-                ViewKey = employerAccountId,
+                Id = employerAccountId,
                 Vacancies = new List<VacancySummary>
                 {
                     new VacancySummary
@@ -23,7 +23,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             return Task.FromResult(dashboard);
         }
 
-        public Task UpdateDashboardAsync(string key, Dashboard dashboard)
+        public Task UpdateDashboardAsync(Dashboard dashboard)
         {
             return Task.CompletedTask;
         }
