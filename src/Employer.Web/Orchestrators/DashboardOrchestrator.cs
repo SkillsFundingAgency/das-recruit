@@ -10,7 +10,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
     {
         private readonly IVacancyClient _vacancyClient;
         private readonly IEmployerAccountService _getAccountService;
-        private readonly DashboardMapper _mapper = new DashboardMapper();
 
         public DashboardOrchestrator(IEmployerAccountService getAccountsService, IVacancyClient vacancyClient)
         {
@@ -24,7 +23,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             var dashboard = _vacancyClient.GetDashboardAsync(employerAccountId);
             await Task.WhenAll(account, dashboard);
 
-            var vm = _mapper.MapFromDashboard(dashboard.Result, account.Result);
+            var vm = DashboardMapper.MapFromDashboard(dashboard.Result, account.Result);
 
             return vm;
         }

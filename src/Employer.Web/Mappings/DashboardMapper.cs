@@ -8,7 +8,7 @@ namespace Esfa.Recruit.Employer.Web.Mappings
 {
     public class DashboardMapper
     {
-        public DashboardViewModel MapFromDashboard(Dashboard dashboard, AccountDetailViewModel accountDetail)
+        public static DashboardViewModel MapFromDashboard(Dashboard dashboard, AccountDetailViewModel accountDetail)
         {
             return new DashboardViewModel
             {
