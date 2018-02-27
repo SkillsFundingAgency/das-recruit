@@ -1,5 +1,6 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Projections;
 using Esfa.Recruit.Vacancies.Client.Domain.QueryStore;
 using MediatR;
 using System;
@@ -57,7 +58,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Handlers
             };
         }
 
-        private VacancySummary GetUpdatedVacancySummary(Vacancy updatedVacancy) // MapToVacancySummary Projection
+        private VacancySummary GetUpdatedVacancySummary(Vacancy updatedVacancy)
         {
             return new VacancySummary
             {

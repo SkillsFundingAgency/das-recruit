@@ -1,4 +1,4 @@
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Projections;
 using Esfa.Recruit.Vacancies.Client.Domain.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Microsoft.Extensions.Options;
@@ -29,13 +29,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 
         public async Task UpdateDashboardAsync(string key, Dashboard dashboard)
         {
-            //var changesDocument = dashboard.ToBsonDocument();
-
-            //var update = new BsonDocumentUpdateDefinition<BsonDocument>(new BsonDocument("$set", changesDocument));
-
             var filter = Builders<Dashboard>.Filter.Eq(d => d.EmployerAccountId, key);
             var collection = GetCollection<Dashboard>();
-            //collection.UpdateOne<Dashboard>(filter, new UpdateDefinition<Dashboard>())
 
             await collection.ReplaceOneAsync(filter, dashboard, new UpdateOptions { IsUpsert = true });
         }
