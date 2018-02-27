@@ -1,7 +1,4 @@
 using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Configuration;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Options;
 
 namespace Microsoft.AspNetCore.Builder
 {
