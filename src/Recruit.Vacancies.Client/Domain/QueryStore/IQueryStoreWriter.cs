@@ -1,4 +1,4 @@
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Projections;
 using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Vacancies.Client.Domain.QueryStore
