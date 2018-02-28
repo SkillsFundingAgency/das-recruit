@@ -6,9 +6,9 @@ namespace Esfa.Recruit.Employer.Web.Services
 {
     public class StubEmployerAccountService : IEmployerAccountService
     {
-        public Task<Dictionary<string, EmployerIdentifier>> GetEmployerIdentifiersAsync(string userId)
+        public Task<IDictionary<string, EmployerIdentifier>> GetEmployerIdentifiersAsync(string userId)
         {
-            return Task.FromResult(new Dictionary<string, EmployerIdentifier>()
+            return Task.FromResult<IDictionary<string, EmployerIdentifier>>(new Dictionary<string, EmployerIdentifier>()
                                     {
                                         { "abc", new EmployerIdentifier { AccountId = "abc", EmployerName = "Ozzy Scott" } },
                                         { "MYJR4X", new EmployerIdentifier { AccountId = "MYJR4X", EmployerName = "Mister G" } },
