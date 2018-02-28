@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Configuration;
@@ -21,6 +22,8 @@ namespace Esfa.Recruit.Vacancies.Jobs
 
         static void Main(string[] args)
         {
+            ILoggerFactory loggerFactory = null;
+
             try
             {
                 IServiceCollection serviceCollection = new ServiceCollection();
@@ -28,29 +31,39 @@ namespace Esfa.Recruit.Vacancies.Jobs
 
                 var configuration = BuildConfiguration();
                 
-                ConfigureLogging(serviceProvider);
+                using (BuildLoggerFactory(serviceProvider, configuration))
+                {
+                    JobHostConfiguration jobConfiguration = GetHostConfiguration(serviceProvider);
 
-                JobHostConfiguration jobConfiguration = GetHostConfiguration(serviceProvider);
-
-                var host = new JobHost(jobConfiguration);
-                host.RunAndBlock();
+                    var host = new JobHost(jobConfiguration);
+                    host.RunAndBlock();
+                }
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
+            finally
+            {
+                loggerFactory.Dispose();
+            }
         }
 
-        private static void ConfigureLogging(ServiceProvider serviceProvider)
+        private static ILoggerFactory BuildLoggerFactory(ServiceProvider serviceProvider, IConfigurationRoot config)
         {
+            var instrumentationKey = config["AppInsights_InstrumentationKey"];
+            Console.WriteLine($"AppInsights: {config.GetValue<string>("AppInsights_InstrumentationKey")}");
+            
             var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
             loggerFactory.AddNLog(new NLogProviderOptions { CaptureMessageProperties = true, CaptureMessageTemplates = true });
             loggerFactory.ConfigureNLog("nlog.config");
+            loggerFactory.AddApplicationInsights(instrumentationKey, null);
+
+            return loggerFactory;
         }
 
         private static JobHostConfiguration GetHostConfiguration(ServiceProvider serviceProvider)
         {
-
             // Host configuration
             var jobConfiguration = new JobHostConfiguration();
             jobConfiguration.Queues.MaxPollingInterval = TimeSpan.FromSeconds(10);
@@ -62,6 +75,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
             {
                 jobConfiguration.DashboardConnectionString = null; // Reduces errors in output.
                 jobConfiguration.UseDevelopmentSettings();
+                jobConfiguration.Tracing.ConsoleLevel = TraceLevel.Off;
             }
 
             return jobConfiguration;
@@ -82,7 +96,6 @@ namespace Esfa.Recruit.Vacancies.Jobs
             }
 
             var configuration = builder.Build();
-
             Environment.SetEnvironmentVariable("AzureWebJobsDashboard", configuration.GetConnectionString("WebJobsDashboard"));
             Environment.SetEnvironmentVariable("AzureWebJobsStorage", configuration.GetConnectionString("WebJobsStorage"));  
 

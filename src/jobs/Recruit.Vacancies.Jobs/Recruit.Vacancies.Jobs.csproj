@@ -18,6 +18,7 @@
     <PackageReference Include="SFA.DAS.NLog.Targets.Redis" Version="1.0.0.56651"/>
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="2.0.0"/>
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.0.0"/>
+    <PackageReference Include="Microsoft.Azure.WebJobs.Logging.ApplicationInsights" Version="3.0.0-beta4"/>
   </ItemGroup>
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="2.0.0"/>
