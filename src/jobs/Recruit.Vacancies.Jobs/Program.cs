@@ -24,23 +24,13 @@ namespace Esfa.Recruit.Vacancies.Jobs
             try
             {
                 IServiceCollection serviceCollection = new ServiceCollection();
-                ConfigureServices(serviceCollection);
-                var serviceProvider = serviceCollection.BuildServiceProvider();
+                var serviceProvider = ConfigureServices(serviceCollection).BuildServiceProvider();
 
-                var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
-                loggerFactory.AddNLog(new NLogProviderOptions { CaptureMessageProperties = true, CaptureMessageTemplates = true });
-                loggerFactory.ConfigureNLog("nlog.config");
+                var configuration = BuildConfiguration();
+                
+                ConfigureLogging(serviceProvider);
 
-                var jobConfiguration = new JobHostConfiguration();
-                jobConfiguration.Queues.MaxPollingInterval = TimeSpan.FromSeconds(10);
-                jobConfiguration.Queues.BatchSize = 1;
-                jobConfiguration.JobActivator = new CustomJobActivator(serviceProvider);
-                jobConfiguration.UseTimers();
-
-                if (_isDevelopment)
-                {
-                    jobConfiguration.UseDevelopmentSettings();
-                }
+                JobHostConfiguration jobConfiguration = GetHostConfiguration(serviceProvider);
 
                 var host = new JobHost(jobConfiguration);
                 host.RunAndBlock();
@@ -51,41 +41,69 @@ namespace Esfa.Recruit.Vacancies.Jobs
             }
         }
 
-        private static IConfiguration BuildConfiguration()
+        private static void ConfigureLogging(ServiceProvider serviceProvider)
         {
-            return new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appSettings.json", optional: false)
-                .AddJsonFile($"appSettings.{_environmentName}.json", true)
-                .AddUserSecrets<Program>()
-                .Build();
+            var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
+            loggerFactory.AddNLog(new NLogProviderOptions { CaptureMessageProperties = true, CaptureMessageTemplates = true });
+            loggerFactory.ConfigureNLog("nlog.config");
         }
 
-        private static void ConfigureServices(IServiceCollection serviceCollection)
+        private static JobHostConfiguration GetHostConfiguration(ServiceProvider serviceProvider)
+        {
+
+            // Host configuration
+            var jobConfiguration = new JobHostConfiguration();
+            jobConfiguration.Queues.MaxPollingInterval = TimeSpan.FromSeconds(10);
+            jobConfiguration.Queues.BatchSize = 1;
+            jobConfiguration.JobActivator = new CustomJobActivator(serviceProvider);
+            jobConfiguration.UseTimers();
+
+            if (_isDevelopment)
+            {
+                jobConfiguration.UseDevelopmentSettings();
+            }
+
+            return jobConfiguration;
+        }
+
+        private static IConfigurationRoot BuildConfiguration()
         {
             // Setup configuration classes
-            var configuration = new ConfigurationBuilder()
+            var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appSettings.json", optional: false)
                 .AddJsonFile($"appSettings.{_environmentName}.json", true)
-                .AddUserSecrets<Program>()
-                .Build();
+                .AddEnvironmentVariables();
 
+            if (_isDevelopment)
+            {
+                builder.AddUserSecrets<Program>();
+            }
+
+            var configuration = builder.Build();
+
+            Environment.SetEnvironmentVariable("AzureWebJobsDashboard", configuration.GetConnectionString("WebJobsDashboard"));
+            Environment.SetEnvironmentVariable("AzureWebJobsStorage", configuration.GetConnectionString("WebJobsStorage"));  
+
+            return configuration;
+        }
+
+        private static IServiceCollection ConfigureServices(IServiceCollection serviceCollection)
+        {
             // Setup dependencies
             serviceCollection.AddSingleton<ILoggerFactory, LoggerFactory>();
             serviceCollection.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
-            serviceCollection.AddLogging((builder) => 
+            serviceCollection.AddLogging((options) => 
             {
-                builder.SetMinimumLevel(LogLevel.Trace);
-                builder.AddConsole();
-                builder.AddDebug();
+                options.SetMinimumLevel(LogLevel.Trace);
+                options.AddConsole();
+                options.AddDebug();
             });
 
-            // Setup Jobs
+            // Add Jobs
             serviceCollection.AddScoped<GenerateVacancyNumberJob, GenerateVacancyNumberJob>();
-            
-            Environment.SetEnvironmentVariable("AzureWebJobsDashboard", configuration.GetConnectionString("WebJobsDashboard"));
-            Environment.SetEnvironmentVariable("AzureWebJobsStorage", configuration.GetConnectionString("WebJobsStorage"));  
+
+            return serviceCollection;
         }
     }
 }
