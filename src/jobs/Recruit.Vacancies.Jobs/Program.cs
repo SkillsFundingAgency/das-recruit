@@ -60,6 +60,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
 
             if (_isDevelopment)
             {
+                jobConfiguration.DashboardConnectionString = null; // Reduces errors in output.
                 jobConfiguration.UseDevelopmentSettings();
             }
 
