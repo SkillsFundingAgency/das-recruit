@@ -19,7 +19,7 @@ namespace Esfa.Recruit.Employer.Web.Services
             _accountApiClient = accountApiClient;
         }
 
-        public async Task<Dictionary<string, EmployerIdentifier>> GetEmployerIdentifiersAsync(string userId)
+        public async Task<IDictionary<string, EmployerIdentifier>> GetEmployerIdentifiersAsync(string userId)
         {
             try
             {
