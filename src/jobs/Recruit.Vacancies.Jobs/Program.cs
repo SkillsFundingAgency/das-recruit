@@ -116,6 +116,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
 
             // Add Jobs
             serviceCollection.AddScoped<GenerateVacancyNumberJob, GenerateVacancyNumberJob>();
+            //serviceCollection.AddSingleton<IApprenticeshipProgrammeApiClient, ApprenticeshipProgrammeApiClient>();
 
             return serviceCollection;
         }
