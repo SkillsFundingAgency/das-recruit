@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using Esfa.Recruit.Vacancies.Jobs.Mongo;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
+using SFA.DAS.Apprenticeships.Api.Client;
 
 namespace Esfa.Recruit.Vacancies.Jobs
 {
@@ -26,10 +28,11 @@ namespace Esfa.Recruit.Vacancies.Jobs
 
             try
             {
-                IServiceCollection serviceCollection = new ServiceCollection();
-                var serviceProvider = ConfigureServices(serviceCollection).BuildServiceProvider();
-
                 var configuration = BuildConfiguration();
+
+                IServiceCollection serviceCollection = new ServiceCollection();
+                var serviceProvider = ConfigureServices(serviceCollection, configuration).BuildServiceProvider();
+
                 
                 using (BuildLoggerFactory(serviceProvider, configuration))
                 {
@@ -102,23 +105,33 @@ namespace Esfa.Recruit.Vacancies.Jobs
             return configuration;
         }
 
-        private static IServiceCollection ConfigureServices(IServiceCollection serviceCollection)
+        private static IServiceCollection ConfigureServices(IServiceCollection services, IConfiguration configuration)
         {
             // Setup dependencies
-            serviceCollection.AddSingleton<ILoggerFactory, LoggerFactory>();
-            serviceCollection.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
-            serviceCollection.AddLogging((options) => 
+            services.AddSingleton<ILoggerFactory, LoggerFactory>();
+            services.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
+            services.AddLogging((options) => 
             {
                 options.SetMinimumLevel(LogLevel.Trace);
                 options.AddConsole();
                 options.AddDebug();
             });
+            services.AddScoped<StandardsAndFrameworksUpdater>();
+            services.AddSingleton<IApprenticeshipProgrammeApiClient, ApprenticeshipProgrammeApiClient>();
+            services.AddSingleton<IUpdateQueryStore, QueryStore>();
+            services.AddApprentieshipsApi();
+
+            var mongoConnectionString = configuration.GetConnectionString("MongoDb");
+            services.Configure<MongoDbConnectionDetails>(options => 
+            {
+                options.ConnectionString = mongoConnectionString;
+            });
 
             // Add Jobs
-            serviceCollection.AddScoped<GenerateVacancyNumberJob, GenerateVacancyNumberJob>();
-            //serviceCollection.AddSingleton<IApprenticeshipProgrammeApiClient, ApprenticeshipProgrammeApiClient>();
+            // services.AddScoped<GenerateVacancyNumberJob>();
+            services.AddScoped<UpdateStandardsAndFrameworksJob>();
 
-            return serviceCollection;
+            return services;
         }
     }
 }
