@@ -8,7 +8,7 @@ using Polly;
 using SFA.DAS.Apprenticeships.Api.Client;
 using SFA.DAS.Apprenticeships.Api.Types;
 
-namespace Esfa.Recruit.Vacancies.Jobs
+namespace Esfa.Recruit.Vacancies.Jobs.TrainingTypes
 {
     public class UpdateStandardsAndFrameworksJob
     {

@@ -2,13 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Jobs.Infrastructure;
 using Esfa.Recruit.Vacancies.Jobs.Models;
 using Microsoft.Extensions.Logging;
 using Polly;
 using SFA.DAS.Apprenticeships.Api.Client;
 using SFA.DAS.Apprenticeships.Api.Types;
 
-namespace Esfa.Recruit.Vacancies.Jobs
+namespace Esfa.Recruit.Vacancies.Jobs.TrainingTypes
 {
     public sealed class StandardsAndFrameworksUpdater
     {

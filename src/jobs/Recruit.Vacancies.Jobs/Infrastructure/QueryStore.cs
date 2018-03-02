@@ -7,7 +7,7 @@ using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using SFA.DAS.Apprenticeships.Api.Types;
 
-namespace Esfa.Recruit.Vacancies.Jobs
+namespace Esfa.Recruit.Vacancies.Jobs.Infrastructure
 {
     internal sealed class QueryStore : MongoDbCollectionBase, IUpdateQueryStore
     {

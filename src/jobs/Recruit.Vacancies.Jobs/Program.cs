@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using Esfa.Recruit.Vacancies.Jobs.Infrastructure;
 using Esfa.Recruit.Vacancies.Jobs.Mongo;
+using Esfa.Recruit.Vacancies.Jobs.TrainingTypes;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

@@ -4,7 +4,7 @@
 // using Microsoft.Azure.WebJobs;
 // using Microsoft.Extensions.Logging;
 
-// namespace Esfa.Recruit.Vacancies.Jobs
+// namespace Esfa.Recruit.Vacancies.Jobs.GenerateVacancyNumber
 // {
 //     public class GenerateVacancyNumberJob
 //     {
