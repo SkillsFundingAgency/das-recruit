@@ -538,10 +538,6 @@
     }
 }
 
-.verification-summary:focus {
-    1outline: 3px solid #ffbf47
-}
-
 .verification-summary .error-summary-heading {
     margin-top: 0
 }
@@ -570,14 +566,5 @@
     margin-top: 0px;
     margin-bottom: 0px;
     color: #6F777B;
-    1font-family: nta,Arial,sans-serif;
     font-weight: 400;
-    1text-transform: none;
-    1font-size: 16px;
-    1line-height: 1.25;
-    1display: block;
-    1color: #6f777b;
-    1font-weight: 400;
-    1margin-top: -2px;
-    1padding-bottom: 2px
 }
