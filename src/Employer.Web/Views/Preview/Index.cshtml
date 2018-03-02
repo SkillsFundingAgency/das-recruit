@@ -7,7 +7,15 @@
         <h1 class="heading-large">@Model.Title</h1>
         <h1 class="heading-large">Vacancy preview</h1>
 
-        
+        <h2>Training Provider</h2>
+        <p>
+            @if (Model.HasTrainingProviderDetails)
+            {
+            @Model.ProviderName <text>(UKPRN: </text>@Model.Ukprn.Value<text>)</text><br />
+            @Model.ProviderAddress
+            }
+        </p>
+
         <div class="form-group">
             <a asp-route="@RouteNames.Sections_Index_Get" class="button-link">Return to vacancy</a>
 
