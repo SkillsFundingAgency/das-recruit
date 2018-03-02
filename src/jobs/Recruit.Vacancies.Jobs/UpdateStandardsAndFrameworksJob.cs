@@ -18,12 +18,12 @@ namespace Esfa.Recruit.Vacancies.Jobs
         public UpdateStandardsAndFrameworksJob(ILogger<UpdateStandardsAndFrameworksJob> logger, StandardsAndFrameworksUpdater updater)
         {
             _logger = logger;
-           _updater = updater;
+            _updater = updater;
         }
 
         public async Task UpdateStandardsAndFrameworks([TimerTrigger("0 0 2 * * *", RunOnStartup = true)] TimerInfo timerInfo, TextWriter log)
         {
-            _logger.LogInformation("Getting Standards and Frameworks from Apprenticships Api");
+            _logger.LogInformation("Starting populating standards and frameworks into Query Store");
 
             try
             {
@@ -33,6 +33,8 @@ namespace Esfa.Recruit.Vacancies.Jobs
             {
                 _logger.LogError(ex, "Unable to get standards and frameworks from apprenticeship api.");
             }
+
+            _logger.LogInformation("Finished populating standards and frameworks into Query Store");
         }
     }
 }

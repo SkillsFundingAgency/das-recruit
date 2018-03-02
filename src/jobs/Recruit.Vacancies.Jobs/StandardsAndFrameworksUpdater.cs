@@ -10,7 +10,7 @@ using SFA.DAS.Apprenticeships.Api.Types;
 
 namespace Esfa.Recruit.Vacancies.Jobs
 {
-    public class StandardsAndFrameworksUpdater
+    public sealed class StandardsAndFrameworksUpdater
     {
         private readonly ILogger<StandardsAndFrameworksUpdater> _logger;
         private readonly IUpdateQueryStore _queryStore;
@@ -31,17 +31,20 @@ namespace Esfa.Recruit.Vacancies.Jobs
 
         public async Task UpdateAsync()
         {
-            var standards = GetStandards();
-            var frameworks = GetFrameworks();
-            List<Task> tasks = new List<Task>{ standards, frameworks };
+            var standardsTask = GetStandards();
+            var frameworksTask = GetFrameworks();
+            List<Task> tasks = new List<Task>{ standardsTask, frameworksTask };
 
             try
             {
                 Task.WaitAll(tasks.ToArray());
 
+                var standardsFromApi = standardsTask.Result.ToList();
+                var frameworksFromApi = frameworksTask.Result.ToList();
+
                 List<ApprenticeshipProgramme> newList = new List<ApprenticeshipProgramme>();
-                newList.AddRange(standards.Result);
-                newList.AddRange(frameworks.Result);
+                newList.AddRange(standardsFromApi);
+                newList.AddRange(frameworksFromApi);
 
                 var view = new ApprenticeshipProgrammeView
                 {
@@ -49,18 +52,19 @@ namespace Esfa.Recruit.Vacancies.Jobs
                 };
                     
                 await UpdateQueryStore(view);
+
+                _logger.LogInformation("Inserted: {standardCount} standards and {frameworkCount} frameworks.", standardsFromApi.Count, frameworksFromApi.Count);
             }
             catch (AggregateException)
             {
-                if (standards.Exception != null)
+                if (standardsTask.Exception != null)
                 {
-                    _logger.LogError(standards.Exception, "Failed to get standards from api");
+                    _logger.LogError(standardsTask.Exception, "Failed to get standards from api");
                 }
 
-                if (frameworks
-                .Exception != null)
+                if (frameworksTask.Exception != null)
                 {
-                    _logger.LogError(frameworks.Exception, "Failed to get frameworks from api");
+                    _logger.LogError(frameworksTask.Exception, "Failed to get frameworks from api");
                 }
 
                 throw;
