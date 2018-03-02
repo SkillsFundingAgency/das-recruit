@@ -24,7 +24,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.Configure<AccountApiConfiguration>(configuration.GetSection("AccountApiConfiguration"));
             
             RegisterAccountApiClientDeps(services);
-            RegisterProviderApiClientDep(services);
+            RegisterProviderApiClientDep(services, configuration);
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>(); // Used by NLog to log out traceidentifier value.
 
@@ -42,9 +42,9 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             RegisterOrchestratorDeps(services);
         }
 
-        private static void RegisterProviderApiClientDep(IServiceCollection services)
+        private static void RegisterProviderApiClientDep(IServiceCollection services, IConfiguration configuration)
         {
-            services.AddTransient<IProviderApiClient, ProviderApiClient>();
+            services.AddTransient<IProviderApiClient>(_ => new ProviderApiClient(configuration.GetValue<string>("ProviderApiUrl")));
         }
 
         private static void RegisterAccountApiClientDeps(IServiceCollection services)
