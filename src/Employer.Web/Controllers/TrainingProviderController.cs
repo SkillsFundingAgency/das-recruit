@@ -47,7 +47,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             return View("Confirm", confirmDetailsVm);
         }
 
-        [HttpPost("training-provider-confirm", Name = RouteNames.TrainingProvider_Confirm_Post)]
+        [HttpPost("confirm-training-provider", Name = RouteNames.TrainingProvider_Confirm_Post)]
         public async Task<IActionResult> Confirm(ConfirmEditModel m)
         {
             if (!ModelState.IsValid)
@@ -60,7 +60,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             if (providerExists == false)
             {
                 ModelState.AddModelError(string.Empty, string.Format(InvalidUkprnMessageFormat, m.Ukprn));
-                return RedirectToAction("Index", new { vacancyId = m.VacancyId });
+                return RedirectToRoute(RouteNames.TrainingProvider_Index_Get, new { m.VacancyId });
             }
 
             await _orchestrator.PostConfirmEditModelAsync(m);
