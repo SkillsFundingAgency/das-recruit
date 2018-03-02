@@ -3,26 +3,27 @@
 <div class="grid-row">
     <div class="column-two-thirds">
 
-        <div asp-validation-summary="All" class="error-summary" role="alert" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
-            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
-                Please fix these errors
-            </h2>
-        </div>
-
         <h1 class="heading-large">@Model.Title</h1>
         <h1 class="heading-large">Add training provider</h1>
 
         @if (Model.HasSelectedTrainingTrainingProvider)
         {
-            <div class="verification-summary">
-                <h2 class="heading-medium error-summary-heading" id="verification-summary-heading-example-1">
-                    Selected training provider
-                </h2>
-                
-                <h3 class="heading-small">93 Hackney Rd, London, EC1V 3QJ</h3>
-                <h3 class="heading-small">UKPRN: @Model.Ukprn</h3>
-            </div>
+        <div class="verification-summary">
+            <h2 class="heading-medium error-summary-heading" id="verification-summary-heading-example-1">
+                Selected training provider
+            </h2>
+
+            <h3 class="heading-small">@Model.ProviderName</h3>
+            <h3 class="heading-small">@Model.ProviderAddress</h3>
+            <h3 class="heading-small">UKPRN: @Model.Ukprn</h3>
+        </div>
         }
+
+        <div asp-validation-summary="All" class="error-summary" role="alert" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
+            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
+                Please fix these errors
+            </h2>
+        </div>
 
         <form asp-route="@RouteNames.TrainingProvider_Index_Post">
             <div class="form-group">
@@ -38,9 +39,9 @@
                 <a asp-route="@RouteNames.Sections_Index_Get" class="button-link">Return to vacancy</a>
 
                 @if (Model.HasSelectedTrainingTrainingProvider)
-            {
+                {
                 <a asp-route="@RouteNames.WageAndhours_Index_Get" class="button">Continue</a>
-        }
+                }
 
             </div>
         </form>
