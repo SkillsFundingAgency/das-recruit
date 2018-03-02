@@ -11,6 +11,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
     public class TrainingProviderController : Controller
     {
         private readonly TrainingProviderOrchestrator _orchestrator;
+        private const string InvalidUkprnMessageFormat = "This UKPRN {0} is not valid or the associated provider is not active.";
 
         public TrainingProviderController(TrainingProviderOrchestrator orchestrator)
         {
@@ -25,21 +26,44 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         }
 
         [HttpPost("training-provider", Name = RouteNames.TrainingProvider_Index_Post)]
-        public IActionResult Index(IndexViewModel vm)
+        public async Task<IActionResult> Index(IndexEditModel m)
         {
-            return RedirectToRoute(RouteNames.TrainingProvider_Confirm_Get);
-        }
+            if (!ModelState.IsValid)
+            {
+                var vm = await _orchestrator.GetIndexViewModelAsync(m.VacancyId);
+                return View(vm);
+            }
 
-        [HttpGet("training-provider-confirm", Name = RouteNames.TrainingProvider_Confirm_Get)]
-        public async Task<IActionResult> Confirm(Guid vacancyId)
-        {
-            var vm = await _orchestrator.GetConfirmViewModelAsync(vacancyId);
-            return View(vm);
+            var providerExists = await _orchestrator.ConfirmProviderExists(long.Parse(m.Ukprn));
+            
+            if (providerExists == false)
+            {
+                ModelState.AddModelError(string.Empty, string.Format(InvalidUkprnMessageFormat, m.Ukprn));
+                var vm = await _orchestrator.GetIndexViewModelAsync(m.VacancyId);
+                return View(vm);
+            }
+
+            var confirmDetailsVm = await _orchestrator.PostIndexEditModelAsync(m);
+            return View("Confirm", confirmDetailsVm);
         }
 
         [HttpPost("training-provider-confirm", Name = RouteNames.TrainingProvider_Confirm_Post)]
-        public IActionResult Confirm(ConfirmViewModel vm)
+        public async Task<IActionResult> Confirm(ConfirmEditModel m)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(m);
+            }
+
+            var providerExists = await _orchestrator.ConfirmProviderExists(long.Parse(m.Ukprn));
+
+            if (providerExists == false)
+            {
+                ModelState.AddModelError(string.Empty, string.Format(InvalidUkprnMessageFormat, m.Ukprn));
+                return RedirectToAction("Index", new { vacancyId = m.VacancyId });
+            }
+
+            await _orchestrator.PostConfirmEditModelAsync(m);
             return RedirectToRoute(RouteNames.WageAndhours_Index_Get);
         }
     }

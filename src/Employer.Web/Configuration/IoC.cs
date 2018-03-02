@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SFA.DAS.EAS.Account.Api.Client;
+using SFA.DAS.Providers.Api.Client;
 
 namespace Esfa.Recruit.Employer.Web.Configuration
 {
@@ -23,6 +24,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.Configure<AccountApiConfiguration>(configuration.GetSection("AccountApiConfiguration"));
             
             RegisterAccountApiClientDeps(services);
+            RegisterProviderApiClientDep(services);
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>(); // Used by NLog to log out traceidentifier value.
 
@@ -33,9 +35,15 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             else
             {
                 services.AddTransient<IEmployerAccountService, EmployerAccountService>();
+                services.AddTransient<ITrainingProviderService, TrainingProviderService>();
             }
 
             RegisterOrchestratorDeps(services);
+        }
+
+        private static void RegisterProviderApiClientDep(IServiceCollection services)
+        {
+            services.AddTransient<IProviderApiClient, ProviderApiClient>();
         }
 
         private static void RegisterAccountApiClientDeps(IServiceCollection services)
