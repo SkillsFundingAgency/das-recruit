@@ -31,6 +31,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             if (configuration.GetValue<bool>("UseStubs"))
             {
                 services.AddTransient<IEmployerAccountService, StubEmployerAccountService>();
+                services.AddTransient<ITrainingProviderService, StubTrainingProviderService>();
             }
             else
             {
