@@ -35,7 +35,6 @@ namespace Esfa.Recruit.Vacancies.Jobs
                 IServiceCollection serviceCollection = new ServiceCollection();
                 var serviceProvider = ConfigureServices(serviceCollection, configuration).BuildServiceProvider();
 
-                
                 using (BuildLoggerFactory(serviceProvider, configuration))
                 {
                     JobHostConfiguration jobConfiguration = GetHostConfiguration(serviceProvider);
@@ -121,7 +120,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddScoped<StandardsAndFrameworksUpdater>();
             services.AddSingleton<IApprenticeshipProgrammeApiClient, ApprenticeshipProgrammeApiClient>();
             services.AddSingleton<IUpdateQueryStore, QueryStore>();
-            services.AddApprentieshipsApi();
+            services.AddApprentieshipsApi(configuration);
 
             var mongoConnectionString = configuration.GetConnectionString("MongoDb");
             services.Configure<MongoDbConnectionDetails>(options => 

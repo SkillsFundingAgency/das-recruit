@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Esfa.Recruit.Vacancies.Jobs
 {
-    public class CustomJobActivator : IJobActivator
+    internal class CustomJobActivator : IJobActivator
     {
         private readonly IServiceProvider _service;
 

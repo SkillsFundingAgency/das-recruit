@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Vacancies.Jobs.Models;
 using SFA.DAS.Apprenticeships.Api.Types;

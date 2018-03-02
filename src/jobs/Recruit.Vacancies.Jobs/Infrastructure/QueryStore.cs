@@ -1,11 +1,8 @@
-using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Jobs.Models;
 using Esfa.Recruit.Vacancies.Jobs.Mongo;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
-using SFA.DAS.Apprenticeships.Api.Types;
 
 namespace Esfa.Recruit.Vacancies.Jobs.Infrastructure
 {
