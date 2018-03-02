@@ -74,18 +74,22 @@ namespace Esfa.Recruit.Vacancies.Jobs.TrainingTypes
 
         private async Task<IEnumerable<ApprenticeshipProgramme>> GetStandards()
         {
+            _logger.LogTrace("Getting Standards from Apprentieships Api");
+
             var retryPolicy = GetApiRetryPolicy();
 
-            var standards = await retryPolicy.ExecuteAsync(() => _standardsClient.GetAllAsync());
-            
+            var standards = await retryPolicy.ExecuteAsync(() => _standardsClient.GetAllAsync(), new Dictionary<string, object>() {{ "apiCall", "Standards" }});
+
             return standards.FilterAndMapToApprenticeshipProgrammes();
         }
 
         private async Task<IEnumerable<ApprenticeshipProgramme>> GetFrameworks()
         {
+            _logger.LogTrace("Getting Frameworks from Apprentieships Api");
+            
             var retryPolicy = GetApiRetryPolicy();
 
-            var frameworks = await retryPolicy.ExecuteAsync(() => _frameworksClient.GetAllAsync());
+            var frameworks = await retryPolicy.ExecuteAsync(() => _frameworksClient.GetAllAsync(), new Dictionary<string, object>() {{ "apiCall", "Frameworks" }});
             
             return frameworks.FilterAndMapToApprenticeshipProgrammes();
         }
@@ -103,9 +107,9 @@ namespace Esfa.Recruit.Vacancies.Jobs.TrainingTypes
                     {
                         TimeSpan.FromSeconds(1),
                         TimeSpan.FromSeconds(2),
-                        TimeSpan.FromSeconds(3)
+                        TimeSpan.FromSeconds(4)
                     }, (exception, timeSpan, retryCount, context) => {
-                        _logger.LogWarning($"Error connecting to Apprenticeships Api. Retrying...attempt: {retryCount}");    
+                        _logger.LogWarning($"Error connecting to Apprenticeships Api for {context["apiCall"]}. Retrying...attempt: {retryCount}");    
                     });
         }
     }

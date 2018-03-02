@@ -27,14 +27,13 @@ namespace Esfa.Recruit.Vacancies.Jobs.TrainingTypes
 
             try
             {
-               await _updater.UpdateAsync();
+                await _updater.UpdateAsync();
+                _logger.LogInformation("Finished populating standards and frameworks into Query Store");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Unable to get standards and frameworks from apprenticeship api.");
+                _logger.LogError(ex, "Unable to update standards and frameworks.");
             }
-
-            _logger.LogInformation("Finished populating standards and frameworks into Query Store");
         }
     }
 }
