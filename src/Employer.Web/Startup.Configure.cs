@@ -43,7 +43,9 @@ namespace Esfa.Recruit.Employer.Web
             // Add Content Security Policy
             app.UseCsp(options => options
                 .DefaultSources(s => s.Self())
-                .StyleSources(s => s.Self())
+                .StyleSources(s => 
+                    s.Self()
+                    .UnsafeInline()) // TODO: Should see if there's another option that having inline script
                 .ScriptSources(s => 
                     s.Self()
                     .CustomSources("https://az416426.vo.msecnd.net")
