@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using Esfa.Recruit.Vacancies.Jobs.Models;
+using Esfa.Recruit.Vacancies.Jobs.TrainingTypes.Models;
 using Esfa.Recruit.Vacancies.Jobs.Mongo;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;

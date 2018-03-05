@@ -1,4 +1,4 @@
-namespace Esfa.Recruit.Vacancies.Jobs.Models
+namespace Esfa.Recruit.Vacancies.Jobs.TrainingTypes.Models
 {
     public enum ApprenticeshipType
     {

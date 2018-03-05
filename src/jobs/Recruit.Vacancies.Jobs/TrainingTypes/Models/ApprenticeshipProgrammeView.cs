@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Esfa.Recruit.Vacancies.Jobs.Models
+namespace Esfa.Recruit.Vacancies.Jobs.TrainingTypes.Models
 {
     public class ApprenticeshipProgrammeView
     {

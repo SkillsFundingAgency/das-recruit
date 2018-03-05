@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Jobs.Infrastructure;
-using Esfa.Recruit.Vacancies.Jobs.Models;
+using Esfa.Recruit.Vacancies.Jobs.TrainingTypes.Models;
 using Microsoft.Extensions.Logging;
 using Polly;
 using SFA.DAS.Apprenticeships.Api.Client;

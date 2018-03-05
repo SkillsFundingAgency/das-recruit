@@ -1,5 +1,5 @@
 using System.Linq;
-using Esfa.Recruit.Vacancies.Jobs.Models;
+using Esfa.Recruit.Vacancies.Jobs.TrainingTypes.Models;
 using SFA.DAS.Apprenticeships.Api.Types;
 
 namespace System.Collections.Generic
@@ -20,7 +20,8 @@ namespace System.Collections.Generic
                 Title = x.Title,
                 EffectiveFrom = x.EffectiveFrom,
                 EffectiveTo = x.EffectiveTo,
-                Level = x.Level
+                Level = x.Level,
+                Duration = x.Duration
             });
         }
 
@@ -38,7 +39,8 @@ namespace System.Collections.Generic
                 Title = x.Title,
                 EffectiveFrom = x.EffectiveFrom,
                 EffectiveTo = x.EffectiveTo,
-                Level = x.Level
+                Level = x.Level,
+                Duration = x.Duration
             });
         }
 

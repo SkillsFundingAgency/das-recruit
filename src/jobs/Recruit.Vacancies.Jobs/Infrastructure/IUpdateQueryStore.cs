@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using Esfa.Recruit.Vacancies.Jobs.Models;
+using Esfa.Recruit.Vacancies.Jobs.TrainingTypes.Models;
 
 namespace Esfa.Recruit.Vacancies.Jobs.Infrastructure
 {
