@@ -11,9 +11,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers
     public class TrainingProviderController : Controller
     {
         private readonly TrainingProviderOrchestrator _orchestrator;
-        private const string InvalidUkprnMessageFormat = "This UKPRN {0} is not valid or the associated provider is not active.";
+        private const string InvalidUkprnMessageFormat = "The UKPRN {0} is not valid or the associated provider is not active.";
 
         public TrainingProviderController(TrainingProviderOrchestrator orchestrator)
+
         {
             _orchestrator = orchestrator;
         }
@@ -37,9 +38,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             var providerExists = await _orchestrator.ConfirmProviderExists(long.Parse(m.Ukprn));
             
             if (providerExists == false)
-            {
-                return await ProviderNotFound(m.VacancyId, m.Ukprn);
-            }
+                return await ProviderNotFound(m);
 
             var confirmDetailsVm = await _orchestrator.GetConfirmViewModel(m);
             return View("Confirm", confirmDetailsVm);
@@ -57,17 +56,18 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             if (providerExists == false)
             {
-                return await ProviderNotFound(m.VacancyId, m.Ukprn);
+                var vm = new IndexEditModel { VacancyId = m.VacancyId, Ukprn = m.Ukprn };
+                return await ProviderNotFound(vm);
             }
 
             await _orchestrator.PostConfirmEditModelAsync(m);
             return RedirectToRoute(RouteNames.WageAndhours_Index_Get);
         }
 
-        private async Task<IActionResult> ProviderNotFound(Guid vacancyId, string ukprn)
+        private async Task<IActionResult> ProviderNotFound(IndexEditModel m)
         {
-            ModelState.AddModelError(string.Empty, string.Format(InvalidUkprnMessageFormat, ukprn));
-            var vm = await _orchestrator.GetIndexViewModel(vacancyId);            
+            ModelState.AddModelError(string.Empty, string.Format(InvalidUkprnMessageFormat, m.Ukprn));
+            var vm = await _orchestrator.GetIndexViewModel(m.VacancyId);
             return View("Index", vm);
         }
     }
