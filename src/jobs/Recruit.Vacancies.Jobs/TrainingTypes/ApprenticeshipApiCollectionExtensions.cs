@@ -8,12 +8,10 @@ namespace System.Collections.Generic
     {
         public static IEnumerable<ApprenticeshipProgramme> FilterAndMapToApprenticeshipProgrammes(this IEnumerable<StandardSummary> standards)
         {
-            var list = standards.ToList();
+            if (standards == null || standards.Count() == 0)
+                return Enumerable.Empty<ApprenticeshipProgramme>();
 
-            if (list == null || list.Count == 0)
-                return new List<ApprenticeshipProgramme>(0);
-
-            return list.Where(IsStandardActive()).Select(x => new ApprenticeshipProgramme
+            return standards.Where(IsStandardActive()).Select(x => new ApprenticeshipProgramme
             {
                 Id = x.Id,
                 ApprenticeshipType = ApprenticeshipType.Standard,
@@ -27,12 +25,10 @@ namespace System.Collections.Generic
 
         public static IEnumerable<ApprenticeshipProgramme> FilterAndMapToApprenticeshipProgrammes(this IEnumerable<FrameworkSummary> frameworks)
         {
-            var list = frameworks.ToList();
+            if (frameworks == null || frameworks.Count() == 0)
+                return Enumerable.Empty<ApprenticeshipProgramme>();
 
-            if (list == null || list.Count == 0)
-                return new List<ApprenticeshipProgramme>(0);
-
-            return list.Where(IsFrameworkActive()).Select(x => new ApprenticeshipProgramme
+            return frameworks.Where(IsFrameworkActive()).Select(x => new ApprenticeshipProgramme
             {
                 Id  = x.Id,
                 ApprenticeshipType = ApprenticeshipType.Framework,

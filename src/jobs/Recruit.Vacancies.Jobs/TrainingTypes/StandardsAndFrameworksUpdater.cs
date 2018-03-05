@@ -95,7 +95,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.TrainingTypes
 
         private async Task UpdateQueryStore(ApprenticeshipProgrammeView view)
         {
-            await _queryStore.UpdateStandardsAndFrameworksAsyc(view);
+            await _queryStore.UpdateStandardsAndFrameworksAsync(view);
         }
         
         private Polly.Retry.RetryPolicy GetApiRetryPolicy()
@@ -108,7 +108,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.TrainingTypes
                         TimeSpan.FromSeconds(2),
                         TimeSpan.FromSeconds(4)
                     }, (exception, timeSpan, retryCount, context) => {
-                        _logger.LogWarning($"Error connecting to Apprenticeships Api for {context["apiCall"]}. Retrying...attempt: {retryCount}");    
+                        _logger.LogWarning($"Error connecting to Apprenticeships Api for {context["apiCall"]}. Retrying in {timeSpan.Seconds} secs...attempt: {retryCount}");    
                     });
         }
     }

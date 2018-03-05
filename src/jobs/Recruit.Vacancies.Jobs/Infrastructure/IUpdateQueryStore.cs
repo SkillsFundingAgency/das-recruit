@@ -5,6 +5,6 @@ namespace Esfa.Recruit.Vacancies.Jobs.Infrastructure
 {
     public interface IUpdateQueryStore
     {
-        Task UpdateStandardsAndFrameworksAsyc(ApprenticeshipProgrammeView updatedList);
+        Task UpdateStandardsAndFrameworksAsync(ApprenticeshipProgrammeView updatedList);
     }
 }

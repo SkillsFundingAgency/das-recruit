@@ -16,7 +16,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.Infrastructure
         {
         }
 
-        public async Task UpdateStandardsAndFrameworksAsyc(ApprenticeshipProgrammeView updatedList)
+        public async Task UpdateStandardsAndFrameworksAsync(ApprenticeshipProgrammeView updatedList)
         {
             var collection = GetCollection<ApprenticeshipProgrammeView>();
 
