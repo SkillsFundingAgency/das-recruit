@@ -36,27 +36,26 @@ You can view the state of the running containers using:
 `docker ps -a`
 
 
-### Running - Command line
+### Running
 
-* Open command prompt and change directory to _**/src/Employer.Web/**_
-* Run `dotnet run`
-
-### Running - Visual Studio
-
-* Open solution _**/src/Esfa.Recruit.Employer.sln**_
-* Set start up project to _**Employer.Web**_
-* F5 to run up the website
-* Append /accounts/abc/dashboard to the url
-
-### Running - Visual Studio Code
-
-* Open folder _**/src/**_
-* Select _**.Net Core Launch (web)**_ from debug configurations
-* F5 to run up the website
-* Append /accounts/abc/dashboard to the url
+* Open command prompt and change directory to _**/src/jobs/Recruit.Vacancies.Jobs/**_
+* Run `dotnet run` to start up the **Webjob**
+* Open second command prompt and change directory to _**/src/Employer.Web/**_
+* Run `dotnet run` to start up the **Website**
+* Browse to `http://localhost:5020/accounts/abc/dashboard`
 
 ### Application logs
 Application logs are logged to [Elasticsearch](https://www.elastic.co/products/elasticsearch) and can be viewed using [Kibana](https://www.elastic.co/products/kibana) at http://localhost:5601
+
+### Development 
+
+#### Website
+
+* Open solution _**/src/Esfa.Recruit.Employer.sln**_
+
+#### Webjobs
+
+* Open solution _**/src/jobs/Recruit.Vacancies.Jobs/Recruit.Vacancies.Jobs.csproj**_
 
 
 ## License
