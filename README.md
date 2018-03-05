@@ -55,7 +55,7 @@ Application logs are logged to [Elasticsearch](https://www.elastic.co/products/e
 
 #### Webjobs
 
-* Open solution _**/src/jobs/Recruit.Vacancies.Jobs/Recruit.Vacancies.Jobs.csproj**_
+* Open project _**/src/jobs/Recruit.Vacancies.Jobs/Recruit.Vacancies.Jobs.csproj**_
 
 
 ## License
