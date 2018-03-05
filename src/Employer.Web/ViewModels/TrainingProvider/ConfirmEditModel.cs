@@ -10,12 +10,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.TrainingProvider
         [FromRoute]
         public Guid VacancyId { get; set; }
 
-        [Required(ErrorMessage = "An error occured with the chosen training provider.")]
-        public string ProviderName { get; set; }
-
-        [Required(ErrorMessage = "An error occured with the chosen training provider.")]
-        public string ProviderAddress { get; set; }
-
         [Required]
         [Display(Name = "UKPRN")]
         [RegularExpression(@"^((?!(0))[0-9]{8})$", ErrorMessage = "No provider found with this UK Provider Reference Number.")]

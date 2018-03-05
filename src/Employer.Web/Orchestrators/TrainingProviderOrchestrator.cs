@@ -17,7 +17,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             _providerService = providerService;
         }
 
-        public async Task<IndexViewModel> GetIndexViewModelAsync(Guid vacancyId)
+        public async Task<IndexViewModel> GetIndexViewModel(Guid vacancyId)
         {
             var vacancy = await _client.GetVacancyForEditAsync(vacancyId);
 
@@ -32,7 +32,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return vm;
         }
 
-        public async Task<ConfirmViewModel> PostIndexEditModelAsync(IndexEditModel m)
+        public async Task<ConfirmViewModel> GetConfirmViewModel(IndexEditModel m)
         {
             var vacancy = await _client.GetVacancyForEditAsync(m.VacancyId);
             
@@ -60,10 +60,18 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public async Task PostConfirmEditModelAsync(ConfirmEditModel m)
         {
-            var vacancy = await _client.GetVacancyForEditAsync(m.VacancyId);
-            vacancy.Ukprn = long.Parse(m.Ukprn);
-            vacancy.ProviderName = m.ProviderName;
-            vacancy.ProviderAddress = m.ProviderAddress;
+            var vacancyTask = _client.GetVacancyForEditAsync(m.VacancyId);
+            var providerDetailTask = _providerService.GetProviderDetailAsync(long.Parse(m.Ukprn));
+
+            Task.WaitAll(new Task[] { vacancyTask, providerDetailTask });
+
+            var vacancy = vacancyTask.Result;
+            var providerDetail = providerDetailTask.Result;
+
+            vacancy.Ukprn = providerDetail.Ukprn;
+            vacancy.ProviderName = providerDetail.ProviderName;
+            vacancy.ProviderAddress = providerDetail.ProviderAddress;
+
             await _client.UpdateVacancyAsync(vacancy, canUpdateQueryStore: false);
         }
 

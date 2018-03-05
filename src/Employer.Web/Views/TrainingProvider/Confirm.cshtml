@@ -6,9 +6,6 @@
         <h1 class="heading-large">Confirm training provider</h1>
 
         <div class="verification-summary">
-            @*<h2 class="heading-medium error-summary-heading" id="verification-summary-heading-example-1">
-                Selected training provider
-            </h2>*@
 
             <h3 class="heading-small">@Model.ProviderName</h3>
             <h3 class="heading-small">@Model.ProviderAddress</h3>
@@ -16,10 +13,7 @@
         </div>
 
         <form asp-route="@RouteNames.TrainingProvider_Confirm_Post">
-            <input asp-for="ProviderName" type="hidden" />
-            <input asp-for="ProviderAddress" type="hidden" />
             <input asp-for="Ukprn" type="hidden" />
-
             <div class="form-group">
                 <a asp-route="@RouteNames.TrainingProvider_Index_Get" class="button-link">Change training provider</a>
                 <input type="submit" value="Confirm training provider" class="button" />

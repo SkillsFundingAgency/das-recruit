@@ -6,7 +6,7 @@
         <h1 class="heading-large">@Model.Title</h1>
         <h1 class="heading-large">Add training provider</h1>
 
-        @if (Model.HasSelectedTrainingTrainingProvider)
+        @if (Model.HasSelectedTrainingProvider)
         {
         <div class="verification-summary">
             <h2 class="heading-medium error-summary-heading" id="verification-summary-heading-example-1">
@@ -38,7 +38,7 @@
             <div class="form-group">
                 <a asp-route="@RouteNames.Sections_Index_Get" class="button-link">Return to vacancy</a>
 
-                @if (Model.HasSelectedTrainingTrainingProvider)
+                @if (Model.HasSelectedTrainingProvider)
                 {
                 <a asp-route="@RouteNames.WageAndhours_Index_Get" class="button">Continue</a>
                 }

@@ -7,6 +7,6 @@
         public string ProviderName { get; set; }
         public string ProviderAddress { get; set; }
 
-        public bool HasSelectedTrainingTrainingProvider => Ukprn.HasValue;
+        public bool HasSelectedTrainingProvider => Ukprn.HasValue;
     }
 }

@@ -29,7 +29,7 @@ namespace Esfa.Recruit.Employer.Web.Mappings
                 address.PostCode
             };
             
-            return string.Join(", ", arr.Where(x => !string.IsNullOrEmpty(x)));
+            return string.Join(", ", arr.Where(x => !string.IsNullOrWhiteSpace(x)));
         }
     }
 }
