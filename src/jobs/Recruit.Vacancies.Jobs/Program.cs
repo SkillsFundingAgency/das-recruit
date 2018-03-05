@@ -49,7 +49,8 @@ namespace Esfa.Recruit.Vacancies.Jobs
             }
             finally
             {
-                loggerFactory.Dispose();
+                if (loggerFactory != null)
+                    loggerFactory.Dispose();
             }
         }
 
