@@ -22,24 +22,21 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddSingleton<ManageApprenticeshipsLinkHelper>();
             services.Configure<AuthenticationConfiguration>(configuration.GetSection("Authentication"));
             services.Configure<AccountApiConfiguration>(configuration.GetSection("AccountApiConfiguration"));
-            
+
             RegisterAccountApiClientDeps(services);
             RegisterProviderApiClientDep(services, configuration);
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>(); // Used by NLog to log out traceidentifier value.
-
-            if (configuration.GetValue<bool>("UseStubs"))
-            {
-                services.AddTransient<IEmployerAccountService, StubEmployerAccountService>();
-                services.AddTransient<ITrainingProviderService, StubTrainingProviderService>();
-            }
-            else
-            {
-                services.AddTransient<IEmployerAccountService, EmployerAccountService>();
-                services.AddTransient<ITrainingProviderService, TrainingProviderService>();
-            }
+            
+            RegisterServiceDeps(services);
 
             RegisterOrchestratorDeps(services);
+        }
+
+        private static void RegisterServiceDeps(IServiceCollection services)
+        {
+            services.AddTransient<IEmployerAccountService, EmployerAccountService>();
+            services.AddTransient<ITrainingProviderService, TrainingProviderService>();
         }
 
         private static void RegisterProviderApiClientDep(IServiceCollection services, IConfiguration configuration)
