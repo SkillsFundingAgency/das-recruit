@@ -27,6 +27,17 @@
             "problemMatcher": "$msCompile"
         },
         {
+            "label": "build-client",
+            "group": "build",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/Shared/VacanciesClient.sln"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
             "label": "web-unit-tests",
             "group": {
                 "kind": "test",
