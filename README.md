@@ -39,9 +39,38 @@ You can view the state of the running containers using:
 ### Running
 
 * Open command prompt and change directory to _**/src/jobs/Recruit.Vacancies.Jobs/**_
-* Run `dotnet run` to start up the **Webjob**
+* The azure webjobs require a "real" azure storage account in order to run. Add a valid connection string in **_appSetting.Development.json_** for the following keys:
+```
+{
+  "ConnectionStrings": {
+    "WebJobsDashboard": "<replace with connection string to a azure storage account (not local storage emulator)>",
+    "WebJobsStorage": "<replace with connection string to a azure storage account (not local storage emulator)>"
+  }
+}
+```
+* Start the **Webjobs**:
+
+MacOS
+```
+ASPNETCORE_ENVIRONMENT=Development dotnet run
+```
+Windows cmd
+```
+set ASPNETCORE_ENVIRONMENT=Development
+dotnet run
+```
 * Open second command prompt and change directory to _**/src/Employer.Web/**_
-* Run `dotnet run` to start up the **Website**
+* Start the **Website**:
+
+MacOS
+```
+ASPNETCORE_ENVIRONMENT=Development dotnet run
+```
+Windows cmd
+```
+set ASPNETCORE_ENVIRONMENT=Development
+dotnet run
+```
 * Browse to `http://localhost:5020/accounts/abc/dashboard`
 
 ### Application logs
