@@ -1,17 +1,19 @@
 {
     "Databases": [
         {
-            "DatabaseName": "testDb",
+            "DatabaseName": "recruit",
             "Collections": [
                 {
-                    "CollectionName": "testCollection",
+                    "CollectionName": "vacancies",
                     "OfferThroughput": 400,
                     "PartitionKey": "part1",
-                    "StoredProcedures": [
-                        {
-                            "StoredProcedureName": "createMyDocument"
-                        }
-                    ]
+                    "StoredProcedures": []
+                },
+                {
+                    "CollectionName": "queryViews",
+                    "OfferThroughput": 400,
+                    "PartitionKey": "part1",
+                    "StoredProcedures": []
                 }
             ]
         }
