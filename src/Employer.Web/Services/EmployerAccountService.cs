@@ -30,7 +30,7 @@ namespace Esfa.Recruit.Employer.Web.Services
             }
             catch (Exception ex)
             {
-                _logger.LogCritical(ex, "Failure connecting to Accounts API");
+                _logger.LogError(ex, $"Failed to retrieve account information for user Id: {userId}");
                 throw;
             }
         }
