@@ -14,7 +14,7 @@ namespace System.Collections.Generic
             return standards.Where(IsStandardActive()).Select(x => new ApprenticeshipProgramme
             {
                 Id = x.Id,
-                ApprenticeshipType = ApprenticeshipType.Standard,
+                ApprenticeshipType = TrainingType.Standard,
                 Title = x.Title,
                 EffectiveFrom = x.EffectiveFrom,
                 EffectiveTo = x.EffectiveTo,
@@ -31,7 +31,7 @@ namespace System.Collections.Generic
             return frameworks.Where(IsFrameworkActive()).Select(x => new ApprenticeshipProgramme
             {
                 Id  = x.Id,
-                ApprenticeshipType = ApprenticeshipType.Framework,
+                ApprenticeshipType = TrainingType.Framework,
                 Title = x.Title,
                 EffectiveFrom = x.EffectiveFrom,
                 EffectiveTo = x.EffectiveTo,
