@@ -56,8 +56,8 @@ namespace Esfa.Recruit.Vacancies.Jobs
 
         private static ILoggerFactory BuildLoggerFactory(ServiceProvider serviceProvider, IConfigurationRoot config)
         {
-            var instrumentationKey = config["AppInsights_InstrumentationKey"];
-            Console.WriteLine($"AppInsights: {config.GetValue<string>("AppInsights_InstrumentationKey")}");
+            var instrumentationKey = config.GetValue<string>("ApplicationInsights:InstrumentationKey");
+            Console.WriteLine($"AppInsights: {instrumentationKey}");
             
             var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
             loggerFactory.AddNLog(new NLogProviderOptions { CaptureMessageProperties = true, CaptureMessageTemplates = true });
