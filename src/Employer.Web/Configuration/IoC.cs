@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SFA.DAS.EAS.Account.Api.Client;
+using SFA.DAS.Providers.Api.Client;
 
 namespace Esfa.Recruit.Employer.Web.Configuration
 {
@@ -21,21 +22,26 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddSingleton<ManageApprenticeshipsLinkHelper>();
             services.Configure<AuthenticationConfiguration>(configuration.GetSection("Authentication"));
             services.Configure<AccountApiConfiguration>(configuration.GetSection("AccountApiConfiguration"));
-            
+
             RegisterAccountApiClientDeps(services);
+            RegisterProviderApiClientDep(services, configuration);
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>(); // Used by NLog to log out traceidentifier value.
-
-            if (configuration.GetValue<bool>("UseStubs"))
-            {
-                services.AddTransient<IEmployerAccountService, StubEmployerAccountService>();
-            }
-            else
-            {
-                services.AddTransient<IEmployerAccountService, EmployerAccountService>();
-            }
+            
+            RegisterServiceDeps(services);
 
             RegisterOrchestratorDeps(services);
+        }
+
+        private static void RegisterServiceDeps(IServiceCollection services)
+        {
+            services.AddTransient<IEmployerAccountService, EmployerAccountService>();
+            services.AddTransient<ITrainingProviderService, TrainingProviderService>();
+        }
+
+        private static void RegisterProviderApiClientDep(IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddTransient<IProviderApiClient>(_ => new ProviderApiClient(configuration.GetValue<string>("ProviderApiUrl")));
         }
 
         private static void RegisterAccountApiClientDeps(IServiceCollection services)

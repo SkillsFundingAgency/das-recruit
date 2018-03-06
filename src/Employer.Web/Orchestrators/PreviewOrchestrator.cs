@@ -21,6 +21,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             var vm = new IndexViewModel
             {
                 Title = vacancy.Title,
+                Ukprn = vacancy.Ukprn,
+                ProviderName = vacancy.ProviderName,
+                ProviderAddress = vacancy.ProviderAddress,
                 CanSubmit = vacancy.CanSubmit
             };
 
