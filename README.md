@@ -43,8 +43,8 @@ You can view the state of the running containers using:
 ```
 {
   "ConnectionStrings": {
-    "AzureWebJobsDashboard": "<replace with connection string to a azure storage account (not local storage emulator)>",
-    "AzureWebJobsStorage": "<replace with connection string to a azure storage account (not local storage emulator)>"
+    "WebJobsDashboard": "<replace with connection string to a azure storage account (not local storage emulator)>",
+    "WebJobsStorage": "<replace with connection string to a azure storage account (not local storage emulator)>"
   }
 }
 ```
@@ -76,7 +76,7 @@ dotnet run
 ### Application logs
 Application logs are logged to [Elasticsearch](https://www.elastic.co/products/elasticsearch) and can be viewed using [Kibana](https://www.elastic.co/products/kibana) at http://localhost:5601
 
-### Development
+### Development 
 
 #### Website
 
