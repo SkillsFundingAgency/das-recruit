@@ -36,6 +36,9 @@
     },
     "LoggingRedisConnectionString": {
       "value": ""
+    },
+    "ApprenticeshipProgrammesApiBaseUrl": {
+      "value": ""
     }
   }
 }

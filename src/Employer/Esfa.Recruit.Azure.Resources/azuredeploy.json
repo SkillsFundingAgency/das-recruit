@@ -53,13 +53,19 @@
     "LoggingRedisConnectionString": {
       "type": "securestring",
       "defaultValue": ""
+    },
+    "ApprenticeshipProgrammesApiBaseUrl": {
+      "type": "string",
+      "defaultValue": ""
     }
   },
   "variables": {
     "AppServicePlanName": "[concat('das-', toLower(parameters('EnvironmentName')), '-rcrt-asp')]",
     "EmployerRecruitAppServiceName": "[concat('das-', toLower(parameters('EnvironmentName')), '-rcrt-as')]",
     "CosmosDbName": "[concat('das-', toLower(parameters('EnvironmentName')),'-rcrt-cdb')]",
-    "AppInsightsName": "[concat('das-', toLower(parameters('EnvironmentName')),'-rcrt-ai')]"
+    "AppInsightsName": "[concat('das-', toLower(parameters('EnvironmentName')),'-rcrt-ai')]",
+    "WebJobAppServiceName": "[concat('das-', toLower(parameters('EnvironmentName')), '-rcrt-webjob-as')]",
+    "StorageAccountName": "[concat('das', toLower(parameters('EnvironmentName')), 'rcrtstr')]"
   },
   "resources": [
     {
@@ -178,6 +184,78 @@
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName'))]",
         "[resourceId('microsoft.insights/components', variables('AppInsightsName'))]",
+        "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('CosmosDbName'))]"
+      ]
+    },
+    {
+      "apiVersion": "2017-06-01",
+      "name": "[variables('StorageAccountName')]",
+      "location": "[resourceGroup().location]",
+      "type": "Microsoft.Storage/storageAccounts",
+      "sku": {
+        "name": "Standard_LRS"
+      },
+      "kind": "Storage",
+      "properties": {
+        "encryption": {
+          "services": {
+            "blob": {
+              "enabled": true
+            },
+            "file": {
+              "enabled": true
+            }
+          },
+          "keySource": "Microsoft.Storage"
+        }
+      },
+      "dependsOn": []
+    },
+    {
+      "name": "[variables('WebJobAppServiceName')]",
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2016-08-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName'))]",
+        "siteConfig": {
+          "appSettings": [
+            {
+              "name": "Environment",
+              "value": "[toUpper(parameters('EnvironmentName'))]"
+            },
+            {
+              "name": "ApprenticeshipProgrammesApiBaseUrl",
+              "value": "[parameters('ApprenticeshipProgrammesApiBaseUrl')]"
+            }
+          ],
+          "connectionStrings": [
+            {
+              "name": "Redis",
+              "connectionString": "[parameters('LoggingRedisConnectionString')]",
+              "type": "Custom"
+            },
+            {
+              "name": "MongoDb",
+              "connectionString": "[concat('mongodb://', variables('CosmosDbName'), ':', listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', variables('CosmosDbName')), '2015-11-06').primaryMasterKey,'@', variables('CosmosDbName'), '.documents.azure.com:10255/?ssl=true&replicaSet=globaldb')]",
+              "type": "Custom"
+            },
+            {
+              "name": "WebJobsDashboard",
+              "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('StorageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]",
+              "type": "Custom"
+            },
+            {
+              "name": "WebJobsStorage",
+              "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('StorageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]",
+              "type": "Custom"
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName'))]",
+        "[variables('StorageAccountName')]",
         "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('CosmosDbName'))]"
       ]
     }
