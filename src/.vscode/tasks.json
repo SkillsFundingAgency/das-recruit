@@ -2,7 +2,7 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build",
+            "label": "build-web",
             "group":{
                 "kind": "build",
                 "isDefault": true
@@ -11,12 +11,34 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/Esfa.Recruit.Employer.sln"
+                "${workspaceFolder}/Employer/Employer.sln"
             ],
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "unit-tests",
+            "label": "build-jobs",
+            "group": "build",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/Jobs/Jobs.sln"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "build-client",
+            "group": "build",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/Shared/VacanciesClient.sln"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "web-unit-tests",
             "group": {
                 "kind": "test",
                 "isDefault": true
@@ -25,17 +47,17 @@
             "type": "process",
             "args": [
                 "test",
-                "${workspaceFolder}/UnitTests/UnitTests.csproj"
+                "${workspaceFolder}/Employer/UnitTests/UnitTests.csproj"
             ]
         },
         {
-            "label": "integration-tests",
+            "label": "web-integration-tests",
             "group": "test",
             "command": "dotnet",
             "type": "process",
             "args": [
                 "test",
-                "${workspaceFolder}/IntegrationTests/IntegrationTests.csproj"
+                "${workspaceFolder}/Employer/IntegrationTests/IntegrationTests.csproj"
             ]
         }
     ]

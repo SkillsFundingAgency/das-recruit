@@ -38,7 +38,7 @@ You can view the state of the running containers using:
 
 ### Running
 
-* Open command prompt and change directory to _**/src/jobs/Recruit.Vacancies.Jobs/**_
+* Open command prompt and change directory to _**/src/Jobs/Recruit.Vacancies.Jobs/**_
 * The azure webjobs require a "real" azure storage account in order to run. Add a valid connection string in **_appSetting.Development.json_** for the following keys:
 ```
 {
@@ -59,7 +59,7 @@ Windows cmd
 set ASPNETCORE_ENVIRONMENT=Development
 dotnet run
 ```
-* Open second command prompt and change directory to _**/src/Employer.Web/**_
+* Open second command prompt and change directory to _**/src/Employer/Employer.Web/**_
 * Start the **Website**:
 
 MacOS
@@ -80,11 +80,11 @@ Application logs are logged to [Elasticsearch](https://www.elastic.co/products/e
 
 #### Website
 
-* Open solution _**/src/Esfa.Recruit.Employer.sln**_
+* Open solution _**/src/Employer/Employer.sln**_
 
 #### Webjobs
 
-* Open project _**/src/jobs/Recruit.Vacancies.Jobs/Recruit.Vacancies.Jobs.csproj**_
+* Open solution _**/src/Jobs/Jobs.sln**_
 
 
 ## License
