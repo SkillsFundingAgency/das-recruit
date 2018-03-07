@@ -57,7 +57,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
         private static ILoggerFactory BuildLoggerFactory(ServiceProvider serviceProvider, IConfigurationRoot config)
         {
             var instrumentationKey = config["AppInsights_InstrumentationKey"];
-            
+
             var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
             loggerFactory.AddNLog(new NLogProviderOptions { CaptureMessageProperties = true, CaptureMessageTemplates = true });
             loggerFactory.ConfigureNLog("nlog.config");
@@ -100,8 +100,8 @@ namespace Esfa.Recruit.Vacancies.Jobs
             }
 
             var configuration = builder.Build();
-            Environment.SetEnvironmentVariable("AzureWebJobsDashboard", configuration.GetConnectionString("WebJobsDashboard"));
-            Environment.SetEnvironmentVariable("AzureWebJobsStorage", configuration.GetConnectionString("WebJobsStorage"));  
+            Environment.SetEnvironmentVariable("AzureWebJobsDashboard", configuration.GetConnectionString("AzureWebJobsDashboard"));
+            Environment.SetEnvironmentVariable("AzureWebJobsStorage", configuration.GetConnectionString("AzureWebJobsStorage"));
 
             return configuration;
         }
@@ -111,7 +111,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
             // Setup dependencies
             services.AddSingleton<ILoggerFactory, LoggerFactory>();
             services.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
-            services.AddLogging((options) => 
+            services.AddLogging((options) =>
             {
                 options.SetMinimumLevel(LogLevel.Trace);
                 options.AddConsole();
@@ -123,7 +123,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddApprentieshipsApi(configuration);
 
             var mongoConnectionString = configuration.GetConnectionString("MongoDb");
-            services.Configure<MongoDbConnectionDetails>(options => 
+            services.Configure<MongoDbConnectionDetails>(options =>
             {
                 options.ConnectionString = mongoConnectionString;
             });
