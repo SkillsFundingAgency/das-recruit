@@ -250,7 +250,18 @@
               "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('StorageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]",
               "type": "Custom"
             }
-          ]
+          ],
+          "alwaysOn" : true,
+          "virtualApplications": [
+            {
+                "virtualPath": "/",
+                "physicalPath": "site\\wwwroot"
+            },
+            {
+                "virtualPath": "/Recruit.Vacancies.Jobs",
+                "physicalPath": "site\\wwwroot\\app_data\\jobs\\continuous\\Recruit.Vacancies.Jobs"
+            }
+        ]
         }
       },
       "dependsOn": [
