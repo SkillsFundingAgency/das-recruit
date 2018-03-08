@@ -32,20 +32,11 @@ namespace Microsoft.Extensions.DependencyInjection
             {
                 options.ConnectionString = mongoConnectionString;
             });
-            
-            if (string.IsNullOrWhiteSpace(mongoConnectionString))
-            {
-                services.AddSingleton<IVacancyRepository, StubVacancyRepository>();
-                services.AddSingleton<IQueryStoreReader, StubQueryStore>();
-                services.AddSingleton<IQueryStoreWriter, StubQueryStore>();
-            }
-            else
-            {
-                MongoDbConventions.RegisterMongoConventions();
-                services.AddTransient<IVacancyRepository, MongoDbVacancyRepository>();
-                services.AddTransient<IQueryStoreReader, QueryStore>();
-                services.AddTransient<IQueryStoreWriter, QueryStore>();
-            }
+
+            MongoDbConventions.RegisterMongoConventions();
+            services.AddTransient<IVacancyRepository, MongoDbVacancyRepository>();
+            services.AddTransient<IQueryStoreReader, QueryStore>();
+            services.AddTransient<IQueryStoreWriter, QueryStore>();
         }
     }
 }
