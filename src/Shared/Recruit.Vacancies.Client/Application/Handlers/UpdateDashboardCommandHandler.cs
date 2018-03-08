@@ -1,6 +1,6 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Application.Commands;
+using Esfa.Recruit.Vacancies.Client.Application.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Domain.Mappings;
-using Esfa.Recruit.Vacancies.Client.Domain.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using MediatR;
 using System.Linq;

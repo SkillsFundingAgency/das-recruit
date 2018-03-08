@@ -1,14 +1,14 @@
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
+using Esfa.Recruit.Vacancies.Client.Application.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Enums;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Projections;
-using Esfa.Recruit.Vacancies.Client.Domain.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
@@ -112,8 +112,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         
         public async Task<Dashboard> GetDashboardAsync(string employerAccountId)
         {
-            var key = string.Format(QueryViewKeys.DashboardViewPrefix, employerAccountId);
-            return await _reader.GetDashboardAsync(key);
+            return await _reader.GetDashboardAsync(employerAccountId);
         }
 
         public async Task UpdateApprenitceshipProgrammesAsync(IEnumerable<ApprenticeshipProgramme> programmes)

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Application.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Domain.Projections;
-using Esfa.Recruit.Vacancies.Client.Domain.QueryStore;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 {
@@ -23,18 +23,24 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 
         public Task UpdateDashboardAsync(string employerAccountId, IEnumerable<VacancySummary> vacancySummaries)
         {
-            var dashboard = new Dashboard
+            var dashboardItem = new Dashboard
             {
                 Id = string.Format(QueryViewKeys.DashboardViewPrefix, employerAccountId),
                 Vacancies = vacancySummaries
             };
 
-            return _queryStore.UpdsertAsync<Dashboard>(dashboard);
+            return _queryStore.UpdsertAsync<Dashboard>(dashboardItem);
         }
 
-        public Task UpdateApprenticeshipProgrammesAsync(ApprenticeshipProgrammes programmes)
+        public Task UpdateApprenticeshipProgrammesAsync(IEnumerable<ApprenticeshipProgramme> programmes)
         {
-            return _queryStore.UpdsertAsync<ApprenticeshipProgrammes>(programmes);
+            var programmesItem = new ApprenticeshipProgrammes
+            {
+                Id = QueryViewKeys.ApprenticeshipProgrammes,
+                Programmes = programmes
+            };
+            
+            return _queryStore.UpdsertAsync<ApprenticeshipProgrammes>(programmesItem);
         }
     }
 }

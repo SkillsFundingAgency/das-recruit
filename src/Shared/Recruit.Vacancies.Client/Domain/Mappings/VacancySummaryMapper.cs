@@ -3,7 +3,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Projections;
 
 namespace Esfa.Recruit.Vacancies.Client.Domain.Mappings
 {
-    internal class VacancySummaryMapper
+    internal static class VacancySummaryMapper
     {
         internal static VacancySummary MapFromVacancy(Vacancy updatedVacancy)
         {

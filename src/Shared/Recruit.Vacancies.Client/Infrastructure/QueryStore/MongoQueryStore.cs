@@ -1,7 +1,7 @@
+using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
-using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 {

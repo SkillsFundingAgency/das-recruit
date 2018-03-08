@@ -1,6 +1,6 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Application.Handlers;
+using Esfa.Recruit.Vacancies.Client.Application.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
-using Esfa.Recruit.Vacancies.Client.Domain.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Messaging;
