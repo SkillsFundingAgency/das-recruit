@@ -9,9 +9,8 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories;
 using MediatR;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
-namespace Esfa.Recruit.Vacancies.Client.Ioc
+namespace Microsoft.Extensions.DependencyInjection
 {
     public static class Registry
     {
@@ -39,7 +38,6 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
                 services.AddSingleton<IVacancyRepository, StubVacancyRepository>();
                 services.AddSingleton<IQueryStoreReader, StubQueryStore>();
                 services.AddSingleton<IQueryStoreWriter, StubQueryStore>();
-
             }
             else
             {
@@ -47,7 +45,6 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
                 services.AddTransient<IVacancyRepository, MongoDbVacancyRepository>();
                 services.AddTransient<IQueryStoreReader, QueryStore>();
                 services.AddTransient<IQueryStoreWriter, QueryStore>();
-
             }
         }
     }

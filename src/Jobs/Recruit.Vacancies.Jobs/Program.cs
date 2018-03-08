@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using Esfa.Recruit.Vacancies.Jobs.Infrastructure;
-using Esfa.Recruit.Vacancies.Jobs.Mongo;
 using Esfa.Recruit.Vacancies.Jobs.TrainingTypes;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Configuration;
@@ -119,14 +117,8 @@ namespace Esfa.Recruit.Vacancies.Jobs
             });
             services.AddScoped<StandardsAndFrameworksUpdater>();
             services.AddSingleton<IApprenticeshipProgrammeApiClient, ApprenticeshipProgrammeApiClient>();
-            services.AddSingleton<IUpdateQueryStore, QueryStore>();
             services.AddApprentieshipsApi(configuration);
-
-            var mongoConnectionString = configuration.GetConnectionString("MongoDb");
-            services.Configure<MongoDbConnectionDetails>(options => 
-            {
-                options.ConnectionString = mongoConnectionString;
-            });
+            services.AddRecruitStorageClient(configuration);
 
             // Add Jobs
             // services.AddScoped<GenerateVacancyNumberJob>();

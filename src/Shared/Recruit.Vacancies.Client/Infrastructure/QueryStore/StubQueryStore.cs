@@ -27,5 +27,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         {
             return Task.CompletedTask;
         }
+
+        public Task UpdateApprenticeshipProgrammesAsync(ApprenticeshipProgrammes updatedList)
+        {
+            return Task.CompletedTask;
+        }
     }
 }

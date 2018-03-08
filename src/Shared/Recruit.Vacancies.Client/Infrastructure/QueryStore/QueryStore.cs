@@ -34,5 +34,18 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 
             await collection.ReplaceOneAsync(filter, dashboard, new UpdateOptions { IsUpsert = true });
         }
+
+        public async Task UpdateApprenticeshipProgrammesAsync(ApprenticeshipProgrammes programmes)
+        {
+            var collection = GetCollection<ApprenticeshipProgrammes>();
+
+            var filter = Builders<ApprenticeshipProgrammes>.Filter.Eq(x => x.Id, programmes.Id);
+            var options = new UpdateOptions 
+            {
+                IsUpsert = true,
+            };
+
+            await collection.ReplaceOneAsync(filter, programmes, options);
+        }
     }
 }

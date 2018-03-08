@@ -11,7 +11,8 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/Employer/Employer.sln"
+                "${workspaceFolder}/Employer/Employer.sln",
+                "/p:GenerateFullPaths=true"
             ],
             "problemMatcher": "$msCompile"
         },
@@ -22,7 +23,8 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/Jobs/Jobs.sln"
+                "${workspaceFolder}/Jobs/Jobs.sln",
+                "/p:GenerateFullPaths=true"
             ],
             "problemMatcher": "$msCompile"
         },
@@ -33,7 +35,8 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/Shared/VacanciesClient.sln"
+                "${workspaceFolder}/Shared/VacanciesClient.sln",
+                "/p:GenerateFullPaths=true"
             ],
             "problemMatcher": "$msCompile"
         },
@@ -47,7 +50,8 @@
             "type": "process",
             "args": [
                 "test",
-                "${workspaceFolder}/Employer/UnitTests/UnitTests.csproj"
+                "${workspaceFolder}/Employer/UnitTests/UnitTests.csproj",
+                "/p:GenerateFullPaths=true"
             ]
         },
         {
@@ -57,7 +61,8 @@
             "type": "process",
             "args": [
                 "test",
-                "${workspaceFolder}/Employer/IntegrationTests/IntegrationTests.csproj"
+                "${workspaceFolder}/Employer/IntegrationTests/IntegrationTests.csproj",
+                "/p:GenerateFullPaths=true"
             ]
         }
     ]

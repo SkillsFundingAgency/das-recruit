@@ -5,6 +5,8 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.QueryStore
 {
     public interface IQueryStoreWriter
     {
-         Task UpdateDashboardAsync(Dashboard dashboard); 
+        Task UpdateDashboardAsync(Dashboard dashboard); 
+
+        Task UpdateApprenticeshipProgrammesAsync(ApprenticeshipProgrammes programmes);
     }
 }

@@ -7,6 +7,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
@@ -113,6 +114,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         {
             var key = string.Format(QueryViewKeys.DashboardViewPrefix, employerAccountId);
             return await _reader.GetDashboardAsync(key);
+        }
+
+        public async Task UpdateApprenitceshipProgrammesAsync(IEnumerable<ApprenticeshipProgramme> programmes)
+        {
+            var command = new UpdateApprenticeshipProgrammesCommand
+            {
+                ApprenticeshipProgrammes = programmes
+            };
+
+            await _messaging.SendCommandAsync(command);
         }
 
         private async Task UpdateDashboardAsync(string employerAccountId)

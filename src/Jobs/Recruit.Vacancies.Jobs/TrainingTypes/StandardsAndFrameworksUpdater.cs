@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Esfa.Recruit.Vacancies.Jobs.Infrastructure;
-using Esfa.Recruit.Vacancies.Jobs.TrainingTypes.Models;
+using Esfa.Recruit.Vacancies.Client.Domain.Projections;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.Extensions.Logging;
 using Polly;
 using SFA.DAS.Apprenticeships.Api.Client;
@@ -13,18 +13,18 @@ namespace Esfa.Recruit.Vacancies.Jobs.TrainingTypes
     public sealed class StandardsAndFrameworksUpdater
     {
         private readonly ILogger<StandardsAndFrameworksUpdater> _logger;
-        private readonly IUpdateQueryStore _queryStore;
+        private readonly IVacancyClient _queryStoreClient;
         private readonly IStandardApiClient _standardsClient;
         private readonly IFrameworkApiClient _frameworksClient;
 
         public StandardsAndFrameworksUpdater(
             ILogger<StandardsAndFrameworksUpdater> logger, 
-            IUpdateQueryStore queryStore,
+            IVacancyClient queryStoreClient,
             IStandardApiClient standardsClient,
             IFrameworkApiClient frameworksClient)
         {
             _logger = logger;
-            _queryStore = queryStore;
+            _queryStoreClient = queryStoreClient;
             _standardsClient = standardsClient;
             _frameworksClient = frameworksClient;
         }
@@ -46,12 +46,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.TrainingTypes
                 newList.AddRange(standardsFromApi);
                 newList.AddRange(frameworksFromApi);
 
-                var view = new ApprenticeshipProgrammeView
-                {
-                    ApprenticeshipProgrammes = newList
-                };
-                    
-                await UpdateQueryStore(view);
+                await UpdateQueryStore(newList);
 
                 _logger.LogInformation("Inserted: {standardCount} standards and {frameworkCount} frameworks.", standardsFromApi.Count, frameworksFromApi.Count);
             }
@@ -93,9 +88,9 @@ namespace Esfa.Recruit.Vacancies.Jobs.TrainingTypes
             return frameworks.FilterAndMapToApprenticeshipProgrammes();
         }
 
-        private async Task UpdateQueryStore(ApprenticeshipProgrammeView view)
+        private async Task UpdateQueryStore(IEnumerable<ApprenticeshipProgramme> programmes)
         {
-            await _queryStore.UpdateStandardsAndFrameworksAsync(view);
+            await _queryStoreClient.UpdateApprenitceshipProgrammesAsync(programmes);
         }
         
         private Polly.Retry.RetryPolicy GetApiRetryPolicy()

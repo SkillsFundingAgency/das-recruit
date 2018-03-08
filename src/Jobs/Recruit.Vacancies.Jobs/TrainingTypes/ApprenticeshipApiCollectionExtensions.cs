@@ -1,6 +1,6 @@
 using System.Linq;
-using Esfa.Recruit.Vacancies.Jobs.TrainingTypes.Models;
 using SFA.DAS.Apprenticeships.Api.Types;
+using Esfa.Recruit.Vacancies.Client.Domain.Projections;
 
 namespace System.Collections.Generic
 {
