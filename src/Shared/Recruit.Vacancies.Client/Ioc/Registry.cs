@@ -35,8 +35,9 @@ namespace Microsoft.Extensions.DependencyInjection
 
             MongoDbConventions.RegisterMongoConventions();
             services.AddTransient<IVacancyRepository, MongoDbVacancyRepository>();
-            services.AddTransient<IQueryStoreReader, QueryStore>();
-            services.AddTransient<IQueryStoreWriter, QueryStore>();
+            services.AddTransient<IQueryStore, MongoQueryStore>();
+            services.AddTransient<IQueryStoreReader, QueryStoreClient>();
+            services.AddTransient<IQueryStoreWriter, QueryStoreClient>();
         }
     }
 }
