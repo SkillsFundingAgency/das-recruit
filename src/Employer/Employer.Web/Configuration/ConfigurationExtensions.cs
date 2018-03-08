@@ -12,6 +12,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Middleware;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace Esfa.Recruit.Employer.Web.Configuration
 {
@@ -36,6 +37,8 @@ namespace Esfa.Recruit.Employer.Web.Configuration
 
         public static void AddMvcService(this IServiceCollection services, IHostingEnvironment hostingEnvironment, bool isAuthEnabled)
         {
+            services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
+
             services.AddMvc(opts =>
             {
                 if (!hostingEnvironment.IsDevelopment())
