@@ -24,6 +24,11 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         {
             var employerDetail = (EmployerIdentifier)HttpContext.Items[ContextItemKeys.EmployerIdentifier];
             var vm = await _orchestrator.GetDashboardViewModelAsync(employerDetail);
+            
+            if (TempData.ContainsKey(TempDataKeys.DashboardErrorMessage))
+            {
+                ModelState.AddModelError(string.Empty, TempData[TempDataKeys.DashboardErrorMessage].ToString());
+            }
 
             return View(vm);
         }

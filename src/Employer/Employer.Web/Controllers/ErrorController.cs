@@ -3,13 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using Esfa.Recruit.Employer.Web.ViewModels.Error;
 using Microsoft.Extensions.Logging;
-using Esfa.Recruit.Employer.Web.Orchestrators;
 using Microsoft.AspNetCore.Diagnostics;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Models;
-using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Exceptions;
 using System.Net;
+using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
@@ -17,22 +15,20 @@ namespace Esfa.Recruit.Employer.Web.Controllers
     public class ErrorController : Controller
     {
         private readonly ILogger<ErrorController> _logger;
-        private readonly DashboardOrchestrator _orchestrator;
 
-        public ErrorController(ILogger<ErrorController> logger, DashboardOrchestrator orchestrator)
+        public ErrorController(ILogger<ErrorController> logger)
         {
             _logger = logger;
-            _orchestrator = orchestrator;
         }
 
         [Route("Error/{id?}")]
-        public async Task<IActionResult> Error(int id)
+        public IActionResult Error(int id)
         {
             return View(new ErrorViewModel { StatusCode = id, RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
         [Route("error/handle")]
-        public async Task<IActionResult> ErrorHandler()
+        public IActionResult ErrorHandler()
         {
             var exceptionFeature = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
 
@@ -44,11 +40,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
                 if (exception is ConcurrencyException)
                 {
-                    _logger.LogError(exception, $"Exception on path: {routeWhereExceptionOccurred}");
-                    var vm = await _orchestrator.GetDashboardViewModelAsync(employerDetail);
-                    ModelState.AddModelError(string.Empty, exception.Message);
-
-                    return View(ViewNames.DashboardView, vm);
+                    _logger.LogError(exception, $"Exception on path: {routeWhereExceptionOccurred}");                    
+                    TempData.Add(TempDataKeys.DashboardErrorMessage, exception.Message);
+                    return RedirectToRoute(RouteNames.Dashboard_Index_Get, new { EmployerAccountId = employerDetail.AccountId });
                 }
             }
 
