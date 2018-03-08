@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Esfa.Recruit.Employer.Web.Exceptions
+namespace Esfa.Recruit.Vacancies.Client.Domain.Exceptions
 {
     [Serializable]
     public class ConcurrencyException : Exception
