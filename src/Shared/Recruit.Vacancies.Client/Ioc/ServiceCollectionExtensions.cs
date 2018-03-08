@@ -12,7 +12,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class Registry
+    public static class ServiceCollectionExtensions
     {
         public static void AddRecruitStorageClient(this IServiceCollection services, IConfiguration configuration)
         {
@@ -37,6 +37,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient<IVacancyRepository, MongoDbVacancyRepository>();
             services.AddTransient<IQueryStore, MongoQueryStore>();
             services.AddTransient<IQueryStoreReader, QueryStoreClient>();
+  
             services.AddTransient<IQueryStoreWriter, QueryStoreClient>();
         }
     }
