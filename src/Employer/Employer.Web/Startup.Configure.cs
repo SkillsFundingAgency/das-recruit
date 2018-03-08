@@ -1,21 +1,19 @@
 ﻿using Esfa.Recruit.Employer.Web.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Options;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Employer.Web
 {
     public partial class Startup
     {
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env,  IOptions<ExternalLinksConfiguration> externalLinks)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IOptions<ExternalLinksConfiguration> externalLinks)
         {
             app.UseStatusCodePagesWithReExecute("/Error/Index/{0}");
-
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -27,18 +25,11 @@ namespace Esfa.Recruit.Employer.Web
 
                 app.UseRewriter(rewriteOptions);
 
-                app.UseExceptionHandler(exApp =>
-                {
-                    exApp.Run(ctx => 
-                    {
-                        ctx.Response.StatusCode = StatusCodes.Status500InternalServerError;
-                        return Task.CompletedTask;
-                    });
-                });
+                app.UseExceptionHandler("/error/handle");
             }
 
             // Redirect requests to root to the MA site.
-            app.UseRootRedirect(externalLinks.Value.ManageApprenticeshipSiteUrl);            
+            app.UseRootRedirect(externalLinks.Value.ManageApprenticeshipSiteUrl);    
             
             // Add Content Security Policy
             app.UseCsp(options => options
