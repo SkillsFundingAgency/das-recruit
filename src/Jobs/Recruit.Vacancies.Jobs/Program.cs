@@ -115,14 +115,14 @@ namespace Esfa.Recruit.Vacancies.Jobs
                 options.AddConsole();
                 options.AddDebug();
             });
-            services.AddScoped<StandardsAndFrameworksUpdater>();
+            services.AddScoped<ApprenticeshipProgrammesUpdater>();
             services.AddSingleton<IApprenticeshipProgrammeApiClient, ApprenticeshipProgrammeApiClient>();
             services.AddApprentieshipsApi(configuration);
             services.AddRecruitStorageClient(configuration);
 
             // Add Jobs
             // services.AddScoped<GenerateVacancyNumberJob>();
-            services.AddScoped<UpdateStandardsAndFrameworksJob>();
+            services.AddScoped<ApprenticeshipProgrammesJob>();
 
             return services;
         }

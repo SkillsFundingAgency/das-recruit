@@ -10,15 +10,15 @@ using SFA.DAS.Apprenticeships.Api.Client;
 
 namespace Esfa.Recruit.Vacancies.Jobs.TrainingTypes
 {
-    public sealed class StandardsAndFrameworksUpdater
+    public sealed class ApprenticeshipProgrammesUpdater
     {
-        private readonly ILogger<StandardsAndFrameworksUpdater> _logger;
+        private readonly ILogger<ApprenticeshipProgrammesUpdater> _logger;
         private readonly IVacancyClient _queryStoreClient;
         private readonly IStandardApiClient _standardsClient;
         private readonly IFrameworkApiClient _frameworksClient;
 
-        public StandardsAndFrameworksUpdater(
-            ILogger<StandardsAndFrameworksUpdater> logger, 
+        public ApprenticeshipProgrammesUpdater(
+            ILogger<ApprenticeshipProgrammesUpdater> logger, 
             IVacancyClient queryStoreClient,
             IStandardApiClient standardsClient,
             IFrameworkApiClient frameworksClient)
