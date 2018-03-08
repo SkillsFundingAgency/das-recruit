@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Projections;
 using Esfa.Recruit.Vacancies.Client.Domain.QueryStore;
 
@@ -13,13 +14,21 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             _queryStore = queryStore;
         }
 
-        public Task<Dashboard> GetDashboardAsync(string viewKey)
+        public Task<Dashboard> GetDashboardAsync(string employerAccountId)
         {
-            return _queryStore.GetAsync<Dashboard>(viewKey);
+            var key = string.Format(QueryViewKeys.DashboardViewPrefix, employerAccountId);
+
+            return _queryStore.GetAsync<Dashboard>(key);
         }
 
-        public Task UpdateDashboardAsync(Dashboard dashboard)
+        public Task UpdateDashboardAsync(string employerAccountId, IEnumerable<VacancySummary> vacancySummaries)
         {
+            var dashboard = new Dashboard
+            {
+                Id = string.Format(QueryViewKeys.DashboardViewPrefix, employerAccountId),
+                Vacancies = vacancySummaries
+            };
+
             return _queryStore.UpdsertAsync<Dashboard>(dashboard);
         }
 
