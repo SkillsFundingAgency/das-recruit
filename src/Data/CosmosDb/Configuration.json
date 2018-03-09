@@ -6,12 +6,12 @@
                 {
                     "CollectionName": "vacancies",
                     "OfferThroughput": 400,
+                    "PartitionKey": "part1",
                     "StoredProcedures": []
                 },
                 {
                     "CollectionName": "queryViews",
                     "OfferThroughput": 400,
-                    "PartitionKey": "part1",
                     "StoredProcedures": []
                 }
             ]
