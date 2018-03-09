@@ -25,7 +25,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             return result?.FirstOrDefault();
         }
 
-        Task IQueryStore.UpdsertAsync<T>(T item)
+        Task IQueryStore.UpsertAsync<T>(T item)
         {
             var filter = Builders<T>.Filter.Eq(d => d.Id, item.Id);
             var collection = GetCollection<T>();

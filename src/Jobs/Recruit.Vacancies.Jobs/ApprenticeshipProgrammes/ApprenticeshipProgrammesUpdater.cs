@@ -90,7 +90,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.TrainingTypes
 
         private async Task UpdateQueryStore(IEnumerable<ApprenticeshipProgramme> programmes)
         {
-            await _queryStoreClient.UpdateApprenitceshipProgrammesAsync(programmes);
+            await _queryStoreClient.UpdateApprenticeshipProgrammesAsync(programmes);
         }
         
         private Polly.Retry.RetryPolicy GetApiRetryPolicy()

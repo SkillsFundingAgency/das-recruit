@@ -29,7 +29,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
                 Vacancies = vacancySummaries
             };
 
-            return _queryStore.UpdsertAsync<Dashboard>(dashboardItem);
+            return _queryStore.UpsertAsync<Dashboard>(dashboardItem);
         }
 
         public Task UpdateApprenticeshipProgrammesAsync(IEnumerable<ApprenticeshipProgramme> programmes)
@@ -40,7 +40,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
                 Programmes = programmes
             };
             
-            return _queryStore.UpdsertAsync<ApprenticeshipProgrammes>(programmesItem);
+            return _queryStore.UpsertAsync<ApprenticeshipProgrammes>(programmesItem);
         }
     }
 }

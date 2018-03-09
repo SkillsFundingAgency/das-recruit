@@ -115,7 +115,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return await _reader.GetDashboardAsync(employerAccountId);
         }
 
-        public async Task UpdateApprenitceshipProgrammesAsync(IEnumerable<ApprenticeshipProgramme> programmes)
+        public async Task UpdateApprenticeshipProgrammesAsync(IEnumerable<ApprenticeshipProgramme> programmes)
         {
             var command = new UpdateApprenticeshipProgrammesCommand
             {
