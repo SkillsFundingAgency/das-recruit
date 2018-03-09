@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 
-namespace Esfa.Recruit.Vacancies.Jobs.TrainingTypes
+namespace Esfa.Recruit.Vacancies.Jobs.ApprenticeshipProgrammes
 {
     public class ApprenticeshipProgrammesJob
     {

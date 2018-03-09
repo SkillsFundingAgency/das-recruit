@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 using Polly;
 using SFA.DAS.Apprenticeships.Api.Client;
 
-namespace Esfa.Recruit.Vacancies.Jobs.TrainingTypes
+namespace Esfa.Recruit.Vacancies.Jobs.ApprenticeshipProgrammes
 {
     public sealed class ApprenticeshipProgrammesUpdater
     {
