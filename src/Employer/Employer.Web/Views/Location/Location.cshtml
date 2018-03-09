@@ -1,0 +1,74 @@
+﻿@using Esfa.Recruit.Employer.Web.ViewModels.Location
+@model Esfa.Recruit.Employer.Web.ViewModels.Location.LocationViewModel
+
+<div class="grid-row">
+    <div class="column-full">
+        
+        @Html.Partial("_Part1Header")
+    
+        <!-- Validation summary-->
+        <div asp-validation-summary="All" class="error-summary" role="alert" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
+            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
+                Please fix these errors
+            </h2>
+        </div>
+
+        <!-- Location -->
+        <div id="section_location">
+            <form asp-route="@RouteNames.Location_Post">
+                <div class="form-group">
+                    <fieldset>
+                        <legend>
+                            <span class="form-label-bold">Which organisation is the vacancy for?</span>
+                        </legend>
+
+                        @foreach (var organisation in Model.Organisations)
+            {
+                <div class="multiple-choice">
+                    <input asp-for="SelectedOrganisationId" type="radio" value="@organisation.Id">
+                    <label asp-for="@organisation.Id">@organisation.Name</label>
+                </div>
+}
+                    </fieldset>
+                </div>
+
+                <div id="address-details" class="address-manual-input">
+                    <label class="form-label-bold">Is this the address where the apprenticeship will take place? If not, enter manually.</label>
+
+                    <div class="form-group-compound address-item form-group">
+                        <label asp-for="AddressLine1" class="form-label">Address</label>
+                        <input asp-for="AddressLine1" class="form-control-large form-control" />
+                        <span asp-validation-for="AddressLine1" class="error-message"></span>
+                    </div>
+
+                    <div class="form-group-compound address-item form-group">
+                        <input asp-for="AddressLine2" class="form-control-large form-control" />
+                        <span asp-validation-for="AddressLine2" class="error-message"></span>
+                    </div>
+
+                    <div class="form-group-compound address-item form-group">
+                        <input asp-for="AddressLine3" class="form-control-large form-control" />
+                        <span asp-validation-for="AddressLine3" class="error-message"></span>
+                    </div>
+
+                    <div class="form-group-compound address-item form-group">
+                        <input asp-for="AddressLine4" class="form-control-large form-control" />
+                        <span asp-validation-for="AddressLine4" class="error-message"></span>
+                    </div>
+
+                    <div class="form-group-compound address-item form-group">
+                        <label asp-for="Postcode" class="form-label">Postcode</label>
+                        <input asp-for="Postcode" class="form-control-large form-control" />
+                        <span asp-validation-for="Postcode" class="error-message"></span>
+                    </div>
+
+                </div>
+
+                <button type="submit" class="button">Save and continue</button>
+                <a asp-route="@RouteNames.Dashboard_Index_Get" class="button-link">Cancel</a>
+            </form>
+            <hr>
+        </div>
+
+    </div>
+</div>

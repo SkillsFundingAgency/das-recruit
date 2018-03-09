@@ -27,7 +27,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         [HttpPost("employer-details", Name = RouteNames.EmployerDetails_Index_Post)]
         public IActionResult Index(IndexViewModel vm)
         {
-            return RedirectToRoute(RouteNames.LocationAndPosition_Index_Get);
+            return RedirectToRoute(RouteNames.Location_Get);
         }
     }
 }

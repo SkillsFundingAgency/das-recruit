@@ -33,5 +33,9 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public long? Ukprn { get; set; }
         public string ProviderName { get; set; }
         public string ProviderAddress { get; set; }
+
+        public string OrganisationId { get; set; }
+        
+        public Address Location { get; set; }
     }
 }
