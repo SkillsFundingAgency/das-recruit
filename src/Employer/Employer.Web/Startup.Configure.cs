@@ -36,7 +36,7 @@ namespace Esfa.Recruit.Employer.Web
                 .DefaultSources(s => s.Self())
                 .StyleSources(s => 
                     s.Self()
-                    .UnsafeInline()) // TODO: Should see if there's another option that having inline script
+                    .UnsafeInline()) // TODO: Should see if there's another option that having inline script - currently only need this for the built-in validation-summary which we are going to substitute with our own at some point.
                 .ScriptSources(s => 
                     s.Self()
                     .CustomSources("https://az416426.vo.msecnd.net")
@@ -50,6 +50,10 @@ namespace Esfa.Recruit.Employer.Web
                     s.Self()
                     .CustomSources("https://dc.services.visualstudio.com")
                 )
+                .ImageSources(s => 
+                    s.Self()
+                    .CustomSources("https://maps.googleapis.com")
+                 )
                 .ReportUris(r => r.Uris("/ContentPolicyReport/Report")));
 
             //Registered before static files to always set header
