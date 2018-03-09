@@ -1,0 +1,116 @@
+﻿@using Esfa.Recruit.Employer.Web.ViewModels.Part1.TitleVacancy
+@model Esfa.Recruit.Employer.Web.ViewModels.Part1.TitleVacancy.TitleViewModel
+
+@{
+    var exampleClosingDate = DateTime.Now.AddMonths(2);
+    var exampleStartingDate = exampleClosingDate.AddDays(14);
+}
+<div class="grid-row">
+    <div class="column-full">
+        <h1 class="heading-xlarge small-bottom-margin">Make your vacancy stand out in a search</h1>
+        <p>
+            Apprentice candidates will see your vacancy in a search along with vacancies from other employers. This is your
+            opportunity to make your vacancy attract the best candidates
+        </p>
+        <hr>
+
+        <!-- Example-->
+        <a href="#example_link" id="example_link">Show an example advert</a>
+
+        <div id="example_vacancy" class="example-advert">
+            <h2 class="heading-medium small-top-margin">
+                <a class="vacancy-link" href="#example_vacancy">Level 3 Mechanic Apprentice</a>
+            </h2>
+            <ul class="list">
+                <li class="secondary-text">Turves Green Service Station Ltd</li>
+
+                <li class="font-xsmall secondary-text">
+                    <span>(Added 14 Feb 2018</span>
+                    <span>
+                        - 1 position available)
+                    </span>
+
+                </li>
+            </ul>
+            <p>
+                Maintenance &amp; Repair Apprentice candidate will be working towards an NVQ level 3 qualification in Motor Vehicle Main
+                &amp; Repair which includes: Full servicing of vehicles, Assisting mechanics with all tasks on Motor
+                Vehicle Repair &amp; Service. The role includes Diagnostics, Brakes, Exhausts, Clutches.
+            </p>
+            <div class="grid-row">
+                <div class="column-two-thirds">
+                    <ul class="list sfa-no-margins vacancy-details-list ">
+                        <li data-show="DisplayDistance">
+                            <span class="bold-small">Distance:</span>
+                            <span id="distance-value">0.6</span> miles
+                            <a href="#" class="summary-style hide-nojs journey-trigger">Journey time</a>
+                        </li>
+                        <li data-show="DisplayClosingDate">
+                            <span class="bold-small ">Closing date:</span>
+                            <span>@($"{exampleClosingDate:dd MMM yyyy}")</span>
+                        </li>
+                        <li data-show="DisplayStartDate">
+                            <span class="bold-small ">Possible start date:</span>
+                            <span>@($"{exampleStartingDate:dd MMM yyyy}")</span>
+                        </li>
+                        <li data-show="DisplayApprenticeshipLevel" class="toggle-content">
+                            <span class="bold-small">Apprenticeship level:</span> Advanced
+                        </li>
+                        <li data-show="DisplayWage" class="toggle-content">
+                            <span class="bold-small">Wage:</span> £140.00 per week
+                        </li>
+
+                    </ul>
+                </div>
+                <div class="column-one-third map-container hide-nojs sfa-small-bottom-margin toggle-content--mob">
+                    <div class="map-placeholder"></div>
+                    <img class="static-map" src="https://maps.googleapis.com/maps/api/staticmap?markers=52.4001929857,-1.9689295778&amp;size=190x125&amp;zoom=12&amp;client=gme-skillsfundingagency&amp;signature=AU06WjxyDoHvX8mScXchwDTvFFg=">
+                </div>
+            </div>
+        </div>
+        <br>
+        
+        <hr>
+        
+        <!-- Validation summary-->
+        <div asp-validation-summary="All" class="error-summary" role="alert" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
+            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
+                Please fix these errors
+            </h2>
+        </div>
+
+        <!-- Title -->
+        <div id="section_title">
+            <form asp-route="@(Model.VacancyId.HasValue ? RouteNames.Title_Post : RouteNames.CreateVacancy_Post)">
+                <div class="form-group">
+
+                    <label asp-for="Title" class="form-label-bold">
+                        What do you want to call this vacancy?
+                        <span class="form-hint">For example, Bodywork repair apprentice</span>
+                    </label>
+                    <input asp-for="Title" class="form-control-3-4 form-control" size="12" type="text" maxlength="50" data-val-length-max="100" />
+                    <span asp-validation-for="Title" class="error-message"></span>
+                </div>
+                <a asp-route="@RouteNames.Dashboard_Index_Get" class="button-link">Cancel</a>
+                <button type="submit" class="button">Next</button>
+            </form>
+
+            <hr>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $("#example_vacancy").hide();
+
+        $("#example_link").click(function () {
+            if ($("#example_vacancy").is(":visible")) {
+                $("#example_link")[0].innerText = "Show an example advert";
+            } else {
+                $("#example_link")[0].innerText = "Hide example";
+            }
+            $("#example_vacancy").slideToggle();
+        });
+    });
+</script>
