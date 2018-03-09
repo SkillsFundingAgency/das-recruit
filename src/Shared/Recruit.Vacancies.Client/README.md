@@ -31,7 +31,7 @@ In appSettings.json:
 }
 ```
 
-# 3. Instantiate Client
+## 3. Instantiate Client
 
 The client is most easily instantiated by using DI by just passing `IVacancyClient` as a dependency into a class.
 
