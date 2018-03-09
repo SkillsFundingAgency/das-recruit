@@ -32,9 +32,11 @@
         public const string LocationAndPosition_Index_Get = "LocationAndPosition_Index_Get";
         public const string LocationAndPosition_Index_Post = "LocationAndPosition_Index_Post";
 
-        public const string NewVacancy_Index = "NewVacancy_Index";
-        public const string NewVacancy_Index_Get = "NewVacancy_Index_Get";
-        public const string NewVacancy_Index_Post = "NewVacancy_Index_Post";
+        public const string CreateVacancy_Get = "CreateVacancy_Get";
+        public const string CreateVacancy_Post = "CreateVacancy_Post";
+
+        public const string Title_Get = "Title_Get";
+        public const string Title_Post = "Title_Post";
 
         public const string Preview_Index_Get = "Preview_Index_Get";
         public const string Preview_Submit_Post = "Preview_Submit_Post";
