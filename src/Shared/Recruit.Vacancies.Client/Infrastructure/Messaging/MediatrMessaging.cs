@@ -1,6 +1,6 @@
-﻿using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
+﻿using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using MediatR;
-using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Messaging
 {

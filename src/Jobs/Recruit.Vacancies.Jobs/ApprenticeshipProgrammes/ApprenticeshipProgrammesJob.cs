@@ -4,14 +4,14 @@ using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 
-namespace Esfa.Recruit.Vacancies.Jobs.TrainingTypes
+namespace Esfa.Recruit.Vacancies.Jobs.ApprenticeshipProgrammes
 {
-    public class UpdateStandardsAndFrameworksJob
+    public class ApprenticeshipProgrammesJob
     {
-        private readonly ILogger<UpdateStandardsAndFrameworksJob> _logger;
-        private StandardsAndFrameworksUpdater _updater;
+        private readonly ILogger<ApprenticeshipProgrammesJob> _logger;
+        private ApprenticeshipProgrammesUpdater _updater;
 
-        public UpdateStandardsAndFrameworksJob(ILogger<UpdateStandardsAndFrameworksJob> logger, StandardsAndFrameworksUpdater updater)
+        public ApprenticeshipProgrammesJob(ILogger<ApprenticeshipProgrammesJob> logger, ApprenticeshipProgrammesUpdater updater)
         {
             _logger = logger;
             _updater = updater;

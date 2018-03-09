@@ -1,7 +1,8 @@
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Projections;
-using System;
-using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
@@ -13,5 +14,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<bool> SubmitVacancyAsync(Guid id);
         Task<bool> DeleteVacancyAsync(Guid id);
         Task<Dashboard> GetDashboardAsync(string employerAccountId);
+        Task UpdateApprenticeshipProgrammesAsync(IEnumerable<ApprenticeshipProgramme> programmes);
     }
 }

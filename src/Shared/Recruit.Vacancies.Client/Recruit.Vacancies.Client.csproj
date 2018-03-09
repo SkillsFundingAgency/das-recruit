@@ -25,4 +25,7 @@
     <PackageReference Include="MongoDB.Driver" Version="2.5.0" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Application\QueryStore\" />
+  </ItemGroup>
 </Project>

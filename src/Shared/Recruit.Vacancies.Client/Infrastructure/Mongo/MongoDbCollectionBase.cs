@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.Options;
+﻿using System.Security.Authentication;
+using Microsoft.Extensions.Options;
 using MongoDB.Driver;
-using System.Security.Authentication;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
 {

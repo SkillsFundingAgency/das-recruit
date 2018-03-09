@@ -1,6 +1,6 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Application.Handlers;
+using Esfa.Recruit.Vacancies.Client.Application.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
-using Esfa.Recruit.Vacancies.Client.Domain.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Messaging;
@@ -9,11 +9,10 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories;
 using MediatR;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
-namespace Esfa.Recruit.Vacancies.Client.Ioc
+namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class Registry
+    public static class ServiceCollectionExtensions
     {
         public static void AddRecruitStorageClient(this IServiceCollection services, IConfiguration configuration)
         {
@@ -33,22 +32,13 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             {
                 options.ConnectionString = mongoConnectionString;
             });
-            
-            if (string.IsNullOrWhiteSpace(mongoConnectionString))
-            {
-                services.AddSingleton<IVacancyRepository, StubVacancyRepository>();
-                services.AddSingleton<IQueryStoreReader, StubQueryStore>();
-                services.AddSingleton<IQueryStoreWriter, StubQueryStore>();
 
-            }
-            else
-            {
-                MongoDbConventions.RegisterMongoConventions();
-                services.AddTransient<IVacancyRepository, MongoDbVacancyRepository>();
-                services.AddTransient<IQueryStoreReader, QueryStore>();
-                services.AddTransient<IQueryStoreWriter, QueryStore>();
-
-            }
+            MongoDbConventions.RegisterMongoConventions();
+            services.AddTransient<IVacancyRepository, MongoDbVacancyRepository>();
+            services.AddTransient<IQueryStore, MongoQueryStore>();
+            services.AddTransient<IQueryStoreReader, QueryStoreClient>();
+  
+            services.AddTransient<IQueryStoreWriter, QueryStoreClient>();
         }
     }
 }

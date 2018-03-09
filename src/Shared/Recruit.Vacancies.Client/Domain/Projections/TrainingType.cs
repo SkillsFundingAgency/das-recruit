@@ -1,4 +1,4 @@
-namespace Esfa.Recruit.Vacancies.Jobs.TrainingTypes.Models
+namespace Esfa.Recruit.Vacancies.Client.Domain.Projections
 {
     public enum TrainingType
     {

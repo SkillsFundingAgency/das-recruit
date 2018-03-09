@@ -2,9 +2,8 @@
 
 namespace Esfa.Recruit.Vacancies.Client.Domain.Projections
 {
-    public class Dashboard
+    public class Dashboard : QueryProjectionBase
     {
-        public string Id { get; set; }        
         public IEnumerable<VacancySummary> Vacancies { get; set; }
     }
 }
