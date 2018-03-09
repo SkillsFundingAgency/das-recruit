@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Domain.Projections;
@@ -16,7 +17,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 
         public Task<Dashboard> GetDashboardAsync(string employerAccountId)
         {
-            var key = string.Format(QueryViewKeys.DashboardViewPrefix, employerAccountId);
+            var key = QueryViewType.Dashboard.GetIdValue(employerAccountId);
 
             return _queryStore.GetAsync<Dashboard>(key);
         }
@@ -25,8 +26,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         {
             var dashboardItem = new Dashboard
             {
-                Id = string.Format(QueryViewKeys.DashboardViewPrefix, employerAccountId),
-                Vacancies = vacancySummaries
+                Id = QueryViewType.Dashboard.GetIdValue(employerAccountId),
+                Type = QueryViewType.Dashboard.TypeName,
+                Vacancies = vacancySummaries,
+                LastUpdated = DateTime.UtcNow
             };
 
             return _queryStore.UpsertAsync<Dashboard>(dashboardItem);
@@ -36,8 +39,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         {
             var programmesItem = new ApprenticeshipProgrammes
             {
-                Id = QueryViewKeys.ApprenticeshipProgrammes,
-                Programmes = programmes
+                Id = QueryViewType.ApprenticeshipProgrammes.GetIdValue(),
+                Type = QueryViewType.ApprenticeshipProgrammes.TypeName,
+                Programmes = programmes,
+                LastUpdated = DateTime.UtcNow
             };
             
             return _queryStore.UpsertAsync<ApprenticeshipProgrammes>(programmesItem);
