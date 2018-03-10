@@ -7,14 +7,12 @@ namespace Esfa.Recruit.Employer.Web.Extensions
 {
     public static class StringExtensions
     {
-        public static string AsPostCode(this string postcode)
+        public static string AsPostcode(this string postcode)
         {
-            if (!string.IsNullOrEmpty(postcode) && postcode.Length > 3)
+            if (postcode?.Length > 3)
             {
-                postcode = postcode.ToUpper().Replace(" ", "");
-                var chars = postcode.ToCharArray().ToList();
-                chars.Insert(chars.Count - 3, ' ');
-                postcode = new string(chars.ToArray());
+                postcode = postcode.Trim().ToUpper().Replace(" ", "");
+                postcode = postcode.Insert(postcode.Length - 3, " ");
             }
 
             return postcode;

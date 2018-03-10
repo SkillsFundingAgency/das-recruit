@@ -76,7 +76,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 AddressLine2 = m.AddressLine2?.Trim(),
                 AddressLine3 = m.AddressLine3?.Trim(),
                 AddressLine4 = m.AddressLine4?.Trim(),
-                Postcode = m.Postcode?.AsPostCode()
+                Postcode = m.Postcode?.AsPostcode()
             };
             
             await _client.UpdateVacancyAsync(vacancy);
