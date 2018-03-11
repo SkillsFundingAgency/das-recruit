@@ -1,4 +1,6 @@
 ﻿using Esfa.Recruit.Employer.Web.ViewModels.Submitted;
+using Esfa.Recruit.Vacancies.Client.Domain.Enums;
+using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using System;
 using System.Threading.Tasks;
@@ -17,6 +19,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         public async Task<IndexViewModel> GetIndexViewModelAsync(Guid vacancyId)
         {
             var vacancy = await _client.GetVacancyForEditAsync(vacancyId);
+
+            if (vacancy.Status != VacancyStatus.Submitted)
+                throw new ConcurrencyException($"The vacancy '{vacancy.Title}' has not been submitted successfully.");
 
             var vm = new IndexViewModel
             {
