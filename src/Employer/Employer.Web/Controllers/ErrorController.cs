@@ -21,7 +21,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             _logger = logger;
         }
 
-        [Route("Error/{id?}")]
+        [Route("error/{id?}")]
         public IActionResult Error(int id)
         {
             return View(new ErrorViewModel { StatusCode = id, RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });

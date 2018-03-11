@@ -12,7 +12,7 @@ namespace Esfa.Recruit.Employer.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IOptions<ExternalLinksConfiguration> externalLinks)
         {
-            app.UseStatusCodePagesWithReExecute("/Error/Index/{0}");
+            app.UseStatusCodePagesWithReExecute("/error/{0}");
             
             if (env.IsDevelopment())
             {
