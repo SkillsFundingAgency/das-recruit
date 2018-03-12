@@ -10,6 +10,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Middleware;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -63,6 +64,8 @@ namespace Esfa.Recruit.Employer.Web.Configuration
                 }
 
                 opts.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+
+                opts.AddTrimModelBinderProvider();
             });
         }
 
