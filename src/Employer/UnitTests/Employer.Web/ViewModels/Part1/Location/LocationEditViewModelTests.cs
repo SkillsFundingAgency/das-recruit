@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
-using Esfa.Recruit.Employer.Web.ViewModels.Location;
+using Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer;
 using FluentAssertions;
 using Xunit;
 
@@ -14,7 +14,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.Part1.Location
         [Fact]
         public void ShouldErrorIfLocationEditModelIsInvalid()
         {
-            var m = new LocationEditModel
+            var m = new EmployerEditModel
             {
                 Postcode = null,
                 EmployerAccountId = null
@@ -36,7 +36,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.Part1.Location
         [Fact]
         public void ShouldErrorIfPostcodeInvalid()
         {
-            var m = new LocationEditModel
+            var m = new EmployerEditModel
             {
                 Postcode = "invalid post code",
                 EmployerAccountId = "employer account Id",

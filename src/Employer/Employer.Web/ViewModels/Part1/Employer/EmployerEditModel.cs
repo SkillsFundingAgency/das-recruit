@@ -1,11 +1,11 @@
-﻿using Esfa.Recruit.Employer.Web.ViewModels.Validations;
-using Microsoft.AspNetCore.Mvc;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
+using Esfa.Recruit.Employer.Web.ViewModels.Validations;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Esfa.Recruit.Employer.Web.ViewModels.Location
+namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer
 {
-    public class LocationEditModel
+    public class EmployerEditModel
     {
         [FromRoute]
         [Required, ValidGuid]

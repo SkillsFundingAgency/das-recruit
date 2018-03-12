@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace Esfa.Recruit.Employer.Web.ViewModels.Location
+namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer
 {
-    public class LocationViewModel : LocationEditModel
+    public class EmployerViewModel : EmployerEditModel
     {
         public IEnumerable<LocationOrganisationViewModel> Organisations { get; set; }
     }

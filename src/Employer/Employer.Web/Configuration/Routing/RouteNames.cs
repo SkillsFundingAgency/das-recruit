@@ -29,8 +29,8 @@
         public const string Home_Index_Get = "Home_Index_Get";
         public const string Home_Logout_Get = "Home_Logout_Get";
 
-        public const string Location_Get = "Location_Get";
-        public const string Location_Post = "Location_Post";
+        public const string Employer_Get = "Employer_Get";
+        public const string Employer_Post = "Employer_Post";
 
         public const string CreateVacancy_Get = "CreateVacancy_Get";
         public const string CreateVacancy_Post = "CreateVacancy_Post";
