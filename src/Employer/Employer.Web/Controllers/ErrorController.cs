@@ -5,9 +5,9 @@ using Esfa.Recruit.Employer.Web.ViewModels.Error;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Diagnostics;
 using Esfa.Recruit.Employer.Web.Configuration;
-using Esfa.Recruit.Employer.Web.Models;
 using System.Net;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 
 namespace Esfa.Recruit.Employer.Web.Controllers

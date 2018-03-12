@@ -1,5 +1,5 @@
 using Esfa.Recruit.Employer.Web.Configuration;
-using Esfa.Recruit.Employer.Web.Services;
+using Esfa.Recruit.Vacancies.Client.Domain.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;

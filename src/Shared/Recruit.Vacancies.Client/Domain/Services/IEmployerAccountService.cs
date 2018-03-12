@@ -1,8 +1,8 @@
-﻿using Esfa.Recruit.Employer.Web.Models;
+﻿using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Esfa.Recruit.Employer.Web.Services
+namespace Esfa.Recruit.Vacancies.Client.Domain.Services
 {
     public interface IEmployerAccountService
     {
