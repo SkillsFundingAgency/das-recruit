@@ -1,4 +1,5 @@
 ﻿using Esfa.Recruit.Employer.Web.Orchestrators;
+using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -65,6 +66,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddTransient<TrainingProviderOrchestrator>();
             services.AddTransient<WageAndHoursOrchestrator>();
             services.AddTransient<DeleteVacancyOrchestrator>();
+            services.AddTransient<ShortDescriptionOrchestrator>();
         }
     }
 }

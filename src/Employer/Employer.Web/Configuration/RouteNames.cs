@@ -38,6 +38,9 @@
         public const string Title_Get = "Title_Get";
         public const string Title_Post = "Title_Post";
 
+        public const string ShortDescription_Get = "ShortDescription_Get";
+        public const string ShortDescription_Post = "ShortDescription_Post";
+
         public const string Preview_Index_Get = "Preview_Index_Get";
         public const string Preview_Submit_Post = "Preview_Submit_Post";
 
