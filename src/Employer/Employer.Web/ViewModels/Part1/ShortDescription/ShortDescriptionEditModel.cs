@@ -23,6 +23,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.ShortDescription
         public int? NumberOfPositions { get; set; }
 
         [Required]
+        [Display(Name = "Short description")]
         public string ShortDescription { get; set; }
     }
 }

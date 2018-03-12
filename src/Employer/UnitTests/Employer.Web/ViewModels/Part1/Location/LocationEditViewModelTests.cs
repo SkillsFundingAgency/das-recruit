@@ -12,7 +12,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.Part1.Location
     public class LocationEditViewModelTests
     {
         [Fact]
-        public void ShouldErrorIfPostcodeNotSupplied()
+        public void ShouldErrorIfLocationEditModelIsInvalid()
         {
             var m = new LocationEditModel
             {

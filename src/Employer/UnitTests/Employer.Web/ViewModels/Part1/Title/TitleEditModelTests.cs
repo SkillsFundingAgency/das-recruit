@@ -19,7 +19,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.Part1.Title
 
         [Theory]
         [MemberData(nameof(InvalidTitleData))]
-        public void ShouldErrorIfTitleIsInvalid(string actualTitle, string expectedErrorMessage)
+        public void ShouldErrorIfTitleEditModelIsInvalid(string actualTitle, string expectedErrorMessage)
         {
             var vm = new TitleEditModel
             {
@@ -42,7 +42,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.Part1.Title
         
 
         [Fact]
-        public void ShouldBeValidIfTitleIsSpecified()
+        public void ShouldBeValidIfTitleEditModelIsValid()
         {
             var vm = new TitleEditModel
             {
