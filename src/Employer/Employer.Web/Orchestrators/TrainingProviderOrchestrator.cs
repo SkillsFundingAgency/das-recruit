@@ -1,5 +1,6 @@
 ﻿using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.ViewModels.TrainingProvider;
+using Esfa.Recruit.Vacancies.Client.Domain;
 using Esfa.Recruit.Vacancies.Client.Domain.Enums;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -24,7 +25,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             var vacancy = await _client.GetVacancyForEditAsync(vacancyId);
 
             if (vacancy.Status != VacancyStatus.Draft)
-                throw new ConcurrencyException($"The vacancy '{vacancy.Title}' is not available for editing.");
+                throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
 
             var vm = new IndexViewModel
             {
@@ -42,7 +43,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             var vacancy = await _client.GetVacancyForEditAsync(m.VacancyId);
 
             if (vacancy.Status != VacancyStatus.Draft)
-                throw new ConcurrencyException($"The vacancy '{vacancy.Title}' is not available for editing.");
+                throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
 
             var confirmViewModel = new ConfirmViewModel
             {
