@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 {
-    [Route("accounts/{employerAccountId}")]
+    [Route("accounts/{employerAccountId:minlength(6)}")]
     public class TitleController : Controller
     {
         private readonly TitleOrchestrator _orchestrator;
@@ -24,7 +24,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             return View(vm);
         }
 
-        [HttpGet("vacancies/{vacancyId}/title", Name = RouteNames.Title_Get)]
+        [HttpGet("vacancies/{vacancyId:guid:validGuid}/title", Name = RouteNames.Title_Get)]
         public async Task<IActionResult> Title(Guid vacancyId)
         {
             var vm = await _orchestrator.GetTitleViewModelAsync(vacancyId);
@@ -32,7 +32,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         }
 
         [HttpPost("create-vacancy", Name = RouteNames.CreateVacancy_Post)]
-        [HttpPost("vacancies/{vacancyId}/title", Name = RouteNames.Title_Post)]
+        [HttpPost("vacancies/{vacancyId:guid:validGuid}/title", Name = RouteNames.Title_Post)]
         public async Task<IActionResult> Title(TitleViewModel vm)
         {
             if(!ModelState.IsValid)

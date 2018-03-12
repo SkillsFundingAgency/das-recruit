@@ -12,6 +12,8 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Middleware;
 using Newtonsoft.Json;
+using Esfa.Recruit.Employer.Web.ModelBinders;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 
 namespace Esfa.Recruit.Employer.Web.Configuration
 {
@@ -51,6 +53,8 @@ namespace Esfa.Recruit.Employer.Web.Configuration
                 {
                     opts.Filters.Add(new AuthorizeFilter(HasEmployerAccountPolicyName));
                 }
+
+                opts.AddStringTrimmingProvider();
 
                 var jsonInputFormatters = opts.InputFormatters.OfType<JsonInputFormatter>();
                 foreach (var formatter in jsonInputFormatters)
@@ -100,6 +104,18 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             var associatedAccountsClaim = new Claim(EmployerRecruitClaims.AccountsClaimsTypeIdentifier, accountsAsJson, JsonClaimValueTypes.Json);
 
             ctx.Principal.Identities.First().AddClaim(associatedAccountsClaim);
+        }
+
+        public static void AddStringTrimmingProvider(this MvcOptions option)
+        {
+            var binderToFind = option.ModelBinderProviders
+              .FirstOrDefault(x => x.GetType() == typeof(SimpleTypeModelBinderProvider));
+            if (binderToFind == null)
+            {
+                return;
+            }
+            var index = option.ModelBinderProviders.IndexOf(binderToFind);
+            option.ModelBinderProviders.Insert(index, new TrimmingModelBinderProvider());
         }
     }
 }

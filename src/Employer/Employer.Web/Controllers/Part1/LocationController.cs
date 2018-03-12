@@ -7,7 +7,7 @@ using Esfa.Recruit.Employer.Web.ViewModels.Location;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
-    [Route("accounts/{employerAccountId}/vacancies/{vacancyId}")]
+    [Route("accounts/{employerAccountId:minlength(6)}/vacancies/{vacancyId:guid:validGuid}")]
     public class LocationController : Controller
     {
         private readonly LocationOrchestrator _orchestrator;
@@ -36,7 +36,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             await _orchestrator.PostLocationEditModelAsync(m);
             return RedirectToRoute(RouteNames.Title_Get);
-        }
-        
+        }        
     }
 }
