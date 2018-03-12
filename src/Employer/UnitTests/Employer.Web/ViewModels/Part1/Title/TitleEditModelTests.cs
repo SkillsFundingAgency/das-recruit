@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using Esfa.Recruit.Employer.Web.ViewModels.Part1.TitleVacancy;
+using Esfa.Recruit.Employer.Web.ViewModels.Part1.Title;
 using FluentAssertions;
 using Xunit;
 
@@ -12,7 +12,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.Part1.Title
         [Fact]
         public void ShouldErrorIfTitleIsNotSpecified()
         {
-            var vm = new TitleViewModel
+            var vm = new TitleEditModel
             {
                 Title = null,
                 EmployerAccountId = null
@@ -33,7 +33,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.Part1.Title
         [Fact]
         public void ShouldBeValidIfTitleIsSpecified()
         {
-            var vm = new TitleViewModel
+            var vm = new TitleEditModel
             {
                 Title = "some text",
                 EmployerAccountId = "scotty"

@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Orchestrators;
-using Esfa.Recruit.Employer.Web.ViewModels.Part1.TitleVacancy;
+using Esfa.Recruit.Employer.Web.ViewModels.Part1.Title;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part1
@@ -33,14 +33,15 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 
         [HttpPost("create-vacancy", Name = RouteNames.CreateVacancy_Post)]
         [HttpPost("vacancies/{vacancyId}/title", Name = RouteNames.Title_Post)]
-        public async Task<IActionResult> Title(TitleViewModel vm)
+        public async Task<IActionResult> Title(TitleEditModel m)
         {
             if(!ModelState.IsValid)
             {
+                var vm = _orchestrator.GetTitleViewModelAsync(m);
                 return View(vm);
             }
             
-            var vacancyId = await _orchestrator.PostTitleViewModelAsync(vm);
+            var vacancyId = await _orchestrator.PostTitleEditModelAsync(m);
             
             return RedirectToRoute(RouteNames.Location_Get, new { vacancyId });
         }

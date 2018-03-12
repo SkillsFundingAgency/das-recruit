@@ -1,7 +1,7 @@
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using System;
 using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.ViewModels.Part1.TitleVacancy;
+using Esfa.Recruit.Employer.Web.ViewModels.Part1.Title;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
@@ -33,7 +33,16 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return vm;
         }
 
-        public async Task<Guid> PostTitleViewModelAsync(TitleViewModel vm)
+        public async Task<TitleViewModel> GetTitleViewModelAsync(TitleEditModel m)
+        {
+            var vm = await GetTitleViewModelAsync(m.VacancyId.Value);
+
+            vm.Title = m.Title;
+
+            return vm;
+        }
+
+        public async Task<Guid> PostTitleEditModelAsync(TitleEditModel vm)
         {
             if (!vm.VacancyId.HasValue)
             {
