@@ -65,8 +65,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         {
             var vacancy = await _client.GetVacancyForEditAsync(m.VacancyId);
 
-            if (vacancy.Status != VacancyStatus.Draft)
+            if (!vacancy.CanEdit)
+            {
                 throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
+            }
             
             vacancy.OrganisationId = m.SelectedOrganisationId?.Trim();
             vacancy.Location = new Address

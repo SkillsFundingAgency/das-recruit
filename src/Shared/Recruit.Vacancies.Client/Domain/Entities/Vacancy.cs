@@ -30,6 +30,11 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         /// </summary>
         public bool CanDelete => Status == VacancyStatus.Draft && IsDeleted == false;
 
+        /// <summary>
+        /// We can only edit draft vacancies that have not been deleted
+        /// </summary>
+        public bool CanEdit => Status == VacancyStatus.Draft && IsDeleted == false;
+
         public long? Ukprn { get; set; }
         public string ProviderName { get; set; }
         public string ProviderAddress { get; set; }
