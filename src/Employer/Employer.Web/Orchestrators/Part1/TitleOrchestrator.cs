@@ -53,7 +53,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             var vacancy = await _client.GetVacancyForEditAsync(vm.VacancyId.Value);
 
-            vacancy.Title = vm.Title?.Trim();
+            vacancy.Title = vm.Title;
 
             await _client.UpdateVacancyAsync(vacancy);
 

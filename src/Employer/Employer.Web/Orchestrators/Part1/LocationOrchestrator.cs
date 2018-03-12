@@ -72,10 +72,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             vacancy.OrganisationId = m.SelectedOrganisationId?.Trim();
             vacancy.Location = new Address
             {
-                AddressLine1 = m.AddressLine1?.Trim(),
-                AddressLine2 = m.AddressLine2?.Trim(),
-                AddressLine3 = m.AddressLine3?.Trim(),
-                AddressLine4 = m.AddressLine4?.Trim(),
+                AddressLine1 = m.AddressLine1,
+                AddressLine2 = m.AddressLine2,
+                AddressLine3 = m.AddressLine3,
+                AddressLine4 = m.AddressLine4,
                 Postcode = m.Postcode?.AsPostcode()
             };
             

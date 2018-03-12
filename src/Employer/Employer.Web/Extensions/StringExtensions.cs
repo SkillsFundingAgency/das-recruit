@@ -13,7 +13,7 @@ namespace Esfa.Recruit.Employer.Web.Extensions
         {
             if (postcode?.Length > incodeLength)
             {
-                postcode = postcode.Trim().ToUpper().Replace(" ", "");
+                postcode = postcode.ToUpper().Replace(" ", "");
                 postcode = postcode.Insert(postcode.Length - incodeLength, " ");
             }
 
