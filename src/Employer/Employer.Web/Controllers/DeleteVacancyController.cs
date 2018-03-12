@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
-    [Route("accounts/{employerAccountId}/vacancies/{vacancyId}")]
+    [Route("accounts/{employerAccountId:minlength(6)}/vacancies/{vacancyId:guid}")]
     public class DeleteVacancyController : Controller
     {
         private readonly DeleteVacancyOrchestrator _orchestrator;

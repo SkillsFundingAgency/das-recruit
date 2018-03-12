@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
-    [Route("accounts/{employerAccountId}/vacancies/{vacancyId}")]
+    [Route("accounts/{employerAccountId:minlength(6)}/vacancies/{vacancyId:guid}")]
     public class ApprenticeshipDetailsController : Controller
     {
         private readonly ApprenticeshipDetailsOrchestrator _orchestrator;
