@@ -37,7 +37,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         {
             if(!ModelState.IsValid)
             {
-                var vm = _orchestrator.GetTitleViewModelAsync(m);
+                var vm = await _orchestrator.GetTitleViewModelAsync(m);
                 return View(vm);
             }
             

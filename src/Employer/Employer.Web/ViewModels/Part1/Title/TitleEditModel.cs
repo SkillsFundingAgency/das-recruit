@@ -7,14 +7,15 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Title
 {
     public class TitleEditModel
     {
-        [Required]
-        public string Title { get; set; }
-        [Required]
         [FromRoute]
+        [Required]
         public string EmployerAccountId { get; set; }
 
         [FromRoute]
         [ValidGuid]
         public Guid? VacancyId { get; set; }
+
+        [Required, FreeText, StringLength(100, MinimumLength = 1)]
+        public string Title { get; set; }
     }
 }

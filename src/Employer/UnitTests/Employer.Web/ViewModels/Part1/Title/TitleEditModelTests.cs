@@ -9,12 +9,21 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.Part1.Title
 {
     public class TitleEditModelTests
     {
-        [Fact]
-        public void ShouldErrorIfTitleIsNotSpecified()
+        public static IEnumerable<object[]> InvalidTitleData =>
+            new List<object[]>
+            {
+                new object[] { null, "The Title field is required."},
+                new object[] { new string('a', 101), "The field Title must be a string with a minimum length of 1 and a maximum length of 100." },
+                new object[] { "<", "Title contains invalid characters." }
+            };
+
+        [Theory]
+        [MemberData(nameof(InvalidTitleData))]
+        public void ShouldErrorIfTitleIsInvalid(string actualTitle, string expectedErrorMessage)
         {
             var vm = new TitleEditModel
             {
-                Title = null,
+                Title = actualTitle,
                 EmployerAccountId = null
             };
 
@@ -26,9 +35,11 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.Part1.Title
             
             isValid.Should().BeFalse();
             result.Should().HaveCount(2);
-            result.Single(r => r.MemberNames.Single() == "Title").ErrorMessage.Should().Be("The Title field is required.");
+            result.Single(r => r.MemberNames.Single() == "Title").ErrorMessage.Should().Be(expectedErrorMessage);
             result.Single(r => r.MemberNames.Single() == "EmployerAccountId").ErrorMessage.Should().Be("The EmployerAccountId field is required.");
         }
+
+        
 
         [Fact]
         public void ShouldBeValidIfTitleIsSpecified()

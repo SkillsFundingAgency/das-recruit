@@ -35,7 +35,16 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public async Task<TitleViewModel> GetTitleViewModelAsync(TitleEditModel m)
         {
-            var vm = await GetTitleViewModelAsync(m.VacancyId.Value);
+            TitleViewModel vm;
+
+            if (m.VacancyId.HasValue)
+            {
+                vm = await GetTitleViewModelAsync(m.VacancyId.Value);
+            }
+            else
+            {
+                vm = GetTitleViewModel();
+            }
 
             vm.Title = m.Title;
 
