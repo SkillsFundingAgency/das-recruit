@@ -6,14 +6,12 @@
         
         @Html.Partial("_Part1Header")
     
-        <!-- Validation summary-->
         <div asp-validation-summary="All" class="error-summary" role="alert" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
             <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
                 Please fix these errors
             </h2>
         </div>
 
-        <!-- Location -->
         <div id="section_location">
             <form asp-route="@RouteNames.Location_Post">
                 <div class="form-group">

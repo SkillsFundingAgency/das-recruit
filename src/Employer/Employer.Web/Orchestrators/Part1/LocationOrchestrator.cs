@@ -79,7 +79,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 Postcode = m.Postcode?.AsPostcode()
             };
             
-            await _client.UpdateVacancyAsync(vacancy);
+            await _client.UpdateVacancyAsync(vacancy, false);
         }
     }
 }

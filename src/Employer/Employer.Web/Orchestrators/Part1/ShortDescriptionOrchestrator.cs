@@ -46,7 +46,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             vacancy.NumberOfPositions = m.NumberOfPositions.Value;
             vacancy.ShortDescription = m.ShortDescription;
             
-            await _client.UpdateVacancyAsync(vacancy);
+            await _client.UpdateVacancyAsync(vacancy, false);
         }
     }
 }
