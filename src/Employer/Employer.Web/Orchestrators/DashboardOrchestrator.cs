@@ -1,7 +1,7 @@
 ﻿using Esfa.Recruit.Employer.Web.Mappings;
-using Esfa.Recruit.Employer.Web.Models;
-using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.ViewModels;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Services;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using System.Threading.Tasks;
 

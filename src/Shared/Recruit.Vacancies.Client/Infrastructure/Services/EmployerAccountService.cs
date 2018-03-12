@@ -1,4 +1,5 @@
-﻿using Esfa.Recruit.Employer.Web.Models;
+﻿using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Services;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.EAS.Account.Api.Client;
 using System;
@@ -6,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Esfa.Recruit.Employer.Web.Services
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services
 {
     public class EmployerAccountService : IEmployerAccountService
     {
