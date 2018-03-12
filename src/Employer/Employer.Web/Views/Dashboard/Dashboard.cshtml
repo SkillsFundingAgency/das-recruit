@@ -10,7 +10,7 @@
 
 <div class="grid-row">
     <div class="column-full">
-        <a asp-route="@RouteNames.NewVacancy_Index_Get" class="button">Create vacancy</a>
+        <a asp-route="@RouteNames.CreateVacancy_Get" class="button">Create vacancy</a>
         <hr>
     </div>
 </div>
@@ -28,7 +28,7 @@
                 @foreach (var vacancy in Model.Vacancies)
 			    {
                 <tr>
-                    <td><a asp-route="@RouteNames.Sections_Index_Get" asp-route-vacancyId="@vacancy.Id">@vacancy.Title</a></td>
+                    <td><a asp-route="@RouteNames.Title_Get" asp-route-vacancyId="@vacancy.Id">@vacancy.Title</a></td>
                     <td>@vacancy.Status</td>
                 </tr>
 			    }
