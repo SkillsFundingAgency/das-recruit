@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2027
+VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Employer.Web", "Employer.Web\Employer.Web.csproj", "{9C9261F7-B779-4BAC-BFC0-EA63375F718B}"
 EndProject
@@ -16,6 +16,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Recruit.Vacancies.Client", "..\Shared\Recruit.Vacancies.Client\Recruit.Vacancies.Client.csproj", "{A7DE9840-CA1D-4B8C-BDFB-D67B9AB8B6C0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{9EEDEBC0-B3C4-4D3A-8D38-9CA216C00926}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -88,6 +90,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6B9BE737-38C8-46FB-AB78-FF43B4044EF2} = {9EEDEBC0-B3C4-4D3A-8D38-9CA216C00926}
+		{723ADF83-C33B-49A4-BADC-E0EC1D94CD68} = {9EEDEBC0-B3C4-4D3A-8D38-9CA216C00926}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C1C67896-5CEA-4F05-88DE-1799F9120C2B}
