@@ -1,20 +1,21 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using Esfa.Recruit.Employer.Web.ViewModels.Part1.Title;
-using FluentAssertions;
-using Xunit;
-
-namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.Part1.Title
+﻿namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.Part1.Title
 {
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+    using System.Linq;
+    using Esfa.Recruit.Employer.Web.ViewModels.Part1.Title;
+    using FluentAssertions;
+    using Xunit;
+    using ErrMsg = Esfa.Recruit.Employer.Web.ViewModels.ValidationMessages.TitleValidationMessages;
+
     public class TitleEditModelTests
     {
         public static IEnumerable<object[]> InvalidTitleData =>
             new List<object[]>
             {
-                new object[] { null, "The Title field is required."},
-                new object[] { new string('a', 101), "The field Title must be a string with a minimum length of 1 and a maximum length of 100." },
-                new object[] { "<", "Title contains invalid characters." }
+                new object[] { null, ErrMsg.Required.Title},
+                new object[] { new string('a', 101), string.Format(ErrMsg.StringLength.Title, "Title", 100)},
+                new object[] { "<", ErrMsg.FreeText.Title }
             };
 
         [Theory]
