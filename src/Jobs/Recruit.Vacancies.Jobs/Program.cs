@@ -99,7 +99,8 @@ namespace Esfa.Recruit.Vacancies.Jobs
 
             var configuration = builder.Build();
             Environment.SetEnvironmentVariable("AzureWebJobsDashboard", configuration.GetConnectionString("WebJobsDashboard"));
-            Environment.SetEnvironmentVariable("AzureWebJobsStorage", configuration.GetConnectionString("WebJobsStorage"));  
+            Environment.SetEnvironmentVariable("AzureWebJobsStorage", configuration.GetConnectionString("WebJobsStorage"));
+            Environment.SetEnvironmentVariable("EventQueueConnectionString", configuration.GetConnectionString("Storage"));
 
             return configuration;
         }
@@ -116,6 +117,8 @@ namespace Esfa.Recruit.Vacancies.Jobs
                 options.AddDebug();
             });
             services.AddScoped<ApprenticeshipProgrammesUpdater>();
+            services.AddScoped<EmployerVacancyDataGenerator>();
+
             services.AddSingleton<IApprenticeshipProgrammeApiClient, ApprenticeshipProgrammeApiClient>();
             services.AddApprentieshipsApi(configuration);
             services.AddRecruitStorageClient(configuration);
@@ -123,6 +126,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
             // Add Jobs
             // services.AddScoped<GenerateVacancyNumberJob>();
             services.AddScoped<ApprenticeshipProgrammesJob>();
+            services.AddScoped<EmployerVacancyDataGeneratorJob>();
 
             return services;
         }

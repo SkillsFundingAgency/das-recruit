@@ -27,6 +27,7 @@
         }
 
         public static QueryViewType Dashboard => new QueryViewType("Dashboard", "dashboard_{0}");
+        public static QueryViewType EmployerData => new QueryViewType("EmployerData", "employer_{0}");
         public static QueryViewType ApprenticeshipProgrammes => new QueryViewType("ApprenticeshipProgrammes", "ApprenticeshipProgrammes");
     }
 }

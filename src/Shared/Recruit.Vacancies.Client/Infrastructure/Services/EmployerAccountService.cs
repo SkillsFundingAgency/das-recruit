@@ -2,6 +2,7 @@
 using Esfa.Recruit.Vacancies.Client.Domain.Services;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.EAS.Account.Api.Client;
+using SFA.DAS.EAS.Account.Api.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,6 +33,27 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Failed to retrieve account information for user Id: {userId}");
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<LegalEntityViewModel>> GetEmployerLegalEntitiesAsync(string accountId)
+        {
+            try
+            {
+                var accounts = await _accountApiClient.GetLegalEntitiesConnectedToAccount(accountId);
+
+                var legalEntitiesTasks = accounts.Select(r => _accountApiClient.GetLegalEntity(accountId, long.Parse(r.Id)));
+
+                await Task.WhenAll(legalEntitiesTasks.ToArray());
+
+                var entities = legalEntitiesTasks.Select(t => t.Result);
+
+                return entities;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Failed to retrieve account information for account Id: {accountId}");
                 throw;
             }
         }

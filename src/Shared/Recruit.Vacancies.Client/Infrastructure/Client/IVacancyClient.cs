@@ -14,6 +14,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<bool> SubmitVacancyAsync(Guid id);
         Task<bool> DeleteVacancyAsync(Guid id);
         Task<Dashboard> GetDashboardAsync(string employerAccountId);
+        Task UpdateEmployerVacancyDataAsync(string employerAccountId);
         Task UpdateApprenticeshipProgrammesAsync(IEnumerable<ApprenticeshipProgramme> programmes);
         Task<ApprenticeshipProgrammes> GetApprenticehshipProgrammesAsync();
     }

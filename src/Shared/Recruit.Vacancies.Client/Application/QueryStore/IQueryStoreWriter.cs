@@ -1,4 +1,5 @@
 using Esfa.Recruit.Vacancies.Client.Domain.Projections;
+using SFA.DAS.EAS.Account.Api.Types;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -9,5 +10,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.QueryStore
         Task UpdateDashboardAsync(string employerAccountId, IEnumerable<VacancySummary> vacancySummaries); 
 
         Task UpdateApprenticeshipProgrammesAsync(IEnumerable<ApprenticeshipProgramme> programmes);
+        Task UpdateEmployerVacancyDataAsync(string employerAccountId, IEnumerable<LegalEntityViewModel> legalEntities);
     }
 }
