@@ -8,7 +8,6 @@ using Esfa.Recruit.Vacancies.Client.Domain.Enums;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Projections;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
@@ -138,6 +137,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             };
 
             await _messaging.SendCommandAsync(command);
+        }
+
+        public Task UpdateEmployerVacancyDataAsync(string employerAccountId)
+        {
+            var command = new UpdateEmployerVacancyDataCommand
+            {
+                EmployerAccountId = employerAccountId
+            };
+
+            return _messaging.SendCommandAsync(command);
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Domain.Projections;
+using SFA.DAS.EAS.Account.Api.Types;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 {
@@ -53,6 +54,19 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             var key = QueryViewType.ApprenticeshipProgrammes.GetIdValue(QueryViewType.ApprenticeshipProgrammes.GetIdValue());
 
             return _queryStore.GetAsync<ApprenticeshipProgrammes>(key);
+        }
+
+        public Task UpdateEmployerVacancyDataAsync(string employerAccountId, IEnumerable<LegalEntityViewModel> legalEntities)
+        {
+            var employerVacancyDataItem = new EmployerVacancyData
+            {
+                Id = QueryViewType.EmployerData.GetIdValue(employerAccountId),
+                Type = QueryViewType.EmployerData.TypeName,
+                LegalEntities = legalEntities,
+                LastUpdated = DateTime.UtcNow
+            };
+
+            return _queryStore.UpsertAsync(employerVacancyDataItem);
         }
     }
 }
