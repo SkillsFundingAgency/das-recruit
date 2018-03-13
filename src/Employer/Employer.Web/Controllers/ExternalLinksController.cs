@@ -1,4 +1,5 @@
 ﻿using Esfa.Recruit.Employer.Web.Configuration;
+using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -7,7 +8,7 @@ using System.Net;
 
 namespace Employer.Web.Controllers
 {
-    [Route("accounts/{employerAccountId}")]
+    [Route(RoutePrefixPaths.AccountRoutePath)]
     public class ExternalLinksController : Controller
     {
         ILogger<ExternalLinksController> _logger;

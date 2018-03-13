@@ -1,4 +1,5 @@
 ﻿using Esfa.Recruit.Employer.Web.Configuration;
+using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.ViewModels.TrainingProvider;
 using Microsoft.AspNetCore.Mvc;
@@ -7,14 +8,13 @@ using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
-    [Route("accounts/{employerAccountId:minlength(6)}/vacancies/{vacancyId:guid}")]
+    [Route(RoutePrefixPaths.AccountVacancyRoutePath)]
     public class TrainingProviderController : Controller
     {
         private readonly TrainingProviderOrchestrator _orchestrator;
         private const string InvalidUkprnMessageFormat = "The UKPRN {0} is not valid or the associated provider is not active.";
 
         public TrainingProviderController(TrainingProviderOrchestrator orchestrator)
-
         {
             _orchestrator = orchestrator;
         }
