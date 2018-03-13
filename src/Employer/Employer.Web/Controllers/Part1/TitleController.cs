@@ -33,7 +33,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 
         [HttpPost("create-vacancy", Name = RouteNames.CreateVacancy_Post)]
         [HttpPost("vacancies/{vacancyId:guid}/title", Name = RouteNames.Title_Post)]
-        public async Task<IActionResult> Title(TitleViewModel vm)
+        public async Task<IActionResult> Title(TitleViewModel m)
         {
             if(!ModelState.IsValid)
             {
