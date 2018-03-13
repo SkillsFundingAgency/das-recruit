@@ -19,14 +19,22 @@
                         <legend>
                             <span class="form-label-bold">Which organisation is the vacancy for?</span>
                         </legend>
-
-                        @foreach (var organisation in Model.Organisations)
-                        {
-                            <div class="multiple-choice">
-                                <input asp-for="SelectedOrganisationId" type="radio" value="@organisation.Id" id="org-@organisation.Id">
-                                <label for="org-@organisation.Id">@organisation.Name</label>
-                            </div>
-                        }
+                        <span asp-validation-for="SelectedOrganisationId" class="error-message"></span>
+                        @if (Model.Organisations.Count() == 1)
+    {
+                    <div>@Model.Organisations.First().Name</div>
+                    <input asp-for="SelectedOrganisationId" value="@Model.Organisations.First().Id" type="hidden" />
+}
+else
+{
+foreach (var organisation in Model.Organisations)
+{
+                    <div class="multiple-choice">
+                        <input asp-for="SelectedOrganisationId" type="radio" value="@organisation.Id" id="org-@organisation.Id">
+                        <label for="org-@organisation.Id">@organisation.Name</label>
+                    </div>
+}
+}
                     </fieldset>
                 </div>
 

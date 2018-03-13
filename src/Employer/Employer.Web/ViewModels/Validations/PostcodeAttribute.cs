@@ -13,6 +13,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Validations
 
         public PostcodeAttribute() : base(RegexPostcode)
         {
+            ErrorMessage = "{0} is not a valid postcode.";
         }
     }
 }
