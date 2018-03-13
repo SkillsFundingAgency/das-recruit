@@ -14,16 +14,16 @@
         public static IEnumerable<object[]> InvalidShortDescrptionData =>
             new List<object[]>
             {
-                new object[] { "NumberOfPositions", null, ErrMsg.Required.NumberOfPositions},
-                new object[] { "NumberOfPositions", "0", ErrMsg.Range.NumberOfPositions},
-                new object[] { "NumberOfPositions", "3.2", ErrMsg.TypeOfInteger.NumberOfPositions},
-                new object[] { "ShortDescription", null, ErrMsg.Required.ShortDescription},
-                new object[] { "ShortDescription", new string('a', 49), string.Format(ErrMsg.StringLength.ShortDescription, "ShortDesciprtion", 350, 50)},
-                new object[] { "ShortDescription", new string('a', 351), string.Format(ErrMsg.StringLength.ShortDescription, "ShortDesciprtion", 350, 50)},
-                new object[] { "ShortDescription", new string('<', 50), ErrMsg.FreeText.ShortDescription},
+                new object[] { nameof(ShortDescriptionEditModel.NumberOfPositions) , null, ErrMsg.Required.NumberOfPositions},
+                new object[] { nameof(ShortDescriptionEditModel.NumberOfPositions), "0", ErrMsg.Range.NumberOfPositions},
+                new object[] { nameof(ShortDescriptionEditModel.NumberOfPositions), "3.2", ErrMsg.TypeOfInteger.NumberOfPositions},
+                new object[] { nameof(ShortDescriptionEditModel.ShortDescription), null, ErrMsg.Required.ShortDescription},
+                new object[] { nameof(ShortDescriptionEditModel.ShortDescription), new string('a', 49), string.Format(ErrMsg.StringLength.ShortDescription, "ShortDesciprtion", 350, 50)},
+                new object[] { nameof(ShortDescriptionEditModel.ShortDescription), new string('a', 351), string.Format(ErrMsg.StringLength.ShortDescription, "ShortDesciprtion", 350, 50)},
+                new object[] { nameof(ShortDescriptionEditModel.ShortDescription), new string('<', 50), ErrMsg.FreeText.ShortDescription},
 
-                new object[] { "EmployerAccountId", null, "The EmployerAccountId field is required."},
-                new object[] { "VacancyId", default(Guid), "The field VacancyId is invalid."},
+                new object[] { nameof(ShortDescriptionEditModel.EmployerAccountId), null, "The EmployerAccountId field is required."},
+                new object[] { nameof(ShortDescriptionEditModel.VacancyId), default(Guid), "The field VacancyId is invalid."},
             };
 
         [Theory]
