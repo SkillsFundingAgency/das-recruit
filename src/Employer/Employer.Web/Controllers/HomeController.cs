@@ -1,4 +1,5 @@
 ﻿using Esfa.Recruit.Employer.Web.Configuration;
+using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;

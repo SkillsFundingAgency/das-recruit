@@ -1,4 +1,4 @@
-﻿namespace Esfa.Recruit.Employer.Web.Configuration
+﻿namespace Esfa.Recruit.Employer.Web.Configuration.Routing
 {
     public static class RouteNames
     {
