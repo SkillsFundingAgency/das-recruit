@@ -1,4 +1,5 @@
 ﻿@using Esfa.Recruit.Employer.Web.Configuration;
+@using Esfa.Recruit.Employer.Web.Configuration.Routing;
 @inject ManageApprenticeshipsLinkHelper ExternalLinks
 <!DOCTYPE html>
 <!--[if lt IE 9]><html class="lte-ie8" lang="en"><![endif]-->
@@ -11,22 +12,23 @@
     <title>ESFA</title>
 
     <!-- TEMPLATE STYLES - START -->
-    <!--[if gt IE 8]><!--><link rel="stylesheet" media="screen" href="/lib/esfa-govuk/assets/stylesheets/govuk-template.min.css?0.23.0" /><!--<![endif]-->
+    <!--[if gt IE 8]><!-->
+    <link rel="stylesheet" media="screen" href="/lib/esfa-govuk/assets/stylesheets/govuk-template.min.css?0.23.0" /><!--<![endif]-->
     <!--[if IE 6]><link rel="stylesheet" media="screen" href="/lib/esfa-govuk/assets/stylesheets/govuk-template-ie6.min.css?0.23.0" /><![endif]-->
     <!--[if IE 7]><link rel="stylesheet" media="screen" href="/lib/esfa-govuk/assets/stylesheets/govuk-template-ie7.min.css?0.23.0" /><![endif]-->
     <!--[if IE 8]><link rel="stylesheet" media="screen" href="/lib/esfa-govuk/assets/stylesheets/govuk-template-ie8.min.css?0.23.0" /><![endif]-->
     <link rel="stylesheet" media="print" href="/lib/esfa-govuk/assets/stylesheets/govuk-template-print.min.css?0.23.0" />
     <!--[if IE 8]><link rel="stylesheet" media="all" href="/lib/esfa-govuk/assets/stylesheets/fonts-ie8.min.css?0.23.0" /><![endif]-->
-    <!--[if gte IE 9]><!--><link rel="stylesheet" media="all" href="/lib/esfa-govuk/assets/stylesheets/fonts.min.css?0.23.0" /><!--<![endif]-->
+    <!--[if gte IE 9]><!-->
+    <link rel="stylesheet" media="all" href="/lib/esfa-govuk/assets/stylesheets/fonts.min.css?0.23.0" /><!--<![endif]-->
     <!-- TEMPLATE STYLES - END -->
-
     <!-- ELEMENTS AND TOOLKIT STYLES - START -->
-    <!--[if gt IE 8]><!--><link rel="stylesheet" media="screen" href="/lib/esfa-govuk/assets/stylesheets/esfa-govuk-base.min.css?3.1.2" /><!--<![endif]-->
+    <!--[if gt IE 8]><!-->
+    <link rel="stylesheet" media="screen" href="/lib/esfa-govuk/assets/stylesheets/esfa-govuk-base.min.css?3.1.2" /><!--<![endif]-->
     <!--[if IE 6]><link rel="stylesheet" media="screen" href="/lib/esfa-govuk/assets/stylesheets/esfa-govuk-ie6.min.css?3.1.2" /><![endif]-->
     <!--[if IE 7]><link rel="stylesheet" media="screen" href="/lib/esfa-govuk/assets/stylesheets/esfa-govuk-ie7.min.css?3.1.2" /><![endif]-->
     <!--[if IE 8]><link rel="stylesheet" media="screen" href="/lib/esfa-govuk/assets/stylesheets/esfa-govuk-ie8.min.css?3.1.2" /><![endif]-->
     <!-- ELEMENTS AND TOOLKIT STYLES - END -->
-
     <!--[if lt IE 9]><script src="/lib/esfa-govuk/assets/javascripts/ie.js?0.23.0"></script><![endif]-->
 
     <link rel="shortcut icon" href="/lib/esfa-govuk/assets/images/favicon.ico" type="image/x-icon" />
@@ -121,7 +123,7 @@
                 </ul>
             </nav>
         </div>
-  }
+    }
 
     <main id="content" role="main">
         @RenderBody()
