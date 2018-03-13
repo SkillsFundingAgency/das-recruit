@@ -60,6 +60,11 @@
                 public const string ShortDescription = "Enter the brief overview of the role";
             }
 
+            public class TypeOfInteger
+            {
+                public const string NumberOfPositions = "The number of positions is invalid";
+            }
+
             public class Range
             {
                 public const string NumberOfPositions = "The number of positions must be greater than zero";

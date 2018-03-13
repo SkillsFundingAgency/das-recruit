@@ -15,7 +15,8 @@
             new List<object[]>
             {
                 new object[] { "NumberOfPositions", null, ErrMsg.Required.NumberOfPositions},
-                new object[] { "NumberOfPositions", 0, ErrMsg.Range.NumberOfPositions},
+                new object[] { "NumberOfPositions", "0", ErrMsg.Range.NumberOfPositions},
+                new object[] { "NumberOfPositions", "3.2", ErrMsg.TypeOfInteger.NumberOfPositions},
                 new object[] { "ShortDescription", null, ErrMsg.Required.ShortDescription},
                 new object[] { "ShortDescription", new string('a', 49), string.Format(ErrMsg.StringLength.ShortDescription, "ShortDesciprtion", 350, 50)},
                 new object[] { "ShortDescription", new string('a', 351), string.Format(ErrMsg.StringLength.ShortDescription, "ShortDesciprtion", 350, 50)},
@@ -34,7 +35,7 @@
             {
                 EmployerAccountId = "valid",
                 VacancyId = Guid.Parse("53b54daa-4702-4b69-97e5-12123a59f8ad"),
-                NumberOfPositions = 1,
+                NumberOfPositions = "1",
                 ShortDescription = new string('a', 50)
             };
 

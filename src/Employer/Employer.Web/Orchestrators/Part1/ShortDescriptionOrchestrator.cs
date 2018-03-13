@@ -24,7 +24,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var vm = new ShortDescriptionViewModel
             {
                 VacancyId = vacancy.Id,
-                NumberOfPositions = vacancy.NumberOfPositions.HasValue ? vacancy.NumberOfPositions : null,
+                NumberOfPositions = vacancy.NumberOfPositions?.ToString(),
                 ShortDescription = vacancy.ShortDescription
             };
 
@@ -50,7 +50,12 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
             }
 
-            vacancy.NumberOfPositions = m.NumberOfPositions.Value;
+            if (!string.IsNullOrEmpty(m.NumberOfPositions))
+            {
+                int.TryParse(m.NumberOfPositions, out var numberOfPositions);
+                vacancy.NumberOfPositions = numberOfPositions;
+            }
+            
             vacancy.ShortDescription = m.ShortDescription;
             
             await _client.UpdateVacancyAsync(vacancy, false);
