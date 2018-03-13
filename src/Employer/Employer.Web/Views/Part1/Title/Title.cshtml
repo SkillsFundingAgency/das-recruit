@@ -1,0 +1,34 @@
+﻿@using Esfa.Recruit.Employer.Web.ViewModels.Part1.Title
+@model Esfa.Recruit.Employer.Web.ViewModels.Part1.Title.TitleViewModel
+
+<div class="grid-row">
+    <div class="column-full">
+        
+        @Html.Partial("_Part1Header")
+
+        <div asp-validation-summary="All" class="error-summary" role="alert" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
+            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
+                Please fix these errors
+            </h2>
+        </div>
+
+        <div id="section_title">
+            <form asp-route="@(Model.VacancyId.HasValue ? RouteNames.Title_Post : RouteNames.CreateVacancy_Post)">
+                <div class="form-group">
+
+                    <label asp-for="Title" class="form-label-bold">
+                        What do you want to call this vacancy?
+                        <span class="form-hint">For example, Software developer apprenticeship</span>
+                    </label>
+                    <input asp-for="Title" class="form-control-3-4 form-control" type="text" maxlength="100"/>
+                    <span asp-validation-for="Title" class="error-message"></span>
+                </div>
+                <button type="submit" class="button">Save and Continue</button>
+                <a asp-route="@RouteNames.Dashboard_Index_Get" class="button-link">Cancel</a>
+
+            </form>
+
+            <hr>
+        </div>
+    </div>
+</div>

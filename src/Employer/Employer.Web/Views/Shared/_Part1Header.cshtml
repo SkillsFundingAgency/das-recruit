@@ -1,0 +1,73 @@
+﻿@{
+    var exampleClosingDate = DateTime.Now.AddMonths(2);
+    var exampleStartingDate = exampleClosingDate.AddDays(14);
+}
+
+<h1 class="heading-xlarge small-bottom-margin">Make your vacancy stand out in a search</h1>
+<p>
+    Apprentice candidates will see your vacancy in a search along with vacancies from other employers. This is your
+    opportunity to make your vacancy attract the best candidates
+</p>
+<hr>
+
+<a href="#example_link" id="example_link">Show an example advert</a>
+
+<div id="example_vacancy" class="example-advert" style="display:none">
+    <h2 class="heading-medium small-top-margin">
+        <a class="vacancy-link" href="#example_vacancy">Software developer apprenticeship</a>
+    </h2>
+    <ul class="list">
+        <li class="secondary-text">Your Organisation</li>
+
+        <li class="font-xsmall secondary-text">1 position available</li>
+    </ul>
+    <p>
+        We are not looking for programming heroes! We want you to develop to be one of the next generation of Engineers for software based systems!
+    </p>
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            <ul class="list sfa-no-margins vacancy-details-list ">
+                <li data-show="DisplayDistance">
+                    <span class="bold-small">Distance:</span>
+                    <span id="distance-value">1</span> mile
+                </li>
+                <li data-show="DisplayClosingDate">
+                    <span class="bold-small ">Closing date:</span>
+                    <span>@($"{exampleClosingDate:dd MMM yyyy}")</span>
+                </li>
+                <li data-show="DisplayStartDate">
+                    <span class="bold-small ">Possible start date:</span>
+                    <span>@($"{exampleStartingDate:dd MMM yyyy}")</span>
+                </li>
+                <li data-show="DisplayApprenticeshipLevel" class="toggle-content">
+                    <span class="bold-small">Apprenticeship level:</span> Advanced
+                </li>
+                <li data-show="DisplayWage" class="toggle-content">
+                    <span class="bold-small">Wage:</span> £20,000 a year
+                </li>
+            </ul>
+        </div>
+        <div class="column-one-third map-container hide-nojs sfa-small-bottom-margin toggle-content--mob">
+            <div class="map-placeholder"></div>
+            <img class="static-map" src="https://maps.googleapis.com/maps/api/staticmap?markers=52.4025709122,-1.5099275323&size=190x125&zoom=12&client=gme-skillsfundingagency&signature=GONvv_qpwzkdaTvUvs4yoO9o_NQ=">
+        </div>
+    </div>
+</div>
+<br>
+
+<hr>
+
+<script type="text/javascript">
+    $(function () {
+        $("#example_vacancy").hide();
+
+        $("#example_link").click(function () {
+            if ($("#example_vacancy").is(":visible")) {
+                $("#example_link")[0].innerText = "Show an example advert";
+            } else {
+                $("#example_link")[0].innerText = "Hide example";
+            }
+            $("#example_vacancy").slideToggle();
+        });
+    });
+</script>

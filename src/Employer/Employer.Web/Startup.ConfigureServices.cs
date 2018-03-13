@@ -1,6 +1,7 @@
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Services;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -36,7 +37,12 @@ namespace Esfa.Recruit.Employer.Web
                 //opt.LowercaseUrls = true;
                 opt.AppendTrailingSlash = true;
             });
-            
+
+            services.Configure<RazorViewEngineOptions>(o =>
+            {
+                o.ViewLocationFormats.Add("/Views/Part1/{1}/{0}" + RazorViewEngine.ViewExtension);
+            });
+
             services.AddMvcService(_hostingEnvironment, _isAuthEnabled);
 
             services.AddApplicationInsightsTelemetry(_configuration);
