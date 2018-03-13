@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 {
-    [Route("accounts/{employerAccountId}/vacancies/{vacancyId}")]
+    [Route("accounts/{employerAccountId:minlength(6)}/vacancies/{vacancyId:guid}")]
     public class ShortDescriptionController : Controller
     {
         private readonly ShortDescriptionOrchestrator _orchestrator;
