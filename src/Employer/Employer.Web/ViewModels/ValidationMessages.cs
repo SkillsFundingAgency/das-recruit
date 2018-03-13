@@ -51,5 +51,29 @@
                 public const string Postcode = "'postcode' is not a valid format";
             }
         }
+
+        public class ShortDescriptionValidationMessages
+        {
+            public class Required
+            {
+                public const string NumberOfPositions = "Enter the number of positions for this vacancy";
+                public const string ShortDescription = "Enter the brief overview of the role";
+            }
+
+            public class Range
+            {
+                public const string NumberOfPositions = "The number of positions must be greater than zero";
+            }
+
+            public class StringLength
+            {
+                public const string ShortDescription = "The brief overview of the role must be between {2} and {1} characters";
+            }
+
+            public class FreeText
+            {
+                public const string ShortDescription = "The brief overview of the role contains some invalid characters";
+            }
+        }
     }
 }
