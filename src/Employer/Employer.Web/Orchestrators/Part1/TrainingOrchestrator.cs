@@ -1,3 +1,5 @@
+using System.Linq;
+
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
     using System;
@@ -20,11 +22,19 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         
         public async Task<TrainingViewModel> GetTrainingViewModelAsync(Guid vacancyId)
         {
-            var vacancy = await _client.GetVacancyForEditAsync(vacancyId);
+            var vacancyTask = _client.GetVacancyForEditAsync(vacancyId);
+            var programmesTask = _client.GetApprenticehshipProgrammesAsync();
+
+            await Task.WhenAll(vacancyTask, programmesTask);
+
+            var vacancy = vacancyTask.Result;            
+            var programmes = programmesTask.Result;
 
             var vm = new TrainingViewModel
             {
-                VacancyId = vacancy.Id
+                VacancyId = vacancy.Id,
+                SelectedProgrammeId = vacancy.ProgrammeId,
+                Programmes = programmes.ToViewModel()
             };
 
             if (vacancy.ClosingDate.HasValue)
@@ -61,8 +71,14 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         public async Task PostTrainingEditModelAsync(TrainingEditModel m)
         {
-            var vacancy = await _client.GetVacancyForEditAsync(m.VacancyId);
+            var vacancyTask = _client.GetVacancyForEditAsync(m.VacancyId);
+            var programmesTask = _client.GetApprenticehshipProgrammesAsync();
 
+            await Task.WhenAll(vacancyTask, programmesTask);
+
+            var vacancy = vacancyTask.Result;
+            var programme = programmesTask.Result.Programmes.Single(p => p.Id == m.SelectedProgrammeId);
+            
             if (!vacancy.CanEdit)
             {
                 throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
@@ -70,7 +86,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
             vacancy.ClosingDate = m.ClosingDate.AsDateTimeUk();
             vacancy.StartDate = m.StartDate.AsDateTimeUk();
-
+            vacancy.ProgrammeId = programme.Id;
+            vacancy.ProgrammeTitle = programme.Title;
+            vacancy.TrainingType = programme.ApprenticeshipType;
+            
             await _client.UpdateVacancyAsync(vacancy, false);
         }
     }

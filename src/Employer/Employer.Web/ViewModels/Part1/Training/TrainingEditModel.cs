@@ -58,5 +58,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Training
             }
         }
 
+        [Required(ErrorMessage = ErrMsg.Required.SelectedProgrammeId)]
+        public string SelectedProgrammeId { get; set; }
     }
 }

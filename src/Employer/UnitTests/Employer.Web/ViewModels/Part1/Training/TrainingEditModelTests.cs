@@ -40,6 +40,9 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.Part1.Training
                 new object[] { nameof(TrainingEditModel.StartYear), null, nameof(TrainingEditModel.StartDate), ErrMsg.Required.StartDate},
                 new object[] { nameof(TrainingEditModel.StartYear), "aa", nameof(TrainingEditModel.StartDate), ErrMsg.TypeOfDate.StartDate},
 
+                //SelectedProgrammeId
+                new object[] { nameof(TrainingEditModel.SelectedProgrammeId), null, nameof(TrainingEditModel.SelectedProgrammeId), ErrMsg.Required.SelectedProgrammeId},
+
                 new object[] { nameof(TrainingEditModel.EmployerAccountId), null, nameof(TrainingEditModel.EmployerAccountId), "The EmployerAccountId field is required." },
                 new object[] { nameof(TrainingEditModel.VacancyId), default(Guid), nameof(TrainingEditModel.VacancyId), "The field VacancyId is invalid." },
             };
@@ -58,7 +61,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.Part1.Training
                 ClosingYear = "18",
                 StartDay = "7",
                 StartMonth = "04",
-                StartYear = "2018"
+                StartYear = "2018",
+                SelectedProgrammeId = "valid"
             };
 
             var context = new ValidationContext(m, null, null);

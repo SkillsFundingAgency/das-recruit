@@ -87,6 +87,7 @@
             {
                 public const string ClosingDate = "Enter the closing date for applications";
                 public const string StartDate = "Enter the possible start date";
+                public const string SelectedProgrammeId = "Select apprenticeship training";
             }
 
             public class TypeOfDate

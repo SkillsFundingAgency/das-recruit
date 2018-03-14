@@ -1,5 +1,6 @@
 using Esfa.Recruit.Vacancies.Client.Domain.Enums;
 using System;
+using Esfa.Recruit.Vacancies.Client.Domain.Projections;
 
 namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
 {
@@ -50,5 +51,11 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public DateTime? ClosingDate { get; set; }
 
         public DateTime? StartDate { get; set; }
+
+        public string ProgrammeId { get; set; }
+
+        public string ProgrammeTitle { get; set; }
+
+        public TrainingType? TrainingType { get; set; }
     }
 }

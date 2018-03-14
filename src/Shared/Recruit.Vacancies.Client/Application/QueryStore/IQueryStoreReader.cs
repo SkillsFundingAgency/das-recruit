@@ -6,5 +6,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.QueryStore
     public interface IQueryStoreReader
     {
         Task<Dashboard> GetDashboardAsync(string employerAccountId);
+
+        Task<ApprenticeshipProgrammes> GetApprenticeshipProgrammesAsync();
     }
 }
