@@ -39,7 +39,7 @@
 
         [Theory]
         [MemberData(nameof(InvalidEmployerData))]
-        public void ShouldErrorIfEmployerEditModelAddressIsInvalid(string propertyName, object actualPropertyValue, string expectedErrorMessage)
+        public void ShouldErrorIfEmployerEditModelIsInvalid(string propertyName, object actualPropertyValue, string expectedErrorMessage)
         {
             //a valid model
             var m = new EmployerEditModel

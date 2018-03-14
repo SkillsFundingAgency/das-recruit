@@ -24,7 +24,19 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Training
 
         [Required(ErrorMessage = ErrMsg.Required.ClosingDate)]
         [TypeOfDate(ErrorMessage = ErrMsg.TypeOfDate.ClosingDate)]
-        public string ClosingDate => $"{ClosingDay}/{ClosingMonth}/{ClosingYear}";
+        public string ClosingDate
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(ClosingDay) || 
+                    string.IsNullOrWhiteSpace(ClosingMonth) || 
+                    string.IsNullOrWhiteSpace(ClosingYear))
+                {
+                    return null;
+                }
+                return $"{ClosingDay}/{ClosingMonth}/{ClosingYear}";
+            }
+        }           
 
         public string StartDay { get; set; }
         public string StartMonth { get; set; }
@@ -32,7 +44,19 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Training
 
         [Required(ErrorMessage = ErrMsg.Required.StartDate)]
         [TypeOfDate(ErrorMessage = ErrMsg.TypeOfDate.StartDate)]
-        public string StartDate => $"{StartDay}/{StartMonth}/{StartYear}";
+        public string StartDate
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(StartDay) ||
+                    string.IsNullOrWhiteSpace(StartMonth) ||
+                    string.IsNullOrWhiteSpace(StartYear))
+                {
+                    return null;
+                }
+                return $"{StartDay}/{StartMonth}/{StartYear}";
+            }
+        }
 
     }
 }
