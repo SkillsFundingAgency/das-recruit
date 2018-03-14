@@ -46,5 +46,9 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public int? NumberOfPositions { get; set; }
 
         public string ShortDescription { get; set; }
+
+        public DateTime? ClosingDate { get; set; }
+
+        public DateTime? StartDate { get; set; }
     }
 }

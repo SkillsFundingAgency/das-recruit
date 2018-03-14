@@ -80,5 +80,20 @@
                 public const string ShortDescription = "The brief overview of the role contains some invalid characters";
             }
         }
+
+        public class TrainingValidationMessages
+        {
+            public class Required
+            {
+                public const string ClosingDate = "Enter the closing date for applications";
+                public const string StartDate = "Enter the possible start date";
+            }
+
+            public class TypeOfDate
+            {
+                public const string ClosingDate = "The field [Day/Month/Year] must be a date";
+                public const string StartDate = "The field [Day/Month/Year] must be a date";
+            }
+        }
     }
 }

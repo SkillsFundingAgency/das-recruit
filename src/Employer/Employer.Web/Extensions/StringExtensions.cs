@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Employer.Web.Extensions
 {
+
     public static class StringExtensions
     {
+        private static readonly IFormatProvider _ukCulture = new CultureInfo("en-GB");
         const int incodeLength = 3;
-
+        
         public static string AsPostcode(this string postcode)
         {
             if (postcode?.Length > incodeLength)
@@ -18,6 +21,16 @@ namespace Esfa.Recruit.Employer.Web.Extensions
             }
 
             return postcode;
+        }
+
+        public static DateTime? AsDateTimeUk(this string date)
+        {
+            if(DateTime.TryParse(date, _ukCulture, DateTimeStyles.AssumeUniversal, out var d))
+            {
+                return d;
+            }
+
+            return null;
         }
     }
 }
