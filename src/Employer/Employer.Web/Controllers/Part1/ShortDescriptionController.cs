@@ -1,15 +1,14 @@
 using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
-using Esfa.Recruit.Employer.Web.Orchestrators;
+using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.ShortDescription;
-using Esfa.Recruit.Employer.Web.ViewModels.Part1.Title;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 {
-    [Route("accounts/{employerAccountId}/vacancies/{vacancyId}")]
+    [Route(RoutePrefixPaths.AccountVacancyRoutePath)]
     public class ShortDescriptionController : Controller
     {
         private readonly ShortDescriptionOrchestrator _orchestrator;
@@ -40,6 +39,5 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 
             return RedirectToRoute(RouteNames.Title_Get);
         }
-        
     }
 }

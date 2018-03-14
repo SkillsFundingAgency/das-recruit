@@ -1,3 +1,4 @@
+using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Microsoft.Extensions.Options;
 
 namespace Esfa.Recruit.Employer.Web.Configuration

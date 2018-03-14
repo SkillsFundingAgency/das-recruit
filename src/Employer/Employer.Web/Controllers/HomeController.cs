@@ -1,4 +1,5 @@
 ﻿using Esfa.Recruit.Employer.Web.Configuration;
+using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
+    [Route(RoutePrefixPaths.AccountRoutePath)]
     public class HomeController : Controller
     {
         private readonly ExternalLinksConfiguration _externalLinks;
@@ -18,14 +20,14 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             _logger = logger;
         }
 
-        [HttpGet, Route("accounts/{employerAccountId}/home", Name = RouteNames.Home_Index_Get)]
+        [HttpGet, Route("home", Name = RouteNames.Home_Index_Get)]
         public IActionResult Index()
         {
             _logger.LogInformation("Showing Index page.");
             return View();
         }
 
-        [HttpGet, Route("accounts/{employerAccountId}/home/logout", Name = RouteNames.Home_Logout_Get)]
+        [HttpGet, Route("home/logout", Name = RouteNames.Home_Logout_Get)]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync("Cookies");

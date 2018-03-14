@@ -34,7 +34,6 @@ namespace Esfa.Recruit.Employer.Web
             // Routing has to come before adding Mvc
             services.AddRouting(opt =>
             {
-                //opt.LowercaseUrls = true;
                 opt.AppendTrailingSlash = true;
             });
 

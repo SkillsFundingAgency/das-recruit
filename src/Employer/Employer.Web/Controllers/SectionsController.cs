@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
+using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
-    [Route("accounts/{employerAccountId}/vacancies/{vacancyId}")]
+    [Route(RoutePrefixPaths.AccountVacancyRoutePath)]
     public class SectionsController : Controller
     {
         private readonly SectionsOrchestrator _orchestrator;
