@@ -42,7 +42,11 @@ namespace Esfa.Recruit.Employer.Web.Extensions
             
             if (decimal.TryParse(text, out var d))
             {
-                return d;
+                if (decimal.Round(d, 2, MidpointRounding.AwayFromZero) == d)
+                {
+                    return d;
+                }
+                return null;
             }
 
             return null;
