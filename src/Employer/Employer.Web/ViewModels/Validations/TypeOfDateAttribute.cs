@@ -10,6 +10,11 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Validations
     {
         public override bool IsValid(object value)
         {
+            if (value == null)
+            {
+                return true;
+            }
+
             return ((string) value).AsDateTimeUk() != null;
         }
     }
