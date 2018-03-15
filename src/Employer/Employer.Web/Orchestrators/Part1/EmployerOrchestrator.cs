@@ -1,31 +1,30 @@
-﻿using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Extensions;
-using Esfa.Recruit.Employer.Web.ViewModels.Location;
+using Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer;
 using Esfa.Recruit.Vacancies.Client.Domain;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Enums;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 
-namespace Esfa.Recruit.Employer.Web.Orchestrators
+namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
-    public class LocationOrchestrator
+    public class EmployerOrchestrator
     {
         private readonly IVacancyClient _client;
 
-        public LocationOrchestrator(IVacancyClient client)
+        public EmployerOrchestrator(IVacancyClient client)
         {
             _client = client;
         }
 
-        public async Task<LocationViewModel> GetLocationViewModelAsync(Guid vacancyId)
+        public async Task<EmployerViewModel> GetLocationViewModelAsync(Guid vacancyId)
         {
             var vacancy = await _client.GetVacancyForEditAsync(vacancyId);
             
-            var vm = new LocationViewModel
+            var vm = new EmployerViewModel
             {
                 Organisations = new List<LocationOrganisationViewModel>
                 {
@@ -48,7 +47,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return vm;
         }
 
-        public async Task<LocationViewModel> GetLocationViewModelAsync(LocationEditModel m)
+        public async Task<EmployerViewModel> GetLocationViewModelAsync(EmployerEditModel m)
         {
             var vm = await GetLocationViewModelAsync(m.VacancyId);
 
@@ -62,12 +61,14 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return vm;
         }
 
-        public async Task PostLocationEditModelAsync(LocationEditModel m)
+        public async Task PostLocationEditModelAsync(EmployerEditModel m)
         {
             var vacancy = await _client.GetVacancyForEditAsync(m.VacancyId);
 
-            if (vacancy.Status != VacancyStatus.Draft)
+            if (!vacancy.CanEdit)
+            {
                 throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
+            }
             
             vacancy.OrganisationId = m.SelectedOrganisationId?.Trim();
             vacancy.Location = new Address

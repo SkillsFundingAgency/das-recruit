@@ -47,5 +47,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             
             return _queryStore.UpsertAsync<ApprenticeshipProgrammes>(programmesItem);
         }
+
+        public Task<ApprenticeshipProgrammes> GetApprenticeshipProgrammesAsync()
+        {
+            var key = QueryViewType.ApprenticeshipProgrammes.GetIdValue(QueryViewType.ApprenticeshipProgrammes.GetIdValue());
+
+            return _queryStore.GetAsync<ApprenticeshipProgrammes>(key);
+        }
     }
 }

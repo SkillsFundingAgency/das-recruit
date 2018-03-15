@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Esfa.Recruit.Employer.Web.ViewModels.Validations
+﻿namespace Esfa.Recruit.Employer.Web.ViewModels.Validations
 {
+    using System.ComponentModel.DataAnnotations;
+
     public class PostcodeAttribute : RegularExpressionAttribute
     {
         // See http://stackoverflow.com/questions/164979/uk-postcode-regex-comprehensive

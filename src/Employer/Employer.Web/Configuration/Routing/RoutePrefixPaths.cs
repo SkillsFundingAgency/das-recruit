@@ -4,6 +4,6 @@
     {        
         public const string VacancyRoutePath = "vacancies/{vacancyId:guid}";
         public const string AccountRoutePath = "accounts/{employerAccountId:minlength(6)}";
-        public const string AccountVacancyRoutePath = "accounts/{employerAccountId:minlength(6)}/vacancies/{vacancyId:guid}";
+        public const string AccountVacancyRoutePath = AccountRoutePath + "/" + VacancyRoutePath;
     }
 }

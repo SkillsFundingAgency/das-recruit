@@ -29,8 +29,8 @@
         public const string Home_Index_Get = "Home_Index_Get";
         public const string Home_Logout_Get = "Home_Logout_Get";
 
-        public const string Location_Get = "Location_Get";
-        public const string Location_Post = "Location_Post";
+        public const string Employer_Get = "Employer_Get";
+        public const string Employer_Post = "Employer_Post";
 
         public const string CreateVacancy_Get = "CreateVacancy_Get";
         public const string CreateVacancy_Post = "CreateVacancy_Post";
@@ -40,6 +40,9 @@
 
         public const string ShortDescription_Get = "ShortDescription_Get";
         public const string ShortDescription_Post = "ShortDescription_Post";
+
+        public const string Training_Get = "Training_Get";
+        public const string Training_Post = "Training_Post";
 
         public const string Preview_Index_Get = "Preview_Index_Get";
         public const string Preview_Submit_Post = "Preview_Submit_Post";

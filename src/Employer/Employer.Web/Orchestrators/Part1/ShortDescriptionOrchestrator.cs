@@ -2,6 +2,8 @@ using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.ShortDescription;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Title;
+using Esfa.Recruit.Vacancies.Client.Domain;
+using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
@@ -22,7 +24,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var vm = new ShortDescriptionViewModel
             {
                 VacancyId = vacancy.Id,
-                NumberOfPositions = vacancy.NumberOfPositions.HasValue ? vacancy.NumberOfPositions : null,
+                NumberOfPositions = vacancy.NumberOfPositions?.ToString(),
                 ShortDescription = vacancy.ShortDescription
             };
 
@@ -43,7 +45,17 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         {
             var vacancy = await _client.GetVacancyForEditAsync(m.VacancyId);
 
-            vacancy.NumberOfPositions = m.NumberOfPositions.Value;
+            if (!vacancy.CanEdit)
+            {
+                throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
+            }
+
+            if (!string.IsNullOrEmpty(m.NumberOfPositions))
+            {
+                int.TryParse(m.NumberOfPositions, out var numberOfPositions);
+                vacancy.NumberOfPositions = numberOfPositions;
+            }
+            
             vacancy.ShortDescription = m.ShortDescription;
             
             await _client.UpdateVacancyAsync(vacancy, false);

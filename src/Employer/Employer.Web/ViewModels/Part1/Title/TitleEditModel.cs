@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using Esfa.Recruit.Employer.Web.ViewModels.Validations;
 using Microsoft.AspNetCore.Mvc;
+using ErrMsg = Esfa.Recruit.Employer.Web.ViewModels.ValidationMessages.TitleValidationMessages;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Title
 {
@@ -15,7 +16,9 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Title
         [ValidGuid]
         public Guid? VacancyId { get; set; }
 
-        [Required, FreeText, StringLength(100, MinimumLength = 1)]
+        [Required(ErrorMessage = ErrMsg.Required.Title)]
+        [FreeText(ErrorMessage = ErrMsg.FreeText.Title)]
+        [StringLength(100, ErrorMessage = ErrMsg.StringLength.Title)]
         public string Title { get; set; }
     }
 }

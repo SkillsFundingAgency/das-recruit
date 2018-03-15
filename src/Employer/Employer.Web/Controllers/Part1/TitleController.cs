@@ -45,7 +45,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             
             var vacancyId = await _orchestrator.PostTitleEditModelAsync(m);
             
-            return RedirectToRoute(RouteNames.Location_Get, new { vacancyId });
+            return RedirectToRoute(RouteNames.Employer_Get, new { vacancyId });
         }
     }
 }

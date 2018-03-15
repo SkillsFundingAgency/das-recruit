@@ -20,8 +20,8 @@
                         What do you want to call this vacancy?
                         <span class="form-hint">For example, Software developer apprenticeship</span>
                     </label>
-                    <input asp-for="Title" class="form-control-3-4 form-control" type="text" maxlength="100"/>
                     <span asp-validation-for="Title" class="error-message"></span>
+                    <input asp-for="Title" class="form-control-3-4 form-control" type="text" maxlength="100" />
                 </div>
                 <button type="submit" class="button">Save and Continue</button>
                 <a asp-route="@RouteNames.Dashboard_Index_Get" class="button-link">Cancel</a>

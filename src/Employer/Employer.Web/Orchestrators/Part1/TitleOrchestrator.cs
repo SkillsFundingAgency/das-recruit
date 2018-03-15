@@ -2,6 +2,8 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Title;
+using Esfa.Recruit.Vacancies.Client.Domain;
+using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
@@ -61,6 +63,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             }
 
             var vacancy = await _client.GetVacancyForEditAsync(vm.VacancyId.Value);
+
+            if (!vacancy.CanEdit)
+            {
+                throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
+            }
 
             vacancy.Title = vm.Title;
 
