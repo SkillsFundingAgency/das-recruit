@@ -25,7 +25,13 @@ namespace Esfa.Recruit.Employer.Web.Extensions
 
         public static DateTime? AsDateTimeUk(this string date)
         {
-            if(DateTime.TryParse(date, _ukCulture, DateTimeStyles.AssumeUniversal, out var d))
+            if(DateTime.TryParseExact(date, "d/M/yyyy", _ukCulture, DateTimeStyles.AssumeUniversal, out var d))
+            {
+                return d;
+            }
+
+            return null;
+        }
             {
                 return d;
             }

@@ -27,6 +27,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.Part1.Training
 
                 new object[] { nameof(TrainingEditModel.ClosingYear), null, nameof(TrainingEditModel.ClosingDate), ErrMsg.Required.ClosingDate},
                 new object[] { nameof(TrainingEditModel.ClosingYear), "aa", nameof(TrainingEditModel.ClosingDate), ErrMsg.TypeOfDate.ClosingDate},
+                new object[] { nameof(TrainingEditModel.ClosingYear), "18", nameof(TrainingEditModel.ClosingDate), ErrMsg.TypeOfDate.ClosingDate},
 
                 //StartDate
                 new object[] { nameof(TrainingEditModel.StartDay), null, nameof(TrainingEditModel.StartDate), ErrMsg.Required.StartDate},
@@ -39,6 +40,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.Part1.Training
 
                 new object[] { nameof(TrainingEditModel.StartYear), null, nameof(TrainingEditModel.StartDate), ErrMsg.Required.StartDate},
                 new object[] { nameof(TrainingEditModel.StartYear), "aa", nameof(TrainingEditModel.StartDate), ErrMsg.TypeOfDate.StartDate},
+                new object[] { nameof(TrainingEditModel.StartYear), "18", nameof(TrainingEditModel.StartDate), ErrMsg.TypeOfDate.StartDate},
 
                 //SelectedProgrammeId
                 new object[] { nameof(TrainingEditModel.SelectedProgrammeId), null, nameof(TrainingEditModel.SelectedProgrammeId), ErrMsg.Required.SelectedProgrammeId},
@@ -58,7 +60,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.Part1.Training
                 VacancyId = Guid.Parse("53b54daa-4702-4b69-97e5-12123a59f8ad"),
                 ClosingDay = "01",
                 ClosingMonth = "3",
-                ClosingYear = "18",
+                ClosingYear = "2018",
                 StartDay = "7",
                 StartMonth = "04",
                 StartYear = "2018",
