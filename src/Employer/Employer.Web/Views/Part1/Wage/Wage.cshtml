@@ -36,7 +36,7 @@
             <div class="form-group">
                 <label asp-for="WeeklyHours" class="form-label-bold">How many hours will the apprentice work each week, including training?</label>
                 <span asp-validation-for="WeeklyHours" class="error-message"></span>
-                <input asp-for="WeeklyHours" class="form-control form-control-1-8" type="number">
+                <input asp-for="WeeklyHours" class="form-control form-control-1-8" type="number" step="0.01">
             </div>
             <div class="form-group">
                 <fieldset>
