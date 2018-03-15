@@ -96,5 +96,43 @@
                 public const string StartDate = "The field [Day/Month/Year] must be a date";
             }
         }
+
+        public class WageValidationMessages
+        {
+            public class Required
+            {
+                public const string Duration = "Enter the expected duaration";
+                public const string WorkingWeekDescription = "Enter the working week";
+                public const string WeeklyHours = "Enter the hours per week";
+
+            }
+
+            public class TypeOfInteger
+            {
+                public const string Duration = "The field expected duration must be a number";
+            }
+
+            public class FreeText
+            {
+                public const string WorkingWeekDescription = "The working week contains some invalid characters";
+                public const string WageAdditionalInformation = "Additional salary information contains some invalid characters";
+            }
+
+            public class StringLength
+            {
+                public const string WorkingWeekDescription = "The working week must not be more than {1} characters";
+                public const string WageAdditionalInformation = "Additional salary information must not be more than {1} characters";
+            }
+
+            public class TypeOfDecimal
+            {
+                public const string WeeklyHours = "The field paid hours per week must be a number";
+            }
+
+            public class TypeOfMoneyGBP
+            {
+                public const string FixedWageYearlyAmount = "The field wage must be a number";
+            }
+        }
     }
 }

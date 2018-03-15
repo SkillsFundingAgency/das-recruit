@@ -32,6 +32,25 @@ namespace Esfa.Recruit.Employer.Web.Extensions
 
             return null;
         }
+
+        public static decimal? AsMoney(this string text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return null;
+            }
+            
+            if (decimal.TryParse(text, out var d))
+            {
+                return d;
+            }
+
+            return null;
+        }
+
+        public static decimal? AsDecimal(this string text)
+        {
+            if (decimal.TryParse(text, out var d))
             {
                 return d;
             }

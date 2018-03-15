@@ -57,5 +57,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public string ProgrammeTitle { get; set; }
 
         public TrainingType? TrainingType { get; set; }
+
+        public Wage Wage { get; set; }
     }
 }
