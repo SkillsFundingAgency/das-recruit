@@ -24,6 +24,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Handlers
         {
             var vacancySummaries = await _repository.GetVacanciesByEmployerAccountAsync<VacancySummary>(message.EmployerAccountId);
             
+            var employerVacancies = await _repository.GetVacanciesByEmployerAccountAsync(message.EmployerAccountId)
+                .OrderBy(v => v.CreatedDate);
+            
             await _writer.UpdateDashboardAsync(message.EmployerAccountId, vacancySummaries);
         }
     }
