@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Extensions;
+using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer;
 using Esfa.Recruit.Vacancies.Client.Domain;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Domain.Enums;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 
@@ -20,18 +19,19 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             _client = client;
         }
 
-        public async Task<EmployerViewModel> GetLocationViewModelAsync(Guid vacancyId)
+        public async Task<EmployerViewModel> GetLocationViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await _client.GetVacancyForEditAsync(vacancyId);
-            
+            var getEmployerDataTask = _client.GetEmployerVacancyDataAsync(vrm.EmployerAccountId);
+            var getVacancyTask = _client.GetVacancyForEditAsync(vrm.VacancyId);
+
+            await Task.WhenAll(new Task[] { getEmployerDataTask, getVacancyTask });
+
+            var employerData = getEmployerDataTask.Result;
+            var vacancy = getVacancyTask.Result;
+
             var vm = new EmployerViewModel
             {
-                Organisations = new List<LocationOrganisationViewModel>
-                {
-                    new LocationOrganisationViewModel{Id = "A", Name = "Organisation A"},
-                    new LocationOrganisationViewModel{Id = "B", Name = "Organisation B"},
-                    new LocationOrganisationViewModel{Id = "C", Name = "Organisation C"}
-                },
+                Organisations = employerData.LegalEntities.Select(MapLegalEntitiesToOrgs).ToList(),
                 SelectedOrganisationId = vacancy.OrganisationId,
             };
 
@@ -43,13 +43,23 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 vm.AddressLine4 = vacancy.Location.AddressLine4;
                 vm.Postcode = vacancy.Location.Postcode;
             }
+            else
+            {
+                var legalEntityAddress = employerData.LegalEntities.First().Address;
+                vm.AddressLine1 = legalEntityAddress.AddressLine1;
+                vm.AddressLine2 = legalEntityAddress.AddressLine2;
+                vm.AddressLine3 = legalEntityAddress.AddressLine3;
+                vm.AddressLine4 = legalEntityAddress.AddressLine4;
+                vm.Postcode = legalEntityAddress.Postcode;
+            }
 
             return vm;
         }
 
         public async Task<EmployerViewModel> GetLocationViewModelAsync(EmployerEditModel m)
         {
-            var vm = await GetLocationViewModelAsync(m.VacancyId);
+            var vrm = new VacancyRouteModel { EmployerAccountId = m.EmployerAccountId, VacancyId = m.VacancyId };
+            var vm = await GetLocationViewModelAsync(vrm);
 
             vm.SelectedOrganisationId = m.SelectedOrganisationId;
             vm.AddressLine1 = m.AddressLine1;
@@ -81,6 +91,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             };
             
             await _client.UpdateVacancyAsync(vacancy, false);
+        }
+
+        private LocationOrganisationViewModel MapLegalEntitiesToOrgs(LegalEntity data)
+        {
+            return new LocationOrganisationViewModel { Id = data.LegalEntityId.ToString(), Name = data.Name };
         }
     }
 }
