@@ -20,8 +20,8 @@
                     <span asp-validation-for="Duration" class="error-message"></span>
                     <input asp-for="Duration" class="form-control form-control-1-8" type="number">
                     <select asp-for="DurationUnit" class="form-control" style="width: auto">
-                        <option value="@DurationUnit.Month">@DurationUnit.Month.ToString()</option>
-                        <option value="@DurationUnit.Year">@DurationUnit.Year.ToString()</option>
+                        <option value="@DurationUnit.Month">@DurationUnit.Month.GetDisplayName()</option>
+                        <option value="@DurationUnit.Year">@DurationUnit.Year.GetDisplayName()</option>
                     </select>
                 </fieldset>
             </div>
@@ -73,7 +73,7 @@
                     </div>
 
                     <div class="multiple-choice">
-                        <input asp-for="WageType" value="@WageType.NationalMinumWageForApprentices" type="radio" id="wage-type-national-minimum-wage-for-apprentices">
+                        <input asp-for="WageType" value="@WageType.NationalMinimumWageForApprentices" type="radio" id="wage-type-national-minimum-wage-for-apprentices">
                         <label for="wage-type-national-minimum-wage-for-apprentices">National Minimum Wage for apprentices</label>
                     </div>
 
