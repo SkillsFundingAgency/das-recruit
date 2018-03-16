@@ -2,6 +2,6 @@
 {
     public abstract class EventBase : IEvent
     {
-        public string SourceCommandId { get; }
+        public string SourceCommandId { get; set; }
     }
 }

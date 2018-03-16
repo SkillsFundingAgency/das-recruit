@@ -21,7 +21,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         [HttpGet("")]
         public async Task<IActionResult> EntryPoint(string employerAccountId)
         {
-            await _orchestrator.RecordUserSignIn(employerAccountId);
+            await _orchestrator.RecordUserSignInAsync(employerAccountId);
 
             return RedirectToRoute(RouteNames.Dashboard_Index_Get);
         }

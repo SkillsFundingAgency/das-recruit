@@ -15,9 +15,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             _client = client;
         }
 
-        public Task RecordUserSignIn(string accountId)
+        public Task RecordUserSignInAsync(string accountId)
         {
-            return _client.RecordEmployerAccountSignIn(accountId);
+            return _client.RecordEmployerAccountSignInAsync(accountId);
         }
     }
 }
