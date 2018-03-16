@@ -68,7 +68,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.ApprenticeshipProgrammes
 
         private async Task<IEnumerable<ApprenticeshipProgramme>> GetStandards()
         {
-            _logger.LogTrace("Getting Standards from Apprentieships Api");
+            _logger.LogTrace("Getting Standards from Apprenticeships Api");
 
             var retryPolicy = GetApiRetryPolicy();
 
@@ -79,7 +79,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.ApprenticeshipProgrammes
 
         private async Task<IEnumerable<ApprenticeshipProgramme>> GetFrameworks()
         {
-            _logger.LogTrace("Getting Frameworks from Apprentieships Api");
+            _logger.LogTrace("Getting Frameworks from Apprenticeships Api");
             
             var retryPolicy = GetApiRetryPolicy();
 
