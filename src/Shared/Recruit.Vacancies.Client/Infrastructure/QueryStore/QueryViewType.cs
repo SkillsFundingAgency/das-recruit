@@ -26,8 +26,8 @@
             return _idFormatString;
         }
 
-        public static QueryViewType Dashboard => new QueryViewType("Dashboard", "dashboard_{0}");
-        public static QueryViewType EmployerVacancyData => new QueryViewType("EmployerVacancyData", "employer_{0}");
+        public static QueryViewType Dashboard => new QueryViewType("Dashboard", "Dashboard_{0}");
+        public static QueryViewType EmployerVacancyData => new QueryViewType("EmployerVacancyData", "EmployerVacancyData_{0}");
         public static QueryViewType ApprenticeshipProgrammes => new QueryViewType("ApprenticeshipProgrammes", "ApprenticeshipProgrammes");
     }
 }
