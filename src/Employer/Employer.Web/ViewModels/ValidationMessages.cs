@@ -7,7 +7,7 @@
         {
             public class Required
             {
-                public const string Title = "Enter the title";
+                public const string Title = "Enter the title of the vacancy";
             }
 
             public class StringLength
@@ -25,30 +25,30 @@
         {
             public class Required
             {
-                public const string SelectedOrganisationId = "You must select a legal entity";
-                public const string AddressLine1 = "Enter your first line of address";
-                public const string Postcode = "Enter your postcode";
+                public const string SelectedOrganisationId = "You must select one organisation";
+                public const string AddressLine1 = "You must enter an address";
+                public const string Postcode = "Enter the postcode";
             }
 
             public class StringLength
             {
-                public const string AddressLine1 = "First line of address must not be more than {1} characters";
-                public const string AddressLine2 = "Second line of address must not be more than {1} characters";
-                public const string AddressLine3 = "Third line of address must not be more than {1} characters";
-                public const string AddressLine4 = "Fourth line of address must not be more than {1} characters";
+                public const string AddressLine1 = "The first line of the address must not be more than {1} characters";
+                public const string AddressLine2 = "The second line of the address must not be more than {1} characters";
+                public const string AddressLine3 = "The third line of the address must not be more than {1} characters";
+                public const string AddressLine4 = "The fourth line of the address must not be more than {1} characters";
             }
 
             public class FreeText
             {
-                public const string AddressLine1 = "First line of address contains some invalid characters";
-                public const string AddressLine2 = "Second line of address contains some invalid characters";
-                public const string AddressLine3 = "Third line of address contains some invalid characters";
-                public const string AddressLine4 = "Fourth line of address contains some invalid characters";
+                public const string AddressLine1 = "The first line of the address contains some invalid characters";
+                public const string AddressLine2 = "The second line of the address contains some invalid characters";
+                public const string AddressLine3 = "The third line of the address contains some invalid characters";
+                public const string AddressLine4 = "The fourth line of the address contains some invalid characters";
             }
 
             public class PostcodeAttribute
             {
-                public const string Postcode = "'postcode' is not a valid format";
+                public const string Postcode = "'Postcode' is not a valid format";
             }
         }
 
@@ -57,12 +57,12 @@
             public class Required
             {
                 public const string NumberOfPositions = "Enter the number of positions for this vacancy";
-                public const string ShortDescription = "Enter the brief overview of the role";
+                public const string ShortDescription = "Enter the brief overview of the vacancy";
             }
 
             public class TypeOfInteger
             {
-                public const string NumberOfPositions = "The number of positions is invalid";
+                public const string NumberOfPositions = "Enter the number of positions for this vacancy";
             }
 
             public class Range
@@ -72,12 +72,12 @@
 
             public class StringLength
             {
-                public const string ShortDescription = "The brief overview of the role must be between {2} and {1} characters";
+                public const string ShortDescription = "The overview of the role must be between {2} and {1} characters";
             }
 
             public class FreeText
             {
-                public const string ShortDescription = "The brief overview of the role contains some invalid characters";
+                public const string ShortDescription = "The overview of the vacancy contains some invalid characters";
             }
         }
 
@@ -92,8 +92,46 @@
 
             public class TypeOfDate
             {
-                public const string ClosingDate = "The field [Day/Month/Year] must be a date";
-                public const string StartDate = "The field [Day/Month/Year] must be a date";
+                public const string ClosingDate = "The closing date format should be dd/mm/yyyy";
+                public const string StartDate = "The start date format should be dd/mm/yyyy";
+            }
+        }
+
+        public class WageValidationMessages
+        {
+            public class Required
+            {
+                public const string Duration = "Enter the expected duaration";
+                public const string WorkingWeekDescription = "Enter the working week";
+                public const string WeeklyHours = "Enter the hours per week";
+
+            }
+
+            public class TypeOfInteger
+            {
+                public const string Duration = "The field expected duration must be a number";
+            }
+
+            public class FreeText
+            {
+                public const string WorkingWeekDescription = "The working week contains some invalid characters";
+                public const string WageAdditionalInformation = "Additional salary information contains some invalid characters";
+            }
+
+            public class StringLength
+            {
+                public const string WorkingWeekDescription = "The working week must not be more than {1} characters";
+                public const string WageAdditionalInformation = "Additional salary information must not be more than {1} characters";
+            }
+
+            public class TypeOfDecimal
+            {
+                public const string WeeklyHours = "The field paid hours per week must be a number";
+            }
+
+            public class TypeOfMoneyGBP
+            {
+                public const string FixedWageYearlyAmount = "The field wage must be a number";
             }
         }
     }

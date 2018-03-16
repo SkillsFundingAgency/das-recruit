@@ -1,9 +1,9 @@
 ﻿namespace Esfa.Recruit.Employer.Web.ViewModels.Validations
 {
-    using System;
+    using Esfa.Recruit.Employer.Web.Extensions;    
     using System.ComponentModel.DataAnnotations;
 
-    public class TypeOfIntegerAttribute : ValidationAttribute
+    public class TypeOfMoneyGBPAttribute : ValidationAttribute
     {
         public override bool IsValid(object value)
         {
@@ -12,7 +12,7 @@
                 return true;
             }
 
-            return (int.TryParse((string)value, out var i));
+            return (((string)value).AsMoney() != null);            
         }
     }
 }

@@ -25,7 +25,36 @@ namespace Esfa.Recruit.Employer.Web.Extensions
 
         public static DateTime? AsDateTimeUk(this string date)
         {
-            if(DateTime.TryParse(date, _ukCulture, DateTimeStyles.AssumeUniversal, out var d))
+            if(DateTime.TryParseExact(date, "d/M/yyyy", _ukCulture, DateTimeStyles.AssumeUniversal, out var d))
+            {
+                return d;
+            }
+
+            return null;
+        }
+
+        public static decimal? AsMoney(this string text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return null;
+            }
+            
+            if (decimal.TryParse(text, out var d))
+            {
+                if (decimal.Round(d, 2, MidpointRounding.AwayFromZero) == d)
+                {
+                    return d;
+                }
+                return null;
+            }
+
+            return null;
+        }
+
+        public static decimal? AsDecimal(this string text)
+        {
+            if (decimal.TryParse(text, out var d))
             {
                 return d;
             }

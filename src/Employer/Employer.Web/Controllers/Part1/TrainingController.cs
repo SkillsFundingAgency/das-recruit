@@ -36,7 +36,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 
             await _orchestrator.PostTrainingEditModelAsync(m);
 
-            return RedirectToRoute(RouteNames.Title_Get);
+            return RedirectToRoute(RouteNames.Wage_Get);
         }
         
     }
