@@ -60,8 +60,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         {
             var employerVacancyDataItem = new EmployerVacancyData
             {
-                Id = QueryViewType.EmployerData.GetIdValue(employerAccountId),
-                Type = QueryViewType.EmployerData.TypeName,
+                Id = QueryViewType.EmployerVacancyData.GetIdValue(employerAccountId),
+                Type = QueryViewType.EmployerVacancyData.TypeName,
                 LegalEntities = legalEntities,
                 LastUpdated = DateTime.UtcNow
             };
@@ -71,7 +71,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 
         public Task<EmployerVacancyData> GetEmployerVacancyDataAsync(string employerAccountId)
         {
-            var key = QueryViewType.EmployerData.GetIdValue(employerAccountId);
+            var key = QueryViewType.EmployerVacancyData.GetIdValue(employerAccountId);
 
             return _queryStore.GetAsync<EmployerVacancyData>(key);
         }
