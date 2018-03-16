@@ -50,7 +50,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddTransient<EmployerOrchestrator>();
             services.AddTransient<TitleOrchestrator>();
             services.AddTransient<EntryPointOrchestrator>();
-            services.AddTransient<PreviewOrchestrator>();
+            services.AddTransient<Orchestrators.PreviewOrchestrator>();
             services.AddTransient<RoleDescriptionOrchestrator>();
             services.AddTransient<SectionsOrchestrator>();
             services.AddTransient<SubmittedOrchestrator>();
@@ -60,6 +60,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddTransient<ShortDescriptionOrchestrator>();
             services.AddTransient<TrainingOrchestrator>();
             services.AddTransient<WageOrchestrator>();
+            services.AddTransient<Orchestrators.Part1.PreviewOrchestrator>();
         }
     }
 }

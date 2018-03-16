@@ -41,6 +41,8 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public string ProviderAddress { get; set; }
 
         public string OrganisationId { get; set; }
+
+        public string OrganisationName { get; set; }
         
         public Address Location { get; set; }
 
@@ -52,11 +54,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
 
         public DateTime? StartDate { get; set; }
 
-        public string ProgrammeId { get; set; }
-
-        public string ProgrammeTitle { get; set; }
-
-        public TrainingType? TrainingType { get; set; }
+        public Programme Programme { get; set; }
 
         public Wage Wage { get; set; }
     }

@@ -1,0 +1,67 @@
+﻿@model Esfa.Recruit.Employer.Web.ViewModels.Part1.Preview.PreviewViewModel
+
+@{
+    var numberOfPositionsSuffix = Model.NumberOfPositions == "1" ? "position available" : "positions available";
+}
+<div class="grid-row">
+    <div class="column-full">
+
+        @Html.Partial("_Part1Header")
+
+        <!-- Validation summary-->
+        <div asp-validation-summary="All" class="error-summary" role="alert" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
+            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
+                Please fix these errors
+            </h2>
+        </div>
+
+        <div class="preview-advert">
+
+            <ul class="list">
+                <li class="secondary-text">@Model.OrganisationName</li>
+
+                <li class="font-xsmall secondary-text">
+                    <span id="date-and-positions">@Model.NumberOfPositions @numberOfPositionsSuffix</span>
+                </li>
+            </ul>
+            
+            <p id="preview_short_description">@Model.ShortDescription</p>
+            
+            <div class="grid-row">
+                <div class="column-two-thirds">
+                    <ul class="list sfa-no-margins vacancy-details-list">
+                        <li data-show="DisplayClosingDate">
+                            <span class="bold-small">Closing date:</span>
+                            <span>@Model.ClosingDate</span>
+                        </li>
+                        <li>
+                            <span class="bold-small">Possible start date:</span>
+                            <span>@Model.StartDate</span>
+                        </li>
+                        <li class="toggle-content">
+                            <span class="bold-small">Apprenticeship level:</span>
+                            <span>@Model.LevelName</span>
+                        </li>
+                        <li data-show="DisplayWage">
+                            <span class="bold-small">Wage:</span>
+                            <span>@Model.Wage</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="column-one-third map-container hide-nojs toggle-content--mob">
+                    <img id="static-map" class="static-map js-hidden" src="https://maps.googleapis.com/maps/api/staticmap?markers=@Model.Latitude,@Model.Longitude&amp;size=190x125&amp;zoom=12&amp;client=gme-skillsfundingagency&amp;signature=AU06WjxyDoHvX8mScXchwDTvFFg=">
+                </div>
+            </div>
+
+            <div class="form-group inline">
+                <div class="form-group small-top-margin">
+                    <a asp-route="@RouteNames.Dashboard_Index_Get" class="button">Save and continue</a>
+                    <a asp-route="@RouteNames.Title_Get" class="button-link">Make changes</a>
+                    <a asp-route="@RouteNames.Dashboard_Index_Get" class="button-link">Return to dashboard</a>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+    </div>
+</div>
