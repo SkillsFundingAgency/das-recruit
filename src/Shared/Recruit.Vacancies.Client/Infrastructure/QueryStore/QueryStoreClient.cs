@@ -68,5 +68,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 
             return _queryStore.UpsertAsync(employerVacancyDataItem);
         }
+
+        public Task<EmployerVacancyData> GetEmployerVacancyDataAsync(string employerAccountId)
+        {
+            var key = QueryViewType.EmployerData.GetIdValue(employerAccountId);
+
+            return _queryStore.GetAsync<EmployerVacancyData>(key);
+        }
     }
 }
