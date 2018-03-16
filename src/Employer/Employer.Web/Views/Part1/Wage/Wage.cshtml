@@ -20,8 +20,8 @@
                     <span asp-validation-for="Duration" class="error-message"></span>
                     <input asp-for="Duration" class="form-control form-control-1-8" type="number">
                     <select asp-for="DurationUnit" class="form-control" style="width: auto">
-                        <option value="@DurationUnit.Month">@DurationUnit.Month.GetDisplayName()</option>
-                        <option value="@DurationUnit.Year">@DurationUnit.Year.GetDisplayName()</option>
+                        <option value="@DurationUnit.Month">Month(s)</option>
+                        <option value="@DurationUnit.Year">Year(s)</option>
                     </select>
                 </fieldset>
             </div>
