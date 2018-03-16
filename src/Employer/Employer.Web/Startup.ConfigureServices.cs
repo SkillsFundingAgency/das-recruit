@@ -19,7 +19,7 @@ namespace Esfa.Recruit.Employer.Web
             _configuration = config;
             _hostingEnvironment = env;
             _authConfig = _configuration.GetSection("Authentication").Get<AuthenticationConfiguration>();
-            //_configuration.Bind()
+
             if (env.IsDevelopment()  && _authConfig.IsEnabledForDev == false)
             {
                 _isAuthEnabled = false;
