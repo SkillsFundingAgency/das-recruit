@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
-    [Route("accounts/{employerAccountId:minlength(6)}")]
+    [Route(RoutePrefixPaths.AccountRoutePath)]
     public class EntryPointController : Controller
     {
         private readonly ILogger<EntryPointController> _logger;
