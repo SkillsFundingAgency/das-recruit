@@ -17,7 +17,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Mappings
                 LegalEntityId = data.LegalEntityId,
                 Name = data.Name,
                 Code = data.Code,
-                Status = data.Status,
                 Address = MapFromAddressLine(data.Address)
             };
         }
