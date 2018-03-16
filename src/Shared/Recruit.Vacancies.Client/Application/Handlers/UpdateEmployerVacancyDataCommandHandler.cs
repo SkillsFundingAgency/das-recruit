@@ -18,7 +18,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Handlers
 
         public async Task Handle(UpdateEmployerVacancyDataCommand message, CancellationToken cancellationToken)
         {
-            await _messaging.PublishEvent(new UserSignedInEvent(message));
+            await _messaging.PublishEvent(new UserSignedInEvent
+            {
+                SourceCommandId = message.CommandId.ToString(),
+                EmployerAccountId = message.EmployerAccountId
+            });
         }
     }
 }

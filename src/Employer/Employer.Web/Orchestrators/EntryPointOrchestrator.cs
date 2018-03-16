@@ -15,9 +15,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             _client = client;
         }
 
-        public Task CreateEmployerStore(string accountId)
+        public Task RecordUserSignIn(string accountId)
         {
-            return _client.UpdateEmployerVacancyDataAsync(accountId);            
+            return _client.RecordEmployerAccountSignIn(accountId);
         }
     }
 }
