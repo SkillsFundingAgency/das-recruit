@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.Linq;
-    using Recruit.Employer.Web.ViewModels.Part1.Employer;
+    using Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer;
     using FluentAssertions;
     using Xunit;
     using ErrMsg = Esfa.Recruit.Employer.Web.ViewModels.ValidationMessages.EmployerEditModelValidationMessages;

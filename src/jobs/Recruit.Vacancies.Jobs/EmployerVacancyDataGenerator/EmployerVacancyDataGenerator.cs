@@ -1,10 +1,11 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Application.QueryStore;
+using Esfa.Recruit.Vacancies.Client.Domain.Mappings;
 using Esfa.Recruit.Vacancies.Client.Domain.Services;
 using Microsoft.Extensions.Logging;
-using System;
+using System.Linq;
 using System.Threading.Tasks;
 
-namespace Esfa.Recruit.Vacancies.Jobs.ApprenticeshipProgrammes
+namespace Esfa.Recruit.Vacancies.Jobs.EmployerVacancyDataGenerator
 {
     public class EmployerVacancyDataGenerator
     {
@@ -21,8 +22,9 @@ namespace Esfa.Recruit.Vacancies.Jobs.ApprenticeshipProgrammes
 
         internal async Task GenerateVacancyDataForEmployer(string employerAccountId)
         {
-            // grab data for the view
-            var legalEntities = await _accountSvc.GetEmployerLegalEntitiesAsync(employerAccountId);
+            var accountLegalEntities = await _accountSvc.GetEmployerLegalEntitiesAsync(employerAccountId);
+
+            var legalEntities = accountLegalEntities.Select(LegalEntityMapper.MapFromAccountApiLegalEntity);
 
             await _writer.UpdateEmployerVacancyDataAsync(employerAccountId, legalEntities);
         }

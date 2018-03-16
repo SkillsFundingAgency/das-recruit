@@ -7,7 +7,7 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
-namespace Esfa.Recruit.Vacancies.Jobs.ApprenticeshipProgrammes
+namespace Esfa.Recruit.Vacancies.Jobs.EmployerVacancyDataGenerator
 {
     public class EmployerVacancyDataGeneratorJob
     {
