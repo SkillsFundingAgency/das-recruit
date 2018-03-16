@@ -124,7 +124,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             await _messaging.SendCommandAsync(command);
         }
 
-        public async Task<ApprenticeshipProgrammes> GetApprenticehshipProgrammesAsync()
+        public async Task<ApprenticeshipProgrammes> GetApprenticeshipProgrammesAsync()
         {
             return await _reader.GetApprenticeshipProgrammesAsync();
         }
