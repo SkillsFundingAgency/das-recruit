@@ -20,7 +20,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         [HttpGet("employer-details", Name = RouteNames.EmployerDetails_Index_Get)]
         public async Task<IActionResult> Index(Guid vacancyId)
         {
-            var vm = await _orchestrator.GetIndexViewModelAsync(vacancyId);
+            var vm = await _orchestrator.GetEmployerDetailViewModelAsync(vacancyId);
             return View(vm);
         }
 

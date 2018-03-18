@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.RouteModel;
@@ -21,7 +20,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         [HttpGet("employer", Name = RouteNames.Employer_Get)]
         public async Task<IActionResult> Employer(VacancyRouteModel vrm)
         {
-            var vm = await _orchestrator.GetLocationViewModelAsync(vrm);
+            var vm = await _orchestrator.GetEmployerViewModelAsync(vrm);
             return View(vm);
         }
 
@@ -30,14 +29,13 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         {
             if (!ModelState.IsValid)
             {
-                var vm = await _orchestrator.GetLocationViewModelAsync(m);
+                var vm = await _orchestrator.GetEmployerViewModelAsync(m);
 
                 return View(vm);
             }
 
-            await _orchestrator.PostLocationEditModelAsync(m);
+            await _orchestrator.PostEmployerEditModelAsync(m);
             return RedirectToRoute(RouteNames.ShortDescription_Get);
         }
-        
     }
 }

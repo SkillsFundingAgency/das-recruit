@@ -19,7 +19,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             _client = client;
         }
 
-        public async Task<EmployerViewModel> GetLocationViewModelAsync(VacancyRouteModel vrm)
+        public async Task<EmployerViewModel> GetEmployerViewModelAsync(VacancyRouteModel vrm)
         {
             var getEmployerDataTask = _client.GetEmployerVacancyDataAsync(vrm.EmployerAccountId);
             var getVacancyTask = _client.GetVacancyForEditAsync(vrm.VacancyId);
@@ -56,10 +56,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             return vm;
         }
 
-        public async Task<EmployerViewModel> GetLocationViewModelAsync(EmployerEditModel m)
+        public async Task<EmployerViewModel> GetEmployerViewModelAsync(EmployerEditModel m)
         {
             var vrm = new VacancyRouteModel { EmployerAccountId = m.EmployerAccountId, VacancyId = m.VacancyId };
-            var vm = await GetLocationViewModelAsync(vrm);
+            var vm = await GetEmployerViewModelAsync(vrm);
 
             vm.SelectedOrganisationId = m.SelectedOrganisationId;
             vm.AddressLine1 = m.AddressLine1;
@@ -71,7 +71,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             return vm;
         }
 
-        public async Task PostLocationEditModelAsync(EmployerEditModel m)
+        public async Task PostEmployerEditModelAsync(EmployerEditModel m)
         {
             var vacancy = await _client.GetVacancyForEditAsync(m.VacancyId);
 
