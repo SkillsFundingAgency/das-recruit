@@ -5,6 +5,9 @@
     <UserSecretsId>0d60e5b4-1f4d-47b0-b24c-7bfa4d874849</UserSecretsId>
     <RootNamespace>Esfa.Recruit.Vacancies.Jobs</RootNamespace>
   </PropertyGroup>
+  <PropertyGroup>
+   <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup> 
   <ItemGroup>
     <PackageReference Include="Microsoft.Azure.WebJobs" Version="3.0.0-beta4" />
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions" Version="3.0.0-beta4" />
