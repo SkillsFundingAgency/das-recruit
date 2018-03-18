@@ -9,7 +9,7 @@ using Xunit;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.Part1.Wage
 {
-    using ErrMsg = Recruit.Employer.Web.ViewModels.ValidationMessages.WageValidationMessages;
+    using ErrMsg = Esfa.Recruit.Employer.Web.ViewModels.ValidationMessages.WageValidationMessages;
 
     public class WageEditModelTests
     {
