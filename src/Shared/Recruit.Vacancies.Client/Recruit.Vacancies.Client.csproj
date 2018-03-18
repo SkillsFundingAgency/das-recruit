@@ -16,6 +16,9 @@
     <PackageReleaseNotes>Initial release.</PackageReleaseNotes>
     <RootNamespace>Esfa.Recruit.Vacancies.Client</RootNamespace>
   </PropertyGroup>
+  <PropertyGroup>
+   <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup> 
   <ItemGroup>
     <PackageReference Include="MediatR" Version="4.0.1" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="4.0.0" />
