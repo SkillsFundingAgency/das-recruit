@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.ShortDescription;
+using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -62,7 +63,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             
             vacancy.ShortDescription = m.ShortDescription;
             
-            await _client.UpdateVacancyAsync(vacancy, false);
+            await _client.UpdateVacancyAsync(vacancy, VacancyValidations.Description, false);
         }
     }
 }

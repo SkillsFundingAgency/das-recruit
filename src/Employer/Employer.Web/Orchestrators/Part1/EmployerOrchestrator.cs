@@ -3,19 +3,24 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer;
+using Esfa.Recruit.Vacancies.Client.Application.Exceptions;
+using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
-    public class EmployerOrchestrator
+    public class EmployerOrchestrator : EntityValidatingOrchestrator<Vacancy, EmployerViewModel>
     {
         private readonly IVacancyClient _client;
+        private readonly ILogger<EmployerOrchestrator> _logger;
 
-        public EmployerOrchestrator(IVacancyClient client)
+        public EmployerOrchestrator(IVacancyClient client, ILogger<EmployerOrchestrator> logger)
         {
+            _logger = logger;
             _client = client;
         }
 
@@ -67,7 +72,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             return vm;
         }
 
-        public async Task PostEmployerEditModelAsync(EmployerEditModel m)
+        public async Task<OrchestratorResponse> PostEmployerEditModelAsync(EmployerEditModel m)
         {
             var vacancy = await _client.GetVacancyForEditAsync(m.VacancyId);
 
@@ -75,7 +80,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             {
                 throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
             }
-            
+
             vacancy.OrganisationId = m.SelectedOrganisationId?.Trim();
             vacancy.Location = new Address
             {
@@ -85,8 +90,30 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 AddressLine4 = m.AddressLine4,
                 Postcode = m.Postcode.AsPostcode()
             };
-            
-            await _client.UpdateVacancyAsync(vacancy, false);
+
+            try
+            {
+                await _client.UpdateVacancyAsync(vacancy, VacancyValidations.Organisation, false);
+            }
+            catch (EntityValidationException ex)
+            {
+                _logger.LogDebug("Vacancy update failed validation: {ValidationErrors}", ex.ValidationResult);
+
+                MapValidationPropertiesToViewModel(ex.ValidationResult);
+                
+                return new OrchestratorResponse(ex.ValidationResult);
+            }
+
+            return new OrchestratorResponse(true);
+        }
+
+        protected override EntityToViewModelPropertyMappings<Vacancy, EmployerViewModel> DefineMappings()
+        {
+            var mappings = new EntityToViewModelPropertyMappings<Vacancy, EmployerViewModel>();
+
+            mappings.Add(e => e.Location.AddressLine1, vm => vm.AddressLine1);
+
+            return mappings;
         }
 
         private LocationOrganisationViewModel MapLegalEntitiesToOrgs(LegalEntity data)

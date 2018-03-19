@@ -1,4 +1,4 @@
-﻿using Esfa.Recruit.Employer.Web.ViewModels;
+using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain;
 using Esfa.Recruit.Vacancies.Client.Domain.Enums;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
@@ -39,7 +39,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             vacancy.ThingsToConsider = m.ThingsToConsider;
 
-            await _client.UpdateVacancyAsync(vacancy);
+            await _client.UpdateVacancyAsync(vacancy, VacancyValidations.Role);
         }
     }
 }

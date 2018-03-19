@@ -1,6 +1,9 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Application.Events;
 using Esfa.Recruit.Vacancies.Client.Application.Handlers;
 using Esfa.Recruit.Vacancies.Client.Application.QueryStore;
+using Esfa.Recruit.Vacancies.Client.Application.Validation;
+using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Domain.Services;
@@ -12,6 +15,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
+using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -35,7 +39,10 @@ namespace Microsoft.Extensions.DependencyInjection
             RegisterServiceDeps(services);
 
             services.AddRepositories(configuration);
+
             RegisterStorageProviderDeps(services, configuration);
+
+            services.AddValidation();
         }
 
         private static void RegisterAccountApiClientDeps(IServiceCollection services)
@@ -78,6 +85,12 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<StorageQueueConnectionDetails>(kernal => kernal.GetService<IOptions<StorageQueueConnectionDetails>>().Value);
 
             services.AddTransient<IEventStore, StorageQueueEventQueue>();
+        }
+
+        private static void AddValidation(this IServiceCollection services)
+        {
+            services.AddTransient<AbstractValidator<Vacancy>, FluentVacancyValidator>();
+            services.AddTransient<IVacancyValidator, VacancyValidator>();
         }
     }
 }

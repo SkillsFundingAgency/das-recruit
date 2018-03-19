@@ -11,6 +11,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
     using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
     using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
     using Esfa.Recruit.Employer.Web.Extensions;
+    using Esfa.Recruit.Vacancies.Client.Application.Validation;
 
     public class TrainingOrchestrator
     {
@@ -102,7 +103,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 LevelName = ((ProgrammeLevel)programme.Level).GetDisplayName()
             };
             
-            await _client.UpdateVacancyAsync(vacancy, false);
+            await _client.UpdateVacancyAsync(vacancy, VacancyValidations.Training, false);
         }
     }
 }

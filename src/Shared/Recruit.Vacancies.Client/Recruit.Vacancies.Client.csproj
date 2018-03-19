@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
@@ -31,6 +30,7 @@
     <PackageReference Include="SFA.DAS.Account.Api.Client" Version="1.2.0.62882" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.4.1" />
     <PackageReference Include="WindowsAzure.Storage" Version="9.1.0" />
+    <PackageReference Include="FluentValidation" Version="7.5.2"/>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Application\QueryStore\" />

@@ -55,6 +55,20 @@
             ]
         },
         {
+            "label": "client-unit-tests",
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "test",
+                "${workspaceFolder}/Shared/UnitTests/UnitTests.csproj",
+                "/p:GenerateFullPaths=true"
+            ]
+        },
+        {
             "label": "web-integration-tests",
             "group": "test",
             "command": "dotnet",

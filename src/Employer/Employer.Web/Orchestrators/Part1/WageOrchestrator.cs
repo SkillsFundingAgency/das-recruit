@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Wage;
+using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Enums;
@@ -79,7 +80,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 WageAdditionalInformation = m.WageAdditionalInformation
             };
             
-            await _client.UpdateVacancyAsync(vacancy, false);
+            await _client.UpdateVacancyAsync(vacancy, VacancyValidations.Wages, false);
         }
     }
 }

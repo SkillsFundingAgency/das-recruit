@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.QueryStore;
+using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Enums;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
@@ -24,11 +25,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _messaging = messaging;
         }
 
-        public async Task UpdateVacancyAsync(Vacancy vacancy, bool canUpdateQueryStore = true)
+        public async Task UpdateVacancyAsync(Vacancy vacancy, VacancyValidations validationRules, bool canUpdateQueryStore = true)
         {
             var command = new UpdateVacancyCommand
             {
-                Vacancy = vacancy
+                Vacancy = vacancy,
+                ValidationRules = validationRules
             };
 
             await _messaging.SendCommandAsync(command);
