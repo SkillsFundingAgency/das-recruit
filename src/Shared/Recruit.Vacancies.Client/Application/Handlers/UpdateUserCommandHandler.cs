@@ -7,16 +7,16 @@ using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Handlers
 {
-    public class UpdateEmployerVacancyDataCommandHandler : IRequestHandler<UpdateEmployerVacancyDataCommand>
+    public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand>
     {
         private readonly IMessaging _messaging;
 
-        public UpdateEmployerVacancyDataCommandHandler(IMessaging messaging)
+        public UpdateUserCommandHandler(IMessaging messaging)
         {
             _messaging = messaging;
         }
 
-        public async Task Handle(UpdateEmployerVacancyDataCommand message, CancellationToken cancellationToken)
+        public async Task Handle(UpdateUserCommand message, CancellationToken cancellationToken)
         {
             await _messaging.PublishEvent(new UserSignedInEvent
             {
