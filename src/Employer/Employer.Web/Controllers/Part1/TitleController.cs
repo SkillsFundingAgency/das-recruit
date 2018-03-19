@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
+using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Title;
 using Microsoft.AspNetCore.Mvc;
@@ -44,7 +45,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                 return View(vm);
             }
 
-            var user = User.FindFirstValue(EmployerRecruitClaims.IdamsUserDisplayNameClaimTypeIdentifier);
+            var user = User.GetDisplayName();
             var vacancyId = await _orchestrator.PostTitleEditModelAsync(m, user);
             
             return RedirectToRoute(RouteNames.Employer_Get, new { vacancyId });
