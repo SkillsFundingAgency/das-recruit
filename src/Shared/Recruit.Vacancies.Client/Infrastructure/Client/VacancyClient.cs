@@ -42,7 +42,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return await _repository.GetVacancyAsync(id);
         }
 
-        public async Task<Guid> CreateVacancyAsync(string title, string employerAccountId)
+        public async Task<Guid> CreateVacancyAsync(string title, string employerAccountId, string user)
         {
             var command = new CreateVacancyCommand
             {
@@ -53,6 +53,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                     EmployerAccountId = employerAccountId,
                     Status = VacancyStatus.Draft,
                     CreatedDate = DateTime.UtcNow,
+                    CreatedBy = user,
                     IsDeleted = false
                 }
             };
