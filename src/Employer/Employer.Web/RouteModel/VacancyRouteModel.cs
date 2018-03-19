@@ -1,17 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
-using System.ComponentModel.DataAnnotations;
 
 namespace Esfa.Recruit.Employer.Web.RouteModel
 {
     public class VacancyRouteModel
     {
+        private string _employerAccountId;
+
         [FromRoute]
-        [Required]
-        public Guid VacancyId { get; set; }
-        
+        public string EmployerAccountId
+        {
+            get { return _employerAccountId; }
+            set { _employerAccountId = value.ToUpper(); }
+        }
+
         [FromRoute]
-        [Required]
-        public string EmployerAccountId { get; set; }
+        public Guid VacancyId { get; set; }       
     }
 }
