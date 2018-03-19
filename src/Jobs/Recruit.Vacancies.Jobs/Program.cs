@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using Esfa.Recruit.Vacancies.Jobs.ApprenticeshipProgrammes;
-using Esfa.Recruit.Vacancies.Jobs.EmployerVacancyDataGenerator;
+using Esfa.Recruit.Vacancies.Jobs.EditVacancyInfo;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -118,7 +118,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
                 options.AddDebug();
             });
             services.AddScoped<ApprenticeshipProgrammesUpdater>();
-            services.AddScoped<EmployerVacancyDataGenerator.EmployerVacancyDataGenerator>();
+            services.AddScoped<EditVacancyInfoUpdater>();
 
             services.AddSingleton<IApprenticeshipProgrammeApiClient, ApprenticeshipProgrammeApiClient>();
             services.AddApprentieshipsApi(configuration);
@@ -127,7 +127,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
             // Add Jobs
             // services.AddScoped<GenerateVacancyNumberJob>();
             services.AddScoped<ApprenticeshipProgrammesJob>();
-            services.AddScoped<EmployerVacancyDataGeneratorJob>();
+            services.AddScoped<EditVacancyInfoJob>();
 
             return services;
         }

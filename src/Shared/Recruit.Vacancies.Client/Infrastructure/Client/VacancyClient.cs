@@ -150,7 +150,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _messaging.SendCommandAsync(command);
         }
 
-        public Task<EmployerVacancyData> GetEmployerVacancyDataAsync(string employerAccountId)
+        public Task<EditVacancyInfo> GetEditVacancyInfo(string employerAccountId)
         {
             return _reader.GetEmployerVacancyDataAsync(employerAccountId);
         }
