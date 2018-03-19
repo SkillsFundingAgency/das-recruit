@@ -1,5 +1,6 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Application.Events;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Queue;
@@ -10,7 +11,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Events
 {
     internal sealed class StorageQueueEventQueue : IEventStore
     {
-        private const string QueueName = "user-signed-in-queue";
         private readonly string _connectionString;
 
         public StorageQueueEventQueue(StorageQueueConnectionDetails details)
@@ -32,7 +32,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Events
             var storageAccount = CloudStorageAccount.Parse(_connectionString);
             var client = storageAccount.CreateCloudQueueClient();
 
-            var queue = client.GetQueueReference(QueueName);
+            var queueName = @event.GetType().Name.Replace("Event", "Queue").PascalToKebabCase();
+            var queue = client.GetQueueReference(queueName);
             await queue.CreateIfNotExistsAsync();
 
             var message = new CloudQueueMessage(JsonConvert.SerializeObject(item, Formatting.Indented));
