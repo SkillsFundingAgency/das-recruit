@@ -43,15 +43,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 vm.AddressLine4 = vacancy.Location.AddressLine4;
                 vm.Postcode = vacancy.Location.Postcode;
             }
-            else
-            {
-                var legalEntityAddress = employerData.LegalEntities.First().Address;
-                vm.AddressLine1 = legalEntityAddress.AddressLine1;
-                vm.AddressLine2 = legalEntityAddress.AddressLine2;
-                vm.AddressLine3 = legalEntityAddress.AddressLine3;
-                vm.AddressLine4 = legalEntityAddress.AddressLine4;
-                vm.Postcode = legalEntityAddress.Postcode;
-            }
 
             return vm;
         }
