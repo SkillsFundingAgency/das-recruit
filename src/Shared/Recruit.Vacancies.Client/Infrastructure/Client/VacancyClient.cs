@@ -142,7 +142,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public Task RecordEmployerAccountSignInAsync(string employerAccountId)
         {
-            var command = new UpdateEmployerVacancyDataCommand
+            var command = new UpdateUserCommand
             {
                 EmployerAccountId = employerAccountId
             };
