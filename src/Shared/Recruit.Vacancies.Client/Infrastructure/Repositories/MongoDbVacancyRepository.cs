@@ -5,6 +5,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Microsoft.Extensions.Options;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
@@ -13,6 +14,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
     {
         private const string Database = "recruit";
         private const string Collection = "vacancies";
+
+        private const string EmployerAccountId = "employerAccountId";
+        private const string IsDeleted = "isDeleted";
 
         public MongoDbVacancyRepository(IOptions<MongoDbConnectionDetails> details) 
             : base(Database, Collection, details)
@@ -35,13 +39,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             return result.SingleOrDefault();
         }
 
-        public async Task<IEnumerable<Vacancy>> GetVacanciesByEmployerAccountAsync(string employerAccountId)
+        public async Task<IEnumerable<T>> GetVacanciesByEmployerAccountAsync<T>(string employerAccountId)
         {
-            var filter = Builders<Vacancy>.Filter.Eq(v => v.EmployerAccountId, employerAccountId);
-            filter = filter & Builders<Vacancy>.Filter.Eq(v => v.IsDeleted, false);
+            var filter = Builders<BsonDocument>.Filter.Eq(EmployerAccountId, employerAccountId);
+            filter = filter & Builders<BsonDocument>.Filter.Eq(IsDeleted, false);
 
-            var collection = GetCollection<Vacancy>();
-            var result = await collection.FindAsync(filter);
+            var collection = GetCollection<BsonDocument>();
+            var result = await collection.FindAsync<T>(filter);
+    
             return await result.ToListAsync();
         }
 
