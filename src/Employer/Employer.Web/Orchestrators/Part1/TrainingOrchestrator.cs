@@ -31,6 +31,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var vacancy = vacancyTask.Result;            
             var programmes = programmesTask.Result;
 
+            if (!vacancy.CanEdit)
+            {
+                throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
+            }
+
             var vm = new TrainingViewModel
             {
                 VacancyId = vacancy.Id,

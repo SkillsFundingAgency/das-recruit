@@ -26,6 +26,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         {
             var vacancy = await _client.GetVacancyForEditAsync(vacancyId);
 
+            if (!vacancy.CanEdit)
+            {
+                throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
+            }
+
             var vm = new PreviewViewModel
             {
                 OrganisationName = vacancy.OrganisationName,
