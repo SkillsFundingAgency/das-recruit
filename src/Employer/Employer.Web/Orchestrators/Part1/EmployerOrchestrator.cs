@@ -21,7 +21,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         public async Task<EmployerViewModel> GetEmployerViewModelAsync(VacancyRouteModel vrm)
         {
-            var getEmployerDataTask = _client.GetEmployerVacancyDataAsync(vrm.EmployerAccountId);
+            var getEmployerDataTask = _client.GetEditVacancyInfo(vrm.EmployerAccountId);
             var getVacancyTask = _client.GetVacancyForEditAsync(vrm.VacancyId);
 
             await Task.WhenAll(new Task[] { getEmployerDataTask, getVacancyTask });

@@ -8,6 +8,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.QueryStore
         Task<Dashboard> GetDashboardAsync(string employerAccountId);
 
         Task<ApprenticeshipProgrammes> GetApprenticeshipProgrammesAsync();
-        Task<EmployerVacancyData> GetEmployerVacancyDataAsync(string employerAccountId);
+        Task<EditVacancyInfo> GetEmployerVacancyDataAsync(string employerAccountId);
     }
 }
