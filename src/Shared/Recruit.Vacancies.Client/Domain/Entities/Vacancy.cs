@@ -13,7 +13,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public string EmployerAccountId { get; internal set; }
 
         public DateTime? CreatedDate { get; set; }
-
+        public string CreatedBy { get; internal set; }
         public VacancyStatus Status { get; set; }
 
         public DateTime? SubmittedDate { get; set; }

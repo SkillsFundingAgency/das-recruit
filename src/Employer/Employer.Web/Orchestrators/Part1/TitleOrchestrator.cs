@@ -53,11 +53,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return vm;
         }
 
-        public async Task<Guid> PostTitleEditModelAsync(TitleEditModel vm)
+        public async Task<Guid> PostTitleEditModelAsync(TitleEditModel vm, string user)
         {
             if (!vm.VacancyId.HasValue)
             {
-                var id = await _client.CreateVacancyAsync(vm.Title, vm.EmployerAccountId);
+                var id = await _client.CreateVacancyAsync(vm.Title, vm.EmployerAccountId, user);
 
                 return id;
             }
