@@ -10,6 +10,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Repositories
         Task CreateAsync(Vacancy vacancy);
         Task UpdateAsync(Vacancy vacancy);
         Task<Vacancy> GetVacancyAsync(Guid id);
-        Task<IEnumerable<Vacancy>> GetVacanciesByEmployerAccountAsync(string employerAccountId);
+        Task<IEnumerable<T>> GetVacanciesByEmployerAccountAsync<T>(string employerAccountId);
     }
 }
