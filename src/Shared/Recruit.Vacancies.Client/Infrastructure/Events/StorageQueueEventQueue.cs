@@ -10,7 +10,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Events
 {
     internal sealed class StorageQueueEventQueue : IEventStore
     {
-        private const string QueueName = "events";
+        private const string QueueName = "user-signed-in-queue";
         private readonly string _connectionString;
 
         public StorageQueueEventQueue(StorageQueueConnectionDetails details)

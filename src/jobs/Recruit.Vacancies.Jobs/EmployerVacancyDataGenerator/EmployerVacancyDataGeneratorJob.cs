@@ -21,7 +21,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.EmployerVacancyDataGenerator
             _job = job;
         }
 
-        public async Task GenerateEmployerVacancyData([QueueTrigger("events", Connection = "EventQueueConnectionString")] string message, TextWriter log)
+        public async Task GenerateEmployerVacancyData([QueueTrigger("user-signed-in-queue", Connection = "EventQueueConnectionString")] string message, TextWriter log)
         {
             try
             {
