@@ -51,7 +51,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 
         public Task<ApprenticeshipProgrammes> GetApprenticeshipProgrammesAsync()
         {
-            var key = QueryViewType.ApprenticeshipProgrammes.GetIdValue(QueryViewType.ApprenticeshipProgrammes.GetIdValue());
+            var key = QueryViewType.ApprenticeshipProgrammes.GetIdValue();
 
             return _queryStore.GetAsync<ApprenticeshipProgrammes>(key);
         }
