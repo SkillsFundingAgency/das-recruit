@@ -24,9 +24,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Enums
         Degree = 6,
 
         [Display(Name = "Masters")]
-        Masters = 7,
-
-        [Display(Name = "Traineeship")]
-        Traineeship = 8
+        Masters = 7
     }
 }
