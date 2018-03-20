@@ -7,5 +7,9 @@
         public string AddressLine3 { get; set; }
         public string AddressLine4 { get; set; }
         public string Postcode { get; set; }
+        public string Latitude { get; set; }
+        public string Longitude { get; set; }
+
+        public bool HasGeocode => !string.IsNullOrWhiteSpace(Latitude) && !string.IsNullOrWhiteSpace(Longitude);
     }
 }

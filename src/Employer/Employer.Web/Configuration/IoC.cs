@@ -25,14 +25,15 @@ namespace Esfa.Recruit.Employer.Web.Configuration
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>(); // Used by NLog to log out traceidentifier value.
             
-            RegisterServiceDeps(services);
+            RegisterServiceDeps(services, configuration);
 
             RegisterOrchestratorDeps(services);
         }
 
-        private static void RegisterServiceDeps(IServiceCollection services)
+        private static void RegisterServiceDeps(IServiceCollection services, IConfiguration configuration)
         {
             services.AddTransient<ITrainingProviderService, TrainingProviderService>();
+            services.AddTransient<IGeocodeImageService>(_ => new GoogleMapsGeocodeImageService(configuration.GetValue<string>("GoogleMapsPrivateKey")));
         }
 
         private static void RegisterProviderApiClientDep(IServiceCollection services, IConfiguration configuration)

@@ -49,7 +49,10 @@
                     </ul>
                 </div>
                 <div class="column-one-third map-container hide-nojs toggle-content--mob">
-                    <img id="static-map" class="static-map js-hidden" src="https://maps.googleapis.com/maps/api/staticmap?markers=@Model.Latitude,@Model.Longitude&amp;size=190x125&amp;zoom=12&amp;client=gme-skillsfundingagency&amp;signature=AU06WjxyDoHvX8mScXchwDTvFFg=">
+                    @if (!string.IsNullOrWhiteSpace(Model.MapUrl))
+                    {
+                    <img id="static-map" class="static-map" src="@Model.MapUrl">
+                    }
                 </div>
             </div>
 
