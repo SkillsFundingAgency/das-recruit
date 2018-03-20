@@ -42,11 +42,15 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 ClosingDate = vacancy.ClosingDate?.ToString(dateFormat),
                 StartDate = vacancy.StartDate?.ToString(dateFormat),
                 LevelName = vacancy.Programme?.LevelName,
-                Wage = vacancy.Wage?.ToText(),
-                MapUrl = vacancy.Location.HasGeocode ?
-                    _mapService.GetMapImageUrl(vacancy.Location.Latitude, vacancy.Location.Longitude) : 
-                    _mapService.GetMapImageUrl(vacancy.Location?.Postcode)
+                Wage = vacancy.Wage?.ToText()
             };
+
+            if (vacancy.Location != null)
+            {
+                vm.MapUrl = vacancy.Location.HasGeocode
+                    ? _mapService.GetMapImageUrl(vacancy.Location.Latitude, vacancy.Location.Longitude)
+                    : _mapService.GetMapImageUrl(vacancy.Location?.Postcode);
+            }
             
             return vm;
         }
