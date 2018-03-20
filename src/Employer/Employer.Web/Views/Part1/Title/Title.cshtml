@@ -1,5 +1,4 @@
-﻿@using Esfa.Recruit.Employer.Web.ViewModels.Part1.Title
-@model Esfa.Recruit.Employer.Web.ViewModels.Part1.Title.TitleViewModel
+﻿@model Esfa.Recruit.Employer.Web.ViewModels.Part1.Title.TitleViewModel
 
 <div class="grid-row">
     <div class="column-full">
@@ -13,7 +12,7 @@
         </div>
 
         <div id="section_title">
-            <form asp-route="@(Model.VacancyId.HasValue ? RouteNames.Title_Post : RouteNames.CreateVacancy_Post)">
+            <form asp-route="@(Model.VacancyId.HasValue ? RouteNames.Title_Post : RouteNames.CreateVacancy_Post)" novalidate>
                 <div class="form-group">
 
                     <label asp-for="Title" class="form-label-bold">
@@ -25,7 +24,6 @@
                 </div>
                 <button type="submit" class="button">Save and Continue</button>
                 <a asp-route="@RouteNames.Dashboard_Index_Get" class="button-link">Cancel</a>
-
             </form>
 
             <hr>
