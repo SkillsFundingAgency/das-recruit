@@ -1,5 +1,9 @@
 ﻿@model Esfa.Recruit.Employer.Web.ViewModels.Part1.Training.TrainingViewModel
 
+@{ 
+    var minYear = DateTime.UtcNow.Year;
+}
+
 <div class="grid-row">
     <div class="column-full">
         
@@ -10,8 +14,8 @@
                 Please fix these errors
             </h2>
         </div>
-        
-        <form asp-route="@RouteNames.Training_Post">
+
+        <form asp-route="@RouteNames.Training_Post" novalidate>
 
             <div class="form-group">
                 <fieldset>
@@ -22,15 +26,15 @@
                     <div class="form-date">
                         <div class="form-group form-group-day">
                             <label asp-for="ClosingDay" class="form-label">Day</label>
-                            <input asp-for="ClosingDay" class="form-control" type="number">
+                            <input asp-for="ClosingDay" class="form-control" type="number" min="1" max="31">
                         </div>
                         <div class="form-group form-group-month">
                             <label asp-for="ClosingMonth" class="form-label">Month</label>
-                            <input asp-for="ClosingMonth" class="form-control" type="number">
+                            <input asp-for="ClosingMonth" class="form-control" type="number" min="1" max="12">
                         </div>
                         <div class="form-group form-group-year">
                             <label asp-for="ClosingYear" class="form-label">Year</label>
-                            <input asp-for="ClosingYear" class="form-control" type="number">
+                            <input asp-for="ClosingYear" class="form-control" type="number" min="@minYear">
                         </div>
                     </div>
                 </fieldset>
@@ -45,21 +49,21 @@
                     <div class="form-date">
                         <div class="form-group form-group-day">
                             <label asp-for="StartDay" class="form-label">Day</label>
-                            <input asp-for="StartDay" class="form-control" type="number">
+                            <input asp-for="StartDay" class="form-control" type="number" min="1" max="31">
                         </div>
                         <div class="form-group form-group-month">
                             <label asp-for="StartMonth" class="form-label">Month</label>
-                            <input asp-for="StartMonth" class="form-control" type="number">
+                            <input asp-for="StartMonth" class="form-control" type="number" min="1" max="12">
                         </div>
                         <div class="form-group form-group-year">
                             <label asp-for="StartYear" class="form-label">Year</label>
-                            <input asp-for="StartYear" class="form-control" type="number">
+                            <input asp-for="StartYear" class="form-control" type="number" min="@minYear">
                         </div>
                     </div>
                 </fieldset>
             </div>
 
-            <div class="form-group ">
+            <div class="form-group">
                 <label asp-for="SelectedProgrammeId" class="form-label-bold">Search for apprenticeship training (standard or framework)</label>
 
                 <span asp-validation-for="SelectedProgrammeId" class="error-message"></span>
@@ -69,7 +73,7 @@
                     
                     @foreach (var programme in Model.Programmes)
                     {
-                        <option value="@programme.Id">@programme.Name</option>
+                    <option value="@programme.Id">@programme.Name</option>
                     }
 
                 </select>
@@ -78,7 +82,7 @@
             <button type="submit" class="button">Save and continue</button>
             <a asp-route="@RouteNames.Dashboard_Index_Get" class="button-link">Cancel</a>
         </form>
-        
+
         <hr>
 
 </div>

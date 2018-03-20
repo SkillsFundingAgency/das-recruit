@@ -12,13 +12,13 @@
             </h2>
         </div>
         
-        <form asp-route="RouteNames.Wages_Get">
+        <form asp-route="@RouteNames.Wage_Post" novalidate>
 
             <div class="form-group">
                 <fieldset>
                     <label asp-for="Duration" class="form-label-bold">How long is the apprenticeship expected to last?</label>
                     <span asp-validation-for="Duration" class="error-message"></span>
-                    <input asp-for="Duration" class="form-control form-control-1-8" type="number">
+                    <input asp-for="Duration" class="form-control form-control-1-8" type="number" min="1">
                     <select asp-for="DurationUnit" class="form-control" style="width: auto">
                         <option value="@DurationUnit.Month">Month(s)</option>
                         <option value="@DurationUnit.Year">Year(s)</option>
@@ -36,7 +36,7 @@
             <div class="form-group">
                 <label asp-for="WeeklyHours" class="form-label-bold">How many hours will the apprentice work each week, including training?</label>
                 <span asp-validation-for="WeeklyHours" class="error-message"></span>
-                <input asp-for="WeeklyHours" class="form-control form-control-1-8" type="number" step="0.01">
+                <input asp-for="WeeklyHours" class="form-control form-control-1-8" type="number" step=".25" min="16" max="48">
             </div>
             <div class="form-group">
                 <fieldset>
