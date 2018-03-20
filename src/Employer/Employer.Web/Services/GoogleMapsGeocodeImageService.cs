@@ -25,7 +25,7 @@ namespace Esfa.Recruit.Employer.Web.Services
                 return null;
             }
             
-            var staticMapsUrl = $"https://maps.googleapis.com/maps/api/staticmap?center={WebUtility.UrlEncode(postcode)}&size=190x125&zoom=12";
+            var staticMapsUrl = $"https://maps.googleapis.com/maps/api/staticmap?markers={WebUtility.UrlEncode(postcode)}&size=190x125&zoom=12";
             var url = SignUrl(staticMapsUrl);
             return url;
         }
@@ -44,13 +44,12 @@ namespace Esfa.Recruit.Employer.Web.Services
 
         private string SignUrl(string url)
         {
-            var encoding = new ASCIIEncoding();
-
-            // converting key to bytes will throw an exception, need to replace '-' and '_' characters first.
             var privateKeyBytes = Convert.FromBase64String(_privateKey);
 
             url += "&client=gme-skillsfundingagency";
             var uri = new Uri(url);
+
+            var encoding = new ASCIIEncoding();
             var encodedPathAndQueryBytes = encoding.GetBytes(uri.LocalPath + uri.Query);
 
             // compute the hash
