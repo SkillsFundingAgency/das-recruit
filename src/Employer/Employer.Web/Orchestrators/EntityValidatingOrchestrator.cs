@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Application.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
+using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
@@ -9,9 +12,12 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
     {
         private readonly EntityToViewModelPropertyMappings<TEntity, TViewModel> _mappings;
         private readonly IDictionary<string, string> _mappingDictionary;
+        private readonly ILogger _logger;
 
-        public EntityValidatingOrchestrator()
+        public EntityValidatingOrchestrator(ILogger logger)
         {
+            _logger = logger;
+
             _mappings = DefineMappings();
             
             _mappingDictionary = BuildMappingDictionary();
@@ -21,7 +27,45 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         protected abstract EntityToViewModelPropertyMappings<TEntity, TViewModel> DefineMappings();
 
-        protected void MapValidationPropertiesToViewModel(EntityValidationResult validationResult)
+        protected async Task<OrchestratorResponse> BuildOrchestratorResponse(Func<Task> func)
+        {
+            try
+            {
+                await func.Invoke();
+            }
+            catch (EntityValidationException ex)
+            {
+                _logger.LogDebug("Vacancy update failed validation: {ValidationErrors}", ex.ValidationResult);
+
+                MapValidationPropertiesToViewModel(ex.ValidationResult);
+                
+                return new OrchestratorResponse(ex.ValidationResult);
+            }
+
+            return new OrchestratorResponse(true);
+        }
+
+        protected async Task<OrchestratorResponse<T>> BuildOrchestratorResponse<T>(Func<Task<T>> func)
+        {
+            T data;
+
+            try
+            {
+                data = await func.Invoke();
+            }
+            catch (EntityValidationException ex)
+            {
+                _logger.LogDebug("Vacancy update failed validation: {ValidationErrors}", ex.ValidationResult);
+
+                MapValidationPropertiesToViewModel(ex.ValidationResult);
+                
+                return new OrchestratorResponse<T>(ex.ValidationResult);
+            }
+
+            return new OrchestratorResponse<T>(data);
+        }
+
+        private void MapValidationPropertiesToViewModel(EntityValidationResult validationResult)
         {
             foreach(var error in validationResult.Errors)
             {

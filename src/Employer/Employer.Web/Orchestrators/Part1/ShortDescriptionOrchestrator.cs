@@ -63,7 +63,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             
             vacancy.ShortDescription = m.ShortDescription;
             
-            await _client.UpdateVacancyAsync(vacancy, VacancyValidations.NumberOfPostions & VacancyValidations.ShortDescription, false);
+            await _client.UpdateVacancyAsync(vacancy, VacancyValidations.NumberOfPostions | VacancyValidations.ShortDescription, false);
         }
     }
 }

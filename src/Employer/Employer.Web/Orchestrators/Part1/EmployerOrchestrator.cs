@@ -18,7 +18,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         private readonly IVacancyClient _client;
         private readonly ILogger<EmployerOrchestrator> _logger;
 
-        public EmployerOrchestrator(IVacancyClient client, ILogger<EmployerOrchestrator> logger)
+        public EmployerOrchestrator(IVacancyClient client, ILogger<EmployerOrchestrator> logger) : base(logger)
         {
             _logger = logger;
             _client = client;
@@ -91,20 +91,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 Postcode = m.Postcode.AsPostcode()
             };
 
-            try
-            {
-                await _client.UpdateVacancyAsync(vacancy, VacancyValidations.OrganisationId & VacancyValidations.OrganisationAddress, false);
-            }
-            catch (EntityValidationException ex)
-            {
-                _logger.LogDebug("Vacancy update failed validation: {ValidationErrors}", ex.ValidationResult);
 
-                MapValidationPropertiesToViewModel(ex.ValidationResult);
-                
-                return new OrchestratorResponse(ex.ValidationResult);
-            }
-
-            return new OrchestratorResponse(true);
+            return await BuildOrchestratorResponse(() => _client.UpdateVacancyAsync(vacancy, VacancyValidations.OrganisationId | VacancyValidations.OrganisationAddress, false));
         }
 
         protected override EntityToViewModelPropertyMappings<Vacancy, EmployerViewModel> DefineMappings()

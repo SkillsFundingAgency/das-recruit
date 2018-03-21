@@ -16,7 +16,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         private readonly IVacancyClient _client;
         private readonly ILogger<TitleOrchestrator> _logger;
 
-        public TitleOrchestrator(IVacancyClient client, ILogger<TitleOrchestrator> logger)
+        public TitleOrchestrator(IVacancyClient client, ILogger<TitleOrchestrator> logger) : base(logger)
         {
             _logger = logger;
             _client = client;
@@ -83,18 +83,12 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             vacancy.Title = vm.Title;
 
-            try
+
+            return await BuildOrchestratorResponse(async () => 
             {
                 await _client.UpdateVacancyAsync(vacancy, VacancyValidations.Title);
-            }
-            catch (EntityValidationException ex)
-            {
-                _logger.LogDebug("Vacancy update failed validation: {ValidationErrors}", ex.ValidationResult);
-
-                return new OrchestratorResponse<Guid>(ex.ValidationResult);
-            }
-
-            return new OrchestratorResponse<Guid>(vacancy.Id);
+                return vacancy.Id;
+            });
         }
 
         protected override EntityToViewModelPropertyMappings<Vacancy, TitleViewModel> DefineMappings()
