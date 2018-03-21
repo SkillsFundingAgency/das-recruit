@@ -176,6 +176,11 @@
               "name": "MongoDb",
               "connectionString": "[concat('mongodb://', variables('CosmosDbName'), ':', listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', variables('CosmosDbName')), '2015-11-06').primaryMasterKey,'@', variables('CosmosDbName'), '.documents.azure.com:10255/?ssl=true&replicaSet=globaldb')]",
               "type": "Custom"
+            },
+            {
+              "name": "Storage",
+              "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('StorageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]",
+              "type": "Custom"
             }
           ],
           "alwaysOn": true
@@ -204,7 +209,8 @@
             },
             "file": {
               "enabled": true
-            }
+            },
+            ""
           },
           "keySource": "Microsoft.Storage"
         }
@@ -238,6 +244,11 @@
             {
               "name": "MongoDb",
               "connectionString": "[concat('mongodb://', variables('CosmosDbName'), ':', listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', variables('CosmosDbName')), '2015-11-06').primaryMasterKey,'@', variables('CosmosDbName'), '.documents.azure.com:10255/?ssl=true&replicaSet=globaldb')]",
+              "type": "Custom"
+            },
+            {
+              "name": "Storage",
+              "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('StorageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]",
               "type": "Custom"
             },
             {
