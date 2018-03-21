@@ -25,6 +25,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         {
             var vacancy = await _client.GetVacancyForEditAsync(vacancyId);
 
+            if (!vacancy.CanEdit)
+            {
+                throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
+            }
+
             var vm = new WageViewModel
             {
                 Duration = vacancy.Wage?.Duration?.ToString(),
@@ -32,7 +37,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 WorkingWeekDescription = vacancy.Wage?.WorkingWeekDescription,
                 WeeklyHours = $"{vacancy.Wage?.WeeklyHours:0.##}",
                 WageType = vacancy.Wage?.WageType ?? WageType.FixedWage,
-                FixedWageYearlyAmount = $"{vacancy.Wage?.FixedWageYearlyAmount:N2}".Replace(".00", ""),
+                FixedWageYearlyAmount = vacancy.Wage?.FixedWageYearlyAmount?.AsMoney(),
                 WageAdditionalInformation = vacancy.Wage?.WageAdditionalInformation
             };
             

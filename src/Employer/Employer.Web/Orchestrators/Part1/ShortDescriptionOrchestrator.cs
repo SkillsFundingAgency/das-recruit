@@ -1,7 +1,6 @@
 using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.ShortDescription;
-using Esfa.Recruit.Employer.Web.ViewModels.Part1.Title;
 using Esfa.Recruit.Vacancies.Client.Domain;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -20,6 +19,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         public async Task<ShortDescriptionViewModel> GetShortDescriptionViewModelAsync(Guid vacancyId)
         {
             var vacancy = await _client.GetVacancyForEditAsync(vacancyId);
+
+            if (!vacancy.CanEdit)
+            {
+                throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
+            }
 
             var vm = new ShortDescriptionViewModel
             {

@@ -1,4 +1,6 @@
 using System.Linq;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Enums;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
@@ -8,7 +10,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
     using Esfa.Recruit.Vacancies.Client.Domain;
     using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
     using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-    using System.Globalization;
     using Esfa.Recruit.Employer.Web.Extensions;
 
     public class TrainingOrchestrator
@@ -30,10 +31,15 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var vacancy = vacancyTask.Result;            
             var programmes = programmesTask.Result;
 
+            if (!vacancy.CanEdit)
+            {
+                throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
+            }
+
             var vm = new TrainingViewModel
             {
                 VacancyId = vacancy.Id,
-                SelectedProgrammeId = vacancy.ProgrammeId,
+                SelectedProgrammeId = vacancy.Programme?.Id,
                 Programmes = programmes.ToViewModel()
             };
 
@@ -86,9 +92,15 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
             vacancy.ClosingDate = m.ClosingDate.AsDateTimeUk();
             vacancy.StartDate = m.StartDate.AsDateTimeUk();
-            vacancy.ProgrammeId = programme.Id;
-            vacancy.ProgrammeTitle = programme.Title;
-            vacancy.TrainingType = programme.ApprenticeshipType;
+            
+            vacancy.Programme = new Programme
+            {
+                Id = programme.Id,
+                Title = programme.Title,
+                TrainingType = programme.ApprenticeshipType,
+                Level = programme.Level,
+                LevelName = ((ProgrammeLevel)programme.Level).GetDisplayName()
+            };
             
             await _client.UpdateVacancyAsync(vacancy, false);
         }

@@ -3,7 +3,7 @@
     using Esfa.Recruit.Employer.Web.Extensions;    
     using System.ComponentModel.DataAnnotations;
 
-    public class TypeOfMoneyGBPAttribute : ValidationAttribute
+    public class TypeOfMoneyAttribute : ValidationAttribute
     {
         public override bool IsValid(object value)
         {
