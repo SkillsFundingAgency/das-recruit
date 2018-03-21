@@ -48,7 +48,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             if (vacancy.Location != null)
             {
                 vm.MapUrl = vacancy.Location.HasGeocode
-                    ? _mapService.GetMapImageUrl(vacancy.Location.Latitude, vacancy.Location.Longitude)
+                    ? _mapService.GetMapImageUrl(vacancy.Location.Latitude.ToString(), vacancy.Location.Longitude.ToString())
                     : _mapService.GetMapImageUrl(vacancy.Location?.Postcode);
             }
             
