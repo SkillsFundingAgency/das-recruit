@@ -10,17 +10,17 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             ValidateDescription();
 
-            ValidateOrganisation();
+            ValidateOrganisationAddress();
         }
 
-        private void ValidateOrganisation()
+        private void ValidateOrganisationAddress()
         {
             When(x => x.Location != null, () => 
             {
                 RuleFor(x => x.Location.AddressLine1)
                     .NotEmpty().WithMessage("{PropertyName} is a required field").WithErrorCode("123")
                     .MaximumLength(5)
-                    .RunCondition(VacancyValidations.Organisation);
+                    .RunCondition(VacancyValidations.OrganisationAddress);
             });
         }
 

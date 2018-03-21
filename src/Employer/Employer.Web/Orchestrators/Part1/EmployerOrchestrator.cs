@@ -93,7 +93,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
             try
             {
-                await _client.UpdateVacancyAsync(vacancy, VacancyValidations.Organisation, false);
+                await _client.UpdateVacancyAsync(vacancy, VacancyValidations.OrganisationId & VacancyValidations.OrganisationAddress, false);
             }
             catch (EntityValidationException ex)
             {

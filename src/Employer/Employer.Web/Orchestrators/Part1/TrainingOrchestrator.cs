@@ -103,7 +103,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 LevelName = ((ProgrammeLevel)programme.Level).GetDisplayName()
             };
             
-            await _client.UpdateVacancyAsync(vacancy, VacancyValidations.Training, false);
+            await _client.UpdateVacancyAsync(vacancy, VacancyValidations.ClosingDate & VacancyValidations.StartDate & VacancyValidations.TrainingProgramme, false);
         }
     }
 }
