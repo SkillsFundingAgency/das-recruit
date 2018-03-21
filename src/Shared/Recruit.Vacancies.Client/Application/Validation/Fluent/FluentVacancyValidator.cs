@@ -10,26 +10,36 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             ValidateDescription();
 
-            ValidateOrganisationAddress();
-        }
-
-        private void ValidateOrganisationAddress()
-        {
-            When(x => x.Location != null, () => 
-            {
-                RuleFor(x => x.Location.AddressLine1)
-                    .NotEmpty().WithMessage("{PropertyName} is a required field").WithErrorCode("123")
-                    .MaximumLength(5)
-                    .RunCondition(VacancyValidations.OrganisationAddress);
-            });
+            ValidateOrganisation();
         }
 
         private void ValidateDescription()
         {
             RuleFor(x => x.Title)
-                .NotEmpty().WithMessage("{PropertyName} is a required field").WithErrorCode("123")
+                .NotEmpty()
+                    .WithMessage("Enter the title of the vacancy")
+                    .WithErrorCode("1")
                 .MaximumLength(100)
+                    .WithMessage("The title must not be more than {MaxLength}")
+                    .WithErrorCode("2")
+                .ValidFreeTextCharacters()
+                    .WithMessage("The title contains some invalid characters")
+                    .WithErrorCode("3")
                 .RunCondition(VacancyValidations.Title);
+        }
+
+        private void ValidateOrganisation()
+        {
+            RuleFor(x => x.OrganisationId)
+                .NotEmpty()
+                    .WithMessage("You must select one organisation")
+                    .WithErrorCode("4")
+                .RunCondition(VacancyValidations.OrganisationId);
+
+
+            RuleFor(x => x.Location)
+                .SetValidator(new AddressValidator())
+                .RunCondition(VacancyValidations.OrganisationAddress);
         }
     }
 }

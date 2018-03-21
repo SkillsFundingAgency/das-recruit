@@ -1,4 +1,5 @@
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
+using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators;
 using FluentValidation;
 using FluentValidation.Internal;
 
@@ -17,5 +18,9 @@ namespace FluentValidation
 
             return (validationsToRun & validationToCheck) > 0;
         }
+
+        public static IRuleBuilderOptions<T, string> ValidFreeTextCharacters<T>(this IRuleBuilder<T, string> ruleBuilder) {
+			return ruleBuilder.SetValidator(new FreeTextValidator());
+		}
     }
 }
