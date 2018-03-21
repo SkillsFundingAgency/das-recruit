@@ -29,6 +29,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var employerData = getEmployerDataTask.Result;
             var vacancy = getVacancyTask.Result;
 
+            if (!vacancy.CanEdit)
+            {
+                throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
+            }
+
             var vm = new EmployerViewModel
             {
                 Organisations = employerData.LegalEntities.Select(MapLegalEntitiesToOrgs).ToList(),
