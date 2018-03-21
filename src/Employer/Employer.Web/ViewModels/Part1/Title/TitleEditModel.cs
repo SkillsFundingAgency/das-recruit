@@ -18,7 +18,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Title
 
         [Required(ErrorMessage = ErrMsg.Required.Title)]
         [FreeText(ErrorMessage = ErrMsg.FreeText.Title)]
-        [StringLength(100, ErrorMessage = ErrMsg.StringLength.Title)]
+        // [StringLength(100, ErrorMessage = ErrMsg.StringLength.Title)]
         public string Title { get; set; }
     }
 }

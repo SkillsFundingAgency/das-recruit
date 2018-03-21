@@ -22,5 +22,10 @@ namespace FluentValidation
         public static IRuleBuilderOptions<T, string> ValidFreeTextCharacters<T>(this IRuleBuilder<T, string> ruleBuilder) {
 			return ruleBuilder.SetValidator(new FreeTextValidator());
 		}
+
+        public static IRuleBuilderOptions<T, string> PostCode<T>(this IRuleBuilder<T, string> ruleBuilder)
+        {
+            return ruleBuilder.SetValidator(new PostCodeValidator());
+        }
     }
 }

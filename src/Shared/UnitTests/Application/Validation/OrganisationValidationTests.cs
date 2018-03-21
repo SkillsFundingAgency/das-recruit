@@ -43,7 +43,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
                 Location = new Address
                 {
                     AddressLine1 = addressValue,
-                    Postcode = "AB12 34Z"   
+                    Postcode = "AB12 3DZ"   
                 }
             };
 
@@ -68,7 +68,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
                 Location = new Address
                 {
                     AddressLine1 = testValue,
-                    Postcode = "AB12 34Z"
+                    Postcode = "AB12 3DZ"
                 }
             };
 
@@ -91,7 +91,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
                 Location = new Address
                 {
                     AddressLine1 = new string('a', 101),
-                    Postcode = "AB12 34Z"
+                    Postcode = "AB12 3DZ"
                 }
             };
 
@@ -117,7 +117,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
                 {
                     AddressLine1 = "2 New Street",
                     AddressLine2 = testValue,
-                    Postcode = "AB12 34Z"
+                    Postcode = "AB12 3DZ"
                 }
             };
 
@@ -141,7 +141,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
                 {
                     AddressLine1 = "2 New Street",
                     AddressLine2 = new String('a', 101),
-                    Postcode = "AB12 34Z"
+                    Postcode = "AB12 3DZ"
                 }
             };
 
@@ -167,7 +167,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
                 {
                     AddressLine1 = "2 New Street",
                     AddressLine3 = testValue,
-                    Postcode = "AB12 34Z"
+                    Postcode = "AB12 3DZ"
                 }
             };
 
@@ -191,7 +191,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
                 {
                     AddressLine1 = "2 New Street",
                     AddressLine3 = new string('a', 101),
-                    Postcode = "AB12 34Z"
+                    Postcode = "AB12 3DZ"
                 }
             };
 
@@ -217,7 +217,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
                 {
                     AddressLine1 = "2 New Street",
                     AddressLine4 = testValue,
-                    Postcode = "AB12 34Z"
+                    Postcode = "AB12 3DZ"
                 }
             };
 
@@ -241,7 +241,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
                 {
                     AddressLine1 = "2 New Street",
                     AddressLine4 = new string('a', 101),
-                    Postcode = "AB12 34Z"
+                    Postcode = "AB12 3DZ"
                 }
             };
 
@@ -277,6 +277,32 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
             ex.Which.ValidationResult.Errors.Count.Should().Be(1);
             ex.Which.ValidationResult.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Location)}.{nameof(vacancy.Location.Postcode)}");
             ex.Which.ValidationResult.Errors[0].ErrorCode.Should().Be("8");
+        }
+
+        [Theory]
+        [InlineData("12345")]
+        [InlineData("AAAAAA")]
+        [InlineData("AS123 1JJ")]
+        public void OrganisationPostCodeMustBeValidFormat(string postCodeValue)
+        {
+            var validator = new VacancyValidator(new FluentVacancyValidator());
+
+            var vacancy = new Vacancy
+            {
+                Location = new Address
+                {
+                    AddressLine1 = "2 New Street",
+                    Postcode = postCodeValue
+                }
+            };
+
+            Action act = () => validator.ValidateAndThrow(vacancy, VacancyValidations.OrganisationAddress);
+
+            var ex = act.Should().Throw<EntityValidationException>();
+            ex.Which.ValidationResult.HasErrors.Should().BeTrue();
+            ex.Which.ValidationResult.Errors.Count.Should().Be(1);
+            ex.Which.ValidationResult.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Location)}.{nameof(vacancy.Location.Postcode)}");
+            ex.Which.ValidationResult.Errors[0].ErrorCode.Should().Be("9");
         }
     }
 }

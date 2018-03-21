@@ -41,11 +41,15 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .MaximumLength(100)
                     .WithMessage("The address must not be more than {MaxLength} characters")
                     .WithErrorCode("7");
-            
+
             RuleFor(x => x.Postcode)
                 .NotEmpty()
                     .WithMessage("Enter a postcode")
-                    .WithErrorCode("8");
+                    .WithErrorCode("8")
+                .PostCode()
+                    .When(x => !string.IsNullOrEmpty(x.Postcode), ApplyConditionTo.CurrentValidator)
+                    .WithMessage("'{PropertyName}' is not a valid format")
+                    .WithErrorCode("9");
 		}
 	}
 }
