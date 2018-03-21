@@ -37,7 +37,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Wage
 
         public WageType WageType { get; set; }
 
-        [TypeOfMoneyGBP(ErrorMessage = ErrMsg.TypeOfMoneyGBP.FixedWageYearlyAmount)]
+        [TypeOfMoney(ErrorMessage = ErrMsg.TypeOfMoney.FixedWageYearlyAmount)]
         public string FixedWageYearlyAmount { get; set; }
 
         [StringLength(240, ErrorMessage = ErrMsg.StringLength.WageAdditionalInformation)]

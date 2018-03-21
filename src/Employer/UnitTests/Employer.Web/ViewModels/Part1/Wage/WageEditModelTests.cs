@@ -27,9 +27,9 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.Part1.Wage
                 new object[] { nameof(WageEditModel.WeeklyHours), "aa", ErrMsg.TypeOfDecimal.WeeklyHours},
                 new object[] { nameof(WageEditModel.WeeklyHours), "27.234", ErrMsg.TypeOfDecimal.WeeklyHours},
 
-                new object[] { nameof(WageEditModel.FixedWageYearlyAmount), "aa", ErrMsg.TypeOfMoneyGBP.FixedWageYearlyAmount},
-                new object[] { nameof(WageEditModel.FixedWageYearlyAmount), "$15,000.01", ErrMsg.TypeOfMoneyGBP.FixedWageYearlyAmount},
-                new object[] { nameof(WageEditModel.FixedWageYearlyAmount), "15,000.0135", ErrMsg.TypeOfMoneyGBP.FixedWageYearlyAmount},
+                new object[] { nameof(WageEditModel.FixedWageYearlyAmount), "aa", ErrMsg.TypeOfMoney.FixedWageYearlyAmount},
+                new object[] { nameof(WageEditModel.FixedWageYearlyAmount), "$15,000.01", ErrMsg.TypeOfMoney.FixedWageYearlyAmount},
+                new object[] { nameof(WageEditModel.FixedWageYearlyAmount), "15,000.0135", ErrMsg.TypeOfMoney.FixedWageYearlyAmount},
 
                 new object[] { nameof(WageEditModel.WageAdditionalInformation), new string('a', 241), string.Format(ErrMsg.StringLength.WageAdditionalInformation, "WageAdditionalInformation", 240)},
                 new object[] { nameof(WageEditModel.WageAdditionalInformation), "<", ErrMsg.FreeText.WageAdditionalInformation},
