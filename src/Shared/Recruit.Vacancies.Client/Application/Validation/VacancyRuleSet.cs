@@ -20,4 +20,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation
         WageAdditionalInformation = 0x10000,
         All = ~None
     }
+
+
+    public struct ValidationRuleSet
+    {
+        
+    }
 }

@@ -16,10 +16,8 @@
         [FromRoute]
         public string EmployerAccountId { get; set; }
 
-        [Required(ErrorMessage = ErrMsg.Required.SelectedOrganisationId)]
         public string SelectedOrganisationId { get; set; }
 
-        [Required(ErrorMessage = ErrMsg.Required.AddressLine1)]
         public string AddressLine1 { get; set; }
 
         public string AddressLine2 { get; set; }
@@ -28,7 +26,6 @@
 
         public string AddressLine4 { get; set; }
 
-        [Required(ErrorMessage = ErrMsg.Required.Postcode)]
         public string Postcode { get; set; }
     }
 }

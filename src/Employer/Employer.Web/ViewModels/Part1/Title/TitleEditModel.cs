@@ -16,7 +16,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Title
         [ValidGuid]
         public Guid? VacancyId { get; set; }
 
-        [Required(ErrorMessage = ErrMsg.Required.Title)]
         public string Title { get; set; }
     }
 }

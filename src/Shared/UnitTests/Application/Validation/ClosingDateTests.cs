@@ -11,6 +11,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
 {
     public class ClosingDateTests
     {
+        private IEntityValidator<Vacancy, VacancyRuleSet> _validator;
+
+        public ClosingDateTests()
+        {
+            _validator = new EntityValidator<Vacancy, VacancyRuleSet>(new FluentVacancyValidator());
+        }
+
         public static IEnumerable<object[]> InvalidClosingDates =>
             new List<object[]>
             {
@@ -22,14 +29,12 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
         [Fact]
         public void ClosingDateMustHaveAValue()
         {
-            var validator = new VacancyValidator(new FluentVacancyValidator());
-
             var vacancy = new Vacancy 
             {
                 ClosingDate = null
             };
             
-            Action act = () => validator.ValidateAndThrow(vacancy, VacancyRuleSet.ClosingDate);
+            Action act = () => _validator.ValidateAndThrow(vacancy, VacancyRuleSet.ClosingDate);
 
             var ex = act.Should().Throw<EntityValidationException>();
             ex.Which.ValidationResult.HasErrors.Should().BeTrue();
@@ -43,14 +48,12 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
         [MemberData(nameof(InvalidClosingDates))]
         public void ClosingDateMustBeGreaterThanToday(DateTime closingDateValue)
         {
-            var validator = new VacancyValidator(new FluentVacancyValidator());
-
             var vacancy = new Vacancy
             {
                 ClosingDate = closingDateValue
             };
 
-            Action act = () => validator.ValidateAndThrow(vacancy, VacancyRuleSet.ClosingDate);
+            Action act = () => _validator.ValidateAndThrow(vacancy, VacancyRuleSet.ClosingDate);
 
             var ex = act.Should().Throw<EntityValidationException>();
             ex.Which.ValidationResult.HasErrors.Should().BeTrue();

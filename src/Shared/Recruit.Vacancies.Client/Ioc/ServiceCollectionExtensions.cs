@@ -90,7 +90,7 @@ namespace Microsoft.Extensions.DependencyInjection
         private static void AddValidation(this IServiceCollection services)
         {
             services.AddTransient<AbstractValidator<Vacancy>, FluentVacancyValidator>();
-            services.AddTransient<IVacancyValidator, VacancyValidator>();
+            services.AddTransient(typeof(IEntityValidator<,>), typeof(EntityValidator<,>));
         }
     }
 }

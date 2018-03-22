@@ -11,6 +11,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
 {
     public class ValidateVacancyTests
     {
+        private IEntityValidator<Vacancy, VacancyRuleSet> _validator;
+
+        public ValidateVacancyTests()
+        {
+            _validator = new EntityValidator<Vacancy, VacancyRuleSet>(new FluentVacancyValidator());
+        }
+
         public static IEnumerable<object[]> ValidTitles =>
             new List<object[]>
             {
@@ -22,14 +29,12 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
         [MemberData(nameof(ValidTitles))]
         public void ShouldNotThrowExceptionIfTitleIsValid(string validTitle)
         {
-            var validator = new VacancyValidator(new FluentVacancyValidator());
-
             var vacancy = new Vacancy 
             {
                 Title = validTitle
             };
 
-            Action act = () => validator.ValidateAndThrow(vacancy, VacancyRuleSet.Title);
+            Action act = () => _validator.ValidateAndThrow(vacancy, VacancyRuleSet.Title);
 
             act.Should().NotThrow<EntityValidationException>();
         }
@@ -39,14 +44,12 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
         [InlineData("")]
         public void TitleMustHaveAValue(string titleValue)
         {
-            var validator = new VacancyValidator(new FluentVacancyValidator());
-
             var vacancy = new Vacancy 
             {
                 Title = titleValue
             };
 
-            Action act = () => validator.ValidateAndThrow(vacancy, VacancyRuleSet.Title);
+            Action act = () => _validator.ValidateAndThrow(vacancy, VacancyRuleSet.Title);
 
             var ex = act.Should().Throw<EntityValidationException>();
             ex.Which.ValidationResult.HasErrors.Should().BeTrue();
@@ -59,14 +62,12 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
         [Fact]
         public void TitleBeLongerThan100Characters()
         {
-            var validator = new VacancyValidator(new FluentVacancyValidator());
-
             var vacancy = new Vacancy 
             {
                 Title = new String('a', 110)
             };
 
-            Action act = () => validator.ValidateAndThrow(vacancy, VacancyRuleSet.Title);
+            Action act = () => _validator.ValidateAndThrow(vacancy, VacancyRuleSet.Title);
 
             var ex = act.Should().Throw<EntityValidationException>();
             ex.Which.ValidationResult.HasErrors.Should().BeTrue();
@@ -81,14 +82,12 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
         [InlineData(">")]
         public void TitleMustContainVaildCharacters(string testValue)
         {
-            var validator = new VacancyValidator(new FluentVacancyValidator());
-
             var vacancy = new Vacancy 
             {
                 Title = testValue
             };
 
-            Action act = () => validator.ValidateAndThrow(vacancy, VacancyRuleSet.Title);
+            Action act = () => _validator.ValidateAndThrow(vacancy, VacancyRuleSet.Title);
 
             var ex = act.Should().Throw<EntityValidationException>();
             ex.Which.ValidationResult.HasErrors.Should().BeTrue();

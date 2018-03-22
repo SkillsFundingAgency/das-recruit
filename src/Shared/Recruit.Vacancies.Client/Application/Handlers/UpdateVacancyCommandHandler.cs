@@ -1,5 +1,6 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using MediatR;
 using System.Threading;
@@ -10,9 +11,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Handlers
     public class UpdateVacancyCommandHandler : IRequestHandler<UpdateVacancyCommand>
     {
         private readonly IVacancyRepository _repository;
-        public readonly IVacancyValidator _validator;
+        public readonly IEntityValidator<Vacancy, VacancyRuleSet> _validator;
 
-        public UpdateVacancyCommandHandler(IVacancyRepository repository, IVacancyValidator validator)
+        public UpdateVacancyCommandHandler(IVacancyRepository repository, IEntityValidator<Vacancy, VacancyRuleSet> validator)
         {
             _validator = validator;
             _repository = repository;

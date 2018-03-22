@@ -16,11 +16,9 @@
         [ValidGuid]
         public Guid VacancyId { get; set; }
 
-        [Required(ErrorMessage = ErrMsg.Required.NumberOfPositions)]
         [TypeOfInteger(ErrorMessage = ErrMsg.TypeOfInteger.NumberOfPositions)]
         public string NumberOfPositions { get; set; }
 
-        [Required(ErrorMessage = ErrMsg.Required.ShortDescription)]
         public string ShortDescription { get; set; }
     }
 }

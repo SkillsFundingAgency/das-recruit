@@ -1,25 +1,23 @@
 using System;
-using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Application.Exceptions;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using FluentValidation;
 using FluentValidation.Results;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Validation
 {
-    public class VacancyValidator : IVacancyValidator
+    public class EntityValidator<T, TRules> : IEntityValidator<T, TRules> where TRules : struct, IComparable, IConvertible, IFormattable 
     {
         private const string ValidationsToRunKey = "validationsToRun";
-        private AbstractValidator<Vacancy> _validator;
+        private AbstractValidator<T> _validator;
     
-        public VacancyValidator(AbstractValidator<Vacancy> fluentValidator)
+        public EntityValidator(AbstractValidator<T> fluentValidator)
         {
             _validator = fluentValidator;
         }
 
-        public void ValidateAndThrow(Vacancy vacancy, VacancyRuleSet validationsToRun)
+        public void ValidateAndThrow(T entity, TRules validationsToRun)
         {
-            var context = new ValidationContext<Vacancy>(vacancy);
+            var context = new ValidationContext<T>(entity);
 
             context.RootContextData.Add(ValidationsToRunKey, validationsToRun);
 
@@ -30,7 +28,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation
                 var validationResult = CreateValidationErrors(fluentResult);
 
                 // TODO: LWA Do we want to add the validations rules that were run??
-                throw new EntityValidationException("Vacancy contains validation error", validationResult);
+                throw new EntityValidationException($"Entity: {typeof(T)} has failed validation", validationResult);
             }
         }
 
