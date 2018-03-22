@@ -256,6 +256,11 @@
               "type": "Custom"
             },
             {
+              "name": "AzureWebJobsDashboard",
+              "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('StorageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]",
+              "type": "Custom"
+            },
+            {
               "name": "WebJobsStorage",
               "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('StorageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]",
               "type": "Custom"
