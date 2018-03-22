@@ -1,14 +1,18 @@
 using System;
-using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Services;
 using FluentValidation;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 {
     public class FluentVacancyValidator : AbstractValidator<Vacancy>
     {
-        public FluentVacancyValidator()
+        private readonly ITimeProvider _timeProvider;
+
+        public FluentVacancyValidator(ITimeProvider timeProvider)
         {
+            _timeProvider = timeProvider;
+
             ValidateDescription();
 
             ValidateOrganisation();
@@ -88,7 +92,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .NotNull()
                     .WithMessage("Enter the closing date for applications")
                     .WithErrorCode("16")
-                .GreaterThan(DateTime.UtcNow.Date.AddDays(1))
+                .GreaterThan(_timeProvider.Now.AddDays(1))
                     .WithMessage("The closing date can't be today or earlier. We advise using a date more than two weeks from now")
                     .WithErrorCode("18")
                 .RunCondition(VacancyRuleSet.ClosingDate)

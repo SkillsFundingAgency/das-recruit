@@ -1,4 +1,6 @@
-﻿@model Esfa.Recruit.Employer.Web.ViewModels.Part1.Training.TrainingViewModel
+﻿@using Esfa.Recruit.Vacancies.Client.Domain.Services
+@model Esfa.Recruit.Employer.Web.ViewModels.Part1.Training.TrainingViewModel
+@inject ITimeProvider timeProvider;
 
 <div class="grid-row">
     <div class="column-full">
@@ -30,7 +32,7 @@
                         </div>
                         <div class="form-group form-group-year">
                             <label asp-for="ClosingYear" class="form-label">Year</label>
-                            <input asp-for="ClosingYear" class="form-control" type="number" min="@Model.MinYear">
+                            <input asp-for="ClosingYear" class="form-control" type="number" min="@timeProvider.Now.Year">
                         </div>
                     </div>
                 </fieldset>
@@ -53,7 +55,7 @@
                         </div>
                         <div class="form-group form-group-year">
                             <label asp-for="StartYear" class="form-label">Year</label>
-                            <input asp-for="StartYear" class="form-control" type="number" min="@Model.MinYear">
+                            <input asp-for="StartYear" class="form-control" type="number" min="@timeProvider.Now.Year">
                         </div>
                     </div>
                 </fieldset>

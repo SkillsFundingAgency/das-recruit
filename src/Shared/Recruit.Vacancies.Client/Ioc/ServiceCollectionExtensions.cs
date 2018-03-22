@@ -53,6 +53,8 @@ namespace Microsoft.Extensions.DependencyInjection
 
         private static void RegisterServiceDeps(IServiceCollection services)
         {
+            services.AddTransient<ITimeProvider, CurrentTimeProvider>();
+                    
             services.AddTransient<IEmployerAccountService, EmployerAccountService>();
         }
 

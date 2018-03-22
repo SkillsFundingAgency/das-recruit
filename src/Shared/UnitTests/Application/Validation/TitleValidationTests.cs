@@ -4,6 +4,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Services;
 using FluentAssertions;
 using Xunit;
 
@@ -15,7 +16,9 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
 
         public ValidateVacancyTests()
         {
-            _validator = new EntityValidator<Vacancy, VacancyRuleSet>(new FluentVacancyValidator());
+            var timeProvider = new CurrentTimeProvider();
+
+            _validator = new EntityValidator<Vacancy, VacancyRuleSet>(new FluentVacancyValidator(timeProvider));
         }
 
         public static IEnumerable<object[]> ValidTitles =>
