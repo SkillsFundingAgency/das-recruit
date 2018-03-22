@@ -1,8 +1,5 @@
 ﻿@model Esfa.Recruit.Employer.Web.ViewModels.Part1.Preview.PreviewViewModel
 
-@{
-    var numberOfPositionsSuffix = Model.NumberOfPositions == "1" ? "position available" : "positions available";
-}
 <div class="grid-row">
     <div class="column-full">
 
@@ -21,7 +18,7 @@
                 <li class="secondary-text">@Model.OrganisationName</li>
 
                 <li class="font-xsmall secondary-text">
-                    <span id="date-and-positions">@Model.NumberOfPositions @numberOfPositionsSuffix</span>
+                    <span id="date-and-positions">@Model.NumberOfPositionsCaption</span>
                 </li>
             </ul>
             

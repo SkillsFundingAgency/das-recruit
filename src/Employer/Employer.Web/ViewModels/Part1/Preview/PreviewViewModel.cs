@@ -6,6 +6,10 @@
 
         public string NumberOfPositions { get; set; }
 
+        public string NumberOfPositionsCaption =>   !string.IsNullOrWhiteSpace(NumberOfPositions) && NumberOfPositions == "1" 
+                                                    ? $"{NumberOfPositions} position available" 
+                                                    : $"{NumberOfPositions} positions available";
+
         public string ShortDescription { get; set; }
 
         public string ClosingDate { get; set; }
