@@ -10,6 +10,26 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
 {
     public class OrganisationValidationTests
     {
+        [Fact]
+        public void ShouldNotThrowExceptionIfOrganisationFieldsAreValid()
+        {
+            var validator = new VacancyValidator(new FluentVacancyValidator());
+
+            var vacancy = new Vacancy
+            {
+                OrganisationId = "1234",
+                Location = new Address
+                {
+                    AddressLine1 = "1 New Street",
+                    Postcode = "AB1 3SD"
+                }
+            };
+
+            Action act = () => validator.ValidateAndThrow(vacancy, VacancyRuleSet.OrganisationId | VacancyRuleSet.OrganisationAddress);
+
+            act.Should().NotThrow<EntityValidationException>();
+        }
+
         [Theory]
         [InlineData(null)]
         [InlineData("")]
@@ -22,7 +42,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
                 OrganisationId = organisationIdValue
             };
 
-            Action act = () => validator.ValidateAndThrow(vacancy, VacancyValidations.OrganisationId);
+            Action act = () => validator.ValidateAndThrow(vacancy, VacancyRuleSet.OrganisationId);
 
             var ex = act.Should().Throw<EntityValidationException>();
             ex.Which.ValidationResult.HasErrors.Should().BeTrue();
@@ -47,7 +67,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
                 }
             };
 
-            Action act = () => validator.ValidateAndThrow(vacancy, VacancyValidations.OrganisationAddress);
+            Action act = () => validator.ValidateAndThrow(vacancy, VacancyRuleSet.OrganisationAddress);
 
             var ex = act.Should().Throw<EntityValidationException>();
             ex.Which.ValidationResult.HasErrors.Should().BeTrue();
@@ -72,7 +92,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
                 }
             };
 
-            Action act = () => validator.ValidateAndThrow(vacancy, VacancyValidations.OrganisationAddress);
+            Action act = () => validator.ValidateAndThrow(vacancy, VacancyRuleSet.OrganisationAddress);
 
             var ex = act.Should().Throw<EntityValidationException>();
             ex.Which.ValidationResult.HasErrors.Should().BeTrue();
@@ -95,7 +115,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
                 }
             };
 
-            Action act = () => validator.ValidateAndThrow(vacancy, VacancyValidations.OrganisationAddress);
+            Action act = () => validator.ValidateAndThrow(vacancy, VacancyRuleSet.OrganisationAddress);
 
             var ex = act.Should().Throw<EntityValidationException>();
             ex.Which.ValidationResult.HasErrors.Should().BeTrue();
@@ -121,7 +141,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
                 }
             };
 
-            Action act = () => validator.ValidateAndThrow(vacancy, VacancyValidations.OrganisationAddress);
+            Action act = () => validator.ValidateAndThrow(vacancy, VacancyRuleSet.OrganisationAddress);
 
             var ex = act.Should().Throw<EntityValidationException>();
             ex.Which.ValidationResult.HasErrors.Should().BeTrue();
@@ -145,7 +165,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
                 }
             };
 
-            Action act = () => validator.ValidateAndThrow(vacancy, VacancyValidations.OrganisationAddress);
+            Action act = () => validator.ValidateAndThrow(vacancy, VacancyRuleSet.OrganisationAddress);
 
             var ex = act.Should().Throw<EntityValidationException>();
             ex.Which.ValidationResult.HasErrors.Should().BeTrue();
@@ -171,7 +191,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
                 }
             };
 
-            Action act = () => validator.ValidateAndThrow(vacancy, VacancyValidations.OrganisationAddress);
+            Action act = () => validator.ValidateAndThrow(vacancy, VacancyRuleSet.OrganisationAddress);
 
             var ex = act.Should().Throw<EntityValidationException>();
             ex.Which.ValidationResult.HasErrors.Should().BeTrue();
@@ -195,7 +215,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
                 }
             };
 
-            Action act = () => validator.ValidateAndThrow(vacancy, VacancyValidations.OrganisationAddress);
+            Action act = () => validator.ValidateAndThrow(vacancy, VacancyRuleSet.OrganisationAddress);
 
             var ex = act.Should().Throw<EntityValidationException>();
             ex.Which.ValidationResult.HasErrors.Should().BeTrue();
@@ -221,7 +241,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
                 }
             };
 
-            Action act = () => validator.ValidateAndThrow(vacancy, VacancyValidations.OrganisationAddress);
+            Action act = () => validator.ValidateAndThrow(vacancy, VacancyRuleSet.OrganisationAddress);
 
             var ex = act.Should().Throw<EntityValidationException>();
             ex.Which.ValidationResult.HasErrors.Should().BeTrue();
@@ -245,7 +265,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
                 }
             };
 
-            Action act = () => validator.ValidateAndThrow(vacancy, VacancyValidations.OrganisationAddress);
+            Action act = () => validator.ValidateAndThrow(vacancy, VacancyRuleSet.OrganisationAddress);
 
             var ex = act.Should().Throw<EntityValidationException>();
             ex.Which.ValidationResult.HasErrors.Should().BeTrue();
@@ -270,7 +290,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
                 }
             };
 
-            Action act = () => validator.ValidateAndThrow(vacancy, VacancyValidations.OrganisationAddress);
+            Action act = () => validator.ValidateAndThrow(vacancy, VacancyRuleSet.OrganisationAddress);
 
             var ex = act.Should().Throw<EntityValidationException>();
             ex.Which.ValidationResult.HasErrors.Should().BeTrue();
@@ -296,7 +316,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
                 }
             };
 
-            Action act = () => validator.ValidateAndThrow(vacancy, VacancyValidations.OrganisationAddress);
+            Action act = () => validator.ValidateAndThrow(vacancy, VacancyRuleSet.OrganisationAddress);
 
             var ex = act.Should().Throw<EntityValidationException>();
             ex.Which.ValidationResult.HasErrors.Should().BeTrue();

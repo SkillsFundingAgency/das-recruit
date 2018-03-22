@@ -39,7 +39,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             vacancy.ThingsToConsider = m.ThingsToConsider;
 
-            await _client.UpdateVacancyAsync(vacancy, VacancyValidations.None);
+            await _client.UpdateVacancyAsync(vacancy, VacancyRuleSet.None);
         }
     }
 }

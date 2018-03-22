@@ -3,7 +3,7 @@ using System;
 namespace Esfa.Recruit.Vacancies.Client.Application.Validation
 {
     [Flags]
-    public enum VacancyValidations : long
+    public enum VacancyRuleSet : long
     {
         None = 0x1,
         OrganisationId = 0x2,

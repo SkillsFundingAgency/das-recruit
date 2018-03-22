@@ -79,7 +79,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             vacancy.ProviderName = providerDetail.ProviderName;
             vacancy.ProviderAddress = providerDetail.ProviderAddress;
 
-            await _client.UpdateVacancyAsync(vacancy, VacancyValidations.None, canUpdateQueryStore: false);
+            await _client.UpdateVacancyAsync(vacancy, VacancyRuleSet.None, canUpdateQueryStore: false);
         }
 
         public Task<bool> ConfirmProviderExists(long ukprn)

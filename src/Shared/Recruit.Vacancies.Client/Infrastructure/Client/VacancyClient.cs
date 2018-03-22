@@ -25,7 +25,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _messaging = messaging;
         }
 
-        public async Task UpdateVacancyAsync(Vacancy vacancy, VacancyValidations validationRules, bool canUpdateQueryStore = true)
+        public async Task UpdateVacancyAsync(Vacancy vacancy, VacancyRuleSet validationRules, bool canUpdateQueryStore = true)
         {
             var command = new UpdateVacancyCommand
             {

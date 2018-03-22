@@ -16,7 +16,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation
             _validator = fluentValidator;
         }
 
-        public void ValidateAndThrow(Vacancy vacancy, VacancyValidations validationsToRun)
+        public void ValidateAndThrow(Vacancy vacancy, VacancyRuleSet validationsToRun)
         {
             var context = new ValidationContext<Vacancy>(vacancy);
 

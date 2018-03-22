@@ -4,6 +4,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation
 {
     public interface IVacancyValidator
     {
-        void ValidateAndThrow(Vacancy vacancy, VacancyValidations validationsToRun);
+        void ValidateAndThrow(Vacancy vacancy, VacancyRuleSet validationsToRun);
     }
 }

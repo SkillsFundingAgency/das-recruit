@@ -11,7 +11,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
     {
         Task<Vacancy> GetVacancyForEditAsync(Guid id);
         Task<Guid> CreateVacancyAsync(string title, string employerAccountId, string user);
-        Task UpdateVacancyAsync(Vacancy vacancy, VacancyValidations validationRules, bool canUpdateQueryStore = true);
+        Task UpdateVacancyAsync(Vacancy vacancy, VacancyRuleSet validationRules, bool canUpdateQueryStore = true);
         Task<bool> SubmitVacancyAsync(Guid id);
         Task<bool> DeleteVacancyAsync(Guid id);
         Task<Dashboard> GetDashboardAsync(string employerAccountId);

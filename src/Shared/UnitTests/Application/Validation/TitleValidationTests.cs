@@ -29,7 +29,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
                 Title = validTitle
             };
 
-            Action act = () => validator.ValidateAndThrow(vacancy, VacancyValidations.Title);
+            Action act = () => validator.ValidateAndThrow(vacancy, VacancyRuleSet.Title);
 
             act.Should().NotThrow<EntityValidationException>();
         }
@@ -46,7 +46,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
                 Title = titleValue
             };
 
-            Action act = () => validator.ValidateAndThrow(vacancy, VacancyValidations.Title);
+            Action act = () => validator.ValidateAndThrow(vacancy, VacancyRuleSet.Title);
 
             var ex = act.Should().Throw<EntityValidationException>();
             ex.Which.ValidationResult.HasErrors.Should().BeTrue();
@@ -65,7 +65,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
                 Title = new String('a', 110)
             };
 
-            Action act = () => validator.ValidateAndThrow(vacancy, VacancyValidations.Title);
+            Action act = () => validator.ValidateAndThrow(vacancy, VacancyRuleSet.Title);
 
             var ex = act.Should().Throw<EntityValidationException>();
             ex.Which.ValidationResult.HasErrors.Should().BeTrue();
@@ -86,7 +86,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
                 Title = testValue
             };
 
-            Action act = () => validator.ValidateAndThrow(vacancy, VacancyValidations.Title);
+            Action act = () => validator.ValidateAndThrow(vacancy, VacancyRuleSet.Title);
 
             var ex = act.Should().Throw<EntityValidationException>();
             ex.Which.ValidationResult.HasErrors.Should().BeTrue();

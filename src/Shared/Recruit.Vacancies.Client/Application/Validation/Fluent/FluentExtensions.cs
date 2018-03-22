@@ -7,14 +7,14 @@ namespace FluentValidation
 {
     public static class FluentExtensions
     {
-        public static IRuleBuilderOptions<T, TElement> RunCondition<T, TElement>(this IConfigurable<PropertyRule, IRuleBuilderOptions<T, TElement>> ruleBuilder, VacancyValidations condition)
+        public static IRuleBuilderOptions<T, TElement> RunCondition<T, TElement>(this IConfigurable<PropertyRule, IRuleBuilderOptions<T, TElement>> ruleBuilder, VacancyRuleSet condition)
         {
             return ruleBuilder.Configure(c => c.ApplyCondition(context => context.CanRunValidator(condition), ApplyConditionTo.AllValidators));
         }
 
-        public static bool CanRunValidator(this ValidationContext context, VacancyValidations validationToCheck)
+        public static bool CanRunValidator(this ValidationContext context, VacancyRuleSet validationToCheck)
         {
-            var validationsToRun = (VacancyValidations)context.RootContextData["validationsToRun"];
+            var validationsToRun = (VacancyRuleSet)context.RootContextData["validationsToRun"];
 
             return (validationsToRun & validationToCheck) > 0;
         }

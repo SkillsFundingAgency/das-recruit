@@ -92,7 +92,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             };
 
 
-            return await BuildOrchestratorResponse(() => _client.UpdateVacancyAsync(vacancy, VacancyValidations.OrganisationId | VacancyValidations.OrganisationAddress, false));
+            return await BuildOrchestratorResponse(() => _client.UpdateVacancyAsync(vacancy, VacancyRuleSet.OrganisationId | VacancyRuleSet.OrganisationAddress, false));
         }
 
         protected override EntityToViewModelPropertyMappings<Vacancy, EmployerViewModel> DefineMappings()

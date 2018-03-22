@@ -9,6 +9,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Commands
     {
         public Vacancy Vacancy { get; set; }
 
-        public VacancyValidations ValidationRules { get; set; }
+        public VacancyRuleSet ValidationRules { get; set; }
     }
 }

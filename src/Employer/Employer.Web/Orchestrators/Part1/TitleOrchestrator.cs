@@ -86,7 +86,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             return await BuildOrchestratorResponse(async () => 
             {
-                await _client.UpdateVacancyAsync(vacancy, VacancyValidations.Title);
+                await _client.UpdateVacancyAsync(vacancy, VacancyRuleSet.Title);
                 return vacancy.Id;
             });
         }

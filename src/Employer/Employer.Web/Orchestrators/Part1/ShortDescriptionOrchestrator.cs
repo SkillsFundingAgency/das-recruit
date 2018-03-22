@@ -3,20 +3,24 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.ShortDescription;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
-    public class ShortDescriptionOrchestrator
+    public class ShortDescriptionOrchestrator : EntityValidatingOrchestrator<Vacancy, ShortDescriptionViewModel>
     {
         private readonly IVacancyClient _client;
+        private readonly ILogger<ShortDescriptionOrchestrator> _logger;
 
-        public ShortDescriptionOrchestrator(IVacancyClient client)
+        public ShortDescriptionOrchestrator(IVacancyClient client, ILogger<ShortDescriptionOrchestrator> logger) : base(logger)
         {
+            _logger = logger;
             _client = client;
         }
-        
+
         public async Task<ShortDescriptionViewModel> GetShortDescriptionViewModelAsync(Guid vacancyId)
         {
             var vacancy = await _client.GetVacancyForEditAsync(vacancyId);
@@ -46,7 +50,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             return vm;
         }
 
-        public async Task PostShortDescriptionEditModelAsync(ShortDescriptionEditModel m)
+        public async Task<OrchestratorResponse> PostShortDescriptionEditModelAsync(ShortDescriptionEditModel m)
         {
             var vacancy = await _client.GetVacancyForEditAsync(m.VacancyId);
 
@@ -60,10 +64,20 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 int.TryParse(m.NumberOfPositions, out var numberOfPositions);
                 vacancy.NumberOfPositions = numberOfPositions;
             }
-            
+
             vacancy.ShortDescription = m.ShortDescription;
-            
-            await _client.UpdateVacancyAsync(vacancy, VacancyValidations.NumberOfPostions | VacancyValidations.ShortDescription, false);
+
+            return await BuildOrchestratorResponse(() => _client.UpdateVacancyAsync(vacancy, VacancyRuleSet.NumberOfPostions | VacancyRuleSet.ShortDescription, false));
+        }
+
+        protected override EntityToViewModelPropertyMappings<Vacancy, ShortDescriptionViewModel> DefineMappings()
+        {
+            var mappings = new EntityToViewModelPropertyMappings<Vacancy, ShortDescriptionViewModel>();
+
+            mappings.Add(e => e.NumberOfPositions, vm => vm.NumberOfPositions);
+            mappings.Add(e => e.ShortDescription, vm => vm.ShortDescription);
+
+            return mappings;
         }
     }
 }
