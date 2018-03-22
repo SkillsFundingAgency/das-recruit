@@ -12,12 +12,13 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
     using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
     using Esfa.Recruit.Employer.Web.Extensions;
     using Esfa.Recruit.Vacancies.Client.Application.Validation;
+    using Microsoft.Extensions.Logging;
 
-    public class TrainingOrchestrator
+    public class TrainingOrchestrator : EntityValidatingOrchestrator<Vacancy, TrainingViewModel>
     {
         private readonly IVacancyClient _client;
 
-        public TrainingOrchestrator(IVacancyClient client)
+        public TrainingOrchestrator(IVacancyClient client, ILogger<TrainingOrchestrator> logger) : base(logger)
         {
             _client = client;
         }
@@ -76,7 +77,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             return vm;
         }
 
-        public async Task PostTrainingEditModelAsync(TrainingEditModel m)
+        public async Task<OrchestratorResponse> PostTrainingEditModelAsync(TrainingEditModel m)
         {
             var vacancyTask = _client.GetVacancyForEditAsync(m.VacancyId);
             var programmesTask = _client.GetApprenticeshipProgrammesAsync();
@@ -103,7 +104,18 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 LevelName = ((ProgrammeLevel)programme.Level).GetDisplayName()
             };
             
-            await _client.UpdateVacancyAsync(vacancy, VacancyRuleSet.ClosingDate | VacancyRuleSet.StartDate | VacancyRuleSet.TrainingProgramme, false);
+            return await BuildOrchestratorResponse(() =>_client.UpdateVacancyAsync(vacancy, VacancyRuleSet.ClosingDate | VacancyRuleSet.StartDate | VacancyRuleSet.TrainingProgramme, false));
+        }
+
+        protected override EntityToViewModelPropertyMappings<Vacancy, TrainingViewModel> DefineMappings()
+        {
+            var mappings = new EntityToViewModelPropertyMappings<Vacancy, TrainingViewModel>();
+
+            mappings.Add(e => e.Programme, vm => vm.SelectedProgrammeId);
+            mappings.Add(e => e.StartDate, vm => vm.StartDate);
+            mappings.Add(e => e.ClosingDate, vm => vm.ClosingDate);
+
+            return mappings;
         }
     }
 }

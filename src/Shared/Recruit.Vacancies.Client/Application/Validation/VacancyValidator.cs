@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Application.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -41,11 +42,26 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation
             {
                 foreach(var fluentError in fluentResult.Errors)
                 {
-                    newResult.Errors.Add(new EntityValidationError(fluentError.PropertyName, fluentError.ErrorMessage, fluentError.ErrorCode));
+                    newResult.Errors.Add(new EntityValidationError(ParseForRuleId(fluentError.CustomState), fluentError.PropertyName, fluentError.ErrorMessage, fluentError.ErrorCode));
                 }
             }
 
             return newResult;
+        }
+
+        private long ParseForRuleId(object customState)
+        {
+            if (customState == null)
+                throw new ArgumentNullException(nameof(customState), "Fluent Error should have CustomState property set to the RuleId");
+
+            try
+            {
+				return Convert.ToInt64(customState);
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException("Unexpected value for customState. Expecting a long", nameof(customState), ex);
+            }
         }
     }
 }

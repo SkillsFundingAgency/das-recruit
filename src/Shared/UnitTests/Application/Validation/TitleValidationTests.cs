@@ -53,6 +53,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
             ex.Which.ValidationResult.Errors.Count.Should().Be(1);
             ex.Which.ValidationResult.Errors[0].PropertyName.Should().Be(nameof(vacancy.Title));
             ex.Which.ValidationResult.Errors[0].ErrorCode.Should().Be("1");
+            ex.Which.ValidationResult.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Title);
         }
 
         [Fact]
@@ -72,6 +73,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
             ex.Which.ValidationResult.Errors.Count.Should().Be(1);
             ex.Which.ValidationResult.Errors[0].PropertyName.Should().Be(nameof(vacancy.Title));
             ex.Which.ValidationResult.Errors[0].ErrorCode.Should().Be("2");
+            ex.Which.ValidationResult.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Title);
         }
 
         [Theory]
@@ -93,6 +95,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
             ex.Which.ValidationResult.Errors.Count.Should().Be(1);
             ex.Which.ValidationResult.Errors[0].PropertyName.Should().Be(nameof(vacancy.Title));
             ex.Which.ValidationResult.Errors[0].ErrorCode.Should().Be("3");
+            ex.Which.ValidationResult.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Title);
         }
     }
 }

@@ -49,6 +49,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
             ex.Which.ValidationResult.Errors.Count.Should().Be(1);
             ex.Which.ValidationResult.Errors[0].PropertyName.Should().Be(nameof(vacancy.OrganisationId));
             ex.Which.ValidationResult.Errors[0].ErrorCode.Should().Be("4");
+            ex.Which.ValidationResult.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OrganisationId);
         }
 
         [Theory]
@@ -74,6 +75,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
             ex.Which.ValidationResult.Errors.Count.Should().Be(1);
             ex.Which.ValidationResult.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Location)}.{nameof(vacancy.Location.AddressLine1)}");
             ex.Which.ValidationResult.Errors[0].ErrorCode.Should().Be("5");
+            ex.Which.ValidationResult.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OrganisationAddress);
         }
 
         [Theory]
@@ -99,6 +101,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
             ex.Which.ValidationResult.Errors.Count.Should().Be(1);
             ex.Which.ValidationResult.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Location)}.{nameof(vacancy.Location.AddressLine1)}");
             ex.Which.ValidationResult.Errors[0].ErrorCode.Should().Be("6");
+            ex.Which.ValidationResult.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OrganisationAddress);
         }
 
         [Fact]
@@ -122,6 +125,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
             ex.Which.ValidationResult.Errors.Count.Should().Be(1);
             ex.Which.ValidationResult.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Location)}.{nameof(vacancy.Location.AddressLine1)}");
             ex.Which.ValidationResult.Errors[0].ErrorCode.Should().Be("7");
+            ex.Which.ValidationResult.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OrganisationAddress);
         }
 
         [Theory]
@@ -148,6 +152,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
             ex.Which.ValidationResult.Errors.Count.Should().Be(1);
             ex.Which.ValidationResult.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Location)}.{nameof(vacancy.Location.AddressLine2)}");
             ex.Which.ValidationResult.Errors[0].ErrorCode.Should().Be("6");
+            ex.Which.ValidationResult.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OrganisationAddress);
         }
 
         [Fact]
@@ -172,6 +177,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
             ex.Which.ValidationResult.Errors.Count.Should().Be(1);
             ex.Which.ValidationResult.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Location)}.{nameof(vacancy.Location.AddressLine2)}");
             ex.Which.ValidationResult.Errors[0].ErrorCode.Should().Be("7");
+            ex.Which.ValidationResult.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OrganisationAddress);
         }
 
         [Theory]
@@ -198,6 +204,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
             ex.Which.ValidationResult.Errors.Count.Should().Be(1);
             ex.Which.ValidationResult.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Location)}.{nameof(vacancy.Location.AddressLine3)}");
             ex.Which.ValidationResult.Errors[0].ErrorCode.Should().Be("6");
+            ex.Which.ValidationResult.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OrganisationAddress);
         }
 
         [Fact]
@@ -221,6 +228,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
             ex.Which.ValidationResult.HasErrors.Should().BeTrue();
             ex.Which.ValidationResult.Errors.Count.Should().Be(1);
             ex.Which.ValidationResult.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Location)}.{nameof(vacancy.Location.AddressLine3)}");
+            ex.Which.ValidationResult.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OrganisationAddress);
             ex.Which.ValidationResult.Errors[0].ErrorCode.Should().Be("7");
         }
 
@@ -248,6 +256,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
             ex.Which.ValidationResult.Errors.Count.Should().Be(1);
             ex.Which.ValidationResult.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Location)}.{nameof(vacancy.Location.AddressLine4)}");
             ex.Which.ValidationResult.Errors[0].ErrorCode.Should().Be("6");
+            ex.Which.ValidationResult.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OrganisationAddress);
         }
 
         [Fact]
@@ -272,6 +281,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
             ex.Which.ValidationResult.Errors.Count.Should().Be(1);
             ex.Which.ValidationResult.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Location)}.{nameof(vacancy.Location.AddressLine4)}");
             ex.Which.ValidationResult.Errors[0].ErrorCode.Should().Be("7");
+            ex.Which.ValidationResult.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OrganisationAddress);
         }
 
         [Theory]
@@ -297,6 +307,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
             ex.Which.ValidationResult.Errors.Count.Should().Be(1);
             ex.Which.ValidationResult.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Location)}.{nameof(vacancy.Location.Postcode)}");
             ex.Which.ValidationResult.Errors[0].ErrorCode.Should().Be("8");
+            ex.Which.ValidationResult.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OrganisationAddress);
         }
 
         [Theory]
@@ -323,6 +334,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
             ex.Which.ValidationResult.Errors.Count.Should().Be(1);
             ex.Which.ValidationResult.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Location)}.{nameof(vacancy.Location.Postcode)}");
             ex.Which.ValidationResult.Errors[0].ErrorCode.Should().Be("9");
+            ex.Which.ValidationResult.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OrganisationAddress);
         }
     }
 }

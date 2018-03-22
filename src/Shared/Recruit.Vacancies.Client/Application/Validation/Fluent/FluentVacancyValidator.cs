@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using FluentValidation;
 
@@ -14,6 +16,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             ValidateNumberOfPositions();
 
             ValidateShortDescription();
+
+            ValidateClosingDate();
         }
 
         private void ValidateDescription()
@@ -28,7 +32,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .ValidFreeTextCharacters()
                     .WithMessage("The title contains some invalid characters")
                     .WithErrorCode("3")
-                .RunCondition(VacancyRuleSet.Title);
+                .RunCondition(VacancyRuleSet.Title)
+                .WithRuleId(VacancyRuleSet.Title);
         }
 
         private void ValidateOrganisation()
@@ -37,12 +42,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .NotEmpty()
                     .WithMessage("You must select one organisation")
                     .WithErrorCode("4")
-                .RunCondition(VacancyRuleSet.OrganisationId);
-
+                .RunCondition(VacancyRuleSet.OrganisationId)
+                .WithRuleId(VacancyRuleSet.OrganisationId);
 
             RuleFor(x => x.Location)
-                .SetValidator(new AddressValidator())
-                .RunCondition(VacancyRuleSet.OrganisationAddress);
+                .SetValidator(new AddressValidator((long)VacancyRuleSet.OrganisationAddress))
+                .RunCondition(VacancyRuleSet.OrganisationAddress)
+                .WithRuleId(VacancyRuleSet.OrganisationAddress);
         }
 
         private void ValidateNumberOfPositions()
@@ -51,7 +57,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .Must(x => x.HasValue && x.Value > 0)
                     .WithMessage("Enter the number of positions for this vacancy")
                     .WithErrorCode("10")
-                .RunCondition(VacancyRuleSet.NumberOfPostions);
+                .RunCondition(VacancyRuleSet.NumberOfPostions)
+                .WithRuleId(VacancyRuleSet.NumberOfPostions);
         }
 
         private void ValidateShortDescription()
@@ -70,7 +77,23 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .ValidFreeTextCharacters()
                     .WithMessage("The overview of the vacancy contains some invalid characters")
                     .WithErrorCode("15")
-                .RunCondition(VacancyRuleSet.ShortDescription);
+                .RunCondition(VacancyRuleSet.ShortDescription)
+                .WithRuleId(VacancyRuleSet.ShortDescription);
+            
+        }
+
+        private void ValidateClosingDate()
+        {
+            RuleFor(x => x.ClosingDate)
+                .NotNull()
+                    .WithMessage("Enter the closing date for applications")
+                    .WithErrorCode("16")
+                .GreaterThan(DateTime.UtcNow.Date.AddDays(1))
+                    .WithMessage("The closing date can't be today or earlier. We advise using a date more than two weeks from now")
+                    .WithErrorCode("18")
+                .RunCondition(VacancyRuleSet.ClosingDate)
+                .WithRuleId(VacancyRuleSet.ClosingDate);
+            
         }
     }
 }

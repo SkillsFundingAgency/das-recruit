@@ -1,6 +1,5 @@
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators;
-using FluentValidation;
 using FluentValidation.Internal;
 
 namespace FluentValidation
@@ -9,7 +8,22 @@ namespace FluentValidation
     {
         public static IRuleBuilderOptions<T, TElement> RunCondition<T, TElement>(this IConfigurable<PropertyRule, IRuleBuilderOptions<T, TElement>> ruleBuilder, VacancyRuleSet condition)
         {
-            return ruleBuilder.Configure(c => c.ApplyCondition(context => context.CanRunValidator(condition), ApplyConditionTo.AllValidators));
+            return ruleBuilder.Configure(c => 
+            { 
+				c.ApplyCondition(context => context.CanRunValidator(condition), ApplyConditionTo.AllValidators); 
+            });
+        }
+
+        public static IRuleBuilderOptions<T, TElement> WithRuleId<T, TElement>(this IConfigurable<PropertyRule, IRuleBuilderOptions<T, TElement>> ruleBuilder, VacancyRuleSet condition)
+        {
+            return ruleBuilder.Configure(c =>
+            {
+                // Set rule type in context so can be returned in error object
+                foreach (var validator in c.Validators)
+                {
+                    validator.CustomStateProvider = s => condition;
+                }
+            });
         }
 
         public static bool CanRunValidator(this ValidationContext context, VacancyRuleSet validationToCheck)

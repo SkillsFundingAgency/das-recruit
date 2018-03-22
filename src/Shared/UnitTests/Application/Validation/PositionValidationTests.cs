@@ -45,6 +45,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
             ex.Which.ValidationResult.Errors.Count.Should().Be(1);
             ex.Which.ValidationResult.Errors[0].PropertyName.Should().Be(nameof(vacancy.NumberOfPositions));
             ex.Which.ValidationResult.Errors[0].ErrorCode.Should().Be("10");
+            ex.Which.ValidationResult.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.NumberOfPostions);
         }
 
         [Theory]
@@ -66,6 +67,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
             ex.Which.ValidationResult.Errors.Count.Should().Be(1);
             ex.Which.ValidationResult.Errors[0].PropertyName.Should().Be(nameof(vacancy.ShortDescription));
             ex.Which.ValidationResult.Errors[0].ErrorCode.Should().Be("12");
+            ex.Which.ValidationResult.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.ShortDescription);
         }
 
         [Fact]
@@ -85,6 +87,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
             ex.Which.ValidationResult.Errors.Count.Should().Be(1);
             ex.Which.ValidationResult.Errors[0].PropertyName.Should().Be(nameof(vacancy.ShortDescription));
             ex.Which.ValidationResult.Errors[0].ErrorCode.Should().Be("13");
+            ex.Which.ValidationResult.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.ShortDescription);
         }
 
         [Fact]
@@ -104,6 +107,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
             ex.Which.ValidationResult.Errors.Count.Should().Be(1);
             ex.Which.ValidationResult.Errors[0].PropertyName.Should().Be(nameof(vacancy.ShortDescription));
             ex.Which.ValidationResult.Errors[0].ErrorCode.Should().Be("14");
+            ex.Which.ValidationResult.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.ShortDescription);
         }
 
 
@@ -126,6 +130,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
             ex.Which.ValidationResult.Errors.Count.Should().Be(1);
             ex.Which.ValidationResult.Errors[0].PropertyName.Should().Be(nameof(vacancy.ShortDescription));
             ex.Which.ValidationResult.Errors[0].ErrorCode.Should().Be("15");
+            ex.Which.ValidationResult.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.ShortDescription);
         }
     }
 }

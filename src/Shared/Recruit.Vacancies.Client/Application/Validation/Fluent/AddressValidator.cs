@@ -5,8 +5,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 {
     public class AddressValidator : AbstractValidator<Address> 
     {
-        public AddressValidator()
+        public AddressValidator(long ruleId)
         {
+            var vacancyRules = (VacancyRuleSet)ruleId;
+
             RuleFor(x => x.AddressLine1)
                 .NotEmpty()
                     .WithMessage("You must enter an address")
@@ -16,7 +18,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithErrorCode("6")
                 .MaximumLength(100)
                     .WithMessage("The address must not be more than {MaxLength} characters")
-                    .WithErrorCode("7");
+                    .WithErrorCode("7")
+                .WithRuleId(vacancyRules);
 
             RuleFor(x => x.AddressLine2)
                 .ValidFreeTextCharacters()
@@ -24,15 +27,17 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithErrorCode("6")
                 .MaximumLength(100)
                     .WithMessage("The address must not be more than {MaxLength} characters")
-                    .WithErrorCode("7");
-
+                    .WithErrorCode("7")
+                .WithRuleId(vacancyRules);
+            
             RuleFor(x => x.AddressLine3)
                 .ValidFreeTextCharacters()
                     .WithMessage("You have entered invalid characters")
                     .WithErrorCode("6")
                 .MaximumLength(100)
                     .WithMessage("The address must not be more than {MaxLength} characters")
-                    .WithErrorCode("7");
+                    .WithErrorCode("7")
+                .WithRuleId(vacancyRules);
             
             RuleFor(x => x.AddressLine4)
                 .ValidFreeTextCharacters()
@@ -40,7 +45,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithErrorCode("6")
                 .MaximumLength(100)
                     .WithMessage("The address must not be more than {MaxLength} characters")
-                    .WithErrorCode("7");
+                    .WithErrorCode("7")
+                .WithRuleId(vacancyRules);
 
             RuleFor(x => x.Postcode)
                 .NotEmpty()
@@ -49,7 +55,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .PostCode()
                     .When(x => !string.IsNullOrEmpty(x.Postcode), ApplyConditionTo.CurrentValidator)
                     .WithMessage("'{PropertyName}' is not a valid format")
-                    .WithErrorCode("9");
+                    .WithErrorCode("9")
+                .WithRuleId(vacancyRules);
+
 		}
 	}
 }
