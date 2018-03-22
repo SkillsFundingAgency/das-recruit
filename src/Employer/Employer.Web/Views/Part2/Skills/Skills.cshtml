@@ -1,0 +1,134 @@
+﻿@using Esfa.Recruit.Employer.Web.ViewModels.Part2.Skills
+@model SkillsViewModel
+
+
+<div class="grid-row">
+    <div class="column-full">
+
+        <h1 class="heading-xlarge small-bottom-margin">Desired skills or personal qualities</h1>
+
+        <div asp-validation-summary="All" class="error-summary" role="alert" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
+            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
+                Please fix these errors
+            </h2>
+        </div>
+
+        <hr>
+
+        <form asp-route="@RouteNames.Skills_Post" id="skillsForm">
+            <fieldset>
+                <legend class="heading-small">Desired skills or personal qualities?</legend>
+
+                <div class="body-text">Select all that apply</div>
+                <div class="two-column-checkbox-container">
+                    <fieldset class="two-column-checkbox">
+                        @foreach (var checkBox in Model.Column1Checkboxes)
+                        {
+                            <div class="multiple-choice">
+                                <input name="Skills" id="col1-@checkBox.Id" type="checkbox" value="@checkBox.Name" checked="@checkBox.Selected">
+                                <label for="col1-@checkBox.Id">@checkBox.Name</label>
+                            </div>
+                        }
+                    </fieldset>
+                    <fieldset class="two-column-checkbox">
+                        @foreach (var checkBox in Model.Column2Checkboxes)
+                        {
+                            <div class="multiple-choice">
+                                <input name="Skills" id="col2-@checkBox.Id" type="checkbox" value="@checkBox.Name" checked="@checkBox.Selected">
+                                <label for="col2-@checkBox.Id">@checkBox.Name</label>
+                            </div>
+                        }
+                    </fieldset>
+                </div>
+            </fieldset>
+
+            <p class="no-bottom-margin">or</p>
+            <div class="form-group form-group-compound">
+                <label asp-for="AddCustomSkillName" class="form-label-bold">Add a new desired skill or personal quality</label>
+                <input asp-for="AddCustomSkillName" type="text" class="form-control">
+                <button name="AddCustomSkillAction" id="add-custom-skill" value="AddCustomSkill" type="submit" class="button-secondary">+ Add this skill</button>
+            </div>
+            
+            <div id="custom-skill-container" style="@(Model.CustomSkills.Any() == false ? "display:none" : null)">
+                <h3 class="heading-small">Desired skills or personal qualities</h3>
+                <table>
+                    <thead>
+                    <tr>
+                        <th>
+                            <span class="heading-span">Skill or personal quality</span>
+                        </th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody id="custom-skill-summary">
+                    @foreach (var customSkill in Model.CustomSkills)
+                    {
+                        <tr>
+                            <td>@customSkill</td>
+                            <td>
+                                <input name="Skills" type="hidden" value="@customSkill" />
+                                <button name="RemoveCustomSkill" value="@customSkill" type="submit" class="button-link">Remove</button>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+
+            <button type="submit" class="button">Save and continue</button>
+            <a asp-route="@RouteNames.Dashboard_Index_Get" class="button-link">Cancel</a>
+        </form>
+        <hr>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+
+    $(function () {
+
+        var $customSkillsContainer = $("#custom-skill-container");
+        var $customSkillSummary = $("#custom-skill-summary");
+        var $customSkillInput = $("#@Html.IdFor(m => m.AddCustomSkillName)");
+        
+        var customRowMask = '<tr><td></td><td><input name="Skills" type="hidden" value="" /><button name="RemoveCustomSkill" value="" type="submit" class="button-link">Remove</button></td></tr>';
+
+        var buildCustomSkillRow = function (customSkill) {
+            var $row = $(customRowMask);
+            $("td:first", $row).text(customSkill);
+            $("input[name='Skills']", $row).attr("value", customSkill);
+            $("button[name='RemoveCustomSkill']", $row).attr("value", customSkill);
+            return $row;
+        };
+
+        var toggleCustomSkillsContainer = function () {
+            $customSkillsContainer.toggle($customSkillSummary.children().length > 0);
+        }
+        
+        $("#add-custom-skill").on("click",
+            function (e) {
+                var customSkill = $customSkillInput.val();
+
+                if (customSkill) {
+                    var $row = buildCustomSkillRow(customSkill);
+                    $customSkillSummary.append($row);
+                    
+                    toggleCustomSkillsContainer();
+                }
+
+                e.preventDefault();
+                return false;
+            });
+
+        $customSkillSummary.on("click", "button[name='RemoveCustomSkill']",
+            function(e) {
+                $(this).closest("tr").remove();
+
+                toggleCustomSkillsContainer();
+            
+                e.preventDefault();
+                return false;
+            });
+    });
+
+</script>
