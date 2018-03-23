@@ -1,8 +1,11 @@
-﻿using Esfa.Recruit.Employer.Web.ViewModels.Preview;
+﻿using Esfa.Recruit.Employer.Web.Extensions;
+using Esfa.Recruit.Employer.Web.ViewModels;
+using Esfa.Recruit.Employer.Web.ViewModels.Preview;
 using Esfa.Recruit.Vacancies.Client.Domain;
 using Esfa.Recruit.Vacancies.Client.Domain.Enums;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Humanizer;
 using System;
 using System.Threading.Tasks;
 
@@ -17,28 +20,51 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             _client = client;
         }
 
-        public async Task<IndexViewModel> GetIndexViewModelAsync(Guid vacancyId)
+        public async Task<PreviewVacancyViewModel> GetPreviewVacancyViewModelAsync(Guid vacancyId)
         {
             var vacancy = await _client.GetVacancyForEditAsync(vacancyId);
 
             if (vacancy.Status != VacancyStatus.Draft)
                 throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
 
-            var vm = new IndexViewModel
+            var vm = new PreviewVacancyViewModel
             {
-                Title = vacancy.Title,
-                Ukprn = vacancy.Ukprn,
+                ApplicationInstructions = string.Empty,
+                CanDelete = vacancy.CanDelete,
+                CanSubmit = vacancy.CanSubmit,
+                ContactName = string.Empty,
+                ContactEmail = string.Empty,
+                ContactTelephone = string.Empty,
+                ClosingDate = vacancy.ClosingDate.Value,
+                Description = string.Empty,
+                EmployerName = vacancy.OrganisationName,
+                EmployerWebsiteUrl = string.Empty,
+                ExpectedDuration = vacancy.Wage.DurationUnit.Value.GetDisplayName().ToQuantity(vacancy.Wage.Duration.Value),
+                HoursPerWeek = vacancy.Wage.WeeklyHours.Value,
+                Location = vacancy.Location,
+                NumberOfPositions = vacancy.NumberOfPositions.Value,
+                PossibleStartDate = vacancy.StartDate.Value,
                 ProviderName = vacancy.ProviderName,
                 ProviderAddress = vacancy.ProviderAddress,
-                CanSubmit = vacancy.CanSubmit
+                ShortDescription = vacancy.ShortDescription,
+                ThingsToConsider = string.Empty,
+                Title = vacancy.Title,
+                TrainingTitle = vacancy.Programme.Title,
+                TrainingType = vacancy.Programme.TrainingType?.ToString(),
+                TrainingLevel = vacancy.Programme.LevelName,
+                Ukprn = vacancy.Ukprn,
+                VacancyReferenceNumber = string.Empty,
+                WageInfo = vacancy.Wage.WageAdditionalInformation,
+                WageText = vacancy.Wage.FixedWageYearlyAmount?.AsMoney(),
+                WorkingWeekDescription = vacancy.Wage.WorkingWeekDescription
             };
 
             return vm;
         }
 
-        public async Task<bool> TrySubmitVacancyAsync(SubmitEditModel m)
+        public Task<bool> TrySubmitVacancyAsync(SubmitEditModel m)
         {
-            return await _client.SubmitVacancyAsync(m.VacancyId);
+            return _client.SubmitVacancyAsync(m.VacancyId);
         }
     }
 }

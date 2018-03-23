@@ -1,5 +1,4 @@
-﻿using Esfa.Recruit.Employer.Web.Configuration;
-using Esfa.Recruit.Employer.Web.Configuration.Routing;
+﻿using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.ViewModels.Preview;
 using Microsoft.AspNetCore.Mvc;
@@ -21,7 +20,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         [HttpGet("vacancy-preview", Name = RouteNames.Preview_Index_Get)]
         public async Task<IActionResult> Index(Guid vacancyId)
         {
-            var vm = await _orchestrator.GetIndexViewModelAsync(vacancyId);
+            var vm = await _orchestrator.GetPreviewVacancyViewModelAsync(vacancyId);
             return View(vm);
         }
 
@@ -36,7 +35,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             }
             
             ModelState.AddModelError(string.Empty, "Vacancy has already been submitted");
-            var vm = await _orchestrator.GetIndexViewModelAsync(m.VacancyId);
+            var vm = await _orchestrator.GetPreviewVacancyViewModelAsync(m.VacancyId);
             return View("Index", vm);
         }
     }
