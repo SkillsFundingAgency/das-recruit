@@ -80,5 +80,8 @@
 
         public const string Skills_Get = "Skills_Get";
         public const string Skills_Post = "Skills_Post";
+
+        public const string Qualifications_Get = "Qualifications_Get";
+        public const string Qualifications_Post = "Qualifications_Post";
     }
 }
