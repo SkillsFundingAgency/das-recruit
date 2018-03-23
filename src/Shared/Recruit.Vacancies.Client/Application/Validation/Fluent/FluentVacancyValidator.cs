@@ -73,10 +73,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .WithMessage("Enter the brief overview of the vacancy")
                     .WithErrorCode("12")
                 .MaximumLength(350)
-                    .WithMessage("The overview of the vacancy must not be more than 350 characters")
+                    .WithMessage("The overview of the vacancy must not be more than {MaxLength} characters")
                     .WithErrorCode("13")
                 .MinimumLength(50)
-                    .WithMessage("The overview of the vacancy must be more than 50 characters")
+                    .WithMessage("The overview of the vacancy must be more than {MinLength} characters")
                     .WithErrorCode("14")
                 .ValidFreeTextCharacters()
                     .WithMessage("The overview of the vacancy contains some invalid characters")
@@ -97,7 +97,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithErrorCode("18")
                 .RunCondition(VacancyRuleSet.ClosingDate)
                 .WithRuleId(VacancyRuleSet.ClosingDate);
-            
         }
     }
 }

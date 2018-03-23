@@ -28,7 +28,7 @@ namespace FluentValidation
 
         public static bool CanRunValidator(this ValidationContext context, VacancyRuleSet validationToCheck)
         {
-            var validationsToRun = (VacancyRuleSet)context.RootContextData["validationsToRun"];
+            var validationsToRun = (VacancyRuleSet)context.RootContextData[ValidationConstants.ValidationsRulesKey];
 
             return (validationsToRun & validationToCheck) > 0;
         }

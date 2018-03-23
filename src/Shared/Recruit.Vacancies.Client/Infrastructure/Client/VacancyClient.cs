@@ -19,13 +19,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly IQueryStoreReader _reader;
         private readonly IVacancyRepository _repository;
         private readonly ITimeProvider _timeProvider;
+        private readonly IEntityValidator<Vacancy, VacancyRuleSet> _validator;
 
-        public VacancyClient(IVacancyRepository repository, IQueryStoreReader reader, IMessaging messaging, ITimeProvider timeProvider)
+        public VacancyClient(IVacancyRepository repository, IQueryStoreReader reader, IMessaging messaging, ITimeProvider timeProvider, IEntityValidator<Vacancy, VacancyRuleSet> validator)
         {
             _timeProvider = timeProvider;
             _repository = repository;
             _reader = reader;
             _messaging = messaging;
+            _validator = validator;
         }
 
         public async Task UpdateVacancyAsync(Vacancy vacancy, VacancyRuleSet validationRules, bool canUpdateQueryStore = true)
@@ -160,9 +162,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _reader.GetEmployerVacancyDataAsync(employerAccountId);
         }
 
-        public Task<EntityValidationResult> ValidateAsync(Vacancy vacancy)
+        public EntityValidationResult Validate(Vacancy vacancy, VacancyRuleSet rules)
         {
-            throw new NotImplementedException();            
+            return _validator.Validate(vacancy, rules);           
         }
     }
 }

@@ -7,7 +7,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation
 {
     public class EntityValidator<T, TRules> : IEntityValidator<T, TRules> where TRules : struct, IComparable, IConvertible, IFormattable 
     {
-        private const string ValidationsToRunKey = "validationsToRun";
         private AbstractValidator<T> _validator;
     
         public EntityValidator(AbstractValidator<T> fluentValidator)
@@ -15,24 +14,39 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation
             _validator = fluentValidator;
         }
 
-        public void ValidateAndThrow(T entity, TRules validationsToRun)
+        public void ValidateAndThrow(T entity, TRules rules)
         {
-            var context = new ValidationContext<T>(entity);
+            var validationResult = ValidateEntity(entity, rules);
 
-            context.RootContextData.Add(ValidationsToRunKey, validationsToRun);
-
-            var fluentResult = _validator.Validate(context);
-
-            if (!fluentResult.IsValid)
+            if (validationResult.HasErrors)
             {
-                var validationResult = CreateValidationErrors(fluentResult);
-
                 // TODO: LWA Do we want to add the validations rules that were run??
                 throw new EntityValidationException($"Entity: {typeof(T)} has failed validation", validationResult);
             }
         }
 
-        public EntityValidationResult CreateValidationErrors(ValidationResult fluentResult)
+        public EntityValidationResult Validate(T entity, TRules rules)
+        {
+            return ValidateEntity(entity, rules);
+        }
+
+        private EntityValidationResult ValidateEntity(T entity, TRules rules)
+        {
+            var context = new ValidationContext<T>(entity);
+
+            context.RootContextData.Add(ValidationConstants.ValidationsRulesKey, rules);
+
+            var fluentResult =_validator.Validate(context);
+
+            if (!fluentResult.IsValid)
+            {
+                return CreateValidationErrors(fluentResult);
+            }
+
+            return new EntityValidationResult();
+        }
+
+        private EntityValidationResult CreateValidationErrors(ValidationResult fluentResult)
         {
             var newResult = new EntityValidationResult();
 
