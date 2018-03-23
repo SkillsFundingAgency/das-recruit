@@ -68,8 +68,8 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
 
         public Wage Wage { get; set; }
 
-        public IEnumerable<string> Skills { get; set; }
         public string TrainingDescription { get; set; }
         
+        public List<string> Skills { get; set; }
     }
 }

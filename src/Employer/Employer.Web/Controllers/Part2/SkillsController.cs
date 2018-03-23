@@ -47,7 +47,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
             }
 
             await _orchestrator.PostSkillsEditModelAsync(m);
-            return RedirectToRoute(RouteNames.Skills_Get);
+            return RedirectToRoute(RouteNames.Preview_Index_Get);
         }
     }
 }

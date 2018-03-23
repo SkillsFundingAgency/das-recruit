@@ -18,7 +18,7 @@ namespace Esfa.Recruit.Employer.Web.Services
             _skillsConfig = skillsConfigOptions.Value;
         }
 
-        public IEnumerable<SkillViewModel> GetColumn1ViewModel(IEnumerable<string> selected)
+        public List<SkillViewModel> GetColumn1ViewModel(List<string> selected)
         {
             return _skillsConfig.Column1Skills.Select(c => new SkillViewModel
             {
@@ -27,7 +27,7 @@ namespace Esfa.Recruit.Employer.Web.Services
             }).ToList();
         }
 
-        public IEnumerable<SkillViewModel> GetColumn2ViewModel(IEnumerable<string> selected)
+        public List<SkillViewModel> GetColumn2ViewModel(List<string> selected)
         {
             return _skillsConfig.Column2Skills.Select(c => new SkillViewModel
             {
@@ -36,9 +36,19 @@ namespace Esfa.Recruit.Employer.Web.Services
             }).ToList();
         }
 
-        public IEnumerable<string> GetCustomSkills(IEnumerable<string> selected)
+        public List<string> GetCustomSkills(List<string> selected)
         {
             return selected.Except(_skillsConfig.Column1Skills).Except(_skillsConfig.Column2Skills).ToList();
+        }
+
+        public string GetSkillsAsText(List<string> selected)
+        {
+            var orderedSkills = _skillsConfig.Column1Skills
+                .Union(_skillsConfig.Column2Skills)
+                .Union(selected)
+                .ToList();
+            
+            return string.Join(", ", orderedSkills.Where(selected.Contains));
         }
 
     }
