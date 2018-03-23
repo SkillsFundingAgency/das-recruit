@@ -1,4 +1,6 @@
-﻿namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Preview
+﻿using Humanizer;
+
+namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Preview
 {
     public class PreviewViewModel
     {
@@ -6,9 +8,9 @@
 
         public string NumberOfPositions { get; set; }
 
-        public string NumberOfPositionsCaption =>   !string.IsNullOrWhiteSpace(NumberOfPositions) && NumberOfPositions == "1" 
-                                                    ? $"{NumberOfPositions} position available" 
-                                                    : $"{NumberOfPositions} positions available";
+        public string NumberOfPositionsCaption =>   !string.IsNullOrEmpty(NumberOfPositions) && int.TryParse(NumberOfPositions, out var positions) 
+                                                    ? $"{"position".ToQuantity(positions)} available" 
+                                                    : string.Empty;
 
         public string ShortDescription { get; set; }
 
