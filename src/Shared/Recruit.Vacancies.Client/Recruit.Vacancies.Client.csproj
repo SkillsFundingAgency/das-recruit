@@ -34,5 +34,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Application\QueryStore\" />
+    <Folder Include="Application\Validation\Fluent\CustomValidators\VacancyValidators\" />
   </ItemGroup>
 </Project>

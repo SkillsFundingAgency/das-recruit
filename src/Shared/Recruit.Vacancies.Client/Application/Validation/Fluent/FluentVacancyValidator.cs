@@ -1,3 +1,4 @@
+using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators.VacancyValidators;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Services;
 using FluentValidation;
@@ -12,6 +13,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             _timeProvider = timeProvider;
 
+            SingleFieldValidations();
+
+            CrossFieldValidations();
+        }
+
+        private void SingleFieldValidations()
+        {
             ValidateDescription();
 
             ValidateOrganisation();
@@ -25,6 +33,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             ValidateStartDate();
 
             ValidateTrainingProgramme();
+        }
+
+        private void CrossFieldValidations()
+        {
+            ValidateStartDateClosingDate();
         }
 
         private void ValidateDescription()
@@ -86,7 +99,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithErrorCode("15")
                 .RunCondition(VacancyRuleSet.ShortDescription)
                 .WithRuleId(VacancyRuleSet.ShortDescription);
-            
+
         }
 
         private void ValidateClosingDate()
@@ -120,7 +133,18 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             RuleFor(x => x.Programme)
                 .SetValidator(new TrainingProgrammeValidator((long)VacancyRuleSet.TrainingProgramme))
                     .RunCondition(VacancyRuleSet.TrainingProgramme)
-                    .WithRuleId(VacancyRuleSet.TrainingProgramme);
+                .WithRuleId(VacancyRuleSet.TrainingProgramme);
+        }
+
+        private void ValidateStartDateClosingDate()
+        {
+            When(x => x.StartDate.HasValue && x.ClosingDate.HasValue, () =>
+            {
+                RuleFor(x => x)
+                    .ClosingDateMustBeLessThanStartDate()
+                .RunCondition(VacancyRuleSet.StartDateEndDate)
+                .WithRuleId(VacancyRuleSet.StartDateEndDate);
+            });
         }
     }
 }

@@ -18,12 +18,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation
         WorkingWeekDescription = 0x400,
         Wage = 0x800,
         WageAdditionalInformation = 0x10000,
+        StartDateEndDate = 0x20000,
         All = ~None
-    }
-
-
-    public struct ValidationRuleSet
-    {
-        
     }
 }
