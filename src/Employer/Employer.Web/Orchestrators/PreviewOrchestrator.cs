@@ -50,7 +50,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 ThingsToConsider = string.Empty,
                 Title = vacancy.Title,
                 TrainingTitle = vacancy.Programme.Title,
-                TrainingType = vacancy.Programme.TrainingType?.ToString(),
+                TrainingType = vacancy.Programme.TrainingType?.GetDisplayName(),
                 TrainingLevel = vacancy.Programme.LevelName,
                 Ukprn = vacancy.Ukprn,
                 VacancyReferenceNumber = string.Empty,
