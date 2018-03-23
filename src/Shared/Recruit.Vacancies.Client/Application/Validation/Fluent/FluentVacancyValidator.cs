@@ -21,6 +21,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             ValidateShortDescription();
 
             ValidateClosingDate();
+
+            ValidateStartDate();
+
+            ValidateTrainingProgramme();
         }
 
         private void ValidateDescription()
@@ -96,6 +100,27 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithErrorCode("18")
                 .RunCondition(VacancyRuleSet.ClosingDate)
                 .WithRuleId(VacancyRuleSet.ClosingDate);
+        }
+
+        private void ValidateStartDate()
+        {
+            RuleFor(x => x.StartDate)
+                .NotNull()
+                .WithMessage("Enter the possible start date")
+                    .WithErrorCode("20")
+                .GreaterThan(_timeProvider.Now.AddDays(1))
+                .WithMessage("The possible start date can't be today or earlier. We advise using a date more than two weeks from now")
+                    .WithErrorCode("22")
+                .RunCondition(VacancyRuleSet.StartDate)
+                .WithRuleId(VacancyRuleSet.StartDate);
+        }
+
+        private void ValidateTrainingProgramme()
+        {
+            RuleFor(x => x.Programme)
+                .SetValidator(new TrainingProgrammeValidator((long)VacancyRuleSet.TrainingProgramme))
+                    .RunCondition(VacancyRuleSet.TrainingProgramme)
+                    .WithRuleId(VacancyRuleSet.TrainingProgramme);
         }
     }
 }

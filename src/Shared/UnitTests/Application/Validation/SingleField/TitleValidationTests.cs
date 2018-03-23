@@ -7,7 +7,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Services;
 using FluentAssertions;
 using Xunit;
 
-namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
+namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation.SingleField
 {
     public class ValidateVacancyTests
     {

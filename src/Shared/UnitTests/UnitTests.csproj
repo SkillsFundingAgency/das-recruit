@@ -13,4 +13,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Recruit.Vacancies.Client\Recruit.Vacancies.Client.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Application\Validation\SingleField\" />
+    <Folder Include="Application\Validation\CrossField\" />
+  </ItemGroup>
 </Project>
