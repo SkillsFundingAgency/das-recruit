@@ -4,21 +4,8 @@
     <div class="column-two-thirds">
 
         <h1 class="heading-large">@Model.Title</h1>
-        <h1 class="heading-large">Add training provider</h1>
-
-        @if (Model.HasSelectedTrainingProvider)
-        {
-        <div class="verification-summary">
-            <h2 class="heading-medium error-summary-heading" id="verification-summary-heading-example-1">
-                Selected training provider
-            </h2>
-
-            <h3 class="heading-small">@Model.ProviderName</h3>
-            <h3 class="heading-small">@Model.ProviderAddress</h3>
-            <h3 class="heading-small">UKPRN: @Model.Ukprn</h3>
-        </div>
-        }
-
+        <h1 class="heading-large">Training provider</h1>
+        
         <div asp-validation-summary="All" class="error-summary" role="alert" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
             <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
                 Please fix these errors
