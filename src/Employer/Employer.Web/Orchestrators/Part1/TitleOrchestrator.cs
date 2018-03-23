@@ -11,7 +11,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
-    public class TitleOrchestrator : EntityValidatingOrchestrator<Vacancy, TitleViewModel>
+    public class TitleOrchestrator : EntityValidatingOrchestrator<Vacancy, TitleEditModel>
     {
         private readonly IVacancyClient _client;
         private readonly ILogger<TitleOrchestrator> _logger;
@@ -71,7 +71,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             {
                 var id = await _client.CreateVacancyAsync(vm.Title, vm.EmployerAccountId, user);
 
-                return new OrchestratorResponse<Guid>(id);;
+                return new OrchestratorResponse<Guid>(id);
             }
 
             var vacancy = await _client.GetVacancyForEditAsync(vm.VacancyId.Value);
@@ -83,15 +83,18 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             vacancy.Title = vm.Title;
 
-
-            return await BuildOrchestratorResponse(async () => 
-            {
-                await _client.UpdateVacancyAsync(vacancy, VacancyRuleSet.Title);
-                return vacancy.Id;
-            });
+            return await ValidateAndExecute<Guid>(
+                vacancy, 
+                v => _client.Validate(v, VacancyRuleSet.Title),
+                async v =>
+                {
+                    await _client.UpdateVacancyAsync(vacancy, false);
+                    return v.Id;
+                }
+            );
         }
 
-        protected override EntityToViewModelPropertyMappings<Vacancy, TitleViewModel> DefineMappings()
+        protected override EntityToViewModelPropertyMappings<Vacancy, TitleEditModel> DefineMappings()
         {
             return null;
         }

@@ -14,7 +14,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
     using Esfa.Recruit.Vacancies.Client.Application.Validation;
     using Microsoft.Extensions.Logging;
 
-    public class TrainingOrchestrator : EntityValidatingOrchestrator<Vacancy, TrainingViewModel>
+    public class TrainingOrchestrator : EntityValidatingOrchestrator<Vacancy, TrainingEditModel>
     {
         private readonly IVacancyClient _client;
 
@@ -85,7 +85,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             await Task.WhenAll(vacancyTask, programmesTask);
 
             var vacancy = vacancyTask.Result;
-            var programme = programmesTask.Result.Programmes.Single(p => p.Id == m.SelectedProgrammeId);
             
             if (!vacancy.CanEdit)
             {
@@ -95,21 +94,30 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             vacancy.ClosingDate = m.ClosingDate.AsDateTimeUk();
             vacancy.StartDate = m.StartDate.AsDateTimeUk();
             
-            vacancy.Programme = new Programme
-            {
-                Id = programme.Id,
-                Title = programme.Title,
-                TrainingType = programme.ApprenticeshipType,
-                Level = programme.Level,
-                LevelName = ((ProgrammeLevel)programme.Level).GetDisplayName()
-            };
+            var programme = programmesTask.Result.Programmes.SingleOrDefault(p => p.Id == m.SelectedProgrammeId);
             
-            return await BuildOrchestratorResponse(() =>_client.UpdateVacancyAsync(vacancy, VacancyRuleSet.ClosingDate | VacancyRuleSet.StartDate | VacancyRuleSet.TrainingProgramme, false));
+            if (programme != null)
+            {
+                vacancy.Programme = new Programme
+                {
+                    Id = programme.Id,
+                    Title = programme.Title,
+                    TrainingType = programme.ApprenticeshipType,
+                    Level = programme.Level,
+                    LevelName = ((ProgrammeLevel)programme.Level).GetDisplayName()
+                };
+            }
+            
+            return await ValidateAndExecute(
+                vacancy, 
+                v => _client.Validate(v, VacancyRuleSet.ClosingDate | VacancyRuleSet.StartDate | VacancyRuleSet.TrainingProgramme),
+                v => _client.UpdateVacancyAsync(vacancy, false)
+            );
         }
 
-        protected override EntityToViewModelPropertyMappings<Vacancy, TrainingViewModel> DefineMappings()
+        protected override EntityToViewModelPropertyMappings<Vacancy, TrainingEditModel> DefineMappings()
         {
-            var mappings = new EntityToViewModelPropertyMappings<Vacancy, TrainingViewModel>();
+            var mappings = new EntityToViewModelPropertyMappings<Vacancy, TrainingEditModel>();
 
             mappings.Add(e => e.Programme, vm => vm.SelectedProgrammeId);
             mappings.Add(e => e.StartDate, vm => vm.StartDate);

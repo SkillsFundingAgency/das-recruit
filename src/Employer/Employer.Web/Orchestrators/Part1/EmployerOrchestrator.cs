@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.RouteModel;
@@ -13,7 +14,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
-    public class EmployerOrchestrator : EntityValidatingOrchestrator<Vacancy, EmployerViewModel>
+    public class EmployerOrchestrator : EntityValidatingOrchestrator<Vacancy, EmployerEditModel>
     {
         private readonly IVacancyClient _client;
         private readonly ILogger<EmployerOrchestrator> _logger;
@@ -91,13 +92,16 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 Postcode = m.Postcode.AsPostcode()
             };
 
-
-            return await BuildOrchestratorResponse(() => _client.UpdateVacancyAsync(vacancy, VacancyRuleSet.OrganisationId | VacancyRuleSet.OrganisationAddress, false));
+            return await ValidateAndExecute(
+                vacancy, 
+                v => _client.Validate(v, VacancyRuleSet.OrganisationId | VacancyRuleSet.OrganisationAddress),
+                v => _client.UpdateVacancyAsync(vacancy, false)
+            );
         }
 
-        protected override EntityToViewModelPropertyMappings<Vacancy, EmployerViewModel> DefineMappings()
+        protected override EntityToViewModelPropertyMappings<Vacancy, EmployerEditModel> DefineMappings()
         {
-            var mappings = new EntityToViewModelPropertyMappings<Vacancy, EmployerViewModel>();
+            var mappings = new EntityToViewModelPropertyMappings<Vacancy, EmployerEditModel>();
 
             mappings.Add(e => e.Location.AddressLine1, vm => vm.AddressLine1);
 

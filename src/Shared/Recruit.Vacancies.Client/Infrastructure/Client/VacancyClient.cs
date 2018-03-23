@@ -30,12 +30,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _validator = validator;
         }
 
-        public async Task UpdateVacancyAsync(Vacancy vacancy, VacancyRuleSet validationRules, bool canUpdateQueryStore = true)
+        public async Task UpdateVacancyAsync(Vacancy vacancy, bool canUpdateQueryStore = true)
         {
             var command = new UpdateVacancyCommand
             {
-                Vacancy = vacancy,
-                ValidationRules = validationRules
+                Vacancy = vacancy
             };
 
             await _messaging.SendCommandAsync(command);

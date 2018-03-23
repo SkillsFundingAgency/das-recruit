@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
-    public class ShortDescriptionOrchestrator : EntityValidatingOrchestrator<Vacancy, ShortDescriptionViewModel>
+    public class ShortDescriptionOrchestrator : EntityValidatingOrchestrator<Vacancy, ShortDescriptionEditModel>
     {
         private readonly IVacancyClient _client;
         private readonly ILogger<ShortDescriptionOrchestrator> _logger;
@@ -59,20 +59,19 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
             }
 
-            if (!string.IsNullOrEmpty(m.NumberOfPositions))
-            {
-                int.TryParse(m.NumberOfPositions, out var numberOfPositions);
-                vacancy.NumberOfPositions = numberOfPositions;
-            }
-
+            vacancy.NumberOfPositions = int.TryParse(m.NumberOfPositions, out var numberOfPositions) ? numberOfPositions : default(int?);
             vacancy.ShortDescription = m.ShortDescription;
 
-            return await BuildOrchestratorResponse(() => _client.UpdateVacancyAsync(vacancy, VacancyRuleSet.NumberOfPostions | VacancyRuleSet.ShortDescription, false));
+            return await ValidateAndExecute(
+                vacancy, 
+                v => _client.Validate(v, VacancyRuleSet.NumberOfPostions | VacancyRuleSet.ShortDescription),
+                v => _client.UpdateVacancyAsync(vacancy, false)
+            );
         }
 
-        protected override EntityToViewModelPropertyMappings<Vacancy, ShortDescriptionViewModel> DefineMappings()
+        protected override EntityToViewModelPropertyMappings<Vacancy, ShortDescriptionEditModel> DefineMappings()
         {
-            var mappings = new EntityToViewModelPropertyMappings<Vacancy, ShortDescriptionViewModel>();
+            var mappings = new EntityToViewModelPropertyMappings<Vacancy, ShortDescriptionEditModel>();
 
             mappings.Add(e => e.NumberOfPositions, vm => vm.NumberOfPositions);
             mappings.Add(e => e.ShortDescription, vm => vm.ShortDescription);

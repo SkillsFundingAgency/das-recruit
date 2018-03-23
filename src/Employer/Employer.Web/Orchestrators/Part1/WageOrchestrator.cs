@@ -80,7 +80,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 WageAdditionalInformation = m.WageAdditionalInformation
             };
             
-            await _client.UpdateVacancyAsync(vacancy, VacancyRuleSet.Duration | VacancyRuleSet.WorkingWeekDescription & VacancyRuleSet.Wage & VacancyRuleSet.WageAdditionalInformation, false);
+            // await _client.UpdateVacancyAsync(vacancy, VacancyRuleSet.Duration | VacancyRuleSet.WorkingWeekDescription & VacancyRuleSet.Wage & VacancyRuleSet.WageAdditionalInformation, false);
+            await _client.UpdateVacancyAsync(vacancy, false);
         }
     }
 }
