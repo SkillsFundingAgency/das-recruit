@@ -1,5 +1,4 @@
 using System;
-using Esfa.Recruit.Vacancies.Client.Application.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -21,7 +20,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
         }
 
         [Fact]
-        public void ShouldNotThrowExceptionIfPostisionFieldsAreValid()
+        public void NoErrorsWhenPositionFieldsAreValid()
         {
             var vacancy = new Vacancy
             {
@@ -29,9 +28,10 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
                 ShortDescription = new string('a', 60)
             };
 
-            Action act = () => _validator.ValidateAndThrow(vacancy, VacancyRuleSet.NumberOfPostions | VacancyRuleSet.ShortDescription);
+            var result = _validator.Validate(vacancy, VacancyRuleSet.NumberOfPostions | VacancyRuleSet.ShortDescription);
 
-            act.Should().NotThrow<EntityValidationException>();
+            result.HasErrors.Should().BeFalse();
+            result.Errors.Should().HaveCount(0);
         }
 
         [Theory]
@@ -44,14 +44,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
                 NumberOfPositions = numOfPositionsValue
             };
 
-            Action act = () => _validator.ValidateAndThrow(vacancy, VacancyRuleSet.NumberOfPostions);
+            var result = _validator.Validate(vacancy, VacancyRuleSet.NumberOfPostions);
 
-            var ex = act.Should().Throw<EntityValidationException>();
-            ex.Which.ValidationResult.HasErrors.Should().BeTrue();
-            ex.Which.ValidationResult.Errors.Count.Should().Be(1);
-            ex.Which.ValidationResult.Errors[0].PropertyName.Should().Be(nameof(vacancy.NumberOfPositions));
-            ex.Which.ValidationResult.Errors[0].ErrorCode.Should().Be("10");
-            ex.Which.ValidationResult.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.NumberOfPostions);
+            result.HasErrors.Should().BeTrue();
+            result.Errors.Should().HaveCount(1);
+            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.NumberOfPositions));
+            result.Errors[0].ErrorCode.Should().Be("10");
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.NumberOfPostions);
         }
 
         [Theory]
@@ -64,14 +63,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
                 ShortDescription = shortDescriptionValue
             };
 
-            Action act = () => _validator.ValidateAndThrow(vacancy, VacancyRuleSet.ShortDescription);
+            var result = _validator.Validate(vacancy, VacancyRuleSet.ShortDescription);
 
-            var ex = act.Should().Throw<EntityValidationException>();
-            ex.Which.ValidationResult.HasErrors.Should().BeTrue();
-            ex.Which.ValidationResult.Errors.Count.Should().Be(1);
-            ex.Which.ValidationResult.Errors[0].PropertyName.Should().Be(nameof(vacancy.ShortDescription));
-            ex.Which.ValidationResult.Errors[0].ErrorCode.Should().Be("12");
-            ex.Which.ValidationResult.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.ShortDescription);
+            result.HasErrors.Should().BeTrue();
+            result.Errors.Should().HaveCount(1);
+            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.ShortDescription));
+            result.Errors[0].ErrorCode.Should().Be("12");
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.ShortDescription);
         }
 
         [Fact]
@@ -82,14 +80,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
                 ShortDescription = new String('a', 351)
             };
 
-            Action act = () => _validator.ValidateAndThrow(vacancy, VacancyRuleSet.ShortDescription);
+            var result = _validator.Validate(vacancy, VacancyRuleSet.ShortDescription);
 
-            var ex = act.Should().Throw<EntityValidationException>();
-            ex.Which.ValidationResult.HasErrors.Should().BeTrue();
-            ex.Which.ValidationResult.Errors.Count.Should().Be(1);
-            ex.Which.ValidationResult.Errors[0].PropertyName.Should().Be(nameof(vacancy.ShortDescription));
-            ex.Which.ValidationResult.Errors[0].ErrorCode.Should().Be("13");
-            ex.Which.ValidationResult.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.ShortDescription);
+            result.HasErrors.Should().BeTrue();
+            result.Errors.Should().HaveCount(1);
+            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.ShortDescription));
+            result.Errors[0].ErrorCode.Should().Be("13");
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.ShortDescription);
         }
 
         [Fact]
@@ -100,14 +97,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
                 ShortDescription = new String('a', 49)
             };
 
-            Action act = () => _validator.ValidateAndThrow(vacancy, VacancyRuleSet.ShortDescription);
+            var result = _validator.Validate(vacancy, VacancyRuleSet.ShortDescription);
 
-            var ex = act.Should().Throw<EntityValidationException>();
-            ex.Which.ValidationResult.HasErrors.Should().BeTrue();
-            ex.Which.ValidationResult.Errors.Count.Should().Be(1);
-            ex.Which.ValidationResult.Errors[0].PropertyName.Should().Be(nameof(vacancy.ShortDescription));
-            ex.Which.ValidationResult.Errors[0].ErrorCode.Should().Be("14");
-            ex.Which.ValidationResult.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.ShortDescription);
+            result.HasErrors.Should().BeTrue();
+            result.Errors.Should().HaveCount(1);
+            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.ShortDescription));
+            result.Errors[0].ErrorCode.Should().Be("14");
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.ShortDescription);
         }
 
 
@@ -121,14 +117,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
                 ShortDescription = new String('a', 30) + invalidCharacter + new String('b', 30)
             };
 
-            Action act = () => _validator.ValidateAndThrow(vacancy, VacancyRuleSet.ShortDescription);
+            var result = _validator.Validate(vacancy, VacancyRuleSet.ShortDescription);
 
-            var ex = act.Should().Throw<EntityValidationException>();
-            ex.Which.ValidationResult.HasErrors.Should().BeTrue();
-            ex.Which.ValidationResult.Errors.Count.Should().Be(1);
-            ex.Which.ValidationResult.Errors[0].PropertyName.Should().Be(nameof(vacancy.ShortDescription));
-            ex.Which.ValidationResult.Errors[0].ErrorCode.Should().Be("15");
-            ex.Which.ValidationResult.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.ShortDescription);
+            result.HasErrors.Should().BeTrue();
+            result.Errors.Should().HaveCount(1);
+            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.ShortDescription));
+            result.Errors[0].ErrorCode.Should().Be("15");
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.ShortDescription);
         }
     }
 }

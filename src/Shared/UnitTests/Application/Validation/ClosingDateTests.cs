@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Esfa.Recruit.Vacancies.Client.Application.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -29,6 +28,21 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
                 new object[] { DateTime.UtcNow.AddDays(-1) }
             };
 
+
+        [Fact]
+        public void NoErrorsWhenClosingDateIsValid()
+        {
+            var vacancy = new Vacancy
+            {
+                ClosingDate = DateTime.UtcNow.AddDays(5)
+            };
+
+            var result = _validator.Validate(vacancy, VacancyRuleSet.ClosingDate);
+
+            result.HasErrors.Should().BeFalse();
+            result.Errors.Should().HaveCount(0);
+        }
+
         [Fact]
         public void ClosingDateMustHaveAValue()
         {
@@ -37,14 +51,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
                 ClosingDate = null
             };
             
-            Action act = () => _validator.ValidateAndThrow(vacancy, VacancyRuleSet.ClosingDate);
+            var result = _validator.Validate(vacancy, VacancyRuleSet.ClosingDate);
 
-            var ex = act.Should().Throw<EntityValidationException>();
-            ex.Which.ValidationResult.HasErrors.Should().BeTrue();
-            ex.Which.ValidationResult.Errors.Count.Should().Be(1);
-            ex.Which.ValidationResult.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.ClosingDate)}");
-            ex.Which.ValidationResult.Errors[0].ErrorCode.Should().Be("16");
-            ex.Which.ValidationResult.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.ClosingDate);
+            result.HasErrors.Should().BeTrue();
+            result.Errors.Should().HaveCount(1);
+            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.ClosingDate)}");
+            result.Errors[0].ErrorCode.Should().Be("16");
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.ClosingDate);
         }
 
         [Theory]
@@ -56,14 +69,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
                 ClosingDate = closingDateValue
             };
 
-            Action act = () => _validator.ValidateAndThrow(vacancy, VacancyRuleSet.ClosingDate);
+            var result = _validator.Validate(vacancy, VacancyRuleSet.ClosingDate);
 
-            var ex = act.Should().Throw<EntityValidationException>();
-            ex.Which.ValidationResult.HasErrors.Should().BeTrue();
-            ex.Which.ValidationResult.Errors.Count.Should().Be(1);
-            ex.Which.ValidationResult.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.ClosingDate)}");
-            ex.Which.ValidationResult.Errors[0].ErrorCode.Should().Be("18");
-            ex.Which.ValidationResult.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.ClosingDate);
+            result.HasErrors.Should().BeTrue();
+            result.Errors.Should().HaveCount(1);
+            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.ClosingDate)}");
+            result.Errors[0].ErrorCode.Should().Be("18");
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.ClosingDate);
         }
     }
 }

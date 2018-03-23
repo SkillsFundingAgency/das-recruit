@@ -1,5 +1,4 @@
 using System;
-using Esfa.Recruit.Vacancies.Client.Application.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -21,7 +20,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
         }
 
         [Fact]
-        public void ShouldNotThrowExceptionIfOrganisationFieldsAreValid()
+        public void NoErrorsWhenOrganisationFieldsAreValid()
         {
             var vacancy = new Vacancy
             {
@@ -33,9 +32,10 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
                 }
             };
 
-            Action act = () => _validator.ValidateAndThrow(vacancy, VacancyRuleSet.OrganisationId | VacancyRuleSet.OrganisationAddress);
+            var result = _validator.Validate(vacancy, VacancyRuleSet.OrganisationId | VacancyRuleSet.OrganisationAddress);
 
-            act.Should().NotThrow<EntityValidationException>();
+            result.HasErrors.Should().BeFalse();
+            result.Errors.Should().HaveCount(0);
         }
 
         [Theory]
@@ -48,14 +48,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
                 OrganisationId = organisationIdValue
             };
 
-            Action act = () => _validator.ValidateAndThrow(vacancy, VacancyRuleSet.OrganisationId);
+            var result = _validator.Validate(vacancy, VacancyRuleSet.OrganisationId);
 
-            var ex = act.Should().Throw<EntityValidationException>();
-            ex.Which.ValidationResult.HasErrors.Should().BeTrue();
-            ex.Which.ValidationResult.Errors.Count.Should().Be(1);
-            ex.Which.ValidationResult.Errors[0].PropertyName.Should().Be(nameof(vacancy.OrganisationId));
-            ex.Which.ValidationResult.Errors[0].ErrorCode.Should().Be("4");
-            ex.Which.ValidationResult.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OrganisationId);
+            result.HasErrors.Should().BeTrue();
+            result.Errors.Should().HaveCount(1);
+            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.OrganisationId));
+            result.Errors[0].ErrorCode.Should().Be("4");
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OrganisationId);
         }
 
         [Theory]
@@ -72,14 +71,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
                 }
             };
 
-            Action act = () => _validator.ValidateAndThrow(vacancy, VacancyRuleSet.OrganisationAddress);
+            var result = _validator.Validate(vacancy, VacancyRuleSet.OrganisationAddress);
 
-            var ex = act.Should().Throw<EntityValidationException>();
-            ex.Which.ValidationResult.HasErrors.Should().BeTrue();
-            ex.Which.ValidationResult.Errors.Count.Should().Be(1);
-            ex.Which.ValidationResult.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Location)}.{nameof(vacancy.Location.AddressLine1)}");
-            ex.Which.ValidationResult.Errors[0].ErrorCode.Should().Be("5");
-            ex.Which.ValidationResult.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OrganisationAddress);
+            result.HasErrors.Should().BeTrue();
+            result.Errors.Should().HaveCount(1);
+            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Location)}.{nameof(vacancy.Location.AddressLine1)}");
+            result.Errors[0].ErrorCode.Should().Be("5");
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OrganisationAddress);
         }
 
         [Theory]
@@ -96,14 +94,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
                 }
             };
 
-            Action act = () => _validator.ValidateAndThrow(vacancy, VacancyRuleSet.OrganisationAddress);
+            var result = _validator.Validate(vacancy, VacancyRuleSet.OrganisationAddress);
 
-            var ex = act.Should().Throw<EntityValidationException>();
-            ex.Which.ValidationResult.HasErrors.Should().BeTrue();
-            ex.Which.ValidationResult.Errors.Count.Should().Be(1);
-            ex.Which.ValidationResult.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Location)}.{nameof(vacancy.Location.AddressLine1)}");
-            ex.Which.ValidationResult.Errors[0].ErrorCode.Should().Be("6");
-            ex.Which.ValidationResult.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OrganisationAddress);
+            result.HasErrors.Should().BeTrue();
+            result.Errors.Should().HaveCount(1);
+            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Location)}.{nameof(vacancy.Location.AddressLine1)}");
+            result.Errors[0].ErrorCode.Should().Be("6");
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OrganisationAddress);
         }
 
         [Fact]
@@ -118,14 +115,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
                 }
             };
 
-            Action act = () => _validator.ValidateAndThrow(vacancy, VacancyRuleSet.OrganisationAddress);
+            var result = _validator.Validate(vacancy, VacancyRuleSet.OrganisationAddress);
 
-            var ex = act.Should().Throw<EntityValidationException>();
-            ex.Which.ValidationResult.HasErrors.Should().BeTrue();
-            ex.Which.ValidationResult.Errors.Count.Should().Be(1);
-            ex.Which.ValidationResult.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Location)}.{nameof(vacancy.Location.AddressLine1)}");
-            ex.Which.ValidationResult.Errors[0].ErrorCode.Should().Be("7");
-            ex.Which.ValidationResult.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OrganisationAddress);
+            result.HasErrors.Should().BeTrue();
+            result.Errors.Should().HaveCount(1);
+            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Location)}.{nameof(vacancy.Location.AddressLine1)}");
+            result.Errors[0].ErrorCode.Should().Be("7");
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OrganisationAddress);
         }
 
         [Theory]
@@ -143,14 +139,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
                 }
             };
 
-            Action act = () => _validator.ValidateAndThrow(vacancy, VacancyRuleSet.OrganisationAddress);
+            var result = _validator.Validate(vacancy, VacancyRuleSet.OrganisationAddress);
 
-            var ex = act.Should().Throw<EntityValidationException>();
-            ex.Which.ValidationResult.HasErrors.Should().BeTrue();
-            ex.Which.ValidationResult.Errors.Count.Should().Be(1);
-            ex.Which.ValidationResult.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Location)}.{nameof(vacancy.Location.AddressLine2)}");
-            ex.Which.ValidationResult.Errors[0].ErrorCode.Should().Be("6");
-            ex.Which.ValidationResult.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OrganisationAddress);
+            result.HasErrors.Should().BeTrue();
+            result.Errors.Should().HaveCount(1);
+            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Location)}.{nameof(vacancy.Location.AddressLine2)}");
+            result.Errors[0].ErrorCode.Should().Be("6");
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OrganisationAddress);
         }
 
         [Fact]
@@ -166,14 +161,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
                 }
             };
 
-            Action act = () => _validator.ValidateAndThrow(vacancy, VacancyRuleSet.OrganisationAddress);
+            var result = _validator.Validate(vacancy, VacancyRuleSet.OrganisationAddress);
 
-            var ex = act.Should().Throw<EntityValidationException>();
-            ex.Which.ValidationResult.HasErrors.Should().BeTrue();
-            ex.Which.ValidationResult.Errors.Count.Should().Be(1);
-            ex.Which.ValidationResult.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Location)}.{nameof(vacancy.Location.AddressLine2)}");
-            ex.Which.ValidationResult.Errors[0].ErrorCode.Should().Be("7");
-            ex.Which.ValidationResult.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OrganisationAddress);
+            result.HasErrors.Should().BeTrue();
+            result.Errors.Should().HaveCount(1);
+            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Location)}.{nameof(vacancy.Location.AddressLine2)}");
+            result.Errors[0].ErrorCode.Should().Be("7");
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OrganisationAddress);
         }
 
         [Theory]
@@ -191,14 +185,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
                 }
             };
 
-            Action act = () => _validator.ValidateAndThrow(vacancy, VacancyRuleSet.OrganisationAddress);
+            var result = _validator.Validate(vacancy, VacancyRuleSet.OrganisationAddress);
 
-            var ex = act.Should().Throw<EntityValidationException>();
-            ex.Which.ValidationResult.HasErrors.Should().BeTrue();
-            ex.Which.ValidationResult.Errors.Count.Should().Be(1);
-            ex.Which.ValidationResult.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Location)}.{nameof(vacancy.Location.AddressLine3)}");
-            ex.Which.ValidationResult.Errors[0].ErrorCode.Should().Be("6");
-            ex.Which.ValidationResult.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OrganisationAddress);
+            result.HasErrors.Should().BeTrue();
+            result.Errors.Should().HaveCount(1);
+            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Location)}.{nameof(vacancy.Location.AddressLine3)}");
+            result.Errors[0].ErrorCode.Should().Be("6");
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OrganisationAddress);
         }
 
         [Fact]
@@ -214,14 +207,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
                 }
             };
 
-            Action act = () => _validator.ValidateAndThrow(vacancy, VacancyRuleSet.OrganisationAddress);
+            var result = _validator.Validate(vacancy, VacancyRuleSet.OrganisationAddress);
 
-            var ex = act.Should().Throw<EntityValidationException>();
-            ex.Which.ValidationResult.HasErrors.Should().BeTrue();
-            ex.Which.ValidationResult.Errors.Count.Should().Be(1);
-            ex.Which.ValidationResult.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Location)}.{nameof(vacancy.Location.AddressLine3)}");
-            ex.Which.ValidationResult.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OrganisationAddress);
-            ex.Which.ValidationResult.Errors[0].ErrorCode.Should().Be("7");
+            result.HasErrors.Should().BeTrue();
+            result.Errors.Should().HaveCount(1);
+            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Location)}.{nameof(vacancy.Location.AddressLine3)}");
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OrganisationAddress);
+            result.Errors[0].ErrorCode.Should().Be("7");
         }
 
         [Theory]
@@ -239,14 +231,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
                 }
             };
 
-            Action act = () => _validator.ValidateAndThrow(vacancy, VacancyRuleSet.OrganisationAddress);
+            var result = _validator.Validate(vacancy, VacancyRuleSet.OrganisationAddress);
 
-            var ex = act.Should().Throw<EntityValidationException>();
-            ex.Which.ValidationResult.HasErrors.Should().BeTrue();
-            ex.Which.ValidationResult.Errors.Count.Should().Be(1);
-            ex.Which.ValidationResult.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Location)}.{nameof(vacancy.Location.AddressLine4)}");
-            ex.Which.ValidationResult.Errors[0].ErrorCode.Should().Be("6");
-            ex.Which.ValidationResult.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OrganisationAddress);
+            result.HasErrors.Should().BeTrue();
+            result.Errors.Should().HaveCount(1);
+            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Location)}.{nameof(vacancy.Location.AddressLine4)}");
+            result.Errors[0].ErrorCode.Should().Be("6");
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OrganisationAddress);
         }
 
         [Fact]
@@ -262,14 +253,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
                 }
             };
 
-            Action act = () => _validator.ValidateAndThrow(vacancy, VacancyRuleSet.OrganisationAddress);
+            var result = _validator.Validate(vacancy, VacancyRuleSet.OrganisationAddress);
 
-            var ex = act.Should().Throw<EntityValidationException>();
-            ex.Which.ValidationResult.HasErrors.Should().BeTrue();
-            ex.Which.ValidationResult.Errors.Count.Should().Be(1);
-            ex.Which.ValidationResult.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Location)}.{nameof(vacancy.Location.AddressLine4)}");
-            ex.Which.ValidationResult.Errors[0].ErrorCode.Should().Be("7");
-            ex.Which.ValidationResult.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OrganisationAddress);
+            result.HasErrors.Should().BeTrue();
+            result.Errors.Should().HaveCount(1);
+            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Location)}.{nameof(vacancy.Location.AddressLine4)}");
+            result.Errors[0].ErrorCode.Should().Be("7");
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OrganisationAddress);
         }
 
         [Theory]
@@ -286,14 +276,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
                 }
             };
 
-            Action act = () => _validator.ValidateAndThrow(vacancy, VacancyRuleSet.OrganisationAddress);
+            var result = _validator.Validate(vacancy, VacancyRuleSet.OrganisationAddress);
 
-            var ex = act.Should().Throw<EntityValidationException>();
-            ex.Which.ValidationResult.HasErrors.Should().BeTrue();
-            ex.Which.ValidationResult.Errors.Count.Should().Be(1);
-            ex.Which.ValidationResult.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Location)}.{nameof(vacancy.Location.Postcode)}");
-            ex.Which.ValidationResult.Errors[0].ErrorCode.Should().Be("8");
-            ex.Which.ValidationResult.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OrganisationAddress);
+            result.HasErrors.Should().BeTrue();
+            result.Errors.Should().HaveCount(1);
+            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Location)}.{nameof(vacancy.Location.Postcode)}");
+            result.Errors[0].ErrorCode.Should().Be("8");
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OrganisationAddress);
         }
 
         [Theory]
@@ -311,14 +300,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
                 }
             };
 
-            Action act = () => _validator.ValidateAndThrow(vacancy, VacancyRuleSet.OrganisationAddress);
+            var result = _validator.Validate(vacancy, VacancyRuleSet.OrganisationAddress);
 
-            var ex = act.Should().Throw<EntityValidationException>();
-            ex.Which.ValidationResult.HasErrors.Should().BeTrue();
-            ex.Which.ValidationResult.Errors.Count.Should().Be(1);
-            ex.Which.ValidationResult.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Location)}.{nameof(vacancy.Location.Postcode)}");
-            ex.Which.ValidationResult.Errors[0].ErrorCode.Should().Be("9");
-            ex.Which.ValidationResult.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OrganisationAddress);
+            result.HasErrors.Should().BeTrue();
+            result.Errors.Should().HaveCount(1);
+            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Location)}.{nameof(vacancy.Location.Postcode)}");
+            result.Errors[0].ErrorCode.Should().Be("9");
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OrganisationAddress);
         }
     }
 }

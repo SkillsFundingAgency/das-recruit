@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Esfa.Recruit.Vacancies.Client.Application.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -30,16 +29,17 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
 
         [Theory]
         [MemberData(nameof(ValidTitles))]
-        public void ShouldNotThrowExceptionIfTitleIsValid(string validTitle)
+        public void NoErrorsWhenTitleFieldIsValid(string validTitle)
         {
             var vacancy = new Vacancy 
             {
                 Title = validTitle
             };
 
-            Action act = () => _validator.ValidateAndThrow(vacancy, VacancyRuleSet.Title);
+            var result = _validator.Validate(vacancy, VacancyRuleSet.Title);
 
-            act.Should().NotThrow<EntityValidationException>();
+            result.HasErrors.Should().BeFalse();
+            result.Errors.Should().HaveCount(0);
         }
 
         [Theory]
@@ -52,14 +52,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
                 Title = titleValue
             };
 
-            Action act = () => _validator.ValidateAndThrow(vacancy, VacancyRuleSet.Title);
+            var result = _validator.Validate(vacancy, VacancyRuleSet.Title);
 
-            var ex = act.Should().Throw<EntityValidationException>();
-            ex.Which.ValidationResult.HasErrors.Should().BeTrue();
-            ex.Which.ValidationResult.Errors.Count.Should().Be(1);
-            ex.Which.ValidationResult.Errors[0].PropertyName.Should().Be(nameof(vacancy.Title));
-            ex.Which.ValidationResult.Errors[0].ErrorCode.Should().Be("1");
-            ex.Which.ValidationResult.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Title);
+            result.HasErrors.Should().BeTrue();
+            result.Errors.Should().HaveCount(1);
+            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.Title));
+            result.Errors[0].ErrorCode.Should().Be("1");
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Title);
         }
 
         [Fact]
@@ -70,14 +69,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
                 Title = new String('a', 110)
             };
 
-            Action act = () => _validator.ValidateAndThrow(vacancy, VacancyRuleSet.Title);
+            var result = _validator.Validate(vacancy, VacancyRuleSet.Title);
 
-            var ex = act.Should().Throw<EntityValidationException>();
-            ex.Which.ValidationResult.HasErrors.Should().BeTrue();
-            ex.Which.ValidationResult.Errors.Count.Should().Be(1);
-            ex.Which.ValidationResult.Errors[0].PropertyName.Should().Be(nameof(vacancy.Title));
-            ex.Which.ValidationResult.Errors[0].ErrorCode.Should().Be("2");
-            ex.Which.ValidationResult.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Title);
+            result.HasErrors.Should().BeTrue();
+            result.Errors.Should().HaveCount(1);
+            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.Title));
+            result.Errors[0].ErrorCode.Should().Be("2");
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Title);
         }
 
         [Theory]
@@ -90,14 +88,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
                 Title = testValue
             };
 
-            Action act = () => _validator.ValidateAndThrow(vacancy, VacancyRuleSet.Title);
+            var result = _validator.Validate(vacancy, VacancyRuleSet.Title);
 
-            var ex = act.Should().Throw<EntityValidationException>();
-            ex.Which.ValidationResult.HasErrors.Should().BeTrue();
-            ex.Which.ValidationResult.Errors.Count.Should().Be(1);
-            ex.Which.ValidationResult.Errors[0].PropertyName.Should().Be(nameof(vacancy.Title));
-            ex.Which.ValidationResult.Errors[0].ErrorCode.Should().Be("3");
-            ex.Which.ValidationResult.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Title);
+            result.HasErrors.Should().BeTrue();
+            result.Errors.Should().HaveCount(1);
+            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.Title));
+            result.Errors[0].ErrorCode.Should().Be("3");
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Title);
         }
     }
 }
