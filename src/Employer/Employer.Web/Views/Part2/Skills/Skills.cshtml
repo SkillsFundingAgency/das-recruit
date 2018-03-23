@@ -25,20 +25,22 @@
 
                 <div class="two-column-checkbox-container">
                     <fieldset class="two-column-checkbox">
-                        @foreach (var checkBox in Model.Column1Checkboxes)
+                        @for (var i = 0; i < Model.Column1Checkboxes.Count; i++)
                         {
+                            var checkbox = Model.Column1Checkboxes[i];
                             <div class="multiple-choice">
-                                <input name="Skills" id="col1-@checkBox.Id" type="checkbox" value="@checkBox.Name" checked="@checkBox.Selected">
-                                <label for="col1-@checkBox.Id">@checkBox.Name</label>
+                                <input name="Skills" id="col1-@i" type="checkbox" value="@checkbox.Name" checked="@checkbox.Selected">
+                                <label for="col1-@i">@checkbox.Name</label>
                             </div>
                         }
                     </fieldset>
                     <fieldset class="two-column-checkbox">
-                        @foreach (var checkBox in Model.Column2Checkboxes)
+                        @for (var i = 0; i < Model.Column2Checkboxes.Count; i++)
                         {
+                            var checkbox = Model.Column2Checkboxes[i];
                             <div class="multiple-choice">
-                                <input name="Skills" id="col2-@checkBox.Id" type="checkbox" value="@checkBox.Name" checked="@checkBox.Selected">
-                                <label for="col2-@checkBox.Id">@checkBox.Name</label>
+                                <input name="Skills" id="col2-@i" type="checkbox" value="@checkbox.Name" checked="@checkbox.Selected">
+                                <label for="col2-@i">@checkbox.Name</label>
                             </div>
                         }
                     </fieldset>
