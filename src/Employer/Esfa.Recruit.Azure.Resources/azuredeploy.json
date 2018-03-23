@@ -57,6 +57,10 @@
     "ApprenticeshipProgrammesApiBaseUrl": {
       "type": "string",
       "defaultValue": ""
+    },
+    "GoogleMapsPrivateKey": {
+      "type": "string",
+      "defaultValue": ""
     }
   },
   "variables": {
@@ -164,6 +168,10 @@
             {
               "name": "Environment",
               "value": "[toUpper(parameters('EnvironmentName'))]"
+            },
+            {
+              "name": "GoogleMapsPrivateKey",
+              "value": "[parameters('GoogleMapsPrivateKey')]"
             }
           ],
           "connectionStrings": [
