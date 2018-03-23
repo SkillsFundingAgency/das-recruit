@@ -568,3 +568,15 @@
     color: #6F777B;
     font-weight: 400;
 }
+
+.preview-empty {
+    border-left: 5px solid #FFBF47;
+    min-height: 80px;
+    padding-left: 15px;
+}
+
+.preview-error {
+    border-left: 5px solid #b10e1e;
+    min-height: 80px;
+    padding-left: 15px;
+}

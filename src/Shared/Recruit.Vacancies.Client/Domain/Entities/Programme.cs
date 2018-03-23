@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Esfa.Recruit.Vacancies.Client.Domain.Projections;
+﻿using Esfa.Recruit.Vacancies.Client.Domain.Projections;
 
 namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
 {
