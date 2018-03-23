@@ -20,6 +20,9 @@
                 <legend class="heading-small">Desired skills or personal qualities?</legend>
 
                 <div class="body-text">Select all that apply</div>
+
+                <span asp-validation-for="Skills" class="error-message"></span>
+
                 <div class="two-column-checkbox-container">
                     <fieldset class="two-column-checkbox">
                         @foreach (var checkBox in Model.Column1Checkboxes)
@@ -45,32 +48,33 @@
             <p class="no-bottom-margin">or</p>
             <div class="form-group form-group-compound">
                 <label asp-for="AddCustomSkillName" class="form-label-bold">Add a new desired skill or personal quality</label>
+                <span asp-validation-for="AddCustomSkillName" class="error-message"></span>
                 <input asp-for="AddCustomSkillName" type="text" class="form-control">
                 <button name="AddCustomSkillAction" id="add-custom-skill" value="AddCustomSkill" type="submit" class="button-secondary">+ Add this skill</button>
             </div>
-            
+
             <div id="custom-skill-container" style="@(Model.CustomSkills.Any() == false ? "display:none" : null)">
                 <h3 class="heading-small">Desired skills or personal qualities</h3>
                 <table>
                     <thead>
-                    <tr>
-                        <th>
-                            <span class="heading-span">Skill or personal quality</span>
-                        </th>
-                        <th></th>
-                    </tr>
+                        <tr>
+                            <th>
+                                <span class="heading-span">Skill or personal quality</span>
+                            </th>
+                            <th></th>
+                        </tr>
                     </thead>
                     <tbody id="custom-skill-summary">
-                    @foreach (var customSkill in Model.CustomSkills)
-                    {
-                        <tr>
-                            <td>@customSkill</td>
-                            <td>
-                                <input name="Skills" type="hidden" value="@customSkill" />
-                                <button name="RemoveCustomSkill" value="@customSkill" type="submit" class="button-link">Remove</button>
-                            </td>
-                        </tr>
-                    }
+                        @foreach (var customSkill in Model.CustomSkills)
+                        {
+                            <tr>
+                                <td>@customSkill</td>
+                                <td>
+                                    <input name="Skills" type="hidden" value="@customSkill" />
+                                    <button name="RemoveCustomSkill" value="@customSkill" type="submit" class="button-link">Remove</button>
+                                </td>
+                            </tr>
+                        }
                     </tbody>
                 </table>
             </div>
@@ -90,7 +94,7 @@
         var $customSkillsContainer = $("#custom-skill-container");
         var $customSkillSummary = $("#custom-skill-summary");
         var $customSkillInput = $("#@Html.IdFor(m => m.AddCustomSkillName)");
-        
+
         var customRowMask = '<tr><td></td><td><input name="Skills" type="hidden" value="" /><button name="RemoveCustomSkill" value="" type="submit" class="button-link">Remove</button></td></tr>';
 
         var buildCustomSkillRow = function (customSkill) {
@@ -104,7 +108,7 @@
         var toggleCustomSkillsContainer = function () {
             $customSkillsContainer.toggle($customSkillSummary.children().length > 0);
         }
-        
+
         $("#add-custom-skill").on("click",
             function (e) {
                 var customSkill = $customSkillInput.val();
@@ -112,7 +116,9 @@
                 if (customSkill) {
                     var $row = buildCustomSkillRow(customSkill);
                     $customSkillSummary.append($row);
-                    
+
+                    $customSkillInput.val("");
+
                     toggleCustomSkillsContainer();
                 }
 
@@ -125,7 +131,7 @@
                 $(this).closest("tr").remove();
 
                 toggleCustomSkillsContainer();
-            
+
                 e.preventDefault();
                 return false;
             });
