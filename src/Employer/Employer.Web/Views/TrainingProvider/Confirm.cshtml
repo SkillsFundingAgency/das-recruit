@@ -15,8 +15,9 @@
         <form asp-route="@RouteNames.TrainingProvider_Confirm_Post">
             <input asp-for="Ukprn" type="hidden" />
             <div class="form-group">
-                <a asp-route="@RouteNames.TrainingProvider_Index_Get" class="button-link">Change training provider</a>
                 <input type="submit" value="Confirm training provider" class="button" />
+                <a asp-route="@RouteNames.TrainingProvider_Index_Get" class="button-link">Change training provider</a>
+                <a asp-route="@RouteNames.Preview_Index_Get" class="button-link">Cancel</a>
             </div>
         </form>
     </div>
