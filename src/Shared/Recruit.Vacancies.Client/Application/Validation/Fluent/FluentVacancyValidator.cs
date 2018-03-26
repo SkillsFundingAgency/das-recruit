@@ -1,3 +1,4 @@
+using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators.VacancyValidators;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Enums;
@@ -9,10 +10,12 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
     public class FluentVacancyValidator : AbstractValidator<Vacancy>
     {
         private readonly ITimeProvider _timeProvider;
+        private readonly IGetApprenticeshipNationalMinimumWages _minimumWageService;
 
-        public FluentVacancyValidator(ITimeProvider timeProvider)
+        public FluentVacancyValidator(ITimeProvider timeProvider, IGetApprenticeshipNationalMinimumWages minimumWageService)
         {
             _timeProvider = timeProvider;
+            _minimumWageService = minimumWageService;
 
             SingleFieldValidations();
 
@@ -47,6 +50,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         private void CrossFieldValidations()
         {
             ValidateStartDateClosingDate();
+
+            MinimumWageValidation();
         }
 
         private void ValidateDescription()
@@ -254,6 +259,17 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .ClosingDateMustBeLessThanStartDate()
                 .RunCondition(VacancyRuleSet.StartDateEndDate)
                 .WithRuleId(VacancyRuleSet.StartDateEndDate);
+            });
+        }
+
+        private void MinimumWageValidation()
+        {
+            When(x => x.Wage != null && x.Wage.WageType == WageType.FixedWage, () =>
+            {
+                RuleFor(x => x)
+                    .FixedWageMustBeGreaterThanApprenticeshipMinimumWage(_minimumWageService)
+                .RunCondition(VacancyRuleSet.MinimumWage)
+                .WithRuleId(VacancyRuleSet.MinimumWage);
             });
         }
     }

@@ -19,6 +19,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation
 		WeeklyHours = 0x800,
         Wage = 0x1000,
         StartDateEndDate = 0x2000,
+        MinimumWage = 0x4000,
         All = ~None
     }
 }

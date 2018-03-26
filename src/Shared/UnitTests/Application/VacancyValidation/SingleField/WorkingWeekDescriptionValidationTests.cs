@@ -1,25 +1,14 @@
 using System;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
-using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Domain.Enums;
-using Esfa.Recruit.Vacancies.Client.Domain.Services;
 using FluentAssertions;
+using UnitTests.Application.VacancyValidation;
 using Xunit;
 
-namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation.SingleField
+namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.SingleField
 {
-    public class WorkingWeekDescriptionValidationTests
+    public class WorkingWeekDescriptionValidationTests : VacancyValidationTestsBase
     {
-        private IEntityValidator<Vacancy, VacancyRuleSet> _validator;
-
-        public WorkingWeekDescriptionValidationTests()
-        {
-            var timeProvider = new CurrentTimeProvider();
-
-            _validator = new EntityValidator<Vacancy, VacancyRuleSet>(new FluentVacancyValidator(timeProvider));
-        }
-
         [Fact]
         public void NoErrorsWhenWorkingWeekDescriptionValueIsValid()
         {
@@ -31,7 +20,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation.SingleF
                 }
             };
 
-            var result = _validator.Validate(vacancy, VacancyRuleSet.WorkingWeekDescription);
+            var result = Validator.Validate(vacancy, VacancyRuleSet.WorkingWeekDescription);
 
             result.HasErrors.Should().BeFalse();
             result.Errors.Should().HaveCount(0);
@@ -50,7 +39,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation.SingleF
                 }
             };
 
-            var result = _validator.Validate(vacancy, VacancyRuleSet.WorkingWeekDescription);
+            var result = Validator.Validate(vacancy, VacancyRuleSet.WorkingWeekDescription);
 
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(1);
@@ -72,7 +61,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation.SingleF
                 }
             };
 
-            var result = _validator.Validate(vacancy, VacancyRuleSet.WorkingWeekDescription);
+            var result = Validator.Validate(vacancy, VacancyRuleSet.WorkingWeekDescription);
 
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(1);
@@ -92,7 +81,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation.SingleF
                 }
             };
 
-            var result = _validator.Validate(vacancy, VacancyRuleSet.WorkingWeekDescription);
+            var result = Validator.Validate(vacancy, VacancyRuleSet.WorkingWeekDescription);
 
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(1);

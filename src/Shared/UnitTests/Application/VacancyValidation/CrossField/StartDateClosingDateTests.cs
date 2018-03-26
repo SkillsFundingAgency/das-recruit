@@ -1,25 +1,14 @@
 using System;
-using System.Collections.Generic;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
-using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Domain.Services;
 using FluentAssertions;
+using UnitTests.Application.VacancyValidation;
 using Xunit;
 
-namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation.SingleField
+namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.SingleField
 {
-    public class StartDateClosingDateTests
+    public class StartDateClosingDateTests : VacancyValidationTestsBase
     {
-        private IEntityValidator<Vacancy, VacancyRuleSet> _validator;
-
-        public StartDateClosingDateTests()
-        {
-            var timeProvider = new CurrentTimeProvider();
-
-            _validator = new EntityValidator<Vacancy, VacancyRuleSet>(new FluentVacancyValidator(timeProvider));
-        }
-
         [Fact]
         public void NoErrorsWhenFieldsAreValid()
         {
@@ -29,7 +18,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation.SingleF
                 ClosingDate = DateTime.UtcNow.AddDays(4)
             };
 
-            var result = _validator.Validate(vacancy, VacancyRuleSet.StartDateEndDate);
+            var result = Validator.Validate(vacancy, VacancyRuleSet.StartDateEndDate);
 
             result.HasErrors.Should().BeFalse();
             result.Errors.Should().HaveCount(0);
@@ -44,7 +33,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation.SingleF
                 ClosingDate = DateTime.UtcNow
             };
             
-            var result = _validator.Validate(vacancy, VacancyRuleSet.StartDateEndDate);
+            var result = Validator.Validate(vacancy, VacancyRuleSet.StartDateEndDate);
 
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(1);
@@ -62,7 +51,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation.SingleF
                 ClosingDate = DateTime.UtcNow.AddDays(1)
             };
 
-            var result = _validator.Validate(vacancy, VacancyRuleSet.StartDateEndDate);
+            var result = Validator.Validate(vacancy, VacancyRuleSet.StartDateEndDate);
 
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(1);

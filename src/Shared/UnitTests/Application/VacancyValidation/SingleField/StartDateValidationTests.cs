@@ -1,25 +1,15 @@
 using System;
 using System.Collections.Generic;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
-using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Domain.Services;
 using FluentAssertions;
+using UnitTests.Application.VacancyValidation;
 using Xunit;
 
-namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation.SingleField
+namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.SingleField
 {
-    public class StartDateValidationTests
+    public class StartDateValidationTests : VacancyValidationTestsBase
     {
-        private IEntityValidator<Vacancy, VacancyRuleSet> _validator;
-
-        public StartDateValidationTests()
-        {
-            var timeProvider = new CurrentTimeProvider();
-
-            _validator = new EntityValidator<Vacancy, VacancyRuleSet>(new FluentVacancyValidator(timeProvider));
-        }
-
         public static IEnumerable<object[]> InvalidStartDates =>
             new List<object[]>
             {
@@ -27,7 +17,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation.SingleF
                 new object[] { DateTime.UtcNow },
                 new object[] { DateTime.UtcNow.AddDays(-1) }
             };
-
 
         [Fact]
         public void NoErrorsWhenStartDateIsValid()
@@ -37,7 +26,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation.SingleF
                 StartDate = DateTime.UtcNow.AddDays(5)
             };
 
-            var result = _validator.Validate(vacancy, VacancyRuleSet.StartDate);
+            var result = Validator.Validate(vacancy, VacancyRuleSet.StartDate);
 
             result.HasErrors.Should().BeFalse();
             result.Errors.Should().HaveCount(0);
@@ -51,7 +40,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation.SingleF
                 StartDate = null
             };
             
-            var result = _validator.Validate(vacancy, VacancyRuleSet.StartDate);
+            var result = Validator.Validate(vacancy, VacancyRuleSet.StartDate);
 
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(1);
@@ -69,7 +58,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation.SingleF
                 StartDate = startDate
             };
 
-            var result = _validator.Validate(vacancy, VacancyRuleSet.StartDate);
+            var result = Validator.Validate(vacancy, VacancyRuleSet.StartDate);
 
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(1);

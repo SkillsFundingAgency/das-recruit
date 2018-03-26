@@ -1,24 +1,14 @@
 using System;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
-using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Domain.Services;
 using FluentAssertions;
+using UnitTests.Application.VacancyValidation;
 using Xunit;
 
-namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation.SingleField
+namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.SingleField
 {
-    public class PositionValidationTests
+    public class PositionValidationTests : VacancyValidationTestsBase
     {
-        private IEntityValidator<Vacancy, VacancyRuleSet> _validator;
-
-        public PositionValidationTests()
-        {
-            var timeProvider = new CurrentTimeProvider();
-
-            _validator = new EntityValidator<Vacancy, VacancyRuleSet>(new FluentVacancyValidator(timeProvider));
-        }
-
         [Fact]
         public void NoErrorsWhenPositionFieldsAreValid()
         {
@@ -28,7 +18,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation.SingleF
                 ShortDescription = new string('a', 60)
             };
 
-            var result = _validator.Validate(vacancy, VacancyRuleSet.NumberOfPostions | VacancyRuleSet.ShortDescription);
+            var result = Validator.Validate(vacancy, VacancyRuleSet.NumberOfPostions | VacancyRuleSet.ShortDescription);
 
             result.HasErrors.Should().BeFalse();
             result.Errors.Should().HaveCount(0);
@@ -44,7 +34,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation.SingleF
                 NumberOfPositions = numOfPositionsValue
             };
 
-            var result = _validator.Validate(vacancy, VacancyRuleSet.NumberOfPostions);
+            var result = Validator.Validate(vacancy, VacancyRuleSet.NumberOfPostions);
 
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(1);
@@ -63,7 +53,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation.SingleF
                 ShortDescription = shortDescriptionValue
             };
 
-            var result = _validator.Validate(vacancy, VacancyRuleSet.ShortDescription);
+            var result = Validator.Validate(vacancy, VacancyRuleSet.ShortDescription);
 
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(1);
@@ -80,7 +70,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation.SingleF
                 ShortDescription = new String('a', 351)
             };
 
-            var result = _validator.Validate(vacancy, VacancyRuleSet.ShortDescription);
+            var result = Validator.Validate(vacancy, VacancyRuleSet.ShortDescription);
 
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(1);
@@ -97,7 +87,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation.SingleF
                 ShortDescription = new String('a', 49)
             };
 
-            var result = _validator.Validate(vacancy, VacancyRuleSet.ShortDescription);
+            var result = Validator.Validate(vacancy, VacancyRuleSet.ShortDescription);
 
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(1);
@@ -117,7 +107,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation.SingleF
                 ShortDescription = new String('a', 30) + invalidCharacter + new String('b', 30)
             };
 
-            var result = _validator.Validate(vacancy, VacancyRuleSet.ShortDescription);
+            var result = Validator.Validate(vacancy, VacancyRuleSet.ShortDescription);
 
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(1);

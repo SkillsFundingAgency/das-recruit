@@ -9,12 +9,17 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
     <PackageReference Include="FluentAssertions" Version="5.2.0" />
     <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
+    <PackageReference Include="Moq" Version="4.8.2" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Recruit.Vacancies.Client\Recruit.Vacancies.Client.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Application\Validation\SingleField\" />
-    <Folder Include="Application\Validation\CrossField\" />
+    <Folder Include="Application\VacancyValidation\SingleField\" />
+    <Folder Include="Application\VacancyValidation\CrossField\" />
+    <Folder Include="Application\VacancyValidation\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Application\VacancyValidation\.DS_Store" />
   </ItemGroup>
 </Project>

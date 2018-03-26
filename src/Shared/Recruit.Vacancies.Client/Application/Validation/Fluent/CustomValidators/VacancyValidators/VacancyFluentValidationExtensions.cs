@@ -1,4 +1,5 @@
-﻿using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+﻿using Esfa.Recruit.Vacancies.Client.Application.Services;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using FluentValidation;
 using FluentValidation.Results;
 
@@ -16,6 +17,25 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
                     {
                         ErrorCode = "24",
                         CustomState = VacancyRuleSet.StartDateEndDate
+                    };
+                    context.AddFailure(failure);
+                }
+            });
+        }
+
+        public static IRuleBuilderInitial<Vacancy, Vacancy> FixedWageMustBeGreaterThanApprenticeshipMinimumWage(this IRuleBuilder<Vacancy, Vacancy> ruleBuilder, IGetApprenticeshipNationalMinimumWages minimumWageService)
+        {
+            return ruleBuilder.Custom((vacancy, context) =>
+            {
+
+                var apprenticeshipMinWage = minimumWageService.GetMinimumWage(vacancy.StartDate.Value);
+
+                if (vacancy.Wage.FixedWageYearlyAmount / 52 / vacancy.Wage.WeeklyHours < apprenticeshipMinWage)
+                {
+                    var failure = new ValidationFailure(string.Empty, "The wage should not be less than the new National Minimum Wage for apprentices effective from 1 April 2018")
+                    {
+                        ErrorCode = "49",
+                        CustomState = VacancyRuleSet.MinimumWage
                     };
                     context.AddFailure(failure);
                 }
