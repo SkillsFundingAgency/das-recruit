@@ -38,6 +38,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             ValidateDuration();
 
             ValidateWorkingWeek();
+
+            ValidateWeeklyHours();
         }
 
         private void CrossFieldValidations()
@@ -191,6 +193,22 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithErrorCode("39")
                 .RunCondition(VacancyRuleSet.WorkingWeekDescription)
                 .WithRuleId(VacancyRuleSet.WorkingWeekDescription);
+        }
+
+        private void ValidateWeeklyHours()
+        {
+            RuleFor(x => x.Wage.WeeklyHours)
+                .NotEmpty()
+                    .WithMessage("Enter the hours per week")
+                    .WithErrorCode("40")
+                .GreaterThan(16)
+                    .WithMessage("The total hours a week must be more than {ComparisonValue}")
+                    .WithErrorCode("42")
+                .LessThan(48)
+                    .WithMessage("  The paid hours a week must be less than {ComparisonValue}")
+                    .WithErrorCode("43")
+                .RunCondition(VacancyRuleSet.WeeklyHours)
+                .WithRuleId(VacancyRuleSet.WeeklyHours);
         }
 
         private void ValidateStartDateClosingDate()
