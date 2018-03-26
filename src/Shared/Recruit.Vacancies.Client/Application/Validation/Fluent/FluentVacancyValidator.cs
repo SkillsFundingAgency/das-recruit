@@ -40,6 +40,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             ValidateWorkingWeek();
 
             ValidateWeeklyHours();
+
+            ValidationWageAdditionalInfo();
         }
 
         private void CrossFieldValidations()
@@ -209,6 +211,19 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithErrorCode("43")
                 .RunCondition(VacancyRuleSet.WeeklyHours)
                 .WithRuleId(VacancyRuleSet.WeeklyHours);
+        }
+
+        private void ValidationWageAdditionalInfo()
+        {
+            RuleFor(x => x.Wage.WageAdditionalInformation)
+                .MaximumLength(241)
+                    .WithMessage("Additional salary information must not be more than {MaxLength} characters")
+                    .WithErrorCode("44")
+                .ValidFreeTextCharacters()
+                    .WithMessage("Additional salary information contains some invalid characters")
+                    .WithErrorCode("45")
+                .RunCondition(VacancyRuleSet.WageAdditionalInformation)
+                .WithRuleId(VacancyRuleSet.WageAdditionalInformation);
         }
 
         private void ValidateStartDateClosingDate()

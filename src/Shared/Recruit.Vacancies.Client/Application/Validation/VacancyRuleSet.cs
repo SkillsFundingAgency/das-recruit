@@ -16,10 +16,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation
         TrainingProgramme = 0x100,
         Duration = 0x200,
         WorkingWeekDescription = 0x400,
-        Wage = 0x800,
-        WageAdditionalInformation = 0x1000,
-        StartDateEndDate = 0x2000,
-        WeeklyHours = 0x4000,
+		WeeklyHours = 0x800,
+		WageAdditionalInformation = 0x1000,
+        Wage = 0x2000,
+        StartDateEndDate = 0x4000,
         All = ~None
     }
 }
