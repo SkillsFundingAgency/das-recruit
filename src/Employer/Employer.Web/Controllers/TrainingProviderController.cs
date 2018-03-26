@@ -40,6 +40,12 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 return await ProviderNotFound(m);
 
             var confirmDetailsVm = await _orchestrator.GetConfirmViewModel(m);
+            return RedirectToRoute(RouteNames.TrainingProvider_Confirm_Get, confirmDetailsVm);
+        }
+
+        [HttpGet("confirm-training-provider", Name = RouteNames.TrainingProvider_Confirm_Get)]
+        public async Task<IActionResult> Confirm(ConfirmViewModel confirmDetailsVm)
+        {
             return View("Confirm", confirmDetailsVm);
         }
 
