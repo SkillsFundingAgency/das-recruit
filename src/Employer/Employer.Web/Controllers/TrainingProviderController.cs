@@ -1,5 +1,4 @@
-﻿using Esfa.Recruit.Employer.Web.Configuration;
-using Esfa.Recruit.Employer.Web.Configuration.Routing;
+﻿using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.ViewModels.TrainingProvider;
 using Microsoft.AspNetCore.Mvc;
@@ -61,7 +60,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             }
 
             await _orchestrator.PostConfirmEditModelAsync(m);
-            return RedirectToRoute(RouteNames.WageAndhours_Index_Get);
+            return RedirectToRoute(RouteNames.Preview_Index_Get);
         }
 
         private async Task<IActionResult> ProviderNotFound(IndexEditModel m)
