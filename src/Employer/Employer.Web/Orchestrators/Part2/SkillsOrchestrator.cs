@@ -73,7 +73,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                 skills.Remove(m.RemoveCustomSkill);
             }
 
-            vacancy.Skills = skills.Where(s => !string.IsNullOrWhiteSpace(s)).Distinct().ToList();
+            vacancy.Skills = _skillsService.SortSkills(skills);
 
             await _client.UpdateVacancyAsync(vacancy, false);
         }

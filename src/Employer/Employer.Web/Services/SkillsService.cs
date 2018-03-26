@@ -38,17 +38,24 @@ namespace Esfa.Recruit.Employer.Web.Services
 
         public List<string> GetCustomSkills(List<string> selected)
         {
+            if (selected == null)
+            {
+                return new List<string>();
+            }
+
             return selected.Except(_skillsConfig.Column1Skills).Except(_skillsConfig.Column2Skills).ToList();
         }
 
-        public string GetSkillsAsText(List<string> selected)
+        public List<string> SortSkills(List<string> selected)
         {
+            var filteredSelectedSkills = selected.Where(s => !string.IsNullOrWhiteSpace(s)).Distinct();
+
             var orderedSkills = _skillsConfig.Column1Skills
                 .Union(_skillsConfig.Column2Skills)
                 .Union(selected)
                 .ToList();
-            
-            return string.Join(", ", orderedSkills.Where(selected.Contains));
+
+            return orderedSkills.Where(filteredSelectedSkills.Contains).ToList();
         }
 
     }

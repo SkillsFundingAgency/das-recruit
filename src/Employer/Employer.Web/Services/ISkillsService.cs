@@ -8,6 +8,6 @@ namespace Esfa.Recruit.Employer.Web.Services
         List<SkillViewModel> GetColumn1ViewModel(List<string> selected);
         List<SkillViewModel> GetColumn2ViewModel(List<string> selected);
         List<string> GetCustomSkills(List<string> selected);
-        string GetSkillsAsText(List<string> selected);
+        List<string> SortSkills(List<string> selected);
     }
 }
