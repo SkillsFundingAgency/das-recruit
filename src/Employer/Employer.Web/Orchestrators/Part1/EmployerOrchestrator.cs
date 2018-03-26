@@ -103,7 +103,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         {
             var mappings = new EntityToViewModelPropertyMappings<Vacancy, EmployerEditModel>();
 
+            mappings.Add(e => e.OrganisationId, vm => vm.SelectedOrganisationId);
             mappings.Add(e => e.Location.AddressLine1, vm => vm.AddressLine1);
+            mappings.Add(e => e.Location.Postcode, vm => vm.Postcode);
 
             return mappings;
         }

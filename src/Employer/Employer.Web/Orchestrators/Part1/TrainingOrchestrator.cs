@@ -74,6 +74,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             vm.StartMonth = m.StartMonth;
             vm.StartYear = m.StartYear;
 
+            vm.SelectedProgrammeId = m.SelectedProgrammeId;
+
             return vm;
         }
 
@@ -96,21 +98,20 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             
             var programme = programmesTask.Result.Programmes.SingleOrDefault(p => p.Id == m.SelectedProgrammeId);
             
+            vacancy.Programme = new Programme();
+
             if (programme != null)
             {
-                vacancy.Programme = new Programme
-                {
-                    Id = programme.Id,
-                    Title = programme.Title,
-                    TrainingType = programme.ApprenticeshipType,
-                    Level = programme.Level,
-                    LevelName = ((ProgrammeLevel)programme.Level).GetDisplayName()
-                };
+                vacancy.Programme.Id = programme.Id;
+                vacancy.Programme.Title = programme.Title;
+                vacancy.Programme.TrainingType = programme.ApprenticeshipType;
+                vacancy.Programme.Level = programme.Level;
+                vacancy.Programme.LevelName = ((ProgrammeLevel)programme.Level).GetDisplayName();
             }
-            
+
             return await ValidateAndExecute(
                 vacancy, 
-                v => _client.Validate(v, VacancyRuleSet.ClosingDate | VacancyRuleSet.StartDate | VacancyRuleSet.TrainingProgramme),
+                v => _client.Validate(v, VacancyRuleSet.ClosingDate | VacancyRuleSet.StartDate | VacancyRuleSet.TrainingProgramme | VacancyRuleSet.StartDateEndDate),
                 v => _client.UpdateVacancyAsync(vacancy, false)
             );
         }
@@ -119,7 +120,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         {
             var mappings = new EntityToViewModelPropertyMappings<Vacancy, TrainingEditModel>();
 
-            mappings.Add(e => e.Programme, vm => vm.SelectedProgrammeId);
+            mappings.Add(e => e.Programme.Id, vm => vm.SelectedProgrammeId);
             mappings.Add(e => e.StartDate, vm => vm.StartDate);
             mappings.Add(e => e.ClosingDate, vm => vm.ClosingDate);
 

@@ -67,11 +67,18 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public async Task<OrchestratorResponse<Guid>> PostTitleEditModelAsync(TitleEditModel vm, string user)
         {
-            if (!vm.VacancyId.HasValue)
+            if (!vm.VacancyId.HasValue) // Create if it's a new vacancy
             {
-                var id = await _client.CreateVacancyAsync(vm.Title, vm.EmployerAccountId, user);
+                var newVacancy = new Vacancy { Title = vm.Title };
 
-                return new OrchestratorResponse<Guid>(id);
+                return await ValidateAndExecute<Guid>(
+                    newVacancy, 
+                    v => _client.Validate(v, VacancyRuleSet.Title),
+                    async v =>
+                    {
+                        return await _client.CreateVacancyAsync(vm.Title, vm.EmployerAccountId, user);
+                    }
+                );
             }
 
             var vacancy = await _client.GetVacancyForEditAsync(vm.VacancyId.Value);

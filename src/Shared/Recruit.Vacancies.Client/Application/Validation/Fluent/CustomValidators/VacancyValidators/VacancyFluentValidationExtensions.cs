@@ -30,7 +30,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
 
                 var apprenticeshipMinWage = minimumWageService.GetMinimumWage(vacancy.StartDate.Value);
 
-                if (vacancy.Wage.FixedWageYearlyAmount / 52 / vacancy.Wage.WeeklyHours < apprenticeshipMinWage)
+                if (vacancy.Wage.FixedWageYearlyAmount == null || vacancy.Wage.FixedWageYearlyAmount / 52 / vacancy.Wage.WeeklyHours < apprenticeshipMinWage)
                 {
                     var failure = new ValidationFailure(string.Empty, "The wage should not be less than the new National Minimum Wage for apprentices effective from 1 April 2018")
                     {

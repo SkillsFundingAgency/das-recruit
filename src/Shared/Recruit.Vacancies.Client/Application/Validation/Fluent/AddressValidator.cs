@@ -50,7 +50,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
             RuleFor(x => x.Postcode)
                 .NotEmpty()
-                    .WithMessage("Enter a postcode")
+                    .WithMessage("Enter the postcode")
                     .WithErrorCode("8")
                 .PostCode()
                     .When(x => !string.IsNullOrEmpty(x.Postcode), ApplyConditionTo.CurrentValidator)

@@ -39,8 +39,9 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         }
 
         [Theory]
-        [InlineData(3.70, 40, 7000.00)] // £3.37 per hour
-        public void FixedWageAmountIsNotValidIfUnderMinimumWage(float minimumWageTestValue, int hoursPerWeekValue, float yearlyWageAmcountValue)
+        [InlineData(3.70, 40, "7000.00")] // £3.37 per hour
+        [InlineData(3.70, 40, null)]
+        public void FixedWageAmountIsNotValidIfUnderMinimumWage(float minimumWageTestValue, int hoursPerWeekValue, string yearlyWageAmcountValue)
         {
             var startDate = DateTime.UtcNow.Date;
             var minimumWageAmount = Convert.ToDecimal(minimumWageTestValue);
@@ -51,7 +52,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
                 Wage = new Wage
                 {
                     WageType = WageType.FixedWage,
-                    FixedWageYearlyAmount = Convert.ToDecimal(yearlyWageAmcountValue),
+                    FixedWageYearlyAmount = yearlyWageAmcountValue != null ? Convert.ToDecimal(yearlyWageAmcountValue) : default(decimal?),
                     WeeklyHours = hoursPerWeekValue
                 }
             };
