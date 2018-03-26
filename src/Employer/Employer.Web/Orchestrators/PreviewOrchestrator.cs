@@ -1,4 +1,5 @@
 ﻿using Esfa.Recruit.Employer.Web.Extensions;
+using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Employer.Web.ViewModels.Preview;
 using Esfa.Recruit.Vacancies.Client.Domain;
@@ -14,10 +15,12 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
     public class PreviewOrchestrator
     {
         private readonly IVacancyClient _client;
+        private readonly IGeocodeImageService _mapService;
 
-        public PreviewOrchestrator(IVacancyClient client)
+        public PreviewOrchestrator(IVacancyClient client, IGeocodeImageService mapService)
         {
             _client = client;
+            _mapService = mapService;
         }
 
         public async Task<PreviewVacancyViewModel> GetPreviewVacancyViewModelAsync(Guid vacancyId)
@@ -42,6 +45,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 ExpectedDuration = vacancy.Wage.DurationUnit.Value.GetDisplayName().ToQuantity(vacancy.Wage.Duration.Value),
                 HoursPerWeek = vacancy.Wage.WeeklyHours.Value,
                 Location = vacancy.Location,
+                MapUrl = vacancy.Location.HasGeocode
+                    ? _mapService.GetMapImageUrl(vacancy.Location.Latitude.ToString(), vacancy.Location.Longitude.ToString())
+                    : _mapService.GetMapImageUrl(vacancy.Location?.Postcode),
                 NumberOfPositions = vacancy.NumberOfPositions.Value,
                 PossibleStartDate = vacancy.StartDate.Value,
                 ProviderName = vacancy.ProviderName,
