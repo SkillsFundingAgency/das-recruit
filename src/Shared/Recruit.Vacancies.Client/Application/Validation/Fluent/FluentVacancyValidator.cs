@@ -41,7 +41,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
             ValidateWeeklyHours();
 
-            ValidationWageAdditionalInfo();
+            ValidateWage();
         }
 
         private void CrossFieldValidations()
@@ -213,8 +213,18 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .WithRuleId(VacancyRuleSet.WeeklyHours);
         }
 
-        private void ValidationWageAdditionalInfo()
+        private void ValidateWage()
         {
+            RuleFor(x => x.Wage.WageType)
+                .NotEmpty()
+                    .WithMessage("Select a wage")
+                    .WithErrorCode("46")
+                .IsInEnum()
+                    .WithMessage("Select a wage")
+                    .WithErrorCode("46")
+                .RunCondition(VacancyRuleSet.Wage)
+                .WithRuleId(VacancyRuleSet.Wage);
+
             RuleFor(x => x.Wage.WageAdditionalInformation)
                 .MaximumLength(241)
                     .WithMessage("Additional salary information must not be more than {MaxLength} characters")
@@ -222,8 +232,18 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .ValidFreeTextCharacters()
                     .WithMessage("Additional salary information contains some invalid characters")
                     .WithErrorCode("45")
-                .RunCondition(VacancyRuleSet.WageAdditionalInformation)
-                .WithRuleId(VacancyRuleSet.WageAdditionalInformation);
+                .RunCondition(VacancyRuleSet.Wage)
+                .WithRuleId(VacancyRuleSet.Wage);
+
+            When(x => x.Wage != null && x.Wage.WageType == WageType.Unspecified, () =>
+            {
+                RuleFor(x => x.Wage.WageAdditionalInformation)
+                    .NotEmpty()
+                        .WithMessage("Enter a reason why you need to use Unspecified")
+                        .WithErrorCode("50")
+                    .RunCondition(VacancyRuleSet.Wage)
+                    .WithRuleId(VacancyRuleSet.Wage);
+            });
         }
 
         private void ValidateStartDateClosingDate()

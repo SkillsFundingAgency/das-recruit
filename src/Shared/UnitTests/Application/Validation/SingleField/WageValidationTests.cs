@@ -1,0 +1,194 @@
+using System;
+using Esfa.Recruit.Vacancies.Client.Application.Validation;
+using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Enums;
+using Esfa.Recruit.Vacancies.Client.Domain.Services;
+using FluentAssertions;
+using Xunit;
+
+namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation.SingleField
+{
+    public class WageValidationTests
+    {
+        private IEntityValidator<Vacancy, VacancyRuleSet> _validator;
+
+        public WageValidationTests()
+        {
+            var timeProvider = new CurrentTimeProvider();
+
+            _validator = new EntityValidator<Vacancy, VacancyRuleSet>(new FluentVacancyValidator(timeProvider));
+        }
+
+        [Theory]
+        [InlineData(WageType.FixedWage, 30000, null)]
+        [InlineData(WageType.NationalMinimumWage, null, null)]
+        [InlineData(WageType.NationalMinimumWageForApprentices, null, null)]
+        [InlineData(WageType.Unspecified, null, "This is a valid value")]
+        public void NoErrorsWhenWageFieldsAreValid(WageType wageTypeValue, int? yearlyFixedWageAmountValue, string wageAdditionalInfoValue)
+        {
+            var vacancy = new Vacancy
+            {
+                Wage = new Wage
+                {
+                    WageType = wageTypeValue,
+                    FixedWageYearlyAmount = Convert.ToDecimal(yearlyFixedWageAmountValue),
+                    WageAdditionalInformation = wageAdditionalInfoValue
+                }
+            };
+
+            var result = _validator.Validate(vacancy, VacancyRuleSet.Wage);
+
+            result.HasErrors.Should().BeFalse();
+            result.Errors.Should().HaveCount(0);
+        }
+
+        [Fact]
+        public void WageTypeMustHaveAValue()
+        {
+            var vacancy = new Vacancy
+            {
+                Wage = new Wage
+                {
+                    WageType = null
+                }
+            };
+
+            var result = _validator.Validate(vacancy, VacancyRuleSet.Wage);
+
+            result.HasErrors.Should().BeTrue();
+            result.Errors.Should().HaveCount(1);
+            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Wage)}.{nameof(vacancy.Wage.WageType)}");
+            result.Errors[0].ErrorCode.Should().Be("46");
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Wage);
+        }
+
+        [Fact]
+        public void WageTypeMustHaveAValidValue()
+        {
+            var vacancy = new Vacancy
+            {
+                Wage = new Wage
+                {
+                    WageType = (WageType)1000
+                }
+            };
+
+            var result = _validator.Validate(vacancy, VacancyRuleSet.Wage);
+
+            result.HasErrors.Should().BeTrue();
+            result.Errors.Should().HaveCount(1);
+            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Wage)}.{nameof(vacancy.Wage.WageType)}");
+            result.Errors[0].ErrorCode.Should().Be("46");
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Wage);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public void WageAdditionalInfoIsOptional(string descriptionValue)
+        {
+            var vacancy = new Vacancy
+            {
+                Wage = new Wage
+                {
+                    WageType = WageType.NationalMinimumWage,
+                    WageAdditionalInformation = descriptionValue
+                }
+            };
+
+            var result = _validator.Validate(vacancy, VacancyRuleSet.Wage);
+
+            result.HasErrors.Should().BeFalse();
+            result.Errors.Should().HaveCount(0);
+        }
+
+        [Theory]
+        [InlineData("<")]
+        [InlineData(">")]
+        public void WageAdditionalInfoMustContainValidCharacters(string invalidCharacter)
+        {
+            var vacancy = new Vacancy
+            {
+                Wage = new Wage
+                {
+                    WageType = WageType.NationalMinimumWage,
+                    WageAdditionalInformation = new String('a', 50) + invalidCharacter + new String('a', 50)
+                }
+            };
+
+            var result = _validator.Validate(vacancy, VacancyRuleSet.Wage);
+
+            result.HasErrors.Should().BeTrue();
+            result.Errors.Should().HaveCount(1);
+            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Wage)}.{nameof(vacancy.Wage.WageAdditionalInformation)}");
+            result.Errors[0].ErrorCode.Should().Be("45");
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Wage);
+        }
+
+        [Fact]
+        public void WageAdditionalInfoMustBeLessThan241Characters()
+        {
+            var vacancy = new Vacancy
+            {
+                Wage = new Wage
+                {
+                    WageType = WageType.NationalMinimumWage,
+                    WageAdditionalInformation = new string('a', 242)
+                }
+            };
+
+            var result = _validator.Validate(vacancy, VacancyRuleSet.Wage);
+
+            result.HasErrors.Should().BeTrue();
+            result.Errors.Should().HaveCount(1);
+            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Wage)}.{nameof(vacancy.Wage.WageAdditionalInformation)}");
+            result.Errors[0].ErrorCode.Should().Be("44");
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Wage);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public void UnspecifiedWageMustHaveAWageAddtionalInfoValue(string wageAdditionalInfoValue)
+        {
+            var vacancy = new Vacancy
+            {
+                Wage = new Wage
+                {
+                    WageType = WageType.Unspecified,
+                    WageAdditionalInformation = wageAdditionalInfoValue
+                }
+            };
+
+            var result = _validator.Validate(vacancy, VacancyRuleSet.Wage);
+
+            result.HasErrors.Should().BeTrue();
+            result.Errors.Should().HaveCount(1);
+            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Wage)}.{nameof(vacancy.Wage.WageAdditionalInformation)}");
+            result.Errors[0].ErrorCode.Should().Be("50");
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Wage);
+        }
+
+        //[Fact]
+        //public void FixedWageMustHaveAYearlyWageAmount()
+        //{
+        //    var vacancy = new Vacancy
+        //    {
+        //        Wage = new Wage
+        //        {
+        //            WageType = WageType.FixedWage,
+        //            FixedWageYearlyAmount = null
+        //        }
+        //    };
+
+        //    var result = _validator.Validate(vacancy, VacancyRuleSet.Wage);
+
+        //    result.HasErrors.Should().BeTrue();
+        //    result.Errors.Should().HaveCount(1);
+        //    result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Wage)}.{nameof(vacancy.Wage.FixedWageYearlyAmount)}");
+        //    result.Errors[0].ErrorCode.Should().Be("42");
+        //    result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Wage);
+        //}
+    }
+}
