@@ -36,6 +36,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             ValidateTrainingProgramme();
 
             ValidateDuration();
+
+            ValidateWorkingWeek();
         }
 
         private void CrossFieldValidations()
@@ -172,8 +174,23 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithErrorCode("36")
                 .RunCondition(VacancyRuleSet.Duration)
                 .WithRuleId(VacancyRuleSet.Duration);
+        }
 
-
+        private void ValidateWorkingWeek()
+        {
+            RuleFor(x => x.Wage.WorkingWeekDescription)
+                .Cascade(CascadeMode.StopOnFirstFailure)
+                .NotEmpty()
+                    .WithMessage("Enter the working week")
+                    .WithErrorCode("37")
+                .ValidFreeTextCharacters()
+                    .WithMessage("The working week contains some invalid characters")
+                    .WithErrorCode("38")
+                .MaximumLength(250)
+                    .WithMessage("The working week must not be more than {MaxLength} characters")
+                    .WithErrorCode("39")
+                .RunCondition(VacancyRuleSet.WorkingWeekDescription)
+                .WithRuleId(VacancyRuleSet.WorkingWeekDescription);
         }
 
         private void ValidateStartDateClosingDate()
