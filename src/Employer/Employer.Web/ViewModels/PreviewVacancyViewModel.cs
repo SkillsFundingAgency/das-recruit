@@ -26,12 +26,12 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public Address Location { get; internal set; }
         public IEnumerable<string> EmployerAddressElements => new [] { Location.AddressLine1, Location.AddressLine2, Location.AddressLine3, Location.AddressLine4, Location.Postcode }
                                                                 .Where(x => !string.IsNullOrEmpty(x));
+        public string MapUrl { get; set; }
         public int NumberOfPositions { get; internal set; }
         public string NumberOfPositionsCaption => $"{"position".ToQuantity(NumberOfPositions)} available";
         public DateTime PossibleStartDate { get; internal set; }
         public string PossibleStartDateCaption => PossibleStartDate.ToShortDateString();
         public string ProviderName { get; internal set; }
-        public string ProviderNameCaption => !string.IsNullOrWhiteSpace(ProviderName) ? $"{ProviderName} (UKPRN: {Ukprn})" : string.Empty;
         public string ProviderAddress { get; internal set; }
         public string ShortDescription { get; internal set; }
         public string ThingsToConsider { get; internal set; }
