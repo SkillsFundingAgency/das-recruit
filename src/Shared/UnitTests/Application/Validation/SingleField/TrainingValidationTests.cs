@@ -8,11 +8,11 @@ using Xunit;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation.SingleField
 {
-    public class TrainingTests
+    public class TrainingValidationTests
     {
         private IEntityValidator<Vacancy, VacancyRuleSet> _validator;
 
-        public TrainingTests()
+        public TrainingValidationTests()
         {
             var timeProvider = new CurrentTimeProvider();
 

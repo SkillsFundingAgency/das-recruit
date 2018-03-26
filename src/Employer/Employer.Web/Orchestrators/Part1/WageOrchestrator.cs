@@ -10,16 +10,19 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Enums;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
-    public class WageOrchestrator
+    public class WageOrchestrator : EntityValidatingOrchestrator<Vacancy, WageEditModel>
     {
         private readonly IVacancyClient _client;
+        private readonly ILogger<WageOrchestrator> _logger;
 
-        public WageOrchestrator(IVacancyClient client)
+        public WageOrchestrator(IVacancyClient client, ILogger<WageOrchestrator> logger) : base(logger)
         {
             _client = client;
+            _logger = logger;
         }
 
         public async Task<WageViewModel> GetWageViewModelAsync(Guid vacancyId)
@@ -60,7 +63,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             return vm;
         }
 
-        public async Task PostWageEditModelAsync(WageEditModel m)
+        public async Task<OrchestratorResponse> PostWageEditModelAsync(WageEditModel m)
         {
             var vacancy = await _client.GetVacancyForEditAsync(m.VacancyId);
 
@@ -71,7 +74,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
             vacancy.Wage = new Wage
             {
-                Duration = int.Parse(m.Duration),
+                Duration = int.TryParse(m.Duration, out int duration) == true ? duration : default(int?),
                 DurationUnit = m.DurationUnit,
                 WorkingWeekDescription = m.WorkingWeekDescription,
                 WeeklyHours = m.WeeklyHours.AsDecimal(),
@@ -79,9 +82,27 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 FixedWageYearlyAmount = m.FixedWageYearlyAmount?.AsMoney(),
                 WageAdditionalInformation = m.WageAdditionalInformation
             };
-            
-            // await _client.UpdateVacancyAsync(vacancy, VacancyRuleSet.Duration | VacancyRuleSet.WorkingWeekDescription & VacancyRuleSet.Wage & VacancyRuleSet.WageAdditionalInformation, false);
-            await _client.UpdateVacancyAsync(vacancy, false);
+
+            return await ValidateAndExecute(
+                vacancy, 
+                v => _client.Validate(v, VacancyRuleSet.Duration | VacancyRuleSet.WorkingWeekDescription & VacancyRuleSet.Wage & VacancyRuleSet.WageAdditionalInformation),
+                v => _client.UpdateVacancyAsync(vacancy, false)
+            );
+        }
+
+        protected override EntityToViewModelPropertyMappings<Vacancy, WageEditModel> DefineMappings()
+        {
+            var mappings = new EntityToViewModelPropertyMappings<Vacancy, WageEditModel>();
+
+            mappings.Add(e => e.Wage.Duration, vm => vm.Duration);
+            mappings.Add(e => e.Wage.DurationUnit, vm => vm.DurationUnit);
+            mappings.Add(e => e.Wage.WorkingWeekDescription, vm => vm.WorkingWeekDescription);
+            mappings.Add(e => e.Wage.WeeklyHours, vm => vm.WeeklyHours);
+            mappings.Add(e => e.Wage.WageType, vm => vm.WageType);
+            mappings.Add(e => e.Wage.FixedWageYearlyAmount, vm => vm.FixedWageYearlyAmount);
+            mappings.Add(e => e.Wage.WageAdditionalInformation, vm => vm.WageAdditionalInformation);
+
+            return mappings;
         }
     }
 }

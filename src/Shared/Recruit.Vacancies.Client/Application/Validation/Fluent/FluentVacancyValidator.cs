@@ -1,5 +1,6 @@
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators.VacancyValidators;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Enums;
 using Esfa.Recruit.Vacancies.Client.Domain.Services;
 using FluentValidation;
 
@@ -33,6 +34,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             ValidateStartDate();
 
             ValidateTrainingProgramme();
+
+            ValidateDuration();
         }
 
         private void CrossFieldValidations()
@@ -134,6 +137,43 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .SetValidator(new TrainingProgrammeValidator((long)VacancyRuleSet.TrainingProgramme))
                     .RunCondition(VacancyRuleSet.TrainingProgramme)
                 .WithRuleId(VacancyRuleSet.TrainingProgramme);
+        }
+
+        private void ValidateDuration()
+        {
+            RuleFor(x => x.Wage.DurationUnit)
+                .NotEmpty()
+                    .WithMessage("Enter the expected duaration")
+                    .WithErrorCode("34")
+                .IsInEnum()
+                    .WithMessage("Enter the expected duaration")
+                    .WithErrorCode("34")
+                .RunCondition(VacancyRuleSet.Duration)
+                .WithRuleId(VacancyRuleSet.Duration);
+
+            RuleFor(x => x.Wage.Duration)
+                .Cascade(CascadeMode.StopOnFirstFailure)
+                .NotEmpty()
+                    .WithMessage("Enter the expected duaration")
+                    .WithErrorCode("34")
+                .GreaterThan(0)
+                    .WithMessage("Enter the expected duaration")
+                    .WithErrorCode("34")
+                .Must((vacancy, value) => 
+                {
+                    if (vacancy.Wage.DurationUnit == DurationUnit.Month && value < 12)
+                    {
+                        return false;
+                    }
+
+                    return true;
+                })
+                    .WithMessage("The expected duration must be at least 12 months (52 weeks)")
+                    .WithErrorCode("36")
+                .RunCondition(VacancyRuleSet.Duration)
+                .WithRuleId(VacancyRuleSet.Duration);
+
+
         }
 
         private void ValidateStartDateClosingDate()

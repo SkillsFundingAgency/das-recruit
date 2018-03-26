@@ -9,18 +9,18 @@ using Xunit;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation.SingleField
 {
-    public class ClosingDateTests
+    public class StartDateValidationTests
     {
         private IEntityValidator<Vacancy, VacancyRuleSet> _validator;
 
-        public ClosingDateTests()
+        public StartDateValidationTests()
         {
             var timeProvider = new CurrentTimeProvider();
 
             _validator = new EntityValidator<Vacancy, VacancyRuleSet>(new FluentVacancyValidator(timeProvider));
         }
 
-        public static IEnumerable<object[]> InvalidClosingDates =>
+        public static IEnumerable<object[]> InvalidStartDates =>
             new List<object[]>
             {
                 new object[] { DateTime.UtcNow.Date },
@@ -30,52 +30,52 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation.SingleF
 
 
         [Fact]
-        public void NoErrorsWhenClosingDateIsValid()
+        public void NoErrorsWhenStartDateIsValid()
         {
             var vacancy = new Vacancy
             {
-                ClosingDate = DateTime.UtcNow.AddDays(5)
+                StartDate = DateTime.UtcNow.AddDays(5)
             };
 
-            var result = _validator.Validate(vacancy, VacancyRuleSet.ClosingDate);
+            var result = _validator.Validate(vacancy, VacancyRuleSet.StartDate);
 
             result.HasErrors.Should().BeFalse();
             result.Errors.Should().HaveCount(0);
         }
 
         [Fact]
-        public void ClosingDateMustHaveAValue()
+        public void StartDateMustHaveAValue()
         {
             var vacancy = new Vacancy 
             {
-                ClosingDate = null
+                StartDate = null
             };
             
-            var result = _validator.Validate(vacancy, VacancyRuleSet.ClosingDate);
+            var result = _validator.Validate(vacancy, VacancyRuleSet.StartDate);
 
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(1);
-            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.ClosingDate)}");
-            result.Errors[0].ErrorCode.Should().Be("16");
-            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.ClosingDate);
+            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.StartDate)}");
+            result.Errors[0].ErrorCode.Should().Be("20");
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.StartDate);
         }
 
         [Theory]
-        [MemberData(nameof(InvalidClosingDates))]
-        public void ClosingDateMustBeGreaterThanToday(DateTime closingDateValue)
+        [MemberData(nameof(InvalidStartDates))]
+        public void StartDateMustBeGreaterThanToday(DateTime startDate)
         {
             var vacancy = new Vacancy
             {
-                ClosingDate = closingDateValue
+                StartDate = startDate
             };
 
-            var result = _validator.Validate(vacancy, VacancyRuleSet.ClosingDate);
+            var result = _validator.Validate(vacancy, VacancyRuleSet.StartDate);
 
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(1);
-            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.ClosingDate)}");
-            result.Errors[0].ErrorCode.Should().Be("18");
-            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.ClosingDate);
+            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.StartDate)}");
+            result.Errors[0].ErrorCode.Should().Be("22");
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.StartDate);
         }
     }
 }

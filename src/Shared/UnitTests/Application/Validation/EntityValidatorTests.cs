@@ -20,7 +20,12 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
         [Fact]
         public void ValidateReturnsFailWhenValidationFails()
         {
-            var invalidVacancy = new Vacancy();
+            var invalidVacancy = new Vacancy
+            {
+                Location = new Address(),
+                Wage = new Wage(),
+                Programme = new Programme()
+            };
 
             var result = _validator.Validate(invalidVacancy, VacancyRuleSet.All);
 
@@ -30,7 +35,12 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
         [Fact]
         public void ValidateReturnsListOfValidationErrorWhenValidationFails()
         {
-            var invalidVacancy = new Vacancy();
+            var invalidVacancy = new Vacancy
+            {
+                Location = new Address(),
+                Wage = new Wage(),
+                Programme = new Programme()
+            };
 
             var result = _validator.Validate(invalidVacancy, VacancyRuleSet.All);
 
@@ -40,9 +50,15 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.Validation
         [Fact]
         public void ValidateReturnsNoErrorWhenValidationPasses()
         {
-            var invalidVacancy = new Vacancy { Title = "Valid Title" };
+            var validVacancy = new Vacancy
+            {
+                Title = "Valid Title",
+                Location = new Address(),
+                Wage = new Wage(),
+                Programme = new Programme()
+            };
 
-            var result = _validator.Validate(invalidVacancy, VacancyRuleSet.Title);
+            var result = _validator.Validate(validVacancy, VacancyRuleSet.Title);
 
             result.HasErrors.Should().BeFalse();
             result.Errors.Should().HaveCount(0);
