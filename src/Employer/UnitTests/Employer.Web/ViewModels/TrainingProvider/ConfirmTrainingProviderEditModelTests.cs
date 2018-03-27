@@ -1,4 +1,4 @@
-﻿using Esfa.Recruit.Employer.Web.ViewModels.TrainingProvider;
+﻿using Esfa.Recruit.Employer.Web.ViewModels;
 using FluentAssertions;
 using System;
 using System.Collections.Generic;
@@ -6,9 +6,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Xunit;
 
-namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.TrainingProvider
+namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels
 {
-    public class ConfirmEditModelTests
+    public class ConfirmTrainingProviderEditModelTests
     {
         private readonly Guid _dummyVacancyGuid = Guid.NewGuid();
 
