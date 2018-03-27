@@ -14,7 +14,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.TrainingProvid
         [InlineData("")]
         public void ShouldErrorIfUkprnIsNotSpecified(string inputUkprn)
         {
-            var vm = new IndexEditModel
+            var vm = new SelectTrainingProviderEditModel
             {
                 Ukprn = inputUkprn
             };

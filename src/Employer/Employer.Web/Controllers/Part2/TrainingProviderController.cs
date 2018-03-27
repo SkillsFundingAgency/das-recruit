@@ -1,6 +1,6 @@
 ﻿using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Orchestrators;
-using Esfa.Recruit.Employer.Web.ViewModels.TrainingProvider;
+using Esfa.Recruit.Employer.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -18,15 +18,15 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             _orchestrator = orchestrator;
         }
 
-        [HttpGet("training-provider", Name = RouteNames.TrainingProvider_Index_Get)]
-        public async Task<IActionResult> Index(Guid vacancyId)
+        [HttpGet("select-training-provider", Name = RouteNames.TrainingProvider_Select_Get)]
+        public async Task<IActionResult> SelectTrainingProvider(Guid vacancyId)
         {
             var vm = await _orchestrator.GetIndexViewModel(vacancyId);
             return View(vm);
         }
 
-        [HttpPost("training-provider", Name = RouteNames.TrainingProvider_Index_Post)]
-        public async Task<IActionResult> Index(IndexEditModel m)
+        [HttpPost("select-training-provider", Name = RouteNames.TrainingProvider_Select_Post)]
+        public async Task<IActionResult> SelectTrainingProvider(SelectTrainingProviderEditModel m)
         {
             if (!ModelState.IsValid)
             {
@@ -44,13 +44,13 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         }
 
         [HttpGet("confirm-training-provider", Name = RouteNames.TrainingProvider_Confirm_Get)]
-        public async Task<IActionResult> Confirm(ConfirmViewModel confirmDetailsVm)
+        public IActionResult ConfirmTrainingProvider(ConfirmTrainingProviderViewModel confirmDetailsVm)
         {
-            return View("Confirm", confirmDetailsVm);
+            return View(confirmDetailsVm);
         }
 
         [HttpPost("confirm-training-provider", Name = RouteNames.TrainingProvider_Confirm_Post)]
-        public async Task<IActionResult> Confirm(ConfirmEditModel m)
+        public async Task<IActionResult> ConfirmTrainingProvider(ConfirmTrainingProviderEditModel m)
         {
             if (!ModelState.IsValid)
             {
@@ -61,7 +61,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             if (providerExists == false)
             {
-                var vm = new IndexEditModel { VacancyId = m.VacancyId, Ukprn = m.Ukprn };
+                var vm = new SelectTrainingProviderEditModel { VacancyId = m.VacancyId, Ukprn = m.Ukprn };
                 return await ProviderNotFound(vm);
             }
 
@@ -69,11 +69,11 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             return RedirectToRoute(RouteNames.Preview_Index_Get);
         }
 
-        private async Task<IActionResult> ProviderNotFound(IndexEditModel m)
+        private async Task<IActionResult> ProviderNotFound(SelectTrainingProviderEditModel m)
         {
             ModelState.AddModelError(string.Empty, string.Format(InvalidUkprnMessageFormat, m.Ukprn));
             var vm = await _orchestrator.GetIndexViewModel(m.VacancyId);
-            return View("Index", vm);
+            return View("SelectTrainingProvider", vm);
         }
     }
 }

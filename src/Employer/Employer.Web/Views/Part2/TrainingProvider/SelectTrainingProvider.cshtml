@@ -1,4 +1,4 @@
-﻿@model Esfa.Recruit.Employer.Web.ViewModels.TrainingProvider.IndexViewModel
+﻿@model Esfa.Recruit.Employer.Web.ViewModels.SelectTrainingProviderViewModel
 
 <div class="grid-row">
     <div class="column-two-thirds">
@@ -12,7 +12,7 @@
             </h2>
         </div>
 
-        <form asp-route="@RouteNames.TrainingProvider_Index_Post">
+        <form asp-route="@RouteNames.TrainingProvider_Select_Post">
             <div class="form-group">
                 <label asp-for="Ukprn" class="form-label-bold">Enter UK Provider Reference Number (UKPRN)</label>
                 <span class="form-hint">

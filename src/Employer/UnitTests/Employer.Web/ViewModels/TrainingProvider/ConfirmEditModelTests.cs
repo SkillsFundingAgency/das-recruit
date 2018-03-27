@@ -17,7 +17,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.TrainingProvid
         [InlineData("")]
         public void ShouldErrorIfUkprnIsNotSpecified(string inputUkprn)
         {
-            var vm = new ConfirmEditModel
+            var vm = new ConfirmTrainingProviderEditModel
             {
                 VacancyId = _dummyVacancyGuid,
                 Ukprn = inputUkprn
@@ -35,7 +35,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.TrainingProvid
         [Fact]
         public void ShouldBeValidIfUkprnSpecified()
         {
-            var vm = new ConfirmEditModel
+            var vm = new ConfirmTrainingProviderEditModel
             {
                 VacancyId = _dummyVacancyGuid,
                 Ukprn = "12345678"
