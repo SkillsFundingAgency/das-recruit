@@ -61,10 +61,10 @@
             </div>
 
             <div class="form-group">
-                <button type="submit" name="AddQualificationAction" class="button-link">+ Add this qualification</button>
+                <button type="submit" name="AddQualificationAction" value="AddQualification" class="button-link">+ Add this qualification</button>
             </div>
 
-            <table>
+            <table style="@(Model.Qualifications.Any() == false ? "display:none" : null)">
                 <thead>
                     <tr>
                         <th>
@@ -92,10 +92,10 @@
                             <td>@qualification.Grade</td>
                             <td>@qualification.Weighting</td>
                             <td>
-                                <input asp-for="@qualification.QualificationType" type="hidden" value="@qualification.QualificationType" />
-                                <input asp-for="@qualification.Subject" type="hidden" value="@qualification.Subject" />
-                                <input asp-for="@qualification.Grade" type="hidden" value="@qualification.Grade" />
-                                <input asp-for="@qualification.Weighting" type="hidden" value="@qualification.Weighting" />
+                                <input name="Qualifications[@i].QualificationType" type="hidden" value="@qualification.QualificationType" />
+                                <input name="Qualifications[@i].Subject" type="hidden" value="@qualification.Subject" />
+                                <input name="Qualifications[@i].Grade" type="hidden" value="@qualification.Grade" />
+                                <input name="Qualifications[@i].Weighting" type="hidden" value="@qualification.Weighting" />
 
                                 <button type="submit" name="RemoveQualification" value="@i">Remove</button>
                             </td>
