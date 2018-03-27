@@ -121,7 +121,19 @@
         var $qualificationsContainer = $("#qualifications-container");
         var $qualificationsSummary = $("#qualifications-summary");
 
-        var qualificationRowMask = '<tr><td></td><td></td><td></td><td></td><td><input name="" type="hidden" value="" /><input name="" type="hidden" value="" /><input name="" type="hidden" value="" /><input name="" type="hidden" value="" /><button type="submit" name="RemoveQualification" value="">Remove</button></td></tr>';
+        var qualificationRowMask = '<tr><td></td><td></td><td></td><td></td><td><input name="QualificationType" type="hidden" value="" /><input name="Subject" type="hidden" value="" /><input name="Grade" type="hidden" value="" /><input name="Weighting" type="hidden" value="" /><button type="submit" name="RemoveQualification" value="">Remove</button></td></tr>';
+
+        var updateInputPositions = function () {
+            
+            $("tr", $qualificationsSummary).each(function (i) {
+                var $row = $(this);
+                $("input[name*='QualificationType']", $row).attr("name", "Qualifications[" + i + "].QualificationType");
+                $("input[name*='Subject']", $row).attr("name", "Qualifications[" + i + "].Subject");
+                $("input[name*='Grade']", $row).attr("name", "Qualifications[" + i + "].Grade");
+                $("input[name*='Weighting']", $row).attr("name", "Qualifications[" + i + "].Weighting");
+                $("button[name='RemoveQualification']", $row).val(i);
+            });
+        }
 
         var buildQualificationRow = function(qualificationType, subject, grade, weighting) {
 
@@ -133,19 +145,12 @@
             $("td:nth-child(2)", $row).text(subject);
             $("td:nth-child(3)", $row).text(grade);
             $("td:nth-child(4)", $row).text(weighting);
-
-            $("td:nth-child(5) input:nth-child(1)", $row).attr("name", "Qualifications[" + i + "].QualificationType");
-            $("td:nth-child(5) input:nth-child(2)", $row).attr("name", "Qualifications[" + i + "].Subject");
-            $("td:nth-child(5) input:nth-child(3)", $row).attr("name", "Qualifications[" + i + "].Grade");
-            $("td:nth-child(5) input:nth-child(4)", $row).attr("name", "Qualifications[" + i + "].Weighting");
-
-            $("td:nth-child(5) input:nth-child(1)", $row).val(qualificationType);
-            $("td:nth-child(5) input:nth-child(2)", $row).val(subject);
-            $("td:nth-child(5) input:nth-child(3)", $row).val(grade);
-            $("td:nth-child(5) input:nth-child(4)", $row).val(weighting);
-
-            $("td:nth-child(5) button[name='RemoveQualification']", $row).val(i);
-
+            
+            $("input[name*='QualificationType']", $row).val(qualificationType);
+            $("input[name*='Subject']", $row).val(subject);
+            $("input[name*='Grade']", $row).val(grade);
+            $("input[name*='Weighting']", $row).val(weighting);
+            
             return $row;
         };
 
@@ -170,6 +175,8 @@
                     var $row = buildQualificationRow(qualificationType, subject, grade, weighting);
                     $qualificationsSummary.append($row);
 
+                    updateInputPositions();
+
                     $qualificationType.val("");
                     $subject.val("");
                     $grade.val("");
@@ -185,6 +192,8 @@
         $qualificationsSummary.on("click", "button[name='RemoveQualification']",
             function(e) {
                 $(this).closest("tr").remove();
+
+                updateInputPositions();
 
                 toggleQualificationsContainer();
 
