@@ -36,6 +36,11 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
             }
 
             await _orchestrator.PostQualificationsEditModelAsync(m);
+
+            if(!string.IsNullOrEmpty(m.AddQualificationAction) || !string.IsNullOrEmpty(m.RemoveQualification))
+            {
+                return RedirectToRoute(RouteNames.Qualifications_Get);
+            }
             
             return RedirectToRoute(RouteNames.Preview_Index_Get);
         }
