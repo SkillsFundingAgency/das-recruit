@@ -5,7 +5,7 @@ using FluentValidation.Results;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Validation
 {
-    public class EntityValidator<T, TRules> : IEntityValidator<T, TRules> where TRules : struct, IComparable, IConvertible, IFormattable 
+    public sealed class EntityValidator<T, TRules> : IEntityValidator<T, TRules> where TRules : struct, IComparable, IConvertible, IFormattable 
     {
         private AbstractValidator<T> _validator;
     
@@ -20,7 +20,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation
 
             if (validationResult.HasErrors)
             {
-                // TODO: LWA Do we want to add the validations rules that were run??
                 throw new EntityValidationException($"Entity: {typeof(T)} has failed validation", validationResult);
             }
         }

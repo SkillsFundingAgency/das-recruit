@@ -4,13 +4,13 @@ using FluentValidation.Validators;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators
 {
-    public class PostCodeValidator : PropertyValidator, IRegularExpressionValidator 
+    internal class PostCodeValidator : PropertyValidator, IRegularExpressionValidator 
     {
 		private readonly Regex _regex;
 
         const string expression = @"(([gG][iI][rR] {0,}0[aA]{2})|((([a-pr-uwyzA-PR-UWYZ][a-hk-yA-HK-Y]?[0-9][0-9]?)|(([a-pr-uwyzA-PR-UWYZ][0-9][a-hjkstuwA-HJKSTUW])|([a-pr-uwyzA-PR-UWYZ][a-hk-yA-HK-Y][0-9][abehmnprv-yABEHMNPRV-Y]))) {0,}[0-9][abd-hjlnp-uw-zABD-HJLNP-UW-Z]{2}))";
 
-        public PostCodeValidator() : base("{PropertyName} must be a valid postcode format")
+        internal PostCodeValidator() : base("{PropertyName} must be a valid postcode format")
         {
 			_regex = CreateRegEx();
 		}
@@ -35,9 +35,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
 					return new Regex(expression, RegexOptions.IgnoreCase, TimeSpan.FromSeconds(2.0));
 				}
 			}
-			catch
-			{
-			}
+            catch
+            {
+            }
 
             return new Regex(expression, RegexOptions.IgnoreCase);
 		}

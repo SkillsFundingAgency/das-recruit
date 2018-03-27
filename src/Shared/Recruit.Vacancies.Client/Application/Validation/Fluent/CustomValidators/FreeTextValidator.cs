@@ -4,13 +4,13 @@ using FluentValidation.Validators;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators
 {
-    public class FreeTextValidator : PropertyValidator, IRegularExpressionValidator 
+    internal class FreeTextValidator : PropertyValidator, IRegularExpressionValidator 
     {
 		private readonly Regex _regex;
 
 		const string expression = @"^[a-zA-Z0-9\u0080-\uFFA7?$@#()""'!,+\-=_:;.&€£*%\s\/\[\]]*$";
 
-		public FreeTextValidator() : base("{PropertyName} must contain valid characters")
+		internal FreeTextValidator() : base("{PropertyName} must contain valid characters")
         {
 			_regex = CreateRegEx();
 		}
