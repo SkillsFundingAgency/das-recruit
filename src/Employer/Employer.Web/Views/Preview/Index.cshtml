@@ -136,7 +136,12 @@
                     <div class="preview-empty">
                         <h3 class="heading-small">Qualifications</h3>
                         <div id="vacancy-qualifications-required">
-                            <p class="preserve-format"></p>
+                            <p class="preserve-format">
+                                @foreach (var qualification in Model.Qualifications)
+                                {
+                                    @qualification<br/>
+                                }
+                            </p>
                         </div>
                         <a asp-route="@RouteNames.Qualifications_Get">Edit</a>
                     </div>
