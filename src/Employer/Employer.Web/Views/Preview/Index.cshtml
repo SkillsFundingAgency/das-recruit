@@ -2,6 +2,8 @@
 
 @{ 
     var emptySectionClass = "preview-empty";
+    var errorSectionClass = "preview-error";
+
     var providerDetailsClass = Model.HasTrainingProviderDetails == false ? emptySectionClass : string.Empty;
     var contactDetailsClass = Model.HasContactDetails == false ? emptySectionClass : string.Empty;
 }
@@ -9,7 +11,6 @@
 <div class="grid-row">
     <div class="column-full">
 
-        <!-- Validation summary-->
         <div asp-validation-summary="All" class="error-summary" role="alert" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
             <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
                 Please fix these errors
@@ -45,7 +46,7 @@
                 </div>
                 <div class="column-one-third">
                     <h3 class="heading-small sfa-no-top-margin">Closing Date</h3>
-                    <p id="vacancy-closing-date">@Model.ClosingDateCaption</p>
+                    <p id="vacancy-closing-date">@Model.ClosingDate</p>
                     <a asp-route="@RouteNames.Title_Get">Edit</a>
                 </div>
             </div>
@@ -64,7 +65,7 @@
                                     @Model.WorkingWeekDescription
                                 </li>
                                 <li id="total-hours-per-week">
-                                    Total hours per week: @Model.HoursPerWeekCaption
+                                    Total hours per week: @Model.HoursPerWeek
                                 </li>
                             </ul>
                             <a asp-route="@RouteNames.Title_Get">Edit</a>
@@ -82,7 +83,7 @@
                         </li>
                         <li>
                             <h3 class="heading-small">Possible start date</h3>
-                            <p id="vacancy-start-date">@Model.PossibleStartDateCaption</p>
+                            <p id="vacancy-start-date">@Model.PossibleStartDate</p>
                             <a asp-route="@RouteNames.Title_Get">Edit</a>
                         </li>
                         <li>
@@ -108,9 +109,11 @@
                             Vacancy description
                         </h3>
                         <div id="vacancy-full-descrpition">
-                            <p class="preserve-format">@Model.Description</p>
+                            <p class="preserve-format">@Model.VacancyDescription</p>
+                            <p class="preserve-format">@Model.TrainingDescription</p>
+                            <p class="preserve-format">@Model.OutcomeDescription</p>
                         </div>
-                        <a asp-route="@RouteNames.Title_Get">Edit</a>
+                        <a asp-route="@RouteNames.VacancyDescription_Index_Get">Edit</a>
                     </div>
                 </div>
             </div>
@@ -143,7 +146,7 @@
                     <div class="preview-empty">
                         <h3 class="heading-small">Things to consider (optional)</h3>
                         <p>@Model.ThingsToConsider</p>
-                        <a href="things-to-consider">Edit</a>
+                        <a asp-route="@RouteNames.Considerations_Get">Edit</a>
                     </div>
                 </div>
             </div>
@@ -164,17 +167,17 @@
                         <h3 class="heading-small">Description</h3>
                         <div id="vacancy-employer-description">
                             <p>@Model.EmployerDescription</p>
-                            <a href="employer-details">Edit</a>
+                            <a asp-route="@RouteNames.AboutEmployer_Get">Edit</a>
                         </div>
                     </div>
                     <div class="preview-empty">
                         <h3 class="heading-small">Website (optional)</h3>
                         <div id="vacancy-employer-website">
                             <p>
-                                <a href= id="@Model.EmployerWebsiteUrl"></a>
+                                <a href="@Model.EmployerWebsiteUrl">@Model.EmployerWebsiteUrl</a>
                             </p>
                         </div>
-                        <a asp-route="@RouteNames.Title_Get">Edit</a>
+                        <a asp-route="@RouteNames.AboutEmployer_Get">Edit</a>
                     </div>
                 </div>
 
@@ -186,7 +189,7 @@
                         <p class="sfa-small-bottom-margin">@Model.ContactName</p>
                         <p class="sfa-small-bottom-margin">@Model.ContactEmail</p>
                         <p class="sfa-small-bottom-margin">@Model.ContactTelephone</p>
-                        <a href="application-process">Edit</a>
+                        <a asp-route="@RouteNames.ApplicationProcess_Get">Edit</a>
                     </div>
                 </div>
             </div>
@@ -218,16 +221,12 @@
                     <div class="column-full">
                         <div class="preview-empty">
                             <h2 class="heading-small">Employer's application instructions</h2>
-                        </div>
-                        <div class="column-two-thirds">
-
-                            <p class="application-instructions">
-                                @Model.ApplicationInstructions
-                            </p>
-                            <p>
-
-                            </p>
-                            <a href="application-process">Edit</a>
+                            <div class="column-two-thirds">
+                                <p class="application-instructions">
+                                    @Model.ApplicationInstructions
+                                </p>
+                                <a asp-route="@RouteNames.ApplicationProcess_Get">Edit</a>
+                            </div>
                         </div>
                     </div>
                 </div>

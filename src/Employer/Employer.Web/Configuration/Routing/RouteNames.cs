@@ -2,14 +2,20 @@
 {
     public static class RouteNames
     {
-        public const string ApplicationProcess_Index_Get = "ApplicationProcess_Index_Get";
-        public const string ApplicationProcess_Index_Post = "ApplicationProcess_Index_Post";
+        public const string AboutEmployer_Get = "AboutEmployer_Get";
+        public const string AboutEmployer_Post = "AboutEmployer_Post";
+        
+        public const string ApplicationProcess_Get = "ApplicationProcess_Get";
+        public const string ApplicationProcess_Post = "ApplicationProcess_Post";
 
         public const string ApprenticeshipDetails_Index_Get = "ApprenticeshipDetails_Index_Get";
         public const string ApprenticeshipDetails_Index_Post = "ApprenticeshipDetails_Index_Post";
 
         public const string CandidateProfile_Index_Get = "CandidateProfile_Index_Get";
         public const string CandidateProfile_Index_Post = "CandidateProfile_Index_Post";
+
+        public const string Considerations_Get = "Considerations_Get";
+        public const string Considerations_Post = "Considerations_Post";
 
         public const string Dashboard_Index_Get = "Dashboard_Index_Get";
         public const string Dashboard_ChangePassword = "Dashboard_ChangePassword";
@@ -63,6 +69,9 @@
         public const string TrainingProvider_Index_Post = "TrainingProvider_Index_Post";
         public const string TrainingProvider_Confirm_Get = "TrainingProvider_Confirm_Get";
         public const string TrainingProvider_Confirm_Post = "TrainingProvider_Confirm_Post";
+
+        public const string VacancyDescription_Index_Get = "VacancyDescription_Index_Get";
+        public const string VacancyDescription_Index_Post = "VacancyDescription_Index_Post";
 
         public const string WageAndhours_Index_Get = "WageAndhours_Index_Get";
         public const string WageAndhours_Index_Post = "WageAndhours_Index_Post";

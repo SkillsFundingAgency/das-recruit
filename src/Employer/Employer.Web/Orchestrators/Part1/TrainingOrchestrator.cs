@@ -28,7 +28,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
             await Task.WhenAll(vacancyTask, programmesTask);
 
-            var vacancy = vacancyTask.Result;            
+            var vacancy = vacancyTask.Result;
             var programmes = programmesTask.Result;
 
             if (!vacancy.CanEdit)
