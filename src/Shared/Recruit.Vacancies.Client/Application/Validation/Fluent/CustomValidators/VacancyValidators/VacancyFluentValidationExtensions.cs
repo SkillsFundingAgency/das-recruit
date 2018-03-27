@@ -1,5 +1,9 @@
-﻿using Esfa.Recruit.Vacancies.Client.Application.Services;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Projections;
 using FluentValidation;
 using FluentValidation.Results;
 
@@ -36,6 +40,24 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
                     {
                         ErrorCode = "49",
                         CustomState = VacancyRuleSet.MinimumWage
+                    };
+                    context.AddFailure(failure);
+                }
+            });
+        }
+
+        public static IRuleBuilderInitial<Vacancy, Vacancy> TrainingMustBeActiveForStartDate(this IRuleBuilder<Vacancy, Vacancy> ruleBuilder, Lazy<IEnumerable<ApprenticeshipProgramme>> programmes)
+        {
+            return ruleBuilder.Custom((vacancy, context) =>
+            {
+                var matchingProgramme = programmes.Value.SingleOrDefault(x => x.Id.Equals(vacancy.Programme.Id, StringComparison.InvariantCultureIgnoreCase));
+
+                if (matchingProgramme.EffectiveTo != null && matchingProgramme.EffectiveTo < vacancy.StartDate)
+                {
+                    var failure = new ValidationFailure(string.Empty, "This [framework/standard] is no longer available on the date selected. Choose other apprenticeship training or change the start date.")
+                    {
+                        ErrorCode = "26",
+                        CustomState = VacancyRuleSet.TrainingExpiryDate
                     };
                     context.AddFailure(failure);
                 }

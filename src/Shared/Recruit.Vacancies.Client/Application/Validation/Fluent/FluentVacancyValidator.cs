@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Esfa.Recruit.Vacancies.Client.Application.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators.VacancyValidators;
@@ -14,13 +15,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
     {
         private readonly ITimeProvider _timeProvider;
         private readonly IGetApprenticeshipNationalMinimumWages _minimumWageService;
-        private Lazy<ApprenticeshipProgrammes> _trainingProgrammes;
+        private Lazy<IEnumerable<ApprenticeshipProgramme>> _trainingProgrammes;
 
         public FluentVacancyValidator(ITimeProvider timeProvider, IGetApprenticeshipNationalMinimumWages minimumWageService, IQueryStoreReader queryStoreReader)
         {
             _timeProvider = timeProvider;
             _minimumWageService = minimumWageService;
-            _trainingProgrammes = new Lazy<ApprenticeshipProgrammes>(() => queryStoreReader.GetApprenticeshipProgrammesAsync().Result);
+            _trainingProgrammes = new Lazy<IEnumerable<ApprenticeshipProgramme>>(() => queryStoreReader.GetApprenticeshipProgrammesAsync().Result.Programmes);
 
             SingleFieldValidations();
 
@@ -57,6 +58,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             ValidateStartDateClosingDate();
 
             MinimumWageValidation();
+
+            TrainingExpiryDateValidation();
         }
 
         private void ValidateDescription()
@@ -275,6 +278,17 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .FixedWageMustBeGreaterThanApprenticeshipMinimumWage(_minimumWageService)
                 .RunCondition(VacancyRuleSet.MinimumWage)
                 .WithRuleId(VacancyRuleSet.MinimumWage);
+            });
+        }
+
+        private void TrainingExpiryDateValidation()
+        {
+            When(x => x.Programme != null && !string.IsNullOrWhiteSpace(x.Programme.Id) && x.StartDate.HasValue, () =>
+            {
+                RuleFor(x => x)
+                    .TrainingMustBeActiveForStartDate(_trainingProgrammes)
+                .RunCondition(VacancyRuleSet.TrainingExpiryDate)
+                .WithRuleId(VacancyRuleSet.TrainingExpiryDate);
             });
         }
     }
