@@ -19,7 +19,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .MaximumLength(100)
                     .WithMessage("The address must not be more than {MaxLength} characters")
                     .WithErrorCode("7")
-                .WithRuleId(vacancyRules);
+                .WithRuleId((long)vacancyRules);
 
             RuleFor(x => x.AddressLine2)
                 .ValidFreeTextCharacters()
@@ -28,7 +28,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .MaximumLength(100)
                     .WithMessage("The address must not be more than {MaxLength} characters")
                     .WithErrorCode("7")
-                .WithRuleId(vacancyRules);
+                .WithRuleId((long)vacancyRules);
             
             RuleFor(x => x.AddressLine3)
                 .ValidFreeTextCharacters()
@@ -37,7 +37,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .MaximumLength(100)
                     .WithMessage("The address must not be more than {MaxLength} characters")
                     .WithErrorCode("7")
-                .WithRuleId(vacancyRules);
+                .WithRuleId((long)vacancyRules);
             
             RuleFor(x => x.AddressLine4)
                 .ValidFreeTextCharacters()
@@ -46,7 +46,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .MaximumLength(100)
                     .WithMessage("The address must not be more than {MaxLength} characters")
                     .WithErrorCode("7")
-                .WithRuleId(vacancyRules);
+                .WithRuleId((long)vacancyRules);
 
             RuleFor(x => x.Postcode)
                 .NotEmpty()
@@ -56,8 +56,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .When(x => !string.IsNullOrEmpty(x.Postcode), ApplyConditionTo.CurrentValidator)
                     .WithMessage("'{PropertyName}' is not a valid format")
                     .WithErrorCode("9")
-                .WithRuleId(vacancyRules);
-
+                .WithRuleId((long)vacancyRules);
 		}
 	}
 }

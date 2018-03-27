@@ -30,8 +30,6 @@
             result.Single(r => r.MemberNames.Single() == "EmployerAccountId").ErrorMessage.Should().Be("The EmployerAccountId field is required.");
         }
 
-        
-
         [Fact]
         public void ShouldBeValidIfTitleEditModelIsValid()
         {

@@ -5,6 +5,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Projections;
 using FluentValidation;
+using FluentValidation.Internal;
 using FluentValidation.Results;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators.VacancyValidators
@@ -62,6 +63,16 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
                     context.AddFailure(failure);
                 }
             });
+        }
+
+        public static IRuleBuilderOptions<T, TElement> WithVacancyRuleId<T, TElement>(this IConfigurable<PropertyRule, IRuleBuilderOptions<T, TElement>> ruleBuilder, VacancyRuleSet rule)
+        {
+            return ruleBuilder.WithRuleId((long)rule);
+        }
+
+        public static IRuleBuilderInitial<T, TElement> WithRuleId<T, TElement>(this IConfigurable<PropertyRule, IRuleBuilderInitial<T, TElement>> ruleBuilder, VacancyRuleSet rule)
+        {
+            return ruleBuilder.WithRuleId((long)rule);
         }
     }
 }

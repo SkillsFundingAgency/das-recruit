@@ -75,7 +75,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithMessage("The title contains some invalid characters")
                     .WithErrorCode("3")
                 .RunCondition(VacancyRuleSet.Title)
-                .WithRuleId(VacancyRuleSet.Title);
+                .WithVacancyRuleId(VacancyRuleSet.Title);
         }
 
         private void ValidateOrganisation()
@@ -85,12 +85,12 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithMessage("You must select one organisation")
                     .WithErrorCode("4")
                 .RunCondition(VacancyRuleSet.OrganisationId)
-                .WithRuleId(VacancyRuleSet.OrganisationId);
+                .WithVacancyRuleId(VacancyRuleSet.OrganisationId);
 
             RuleFor(x => x.Location)
                 .SetValidator(new AddressValidator((long)VacancyRuleSet.OrganisationAddress))
                 .RunCondition(VacancyRuleSet.OrganisationAddress)
-                .WithRuleId(VacancyRuleSet.OrganisationAddress);
+                .WithVacancyRuleId(VacancyRuleSet.OrganisationAddress);
         }
 
         private void ValidateNumberOfPositions()
@@ -100,7 +100,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithMessage("Enter the number of positions for this vacancy")
                     .WithErrorCode("10")
                 .RunCondition(VacancyRuleSet.NumberOfPostions)
-                .WithRuleId(VacancyRuleSet.NumberOfPostions);
+                .WithVacancyRuleId(VacancyRuleSet.NumberOfPostions);
         }
 
         private void ValidateShortDescription()
@@ -120,7 +120,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithMessage("The overview of the vacancy contains some invalid characters")
                     .WithErrorCode("15")
                 .RunCondition(VacancyRuleSet.ShortDescription)
-                .WithRuleId(VacancyRuleSet.ShortDescription);
+                .WithVacancyRuleId(VacancyRuleSet.ShortDescription);
 
         }
 
@@ -134,7 +134,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithMessage("The closing date can't be today or earlier. We advise using a date more than two weeks from now")
                     .WithErrorCode("18")
                 .RunCondition(VacancyRuleSet.ClosingDate)
-                .WithRuleId(VacancyRuleSet.ClosingDate);
+                .WithVacancyRuleId(VacancyRuleSet.ClosingDate);
         }
 
         private void ValidateStartDate()
@@ -147,7 +147,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .WithMessage("The possible start date can't be today or earlier. We advise using a date more than two weeks from now")
                     .WithErrorCode("22")
                 .RunCondition(VacancyRuleSet.StartDate)
-                .WithRuleId(VacancyRuleSet.StartDate);
+                .WithVacancyRuleId(VacancyRuleSet.StartDate);
         }
 
         private void ValidateTrainingProgramme()
@@ -155,7 +155,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             RuleFor(x => x.Programme)
                 .SetValidator(new TrainingProgrammeValidator((long)VacancyRuleSet.TrainingProgramme))
                     .RunCondition(VacancyRuleSet.TrainingProgramme)
-                .WithRuleId(VacancyRuleSet.TrainingProgramme);
+                .WithVacancyRuleId(VacancyRuleSet.TrainingProgramme);
         }
 
         private void ValidateDuration()
@@ -168,7 +168,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithMessage("Enter the expected duaration")
                     .WithErrorCode("34")
                 .RunCondition(VacancyRuleSet.Duration)
-                .WithRuleId(VacancyRuleSet.Duration);
+                .WithVacancyRuleId(VacancyRuleSet.Duration);
 
             RuleFor(x => x.Wage.Duration)
                 .Cascade(CascadeMode.StopOnFirstFailure)
@@ -190,7 +190,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithMessage("The expected duration must be at least 12 months (52 weeks)")
                     .WithErrorCode("36")
                 .RunCondition(VacancyRuleSet.Duration)
-                .WithRuleId(VacancyRuleSet.Duration);
+                .WithVacancyRuleId(VacancyRuleSet.Duration);
         }
 
         private void ValidateWorkingWeek()
@@ -207,7 +207,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithMessage("The working week must not be more than {MaxLength} characters")
                     .WithErrorCode("39")
                 .RunCondition(VacancyRuleSet.WorkingWeekDescription)
-                .WithRuleId(VacancyRuleSet.WorkingWeekDescription);
+                .WithVacancyRuleId(VacancyRuleSet.WorkingWeekDescription);
         }
 
         private void ValidateWeeklyHours()
@@ -223,7 +223,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithMessage("  The paid hours a week must be less than {ComparisonValue}")
                     .WithErrorCode("43")
                 .RunCondition(VacancyRuleSet.WeeklyHours)
-                .WithRuleId(VacancyRuleSet.WeeklyHours);
+                .WithVacancyRuleId(VacancyRuleSet.WeeklyHours);
         }
 
         private void ValidateWage()
@@ -236,7 +236,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithMessage("Select a wage")
                     .WithErrorCode("46")
                 .RunCondition(VacancyRuleSet.Wage)
-                .WithRuleId(VacancyRuleSet.Wage);
+                .WithVacancyRuleId(VacancyRuleSet.Wage);
 
             RuleFor(x => x.Wage.WageAdditionalInformation)
                 .MaximumLength(241)
@@ -246,7 +246,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithMessage("Additional salary information contains some invalid characters")
                     .WithErrorCode("45")
                 .RunCondition(VacancyRuleSet.Wage)
-                .WithRuleId(VacancyRuleSet.Wage);
+                .WithVacancyRuleId(VacancyRuleSet.Wage);
 
             When(x => x.Wage != null && x.Wage.WageType == WageType.Unspecified, () =>
             {
@@ -255,7 +255,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                         .WithMessage("Enter a reason why you need to use Unspecified")
                         .WithErrorCode("50")
                     .RunCondition(VacancyRuleSet.Wage)
-                    .WithRuleId(VacancyRuleSet.Wage);
+                    .WithVacancyRuleId(VacancyRuleSet.Wage);
             });
         }
 

@@ -13,7 +13,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .NotEmpty()
                     .WithMessage("Select  apprenticeship training")
                     .WithErrorCode("25")
-                .WithRuleId(vacancyRules);
+                .WithRuleId((long)vacancyRules);
 		}
 	}
 }

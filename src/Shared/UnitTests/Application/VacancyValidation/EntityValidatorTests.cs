@@ -1,6 +1,7 @@
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using FluentAssertions;
+using FluentValidation;
 using UnitTests.Application.VacancyValidation;
 using Xunit;
 
@@ -11,14 +12,14 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation
         [Fact]
         public void ValidateReturnsFailWhenValidationFails()
         {
-            var invalidVacancy = new Vacancy
+            var validator = new EntityValidator<TestEntity, TestEntityRules>(new TestEntityFluentValidator());
+
+            var testEntity = new TestEntity
             {
-                Location = new Address(),
-                Wage = new Wage(),
-                Programme = new Programme()
+                TestProperty = 3
             };
 
-            var result = Validator.Validate(invalidVacancy, VacancyRuleSet.All);
+            var result = validator.Validate(testEntity, TestEntityRules.All);
 
             result.HasErrors.Should().BeTrue();
         }
@@ -26,14 +27,14 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation
         [Fact]
         public void ValidateReturnsListOfValidationErrorWhenValidationFails()
         {
-            var invalidVacancy = new Vacancy
+            var validator = new EntityValidator<TestEntity, TestEntityRules>(new TestEntityFluentValidator());
+
+            var testEntity = new TestEntity
             {
-                Location = new Address(),
-                Wage = new Wage(),
-                Programme = new Programme()
+                TestProperty = 3
             };
 
-            var result = Validator.Validate(invalidVacancy, VacancyRuleSet.All);
+            var result = validator.Validate(testEntity, TestEntityRules.All);
 
             result.Errors.Should().HaveCountGreaterThan(0);
         }
@@ -41,18 +42,37 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation
         [Fact]
         public void ValidateReturnsNoErrorWhenValidationPasses()
         {
-            var validVacancy = new Vacancy
+            var validator = new EntityValidator<TestEntity, TestEntityRules>(new TestEntityFluentValidator());
+
+            var testEntity = new TestEntity
             {
-                Title = "Valid Title",
-                Location = new Address(),
-                Wage = new Wage(),
-                Programme = new Programme()
+                TestProperty = 6
             };
 
-            var result = Validator.Validate(validVacancy, VacancyRuleSet.Title);
+            var result = validator.Validate(testEntity, TestEntityRules.All);
 
             result.HasErrors.Should().BeFalse();
             result.Errors.Should().HaveCount(0);
+        }
+    }
+
+    public class TestEntity 
+    {
+        public int TestProperty { get; set; }
+    }
+
+    public enum TestEntityRules
+    {
+        All
+    }
+
+    public class TestEntityFluentValidator : AbstractValidator<TestEntity>
+    {
+        public TestEntityFluentValidator()
+        {
+            RuleFor(x => x.TestProperty)
+                .GreaterThan(5)
+                .WithRuleId((long)TestEntityRules.All);
         }
     }
 }

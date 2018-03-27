@@ -16,26 +16,26 @@ namespace FluentValidation
             return ruleBuilder.Configure(c => c.ApplyCondition(context => context.CanRunValidator(condition), ApplyConditionTo.AllValidators));
         }
 
-        public static IRuleBuilderOptions<T, TElement> WithRuleId<T, TElement>(this IConfigurable<PropertyRule, IRuleBuilderOptions<T, TElement>> ruleBuilder, VacancyRuleSet condition)
+        public static IRuleBuilderOptions<T, TElement> WithRuleId<T, TElement>(this IConfigurable<PropertyRule, IRuleBuilderOptions<T, TElement>> ruleBuilder, long ruleId)
         {
             return ruleBuilder.Configure(c =>
             {
                 // Set rule type in context so can be returned in error object
                 foreach (var validator in c.Validators)
                 {
-                    validator.CustomStateProvider = s => condition;
+                    validator.CustomStateProvider = s => ruleId;
                 }
             });
         }
 
-        public static IRuleBuilderInitial<T, TElement> WithRuleId<T, TElement>(this IConfigurable<PropertyRule, IRuleBuilderInitial<T, TElement>> ruleBuilder, VacancyRuleSet condition)
+        public static IRuleBuilderInitial<T, TElement> WithRuleId<T, TElement>(this IConfigurable<PropertyRule, IRuleBuilderInitial<T, TElement>> ruleBuilder, long ruleId)
         {
             return ruleBuilder.Configure(c =>
             {
                 // Set rule type in context so can be returned in error object
                 foreach (var validator in c.Validators)
                 {
-                    validator.CustomStateProvider = s => condition;
+                    validator.CustomStateProvider = s => ruleId;
                 }
             });
         }
