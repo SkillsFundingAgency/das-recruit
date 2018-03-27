@@ -12,8 +12,17 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         
         public string EmployerAccountId { get; internal set; }
 
+        public string ApplicationInstructions { get; set; }
+        public string ApplicationUrl { get; set; }
+        
         public DateTime? CreatedDate { get; set; }
         public string CreatedBy { get; internal set; }
+        public string Description { get; set; }
+        public string EmployerContactName { get; set; }
+        public string EmployerContactEmail { get; set; }
+        public string EmployerContactPhone { get; set; }
+        public string EmployerDescription { get; set; }
+        public string EmployerWebsiteUrl { get; set; }
         public VacancyStatus Status { get; set; }
 
         public DateTime? SubmittedDate { get; set; }
@@ -43,19 +52,20 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public string OrganisationId { get; set; }
 
         public string OrganisationName { get; set; }
-        
+        public string OutcomeDescription { get; set; }
         public Address Location { get; set; }
 
         public int? NumberOfPositions { get; set; }
 
         public string ShortDescription { get; set; }
-
+        public string ThingsToConsider { get; set; }
         public DateTime? ClosingDate { get; set; }
 
         public DateTime? StartDate { get; set; }
 
         public Programme Programme { get; set; }
 
-        public Wage Wage { get; set; }
+        public string TrainingDescription { get; set; }
+        public Wage Wage { get; set; }        
     }
 }

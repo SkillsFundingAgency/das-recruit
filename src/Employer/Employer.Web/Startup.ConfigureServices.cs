@@ -40,6 +40,7 @@ namespace Esfa.Recruit.Employer.Web
             services.Configure<RazorViewEngineOptions>(o =>
             {
                 o.ViewLocationFormats.Add("/Views/Part1/{1}/{0}" + RazorViewEngine.ViewExtension);
+                o.ViewLocationFormats.Add("/Views/Part2/{1}/{0}" + RazorViewEngine.ViewExtension);
             });
 
             services.AddMvcService(_hostingEnvironment, _isAuthEnabled);

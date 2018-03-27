@@ -8,6 +8,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Humanizer;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
@@ -32,33 +33,38 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             var vm = new PreviewVacancyViewModel
             {
-                ApplicationInstructions = string.Empty,
+                ApplicationInstructions = vacancy.ApplicationInstructions,
+                ApplicationUrl = vacancy.ApplicationUrl,
                 CanDelete = vacancy.CanDelete,
                 CanSubmit = vacancy.CanSubmit,
-                ContactName = string.Empty,
-                ContactEmail = string.Empty,
-                ContactTelephone = string.Empty,
-                ClosingDate = vacancy.ClosingDate.Value,
-                Description = string.Empty,
+                ContactName = vacancy.EmployerContactName,
+                ContactEmail = vacancy.EmployerContactEmail,
+                ContactTelephone = vacancy.EmployerContactPhone,
+                ClosingDate = vacancy.ClosingDate.Value.ToString("dd MMM yyyy"),
+                EmployerDescription = vacancy.EmployerDescription,
                 EmployerName = vacancy.OrganisationName,
-                EmployerWebsiteUrl = string.Empty,
+                EmployerWebsiteUrl = vacancy.EmployerWebsiteUrl,
                 ExpectedDuration = vacancy.Wage.DurationUnit.Value.GetDisplayName().ToQuantity(vacancy.Wage.Duration.Value),
-                HoursPerWeek = vacancy.Wage.WeeklyHours.Value,
+                HoursPerWeek = vacancy.Wage.WeeklyHours.ToString().EndsWith("0")
+                                ? vacancy.Wage.WeeklyHours.ToString().SkipLast(1).ToString().Replace(".0", string.Empty)
+                                : vacancy.Wage.WeeklyHours.ToString(),
                 Location = vacancy.Location,
                 MapUrl = vacancy.Location.HasGeocode
                     ? _mapService.GetMapImageUrl(vacancy.Location.Latitude.ToString(), vacancy.Location.Longitude.ToString())
                     : _mapService.GetMapImageUrl(vacancy.Location?.Postcode),
                 NumberOfPositions = vacancy.NumberOfPositions.Value,
-                PossibleStartDate = vacancy.StartDate.Value,
+                OutcomeDescription = vacancy.OutcomeDescription,
+                PossibleStartDate = vacancy.StartDate.Value.ToString("dd MMM yyyy"),
                 ProviderName = vacancy.ProviderName,
                 ProviderAddress = vacancy.ProviderAddress,
                 ShortDescription = vacancy.ShortDescription,
-                ThingsToConsider = string.Empty,
+                ThingsToConsider = vacancy.ThingsToConsider,
                 Title = vacancy.Title,
+                TrainingDescription = vacancy.TrainingDescription,
                 TrainingTitle = vacancy.Programme.Title,
                 TrainingType = vacancy.Programme.TrainingType?.GetDisplayName(),
                 TrainingLevel = vacancy.Programme.LevelName,
-                Ukprn = vacancy.Ukprn,
+                VacancyDescription = vacancy.Description,
                 VacancyReferenceNumber = string.Empty,
                 WageInfo = vacancy.Wage.WageAdditionalInformation,
                 WageText = vacancy.Wage.FixedWageYearlyAmount?.AsMoney(),

@@ -1,6 +1,7 @@
 ﻿using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
+using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
 using Esfa.Recruit.Employer.Web.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -43,9 +44,11 @@ namespace Esfa.Recruit.Employer.Web.Configuration
 
         private static void RegisterOrchestratorDeps(IServiceCollection services)
         {
+            services.AddTransient<AboutEmployerOrchestrator>();
             services.AddTransient<ApplicationProcessOrchestrator>();
             services.AddTransient<ApprenticeshipDetailsOrchestrator>();
             services.AddTransient<CandidateProfileOrchestrator>();
+            services.AddTransient<ConsiderationsOrchestrator>();
             services.AddTransient<DashboardOrchestrator>();
             services.AddTransient<EmployerDetailsOrchestrator>();
             services.AddTransient<EmployerOrchestrator>();
@@ -56,10 +59,10 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddTransient<SectionsOrchestrator>();
             services.AddTransient<SubmittedOrchestrator>();
             services.AddTransient<TrainingProviderOrchestrator>();
-            services.AddTransient<WageAndHoursOrchestrator>();
             services.AddTransient<DeleteVacancyOrchestrator>();
             services.AddTransient<ShortDescriptionOrchestrator>();
             services.AddTransient<TrainingOrchestrator>();
+            services.AddTransient<VacancyDescriptionOrchestrator>();
             services.AddTransient<WageOrchestrator>();
             services.AddTransient<Orchestrators.Part1.PreviewOrchestrator>();
         }

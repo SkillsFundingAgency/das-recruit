@@ -580,3 +580,21 @@
     min-height: 80px;
     padding-left: 15px;
 }
+
+textarea.form-control {
+    opacity: 1;
+    background-image: none;
+}
+
+input.form-control, textarea.form-control {
+    -webkit-appearance: none;
+    border-radius: 0;
+}
+
+.textarea-expandable {
+    transition: all 0.5s ease;
+}
+
+.textarea-expandable:focus {
+    height: 10em;
+}
