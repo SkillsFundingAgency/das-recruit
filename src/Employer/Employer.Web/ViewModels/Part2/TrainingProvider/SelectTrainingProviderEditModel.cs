@@ -1,11 +1,10 @@
-﻿using Esfa.Recruit.Employer.Web.ViewModels.Validations;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Esfa.Recruit.Employer.Web.ViewModels.TrainingProvider
+namespace Esfa.Recruit.Employer.Web.ViewModels
 {
-    public class IndexEditModel
+    public class SelectTrainingProviderEditModel
     {
         [FromRoute]
         public Guid VacancyId { get; set; }

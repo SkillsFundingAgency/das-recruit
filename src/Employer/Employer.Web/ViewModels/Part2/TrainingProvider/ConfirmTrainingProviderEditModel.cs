@@ -2,9 +2,9 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Esfa.Recruit.Employer.Web.ViewModels.TrainingProvider
+namespace Esfa.Recruit.Employer.Web.ViewModels
 {
-    public class ConfirmEditModel
+    public class ConfirmTrainingProviderEditModel
     {
         [Required]
         [FromRoute]
@@ -12,7 +12,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.TrainingProvider
 
         [Required]
         [Display(Name = "UKPRN")]
-        [RegularExpression(@"^((?!(0))[0-9]{8})$", ErrorMessage = "No provider found with this UK Provider Reference Number.")]
         public string Ukprn { get; set; }
     }
 }

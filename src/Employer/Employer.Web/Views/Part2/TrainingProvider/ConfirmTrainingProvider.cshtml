@@ -1,4 +1,4 @@
-﻿@model Esfa.Recruit.Employer.Web.ViewModels.TrainingProvider.ConfirmViewModel
+﻿@model Esfa.Recruit.Employer.Web.ViewModels.ConfirmTrainingProviderViewModel
 
 <div class="grid-row">
     <div class="column-two-thirds">
@@ -16,7 +16,7 @@
             <input asp-for="Ukprn" type="hidden" />
             <div class="form-group">
                 <input type="submit" value="Confirm training provider" class="button" />
-                <a asp-route="@RouteNames.TrainingProvider_Index_Get" class="button-link">Change training provider</a>
+                <a asp-route="@RouteNames.TrainingProvider_Select_Get" class="button-link">Change training provider</a>
                 <a asp-route="@RouteNames.Preview_Index_Get" class="button-link">Cancel</a>
             </div>
         </form>

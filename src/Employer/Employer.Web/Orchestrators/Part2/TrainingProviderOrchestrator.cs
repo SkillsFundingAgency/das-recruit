@@ -1,5 +1,5 @@
 ﻿using Esfa.Recruit.Employer.Web.Services;
-using Esfa.Recruit.Employer.Web.ViewModels.TrainingProvider;
+using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain;
 using Esfa.Recruit.Vacancies.Client.Domain.Enums;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
@@ -20,14 +20,14 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             _providerService = providerService;
         }
 
-        public async Task<IndexViewModel> GetIndexViewModel(Guid vacancyId)
+        public async Task<SelectTrainingProviderViewModel> GetIndexViewModel(Guid vacancyId)
         {
             var vacancy = await _client.GetVacancyForEditAsync(vacancyId);
 
             if (vacancy.Status != VacancyStatus.Draft)
                 throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
 
-            var vm = new IndexViewModel
+            var vm = new SelectTrainingProviderViewModel
             {
                 Title = vacancy.Title,
                 Ukprn = vacancy.Ukprn
@@ -36,14 +36,14 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return vm;
         }
 
-        public async Task<ConfirmViewModel> GetConfirmViewModel(IndexEditModel m)
+        public async Task<ConfirmTrainingProviderViewModel> GetConfirmViewModel(SelectTrainingProviderEditModel m)
         {
             var vacancy = await _client.GetVacancyForEditAsync(m.VacancyId);
 
             if (vacancy.Status != VacancyStatus.Draft)
                 throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
 
-            var confirmViewModel = new ConfirmViewModel
+            var confirmViewModel = new ConfirmTrainingProviderViewModel
             {
                 Title = vacancy.Title
             };
@@ -65,7 +65,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return confirmViewModel;
         }
 
-        public async Task PostConfirmEditModelAsync(ConfirmEditModel m)
+        public async Task PostConfirmEditModelAsync(ConfirmTrainingProviderEditModel m)
         {
             var vacancyTask = _client.GetVacancyForEditAsync(m.VacancyId);
             var providerDetailTask = _providerService.GetProviderDetailAsync(long.Parse(m.Ukprn));
@@ -82,9 +82,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             await _client.UpdateVacancyAsync(vacancy, canUpdateQueryStore: false);
         }
 
-        public async Task<bool> ConfirmProviderExists(long ukprn)
+        public Task<bool> ConfirmProviderExists(long ukprn)
         {
-            return await _providerService.ExistsAsync(ukprn);
+            return _providerService.ExistsAsync(ukprn);
         }
     }
 }

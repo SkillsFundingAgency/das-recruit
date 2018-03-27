@@ -1,6 +1,6 @@
-﻿namespace Esfa.Recruit.Employer.Web.ViewModels.TrainingProvider
+﻿namespace Esfa.Recruit.Employer.Web.ViewModels
 {
-    public class ConfirmViewModel
+    public class ConfirmTrainingProviderViewModel
     {
         public string Title { get; set; }
         public string ProviderName { get; set; }

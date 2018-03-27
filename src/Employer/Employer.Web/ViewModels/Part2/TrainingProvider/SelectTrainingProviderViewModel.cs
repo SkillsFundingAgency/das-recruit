@@ -1,6 +1,6 @@
-﻿namespace Esfa.Recruit.Employer.Web.ViewModels.TrainingProvider
+﻿namespace Esfa.Recruit.Employer.Web.ViewModels
 {
-    public class IndexViewModel
+    public class SelectTrainingProviderViewModel
     {
         public string Title { get; set; }
         public long? Ukprn { get; set; }

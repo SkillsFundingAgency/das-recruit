@@ -206,13 +206,11 @@
                 </div>
 
                 <div class="column-half map-container hide-nojs toggle-content--mob">
-                    
-                        @if (!string.IsNullOrWhiteSpace(Model.MapUrl))
-        {
-                <img id="static-map" class="static-map" src="@Model.MapUrl">
-}
-                    </div>
- 
+                @if (!string.IsNullOrWhiteSpace(Model.MapUrl))
+                {
+                    <img id="static-map" class="static-map" src="@Model.MapUrl">
+                }
+                </div> 
             </div>
 
             <div id="offline-vacancy">
@@ -246,11 +244,11 @@
                             @Model.ProviderAddress
                             }
                         </p>
-                        <a asp-route="@RouteNames.TrainingProvider_Index_Get">Edit</a>
+                        <a asp-route="@RouteNames.TrainingProvider_Select_Get">Edit</a>
                     </div>
                     <h3 class="heading-small">Apprenticeship @Model.TrainingType</h3>
                     <p is="vacancy-framework">@Model.TrainingTitle</p>
-                    <a asp-route="@RouteNames.Training_Get">Edit</a>
+                    <a asp-route="@RouteNames.Title_Get">Edit</a>
                 </div>
             </div>
 

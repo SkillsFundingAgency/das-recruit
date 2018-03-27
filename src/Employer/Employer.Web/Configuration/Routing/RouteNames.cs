@@ -65,8 +65,8 @@
 
         public const string Submitted_Index_Get = "Submitted_Index_Get";
 
-        public const string TrainingProvider_Index_Get = "TrainingProvider_Index_Get";
-        public const string TrainingProvider_Index_Post = "TrainingProvider_Index_Post";
+        public const string TrainingProvider_Select_Get = "TrainingProvider_Select_Get";
+        public const string TrainingProvider_Select_Post = "TrainingProvider_Select_Post";
         public const string TrainingProvider_Confirm_Get = "TrainingProvider_Confirm_Get";
         public const string TrainingProvider_Confirm_Post = "TrainingProvider_Confirm_Post";
 
