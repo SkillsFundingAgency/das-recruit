@@ -26,7 +26,7 @@
 
                     @foreach (var qualificationType in Model.QualificationTypes)
                     {
-                    <option value="@qualificationType">@qualificationType</option>
+                        <option value="@qualificationType">@qualificationType</option>
                     }
                 </select>
             </div>
@@ -61,46 +61,46 @@
             </div>
 
             <div class="form-group">
-                <button type="submit" name="AddQualificationAction" value="AddQualification" class="button-link">+ Add this qualification</button>
+                <button type="submit" name="AddQualificationAction" id="add-qualification" value="AddQualification" class="button-link">+ Add this qualification</button>
             </div>
 
-            <table style="@(Model.Qualifications.Any() == false ? "display:none" : null)">
+            <table id="qualifications-container" style="@(Model.Qualifications.Any() == false ? "display:none" : null)">
                 <thead>
-                    <tr>
-                        <th>
-                            <span class="heading-span">Qualification</span>
-                        </th>
-                        <th>
-                            <span class="heading-span">Subject</span>
-                        </th>
-                        <th>
-                            <span class="heading-span">Grade</span>
-                        </th>
-                        <th>
-                            <span class="heading-span">Essential or desired</span>
-                        </th>
-                        <th></th>
-                    </tr>
+                <tr>
+                    <th>
+                        <span class="heading-span">Qualification</span>
+                    </th>
+                    <th>
+                        <span class="heading-span">Subject</span>
+                    </th>
+                    <th>
+                        <span class="heading-span">Grade</span>
+                    </th>
+                    <th>
+                        <span class="heading-span">Essential or desired</span>
+                    </th>
+                    <th></th>
+                </tr>
                 </thead>
                 <tbody id="qualifications-summary">
-                    @for(var i = 0; i < Model.Qualifications.Count; i++)
-                    {
-                        var qualification = Model.Qualifications[i];
-                        <tr>
-                            <td>@qualification.QualificationType</td>
-                            <td>@qualification.Subject</td>
-                            <td>@qualification.Grade</td>
-                            <td>@qualification.Weighting</td>
-                            <td>
-                                <input name="Qualifications[@i].QualificationType" type="hidden" value="@qualification.QualificationType" />
-                                <input name="Qualifications[@i].Subject" type="hidden" value="@qualification.Subject" />
-                                <input name="Qualifications[@i].Grade" type="hidden" value="@qualification.Grade" />
-                                <input name="Qualifications[@i].Weighting" type="hidden" value="@qualification.Weighting" />
+                @for(var i = 0; i < Model.Qualifications.Count; i++)
+                {
+                    var qualification = Model.Qualifications[i];
+                    <tr>
+                        <td>@qualification.QualificationType</td>
+                        <td>@qualification.Subject</td>
+                        <td>@qualification.Grade</td>
+                        <td>@qualification.Weighting</td>
+                        <td>
+                            <input name="Qualifications[@i].QualificationType" type="hidden" value="@qualification.QualificationType" />
+                            <input name="Qualifications[@i].Subject" type="hidden" value="@qualification.Subject" />
+                            <input name="Qualifications[@i].Grade" type="hidden" value="@qualification.Grade" />
+                            <input name="Qualifications[@i].Weighting" type="hidden" value="@qualification.Weighting" />
 
-                                <button type="submit" name="RemoveQualification" value="@i">Remove</button>
-                            </td>
-                        </tr>
-                    }
+                            <button type="submit" name="RemoveQualification" value="@i">Remove</button>
+                        </td>
+                    </tr>
+                }
                 </tbody>
             </table>
 
@@ -113,3 +113,84 @@
     </div>
 
 </div>
+
+<script type="text/javascript">
+
+    $(function() {
+
+        var $qualificationsContainer = $("#qualifications-container");
+        var $qualificationsSummary = $("#qualifications-summary");
+
+        var qualificationRowMask = '<tr><td></td><td></td><td></td><td></td><td><input name="" type="hidden" value="" /><input name="" type="hidden" value="" /><input name="" type="hidden" value="" /><input name="" type="hidden" value="" /><button type="submit" name="RemoveQualification" value="">Remove</button></td></tr>';
+
+        var buildQualificationRow = function(qualificationType, subject, grade, weighting) {
+
+            var i = $qualificationsSummary.children().length;
+
+            var $row = $(qualificationRowMask);
+
+            $("td:nth-child(1)", $row).text(qualificationType);
+            $("td:nth-child(2)", $row).text(subject);
+            $("td:nth-child(3)", $row).text(grade);
+            $("td:nth-child(4)", $row).text(weighting);
+
+            $("td:nth-child(5) input:nth-child(1)", $row).attr("name", "Qualifications[" + i + "].QualificationType");
+            $("td:nth-child(5) input:nth-child(2)", $row).attr("name", "Qualifications[" + i + "].Subject");
+            $("td:nth-child(5) input:nth-child(3)", $row).attr("name", "Qualifications[" + i + "].Grade");
+            $("td:nth-child(5) input:nth-child(4)", $row).attr("name", "Qualifications[" + i + "].Weighting");
+
+            $("td:nth-child(5) input:nth-child(1)", $row).val(qualificationType);
+            $("td:nth-child(5) input:nth-child(2)", $row).val(subject);
+            $("td:nth-child(5) input:nth-child(3)", $row).val(grade);
+            $("td:nth-child(5) input:nth-child(4)", $row).val(weighting);
+
+            $("td:nth-child(5) button[name='RemoveQualification']", $row).val(i);
+
+            return $row;
+        };
+
+        var toggleQualificationsContainer = function() {
+            $qualificationsContainer.toggle($qualificationsSummary.children().length > 0);
+        };
+
+        $("#add-qualification").on("click",
+            function (e) {
+                
+                var $qualificationType = $("#@Html.IdFor(m => m.QualificationType)");
+                var $subject = $("#@Html.IdFor(m => m.Subject)");
+                var $grade = $("#@Html.IdFor(m => m.Grade)");
+                var $weighting = $("#@Html.IdFor(m => m.Weighting):checked");
+
+                var qualificationType = $qualificationType.val();
+                var subject = $subject.val();
+                var grade = $grade.val().toUpperCase();
+                var weighting = $weighting.val();
+
+                if (qualificationType && subject && grade && weighting) {
+                    var $row = buildQualificationRow(qualificationType, subject, grade, weighting);
+                    $qualificationsSummary.append($row);
+
+                    $qualificationType.val("");
+                    $subject.val("");
+                    $grade.val("");
+                    $weighting.prop('checked', false);
+
+                    toggleQualificationsContainer();
+                }
+
+                e.preventDefault();
+                return false;
+            });
+
+        $qualificationsSummary.on("click", "button[name='RemoveQualification']",
+            function(e) {
+                $(this).closest("tr").remove();
+
+                toggleQualificationsContainer();
+
+                e.preventDefault();
+                return false;
+            });
+    })
+
+</script>

@@ -34,9 +34,9 @@ namespace Esfa.Recruit.Employer.Web.Services
             return qualifications;
         }
 
-        private class WeightingComparer : IComparer<QualificationWeighting>
+        private class WeightingComparer : IComparer<QualificationWeighting?>
         {
-            public int Compare(QualificationWeighting x, QualificationWeighting y)
+            public int Compare(QualificationWeighting? x, QualificationWeighting? y)
             {
                 if (x == y)
                 {

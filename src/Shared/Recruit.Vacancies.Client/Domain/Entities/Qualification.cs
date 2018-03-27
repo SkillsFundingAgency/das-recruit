@@ -10,6 +10,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public string QualificationType { get; set; }
         public string Subject { get; set; }
         public string Grade { get; set; }
-        public QualificationWeighting Weighting { get; set; }
+        public QualificationWeighting? Weighting { get; set; }
     }
 }

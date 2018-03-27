@@ -21,7 +21,7 @@ namespace Esfa.Recruit.Employer.Web.Extensions
                 QualificationType = q.QualificationType,
                 Subject = q.Subject,
                 Grade = q.Grade,
-                Weighting = q.Weighting
+                Weighting = q.Weighting.ToString()
             }).ToList();
 
         }
@@ -32,13 +32,13 @@ namespace Esfa.Recruit.Employer.Web.Extensions
             {
                 return new List<Qualification>();
             }
-
+            
             return qualifications.Select(q => new Qualification
-            {
-                QualificationType = q.QualificationType,
-                Subject = q.Subject,
-                Grade = q.Grade,
-                Weighting = q.Weighting
+                {
+                    QualificationType = q.QualificationType,
+                    Subject = q.Subject,
+                    Grade = q.Grade.ToUpper(),
+                    Weighting = (Enum.TryParse(typeof(QualificationWeighting), q.Weighting, out var w) ? (QualificationWeighting)w : default(QualificationWeighting?))
             }).ToList();
         }
     }
