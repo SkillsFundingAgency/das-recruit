@@ -7,7 +7,6 @@
     using Esfa.Recruit.Employer.Web.ViewModels.Part1.Title;
     using FluentAssertions;
     using Xunit;
-    using ErrMsg = Esfa.Recruit.Employer.Web.ViewModels.ValidationMessages.TitleValidationMessages;
 
     public class TitleEditModelTests
     {

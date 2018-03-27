@@ -2,7 +2,6 @@
 using System.ComponentModel.DataAnnotations;
 using Esfa.Recruit.Employer.Web.ViewModels.Validations;
 using Microsoft.AspNetCore.Mvc;
-using ErrMsg = Esfa.Recruit.Employer.Web.ViewModels.ValidationMessages.TitleValidationMessages;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Title
 {

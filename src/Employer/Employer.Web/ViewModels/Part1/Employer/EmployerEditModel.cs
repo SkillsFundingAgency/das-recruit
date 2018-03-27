@@ -4,7 +4,6 @@
     using System.ComponentModel.DataAnnotations;
     using Validations;
     using Microsoft.AspNetCore.Mvc;
-    using ErrMsg = ValidationMessages.EmployerEditModelValidationMessages;
 
     public class EmployerEditModel
     {

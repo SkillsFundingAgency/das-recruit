@@ -7,7 +7,6 @@
     using Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer;
     using FluentAssertions;
     using Xunit;
-    using ErrMsg = Esfa.Recruit.Employer.Web.ViewModels.ValidationMessages.EmployerEditModelValidationMessages;
 
     public class EmployerEditViewModelTests
     {
