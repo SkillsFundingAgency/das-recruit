@@ -17,33 +17,24 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.Part1.Training
             new List<object[]>
             {
                 //ClosingDate
-                new object[] { nameof(TrainingEditModel.ClosingDay), null, nameof(TrainingEditModel.ClosingDate), ErrMsg.Required.ClosingDate},
                 new object[] { nameof(TrainingEditModel.ClosingDay), "aa", nameof(TrainingEditModel.ClosingDate), ErrMsg.TypeOfDate.ClosingDate},
                 new object[] { nameof(TrainingEditModel.ClosingDay), "32", nameof(TrainingEditModel.ClosingDate), ErrMsg.TypeOfDate.ClosingDate},
 
-                new object[] { nameof(TrainingEditModel.ClosingMonth), null, nameof(TrainingEditModel.ClosingDate), ErrMsg.Required.ClosingDate},
                 new object[] { nameof(TrainingEditModel.ClosingMonth), "aa", nameof(TrainingEditModel.ClosingDate), ErrMsg.TypeOfDate.ClosingDate},
                 new object[] { nameof(TrainingEditModel.ClosingMonth), "13", nameof(TrainingEditModel.ClosingDate), ErrMsg.TypeOfDate.ClosingDate},
 
-                new object[] { nameof(TrainingEditModel.ClosingYear), null, nameof(TrainingEditModel.ClosingDate), ErrMsg.Required.ClosingDate},
                 new object[] { nameof(TrainingEditModel.ClosingYear), "aa", nameof(TrainingEditModel.ClosingDate), ErrMsg.TypeOfDate.ClosingDate},
                 new object[] { nameof(TrainingEditModel.ClosingYear), "18", nameof(TrainingEditModel.ClosingDate), ErrMsg.TypeOfDate.ClosingDate},
 
                 //StartDate
-                new object[] { nameof(TrainingEditModel.StartDay), null, nameof(TrainingEditModel.StartDate), ErrMsg.Required.StartDate},
                 new object[] { nameof(TrainingEditModel.StartDay), "aa", nameof(TrainingEditModel.StartDate), ErrMsg.TypeOfDate.StartDate},
                 new object[] { nameof(TrainingEditModel.StartDay), "32", nameof(TrainingEditModel.StartDate), ErrMsg.TypeOfDate.StartDate},
 
-                new object[] { nameof(TrainingEditModel.StartMonth), null, nameof(TrainingEditModel.StartDate), ErrMsg.Required.StartDate},
                 new object[] { nameof(TrainingEditModel.StartMonth), "aa", nameof(TrainingEditModel.StartDate), ErrMsg.TypeOfDate.StartDate},
                 new object[] { nameof(TrainingEditModel.StartMonth), "13", nameof(TrainingEditModel.StartDate), ErrMsg.TypeOfDate.StartDate},
 
-                new object[] { nameof(TrainingEditModel.StartYear), null, nameof(TrainingEditModel.StartDate), ErrMsg.Required.StartDate},
                 new object[] { nameof(TrainingEditModel.StartYear), "aa", nameof(TrainingEditModel.StartDate), ErrMsg.TypeOfDate.StartDate},
                 new object[] { nameof(TrainingEditModel.StartYear), "18", nameof(TrainingEditModel.StartDate), ErrMsg.TypeOfDate.StartDate},
-
-                //SelectedProgrammeId
-                new object[] { nameof(TrainingEditModel.SelectedProgrammeId), null, nameof(TrainingEditModel.SelectedProgrammeId), ErrMsg.Required.SelectedProgrammeId},
 
                 new object[] { nameof(TrainingEditModel.EmployerAccountId), null, nameof(TrainingEditModel.EmployerAccountId), "The EmployerAccountId field is required." },
                 new object[] { nameof(TrainingEditModel.VacancyId), default(Guid), nameof(TrainingEditModel.VacancyId), "The field VacancyId is invalid." },

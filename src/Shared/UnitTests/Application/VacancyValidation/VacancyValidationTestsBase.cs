@@ -1,4 +1,5 @@
-﻿using Esfa.Recruit.Vacancies.Client.Application.Services;
+﻿using Esfa.Recruit.Vacancies.Client.Application.QueryStore;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -11,13 +12,15 @@ namespace UnitTests.Application.VacancyValidation
     {
         protected IEntityValidator<Vacancy, VacancyRuleSet> Validator;
         protected Mock<IGetApprenticeshipNationalMinimumWages> MockMinimumWageService;
+        protected Mock<IQueryStoreReader> MockQueryStoreReader;
 
         protected VacancyValidationTestsBase()
         {
             var timeProvider = new CurrentTimeProvider();
             MockMinimumWageService = new Mock<IGetApprenticeshipNationalMinimumWages>();
+            MockQueryStoreReader = new Mock<IQueryStoreReader>();
 
-            var fluentValidator = new FluentVacancyValidator(timeProvider, MockMinimumWageService.Object);
+            var fluentValidator = new FluentVacancyValidator(timeProvider, MockMinimumWageService.Object, MockQueryStoreReader.Object);
 
             Validator = new EntityValidator<Vacancy, VacancyRuleSet>(fluentValidator);
         }

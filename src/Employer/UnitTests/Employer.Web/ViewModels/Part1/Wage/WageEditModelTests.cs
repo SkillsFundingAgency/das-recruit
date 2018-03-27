@@ -16,23 +16,13 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.Part1.Wage
         public static IEnumerable<object[]> InvalidWageData =>
             new List<object[]>
             {
-                new object[] { nameof(WageEditModel.Duration), null, ErrMsg.Required.Duration},
                 new object[] { nameof(WageEditModel.Duration), "1.1", ErrMsg.TypeOfInteger.Duration},
 
-                new object[] { nameof(WageEditModel.WorkingWeekDescription), null, ErrMsg.Required.WorkingWeekDescription},
-                new object[] { nameof(WageEditModel.WorkingWeekDescription), "<", ErrMsg.FreeText.WorkingWeekDescription},
-                new object[] { nameof(WageEditModel.WorkingWeekDescription), new string('a', 251), string.Format(ErrMsg.StringLength.WorkingWeekDescription, "WorkingWeekDescription", 250)},
-
-                new object[] { nameof(WageEditModel.WeeklyHours), null, ErrMsg.Required.WeeklyHours},
-                new object[] { nameof(WageEditModel.WeeklyHours), "aa", ErrMsg.TypeOfDecimal.WeeklyHours},
                 new object[] { nameof(WageEditModel.WeeklyHours), "27.234", ErrMsg.TypeOfDecimal.WeeklyHours},
 
                 new object[] { nameof(WageEditModel.FixedWageYearlyAmount), "aa", ErrMsg.TypeOfMoney.FixedWageYearlyAmount},
                 new object[] { nameof(WageEditModel.FixedWageYearlyAmount), "$15,000.01", ErrMsg.TypeOfMoney.FixedWageYearlyAmount},
                 new object[] { nameof(WageEditModel.FixedWageYearlyAmount), "15,000.0135", ErrMsg.TypeOfMoney.FixedWageYearlyAmount},
-
-                new object[] { nameof(WageEditModel.WageAdditionalInformation), new string('a', 241), string.Format(ErrMsg.StringLength.WageAdditionalInformation, "WageAdditionalInformation", 240)},
-                new object[] { nameof(WageEditModel.WageAdditionalInformation), "<", ErrMsg.FreeText.WageAdditionalInformation},
 
                 new object[] { nameof(WageEditModel.EmployerAccountId), null, "The EmployerAccountId field is required." },
                 new object[] { nameof(WageEditModel.VacancyId), default(Guid), "The field VacancyId is invalid." },

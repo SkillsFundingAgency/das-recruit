@@ -1,7 +1,10 @@
+using System;
+using Esfa.Recruit.Vacancies.Client.Application.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators.VacancyValidators;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Enums;
+using Esfa.Recruit.Vacancies.Client.Domain.Projections;
 using Esfa.Recruit.Vacancies.Client.Domain.Services;
 using FluentValidation;
 
@@ -11,11 +14,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
     {
         private readonly ITimeProvider _timeProvider;
         private readonly IGetApprenticeshipNationalMinimumWages _minimumWageService;
+        private Lazy<ApprenticeshipProgrammes> _trainingProgrammes;
 
-        public FluentVacancyValidator(ITimeProvider timeProvider, IGetApprenticeshipNationalMinimumWages minimumWageService)
+        public FluentVacancyValidator(ITimeProvider timeProvider, IGetApprenticeshipNationalMinimumWages minimumWageService, IQueryStoreReader queryStoreReader)
         {
             _timeProvider = timeProvider;
             _minimumWageService = minimumWageService;
+            _trainingProgrammes = new Lazy<ApprenticeshipProgrammes>(() => queryStoreReader.GetApprenticeshipProgrammesAsync().Result);
 
             SingleFieldValidations();
 
