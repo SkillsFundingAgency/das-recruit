@@ -44,8 +44,13 @@ namespace Esfa.Recruit.Employer.Web.Extensions
 
         public static List<string> AsText(this List<Qualification> qualifications)
         {
+            if (qualifications == null)
+            {
+                return new List<string>();
+            }
+
             return qualifications.Select(q =>
-                $"{q.QualificationType} {q.Subject} (Grade {q.Grade}) {q.Weighting.GetDisplayName()}").ToList();
+                $"{q.QualificationType} {q.Subject} (Grade {q.Grade}) {q.Weighting.GetDisplayName().ToLower()}").ToList();
         }
     }
 }
