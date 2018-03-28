@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
+using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
 using Esfa.Recruit.Employer.Web.ViewModels.Part2.Qualifications;
 using Microsoft.AspNetCore.Mvc;
@@ -66,15 +67,15 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
                 qualifications.RemoveAt(int.Parse(m.RemoveQualification));
             }
 
-            TempData.Add(TempDataKeys.Qualifications, qualifications);
+            TempData.Put(TempDataKeys.Qualifications, qualifications);
         }
 
         private void TryUpdateQualificationsFromTempData(QualificationsViewModel vm)
         {
             if (TempData.ContainsKey(TempDataKeys.Qualifications))
             {
-                var tempDataQualifications = TempData[TempDataKeys.Qualifications] as QualificationEditModel[] ?? new QualificationEditModel[0];
-                vm.Qualifications = tempDataQualifications.ToList();
+                var tempDataQualifications = TempData.Get<List<QualificationEditModel>>(TempDataKeys.Qualifications);
+                vm.Qualifications = tempDataQualifications;
             }
         }
     }
