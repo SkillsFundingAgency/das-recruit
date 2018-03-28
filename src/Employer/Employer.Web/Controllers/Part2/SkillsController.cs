@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
+using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.ViewModels.Part2.Skills;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,6 +25,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
         public async Task<IActionResult> Skills(Guid vacancyId)
         {
             var vm = await _orchestrator.GetSkillsViewModelAsync(vacancyId);
+
+            TryUpdateSkillsFromTempData(vm);
+            
             return View(vm);
         }
 
@@ -46,14 +53,42 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
                 return View(vm);
             }
 
-            await _orchestrator.PostSkillsEditModelAsync(m);
-
-            if (!string.IsNullOrWhiteSpace(m.AddCustomSkillAction) || !string.IsNullOrWhiteSpace(m.RemoveCustomSkill))
+            if (m.IsAddingCustomSkill || m.IsRemovingCustomSkill)
             {
+                HandleCustomSkillChange(m);
+
                 return RedirectToRoute(RouteNames.Skills_Get);
             }
 
+            await _orchestrator.PostSkillsEditModelAsync(m);
+
             return RedirectToRoute(RouteNames.Preview_Index_Get);
+        }
+
+        private void HandleCustomSkillChange(SkillsEditModel m)
+        {
+            var skills = m.Skills ?? new List<string>();
+
+            if (m.IsAddingCustomSkill)
+            {
+                skills.Add(m.AddCustomSkillName);
+            }
+
+            if (m.IsRemovingCustomSkill)
+            {
+                skills.Remove(m.RemoveCustomSkill);
+            }
+
+            TempData.Add(TempDataKeys.Skills, skills);
+        }
+        
+        private void TryUpdateSkillsFromTempData(SkillsViewModel vm)
+        {
+            if (TempData.ContainsKey(TempDataKeys.Skills))
+            {
+                var tempDataSkills = TempData[TempDataKeys.Skills] as string[] ?? new string[0];
+                _orchestrator.SetViewModelSkills(vm, tempDataSkills);
+            }
         }
     }
 }

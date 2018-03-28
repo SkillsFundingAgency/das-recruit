@@ -18,35 +18,35 @@ namespace Esfa.Recruit.Employer.Web.Services
             _skillsConfig = skillsConfigOptions.Value;
         }
 
-        public List<SkillViewModel> GetColumn1ViewModel(List<string> selected)
+        public IEnumerable<SkillViewModel> GetColumn1ViewModel(IEnumerable<string> selected)
         {
             return _skillsConfig.Column1Skills.Select(c => new SkillViewModel
             {
                 Name = c,
                 Selected = selected != null && selected.Any(s => s == c)
-            }).ToList();
+            });
         }
 
-        public List<SkillViewModel> GetColumn2ViewModel(List<string> selected)
+        public IEnumerable<SkillViewModel> GetColumn2ViewModel(IEnumerable<string> selected)
         {
             return _skillsConfig.Column2Skills.Select(c => new SkillViewModel
             {
                 Name = c,
                 Selected = selected != null && selected.Any(s => s == c)
-            }).ToList();
+            });
         }
 
-        public List<string> GetCustomSkills(List<string> selected)
+        public IEnumerable<string> GetCustomSkills(IEnumerable<string> selected)
         {
             if (selected == null)
             {
                 return new List<string>();
             }
 
-            return selected.Except(_skillsConfig.Column1Skills).Except(_skillsConfig.Column2Skills).ToList();
+            return selected.Except(_skillsConfig.Column1Skills).Except(_skillsConfig.Column2Skills);
         }
 
-        public List<string> SortSkills(List<string> selected)
+        public IEnumerable<string> SortSkills(IEnumerable<string> selected)
         {
             var filteredSelectedSkills = selected.Where(s => !string.IsNullOrWhiteSpace(s)).Distinct();
 
@@ -55,7 +55,7 @@ namespace Esfa.Recruit.Employer.Web.Services
                 .Union(selected)
                 .ToList();
 
-            return orderedSkills.Where(filteredSelectedSkills.Contains).ToList();
+            return orderedSkills.Where(filteredSelectedSkills.Contains);
         }
 
     }

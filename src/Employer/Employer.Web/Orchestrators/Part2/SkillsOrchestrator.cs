@@ -7,6 +7,7 @@ using Esfa.Recruit.Employer.Web.ViewModels.Part2.Skills;
 using Esfa.Recruit.Vacancies.Client.Domain;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Microsoft.AspNetCore.Mvc.ViewFeatures.Internal;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 {
@@ -30,13 +31,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                 throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
             }
 
-            var vm = new SkillsViewModel
-            {
-                Column1Checkboxes = _skillsService.GetColumn1ViewModel(vacancy.Skills),
-                Column2Checkboxes = _skillsService.GetColumn2ViewModel(vacancy.Skills),
-                CustomSkills = _skillsService.GetCustomSkills(vacancy.Skills)
-            };
+            var vm = new SkillsViewModel();
 
+            SetViewModelSkills(vm, vacancy.Skills);
+            
             return vm;
         }
 
@@ -44,12 +42,18 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         {
             var vm = await GetSkillsViewModelAsync(m.VacancyId);
 
-            vm.Column1Checkboxes = _skillsService.GetColumn1ViewModel(m.Skills);
-            vm.Column2Checkboxes = _skillsService.GetColumn2ViewModel(m.Skills);
-            vm.CustomSkills = _skillsService.GetCustomSkills(m.Skills);
-            vm.AddCustomSkillName = m.AddCustomSkillName;
+            SetViewModelSkills(vm, m.Skills);
 
+            vm.AddCustomSkillName = m.AddCustomSkillName;
+            
             return vm;
+        }
+
+        public void SetViewModelSkills(SkillsViewModel vm, IEnumerable<string> skills)
+        {
+            vm.Column1Checkboxes = _skillsService.GetColumn1ViewModel(skills).ToList();
+            vm.Column2Checkboxes = _skillsService.GetColumn2ViewModel(skills).ToList();
+            vm.CustomSkills = _skillsService.GetCustomSkills(skills).ToList();
         }
 
         public async Task PostSkillsEditModelAsync(SkillsEditModel m)
@@ -61,19 +65,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                 throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
             }
             
-            var skills = m.Skills?.ToList() ?? new List<string>();
+            var skills = m.Skills ?? new List<string>();
             
-            if (!string.IsNullOrEmpty(m.AddCustomSkillAction) && !string.IsNullOrWhiteSpace(m.AddCustomSkillName))
-            { 
-                skills.Add(m.AddCustomSkillName);
-            }
-
-            if (!string.IsNullOrWhiteSpace(m.RemoveCustomSkill))
-            {
-                skills.Remove(m.RemoveCustomSkill);
-            }
-
-            vacancy.Skills = _skillsService.SortSkills(skills);
+            vacancy.Skills = _skillsService.SortSkills(skills).ToList();
 
             await _client.UpdateVacancyAsync(vacancy, false);
         }

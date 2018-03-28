@@ -5,9 +5,9 @@ namespace Esfa.Recruit.Employer.Web.Services
 {
     public interface ISkillsService
     {
-        List<SkillViewModel> GetColumn1ViewModel(List<string> selected);
-        List<SkillViewModel> GetColumn2ViewModel(List<string> selected);
-        List<string> GetCustomSkills(List<string> selected);
-        List<string> SortSkills(List<string> selected);
+        IEnumerable<SkillViewModel> GetColumn1ViewModel(IEnumerable<string> selected);
+        IEnumerable<SkillViewModel> GetColumn2ViewModel(IEnumerable<string> selected);
+        IEnumerable<string> GetCustomSkills(IEnumerable<string> selected);
+        IEnumerable<string> SortSkills(IEnumerable<string> selected);
     }
 }

@@ -3,5 +3,6 @@
     public class TempDataKeys
     {
         public const string DashboardErrorMessage = "Dashboard_ErrorMessage";
+        public const string Skills = "Skills";
     }
 }
