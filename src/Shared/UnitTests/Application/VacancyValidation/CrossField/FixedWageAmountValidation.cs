@@ -4,10 +4,9 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Enums;
 using FluentAssertions;
 using Moq;
-using UnitTests.Application.VacancyValidation;
 using Xunit;
 
-namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.SingleField
+namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.CrossField
 {
     public class FixedWageAmountValidation : VacancyValidationTestsBase
     {

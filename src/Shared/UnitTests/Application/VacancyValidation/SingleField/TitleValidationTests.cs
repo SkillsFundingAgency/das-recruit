@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using FluentAssertions;
-using UnitTests.Application.VacancyValidation;
 using Xunit;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.SingleField
