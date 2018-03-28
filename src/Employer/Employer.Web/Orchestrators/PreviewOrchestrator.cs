@@ -56,7 +56,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 ProviderName = vacancy.ProviderName,
                 ProviderAddress = vacancy.ProviderAddress,
                 ShortDescription = vacancy.ShortDescription,
-                Skills = (vacancy.Skills != null) ? string.Join(", ", vacancy.Skills) : "",
+                Skills = vacancy.Skills ?? Enumerable.Empty<string>(),
                 ThingsToConsider = vacancy.ThingsToConsider,
                 Title = vacancy.Title,
                 TrainingDescription = vacancy.TrainingDescription,
