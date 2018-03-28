@@ -25,8 +25,6 @@ namespace Esfa.Recruit.Vacancies.Jobs
 
         static void Main(string[] args)
         {
-            ILoggerFactory loggerFactory = null;
-
             try
             {
                 var configuration = BuildConfiguration();
@@ -48,8 +46,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
             }
             finally
             {
-                if (loggerFactory != null)
-                    loggerFactory.Dispose();
+                NLog.LogManager.Shutdown(); 
             }
         }
 
@@ -59,8 +56,8 @@ namespace Esfa.Recruit.Vacancies.Jobs
             
             var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
             loggerFactory.AddNLog(new NLogProviderOptions { CaptureMessageProperties = true, CaptureMessageTemplates = true });
-            loggerFactory.ConfigureNLog("nlog.config");
             loggerFactory.AddApplicationInsights(instrumentationKey, null);
+			NLog.LogManager.LoadConfiguration("nlog.config");
 
             return loggerFactory;
         }

@@ -2,9 +2,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Recruit.Vacancies.Jobs", "Recruit.Vacancies.Jobs\Recruit.Vacancies.Jobs.csproj", "{974C60A5-02B6-4D55-B443-CD22E54218C3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Recruit.Vacancies.Jobs", "Recruit.Vacancies.Jobs\Recruit.Vacancies.Jobs.csproj", "{974C60A5-02B6-4D55-B443-CD22E54218C3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Recruit.Vacancies.Client", "..\Shared\Recruit.Vacancies.Client\Recruit.Vacancies.Client.csproj", "{1AB272F7-55EC-4002-BBDD-B1EBFE2C0CE8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Recruit.Vacancies.Client", "..\Shared\Recruit.Vacancies.Client\Recruit.Vacancies.Client.csproj", "{1AB272F7-55EC-4002-BBDD-B1EBFE2C0CE8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
