@@ -1,5 +1,6 @@
 using Esfa.Recruit.Vacancies.Client.Domain.Enums;
 using System;
+using System.Collections.Generic;
 using Esfa.Recruit.Vacancies.Client.Domain.Projections;
 
 namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
@@ -65,7 +66,10 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
 
         public Programme Programme { get; set; }
 
+        public Wage Wage { get; set; }
+
         public string TrainingDescription { get; set; }
-        public Wage Wage { get; set; }        
+        
+        public List<string> Skills { get; set; }
     }
 }

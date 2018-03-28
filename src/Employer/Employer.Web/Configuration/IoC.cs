@@ -21,6 +21,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.Configure<ManageApprenticeshipsRoutes>(configuration.GetSection("ManageApprenticeshipsRoutes"));
             services.AddSingleton<ManageApprenticeshipsLinkHelper>();
             services.Configure<AuthenticationConfiguration>(configuration.GetSection("Authentication"));
+            services.Configure<SkillsConfiguration>(configuration.GetSection("SkillsConfiguration"));
 
             RegisterProviderApiClientDep(services, configuration);
 
@@ -60,6 +61,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddTransient<VacancyDescriptionOrchestrator>();
             services.AddTransient<WageOrchestrator>();
             services.AddTransient<Orchestrators.Part1.PreviewOrchestrator>();
+            services.AddTransient<SkillsOrchestrator>();
         }
     }
 }

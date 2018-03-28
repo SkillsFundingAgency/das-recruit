@@ -1,0 +1,144 @@
+﻿@using Esfa.Recruit.Employer.Web.ViewModels.Part2.Skills
+@model SkillsViewModel
+
+
+<div class="grid-row">
+    <div class="column-full">
+
+        <h1 class="heading-xlarge small-bottom-margin">Desired skills or personal qualities</h1>
+
+        <div asp-validation-summary="All" class="error-summary" role="alert" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
+            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
+                Please fix these errors
+            </h2>
+        </div>
+
+        <hr>
+
+        <form asp-route="@RouteNames.Skills_Post" id="skillsForm">
+            <fieldset>
+                <legend class="heading-small">Desired skills or personal qualities?</legend>
+
+                <div class="body-text">Select all that apply</div>
+
+                <span asp-validation-for="Skills" class="error-message"></span>
+
+                <div class="two-column-checkbox-container">
+                    <fieldset class="two-column-checkbox">
+                        @for (var i = 0; i < Model.Column1Checkboxes.Count; i++)
+                        {
+                            var checkbox = Model.Column1Checkboxes[i];
+                            <div class="multiple-choice">
+                                <input name="Skills" id="col1-@i" type="checkbox" value="@checkbox.Name" checked="@checkbox.Selected">
+                                <label for="col1-@i">@checkbox.Name</label>
+                            </div>
+                        }
+                    </fieldset>
+                    <fieldset class="two-column-checkbox">
+                        @for (var i = 0; i < Model.Column2Checkboxes.Count; i++)
+                        {
+                            var checkbox = Model.Column2Checkboxes[i];
+                            <div class="multiple-choice">
+                                <input name="Skills" id="col2-@i" type="checkbox" value="@checkbox.Name" checked="@checkbox.Selected">
+                                <label for="col2-@i">@checkbox.Name</label>
+                            </div>
+                        }
+                    </fieldset>
+                </div>
+            </fieldset>
+
+            <p class="no-bottom-margin">or</p>
+            <div class="form-group form-group-compound">
+                <label asp-for="AddCustomSkillName" class="form-label-bold">Add a new desired skill or personal quality</label>
+                <span asp-validation-for="AddCustomSkillName" class="error-message"></span>
+                <input asp-for="AddCustomSkillName" type="text" class="form-control">
+                <button name="AddCustomSkillAction" id="add-custom-skill" value="AddCustomSkill" type="submit" class="button-secondary">+ Add this skill</button>
+            </div>
+
+            <div id="custom-skill-container" style="@(Model.CustomSkills.Any() == false ? "display:none" : null)">
+                <h3 class="heading-small">Desired skills or personal qualities</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>
+                                <span class="heading-span">Skill or personal quality</span>
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="custom-skill-summary">
+                        @foreach (var customSkill in Model.CustomSkills)
+                        {
+                            <tr>
+                                <td>@customSkill</td>
+                                <td>
+                                    <input name="Skills" type="hidden" value="@customSkill" />
+                                    <button name="RemoveCustomSkill" value="@customSkill" type="submit" class="button-link">Remove</button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <br />
+
+            <button type="submit" class="button">Save and continue</button>
+            <a asp-route="@RouteNames.Preview_Index_Get" class="button-link">Cancel</a>
+        </form>
+        <hr>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+
+    $(function () {
+
+        var $customSkillsContainer = $("#custom-skill-container");
+        var $customSkillSummary = $("#custom-skill-summary");
+        var $customSkillInput = $("#@Html.IdFor(m => m.AddCustomSkillName)");
+
+        var customRowMask = '<tr><td></td><td><input name="Skills" type="hidden" value="" /><button name="RemoveCustomSkill" value="" type="submit" class="button-link">Remove</button></td></tr>';
+
+        var buildCustomSkillRow = function (customSkill) {
+            var $row = $(customRowMask);
+            $("td:first", $row).text(customSkill);
+            $("input[name='Skills']", $row).attr("value", customSkill);
+            $("button[name='RemoveCustomSkill']", $row).attr("value", customSkill);
+            return $row;
+        };
+
+        var toggleCustomSkillsContainer = function () {
+            $customSkillsContainer.toggle($customSkillSummary.children().length > 0);
+        }
+
+        $("#add-custom-skill").on("click",
+            function (e) {
+                var customSkill = $customSkillInput.val();
+
+                if (customSkill) {
+                    var $row = buildCustomSkillRow(customSkill);
+                    $customSkillSummary.append($row);
+
+                    $customSkillInput.val("");
+
+                    toggleCustomSkillsContainer();
+                }
+
+                e.preventDefault();
+                return false;
+            });
+
+        $customSkillSummary.on("click", "button[name='RemoveCustomSkill']",
+            function(e) {
+                $(this).closest("tr").remove();
+
+                toggleCustomSkillsContainer();
+
+                e.preventDefault();
+                return false;
+            });
+    });
+
+</script>

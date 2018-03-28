@@ -129,9 +129,9 @@
                     <div class="preview-empty">
                         <h3 class="heading-small">Desired skills and personal qualities</h3>
                         <div id="vacancy-skills-qualities-required">
-                            <p class="preserve-format"></p>
+                            <p class="preserve-format">@string.Join(", ", Model.Skills)</p>
                         </div>
-                        <a href="skills-and-qualities">Edit</a>
+                        <a asp-route="@RouteNames.Skills_Get">Edit</a>
                     </div>
                     <div class="preview-empty">
                         <h3 class="heading-small">Qualifications</h3>

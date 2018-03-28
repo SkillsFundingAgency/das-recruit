@@ -16,7 +16,16 @@
 .button-link {
     display:inline-block;
     padding:10px 15px 5px 0;
-  }
+}
+
+/*** Skills ***/
+.button-secondary {
+    background-color:#BFC1C3;
+    color:#0B0C0C !important;
+    display:inline-block;
+    padding:7px 15px;
+    text-decoration:none;
+}
 
 /** Further legacy menu styles **/
 .header-inner {
@@ -581,6 +590,24 @@
     padding-left: 15px;
 }
 
+/*** Skills ***/
+@media(min-width: 769px) {
+    .two-column-checkbox-container{
+        overflow:hidden;
+    }
+
+    .two-column-checkbox {
+        display:block;
+        width:50%;
+        float:left;
+    }
+
+    .two-column-checkbox:after{
+        content: "";
+        clear:both;
+        display:block;
+    }
+}
 textarea.form-control {
     opacity: 1;
     background-image: none;
