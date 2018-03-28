@@ -61,14 +61,7 @@
     "GoogleMapsPrivateKey": {
       "type": "string",
       "defaultValue": ""
-    },
-    "SkillsConfiguration": {
-      "type": "object",
-      "defaultValue": {
-        "Column1Skills": "",
-        "Column2Skills": ""
-      } 
-    } 
+    }
   },
   "variables": {
     "AppServicePlanName": "[concat('das-', toLower(parameters('EnvironmentName')), '-rcrt-asp')]",
@@ -179,14 +172,6 @@
             {
               "name": "GoogleMapsPrivateKey",
               "value": "[parameters('GoogleMapsPrivateKey')]"
-            },
-            {
-              "name": "SkillsConfiguration:Column1Skills",
-              "value": "[parameters('SkillsConfiguration').Column1Skills]"
-            },
-            {
-              "name": "SkillsConfiguration:Column2Skills",
-              "value": "[parameters('SkillsConfiguration').Column2Skills]"
             }
           ],
           "connectionStrings": [
