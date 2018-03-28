@@ -15,7 +15,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
     {
         private readonly ITimeProvider _timeProvider;
         private readonly IGetApprenticeshipNationalMinimumWages _minimumWageService;
-        private Lazy<IEnumerable<ApprenticeshipProgramme>> _trainingProgrammes;
+        private readonly Lazy<IEnumerable<ApprenticeshipProgramme>> _trainingProgrammes;
 
         public FluentVacancyValidator(ITimeProvider timeProvider, IGetApprenticeshipNationalMinimumWages minimumWageService, IQueryStoreReader queryStoreReader)
         {

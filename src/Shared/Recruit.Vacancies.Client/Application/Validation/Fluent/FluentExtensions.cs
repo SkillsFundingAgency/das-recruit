@@ -1,8 +1,8 @@
-using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators;
+using FluentValidation;
 using FluentValidation.Internal;
 
-namespace FluentValidation
+namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 {
     internal static class FluentExtensions
     {

@@ -7,7 +7,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation
 {
     public sealed class EntityValidator<T, TRules> : IEntityValidator<T, TRules> where TRules : struct, IComparable, IConvertible, IFormattable 
     {
-        private AbstractValidator<T> _validator;
+        private readonly AbstractValidator<T> _validator;
     
         public EntityValidator(AbstractValidator<T> fluentValidator)
         {

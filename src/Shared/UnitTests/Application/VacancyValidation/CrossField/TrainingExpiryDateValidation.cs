@@ -22,11 +22,12 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
                 }
             };
 
-            ApprenticeshipProgrammes programmes = new ApprenticeshipProgrammes();
-
-            programmes.Programmes = new List<ApprenticeshipProgramme>
+            var programmes = new ApprenticeshipProgrammes
             {
-                new ApprenticeshipProgramme { Id = "123", EffectiveTo = null }
+                Programmes = new List<ApprenticeshipProgramme>
+                {
+                    new ApprenticeshipProgramme {Id = "123", EffectiveTo = null}
+                }
             };
 
             MockQueryStoreReader.Setup(x => x.GetApprenticeshipProgrammesAsync()).ReturnsAsync(programmes);
@@ -53,11 +54,12 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
                 }
             };
 
-            ApprenticeshipProgrammes programmes = new ApprenticeshipProgrammes();
-
-            programmes.Programmes = new List<ApprenticeshipProgramme>
+            var programmes = new ApprenticeshipProgrammes
             {
-                new ApprenticeshipProgramme { Id = "123", EffectiveTo = startDate.AddDays(daysAfterStartDate) }
+                Programmes = new List<ApprenticeshipProgramme>
+                {
+                    new ApprenticeshipProgramme {Id = "123", EffectiveTo = startDate.AddDays(daysAfterStartDate)}
+                }
             };
 
             MockQueryStoreReader.Setup(x => x.GetApprenticeshipProgrammesAsync()).ReturnsAsync(programmes);
@@ -82,11 +84,12 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
                 }
             };
 
-            ApprenticeshipProgrammes programmes = new ApprenticeshipProgrammes();
-
-            programmes.Programmes = new List<ApprenticeshipProgramme>
+            var programmes = new ApprenticeshipProgrammes
             {
-                new ApprenticeshipProgramme { Id = "123", EffectiveTo = startDate.AddDays(-1) }
+                Programmes = new List<ApprenticeshipProgramme>
+                {
+                    new ApprenticeshipProgramme {Id = "123", EffectiveTo = startDate.AddDays(-1)}
+                }
             };
 
             MockQueryStoreReader.Setup(x => x.GetApprenticeshipProgrammesAsync()).ReturnsAsync(programmes);

@@ -10,9 +10,9 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation
 {
     public abstract class VacancyValidationTestsBase
     {
-        protected IEntityValidator<Vacancy, VacancyRuleSet> Validator;
-        protected Mock<IGetApprenticeshipNationalMinimumWages> MockMinimumWageService;
-        protected Mock<IQueryStoreReader> MockQueryStoreReader;
+        protected readonly IEntityValidator<Vacancy, VacancyRuleSet> Validator;
+        protected readonly Mock<IGetApprenticeshipNationalMinimumWages> MockMinimumWageService;
+        protected readonly Mock<IQueryStoreReader> MockQueryStoreReader;
 
         protected VacancyValidationTestsBase()
         {

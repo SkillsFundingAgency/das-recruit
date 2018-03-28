@@ -8,7 +8,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
     {
 		private readonly Regex _regex;
 
-		const string expression = @"^[a-zA-Z0-9\u0080-\uFFA7?$@#()""'!,+\-=_:;.&€£*%\s\/\[\]]*$";
+		private const string ValidCharactersExpression = @"^[a-zA-Z0-9\u0080-\uFFA7?$@#()""'!,+\-=_:;.&€£*%\s\/\[\]]*$";
 
 		internal FreeTextValidator() : base("{PropertyName} must contain valid characters")
         {
@@ -25,21 +25,21 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
 			return true;
 		}
 
-		public string Expression => expression;
+		public string Expression => ValidCharactersExpression;
 
 		private static Regex CreateRegEx()
 		{
 			try
 			{
 				if (AppDomain.CurrentDomain.GetData("REGEX_DEFAULT_MATCH_TIMEOUT") == null) {
-					return new Regex(expression, RegexOptions.IgnoreCase, TimeSpan.FromSeconds(2.0));
+					return new Regex(ValidCharactersExpression, RegexOptions.IgnoreCase, TimeSpan.FromSeconds(2.0));
 				}
 			}
-			catch
+			catch (Exception)
 			{
 			}
 
-            return new Regex(expression, RegexOptions.IgnoreCase);
+            return new Regex(ValidCharactersExpression, RegexOptions.IgnoreCase);
 		}
 	}
 }

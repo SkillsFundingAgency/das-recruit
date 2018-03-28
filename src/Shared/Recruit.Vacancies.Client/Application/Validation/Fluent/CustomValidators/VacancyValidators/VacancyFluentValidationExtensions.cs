@@ -99,7 +99,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
             });
         }
 
-        internal static bool CanRunValidator(this ValidationContext context, VacancyRuleSet validationToCheck)
+        private static bool CanRunValidator(this ValidationContext context, VacancyRuleSet validationToCheck)
         {
             var validationsToRun = (VacancyRuleSet)context.RootContextData[ValidationConstants.ValidationsRulesKey];
 
