@@ -45,9 +45,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 EmployerName = vacancy.OrganisationName,
                 EmployerWebsiteUrl = vacancy.EmployerWebsiteUrl,
                 ExpectedDuration = vacancy.Wage.DurationUnit.Value.GetDisplayName().ToQuantity(vacancy.Wage.Duration.Value),
-                HoursPerWeek = vacancy.Wage.WeeklyHours.ToString().EndsWith("0")
-                                ? vacancy.Wage.WeeklyHours.ToString().SkipLast(1).ToString().Replace(".0", string.Empty)
-                                : vacancy.Wage.WeeklyHours.ToString(),
+                HoursPerWeek = vacancy.Wage.ToHoursPerWeekText(),
                 Location = vacancy.Location,
                 MapUrl = vacancy.Location.HasGeocode
                     ? _mapService.GetMapImageUrl(vacancy.Location.Latitude.ToString(), vacancy.Location.Longitude.ToString())

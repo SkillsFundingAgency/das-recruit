@@ -3,6 +3,7 @@
 namespace Esfa.Recruit.Employer.Web.Extensions
 {
     using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+    using System.Linq;
 
     public static class WageExtensions
     {
@@ -14,6 +15,13 @@ namespace Esfa.Recruit.Employer.Web.Extensions
             }
             
             return wage.WageType?.GetDisplayName();
+        }
+
+        public static string ToHoursPerWeekText(this Wage wage)
+        {
+            return wage.WeeklyHours.ToString().EndsWith("0")
+                    ? wage.WeeklyHours.ToString().SkipLast(1).ToString().Replace(".0", string.Empty)
+                    : wage.WeeklyHours.ToString();
         }
     }
 }
