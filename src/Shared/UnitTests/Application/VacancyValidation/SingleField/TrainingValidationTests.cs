@@ -1,6 +1,6 @@
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
-using Esfa.Recruit.Vacancies.Client.Domain;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Enums;
 using FluentAssertions;
 using UnitTests.Application.VacancyValidation;
 using Xunit;
