@@ -23,6 +23,10 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part2.Qualifications
 
         public string AddQualificationAction { get; set; }
         public string RemoveQualification { get; set; }
+
+        public bool IsAddingQualification => !string.IsNullOrWhiteSpace(AddQualificationAction);
+
+        public bool IsRemovingQualification => !string.IsNullOrEmpty(RemoveQualification);
     }
 
     public class QualificationEditModel

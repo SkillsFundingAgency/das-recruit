@@ -46,7 +46,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         {
             var vm = await GetQualificationsViewModelAsync(m.VacancyId);
 
-            
+            vm.Qualifications = m.Qualifications;
 
             return vm;
         }
@@ -61,16 +61,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             }
 
             var qualifications = m.Qualifications?.ToList() ?? new List<QualificationEditModel>();
-
-            if (!string.IsNullOrEmpty(m.RemoveQualification))
-            {
-                qualifications.RemoveAt(int.Parse(m.RemoveQualification));
-            }
-
-            if (!string.IsNullOrWhiteSpace(m.AddQualificationAction))
-            {
-                qualifications.Add(m);
-            }
             
             vacancy.Qualifications = _qualificationsService.SortQualifications(qualifications.ToEntity());
             
