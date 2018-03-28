@@ -2,26 +2,27 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Extensions;
-using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.ViewModels.Part2.Qualifications;
 using Esfa.Recruit.Vacancies.Client.Domain;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Enums;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Microsoft.Extensions.Options;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 {
     public class QualificationsOrchestrator
     {
         private readonly IVacancyClient _client;
-        private readonly IQualificationsService _qualificationsService;
-        
-        public QualificationsOrchestrator(IVacancyClient client, IQualificationsService qualificationsService)
+        private readonly QualificationsConfiguration _qualificationsConfig;
+
+        public QualificationsOrchestrator(IVacancyClient client, IOptions<QualificationsConfiguration> qualificationsConfigOptions)
         {
             _client = client;
-            _qualificationsService = qualificationsService;
+            _qualificationsConfig = qualificationsConfigOptions.Value;
         }
 
         public async Task<QualificationsViewModel> GetQualificationsViewModelAsync(Guid vacancyId)
@@ -35,7 +36,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
             var vm = new QualificationsViewModel
             {
-                QualificationTypes = _qualificationsService.GetQualificationTypes(),
+                QualificationTypes = _qualificationsConfig.QualificationTypes,
                 Qualifications = vacancy.Qualifications.ToViewModel()
             };
 
@@ -62,9 +63,37 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
             var qualifications = m.Qualifications?.ToList() ?? new List<QualificationEditModel>();
             
-            vacancy.Qualifications = _qualificationsService.SortQualifications(qualifications.ToEntity());
+            vacancy.Qualifications = SortQualifications(qualifications.ToEntity());
             
             await _client.UpdateVacancyAsync(vacancy, false);
+        }
+        
+        private List<Qualification> SortQualifications(IEnumerable<Qualification> qualificationsToSort)
+        {
+            var weightingComparer = new WeightingComparer();
+
+            var qualifications = qualificationsToSort.OrderBy(q => q.Weighting, weightingComparer)
+                .ThenBy(q => q.QualificationType).ThenBy(q => q.Subject).ToList();
+
+            return qualifications;
+        }
+
+        private class WeightingComparer : IComparer<QualificationWeighting?>
+        {
+            public int Compare(QualificationWeighting? x, QualificationWeighting? y)
+            {
+                if (x == y)
+                {
+                    return 0;
+                }
+
+                if (x == QualificationWeighting.Essential)
+                {
+                    return -1;
+                }
+
+                return 1;
+            }
         }
     }
 }
