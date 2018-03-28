@@ -44,13 +44,13 @@ namespace System.Collections.Generic
         private static Func<StandardSummary, bool> IsStandardActive()
         {
             return x => x.EffectiveFrom.HasValue && x.EffectiveFrom.Value.Date <= DateTime.UtcNow.Date
-                && (!x.EffectiveTo.HasValue || (x.EffectiveTo.HasValue && x.EffectiveTo.Value.Date >= DateTime.UtcNow.Date ));
+                && (!x.EffectiveTo.HasValue || x.EffectiveTo.Value.Date >= DateTime.UtcNow.Date);
         }
 
         private static Func<FrameworkSummary, bool> IsFrameworkActive()
         {
             return x => x.EffectiveFrom.HasValue && x.EffectiveFrom.Value.Date <= DateTime.UtcNow.Date
-                && (!x.EffectiveTo.HasValue || (x.EffectiveTo.HasValue && x.EffectiveTo.Value.Date >= DateTime.UtcNow.Date ));
+                && (!x.EffectiveTo.HasValue || x.EffectiveTo.Value.Date >= DateTime.UtcNow.Date);
         }
     }
 }
