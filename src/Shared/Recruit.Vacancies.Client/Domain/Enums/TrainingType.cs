@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Esfa.Recruit.Vacancies.Client.Domain
+namespace Esfa.Recruit.Vacancies.Client.Domain.Enums
 {
     public enum TrainingType
     {
