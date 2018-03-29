@@ -28,7 +28,6 @@
     <PackageReference Include="MongoDB.Driver" Version="2.5.0" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="SFA.DAS.Account.Api.Client" Version="1.2.0.62882" />
-    <PackageReference Include="System.ComponentModel.Annotations" Version="4.4.1" />
     <PackageReference Include="WindowsAzure.Storage" Version="9.1.0" />
     <PackageReference Include="FluentValidation" Version="7.5.2" />
   </ItemGroup>
