@@ -8,8 +8,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
     {
 		private readonly Regex _regex;
 
-        private const string PostCodeExpression = @"(([gG][iI][rR] {0,}0[aA]{2})|((([a-pr-uwyzA-PR-UWYZ][a-hk-yA-HK-Y]?[0-9][0-9]?)|(([a-pr-uwyzA-PR-UWYZ][0-9][a-hjkstuwA-HJKSTUW])|([a-pr-uwyzA-PR-UWYZ][a-hk-yA-HK-Y][0-9][abehmnprv-yABEHMNPRV-Y]))) {0,}[0-9][abd-hjlnp-uw-zABD-HJLNP-UW-Z]{2}))";
-
         internal PostCodeValidator() : base("{PropertyName} must be a valid postcode format")
         {
 			_regex = CreateRegEx();
@@ -25,21 +23,21 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
 			return true;
 		}
 
-		public string Expression => PostCodeExpression;
+		public string Expression => ValidationConstants.PostCodeRegExPattern;
 
 		private static Regex CreateRegEx()
 		{
 			try
 			{
 				if (AppDomain.CurrentDomain.GetData("REGEX_DEFAULT_MATCH_TIMEOUT") == null) {
-					return new Regex(PostCodeExpression, RegexOptions.IgnoreCase, TimeSpan.FromSeconds(2.0));
+					return new Regex(ValidationConstants.PostCodeRegExPattern, RegexOptions.IgnoreCase, TimeSpan.FromSeconds(2.0));
 				}
 			}
             catch
             {
             }
 
-            return new Regex(PostCodeExpression, RegexOptions.IgnoreCase);
+            return new Regex(ValidationConstants.PostCodeRegExPattern, RegexOptions.IgnoreCase);
 		}
 	}
 }
