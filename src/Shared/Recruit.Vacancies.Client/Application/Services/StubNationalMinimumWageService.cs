@@ -2,7 +2,7 @@
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Services
 {
-    public class StubNationalMinimumWageService : IGetApprenticeshipNationalMinimumWages
+    public class StubNationalMinimumWageService : IGetApprenticeNationalMinimumWages
     {
         public decimal GetMinimumWage(DateTime date)
         {

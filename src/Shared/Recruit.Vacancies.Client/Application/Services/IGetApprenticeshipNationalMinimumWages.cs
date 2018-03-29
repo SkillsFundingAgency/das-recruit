@@ -2,7 +2,7 @@
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Services
 {
-    public interface IGetApprenticeshipNationalMinimumWages
+    public interface IGetApprenticeNationalMinimumWages
     {
         decimal GetMinimumWage(DateTime date);
     }

@@ -56,7 +56,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             services.AddTransient<ITimeProvider, CurrentUtcTimeProvider>();
             services.AddTransient<IEmployerAccountService, EmployerAccountService>();
-            services.AddTransient<IGetApprenticeshipNationalMinimumWages, StubNationalMinimumWageService>();
+            services.AddTransient<IGetApprenticeNationalMinimumWages, StubNationalMinimumWageService>();
         }
 
         private static void AddRepositories(this IServiceCollection services, IConfiguration configuration)
