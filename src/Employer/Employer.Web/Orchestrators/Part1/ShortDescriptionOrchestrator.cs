@@ -12,6 +12,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
     public class ShortDescriptionOrchestrator : EntityValidatingOrchestrator<Vacancy, ShortDescriptionEditModel>
     {
+        private const VacancyRuleSet ValidationRules = VacancyRuleSet.NumberOfPostions | VacancyRuleSet.ShortDescription;
         private readonly IVacancyClient _client;
         private readonly ILogger<ShortDescriptionOrchestrator> _logger;
 
@@ -64,7 +65,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
             return await ValidateAndExecute(
                 vacancy, 
-                v => _client.Validate(v, VacancyRuleSet.NumberOfPostions | VacancyRuleSet.ShortDescription),
+                v => _client.Validate(v, ValidationRules),
                 v => _client.UpdateVacancyAsync(vacancy, false)
             );
         }

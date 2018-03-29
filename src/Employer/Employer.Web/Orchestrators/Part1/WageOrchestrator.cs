@@ -16,6 +16,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
     public class WageOrchestrator : EntityValidatingOrchestrator<Vacancy, WageEditModel>
     {
+        private const VacancyRuleSet ValidationRules = VacancyRuleSet.Duration | VacancyRuleSet.WorkingWeekDescription | VacancyRuleSet.WeeklyHours | VacancyRuleSet.Wage | VacancyRuleSet.MinimumWage;
         private readonly IVacancyClient _client;
         private readonly ILogger<WageOrchestrator> _logger;
 
@@ -85,7 +86,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
             return await ValidateAndExecute(
                 vacancy, 
-                v => _client.Validate(v, VacancyRuleSet.Duration | VacancyRuleSet.WorkingWeekDescription | VacancyRuleSet.WeeklyHours | VacancyRuleSet.Wage | VacancyRuleSet.MinimumWage),
+                v => _client.Validate(v, ValidationRules),
                 v => _client.UpdateVacancyAsync(vacancy, false)
             );
         }

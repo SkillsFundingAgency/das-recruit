@@ -13,6 +13,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
     public class TitleOrchestrator : EntityValidatingOrchestrator<Vacancy, TitleEditModel>
     {
+        private const VacancyRuleSet ValidationRules = VacancyRuleSet.Title;
         private readonly IVacancyClient _client;
         private readonly ILogger<TitleOrchestrator> _logger;
 
@@ -73,7 +74,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
                 return await ValidateAndExecute<Guid>(
                     newVacancy, 
-                    v => _client.Validate(v, VacancyRuleSet.Title),
+                    v => _client.Validate(v, ValidationRules),
                     async v =>
                     {
                         return await _client.CreateVacancyAsync(vm.Title, vm.EmployerAccountId, user);
@@ -92,7 +93,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             return await ValidateAndExecute<Guid>(
                 vacancy, 
-                v => _client.Validate(v, VacancyRuleSet.Title),
+                v => _client.Validate(v, ValidationRules),
                 async v =>
                 {
                     await _client.UpdateVacancyAsync(vacancy, false);

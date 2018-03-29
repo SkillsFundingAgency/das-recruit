@@ -16,6 +16,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
     public class TrainingOrchestrator : EntityValidatingOrchestrator<Vacancy, TrainingEditModel>
     {
+        private const VacancyRuleSet ValdationRules = VacancyRuleSet.ClosingDate | VacancyRuleSet.StartDate | VacancyRuleSet.TrainingProgramme | VacancyRuleSet.StartDateEndDate;
         private readonly IVacancyClient _client;
 
         public TrainingOrchestrator(IVacancyClient client, ILogger<TrainingOrchestrator> logger) : base(logger)
@@ -111,7 +112,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
             return await ValidateAndExecute(
                 vacancy, 
-                v => _client.Validate(v, VacancyRuleSet.ClosingDate | VacancyRuleSet.StartDate | VacancyRuleSet.TrainingProgramme | VacancyRuleSet.StartDateEndDate),
+                v => _client.Validate(v, ValdationRules),
                 v => _client.UpdateVacancyAsync(vacancy, false)
             );
         }
