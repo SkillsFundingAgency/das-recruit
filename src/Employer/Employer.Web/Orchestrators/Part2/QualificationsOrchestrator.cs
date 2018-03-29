@@ -70,17 +70,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         
         private List<Qualification> SortQualifications(IEnumerable<Qualification> qualificationsToSort)
         {
-            var weightingComparer = new WeightingComparer();
-
-            var qualifications = qualificationsToSort.OrderBy(q => q.Weighting, weightingComparer)
-                .ThenBy(q => q.QualificationType).ThenBy(q => q.Subject).ToList();
-
-            return qualifications;
-        }
-
-        private class WeightingComparer : IComparer<QualificationWeighting?>
-        {
-            public int Compare(QualificationWeighting? x, QualificationWeighting? y)
+            var weightingComparer = Comparer<QualificationWeighting?>.Create((x, y) =>
             {
                 if (x == y)
                 {
@@ -93,7 +83,12 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                 }
 
                 return 1;
-            }
+            });
+            
+            var qualifications = qualificationsToSort.OrderBy(q => q.Weighting, weightingComparer)
+                .ThenBy(q => q.QualificationType).ThenBy(q => q.Subject).ToList();
+
+            return qualifications;
         }
     }
 }
