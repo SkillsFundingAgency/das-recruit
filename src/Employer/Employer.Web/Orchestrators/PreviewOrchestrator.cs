@@ -67,7 +67,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 VacancyDescription = vacancy.Description,
                 VacancyReferenceNumber = string.Empty,
                 WageInfo = vacancy.Wage.WageAdditionalInformation,
-                WageText = vacancy.Wage.FixedWageYearlyAmount?.AsMoney(),
+                WageText = $"£{vacancy.Wage.FixedWageYearlyAmount?.AsMoney()}",
                 WorkingWeekDescription = vacancy.Wage.WorkingWeekDescription
             };
 
