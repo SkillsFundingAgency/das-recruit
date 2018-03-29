@@ -50,11 +50,11 @@
                     </legend>
                     <span asp-validation-for="Weighting" class="error-message"></span>
                     <div class="multiple-choice">
-                        <input asp-for="Weighting" type="radio" value="@QualificationWeighting.Essential">
+                        <input asp-for="Weighting" type="radio" value="@QualificationWeighting.Essential" data-display="@QualificationWeighting.Essential.GetDisplayName()">
                         <label asp-for="Weighting">Yes</label>
                     </div>
                     <div class="multiple-choice">
-                        <input asp-for="Weighting" type="radio" value="@QualificationWeighting.Desired">
+                        <input asp-for="Weighting" type="radio" value="@QualificationWeighting.Desired" data-display="@QualificationWeighting.Desired.GetDisplayName()">
                         <label asp-for="Weighting">No</label>
                     </div>
                 </fieldset>
@@ -90,7 +90,7 @@
                         <td>@qualification.QualificationType</td>
                         <td>@qualification.Subject</td>
                         <td>@qualification.Grade</td>
-                        <td>@qualification.Weighting</td>
+                        <td>@qualification.Weighting.GetDisplayName()</td>
                         <td>
                             <input name="Qualifications[@i].QualificationType" type="hidden" value="@qualification.QualificationType" />
                             <input name="Qualifications[@i].Subject" type="hidden" value="@qualification.Subject" />
@@ -135,7 +135,7 @@
             });
         }
 
-        var buildQualificationRow = function(qualificationType, subject, grade, weighting) {
+        var buildQualificationRow = function (qualificationType, subject, grade, weighting, weightingDisplay) {
 
             var i = $qualificationsSummary.children().length;
 
@@ -144,7 +144,7 @@
             $("td:nth-child(1)", $row).text(qualificationType);
             $("td:nth-child(2)", $row).text(subject);
             $("td:nth-child(3)", $row).text(grade);
-            $("td:nth-child(4)", $row).text(weighting);
+            $("td:nth-child(4)", $row).text(weightingDisplay);
             
             $("input[name*='QualificationType']", $row).val(qualificationType);
             $("input[name*='Subject']", $row).val(subject);
@@ -170,9 +170,10 @@
                 var subject = $subject.val();
                 var grade = $grade.val().toUpperCase();
                 var weighting = $weighting.val();
+                var weightingDisplay = $weighting.data("display");
 
                 if (qualificationType && subject && grade && weighting) {
-                    var $row = buildQualificationRow(qualificationType, subject, grade, weighting);
+                    var $row = buildQualificationRow(qualificationType, subject, grade, weighting, weightingDisplay);
                     $qualificationsSummary.append($row);
 
                     updateInputPositions();
