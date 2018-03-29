@@ -1,19 +1,18 @@
-using System.Linq;
+using System;
+using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.ViewModels.Part1.Training;
+using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Employer.Web.Extensions;
+using Esfa.Recruit.Vacancies.Client.Application.Validation;
+using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Employer.Web.ViewModels;
+using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Domain.Enums;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
-    using System;
-    using System.Threading.Tasks;
-    using Esfa.Recruit.Employer.Web.ViewModels.Part1.Training;
-    using Esfa.Recruit.Vacancies.Client.Domain;
-    using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
-    using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-    using Esfa.Recruit.Employer.Web.Extensions;
-    using Esfa.Recruit.Vacancies.Client.Application.Validation;
-    using Microsoft.Extensions.Logging;
-
     public class TrainingOrchestrator : EntityValidatingOrchestrator<Vacancy, TrainingEditModel>
     {
         private const VacancyRuleSet ValdationRules = VacancyRuleSet.ClosingDate | VacancyRuleSet.StartDate | VacancyRuleSet.TrainingProgramme | VacancyRuleSet.StartDateEndDate;
