@@ -16,7 +16,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation
 
         protected VacancyValidationTestsBase()
         {
-            var timeProvider = new CurrentTimeProvider();
+            var timeProvider = new CurrentUtcTimeProvider();
             MockMinimumWageService = new Mock<IGetApprenticeshipNationalMinimumWages>();
             MockQueryStoreReader = new Mock<IQueryStoreReader>();
 
