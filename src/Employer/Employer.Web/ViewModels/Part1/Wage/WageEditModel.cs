@@ -20,18 +20,13 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Wage
         [ValidGuid]
         public Guid VacancyId { get; set; }
 
-        [Required(ErrorMessage = ErrMsg.Required.Duration )]
         [TypeOfInteger(ErrorMessage = ErrMsg.TypeOfInteger.Duration)]
         public string Duration { get; set; }
 
         public DurationUnit DurationUnit { get; set; }
 
-        [Required(ErrorMessage = ErrMsg.Required.WorkingWeekDescription)]
-        [FreeText(ErrorMessage = ErrMsg.FreeText.WorkingWeekDescription)]
-        [StringLength(250, ErrorMessage = ErrMsg.StringLength.WorkingWeekDescription )]
         public string WorkingWeekDescription { get; set; }
 
-        [Required(ErrorMessage = ErrMsg.Required.WeeklyHours)]
         [TypeOfDecimal(2, ErrorMessage = ErrMsg.TypeOfDecimal.WeeklyHours)]
         public string WeeklyHours { get; set; }
 
@@ -40,8 +35,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Wage
         [TypeOfMoney(ErrorMessage = ErrMsg.TypeOfMoney.FixedWageYearlyAmount)]
         public string FixedWageYearlyAmount { get; set; }
 
-        [StringLength(240, ErrorMessage = ErrMsg.StringLength.WageAdditionalInformation)]
-        [FreeText(ErrorMessage = ErrMsg.FreeText.WageAdditionalInformation)]
         public string WageAdditionalInformation { get; set; }
     }
 }

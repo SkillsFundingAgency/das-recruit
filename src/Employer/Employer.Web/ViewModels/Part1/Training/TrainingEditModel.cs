@@ -22,7 +22,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Training
         public string ClosingMonth { get; set; }
         public string ClosingYear { get; set; }
 
-        [Required(ErrorMessage = ErrMsg.Required.ClosingDate)]
         [TypeOfDate(ErrorMessage = ErrMsg.TypeOfDate.ClosingDate)]
         public string ClosingDate
         {
@@ -42,7 +41,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Training
         public string StartMonth { get; set; }
         public string StartYear { get; set; }
 
-        [Required(ErrorMessage = ErrMsg.Required.StartDate)]
         [TypeOfDate(ErrorMessage = ErrMsg.TypeOfDate.StartDate)]
         public string StartDate
         {
@@ -58,7 +56,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Training
             }
         }
 
-        [Required(ErrorMessage = ErrMsg.Required.SelectedProgrammeId)]
         public string SelectedProgrammeId { get; set; }
     }
 }

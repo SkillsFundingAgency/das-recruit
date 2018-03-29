@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.QueryStore;
+using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Enums;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Projections;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Domain.Services;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
@@ -16,12 +18,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly IMessaging _messaging;
         private readonly IQueryStoreReader _reader;
         private readonly IVacancyRepository _repository;
+        private readonly ITimeProvider _timeProvider;
+        private readonly IEntityValidator<Vacancy, VacancyRuleSet> _validator;
 
-        public VacancyClient(IVacancyRepository repository, IQueryStoreReader reader, IMessaging messaging)
+        public VacancyClient(IVacancyRepository repository, IQueryStoreReader reader, IMessaging messaging, ITimeProvider timeProvider, IEntityValidator<Vacancy, VacancyRuleSet> validator)
         {
+            _timeProvider = timeProvider;
             _repository = repository;
             _reader = reader;
             _messaging = messaging;
+            _validator = validator;
         }
 
         public async Task UpdateVacancyAsync(Vacancy vacancy, bool canUpdateQueryStore = true)
@@ -52,7 +58,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                     Title = title,
                     EmployerAccountId = employerAccountId,
                     Status = VacancyStatus.Draft,
-                    CreatedDate = DateTime.UtcNow,
+                    CreatedDate = _timeProvider.Now,
                     CreatedBy = user,
                     IsDeleted = false
                 }
@@ -74,7 +80,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             }
 
             vacancy.Status = VacancyStatus.Submitted;
-            vacancy.SubmittedDate = DateTime.UtcNow;
+            vacancy.SubmittedDate = _timeProvider.Now;
 
             var command = new SubmitVacancyCommand
             {
@@ -97,7 +103,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             }
 
             vacancy.IsDeleted = true;
-            vacancy.DeletedDate = DateTime.UtcNow;
+            vacancy.DeletedDate = _timeProvider.Now;
 
             var command = new DeleteVacancyCommand
             {
@@ -153,6 +159,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         public Task<EditVacancyInfo> GetEditVacancyInfo(string employerAccountId)
         {
             return _reader.GetEmployerVacancyDataAsync(employerAccountId);
+        }
+
+        public EntityValidationResult Validate(Vacancy vacancy, VacancyRuleSet rules)
+        {
+            return _validator.Validate(vacancy, rules);           
         }
     }
 }

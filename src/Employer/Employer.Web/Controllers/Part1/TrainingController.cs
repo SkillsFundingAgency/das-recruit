@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
+using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Training;
 using Microsoft.AspNetCore.Mvc;
@@ -27,14 +28,19 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         [HttpPost("training", Name = RouteNames.Training_Post)]
         public async Task<IActionResult> Training(TrainingEditModel m)
         {
+            var response = await _orchestrator.PostTrainingEditModelAsync(m);
+            
+            if (!response.Success)
+            {
+                response.AddErrorsToModelState(ModelState);
+            }
+
             if (!ModelState.IsValid)
             {
                 var vm = await _orchestrator.GetTrainingViewModelAsync(m);
 
                 return View(vm);
             }
-
-            await _orchestrator.PostTrainingEditModelAsync(m);
 
             return RedirectToRoute(RouteNames.Wage_Get);
         }

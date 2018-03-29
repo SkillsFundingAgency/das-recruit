@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Projections;
+using Esfa.Recruit.Vacancies.Client.Domain.Services;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.Extensions.Logging;
 using Polly;
@@ -16,17 +17,20 @@ namespace Esfa.Recruit.Vacancies.Jobs.ApprenticeshipProgrammes
         private readonly IVacancyClient _queryStoreClient;
         private readonly IStandardApiClient _standardsClient;
         private readonly IFrameworkApiClient _frameworksClient;
+        private readonly ITimeProvider _timeProvider;
 
         public ApprenticeshipProgrammesUpdater(
             ILogger<ApprenticeshipProgrammesUpdater> logger, 
             IVacancyClient queryStoreClient,
             IStandardApiClient standardsClient,
-            IFrameworkApiClient frameworksClient)
+            IFrameworkApiClient frameworksClient,
+            ITimeProvider timeProvider)
         {
             _logger = logger;
             _queryStoreClient = queryStoreClient;
             _standardsClient = standardsClient;
             _frameworksClient = frameworksClient;
+            _timeProvider = timeProvider;
         }
 
         public async Task UpdateAsync()
@@ -74,7 +78,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.ApprenticeshipProgrammes
 
             var standards = await retryPolicy.ExecuteAsync(() => _standardsClient.GetAllAsync(), new Dictionary<string, object>() {{ "apiCall", "Standards" }});
 
-            return standards.FilterAndMapToApprenticeshipProgrammes();
+            return standards.FilterAndMapToApprenticeshipProgrammes(_timeProvider);
         }
 
         private async Task<IEnumerable<ApprenticeshipProgramme>> GetFrameworks()
@@ -85,7 +89,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.ApprenticeshipProgrammes
 
             var frameworks = await retryPolicy.ExecuteAsync(() => _frameworksClient.GetAllAsync(), new Dictionary<string, object>() {{ "apiCall", "Frameworks" }});
             
-            return frameworks.FilterAndMapToApprenticeshipProgrammes();
+            return frameworks.FilterAndMapToApprenticeshipProgrammes(_timeProvider);
         }
 
         private async Task UpdateQueryStore(IEnumerable<ApprenticeshipProgramme> programmes)

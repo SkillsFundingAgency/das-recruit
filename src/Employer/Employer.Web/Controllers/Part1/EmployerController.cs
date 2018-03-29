@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
+using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer;
@@ -27,6 +28,13 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         [HttpPost("employer", Name = RouteNames.Employer_Post)]
         public async Task<IActionResult> Employer(EmployerEditModel m)
         {
+            var response = await _orchestrator.PostEmployerEditModelAsync(m);
+
+            if (!response.Success)
+            {
+                response.AddErrorsToModelState(ModelState);
+            }
+
             if (!ModelState.IsValid)
             {
                 var vm = await _orchestrator.GetEmployerViewModelAsync(m);
@@ -34,7 +42,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                 return View(vm);
             }
 
-            await _orchestrator.PostEmployerEditModelAsync(m);
             return RedirectToRoute(RouteNames.ShortDescription_Get);
         }
     }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Handlers
 {
-    public class UpdateVacancyCommandHandler: IRequestHandler<UpdateVacancyCommand>
+    public class UpdateVacancyCommandHandler : IRequestHandler<UpdateVacancyCommand>
     {
         private readonly IVacancyRepository _repository;
 

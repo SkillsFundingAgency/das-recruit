@@ -4,16 +4,19 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Projections;
+using Esfa.Recruit.Vacancies.Client.Domain.Services;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 {
     public class QueryStoreClient : IQueryStoreReader, IQueryStoreWriter
     {
         private readonly IQueryStore _queryStore;
+        private readonly ITimeProvider _timeProvider;
 
-        public QueryStoreClient(IQueryStore queryStore)
+        public QueryStoreClient(IQueryStore queryStore, ITimeProvider timeProvider)
         {
             _queryStore = queryStore;
+            _timeProvider = timeProvider;
         }
 
         public Task<Dashboard> GetDashboardAsync(string employerAccountId)
@@ -30,7 +33,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
                 Id = QueryViewType.Dashboard.GetIdValue(employerAccountId),
                 Type = QueryViewType.Dashboard.TypeName,
                 Vacancies = vacancySummaries,
-                LastUpdated = DateTime.UtcNow
+                LastUpdated = _timeProvider.Now
             };
 
             return _queryStore.UpsertAsync<Dashboard>(dashboardItem);
@@ -43,7 +46,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
                 Id = QueryViewType.ApprenticeshipProgrammes.GetIdValue(),
                 Type = QueryViewType.ApprenticeshipProgrammes.TypeName,
                 Programmes = programmes,
-                LastUpdated = DateTime.UtcNow
+                LastUpdated = _timeProvider.Now
             };
             
             return _queryStore.UpsertAsync<ApprenticeshipProgrammes>(programmesItem);
@@ -63,7 +66,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
                 Id = QueryViewType.EditVacancyInfo.GetIdValue(employerAccountId),
                 Type = QueryViewType.EditVacancyInfo.TypeName,
                 LegalEntities = legalEntities,
-                LastUpdated = DateTime.UtcNow
+                LastUpdated = _timeProvider.Now
             };
 
             return _queryStore.UpsertAsync(employerVacancyDataItem);

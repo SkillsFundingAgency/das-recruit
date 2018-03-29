@@ -1,4 +1,5 @@
-﻿using Esfa.Recruit.Vacancies.Client.Domain;
+﻿using Esfa.Recruit.Vacancies.Client.Application.Validation;
+using Esfa.Recruit.Vacancies.Client.Domain;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using SFA.DAS.EAS.Account.Api.Types;
 using System;
@@ -21,15 +22,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mappings
         internal static Address MapFromAddressLine(string address)
         {
             const string splitChar = ",";
-            var hasPostcode = ValidationRegexes.PostcodeRegex.IsMatch(address);
+            var hasPostcode = ValidationConstants.PostcodeRegex.IsMatch(address);
 
             if (!string.IsNullOrWhiteSpace(address) && address.Contains(splitChar) && hasPostcode)
             {
                 var addressParts = address.Split(new[] { splitChar }, StringSplitOptions.RemoveEmptyEntries)
                                             .Select(s => s.Trim());
 
-                var postcode = addressParts.FirstOrDefault(x => ValidationRegexes.PostcodeRegex.IsMatch(x));
-                var nonPostcodeAddressParts = addressParts.Where(x => !ValidationRegexes.PostcodeRegex.IsMatch(x));
+                var postcode = addressParts.FirstOrDefault(x => ValidationConstants.PostcodeRegex.IsMatch(x));
+                var nonPostcodeAddressParts = addressParts.Where(x => !ValidationConstants.PostcodeRegex.IsMatch(x));
 
                 var legalEntityAddress = new Address
                 {

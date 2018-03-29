@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Projections;
 
@@ -18,5 +19,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task UpdateApprenticeshipProgrammesAsync(IEnumerable<ApprenticeshipProgramme> programmes);
         Task<ApprenticeshipProgrammes> GetApprenticeshipProgrammesAsync();
         Task<EditVacancyInfo> GetEditVacancyInfo(string employerAccountId);
+        EntityValidationResult Validate(Vacancy vacancy, VacancyRuleSet rules);
     }
 }

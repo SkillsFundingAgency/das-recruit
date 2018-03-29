@@ -1,7 +1,6 @@
 using Esfa.Recruit.Vacancies.Client.Domain.Enums;
 using System;
 using System.Collections.Generic;
-using Esfa.Recruit.Vacancies.Client.Domain.Projections;
 
 namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
 {

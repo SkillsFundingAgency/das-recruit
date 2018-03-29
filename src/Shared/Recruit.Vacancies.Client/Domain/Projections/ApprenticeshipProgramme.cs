@@ -1,4 +1,5 @@
 using System;
+using Esfa.Recruit.Vacancies.Client.Domain.Enums;
 
 namespace Esfa.Recruit.Vacancies.Client.Domain.Projections
 {

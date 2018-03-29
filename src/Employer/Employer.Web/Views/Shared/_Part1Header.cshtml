@@ -1,5 +1,7 @@
-﻿@{
-    var exampleClosingDate = DateTime.Now.AddMonths(2);
+﻿@using Esfa.Recruit.Vacancies.Client.Domain.Services;
+@inject ITimeProvider timeProvider;
+@{
+    var exampleClosingDate = timeProvider.Now.AddMonths(2);
     var exampleStartingDate = exampleClosingDate.AddDays(14);
 }
 

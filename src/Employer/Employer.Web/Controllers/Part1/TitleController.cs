@@ -38,16 +38,21 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         [HttpPost(VacancyTitleRoute, Name = RouteNames.Title_Post)]
         public async Task<IActionResult> Title(TitleEditModel m)
         {
+            var user = User.GetDisplayName();
+            var response = await _orchestrator.PostTitleEditModelAsync(m, user);
+
+            if (!response.Success)
+            {
+                response.AddErrorsToModelState(ModelState);
+            }
+            
             if(!ModelState.IsValid)
             {
                 var vm = await _orchestrator.GetTitleViewModelAsync(m);
                 return View(vm);
             }
-
-            var user = User.GetDisplayName();
-            var vacancyId = await _orchestrator.PostTitleEditModelAsync(m, user);
             
-            return RedirectToRoute(RouteNames.Employer_Get, new { vacancyId });
+            return RedirectToRoute(RouteNames.Employer_Get, new { vacancyId = response.Data });
         }
     }
 }

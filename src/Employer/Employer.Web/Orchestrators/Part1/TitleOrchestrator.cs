@@ -4,16 +4,24 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Title;
 using Esfa.Recruit.Vacancies.Client.Domain;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
+using Esfa.Recruit.Vacancies.Client.Application.Validation;
+using Esfa.Recruit.Vacancies.Client.Application.Exceptions;
+using Microsoft.Extensions.Logging;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
-    public class TitleOrchestrator
+    public class TitleOrchestrator : EntityValidatingOrchestrator<Vacancy, TitleEditModel>
     {
+        private const VacancyRuleSet ValidationRules = VacancyRuleSet.Title;
         private readonly IVacancyClient _client;
+        private readonly ILogger<TitleOrchestrator> _logger;
 
-        public TitleOrchestrator(IVacancyClient client)
+        public TitleOrchestrator(IVacancyClient client, ILogger<TitleOrchestrator> logger) : base(logger)
         {
+            _logger = logger;
             _client = client;
+
         }
 
         public TitleViewModel GetTitleViewModel()
@@ -58,13 +66,20 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return vm;
         }
 
-        public async Task<Guid> PostTitleEditModelAsync(TitleEditModel vm, string user)
+        public async Task<OrchestratorResponse<Guid>> PostTitleEditModelAsync(TitleEditModel vm, string user)
         {
-            if (!vm.VacancyId.HasValue)
+            if (!vm.VacancyId.HasValue) // Create if it's a new vacancy
             {
-                var id = await _client.CreateVacancyAsync(vm.Title, vm.EmployerAccountId, user);
+                var newVacancy = new Vacancy { Title = vm.Title };
 
-                return id;
+                return await ValidateAndExecute<Guid>(
+                    newVacancy, 
+                    v => _client.Validate(v, ValidationRules),
+                    async v =>
+                    {
+                        return await _client.CreateVacancyAsync(vm.Title, vm.EmployerAccountId, user);
+                    }
+                );
             }
 
             var vacancy = await _client.GetVacancyForEditAsync(vm.VacancyId.Value);
@@ -76,9 +91,20 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             vacancy.Title = vm.Title;
 
-            await _client.UpdateVacancyAsync(vacancy);
+            return await ValidateAndExecute<Guid>(
+                vacancy, 
+                v => _client.Validate(v, ValidationRules),
+                async v =>
+                {
+                    await _client.UpdateVacancyAsync(vacancy, false);
+                    return v.Id;
+                }
+            );
+        }
 
-            return vacancy.Id;
+        protected override EntityToViewModelPropertyMappings<Vacancy, TitleEditModel> DefineMappings()
+        {
+            return null;
         }
     }
 }

@@ -16,14 +16,9 @@
         [ValidGuid]
         public Guid VacancyId { get; set; }
 
-        [Required(ErrorMessage = ErrMsg.Required.NumberOfPositions)]
         [TypeOfInteger(ErrorMessage = ErrMsg.TypeOfInteger.NumberOfPositions)]
-        [Range(1, Double.MaxValue, ErrorMessage = ErrMsg.Range.NumberOfPositions)]
         public string NumberOfPositions { get; set; }
 
-        [Required(ErrorMessage = ErrMsg.Required.ShortDescription)]
-        [StringLength(maximumLength:350, MinimumLength = 50, ErrorMessage = ErrMsg.StringLength.ShortDescription)]
-        [FreeText(ErrorMessage = ErrMsg.FreeText.ShortDescription)]
         public string ShortDescription { get; set; }
     }
 }
