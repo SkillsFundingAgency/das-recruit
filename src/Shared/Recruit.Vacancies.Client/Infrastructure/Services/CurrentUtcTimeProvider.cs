@@ -3,7 +3,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Services;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services
 {
-    public class CurrentTimeProvider : ITimeProvider
+    public class CurrentUtcTimeProvider : ITimeProvider
     {
         public DateTime Now => DateTime.UtcNow;
     }
