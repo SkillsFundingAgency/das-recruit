@@ -69,7 +69,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             
             vacancy.Skills = SortSkills(skills).ToList();
 
-            await _client.UpdateVacancyAsync(vacancy, false);
+            await _client.UpdateVacancyAsync(vacancy);
         }
 
         private IEnumerable<SkillViewModel> GetColumn1ViewModel(IEnumerable<string> selected)
