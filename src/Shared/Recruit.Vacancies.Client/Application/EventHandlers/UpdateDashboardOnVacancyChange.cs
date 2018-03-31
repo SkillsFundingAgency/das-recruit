@@ -1,5 +1,5 @@
-﻿using Esfa.Recruit.Vacancies.Client.Application.Events;
-using Esfa.Recruit.Vacancies.Client.Application.QueryStore;
+﻿using Esfa.Recruit.Vacancies.Client.Application.QueryStore;
+using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using Esfa.Recruit.Vacancies.Client.Domain.Projections;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using MediatR;
