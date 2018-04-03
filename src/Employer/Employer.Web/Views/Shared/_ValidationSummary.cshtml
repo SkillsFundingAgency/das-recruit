@@ -1,17 +1,20 @@
 ﻿@model Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary
-<div class='@(Html.ViewData.ModelState.IsValid ? "validation-summary-valid" : "validation-summary-errors") error-summary' role="alert" aria-labelledby="error-summary-heading-example-1" data-valmsg-summary="true" tabindex="-1">
+@{ 
+    var validationSummaryClass = Html.ViewData.ModelState.IsValid ? "validation-summary-valid" : "validation-summary-errors";
+}
+<div class="@validationSummaryClass error-summary" role="alert" aria-labelledby="error-summary-heading-example-1" data-valmsg-summary="true" tabindex="-1">
     <h2 id="error-summary" class="heading-medium error-summary-heading">
         Please fix these errors
     </h2>
     <ul class="error-summary-list">
         @foreach (var stateItem in Model.Where(msi => msi.Value.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid))
         {
-            var elementId = ViewData.TemplateInfo.GetFullHtmlFieldName(stateItem.Key) ?? stateItem.Key;
+            var elementName = ViewData.TemplateInfo.GetFullHtmlFieldName(stateItem.Key) ?? stateItem.Key;
             var firstErrorPerField = stateItem.Value.Errors.FirstOrDefault()?.ErrorMessage;
         <li>
-            @if (string.IsNullOrEmpty(stateItem.Key))
+            @if (!string.IsNullOrEmpty(stateItem.Key))
             {
-            <a href="#@elementId" data-focuses="@elementId">@firstErrorPerField</a>
+            <a href="#error-message-@elementName" data-focuses="error-message-@elementName">@firstErrorPerField</a>
             }
             else
             {
