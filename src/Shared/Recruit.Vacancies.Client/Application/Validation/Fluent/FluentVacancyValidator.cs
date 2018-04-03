@@ -51,6 +51,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             ValidateWeeklyHours();
 
             ValidateWage();
+
+            ValidateSkills();
         }
 
         private void CrossFieldValidations()
@@ -261,6 +263,28 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             });
         }
 
+        private void ValidateSkills()
+        {
+            RuleFor(x => x.Skills)
+                .Must(s => s != null && s.Count > 0)
+                    .WithMessage("You must include a skill or quality")
+                    .WithErrorCode("51")
+                .RunCondition(VacancyRuleSet.Skills)
+                .WithRuleId(VacancyRuleSet.Skills);
+
+            RuleForEach(x => x.Skills)
+                .NotEmpty()
+                    .WithMessage("You must include a skill or quality")
+                    .WithErrorCode("51")
+                .ValidFreeTextCharacters()
+                    .WithMessage("You have entered invalid characters")
+                    .WithErrorCode("6")
+                .MaximumLength(100)
+                    .WithMessage("The skill or quality must be less than {MaxLength} characters")
+                    .WithErrorCode("7")
+                .WithRuleId(VacancyRuleSet.Skills);
+        }
+
         private void ValidateStartDateClosingDate()
         {
             When(x => x.StartDate.HasValue && x.ClosingDate.HasValue, () =>
@@ -293,5 +317,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .WithRuleId(VacancyRuleSet.TrainingExpiryDate);
             });
         }
+
+        
     }
 }
