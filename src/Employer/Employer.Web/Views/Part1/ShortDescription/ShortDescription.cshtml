@@ -2,16 +2,11 @@
 
 <div class="grid-row">
     <div class="column-full">
-        
+
         @Html.Partial("_Part1Header")
 
-        <!-- Validation summary-->
-        <div asp-validation-summary="All" class="error-summary" role="alert" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
-            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
-                Please fix these errors
-            </h2>
-        </div>
-        
+        @Html.Partial("_ValidationSummary", ViewData.ModelState)
+
         <form asp-route="@RouteNames.ShortDescription_Post" novalidate>
 
             <div class="form-group">
@@ -31,8 +26,8 @@
             <button type="submit" class="button">Save and continue</button>
             <a asp-route="@RouteNames.Dashboard_Index_Get" class="button-link">Cancel</a>
         </form>
-        
+
         <hr>
 
-</div>
+    </div>
 </div>

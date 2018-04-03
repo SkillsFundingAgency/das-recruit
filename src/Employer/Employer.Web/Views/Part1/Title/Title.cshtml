@@ -5,11 +5,7 @@
         
         @Html.Partial("_Part1Header")
 
-        <div asp-validation-summary="All" class="error-summary" role="alert" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
-            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
-                Please fix these errors
-            </h2>
-        </div>
+        @Html.Partial("_ValidationSummary", ViewData.ModelState)
 
         <div id="section_title">
             <form asp-route="@(Model.VacancyId.HasValue ? RouteNames.Title_Post : RouteNames.CreateVacancy_Post)" novalidate>
@@ -25,7 +21,6 @@
                 <button type="submit" class="button">Save and Continue</button>
                 <a asp-route="@RouteNames.Dashboard_Index_Get" class="button-link">Cancel</a>
             </form>
-
             <hr>
         </div>
     </div>
