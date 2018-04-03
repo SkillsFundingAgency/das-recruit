@@ -27,7 +27,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services
             {
                 var accounts = await _accountApiClient.GetUserAccounts(userId);
 
-                return accounts.Select(acc => new EmployerIdentifier { AccountId = acc.HashedAccountId, EmployerName = acc.DasAccountName })
+                return accounts.Select(acc => new EmployerIdentifier { AccountId = acc.HashedAccountId })
                                 .ToDictionary(item => item.AccountId);
             }
             catch (Exception ex)
