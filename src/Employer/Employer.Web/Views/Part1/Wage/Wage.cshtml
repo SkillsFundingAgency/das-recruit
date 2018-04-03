@@ -1,6 +1,5 @@
 ﻿@using Esfa.Recruit.Vacancies.Client.Domain.Enums
 @model Esfa.Recruit.Employer.Web.ViewModels.Part1.Wage.WageViewModel
-
 <div class="grid-row">
     <div class="column-full">
 
@@ -13,7 +12,7 @@
             <div class="form-group">
                 <fieldset>
                     <label asp-for="Duration" class="form-label-bold">How long is the apprenticeship expected to last?</label>
-                    <span asp-validation-for="Duration" class="error-message"></span>
+                    <span esfa-validation-message-for="Duration" class="error-message"></span>
                     <input asp-for="Duration" class="form-control form-control-1-8" type="number" min="1">
                     <select asp-for="DurationUnit" class="form-control" style="width: auto">
                         <option value="@DurationUnit.Month">Month(s)</option>
@@ -25,20 +24,20 @@
             <div class="form-group">
                 <label asp-for="WorkingWeekDescription" class="form-label-bold">Working week</label>
                 <span class="form-hint">For example, Monday to Friday 9am to 5pm, shifts, may work evenings and weekends</span>
-                <span asp-validation-for="WorkingWeekDescription" class="error-message"></span>
+                <span esfa-validation-message-for="WorkingWeekDescription" class="error-message"></span>
                 <textarea asp-for="WorkingWeekDescription" class="form-control-3-4 form-control" cols="20" rows="2" type="text" maxlength="250"></textarea>
             </div>
 
             <div class="form-group">
                 <label asp-for="WeeklyHours" class="form-label-bold">How many hours will the apprentice work each week, including training?</label>
-                <span asp-validation-for="WeeklyHours" class="error-message"></span>
+                <span esfa-validation-message-for="WeeklyHours" class="error-message"></span>
                 <input asp-for="WeeklyHours" class="form-control form-control-1-8" type="number" step=".25" min="16" max="48">
             </div>
             <div class="form-group">
                 <fieldset>
                     <legend asp-for="WageType" class="heading-small">What is the salary?</legend>
                     <span class="form-hint">This must be the minimum salary for this vacancy</span>
-                    <span asp-validation-for="WageType" class="error-message"></span>
+                    <span esfa-validation-message-for="WageType" class="error-message"></span>
                     <div class="multiple-choice" data-target="custom-wage-fixed-panel">
                         <input asp-for="WageType" value="@WageType.FixedWage" type="radio" id="wage-type-fixed">
                         <label for="wage-type-fixed">Fixed wage</label>
@@ -52,7 +51,7 @@
                             </p>
 
                             <div class="form-group">
-                                <span asp-validation-for="FixedWageYearlyAmount" class="error-message"></span>
+                                <span esfa-validation-message-for="FixedWageYearlyAmount" class="error-message"></span>
                                 <p style="display: inline;">£</p>
                                 <label asp-for="FixedWageYearlyAmount" class="visuallyhidden">Minimum wage amount</label>
                                 <input asp-for="FixedWageYearlyAmount" class="form-control form-control-1-4" type="text">
@@ -85,16 +84,13 @@
             <div class="form-group">
                 <label asp-for="WageAdditionalInformation" class="form-label-bold">Additional information about the salary (optional)</label>
                 <span class="form-hint">For example, subject to experience, bonus scheme, performance increases or non contractual benefits</span>
-                <span asp-validation-for="WageAdditionalInformation" class="error-message"></span>
+                <span esfa-validation-message-for="WageAdditionalInformation" class="error-message"></span>
                 <textarea asp-for="WageAdditionalInformation" class="form-control-3-4 form-control" cols="20" rows="2" type="text" maxlength="240"></textarea>
             </div>
 
             <button type="submit" class="button">Save and Continue</button>
             <a asp-route="@RouteNames.Title_Get" class="button-link">Cancel</a>
-
         </form>
-
         <hr>
-
     </div>
 </div>

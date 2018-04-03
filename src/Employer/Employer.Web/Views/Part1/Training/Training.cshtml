@@ -15,7 +15,7 @@
                 <fieldset>
                     <legend class="form-label-bold">Closing date for applications</legend>
 
-                    <span asp-validation-for="ClosingDate" class="error-message"></span>
+                    <span esfa-validation-message-for="ClosingDate" class="error-message"></span>
 
                     <div class="form-date">
                         <div class="form-group form-group-day">
@@ -38,7 +38,7 @@
                 <fieldset>
                     <legend class="form-label-bold">Possible start date</legend>
 
-                    <span asp-validation-for="StartDate" class="error-message"></span>
+                    <span esfa-validation-message-for="StartDate" class="error-message"></span>
 
                     <div class="form-date">
                         <div class="form-group form-group-day">
@@ -60,24 +60,19 @@
             <div class="form-group">
                 <label asp-for="SelectedProgrammeId" class="form-label-bold">Search for apprenticeship training (standard or framework)</label>
 
-                <span asp-validation-for="SelectedProgrammeId" class="error-message"></span>
+                <span esfa-validation-message-for="SelectedProgrammeId" class="error-message"></span>
 
                 <select asp-for="SelectedProgrammeId" class="form-control form-control-3-4">
                     <option value="">Please select</option>
-
                     @foreach (var programme in Model.Programmes)
-                {
+                    {
                     <option value="@programme.Id">@programme.Name</option>
-            }
-
+                    }
                 </select>
             </div>
-
             <button type="submit" class="button">Save and continue</button>
             <a asp-route="@RouteNames.Dashboard_Index_Get" class="button-link">Cancel</a>
         </form>
-
         <hr>
-
     </div>
 </div>
