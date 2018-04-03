@@ -16,7 +16,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
     public class EmployerOrchestrator : EntityValidatingOrchestrator<Vacancy, EmployerEditModel>
     {
-        private const VacancyRuleSet ValidationRules = VacancyRuleSet.Organisation | VacancyRuleSet.OrganisationAddress;
+        private const VacancyRuleSet ValidationRules = VacancyRuleSet.OrganisationName | VacancyRuleSet.OrganisationAddress;
         private readonly IVacancyClient _client;
         private readonly ILogger<EmployerOrchestrator> _logger;
 

@@ -84,8 +84,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .NotEmpty()
                     .WithMessage("You must select one organisation")
                     .WithErrorCode("4")
-                .RunCondition(VacancyRuleSet.Organisation)
-                .WithRuleId(VacancyRuleSet.Organisation);
+                .RunCondition(VacancyRuleSet.OrganisationName)
+                .WithRuleId(VacancyRuleSet.OrganisationName);
 
             RuleFor(x => x.Location)
                 .SetValidator(new AddressValidator((long)VacancyRuleSet.OrganisationAddress))

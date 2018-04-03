@@ -21,7 +21,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
                 }
             };
 
-            var result = Validator.Validate(vacancy, VacancyRuleSet.Organisation | VacancyRuleSet.OrganisationAddress);
+            var result = Validator.Validate(vacancy, VacancyRuleSet.OrganisationName | VacancyRuleSet.OrganisationAddress);
 
             result.HasErrors.Should().BeFalse();
             result.Errors.Should().HaveCount(0);
@@ -37,13 +37,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
                 OrganisationName = organisationValue
             };
 
-            var result = Validator.Validate(vacancy, VacancyRuleSet.Organisation);
+            var result = Validator.Validate(vacancy, VacancyRuleSet.OrganisationName);
 
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(1);
             result.Errors[0].PropertyName.Should().Be(nameof(vacancy.OrganisationName));
             result.Errors[0].ErrorCode.Should().Be("4");
-            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Organisation);
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OrganisationName);
         }
 
         [Theory]
