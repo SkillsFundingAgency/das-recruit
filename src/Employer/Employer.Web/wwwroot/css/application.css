@@ -625,3 +625,14 @@ input.form-control, textarea.form-control {
 .textarea-expandable:focus {
     height: 10em;
 }
+
+@media (min-width: 641px) .error {
+    border-left: 5px solid #b10e1e;
+    padding-left: 15px;
+}
+
+.error {
+    margin-right: 15px;
+    border-left: 4px solid #b10e1e;
+    padding-left: 10px;
+}
