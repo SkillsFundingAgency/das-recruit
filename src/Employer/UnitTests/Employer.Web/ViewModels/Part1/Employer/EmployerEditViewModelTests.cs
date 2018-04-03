@@ -26,7 +26,7 @@
             {
                 EmployerAccountId = "valid",
                 VacancyId = Guid.Parse("53b54daa-4702-4b69-97e5-12123a59f8ad"),
-                SelectedOrganisationId = "valid",
+                SelectedOrganisationName = "valid",
                 AddressLine1 = "valid",
                 Postcode = "SW1A 2AA"
             };

@@ -16,7 +16,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
     public class EmployerOrchestrator : EntityValidatingOrchestrator<Vacancy, EmployerEditModel>
     {
-        private const VacancyRuleSet ValidationRules = VacancyRuleSet.OrganisationId | VacancyRuleSet.OrganisationAddress;
+        private const VacancyRuleSet ValidationRules = VacancyRuleSet.Organisation | VacancyRuleSet.OrganisationAddress;
         private readonly IVacancyClient _client;
         private readonly ILogger<EmployerOrchestrator> _logger;
 
@@ -44,7 +44,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var vm = new EmployerViewModel
             {
                 Organisations = employerData.LegalEntities.Select(MapLegalEntitiesToOrgs).ToList(),
-                SelectedOrganisationId = vacancy.OrganisationId,
+                SelectedOrganisationName = vacancy.OrganisationName,
             };
 
             if (vacancy.Location != null)
@@ -64,7 +64,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var vrm = new VacancyRouteModel { EmployerAccountId = m.EmployerAccountId, VacancyId = m.VacancyId };
             var vm = await GetEmployerViewModelAsync(vrm);
 
-            vm.SelectedOrganisationId = m.SelectedOrganisationId;
+            vm.SelectedOrganisationName = m.SelectedOrganisationName;
             vm.AddressLine1 = m.AddressLine1;
             vm.AddressLine2 = m.AddressLine2;
             vm.AddressLine3 = m.AddressLine3;
@@ -83,7 +83,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
             }
 
-            vacancy.OrganisationId = m.SelectedOrganisationId?.Trim();
+            vacancy.OrganisationName = m.SelectedOrganisationName?.Trim();
             vacancy.Location = new Address
             {
                 AddressLine1 = m.AddressLine1,
@@ -104,7 +104,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         {
             var mappings = new EntityToViewModelPropertyMappings<Vacancy, EmployerEditModel>();
 
-            mappings.Add(e => e.OrganisationId, vm => vm.SelectedOrganisationId);
+            mappings.Add(e => e.OrganisationName, vm => vm.SelectedOrganisationName);
             mappings.Add(e => e.Location.AddressLine1, vm => vm.AddressLine1);
             mappings.Add(e => e.Location.Postcode, vm => vm.Postcode);
 

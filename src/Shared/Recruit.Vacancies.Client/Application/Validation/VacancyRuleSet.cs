@@ -6,7 +6,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation
     public enum VacancyRuleSet : long
     {
         None = 0x1,
-        OrganisationId = 0x2,
+        Organisation = 0x2,
         OrganisationAddress = 0x4,
         NumberOfPostions = 0x8,
         ShortDescription = 0x10,

@@ -13,7 +13,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         {
             var vacancy = new Vacancy
             {
-                OrganisationId = "1234",
+                OrganisationName = "Test Org",
                 Location = new Address
                 {
                     AddressLine1 = "1 New Street",
@@ -21,7 +21,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
                 }
             };
 
-            var result = Validator.Validate(vacancy, VacancyRuleSet.OrganisationId | VacancyRuleSet.OrganisationAddress);
+            var result = Validator.Validate(vacancy, VacancyRuleSet.Organisation | VacancyRuleSet.OrganisationAddress);
 
             result.HasErrors.Should().BeFalse();
             result.Errors.Should().HaveCount(0);
@@ -30,20 +30,20 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        public void OrganisationIdMustBeSet(string organisationIdValue)
+        public void OrganisationMustBeSet(string organisationValue)
         {
             var vacancy = new Vacancy 
             {
-                OrganisationId = organisationIdValue
+                OrganisationName = organisationValue
             };
 
-            var result = Validator.Validate(vacancy, VacancyRuleSet.OrganisationId);
+            var result = Validator.Validate(vacancy, VacancyRuleSet.Organisation);
 
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(1);
-            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.OrganisationId));
+            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.OrganisationName));
             result.Errors[0].ErrorCode.Should().Be("4");
-            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OrganisationId);
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Organisation);
         }
 
         [Theory]
