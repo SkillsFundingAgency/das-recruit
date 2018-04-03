@@ -2,12 +2,11 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Title;
-using Esfa.Recruit.Vacancies.Client.Domain;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
-using Esfa.Recruit.Vacancies.Client.Application.Exceptions;
 using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Employer.Web.ViewModels;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {

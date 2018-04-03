@@ -3,22 +3,16 @@
     <div class="column-two-thirds">
         <h1 class="heading-large">@Model.Title</h1>
         <h1 class="heading-large">About Employer</h1>
-        <div asp-validation-summary="All" class="error-summary" role="alert" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
-            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
-                Please fix these errors
-            </h2>
-        </div>
+        @Html.Partial("_ValidationSummary", ViewData.ModelState)
         <form asp-route="@RouteNames.AboutEmployer_Get">
             <div class="form-group">
                 <label asp-for="EmployerDescription" class="form-label-bold">Tell us about your organisation</label>
                 <textarea asp-for="EmployerDescription" class="form-control form-control-3-4 textarea-expandable" cols="20" rows="1"></textarea>
             </div>
-
             <div class="form-group">
                 <label asp-for="EmployerWebsiteUrl" class="form-label-bold">Your organisation's website (optional)</label>
                 <input asp-for="EmployerWebsiteUrl" class="form-control" />
             </div>
-
             <div class="form-group">
                 <input type="submit" value="Save and continue" class="button" />
                 <a asp-route="@RouteNames.Preview_Index_Get" class="button-link">Cancel</a>

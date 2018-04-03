@@ -1,4 +1,4 @@
-﻿namespace Esfa.Recruit.Vacancies.Client.Domain
+﻿namespace Esfa.Recruit.Employer.Web.ViewModels
 {
     public class ErrorMessages
     {
