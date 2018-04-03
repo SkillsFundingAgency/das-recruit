@@ -7,11 +7,7 @@
 
         <h1 class="heading-xlarge small-bottom-margin">Desired skills or personal qualities</h1>
 
-        <div asp-validation-summary="All" class="error-summary" role="alert" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
-            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
-                Please fix these errors
-            </h2>
-        </div>
+        @Html.Partial("_ValidationSummary", ViewData.ModelState)
 
         <hr>
 
@@ -26,23 +22,23 @@
                 <div class="two-column-checkbox-container">
                     <fieldset class="two-column-checkbox">
                         @for (var i = 0; i < Model.Column1Checkboxes.Count; i++)
-                        {
-                            var checkbox = Model.Column1Checkboxes[i];
-                            <div class="multiple-choice">
-                                <input name="Skills" id="col1-@i" type="checkbox" value="@checkbox.Name" checked="@checkbox.Selected">
-                                <label for="col1-@i">@checkbox.Name</label>
-                            </div>
-                        }
+                    {
+                        var checkbox = Model.Column1Checkboxes[i];
+                        <div class="multiple-choice">
+                            <input name="Skills" id="col1-@i" type="checkbox" value="@checkbox.Name" checked="@checkbox.Selected">
+                            <label for="col1-@i">@checkbox.Name</label>
+                        </div>
+                }
                     </fieldset>
                     <fieldset class="two-column-checkbox">
                         @for (var i = 0; i < Model.Column2Checkboxes.Count; i++)
-                        {
-                            var checkbox = Model.Column2Checkboxes[i];
-                            <div class="multiple-choice">
-                                <input name="Skills" id="col2-@i" type="checkbox" value="@checkbox.Name" checked="@checkbox.Selected">
-                                <label for="col2-@i">@checkbox.Name</label>
-                            </div>
-                        }
+                    {
+                        var checkbox = Model.Column2Checkboxes[i];
+                        <div class="multiple-choice">
+                            <input name="Skills" id="col2-@i" type="checkbox" value="@checkbox.Name" checked="@checkbox.Selected">
+                            <label for="col2-@i">@checkbox.Name</label>
+                        </div>
+                }
                     </fieldset>
                 </div>
             </fieldset>
@@ -68,15 +64,15 @@
                     </thead>
                     <tbody id="custom-skill-summary">
                         @foreach (var customSkill in Model.CustomSkills)
-                        {
-                            <tr>
-                                <td>@customSkill</td>
-                                <td>
-                                    <input name="Skills" type="hidden" value="@customSkill" />
-                                    <button name="RemoveCustomSkill" value="@customSkill" type="submit" class="button-link">Remove</button>
-                                </td>
-                            </tr>
-                        }
+                    {
+                        <tr>
+                            <td>@customSkill</td>
+                            <td>
+                                <input name="Skills" type="hidden" value="@customSkill" />
+                                <button name="RemoveCustomSkill" value="@customSkill" type="submit" class="button-link">Remove</button>
+                            </td>
+                        </tr>
+                }
                     </tbody>
                 </table>
             </div>

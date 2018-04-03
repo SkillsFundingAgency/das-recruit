@@ -6,12 +6,8 @@
 
         @Html.Partial("_Part1Header")
 
-        <div asp-validation-summary="All" class="error-summary" role="alert" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
-            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
-                Please fix these errors
-            </h2>
-        </div>
-        
+        @Html.Partial("_ValidationSummary", ViewData.ModelState)
+
         <form asp-route="@RouteNames.Wage_Post" novalidate>
 
             <div class="form-group">

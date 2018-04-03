@@ -1,0 +1,15 @@
+﻿@model Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary
+<div class='@(Html.ViewData.ModelState.IsValid ? "validation-summary-valid" : "validation-summary-errors") error-summary' role="alert" aria-labelledby="error-summary-heading-example-1" data-valmsg-summary="true" tabindex="-1">
+    <h2 id="error-summary" class="heading-medium error-summary-heading">
+        Please fix these errors
+    </h2>
+    <ul class="error-summary-list">
+        @foreach (var stateItem in Model)
+        {
+            var elementId = ViewData.TemplateInfo.GetFullHtmlFieldName(stateItem.Key) ?? stateItem.Key;
+        <li>
+            <a href="#@elementId" data-focuses="@elementId">@stateItem.Value.Errors.FirstOrDefault()?.ErrorMessage</a>
+        </li>
+        }
+    </ul>
+</div>
