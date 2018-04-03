@@ -4,7 +4,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Preview
 {
     public class PreviewViewModel
     {
-        public string OrganisationName { get; set; }
+        public string EmployerName { get; set; }
 
         public string NumberOfPositions { get; set; }
 

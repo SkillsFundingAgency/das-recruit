@@ -42,14 +42,14 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 ContactTelephone = vacancy.EmployerContactPhone,
                 ClosingDate = vacancy.ClosingDate.Value.ToString("dd MMM yyyy"),
                 EmployerDescription = vacancy.EmployerDescription,
-                EmployerName = vacancy.OrganisationName,
+                EmployerName = vacancy.EmployerName,
                 EmployerWebsiteUrl = vacancy.EmployerWebsiteUrl,
                 ExpectedDuration = vacancy.Wage.DurationUnit.Value.GetDisplayName().ToQuantity(vacancy.Wage.Duration.Value),
                 HoursPerWeek = vacancy.Wage.ToHoursPerWeekText(),
-                Location = vacancy.Location,
-                MapUrl = vacancy.Location.HasGeocode
-                    ? _mapService.GetMapImageUrl(vacancy.Location.Latitude.ToString(), vacancy.Location.Longitude.ToString())
-                    : _mapService.GetMapImageUrl(vacancy.Location?.Postcode),
+                Location = vacancy.EmployerLocation,
+                MapUrl = vacancy.EmployerLocation.HasGeocode
+                    ? _mapService.GetMapImageUrl(vacancy.EmployerLocation.Latitude.ToString(), vacancy.EmployerLocation.Longitude.ToString())
+                    : _mapService.GetMapImageUrl(vacancy.EmployerLocation?.Postcode),
                 NumberOfPositions = vacancy.NumberOfPositions.Value,
                 OutcomeDescription = vacancy.OutcomeDescription,
                 PossibleStartDate = vacancy.StartDate.Value.ToString("dd MMM yyyy"),

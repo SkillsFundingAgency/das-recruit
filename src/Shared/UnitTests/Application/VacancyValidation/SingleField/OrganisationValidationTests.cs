@@ -13,15 +13,15 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         {
             var vacancy = new Vacancy
             {
-                OrganisationName = "Test Org",
-                Location = new Address
+                EmployerName = "Test Org",
+                EmployerLocation = new Address
                 {
                     AddressLine1 = "1 New Street",
                     Postcode = "AB1 3SD"
                 }
             };
 
-            var result = Validator.Validate(vacancy, VacancyRuleSet.OrganisationName | VacancyRuleSet.OrganisationAddress);
+            var result = Validator.Validate(vacancy, VacancyRuleSet.EmployerName | VacancyRuleSet.EmployerAddress);
 
             result.HasErrors.Should().BeFalse();
             result.Errors.Should().HaveCount(0);
@@ -34,16 +34,16 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         {
             var vacancy = new Vacancy 
             {
-                OrganisationName = organisationValue
+                EmployerName = organisationValue
             };
 
-            var result = Validator.Validate(vacancy, VacancyRuleSet.OrganisationName);
+            var result = Validator.Validate(vacancy, VacancyRuleSet.EmployerName);
 
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(1);
-            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.OrganisationName));
+            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.EmployerName));
             result.Errors[0].ErrorCode.Should().Be("4");
-            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OrganisationName);
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.EmployerName);
         }
 
         [Theory]
@@ -53,20 +53,20 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         {
             var vacancy = new Vacancy
             {
-                Location = new Address
+                EmployerLocation = new Address
                 {
                     AddressLine1 = addressValue,
                     Postcode = "AB12 3DZ"   
                 }
             };
 
-            var result = Validator.Validate(vacancy, VacancyRuleSet.OrganisationAddress);
+            var result = Validator.Validate(vacancy, VacancyRuleSet.EmployerAddress);
 
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(1);
-            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Location)}.{nameof(vacancy.Location.AddressLine1)}");
+            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.EmployerLocation)}.{nameof(vacancy.EmployerLocation.AddressLine1)}");
             result.Errors[0].ErrorCode.Should().Be("5");
-            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OrganisationAddress);
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.EmployerAddress);
         }
 
         [Theory]
@@ -76,20 +76,20 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         {
             var vacancy = new Vacancy
             {
-                Location = new Address
+                EmployerLocation = new Address
                 {
                     AddressLine1 = testValue,
                     Postcode = "AB12 3DZ"
                 }
             };
 
-            var result = Validator.Validate(vacancy, VacancyRuleSet.OrganisationAddress);
+            var result = Validator.Validate(vacancy, VacancyRuleSet.EmployerAddress);
 
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(1);
-            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Location)}.{nameof(vacancy.Location.AddressLine1)}");
+            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.EmployerLocation)}.{nameof(vacancy.EmployerLocation.AddressLine1)}");
             result.Errors[0].ErrorCode.Should().Be("6");
-            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OrganisationAddress);
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.EmployerAddress);
         }
 
         [Fact]
@@ -97,20 +97,20 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         {
             var vacancy = new Vacancy
             {
-                Location = new Address
+                EmployerLocation = new Address
                 {
                     AddressLine1 = new string('a', 101),
                     Postcode = "AB12 3DZ"
                 }
             };
 
-            var result = Validator.Validate(vacancy, VacancyRuleSet.OrganisationAddress);
+            var result = Validator.Validate(vacancy, VacancyRuleSet.EmployerAddress);
 
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(1);
-            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Location)}.{nameof(vacancy.Location.AddressLine1)}");
+            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.EmployerLocation)}.{nameof(vacancy.EmployerLocation.AddressLine1)}");
             result.Errors[0].ErrorCode.Should().Be("7");
-            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OrganisationAddress);
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.EmployerAddress);
         }
 
         [Theory]
@@ -120,7 +120,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         {
             var vacancy = new Vacancy
             {
-                Location = new Address
+                EmployerLocation = new Address
                 {
                     AddressLine1 = "2 New Street",
                     AddressLine2 = testValue,
@@ -128,13 +128,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
                 }
             };
 
-            var result = Validator.Validate(vacancy, VacancyRuleSet.OrganisationAddress);
+            var result = Validator.Validate(vacancy, VacancyRuleSet.EmployerAddress);
 
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(1);
-            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Location)}.{nameof(vacancy.Location.AddressLine2)}");
+            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.EmployerLocation)}.{nameof(vacancy.EmployerLocation.AddressLine2)}");
             result.Errors[0].ErrorCode.Should().Be("6");
-            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OrganisationAddress);
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.EmployerAddress);
         }
 
         [Fact]
@@ -142,7 +142,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         {
             var vacancy = new Vacancy
             {
-                Location = new Address
+                EmployerLocation = new Address
                 {
                     AddressLine1 = "2 New Street",
                     AddressLine2 = new String('a', 101),
@@ -150,13 +150,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
                 }
             };
 
-            var result = Validator.Validate(vacancy, VacancyRuleSet.OrganisationAddress);
+            var result = Validator.Validate(vacancy, VacancyRuleSet.EmployerAddress);
 
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(1);
-            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Location)}.{nameof(vacancy.Location.AddressLine2)}");
+            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.EmployerLocation)}.{nameof(vacancy.EmployerLocation.AddressLine2)}");
             result.Errors[0].ErrorCode.Should().Be("7");
-            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OrganisationAddress);
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.EmployerAddress);
         }
 
         [Theory]
@@ -166,7 +166,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         {
             var vacancy = new Vacancy
             {
-                Location = new Address
+                EmployerLocation = new Address
                 {
                     AddressLine1 = "2 New Street",
                     AddressLine3 = testValue,
@@ -174,13 +174,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
                 }
             };
 
-            var result = Validator.Validate(vacancy, VacancyRuleSet.OrganisationAddress);
+            var result = Validator.Validate(vacancy, VacancyRuleSet.EmployerAddress);
 
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(1);
-            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Location)}.{nameof(vacancy.Location.AddressLine3)}");
+            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.EmployerLocation)}.{nameof(vacancy.EmployerLocation.AddressLine3)}");
             result.Errors[0].ErrorCode.Should().Be("6");
-            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OrganisationAddress);
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.EmployerAddress);
         }
 
         [Fact]
@@ -188,7 +188,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         {
             var vacancy = new Vacancy
             {
-                Location = new Address
+                EmployerLocation = new Address
                 {
                     AddressLine1 = "2 New Street",
                     AddressLine3 = new string('a', 101),
@@ -196,12 +196,12 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
                 }
             };
 
-            var result = Validator.Validate(vacancy, VacancyRuleSet.OrganisationAddress);
+            var result = Validator.Validate(vacancy, VacancyRuleSet.EmployerAddress);
 
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(1);
-            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Location)}.{nameof(vacancy.Location.AddressLine3)}");
-            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OrganisationAddress);
+            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.EmployerLocation)}.{nameof(vacancy.EmployerLocation.AddressLine3)}");
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.EmployerAddress);
             result.Errors[0].ErrorCode.Should().Be("7");
         }
 
@@ -212,7 +212,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         {
             var vacancy = new Vacancy
             {
-                Location = new Address
+                EmployerLocation = new Address
                 {
                     AddressLine1 = "2 New Street",
                     AddressLine4 = testValue,
@@ -220,13 +220,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
                 }
             };
 
-            var result = Validator.Validate(vacancy, VacancyRuleSet.OrganisationAddress);
+            var result = Validator.Validate(vacancy, VacancyRuleSet.EmployerAddress);
 
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(1);
-            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Location)}.{nameof(vacancy.Location.AddressLine4)}");
+            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.EmployerLocation)}.{nameof(vacancy.EmployerLocation.AddressLine4)}");
             result.Errors[0].ErrorCode.Should().Be("6");
-            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OrganisationAddress);
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.EmployerAddress);
         }
 
         [Fact]
@@ -234,7 +234,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         {
             var vacancy = new Vacancy
             {
-                Location = new Address
+                EmployerLocation = new Address
                 {
                     AddressLine1 = "2 New Street",
                     AddressLine4 = new string('a', 101),
@@ -242,13 +242,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
                 }
             };
 
-            var result = Validator.Validate(vacancy, VacancyRuleSet.OrganisationAddress);
+            var result = Validator.Validate(vacancy, VacancyRuleSet.EmployerAddress);
 
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(1);
-            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Location)}.{nameof(vacancy.Location.AddressLine4)}");
+            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.EmployerLocation)}.{nameof(vacancy.EmployerLocation.AddressLine4)}");
             result.Errors[0].ErrorCode.Should().Be("7");
-            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OrganisationAddress);
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.EmployerAddress);
         }
 
         [Theory]
@@ -258,20 +258,20 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         {
             var vacancy = new Vacancy
             {
-                Location = new Address
+                EmployerLocation = new Address
                 {
                     AddressLine1 = "2 New Street",
                     Postcode = postCodeValue
                 }
             };
 
-            var result = Validator.Validate(vacancy, VacancyRuleSet.OrganisationAddress);
+            var result = Validator.Validate(vacancy, VacancyRuleSet.EmployerAddress);
 
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(1);
-            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Location)}.{nameof(vacancy.Location.Postcode)}");
+            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.EmployerLocation)}.{nameof(vacancy.EmployerLocation.Postcode)}");
             result.Errors[0].ErrorCode.Should().Be("8");
-            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OrganisationAddress);
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.EmployerAddress);
         }
 
         [Theory]
@@ -282,20 +282,20 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         {
             var vacancy = new Vacancy
             {
-                Location = new Address
+                EmployerLocation = new Address
                 {
                     AddressLine1 = "2 New Street",
                     Postcode = postCodeValue
                 }
             };
 
-            var result = Validator.Validate(vacancy, VacancyRuleSet.OrganisationAddress);
+            var result = Validator.Validate(vacancy, VacancyRuleSet.EmployerAddress);
 
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(1);
-            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Location)}.{nameof(vacancy.Location.Postcode)}");
+            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.EmployerLocation)}.{nameof(vacancy.EmployerLocation.Postcode)}");
             result.Errors[0].ErrorCode.Should().Be("9");
-            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OrganisationAddress);
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.EmployerAddress);
         }
     }
 }

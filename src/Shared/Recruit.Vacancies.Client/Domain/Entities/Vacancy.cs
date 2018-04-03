@@ -49,9 +49,9 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public string ProviderName { get; set; }
         public string ProviderAddress { get; set; }
 
-        public string OrganisationName { get; set; }
+        public string EmployerName { get; set; }
         public string OutcomeDescription { get; set; }
-        public Address Location { get; set; }
+        public Address EmployerLocation { get; set; }
 
         public int? NumberOfPositions { get; set; }
 

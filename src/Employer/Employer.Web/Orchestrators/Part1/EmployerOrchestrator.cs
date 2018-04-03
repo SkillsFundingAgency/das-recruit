@@ -16,7 +16,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
     public class EmployerOrchestrator : EntityValidatingOrchestrator<Vacancy, EmployerEditModel>
     {
-        private const VacancyRuleSet ValidationRules = VacancyRuleSet.OrganisationName | VacancyRuleSet.OrganisationAddress;
+        private const VacancyRuleSet ValidationRules = VacancyRuleSet.EmployerName | VacancyRuleSet.EmployerAddress;
         private readonly IVacancyClient _client;
         private readonly ILogger<EmployerOrchestrator> _logger;
 
@@ -44,16 +44,16 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var vm = new EmployerViewModel
             {
                 Organisations = employerData.LegalEntities.Select(MapLegalEntitiesToOrgs).ToList(),
-                SelectedOrganisationName = vacancy.OrganisationName,
+                SelectedOrganisationName = vacancy.EmployerName,
             };
 
-            if (vacancy.Location != null)
+            if (vacancy.EmployerLocation != null)
             {
-                vm.AddressLine1 = vacancy.Location.AddressLine1;
-                vm.AddressLine2 = vacancy.Location.AddressLine2;
-                vm.AddressLine3 = vacancy.Location.AddressLine3;
-                vm.AddressLine4 = vacancy.Location.AddressLine4;
-                vm.Postcode = vacancy.Location.Postcode;
+                vm.AddressLine1 = vacancy.EmployerLocation.AddressLine1;
+                vm.AddressLine2 = vacancy.EmployerLocation.AddressLine2;
+                vm.AddressLine3 = vacancy.EmployerLocation.AddressLine3;
+                vm.AddressLine4 = vacancy.EmployerLocation.AddressLine4;
+                vm.Postcode = vacancy.EmployerLocation.Postcode;
             }
 
             return vm;
@@ -83,8 +83,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
             }
 
-            vacancy.OrganisationName = m.SelectedOrganisationName?.Trim();
-            vacancy.Location = new Address
+            vacancy.EmployerName = m.SelectedOrganisationName?.Trim();
+            vacancy.EmployerLocation = new Address
             {
                 AddressLine1 = m.AddressLine1,
                 AddressLine2 = m.AddressLine2,
@@ -104,9 +104,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         {
             var mappings = new EntityToViewModelPropertyMappings<Vacancy, EmployerEditModel>();
 
-            mappings.Add(e => e.OrganisationName, vm => vm.SelectedOrganisationName);
-            mappings.Add(e => e.Location.AddressLine1, vm => vm.AddressLine1);
-            mappings.Add(e => e.Location.Postcode, vm => vm.Postcode);
+            mappings.Add(e => e.EmployerName, vm => vm.SelectedOrganisationName);
+            mappings.Add(e => e.EmployerLocation.AddressLine1, vm => vm.AddressLine1);
+            mappings.Add(e => e.EmployerLocation.Postcode, vm => vm.Postcode);
 
             return mappings;
         }
