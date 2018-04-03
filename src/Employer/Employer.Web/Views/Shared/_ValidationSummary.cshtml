@@ -4,11 +4,19 @@
         Please fix these errors
     </h2>
     <ul class="error-summary-list">
-        @foreach (var stateItem in Model)
+        @foreach (var stateItem in Model.Where(msi => msi.Value.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid))
         {
             var elementId = ViewData.TemplateInfo.GetFullHtmlFieldName(stateItem.Key) ?? stateItem.Key;
+            var firstErrorPerField = stateItem.Value.Errors.FirstOrDefault()?.ErrorMessage;
         <li>
-            <a href="#@elementId" data-focuses="@elementId">@stateItem.Value.Errors.FirstOrDefault()?.ErrorMessage</a>
+            @if (string.IsNullOrEmpty(stateItem.Key))
+            {
+            <a href="#@elementId" data-focuses="@elementId">@firstErrorPerField</a>
+            }
+            else
+            {
+            <span>@firstErrorPerField</span>
+            }
         </li>
         }
     </ul>
