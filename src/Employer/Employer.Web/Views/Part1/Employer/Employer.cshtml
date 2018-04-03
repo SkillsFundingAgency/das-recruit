@@ -5,11 +5,7 @@
 
         @Html.Partial("_Part1Header")
 
-        <div asp-validation-summary="All" class="error-summary" role="alert" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
-            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
-                Please fix these errors
-            </h2>
-        </div>
+        @Html.Partial("_ValidationSummary", ViewData.ModelState)
 
         <div id="section_location">
             @if (Model.HasOnlyOneOrganisation)
@@ -18,27 +14,27 @@
             }
             <form asp-route="@RouteNames.Employer_Post">
                 <div class="form-group">
-                    @if (Model.HasOnlyOneOrganisation)
-                    {
+                @if (Model.HasOnlyOneOrganisation)
+                {
                     <input asp-for="SelectedOrganisationName" value="@Model.Organisations.First().Id" type="hidden" />
-                    }
-                    else
-                    {
-                    <fieldset>
-                        <legend>
-                            <span class="form-label-bold">Which organisation is the vacancy for?</span>
-                        </legend>
-                        <span asp-validation-for="SelectedOrganisationName" class="error-message"></span>
+                }
+                else
+                {
+                <fieldset>
+                    <legend>
+                        <span class="form-label-bold">Which organisation is the vacancy for?</span>
+                    </legend>
+                    <span asp-validation-for="SelectedOrganisationName" class="error-message"></span>
 
-                        @foreach (var organisation in Model.Organisations)
-                        {
-                        <div class="multiple-choice">
-                            <input asp-for="SelectedOrganisationName" type="radio" value="@organisation.Name" id="org-@organisation.Id">
-                            <label for="org-@organisation.Id">@organisation.Name</label>
-                        </div>
-                        }
-                    </fieldset>
+                    @foreach (var organisation in Model.Organisations)
+                    {
+                    <div class="multiple-choice">
+                        <input asp-for="SelectedOrganisationName" type="radio" value="@organisation.Name" id="org-@organisation.Id">
+                        <label for="org-@organisation.Id">@organisation.Name</label>
+                    </div>
                     }
+                </fieldset>
+                }
                 </div>
 
                 <div id="address-details" class="address-manual-input">

@@ -3,24 +3,18 @@
     <div class="column-two-thirds">
         <h1 class="heading-large">@Model.Title</h1>
         <h1 class="heading-large">Add training provider</h1>
-        <div asp-validation-summary="All" class="error-summary" role="alert" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
-            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
-                Please fix these errors
-            </h2>
-        </div>
+        @Html.Partial("_ValidationSummary", ViewData.ModelState)
         <form asp-route="@RouteNames.VacancyDescription_Index_Post">
             <div class="form-group">
                 <label asp-for="VacancyDescription" class="form-label-bold">What does the apprenticeship involve?</label>
                 <span class="form-hint">Describe a typical working day and duties</span>
                 <textarea asp-for="VacancyDescription" class="form-control form-control-3-4 textarea-expandable" cols="20" rows="1"></textarea>
             </div>
-
             <div class="form-group">
                 <label asp-for="TrainingDescription" class="form-label-bold">What training will your apprentice get?</label>
                 <span class="form-hint">This should include training at work and offsite</span>
                 <textarea asp-for="TrainingDescription" class="form-control form-control-3-4 textarea-expandable" cols="20" rows="1"></textarea>
             </div>
-
             <div class="form-group">
                 <label asp-for="OutcomeDescription" class="form-label-bold">What can the apprentice expect at the end of the apprenticeship?</label>
                 <span class="form-hint">You may want to mention specific routes they could take once qualified</span>

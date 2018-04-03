@@ -5,12 +5,7 @@
 
         @Html.Partial("_Part1Header")
 
-        <!-- Validation summary-->
-        <div asp-validation-summary="All" class="error-summary" role="alert" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
-            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
-                Please fix these errors
-            </h2>
-        </div>
+        @Html.Partial("_ValidationSummary", ViewData.ModelState)
 
         <div class="preview-advert">
 
@@ -21,9 +16,9 @@
                     <span id="date-and-positions">@Model.NumberOfPositionsCaption</span>
                 </li>
             </ul>
-            
+
             <p id="preview_short_description">@Model.ShortDescription</p>
-            
+
             <div class="grid-row">
                 <div class="column-two-thirds">
                     <ul class="list sfa-no-margins vacancy-details-list">
@@ -47,9 +42,9 @@
                 </div>
                 <div class="column-one-third map-container hide-nojs toggle-content--mob">
                     @if (!string.IsNullOrWhiteSpace(Model.MapUrl))
-                    {
+                {
                     <img id="static-map" class="static-map" src="@Model.MapUrl">
-                    }
+            }
                 </div>
             </div>
 
