@@ -55,6 +55,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 PossibleStartDate = vacancy.StartDate.Value.ToString("dd MMM yyyy"),
                 ProviderName = vacancy.ProviderName,
                 ProviderAddress = vacancy.ProviderAddress,
+                Qualifications = vacancy.Qualifications.AsText(),
                 ShortDescription = vacancy.ShortDescription,
                 Skills = vacancy.Skills ?? Enumerable.Empty<string>(),
                 ThingsToConsider = vacancy.ThingsToConsider,

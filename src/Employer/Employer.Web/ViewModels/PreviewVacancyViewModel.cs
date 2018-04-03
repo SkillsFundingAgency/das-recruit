@@ -31,6 +31,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public string PossibleStartDate { get; internal set; }
         public string ProviderName { get; internal set; }
         public string ProviderAddress { get; internal set; }
+        public List<string> Qualifications { get; internal set; }
         public string ShortDescription { get; internal set; }
         public IEnumerable<string> Skills { get; internal set; }
         public string ThingsToConsider { get; internal set; }

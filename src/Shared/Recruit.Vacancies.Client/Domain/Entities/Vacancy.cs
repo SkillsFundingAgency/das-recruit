@@ -70,5 +70,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public string TrainingDescription { get; set; }
         
         public List<string> Skills { get; set; }
+
+        public List<Qualification> Qualifications { get; set; }
     }
 }

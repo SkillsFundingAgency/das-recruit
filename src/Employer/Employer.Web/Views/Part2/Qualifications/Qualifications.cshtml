@@ -1,0 +1,206 @@
+﻿@using Esfa.Recruit.Employer.Web.ViewModels.Part2.Qualifications
+@using Esfa.Recruit.Vacancies.Client.Domain.Enums
+@model QualificationsViewModel
+
+
+<div class="grid-row">
+    <div class="column-full">
+
+        <h1 class="heading-xlarge small-bottom-margin">Qualifications</h1>
+
+        <div asp-validation-summary="All" class="error-summary" role="alert" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
+            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
+                Please fix these errors
+            </h2>
+        </div>
+
+        <hr>
+
+        <form asp-route="@RouteNames.Qualifications_Post">
+
+            <div class="form-group form-group-compound">
+                <label asp-for="QualificationType" class="form-label-bold">Type of qualification</label>
+                <span asp-validation-for="QualificationType" class="error-message"></span>
+                <select asp-for="QualificationType" class="form-control sfa-form-control-auto">
+                    <option value="">Select from list</option>
+
+                    @foreach (var qualificationType in Model.QualificationTypes)
+                    {
+                        <option value="@qualificationType">@qualificationType</option>
+                    }
+                </select>
+            </div>
+
+            <div class="form-group form-group-compound">
+                <label asp-for="Subject" class="form-label-bold">Subject</label>
+                <span asp-validation-for="Subject" class="error-message"></span>
+                <input asp-for="Subject" type="text" class="form-control" maxlength="50">
+            </div>
+
+            <div class="form-group" data-bind="parentvalElement:grade">
+                <label asp-for="Grade" class="form-label-bold">Grade</label>
+                <span asp-validation-for="Grade" class="error-message"></span>
+                <input asp-for="Grade" type="text" class="form-control form-control-1-3" maxlength="15">
+            </div>
+
+            <div class="form-group">
+                <fieldset class="inline">
+                    <legend>
+                        <h1 class="form-label-bold">Is this qualification essential?</h1>
+                    </legend>
+                    <span asp-validation-for="Weighting" class="error-message"></span>
+                    <div class="multiple-choice">
+                        <input asp-for="Weighting" type="radio" value="@QualificationWeighting.Essential" data-display="@QualificationWeighting.Essential.GetDisplayName()">
+                        <label asp-for="Weighting">Yes</label>
+                    </div>
+                    <div class="multiple-choice">
+                        <input asp-for="Weighting" type="radio" value="@QualificationWeighting.Desired" data-display="@QualificationWeighting.Desired.GetDisplayName()">
+                        <label asp-for="Weighting">No</label>
+                    </div>
+                </fieldset>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" name="AddQualificationAction" id="add-qualification" value="AddQualification" class="button-link">+ Add this qualification</button>
+            </div>
+
+            <table id="qualifications-container" style="@(Model.Qualifications.Any() == false ? "display:none" : null)">
+                <thead>
+                <tr>
+                    <th>
+                        <span class="heading-span">Qualification</span>
+                    </th>
+                    <th>
+                        <span class="heading-span">Subject</span>
+                    </th>
+                    <th>
+                        <span class="heading-span">Grade</span>
+                    </th>
+                    <th>
+                        <span class="heading-span">Essential or desired</span>
+                    </th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody id="qualifications-summary">
+                @for(var i = 0; i < Model.Qualifications.Count; i++)
+                {
+                    var qualification = Model.Qualifications[i];
+                    <tr>
+                        <td>@qualification.QualificationType</td>
+                        <td>@qualification.Subject</td>
+                        <td>@qualification.Grade</td>
+                        <td>@qualification.Weighting.GetDisplayName()</td>
+                        <td>
+                            <input name="Qualifications[@i].QualificationType" type="hidden" value="@qualification.QualificationType" />
+                            <input name="Qualifications[@i].Subject" type="hidden" value="@qualification.Subject" />
+                            <input name="Qualifications[@i].Grade" type="hidden" value="@qualification.Grade" />
+                            <input name="Qualifications[@i].Weighting" type="hidden" value="@qualification.Weighting" />
+
+                            <button type="submit" name="RemoveQualification" value="@i">Remove</button>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+
+            <br />
+
+            <button type="submit" class="button">Save and continue</button>
+            <a asp-route="@RouteNames.Preview_Index_Get" class="button-link">Cancel</a>
+        </form>
+        <hr>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+
+    $(function() {
+
+        var $qualificationsContainer = $("#qualifications-container");
+        var $qualificationsSummary = $("#qualifications-summary");
+
+        var qualificationRowMask = '<tr><td></td><td></td><td></td><td></td><td><input name="QualificationType" type="hidden" value="" /><input name="Subject" type="hidden" value="" /><input name="Grade" type="hidden" value="" /><input name="Weighting" type="hidden" value="" /><button type="submit" name="RemoveQualification" value="">Remove</button></td></tr>';
+
+        var updateInputPositions = function () {
+            
+            $("tr", $qualificationsSummary).each(function (i) {
+                var $row = $(this);
+                $("input[name*='QualificationType']", $row).attr("name", "Qualifications[" + i + "].QualificationType");
+                $("input[name*='Subject']", $row).attr("name", "Qualifications[" + i + "].Subject");
+                $("input[name*='Grade']", $row).attr("name", "Qualifications[" + i + "].Grade");
+                $("input[name*='Weighting']", $row).attr("name", "Qualifications[" + i + "].Weighting");
+                $("button[name='RemoveQualification']", $row).val(i);
+            });
+        }
+
+        var buildQualificationRow = function (qualificationType, subject, grade, weighting, weightingDisplay) {
+
+            var i = $qualificationsSummary.children().length;
+
+            var $row = $(qualificationRowMask);
+
+            $("td:nth-child(1)", $row).text(qualificationType);
+            $("td:nth-child(2)", $row).text(subject);
+            $("td:nth-child(3)", $row).text(grade);
+            $("td:nth-child(4)", $row).text(weightingDisplay);
+            
+            $("input[name*='QualificationType']", $row).val(qualificationType);
+            $("input[name*='Subject']", $row).val(subject);
+            $("input[name*='Grade']", $row).val(grade);
+            $("input[name*='Weighting']", $row).val(weighting);
+            
+            return $row;
+        };
+
+        var toggleQualificationsContainer = function() {
+            $qualificationsContainer.toggle($qualificationsSummary.children().length > 0);
+        };
+
+        $("#add-qualification").on("click",
+            function (e) {
+                
+                var $qualificationType = $("#@Html.IdFor(m => m.QualificationType)");
+                var $subject = $("#@Html.IdFor(m => m.Subject)");
+                var $grade = $("#@Html.IdFor(m => m.Grade)");
+                var $weighting = $("#@Html.IdFor(m => m.Weighting):checked");
+
+                var qualificationType = $qualificationType.val();
+                var subject = $subject.val();
+                var grade = $grade.val().toUpperCase();
+                var weighting = $weighting.val();
+                var weightingDisplay = $weighting.data("display");
+
+                if (qualificationType && subject && grade && weighting) {
+                    var $row = buildQualificationRow(qualificationType, subject, grade, weighting, weightingDisplay);
+                    $qualificationsSummary.append($row);
+
+                    updateInputPositions();
+
+                    $qualificationType.val("");
+                    $subject.val("");
+                    $grade.val("");
+                    $weighting.prop('checked', false);
+
+                    toggleQualificationsContainer();
+                }
+
+                e.preventDefault();
+                return false;
+            });
+
+        $qualificationsSummary.on("click", "button[name='RemoveQualification']",
+            function(e) {
+                $(this).closest("tr").remove();
+
+                updateInputPositions();
+
+                toggleQualificationsContainer();
+
+                e.preventDefault();
+                return false;
+            });
+    })
+
+</script>
