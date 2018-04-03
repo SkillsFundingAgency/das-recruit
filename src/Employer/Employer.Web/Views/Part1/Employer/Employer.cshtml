@@ -7,10 +7,8 @@
         @Html.Partial("_ValidationSummary", new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames })
 
         <div id="section_location">
-            @if (Model.HasOnlyOneOrganisation)
-            {
-            <div>@Model.Organisations.First().Name</div>
-            }
+            
+            <div condition="@Model.HasOnlyOneOrganisation"><p>@Model.Organisations.First().Name</p></div>
             <form asp-route="@RouteNames.Employer_Post">
                 <div class="form-group">
                 @if (Model.HasOnlyOneOrganisation)
