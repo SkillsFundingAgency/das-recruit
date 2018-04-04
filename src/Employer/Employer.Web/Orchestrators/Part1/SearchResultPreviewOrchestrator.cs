@@ -11,8 +11,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
     public class SearchResultPreviewOrchestrator
     {
-        private const string dateFormat = "d MMM yyyy";
-
         private readonly IVacancyClient _client;
         private readonly IGeocodeImageService _mapService;
 
@@ -36,8 +34,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 EmployerName = vacancy.EmployerName,
                 NumberOfPositions = vacancy.NumberOfPositions?.ToString(),
                 ShortDescription = vacancy.ShortDescription,
-                ClosingDate = vacancy.ClosingDate?.ToString(dateFormat),
-                StartDate = vacancy.StartDate?.ToString(dateFormat),
+                ClosingDate = vacancy.ClosingDate?.AsDisplayDate(),
+                StartDate = vacancy.StartDate?.AsDisplayDate(),
                 LevelName = vacancy.Programme?.LevelName,
                 Title = vacancy.Title,
                 Wage = vacancy.Wage?.ToText()
