@@ -1,9 +1,9 @@
 ﻿using Humanizer;
 using System.Collections.Generic;
 
-namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Preview
+namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.SearchResultPreview
 {
-    public class PreviewViewModel
+    public class SearchResultPreviewViewModel
     {
         public string EmployerName { get; set; }
 

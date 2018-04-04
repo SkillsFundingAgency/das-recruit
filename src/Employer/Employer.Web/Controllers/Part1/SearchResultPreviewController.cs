@@ -7,19 +7,19 @@ using Microsoft.AspNetCore.Mvc;
 namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 {
     [Route(RoutePrefixPaths.AccountVacancyRoutePath)]
-    public class PreviewController : Controller
+    public class SearchResultPreviewController : Controller
     {
-        private readonly PreviewOrchestrator _orchestrator;
+        private readonly SearchResultPreviewOrchestrator _orchestrator;
 
-        public PreviewController(PreviewOrchestrator orchestrator)
+        public SearchResultPreviewController(SearchResultPreviewOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
         }
         
         [HttpGet("search-result-preview", Name = RouteNames.SearchResultPreview_Get)]
-        public async Task<IActionResult> Preview(Guid vacancyId)
+        public async Task<IActionResult> SearchResultPreview(Guid vacancyId)
         {
-            var vm = await _orchestrator.GetPreviewViewModelAsync(vacancyId);
+            var vm = await _orchestrator.GetSearchResultPreviewViewModelAsync(vacancyId);
             return View(vm);
         }
     }
