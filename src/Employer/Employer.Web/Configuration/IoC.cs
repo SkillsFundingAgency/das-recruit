@@ -61,7 +61,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddTransient<TrainingOrchestrator>();
             services.AddTransient<VacancyDescriptionOrchestrator>();
             services.AddTransient<WageOrchestrator>();
-            services.AddTransient<Orchestrators.Part1.PreviewOrchestrator>();
+            services.AddTransient<Orchestrators.Part1.SearchResultPreviewOrchestrator>();
             services.AddTransient<SkillsOrchestrator>();
             services.AddTransient<QualificationsOrchestrator>();
         }
