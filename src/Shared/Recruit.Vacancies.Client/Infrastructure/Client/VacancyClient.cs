@@ -30,7 +30,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _validator = validator;
         }
 
-        public async Task UpdateVacancyAsync(Vacancy vacancy, bool canUpdateQueryStore = true)
+        public async Task UpdateVacancyAsync(Vacancy vacancy)
         {
             var command = new UpdateVacancyCommand
             {
@@ -38,9 +38,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             };
 
             await _messaging.SendCommandAsync(command);
-
-            if (canUpdateQueryStore)
-                await UpdateDashboardAsync(vacancy.EmployerAccountId);
         }
 
         public async Task<Vacancy> GetVacancyForEditAsync(Guid id)
@@ -65,7 +62,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             };
 
             await _messaging.SendCommandAsync(command);
-            await UpdateDashboardAsync(employerAccountId);
 
             return command.Vacancy.Id;
         }
@@ -88,7 +84,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             };
 
             await _messaging.SendCommandAsync(command);
-            await UpdateDashboardAsync(vacancy.EmployerAccountId);
 
             return true;
         }
@@ -111,7 +106,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             };
 
             await _messaging.SendCommandAsync(command);
-            await UpdateDashboardAsync(vacancy.EmployerAccountId);
 
             return true;
         }
@@ -134,16 +128,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         public async Task<ApprenticeshipProgrammes> GetApprenticeshipProgrammesAsync()
         {
             return await _reader.GetApprenticeshipProgrammesAsync();
-        }
-
-        private async Task UpdateDashboardAsync(string employerAccountId)
-        {
-            var command = new UpdateDashboardCommand
-            {
-                EmployerAccountId = employerAccountId,
-            };
-
-            await _messaging.SendCommandAsync(command);
         }
 
         public Task RecordEmployerAccountSignInAsync(string employerAccountId)
