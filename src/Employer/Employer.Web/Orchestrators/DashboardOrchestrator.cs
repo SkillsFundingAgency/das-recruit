@@ -1,7 +1,7 @@
 ﻿using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.ViewModels;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Domain.Services;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using System.Threading.Tasks;
 
@@ -18,10 +18,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             _vacancyClient = vacancyClient;
         }
 
-        public async Task<DashboardViewModel> GetDashboardViewModelAsync(EmployerIdentifier employerDetail)
+        public async Task<DashboardViewModel> GetDashboardViewModelAsync(string employerAccountId)
         {            
-            var dashboard = await _vacancyClient.GetDashboardAsync(employerDetail.AccountId);
-            var vm = DashboardMapper.MapFromDashboard(dashboard, employerDetail.EmployerName);
+            var dashboard = await _vacancyClient.GetDashboardAsync(employerAccountId);
+            var vm = DashboardMapper.MapFromDashboard(dashboard);
             return vm;
         }
     }

@@ -1,5 +1,5 @@
-﻿using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Domain.Services;
+﻿using Esfa.Recruit.Vacancies.Client.Application.Services;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.EAS.Account.Api.Client;
 using SFA.DAS.EAS.Account.Api.Types;
@@ -21,14 +21,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services
             _accountApiClient = accountApiClient;
         }
 
-        public async Task<IDictionary<string, EmployerIdentifier>> GetEmployerIdentifiersAsync(string userId)
+        public async Task<IEnumerable<string>> GetEmployerIdentifiersAsync(string userId)
         {
             try
             {
                 var accounts = await _accountApiClient.GetUserAccounts(userId);
 
-                return accounts.Select(acc => new EmployerIdentifier { AccountId = acc.HashedAccountId, EmployerName = acc.DasAccountName })
-                                .ToDictionary(item => item.AccountId);
+                return accounts.Select(acc => acc.HashedAccountId);
             }
             catch (Exception ex)
             {

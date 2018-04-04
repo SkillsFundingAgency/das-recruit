@@ -36,7 +36,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
             var vm = new PreviewViewModel
             {
-                OrganisationName = vacancy.OrganisationName,
+                EmployerName = vacancy.EmployerName,
                 NumberOfPositions = vacancy.NumberOfPositions?.ToString(),
                 ShortDescription = vacancy.ShortDescription,
                 ClosingDate = vacancy.ClosingDate?.ToString(dateFormat),
@@ -45,11 +45,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 Wage = vacancy.Wage?.ToText()
             };
 
-            if (vacancy.Location != null)
+            if (vacancy.EmployerLocation != null)
             {
-                vm.MapUrl = vacancy.Location.HasGeocode
-                    ? _mapService.GetMapImageUrl(vacancy.Location.Latitude.ToString(), vacancy.Location.Longitude.ToString())
-                    : _mapService.GetMapImageUrl(vacancy.Location?.Postcode);
+                vm.MapUrl = vacancy.EmployerLocation.HasGeocode
+                    ? _mapService.GetMapImageUrl(vacancy.EmployerLocation.Latitude.ToString(), vacancy.EmployerLocation.Longitude.ToString())
+                    : _mapService.GetMapImageUrl(vacancy.EmployerLocation?.Postcode);
             }
             
             return vm;

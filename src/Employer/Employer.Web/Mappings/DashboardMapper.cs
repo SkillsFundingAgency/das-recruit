@@ -7,11 +7,10 @@ namespace Esfa.Recruit.Employer.Web.Mappings
 {
     public class DashboardMapper
     {
-        public static DashboardViewModel MapFromDashboard(Dashboard dashboard, string employerName)
+        public static DashboardViewModel MapFromDashboard(Dashboard dashboard)
         {
             return new DashboardViewModel
             {
-                EmployerName = employerName,
                 Vacancies = dashboard?.Vacancies
                                         .OrderByDescending(v => v.CreatedDate)
                                         .ToList() ?? new List<VacancySummary>()

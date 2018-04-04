@@ -15,7 +15,7 @@
         [FromRoute]
         public string EmployerAccountId { get; set; }
 
-        public string SelectedOrganisationId { get; set; }
+        public string SelectedOrganisationName { get; set; }
 
         public string AddressLine1 { get; set; }
 
