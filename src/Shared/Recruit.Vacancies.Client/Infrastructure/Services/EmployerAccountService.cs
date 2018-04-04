@@ -21,14 +21,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services
             _accountApiClient = accountApiClient;
         }
 
-        public async Task<IDictionary<string, EmployerIdentifier>> GetEmployerIdentifiersAsync(string userId)
+        public async Task<IEnumerable<string>> GetEmployerIdentifiersAsync(string userId)
         {
             try
             {
                 var accounts = await _accountApiClient.GetUserAccounts(userId);
 
-                return accounts.Select(acc => new EmployerIdentifier { AccountId = acc.HashedAccountId })
-                                .ToDictionary(item => item.AccountId);
+                return accounts.Select(acc => acc.HashedAccountId);
             }
             catch (Exception ex)
             {

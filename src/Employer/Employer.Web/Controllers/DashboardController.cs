@@ -21,10 +21,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         }
 
         [HttpGet("dashboard", Name = RouteNames.Dashboard_Index_Get)]
-        public async Task<IActionResult> Dashboard()
+        public async Task<IActionResult> Dashboard([FromRoute]string employerAccountId)
         {
-            var employerDetail = (EmployerIdentifier)HttpContext.Items[ContextItemKeys.EmployerIdentifier];
-            var vm = await _orchestrator.GetDashboardViewModelAsync(employerDetail);
+            var vm = await _orchestrator.GetDashboardViewModelAsync(employerAccountId);
             
             if (TempData.ContainsKey(TempDataKeys.DashboardErrorMessage))
             {

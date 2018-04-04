@@ -35,7 +35,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             if (exceptionFeature != null)
             {
-                var employerDetail = (EmployerIdentifier)HttpContext.Items[ContextItemKeys.EmployerIdentifier];
+                var accountId = (string)HttpContext.Items[ContextItemKeys.EmployerIdentifier];
                 string routeWhereExceptionOccurred = exceptionFeature.Path;
                 var exception = exceptionFeature.Error;
 
@@ -43,7 +43,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 {
                     _logger.LogError(exception, $"Exception on path: {routeWhereExceptionOccurred}");                    
                     TempData.Add(TempDataKeys.DashboardErrorMessage, exception.Message);
-                    return RedirectToRoute(RouteNames.Dashboard_Index_Get, new { EmployerAccountId = employerDetail.AccountId });
+                    return RedirectToRoute(RouteNames.Dashboard_Index_Get, new { EmployerAccountId = accountId });
                 }
             }
 

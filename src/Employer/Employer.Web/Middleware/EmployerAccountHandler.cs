@@ -19,11 +19,11 @@ namespace Esfa.Recruit.Employer.Web.Middleware
                 {
                     var accountIdFromUrl = mvcContext.RouteData.Values[RouteValues.EmployerAccountId].ToString().ToUpper();
                     var employerAccountClaim = context.User.FindFirst(c => c.Type.Equals(EmployerRecruitClaims.AccountsClaimsTypeIdentifier));
-                    var employerAccounts = JsonConvert.DeserializeObject<Dictionary<string, EmployerIdentifier>>(employerAccountClaim?.Value);
+                    var employerAccounts = JsonConvert.DeserializeObject<List<string>>(employerAccountClaim?.Value);
 
-                    if (employerAccountClaim != null && employerAccounts.ContainsKey(accountIdFromUrl))
+                    if (employerAccountClaim != null && employerAccounts.Contains(accountIdFromUrl))
                     {
-                        mvcContext.HttpContext.Items.Add(ContextItemKeys.EmployerIdentifier, employerAccounts.GetValueOrDefault(accountIdFromUrl));
+                        mvcContext.HttpContext.Items.Add(ContextItemKeys.EmployerIdentifier, accountIdFromUrl);
                         context.Succeed(requirement);
                     }
                 }
