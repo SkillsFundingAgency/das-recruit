@@ -144,7 +144,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             }
 
             //Populate AddCustomSkillName so we can edit the invalid skill
-            var invalidSkill = m.Skills[skillError.GetPosition().Value];
+            var invalidSkill = m.Skills[skillError.GetIndexPosition().Value];
             m.AddCustomSkillName = invalidSkill;
             m.Skills.Remove(invalidSkill);
 

@@ -37,7 +37,7 @@ namespace Esfa.Recruit.Employer.Web.Extensions
             {
                 QualificationType = q.QualificationType,
                 Subject = q.Subject,
-                Grade = q.Grade.ToUpper(),
+                Grade = q.Grade,
                 Weighting = q.Weighting
             }).ToList();
         }

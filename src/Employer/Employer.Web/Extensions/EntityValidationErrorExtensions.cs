@@ -11,7 +11,7 @@ namespace Esfa.Recruit.Employer.Web.Extensions
         private const char PositionStart = '[';
         private const char PositionEnd = ']';
 
-        public static int? GetPosition(this EntityValidationError error)
+        public static int? GetIndexPosition(this EntityValidationError error)
         {
             var start = error.PropertyName.IndexOf(PositionStart) + 1;
 
