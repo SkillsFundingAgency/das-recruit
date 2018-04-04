@@ -25,25 +25,25 @@ namespace Esfa.Recruit.Vacancies.Client.Application.EventHandlers
 
         public async Task Handle(VacancyCreatedEvent notification, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Handling VacancyCreatedEvent for accountId: {employerAccountId}", notification?.EmployerAccountId);
+            _logger.LogInformation($"Handling {notification.GetType().Name} for accountId: {{employerAccountId}}", notification?.EmployerAccountId);
             await ReBuildDashboard(notification.EmployerAccountId);
         }
 
         public async Task Handle(VacancyUpdatedEvent notification, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Handling VacancyUpdatedEvent for accountId: {employerAccountId}", notification?.EmployerAccountId);
+            _logger.LogInformation($"Handling {notification.GetType().Name} for accountId: {{employerAccountId}}", notification?.EmployerAccountId);
             await ReBuildDashboard(notification.EmployerAccountId);
         }
 
         public async Task Handle(VacancySubmittedEvent notification, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Handling VacancySubmittedEvent for accountId: {employerAccountId}", notification?.EmployerAccountId);
+            _logger.LogInformation($"Handling {notification.GetType().Name} for accountId: {{employerAccountId}}", notification?.EmployerAccountId);
             await ReBuildDashboard(notification.EmployerAccountId);
         }
 
         public async Task Handle(VacancyDeletedEvent notification, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Handling VacancyDeletedEvent for accountId: {employerAccountId}", notification?.EmployerAccountId);
+            _logger.LogInformation($"Handling {notification.GetType().Name} for accountId: {{employerAccountId}}", notification?.EmployerAccountId);
             await ReBuildDashboard(notification.EmployerAccountId);
         }
 
