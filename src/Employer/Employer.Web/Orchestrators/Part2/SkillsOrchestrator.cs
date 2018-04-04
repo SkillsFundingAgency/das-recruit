@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Extensions;
+using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Employer.Web.ViewModels.Part2.Skills;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain;
@@ -81,7 +82,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                     SyncErrorsAndModel(result.Errors, m);
                     return result;
                 },
-                v => _client.UpdateVacancyAsync(vacancy, false)
+                v => _client.UpdateVacancyAsync(vacancy)
             );
         }
         
