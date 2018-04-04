@@ -18,7 +18,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         }
 
         [HttpGet("vacancy-preview", Name = RouteNames.Preview_Index_Get)]
-        public async Task<IActionResult> Index(Guid vacancyId)
+        public async Task<IActionResult> VacancyPreview(Guid vacancyId)
         {
             var vm = await _orchestrator.GetPreviewVacancyViewModelAsync(vacancyId);
             return View(vm);
