@@ -24,14 +24,14 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             _mapService = mapService;
         }
 
-        public async Task<PreviewVacancyViewModel> GetPreviewVacancyViewModelAsync(Guid vacancyId)
+        public async Task<VacancyPreviewViewModel> GetPreviewVacancyViewModelAsync(Guid vacancyId)
         {
             var vacancy = await _client.GetVacancyForEditAsync(vacancyId);
 
             if (vacancy.Status != VacancyStatus.Draft)
                 throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
 
-            var vm = new PreviewVacancyViewModel
+            var vm = new VacancyPreviewViewModel
             {
                 ApplicationInstructions = vacancy.ApplicationInstructions,
                 ApplicationUrl = vacancy.ApplicationUrl,
