@@ -1,5 +1,5 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Application.QueryStore;
-using Esfa.Recruit.Vacancies.Client.Domain.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mappings;
 using Microsoft.Extensions.Logging;
 using System.Linq;
