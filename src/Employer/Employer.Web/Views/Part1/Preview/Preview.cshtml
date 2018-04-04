@@ -8,7 +8,7 @@
         @Html.Partial("_ValidationSummary", new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames })
 
         <div class="preview-advert">
-
+            <h2>@Model.Title</h2>
             <ul class="list">
                 <li class="secondary-text">@Model.EmployerName</li>
 
