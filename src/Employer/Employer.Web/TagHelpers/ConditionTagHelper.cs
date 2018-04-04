@@ -2,14 +2,14 @@
 
 namespace Esfa.Recruit.Employer.Web.TagHelpers
 {
-    [HtmlTargetElement(Attributes = nameof(Condition))]
+    [HtmlTargetElement(Attributes = "asp-condition")]
     public class ConditionTagHelper : TagHelper
     {
-        public bool Condition { get; set; }
+        public bool AspCondition { get; set; }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
-            if (!Condition)
+            if (!AspCondition)
             {
                 output.SuppressOutput();
             }
