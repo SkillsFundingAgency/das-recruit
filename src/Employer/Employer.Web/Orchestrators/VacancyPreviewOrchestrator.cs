@@ -24,7 +24,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             _mapService = mapService;
         }
 
-        public async Task<VacancyPreviewViewModel> GetPreviewVacancyViewModelAsync(Guid vacancyId)
+        public async Task<VacancyPreviewViewModel> GetVacancyPreviewViewModelAsync(Guid vacancyId)
         {
             var vacancy = await _client.GetVacancyForEditAsync(vacancyId);
 
