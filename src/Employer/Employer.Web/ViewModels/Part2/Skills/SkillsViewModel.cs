@@ -7,6 +7,11 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part2.Skills
         public List<SkillViewModel> Column1Checkboxes { get; set; }
         public List<SkillViewModel> Column2Checkboxes { get; set; }
         public List<string> CustomSkills { get; set; }
+
+        public IList<string> OrderedFieldNames => new List<string>
+        {
+            
+        };
     }
 
     public class SkillViewModel
