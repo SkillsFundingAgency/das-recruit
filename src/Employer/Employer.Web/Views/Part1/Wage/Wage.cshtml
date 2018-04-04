@@ -8,8 +8,7 @@
         @Html.Partial("_ValidationSummary", ViewData.ModelState)
 
         <form asp-route="@RouteNames.Wage_Post" novalidate>
-
-            <div class="form-group">
+            <div esfa-validation-marker-for="Duration" class="form-group">
                 <fieldset>
                     <label asp-for="Duration" class="form-label-bold">How long is the apprenticeship expected to last?</label>
                     <span esfa-validation-message-for="Duration" class="error-message"></span>
@@ -21,19 +20,19 @@
                 </fieldset>
             </div>
 
-            <div class="form-group">
+            <div esfa-validation-marker-for="WorkingWeekDescription" class="form-group">
                 <label asp-for="WorkingWeekDescription" class="form-label-bold">Working week</label>
                 <span class="form-hint">For example, Monday to Friday 9am to 5pm, shifts, may work evenings and weekends</span>
                 <span esfa-validation-message-for="WorkingWeekDescription" class="error-message"></span>
                 <textarea asp-for="WorkingWeekDescription" class="form-control-3-4 form-control" cols="20" rows="2" type="text" maxlength="250"></textarea>
             </div>
 
-            <div class="form-group">
+            <div esfa-validation-marker-for="WeeklyHours" class="form-group">
                 <label asp-for="WeeklyHours" class="form-label-bold">How many hours will the apprentice work each week, including training?</label>
                 <span esfa-validation-message-for="WeeklyHours" class="error-message"></span>
                 <input asp-for="WeeklyHours" class="form-control form-control-1-8" type="number" step=".25" min="16" max="48">
             </div>
-            <div class="form-group">
+            <div esfa-validation-marker-for="WageType" class="form-group">
                 <fieldset>
                     <legend asp-for="WageType" class="heading-small">What is the salary?</legend>
                     <span class="form-hint">This must be the minimum salary for this vacancy</span>
@@ -49,16 +48,13 @@
                                 The wage should not be less then the
                                 <a href="https://www.gov.uk/national-minimum-wage-rates" target="new">National Minimum Wage</a> for apprentices
                             </p>
-
-                            <div class="form-group">
+                            <div esfa-validation-marker-for="FixedWageYearlyAmount" class="form-group">
                                 <span esfa-validation-message-for="FixedWageYearlyAmount" class="error-message"></span>
                                 <p style="display: inline;">£</p>
                                 <label asp-for="FixedWageYearlyAmount" class="visuallyhidden">Minimum wage amount</label>
                                 <input asp-for="FixedWageYearlyAmount" class="form-control form-control-1-4" type="text">
-
                                 <span>yearly</span>
                             </div>
-
                         </fieldset>
                     </div>
 
@@ -81,7 +77,7 @@
                 </fieldset>
             </div>
 
-            <div class="form-group">
+            <div esfa-validation-marker-for="WageAdditionalInformation" class="form-group">
                 <label asp-for="WageAdditionalInformation" class="form-label-bold">Additional information about the salary (optional)</label>
                 <span class="form-hint">For example, subject to experience, bonus scheme, performance increases or non contractual benefits</span>
                 <span esfa-validation-message-for="WageAdditionalInformation" class="error-message"></span>

@@ -11,7 +11,7 @@
 
         <form asp-route="@RouteNames.Training_Post" novalidate>
 
-            <div class="form-group">
+            <div esfa-validation-marker-for="ClosingDate" class="form-group">
                 <fieldset>
                     <legend class="form-label-bold">Closing date for applications</legend>
 
@@ -34,7 +34,7 @@
                 </fieldset>
             </div>
 
-            <div class="form-group">
+            <div esfa-validation-marker-for="StartDate" class="form-group">
                 <fieldset>
                     <legend class="form-label-bold">Possible start date</legend>
 
@@ -57,7 +57,7 @@
                 </fieldset>
             </div>
 
-            <div class="form-group">
+            <div esfa-validation-marker-for="SelectedProgrammeId" class="form-group">
                 <label asp-for="SelectedProgrammeId" class="form-label-bold">Search for apprenticeship training (standard or framework)</label>
 
                 <span esfa-validation-message-for="SelectedProgrammeId" class="error-message"></span>

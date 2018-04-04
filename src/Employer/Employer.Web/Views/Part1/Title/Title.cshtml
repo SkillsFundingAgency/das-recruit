@@ -1,15 +1,13 @@
 ﻿@model Esfa.Recruit.Employer.Web.ViewModels.Part1.Title.TitleViewModel
-
 <div class="grid-row">
     <div class="column-full">
-        
         @Html.Partial("_Part1Header")
 
         @Html.Partial("_ValidationSummary", ViewData.ModelState)
 
         <div id="section_title">
             <form asp-route="@(Model.VacancyId.HasValue ? RouteNames.Title_Post : RouteNames.CreateVacancy_Post)" novalidate>
-                <div class="form-group">
+                <div esfa-validation-marker-for="Title" class="form-group">
                     <label asp-for="Title" class="form-label-bold">
                         What do you want to call this vacancy?
                         <span class="form-hint">For example, Software developer apprenticeship</span>
