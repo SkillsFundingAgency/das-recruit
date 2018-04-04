@@ -57,11 +57,10 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         public void QualificationTypeMustNotBeEmpty(string emptyString)
         {
             var vacancy = GetVacancy(qualificationType: emptyString);
-            var qualification = vacancy.Qualifications[0];
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.Qualifications);
 
-            var propertyName = $"{nameof(vacancy.Qualifications)}[0].{nameof(qualification.QualificationType)}";
+            var propertyName = $"{nameof(vacancy.Qualifications)}[0].{nameof(Qualification.QualificationType)}";
             AssertSingleError(result, propertyName, "53");
         }
 
@@ -71,11 +70,10 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         public void SubjectMustNotBeEmpty(string emptyString)
         {
             var vacancy = GetVacancy(subject: emptyString);
-            var qualification = vacancy.Qualifications[0];
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.Qualifications);
 
-            var propertyName = $"{nameof(vacancy.Qualifications)}[0].{nameof(qualification.Subject)}";
+            var propertyName = $"{nameof(vacancy.Qualifications)}[0].{nameof(Qualification.Subject)}";
             AssertSingleError(result, propertyName, "54");
         }
 
@@ -83,11 +81,10 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         public void SubjectMustNotBeLongerThanMaxLength()
         {
             var vacancy = GetVacancy(subject: new string('a', 51));
-            var qualification = vacancy.Qualifications[0];
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.Qualifications);
 
-            var propertyName = $"{nameof(vacancy.Qualifications)}[0].{nameof(qualification.Subject)}";
+            var propertyName = $"{nameof(vacancy.Qualifications)}[0].{nameof(Qualification.Subject)}";
             AssertSingleError(result, propertyName, "7");
         }
 
@@ -95,11 +92,10 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         public void SubjectMustNotContainInvalidCharacters()
         {
             var vacancy = GetVacancy(subject: "<");
-            var qualification = vacancy.Qualifications[0];
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.Qualifications);
 
-            var propertyName = $"{nameof(vacancy.Qualifications)}[0].{nameof(qualification.Subject)}";
+            var propertyName = $"{nameof(vacancy.Qualifications)}[0].{nameof(Qualification.Subject)}";
             AssertSingleError(result, propertyName, "6");
         }
 
@@ -109,11 +105,10 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         public void GradeMustNotBeEmpty(string emptyString)
         {
             var vacancy = GetVacancy(grade: emptyString);
-            var qualification = vacancy.Qualifications[0];
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.Qualifications);
 
-            var propertyName = $"{nameof(vacancy.Qualifications)}[0].{nameof(qualification.Grade)}";
+            var propertyName = $"{nameof(vacancy.Qualifications)}[0].{nameof(Qualification.Grade)}";
             AssertSingleError(result, propertyName, "55");
         }
 
@@ -121,11 +116,10 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         public void GradeMustNotBeLongerThanMaxLength()
         {
             var vacancy = GetVacancy(grade: new string('a', 31));
-            var qualification = vacancy.Qualifications[0];
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.Qualifications);
 
-            var propertyName = $"{nameof(vacancy.Qualifications)}[0].{nameof(qualification.Grade)}";
+            var propertyName = $"{nameof(vacancy.Qualifications)}[0].{nameof(Qualification.Grade)}";
             AssertSingleError(result, propertyName, "7");
         }
 
@@ -133,11 +127,10 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         public void GradeMustNotContainInvalidCharacters()
         {
             var vacancy = GetVacancy(grade: "<");
-            var qualification = vacancy.Qualifications[0];
-
+            
             var result = Validator.Validate(vacancy, VacancyRuleSet.Qualifications);
 
-            var propertyName = $"{nameof(vacancy.Qualifications)}[0].{nameof(qualification.Grade)}";
+            var propertyName = $"{nameof(vacancy.Qualifications)}[0].{nameof(Qualification.Grade)}";
             AssertSingleError(result, propertyName, "6");
         }
 
@@ -145,11 +138,10 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         public void WeightingMustNotBeNull()
         {
             var vacancy = GetVacancy(weighting: null);
-            var qualification = vacancy.Qualifications[0];
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.Qualifications);
 
-            var propertyName = $"{nameof(vacancy.Qualifications)}[0].{nameof(qualification.Weighting)}";
+            var propertyName = $"{nameof(vacancy.Qualifications)}[0].{nameof(Qualification.Weighting)}";
             AssertSingleError(result, propertyName, "56");
         }
 
