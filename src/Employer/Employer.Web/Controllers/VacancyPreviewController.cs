@@ -10,9 +10,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers
     [Route(RoutePrefixPaths.AccountVacancyRoutePath)]
     public class VacancyPreviewController : Controller
     {
-        private readonly PreviewOrchestrator _orchestrator;
+        private readonly VacancyPreviewOrchestrator _orchestrator;
 
-        public VacancyPreviewController(PreviewOrchestrator orchestrator)
+        public VacancyPreviewController(VacancyPreviewOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
         }

@@ -13,12 +13,12 @@ using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
-    public class PreviewOrchestrator
+    public class VacancyPreviewOrchestrator
     {
         private readonly IVacancyClient _client;
         private readonly IGeocodeImageService _mapService;
 
-        public PreviewOrchestrator(IVacancyClient client, IGeocodeImageService mapService)
+        public VacancyPreviewOrchestrator(IVacancyClient client, IGeocodeImageService mapService)
         {
             _client = client;
             _mapService = mapService;
