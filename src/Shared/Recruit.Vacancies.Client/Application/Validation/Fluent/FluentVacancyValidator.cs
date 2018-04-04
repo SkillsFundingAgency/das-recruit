@@ -53,6 +53,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             ValidateWage();
 
             ValidateSkills();
+
+            ValidateQualifications();
         }
 
         private void CrossFieldValidations()
@@ -283,6 +285,17 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithMessage("The skill or quality must be less than {MaxLength} characters")
                     .WithErrorCode("7")
                 .WithRuleId(VacancyRuleSet.Skills);
+        }
+
+        private void ValidateQualifications()
+        {
+            RuleFor(x => x.Qualifications)
+                .Must(q => q != null && q.Count > 0)
+                    .WithMessage("You must have at least one qualification")
+                    .WithErrorCode("52")
+                .SetCollectionValidator(new QualificationValidator((long)VacancyRuleSet.Qualifications))
+                .RunCondition(VacancyRuleSet.Qualifications)
+                .WithRuleId(VacancyRuleSet.Qualifications);
         }
 
         private void ValidateStartDateClosingDate()
