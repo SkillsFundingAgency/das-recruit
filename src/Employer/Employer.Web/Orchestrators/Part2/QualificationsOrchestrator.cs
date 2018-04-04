@@ -65,7 +65,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             
             vacancy.Qualifications = SortQualifications(qualifications.ToEntity());
             
-            await _client.UpdateVacancyAsync(vacancy, false);
+            await _client.UpdateVacancyAsync(vacancy);
         }
         
         private List<Qualification> SortQualifications(IEnumerable<Qualification> qualificationsToSort)
