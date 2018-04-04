@@ -20,7 +20,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         [HttpGet("vacancy-preview", Name = RouteNames.Preview_Index_Get)]
         public async Task<IActionResult> VacancyPreview(Guid vacancyId)
         {
-            var vm = await _orchestrator.GetPreviewVacancyViewModelAsync(vacancyId);
+            var vm = await _orchestrator.GetVacancyPreviewViewModelAsync(vacancyId);
             return View(vm);
         }
 
@@ -29,13 +29,13 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         {
             var result = await _orchestrator.TrySubmitVacancyAsync(m);
 
-            if(result)
+            if (result)
             {
                 return RedirectToRoute(RouteNames.Submitted_Index_Get);
             }
             
             ModelState.AddModelError(string.Empty, "Vacancy has already been submitted");
-            var vm = await _orchestrator.GetPreviewVacancyViewModelAsync(m.VacancyId);
+            var vm = await _orchestrator.GetVacancyPreviewViewModelAsync(m.VacancyId);
             return View("Index", vm);
         }
     }
