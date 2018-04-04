@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
     [Route(RoutePrefixPaths.AccountVacancyRoutePath)]
-    public class PreviewController : Controller
+    public class VacancyPreviewController : Controller
     {
         private readonly PreviewOrchestrator _orchestrator;
 
-        public PreviewController(PreviewOrchestrator orchestrator)
+        public VacancyPreviewController(PreviewOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
         }

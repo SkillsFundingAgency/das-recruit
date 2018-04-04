@@ -5,7 +5,7 @@ using Humanizer;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels
 {
-    public class PreviewVacancyViewModel
+    public class VacancyPreviewViewModel
     {
         public string ApplicationInstructions { get; internal set; }
         public string ApplicationUrl { get; internal set; }
