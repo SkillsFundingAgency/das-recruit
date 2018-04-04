@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -10,6 +11,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Projections;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Domain.Services;
+using Microsoft.Extensions.Options;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
@@ -20,14 +22,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly IVacancyRepository _repository;
         private readonly ITimeProvider _timeProvider;
         private readonly IEntityValidator<Vacancy, VacancyRuleSet> _validator;
+        private readonly QualificationsConfiguration _qualificationsConfiguration;
 
-        public VacancyClient(IVacancyRepository repository, IQueryStoreReader reader, IMessaging messaging, ITimeProvider timeProvider, IEntityValidator<Vacancy, VacancyRuleSet> validator)
+        public VacancyClient(IVacancyRepository repository, IQueryStoreReader reader, IMessaging messaging, ITimeProvider timeProvider, IEntityValidator<Vacancy, VacancyRuleSet> validator, IOptions<QualificationsConfiguration> qualificationsConfiguration)
         {
             _timeProvider = timeProvider;
             _repository = repository;
             _reader = reader;
             _messaging = messaging;
             _validator = validator;
+            _qualificationsConfiguration = qualificationsConfiguration.Value;
         }
 
         public async Task UpdateVacancyAsync(Vacancy vacancy)

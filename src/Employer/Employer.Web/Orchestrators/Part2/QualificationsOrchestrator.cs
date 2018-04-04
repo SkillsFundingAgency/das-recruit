@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Employer.Web.ViewModels.Part2.Qualifications;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -69,10 +69,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             {
                 throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
             }
-
-            var qualifications = m.Qualifications?.ToList() ?? new List<QualificationEditModel>();
             
-            vacancy.Qualifications = SortQualifications(qualifications.ToEntity());
+            m.Qualifications = SortQualifications(m.Qualifications?.ToList() ?? new List<QualificationEditModel>());
+
+            vacancy.Qualifications = m.Qualifications.ToEntity();
 
             return await ValidateAndExecute(vacancy,
                 v => 
@@ -85,7 +85,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             );
         }
         
-        private List<Qualification> SortQualifications(IEnumerable<Qualification> qualificationsToSort)
+        private List<QualificationEditModel> SortQualifications(List<QualificationEditModel> qualificationsToSort)
         {
             var weightingComparer = Comparer<QualificationWeighting?>.Create((x, y) =>
             {
@@ -101,11 +101,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
                 return 1;
             });
-            
-            var qualifications = qualificationsToSort.OrderBy(q => q.Weighting, weightingComparer)
+
+            var sortedQualifications = qualificationsToSort.OrderBy(q => q.Weighting, weightingComparer)
                 .ThenBy(q => q.QualificationType).ThenBy(q => q.Subject).ToList();
 
-            return qualifications;
+            return sortedQualifications;
         }
 
         protected override EntityToViewModelPropertyMappings<Vacancy, QualificationsEditModel> DefineMappings()

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Enums;
@@ -11,6 +12,14 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
 {
     public class QualificationsTests : VacancyValidationTestsBase
     {
+        public QualificationsTests()
+        {
+            MockQualificationConfiguration.Setup(q => q.Value).Returns(new QualificationsConfiguration
+            {
+                QualificationTypes = new List<string>{"type"}
+            });
+        }
+
         [Fact]
         public void NoErrorWhenQualificationsAreValid()
         {

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators.VacancyValidators;
@@ -8,6 +9,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Enums;
 using Esfa.Recruit.Vacancies.Client.Domain.Projections;
 using Esfa.Recruit.Vacancies.Client.Domain.Services;
 using FluentValidation;
+using Microsoft.Extensions.Options;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 {
@@ -16,12 +18,14 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         private readonly ITimeProvider _timeProvider;
         private readonly IGetApprenticeNationalMinimumWages _minimumWageService;
         private readonly Lazy<IEnumerable<ApprenticeshipProgramme>> _trainingProgrammes;
+        private readonly QualificationsConfiguration _qualificationsConfiguration;
 
-        public FluentVacancyValidator(ITimeProvider timeProvider, IGetApprenticeNationalMinimumWages minimumWageService, IQueryStoreReader queryStoreReader)
+        public FluentVacancyValidator(ITimeProvider timeProvider, IGetApprenticeNationalMinimumWages minimumWageService, IQueryStoreReader queryStoreReader, IOptions<QualificationsConfiguration> qualificationsConfiguration)
         {
             _timeProvider = timeProvider;
             _minimumWageService = minimumWageService;
             _trainingProgrammes = new Lazy<IEnumerable<ApprenticeshipProgramme>>(() => queryStoreReader.GetApprenticeshipProgrammesAsync().Result.Programmes);
+            _qualificationsConfiguration = qualificationsConfiguration.Value;
 
             SingleFieldValidations();
 
@@ -293,7 +297,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .Must(q => q != null && q.Count > 0)
                     .WithMessage("You must have at least one qualification")
                     .WithErrorCode("52")
-                .SetCollectionValidator(new QualificationValidator((long)VacancyRuleSet.Qualifications))
+                .SetCollectionValidator(new QualificationValidator((long)VacancyRuleSet.Qualifications, _qualificationsConfiguration))
                 .RunCondition(VacancyRuleSet.Qualifications)
                 .WithRuleId(VacancyRuleSet.Qualifications);
         }
