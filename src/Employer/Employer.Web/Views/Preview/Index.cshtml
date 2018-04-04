@@ -10,7 +10,7 @@
 
 <div class="grid-row">
     <div class="column-full">
-        @Html.Partial("_ValidationSummary", ViewData.ModelState)
+        @Html.Partial("_ValidationSummary", new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames })
         <main id="content" role="main">
             <div class="grid-row">
                 <div class="column-full">
