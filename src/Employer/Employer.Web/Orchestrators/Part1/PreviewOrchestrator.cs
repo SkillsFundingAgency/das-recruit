@@ -11,7 +11,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
     public class PreviewOrchestrator
     {
-
         private const string dateFormat = "d MMM yyyy";
 
         private readonly IVacancyClient _client;
@@ -40,6 +39,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 ClosingDate = vacancy.ClosingDate?.ToString(dateFormat),
                 StartDate = vacancy.StartDate?.ToString(dateFormat),
                 LevelName = vacancy.Programme?.LevelName,
+                Title = vacancy.Title,
                 Wage = vacancy.Wage?.ToText()
             };
 

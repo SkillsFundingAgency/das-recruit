@@ -25,6 +25,8 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Preview
 
         public string MapUrl { get; set; }
 
+        public string Title { get; internal set; }
+
         public IList<string> OrderedFieldNames => new List<string>
         {
             nameof(NumberOfPositions),
