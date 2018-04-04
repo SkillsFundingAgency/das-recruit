@@ -1,4 +1,5 @@
 ﻿using Humanizer;
+using System.Collections.Generic;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Preview
 {
@@ -23,5 +24,15 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Preview
         public string Wage { get; set; }
 
         public string MapUrl { get; set; }
+
+        public IList<string> OrderedFieldNames => new List<string>
+        {
+            nameof(NumberOfPositions),
+            nameof(ShortDescription),
+            nameof(ClosingDate),
+            nameof(StartDate),
+            nameof(LevelName),
+            nameof(Wage)
+        };
     }
 }

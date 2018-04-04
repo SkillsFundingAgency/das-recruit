@@ -5,7 +5,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Training
 {
     using System.ComponentModel.DataAnnotations;
     using Esfa.Recruit.Employer.Web.ViewModels.Validations;
-    using ErrMsg = Esfa.Recruit.Employer.Web.ViewModels.ValidationMessages.TrainingValidationMessages;
+    using ErrMsg = ValidationMessages.TrainingValidationMessages;
 
     public class TrainingEditModel
     {

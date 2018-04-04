@@ -5,7 +5,7 @@
 
         @Html.Partial("_Part1Header")
 
-        @Html.Partial("_ValidationSummary", ViewData.ModelState)
+        @Html.Partial("_ValidationSummary", new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames })
 
         <form asp-route="@RouteNames.ShortDescription_Post" novalidate>
             <div esfa-validation-marker-for="NumberOfPositions" class="form-group">

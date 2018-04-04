@@ -3,7 +3,7 @@
     <div class="column-full">
         @Html.Partial("_Part1Header")
 
-        @Html.Partial("_ValidationSummary", ViewData.ModelState)
+        @Html.Partial("_ValidationSummary", new ValidationSummaryViewModel { ModelState = ViewData.ModelState })
 
         <div id="section_title">
             <form asp-route="@(Model.VacancyId.HasValue ? RouteNames.Title_Post : RouteNames.CreateVacancy_Post)" novalidate>

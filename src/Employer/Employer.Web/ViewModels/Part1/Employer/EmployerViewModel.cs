@@ -8,6 +8,12 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer
         public IEnumerable<LocationOrganisationViewModel> Organisations { get; set; }
 
         public bool HasOnlyOneOrganisation => Organisations.Count() == 1;
+        
+        public IList<string> OrderedFieldNames => new List<string>
+        {
+            nameof(EmployerEditModel.AddressLine1),
+            nameof(EmployerEditModel.Postcode)
+        };
     }
 
     public class LocationOrganisationViewModel

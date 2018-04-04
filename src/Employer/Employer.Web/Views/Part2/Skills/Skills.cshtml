@@ -7,7 +7,7 @@
 
         <h1 class="heading-xlarge small-bottom-margin">Desired skills or personal qualities</h1>
 
-        @Html.Partial("_ValidationSummary", ViewData.ModelState)
+        @Html.Partial("_ValidationSummary", new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames })
 
         <hr>
 

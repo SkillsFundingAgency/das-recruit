@@ -4,7 +4,7 @@
 
         @Html.Partial("_Part1Header")
 
-        @Html.Partial("_ValidationSummary", ViewData.ModelState)
+        @Html.Partial("_ValidationSummary", new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames })
 
         <div id="section_location">
             @if (Model.HasOnlyOneOrganisation)
@@ -38,28 +38,30 @@
 
                 <div id="address-details" class="address-manual-input">
                     <label class="form-label-bold">Is this the address where the apprenticeship will take place? If not, enter manually.</label>
-                    <div esfa-validation-marker-for="AddressLine1" class="form-group-compound address-item form-group">
-                        <label asp-for="AddressLine1" class="form-label">Address</label>
-                        <span esfa-validation-message-for="AddressLine1" class="error-message"></span>
-                        <input asp-for="AddressLine1" class="form-control-large form-control" maxlength="100" />
-                    </div>
-                    <div class="form-group-compound address-item form-group">
-                        <span esfa-validation-message-for="AddressLine2" class="error-message"></span>
-                        <input asp-for="AddressLine2" class="form-control-large form-control" maxlength="100" />
-                    </div>
-                    <div class="form-group-compound address-item form-group">
-                        <span esfa-validation-message-for="AddressLine3" class="error-message"></span>
-                        <input asp-for="AddressLine3" class="form-control-large form-control" maxlength="100" />
-                    </div>
-                    <div class="form-group-compound address-item form-group">
-                        <span esfa-validation-message-for="AddressLine4" class="error-message"></span>
-                        <input asp-for="AddressLine4" class="form-control-large form-control" maxlength="100" />
+                    <div esfa-validation-marker-for="AddressLine1">
+                        <div class="form-group-compound address-item form-group">
+                            <label asp-for="AddressLine1" class="form-label">Address</label>
+                            <span esfa-validation-message-for="AddressLine1" class="error-message"></span>
+                            <input asp-for="AddressLine1" class="form-control-large form-control" maxlength="100" />
+                        </div>
+                        <div class="form-group-compound address-item form-group">
+                            <span esfa-validation-message-for="AddressLine2" class="error-message"></span>
+                            <input asp-for="AddressLine2" class="form-control-large form-control" maxlength="100" />
+                        </div>
+                        <div class="form-group-compound address-item form-group">
+                            <span esfa-validation-message-for="AddressLine3" class="error-message"></span>
+                            <input asp-for="AddressLine3" class="form-control-large form-control" maxlength="100" />
+                        </div>
+                        <div class="form-group-compound address-item form-group">
+                            <span esfa-validation-message-for="AddressLine4" class="error-message"></span>
+                            <input asp-for="AddressLine4" class="form-control-large form-control" maxlength="100" />
+                        </div>
                     </div>
                     <div esfa-validation-marker-for="Postcode" class="form-group-compound address-item form-group">
                         <label asp-for="Postcode" class="form-label">Postcode</label>
                         <span esfa-validation-message-for="Postcode" class="error-message"></span>
                         <input asp-for="Postcode" class="form-control-large form-control" maxlength="8" />
-                    </div>
+                    </div>                    
                 </div>
 
                 <button type="submit" class="button">Save and continue</button>
