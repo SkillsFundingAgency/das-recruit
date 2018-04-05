@@ -1,2 +1,2 @@
 @echo off
-dotnet Recruit.Vacancies.Jobs.dll
+dotnet Esfa.Recruit.Vacancies.Jobs.dll
