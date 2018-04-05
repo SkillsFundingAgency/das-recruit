@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "build-jobs",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceRoot}/Jobs/Recruit.Vacancies.Jobs/bin/Debug/netcoreapp2.0/Recruit.Vacancies.Jobs.dll",
+            "program": "${workspaceRoot}/Jobs/Recruit.Vacancies.Jobs/bin/Debug/netcoreapp2.0/Esfa.Recruit.Vacancies.Jobs.dll",
             "args": [],
             "cwd": "${workspaceFolder}/Jobs/Recruit.Vacancies.Jobs",
             // For more information about the 'console' field, see https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md#console-terminal-window
@@ -27,7 +27,7 @@
             "request": "launch",
             "preLaunchTask": "build-web",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/Employer/Employer.Web/bin/Debug/netcoreapp2.0/Employer.Web.dll",
+            "program": "${workspaceFolder}/Employer/Employer.Web/bin/Debug/netcoreapp2.0/Esfa.Recruit.Employer.Web.dll",
             "args": [],
             "cwd": "${workspaceFolder}/Employer/Employer.Web",
             "stopAtEntry": false,
