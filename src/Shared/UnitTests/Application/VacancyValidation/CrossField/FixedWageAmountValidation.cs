@@ -29,7 +29,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
             };
 
             MockMinimumWageService.Setup(x => 
-                     x.GetMinimumWage(It.IsAny<DateTime>())).Returns(minimumWageAmount);
+                     x.GetApprenticeNationalMinimumWage(It.IsAny<DateTime>())).Returns(minimumWageAmount);
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.MinimumWage);
 
@@ -57,7 +57,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
             };
 
             MockMinimumWageService.Setup(x =>
-                     x.GetMinimumWage(It.IsAny<DateTime>())).Returns(minimumWageAmount);
+                     x.GetApprenticeNationalMinimumWage(It.IsAny<DateTime>())).Returns(minimumWageAmount);
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.MinimumWage);
 

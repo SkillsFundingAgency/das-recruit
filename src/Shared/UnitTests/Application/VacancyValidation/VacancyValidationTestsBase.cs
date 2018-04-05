@@ -12,13 +12,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation
 {
     public abstract class VacancyValidationTestsBase
     {
-        protected readonly Mock<IGetApprenticeNationalMinimumWages> MockMinimumWageService;
+        protected readonly Mock<IGetMinimumWages> MockMinimumWageService;
         protected readonly Mock<IQueryStoreReader> MockQueryStoreReader;
         protected readonly Mock<IOptions<QualificationsConfiguration>> MockQualificationConfiguration;
 
         protected VacancyValidationTestsBase()
         {
-            MockMinimumWageService = new Mock<IGetApprenticeNationalMinimumWages>();
+            MockMinimumWageService = new Mock<IGetMinimumWages>();
             MockQueryStoreReader = new Mock<IQueryStoreReader>();
             MockQualificationConfiguration = new Mock<IOptions<QualificationsConfiguration>>();
         }

@@ -10,6 +10,7 @@ using Humanizer;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
@@ -17,11 +18,13 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
     {
         private readonly IVacancyClient _client;
         private readonly IGeocodeImageService _mapService;
+        private readonly IGetMinimumWages _wageService;
 
-        public VacancyPreviewOrchestrator(IVacancyClient client, IGeocodeImageService mapService)
+        public VacancyPreviewOrchestrator(IVacancyClient client, IGeocodeImageService mapService, IGetMinimumWages wageService)
         {
             _client = client;
             _mapService = mapService;
+            _wageService = wageService;
         }
 
         public async Task<VacancyPreviewViewModel> GetVacancyPreviewViewModelAsync(Guid vacancyId)
@@ -67,7 +70,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 VacancyDescription = vacancy.Description,
                 VacancyReferenceNumber = string.Empty,
                 WageInfo = vacancy.Wage.WageAdditionalInformation,
-                WageText = $"£{vacancy.Wage.FixedWageYearlyAmount?.AsMoney()}",
+                WageText = vacancy.Wage?.ToText(
+                    () => _wageService.GetNationalMinimumWageRange(vacancy.StartDate.Value),
+                    () => _wageService.GetApprenticeNationalMinimumWage(vacancy.StartDate.Value)),
                 WorkingWeekDescription = vacancy.Wage.WorkingWeekDescription
             };
 

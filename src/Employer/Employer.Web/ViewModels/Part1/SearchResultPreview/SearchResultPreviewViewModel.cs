@@ -23,6 +23,8 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.SearchResultPreview
 
         public string Wage { get; set; }
 
+        public string WageSuffix { get; set; }
+
         public string MapUrl { get; set; }
 
         public string Title { get; internal set; }

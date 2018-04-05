@@ -8,6 +8,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
         {
             return 3.70m;
         }
+
+        public Tuple<decimal, decimal> GetNationalMinimumWageRange(DateTime date)
+        {
+            return new Tuple<decimal, decimal>(4.05m, 7.83m);
+        }
     }
 
 }
