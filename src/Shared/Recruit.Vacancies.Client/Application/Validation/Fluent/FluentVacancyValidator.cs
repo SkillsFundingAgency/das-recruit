@@ -35,7 +35,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
         private void SingleFieldValidations()
         {
-            ValidateDescription();
+            ValidateTitle();
 
             ValidateOrganisation();
 
@@ -60,6 +60,12 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             ValidateSkills();
 
             ValidateQualifications();
+
+            ValidateDescription();
+
+            ValidateTrainingDescription();
+
+            ValidateOutcomeDescription();
         }
 
         private void CrossFieldValidations()
@@ -71,7 +77,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             TrainingExpiryDateValidation();
         }
 
-        private void ValidateDescription()
+        private void ValidateTitle()
         {
             RuleFor(x => x.Title)
                 .NotEmpty()
@@ -301,6 +307,54 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .SetCollectionValidator(new QualificationValidator((long)VacancyRuleSet.Qualifications, _qualificationsConfiguration))
                 .RunCondition(VacancyRuleSet.Qualifications)
                 .WithRuleId(VacancyRuleSet.Qualifications);
+        }
+
+        private void ValidateDescription()
+        {
+            RuleFor(x => x.Description)
+                .NotEmpty()
+                    .WithMessage("You must give information on what the apprenticeship will involve")
+                    .WithErrorCode("53")
+                .MaximumLength(500)
+                    .WithMessage("This section must not be more than {MaxLength} characters")
+                    .WithErrorCode("7")
+                .ValidFreeTextCharacters()
+                    .WithMessage("You have entered invalid characters")
+                    .WithErrorCode("6")
+                .RunCondition(VacancyRuleSet.Description)
+                .WithRuleId(VacancyRuleSet.Description);
+        }
+
+        private void ValidateTrainingDescription()
+        {
+            RuleFor(x => x.TrainingDescription)
+                .NotEmpty()
+                    .WithMessage("You must give information on the training to be provided")
+                    .WithErrorCode("54")
+                .MaximumLength(500)
+                    .WithMessage("This section must not be more than {MaxLength} characters")
+                    .WithErrorCode("7")
+                .ValidFreeTextCharacters()
+                    .WithMessage("You have entered invalid characters")
+                    .WithErrorCode("6")
+                .RunCondition(VacancyRuleSet.TrainingDescription)
+                .WithRuleId(VacancyRuleSet.TrainingDescription);
+        }
+
+        private void ValidateOutcomeDescription()
+        {
+            RuleFor(x => x.OutcomeDescription)
+                .NotEmpty()
+                .WithMessage("You must give information on what to expect at the end of the apprenticeship")
+                .WithErrorCode("55")
+                .MaximumLength(500)
+                .WithMessage("This section must not be more than {MaxLength} characters")
+                .WithErrorCode("7")
+                .ValidFreeTextCharacters()
+                .WithMessage("You have entered invalid characters")
+                .WithErrorCode("6")
+                .RunCondition(VacancyRuleSet.OutcomeDescription)
+                .WithRuleId(VacancyRuleSet.OutcomeDescription);
         }
 
         private void ValidateStartDateClosingDate()
