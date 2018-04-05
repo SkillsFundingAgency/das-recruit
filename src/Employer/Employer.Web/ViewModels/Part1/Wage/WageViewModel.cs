@@ -7,6 +7,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Wage
         public IList<string> OrderedFieldNames => new List<string>
         {
             nameof(WageEditModel.Duration),
+            nameof(WageEditModel.WorkingWeekDescription),
             nameof(WageEditModel.WeeklyHours),
             nameof(WageEditModel.WageType),
             nameof(WageEditModel.FixedWageYearlyAmount),
