@@ -34,7 +34,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Training
                 }
                 return $"{ClosingDay}/{ClosingMonth}/{ClosingYear}";
             }
-        }           
+        }
 
         public string StartDay { get; set; }
         public string StartMonth { get; set; }

@@ -45,7 +45,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var vm = new EmployerViewModel
             {
                 Organisations = employerData.LegalEntities.Select(MapLegalEntitiesToOrgs).ToList(),
-                SelectedOrganisationName = vacancy.EmployerName,
+                SelectedOrganisationName = vacancy.EmployerName
             };
 
             if (vacancy.EmployerLocation != null)
