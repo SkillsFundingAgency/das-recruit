@@ -23,6 +23,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation
         TrainingExpiryDate = 0x8000,
         Skills = 0x10000,
         Qualifications = 0x20000,
+        Description = 0x40000,
+        TrainingDescription = 0x80000,
+        OutcomeDescription = 0x100000,
         All = ~None
     }
 }
