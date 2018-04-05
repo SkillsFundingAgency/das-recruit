@@ -33,7 +33,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
             return ruleBuilder.Custom((vacancy, context) =>
             {
 
-                var apprenticeshipMinWage = minimumWageService.GetMinimumWage(vacancy.StartDate.Value);
+                var apprenticeshipMinWage = minimumWageService.GetApprenticeNationalMinimumWage(vacancy.StartDate.Value);
 
                 if (vacancy.Wage.FixedWageYearlyAmount == null || vacancy.Wage.FixedWageYearlyAmount / 52 / vacancy.Wage.WeeklyHours < apprenticeshipMinWage)
                 {
