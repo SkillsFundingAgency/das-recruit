@@ -110,10 +110,13 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
             services.AddLogging((options) => 
             {
+                options.AddConfiguration(configuration.GetSection("Logging"));
                 options.SetMinimumLevel(LogLevel.Trace);
                 options.AddConsole();
                 options.AddDebug();
             });
+            
+
             services.AddScoped<ApprenticeshipProgrammesUpdater>();
             services.AddScoped<EditVacancyInfoUpdater>();
 
