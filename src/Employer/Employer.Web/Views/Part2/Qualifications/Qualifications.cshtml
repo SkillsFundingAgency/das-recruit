@@ -26,7 +26,7 @@
 
                     @foreach (var qualificationType in Model.QualificationTypes)
                     {
-                        <option value="@qualificationType">@qualificationType</option>
+                        <option value="@qualificationType" selected="@(Model.QualificationType == @qualificationType)">@qualificationType</option>
                     }
                 </select>
             </div>
@@ -34,13 +34,13 @@
             <div class="form-group form-group-compound">
                 <label asp-for="Subject" class="form-label-bold">Subject</label>
                 <span asp-validation-for="Subject" class="error-message"></span>
-                <input asp-for="Subject" type="text" class="form-control" maxlength="50">
+                <input asp-for="Subject" value="@Model.Subject" type="text" class="form-control" maxlength="50">
             </div>
 
             <div class="form-group" data-bind="parentvalElement:grade">
                 <label asp-for="Grade" class="form-label-bold">Grade</label>
                 <span asp-validation-for="Grade" class="error-message"></span>
-                <input asp-for="Grade" type="text" class="form-control form-control-1-3" maxlength="15">
+                <input asp-for="Grade" value="@Model.Grade" type="text" class="form-control form-control-1-3" maxlength="30">
             </div>
 
             <div class="form-group">

@@ -21,6 +21,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation
         StartDateEndDate = 0x2000,
         MinimumWage = 0x4000,
         TrainingExpiryDate = 0x8000,
+        Skills = 0x10000,
+        Qualifications = 0x20000,
         All = ~None
     }
 }

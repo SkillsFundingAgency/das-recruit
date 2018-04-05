@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
 
-namespace Esfa.Recruit.Employer.Web.Configuration
+namespace Esfa.Recruit.Vacancies.Client.Application.Configuration
 {
     public class QualificationsConfiguration
     {

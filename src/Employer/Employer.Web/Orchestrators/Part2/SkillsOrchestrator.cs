@@ -3,20 +3,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
+using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Employer.Web.ViewModels.Part2.Skills;
+using Esfa.Recruit.Vacancies.Client.Application.Validation;
+using Esfa.Recruit.Vacancies.Client.Domain;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 {
-    public class SkillsOrchestrator
+    public class SkillsOrchestrator : EntityValidatingOrchestrator<Vacancy, SkillsEditModel>
     {
+        private const VacancyRuleSet ValidationRules = VacancyRuleSet.Skills;
         private readonly IVacancyClient _client;
         private readonly SkillsConfiguration _skillsConfig;
 
-        public SkillsOrchestrator(IVacancyClient client, IOptions<SkillsConfiguration> skillsConfigOptions)
+        public SkillsOrchestrator(IVacancyClient client, IOptions<SkillsConfiguration> skillsConfigOptions, ILogger<SkillsOrchestrator> logger) : base(logger)
         {
             _client = client;
             _skillsConfig = skillsConfigOptions.Value;
@@ -56,7 +62,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             vm.CustomSkills = GetCustomSkills(skills).ToList();
         }
 
-        public async Task PostSkillsEditModelAsync(SkillsEditModel m)
+        public async Task<OrchestratorResponse> PostSkillsEditModelAsync(SkillsEditModel m)
         {
             var vacancy = await _client.GetVacancyForEditAsync(m.VacancyId);
 
@@ -69,7 +75,24 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             
             vacancy.Skills = SortSkills(skills).ToList();
 
-            await _client.UpdateVacancyAsync(vacancy);
+            return await ValidateAndExecute(vacancy,
+                v =>
+                {
+                    var result = _client.Validate(v, ValidationRules);
+                    SyncErrorsAndModel(result.Errors, m);
+                    return result;
+                },
+                v => _client.UpdateVacancyAsync(vacancy)
+            );
+        }
+        
+        protected override EntityToViewModelPropertyMappings<Vacancy, SkillsEditModel> DefineMappings()
+        {
+            var mappings = new EntityToViewModelPropertyMappings<Vacancy, SkillsEditModel>();
+
+            mappings.Add(e => e.Skills, vm => vm.Skills);
+
+            return mappings;
         }
 
         private IEnumerable<SkillViewModel> GetColumn1ViewModel(IEnumerable<string> selected)
@@ -110,6 +133,28 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                 .ToList();
 
             return orderedSkills.Where(filteredSelectedSkills.Contains);
+        }
+
+        private void SyncErrorsAndModel(IList<EntityValidationError> errors, SkillsEditModel m)
+        {
+            //Get the first invalid skill
+            var skillError = errors.FirstOrDefault(e => e.PropertyName.StartsWith($"{nameof(m.Skills)}["));
+            if (skillError == null)
+            {
+                return;
+            }
+
+            //Populate AddCustomSkillName so we can edit the invalid skill
+            var invalidSkill = m.Skills[skillError.GetIndexPosition().Value];
+            m.AddCustomSkillName = invalidSkill;
+            m.Skills.Remove(invalidSkill);
+
+            //Attach the error to AddCustomSkillName
+            skillError.PropertyName = nameof(m.AddCustomSkillName);
+
+            //Remove other skill errors
+            errors.Where(e => e.PropertyName.StartsWith($"{nameof(m.Skills)}[")).ToList()
+                .ForEach(r => errors.Remove(r));
         }
     }
 }
