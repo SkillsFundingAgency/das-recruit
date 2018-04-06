@@ -25,6 +25,8 @@ namespace Esfa.Recruit.Vacancies.Jobs
 
         static void Main(string[] args)
         {
+            ILogger logger = null;
+
             try
             {
                 var configuration = BuildConfiguration();
@@ -32,17 +34,30 @@ namespace Esfa.Recruit.Vacancies.Jobs
                 IServiceCollection serviceCollection = new ServiceCollection();
                 var serviceProvider = ConfigureServices(serviceCollection, configuration).BuildServiceProvider();
 
-                using (BuildLoggerFactory(serviceProvider, configuration))
-                {
-                    JobHostConfiguration jobConfiguration = GetHostConfiguration(serviceProvider);
+                var factory = ConfigureLoggingFactory(serviceProvider, configuration);
 
-                    var host = new JobHost(jobConfiguration);
-                    host.RunAndBlock();
-                }
+                logger = factory.CreateLogger("Program");
+
+                JobHostConfiguration jobConfiguration = GetHostConfiguration(serviceProvider);
+                var host = new JobHost(jobConfiguration);
+
+                var cancellationToken = new WebJobsShutdownWatcher().Token;
+                cancellationToken.Register(host.Stop);
+
+                logger.LogInformation("Job Starting");
+
+                host.RunAndBlock();
+
+                logger.LogInformation("Job Stopping");
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                if (logger != null)
+                {
+                    logger.LogCritical(ex, "The Job has met with a horrible end!!");
+                }
+
+                throw;
             }
             finally
             {
@@ -50,14 +65,15 @@ namespace Esfa.Recruit.Vacancies.Jobs
             }
         }
 
-        private static ILoggerFactory BuildLoggerFactory(ServiceProvider serviceProvider, IConfigurationRoot config)
+        private static ILoggerFactory ConfigureLoggingFactory(ServiceProvider serviceProvider, IConfigurationRoot config)
         {
             var instrumentationKey = config["AppInsights_InstrumentationKey"];
             
             var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
             loggerFactory.AddNLog(new NLogProviderOptions { CaptureMessageProperties = true, CaptureMessageTemplates = true });
+            NLog.LogManager.LoadConfiguration("nlog.config");
+			
             loggerFactory.AddApplicationInsights(instrumentationKey, null);
-			NLog.LogManager.LoadConfiguration("nlog.config");
 
             return loggerFactory;
         }
@@ -110,10 +126,12 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
             services.AddLogging((options) => 
             {
+                options.AddConfiguration(configuration.GetSection("Logging"));
                 options.SetMinimumLevel(LogLevel.Trace);
                 options.AddConsole();
                 options.AddDebug();
             });
+
             services.AddScoped<ApprenticeshipProgrammesUpdater>();
             services.AddScoped<EditVacancyInfoUpdater>();
 
