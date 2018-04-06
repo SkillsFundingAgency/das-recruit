@@ -5,12 +5,6 @@
     "EnvironmentName": {
       "value": "dev"
     },
-    "AppServicePlanTier": {
-      "value": "Basic"
-    },
-    "AppServicePlanSkuLevel": {
-      "value": "1"
-    },
     "Authentication": {
       "value": {
         "Authority": "",
@@ -38,6 +32,12 @@
       "value": ""
     },
     "ApprenticeshipProgrammesApiBaseUrl": {
+      "value": ""
+    },
+    "SharedAppServicePlanName": {
+      "value": ""
+    },
+    "SharedAppServicePlanResourceGroup": {
       "value": ""
     }
   }

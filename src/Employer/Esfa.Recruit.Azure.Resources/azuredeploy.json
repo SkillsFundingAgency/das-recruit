@@ -5,25 +5,6 @@
     "EnvironmentName": {
       "type": "string"
     },
-    "AppServicePlanTier": {
-      "type": "string",
-      "defaultValue": "Free",
-      "allowedValues": [
-        "Free",
-        "Basic",
-        "Standard",
-        "Premium"
-      ]
-    },
-    "AppServicePlanSkuLevel": {
-      "type": "string",
-      "defaultValue": "1",
-      "allowedValues": [
-        "1",
-        "2",
-        "3"
-      ]
-    },
     "Authentication": {
       "type": "object",
       "defaultValue": {
@@ -61,29 +42,23 @@
     "GoogleMapsPrivateKey": {
       "type": "string",
       "defaultValue": ""
+    },
+    "SharedAppServicePlanName": {
+      "type": "string"
+    },
+    "SharedAppServicePlanResourceGroup": {
+      "type": "string"
     }
   },
   "variables": {
-    "AppServicePlanName": "[concat('das-', toLower(parameters('EnvironmentName')), '-rcrt-asp')]",
     "EmployerRecruitAppServiceName": "[concat('das-', toLower(parameters('EnvironmentName')), '-rcrt-as')]",
     "CosmosDbName": "[concat('das-', toLower(parameters('EnvironmentName')),'-rcrt-cdb')]",
     "AppInsightsName": "[concat('das-', toLower(parameters('EnvironmentName')),'-rcrt-ai')]",
     "WebJobAppServiceName": "[concat('das-', toLower(parameters('EnvironmentName')), '-rcrt-webjob-as')]",
-    "StorageAccountName": "[concat('das', toLower(parameters('EnvironmentName')), 'rcrtstr')]"
+    "StorageAccountName": "[concat('das', toLower(parameters('EnvironmentName')), 'rcrtstr')]",
+    "SharedAppServicePlanId": "[resourceId(parameters('SharedAppServicePlanResourceGroup'), 'Microsoft.Web/serverfarms', parameters('SharedAppServicePlanName'))]"
   },
   "resources": [
-    {
-      "name": "[variables('AppServicePlanName')]",
-      "type": "Microsoft.Web/serverfarms",
-      "apiVersion": "2016-09-01",
-      "location": "[resourceGroup().location]",
-      "properties": {},
-      "sku": {
-        "tier": "[parameters('AppServicePlanTier')]",
-        "name": "[concat(substring(parameters('AppServicePlanTier'),0,1), parameters('AppServicePlanSkuLevel'))]"
-      },
-      "dependsOn": []
-    },
     {
       "apiVersion": "2015-05-01",
       "name": "[variables('AppInsightsName')]",
@@ -114,7 +89,7 @@
       "apiVersion": "2016-08-01",
       "location": "[resourceGroup().location]",
       "properties": {
-        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName'))]",
+        "serverFarmId": "[variables('SharedAppServicePlanId')]",
         "siteConfig": {
           "appSettings": [
             {
@@ -195,7 +170,6 @@
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName'))]",
         "[resourceId('microsoft.insights/components', variables('AppInsightsName'))]",
         "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('CosmosDbName'))]"
       ]
@@ -230,7 +204,7 @@
       "apiVersion": "2016-08-01",
       "location": "[resourceGroup().location]",
       "properties": {
-        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName'))]",
+        "serverFarmId": "[variables('SharedAppServicePlanId')]",
         "siteConfig": {
           "appSettings": [
             {
@@ -294,21 +268,20 @@
               "type": "Custom"
             }
           ],
-          "alwaysOn" : true,
+          "alwaysOn": true,
           "virtualApplications": [
             {
-                "virtualPath": "/",
-                "physicalPath": "site\\wwwroot"
+              "virtualPath": "/",
+              "physicalPath": "site\\wwwroot"
             },
             {
-                "virtualPath": "/Recruit.Vacancies.Jobs",
-                "physicalPath": "site\\wwwroot\\app_data\\jobs\\continuous\\Recruit.Vacancies.Jobs"
+              "virtualPath": "/Recruit.Vacancies.Jobs",
+              "physicalPath": "site\\wwwroot\\app_data\\jobs\\continuous\\Recruit.Vacancies.Jobs"
             }
-        ]
+          ]
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName'))]",
         "[variables('StorageAccountName')]",
         "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('CosmosDbName'))]"
       ]
