@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Esfa.Recruit.Employer.Web.Extensions;
+using Esfa.Recruit.Vacancies.Client.Application.Services.MinimumWage;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Enums;
 using FluentAssertions;
@@ -12,8 +13,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Extensions
     public class WageExtensionsTests
     {
 
-        private Func<Tuple<decimal, decimal>> _getNationalMinimumWage = () => new Tuple<decimal, decimal>(4.05m, 7.83m);
-        private Func<decimal> _getApprenticeNationalMinimumWage = () => 3.70m;
+        private readonly Func<WageRange> _getNationalMinimumWage = () => new WageRange{MinimumWage = 4.05m, MaximumWage = 7.83m};
+        private readonly Func<decimal> _getApprenticeNationalMinimumWage = () => 3.70m;
 
         [Fact]
         public void ShouldFormatFixedWageCorrectly()
@@ -35,12 +36,12 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Extensions
             var wage = new Wage
             {
                 WageType = WageType.NationalMinimumWage,
-                WeeklyHours = 37.5m
+                WeeklyHours = 37.555m
             };
 
             var actual = wage.ToText(_getNationalMinimumWage, null);
 
-            actual.Should().Be("£7,897.50 - £15,268.50");
+            actual.Should().Be("£7,909.08 - £15,290.89");
         }
 
         [Fact]
@@ -49,12 +50,12 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Extensions
             var wage = new Wage
             {
                 WageType = WageType.NationalMinimumWageForApprentices,
-                WeeklyHours = 37.5m
+                WeeklyHours = 37.555m
             };
 
             var actual = wage.ToText(null, _getApprenticeNationalMinimumWage);
 
-            actual.Should().Be("£7,215");
+            actual.Should().Be("£7,225.58");
         }
 
         [Fact]

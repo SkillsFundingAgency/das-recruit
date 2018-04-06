@@ -5,6 +5,7 @@ using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.SearchResultPreview;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Services.MinimumWage;
 using Esfa.Recruit.Vacancies.Client.Domain.Enums;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -45,7 +46,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 Wage = vacancy.Wage?.ToText(
                     () => _wageService.GetNationalMinimumWageRange(vacancy.StartDate.Value),
                     () => _wageService.GetApprenticeNationalMinimumWage(vacancy.StartDate.Value)),
-                WageSuffix = (vacancy.Wage == null || vacancy.Wage.WageType == WageType.Unspecified) ? "" : "yearly"
+                HasYearlyWage = (vacancy.Wage != null && vacancy.Wage.WageType != WageType.Unspecified)
             };
 
             if (vacancy.EmployerLocation != null)

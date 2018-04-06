@@ -1,12 +1,12 @@
 ﻿using System;
 
-namespace Esfa.Recruit.Vacancies.Client.Application.Services
+namespace Esfa.Recruit.Vacancies.Client.Application.Services.MinimumWage
 {
     public interface IGetMinimumWages
     {
         decimal GetApprenticeNationalMinimumWage(DateTime date);
 
-        Tuple<decimal, decimal> GetNationalMinimumWageRange(DateTime date);
+        WageRange GetNationalMinimumWageRange(DateTime date);
     }
 
 }

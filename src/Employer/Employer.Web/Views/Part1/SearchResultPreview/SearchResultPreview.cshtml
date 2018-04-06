@@ -40,7 +40,7 @@
                         </li>
                         <li>
                             <span class="bold-small">Wage:</span>
-                            <span>@Model.Wage @Model.WageSuffix</span>
+                            <span>@Model.Wage</span><span asp-condition="@Model.HasYearlyWage"> yearly</span>
                         </li>
                     </ul>
                 </div>
