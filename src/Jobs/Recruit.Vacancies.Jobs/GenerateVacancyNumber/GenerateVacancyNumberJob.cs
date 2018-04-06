@@ -1,26 +1,43 @@
-// using System;
-// using System.IO;
-// using System.Threading.Tasks;
-// using Microsoft.Azure.WebJobs;
-// using Microsoft.Extensions.Logging;
+using System;
+using System.IO;
+using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Domain.Events;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Events;
+using Microsoft.Azure.WebJobs;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
-// namespace Esfa.Recruit.Vacancies.Jobs.GenerateVacancyNumber
-// {
-//     public class GenerateVacancyNumberJob
-//     {
-//         private readonly ILogger<GenerateVacancyNumberJob> _logger;
+namespace Esfa.Recruit.Vacancies.Jobs.GenerateVacancyNumber
+{
+    public class GenerateVacancyNumberJob
+    {
+        private readonly ILogger<GenerateVacancyNumberJob> _logger;
+        private string JobName => GetType().Name;
 
-//         public GenerateVacancyNumberJob(ILogger<GenerateVacancyNumberJob> logger)
-//         {
-//             _logger = logger;
-//         }
+        public GenerateVacancyNumberJob(ILogger<GenerateVacancyNumberJob> logger)
+        {
+            _logger = logger;
+        }
 
-//         public async Task DoSomethingOnATimer([TimerTrigger("0/10 * * * * *", RunOnStartup = false)] TimerInfo timerInfo, TextWriter log)
-//         {
-//             _logger.LogInformation("Using logger to log......");
-//             Console.WriteLine("We're doing something");
-//             await Task.CompletedTask;
-//         }
+        public async Task GenerateVacancyNumber([QueueTrigger("vacancy-created-queue", Connection = "EventQueueConnectionString")] string message, TextWriter log)
+        {
+            try
+            {
+                var eventItem = JsonConvert.DeserializeObject<EventItem>(message);
+                var data = JsonConvert.DeserializeObject<VacancyCreatedEvent>(eventItem.Data);
+                
+                _logger.LogInformation($"Start {JobName} For ????");
 
-//     }
-// }
+                await Task.CompletedTask;
+                
+                _logger.LogInformation($"Finished {JobName} For ????");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Unable to run {JobName}.");
+            }
+        }
+
+    }
+}
+
