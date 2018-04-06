@@ -79,7 +79,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 WorkingWeekDescription = m.WorkingWeekDescription,
                 WeeklyHours = m.WeeklyHours.AsDecimal(),
                 WageType = m.WageType,
-                FixedWageYearlyAmount = m.FixedWageYearlyAmount?.AsMoney(),
+                FixedWageYearlyAmount = (m.WageType == WageType.FixedWage) ? m.FixedWageYearlyAmount?.AsMoney() : null,
                 WageAdditionalInformation = m.WageAdditionalInformation
             };
 

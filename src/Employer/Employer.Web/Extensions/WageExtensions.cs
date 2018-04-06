@@ -1,4 +1,6 @@
-﻿using Esfa.Recruit.Vacancies.Client.Domain.Enums;
+﻿using System;
+using Esfa.Recruit.Vacancies.Client.Application.Services.MinimumWage;
+using Esfa.Recruit.Vacancies.Client.Domain.Enums;
 
 namespace Esfa.Recruit.Employer.Web.Extensions
 {
@@ -7,14 +9,44 @@ namespace Esfa.Recruit.Employer.Web.Extensions
 
     public static class WageExtensions
     {
-        public static string ToText(this Wage wage)
+        const int WeeksPerYear = 52;
+
+        public static string ToText(this Wage wage, Func<WageRange> getNationalMinimumWageRange, Func<decimal> getApprenticeNationalMinimumWage)
         {
-            if (wage.WageType == WageType.FixedWage)
+            string wageText;
+
+            switch (wage.WageType)
             {
-                return $"£ {wage.FixedWageYearlyAmount?.AsMoney()} yearly";
+                case WageType.FixedWage:
+                    wageText = $"£{wage.FixedWageYearlyAmount?.AsMoney()}";
+                    break;
+                case WageType.NationalMinimumWage:
+                    var hourlyRange = getNationalMinimumWageRange();
+
+                    var minYearly = GetYearlyRateFromHourlyRate(hourlyRange.MinimumWage, wage.WeeklyHours.Value);
+                    var maxYearly = GetYearlyRateFromHourlyRate(hourlyRange.MaximumWage, wage.WeeklyHours.Value);
+
+                    wageText = $"£{minYearly.AsMoney()} - £{maxYearly.AsMoney()}";
+                    break;
+                case WageType.NationalMinimumWageForApprentices:
+                    var hourlyRate = getApprenticeNationalMinimumWage();
+
+                    var yearly = GetYearlyRateFromHourlyRate(hourlyRate, wage.WeeklyHours.Value);
+
+                    wageText = $"£{yearly.AsMoney()}";
+                    break;
+                default:
+                    wageText = wage.WageType?.GetDisplayName();
+                    break;
             }
-            
-            return wage.WageType?.GetDisplayName();
+
+            return wageText;
+        }
+
+        private static decimal GetYearlyRateFromHourlyRate(decimal hourlyRate, decimal weeklyHours)
+        {
+            var yearlyRate = hourlyRate * weeklyHours * WeeksPerYear;
+            return decimal.Round(yearlyRate, 2, MidpointRounding.AwayFromZero);
         }
 
         public static string ToHoursPerWeekText(this Wage wage)
@@ -23,5 +55,6 @@ namespace Esfa.Recruit.Employer.Web.Extensions
                     ? wage.WeeklyHours.ToString().SkipLast(1).ToString().Replace(".0", string.Empty)
                     : wage.WeeklyHours.ToString();
         }
+        
     }
 }

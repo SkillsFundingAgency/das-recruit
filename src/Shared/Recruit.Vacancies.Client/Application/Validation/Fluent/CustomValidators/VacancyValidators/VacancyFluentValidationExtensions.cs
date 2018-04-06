@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Services.MinimumWage;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Projections;
 using FluentValidation;
@@ -28,12 +29,12 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
             });
         }
 
-        internal static IRuleBuilderInitial<Vacancy, Vacancy> FixedWageMustBeGreaterThanApprenticeshipMinimumWage(this IRuleBuilder<Vacancy, Vacancy> ruleBuilder, IGetApprenticeNationalMinimumWages minimumWageService)
+        internal static IRuleBuilderInitial<Vacancy, Vacancy> FixedWageMustBeGreaterThanApprenticeshipMinimumWage(this IRuleBuilder<Vacancy, Vacancy> ruleBuilder, IGetMinimumWages minimumWageService)
         {
             return ruleBuilder.Custom((vacancy, context) =>
             {
 
-                var apprenticeshipMinWage = minimumWageService.GetMinimumWage(vacancy.StartDate.Value);
+                var apprenticeshipMinWage = minimumWageService.GetApprenticeNationalMinimumWage(vacancy.StartDate.Value);
 
                 if (vacancy.Wage.FixedWageYearlyAmount == null || vacancy.Wage.FixedWageYearlyAmount / 52 / vacancy.Wage.WeeklyHours < apprenticeshipMinWage)
                 {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Services.MinimumWage;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators.VacancyValidators;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Enums;
@@ -16,11 +17,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
     public sealed class FluentVacancyValidator : AbstractValidator<Vacancy>
     {
         private readonly ITimeProvider _timeProvider;
-        private readonly IGetApprenticeNationalMinimumWages _minimumWageService;
+        private readonly IGetMinimumWages _minimumWageService;
         private readonly Lazy<IEnumerable<ApprenticeshipProgramme>> _trainingProgrammes;
         private readonly QualificationsConfiguration _qualificationsConfiguration;
 
-        public FluentVacancyValidator(ITimeProvider timeProvider, IGetApprenticeNationalMinimumWages minimumWageService, IQueryStoreReader queryStoreReader, IOptions<QualificationsConfiguration> qualificationsConfiguration)
+        public FluentVacancyValidator(ITimeProvider timeProvider, IGetMinimumWages minimumWageService, IQueryStoreReader queryStoreReader, IOptions<QualificationsConfiguration> qualificationsConfiguration)
         {
             _timeProvider = timeProvider;
             _minimumWageService = minimumWageService;
@@ -138,7 +139,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .NotNull()
                     .WithMessage("Enter the closing date for applications")
                     .WithErrorCode("16")
-                .GreaterThan(_timeProvider.Now.AddDays(1))
+                .GreaterThan(_timeProvider.Now.Date.AddDays(1).AddTicks(-1))
                     .WithMessage("The closing date can't be today or earlier. We advise using a date more than two weeks from now")
                     .WithErrorCode("18")
                 .RunCondition(VacancyRuleSet.ClosingDate)
@@ -151,7 +152,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .NotNull()
                 .WithMessage("Enter the possible start date")
                     .WithErrorCode("20")
-                .GreaterThan(_timeProvider.Now.AddDays(1))
+                .GreaterThan(_timeProvider.Now.Date.AddDays(1).AddTicks(-1))
                 .WithMessage("The possible start date can't be today or earlier. We advise using a date more than two weeks from now")
                     .WithErrorCode("22")
                 .RunCondition(VacancyRuleSet.StartDate)

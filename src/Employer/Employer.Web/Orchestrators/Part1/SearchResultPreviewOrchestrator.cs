@@ -4,6 +4,9 @@ using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.SearchResultPreview;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Services.MinimumWage;
+using Esfa.Recruit.Vacancies.Client.Domain.Enums;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 
@@ -13,11 +16,13 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
     {
         private readonly IVacancyClient _client;
         private readonly IGeocodeImageService _mapService;
+        private readonly IGetMinimumWages _wageService;
 
-        public SearchResultPreviewOrchestrator(IVacancyClient client, IGeocodeImageService mapService)
+        public SearchResultPreviewOrchestrator(IVacancyClient client, IGeocodeImageService mapService, IGetMinimumWages wageService)
         {
             _client = client;
             _mapService = mapService;
+            _wageService = wageService;
         }
         
         public async Task<SearchResultPreviewViewModel> GetSearchResultPreviewViewModelAsync(Guid vacancyId)
@@ -28,7 +33,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             {
                 throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
             }
-
+            
             var vm = new SearchResultPreviewViewModel
             {
                 EmployerName = vacancy.EmployerName,
@@ -38,7 +43,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 StartDate = vacancy.StartDate?.AsDisplayDate(),
                 LevelName = vacancy.Programme?.LevelName,
                 Title = vacancy.Title,
-                Wage = vacancy.Wage?.ToText()
+                Wage = vacancy.Wage?.ToText(
+                    () => _wageService.GetNationalMinimumWageRange(vacancy.StartDate.Value),
+                    () => _wageService.GetApprenticeNationalMinimumWage(vacancy.StartDate.Value)),
+                HasYearlyWage = (vacancy.Wage != null && vacancy.Wage.WageType != WageType.Unspecified)
             };
 
             if (vacancy.EmployerLocation != null)

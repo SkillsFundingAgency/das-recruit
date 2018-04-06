@@ -13,7 +13,7 @@
                 <div class="form-group">
                     @if (Model.HasOnlyOneOrganisation)
                     {
-                        <input asp-for="SelectedOrganisationName" value="@Model.Organisations.First().Id" type="hidden" />
+                        <input asp-for="SelectedOrganisationName" value="@Model.Organisations.First().Name" type="hidden" />
                     }
                     else
                     {

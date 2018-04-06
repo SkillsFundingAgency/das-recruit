@@ -1,6 +1,7 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Services.MinimumWage;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services;
@@ -12,13 +13,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation
 {
     public abstract class VacancyValidationTestsBase
     {
-        protected readonly Mock<IGetApprenticeNationalMinimumWages> MockMinimumWageService;
+        protected readonly Mock<IGetMinimumWages> MockMinimumWageService;
         protected readonly Mock<IQueryStoreReader> MockQueryStoreReader;
         protected readonly Mock<IOptions<QualificationsConfiguration>> MockQualificationConfiguration;
 
         protected VacancyValidationTestsBase()
         {
-            MockMinimumWageService = new Mock<IGetApprenticeNationalMinimumWages>();
+            MockMinimumWageService = new Mock<IGetMinimumWages>();
             MockQueryStoreReader = new Mock<IQueryStoreReader>();
             MockQualificationConfiguration = new Mock<IOptions<QualificationsConfiguration>>();
         }
