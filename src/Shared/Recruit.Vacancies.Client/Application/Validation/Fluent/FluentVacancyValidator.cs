@@ -345,14 +345,14 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.OutcomeDescription)
                 .NotEmpty()
-                .WithMessage("You must give information on what to expect at the end of the apprenticeship")
-                .WithErrorCode("55")
+                    .WithMessage("You must give information on what to expect at the end of the apprenticeship")
+                    .WithErrorCode("55")
                 .MaximumLength(500)
-                .WithMessage("This section must not be more than {MaxLength} characters")
-                .WithErrorCode("7")
+                    .WithMessage("This section must not be more than {MaxLength} characters")
+                    .WithErrorCode("7")
                 .ValidFreeTextCharacters()
-                .WithMessage("You have entered invalid characters")
-                .WithErrorCode("6")
+                    .WithMessage("You have entered invalid characters")
+                    .WithErrorCode("6")
                 .RunCondition(VacancyRuleSet.OutcomeDescription)
                 .WithRuleId(VacancyRuleSet.OutcomeDescription);
         }

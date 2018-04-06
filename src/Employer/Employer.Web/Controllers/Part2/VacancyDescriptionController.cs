@@ -1,9 +1,10 @@
 ﻿using Esfa.Recruit.Employer.Web.Configuration.Routing;
-using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.Orchestrators;
+using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part2
 {
@@ -27,14 +28,19 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
         [HttpPost("vacancy-description", Name =  RouteNames.VacancyDescription_Index_Post)]
         public async Task<IActionResult> VacancyDescription(VacancyDescriptionEditModel m)
         {
-            if(!ModelState.IsValid)
+            var response = await _orchestrator.PostVacancyDescriptionEditModelAsync(m);
+
+            if (!response.Success)
             {
-                var vm = await _orchestrator.GetVacancyDescriptionViewModelAsync(m.VacancyId);
+                response.AddErrorsToModelState(ModelState);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                var vm = await _orchestrator.GetVacancyDescriptionViewModelAsync(m);
                 return View(vm);
             }
             
-            await _orchestrator.PostVacancyDescriptionEditModelAsync(m);
-
             return RedirectToRoute(RouteNames.Preview_Index_Get);
         }
     }
