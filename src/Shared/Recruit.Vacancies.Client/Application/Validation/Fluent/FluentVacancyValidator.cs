@@ -66,6 +66,12 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             ValidateTrainingDescription();
 
             ValidateOutcomeDescription();
+
+            ValidateApplicationUrl();
+
+            ValidateApplicationInstructions();
+
+            ValidateEmployerContactDetails();
         }
 
         private void CrossFieldValidations()
@@ -357,6 +363,76 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .WithRuleId(VacancyRuleSet.OutcomeDescription);
         }
 
+        private void ValidateApplicationUrl()
+        {
+            RuleFor(x => x.ApplicationUrl)
+                .NotEmpty()
+                    .WithMessage("Enter a valid website address")
+                    .WithErrorCode("85")
+                .MaximumLength(200)
+                    .WithMessage("The website address must not be more than {MaxLength} characters")
+                    .WithErrorCode("84")
+                .Must(FluentExtensions.BeValidWebUrl)
+                    .WithMessage("Enter a valid website address")
+                    .WithErrorCode("86")
+                .RunCondition(VacancyRuleSet.ApplicationUrl)
+                .WithRuleId(VacancyRuleSet.ApplicationUrl);
+        }
+
+        private void ValidateApplicationInstructions()
+        {
+            RuleFor(x => x.ApplicationInstructions)
+                .MaximumLength(500)
+                    .WithMessage("The application process should be less than {MaxLength} characters")
+                    .WithErrorCode("88")
+                .ValidFreeTextCharacters()
+                    .WithMessage("You have entered invalid characters")
+                    .WithErrorCode("89")
+                .RunCondition(VacancyRuleSet.ApplicationInstructions)
+                .WithRuleId(VacancyRuleSet.ApplicationInstructions);
+        }
+
+        private void ValidateEmployerContactDetails()
+        {
+            RuleFor(x => x.EmployerContactName)
+                .MaximumLength(100)
+                    .WithMessage("Contact details should be less than {MaxLength} characters")
+                    .WithErrorCode("90")
+                .ValidFreeTextCharacters()
+                    .WithMessage("You have entered invalid characters")
+                    .WithErrorCode("91")
+                .RunCondition(VacancyRuleSet.EmployerContactDetails)
+                .WithRuleId(VacancyRuleSet.EmployerContactDetails);
+
+            RuleFor(x => x.EmployerContactEmail)
+                .MaximumLength(100)
+                    .WithMessage("Email address must not be more than {MaxLength} characters")
+                    .WithErrorCode("92")
+                .ValidFreeTextCharacters()
+                    .WithMessage("You have entered invalid characters")
+                    .WithErrorCode("93")
+                .Matches(ValidationConstants.EmailAddressRegex)
+                    .WithMessage("Enter a valid email address")
+                    .WithErrorCode("94")
+                    .When(v => !string.IsNullOrEmpty(v.EmployerContactEmail))
+                .RunCondition(VacancyRuleSet.EmployerContactDetails)
+                .WithRuleId(VacancyRuleSet.EmployerContactDetails);
+
+            RuleFor(x => x.EmployerContactPhone)
+                .MaximumLength(16)
+                    .WithMessage("Contact number must be less than {MaxLength} digits")
+                    .WithErrorCode("95")
+                .MinimumLength(8)
+                    .WithMessage("Contact number must be more than {MinLength} digits")
+                    .WithErrorCode("96")
+                .Matches(ValidationConstants.PhoneNumberRegex)
+                    .WithMessage("You have entered invalid characters")
+                    .WithErrorCode("97")
+                    .When(v => !string.IsNullOrEmpty(v.EmployerContactPhone))
+                .RunCondition(VacancyRuleSet.EmployerContactDetails)
+                .WithRuleId(VacancyRuleSet.EmployerContactDetails);
+        }
+
         private void ValidateStartDateClosingDate()
         {
             When(x => x.StartDate.HasValue && x.ClosingDate.HasValue, () =>
@@ -388,8 +464,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .RunCondition(VacancyRuleSet.TrainingExpiryDate)
                 .WithRuleId(VacancyRuleSet.TrainingExpiryDate);
             });
-        }
-
-        
+        }        
     }
 }

@@ -1,6 +1,7 @@
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators;
 using FluentValidation;
 using FluentValidation.Internal;
+using System;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 {
@@ -13,6 +14,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         internal static IRuleBuilderOptions<T, string> PostCode<T>(this IRuleBuilder<T, string> ruleBuilder)
         {
             return ruleBuilder.SetValidator(new PostCodeValidator());
+        }
+
+        internal static bool BeValidWebUrl(string arg)
+        {
+            Uri result;
+            return Uri.TryCreate(arg, UriKind.Absolute, out result)
+                   && (result.Scheme.Equals(Uri.UriSchemeHttp) || result.Scheme.Equals(Uri.UriSchemeHttps));
         }
 
         internal static IRuleBuilderOptions<T, TElement> WithRuleId<T, TElement>(this IConfigurable<PropertyRule, IRuleBuilderOptions<T, TElement>> ruleBuilder, long ruleId)

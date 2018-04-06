@@ -1,4 +1,5 @@
 ﻿using Esfa.Recruit.Employer.Web.Configuration.Routing;
+using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -24,16 +25,22 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
             return View(vm);
         }
 
-        [HttpPost("application-process", Name =  RouteNames.ApplicationProcess_Post)]
+        [HttpPost("application-process", Name = RouteNames.ApplicationProcess_Post)]
         public async Task<IActionResult> ApplicationProcess(ApplicationProcessEditModel m)
-        {
-            if(!ModelState.IsValid)
+        {            
+            var response = await _orchestrator.PostApplicationProcessEditModelAsync(m);
+
+            if (!response.Success)
             {
-                var vm = await _orchestrator.GetApplicationProcessViewModelAsync(m.VacancyId);
+                response.AddErrorsToModelState(ModelState);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                var vm = await _orchestrator.GetApplicationProcessViewModelAsync(m);
+
                 return View(vm);
             }
-            
-            await _orchestrator.PostApplicationProcessEditModelAsync(m);
 
             return RedirectToRoute(RouteNames.Preview_Index_Get);
         }
