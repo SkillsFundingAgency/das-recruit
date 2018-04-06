@@ -93,8 +93,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
             }
 
-            vacancy.ClosingDate = m.ClosingDate.AsDateTimeUk();
-            vacancy.StartDate = m.StartDate.AsDateTimeUk();
+            vacancy.ClosingDate = m.ClosingDate.AsDateTimeUk()?.ToUniversalTime();
+            vacancy.StartDate = m.StartDate.AsDateTimeUk()?.ToUniversalTime();
             
             var programme = programmesTask.Result.Programmes.SingleOrDefault(p => p.Id == m.SelectedProgrammeId);
             
