@@ -184,7 +184,10 @@
                     <div id="vacancy-address">
                         <h3 class="heading-small sfa-no-top-margin">Location</h3>
                         <ul class="list">
-                            @Html.Raw(string.Join("<br />", Model.EmployerAddressElements))
+                            @foreach (var addrLine in Model.EmployerAddressElements)
+                            {
+                                <li>@addrLine</li>
+                            }
                         </ul>
                         <a asp-route="@RouteNames.Title_Get">Edit</a>
                     </div>
@@ -201,12 +204,10 @@
                     <div class="column-full">
                         <div class="preview-empty">
                             <h2 class="heading-small">Employer's application instructions</h2>
-                            <div class="column-two-thirds">
-                                <p class="application-instructions">
-                                    @Model.ApplicationInstructions
-                                </p>
-                                <a asp-route="@RouteNames.ApplicationProcess_Get">Edit</a>
-                            </div>
+                            <p class="application-instructions">
+                                @Model.ApplicationInstructions
+                            </p>
+                            <a asp-route="@RouteNames.ApplicationProcess_Get">Edit</a>
                         </div>
                     </div>
                 </div>

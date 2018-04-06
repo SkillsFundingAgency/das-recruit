@@ -11,5 +11,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation
 
         public static Regex PostcodeRegex => new Regex(PostCodeRegExPattern);
         public static Regex UkprnRegex => new Regex(@"^((?!(0))[0-9]{8})$");
+        public static Regex EmailAddressRegex => new Regex(@"^[a-zA-Z0-9\u0080-\uFFA7?$#()""'!,+\-=_:;.&€£*%\s\/]+@[a-zA-Z0-9\u0080-\uFFA7?$#()""'!,+\-=_:;.&€£*%\s\/]+\.([a-zA-Z0-9\u0080-\uFFA7]{2,10})$");
+        public static Regex PhoneNumberRegex => new Regex(@"^[0-9+\s-()]{8,16}$");
     }
 }

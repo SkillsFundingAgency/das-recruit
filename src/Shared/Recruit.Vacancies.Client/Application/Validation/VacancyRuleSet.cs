@@ -26,6 +26,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation
         Description = 0x40000,
         TrainingDescription = 0x80000,
         OutcomeDescription = 0x100000,
+        ApplicationInstructions = 0x200000,
+        ApplicationUrl = 0x400000,
+        EmployerContactDetails = 0x800000,
         All = ~None
     }
 }
