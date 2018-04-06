@@ -12,6 +12,9 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer
         public IList<string> OrderedFieldNames => new List<string>
         {
             nameof(EmployerEditModel.AddressLine1),
+            nameof(EmployerEditModel.AddressLine2),
+            nameof(EmployerEditModel.AddressLine3),
+            nameof(EmployerEditModel.AddressLine4),
             nameof(EmployerEditModel.Postcode)
         };
     }

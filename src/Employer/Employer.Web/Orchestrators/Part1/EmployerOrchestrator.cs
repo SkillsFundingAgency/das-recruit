@@ -107,6 +107,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
             mappings.Add(e => e.EmployerName, vm => vm.SelectedOrganisationName);
             mappings.Add(e => e.EmployerLocation.AddressLine1, vm => vm.AddressLine1);
+            mappings.Add(e => e.EmployerLocation.AddressLine2, vm => vm.AddressLine2);
+            mappings.Add(e => e.EmployerLocation.AddressLine3, vm => vm.AddressLine3);
+            mappings.Add(e => e.EmployerLocation.AddressLine4, vm => vm.AddressLine4);
             mappings.Add(e => e.EmployerLocation.Postcode, vm => vm.Postcode);
 
             return mappings;
