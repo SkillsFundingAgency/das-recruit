@@ -5,14 +5,18 @@ using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using System;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Application.Validation;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Microsoft.Extensions.Logging;
 
-namespace Esfa.Recruit.Employer.Web.Orchestrators
+namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 {
-    public class VacancyDescriptionOrchestrator
+    public class VacancyDescriptionOrchestrator : EntityValidatingOrchestrator<Vacancy, VacancyDescriptionEditModel>
     {
+        private const VacancyRuleSet ValdationRules = VacancyRuleSet.Description | VacancyRuleSet.TrainingDescription | VacancyRuleSet.OutcomeDescription;
         private readonly IVacancyClient _client;
 
-        public VacancyDescriptionOrchestrator(IVacancyClient client)
+        public VacancyDescriptionOrchestrator(IVacancyClient client, ILogger<VacancyDescriptionOrchestrator> logger) : base(logger)
         {
             _client = client;
         }
@@ -35,15 +39,41 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return vm;
         }
 
-        public async Task PostVacancyDescriptionEditModelAsync(VacancyDescriptionEditModel m)
+        public async Task<VacancyDescriptionViewModel> GetVacancyDescriptionViewModelAsync(VacancyDescriptionEditModel m)
+        {
+            var vm = await GetVacancyDescriptionViewModelAsync(m.VacancyId);
+
+            vm.VacancyDescription = m.VacancyDescription;
+            vm.TrainingDescription = m.TrainingDescription;
+            vm.OutcomeDescription = m.OutcomeDescription;
+
+            return vm;
+        }
+
+        public async Task<OrchestratorResponse> PostVacancyDescriptionEditModelAsync(VacancyDescriptionEditModel m)
         {
             var vacancy = await _client.GetVacancyForEditAsync(m.VacancyId);
 
             vacancy.Description = m.VacancyDescription;
             vacancy.TrainingDescription = m.TrainingDescription;
             vacancy.OutcomeDescription = m.OutcomeDescription;
+            
+            return await ValidateAndExecute(
+                vacancy,
+                v => _client.Validate(v, ValdationRules),
+                v => _client.UpdateVacancyAsync(vacancy)
+            );
+        }
 
-            await _client.UpdateVacancyAsync(vacancy);
+        protected override EntityToViewModelPropertyMappings<Vacancy, VacancyDescriptionEditModel> DefineMappings()
+        {
+            var mappings = new EntityToViewModelPropertyMappings<Vacancy, VacancyDescriptionEditModel>();
+
+            mappings.Add(e => e.Description, vm => vm.VacancyDescription);
+            mappings.Add(e => e.TrainingDescription, vm => vm.TrainingDescription);
+            mappings.Add(e => e.OutcomeDescription, vm => vm.OutcomeDescription);
+
+            return mappings;
         }
     }
 }
