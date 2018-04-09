@@ -74,6 +74,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             ValidateEmployerContactDetails();
 
             ValidateThingsToConsider();
+
+            ValidateEmployerInformation();
         }        
 
         private void CrossFieldValidations()
@@ -446,6 +448,33 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithErrorCode("76")
                 .RunCondition(VacancyRuleSet.ThingsToConsider)
                 .WithRuleId(VacancyRuleSet.ThingsToConsider);
+        }
+
+        private void ValidateEmployerInformation()
+        {
+            RuleFor(x => x.EmployerDescription)
+                .NotEmpty()
+                    .WithMessage("You must include employer information")
+                    .WithErrorCode("80")
+                .MaximumLength(500)
+                    .WithMessage("Employer information must be {MaxLength} characters or less")
+                    .WithErrorCode("77")
+                .ValidFreeTextCharacters()
+                    .WithMessage("Employer information contains invalid characters")
+                    .WithErrorCode("78")
+                .RunCondition(VacancyRuleSet.EmployerDescription)
+                .WithRuleId(VacancyRuleSet.EmployerDescription);
+
+            RuleFor(x => x.EmployerWebsiteUrl)
+                .MaximumLength(100)
+                    .WithMessage("The website address must not be more than {MaxLength} characters")
+                    .WithErrorCode("84")
+                .Must(FluentExtensions.BeValidWebUrl)
+                    .WithMessage("Enter a valid website address")
+                    .WithErrorCode("82")
+                    .When(v => !string.IsNullOrEmpty(v.EmployerWebsiteUrl))
+                .RunCondition(VacancyRuleSet.EmployerWebsiteUrl)
+                .WithRuleId(VacancyRuleSet.EmployerWebsiteUrl);
         }
 
         private void ValidateStartDateClosingDate()
