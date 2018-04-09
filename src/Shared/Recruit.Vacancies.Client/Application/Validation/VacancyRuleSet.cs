@@ -8,7 +8,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation
         None = 0,
         EmployerName = 1,
         EmployerAddress = 1 << 1,
-        NumberOfPostions = 1 << 2,
+        NumberOfPositions = 1 << 2,
         ShortDescription = 1 << 3,
         Title = 1 << 4,
         ClosingDate = 1 << 5,

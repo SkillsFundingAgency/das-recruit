@@ -17,7 +17,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
                 ShortDescription = new string('a', 60)
             };
 
-            var result = Validator.Validate(vacancy, VacancyRuleSet.NumberOfPostions | VacancyRuleSet.ShortDescription);
+            var result = Validator.Validate(vacancy, VacancyRuleSet.NumberOfPositions | VacancyRuleSet.ShortDescription);
 
             result.HasErrors.Should().BeFalse();
             result.Errors.Should().HaveCount(0);
@@ -33,13 +33,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
                 NumberOfPositions = numOfPositionsValue
             };
 
-            var result = Validator.Validate(vacancy, VacancyRuleSet.NumberOfPostions);
+            var result = Validator.Validate(vacancy, VacancyRuleSet.NumberOfPositions);
 
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(1);
             result.Errors[0].PropertyName.Should().Be(nameof(vacancy.NumberOfPositions));
             result.Errors[0].ErrorCode.Should().Be("10");
-            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.NumberOfPostions);
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.NumberOfPositions);
         }
 
         [Theory]

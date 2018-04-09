@@ -120,8 +120,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .Must(x => x.HasValue && x.Value > 0)
                     .WithMessage("Enter the number of positions for this vacancy")
                     .WithErrorCode("10")
-                .RunCondition(VacancyRuleSet.NumberOfPostions)
-                .WithRuleId(VacancyRuleSet.NumberOfPostions);
+                .RunCondition(VacancyRuleSet.NumberOfPositions)
+                .WithRuleId(VacancyRuleSet.NumberOfPositions);
         }
 
         private void ValidateShortDescription()
