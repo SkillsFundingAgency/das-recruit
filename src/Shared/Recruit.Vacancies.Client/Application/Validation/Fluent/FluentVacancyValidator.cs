@@ -72,7 +72,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             ValidateApplicationInstructions();
 
             ValidateEmployerContactDetails();
-        }
+
+            ValidateThingsToConsider();
+        }        
 
         private void CrossFieldValidations()
         {
@@ -431,6 +433,19 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .When(v => !string.IsNullOrEmpty(v.EmployerContactPhone))
                 .RunCondition(VacancyRuleSet.EmployerContactDetails)
                 .WithRuleId(VacancyRuleSet.EmployerContactDetails);
+        }
+
+        private void ValidateThingsToConsider()
+        {
+            RuleFor(x => x.ThingsToConsider)
+                .MaximumLength(350)
+                    .WithMessage("Things to consider must be {MaxLength} characters or less")
+                    .WithErrorCode("75")
+                .ValidFreeTextCharacters()
+                    .WithMessage("You have entered invalid characters")
+                    .WithErrorCode("76")
+                .RunCondition(VacancyRuleSet.ThingsToConsider)
+                .WithRuleId(VacancyRuleSet.ThingsToConsider);
         }
 
         private void ValidateStartDateClosingDate()

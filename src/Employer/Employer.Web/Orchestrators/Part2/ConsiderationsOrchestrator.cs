@@ -1,20 +1,25 @@
 using Esfa.Recruit.Employer.Web.ViewModels;
-using Esfa.Recruit.Vacancies.Client.Domain;
+using Esfa.Recruit.Vacancies.Client.Application.Validation;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Enums;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 {
-    public class ConsiderationsOrchestrator
+    public class ConsiderationsOrchestrator : EntityValidatingOrchestrator<Vacancy, ConsiderationsEditModel>
     {
+        private const VacancyRuleSet ValidationRules = VacancyRuleSet.ThingsToConsider;
         private readonly IVacancyClient _client;
+        private readonly ILogger<ConsiderationsOrchestrator> _logger;
 
-        public ConsiderationsOrchestrator(IVacancyClient client)
+        public ConsiderationsOrchestrator(ILogger<ConsiderationsOrchestrator> logger, IVacancyClient client) : base(logger)
         {
             _client = client;
+            _logger = logger;
         }
 
         public async Task<ConsiderationsViewModel> GetConsiderationsViewModelAsync(Guid vacancyId)
@@ -33,13 +38,35 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             return vm;
         }
 
-        public async Task PostConsiderationsEditModelAsync(ConsiderationsEditModel m)
+        public async Task<ConsiderationsViewModel> GetConsiderationsViewModelAsync(ConsiderationsEditModel m)
+        {
+            var vm = await GetConsiderationsViewModelAsync(m.VacancyId);
+
+            vm.ThingsToConsider = m.ThingsToConsider;            
+
+            return vm;
+        }
+
+        public async Task<OrchestratorResponse> PostConsiderationsEditModelAsync(ConsiderationsEditModel m)
         {
             var vacancy = await _client.GetVacancyForEditAsync(m.VacancyId);
 
             vacancy.ThingsToConsider = m.ThingsToConsider;
 
-            await _client.UpdateVacancyAsync(vacancy);
+            return await ValidateAndExecute(
+                vacancy,
+                v => _client.Validate(v, ValidationRules),
+                v => _client.UpdateVacancyAsync(vacancy)
+            );
+        }
+
+        protected override EntityToViewModelPropertyMappings<Vacancy, ConsiderationsEditModel> DefineMappings()
+        {
+            var mappings = new EntityToViewModelPropertyMappings<Vacancy, ConsiderationsEditModel>();
+
+            mappings.Add(e => e.ThingsToConsider, vm => vm.ThingsToConsider);
+
+            return mappings;
         }
     }
 }
