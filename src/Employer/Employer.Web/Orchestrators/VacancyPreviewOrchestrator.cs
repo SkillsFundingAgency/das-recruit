@@ -10,6 +10,8 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Services.MinimumWage;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
@@ -18,12 +20,15 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         private readonly IVacancyClient _client;
         private readonly IGeocodeImageService _mapService;
         private readonly IGetMinimumWages _wageService;
+        private readonly QualificationsConfiguration _qualificationsConfiguration;
 
-        public VacancyPreviewOrchestrator(IVacancyClient client, IGeocodeImageService mapService, IGetMinimumWages wageService)
+
+        public VacancyPreviewOrchestrator(IVacancyClient client, IGeocodeImageService mapService, IGetMinimumWages wageService, IOptions<QualificationsConfiguration> qualificationsConfigOptions)
         {
             _client = client;
             _mapService = mapService;
             _wageService = wageService;
+            _qualificationsConfiguration = qualificationsConfigOptions.Value;
         }
 
         public async Task<VacancyPreviewViewModel> GetVacancyPreviewViewModelAsync(Guid vacancyId)
@@ -57,7 +62,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 PossibleStartDate = vacancy.StartDate.Value.AsDisplayDate(),
                 ProviderName = vacancy.ProviderName,
                 ProviderAddress = vacancy.ProviderAddress,
-                Qualifications = vacancy.Qualifications.AsText(),
+                Qualifications = vacancy.Qualifications.AsText(_qualificationsConfiguration.QualificationTypes),
                 ShortDescription = vacancy.ShortDescription,
                 Skills = vacancy.Skills ?? Enumerable.Empty<string>(),
                 ThingsToConsider = vacancy.ThingsToConsider,

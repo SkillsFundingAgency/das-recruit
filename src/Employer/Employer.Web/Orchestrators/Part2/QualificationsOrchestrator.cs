@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Extensions;
+using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Employer.Web.ViewModels.Part2.Qualifications;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
-using Esfa.Recruit.Vacancies.Client.Domain;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Enums;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
@@ -87,25 +87,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         
         private List<QualificationEditModel> SortQualifications(List<QualificationEditModel> qualificationsToSort)
         {
-            var weightingComparer = Comparer<QualificationWeighting?>.Create((x, y) =>
-            {
-                if (x == y)
-                {
-                    return 0;
-                }
-
-                if (x == QualificationWeighting.Essential)
-                {
-                    return -1;
-                }
-
-                return 1;
-            });
-
-            var sortedQualifications = qualificationsToSort.OrderBy(q => q.Weighting, weightingComparer)
-                .ThenBy(q => q.QualificationType).ThenBy(q => q.Subject).ToList();
-
-            return sortedQualifications;
+            return  qualificationsToSort
+                    .OrderBy(q => q.Weighting, new QualificationWeightingComparer())
+                    .ThenBy(q => _qualificationsConfig.QualificationTypes.IndexOf(q.QualificationType))
+                    .ThenBy(q => q.Subject)
+                    .ToList();
         }
 
         protected override EntityToViewModelPropertyMappings<Vacancy, QualificationsEditModel> DefineMappings()
