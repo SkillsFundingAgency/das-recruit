@@ -42,7 +42,7 @@
                         <label for="wage-type-fixed">Fixed wage</label>
                     </div>
 
-                    <div id="custom-wage-fixed-panel" class="panel-border-narrow panel sfa-medium-top-margin">
+                    <div id="custom-wage-fixed-panel" class="panel-border-narrow panel">
                         <fieldset>
                             <p class="form-hint">
                                 The wage should not be less then the
@@ -90,3 +90,10 @@
         <hr>
     </div>
 </div>
+
+<script>
+    $(function () {
+        var showHideContent = new GOVUK.ShowHideContent()
+        showHideContent.init()
+    });
+</script>
