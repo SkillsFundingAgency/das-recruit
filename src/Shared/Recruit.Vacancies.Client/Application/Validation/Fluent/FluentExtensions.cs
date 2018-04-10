@@ -18,9 +18,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
         internal static bool BeValidWebUrl(string arg)
         {
-            Uri result;
-            return Uri.TryCreate(arg, UriKind.Absolute, out result)
-                   && (result.Scheme.Equals(Uri.UriSchemeHttp) || result.Scheme.Equals(Uri.UriSchemeHttps));
+            return Uri.IsWellFormedUriString(arg, UriKind.RelativeOrAbsolute);
         }
 
         internal static IRuleBuilderOptions<T, TElement> WithRuleId<T, TElement>(this IConfigurable<PropertyRule, IRuleBuilderOptions<T, TElement>> ruleBuilder, long ruleId)

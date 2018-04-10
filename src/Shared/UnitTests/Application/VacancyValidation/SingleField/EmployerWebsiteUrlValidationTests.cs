@@ -10,6 +10,9 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         [Theory]
         [InlineData(null)]
         [InlineData("")]
+        [InlineData("company")]
+        [InlineData("company.com")]
+        [InlineData("www.company.com")]
         [InlineData("http://www.company.com")]
         [InlineData("https://www.company.com")]
         public void NoErrorsWhenEmployerWebsiteUrlIsValid(string url)
@@ -41,12 +44,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.EmployerWebsiteUrl);
         }
 
-        [Fact]
-        public void EmployerWebsiteUrlMustBeAValidWebAddress()
+        [Theory]
+        [InlineData("invalid url")]
+        public void EmployerWebsiteUrlMustBeAValidWebAddress(string invalidUrl)
         {
             var vacancy = new Vacancy
             {
-                EmployerWebsiteUrl = "ftp://www.company.com"
+                EmployerWebsiteUrl = invalidUrl
             };
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.EmployerWebsiteUrl);

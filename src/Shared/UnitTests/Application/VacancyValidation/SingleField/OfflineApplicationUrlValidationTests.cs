@@ -8,6 +8,9 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
     public class OfflineApplicationUrlValidationTests : VacancyValidationTestsBase
     {
         [Theory]
+        [InlineData("applyhere")]
+        [InlineData("applyhere.com")]
+        [InlineData("www.applyhere.com")]
         [InlineData("http://www.applyhere.com")]
         [InlineData("https://www.applyhere.com")]
         public void NoErrorsWhenOfflineApplicationUrlIsValid(string url)
@@ -57,12 +60,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.ApplicationUrl);
         }
 
-        [Fact]
-        public void OfflineApplicationUrlMustBeAValidWebAddress()
+        [Theory]
+        [InlineData("Invalid Url")]
+        public void OfflineApplicationUrlMustBeAValidWebAddress(string invalidUrl)
         {
             var vacancy = new Vacancy
             {
-                ApplicationUrl = "ftp://www.applyhere.com"
+                ApplicationUrl = invalidUrl
             };
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.ApplicationUrl);
