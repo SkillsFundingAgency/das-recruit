@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
+using Esfa.Recruit.Employer.Web.Orchestrators;
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part2
 {
@@ -19,9 +20,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
         }
 
         [HttpGet("select-training-provider", Name = RouteNames.TrainingProvider_Select_Get)]
-        public async Task<IActionResult> SelectTrainingProvider(Guid vacancyId)
+        public async Task<IActionResult> SelectTrainingProvider([FromRoute]Guid vacancyId)
         {
-            var vm = await _orchestrator.GetIndexViewModel(vacancyId);
+            var vm = await _orchestrator.GetSelectTrainingProviderViewModel(vacancyId);
             return View(vm);
         }
 
@@ -30,7 +31,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
         {
             if (!ModelState.IsValid)
             {
-                var vm = await _orchestrator.GetIndexViewModel(m.VacancyId);
+                var vm = await _orchestrator.GetSelectTrainingProviderViewModel(m.VacancyId);
                 return View(vm);
             }
 
@@ -65,14 +66,26 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
                 return await ProviderNotFound(vm);
             }
 
-            await _orchestrator.PostConfirmEditModelAsync(m);
+            var response = await _orchestrator.PostConfirmEditModelAsync(m);
+
+            if (!response.Success)
+            {
+                response.AddErrorsToModelState(ModelState);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                var vm = await _orchestrator.GetSelectTrainingProviderViewModel(m.VacancyId);
+                return View("SelectTrainingProvider", vm);
+            }
+
             return RedirectToRoute(RouteNames.Preview_Index_Get);
         }
 
         private async Task<IActionResult> ProviderNotFound(SelectTrainingProviderEditModel m)
         {
             ModelState.AddModelError(string.Empty, string.Format(InvalidUkprnMessageFormat, m.Ukprn));
-            var vm = await _orchestrator.GetIndexViewModel(m.VacancyId);
+            var vm = await _orchestrator.GetSelectTrainingProviderViewModel(m.VacancyId);
             return View("SelectTrainingProvider", vm);
         }
     }

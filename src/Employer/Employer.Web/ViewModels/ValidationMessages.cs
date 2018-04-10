@@ -19,6 +19,14 @@
             }
         }
 
+        public static class TrainingProviderValidationMessages
+        {
+            public static class TypeOfUkprn
+            {
+                public const string UkprnFormat = "The UKPRN you have entered is not recognised";
+            }
+        }
+
         public static class WageValidationMessages
         {
             public static class TypeOfInteger

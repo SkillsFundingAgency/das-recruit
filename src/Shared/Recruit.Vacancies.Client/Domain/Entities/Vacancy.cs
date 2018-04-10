@@ -44,11 +44,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         /// We can only edit draft vacancies that have not been deleted
         /// </summary>
         public bool CanEdit => Status == VacancyStatus.Draft && IsDeleted == false;
-
-        public long? Ukprn { get; set; }
-        public string ProviderName { get; set; }
-        public string ProviderAddress { get; set; }
-
+        
         public string EmployerName { get; set; }
         public string OutcomeDescription { get; set; }
         public Address EmployerLocation { get; set; }
@@ -70,5 +66,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public List<string> Skills { get; set; }
 
         public List<Qualification> Qualifications { get; set; }
+        public TrainingProvider TrainingProvider { get; set; }
     }
 }

@@ -16,7 +16,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation
         TrainingProgramme = 1 << 7,
         Duration = 1 << 8,
         WorkingWeekDescription = 1 << 9,
-		WeeklyHours = 1 << 10,
+        WeeklyHours = 1 << 10,
         Wage = 1 << 11,
         StartDateEndDate = 1 << 12,
         MinimumWage = 1 << 13,
@@ -32,6 +32,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation
         ThingsToConsider = 1 << 23,
         EmployerDescription = 1 << 24,
         EmployerWebsiteUrl = 1 << 25,
-        All = ~None
+        TrainingProvider = 1 << 26,
+        All = ~None,
     }
 }

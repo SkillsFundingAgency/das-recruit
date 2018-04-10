@@ -76,6 +76,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             ValidateThingsToConsider();
 
             ValidateEmployerInformation();
+
+            ValidateTrainingProvider();
         }        
 
         private void CrossFieldValidations()
@@ -146,7 +148,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithErrorCode("15")
                 .RunCondition(VacancyRuleSet.ShortDescription)
                 .WithRuleId(VacancyRuleSet.ShortDescription);
-
         }
 
         private void ValidateClosingDate()
@@ -179,7 +180,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.Programme.Id)
                 .NotEmpty()
-                    .WithMessage("Select  apprenticeship training")
+                    .WithMessage("Select apprenticeship training")
                     .WithErrorCode("25")
                 .WithRuleId(VacancyRuleSet.TrainingProgramme)
                 .RunCondition(VacancyRuleSet.TrainingProgramme);
@@ -477,6 +478,14 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .WithRuleId(VacancyRuleSet.EmployerWebsiteUrl);
         }
 
+        private void ValidateTrainingProvider()
+        {
+            RuleFor(x => x.TrainingProvider)
+                .SetValidator(new TrainingProviderValidator((long)VacancyRuleSet.TrainingProvider))
+                .RunCondition(VacancyRuleSet.TrainingProvider)
+                .WithRuleId(VacancyRuleSet.TrainingProvider);
+        }
+
         private void ValidateStartDateClosingDate()
         {
             When(x => x.StartDate.HasValue && x.ClosingDate.HasValue, () =>
@@ -508,6 +517,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .RunCondition(VacancyRuleSet.TrainingExpiryDate)
                 .WithRuleId(VacancyRuleSet.TrainingExpiryDate);
             });
-        }        
+        }
     }
 }
