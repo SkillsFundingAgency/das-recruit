@@ -42,7 +42,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             var vm = new QualificationsViewModel
             {
                 QualificationTypes = _qualificationsConfig.QualificationTypes,
-                Qualifications = vacancy.Qualifications.ToViewModel()
+                Qualifications = vacancy.Qualifications.SortQualifications(_qualificationsConfig.QualificationTypes).ToViewModel()
             };
 
             return vm;
@@ -69,11 +69,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             {
                 throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
             }
+
+            var qualifications = (m.Qualifications.ToEntity() ?? new List<Qualification>());
+            vacancy.Qualifications = qualifications.SortQualifications(_qualificationsConfig.QualificationTypes);
+            m.Qualifications = vacancy.Qualifications.ToViewModel();
             
-            m.Qualifications = SortQualifications(m.Qualifications?.ToList() ?? new List<QualificationEditModel>());
-
-            vacancy.Qualifications = m.Qualifications.ToEntity();
-
             return await ValidateAndExecute(vacancy,
                 v => 
                 {
@@ -88,8 +88,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         private List<QualificationEditModel> SortQualifications(List<QualificationEditModel> qualificationsToSort)
         {
             return  qualificationsToSort
-                    .OrderBy(q => q.Weighting, new QualificationWeightingComparer())
-                    .ThenBy(q => _qualificationsConfig.QualificationTypes.IndexOf(q.QualificationType))
+                    .OrderBy(q => _qualificationsConfig.QualificationTypes.IndexOf(q.QualificationType))
                     .ThenBy(q => q.Subject)
                     .ToList();
         }
