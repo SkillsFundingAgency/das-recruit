@@ -26,7 +26,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         }
         
         [Fact]
-        public void EmployerWebsiteUrlMustBe200CharactersOrLess()
+        public void EmployerWebsiteUrlMustBe100CharactersOrLess()
         {
             var vacancy = new Vacancy
             {
