@@ -39,7 +39,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
 
                 logger = factory.CreateLogger("Program");
 
-                JobHostConfiguration jobConfiguration = GetHostConfiguration(serviceProvider);
+                JobHostConfiguration jobConfiguration = GetHostConfiguration(serviceProvider, factory);
                 var host = new JobHost(jobConfiguration);
 
                 var cancellationToken = new WebJobsShutdownWatcher().Token;
@@ -79,7 +79,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
             return loggerFactory;
         }
 
-        private static JobHostConfiguration GetHostConfiguration(ServiceProvider serviceProvider)
+        private static JobHostConfiguration GetHostConfiguration(ServiceProvider serviceProvider, ILoggerFactory loggerFactory)
         {
             // Host configuration
             var jobConfiguration = new JobHostConfiguration();
@@ -87,7 +87,8 @@ namespace Esfa.Recruit.Vacancies.Jobs
             jobConfiguration.Queues.BatchSize = 1;
             jobConfiguration.JobActivator = new CustomJobActivator(serviceProvider);
             jobConfiguration.UseTimers();
-
+            jobConfiguration.LoggerFactory = loggerFactory;
+            
             if (_isDevelopment)
             {
                 jobConfiguration.DashboardConnectionString = null; // Reduces errors in output.
