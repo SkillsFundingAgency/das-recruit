@@ -3,7 +3,11 @@ using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.ViewModels.Preview;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.ViewModels;
+using Esfa.Recruit.Vacancies.Client.Application.Validation;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
@@ -20,23 +24,63 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         [HttpGet("vacancy-preview", Name = RouteNames.Vacancy_Preview_Get)]
         public async Task<IActionResult> VacancyPreview(Guid vacancyId)
         {
-            var vm = await _orchestrator.GetVacancyPreviewViewModelAsync(vacancyId);
+            var vm = await GetViewModel(vacancyId);
+            
             return View(vm);
         }
 
         [HttpPost("vacancy-submit", Name = RouteNames.Preview_Submit_Post)]
         public async Task<IActionResult> Submit(SubmitEditModel m)
         {
-            var result = await _orchestrator.TrySubmitVacancyAsync(m);
+            var response = await _orchestrator.TrySubmitVacancyAsync(m);
 
-            if (result)
+            if (!response.Success)
+            {
+                response.AddErrorsToModelState(ModelState);
+            }
+            
+            if (ModelState.IsValid && response.Data)
             {
                 return RedirectToRoute(RouteNames.Submitted_Index_Get);
             }
+
+            if (ModelState.IsValid && !response.Data)
+            {
+                ModelState.AddModelError(string.Empty, "Vacancy has already been submitted");
+            }
+
+            var vm = await GetViewModel(m.VacancyId);
             
-            ModelState.AddModelError(string.Empty, "Vacancy has already been submitted");
-            var vm = await _orchestrator.GetVacancyPreviewViewModelAsync(m.VacancyId);
-            return View("Index", vm);
+            return View("VacancyPreview", vm);
+        }
+
+        private async Task<VacancyPreviewViewModel> GetViewModel(Guid vacancyId)
+        {
+            var vm = await _orchestrator.GetVacancyPreviewViewModelAsync(vacancyId);
+
+            vm.DescriptionSectionState = GetDescriptionSectionState(vm);
+
+            return vm;
+        }
+
+        private VacancyPreviewSectionState GetDescriptionSectionState(VacancyPreviewViewModel vm)
+        {
+            if (IsModelStateInvalidForProperties(nameof(vm.VacancyDescription), nameof(vm.TrainingDescription), nameof(vm.OutcomeDescription)))
+            {
+                return VacancyPreviewSectionState.Invalid;
+            }
+
+            if (string.IsNullOrWhiteSpace(vm.VacancyDescription) || string.IsNullOrWhiteSpace(vm.TrainingDescription) || string.IsNullOrWhiteSpace(vm.OutcomeDescription))
+            {
+                return VacancyPreviewSectionState.Incomplete;
+            }
+
+            return VacancyPreviewSectionState.Valid;
+        }
+
+        private bool IsModelStateInvalidForProperties(params string[] propertyNames)
+        {
+            return ModelState.Keys.Where(propertyNames.Contains).Any(k => ModelState[k].Errors.Any());
         }
     }
 }

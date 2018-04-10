@@ -1,9 +1,25 @@
 ﻿@model Esfa.Recruit.Employer.Web.ViewModels.VacancyPreviewViewModel
 
-@{ 
-    var emptySectionClass = "preview-empty";
-    var errorSectionClass = "preview-error";
+@functions
+{
+    const string emptySectionClass = "preview-empty";
+    const string errorSectionClass = "preview-error";
 
+    public string GetSectionClass(VacancyPreviewSectionState state)
+    {
+        switch (state)
+        {
+            case VacancyPreviewSectionState.Valid:
+                return string.Empty;
+            case VacancyPreviewSectionState.Incomplete:
+                return emptySectionClass;
+            default:
+                return errorSectionClass;
+        }
+    }
+}
+
+@{ 
     var providerDetailsClass = Model.HasTrainingProviderDetails == false ? emptySectionClass : string.Empty;
     var contactDetailsClass = Model.HasContactDetails == false ? emptySectionClass : string.Empty;
 }
@@ -93,14 +109,17 @@
                     </ul>
                 </div>
                 <div class="column-two-thirds">
-                    <div class="preview-empty">
+                    <div class="@GetSectionClass(Model.DescriptionSectionState)">
                         <h3 class="heading-small">
                             Vacancy description
                         </h3>
                         <div id="vacancy-full-description">
-                            <p class="preserve-format">@Model.VacancyDescription</p>
-                            <p class="preserve-format">@Model.TrainingDescription</p>
-                            <p class="preserve-format">@Model.OutcomeDescription</p>
+                            <span esfa-validation-message-for="VacancyDescription" class="error-message"></span>
+                            <p asp-condition="@(!string.IsNullOrWhiteSpace(Model.VacancyDescription))" class="preserve-format">@Model.VacancyDescription</p>
+                            <span esfa-validation-message-for="TrainingDescription" class="error-message"></span>
+                            <p asp-condition="@(!string.IsNullOrWhiteSpace(Model.TrainingDescription))" class="preserve-format">@Model.TrainingDescription</p>
+                            <span esfa-validation-message-for="OutcomeDescription" class="error-message"></span>
+                            <p asp-condition="@(!string.IsNullOrWhiteSpace(Model.OutcomeDescription))" class="preserve-format">@Model.OutcomeDescription</p>
                         </div>
                         <a asp-route="@RouteNames.VacancyDescription_Index_Get">Edit</a>
                     </div>
@@ -193,7 +212,7 @@
                     </div>
                 </div>
                 <div class="column-half map-container hide-nojs toggle-content--mob">
-                    <img asp-condition="@Model.HasMapUrl" id="static-map" class="static-map" src="@Model.MapUrl" />
+                    <img asp-condition="!string.IsNullOrWhiteSpace(Model.MapUrl)" id="static-map" class="static-map" src="@Model.MapUrl" />
                 </div>
             </div>
             <div id="offline-vacancy">
@@ -216,7 +235,7 @@
                 </div>
                 <div class="column-full">
                     <div id="training-provider-section" class="@providerDetailsClass">
-                        <p asp-condition="@Model.HasTrainingProviderDetails" id="vacancy-provider-name">
+                        <p asp-condition="Model.HasTrainingProviderDetails" id="vacancy-provider-name">
                             @Model.ProviderName<br />
                             @Model.ProviderAddress
                         </p>
@@ -230,11 +249,13 @@
             <hr class="sfa-no-bottom-margin" />
             <div class="form-group inline">
                 <div class="form-group small-top-margin">
-                    <form asp-condition="@Model.CanSubmit" asp-route="@RouteNames.Preview_Submit_Post" class="form-inline">
+                    <form asp-condition="Model.CanSubmit" asp-route="@RouteNames.Preview_Submit_Post" class="form-inline">
                         <input type="submit" value="Submit vacancy" class="button" />
                     </form>
-                    <a asp-route="@RouteNames.Dashboard_Index_Get" class="button-link">Return to dashboard</a>
-                    <a asp-condition="@Model.CanDelete" asp-route="@RouteNames.DeleteVacancy_Delete_Get" class="button-link">Delete</a>
+
+                    <a asp-condition="Model.CanDelete" asp-route="@RouteNames.Dashboard_Index_Get" class="button-link">Return to dashboard</a>
+                    
+                    <a asp-route="@RouteNames.DeleteVacancy_Delete_Get" class="button-link">Delete</a>
                 </div>
             </div>
         </main>

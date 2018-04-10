@@ -88,6 +88,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
             vacancy.Status = VacancyStatus.Submitted;
             vacancy.SubmittedDate = _timeProvider.Now;
+            //user name of submitter
+            //email of submitter
 
             var command = new SubmitVacancyCommand
             {

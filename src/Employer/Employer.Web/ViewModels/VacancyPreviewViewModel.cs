@@ -53,6 +53,8 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
                                             && !string.IsNullOrEmpty(ContactEmail)
                                             && !string.IsNullOrEmpty(ContactTelephone);
 
+        public VacancyPreviewSectionState DescriptionSectionState { get; internal set; }
+
         public IList<string> OrderedFieldNames => new List<string>
         {
             // This list is incomplete
@@ -60,5 +62,12 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
             nameof(TrainingDescription),
             nameof(OutcomeDescription)
         };
+    }
+
+    public enum VacancyPreviewSectionState
+    {
+        Incomplete,
+        Valid,
+        Invalid
     }
 }

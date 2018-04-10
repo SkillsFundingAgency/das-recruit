@@ -1,28 +1,35 @@
-﻿using Esfa.Recruit.Employer.Web.ViewModels;
+﻿using Esfa.Recruit.Employer.Web.Extensions;
+using Esfa.Recruit.Employer.Web.Services;
+using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Employer.Web.ViewModels.Preview;
 using Esfa.Recruit.Vacancies.Client.Domain.Enums;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Humanizer;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Services.MinimumWage;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
-using Esfa.Recruit.Employer.Web.Extensions;
-using System.Linq;
+using Esfa.Recruit.Vacancies.Client.Application.Validation;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Humanizer;
+using Microsoft.Rest;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
-    public class VacancyPreviewOrchestrator
+    public class VacancyPreviewOrchestrator : EntityValidatingOrchestrator<Vacancy, VacancyPreviewViewModel>
     {
+        private const VacancyRuleSet ValidationRules = VacancyRuleSet.All;
         private readonly IVacancyClient _client;
         private readonly IGeocodeImageService _mapService;
         private readonly IGetMinimumWages _wageService;
         private readonly QualificationsConfiguration _qualificationsConfiguration;
-
-        public VacancyPreviewOrchestrator(IVacancyClient client, IGeocodeImageService mapService, IGetMinimumWages wageService, IOptions<QualificationsConfiguration> qualificationsConfigOptions)
+        
+        public VacancyPreviewOrchestrator(IVacancyClient client, IGeocodeImageService mapService, IGetMinimumWages wageService, 
+            IOptions<QualificationsConfiguration> qualificationsConfigOptions, ILogger<VacancyPreviewOrchestrator> logger) : base(logger)
         {
             _client = client;
             _mapService = mapService;
@@ -32,11 +39,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public async Task<VacancyPreviewViewModel> GetVacancyPreviewViewModelAsync(Guid vacancyId)
         {
-            var vacancy = await _client.GetVacancyAsync(vacancyId);
+            var vacancy = await _client.GetVacancyForEditAsync(vacancyId);
 
             if (!vacancy.CanEdit)
-                throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
-
+                throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
+            
             var vm = new VacancyPreviewViewModel
             {
                 ApplicationInstructions = vacancy.ApplicationInstructions,
@@ -54,8 +61,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 HoursPerWeek = $"{vacancy.Wage.WeeklyHours:0.##}",
                 Location = vacancy.EmployerLocation,
                 MapUrl = vacancy.EmployerLocation.HasGeocode
-                ? _mapService.GetMapImageUrl(vacancy.EmployerLocation.Latitude.ToString(), vacancy.EmployerLocation.Longitude.ToString())
-                : _mapService.GetMapImageUrl(vacancy.EmployerLocation?.Postcode),
+                    ? _mapService.GetMapImageUrl(vacancy.EmployerLocation.Latitude.ToString(), vacancy.EmployerLocation.Longitude.ToString())
+                    : _mapService.GetMapImageUrl(vacancy.EmployerLocation?.Postcode),
                 NumberOfPositions = vacancy.NumberOfPositions.Value,
                 OutcomeDescription = vacancy.OutcomeDescription,
                 PossibleStartDate = vacancy.StartDate.Value.AsDisplayDate(),
@@ -74,22 +81,37 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 VacancyReferenceNumber = string.Empty,
                 WageInfo = vacancy.Wage.WageAdditionalInformation,
                 WageText = vacancy.Wage?.ToText(
-                () => _wageService.GetNationalMinimumWageRange(vacancy.StartDate.Value),
-                () => _wageService.GetApprenticeNationalMinimumWage(vacancy.StartDate.Value)),
+                    () => _wageService.GetNationalMinimumWageRange(vacancy.StartDate.Value),
+                    () => _wageService.GetApprenticeNationalMinimumWage(vacancy.StartDate.Value)),
                 WorkingWeekDescription = vacancy.Wage.WorkingWeekDescription
             };
-
+            
             return vm;
         }
-
-        public async Task<bool> TrySubmitVacancyAsync(SubmitEditModel m)
+        
+        public async Task<OrchestratorResponse<bool>> TrySubmitVacancyAsync(SubmitEditModel m)
         {
-            var vacancy = await _client.GetVacancyAsync(m.VacancyId);
+            var vacancy = await _client.GetVacancyForEditAsync(m.VacancyId);
 
-            if (!vacancy.CanSubmit)
-                throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
+            if (!vacancy.CanEdit)
+                throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
 
-            return await _client.SubmitVacancyAsync(m.VacancyId);
+            return await ValidateAndExecute(
+                vacancy,
+                v => _client.Validate(v, ValidationRules),
+                v => Task.FromResult(false) //_client.SubmitVacancyAsync(v.Id)
+            );
+        }
+        
+        protected override EntityToViewModelPropertyMappings<Vacancy, VacancyPreviewViewModel> DefineMappings()
+        {
+            var mappings = new EntityToViewModelPropertyMappings<Vacancy, VacancyPreviewViewModel>();
+
+            mappings.Add(e => e.Description, vm => vm.VacancyDescription);
+            mappings.Add(e => e.TrainingDescription, vm => vm.TrainingDescription);
+            mappings.Add(e => e.OutcomeDescription, vm => vm.OutcomeDescription);
+
+            return mappings;
         }
     }
 }
