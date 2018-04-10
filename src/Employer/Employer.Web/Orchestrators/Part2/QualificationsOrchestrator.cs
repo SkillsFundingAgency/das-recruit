@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Extensions;
-using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Employer.Web.ViewModels.Part2.Qualifications;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
