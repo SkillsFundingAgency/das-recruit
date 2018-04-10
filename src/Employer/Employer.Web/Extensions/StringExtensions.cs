@@ -52,11 +52,16 @@ namespace Esfa.Recruit.Employer.Web.Extensions
             return null;
         }
 
-        public static decimal? AsDecimal(this string text)
+        public static decimal? AsDecimal(this string text, int decimals)
         {
             if (decimal.TryParse(text, out var d))
             {
-                return d;
+                var roundedDecimal = decimal.Round(d, decimals, MidpointRounding.AwayFromZero);
+                if (roundedDecimal == d)
+                {
+                    return roundedDecimal;
+                }
+                return null;
             }
 
             return null;

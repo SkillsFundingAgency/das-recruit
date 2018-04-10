@@ -1,4 +1,6 @@
-﻿namespace Esfa.Recruit.Employer.Web.ViewModels.Validations
+﻿using Esfa.Recruit.Employer.Web.Extensions;
+
+namespace Esfa.Recruit.Employer.Web.ViewModels.Validations
 {
     using System;
     using System.ComponentModel.DataAnnotations;
@@ -19,15 +21,7 @@
                 return true;
             }
 
-            if (decimal.TryParse((string) value, out var d))
-            {
-                if (decimal.Round(d, _numberOfDecimalPlaces, MidpointRounding.AwayFromZero) == d)
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return (((string)value).AsDecimal(_numberOfDecimalPlaces) != null);
         }
     }
 }
