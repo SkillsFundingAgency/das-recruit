@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using Esfa.Recruit.Vacancies.Jobs.ApprenticeshipProgrammes;
 using Esfa.Recruit.Vacancies.Jobs.EditVacancyInfo;
+using Esfa.Recruit.Vacancies.Jobs.GenerateVacancyNumber;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -132,6 +133,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
                 options.AddDebug();
             });
 
+            services.AddScoped<GenerateVacancyNumberUpdater>();
             services.AddScoped<ApprenticeshipProgrammesUpdater>();
             services.AddScoped<EditVacancyInfoUpdater>();
 
@@ -140,7 +142,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddRecruitStorageClient(configuration);
 
             // Add Jobs
-            // services.AddScoped<GenerateVacancyNumberJob>();
+            services.AddScoped<GenerateVacancyNumberJob>();
             services.AddScoped<ApprenticeshipProgrammesJob>();
             services.AddScoped<EditVacancyInfoJob>();
 

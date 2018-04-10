@@ -11,6 +11,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Projections;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Domain.Services;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.SequenceStore;
 using Microsoft.Extensions.Options;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
@@ -24,7 +25,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly IEntityValidator<Vacancy, VacancyRuleSet> _validator;
         private readonly QualificationsConfiguration _qualificationsConfiguration;
 
-        public VacancyClient(IVacancyRepository repository, IQueryStoreReader reader, IMessaging messaging, ITimeProvider timeProvider, IEntityValidator<Vacancy, VacancyRuleSet> validator, IOptions<QualificationsConfiguration> qualificationsConfiguration)
+        public VacancyClient(
+            IVacancyRepository repository, 
+            IQueryStoreReader reader, 
+            IMessaging messaging, 
+            ITimeProvider timeProvider, 
+            IEntityValidator<Vacancy, VacancyRuleSet> validator, 
+            IOptions<QualificationsConfiguration> qualificationsConfiguration)
         {
             _timeProvider = timeProvider;
             _repository = repository;
@@ -34,19 +41,19 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _qualificationsConfiguration = qualificationsConfiguration.Value;
         }
 
-        public async Task UpdateVacancyAsync(Vacancy vacancy)
+        public Task UpdateVacancyAsync(Vacancy vacancy)
         {
             var command = new UpdateVacancyCommand
             {
                 Vacancy = vacancy
             };
 
-            await _messaging.SendCommandAsync(command);
+            return _messaging.SendCommandAsync(command);
         }
 
-        public async Task<Vacancy> GetVacancyForEditAsync(Guid id)
+        public Task<Vacancy> GetVacancyForEditAsync(Guid id)
         {
-            return await _repository.GetVacancyAsync(id);
+            return _repository.GetVacancyAsync(id);
         }
 
         public async Task<Guid> CreateVacancyAsync(string title, string employerAccountId, string user)
@@ -114,24 +121,24 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return true;
         }
         
-        public async Task<Dashboard> GetDashboardAsync(string employerAccountId)
+        public Task<Dashboard> GetDashboardAsync(string employerAccountId)
         {
-            return await _reader.GetDashboardAsync(employerAccountId);
+            return  _reader.GetDashboardAsync(employerAccountId);
         }
 
-        public async Task UpdateApprenticeshipProgrammesAsync(IEnumerable<ApprenticeshipProgramme> programmes)
+        public Task UpdateApprenticeshipProgrammesAsync(IEnumerable<ApprenticeshipProgramme> programmes)
         {
             var command = new UpdateApprenticeshipProgrammesCommand
             {
                 ApprenticeshipProgrammes = programmes
             };
 
-            await _messaging.SendCommandAsync(command);
+            return _messaging.SendCommandAsync(command);
         }
 
-        public async Task<ApprenticeshipProgrammes> GetApprenticeshipProgrammesAsync()
+        public Task<ApprenticeshipProgrammes> GetApprenticeshipProgrammesAsync()
         {
-            return await _reader.GetApprenticeshipProgrammesAsync();
+            return _reader.GetApprenticeshipProgrammesAsync();
         }
 
         public Task RecordEmployerAccountSignInAsync(string employerAccountId)
@@ -152,6 +159,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         public EntityValidationResult Validate(Vacancy vacancy, VacancyRuleSet rules)
         {
             return _validator.Validate(vacancy, rules);           
+        }
+
+        public Task AssignVacancyNumber(Guid id)
+        {
+            var command = new AssignVacancyNumberCommand
+            {
+                VacancyId = id
+            };
+
+            return _messaging.SendCommandAsync(command);            
         }
     }
 }
