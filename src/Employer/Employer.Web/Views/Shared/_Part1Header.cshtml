@@ -58,17 +58,17 @@
 
 <script>
     $(function () {
-        var exampleLink = $("#example_link");
-        var exampleVacancy = $("#example_vacancy");
-        exampleVacancy.hide();
+        var $exampleLink = $("#example_link");
+        var $exampleVacancy = $("#example_vacancy");
+        $exampleVacancy.hide();
 
-        exampleLink.click(function () {
-            if (exampleVacancy.is(":visible")) {
-                exampleLink[0].innerText = "Show an example advert";
+        $exampleLink.click(function () {
+            if ($exampleVacancy.is(":visible")) {
+                $exampleLink[0].innerText = "Show an example advert";
             } else {
-                exampleLink[0].innerText = "Hide example";
+                $exampleLink[0].innerText = "Hide example";
             }
-            exampleVacancy.slideToggle();
+            $exampleVacancy.slideToggle();
         });
     });
 </script>
