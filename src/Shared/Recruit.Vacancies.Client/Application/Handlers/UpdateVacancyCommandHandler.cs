@@ -26,7 +26,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Handlers
             await _messaging.PublishEvent(new VacancyUpdatedEvent
             {
                 SourceCommandId = message.CommandId.ToString(),
-                EmployerAccountId = message.Vacancy.EmployerAccountId
+                EmployerAccountId = message.Vacancy.EmployerAccountId,
+                VacancyId = message.Vacancy.Id
             });
         }
     }

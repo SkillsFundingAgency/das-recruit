@@ -4,6 +4,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Events
 {
     public interface IVacancyEvent
     {
-         Guid VacancyId { get; }
+        string EmployerAccountId { get; }
+        Guid VacancyId { get; }
     }
 }

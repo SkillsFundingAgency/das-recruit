@@ -19,7 +19,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.SequenceStore
 
         public async Task<long> GenerateAsync()
         {
-             var collection = GetCollection<Sequence>();
+            var collection = GetCollection<Sequence>();
             var filter = Builders<Sequence>.Filter.Eq(x => x.Name, VacancyNumberSequenceName);
             var update = Builders<Sequence>.Update.Inc(x => x.LastValue, 1);
             var options = new FindOneAndUpdateOptions<Sequence> { ReturnDocument = ReturnDocument.After };
