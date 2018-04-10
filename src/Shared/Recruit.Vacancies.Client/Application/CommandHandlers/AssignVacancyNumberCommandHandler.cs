@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Esfa.Recruit.Vacancies.Client.Application.Handlers
+namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
     public class AssignVacancyNumberCommandHandler: IRequestHandler<AssignVacancyNumberCommand>
     {

@@ -6,7 +6,7 @@ using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Esfa.Recruit.Vacancies.Client.Application.Handlers
+namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
     public class UpdateVacancyCommandHandler : IRequestHandler<UpdateVacancyCommand>
     {
