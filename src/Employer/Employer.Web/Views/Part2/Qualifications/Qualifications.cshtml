@@ -61,7 +61,7 @@
             </div>
 
             <div class="form-group">
-                <button type="submit" name="AddQualificationAction" id="add-qualification" value="AddQualification" class="button-link">+ Add this qualification</button>
+                <button type="submit" name="AddQualificationAction" id="add-qualification" value="AddQualification" class="button button-secondary">+ Add this qualification</button>
             </div>
 
             <table id="qualifications-container" style="@(Model.Qualifications.Any() == false ? "display:none" : null)">
@@ -97,7 +97,7 @@
                             <input name="Qualifications[@i].Grade" type="hidden" value="@qualification.Grade" />
                             <input name="Qualifications[@i].Weighting" type="hidden" value="@qualification.Weighting" />
 
-                            <button type="submit" name="RemoveQualification" value="@i">Remove</button>
+                            <button type="submit" name="RemoveQualification" class="button-fake-link" value="@i">Remove</button>
                         </td>
                     </tr>
                 }
@@ -114,14 +114,14 @@
 
 </div>
 
-<script type="text/javascript">
+<script>
 
     $(function() {
 
         var $qualificationsContainer = $("#qualifications-container");
         var $qualificationsSummary = $("#qualifications-summary");
 
-        var qualificationRowMask = '<tr><td></td><td></td><td></td><td></td><td><input name="QualificationType" type="hidden" value="" /><input name="Subject" type="hidden" value="" /><input name="Grade" type="hidden" value="" /><input name="Weighting" type="hidden" value="" /><button type="submit" name="RemoveQualification" value="">Remove</button></td></tr>';
+        var qualificationRowMask = '<tr><td></td><td></td><td></td><td></td><td><input name="QualificationType" type="hidden" value="" /><input name="Subject" type="hidden" value="" /><input name="Grade" type="hidden" value="" /><input name="Weighting" type="hidden" value="" /><button type="submit" name="RemoveQualification" class="button-fake-link" value="">Remove</button></td></tr>';
 
         var updateInputPositions = function () {
             
