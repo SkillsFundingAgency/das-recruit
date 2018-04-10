@@ -29,7 +29,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         {
             var vacancy = new Vacancy
             {
-                EmployerContactPhone = "+4402086695847".PadRight(101, 'w')
+                EmployerContactPhone = "+4402086695847".PadRight(17, 'w')
             };
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.EmployerContactDetails);
