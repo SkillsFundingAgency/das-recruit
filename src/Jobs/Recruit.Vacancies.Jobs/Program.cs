@@ -143,7 +143,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddRecruitStorageClient(configuration);
 
             // Add Jobs
-            services.AddScoped<GenerateVacancyNumberJob>();
+            services.AddScoped<VacancyEventsJob>();
             services.AddScoped<ApprenticeshipProgrammesJob>();
             services.AddScoped<EditVacancyInfoJob>();
 

@@ -9,20 +9,20 @@ using Newtonsoft.Json;
 
 namespace Esfa.Recruit.Vacancies.Jobs.GenerateVacancyNumber
 {
-    public class GenerateVacancyNumberJob
+    public class VacancyEventsJob
     {
-        private readonly ILogger<GenerateVacancyNumberJob> _logger;
+        private readonly ILogger<VacancyEventsJob> _logger;
         private readonly GenerateVacancyNumberUpdater _updater;
 
         private string JobName => GetType().Name;
 
-        public GenerateVacancyNumberJob(ILogger<GenerateVacancyNumberJob> logger, GenerateVacancyNumberUpdater updater)
+        public VacancyEventsJob(ILogger<VacancyEventsJob> logger, GenerateVacancyNumberUpdater updater)
         {
             _logger = logger;
             _updater = updater;
         }
 
-        public async Task GenerateVacancyNumber([QueueTrigger("vacancy-queue", Connection = "EventQueueConnectionString")] string message, TextWriter log)
+        public async Task HandleVacancyEvent([QueueTrigger("vacancy-queue", Connection = "EventQueueConnectionString")] string message, TextWriter log)
         {
             VacancyCreatedEvent data = null;
 
