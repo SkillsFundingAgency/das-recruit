@@ -77,7 +77,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 Duration = int.TryParse(m.Duration, out int duration) == true ? duration : default(int?),
                 DurationUnit = m.DurationUnit,
                 WorkingWeekDescription = m.WorkingWeekDescription,
-                WeeklyHours = m.WeeklyHours.AsDecimal(),
+                WeeklyHours = m.WeeklyHours.AsDecimal(2),
                 WageType = m.WageType,
                 FixedWageYearlyAmount = (m.WageType == WageType.FixedWage) ? m.FixedWageYearlyAmount?.AsMoney() : null,
                 WageAdditionalInformation = m.WageAdditionalInformation
