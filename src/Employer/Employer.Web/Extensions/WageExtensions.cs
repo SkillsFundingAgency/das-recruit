@@ -48,13 +48,5 @@ namespace Esfa.Recruit.Employer.Web.Extensions
             var yearlyRate = hourlyRate * weeklyHours * WeeksPerYear;
             return decimal.Round(yearlyRate, 2, MidpointRounding.AwayFromZero);
         }
-
-        public static string ToHoursPerWeekText(this Wage wage)
-        {
-            return wage.WeeklyHours.ToString().EndsWith("0")
-                    ? wage.WeeklyHours.ToString().SkipLast(1).ToString().Replace(".0", string.Empty)
-                    : wage.WeeklyHours.ToString();
-        }
-        
     }
 }

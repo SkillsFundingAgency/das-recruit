@@ -52,7 +52,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 EmployerName = vacancy.EmployerName,
                 EmployerWebsiteUrl = vacancy.EmployerWebsiteUrl,
                 ExpectedDuration = vacancy.Wage.DurationUnit.Value.GetDisplayName().ToQuantity(vacancy.Wage.Duration.Value),
-                HoursPerWeek = vacancy.Wage.ToHoursPerWeekText(),
+                HoursPerWeek = $"{vacancy.Wage.WeeklyHours:0.##}",
                 Location = vacancy.EmployerLocation,
                 MapUrl = vacancy.EmployerLocation.HasGeocode
                     ? _mapService.GetMapImageUrl(vacancy.EmployerLocation.Latitude.ToString(), vacancy.EmployerLocation.Longitude.ToString())
