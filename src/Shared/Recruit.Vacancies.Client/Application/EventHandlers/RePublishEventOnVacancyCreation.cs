@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.EventHandlers
 {
-    public class PublishEventOnVacancyCreation : INotificationHandler<VacancyCreatedEvent>
+    public class RePublishEventOnVacancyCreation : INotificationHandler<VacancyCreatedEvent>
     {
         private readonly IEventStore _eventStore;
 
-        public PublishEventOnVacancyCreation(IEventStore eventStore)
+        public RePublishEventOnVacancyCreation(IEventStore eventStore)
         {
             _eventStore = eventStore;
         }
