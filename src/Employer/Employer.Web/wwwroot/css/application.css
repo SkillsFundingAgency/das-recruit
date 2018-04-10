@@ -18,6 +18,22 @@
     padding:10px 15px 5px 10px;
 }
 
+.no-bottom-margin {
+  margin-bottom:0px;
+}
+
+.no-top-margin {
+  margin-top:0px;
+}
+
+.small-bottom-margin {
+  margin-bottom:30px;
+}
+
+.small-top-margin {
+  margin-top:30px;
+}
+
 /*** Skills ***/
 .button-secondary {
     background-color:#BFC1C3;
