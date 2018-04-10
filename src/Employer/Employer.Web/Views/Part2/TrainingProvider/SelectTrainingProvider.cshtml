@@ -1,5 +1,4 @@
 ﻿@model Esfa.Recruit.Employer.Web.ViewModels.SelectTrainingProviderViewModel
-
 <div class="grid-row">
     <div class="column-two-thirds">
         <h1 class="heading-large">@Model.Title</h1>
@@ -12,7 +11,7 @@
                     You will be able to get this from your training provider<br>
                     Your provider must also have a recruit an apprentice account
                 </span>
-                <input asp-for="Ukprn" type="text" class="form-control" />
+                <input asp-for="Ukprn" type="number" maxlength="8" class="form-control" />
             </div>
             <div class="form-group">
                 <input type="submit" value="Select provider" class="button" />

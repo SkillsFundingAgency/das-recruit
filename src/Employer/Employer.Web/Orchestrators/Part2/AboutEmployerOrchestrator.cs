@@ -45,7 +45,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             var vm = await GetAboutEmployerViewModelAsync(m.VacancyId);
 
             vm.EmployerDescription = m.EmployerDescription;
-            vm.EmployerWebsiteUrl = m.EmployerWebsiteUrl;            
+            vm.EmployerWebsiteUrl = m.EmployerWebsiteUrl;
 
             return vm;
         }
