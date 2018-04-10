@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.SingleField
 {
-    public partial class EmployerContactDetailTests : VacancyValidationTestsBase
+    public partial class EmployerContactDetailValidationTests : VacancyValidationTestsBase
     {
         [Theory]
         [InlineData(null)]

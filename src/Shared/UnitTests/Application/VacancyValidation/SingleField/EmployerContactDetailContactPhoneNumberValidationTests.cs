@@ -5,17 +5,17 @@ using Xunit;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.SingleField
 {
-    public partial class EmployerContactDetailTests : VacancyValidationTestsBase
+    public partial class EmployerContactDetailValidationTests : VacancyValidationTestsBase
     {
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        [InlineData("joebloggs@company.com")]
-        public void NoErrorsWhenEmployerContactEmailIsValid(string emailAddress)
+        [InlineData("02086695847")]
+        public void NoErrorsWhenEmployerContactPhoneIsValid(string phoneNo)
         {
             var vacancy = new Vacancy
             {
-                EmployerContactEmail = emailAddress
+                EmployerContactPhone = phoneNo
             };
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.EmployerContactDetails);
@@ -25,51 +25,50 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         }
 
         [Fact]
-        public void EmployerContactEmailMustBe100CharactersOrLess()
+        public void EmployerContactPhoneNumberMustBe16CharactersOrLess()
         {
             var vacancy = new Vacancy
             {
-                EmployerContactEmail = "name@".PadRight(101, 'w')
+                EmployerContactPhone = "+4402086695847".PadRight(101, 'w')
             };
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.EmployerContactDetails);
 
             result.HasErrors.Should().BeTrue();
-            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.EmployerContactEmail));
-            result.Errors[0].ErrorCode.Should().Be("92");
-            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.EmployerContactDetails);
-        }
-
-        [Theory]
-        [MemberData(nameof(TestData.BlacklistedCharacters), MemberType = typeof(TestData))]
-        public void EmployerContactEmailMustNotContainsInvalidCharacters(string invalidChar)
-        {
-            var vacancy = new Vacancy
-            {
-                EmployerContactEmail = invalidChar
-            };
-
-            var result = Validator.Validate(vacancy, VacancyRuleSet.EmployerContactDetails);
-
-            result.HasErrors.Should().BeTrue();
-            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.EmployerContactEmail));
-            result.Errors[0].ErrorCode.Should().Be("93");
+            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.EmployerContactPhone));
+            result.Errors[0].ErrorCode.Should().Be("95");
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.EmployerContactDetails);
         }
 
         [Fact]
-        public void EmployerContactEmailMustBeValidEmailFormat()
+        public void EmployerContactPhoneNumberMustBe8CharactersOrMore()
         {
             var vacancy = new Vacancy
             {
-                EmployerContactEmail = "joe"
+                EmployerContactPhone = "0208"
             };
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.EmployerContactDetails);
 
             result.HasErrors.Should().BeTrue();
-            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.EmployerContactEmail));
-            result.Errors[0].ErrorCode.Should().Be("94");
+            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.EmployerContactPhone));
+            result.Errors[0].ErrorCode.Should().Be("96");
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.EmployerContactDetails);
+        }
+
+        [Fact]
+        public void EmployerContactPhoneNumberMustBeValidEmailFormat()
+        {
+            var vacancy = new Vacancy
+            {
+                EmployerContactPhone = "543121***"
+            };
+
+            var result = Validator.Validate(vacancy, VacancyRuleSet.EmployerContactDetails);
+
+            result.HasErrors.Should().BeTrue();
+            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.EmployerContactPhone));
+            result.Errors[0].ErrorCode.Should().Be("97");
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.EmployerContactDetails);
         }
     }
