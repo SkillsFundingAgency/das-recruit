@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.SingleField
 {
-    public class OfflineApplicationUrlTests : VacancyValidationTestsBase
+    public class OfflineApplicationUrlValidationTests : VacancyValidationTestsBase
     {
         [Theory]
         [InlineData("http://www.applyhere.com")]
