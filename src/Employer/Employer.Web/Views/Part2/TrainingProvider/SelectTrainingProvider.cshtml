@@ -6,10 +6,11 @@
         @Html.Partial("_ValidationSummary", new ValidationSummaryViewModel { ModelState = ViewData.ModelState })
         <form asp-route="@RouteNames.TrainingProvider_Select_Post">
             <div class="form-group">
-                <label asp-for="Ukprn" class="form-label-bold">Enter UK Provider Reference Number (UKPRN)</label>
+                <label asp-for="Ukprn" class="form-label-bold">Enter the training provider UK Provider Reference Number (UKPRN)</label>
                 <span class="form-hint">
                     You will be able to get this from your training provider<br>
-                    Your provider must also have a recruit an apprentice account
+                    Your provider must also have a recruit an apprentice account<br>
+                    The UKPRN must only be 8 digits (For example, 12345678)
                 </span>
                 <input asp-for="Ukprn" type="number" maxlength="8" class="form-control" />
             </div>
