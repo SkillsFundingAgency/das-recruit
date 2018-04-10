@@ -27,6 +27,71 @@
     text-decoration:none;
 }
 
+/*** Example ad Preview styles ***/
+
+.example-advert, .preview-advert, .similar-adverts {
+    position: relative;
+    overflow: hidden;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    padding: 15px;
+  }
+  
+  @media (min-width: 641px) {
+    .example-advert, .preview-advert, .similar-adverts {
+      padding: 30px;
+    } 
+  }
+  
+  .example-advert {
+    border: 1px solid #bfc1c3;
+  }
+  
+  .preview-advert {
+    border: 1px solid #006435; 
+  }
+  
+  .similar-adverts {
+    border: 1px solid #F47738; 
+  }
+  
+  .example-advert:before{
+    content: "EXAMPLE VACANCY";
+    background: #bfc1c3;
+    color: white;
+  }
+  
+  .preview-advert:before{
+    content: "PREVIEW VACANCY";
+    background: #006435;
+    color: white;
+  }
+  
+  .similar-adverts:before{
+    content: "SIMILAR VACANCIES";
+    background: #F47738;
+    color: white;
+  }
+  
+  .example-advert:before, .preview-advert:before, .similar-adverts:before {  
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 5px 10px;
+    font-family: "nta", Arial, sans-serif;
+    font-weight: 800;
+    text-transform: none;
+    font-size: 12px;
+    line-height: 1.25;   
+  }
+  
+  @media (min-width: 641px) {
+    .example-advert:before, .preview-adver:before {
+      font-size: 14px;
+      line-height: 1.42857; 
+    } 
+  }
+
 /** Further legacy menu styles **/
 .header-inner {
   font-size:14px;

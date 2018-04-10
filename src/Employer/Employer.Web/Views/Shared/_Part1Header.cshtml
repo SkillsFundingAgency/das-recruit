@@ -14,13 +14,12 @@
 
 <a href="#example_link" id="example_link">Show an example advert</a>
 
-<div id="example_vacancy" class="example-advert" style="display:none">
+<div id="example_vacancy" class="example-advert">
     <h2 class="heading-medium small-top-margin">
-        <a class="vacancy-link" href="#example_vacancy">Software developer apprenticeship</a>
+        <h2 class="heading-medium small-top-margin">Software developer apprenticeship</h2>
     </h2>
     <ul class="list">
         <li class="secondary-text">Your Organisation</li>
-
         <li class="font-xsmall secondary-text">1 position available</li>
     </ul>
     <p>
@@ -28,48 +27,48 @@
     </p>
     <div class="grid-row">
         <div class="column-two-thirds">
-            <ul class="list sfa-no-margins vacancy-details-list ">
-                <li data-show="DisplayDistance">
+            <ul class="list vacancy-details-list ">
+                <li>
                     <span class="bold-small">Distance:</span>
-                    <span id="distance-value">1</span> mile
+                    <span>1</span> mile
                 </li>
                 <li data-show="DisplayClosingDate">
                     <span class="bold-small ">Closing date:</span>
                     <span>@($"{exampleClosingDate:dd MMM yyyy}")</span>
                 </li>
-                <li data-show="DisplayStartDate">
+                <li>
                     <span class="bold-small ">Possible start date:</span>
                     <span>@($"{exampleStartingDate:dd MMM yyyy}")</span>
                 </li>
-                <li data-show="DisplayApprenticeshipLevel" class="toggle-content">
+                <li>
                     <span class="bold-small">Apprenticeship level:</span> Advanced
                 </li>
-                <li data-show="DisplayWage" class="toggle-content">
+                <li>
                     <span class="bold-small">Wage:</span> £20,000 a year
                 </li>
             </ul>
         </div>
-        <div class="column-one-third map-container hide-nojs sfa-small-bottom-margin toggle-content--mob">
+        <div class="column-one-third map-container hide-nojs toggle-content--mob">
             <div class="map-placeholder"></div>
             <img class="static-map" src="https://maps.googleapis.com/maps/api/staticmap?markers=52.4025709122,-1.5099275323&size=190x125&zoom=12&client=gme-skillsfundingagency&signature=GONvv_qpwzkdaTvUvs4yoO9o_NQ=">
         </div>
     </div>
 </div>
-<br>
-
 <hr>
 
-<script type="text/javascript">
+<script>
     $(function () {
-        $("#example_vacancy").hide();
+        var exampleLink = $("#example_link");
+        var exampleVacancy = $("#example_vacancy");
+        exampleVacancy.hide();
 
-        $("#example_link").click(function () {
-            if ($("#example_vacancy").is(":visible")) {
-                $("#example_link")[0].innerText = "Show an example advert";
+        exampleLink.click(function () {
+            if (exampleVacancy.is(":visible")) {
+                exampleLink[0].innerText = "Show an example advert";
             } else {
-                $("#example_link")[0].innerText = "Hide example";
+                exampleLink[0].innerText = "Hide example";
             }
-            $("#example_vacancy").slideToggle();
+            exampleVacancy.slideToggle();
         });
     });
 </script>
