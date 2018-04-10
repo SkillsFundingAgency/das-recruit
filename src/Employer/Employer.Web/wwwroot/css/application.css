@@ -17,6 +17,35 @@
     padding:10px 15px 5px 10px;
 }
 
+.button-fake-link {
+    background:none;
+    border:none;
+    color: #005ea5;
+    cursor: pointer;
+    display:inline-block;
+    font-size:19px;
+    padding:10px 15px 5px 10px;    
+    text-decoration: underline;
+}
+
+.button-secondary {
+    background-color:#BFC1C3;
+    box-shadow:none;
+    color:#0B0C0C !important;
+    display:inline-block;
+    padding:7px 15px;
+    text-decoration:none;
+}
+
+.button-secondary:focus,.button-secondary:hover {
+    background-color:#BFC1C3;
+}
+
+.button-secondary:active {
+    top: 2px;
+    box-shadow: none;
+}
+
 .no-bottom-margin {
   margin-bottom:0px;
 }
@@ -37,15 +66,6 @@
 .error-summary .error-summary-list span {
     color: #b10e1e;
     font-weight: bold;
-}
-
-/*** Skills ***/
-.button-secondary {
-    background-color:#BFC1C3;
-    color:#0B0C0C !important;
-    display:inline-block;
-    padding:7px 15px;
-    text-decoration:none;
 }
 
 /*** Example ad Preview styles ***/

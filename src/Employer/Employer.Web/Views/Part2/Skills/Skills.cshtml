@@ -48,7 +48,7 @@
                 <label asp-for="AddCustomSkillName" class="form-label-bold">Add a new desired skill or personal quality</label>
                 <span asp-validation-for="AddCustomSkillName" class="error-message"></span>
                 <input asp-for="AddCustomSkillName" value="@Model.AddCustomSkillName" type="text" class="form-control">
-                <button name="AddCustomSkillAction" id="add-custom-skill" value="AddCustomSkill" type="submit" class="button-secondary">+ Add this skill</button>
+                <button name="AddCustomSkillAction" id="add-custom-skill" value="AddCustomSkill" type="submit" class="button button-secondary">+ Add this skill</button>
             </div>
 
             <div id="custom-skill-container" style="@(Model.CustomSkills.Any() == false ? "display:none" : null)">
@@ -69,7 +69,7 @@
                             <td>@customSkill</td>
                             <td>
                                 <input name="Skills" type="hidden" value="@customSkill" />
-                                <button name="RemoveCustomSkill" value="@customSkill" type="submit" class="button-link">Remove</button>
+                                <button name="RemoveCustomSkill" value="@customSkill" type="submit" class="button-fake-link">Remove</button>
                             </td>
                         </tr>
                 }
@@ -87,7 +87,7 @@
 
 </div>
 
-<script type="text/javascript">
+<script>
 
     $(function () {
 
@@ -95,7 +95,7 @@
         var $customSkillSummary = $("#custom-skill-summary");
         var $customSkillInput = $("#@Html.IdFor(m => m.AddCustomSkillName)");
 
-        var customRowMask = '<tr><td></td><td><input name="Skills" type="hidden" value="" /><button name="RemoveCustomSkill" value="" type="submit" class="button-link">Remove</button></td></tr>';
+        var customRowMask = '<tr><td></td><td><input name="Skills" type="hidden" value="" /><button name="RemoveCustomSkill" value="" type="submit" class="button-fake-link">Remove</button></td></tr>';
 
         var buildCustomSkillRow = function (customSkill) {
             var $row = $(customRowMask);
