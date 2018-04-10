@@ -6,6 +6,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Events;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Recruit.Vacancies.Client.Infrastructure.Events;
 
 namespace Esfa.Recruit.Vacancies.Jobs.GenerateVacancyNumber
 {
@@ -22,7 +23,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.GenerateVacancyNumber
             _updater = updater;
         }
 
-        public async Task HandleVacancyEvent([QueueTrigger("vacancy-queue", Connection = "EventQueueConnectionString")] string message, TextWriter log)
+        public async Task HandleVacancyEvent([QueueTrigger(QueueNames.VacancyEventsQueueName, Connection = "EventQueueConnectionString")] string message, TextWriter log)
         {
             VacancyCreatedEvent data = null;
 
