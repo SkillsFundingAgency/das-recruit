@@ -1,5 +1,5 @@
 ﻿using Esfa.Recruit.Employer.Web.Mappings;
-using Esfa.Recruit.Employer.Web.Models;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Apprenticeships.Api.Types.Providers;
 using SFA.DAS.Providers.Api.Client;
@@ -19,7 +19,7 @@ namespace Esfa.Recruit.Employer.Web.Services
             _providerClient = providerClient;
         }
 
-        public async Task<ProviderDetail> GetProviderDetailAsync(long ukprn)
+        public async Task<TrainingProvider> GetProviderAsync(long ukprn)
         {
             Provider provider;
 
@@ -33,7 +33,7 @@ namespace Esfa.Recruit.Employer.Web.Services
                 throw;
             }
 
-            return ProviderDetailMapper.MapFromProvider(provider);
+            return TrainingProviderMapper.MapFromApiProvider(provider);
         }
 
         public async Task<bool> ExistsAsync(long ukprn)

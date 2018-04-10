@@ -16,9 +16,7 @@
     <ProjectReference Include="..\Recruit.Vacancies.Client\Recruit.Vacancies.Client.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Application\VacancyValidation\SingleField\" />
     <Folder Include="Application\VacancyValidation\CrossField\" />
-    <Folder Include="Application\VacancyValidation\" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Application\VacancyValidation\.DS_Store" />

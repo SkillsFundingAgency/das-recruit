@@ -5,10 +5,11 @@
         <h1 class="heading-large">Things to consider</h1>
         @Html.Partial("_ValidationSummary", new ValidationSummaryViewModel { ModelState = ViewData.ModelState })
         <form asp-route="@RouteNames.Considerations_Post">
-            <div class="form-group">
+            <div esfa-validation-marker-for="ThingsToConsider" class="form-group">
                 <label asp-for="ThingsToConsider" class="form-label-bold">Things to consider (optional)</label>
                 <span class="form-hint">For example, if the vacancy will involve working outdoors, or lifting heavy objects</span>
-                <textarea asp-for="ThingsToConsider" class="form-control form-control-3-4 textarea-expandable" cols="20" rows="1"></textarea>
+                <span esfa-validation-message-for="ThingsToConsider" class="error-message"></span>
+                <textarea asp-for="ThingsToConsider" class="form-control form-control-3-4 textarea-expandable" cols="20" rows="1" maxlength="350"></textarea>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save and continue" class="button" />

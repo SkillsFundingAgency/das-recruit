@@ -13,8 +13,8 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
 
         public IList<string> OrderedFieldNames => new List<string>
         {
-            nameof(ApplicationProcessEditModel.ApplicationInstructions),
             nameof(ApplicationProcessEditModel.ApplicationUrl),
+            nameof(ApplicationProcessEditModel.ApplicationInstructions),
             nameof(ApplicationProcessEditModel.EmployerContactName),
             nameof(ApplicationProcessEditModel.EmployerContactEmail),
             nameof(ApplicationProcessEditModel.EmployerContactPhone)

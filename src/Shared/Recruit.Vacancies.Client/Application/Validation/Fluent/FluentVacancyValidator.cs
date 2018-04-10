@@ -66,7 +66,19 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             ValidateTrainingDescription();
 
             ValidateOutcomeDescription();
-        }
+
+            ValidateApplicationUrl();
+
+            ValidateApplicationInstructions();
+
+            ValidateEmployerContactDetails();
+
+            ValidateThingsToConsider();
+
+            ValidateEmployerInformation();
+
+            ValidateTrainingProvider();
+        }        
 
         private void CrossFieldValidations()
         {
@@ -114,8 +126,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .Must(x => x.HasValue && x.Value > 0)
                     .WithMessage("Enter the number of positions for this vacancy")
                     .WithErrorCode("10")
-                .RunCondition(VacancyRuleSet.NumberOfPostions)
-                .WithRuleId(VacancyRuleSet.NumberOfPostions);
+                .RunCondition(VacancyRuleSet.NumberOfPositions)
+                .WithRuleId(VacancyRuleSet.NumberOfPositions);
         }
 
         private void ValidateShortDescription()
@@ -136,7 +148,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithErrorCode("15")
                 .RunCondition(VacancyRuleSet.ShortDescription)
                 .WithRuleId(VacancyRuleSet.ShortDescription);
-
         }
 
         private void ValidateClosingDate()
@@ -169,7 +180,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.Programme.Id)
                 .NotEmpty()
-                    .WithMessage("Select  apprenticeship training")
+                    .WithMessage("Select apprenticeship training")
                     .WithErrorCode("25")
                 .WithRuleId(VacancyRuleSet.TrainingProgramme)
                 .RunCondition(VacancyRuleSet.TrainingProgramme);
@@ -357,6 +368,124 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .WithRuleId(VacancyRuleSet.OutcomeDescription);
         }
 
+        private void ValidateApplicationUrl()
+        {
+            RuleFor(x => x.ApplicationUrl)
+                .NotEmpty()
+                    .WithMessage("Enter a valid website address")
+                    .WithErrorCode("85")
+                .MaximumLength(200)
+                    .WithMessage("The website address must not be more than {MaxLength} characters")
+                    .WithErrorCode("84")
+                .Must(FluentExtensions.BeValidWebUrl)
+                    .WithMessage("Enter a valid website address")
+                    .WithErrorCode("86")
+                .RunCondition(VacancyRuleSet.ApplicationUrl)
+                .WithRuleId(VacancyRuleSet.ApplicationUrl);
+        }
+
+        private void ValidateApplicationInstructions()
+        {
+            RuleFor(x => x.ApplicationInstructions)
+                .MaximumLength(500)
+                    .WithMessage("The application process should be less than {MaxLength} characters")
+                    .WithErrorCode("88")
+                .ValidFreeTextCharacters()
+                    .WithMessage("You have entered invalid characters")
+                    .WithErrorCode("89")
+                .RunCondition(VacancyRuleSet.ApplicationInstructions)
+                .WithRuleId(VacancyRuleSet.ApplicationInstructions);
+        }
+
+        private void ValidateEmployerContactDetails()
+        {
+            RuleFor(x => x.EmployerContactName)
+                .MaximumLength(100)
+                    .WithMessage("Contact details should be less than {MaxLength} characters")
+                    .WithErrorCode("90")
+                .ValidFreeTextCharacters()
+                    .WithMessage("You have entered invalid characters")
+                    .WithErrorCode("91")
+                .RunCondition(VacancyRuleSet.EmployerContactDetails)
+                .WithRuleId(VacancyRuleSet.EmployerContactDetails);
+
+            RuleFor(x => x.EmployerContactEmail)
+                .MaximumLength(100)
+                    .WithMessage("Email address must not be more than {MaxLength} characters")
+                    .WithErrorCode("92")
+                .ValidFreeTextCharacters()
+                    .WithMessage("You have entered invalid characters")
+                    .WithErrorCode("93")
+                .Matches(ValidationConstants.EmailAddressRegex)
+                    .WithMessage("Enter a valid email address")
+                    .WithErrorCode("94")
+                    .When(v => !string.IsNullOrEmpty(v.EmployerContactEmail))
+                .RunCondition(VacancyRuleSet.EmployerContactDetails)
+                .WithRuleId(VacancyRuleSet.EmployerContactDetails);
+
+            RuleFor(x => x.EmployerContactPhone)
+                .MaximumLength(16)
+                    .WithMessage("Contact number must be less than {MaxLength} digits")
+                    .WithErrorCode("95")
+                .MinimumLength(8)
+                    .WithMessage("Contact number must be more than {MinLength} digits")
+                    .WithErrorCode("96")
+                .Matches(ValidationConstants.PhoneNumberRegex)
+                    .WithMessage("You have entered invalid characters")
+                    .WithErrorCode("97")
+                    .When(v => !string.IsNullOrEmpty(v.EmployerContactPhone))
+                .RunCondition(VacancyRuleSet.EmployerContactDetails)
+                .WithRuleId(VacancyRuleSet.EmployerContactDetails);
+        }
+
+        private void ValidateThingsToConsider()
+        {
+            RuleFor(x => x.ThingsToConsider)
+                .MaximumLength(350)
+                    .WithMessage("Things to consider must be {MaxLength} characters or less")
+                    .WithErrorCode("75")
+                .ValidFreeTextCharacters()
+                    .WithMessage("You have entered invalid characters")
+                    .WithErrorCode("76")
+                .RunCondition(VacancyRuleSet.ThingsToConsider)
+                .WithRuleId(VacancyRuleSet.ThingsToConsider);
+        }
+
+        private void ValidateEmployerInformation()
+        {
+            RuleFor(x => x.EmployerDescription)
+                .NotEmpty()
+                    .WithMessage("You must include employer information")
+                    .WithErrorCode("80")
+                .MaximumLength(500)
+                    .WithMessage("Employer information must be {MaxLength} characters or less")
+                    .WithErrorCode("77")
+                .ValidFreeTextCharacters()
+                    .WithMessage("Employer information contains invalid characters")
+                    .WithErrorCode("78")
+                .RunCondition(VacancyRuleSet.EmployerDescription)
+                .WithRuleId(VacancyRuleSet.EmployerDescription);
+
+            RuleFor(x => x.EmployerWebsiteUrl)
+                .MaximumLength(100)
+                    .WithMessage("The website address must not be more than {MaxLength} characters")
+                    .WithErrorCode("84")
+                .Must(FluentExtensions.BeValidWebUrl)
+                    .WithMessage("Enter a valid website address")
+                    .WithErrorCode("82")
+                    .When(v => !string.IsNullOrEmpty(v.EmployerWebsiteUrl))
+                .RunCondition(VacancyRuleSet.EmployerWebsiteUrl)
+                .WithRuleId(VacancyRuleSet.EmployerWebsiteUrl);
+        }
+
+        private void ValidateTrainingProvider()
+        {
+            RuleFor(x => x.TrainingProvider)
+                .SetValidator(new TrainingProviderValidator((long)VacancyRuleSet.TrainingProvider))
+                .RunCondition(VacancyRuleSet.TrainingProvider)
+                .WithRuleId(VacancyRuleSet.TrainingProvider);
+        }
+
         private void ValidateStartDateClosingDate()
         {
             When(x => x.StartDate.HasValue && x.ClosingDate.HasValue, () =>
@@ -389,7 +518,5 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .WithRuleId(VacancyRuleSet.TrainingExpiryDate);
             });
         }
-
-        
     }
 }

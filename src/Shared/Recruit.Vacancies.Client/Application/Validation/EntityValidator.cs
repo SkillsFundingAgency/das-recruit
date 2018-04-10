@@ -35,7 +35,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation
 
             context.RootContextData.Add(ValidationConstants.ValidationsRulesKey, rules);
 
-            var fluentResult =_validator.Validate(context);
+            var fluentResult = _validator.Validate(context);
 
             if (!fluentResult.IsValid)
             {

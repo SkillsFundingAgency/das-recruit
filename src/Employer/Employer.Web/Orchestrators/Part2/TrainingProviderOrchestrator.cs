@@ -1,26 +1,32 @@
-﻿using Esfa.Recruit.Employer.Web.Services;
+﻿using Esfa.Recruit.Employer.Web.Extensions;
+using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.ViewModels;
-using Esfa.Recruit.Vacancies.Client.Domain;
+using Esfa.Recruit.Vacancies.Client.Application.Validation;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Enums;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 {
-    public class TrainingProviderOrchestrator
+    public class TrainingProviderOrchestrator : EntityValidatingOrchestrator<Vacancy, ConfirmTrainingProviderEditModel>
     {
+        private const VacancyRuleSet ValidationRules = VacancyRuleSet.TrainingProvider;
         private readonly IVacancyClient _client;
         private readonly ITrainingProviderService _providerService;
+        private readonly ILogger<TrainingProviderOrchestrator> _logger;
 
-        public TrainingProviderOrchestrator(IVacancyClient client, ITrainingProviderService providerService)
+        public TrainingProviderOrchestrator(IVacancyClient client, ITrainingProviderService providerService, ILogger<TrainingProviderOrchestrator> logger) : base(logger)
         {
             _client = client;
             _providerService = providerService;
+            _logger = logger;
         }
 
-        public async Task<SelectTrainingProviderViewModel> GetIndexViewModel(Guid vacancyId)
+        public async Task<SelectTrainingProviderViewModel> GetSelectTrainingProviderViewModel(Guid vacancyId)
         {
             var vacancy = await _client.GetVacancyForEditAsync(vacancyId);
 
@@ -30,9 +36,16 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             var vm = new SelectTrainingProviderViewModel
             {
                 Title = vacancy.Title,
-                Ukprn = vacancy.Ukprn
+                Ukprn = vacancy.TrainingProvider?.Ukprn
             };
 
+            return vm;
+        }
+
+        public async Task<SelectTrainingProviderViewModel> GetSelectTrainingProviderViewModel(SelectTrainingProviderEditModel m)
+        {
+            var vm = await GetSelectTrainingProviderViewModel(m.VacancyId);
+            vm.Ukprn = long.TryParse(m.Ukprn, out var submittedUkprn) ? submittedUkprn : default(long);
             return vm;
         }
 
@@ -43,48 +56,58 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             if (vacancy.Status != VacancyStatus.Draft)
                 throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
 
-            var confirmViewModel = new ConfirmTrainingProviderViewModel
+            if (long.TryParse(m.Ukprn, out var ukprn) && ukprn != vacancy.TrainingProvider?.Ukprn)
             {
-                Title = vacancy.Title
+                var provider = await _providerService.GetProviderAsync(ukprn);
+
+                return new ConfirmTrainingProviderViewModel
+                {
+                    Title = vacancy.Title,
+                    Ukprn = provider.Ukprn.Value,
+                    ProviderName = provider.Name,
+                    ProviderAddress = provider.Address.GetInlineAddress()
+                };
+            }
+
+            return new ConfirmTrainingProviderViewModel
+            {
+                Title = vacancy.Title,
+                Ukprn = vacancy.TrainingProvider.Ukprn.Value,
+                ProviderName = vacancy.TrainingProvider.Name,
+                ProviderAddress = vacancy.TrainingProvider.Address.GetInlineAddress()
             };
-
-            if (long.TryParse(m.Ukprn, out var ukprn) && ukprn != vacancy.Ukprn)
-            {
-                var providerDetail = await _providerService.GetProviderDetailAsync(ukprn);
-                confirmViewModel.Ukprn = providerDetail.Ukprn;
-                confirmViewModel.ProviderName = providerDetail.ProviderName;
-                confirmViewModel.ProviderAddress = providerDetail.ProviderAddress;
-            }
-            else
-            {
-                confirmViewModel.Ukprn = vacancy.Ukprn.Value;
-                confirmViewModel.ProviderName = vacancy.ProviderName;
-                confirmViewModel.ProviderAddress = vacancy.ProviderAddress;
-            }
-
-            return confirmViewModel;
         }
 
-        public async Task PostConfirmEditModelAsync(ConfirmTrainingProviderEditModel m)
+        public Task<OrchestratorResponse> PostConfirmEditModelAsync(ConfirmTrainingProviderEditModel m)
         {
             var vacancyTask = _client.GetVacancyForEditAsync(m.VacancyId);
-            var providerDetailTask = _providerService.GetProviderDetailAsync(long.Parse(m.Ukprn));
+            var providerTask = _providerService.GetProviderAsync(long.Parse(m.Ukprn));
 
-            Task.WaitAll(new Task[] { vacancyTask, providerDetailTask });
+            Task.WaitAll(new Task[] { vacancyTask, providerTask });
 
             var vacancy = vacancyTask.Result;
-            var providerDetail = providerDetailTask.Result;
+            var provider = providerTask.Result;
 
-            vacancy.Ukprn = providerDetail.Ukprn;
-            vacancy.ProviderName = providerDetail.ProviderName;
-            vacancy.ProviderAddress = providerDetail.ProviderAddress;
+            vacancy.TrainingProvider = provider;
 
-            await _client.UpdateVacancyAsync(vacancy);
+            return ValidateAndExecute(
+                vacancy,
+                v => _client.Validate(v, ValidationRules),
+                v => _client.UpdateVacancyAsync(vacancy)
+            );
         }
 
         public Task<bool> ConfirmProviderExists(long ukprn)
         {
             return _providerService.ExistsAsync(ukprn);
+        }
+
+        protected override EntityToViewModelPropertyMappings<Vacancy, ConfirmTrainingProviderEditModel> DefineMappings()
+        {
+            return new EntityToViewModelPropertyMappings<Vacancy, ConfirmTrainingProviderEditModel>
+            {
+                { e => e.TrainingProvider.Ukprn, vm => vm.Ukprn }
+            };
         }
     }
 }
