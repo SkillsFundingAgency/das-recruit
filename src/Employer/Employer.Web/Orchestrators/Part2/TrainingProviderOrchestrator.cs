@@ -68,16 +68,14 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                     ProviderAddress = provider.Address.GetInlineAddress()
                 };
             }
-            else
+
+            return new ConfirmTrainingProviderViewModel
             {
-                return new ConfirmTrainingProviderViewModel
-                {
-                    Title = vacancy.Title,
-                    Ukprn = vacancy.TrainingProvider.Ukprn.Value,
-                    ProviderName = vacancy.TrainingProvider.Name,
-                    ProviderAddress = vacancy.TrainingProvider.Address.GetInlineAddress()
-                };
-            }
+                Title = vacancy.Title,
+                Ukprn = vacancy.TrainingProvider.Ukprn.Value,
+                ProviderName = vacancy.TrainingProvider.Name,
+                ProviderAddress = vacancy.TrainingProvider.Address.GetInlineAddress()
+            };
         }
 
         public Task<OrchestratorResponse> PostConfirmEditModelAsync(ConfirmTrainingProviderEditModel m)
