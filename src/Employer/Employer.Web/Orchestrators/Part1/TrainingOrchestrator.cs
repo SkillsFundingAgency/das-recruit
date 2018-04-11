@@ -15,7 +15,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
     public class TrainingOrchestrator : EntityValidatingOrchestrator<Vacancy, TrainingEditModel>
     {
-        private const VacancyRuleSet ValdationRules = VacancyRuleSet.ClosingDate | VacancyRuleSet.StartDate | VacancyRuleSet.TrainingProgramme | VacancyRuleSet.StartDateEndDate;
+        private const VacancyRuleSet ValdationRules = VacancyRuleSet.ClosingDate | VacancyRuleSet.StartDate | VacancyRuleSet.TrainingProgramme | VacancyRuleSet.StartDateEndDate | VacancyRuleSet.TrainingExpiryDate;
         private readonly IVacancyClient _client;
 
         public TrainingOrchestrator(IVacancyClient client, ILogger<TrainingOrchestrator> logger) : base(logger)
