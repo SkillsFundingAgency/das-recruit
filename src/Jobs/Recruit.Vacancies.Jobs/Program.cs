@@ -134,7 +134,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
                 options.AddDebug();
             });
 
-            services.AddScoped<GenerateVacancyNumberUpdater>();
+            services.AddScoped<VacancyEventHandler>();     
             services.AddScoped<ApprenticeshipProgrammesUpdater>();
             services.AddScoped<EditVacancyInfoUpdater>();
 

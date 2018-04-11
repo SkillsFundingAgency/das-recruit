@@ -6,61 +6,53 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Events;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Recruit.Vacancies.Client.Infrastructure.Events;
 
 namespace Esfa.Recruit.Vacancies.Jobs.GenerateVacancyNumber
 {
     public class VacancyEventsJob
     {
         private readonly ILogger<VacancyEventsJob> _logger;
-        private readonly GenerateVacancyNumberUpdater _updater;
+        private readonly VacancyEventHandler _handler;
 
         private string JobName => GetType().Name;
 
-        public VacancyEventsJob(ILogger<VacancyEventsJob> logger, GenerateVacancyNumberUpdater updater)
+        public VacancyEventsJob(ILogger<VacancyEventsJob> logger, VacancyEventHandler handler)
         {
             _logger = logger;
-            _updater = updater;
+            _handler = handler;
         }
 
         public async Task HandleVacancyEvent([QueueTrigger(QueueNames.VacancyEventsQueueName, Connection = "EventQueueConnectionString")] string message, TextWriter log)
         {
-            IVacancyEvent @event = null;
-
             try
             {
                 var eventItem = JsonConvert.DeserializeObject<EventItem>(message);
-
-                @event = UnPackEvent(eventItem.EventType, eventItem.Data);
-
-                _logger.LogInformation($"Start {JobName} For {{VacancyId}}", @event.VacancyId);
-
-                await _updater.AssignVacancyNumber(@event.VacancyId);
                 
-                _logger.LogInformation($"Finished {JobName} For {{VacancyId}}", @event.VacancyId);
+                await UnpackAndExecute(eventItem.EventType, eventItem.Data);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Unable to run {JobName} For {{VacancyId}}", @event?.VacancyId.ToString() ?? "unknown");
+                _logger.LogError(ex, $"Unable to run {JobName}");
             }
         }
 
-        private IVacancyEvent UnPackEvent(string eventType, string data)
+        private Task UnpackAndExecute(string eventType, string data)
         {
             switch (eventType)
             {
                 case nameof(VacancyCreatedEvent):
-                    return JsonConvert.DeserializeObject<VacancyCreatedEvent>(data);
+                    return _handler.Handle(JsonConvert.DeserializeObject<VacancyCreatedEvent>(data));
                 case nameof(VacancyUpdatedEvent):
-                    return JsonConvert.DeserializeObject<VacancyUpdatedEvent>(data);
+                    return _handler.Handle(JsonConvert.DeserializeObject<VacancyUpdatedEvent>(data));
                 case nameof(VacancySubmittedEvent):
-                    return JsonConvert.DeserializeObject<VacancySubmittedEvent>(data);
+                    return _handler.Handle(JsonConvert.DeserializeObject<VacancySubmittedEvent>(data));
                 case nameof(VacancyDeletedEvent):
-                    return JsonConvert.DeserializeObject<VacancyDeletedEvent>(data);
+                    return _handler.Handle(JsonConvert.DeserializeObject<VacancyDeletedEvent>(data));
                 default: 
                     throw new ArgumentOutOfRangeException(nameof(eventType), $"Unexpected value for event type: {eventType}");
             }
         }
     }
+
 }
 
