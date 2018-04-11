@@ -7,7 +7,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
     public class Vacancy
     {
         public Guid Id { get; set; }
-        public long? VacancyNumber { get; set; }
+        public long? VacancyReference { get; set; }
         
         public string Title { get; set; }
         

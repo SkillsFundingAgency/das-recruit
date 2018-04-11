@@ -32,16 +32,16 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         {
             var vacancy = await _repository.GetVacancyAsync(message.VacancyId);
             
-            if (vacancy.VacancyNumber.HasValue)
+            if (vacancy.VacancyReference.HasValue)
             {
-                _logger.LogWarning("Vacancy: {vacancyId} already has a vacancy number: {vacancyNumber}. Will not be changed.", vacancy.Id, vacancy.VacancyNumber);
+                _logger.LogWarning("Vacancy: {vacancyId} already has a vacancy number: {vacancyNumber}. Will not be changed.", vacancy.Id, vacancy.VacancyReference);
             }
 
-            vacancy.VacancyNumber = await _generator.GenerateAsync();
+            vacancy.VacancyReference = await _generator.GenerateAsync();
 
             await _repository.UpdateAsync(vacancy);
 
-            _logger.LogInformation("Updated Vacancy: {vacancyId} with vacancy number: {vacancyNumber}", vacancy.Id, vacancy.VacancyNumber);
+            _logger.LogInformation("Updated Vacancy: {vacancyId} with vacancy number: {vacancyNumber}", vacancy.Id, vacancy.VacancyReference);
         }
     }
 }
