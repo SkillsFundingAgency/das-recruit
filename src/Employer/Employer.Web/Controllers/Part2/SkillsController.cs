@@ -49,7 +49,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
 
             if (m.IsAddingCustomSkill || m.IsRemovingCustomSkill)
             {
-                TempData.Add(TempDataKeys.Skills, m.Skills);
+                TempData[TempDataKeys.Skills] = m.Skills;
                 return RedirectToRoute(RouteNames.Skills_Get);
             }
 
