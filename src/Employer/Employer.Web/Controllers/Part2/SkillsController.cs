@@ -33,13 +33,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
         [HttpPost("skills", Name = RouteNames.Skills_Post)]
         public async Task<IActionResult> Skills(SkillsEditModel m)
         {
-            if (m.IsAddingCustomSkill || m.IsRemovingCustomSkill)
-            {
-                HandleCustomSkillChange(m);
-
-                return RedirectToRoute(RouteNames.Skills_Get);
-            }
-
             var response = await _orchestrator.PostSkillsEditModelAsync(m);
 
             if (!response.Success)
@@ -53,25 +46,14 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
 
                 return View(vm);
             }
-            
+
+            if (m.IsAddingCustomSkill || m.IsRemovingCustomSkill)
+            {
+                TempData.Add(TempDataKeys.Skills, m.Skills);
+                return RedirectToRoute(RouteNames.Skills_Get);
+            }
+
             return RedirectToRoute(RouteNames.Preview_Index_Get);
-        }
-        
-        private void HandleCustomSkillChange(SkillsEditModel m)
-        {
-            var skills = m.Skills ?? new List<string>();
-
-            if (m.IsAddingCustomSkill)
-            {
-                skills.Add(m.AddCustomSkillName);
-            }
-
-            if (m.IsRemovingCustomSkill)
-            {
-                skills.Remove(m.RemoveCustomSkill);
-            }
-
-            TempData.Add(TempDataKeys.Skills, skills);
         }
         
         private void TryUpdateSkillsFromTempData(SkillsViewModel vm)
