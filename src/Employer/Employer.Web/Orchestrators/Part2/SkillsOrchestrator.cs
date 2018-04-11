@@ -70,10 +70,19 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             {
                 throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
             }
+
+            if (m.Skills == null)
+            {
+                m.Skills = new List<string>();
+            }
+
+            HandleCustomSkillChange(m);
             
-            var skills = m.Skills ?? new List<string>();
-            
-            vacancy.Skills = SortSkills(skills).ToList();
+            vacancy.Skills = SortSkills(m.Skills).ToList();
+            m.Skills = vacancy.Skills;
+
+            //if we are adding/removing a skill then just validate and don't persist
+            var validateOnly = m.IsAddingCustomSkill || m.IsRemovingCustomSkill;
 
             return await ValidateAndExecute(vacancy,
                 v =>
@@ -82,8 +91,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                     SyncErrorsAndModel(result.Errors, m);
                     return result;
                 },
-                v => _client.UpdateVacancyAsync(vacancy)
-            );
+                v => validateOnly ? Task.CompletedTask : _client.UpdateVacancyAsync(v));
         }
         
         protected override EntityToViewModelPropertyMappings<Vacancy, SkillsEditModel> DefineMappings()
@@ -137,8 +145,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         private void SyncErrorsAndModel(IList<EntityValidationError> errors, SkillsEditModel m)
         {
+
+            var skillsPropertyName = nameof(Vacancy.Skills);
+
             //Get the first invalid skill
-            var skillError = errors.FirstOrDefault(e => e.PropertyName.StartsWith($"{nameof(m.Skills)}["));
+            var skillError = errors.FirstOrDefault(e => e.PropertyName.StartsWith($"{skillsPropertyName}["));
             if (skillError == null)
             {
                 return;
@@ -153,8 +164,21 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             skillError.PropertyName = nameof(m.AddCustomSkillName);
 
             //Remove other skill errors
-            errors.Where(e => e.PropertyName.StartsWith($"{nameof(m.Skills)}[")).ToList()
+            errors.Where(e => e.PropertyName.StartsWith($"{skillsPropertyName}[")).ToList()
                 .ForEach(r => errors.Remove(r));
+        }
+
+        private void HandleCustomSkillChange(SkillsEditModel m)
+        {
+            if (m.IsAddingCustomSkill)
+            {
+                m.Skills.Add(m.AddCustomSkillName);
+            }
+
+            if (m.IsRemovingCustomSkill)
+            {
+                m.Skills.Remove(m.RemoveCustomSkill);
+            }
         }
     }
 }

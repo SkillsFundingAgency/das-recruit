@@ -35,13 +35,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
         [HttpPost("qualifications", Name = RouteNames.Qualifications_Post)]
         public async Task<IActionResult> Qualifications(QualificationsEditModel m)
         {
-            if (m.IsAddingQualification || m.IsRemovingQualification)
-            {
-                HandleQualificationChange(m);
-
-                return RedirectToRoute(RouteNames.Qualifications_Get);
-            }
-
             var response = await _orchestrator.PostQualificationsEditModelAsync(m);
 
             if (!response.Success)
@@ -55,25 +48,14 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
                 
                 return View(vm);
             }
+
+            if (m.IsAddingQualification || m.IsRemovingQualification)
+            {
+                TempData.Put(TempDataKeys.Qualifications, m.Qualifications);
+                return RedirectToRoute(RouteNames.Qualifications_Get);
+            }
             
             return RedirectToRoute(RouteNames.Preview_Index_Get);
-        }
-
-        private void HandleQualificationChange(QualificationsEditModel m)
-        {
-            var qualifications = m.Qualifications?.ToList() ?? new List<QualificationEditModel>();
-
-            if (m.IsAddingQualification)
-            {
-                qualifications.Add(m);
-            }
-
-            if (m.IsRemovingQualification)
-            {
-                qualifications.RemoveAt(int.Parse(m.RemoveQualification));
-            }
-
-            TempData.Put(TempDataKeys.Qualifications, qualifications);
         }
 
         private void TryUpdateQualificationsFromTempData(QualificationsViewModel vm)
