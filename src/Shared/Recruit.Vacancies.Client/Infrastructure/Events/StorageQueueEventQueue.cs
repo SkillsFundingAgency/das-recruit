@@ -33,7 +33,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Events
             var storageAccount = CloudStorageAccount.Parse(_connectionString);
             var client = storageAccount.CreateCloudQueueClient();
             
-            string queueName = GetQueueName(@event);
+            var queueName = GetQueueName(@event);
             
             var queue = client.GetQueueReference(queueName);
             await queue.CreateIfNotExistsAsync();
