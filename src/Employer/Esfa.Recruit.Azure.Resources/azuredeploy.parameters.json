@@ -39,6 +39,9 @@
     },
     "SharedAppServicePlanResourceGroup": {
       "value": ""
+    },
+    "CustomHostname": {
+      "value": ""
     }
   }
 }

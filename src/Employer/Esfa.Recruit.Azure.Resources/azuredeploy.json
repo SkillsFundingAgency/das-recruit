@@ -48,6 +48,12 @@
     },
     "SharedAppServicePlanResourceGroup": {
       "type": "string"
+    },
+    "CustomHostname": {
+      "type": "string"
+    },
+    "KeyvaultCertificateName": {
+      "type": "string"
     }
   },
   "variables": {
@@ -167,11 +173,25 @@
             }
           ],
           "alwaysOn": true
-        }
+        },
+        "httpsOnly": true
       },
       "dependsOn": [
         "[resourceId('microsoft.insights/components', variables('AppInsightsName'))]",
         "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('CosmosDbName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Web/sites/hostnameBindings",
+      "name": "[concat(variables('EmployerRecruitAppServiceName'), '/', parameters('CustomHostname'))]",
+      "apiVersion": "2016-03-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "sslState": "SniEnabled",
+        "thumbprint": "[reference(resourceId(parameters('SharedAppServicePlanResourceGroup'), 'Microsoft.Web/certificates', parameters('KeyvaultCertificateName')), '2016-03-01').Thumbprint]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', variables('EmployerRecruitAppServiceName'))]"
       ]
     },
     {
@@ -279,7 +299,8 @@
               "physicalPath": "site\\wwwroot\\app_data\\jobs\\continuous\\Recruit.Vacancies.Jobs"
             }
           ]
-        }
+        },
+        "httpsOnly": true
       },
       "dependsOn": [
         "[variables('StorageAccountName')]",
