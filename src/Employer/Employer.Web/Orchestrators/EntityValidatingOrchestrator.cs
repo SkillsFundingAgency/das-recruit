@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Application.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -77,39 +78,13 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             foreach (var item in _mappings)
             {
-                var entityProperty = GetPropertyName(item.Item1);
-                var viewModelProperty = GetPropertyName(item.Item2);
+                var entityProperty = item.Item1.GetPropertyName();
+                var viewModelProperty = item.Item2.GetPropertyName();
                 mappings.Add(entityProperty, viewModelProperty);
             };
 
             return mappings;
         }
-
-        private string GetPropertyName<T>(Expression<Func<T, object>> propertyExpression)
-        {
-            SortedSet<string> propertyNames = new SortedSet<string>();
-
-            var getMemberExp = new Func<Expression, MemberExpression>(toUnwrap =>
-            {
-                if (toUnwrap is UnaryExpression)
-                {
-                    return ((UnaryExpression)toUnwrap).Operand as MemberExpression;
-                }
-
-                return toUnwrap as MemberExpression;
-            });
-
-            var memberNames = new Stack<string>();
-
-            var memberExp = getMemberExp(propertyExpression.Body);
-
-            while (memberExp != null)
-            {
-                memberNames.Push(memberExp.Member.Name);
-                memberExp = getMemberExp(memberExp.Expression);
-            }
-
-            return string.Join(".", memberNames);
-        }
+        
     }
 }

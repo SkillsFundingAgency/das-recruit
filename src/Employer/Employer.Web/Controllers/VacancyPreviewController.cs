@@ -3,11 +3,15 @@ using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.ViewModels.Preview;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
@@ -36,6 +40,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             if (!response.Success)
             {
+                FlattenErrors(response);
                 response.AddErrorsToModelState(ModelState);
             }
             
@@ -56,69 +61,73 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
         private async Task<VacancyPreviewViewModel> GetViewModel(Guid vacancyId)
         {
-            var vm = await _orchestrator.GetVacancyPreviewViewModelAsync(vacancyId);
+            var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(vacancyId);
 
-            vm.DescriptionSectionState = GetDescriptionSectionState(vm);
-            vm.SkillsSectionState = GetSkillsSectionState(vm);
-            vm.QualificationsSectionState = GetQualificationsSectionState(vm);
+            viewModel.DescriptionSectionState = GetSectionState(viewModel, vm => vm.VacancyDescription, vm => vm.TrainingDescription, vm => vm.OutcomeDescription);
+            viewModel.SkillsSectionState = GetSectionState(viewModel, vm => vm.Skills);
+            viewModel.QualificationsSectionState = GetSectionState(viewModel, vm => vm.Qualifications);
 
-            return vm;
+            return viewModel;
         }
 
-        private VacancyPreviewSectionState GetDescriptionSectionState(VacancyPreviewViewModel vm)
+        private VacancyPreviewSectionState GetSectionState<T>(T vm, params Expression<Func<T, object>>[] properties)
         {
-            if (IsModelStateInvalidForProperties(nameof(vm.VacancyDescription), nameof(vm.TrainingDescription), nameof(vm.OutcomeDescription)))
+            foreach (var property in properties)
             {
-                return VacancyPreviewSectionState.Invalid;
+                var propertyName = property.GetPropertyName();
+                if (ModelState.Keys.Where(k => k == propertyName).Any(k => ModelState[k].Errors.Any()))
+                {
+                    return VacancyPreviewSectionState.Invalid;
+                }
             }
 
-            if (string.IsNullOrWhiteSpace(vm.VacancyDescription) || string.IsNullOrWhiteSpace(vm.TrainingDescription) || string.IsNullOrWhiteSpace(vm.OutcomeDescription))
+            foreach (var property in properties)
             {
-                return VacancyPreviewSectionState.Incomplete;
+                var propertyValueFunc = property.Compile();
+                var propertyValue = propertyValueFunc(vm);
+
+                if (propertyValue is null)
+                {
+                    return VacancyPreviewSectionState.Incomplete;
+                }
+
+                if (propertyValue is string stringProperty)
+                {
+                    if (string.IsNullOrWhiteSpace(stringProperty))
+                    {
+                        return VacancyPreviewSectionState.Incomplete;
+                    }
+                }
+
+                if(propertyValue is IEnumerable listProperty)
+                {
+                    bool any = false;
+                    foreach (var item in listProperty)
+                    {
+                        any = true;
+                        break;
+                    }
+                    if (any == false)
+                    {
+                        return VacancyPreviewSectionState.Incomplete;
+                    }
+                }
             }
 
             return VacancyPreviewSectionState.Valid;
         }
-
-        private VacancyPreviewSectionState GetSkillsSectionState(VacancyPreviewViewModel vm)
+        
+        private void FlattenErrors(OrchestratorResponse response)
         {
-            if (IsModelStateInvalidForProperties(nameof(vm.Skills)))
+            //Flatten errors to their parent instead. 'Qualifications[1].Grade' > 'Qualifications'
+            foreach (var error in response.Errors.Errors)
             {
-                return VacancyPreviewSectionState.Invalid;
+                var start = error.PropertyName.IndexOf('[');
+                if (start > -1)
+                {
+                    error.PropertyName = error.PropertyName.Substring(0, start);
+                }
             }
-
-            if (!vm.Skills.Any())
-            {
-                return VacancyPreviewSectionState.Incomplete;
-            }
-
-            return VacancyPreviewSectionState.Valid;
-        }
-
-        private VacancyPreviewSectionState GetQualificationsSectionState(VacancyPreviewViewModel vm)
-        {
-            if (IsModelStateInvalidForProperties(nameof(vm.Qualifications)))
-            {
-                return VacancyPreviewSectionState.Invalid;
-            }
-
-            if (!vm.Qualifications.Any())
-            {
-                return VacancyPreviewSectionState.Incomplete;
-            }
-
-            return VacancyPreviewSectionState.Valid;
-        }
-
-        private bool IsModelStateInvalidForProperties(params string[] propertyNames)
-        {
-            return ModelState.Keys.Where(propertyNames.Contains).Any(k => ModelState[k].Errors.Any());
-        }
-
-        private void FlattenModelState()
-        {
-            //Change 'Qualification[1].Grade' to 'Qualification'
-            
         }
     }
 }

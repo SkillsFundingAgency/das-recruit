@@ -98,29 +98,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             return await ValidateAndExecute(
                 vacancy,
-                v =>
-                {
-                    var result = _client.Validate(v, ValidationRules);
-                    SyncErrorsAndModel(result.Errors, m);
-                    return result;
-                },
+                v => _client.Validate(v, ValidationRules),
                 v => Task.FromResult(false) //_client.SubmitVacancyAsync(v.Id)
             );
         }
-
-        private void SyncErrorsAndModel(IList<EntityValidationError> errors, SubmitEditModel m)
-        {
-            //Attach any child errors to their parent instead. 'Qualifications[1].Grade' > 'Qualifications'
-            foreach (var error in errors)
-            {
-                var start = error.PropertyName.IndexOf('[');
-                if (start > -1)
-                {
-                    error.PropertyName = error.PropertyName.Substring(0, start);
-                }
-            }
-        }
-
+        
         protected override EntityToViewModelPropertyMappings<Vacancy, VacancyPreviewViewModel> DefineMappings()
         {
             var mappings = new EntityToViewModelPropertyMappings<Vacancy, VacancyPreviewViewModel>();
