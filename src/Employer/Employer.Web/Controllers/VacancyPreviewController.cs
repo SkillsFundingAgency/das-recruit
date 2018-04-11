@@ -59,6 +59,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             var vm = await _orchestrator.GetVacancyPreviewViewModelAsync(vacancyId);
 
             vm.DescriptionSectionState = GetDescriptionSectionState(vm);
+            vm.SkillsSectionState = GetSkillsSectionState(vm);
+            vm.QualificationsSectionState = GetQualificationsSectionState(vm);
 
             return vm;
         }
@@ -78,9 +80,45 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             return VacancyPreviewSectionState.Valid;
         }
 
+        private VacancyPreviewSectionState GetSkillsSectionState(VacancyPreviewViewModel vm)
+        {
+            if (IsModelStateInvalidForProperties(nameof(vm.Skills)))
+            {
+                return VacancyPreviewSectionState.Invalid;
+            }
+
+            if (!vm.Skills.Any())
+            {
+                return VacancyPreviewSectionState.Incomplete;
+            }
+
+            return VacancyPreviewSectionState.Valid;
+        }
+
+        private VacancyPreviewSectionState GetQualificationsSectionState(VacancyPreviewViewModel vm)
+        {
+            if (IsModelStateInvalidForProperties(nameof(vm.Qualifications)))
+            {
+                return VacancyPreviewSectionState.Invalid;
+            }
+
+            if (!vm.Qualifications.Any())
+            {
+                return VacancyPreviewSectionState.Incomplete;
+            }
+
+            return VacancyPreviewSectionState.Valid;
+        }
+
         private bool IsModelStateInvalidForProperties(params string[] propertyNames)
         {
             return ModelState.Keys.Where(propertyNames.Contains).Any(k => ModelState[k].Errors.Any());
+        }
+
+        private void FlattenModelState()
+        {
+            //Change 'Qualification[1].Grade' to 'Qualification'
+            
         }
     }
 }

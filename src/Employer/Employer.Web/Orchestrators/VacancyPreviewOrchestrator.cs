@@ -98,11 +98,29 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             return await ValidateAndExecute(
                 vacancy,
-                v => _client.Validate(v, ValidationRules),
+                v =>
+                {
+                    var result = _client.Validate(v, ValidationRules);
+                    SyncErrorsAndModel(result.Errors, m);
+                    return result;
+                },
                 v => Task.FromResult(false) //_client.SubmitVacancyAsync(v.Id)
             );
         }
-        
+
+        private void SyncErrorsAndModel(IList<EntityValidationError> errors, SubmitEditModel m)
+        {
+            //Attach any child errors to their parent instead. 'Qualifications[1].Grade' > 'Qualifications'
+            foreach (var error in errors)
+            {
+                var start = error.PropertyName.IndexOf('[');
+                if (start > -1)
+                {
+                    error.PropertyName = error.PropertyName.Substring(0, start);
+                }
+            }
+        }
+
         protected override EntityToViewModelPropertyMappings<Vacancy, VacancyPreviewViewModel> DefineMappings()
         {
             var mappings = new EntityToViewModelPropertyMappings<Vacancy, VacancyPreviewViewModel>();
@@ -110,6 +128,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             mappings.Add(e => e.Description, vm => vm.VacancyDescription);
             mappings.Add(e => e.TrainingDescription, vm => vm.TrainingDescription);
             mappings.Add(e => e.OutcomeDescription, vm => vm.OutcomeDescription);
+            mappings.Add(e => e.Skills, vm => vm.Skills);
+            mappings.Add(e => e.Qualifications, vm => vm.Qualifications);
 
             return mappings;
         }

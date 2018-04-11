@@ -131,21 +131,23 @@
                     <h2 class="heading-large">Requirements and prospects</h2>
                 </div>
                 <div class="column-half">
-                    <div class="preview-empty">
+                    <div class="@GetSectionClass(Model.SkillsSectionState)">
                         <h3 class="heading-small">Desired skills and personal qualities</h3>
                         <div id="vacancy-skills-qualities-required">
+                            <span esfa-validation-message-for="Skills" class="error-message"></span>
                             <p class="preserve-format">@string.Join(", ", Model.Skills)</p>
                         </div>
                         <a asp-route="@RouteNames.Skills_Get">Edit</a>
                     </div>
-                    <div class="preview-empty">
+                    <div class="@GetSectionClass(Model.QualificationsSectionState)">
                         <h3 class="heading-small">Qualifications</h3>
                         <div id="vacancy-qualifications-required">
+                            <span esfa-validation-message-for="Qualifications" class="error-message"></span>
                             <p class="preserve-format">
                                 @foreach (var qualification in Model.Qualifications)
-                                {
-                                    @qualification<br/>
-                                }
+        {
+                        @qualification<br />
+}
                             </p>
                         </div>
                         <a asp-route="@RouteNames.Qualifications_Get">Edit</a>

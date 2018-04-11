@@ -55,12 +55,17 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
 
         public VacancyPreviewSectionState DescriptionSectionState { get; internal set; }
 
+        public VacancyPreviewSectionState SkillsSectionState { get; internal set; }
+
+        public VacancyPreviewSectionState QualificationsSectionState { get; internal set; }
+
         public IList<string> OrderedFieldNames => new List<string>
         {
             // This list is incomplete
             nameof(VacancyDescription),
             nameof(TrainingDescription),
-            nameof(OutcomeDescription)
+            nameof(OutcomeDescription),
+            nameof(Skills)
         };
     }
 
