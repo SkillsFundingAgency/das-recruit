@@ -68,10 +68,20 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                 throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
             }
 
-            var qualifications = (m.Qualifications.ToEntity() ?? new List<Qualification>());
+            if (m.Qualifications == null)
+            {
+                m.Qualifications = new List<QualificationEditModel>();
+            }
+
+            HandleQualificationChange(m);
+
+            var qualifications = m.Qualifications.ToEntity();
             vacancy.Qualifications = qualifications.SortQualifications(_qualificationsConfig.QualificationTypes);
             m.Qualifications = vacancy.Qualifications.ToViewModel();
-            
+
+            //if we are adding/removing a qualification then just validate and don't persist
+            var validateOnly = m.IsAddingQualification || m.IsRemovingQualification;
+
             return await ValidateAndExecute(vacancy,
                 v => 
                 {
@@ -79,16 +89,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                     SyncErrorsAndModel(result.Errors, m);
                     return result;
                 },
-                v => _client.UpdateVacancyAsync(vacancy)
-            );
-        }
-        
-        private List<QualificationEditModel> SortQualifications(List<QualificationEditModel> qualificationsToSort)
-        {
-            return  qualificationsToSort
-                    .OrderBy(q => _qualificationsConfig.QualificationTypes.IndexOf(q.QualificationType))
-                    .ThenBy(q => q.Subject)
-                    .ToList();
+                v => validateOnly ? Task.CompletedTask : _client.UpdateVacancyAsync(v));
         }
 
         protected override EntityToViewModelPropertyMappings<Vacancy, QualificationsEditModel> DefineMappings()
@@ -130,6 +131,19 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             //Remove other qualification errors
             errors.Where(e => e.PropertyName.StartsWith($"{nameof(m.Qualifications)}[")).ToList()
                 .ForEach(r => errors.Remove(r));
+        }
+
+        private void HandleQualificationChange(QualificationsEditModel m)
+        {
+            if (m.IsAddingQualification)
+            {
+                m.Qualifications.Add(m);
+            }
+
+            if (m.IsRemovingQualification)
+            {
+                m.Qualifications.RemoveAt(int.Parse(m.RemoveQualification));
+            }
         }
     }
 }
