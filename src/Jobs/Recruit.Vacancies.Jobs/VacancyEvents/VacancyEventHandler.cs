@@ -6,11 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Jobs.VacancyEvents
 {
-    public class VacancyEventHandler :
-                                        IHandleVacancyEvent<VacancyCreatedEvent>,
-                                        IHandleVacancyEvent<VacancyUpdatedEvent>,
-                                        IHandleVacancyEvent<VacancySubmittedEvent>,
-                                        IHandleVacancyEvent<VacancyDeletedEvent>
+    public class VacancyEventHandler
     {
         private readonly IVacancyClient _client;
         private readonly ILogger<VacancyEventHandler> _logger;
