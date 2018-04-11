@@ -14,8 +14,6 @@ namespace Esfa.Recruit.Vacancies.Jobs.VacancyEvents
         private readonly ILogger<VacancyEventsJob> _logger;
         private readonly VacancyEventHandler _handler;
 
-        private string JobName => GetType().Name;
-
         public VacancyEventsJob(ILogger<VacancyEventsJob> logger, VacancyEventHandler handler)
         {
             _logger = logger;
@@ -32,7 +30,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.VacancyEvents
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Unable to run {JobName}");
+                _logger.LogError(ex, $"Unable to handle vacancy event");
             }
         }
 
