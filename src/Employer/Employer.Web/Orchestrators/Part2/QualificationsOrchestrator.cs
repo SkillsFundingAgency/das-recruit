@@ -21,7 +21,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         private readonly IVacancyClient _client;
         private readonly QualificationsConfiguration _qualificationsConfig;
 
-        public QualificationsOrchestrator(IVacancyClient client, IOptions<QualificationsConfiguration> qualificationsConfigOptions, ILogger<SkillsOrchestrator> logger)
+        public QualificationsOrchestrator(IVacancyClient client, IOptions<QualificationsConfiguration> qualificationsConfigOptions, ILogger<QualificationsOrchestrator> logger)
             : base(logger)
         {
             _client = client;
@@ -103,8 +103,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         private void SyncErrorsAndModel(IList<EntityValidationError> errors, QualificationsEditModel m)
         {
+            var qualificationPropertyName = nameof(Vacancy.Qualifications);
+
             //Get the index position for the first invalid qualification
-            var qualificationIndex = errors.FirstOrDefault(e => e.PropertyName.StartsWith($"{nameof(m.Qualifications)}["))?.GetIndexPosition();
+            var qualificationIndex = errors.FirstOrDefault(e => e.PropertyName.StartsWith($"{qualificationPropertyName}["))?.GetIndexPosition();
             if (!qualificationIndex.HasValue)
             {
                 return;
@@ -120,7 +122,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
             //Get all the errors for the qualification at the index position
             var qualificationErrors = errors.Where(e => e.PropertyName
-                .StartsWith($"{nameof(m.Qualifications)}[{qualificationIndex}]"));
+                .StartsWith($"{qualificationPropertyName}[{qualificationIndex}]"));
 
             //Attach the errors to the inputs ModelState
             foreach (var error in qualificationErrors)
@@ -129,7 +131,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             }
             
             //Remove other qualification errors
-            errors.Where(e => e.PropertyName.StartsWith($"{nameof(m.Qualifications)}[")).ToList()
+            errors.Where(e => e.PropertyName.StartsWith($"{qualificationPropertyName}[")).ToList()
                 .ForEach(r => errors.Remove(r));
         }
 

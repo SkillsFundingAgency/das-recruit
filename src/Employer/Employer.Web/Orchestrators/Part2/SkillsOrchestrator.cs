@@ -145,8 +145,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         private void SyncErrorsAndModel(IList<EntityValidationError> errors, SkillsEditModel m)
         {
+
+            var skillsPropertyName = nameof(Vacancy.Skills);
+
             //Get the first invalid skill
-            var skillError = errors.FirstOrDefault(e => e.PropertyName.StartsWith($"{nameof(m.Skills)}["));
+            var skillError = errors.FirstOrDefault(e => e.PropertyName.StartsWith($"{skillsPropertyName}["));
             if (skillError == null)
             {
                 return;
@@ -161,7 +164,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             skillError.PropertyName = nameof(m.AddCustomSkillName);
 
             //Remove other skill errors
-            errors.Where(e => e.PropertyName.StartsWith($"{nameof(m.Skills)}[")).ToList()
+            errors.Where(e => e.PropertyName.StartsWith($"{skillsPropertyName}[")).ToList()
                 .ForEach(r => errors.Remove(r));
         }
 
