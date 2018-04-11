@@ -7,7 +7,7 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
-namespace Esfa.Recruit.Vacancies.Jobs.GenerateVacancyNumber
+namespace Esfa.Recruit.Vacancies.Jobs.VacancyEvents
 {
     public class VacancyEventsJob
     {

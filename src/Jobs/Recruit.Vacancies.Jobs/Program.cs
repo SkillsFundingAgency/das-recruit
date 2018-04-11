@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using Esfa.Recruit.Vacancies.Jobs.ApprenticeshipProgrammes;
 using Esfa.Recruit.Vacancies.Jobs.EditVacancyInfo;
-using Esfa.Recruit.Vacancies.Jobs.GenerateVacancyNumber;
+using Esfa.Recruit.Vacancies.Jobs.VacancyEvents;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -85,6 +85,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
             var jobConfiguration = new JobHostConfiguration();
             jobConfiguration.Queues.MaxPollingInterval = TimeSpan.FromSeconds(10);
             jobConfiguration.Queues.BatchSize = 1;
+            jobConfiguration.Queues.QueueProcessorFactory = new CustomQueueProcessorFactory();
             jobConfiguration.JobActivator = new CustomJobActivator(serviceProvider);
             jobConfiguration.UseTimers();
             jobConfiguration.LoggerFactory = loggerFactory;
