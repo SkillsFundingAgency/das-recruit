@@ -3,6 +3,9 @@
     public enum VacancyStatus
     {
         Draft,
-        Submitted
+        Submitted,
+        Referred,
+        Live,
+        Closed
     }
 }
