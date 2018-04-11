@@ -62,7 +62,8 @@
     "AppInsightsName": "[concat('das-', toLower(parameters('EnvironmentName')),'-rcrt-ai')]",
     "WebJobAppServiceName": "[concat('das-', toLower(parameters('EnvironmentName')), '-rcrt-webjob-as')]",
     "StorageAccountName": "[concat('das', toLower(parameters('EnvironmentName')), 'rcrtstr')]",
-    "SharedAppServicePlanId": "[resourceId(parameters('SharedAppServicePlanResourceGroup'), 'Microsoft.Web/serverfarms', parameters('SharedAppServicePlanName'))]"
+    "SharedAppServicePlanId": "[resourceId(parameters('SharedAppServicePlanResourceGroup'), 'Microsoft.Web/serverfarms', parameters('SharedAppServicePlanName'))]",
+    "UseCustomHostname": "[greater(length(parameters('CustomHostname')), 0)]"
   },
   "resources": [
     {
@@ -183,7 +184,8 @@
     },
     {
       "type": "Microsoft.Web/sites/hostnameBindings",
-      "name": "[concat(variables('EmployerRecruitAppServiceName'), '/', parameters('CustomHostname'))]",
+      "condition": "[variables('UseCustomHostname')]",
+      "name": "[concat(variables('EmployerRecruitAppServiceName'), '/', if(variables('UseCustomHostname'), parameters('CustomHostname'), 'placeholder'))]",
       "apiVersion": "2016-03-01",
       "location": "[resourceGroup().location]",
       "properties": {
