@@ -25,22 +25,40 @@ namespace Esfa.Recruit.Vacancies.Jobs.GenerateVacancyNumber
 
         public async Task HandleVacancyEvent([QueueTrigger(QueueNames.VacancyEventsQueueName, Connection = "EventQueueConnectionString")] string message, TextWriter log)
         {
-            VacancyCreatedEvent data = null;
+            IVacancyEvent @event = null;
 
             try
             {
                 var eventItem = JsonConvert.DeserializeObject<EventItem>(message);
-                data = JsonConvert.DeserializeObject<VacancyCreatedEvent>(eventItem.Data);
-                
-                _logger.LogInformation($"Start {JobName} For {{VacancyId}}", data.VacancyId);
 
-                await _updater.AssignVacancyNumber(data.VacancyId);
+                @event = UnPackEvent(eventItem.EventType, eventItem.Data);
+
+                _logger.LogInformation($"Start {JobName} For {{VacancyId}}", @event.VacancyId);
+
+                await _updater.AssignVacancyNumber(@event.VacancyId);
                 
-                _logger.LogInformation($"Finished {JobName} For {{VacancyId}}", data.VacancyId);
+                _logger.LogInformation($"Finished {JobName} For {{VacancyId}}", @event.VacancyId);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Unable to run {JobName} For {{VacancyId}}", data?.VacancyId.ToString() ?? "unknown");
+                _logger.LogError(ex, $"Unable to run {JobName} For {{VacancyId}}", @event?.VacancyId.ToString() ?? "unknown");
+            }
+        }
+
+        private IVacancyEvent UnPackEvent(string eventType, string data)
+        {
+            switch (eventType)
+            {
+                case nameof(VacancyCreatedEvent):
+                    return JsonConvert.DeserializeObject<VacancyCreatedEvent>(data);
+                case nameof(VacancyUpdatedEvent):
+                    return JsonConvert.DeserializeObject<VacancyUpdatedEvent>(data);
+                case nameof(VacancySubmittedEvent):
+                    return JsonConvert.DeserializeObject<VacancySubmittedEvent>(data);
+                case nameof(VacancyDeletedEvent):
+                    return JsonConvert.DeserializeObject<VacancyDeletedEvent>(data);
+                default: 
+                    throw new ArgumentOutOfRangeException(nameof(eventType), $"Unexpected value for event type: {eventType}");
             }
         }
     }
