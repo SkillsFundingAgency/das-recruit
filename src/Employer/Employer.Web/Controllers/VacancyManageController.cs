@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Orchestrators;
-using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Enums;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -15,22 +14,6 @@ namespace Employer.Web.Controllers
     {
         private readonly VacancyManageOrchestrator _orchestrator;
         private readonly IVacancyClient _client;
-        private const VacancyRuleSet ValidationRules_Part1 = 
-        VacancyRuleSet.EmployerName
-        | VacancyRuleSet.EmployerAddress
-        | VacancyRuleSet.NumberOfPositions
-        | VacancyRuleSet.ShortDescription
-        | VacancyRuleSet.Title
-        | VacancyRuleSet.ClosingDate
-        | VacancyRuleSet.StartDate
-        | VacancyRuleSet.TrainingProgramme
-        | VacancyRuleSet.Duration
-        | VacancyRuleSet.WorkingWeekDescription
-        | VacancyRuleSet.WeeklyHours
-        | VacancyRuleSet.Wage
-        | VacancyRuleSet.StartDateEndDate
-        | VacancyRuleSet.MinimumWage
-        | VacancyRuleSet.TrainingExpiryDate;
 
         public VacancyManageController(VacancyManageOrchestrator orchestrator, IVacancyClient client)
         {
@@ -54,7 +37,7 @@ namespace Employer.Web.Controllers
 
         private IActionResult HandleRedirectOfDraftVacancy(Vacancy vacancy)
         {
-            if (_client.Validate(vacancy, ValidationRules_Part1).HasErrors)
+            if (!vacancy.Wage.WageType.HasValue)
             {
                 return RedirectToRoute(RouteNames.Title_Get);
             }
