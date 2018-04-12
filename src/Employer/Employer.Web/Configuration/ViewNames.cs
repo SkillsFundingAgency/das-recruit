@@ -3,5 +3,6 @@
     public class ViewNames
     {
         public const string ErrorView = "Error";
+        public const string ManageSubmittedVacancyView = "Submitted";
     }
 }

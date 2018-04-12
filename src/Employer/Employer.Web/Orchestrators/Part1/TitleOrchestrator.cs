@@ -20,7 +20,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         {
             _logger = logger;
             _client = client;
-
         }
 
         public TitleViewModel GetTitleViewModel()

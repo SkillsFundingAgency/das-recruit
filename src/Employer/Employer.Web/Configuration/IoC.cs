@@ -1,4 +1,6 @@
-﻿using Esfa.Recruit.Employer.Web.Configuration.Routing;
+﻿using System;
+using Esfa.Recruit.Employer.Web.Configuration.Routing;
+using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
@@ -30,6 +32,8 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             RegisterServiceDeps(services, configuration);
 
             RegisterOrchestratorDeps(services);
+
+            RegisterMapperDeps(services);
         }
 
         private static void RegisterServiceDeps(IServiceCollection services, IConfiguration configuration)
@@ -63,6 +67,12 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddTransient<SearchResultPreviewOrchestrator>();
             services.AddTransient<SkillsOrchestrator>();
             services.AddTransient<QualificationsOrchestrator>();
+            services.AddTransient<VacancyManageOrchestrator>();
+        }
+
+        private static void RegisterMapperDeps(IServiceCollection services)
+        {
+            services.AddTransient<DisplayVacancyViewModelMapper>();
         }
     }
 }

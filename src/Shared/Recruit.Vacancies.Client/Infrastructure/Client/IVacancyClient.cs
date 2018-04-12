@@ -9,6 +9,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
     public interface IVacancyClient
     {
+        Task<Vacancy> GetVacancyAsync(Guid id);
         Task<Vacancy> GetVacancyForEditAsync(Guid id);
         Task<Guid> CreateVacancyAsync(string title, string employerAccountId, string user);
         Task UpdateVacancyAsync(Vacancy vacancy);

@@ -1,20 +1,12 @@
-﻿@model Esfa.Recruit.Employer.Web.ViewModels.VacancyPreviewViewModel
-
-@{ 
-    var emptySectionClass = "preview-empty";
-    var errorSectionClass = "preview-error";
-
-    var providerDetailsClass = Model.HasTrainingProviderDetails == false ? emptySectionClass : string.Empty;
-    var contactDetailsClass = Model.HasContactDetails == false ? emptySectionClass : string.Empty;
-}
-
+﻿@model SubmittedVacancyViewModel
 <div class="grid-row">
     <div class="column-full">
-        @Html.Partial("_ValidationSummary", new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames })
         <main id="content" role="main">
             <div class="grid-row">
-                <div class="column-full">
-                    <h1 class="heading-xlarge">Vacancy Preview</h1>
+                <div class="column--two-thirds">
+                </div>
+                <div class="column--one-thirds">
+                    <span></span>
                 </div>
             </div>
             <div class="grid-row">
@@ -23,23 +15,18 @@
                         @Model.Title
                         <span class="heading-secondary">@Model.EmployerName</span>
                     </h1>
-                    <a asp-route="@RouteNames.Title_Get">Edit</a>
                 </div>
             </div>
             <div class="grid-row">
                 <div class="column-two-thirds">
                     <h3 class="heading-small sfa-no-top-margin">Brief overview of the role</h3>
                     <div id="vacancy-overview">
-                        <p class="preserve-format">
-                            @Model.ShortDescription
-                        </p>
+                        <p class="preserve-format">@Model.ShortDescription</p>
                     </div>
-                    <a asp-route="@RouteNames.Title_Get">Edit</a>
                 </div>
                 <div class="column-one-third">
                     <h3 class="heading-small sfa-no-top-margin">Closing Date</h3>
                     <p id="vacancy-closing-date">@Model.ClosingDate</p>
-                    <a asp-route="@RouteNames.Title_Get">Edit</a>
                 </div>
             </div>
             <div class="grid-row">
@@ -58,28 +45,23 @@
                                     Total hours per week: @Model.HoursPerWeek
                                 </li>
                             </ul>
-                            <a asp-route="@RouteNames.Title_Get">Edit</a>
                         </li>
                         <li>
                             <h3 class="heading-small" id="vacancy-wage-header">Yearly wage</h3>
                             <p id="vacancy-wage">@Model.WageText</p>
                             <p>@Model.WageInfo</p>
-                            <a asp-route="@RouteNames.Title_Get">Edit</a>
                         </li>
                         <li>
                             <h3 class="heading-small">Expected apprenticeship duration</h3>
                             <p id="vacancy-expected-duration">@Model.ExpectedDuration</p>
-                            <a asp-route="@RouteNames.Title_Get">Edit</a>
                         </li>
                         <li>
                             <h3 class="heading-small">Possible start date</h3>
                             <p id="vacancy-start-date">@Model.PossibleStartDate</p>
-                            <a asp-route="@RouteNames.Title_Get">Edit</a>
                         </li>
                         <li>
                             <h3 class="heading-small">Apprenticeship level</h3>
                             <p id="vacancy-type">@Model.TrainingLevel Level Apprenticeship</p>
-                            <a asp-route="@RouteNames.Title_Get">Edit</a>
                         </li>
                         <li>
                             <h3 class="heading-small">Reference number</h3>
@@ -88,21 +70,17 @@
                         <li>
                             <h3 class="heading-small">Positions</h3>
                             <p id="vacancy-amount-id">@Model.NumberOfPositionsCaption</p>
-                            <a asp-route="@RouteNames.Title_Get">Edit</a>
                         </li>
                     </ul>
                 </div>
                 <div class="column-two-thirds">
-                    <div class="preview-empty">
-                        <h3 class="heading-small">
-                            Vacancy description
-                        </h3>
-                        <div id="vacancy-full-description">
-                            <p class="preserve-format">@Model.VacancyDescription</p>
-                            <p class="preserve-format">@Model.TrainingDescription</p>
-                            <p class="preserve-format">@Model.OutcomeDescription</p>
-                        </div>
-                        <a asp-route="@RouteNames.VacancyDescription_Index_Get">Edit</a>
+                    <h3 class="heading-small">
+                        Vacancy description
+                    </h3>
+                    <div id="vacancy-full-description">
+                        <p class="preserve-format">@Model.VacancyDescription</p>
+                        <p class="preserve-format">@Model.TrainingDescription</p>
+                        <p class="preserve-format">@Model.OutcomeDescription</p>
                     </div>
                 </div>
             </div>
@@ -112,32 +90,18 @@
                     <h2 class="heading-large">Requirements and prospects</h2>
                 </div>
                 <div class="column-half">
-                    <div class="preview-empty">
-                        <h3 class="heading-small">Desired skills and personal qualities</h3>
-                        <div id="vacancy-skills-qualities-required">
-                            <p class="preserve-format">@string.Join(", ", Model.Skills)</p>
-                        </div>
-                        <a asp-route="@RouteNames.Skills_Get">Edit</a>
+                    <h3 class="heading-small">Desired skills and personal qualities</h3>
+                    <div id="vacancy-skills-qualities-required">
+                        <p class="preserve-format">@string.Join(", ", Model.Skills)</p>
                     </div>
-                    <div class="preview-empty">
-                        <h3 class="heading-small">Qualifications</h3>
-                        <div id="vacancy-qualifications-required">
-                            <p class="preserve-format">
-                                @foreach (var qualification in Model.Qualifications)
-                                {
-                                    @qualification<br/>
-                                }
-                            </p>
-                        </div>
-                        <a asp-route="@RouteNames.Qualifications_Get">Edit</a>
+                    <h3 class="heading-small">Qualifications</h3>
+                    <div id="vacancy-qualifications-required">
+                        <p class="preserve-format">@string.Join("<br />", Model.Qualifications)</p>
                     </div>
                 </div>
                 <div class="column-half">
-                    <div class="preview-empty">
-                        <h3 class="heading-small">Things to consider (optional)</h3>
-                        <p>@Model.ThingsToConsider</p>
-                        <a asp-route="@RouteNames.Considerations_Get">Edit</a>
-                    </div>
+                    <h3 class="heading-small">Things to consider</h3>
+                    <p>@Model.ThingsToConsider</p>
                 </div>
             </div>
             <hr>
@@ -150,33 +114,24 @@
                         <h3 class="heading-small">Employer</h3>
                         <p id="vacancy-employer-name">@Model.EmployerName</p>
                     </div>
-                    <div class="preview-empty">
+                    <div>
                         <h3 class="heading-small">Description</h3>
                         <div id="vacancy-employer-description">
                             <p>@Model.EmployerDescription</p>
-                            <a asp-route="@RouteNames.AboutEmployer_Get">Edit</a>
                         </div>
                     </div>
-                    <div class="preview-empty">
-                        <h3 class="heading-small">Website (optional)</h3>
+                    <div>
+                        <h3 class="heading-small">Website</h3>
                         <div id="vacancy-employer-website">
-                            <p>
-                                @Model.EmployerWebsiteUrl
-                            </p>
+                            <p>@Model.EmployerWebsiteUrl</p>
                         </div>
-                        <a asp-route="@RouteNames.AboutEmployer_Get">Edit</a>
                     </div>
                 </div>
                 <div class="column-one-third">
-                    <div class="@contactDetailsClass">
-                        <h3 class="heading-small">
-                            Contact (optional)
-                        </h3>
-                        <p class="sfa-small-bottom-margin">@Model.ContactName</p>
-                        <p class="sfa-small-bottom-margin">@Model.ContactEmail</p>
-                        <p class="sfa-small-bottom-margin">@Model.ContactTelephone</p>
-                        <a asp-route="@RouteNames.ApplicationProcess_Get">Edit</a>
-                    </div>
+                    <h3 class="heading-small">Contact</h3>
+                    <p class="sfa-small-bottom-margin">@Model.ContactName</p>
+                    <p class="sfa-small-bottom-margin">@Model.ContactEmail</p>
+                    <p class="sfa-small-bottom-margin">@Model.ContactTelephone</p>
                 </div>
             </div>
             <div class="grid-row">
@@ -189,7 +144,6 @@
                                 <li>@addrLine</li>
                             }
                         </ul>
-                        <a asp-route="@RouteNames.Title_Get">Edit</a>
                     </div>
                 </div>
                 <div class="column-half map-container hide-nojs toggle-content--mob">
@@ -199,13 +153,10 @@
             <div id="offline-vacancy">
                 <div class="grid-row">
                     <div class="column-full">
-                        <div class="preview-empty">
-                            <h2 class="heading-small">Employer's application instructions</h2>
-                            <p class="application-instructions">
-                                @Model.ApplicationInstructions
-                            </p>
-                            <a asp-route="@RouteNames.ApplicationProcess_Get">Edit</a>
-                        </div>
+                        <h2 class="heading-small">Employer's application instructions</h2>
+                        <p class="application-instructions">
+                            @Model.ApplicationInstructions
+                        </p>
                     </div>
                 </div>
                 <hr class="sfa-no-bottom-margin" />
@@ -215,26 +166,20 @@
                     <h2 class="heading-large">Training provider</h2>
                 </div>
                 <div class="column-full">
-                    <div id="training-provider-section" class="@providerDetailsClass">
-                        <p asp-condition="@Model.HasTrainingProviderDetails" id="vacancy-provider-name">
+                    <div id="training-provider-section">
+                        <p id="vacancy-provider-name">
                             @Model.ProviderName<br />
                             @Model.ProviderAddress
                         </p>
-                        <a asp-route="@RouteNames.TrainingProvider_Select_Get">Edit</a>
                     </div>
                     <h3 class="heading-small">Apprenticeship @Model.TrainingType</h3>
                     <p is="vacancy-framework">@Model.TrainingTitle</p>
-                    <a asp-route="@RouteNames.Title_Get">Edit</a>
                 </div>
             </div>
             <hr class="sfa-no-bottom-margin" />
             <div class="form-group inline">
                 <div class="form-group small-top-margin">
-                    <form asp-condition="@Model.CanSubmit" asp-route="@RouteNames.Preview_Submit_Post" class="form-inline">
-                        <input type="submit" value="Submit vacancy" class="button" />
-                    </form>
                     <a asp-route="@RouteNames.Dashboard_Index_Get" class="button-link">Return to dashboard</a>
-                    <a asp-condition="@Model.CanDelete" asp-route="@RouteNames.DeleteVacancy_Delete_Get" class="button-link">Delete</a>
                 </div>
             </div>
         </main>

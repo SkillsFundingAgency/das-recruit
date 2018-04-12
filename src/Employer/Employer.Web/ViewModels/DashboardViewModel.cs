@@ -1,5 +1,4 @@
-﻿using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Domain.Projections;
+﻿using Esfa.Recruit.Vacancies.Client.Domain.Projections;
 using System.Collections.Generic;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels

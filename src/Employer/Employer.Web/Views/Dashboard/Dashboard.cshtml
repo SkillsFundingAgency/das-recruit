@@ -28,7 +28,7 @@
                 @foreach (var vacancy in Model.Vacancies)
 			    {
                 <tr>
-                    <td><a asp-route="@RouteNames.Title_Get" asp-route-vacancyId="@vacancy.Id">@vacancy.Title</a></td>
+                    <td><a asp-route="@RouteNames.DisplayVacancy_Get" asp-route-vacancyId="@vacancy.Id">@vacancy.Title</a></td>
                     <td>@vacancy.Status</td>
                 </tr>
 			    }
