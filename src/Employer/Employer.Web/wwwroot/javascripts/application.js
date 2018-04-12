@@ -68,7 +68,16 @@ $(window).scroll(function () {
     }
 });
 
-//Legacy menu script
 $(function() {
+    //Legacy menu script
     sfa.navigation.init();
+    // expanding /collapsing text areas
+    $('.textarea-expandable').each(function () {
+        this.setAttribute('style', 'height:' + (this.scrollHeight) + 'px;overflow-y:hidden;');
+    }).on('input', function () {
+        this.style.height = 'auto';
+        this.style.height = (this.scrollHeight) + 'px';
+    });
 });
+
+   
