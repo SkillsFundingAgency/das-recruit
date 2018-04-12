@@ -51,6 +51,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _messaging.SendCommandAsync(command);
         }
 
+        public Task<Vacancy> GetVacancyAsync(Guid id)
+        {
+            return _repository.GetVacancyAsync(id);
+        }
+
         public Task<Vacancy> GetVacancyForEditAsync(Guid id)
         {
             return _repository.GetVacancyAsync(id);

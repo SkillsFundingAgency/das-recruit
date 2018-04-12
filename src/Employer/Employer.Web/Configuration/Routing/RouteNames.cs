@@ -34,6 +34,8 @@
         
         public const string Logout_Get = "Logout_Get";
 
+        public const string DisplayVacancy_Get = "DisplayVacancy_Get";
+
         public const string Employer_Get = "Employer_Get";
         public const string Employer_Post = "Employer_Post";
 
@@ -52,7 +54,7 @@
         public const string Training_Get = "Training_Get";
         public const string Training_Post = "Training_Post";
 
-        public const string Preview_Index_Get = "Preview_Index_Get";
+        public const string Vacancy_Preview_Get = "Vacancy_Preview_Get";
         public const string Preview_Submit_Post = "Preview_Submit_Post";
 
         public const string RoleDescription_Index_Get = "RoleDescription_Index_Get";
