@@ -24,8 +24,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part2.Skills
 
         public string AddCustomSkillName { get; set; }
 
-        public bool IsAddingCustomSkill => !string.IsNullOrEmpty(AddCustomSkillAction) &&
-                                           !string.IsNullOrWhiteSpace(AddCustomSkillName);
+        public bool IsAddingCustomSkill => !string.IsNullOrEmpty(AddCustomSkillAction);
 
         public bool IsRemovingCustomSkill => !string.IsNullOrWhiteSpace(RemoveCustomSkill);
     }

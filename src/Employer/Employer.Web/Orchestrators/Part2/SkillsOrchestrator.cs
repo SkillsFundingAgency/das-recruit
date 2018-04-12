@@ -133,7 +133,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         private IEnumerable<string> SortSkills(IEnumerable<string> selected)
         {
-            var filteredSelectedSkills = selected.Where(s => !string.IsNullOrWhiteSpace(s)).Distinct();
+            var filteredSelectedSkills = selected.Distinct();
 
             var orderedSkills = _skillsConfig.Column1Skills
                 .Union(_skillsConfig.Column2Skills)
