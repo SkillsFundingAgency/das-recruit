@@ -723,14 +723,6 @@ input.form-control, textarea.form-control {
     border-radius: 0;
 }
 
-.textarea-expandable {
-    transition: all 0.5s ease;
-}
-
-.textarea-expandable:focus {
-    height: 10em;
-}
-
 /*** Select2 Styles **/
 .select2-container {
     box-sizing: border-box;
