@@ -8,20 +8,16 @@
 
         <h1 class="heading-xlarge small-bottom-margin">Qualifications</h1>
 
-        <div asp-validation-summary="All" class="error-summary" role="alert" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
-            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
-                Please fix these errors
-            </h2>
-        </div>
+        @Html.Partial("_ValidationSummary", new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames })
 
         <hr>
 
         <form asp-route="@RouteNames.Qualifications_Post">
 
-            <div class="form-group form-group-compound">
+            <div esfa-validation-marker-for="QualificationType" class="form-group form-group-compound">
                 <label asp-for="QualificationType" class="form-label-bold">Type of qualification</label>
-                <span asp-validation-for="QualificationType" class="error-message"></span>
-                <select asp-for="QualificationType" class="form-control sfa-form-control-auto">
+                <span esfa-validation-message-for="QualificationType" class="error-message"></span>
+                <select asp-for="QualificationType" class="form-control">
                     <option value="">Select from list</option>
 
                     @foreach (var qualificationType in Model.QualificationTypes)
@@ -31,24 +27,24 @@
                 </select>
             </div>
 
-            <div class="form-group form-group-compound">
+            <div esfa-validation-marker-for="Subject" class="form-group form-group-compound">
                 <label asp-for="Subject" class="form-label-bold">Subject</label>
-                <span asp-validation-for="Subject" class="error-message"></span>
+                <span esfa-validation-message-for="Subject" class="error-message"></span>
                 <input asp-for="Subject" value="@Model.Subject" type="text" class="form-control" maxlength="50">
             </div>
 
-            <div class="form-group" data-bind="parentvalElement:grade">
+            <div esfa-validation-marker-for="Grade" class="form-group" data-bind="parentvalElement:grade">
                 <label asp-for="Grade" class="form-label-bold">Grade</label>
-                <span asp-validation-for="Grade" class="error-message"></span>
+                <span esfa-validation-message-for="Grade" class="error-message"></span>
                 <input asp-for="Grade" value="@Model.Grade" type="text" class="form-control form-control-1-3" maxlength="30">
             </div>
 
-            <div class="form-group">
+            <div  esfa-validation-marker-for="Weighting" class="form-group">
                 <fieldset class="inline">
                     <legend>
                         <h1 class="form-label-bold">Is this qualification essential?</h1>
                     </legend>
-                    <span asp-validation-for="Weighting" class="error-message"></span>
+                    <span esfa-validation-message-for="Weighting" class="error-message"></span>
                     <div class="multiple-choice">
                         <input asp-for="Weighting" type="radio" value="@QualificationWeighting.Essential" data-display="@QualificationWeighting.Essential.GetDisplayName()">
                         <label asp-for="Weighting">Yes</label>
