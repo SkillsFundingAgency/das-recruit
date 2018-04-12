@@ -20,17 +20,15 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public string EmployerWebsiteUrl { get; internal set; }
         public string ExpectedDuration { get; internal set; }
         public string HoursPerWeek { get; internal set; }
-        public Address Location { get; internal set; }
-        public IEnumerable<string> EmployerAddressElements => new[] { Location.AddressLine1, Location.AddressLine2, Location.AddressLine3, Location.AddressLine4, Location.Postcode }
-                                                                .Where(x => !string.IsNullOrEmpty(x));
+        public IEnumerable<string> EmployerAddressElements { get; internal set; }
         public string MapUrl { get; set; }
-        public int NumberOfPositions { get; internal set; }
-        public string NumberOfPositionsCaption => $"{"position".ToQuantity(NumberOfPositions)} available";
+        public string NumberOfPositions { get; internal set; }
+        public string NumberOfPositionsCaption { get; internal set; }
         public string OutcomeDescription { get; internal set; }
         public string PossibleStartDate { get; internal set; }
         public string ProviderName { get; internal set; }
         public string ProviderAddress { get; internal set; }
-        public IEnumerable<string> Qualifications { get; internal set; }
+        public List<string> Qualifications { get; internal set; }
         public string ShortDescription { get; internal set; }
         public IEnumerable<string> Skills { get; internal set; }
         public string ThingsToConsider { get; internal set; }

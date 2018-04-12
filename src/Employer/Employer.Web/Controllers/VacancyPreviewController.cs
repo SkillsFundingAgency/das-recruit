@@ -28,9 +28,13 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         [HttpGet("vacancy-preview", Name = RouteNames.Vacancy_Preview_Get)]
         public async Task<IActionResult> VacancyPreview(Guid vacancyId)
         {
-            var vm = await GetViewModel(vacancyId);
-            
-            return View(vm);
+            var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(vacancyId);
+
+            viewModel.DescriptionSectionState = GetViewSectionState(viewModel, vm => vm.VacancyDescription, vm => vm.TrainingDescription, vm => vm.OutcomeDescription);
+            viewModel.SkillsSectionState = GetViewSectionState(viewModel, vm => vm.Skills);
+            viewModel.QualificationsSectionState = GetViewSectionState(viewModel, vm => vm.Qualifications);
+
+            return View(viewModel);
         }
 
         [HttpPost("vacancy-submit", Name = RouteNames.Preview_Submit_Post)]
@@ -54,33 +58,17 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 ModelState.AddModelError(string.Empty, "Vacancy has already been submitted");
             }
 
-            var vm = await GetViewModel(m.VacancyId);
-            
-            return View("VacancyPreview", vm);
+            var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(m.VacancyId);
+
+            viewModel.DescriptionSectionState = GetSubmitSectionState(viewModel, vm => vm.VacancyDescription, vm => vm.TrainingDescription, vm => vm.OutcomeDescription);
+            viewModel.SkillsSectionState = GetSubmitSectionState(viewModel, vm => vm.Skills);
+            viewModel.QualificationsSectionState = GetSubmitSectionState(viewModel, vm => vm.Qualifications);
+
+            return View("VacancyPreview", viewModel);
         }
-
-        private async Task<VacancyPreviewViewModel> GetViewModel(Guid vacancyId)
+        
+        private VacancyPreviewSectionState GetViewSectionState<T>(T vm, params Expression<Func<T, object>>[] properties)
         {
-            var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(vacancyId);
-
-            viewModel.DescriptionSectionState = GetSectionState(viewModel, vm => vm.VacancyDescription, vm => vm.TrainingDescription, vm => vm.OutcomeDescription);
-            viewModel.SkillsSectionState = GetSectionState(viewModel, vm => vm.Skills);
-            viewModel.QualificationsSectionState = GetSectionState(viewModel, vm => vm.Qualifications);
-
-            return viewModel;
-        }
-
-        private VacancyPreviewSectionState GetSectionState<T>(T vm, params Expression<Func<T, object>>[] properties)
-        {
-            foreach (var property in properties)
-            {
-                var propertyName = property.GetPropertyName();
-                if (ModelState.Keys.Where(k => k == propertyName).Any(k => ModelState[k].Errors.Any()))
-                {
-                    return VacancyPreviewSectionState.Invalid;
-                }
-            }
-
             foreach (var property in properties)
             {
                 var propertyValueFunc = property.Compile();
@@ -99,7 +87,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                     }
                 }
 
-                if(propertyValue is IEnumerable listProperty)
+                if (propertyValue is IEnumerable listProperty)
                 {
                     bool any = false;
                     foreach (var item in listProperty)
@@ -114,6 +102,20 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 }
             }
 
+            return VacancyPreviewSectionState.Valid;
+        }
+
+        private VacancyPreviewSectionState GetSubmitSectionState<T>(T vm, params Expression<Func<T, object>>[] properties)
+        {
+            foreach (var property in properties)
+            {
+                var propertyName = property.GetPropertyName();
+                if (ModelState.Keys.Where(k => k == propertyName).Any(k => ModelState[k].Errors.Any()))
+                {
+                    return VacancyPreviewSectionState.Invalid;
+                }
+            }
+            
             return VacancyPreviewSectionState.Valid;
         }
         
