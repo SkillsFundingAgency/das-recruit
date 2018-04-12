@@ -177,6 +177,20 @@
         },
         "httpsOnly": true
       },
+      "resources": [
+        {
+          "name": "staging",
+          "type": "slots",
+          "apiVersion": "2016-08-01",
+          "location": "[resourceGroup().location]",
+          "properties": {
+            "scmSiteAlsoStopped": true
+          },
+          "dependsOn": [
+            "[variables('EmployerRecruitAppServiceName')]"
+          ]
+        }
+      ],
       "dependsOn": [
         "[resourceId('microsoft.insights/components', variables('AppInsightsName'))]",
         "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('CosmosDbName'))]"
