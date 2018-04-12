@@ -43,6 +43,13 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                         ViewName = ViewNames.ManageLiveVacancyView
                     };
                 case VacancyStatus.Closed:
+                    var closedViewModel = new ClosedVacancyViewModel();
+                    _vacancyDisplayMapper.MapFromVacancy(closedViewModel, vacancy);
+                    return new ManageVacancy
+                    {
+                        ViewModel = closedViewModel,
+                        ViewName = ViewNames.ManageClosedVacancyView
+                    };
                 case VacancyStatus.Referred:
                 default:
                     throw new NotImplementedException();

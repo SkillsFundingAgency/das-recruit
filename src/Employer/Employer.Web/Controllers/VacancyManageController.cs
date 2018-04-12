@@ -37,7 +37,7 @@ namespace Employer.Web.Controllers
 
         private IActionResult HandleRedirectOfDraftVacancy(Vacancy vacancy)
         {
-            if (!vacancy.Wage.WageType.HasValue)
+            if (vacancy.Wage == null)
             {
                 return RedirectToRoute(RouteNames.Title_Get);
             }
