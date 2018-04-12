@@ -20,5 +20,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<ApprenticeshipProgrammes> GetApprenticeshipProgrammesAsync();
         Task<EditVacancyInfo> GetEditVacancyInfo(string employerAccountId);
         EntityValidationResult Validate(Vacancy vacancy, VacancyRuleSet rules);
+        Task AssignVacancyNumber(Guid id);
     }
 }

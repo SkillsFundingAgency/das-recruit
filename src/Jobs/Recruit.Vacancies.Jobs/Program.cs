@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using Esfa.Recruit.Vacancies.Jobs.ApprenticeshipProgrammes;
 using Esfa.Recruit.Vacancies.Jobs.EditVacancyInfo;
+using Esfa.Recruit.Vacancies.Jobs.VacancyEvents;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -38,7 +39,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
 
                 logger = factory.CreateLogger("Program");
 
-                JobHostConfiguration jobConfiguration = GetHostConfiguration(serviceProvider);
+                JobHostConfiguration jobConfiguration = GetHostConfiguration(serviceProvider, factory);
                 var host = new JobHost(jobConfiguration);
 
                 var cancellationToken = new WebJobsShutdownWatcher().Token;
@@ -78,15 +79,17 @@ namespace Esfa.Recruit.Vacancies.Jobs
             return loggerFactory;
         }
 
-        private static JobHostConfiguration GetHostConfiguration(ServiceProvider serviceProvider)
+        private static JobHostConfiguration GetHostConfiguration(ServiceProvider serviceProvider, ILoggerFactory loggerFactory)
         {
             // Host configuration
             var jobConfiguration = new JobHostConfiguration();
             jobConfiguration.Queues.MaxPollingInterval = TimeSpan.FromSeconds(10);
             jobConfiguration.Queues.BatchSize = 1;
+            jobConfiguration.Queues.QueueProcessorFactory = new CustomQueueProcessorFactory();
             jobConfiguration.JobActivator = new CustomJobActivator(serviceProvider);
             jobConfiguration.UseTimers();
-
+            jobConfiguration.LoggerFactory = loggerFactory;
+            
             if (_isDevelopment)
             {
                 jobConfiguration.DashboardConnectionString = null; // Reduces errors in output.
@@ -132,6 +135,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
                 options.AddDebug();
             });
 
+            services.AddScoped<VacancyEventHandler>();     
             services.AddScoped<ApprenticeshipProgrammesUpdater>();
             services.AddScoped<EditVacancyInfoUpdater>();
 
@@ -140,7 +144,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddRecruitStorageClient(configuration);
 
             // Add Jobs
-            // services.AddScoped<GenerateVacancyNumberJob>();
+            services.AddScoped<VacancyEventsJob>();
             services.AddScoped<ApprenticeshipProgrammesJob>();
             services.AddScoped<EditVacancyInfoJob>();
 

@@ -71,7 +71,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(1);
             result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Skills)}[0]");
-            result.Errors[0].ErrorCode.Should().Be("51");
+            result.Errors[0].ErrorCode.Should().Be("99");
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Skills);
         }
 
