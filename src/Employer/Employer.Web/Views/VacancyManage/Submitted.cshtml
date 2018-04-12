@@ -3,18 +3,14 @@
     <div class="column-full">
         <main id="content" role="main">
             <div class="grid-row">
-                <div class="column--two-thirds">
-                </div>
-                <div class="column--one-thirds">
-                    <span></span>
-                </div>
-            </div>
-            <div class="grid-row">
                 <div class="column-two-thirds">
                     <h1 class="heading-xlarge" id="vacancy-header">
                         @Model.Title
                         <span class="heading-secondary">@Model.EmployerName</span>
                     </h1>
+                </div>
+                <div class="column-one-third">
+                    <div class="small-top-margin">Submitted for review on @Model.SubmittedDate</div>
                 </div>
             </div>
             <div class="grid-row">
