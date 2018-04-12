@@ -298,8 +298,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
             RuleForEach(x => x.Skills)
                 .NotEmpty()
-                    .WithMessage("You must include a skill or quality")
-                    .WithErrorCode("51")
+                    .WithMessage("Enter a skill or quality")
+                    .WithErrorCode("99")
                 .ValidFreeTextCharacters()
                     .WithMessage("You have entered invalid characters")
                     .WithErrorCode("6")
