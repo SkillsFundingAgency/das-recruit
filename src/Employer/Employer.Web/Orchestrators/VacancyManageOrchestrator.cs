@@ -26,17 +26,24 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             switch (vacancy.Status)
             {
                 case VacancyStatus.Submitted:
-                    var vm = new SubmittedVacancyViewModel();
-                    _vacancyDisplayMapper.MapFromVacancy(vm, vacancy);
-                    vm.SubmittedDate = vacancy.SubmittedDate.Value.AsDisplayDate();
+                    var submittedViewModel = new SubmittedVacancyViewModel();
+                    _vacancyDisplayMapper.MapFromVacancy(submittedViewModel, vacancy);
+                    submittedViewModel.SubmittedDate = vacancy.SubmittedDate.Value.AsDisplayDate();
                     return new ManageVacancy
                     {
-                        ViewModel = vm,
+                        ViewModel = submittedViewModel,
                         ViewName = ViewNames.ManageSubmittedVacancyView
                     };
-                case VacancyStatus.Referred:
                 case VacancyStatus.Live:
+                    var liveViewModel = new LiveVacancyViewModel();
+                    _vacancyDisplayMapper.MapFromVacancy(liveViewModel, vacancy);
+                    return new ManageVacancy
+                    {
+                        ViewModel = liveViewModel,
+                        ViewName = ViewNames.ManageLiveVacancyView
+                    };
                 case VacancyStatus.Closed:
+                case VacancyStatus.Referred:
                 default:
                     throw new NotImplementedException();
             }

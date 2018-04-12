@@ -4,5 +4,6 @@
     {
         public const string ErrorView = "Error";
         public const string ManageSubmittedVacancyView = "Submitted";
+        public const string ManageLiveVacancyView = "Live";
     }
 }
