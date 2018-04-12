@@ -33,6 +33,23 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         }
 
         [Fact]
+        public void WageMustNotBeNull()
+        {
+            var vacancy = new Vacancy
+            {
+                Wage = null
+            };
+
+            var result = Validator.Validate(vacancy, VacancyRuleSet.Wage);
+
+            result.HasErrors.Should().BeTrue();
+            result.Errors.Should().HaveCount(1);
+            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Wage)}");
+            result.Errors[0].ErrorCode.Should().Be("46");
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Wage);
+        }
+
+        [Fact]
         public void WageTypeMustHaveAValue()
         {
             var vacancy = new Vacancy

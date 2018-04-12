@@ -6,10 +6,10 @@ using Xunit;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.SingleField
 {
-    public class OrganisationValidationTests : VacancyValidationTestsBase
+    public class EmployerValidationTests : VacancyValidationTestsBase
     {
         [Fact]
-        public void NoErrorsWhenOrganisationFieldsAreValid()
+        public void NoErrorsWhenEmployerFieldsAreValid()
         {
             var vacancy = new Vacancy
             {
@@ -26,11 +26,11 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
             result.HasErrors.Should().BeFalse();
             result.Errors.Should().HaveCount(0);
         }
-
+        
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        public void OrganisationMustBeSet(string organisationValue)
+        public void EmployerMustBeSet(string organisationValue)
         {
             var vacancy = new Vacancy 
             {
@@ -46,10 +46,27 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.EmployerName);
         }
 
+        [Fact]
+        public void ShouldErrorIfEmployerLocationIsNull()
+        {
+            var vacancy = new Vacancy
+            {
+                EmployerLocation = null
+            };
+
+            var result = Validator.Validate(vacancy, VacancyRuleSet.EmployerAddress);
+
+            result.HasErrors.Should().BeTrue();
+            result.Errors.Should().HaveCount(1);
+            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.EmployerLocation));
+            result.Errors[0].ErrorCode.Should().Be("98");
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.EmployerAddress);
+        }
+
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        public void OrganisationAddressLine1MustBeSet(string addressValue)
+        public void EmployerAddressLine1MustBeSet(string addressValue)
         {
             var vacancy = new Vacancy
             {
@@ -72,7 +89,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         [Theory]
         [InlineData("<")]
         [InlineData(">")]
-        public void OrganisationAddressLine1MustContainValidCharacters(string testValue)
+        public void EmployerAddressLine1MustContainValidCharacters(string testValue)
         {
             var vacancy = new Vacancy
             {
@@ -93,7 +110,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         }
 
         [Fact]
-        public void OrganisationAddressLine1CannotBeLongerThan100Characters()
+        public void EmployerAddressLine1CannotBeLongerThan100Characters()
         {
             var vacancy = new Vacancy
             {
@@ -116,7 +133,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         [Theory]
         [InlineData("<")]
         [InlineData(">")]
-        public void OrganisationAddressLine2MustContainValidCharacters(string testValue)
+        public void EmployerAddressLine2MustContainValidCharacters(string testValue)
         {
             var vacancy = new Vacancy
             {
@@ -138,7 +155,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         }
 
         [Fact]
-        public void OrganisationAddressLine2CannotBeLongerThan100Characters()
+        public void EmployerAddressLine2CannotBeLongerThan100Characters()
         {
             var vacancy = new Vacancy
             {
@@ -162,7 +179,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         [Theory]
         [InlineData("<")]
         [InlineData(">")]
-        public void OrganisationAddressLine3MustContainValidCharacters(string testValue)
+        public void EmployerAddressLine3MustContainValidCharacters(string testValue)
         {
             var vacancy = new Vacancy
             {
@@ -184,7 +201,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         }
 
         [Fact]
-        public void OrganisationAddressLine3CannotBeLongerThan100Characters()
+        public void EmployerAddressLine3CannotBeLongerThan100Characters()
         {
             var vacancy = new Vacancy
             {
@@ -208,7 +225,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         [Theory]
         [InlineData("<")]
         [InlineData(">")]
-        public void OrganisationAddressLine4MustContainValidCharacters(string testValue)
+        public void EmployerAddressLine4MustContainValidCharacters(string testValue)
         {
             var vacancy = new Vacancy
             {
@@ -230,7 +247,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         }
 
         [Fact]
-        public void OrganisationAddressLine4CannotBeLongerThan100Characters()
+        public void EmployerAddressLine4CannotBeLongerThan100Characters()
         {
             var vacancy = new Vacancy
             {
@@ -254,7 +271,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        public void OrganisationPostCodeMustBeSet(string postCodeValue)
+        public void EmployerPostCodeMustBeSet(string postCodeValue)
         {
             var vacancy = new Vacancy
             {
@@ -278,7 +295,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         [InlineData("12345")]
         [InlineData("AAAAAA")]
         [InlineData("AS123 1JJ")]
-        public void OrganisationPostCodeMustBeValidFormat(string postCodeValue)
+        public void EmployerPostCodeMustBeValidFormat(string postCodeValue)
         {
             var vacancy = new Vacancy
             {

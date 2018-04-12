@@ -9,6 +9,23 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
     public class TrainingValidationTests : VacancyValidationTestsBase
     {
         [Fact]
+        public void ErrorWhenProgrammeIsNull()
+        {
+            var vacancy = new Vacancy
+            {
+                Programme = null
+            };
+
+            var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProgramme);
+
+            result.HasErrors.Should().BeTrue();
+            result.Errors.Should().HaveCount(1);
+            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Programme)}");
+            result.Errors[0].ErrorCode.Should().Be("25");
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.TrainingProgramme);
+        }
+
+        [Fact]
         public void NoErrorsWhenClosingDateIsValid()
         {
             var vacancy = new Vacancy
