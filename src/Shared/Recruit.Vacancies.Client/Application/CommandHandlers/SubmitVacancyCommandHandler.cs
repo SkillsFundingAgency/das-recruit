@@ -6,27 +6,28 @@ using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Esfa.Recruit.Vacancies.Client.Application.Handlers
+namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class UpdateVacancyCommandHandler : IRequestHandler<UpdateVacancyCommand>
+    public class SubmitVacancyCommandHandler : IRequestHandler<SubmitVacancyCommand>
     {
         private readonly IVacancyRepository _repository;
         private readonly IMessaging _messaging;
 
-        public UpdateVacancyCommandHandler(IVacancyRepository repository, IMessaging messaging)
+        public SubmitVacancyCommandHandler(IVacancyRepository repository, IMessaging messaging)
         {
             _repository = repository;
             _messaging = messaging;
         }
 
-        public async Task Handle(UpdateVacancyCommand message, CancellationToken cancellationToken)
+        public async Task Handle(SubmitVacancyCommand message, CancellationToken cancellationToken)
         {
             await _repository.UpdateAsync(message.Vacancy);
 
-            await _messaging.PublishEvent(new VacancyUpdatedEvent
+            await _messaging.PublishEvent(new VacancySubmittedEvent
             {
                 SourceCommandId = message.CommandId.ToString(),
-                EmployerAccountId = message.Vacancy.EmployerAccountId
+                EmployerAccountId = message.Vacancy.EmployerAccountId,
+                VacancyId = message.Vacancy.Id
             });
         }
     }

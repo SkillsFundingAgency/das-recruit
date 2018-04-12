@@ -1,6 +1,6 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Events;
-using Esfa.Recruit.Vacancies.Client.Application.Handlers;
+using Esfa.Recruit.Vacancies.Client.Application.CommandHandlers;
 using Esfa.Recruit.Vacancies.Client.Application.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Services.MinimumWage;
@@ -16,6 +16,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Messaging;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.SequenceStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
 using FluentValidation;
@@ -61,6 +62,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient<IEmployerAccountService, EmployerAccountService>();
             services.AddTransient<IGetMinimumWages, StubNationalMinimumWageService>();
             services.AddTransient<ICreateDashboards, DashboardService>();
+            services.AddTransient<IGenerateVacancyNumbers, MongoSequenceStore>();
         }
 
         private static void AddRepositories(this IServiceCollection services, IConfiguration configuration)

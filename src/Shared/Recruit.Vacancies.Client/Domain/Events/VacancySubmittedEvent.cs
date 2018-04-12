@@ -1,10 +1,12 @@
-﻿using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
+﻿using System;
+using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using MediatR;
 
 namespace Esfa.Recruit.Vacancies.Client.Domain.Events
 {
-    public class VacancySubmittedEvent : EventBase, INotification
+    public class VacancySubmittedEvent : EventBase, INotification, IVacancyEvent
     {
         public string EmployerAccountId { get; set; }
+        public Guid VacancyId { get; set; }
     }
 }

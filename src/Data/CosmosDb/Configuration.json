@@ -12,6 +12,11 @@
                     "CollectionName": "queryViews",
                     "OfferThroughput": 400,
                     "StoredProcedures": []
+                },
+                {
+                    "CollectionName": "sequences",
+                    "OfferThroughput": 400,
+                    "StoredProcedures": []
                 }
             ]
         }
