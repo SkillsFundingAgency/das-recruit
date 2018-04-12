@@ -6,16 +6,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
 {
     public class Vacancy
     {
-        public Vacancy()
-        {
-            EmployerLocation = new Address();
-            Programme = new Programme();
-            Wage = new Wage();
-            Skills = new List<string>();
-            Qualifications = new List<Qualification>();
-            TrainingProvider = new TrainingProvider();
-        }
-
         public Guid Id { get; set; }
         public long? VacancyReference { get; set; }
         
