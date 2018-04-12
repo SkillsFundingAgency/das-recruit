@@ -8,7 +8,7 @@
 
         <div asp-condition="@Model.HasOnlyOneOrganisation"><p>@Model.Organisations.First().Name</p></div>
         <form asp-route="@RouteNames.Employer_Post">
-            <div class="form-group">
+            <div esfa-validation-marker-for="SelectedOrganisationName" class="form-group">
                 @if (Model.HasOnlyOneOrganisation)
                 {
                     <input asp-for="SelectedOrganisationName" value="@Model.Organisations.First().Name" type="hidden" />
@@ -23,7 +23,7 @@
 
                         @foreach (var organisation in Model.Organisations)
                         {
-                            <div esfa-validation-marker-for="SelectedOrganisationName" class="multiple-choice">
+                            <div class="multiple-choice">
                                 <input asp-for="SelectedOrganisationName" type="radio" value="@organisation.Name" id="org-@organisation.Id">
                                 <label for="org-@organisation.Id">@organisation.Name</label>
                             </div>
