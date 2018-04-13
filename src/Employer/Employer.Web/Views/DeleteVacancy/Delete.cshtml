@@ -1,32 +1,25 @@
 ﻿@model Esfa.Recruit.Employer.Web.ViewModels.DeleteVacancy.DeleteViewModel
-
 <div class="grid-row">
     <div class="column-two-thirds">
-        <div asp-validation-summary="All" class="error-summary" role="alert" aria-labelledby="error-summary-heading-example-1" tabindex="-1"></div>
-
-        <h1 class="heading-large">@Model.Title</h1>
-        <h1 class="heading-large">Delete vacancy</h1>
-        
+        @Html.Partial("_ValidationSummary", new ValidationSummaryViewModel { ModelState = ViewData.ModelState })
+        <h1 class="heading-large">Are you sure you want to remove the '@Model.Title' vacancy?</h1>
         <form asp-route="@RouteNames.DeleteVacancy_Delete_Post">
-            <div class="form-group">
+            <div esfa-validation-marker-for="ConfirmDeletion" class="form-group">
                 <fieldset>
-                    <legend class="heading-medium">Are you sure?</legend>
-
+                    <span esfa-validation-message-for="ConfirmDeletion" class="error-message"></span>
                     <div class="multiple-choice">
                         <input asp-for="@Model.ConfirmDeletion" type="radio" value="true" id="delete-yes" />
-                        <label class="block-label selection-button-radio" for="delete-yes">Yes, delete now</label>
+                        <label class="block-label selection-button-radio" for="delete-yes">Yes, delete this vacancy now</label>
                     </div>
                     <div class="multiple-choice">
                         <input asp-for="@Model.ConfirmDeletion" type="radio" value="false" id="delete-no" />
-                        <label class="block-label selection-button-radio" for="delete-no">No, don't delete</label>
+                        <label class="block-label selection-button-radio" for="delete-no">No, don't delete this vacancy</label>
                     </div>
                 </fieldset>
             </div>
-
             <div class="form-group">
-                <input type="submit" value="Continue" class="button"/>
+                <input type="submit" value="Continue" class="button" />
             </div>
         </form>
-
     </div>
 </div> 
