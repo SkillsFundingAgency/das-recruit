@@ -5,8 +5,8 @@ using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Enums;
+using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using System;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
@@ -51,8 +51,15 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                         ViewName = ViewNames.ManageClosedVacancyView
                     };
                 case VacancyStatus.Referred:
+                    var referredViewModel = new ReferredVacancyViewModel();
+                    _vacancyDisplayMapper.MapFromVacancy(referredViewModel, vacancy);
+                    return new ManageVacancy
+                    {
+                        ViewModel = referredViewModel,
+                        ViewName = ViewNames.ManageReferredVacancyView
+                    };
                 default:
-                    throw new NotImplementedException();
+                    throw new ConcurrencyException(string.Format(ErrorMessages.VacancyCannotBeViewed, vacancy.Title));
             }
         }
     }
