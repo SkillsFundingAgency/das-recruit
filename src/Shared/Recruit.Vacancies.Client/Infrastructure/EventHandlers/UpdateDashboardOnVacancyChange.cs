@@ -1,26 +1,29 @@
-﻿using Esfa.Recruit.Vacancies.Client.Application.Services;
-using Esfa.Recruit.Vacancies.Client.Domain.Events;
-using Esfa.Recruit.Vacancies.Client.Domain.Projections;
+﻿using Esfa.Recruit.Vacancies.Client.Domain.Events;
+using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Dashboard;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Esfa.Recruit.Vacancies.Client.Application.EventHandlers
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
 {
     public class UpdateDashboardOnVacancyChange : INotificationHandler<VacancyCreatedEvent>,
                                                     INotificationHandler<VacancyUpdatedEvent>,
                                                     INotificationHandler<VacancySubmittedEvent>,
                                                     INotificationHandler<VacancyDeletedEvent>
     {
-        private readonly ICreateDashboards _dashboardService;
+        private readonly IQueryStoreWriter _queryStoreWriter;
         private readonly ILogger<UpdateDashboardOnVacancyChange> _logger;
+        private readonly IVacancyRepository _repository;
 
-        public UpdateDashboardOnVacancyChange(ICreateDashboards dashboardService, ILogger<UpdateDashboardOnVacancyChange> logger)
+        public UpdateDashboardOnVacancyChange(IVacancyRepository repository, IQueryStoreWriter queryStoreWriter, ILogger<UpdateDashboardOnVacancyChange> logger)
         {
+            _repository = repository;
+            _queryStoreWriter = queryStoreWriter;
             _logger = logger;
-            _dashboardService = dashboardService;
         }
 
         public async Task Handle(VacancyCreatedEvent notification, CancellationToken cancellationToken)
@@ -47,9 +50,15 @@ namespace Esfa.Recruit.Vacancies.Client.Application.EventHandlers
             await ReBuildDashboard(notification.EmployerAccountId);
         }
 
-        private Task ReBuildDashboard(string employerAccountId)
+        private async Task ReBuildDashboard(string employerAccountId)
         {
-            return _dashboardService.BuildDashboard(employerAccountId);
+            var vacancySummaries = await _repository.GetVacanciesByEmployerAccountAsync<VacancySummary>(employerAccountId);
+
+            var activeVacancySummaries = vacancySummaries.Where(v => v.IsDeleted == false);
+
+            await _queryStoreWriter.UpdateDashboardAsync(employerAccountId, activeVacancySummaries.OrderBy(v => v.CreatedDate));
+
+            _logger.LogDebug("Update dashboard with {count} summary records for account: {employerAccountId}", activeVacancySummaries.Count(), employerAccountId);
         }
     }
 }

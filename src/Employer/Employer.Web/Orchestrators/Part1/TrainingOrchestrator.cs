@@ -9,15 +9,16 @@ using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using System.Linq;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
     public class TrainingOrchestrator : EntityValidatingOrchestrator<Vacancy, TrainingEditModel>
     {
         private const VacancyRuleSet ValdationRules = VacancyRuleSet.ClosingDate | VacancyRuleSet.StartDate | VacancyRuleSet.TrainingProgramme | VacancyRuleSet.StartDateEndDate | VacancyRuleSet.TrainingExpiryDate;
-        private readonly IVacancyClient _client;
+        private readonly IEmployerVacancyClient _client;
 
-        public TrainingOrchestrator(IVacancyClient client, ILogger<TrainingOrchestrator> logger) : base(logger)
+        public TrainingOrchestrator(IEmployerVacancyClient client, ILogger<TrainingOrchestrator> logger) : base(logger)
         {
             _client = client;
         }
@@ -25,7 +26,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         public async Task<TrainingViewModel> GetTrainingViewModelAsync(Guid vacancyId)
         {
             var vacancyTask = _client.GetVacancyAsync(vacancyId);
-            var programmesTask = _client.GetApprenticeshipProgrammesAsync();
+            var programmesTask = _client.GetActiveApprenticeshipProgrammesAsync();
 
             await Task.WhenAll(vacancyTask, programmesTask);
 
@@ -40,7 +41,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var vm = new TrainingViewModel
             {
                 VacancyId = vacancy.Id,
-                SelectedProgrammeId = vacancy.Programme?.Id,
+                SelectedProgrammeId = vacancy.ProgrammeId,
                 Programmes = programmes.ToViewModel()
             };
 
@@ -81,7 +82,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         public async Task<OrchestratorResponse> PostTrainingEditModelAsync(TrainingEditModel m)
         {
             var vacancyTask = _client.GetVacancyAsync(m.VacancyId);
-            var programmesTask = _client.GetApprenticeshipProgrammesAsync();
+            var programmesTask = _client.GetActiveApprenticeshipProgrammesAsync();
 
             await Task.WhenAll(vacancyTask, programmesTask);
 
@@ -95,19 +96,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             vacancy.ClosingDate = m.ClosingDate.AsDateTimeUk()?.ToUniversalTime();
             vacancy.StartDate = m.StartDate.AsDateTimeUk()?.ToUniversalTime();
             
-            var programme = programmesTask.Result.Programmes.SingleOrDefault(p => p.Id == m.SelectedProgrammeId);
+            vacancy.ProgrammeId = m.SelectedProgrammeId;
             
-            vacancy.Programme = new Programme();
-
-            if (programme != null)
-            {
-                vacancy.Programme.Id = programme.Id;
-                vacancy.Programme.Title = programme.Title;
-                vacancy.Programme.TrainingType = programme.ApprenticeshipType;
-                vacancy.Programme.Level = programme.Level;
-                vacancy.Programme.LevelName = ((ProgrammeLevel)programme.Level).GetDisplayName();
-            }
-
             return await ValidateAndExecute(
                 vacancy, 
                 v => _client.Validate(v, ValdationRules),
@@ -119,7 +109,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         {
             var mappings = new EntityToViewModelPropertyMappings<Vacancy, TrainingEditModel>();
 
-            mappings.Add(e => e.Programme.Id, vm => vm.SelectedProgrammeId);
+            mappings.Add(e => e.ProgrammeId, vm => vm.SelectedProgrammeId);
             mappings.Add(e => e.StartDate, vm => vm.StartDate);
             mappings.Add(e => e.ClosingDate, vm => vm.ClosingDate);
 

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services
 {
-    public class EmployerAccountService : IEmployerAccountService
+    internal class EmployerAccountService : IEmployerAccountService
     {
         private readonly ILogger<EmployerAccountService> _logger;
         private readonly IAccountApiClient _accountApiClient;

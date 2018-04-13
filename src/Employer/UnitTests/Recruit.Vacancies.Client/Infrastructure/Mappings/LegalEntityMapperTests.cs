@@ -2,7 +2,7 @@
 using FluentAssertions;
 using Xunit;
 
-namespace Esfa.Recruit.Employer.UnitTests.Recruit.Vacancies.Client.Domain.Mappings
+namespace Esfa.Recruit.Employer.UnitTests.Recruit.Vacancies.Client.Infrastructure.Mappings
 {
     public class LegalEntityMapperTests
     {

@@ -19,10 +19,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
     public class SkillsOrchestrator : EntityValidatingOrchestrator<Vacancy, SkillsEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.Skills;
-        private readonly IVacancyClient _client;
+        private readonly IEmployerVacancyClient _client;
         private readonly SkillsConfiguration _skillsConfig;
 
-        public SkillsOrchestrator(IVacancyClient client, IOptions<SkillsConfiguration> skillsConfigOptions, ILogger<SkillsOrchestrator> logger) : base(logger)
+        public SkillsOrchestrator(IEmployerVacancyClient client, IOptions<SkillsConfiguration> skillsConfigOptions, ILogger<SkillsOrchestrator> logger) : base(logger)
         {
             _client = client;
             _skillsConfig = skillsConfigOptions.Value;

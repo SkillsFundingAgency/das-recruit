@@ -1,9 +1,10 @@
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Domain.Projections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Dashboard;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Models;
 
-namespace Esfa.Recruit.Vacancies.Client.Application.QueryStore
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 {
     public interface IQueryStoreWriter
     {

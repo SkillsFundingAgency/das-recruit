@@ -14,11 +14,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
     public class TrainingProviderOrchestrator : EntityValidatingOrchestrator<Vacancy, ConfirmTrainingProviderEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.TrainingProvider;
-        private readonly IVacancyClient _client;
+        private readonly IEmployerVacancyClient _client;
         private readonly ITrainingProviderService _providerService;
         private readonly ILogger<TrainingProviderOrchestrator> _logger;
 
-        public TrainingProviderOrchestrator(IVacancyClient client, ITrainingProviderService providerService, ILogger<TrainingProviderOrchestrator> logger) : base(logger)
+        public TrainingProviderOrchestrator(IEmployerVacancyClient client, ITrainingProviderService providerService, ILogger<TrainingProviderOrchestrator> logger) : base(logger)
         {
             _client = client;
             _providerService = providerService;

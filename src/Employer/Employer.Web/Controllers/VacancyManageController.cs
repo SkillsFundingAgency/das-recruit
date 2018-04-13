@@ -12,9 +12,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers
     public class VacancyManageController : Controller
     {
         private readonly VacancyManageOrchestrator _orchestrator;
-        private readonly IVacancyClient _client;
+        private readonly IEmployerVacancyClient _client;
 
-        public VacancyManageController(VacancyManageOrchestrator orchestrator, IVacancyClient client)
+        public VacancyManageController(VacancyManageOrchestrator orchestrator, IEmployerVacancyClient client)
         {
             _orchestrator = orchestrator;
             _client = client;
@@ -30,7 +30,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 return HandleRedirectOfDraftVacancy(vacancy);
             }
 
-            var m = _orchestrator.GetVacancyDisplayViewModelAsync(vacancy);
+            var m = await _orchestrator.GetVacancyDisplayViewModelAsync(vacancy);
             return View(m.ViewName, m.ViewModel);
         }
 

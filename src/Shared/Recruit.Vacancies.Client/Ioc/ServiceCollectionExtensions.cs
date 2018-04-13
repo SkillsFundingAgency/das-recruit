@@ -1,7 +1,6 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Events;
 using Esfa.Recruit.Vacancies.Client.Application.CommandHandlers;
-using Esfa.Recruit.Vacancies.Client.Application.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Services.MinimumWage;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
@@ -39,7 +38,8 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddMediatR(typeof(CreateVacancyCommandHandler).Assembly);
             services.AddTransient<IMessaging, MediatrMessaging>();
             
-            services.AddTransient<IVacancyClient, VacancyClient>();
+            services.AddTransient<IEmployerVacancyClient, VacancyClient>();
+            services.AddTransient<IJobsVacancyClient, VacancyClient>();
 
             RegisterServiceDeps(services);
 
@@ -61,8 +61,8 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient<ITimeProvider, CurrentUtcTimeProvider>();
             services.AddTransient<IEmployerAccountService, EmployerAccountService>();
             services.AddTransient<IGetMinimumWages, StubNationalMinimumWageService>();
-            services.AddTransient<ICreateDashboards, DashboardService>();
             services.AddTransient<IGenerateVacancyNumbers, MongoSequenceStore>();
+            services.AddTransient<IApprenticeshipProgrammeProvider, ApprenticeshipProgrammeProvider>(); 
         }
 
         private static void AddRepositories(this IServiceCollection services, IConfiguration configuration)

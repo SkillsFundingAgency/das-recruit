@@ -13,7 +13,7 @@ using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Middleware;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Esfa.Recruit.Vacancies.Client.Application.Services;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 
 namespace Esfa.Recruit.Employer.Web.Configuration
 {
@@ -69,7 +69,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             });
         }
 
-        public static void AddAuthenticationService(this IServiceCollection services, AuthenticationConfiguration authConfig, IEmployerAccountService accountsSvc)
+        public static void AddAuthenticationService(this IServiceCollection services, AuthenticationConfiguration authConfig, IEmployerVacancyClient vacancyClient)
         {
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
@@ -94,14 +94,14 @@ namespace Esfa.Recruit.Employer.Web.Configuration
                 options.ClientSecret = authConfig.ClientSecret;
                 options.Scope.Add("profile");
 
-                options.Events.OnTokenValidated = async (ctx) => await PopulateAccountsClaim(ctx, accountsSvc);
+                options.Events.OnTokenValidated = async (ctx) => await PopulateAccountsClaim(ctx, vacancyClient);
             });
         }
         
-        private static async Task PopulateAccountsClaim(Microsoft.AspNetCore.Authentication.OpenIdConnect.TokenValidatedContext ctx, IEmployerAccountService accountsSvc)
+        private static async Task PopulateAccountsClaim(Microsoft.AspNetCore.Authentication.OpenIdConnect.TokenValidatedContext ctx, IEmployerVacancyClient vacancyClient)
         {
             var userId = ctx.Principal.Claims.First(c => c.Type.Equals(EmployerRecruitClaims.IdamsUserIdClaimTypeIdentifier)).Value;
-            var accounts = await accountsSvc.GetEmployerIdentifiersAsync(userId);
+            var accounts = await vacancyClient.GetEmployerIdentifiersAsync(userId);
             var accountsAsJson = JsonConvert.SerializeObject(accounts);
             var associatedAccountsClaim = new Claim(EmployerRecruitClaims.AccountsClaimsTypeIdentifier, accountsAsJson, JsonClaimValueTypes.Json);
 

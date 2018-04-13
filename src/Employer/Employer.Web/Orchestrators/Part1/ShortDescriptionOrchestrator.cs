@@ -13,10 +13,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
     public class ShortDescriptionOrchestrator : EntityValidatingOrchestrator<Vacancy, ShortDescriptionEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.NumberOfPositions | VacancyRuleSet.ShortDescription;
-        private readonly IVacancyClient _client;
+        private readonly IEmployerVacancyClient _client;
         private readonly ILogger<ShortDescriptionOrchestrator> _logger;
 
-        public ShortDescriptionOrchestrator(IVacancyClient client, ILogger<ShortDescriptionOrchestrator> logger) : base(logger)
+        public ShortDescriptionOrchestrator(IEmployerVacancyClient client, ILogger<ShortDescriptionOrchestrator> logger) : base(logger)
         {
             _logger = logger;
             _client = client;

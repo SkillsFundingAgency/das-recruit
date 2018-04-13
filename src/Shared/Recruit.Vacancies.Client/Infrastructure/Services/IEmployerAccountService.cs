@@ -3,7 +3,7 @@ using SFA.DAS.EAS.Account.Api.Types;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Esfa.Recruit.Vacancies.Client.Application.Services
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services
 {
     public interface IEmployerAccountService
     {

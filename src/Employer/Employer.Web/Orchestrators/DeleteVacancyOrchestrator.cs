@@ -9,9 +9,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
     public class DeleteVacancyOrchestrator
     {
-        private readonly IVacancyClient _client;
+        private readonly IEmployerVacancyClient _client;
 
-        public DeleteVacancyOrchestrator(IVacancyClient client)
+        public DeleteVacancyOrchestrator(IEmployerVacancyClient client)
         {
             _client = client;
         }

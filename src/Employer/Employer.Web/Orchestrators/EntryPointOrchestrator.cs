@@ -7,9 +7,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
     public class EntryPointOrchestrator
     {
         private readonly ILogger<EntryPointOrchestrator> _logger;
-        private readonly IVacancyClient _client;
+        private readonly IEmployerVacancyClient _client;
 
-        public EntryPointOrchestrator(ILogger<EntryPointOrchestrator> logger, IVacancyClient client)
+        public EntryPointOrchestrator(ILogger<EntryPointOrchestrator> logger, IEmployerVacancyClient client)
         {
             _logger = logger;
             _client = client;

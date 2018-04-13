@@ -18,10 +18,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
     public class QualificationsOrchestrator : EntityValidatingOrchestrator<Vacancy, QualificationsEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.Qualifications;
-        private readonly IVacancyClient _client;
+        private readonly IEmployerVacancyClient _client;
         private readonly QualificationsConfiguration _qualificationsConfig;
 
-        public QualificationsOrchestrator(IVacancyClient client, IOptions<QualificationsConfiguration> qualificationsConfigOptions, ILogger<QualificationsOrchestrator> logger)
+        public QualificationsOrchestrator(IEmployerVacancyClient client, IOptions<QualificationsConfiguration> qualificationsConfigOptions, ILogger<QualificationsOrchestrator> logger)
             : base(logger)
         {
             _client = client;

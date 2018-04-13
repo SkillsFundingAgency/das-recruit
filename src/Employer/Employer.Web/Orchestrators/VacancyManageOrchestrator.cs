@@ -1,4 +1,5 @@
-﻿using Esfa.Recruit.Employer.Web.Configuration;
+﻿using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.Models;
@@ -11,22 +12,22 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
     public class VacancyManageOrchestrator
     {
-        private readonly IVacancyClient _client;
+        private readonly IEmployerVacancyClient _client;
         private readonly DisplayVacancyViewModelMapper _vacancyDisplayMapper;
 
-        public VacancyManageOrchestrator(IVacancyClient client, DisplayVacancyViewModelMapper vacancyDisplayMapper)
+        public VacancyManageOrchestrator(IEmployerVacancyClient client, DisplayVacancyViewModelMapper vacancyDisplayMapper)
         {
             _client = client;
             _vacancyDisplayMapper = vacancyDisplayMapper;
         }
 
-        public ManageVacancy GetVacancyDisplayViewModelAsync(Vacancy vacancy)
+        public async Task<ManageVacancy> GetVacancyDisplayViewModelAsync(Vacancy vacancy)
         {
             switch (vacancy.Status)
             {
                 case VacancyStatus.Submitted:
                     var submittedViewModel = new SubmittedVacancyViewModel();
-                    _vacancyDisplayMapper.MapFromVacancy(submittedViewModel, vacancy);
+                    await _vacancyDisplayMapper.MapFromVacancyAsync(submittedViewModel, vacancy);
                     submittedViewModel.SubmittedDate = vacancy.SubmittedDate.Value.AsDisplayDate();
                     return new ManageVacancy
                     {
@@ -35,7 +36,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                     };
                 case VacancyStatus.Live:
                     var liveViewModel = new LiveVacancyViewModel();
-                    _vacancyDisplayMapper.MapFromVacancy(liveViewModel, vacancy);
+                    await _vacancyDisplayMapper.MapFromVacancyAsync(liveViewModel, vacancy);
                     return new ManageVacancy
                     {
                         ViewModel = liveViewModel,
@@ -43,7 +44,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                     };
                 case VacancyStatus.Closed:
                     var closedViewModel = new ClosedVacancyViewModel();
-                    _vacancyDisplayMapper.MapFromVacancy(closedViewModel, vacancy);
+                    await _vacancyDisplayMapper.MapFromVacancyAsync(closedViewModel, vacancy);
                     return new ManageVacancy
                     {
                         ViewModel = closedViewModel,
@@ -51,7 +52,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                     };
                 case VacancyStatus.Referred:
                     var referredViewModel = new ReferredVacancyViewModel();
-                    _vacancyDisplayMapper.MapFromVacancy(referredViewModel, vacancy);
+                    await _vacancyDisplayMapper.MapFromVacancyAsync(referredViewModel, vacancy);
                     return new ManageVacancy
                     {
                         ViewModel = referredViewModel,

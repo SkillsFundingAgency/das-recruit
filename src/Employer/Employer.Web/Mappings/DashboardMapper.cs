@@ -1,5 +1,5 @@
 ﻿using Esfa.Recruit.Employer.Web.ViewModels;
-using Esfa.Recruit.Vacancies.Client.Domain.Projections;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Dashboard;
 using System.Collections.Generic;
 using System.Linq;
 

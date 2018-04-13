@@ -3,10 +3,13 @@ using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Services.MinimumWage;
+using Esfa.Recruit.Vacancies.Client.Application.Services.Models;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Humanizer;
 using Microsoft.Extensions.Options;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Employer.Web.Mappings
 {
@@ -17,16 +20,24 @@ namespace Esfa.Recruit.Employer.Web.Mappings
         private readonly IGeocodeImageService _mapService;
         private readonly IGetMinimumWages _wageService;
         private readonly QualificationsConfiguration _qualificationsConfiguration;
+        private readonly IEmployerVacancyClient _client;
 
-        public DisplayVacancyViewModelMapper(IGeocodeImageService mapService, IGetMinimumWages wageService, IOptions<QualificationsConfiguration> qualificationsConfigOptions)
+        public DisplayVacancyViewModelMapper(
+                IGeocodeImageService mapService,
+                IGetMinimumWages wageService, 
+                IOptions<QualificationsConfiguration> qualificationsConfigOptions,
+                IEmployerVacancyClient client)
         {
             _mapService = mapService;
             _wageService = wageService;
             _qualificationsConfiguration = qualificationsConfigOptions.Value;
+            _client = client;
         }
 
-        public void MapFromVacancy(DisplayVacancyViewModel vm, Vacancy vacancy)
+        public async Task MapFromVacancyAsync(DisplayVacancyViewModel vm, Vacancy vacancy)
         {
+            var programme = await _client.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
+
             vm.ApplicationInstructions = vacancy.ApplicationInstructions;
             vm.ApplicationUrl = vacancy.ApplicationUrl;
             vm.CanDelete = vacancy.CanDelete;
@@ -72,11 +83,11 @@ namespace Esfa.Recruit.Employer.Web.Mappings
                     .Where(x => !string.IsNullOrEmpty(x));
             }
 
-            if (vacancy.Programme != null)
+            if (vacancy.ProgrammeId != null)
             {
-                vm.TrainingTitle = vacancy.Programme.Title;
-                vm.TrainingType = vacancy.Programme.TrainingType?.GetDisplayName();
-                vm.TrainingLevel = vacancy.Programme.LevelName;
+                vm.TrainingTitle = programme?.Title;
+                vm.TrainingType = programme?.ApprenticeshipType.GetDisplayName();
+                vm.TrainingLevel = programme == null ? null : programme.Level.GetDisplayName();
             }
 
             if (vacancy.Wage != null)

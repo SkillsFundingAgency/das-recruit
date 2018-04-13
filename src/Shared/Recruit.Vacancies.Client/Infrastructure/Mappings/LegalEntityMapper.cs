@@ -1,6 +1,5 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Application.Validation;
-using Esfa.Recruit.Vacancies.Client.Domain;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using SFA.DAS.EAS.Account.Api.Types;
 using System;
 using System.Linq;

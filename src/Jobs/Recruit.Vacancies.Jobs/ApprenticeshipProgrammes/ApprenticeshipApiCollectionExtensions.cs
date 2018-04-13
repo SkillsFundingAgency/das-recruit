@@ -1,8 +1,9 @@
 using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using SFA.DAS.Apprenticeships.Api.Types;
-using Esfa.Recruit.Vacancies.Client.Domain.Projections;
 using Esfa.Recruit.Vacancies.Client.Domain.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Services.Models;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Models;
 
 namespace System.Collections.Generic
 {
@@ -13,14 +14,15 @@ namespace System.Collections.Generic
             if (standards == null || standards.Count() == 0)
                 return Enumerable.Empty<ApprenticeshipProgramme>();
 
-            return standards.Where(IsStandardActive(timeProvider)).Select(x => new ApprenticeshipProgramme
+            return standards.Select(x => new ApprenticeshipProgramme
             {
                 Id = x.Id,
                 ApprenticeshipType = TrainingType.Standard,
                 Title = x.Title,
+                IsActive = IsStandardActive(timeProvider, x),
                 EffectiveFrom = x.EffectiveFrom,
                 EffectiveTo = x.EffectiveTo,
-                Level = x.Level,
+                Level = (ProgrammeLevel)x.Level,
                 Duration = x.Duration
             });
         }
@@ -30,28 +32,29 @@ namespace System.Collections.Generic
             if (frameworks == null || frameworks.Count() == 0)
                 return Enumerable.Empty<ApprenticeshipProgramme>();
 
-            return frameworks.Where(IsFrameworkActive(timeProvider)).Select(x => new ApprenticeshipProgramme
+            return frameworks.Select(x => new ApprenticeshipProgramme
             {
                 Id  = x.Id,
                 ApprenticeshipType = TrainingType.Framework,
                 Title = x.Title,
+                IsActive = IsFrameworkActive(timeProvider, x),
                 EffectiveFrom = x.EffectiveFrom,
                 EffectiveTo = x.EffectiveTo,
-                Level = x.Level,
+                Level = (ProgrammeLevel)x.Level,
                 Duration = x.Duration
             });
         }
 
-        private static Func<StandardSummary, bool> IsStandardActive(ITimeProvider timeProvider)
+        private static bool IsStandardActive(ITimeProvider timeProvider, StandardSummary standard)
         {
-            return x => x.EffectiveFrom.HasValue && x.EffectiveFrom.Value.Date <= DateTime.UtcNow.Date
-                && (!x.EffectiveTo.HasValue || x.EffectiveTo.Value.Date >= DateTime.UtcNow.Date);
+            return standard.EffectiveFrom.HasValue && standard.EffectiveFrom.Value.Date <= DateTime.UtcNow.Date
+                && (!standard.EffectiveTo.HasValue || standard.EffectiveTo.Value.Date >= DateTime.UtcNow.Date);
         }
 
-        private static Func<FrameworkSummary, bool> IsFrameworkActive(ITimeProvider timeProvider)
+        private static bool IsFrameworkActive(ITimeProvider timeProvider, FrameworkSummary framework)
         {
-            return x => x.EffectiveFrom.HasValue && x.EffectiveFrom.Value.Date <= DateTime.UtcNow.Date
-                && (!x.EffectiveTo.HasValue || x.EffectiveTo.Value.Date >= DateTime.UtcNow.Date);
+            return framework.EffectiveFrom.HasValue && framework.EffectiveFrom.Value.Date <= DateTime.UtcNow.Date
+                && (!framework.EffectiveTo.HasValue || framework.EffectiveTo.Value.Date >= DateTime.UtcNow.Date);
         }
     }
 }

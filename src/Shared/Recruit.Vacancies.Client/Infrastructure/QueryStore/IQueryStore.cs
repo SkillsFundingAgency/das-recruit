@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using Esfa.Recruit.Vacancies.Client.Domain.Projections;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 {
