@@ -44,5 +44,10 @@
                 public const string FixedWageYearlyAmount = "The field wage must be a number";
             }
         }
+
+        public static class DeleteVacancyConfirmationMessages
+        {
+            public const string SelectionRequired = "You must select one option.";
+        }
     }
 }

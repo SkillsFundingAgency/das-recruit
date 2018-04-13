@@ -21,15 +21,14 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             var vm = new DeleteViewModel
             {
                 Title = vacancy.Title,
-                ConfirmDeletion = false
             };
 
             return vm;
         }
 
-        public async Task<bool> TryDeleteVacancyAsync(DeleteEditModel m)
+        public Task<bool> TryDeleteVacancyAsync(DeleteEditModel m)
         {
-            return await _client.DeleteVacancyAsync(m.VacancyId);
+            return _client.DeleteVacancyAsync(m.VacancyId);
         }
     }
 }

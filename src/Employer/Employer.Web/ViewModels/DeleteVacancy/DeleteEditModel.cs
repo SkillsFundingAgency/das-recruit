@@ -10,7 +10,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.DeleteVacancy
         [FromRoute]
         public Guid VacancyId { get; set; }
 
-        [Required]
-        public bool ConfirmDeletion { get; set; }
+        [Required(ErrorMessage = ValidationMessages.DeleteVacancyConfirmationMessages.SelectionRequired)]
+        public bool? ConfirmDeletion { get; set; }
     }
 }
