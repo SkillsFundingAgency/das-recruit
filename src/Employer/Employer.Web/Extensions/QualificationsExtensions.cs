@@ -7,11 +7,11 @@ namespace Esfa.Recruit.Employer.Web.Extensions
 {
     public static class QualificationsExtensions
     {
-        public static List<QualificationEditModel> ToViewModel(this List<Qualification> qualifications)
+        public static IEnumerable<QualificationEditModel> ToViewModel(this IEnumerable<Qualification> qualifications)
         {
             if (qualifications == null)
             {
-                return new List<QualificationEditModel>();
+                return Enumerable.Empty<QualificationEditModel>();
             }
 
             return qualifications.Select(q => new QualificationEditModel
@@ -20,15 +20,15 @@ namespace Esfa.Recruit.Employer.Web.Extensions
                 Subject = q.Subject,
                 Grade = q.Grade,
                 Weighting = q.Weighting
-            }).ToList();
+            });
 
         }
         
-        public static List<Qualification> ToEntity(this List<QualificationEditModel> qualifications)
+        public static IEnumerable<Qualification> ToEntity(this IEnumerable<QualificationEditModel> qualifications)
         {
             if (qualifications == null)
             {
-                return new List<Qualification>();
+                return Enumerable.Empty<Qualification>();
             }
             
             return qualifications.Select(q => new Qualification
@@ -37,21 +37,20 @@ namespace Esfa.Recruit.Employer.Web.Extensions
                 Subject = q.Subject,
                 Grade = q.Grade,
                 Weighting = q.Weighting
-            }).ToList();
+            });
         }
 
-        public static List<string> AsText(this List<Qualification> qualifications)
+        public static IEnumerable<string> AsText(this IEnumerable<Qualification> qualifications)
         {
             if (qualifications == null)
             {
-                return new List<string>();
+                return Enumerable.Empty<string>();
             }
             
-            return qualifications.Select(q => $"{q.QualificationType} {q.Subject} (Grade {q.Grade}) {q.Weighting.GetDisplayName().ToLower()}")
-                .ToList();
+            return qualifications.Select(q => $"{q.QualificationType} {q.Subject} (Grade {q.Grade}) {q.Weighting.GetDisplayName().ToLower()}");
         }
 
-        public static List<Qualification> SortQualifications(this List<Qualification> qualifications, IList<string> qualificationTypes)
+        public static IOrderedEnumerable<Qualification> SortQualifications(this IEnumerable<Qualification> qualifications, IList<string> qualificationTypes)
         {
             if (qualifications == null)
             {
@@ -60,8 +59,7 @@ namespace Esfa.Recruit.Employer.Web.Extensions
 
             return qualifications
                 .OrderBy(q => qualificationTypes.IndexOf(q.QualificationType))
-                .ThenBy(q => q.Subject)
-                .ToList();
+                .ThenBy(q => q.Subject);
         }
     }
 }

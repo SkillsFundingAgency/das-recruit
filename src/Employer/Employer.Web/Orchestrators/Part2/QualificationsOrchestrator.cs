@@ -40,7 +40,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             var vm = new QualificationsViewModel
             {
                 QualificationTypes = _qualificationsConfig.QualificationTypes,
-                Qualifications = vacancy.Qualifications.SortQualifications(_qualificationsConfig.QualificationTypes).ToViewModel()
+                Qualifications = vacancy.Qualifications.SortQualifications(_qualificationsConfig.QualificationTypes).ToViewModel().ToList()
             };
 
             return vm;
@@ -76,8 +76,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             HandleQualificationChange(m);
 
             var qualifications = m.Qualifications.ToEntity();
-            vacancy.Qualifications = qualifications.SortQualifications(_qualificationsConfig.QualificationTypes);
-            m.Qualifications = vacancy.Qualifications.ToViewModel();
+            vacancy.Qualifications = qualifications.SortQualifications(_qualificationsConfig.QualificationTypes).ToList();
+            m.Qualifications = vacancy.Qualifications.ToViewModel().ToList();
 
             //if we are adding/removing a qualification then just validate and don't persist
             var validateOnly = m.IsAddingQualification || m.IsRemovingQualification;
