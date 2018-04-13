@@ -22,6 +22,22 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         }
 
         [Fact]
+        public void ErrorIfTrainingProviderIsNull()
+        {
+            var vacancy = new Vacancy
+            {
+                TrainingProvider = null
+            };
+
+            var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProvider);
+
+            result.HasErrors.Should().BeTrue();
+            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.TrainingProvider));
+            result.Errors[0].ErrorCode.Should().Be("101");
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.TrainingProvider);
+        }
+
+        [Fact]
         public void EmptyUkprnNotAllowed()
         {
             var vacancy = new Vacancy

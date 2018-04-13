@@ -514,6 +514,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         private void ValidateTrainingProvider()
         {
             RuleFor(x => x.TrainingProvider)
+                .NotNull()
+                    .WithMessage("You must enter a training provider")
+                    .WithErrorCode("101")
                 .SetValidator(new TrainingProviderValidator((long)VacancyRuleSet.TrainingProvider))
                 .RunCondition(VacancyRuleSet.TrainingProvider)
                 .WithRuleId(VacancyRuleSet.TrainingProvider);
