@@ -92,6 +92,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             if (vacancy.Programme != null)
             {
+                vm.Programme = vacancy.Programme != null;
                 vm.TrainingTitle = vacancy.Programme.Title;
                 vm.TrainingType = vacancy.Programme.TrainingType?.GetDisplayName();
                 vm.TrainingLevel = vacancy.Programme.LevelName;
@@ -99,6 +100,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             if (vacancy.Wage != null)
             {
+                vm.Wage = vacancy.Wage != null;
                 vm.ExpectedDuration = (vacancy.Wage.DurationUnit.HasValue && vacancy.Wage.Duration.HasValue)
                     ? vacancy.Wage.DurationUnit.Value.GetDisplayName().ToQuantity(vacancy.Wage.Duration.Value)
                     : null;
@@ -138,6 +140,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             mappings.Add(e => e.Wage, vm => vm.Wage);
             mappings.Add(e => e.Wage.WeeklyHours, vm => vm.HoursPerWeek);
             mappings.Add(e => e.Wage.WorkingWeekDescription, vm => vm.WorkingWeekDescription);
+            mappings.Add(e => e.Wage.WageType, vm => vm.WageText);
+            mappings.Add(e => e.Wage.Duration, vm => vm.ExpectedDuration);
+            mappings.Add(e => e.Wage.DurationUnit, vm => vm.ExpectedDuration);
             mappings.Add(e => e.StartDate, vm => vm.PossibleStartDate);
             mappings.Add(e => e.Programme, vm => vm.Programme);
             mappings.Add(e => e.Programme.Level, vm => vm.TrainingLevel);

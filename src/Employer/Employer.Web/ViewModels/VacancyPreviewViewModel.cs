@@ -77,9 +77,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public bool HasTrainingProviderDetails => !string.IsNullOrWhiteSpace(ProviderName);
 
         public bool HasTrainingDetails => !string.IsNullOrWhiteSpace(TrainingType) || !string.IsNullOrWhiteSpace(TrainingTitle);
-
-        public bool HasWorkingWeek => HasWorkingWeekDescription || HasHoursPerWeek;
-
+        
         public bool HasWorkingWeekDescription => !string.IsNullOrWhiteSpace(WorkingWeekDescription);
 
         public bool HasHoursPerWeek => !string.IsNullOrWhiteSpace(HoursPerWeek);
@@ -113,7 +111,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
 
         public bool HasEmployerDescription => !string.IsNullOrWhiteSpace(EmployerDescription);
 
-        public bool HasEmployerWebsiteUrl => string.IsNullOrWhiteSpace(EmployerWebsiteUrl);
+        public bool HasEmployerWebsiteUrl => !string.IsNullOrWhiteSpace(EmployerWebsiteUrl);
 
         public bool HasContactName => !string.IsNullOrWhiteSpace(ContactName);
 
@@ -127,11 +125,9 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
 
         public bool HasApplicationUrl => !string.IsNullOrWhiteSpace(ApplicationUrl);
         
-        //These are required to display ModelState errors
-        [BindNever]
-        public bool Wage { get; }
-        [BindNever]
-        public bool Programme { get; }
+        public bool Wage { get; internal set; }
+        
+        public bool Programme { get; internal set; }
 
         public IList<string> OrderedFieldNames => new List<string>
         {
@@ -140,6 +136,8 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
             nameof(ClosingDate),
             nameof(WorkingWeekDescription),
             nameof(Wage),
+            nameof(WorkingWeekDescription),
+            nameof(HoursPerWeek),
             nameof(WageText),
             nameof(WageInfo),
             nameof(ExpectedDuration),

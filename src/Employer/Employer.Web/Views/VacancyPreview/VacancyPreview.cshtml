@@ -41,7 +41,7 @@
                 <div class="column-two-thirds">
                     <div class="@GetSectionClass(Model.ShortDescriptionSectionState)">
                         <h3 class="heading-small sfa-no-top-margin">Brief overview of the role</h3>
-                        <span esfa-validation-message-for="VacancyDescription" class="error-message"></span>
+                        <span esfa-validation-message-for="ShortDescription" class="error-message"></span>
                         <p asp-condition="@Model.HasShortDescription">@Model.ShortDescription</p>
                         <a asp-route="@RouteNames.Title_Get">Edit</a>
                     </div>
@@ -64,18 +64,17 @@
                         <li class="@GetSectionClass(Model.WorkingWeekSectionState)">
                             <h3 class="heading-small">Working week</h3>
                             <span esfa-validation-message-for="Wage" class="error-message"></span>
-                            <ul class="list" asp-condition="@Model.HasWorkingWeek">
+                            <ul class="list" asp-condition="@Model.Wage">
+                                <span esfa-validation-message-for="WorkingWeekDescription" class="error-message"></span>
                                 <li asp-condition="@Model.HasWorkingWeekDescription" id="vacancy-working-week">
-                                    <span esfa-validation-message-for="WorkingWeekDescription" class="error-message"></span>
                                     @Model.WorkingWeekDescription
                                 </li>
+                                <span esfa-validation-message-for="HoursPerWeek" class="error-message"></span>
                                 <li asp-condition="@Model.HasHoursPerWeek" id="total-hours-per-week">
-                                    <span esfa-validation-message-for="HoursPerWeek" class="error-message"></span>
                                     Total hours per week: @Model.HoursPerWeek
                                 </li>
                             </ul>
                             <a asp-route="@RouteNames.Title_Get">Edit</a>
-                            
                         </li>
                         <li class="@GetSectionClass(Model.WageTextSectionState)">
                             <h3 class="heading-small">Yearly wage</h3>
@@ -176,7 +175,7 @@
                         <h3 class="heading-small">Employer</h3>
                         <span esfa-validation-message-for="EmployerName" class="error-message"></span>
                         <p asp-condition="@Model.HasEmployerName">@Model.EmployerName</p>
-                        <a asp-route="@RouteNames.AboutEmployer_Get">Edit</a>
+                        <a asp-route="@RouteNames.Title_Get">Edit</a>
                     </div>
                     <div class="@GetSectionClass(Model.EmployerDescriptionSectionState)">
                         <h3 class="heading-small">Description</h3>
@@ -231,13 +230,13 @@
                         <h2 class="heading-small">Employer's application instructions (optional)</h2>
                         <span esfa-validation-message-for="ApplicationInstructions" class="error-message"></span>
                         <p asp-condition="@Model.HasApplicationInstructions">@Model.ApplicationInstructions</p>
-                        <a asp-route=" @RouteNames.ApplicationProcess_Get">Edit</a>
+                        <a asp-route="@RouteNames.ApplicationProcess_Get">Edit</a>
                     </div>
                     <div class="@GetSectionClass(Model.ApplicationUrlSectionState)">
                         <h2 class="heading-small">Employer's application website</h2>
                         <span esfa-validation-message-for="ApplicationUrl" class="error-message"></span>
                         <p asp-condition="@Model.HasApplicationUrl">@Model.ApplicationUrl</p>
-                        <a asp-route=" @RouteNames.ApplicationProcess_Get">Edit</a>
+                        <a asp-route="@RouteNames.ApplicationProcess_Get">Edit</a>
                     </div>
                 </div>
             </div>
