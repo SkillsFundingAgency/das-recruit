@@ -6,5 +6,6 @@
         public const string ManageSubmittedVacancyView = "Submitted";
         public const string ManageLiveVacancyView = "Live";
         public const string ManageClosedVacancyView = "Closed";
+        public const string ManageReferredVacancyView = "Referred";
     }
 }
