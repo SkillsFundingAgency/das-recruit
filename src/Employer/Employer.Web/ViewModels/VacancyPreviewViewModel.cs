@@ -9,21 +9,28 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
     public class VacancyPreviewViewModel
     {
         public string ApplicationInstructions { get; internal set; }
+        public VacancyPreviewSectionState ApplicationInstructionsSectionState { get; internal set; }
         public string ApplicationUrl { get; internal set; }
+        public VacancyPreviewSectionState ApplicationUrlSectionState { get; internal set; }
         public bool CanDelete { get; internal set; }
         public bool CanSubmit { get; internal set; }
         public string ContactName { get; internal set; }
         public string ContactEmail { get; internal set; }
         public string ContactTelephone { get; internal set; }
+        public VacancyPreviewSectionState ContactSectionState { get; internal set; }
         public string ClosingDate { get; internal set; }
         public VacancyPreviewSectionState ClosingDateSectionState { get; internal set; }
         public string EmployerDescription { get; internal set; }
+        public VacancyPreviewSectionState EmployerDescriptionSectionState { get; internal set; }
         public string EmployerName { get; internal set; }
+        public VacancyPreviewSectionState EmployerNameSectionState { get; internal set; }
         public string EmployerWebsiteUrl { get; internal set; }
+        public VacancyPreviewSectionState EmployerWebsiteUrlSectionState { get; internal set; }
         public string ExpectedDuration { get; internal set; }
         public VacancyPreviewSectionState ExpectedDurationSectionState { get; internal set; }
         public string HoursPerWeek { get; internal set; }
         public IEnumerable<string> EmployerAddressElements { get; internal set; }
+        public VacancyPreviewSectionState EmployerAddressSectionState { get; internal set; }
         public string MapUrl { get; set; }
         public string NumberOfPositions { get; internal set; }
         public VacancyPreviewSectionState NumberOfPositionsSectionState { get; internal set;}
@@ -32,7 +39,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public string PossibleStartDate { get; internal set; }
         public VacancyPreviewSectionState PossibleStartDateSectionState { get; internal set; }
         public string ProviderName { get; internal set; }
-        public string ProviderAddress { get; internal set; }
+        public VacancyPreviewSectionState ProviderSectionState { get; internal set; }
         public List<string> Qualifications { get; internal set; }
         public VacancyPreviewSectionState QualificationsSectionState { get; internal set; }
         public string ShortDescription { get; internal set; }
@@ -40,11 +47,13 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public IEnumerable<string> Skills { get; internal set; }
         public VacancyPreviewSectionState SkillsSectionState { get; internal set; }
         public string ThingsToConsider { get; internal set; }
+        public VacancyPreviewSectionState ThingsToConsiderSectionState { get; internal set; }
         public string Title { get; internal set; }
         public string TrainingDescription { get; internal set; }
         public string TrainingTitle { get; internal set; }
         public string TrainingType { get; internal set; }
         public string TrainingLevel { get; internal set; }
+        public VacancyPreviewSectionState TrainingSectionState { get; internal set; }
         public VacancyPreviewSectionState TrainingLevelSectionState { get; internal set; }
         public string VacancyDescription { get; internal set; }
         public string VacancyReferenceNumber { get; internal set; }
@@ -58,17 +67,22 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public bool HasTrainingProviderDetails => !string.IsNullOrEmpty(ProviderName);
 
         public bool HasContactDetails =>    !string.IsNullOrEmpty(ContactName) 
-                                            && !string.IsNullOrEmpty(ContactEmail)
-                                            && !string.IsNullOrEmpty(ContactTelephone);
+                                            || !string.IsNullOrEmpty(ContactEmail)
+                                            || !string.IsNullOrEmpty(ContactTelephone);
+
+        public bool HasTrainingDetails => !string.IsNullOrEmpty(TrainingType) || !string.IsNullOrEmpty(TrainingTitle);
 
         public VacancyPreviewSectionState DescriptionsSectionState { get; internal set; }
 
         public VacancyPreviewSectionState WorkingWeekSectionState { get; internal set; }
 
+        //These are required to display ModelState errors
         [BindNever]
         public bool Wage { get; }
         [BindNever]
-        public bool Programme{get;} 
+        public bool Programme { get; }
+        [BindNever]
+        public bool Provider { get; }
 
         public IList<string> OrderedFieldNames => new List<string>
         {
@@ -84,11 +98,23 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
             nameof(Programme),
             nameof(TrainingLevel),
             nameof(NumberOfPositions),
-
             nameof(VacancyDescription),
             nameof(TrainingDescription),
             nameof(OutcomeDescription),
-            nameof(Skills)
+            nameof(Skills),
+            nameof(Qualifications),
+            nameof(ThingsToConsider),
+            nameof(EmployerName),
+            nameof(EmployerDescription),
+            nameof(EmployerWebsiteUrl),
+            nameof(ContactName),
+            nameof(ContactTelephone),
+            nameof(ContactEmail),
+            nameof(EmployerAddressElements),
+            nameof(ApplicationInstructions),
+            nameof(ProviderName),
+            nameof(TrainingType),
+            nameof(TrainingTitle)
         };
     }
 

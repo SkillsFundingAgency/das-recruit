@@ -19,11 +19,6 @@
     }
 }
 
-@{ 
-    var providerDetailsClass = Model.HasTrainingProviderDetails == false ? emptySectionClass : string.Empty;
-    var contactDetailsClass = Model.HasContactDetails == false ? emptySectionClass : string.Empty;
-}
-
 <div class="grid-row">
     <div class="column-full">
         @Html.Partial("_ValidationSummary", new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames })
@@ -167,9 +162,10 @@
                     </div>
                 </div>
                 <div class="column-half">
-                    <div class="preview-empty">
+                    <div class="@GetSectionClass(Model.ThingsToConsiderSectionState)">
                         <h3 class="heading-small">Things to consider (optional)</h3>
-                        <p>@Model.ThingsToConsider</p>
+                        <span esfa-validation-message-for="ThingsToConsider" class="error-message"></span>
+                        <p asp-condition="@(!string.IsNullOrWhiteSpace(Model.ThingsToConsider))">@Model.ThingsToConsider</p>
                         <a asp-route="@RouteNames.Considerations_Get">Edit</a>
                     </div>
                 </div>
@@ -180,44 +176,46 @@
                     <h2 class="heading-large">About the employer</h2>
                 </div>
                 <div class="column-two-thirds">
-                    <div class="sfa-if-first">
+                    <div class="@GetSectionClass(Model.EmployerNameSectionState)">
                         <h3 class="heading-small">Employer</h3>
-                        <p id="vacancy-employer-name">@Model.EmployerName</p>
+                        <span esfa-validation-message-for="EmployerName" class="error-message"></span>
+                        <p asp-condition="@(!string.IsNullOrWhiteSpace(Model.EmployerName))">@Model.EmployerName</p>
+                        <a asp-route="@RouteNames.AboutEmployer_Get">Edit</a>
                     </div>
-                    <div class="preview-empty">
+                    <div class="@GetSectionClass(Model.EmployerDescriptionSectionState)">
                         <h3 class="heading-small">Description</h3>
-                        <div id="vacancy-employer-description">
-                            <p>@Model.EmployerDescription</p>
-                            <a asp-route="@RouteNames.AboutEmployer_Get">Edit</a>
-                        </div>
+                        <span esfa-validation-message-for="EmployerDescription" class="error-message"></span>
+                        <p asp-condition="@(!string.IsNullOrWhiteSpace(Model.EmployerDescription))">@Model.EmployerDescription</p>
+                        <a asp-route="@RouteNames.AboutEmployer_Get">Edit</a>
                     </div>
-                    <div class="preview-empty">
+                    <div class="@GetSectionClass(Model.EmployerWebsiteUrlSectionState)">
                         <h3 class="heading-small">Website (optional)</h3>
-                        <div id="vacancy-employer-website">
-                            <p>
-                                @Model.EmployerWebsiteUrl
-                            </p>
-                        </div>
+                        <span esfa-validation-message-for="EmployerWebsiteUrl" class="error-message"></span>
+                        <p asp-condition="@(!string.IsNullOrWhiteSpace(Model.EmployerWebsiteUrl))">@Model.EmployerWebsiteUrl</p>
                         <a asp-route="@RouteNames.AboutEmployer_Get">Edit</a>
                     </div>
                 </div>
                 <div class="column-one-third">
-                    <div class="@contactDetailsClass">
+                    <div class="@GetSectionClass(Model.ContactSectionState)">
                         <h3 class="heading-small">
                             Contact (optional)
                         </h3>
-                        <p class="sfa-small-bottom-margin">@Model.ContactName</p>
-                        <p class="sfa-small-bottom-margin">@Model.ContactEmail</p>
-                        <p class="sfa-small-bottom-margin">@Model.ContactTelephone</p>
+                        <span esfa-validation-message-for="ContactName" class="error-message"></span>
+                        <p asp-condition="@(!string.IsNullOrWhiteSpace(Model.ContactName))">@Model.ContactName</p>
+                        <span esfa-validation-message-for="ContactEmail" class="error-message"></span>
+                        <p asp-condition="@(!string.IsNullOrWhiteSpace(Model.ContactEmail))">@Model.ContactEmail</p>
+                        <span esfa-validation-message-for="ContactTelephone" class="error-message"></span>
+                        <p asp-condition="@(!string.IsNullOrWhiteSpace(Model.ContactTelephone))">@Model.ContactTelephone</p>
                         <a asp-route="@RouteNames.ApplicationProcess_Get">Edit</a>
                     </div>
                 </div>
             </div>
             <div class="grid-row">
                 <div class="column-half">
-                    <div id="vacancy-address">
-                        <h3 class="heading-small sfa-no-top-margin">Location</h3>
-                        <ul class="list">
+                    <div class="@GetSectionClass(Model.EmployerAddressSectionState)">
+                        <h3 class="heading-small">Location</h3>
+                        <span esfa-validation-message-for="EmployerAddressElements" class="error-message"></span>
+                        <ul asp-condition="@Model.EmployerAddressElements.Any()" class="list">
                             @foreach (var addrLine in Model.EmployerAddressElements)
                             {
                                 <li>@addrLine</li>
@@ -226,42 +224,50 @@
                         <a asp-route="@RouteNames.Title_Get">Edit</a>
                     </div>
                 </div>
-                <div class="column-half map-container hide-nojs toggle-content--mob">
-                    <img asp-condition="!string.IsNullOrWhiteSpace(Model.MapUrl)" id="static-map" class="static-map" src="@Model.MapUrl" />
+                <div class="column-half">
+                    <img asp-condition="!string.IsNullOrWhiteSpace(Model.MapUrl)" id="static-map" src="@Model.MapUrl" />
                 </div>
             </div>
-            <div id="offline-vacancy">
-                <div class="grid-row">
-                    <div class="column-full">
-                        <div class="preview-empty">
-                            <h2 class="heading-small">Employer's application instructions</h2>
-                            <p class="application-instructions">
-                                @Model.ApplicationInstructions
-                            </p>
-                            <a asp-route="@RouteNames.ApplicationProcess_Get">Edit</a>
-                        </div>
+            
+            <div class="grid-row">
+                <div class="column-full">
+                    <div class="@GetSectionClass(Model.ApplicationInstructionsSectionState)">
+                        <h2 class="heading-small">Employer's application instructions (optional)</h2>
+                        <span esfa-validation-message-for="ApplicationInstructions" class="error-message"></span>
+                        <p asp-condition="@(!string.IsNullOrWhiteSpace(Model.ApplicationInstructions))">@Model.ApplicationInstructions</p>
+                        <a asp-route=" @RouteNames.ApplicationProcess_Get">Edit</a>
+                    </div>
+                    <div class="@GetSectionClass(Model.ApplicationUrlSectionState)">
+                        <h2 class="heading-small">Employer's application website</h2>
+                        <span esfa-validation-message-for="ApplicationUrl" class="error-message"></span>
+                        <p asp-condition="@(!string.IsNullOrWhiteSpace(Model.ApplicationUrl))">@Model.ApplicationUrl</p>
+                        <a asp-route=" @RouteNames.ApplicationProcess_Get">Edit</a>
                     </div>
                 </div>
-                <hr class="sfa-no-bottom-margin" />
             </div>
-            <div class="grid-row" id="provider-info">
+            <hr class="sfa-no-bottom-margin" />
+            
+            <div class="grid-row">
                 <div class="column-full">
                     <h2 class="heading-large">Training provider</h2>
                 </div>
                 <div class="column-full">
-                    <div id="training-provider-section" class="@providerDetailsClass">
-                        <p asp-condition="Model.HasTrainingProviderDetails" id="vacancy-provider-name">
-                            @Model.ProviderName<br />
-                            @Model.ProviderAddress
-                        </p>
+                    <div class="@GetSectionClass(Model.ProviderSectionState)">
+                        <h3 class="heading-small">Training provider</h3>
+                        <span esfa-validation-message-for="ProviderName" class="error-message"></span>
+                        <p asp-condition="Model.HasTrainingProviderDetails">@Model.ProviderName</p>
                         <a asp-route="@RouteNames.TrainingProvider_Select_Get">Edit</a>
                     </div>
-                    <h3 class="heading-small">Apprenticeship @Model.TrainingType</h3>
-                    <p is="vacancy-framework">@Model.TrainingTitle</p>
-                    <a asp-route="@RouteNames.Title_Get">Edit</a>
+                    <div class="@GetSectionClass(Model.TrainingSectionState)">
+                        <h3 class="heading-small">Apprenticeship @Model.TrainingType</h3>
+                        <p asp-condition="Model.HasTrainingDetails">@Model.TrainingTitle</p>
+                        <a asp-route="@RouteNames.Title_Get">Edit</a>
+                    </div>
                 </div>
             </div>
-            <hr class="sfa-no-bottom-margin" />
+
+            <hr />
+
             <div class="form-group inline">
                 <div class="form-group small-top-margin">
                     <form asp-condition="Model.CanSubmit" asp-route="@RouteNames.Preview_Submit_Post" class="form-inline">
