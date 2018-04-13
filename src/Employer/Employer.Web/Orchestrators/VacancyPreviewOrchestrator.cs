@@ -115,7 +115,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return vm;
         }
         
-        public async Task<OrchestratorResponse<bool>> TrySubmitVacancyAsync(SubmitEditModel m)
+        public async Task<OrchestratorResponse<bool>> TrySubmitVacancyAsync(SubmitEditModel m, string user, string userEmail)
         {
             var vacancy = await _client.GetVacancyForEditAsync(m.VacancyId);
 
@@ -125,7 +125,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return await ValidateAndExecute(
                 vacancy,
                 v => _client.Validate(v, ValidationRules),
-                v => Task.FromResult(false) //_client.SubmitVacancyAsync(v.Id)
+                v => _client.SubmitVacancyAsync(v.Id, user, userEmail)
             );
         }
         

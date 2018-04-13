@@ -4,14 +4,11 @@ using Esfa.Recruit.Employer.Web.ViewModels.Preview;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.ViewModels;
-using Esfa.Recruit.Vacancies.Client.Application.Validation;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
@@ -58,7 +55,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         [HttpPost("preview", Name = RouteNames.Preview_Submit_Post)]
         public async Task<IActionResult> Submit(SubmitEditModel m)
         {
-            var response = await _orchestrator.TrySubmitVacancyAsync(m);
+            var response = await _orchestrator.TrySubmitVacancyAsync(m, User.GetDisplayName(), User.GetEmailAddress());
 
             if (!response.Success)
             {

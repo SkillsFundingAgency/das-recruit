@@ -9,5 +9,10 @@ namespace Esfa.Recruit.Employer.Web.Extensions
         {
             return user.FindFirstValue(EmployerRecruitClaims.IdamsUserDisplayNameClaimTypeIdentifier);
         }
+
+        public static string GetEmailAddress(this ClaimsPrincipal user)
+        {
+            return user.FindFirstValue(EmployerRecruitClaims.IdamsUserEmailClaimTypeIdentifier);
+        }
     }
 }
