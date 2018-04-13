@@ -97,7 +97,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             viewModel.EmployerAddressSectionState = GetSubmitSectionState(viewModel, vm => vm.EmployerAddressElements);
             viewModel.ApplicationInstructionsSectionState = GetSubmitSectionState(viewModel, vm => vm.ApplicationInstructions);
             viewModel.ApplicationUrlSectionState = GetSubmitSectionState(viewModel, vm => vm.ApplicationUrl);
-            viewModel.ProviderSectionState = GetSubmitSectionState(viewModel, vm => vm.Provider, vm => vm.ProviderName);
+            viewModel.ProviderSectionState = GetSubmitSectionState(viewModel, vm => vm.ProviderName);
             viewModel.TrainingSectionState = GetSubmitSectionState(viewModel, vm => vm.Programme, vm => vm.TrainingType, vm => vm.TrainingTitle);
 
             return View("VacancyPreview", viewModel);

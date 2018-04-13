@@ -132,8 +132,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public bool Wage { get; }
         [BindNever]
         public bool Programme { get; }
-        [BindNever]
-        public bool Provider { get; }
 
         public IList<string> OrderedFieldNames => new List<string>
         {
