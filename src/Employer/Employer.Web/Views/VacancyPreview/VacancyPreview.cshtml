@@ -42,7 +42,7 @@
                     <div class="@GetSectionClass(Model.ShortDescriptionSectionState)">
                         <h3 class="heading-small sfa-no-top-margin">Brief overview of the role</h3>
                         <span esfa-validation-message-for="VacancyDescription" class="error-message"></span>
-                        <p asp-condition="@(!string.IsNullOrWhiteSpace(Model.ShortDescription))">@Model.ShortDescription</p>
+                        <p asp-condition="@Model.HasShortDescription">@Model.ShortDescription</p>
                         <a asp-route="@RouteNames.Title_Get">Edit</a>
                     </div>
                 </div>
@@ -50,7 +50,7 @@
                     <div class="@GetSectionClass(Model.ClosingDateSectionState)">
                         <h3 class="heading-small sfa-no-top-margin">Closing Date</h3>
                         <span esfa-validation-message-for="ClosingDate" class="error-message"></span>
-                        <p asp-condition="@(!string.IsNullOrWhiteSpace(Model.ClosingDate))">@Model.ClosingDate</p>
+                        <p asp-condition="@Model.HasClosingDate">@Model.ClosingDate</p>
                         <a asp-route="@RouteNames.Title_Get">Edit</a>
                     </div>
                 </div>
@@ -64,12 +64,12 @@
                         <li class="@GetSectionClass(Model.WorkingWeekSectionState)">
                             <h3 class="heading-small">Working week</h3>
                             <span esfa-validation-message-for="Wage" class="error-message"></span>
-                            <ul class="list" asp-condition="@(!string.IsNullOrWhiteSpace(Model.WorkingWeekDescription) || !string.IsNullOrWhiteSpace(Model.HoursPerWeek))">
-                                <li asp-condition="@(!string.IsNullOrWhiteSpace(Model.WorkingWeekDescription))" id="vacancy-working-week">
+                            <ul class="list" asp-condition="@Model.HasWorkingWeek">
+                                <li asp-condition="@Model.HasWorkingWeekDescription" id="vacancy-working-week">
                                     <span esfa-validation-message-for="WorkingWeekDescription" class="error-message"></span>
                                     @Model.WorkingWeekDescription
                                 </li>
-                                <li asp-condition="@(!string.IsNullOrWhiteSpace(Model.HoursPerWeek))" id="total-hours-per-week">
+                                <li asp-condition="@Model.HasHoursPerWeek" id="total-hours-per-week">
                                     <span esfa-validation-message-for="HoursPerWeek" class="error-message"></span>
                                     Total hours per week: @Model.HoursPerWeek
                                 </li>
@@ -80,38 +80,38 @@
                         <li class="@GetSectionClass(Model.WageTextSectionState)">
                             <h3 class="heading-small">Yearly wage</h3>
                             <span esfa-validation-message-for="WageText" class="error-message"></span>
-                            <p asp-condition="@(!string.IsNullOrWhiteSpace(Model.WageText))">@Model.WageText</p>
+                            <p asp-condition="@Model.HasWageText">@Model.WageText</p>
                             <span esfa-validation-message-for="WageInfo" class="error-message"></span>
-                            <p asp-condition="@(!string.IsNullOrWhiteSpace(Model.WageInfo))">@Model.WageInfo</p>
+                            <p asp-condition="@Model.HasWageInfo">@Model.WageInfo</p>
                             <a asp-route="@RouteNames.Title_Get">Edit</a>
                         </li>
                         <li class="@GetSectionClass(Model.ExpectedDurationSectionState)">
                             <h3 class="heading-small">Expected apprenticeship duration</h3>
                             <span esfa-validation-message-for="ExpectedDuration" class="error-message"></span>
-                            <p asp-condition="@(!string.IsNullOrWhiteSpace(Model.ExpectedDuration))">@Model.ExpectedDuration</p>
+                            <p asp-condition="@Model.HasExpectedDuration">@Model.ExpectedDuration</p>
                             <a asp-route="@RouteNames.Title_Get">Edit</a>
                         </li>
                         <li class="@GetSectionClass(Model.PossibleStartDateSectionState)">
                             <h3 class="heading-small">Possible start date</h3>
                             <span esfa-validation-message-for="PossibleStartDate" class="error-message"></span>
-                            <p asp-condition="@(!string.IsNullOrWhiteSpace(Model.PossibleStartDate))">@Model.PossibleStartDate</p>
+                            <p asp-condition="@Model.HasPossibleStartDate">@Model.PossibleStartDate</p>
                             <a asp-route="@RouteNames.Title_Get">Edit</a>
                         </li>
                         <li class="@GetSectionClass(Model.TrainingLevelSectionState)">
                             <h3 class="heading-small">Apprenticeship level</h3>
                             <span esfa-validation-message-for="Programme" class="error-message"></span>
                             <span esfa-validation-message-for="TrainingLevel" class="error-message"></span>
-                            <p asp-condition="@(!string.IsNullOrWhiteSpace(Model.TrainingLevel))">@Model.TrainingLevel Level Apprenticeship</p>
+                            <p asp-condition="@Model.HasTrainingLevel">@Model.TrainingLevel Level Apprenticeship</p>
                             <a asp-route="@RouteNames.Title_Get">Edit</a>
                         </li>
                         <li>
                             <h3 class="heading-small">Reference number</h3>
-                            <p class="secondary-text">@Model.VacancyReferenceNumber</p>
+                            <p>@Model.VacancyReferenceNumber</p>
                         </li>
                         <li class="@GetSectionClass(Model.NumberOfPositionsSectionState)">
                             <h3 class="heading-small">Positions</h3>
                             <span esfa-validation-message-for="NumberOfPositions" class="error-message"></span>
-                            <p asp-condition="@(!string.IsNullOrWhiteSpace(Model.NumberOfPositionsCaption))">@Model.NumberOfPositionsCaption</p>
+                            <p asp-condition="@Model.HasNumberOfPositionsCaption">@Model.NumberOfPositionsCaption</p>
                             <a asp-route="@RouteNames.Title_Get">Edit</a>
                         </li>
                     </ul>
@@ -123,11 +123,11 @@
                         </h3>
                         <div id="vacancy-full-description">
                             <span esfa-validation-message-for="VacancyDescription" class="error-message"></span>
-                            <p asp-condition="@(!string.IsNullOrWhiteSpace(Model.VacancyDescription))" class="preserve-format">@Model.VacancyDescription</p>
+                            <p asp-condition="@Model.HasVacancyDescription">@Model.VacancyDescription</p>
                             <span esfa-validation-message-for="TrainingDescription" class="error-message"></span>
-                            <p asp-condition="@(!string.IsNullOrWhiteSpace(Model.TrainingDescription))" class="preserve-format">@Model.TrainingDescription</p>
+                            <p asp-condition="@Model.HasTrainingDescription">@Model.TrainingDescription</p>
                             <span esfa-validation-message-for="OutcomeDescription" class="error-message"></span>
-                            <p asp-condition="@(!string.IsNullOrWhiteSpace(Model.OutcomeDescription))" class="preserve-format">@Model.OutcomeDescription</p>
+                            <p asp-condition="@Model.HasOutcomeDescription">@Model.OutcomeDescription</p>
                         </div>
                         <a asp-route="@RouteNames.VacancyDescription_Index_Get">Edit</a>
                     </div>
@@ -141,23 +141,19 @@
                 <div class="column-half">
                     <div class="@GetSectionClass(Model.SkillsSectionState)">
                         <h3 class="heading-small">Desired skills and personal qualities</h3>
-                        <div id="vacancy-skills-qualities-required">
-                            <span esfa-validation-message-for="Skills" class="error-message"></span>
-                            <p class="preserve-format">@string.Join(", ", Model.Skills)</p>
-                        </div>
+                        <span esfa-validation-message-for="Skills" class="error-message"></span>
+                        <p asp-condition="@Model.HasSkills" >@string.Join(", ", Model.Skills)</p>
                         <a asp-route="@RouteNames.Skills_Get">Edit</a>
                     </div>
                     <div class="@GetSectionClass(Model.QualificationsSectionState)">
                         <h3 class="heading-small">Qualifications</h3>
-                        <div id="vacancy-qualifications-required">
-                            <span esfa-validation-message-for="Qualifications" class="error-message"></span>
-                            <p class="preserve-format">
-                                @foreach (var qualification in Model.Qualifications)
-        {
-                        @qualification<br />
-}
-                            </p>
-                        </div>
+                        <span esfa-validation-message-for="Qualifications" class="error-message"></span>
+                        <p asp-condition="@Model.HasQualifications">
+                            @foreach (var qualification in Model.Qualifications)
+                            {
+                                @qualification<br />
+                            }
+                        </p>
                         <a asp-route="@RouteNames.Qualifications_Get">Edit</a>
                     </div>
                 </div>
@@ -165,7 +161,7 @@
                     <div class="@GetSectionClass(Model.ThingsToConsiderSectionState)">
                         <h3 class="heading-small">Things to consider (optional)</h3>
                         <span esfa-validation-message-for="ThingsToConsider" class="error-message"></span>
-                        <p asp-condition="@(!string.IsNullOrWhiteSpace(Model.ThingsToConsider))">@Model.ThingsToConsider</p>
+                        <p asp-condition="@Model.HasThingsToConsider">@Model.ThingsToConsider</p>
                         <a asp-route="@RouteNames.Considerations_Get">Edit</a>
                     </div>
                 </div>
@@ -179,19 +175,19 @@
                     <div class="@GetSectionClass(Model.EmployerNameSectionState)">
                         <h3 class="heading-small">Employer</h3>
                         <span esfa-validation-message-for="EmployerName" class="error-message"></span>
-                        <p asp-condition="@(!string.IsNullOrWhiteSpace(Model.EmployerName))">@Model.EmployerName</p>
+                        <p asp-condition="@Model.HasEmployerName">@Model.EmployerName</p>
                         <a asp-route="@RouteNames.AboutEmployer_Get">Edit</a>
                     </div>
                     <div class="@GetSectionClass(Model.EmployerDescriptionSectionState)">
                         <h3 class="heading-small">Description</h3>
                         <span esfa-validation-message-for="EmployerDescription" class="error-message"></span>
-                        <p asp-condition="@(!string.IsNullOrWhiteSpace(Model.EmployerDescription))">@Model.EmployerDescription</p>
+                        <p asp-condition="@Model.HasEmployerDescription">@Model.EmployerDescription</p>
                         <a asp-route="@RouteNames.AboutEmployer_Get">Edit</a>
                     </div>
                     <div class="@GetSectionClass(Model.EmployerWebsiteUrlSectionState)">
                         <h3 class="heading-small">Website (optional)</h3>
                         <span esfa-validation-message-for="EmployerWebsiteUrl" class="error-message"></span>
-                        <p asp-condition="@(!string.IsNullOrWhiteSpace(Model.EmployerWebsiteUrl))">@Model.EmployerWebsiteUrl</p>
+                        <p asp-condition="@Model.HasEmployerWebsiteUrl">@Model.EmployerWebsiteUrl</p>
                         <a asp-route="@RouteNames.AboutEmployer_Get">Edit</a>
                     </div>
                 </div>
@@ -201,11 +197,11 @@
                             Contact (optional)
                         </h3>
                         <span esfa-validation-message-for="ContactName" class="error-message"></span>
-                        <p asp-condition="@(!string.IsNullOrWhiteSpace(Model.ContactName))">@Model.ContactName</p>
+                        <p asp-condition="@Model.HasContactName">@Model.ContactName</p>
                         <span esfa-validation-message-for="ContactEmail" class="error-message"></span>
-                        <p asp-condition="@(!string.IsNullOrWhiteSpace(Model.ContactEmail))">@Model.ContactEmail</p>
+                        <p asp-condition="@Model.HasContactEmail">@Model.ContactEmail</p>
                         <span esfa-validation-message-for="ContactTelephone" class="error-message"></span>
-                        <p asp-condition="@(!string.IsNullOrWhiteSpace(Model.ContactTelephone))">@Model.ContactTelephone</p>
+                        <p asp-condition="@Model.HasContactTelephone">@Model.ContactTelephone</p>
                         <a asp-route="@RouteNames.ApplicationProcess_Get">Edit</a>
                     </div>
                 </div>
@@ -215,7 +211,7 @@
                     <div class="@GetSectionClass(Model.EmployerAddressSectionState)">
                         <h3 class="heading-small">Location</h3>
                         <span esfa-validation-message-for="EmployerAddressElements" class="error-message"></span>
-                        <ul asp-condition="@Model.EmployerAddressElements.Any()" class="list">
+                        <ul asp-condition="@Model.HasEmployerAddressElements" class="list">
                             @foreach (var addrLine in Model.EmployerAddressElements)
                             {
                                 <li>@addrLine</li>
@@ -234,13 +230,13 @@
                     <div class="@GetSectionClass(Model.ApplicationInstructionsSectionState)">
                         <h2 class="heading-small">Employer's application instructions (optional)</h2>
                         <span esfa-validation-message-for="ApplicationInstructions" class="error-message"></span>
-                        <p asp-condition="@(!string.IsNullOrWhiteSpace(Model.ApplicationInstructions))">@Model.ApplicationInstructions</p>
+                        <p asp-condition="@Model.HasApplicationInstructions">@Model.ApplicationInstructions</p>
                         <a asp-route=" @RouteNames.ApplicationProcess_Get">Edit</a>
                     </div>
                     <div class="@GetSectionClass(Model.ApplicationUrlSectionState)">
                         <h2 class="heading-small">Employer's application website</h2>
                         <span esfa-validation-message-for="ApplicationUrl" class="error-message"></span>
-                        <p asp-condition="@(!string.IsNullOrWhiteSpace(Model.ApplicationUrl))">@Model.ApplicationUrl</p>
+                        <p asp-condition="@Model.HasApplicationUrl">@Model.ApplicationUrl</p>
                         <a asp-route=" @RouteNames.ApplicationProcess_Get">Edit</a>
                     </div>
                 </div>

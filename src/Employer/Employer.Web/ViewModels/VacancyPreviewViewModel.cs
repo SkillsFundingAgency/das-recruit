@@ -62,20 +62,71 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public VacancyPreviewSectionState WageTextSectionState { get; internal set; }
         public string WorkingWeekDescription { get; internal set; }
 
-        public bool HasMapUrl => !string.IsNullOrEmpty(MapUrl);
-
-        public bool HasTrainingProviderDetails => !string.IsNullOrEmpty(ProviderName);
-
-        public bool HasContactDetails =>    !string.IsNullOrEmpty(ContactName) 
-                                            || !string.IsNullOrEmpty(ContactEmail)
-                                            || !string.IsNullOrEmpty(ContactTelephone);
-
-        public bool HasTrainingDetails => !string.IsNullOrEmpty(TrainingType) || !string.IsNullOrEmpty(TrainingTitle);
-
         public VacancyPreviewSectionState DescriptionsSectionState { get; internal set; }
 
         public VacancyPreviewSectionState WorkingWeekSectionState { get; internal set; }
 
+        public bool HasClosingDate => !string.IsNullOrWhiteSpace(ClosingDate);
+
+        public bool HasContactDetails =>    !string.IsNullOrWhiteSpace(ContactName) 
+                                            || !string.IsNullOrWhiteSpace(ContactEmail)
+                                            || !string.IsNullOrWhiteSpace(ContactTelephone);
+
+        public bool HasShortDescription => !string.IsNullOrWhiteSpace(ShortDescription);
+
+        public bool HasTrainingProviderDetails => !string.IsNullOrWhiteSpace(ProviderName);
+
+        public bool HasTrainingDetails => !string.IsNullOrWhiteSpace(TrainingType) || !string.IsNullOrWhiteSpace(TrainingTitle);
+
+        public bool HasWorkingWeek => HasWorkingWeekDescription || HasHoursPerWeek;
+
+        public bool HasWorkingWeekDescription => !string.IsNullOrWhiteSpace(WorkingWeekDescription);
+
+        public bool HasHoursPerWeek => !string.IsNullOrWhiteSpace(HoursPerWeek);
+
+        public bool HasWageText => !string.IsNullOrWhiteSpace(WageText);
+
+        public bool HasWageInfo => !string.IsNullOrWhiteSpace(WageInfo);
+
+        public bool HasExpectedDuration => !string.IsNullOrWhiteSpace(ExpectedDuration);
+
+        public bool HasPossibleStartDate => !string.IsNullOrWhiteSpace(PossibleStartDate);
+
+        public bool HasTrainingLevel => !string.IsNullOrWhiteSpace(TrainingLevel);
+
+        public bool HasNumberOfPositionsCaption => !string.IsNullOrWhiteSpace(NumberOfPositionsCaption);
+        public bool HasMapUrl => !string.IsNullOrEmpty(MapUrl);
+
+        public bool HasVacancyDescription => !string.IsNullOrWhiteSpace(VacancyDescription);
+
+        public bool HasTrainingDescription => !string.IsNullOrWhiteSpace(TrainingDescription);
+
+        public bool HasOutcomeDescription => !string.IsNullOrWhiteSpace(OutcomeDescription);
+
+        public bool HasSkills => Skills == null || Skills.Any();
+
+        public bool HasQualifications => Qualifications != null && Qualifications.Any();
+
+        public bool HasThingsToConsider => !string.IsNullOrWhiteSpace(ThingsToConsider);
+
+        public bool HasEmployerName => !string.IsNullOrWhiteSpace(EmployerName);
+
+        public bool HasEmployerDescription => !string.IsNullOrWhiteSpace(EmployerDescription);
+
+        public bool HasEmployerWebsiteUrl => string.IsNullOrWhiteSpace(EmployerWebsiteUrl);
+
+        public bool HasContactName => !string.IsNullOrWhiteSpace(ContactName);
+
+        public bool HasContactEmail => !string.IsNullOrWhiteSpace(ContactEmail);
+
+        public bool HasContactTelephone => !string.IsNullOrWhiteSpace(ContactTelephone);
+
+        public bool HasEmployerAddressElements => EmployerAddressElements != null && EmployerAddressElements.Any();
+
+        public bool HasApplicationInstructions => !string.IsNullOrWhiteSpace(ApplicationInstructions);
+
+        public bool HasApplicationUrl => !string.IsNullOrWhiteSpace(ApplicationUrl);
+        
         //These are required to display ModelState errors
         [BindNever]
         public bool Wage { get; }
@@ -112,6 +163,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
             nameof(ContactEmail),
             nameof(EmployerAddressElements),
             nameof(ApplicationInstructions),
+            nameof(ApplicationUrl),
             nameof(ProviderName),
             nameof(TrainingType),
             nameof(TrainingTitle)
