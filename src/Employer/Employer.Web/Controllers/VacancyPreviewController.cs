@@ -30,7 +30,16 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         {
             var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(vacancyId);
 
-            viewModel.DescriptionSectionState = GetViewSectionState(viewModel, vm => vm.VacancyDescription, vm => vm.TrainingDescription, vm => vm.OutcomeDescription);
+            viewModel.ShortDescriptionSectionState = GetViewSectionState(viewModel, vm => vm.ShortDescription);
+            viewModel.ClosingDateSectionState = GetViewSectionState(viewModel, vm => vm.ClosingDate);
+            viewModel.WorkingWeekSectionState = GetViewSectionState(viewModel, vm => vm.HoursPerWeek, vm => vm.WorkingWeekDescription);
+            viewModel.WageTextSectionState = GetViewSectionState(viewModel, vm => vm.Wage, vm => vm.PossibleStartDate);
+            viewModel.ExpectedDurationSectionState = GetViewSectionState(viewModel, vm => vm.Wage, vm => vm.ExpectedDuration);
+            viewModel.PossibleStartDateSectionState = GetViewSectionState(viewModel, vm => vm.PossibleStartDate);
+            viewModel.TrainingLevelSectionState = GetViewSectionState(viewModel, vm => vm.Programme, vm => vm.TrainingLevel);
+            viewModel.NumberOfPositionsSectionState = GetViewSectionState(viewModel, vm => vm.NumberOfPositions);
+
+            viewModel.DescriptionsSectionState = GetViewSectionState(viewModel, vm => vm.VacancyDescription, vm => vm.TrainingDescription, vm => vm.OutcomeDescription);
             viewModel.SkillsSectionState = GetViewSectionState(viewModel, vm => vm.Skills);
             viewModel.QualificationsSectionState = GetViewSectionState(viewModel, vm => vm.Qualifications);
 
@@ -60,7 +69,16 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(m.VacancyId);
 
-            viewModel.DescriptionSectionState = GetSubmitSectionState(viewModel, vm => vm.VacancyDescription, vm => vm.TrainingDescription, vm => vm.OutcomeDescription);
+            viewModel.ShortDescriptionSectionState = GetSubmitSectionState(viewModel, vm => vm.ShortDescription);
+            viewModel.ClosingDateSectionState = GetSubmitSectionState(viewModel, vm => vm.ClosingDate);
+            viewModel.WorkingWeekSectionState = GetSubmitSectionState(viewModel, vm => vm.Wage, vm => vm.HoursPerWeek, vm => vm.WorkingWeekDescription);
+            viewModel.WageTextSectionState = GetSubmitSectionState(viewModel, vm => vm.Wage, vm => vm.PossibleStartDate);
+            viewModel.ExpectedDurationSectionState = GetSubmitSectionState(viewModel, vm => vm.Wage, vm => vm.ExpectedDuration);
+            viewModel.PossibleStartDateSectionState = GetSubmitSectionState(viewModel, vm => vm.PossibleStartDate);
+            viewModel.TrainingLevelSectionState = GetSubmitSectionState(viewModel, vm => vm.Programme, vm => vm.TrainingLevel);
+            viewModel.NumberOfPositionsSectionState = GetSubmitSectionState(viewModel, vm => vm.NumberOfPositions);
+
+            viewModel.DescriptionsSectionState = GetSubmitSectionState(viewModel, vm => vm.VacancyDescription, vm => vm.TrainingDescription, vm => vm.OutcomeDescription);
             viewModel.SkillsSectionState = GetSubmitSectionState(viewModel, vm => vm.Skills);
             viewModel.QualificationsSectionState = GetSubmitSectionState(viewModel, vm => vm.Qualifications);
 

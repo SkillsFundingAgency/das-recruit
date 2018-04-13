@@ -134,6 +134,16 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         {
             var mappings = new EntityToViewModelPropertyMappings<Vacancy, VacancyPreviewViewModel>();
 
+            mappings.Add(e => e.ShortDescription, vm => vm.ShortDescription);
+            mappings.Add(e => e.ClosingDate, vm => vm.ClosingDate);
+            mappings.Add(e => e.Wage, vm => vm.Wage);
+            mappings.Add(e => e.Wage.WeeklyHours, vm => vm.HoursPerWeek);
+            mappings.Add(e => e.Wage.WorkingWeekDescription, vm => vm.WorkingWeekDescription);
+            mappings.Add(e => e.StartDate, vm => vm.PossibleStartDate);
+            mappings.Add(e => e.Programme, vm => vm.Programme);
+            mappings.Add(e => e.Programme.Level, vm => vm.TrainingLevel);
+            mappings.Add(e => e.NumberOfPositions, vm => vm.NumberOfPositions);
+
             mappings.Add(e => e.Description, vm => vm.VacancyDescription);
             mappings.Add(e => e.TrainingDescription, vm => vm.TrainingDescription);
             mappings.Add(e => e.OutcomeDescription, vm => vm.OutcomeDescription);
