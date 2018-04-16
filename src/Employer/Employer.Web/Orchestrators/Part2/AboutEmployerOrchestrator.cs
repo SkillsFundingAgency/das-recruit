@@ -28,7 +28,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             var vacancy = await _client.GetVacancyAsync(vacancyId);
 
             if (vacancy.Status != VacancyStatus.Draft)
-                throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
+                throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
 
             var vm = new AboutEmployerViewModel
             {

@@ -39,7 +39,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 string routeWhereExceptionOccurred = exceptionFeature.Path;
                 var exception = exceptionFeature.Error;
 
-                if (exception is ConcurrencyException)
+                if (exception is InvalidStateException)
                 {
                     _logger.LogError(exception, $"Exception on path: {routeWhereExceptionOccurred}");                    
                     TempData.Add(TempDataKeys.DashboardErrorMessage, exception.Message);

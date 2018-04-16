@@ -34,7 +34,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
             if (!vacancy.CanEdit)
             {
-                throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
+                throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
             }
 
             var vm = new SkillsViewModel();
@@ -68,7 +68,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
             if (!vacancy.CanEdit)
             {
-                throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
+                throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
             }
 
             if (m.Skills == null)

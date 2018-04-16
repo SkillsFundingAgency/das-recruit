@@ -28,7 +28,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
             if (!vacancy.CanEdit)
             {
-                throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
+                throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
             }
 
             var vm = new ShortDescriptionViewModel
@@ -57,7 +57,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
             if (!vacancy.CanEdit)
             {
-                throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
+                throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
             }
 
             vacancy.NumberOfPositions = int.TryParse(m.NumberOfPositions, out var numberOfPositions) ? numberOfPositions : default(int?);

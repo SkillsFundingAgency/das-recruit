@@ -21,7 +21,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             var vacancy = await _client.GetVacancyAsync(vacancyId);
 
             if (!vacancy.CanDelete)
-                throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
+                throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
 
             var vm = new DeleteViewModel
             {
@@ -36,7 +36,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             var vacancy = await _client.GetVacancyAsync(m.VacancyId);
 
             if (!vacancy.CanDelete)
-                throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
+                throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
 
             return await _client.DeleteVacancyAsync(m.VacancyId);
         }

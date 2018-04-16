@@ -35,7 +35,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             var vacancy = await _client.GetVacancyAsync(vacancyId);
 
             if (!vacancy.CanEdit)
-                throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
+                throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
 
             var vm = new VacancyPreviewViewModel
             {
@@ -87,7 +87,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             var vacancy = await _client.GetVacancyAsync(m.VacancyId);
 
             if (!vacancy.CanSubmit)
-                throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
+                throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
 
             return await _client.SubmitVacancyAsync(m.VacancyId);
         }
