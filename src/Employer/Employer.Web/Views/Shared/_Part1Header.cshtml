@@ -1,6 +1,8 @@
 ﻿@using Esfa.Recruit.Vacancies.Client.Domain.Services;
 @inject ITimeProvider timeProvider;
 @{
+    var hasShowVacancyCookie = ViewContext.HttpContext.Request.Cookies.ContainsKey("showExampleVacancy");
+    var exampleVacancyStyleValue = hasShowVacancyCookie ? "display:none" : string.Empty;
     var exampleClosingDate = timeProvider.Now.AddMonths(2);
     var exampleStartingDate = exampleClosingDate.AddDays(14);
 }
@@ -14,7 +16,7 @@
 
 <a href="#example_link" id="example_link" class="hide-nojs">Show an example advert</a>
 
-<div id="example_vacancy" class="example-advert">
+<div id="example_vacancy" class="example-advert" style="@exampleVacancyStyleValue">
     <h2 class="heading-medium small-top-margin">
         <h2 class="heading-medium small-top-margin">Software developer apprenticeship</h2>
     </h2>
