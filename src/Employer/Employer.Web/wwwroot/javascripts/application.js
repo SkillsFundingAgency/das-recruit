@@ -56,23 +56,29 @@ sfa.navigation = {
     }
 };
 
-sfa.hookupExampleVacancyToggle = function() {
-    var $exampleLink = $("#example_link");
-    var $exampleVacancy = $("#example_vacancy");
+sfa.hookupExampleVacancyToggle = function () {
+    var hideExampleText = "Hide example",
+        showExampleText = "Show an example advert",
+        $exampleLink = $("#example_link"),
+        $exampleVacancy = $("#example_vacancy"),
+        showExampleVacancyCookieName = "showExampleVacancy";
 
-    var showExampleVacancyCookie = Cookies.get('showExampleVacancy');
+    var showExampleVacancyCookie = Cookies.get(showExampleVacancyCookieName);
 
     if (typeof (showExampleVacancyCookie) === "undefined") {
         $exampleVacancy.hide();
     }
+    else {
+        $exampleLink[0].innerText = hideExampleText;
+    }
 
     $exampleLink.click(function () {
         if ($exampleVacancy.is(":visible")) {
-            Cookies.remove('showExampleVacancy');
-            $exampleLink[0].innerText = "Show an example advert";
+            Cookies.remove(showExampleVacancyCookieName);
+            $exampleLink[0].innerText = showExampleText;
         } else {            
-            Cookies.set('showExampleVacancy', 'true');
-            $exampleLink[0].innerText = "Hide example";
+            Cookies.set(showExampleVacancyCookieName, "yes");
+            $exampleLink[0].innerText = hideExampleText;
         }
         $exampleVacancy.slideToggle();
     });
