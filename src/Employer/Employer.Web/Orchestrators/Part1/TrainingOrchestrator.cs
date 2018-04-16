@@ -25,7 +25,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         
         public async Task<TrainingViewModel> GetTrainingViewModelAsync(Guid vacancyId)
         {
-            var vacancyTask = _client.GetVacancyForEditAsync(vacancyId);
+            var vacancyTask = _client.GetVacancyAsync(vacancyId);
             var programmesTask = _client.GetApprenticeshipProgrammesAsync();
 
             await Task.WhenAll(vacancyTask, programmesTask);
@@ -81,7 +81,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         public async Task<OrchestratorResponse> PostTrainingEditModelAsync(TrainingEditModel m)
         {
-            var vacancyTask = _client.GetVacancyForEditAsync(m.VacancyId);
+            var vacancyTask = _client.GetVacancyAsync(m.VacancyId);
             var programmesTask = _client.GetApprenticeshipProgrammesAsync();
 
             await Task.WhenAll(vacancyTask, programmesTask);

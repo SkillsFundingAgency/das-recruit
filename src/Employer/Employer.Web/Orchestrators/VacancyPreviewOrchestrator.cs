@@ -32,9 +32,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public async Task<VacancyPreviewViewModel> GetVacancyPreviewViewModelAsync(Guid vacancyId)
         {
-            var vacancy = await _client.GetVacancyForEditAsync(vacancyId);
+            var vacancy = await _client.GetVacancyAsync(vacancyId);
 
-            if (vacancy.Status != VacancyStatus.Draft)
+            if (!vacancy.CanEdit)
                 throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
 
             var vm = new VacancyPreviewViewModel
@@ -82,9 +82,14 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return vm;
         }
 
-        public Task<bool> TrySubmitVacancyAsync(SubmitEditModel m)
+        public async Task<bool> TrySubmitVacancyAsync(SubmitEditModel m)
         {
-            return _client.SubmitVacancyAsync(m.VacancyId);
+            var vacancy = await _client.GetVacancyAsync(m.VacancyId);
+
+            if (!vacancy.CanSubmit)
+                throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
+
+            return await _client.SubmitVacancyAsync(m.VacancyId);
         }
     }
 }

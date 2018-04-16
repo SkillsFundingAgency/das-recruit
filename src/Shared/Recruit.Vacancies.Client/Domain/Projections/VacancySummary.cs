@@ -13,6 +13,8 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Projections
 
         public VacancyStatus Status { get; set; }
 
+        public bool IsDeleted { get; set; }
+
         public DateTime? SubmittedDate { get; set; }
     }
 }

@@ -26,7 +26,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         public async Task<WageViewModel> GetWageViewModelAsync(Guid vacancyId)
         {
-            var vacancy = await _client.GetVacancyForEditAsync(vacancyId);
+            var vacancy = await _client.GetVacancyAsync(vacancyId);
 
             if (!vacancy.CanEdit)
             {
@@ -64,7 +64,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         public async Task<OrchestratorResponse> PostWageEditModelAsync(WageEditModel m)
         {
-            var vacancy = await _client.GetVacancyForEditAsync(m.VacancyId);
+            var vacancy = await _client.GetVacancyAsync(m.VacancyId);
 
             if (!vacancy.CanEdit)
             {

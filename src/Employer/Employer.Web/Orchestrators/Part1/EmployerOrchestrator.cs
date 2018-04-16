@@ -30,7 +30,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         public async Task<EmployerViewModel> GetEmployerViewModelAsync(VacancyRouteModel vrm)
         {
             var getEmployerDataTask = _client.GetEditVacancyInfo(vrm.EmployerAccountId);
-            var getVacancyTask = _client.GetVacancyForEditAsync(vrm.VacancyId);
+            var getVacancyTask = _client.GetVacancyAsync(vrm.VacancyId);
 
             await Task.WhenAll(new Task[] { getEmployerDataTask, getVacancyTask });
 
@@ -77,7 +77,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         public async Task<OrchestratorResponse> PostEmployerEditModelAsync(EmployerEditModel m)
         {
-            var vacancy = await _client.GetVacancyForEditAsync(m.VacancyId);
+            var vacancy = await _client.GetVacancyAsync(m.VacancyId);
 
             if (!vacancy.CanEdit)
             {

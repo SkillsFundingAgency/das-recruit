@@ -56,11 +56,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _repository.GetVacancyAsync(id);
         }
 
-        public Task<Vacancy> GetVacancyForEditAsync(Guid id)
-        {
-            return _repository.GetVacancyAsync(id);
-        }
-
         public async Task<Guid> CreateVacancyAsync(string title, string employerAccountId, string user)
         {
             var command = new CreateVacancyCommand
@@ -84,7 +79,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public async Task<bool> SubmitVacancyAsync(Guid id)
         {
-            var vacancy = await GetVacancyForEditAsync(id);
+            var vacancy = await GetVacancyAsync(id);
 
             if(!vacancy.CanSubmit)
             {
@@ -106,7 +101,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public async Task<bool> DeleteVacancyAsync(Guid id)
         {
-            var vacancy = await GetVacancyForEditAsync(id);
+            var vacancy = await GetVacancyAsync(id);
             
             if (vacancy == null || vacancy.CanDelete == false)
             {
