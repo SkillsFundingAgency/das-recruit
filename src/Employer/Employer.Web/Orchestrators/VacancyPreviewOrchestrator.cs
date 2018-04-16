@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Vacancies.Client.Application.Services.MinimumWage;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
@@ -29,14 +30,17 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         private readonly IGeocodeImageService _mapService;
         private readonly IGetMinimumWages _wageService;
         private readonly QualificationsConfiguration _qualificationsConfiguration;
-        
+        private readonly DisplayVacancyViewModelMapper _vacancyDisplayMapper;
+
         public VacancyPreviewOrchestrator(IVacancyClient client, IGeocodeImageService mapService, IGetMinimumWages wageService, 
-            IOptions<QualificationsConfiguration> qualificationsConfigOptions, ILogger<VacancyPreviewOrchestrator> logger) : base(logger)
+            IOptions<QualificationsConfiguration> qualificationsConfigOptions, ILogger<VacancyPreviewOrchestrator> logger,
+            DisplayVacancyViewModelMapper vacancyDisplayMapper) : base(logger)
         {
             _client = client;
             _mapService = mapService;
             _wageService = wageService;
             _qualificationsConfiguration = qualificationsConfigOptions.Value;
+            _vacancyDisplayMapper = vacancyDisplayMapper;
         }
 
         public async Task<VacancyPreviewViewModel> GetVacancyPreviewViewModelAsync(Guid vacancyId)
@@ -45,77 +49,13 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             if (!vacancy.CanEdit)
                 throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
+
+            var vm = new VacancyPreviewViewModel();
+            _vacancyDisplayMapper.MapFromVacancy(vm, vacancy);
             
-            var vm = new VacancyPreviewViewModel
-            {
-                ApplicationInstructions = vacancy.ApplicationInstructions,
-                ApplicationUrl = vacancy.ApplicationUrl,
-                CanDelete = vacancy.CanDelete,
-                CanSubmit = vacancy.CanSubmit,
-                ContactName = vacancy.EmployerContactName,
-                ContactEmail = vacancy.EmployerContactEmail,
-                ContactTelephone = vacancy.EmployerContactPhone,
-                ClosingDate = vacancy.ClosingDate?.AsDisplayDate(),
-                EmployerDescription = vacancy.EmployerDescription,
-                EmployerName = vacancy.EmployerName,
-                EmployerWebsiteUrl = vacancy.EmployerWebsiteUrl,
-                EmployerAddressElements = Enumerable.Empty<string>(),
-                NumberOfPositions = vacancy.NumberOfPositions?.ToString(),
-                NumberOfPositionsCaption = vacancy.NumberOfPositions.HasValue ? $"{"position".ToQuantity(vacancy.NumberOfPositions.Value)} available" : null,
-                OutcomeDescription = vacancy.OutcomeDescription,
-                PossibleStartDate = vacancy.StartDate?.AsDisplayDate(),
-                ProviderName = vacancy.TrainingProvider?.Name,
-                Qualifications = vacancy.Qualifications.SortQualifications(_qualificationsConfiguration.QualificationTypes).AsText(),
-                ShortDescription = vacancy.ShortDescription,
-                Skills = vacancy.Skills ?? Enumerable.Empty<string>(),
-                ThingsToConsider = vacancy.ThingsToConsider,
-                Title = vacancy.Title,
-                TrainingDescription = vacancy.TrainingDescription,
-                VacancyDescription = vacancy.Description,
-                VacancyReferenceNumber = string.Empty
-            };
+            vm.Programme = vacancy.Programme != null;
+            vm.Wage = vacancy.Wage != null;
 
-            if (vacancy.EmployerLocation != null)
-            {
-                vm.MapUrl = vacancy.EmployerLocation.HasGeocode
-                    ? _mapService.GetMapImageUrl(vacancy.EmployerLocation.Latitude.ToString(),
-                        vacancy.EmployerLocation.Longitude.ToString(), MapImageWidth, MapImageHeight)
-                    : _mapService.GetMapImageUrl(vacancy.EmployerLocation.Postcode, MapImageWidth, MapImageHeight);
-                vm.EmployerAddressElements = new[]
-                    {
-                        vacancy.EmployerLocation.AddressLine1,
-                        vacancy.EmployerLocation.AddressLine2,
-                        vacancy.EmployerLocation.AddressLine3,
-                        vacancy.EmployerLocation.AddressLine4,
-                        vacancy.EmployerLocation.Postcode
-                    }
-                    .Where(x => !string.IsNullOrEmpty(x));
-            }
-
-            if (vacancy.Programme != null)
-            {
-                vm.Programme = vacancy.Programme != null;
-                vm.TrainingTitle = vacancy.Programme.Title;
-                vm.TrainingType = vacancy.Programme.TrainingType?.GetDisplayName();
-                vm.TrainingLevel = vacancy.Programme.LevelName;
-            }
-
-            if (vacancy.Wage != null)
-            {
-                vm.Wage = vacancy.Wage != null;
-                vm.ExpectedDuration = (vacancy.Wage.DurationUnit.HasValue && vacancy.Wage.Duration.HasValue)
-                    ? vacancy.Wage.DurationUnit.Value.GetDisplayName().ToQuantity(vacancy.Wage.Duration.Value)
-                    : null;
-                vm.HoursPerWeek = $"{vacancy.Wage.WeeklyHours:0.##}";
-                vm.WageInfo = vacancy.Wage.WageAdditionalInformation;
-                vm.WageText = vacancy.StartDate.HasValue
-                    ? vacancy.Wage.ToText(
-                        () => _wageService.GetNationalMinimumWageRange(vacancy.StartDate.Value),
-                        () => _wageService.GetApprenticeNationalMinimumWage(vacancy.StartDate.Value))
-                    : null;
-                vm.WorkingWeekDescription = vacancy.Wage.WorkingWeekDescription;
-            }
-            
             return vm;
         }
         

@@ -34,37 +34,65 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             vm.ContactName = vacancy.EmployerContactName;
             vm.ContactEmail = vacancy.EmployerContactEmail;
             vm.ContactTelephone = vacancy.EmployerContactPhone;
-            vm.ClosingDate = vacancy.ClosingDate.Value.AsDisplayDate();
+            vm.ClosingDate = vacancy.ClosingDate?.AsDisplayDate();
             vm.EmployerDescription = vacancy.EmployerDescription;
             vm.EmployerName = vacancy.EmployerName;
             vm.EmployerWebsiteUrl = vacancy.EmployerWebsiteUrl;
-            vm.ExpectedDuration = vacancy.Wage.DurationUnit.Value.GetDisplayName().ToQuantity(vacancy.Wage.Duration.Value);
-            vm.HoursPerWeek = $"{vacancy.Wage.WeeklyHours:0.##}";
-            vm.Location = vacancy.EmployerLocation;
-            vm.MapUrl = vacancy.EmployerLocation.HasGeocode
-                ? _mapService.GetMapImageUrl(vacancy.EmployerLocation.Latitude.ToString(), vacancy.EmployerLocation.Longitude.ToString(), MapImageWidth, MapImageHeight)
-                : _mapService.GetMapImageUrl(vacancy.EmployerLocation?.Postcode, MapImageWidth, MapImageHeight);
-            vm.NumberOfPositions = vacancy.NumberOfPositions.Value;
+            vm.EmployerAddressElements = Enumerable.Empty<string>();
+            vm.NumberOfPositions = vacancy.NumberOfPositions?.ToString();
+            vm.NumberOfPositionsCaption = vacancy.NumberOfPositions.HasValue
+                ? $"{"position".ToQuantity(vacancy.NumberOfPositions.Value)} available"
+                : null;
             vm.OutcomeDescription = vacancy.OutcomeDescription;
-            vm.PossibleStartDate = vacancy.StartDate.Value.AsDisplayDate();
+            vm.PossibleStartDate = vacancy.StartDate?.AsDisplayDate();
             vm.ProviderName = vacancy.TrainingProvider?.Name;
-            vm.ProviderAddress = vacancy.TrainingProvider?.Address?.GetInlineAddress();
             vm.Qualifications = vacancy.Qualifications.SortQualifications(_qualificationsConfiguration.QualificationTypes).AsText();
             vm.ShortDescription = vacancy.ShortDescription;
             vm.Skills = vacancy.Skills ?? Enumerable.Empty<string>();
             vm.ThingsToConsider = vacancy.ThingsToConsider;
             vm.Title = vacancy.Title;
             vm.TrainingDescription = vacancy.TrainingDescription;
-            vm.TrainingTitle = vacancy.Programme.Title;
-            vm.TrainingType = vacancy.Programme.TrainingType?.GetDisplayName();
-            vm.TrainingLevel = vacancy.Programme.LevelName;
             vm.VacancyDescription = vacancy.Description;
-            vm.VacancyReferenceNumber = $"VAC{vacancy.VacancyReference}";
-            vm.WageInfo = vacancy.Wage.WageAdditionalInformation;
-            vm.WageText = vacancy.Wage?.ToText(
-                () => _wageService.GetNationalMinimumWageRange(vacancy.StartDate.Value),
-                () => _wageService.GetApprenticeNationalMinimumWage(vacancy.StartDate.Value));
-            vm.WorkingWeekDescription = vacancy.Wage.WorkingWeekDescription;
+            vm.VacancyReferenceNumber = string.Empty;
+
+            if (vacancy.EmployerLocation != null)
+            {
+                vm.MapUrl = vacancy.EmployerLocation.HasGeocode
+                    ? _mapService.GetMapImageUrl(vacancy.EmployerLocation.Latitude.ToString(),
+                        vacancy.EmployerLocation.Longitude.ToString(), MapImageWidth, MapImageHeight)
+                    : _mapService.GetMapImageUrl(vacancy.EmployerLocation.Postcode, MapImageWidth, MapImageHeight);
+                vm.EmployerAddressElements = new[]
+                    {
+                        vacancy.EmployerLocation.AddressLine1,
+                        vacancy.EmployerLocation.AddressLine2,
+                        vacancy.EmployerLocation.AddressLine3,
+                        vacancy.EmployerLocation.AddressLine4,
+                        vacancy.EmployerLocation.Postcode
+                    }
+                    .Where(x => !string.IsNullOrEmpty(x));
+            }
+
+            if (vacancy.Programme != null)
+            {
+                vm.TrainingTitle = vacancy.Programme.Title;
+                vm.TrainingType = vacancy.Programme.TrainingType?.GetDisplayName();
+                vm.TrainingLevel = vacancy.Programme.LevelName;
+            }
+
+            if (vacancy.Wage != null)
+            {
+                vm.ExpectedDuration = (vacancy.Wage.DurationUnit.HasValue && vacancy.Wage.Duration.HasValue)
+                    ? vacancy.Wage.DurationUnit.Value.GetDisplayName().ToQuantity(vacancy.Wage.Duration.Value)
+                    : null;
+                vm.HoursPerWeek = $"{vacancy.Wage.WeeklyHours:0.##}";
+                vm.WageInfo = vacancy.Wage.WageAdditionalInformation;
+                vm.WageText = vacancy.StartDate.HasValue
+                    ? vacancy.Wage.ToText(
+                        () => _wageService.GetNationalMinimumWageRange(vacancy.StartDate.Value),
+                        () => _wageService.GetApprenticeNationalMinimumWage(vacancy.StartDate.Value))
+                    : null;
+                vm.WorkingWeekDescription = vacancy.Wage.WorkingWeekDescription;
+            }
         }
     }
 }
