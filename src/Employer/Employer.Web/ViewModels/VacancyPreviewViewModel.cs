@@ -67,16 +67,12 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public VacancyPreviewSectionState WorkingWeekSectionState { get; internal set; }
 
         public bool HasClosingDate => !string.IsNullOrWhiteSpace(ClosingDate);
-
-        public bool HasContactDetails =>    !string.IsNullOrWhiteSpace(ContactName) 
-                                            || !string.IsNullOrWhiteSpace(ContactEmail)
-                                            || !string.IsNullOrWhiteSpace(ContactTelephone);
-
+        
         public bool HasShortDescription => !string.IsNullOrWhiteSpace(ShortDescription);
 
-        public bool HasTrainingProviderDetails => !string.IsNullOrWhiteSpace(ProviderName);
+        public bool HasProviderName => !string.IsNullOrWhiteSpace(ProviderName);
 
-        public bool HasTrainingDetails => !string.IsNullOrWhiteSpace(TrainingType) || !string.IsNullOrWhiteSpace(TrainingTitle);
+        public bool HasTrainingTitle => !string.IsNullOrWhiteSpace(TrainingTitle);
         
         public bool HasWorkingWeekDescription => !string.IsNullOrWhiteSpace(WorkingWeekDescription);
 

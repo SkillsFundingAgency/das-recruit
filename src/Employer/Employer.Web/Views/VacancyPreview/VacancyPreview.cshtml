@@ -250,12 +250,12 @@
                     <div class="@GetSectionClass(Model.ProviderSectionState)">
                         <h3 class="heading-small">Training provider</h3>
                         <span esfa-validation-message-for="ProviderName" class="error-message"></span>
-                        <p asp-condition="Model.HasTrainingProviderDetails">@Model.ProviderName</p>
+                        <p asp-condition="Model.HasProviderName">@Model.ProviderName</p>
                         <a asp-route="@RouteNames.TrainingProvider_Select_Get">Edit</a>
                     </div>
                     <div class="@GetSectionClass(Model.TrainingSectionState)">
                         <h3 class="heading-small">Apprenticeship @Model.TrainingType</h3>
-                        <p asp-condition="Model.HasTrainingDetails">@Model.TrainingTitle</p>
+                        <p asp-condition="Model.HasTrainingTitle">@Model.TrainingTitle</p>
                         <a asp-route="@RouteNames.Title_Get">Edit</a>
                     </div>
                 </div>

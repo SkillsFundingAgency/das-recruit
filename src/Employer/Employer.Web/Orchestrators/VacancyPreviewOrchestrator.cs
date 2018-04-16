@@ -126,9 +126,23 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             return await ValidateAndExecute(
                 vacancy,
-                v => _client.Validate(v, ValidationRules),
+                v =>
+                {
+                    var result = _client.Validate(v, ValidationRules);
+                    SyncErrorsAndModel(result.Errors);
+                    return result;
+                },
                 v => _client.SubmitVacancyAsync(v.Id, user, userEmail)
             );
+        }
+
+        private void SyncErrorsAndModel(IList<EntityValidationError> errors)
+        {
+            //Flatten Qualification errors to its ViewModel parent instead. 'Qualifications[1].Grade' > 'Qualifications'
+            foreach (var error in errors.Where(e => e.PropertyName.StartsWith(nameof(Vacancy.Qualifications))))
+            {
+                error.PropertyName = nameof(VacancyPreviewViewModel.Qualifications);
+            }
         }
         
         protected override EntityToViewModelPropertyMappings<Vacancy, VacancyPreviewViewModel> DefineMappings()

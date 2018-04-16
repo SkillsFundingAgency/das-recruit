@@ -26,7 +26,41 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         public async Task<IActionResult> VacancyPreview(Guid vacancyId)
         {
             var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(vacancyId);
+            
+            SetViewSectionStates(viewModel);
 
+            return View(viewModel);
+        }
+        
+        [HttpPost("preview", Name = RouteNames.Preview_Submit_Post)]
+        public async Task<IActionResult> Submit(SubmitEditModel m)
+        {
+            var response = await _orchestrator.TrySubmitVacancyAsync(m, User.GetDisplayName(), User.GetEmailAddress());
+
+            if (!response.Success)
+            {
+                response.AddErrorsToModelState(ModelState);
+            }
+            
+            if (ModelState.IsValid && response.Data)
+            {
+                return RedirectToRoute(RouteNames.Submitted_Index_Get);
+            }
+
+            if (ModelState.IsValid && !response.Data)
+            {
+                ModelState.AddModelError(string.Empty, "Vacancy has already been submitted");
+            }
+
+            var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(m.VacancyId);
+
+            SetSubmitSectionStates(viewModel);
+            
+            return View("VacancyPreview", viewModel);
+        }
+
+        private void SetViewSectionStates(VacancyPreviewViewModel viewModel)
+        {
             viewModel.ShortDescriptionSectionState = GetViewSectionState(viewModel, vm => vm.ShortDescription);
             viewModel.ClosingDateSectionState = GetViewSectionState(viewModel, vm => vm.ClosingDate);
             viewModel.WorkingWeekSectionState = GetViewSectionState(viewModel, vm => vm.HoursPerWeek, vm => vm.WorkingWeekDescription);
@@ -48,64 +82,13 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             viewModel.ApplicationUrlSectionState = GetViewSectionState(viewModel, vm => vm.ApplicationUrl);
             viewModel.ProviderSectionState = GetViewSectionState(viewModel, vm => vm.ProviderName);
             viewModel.TrainingSectionState = GetViewSectionState(viewModel, vm => vm.TrainingType, vm => vm.TrainingTitle);
-
-            return View(viewModel);
-        }
-
-        [HttpPost("preview", Name = RouteNames.Preview_Submit_Post)]
-        public async Task<IActionResult> Submit(SubmitEditModel m)
-        {
-            var response = await _orchestrator.TrySubmitVacancyAsync(m, User.GetDisplayName(), User.GetEmailAddress());
-
-            if (!response.Success)
-            {
-                FlattenErrors(response);
-                response.AddErrorsToModelState(ModelState);
-            }
-            
-            if (ModelState.IsValid && response.Data)
-            {
-                return RedirectToRoute(RouteNames.Submitted_Index_Get);
-            }
-
-            if (ModelState.IsValid && !response.Data)
-            {
-                ModelState.AddModelError(string.Empty, "Vacancy has already been submitted");
-            }
-
-            var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(m.VacancyId);
-
-            viewModel.ShortDescriptionSectionState = GetSubmitSectionState(viewModel, vm => vm.ShortDescription);
-            viewModel.ClosingDateSectionState = GetSubmitSectionState(viewModel, vm => vm.ClosingDate);
-            viewModel.WorkingWeekSectionState = GetSubmitSectionState(viewModel, vm => vm.Wage, vm => vm.HoursPerWeek, vm => vm.WorkingWeekDescription);
-            viewModel.WageTextSectionState = GetSubmitSectionState(viewModel, vm => vm.Wage, vm => vm.PossibleStartDate);
-            viewModel.ExpectedDurationSectionState = GetSubmitSectionState(viewModel, vm => vm.Wage, vm => vm.ExpectedDuration);
-            viewModel.PossibleStartDateSectionState = GetSubmitSectionState(viewModel, vm => vm.PossibleStartDate);
-            viewModel.TrainingLevelSectionState = GetSubmitSectionState(viewModel, vm => vm.Programme, vm => vm.TrainingLevel);
-            viewModel.NumberOfPositionsSectionState = GetSubmitSectionState(viewModel, vm => vm.NumberOfPositions);
-            viewModel.DescriptionsSectionState = GetSubmitSectionState(viewModel, vm => vm.VacancyDescription, vm => vm.TrainingDescription, vm => vm.OutcomeDescription);
-            viewModel.SkillsSectionState = GetSubmitSectionState(viewModel, vm => vm.Skills);
-            viewModel.QualificationsSectionState = GetSubmitSectionState(viewModel, vm => vm.Qualifications);
-            viewModel.ThingsToConsiderSectionState = GetSubmitSectionState(viewModel, vm => vm.ThingsToConsider);
-            viewModel.EmployerNameSectionState = GetSubmitSectionState(viewModel, vm => vm.EmployerName);
-            viewModel.EmployerDescriptionSectionState = GetSubmitSectionState(viewModel, vm => vm.EmployerDescription);
-            viewModel.EmployerWebsiteUrlSectionState = GetSubmitSectionState(viewModel, vm => vm.EmployerWebsiteUrl);
-            viewModel.ContactSectionState = GetSubmitSectionState(viewModel, vm => vm.ContactName, vm => vm.ContactEmail, vm => vm.ContactTelephone);
-            viewModel.EmployerAddressSectionState = GetSubmitSectionState(viewModel, vm => vm.EmployerAddressElements);
-            viewModel.ApplicationInstructionsSectionState = GetSubmitSectionState(viewModel, vm => vm.ApplicationInstructions);
-            viewModel.ApplicationUrlSectionState = GetSubmitSectionState(viewModel, vm => vm.ApplicationUrl);
-            viewModel.ProviderSectionState = GetSubmitSectionState(viewModel, vm => vm.ProviderName);
-            viewModel.TrainingSectionState = GetSubmitSectionState(viewModel, vm => vm.Programme, vm => vm.TrainingType, vm => vm.TrainingTitle);
-
-            return View("VacancyPreview", viewModel);
         }
         
-        private VacancyPreviewSectionState GetViewSectionState<T>(T vm, params Expression<Func<T, object>>[] properties)
+        private VacancyPreviewSectionState GetViewSectionState<T>(T vm, params Func<T, object>[] requiredProperties)
         {
-            foreach (var property in properties)
+            foreach (var requiredPropertyFunc in requiredProperties)
             {
-                var propertyValueFunc = property.Compile();
-                var propertyValue = propertyValueFunc(vm);
+                var propertyValue = requiredPropertyFunc(vm);
 
                 if (propertyValue is null)
                 {
@@ -138,9 +121,34 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             return VacancyPreviewSectionState.Valid;
         }
 
-        private VacancyPreviewSectionState GetSubmitSectionState<T>(T vm, params Expression<Func<T, object>>[] properties)
+        private void SetSubmitSectionStates(VacancyPreviewViewModel viewModel)
         {
-            foreach (var property in properties)
+            viewModel.ShortDescriptionSectionState = GetSubmitSectionState(vm => vm.ShortDescription);
+            viewModel.ClosingDateSectionState = GetSubmitSectionState(vm => vm.ClosingDate);
+            viewModel.WorkingWeekSectionState = GetSubmitSectionState(vm => vm.Wage, vm => vm.HoursPerWeek, vm => vm.WorkingWeekDescription);
+            viewModel.WageTextSectionState = GetSubmitSectionState(vm => vm.Wage, vm => vm.PossibleStartDate);
+            viewModel.ExpectedDurationSectionState = GetSubmitSectionState(vm => vm.Wage, vm => vm.ExpectedDuration);
+            viewModel.PossibleStartDateSectionState = GetSubmitSectionState(vm => vm.PossibleStartDate);
+            viewModel.TrainingLevelSectionState = GetSubmitSectionState(vm => vm.Programme, vm => vm.TrainingLevel);
+            viewModel.NumberOfPositionsSectionState = GetSubmitSectionState(vm => vm.NumberOfPositions);
+            viewModel.DescriptionsSectionState = GetSubmitSectionState(vm => vm.VacancyDescription, vm => vm.TrainingDescription, vm => vm.OutcomeDescription);
+            viewModel.SkillsSectionState = GetSubmitSectionState(vm => vm.Skills);
+            viewModel.QualificationsSectionState = GetSubmitSectionState(vm => vm.Qualifications);
+            viewModel.ThingsToConsiderSectionState = GetSubmitSectionState(vm => vm.ThingsToConsider);
+            viewModel.EmployerNameSectionState = GetSubmitSectionState(vm => vm.EmployerName);
+            viewModel.EmployerDescriptionSectionState = GetSubmitSectionState(vm => vm.EmployerDescription);
+            viewModel.EmployerWebsiteUrlSectionState = GetSubmitSectionState(vm => vm.EmployerWebsiteUrl);
+            viewModel.ContactSectionState = GetSubmitSectionState(vm => vm.ContactName, vm => vm.ContactEmail, vm => vm.ContactTelephone);
+            viewModel.EmployerAddressSectionState = GetSubmitSectionState(vm => vm.EmployerAddressElements);
+            viewModel.ApplicationInstructionsSectionState = GetSubmitSectionState(vm => vm.ApplicationInstructions);
+            viewModel.ApplicationUrlSectionState = GetSubmitSectionState(vm => vm.ApplicationUrl);
+            viewModel.ProviderSectionState = GetSubmitSectionState(vm => vm.ProviderName);
+            viewModel.TrainingSectionState = GetSubmitSectionState(vm => vm.Programme, vm => vm.TrainingType, vm => vm.TrainingTitle);
+        }
+
+        private VacancyPreviewSectionState GetSubmitSectionState(params Expression<Func<VacancyPreviewViewModel, object>>[] validProperties)
+        {
+            foreach (var property in validProperties)
             {
                 var propertyName = property.GetPropertyName();
                 if (ModelState.Keys.Where(k => k == propertyName).Any(k => ModelState[k].Errors.Any()))
@@ -150,19 +158,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             }
             
             return VacancyPreviewSectionState.Valid;
-        }
-        
-        private void FlattenErrors(OrchestratorResponse response)
-        {
-            //Flatten errors to their parent instead. 'Qualifications[1].Grade' > 'Qualifications'
-            foreach (var error in response.Errors.Errors)
-            {
-                var start = error.PropertyName.IndexOf('[');
-                if (start > -1)
-                {
-                    error.PropertyName = error.PropertyName.Substring(0, start);
-                }
-            }
         }
     }
 }
