@@ -59,7 +59,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                         ViewName = ViewNames.ManageReferredVacancyView
                     };
                 default:
-                    throw new ConcurrencyException(string.Format(ErrorMessages.VacancyCannotBeViewed, vacancy.Title));
+                    throw new InvalidStateException(string.Format(ErrorMessages.VacancyCannotBeViewed, vacancy.Title));
             }
         }
     }

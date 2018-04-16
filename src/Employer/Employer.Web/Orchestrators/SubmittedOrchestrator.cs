@@ -22,7 +22,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             var vacancy = await _client.GetVacancyAsync(vacancyId);
 
             if (vacancy.Status != VacancyStatus.Submitted)
-                throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotSubmittedSuccessfully, vacancy.Title));
+                throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotSubmittedSuccessfully, vacancy.Title));
 
             var vm = new IndexViewModel
             {
