@@ -2,6 +2,8 @@
 using Esfa.Recruit.Employer.Web.ViewModels.DeleteVacancy;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
+using Esfa.Recruit.Employer.Web.ViewModels;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
@@ -16,7 +18,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public async Task<DeleteViewModel> GetDeleteViewModelAsync(Guid vacancyId)
         {
-            var vacancy = await _client.GetVacancyForEditAsync(vacancyId);
+            var vacancy = await _client.GetVacancyAsync(vacancyId);
+
+            if (!vacancy.CanDelete)
+                throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
 
             var vm = new DeleteViewModel
             {
@@ -26,9 +31,14 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return vm;
         }
 
-        public Task<bool> TryDeleteVacancyAsync(DeleteEditModel m)
+        public async Task<bool> TryDeleteVacancyAsync(DeleteEditModel m)
         {
-            return _client.DeleteVacancyAsync(m.VacancyId);
+            var vacancy = await _client.GetVacancyAsync(m.VacancyId);
+
+            if (!vacancy.CanDelete)
+                throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
+
+            return await _client.DeleteVacancyAsync(m.VacancyId);
         }
     }
 }

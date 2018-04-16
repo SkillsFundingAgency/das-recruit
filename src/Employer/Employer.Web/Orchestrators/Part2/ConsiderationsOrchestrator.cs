@@ -24,7 +24,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public async Task<ConsiderationsViewModel> GetConsiderationsViewModelAsync(Guid vacancyId)
         {
-            var vacancy = await _client.GetVacancyForEditAsync(vacancyId);
+            var vacancy = await _client.GetVacancyAsync(vacancyId);
 
             if (vacancy.Status != VacancyStatus.Draft)
                 throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
@@ -49,7 +49,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public async Task<OrchestratorResponse> PostConsiderationsEditModelAsync(ConsiderationsEditModel m)
         {
-            var vacancy = await _client.GetVacancyForEditAsync(m.VacancyId);
+            var vacancy = await _client.GetVacancyAsync(m.VacancyId);
 
             vacancy.ThingsToConsider = m.ThingsToConsider;
 

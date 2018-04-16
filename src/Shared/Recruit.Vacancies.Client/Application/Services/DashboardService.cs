@@ -24,9 +24,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
         {
             var vacancySummaries = await _repository.GetVacanciesByEmployerAccountAsync<VacancySummary>(employerAccountId);
 
-            await _queryStore.UpdateDashboardAsync(employerAccountId, vacancySummaries.OrderBy(v => v.CreatedDate));
+            var activeVacancySummaries = vacancySummaries.Where(v => v.IsDeleted == false);
+
+            await _queryStore.UpdateDashboardAsync(employerAccountId, activeVacancySummaries.OrderBy(v => v.CreatedDate));
             
-            _logger.LogDebug("Update dashboard with {count} summary records for account: {employerAccountId}", vacancySummaries.Count(), employerAccountId);
+            _logger.LogDebug("Update dashboard with {count} summary records for account: {employerAccountId}", activeVacancySummaries.Count(), employerAccountId);
         }
     }
 }

@@ -19,7 +19,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public async Task<IndexViewModel> GetIndexViewModelAsync(Guid vacancyId)
         {
-            var vacancy = await _client.GetVacancyForEditAsync(vacancyId);
+            var vacancy = await _client.GetVacancyAsync(vacancyId);
 
             if (vacancy.Status != VacancyStatus.Submitted)
                 throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotSubmittedSuccessfully, vacancy.Title));

@@ -28,7 +28,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public async Task<SelectTrainingProviderViewModel> GetSelectTrainingProviderViewModel(Guid vacancyId)
         {
-            var vacancy = await _client.GetVacancyForEditAsync(vacancyId);
+            var vacancy = await _client.GetVacancyAsync(vacancyId);
 
             if (vacancy.Status != VacancyStatus.Draft)
                 throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
@@ -51,7 +51,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public async Task<ConfirmTrainingProviderViewModel> GetConfirmViewModel(SelectTrainingProviderEditModel m)
         {
-            var vacancy = await _client.GetVacancyForEditAsync(m.VacancyId);
+            var vacancy = await _client.GetVacancyAsync(m.VacancyId);
 
             if (vacancy.Status != VacancyStatus.Draft)
                 throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
@@ -80,7 +80,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public Task<OrchestratorResponse> PostConfirmEditModelAsync(ConfirmTrainingProviderEditModel m)
         {
-            var vacancyTask = _client.GetVacancyForEditAsync(m.VacancyId);
+            var vacancyTask = _client.GetVacancyAsync(m.VacancyId);
             var providerTask = _providerService.GetProviderAsync(long.Parse(m.Ukprn));
 
             Task.WaitAll(new Task[] { vacancyTask, providerTask });

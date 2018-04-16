@@ -30,7 +30,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public async Task<TitleViewModel> GetTitleViewModelAsync(Guid vacancyId)
         {
-            var vacancy = await _client.GetVacancyForEditAsync(vacancyId);
+            var vacancy = await _client.GetVacancyAsync(vacancyId);
 
             if (!vacancy.CanEdit)
             {
@@ -80,7 +80,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 );
             }
 
-            var vacancy = await _client.GetVacancyForEditAsync(vm.VacancyId.Value);
+            var vacancy = await _client.GetVacancyAsync(vm.VacancyId.Value);
 
             if (!vacancy.CanEdit)
             {

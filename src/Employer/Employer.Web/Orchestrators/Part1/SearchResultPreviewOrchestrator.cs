@@ -27,7 +27,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         
         public async Task<SearchResultPreviewViewModel> GetSearchResultPreviewViewModelAsync(Guid vacancyId)
         {
-            var vacancy = await _client.GetVacancyForEditAsync(vacancyId);
+            var vacancy = await _client.GetVacancyAsync(vacancyId);
 
             if (!vacancy.CanEdit)
             {

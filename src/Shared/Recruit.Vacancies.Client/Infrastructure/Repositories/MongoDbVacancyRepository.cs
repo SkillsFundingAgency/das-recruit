@@ -32,7 +32,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         public async Task<Vacancy> GetVacancyAsync(Guid id)
         {
             var filter = Builders<Vacancy>.Filter.Eq(v => v.Id, id);
-            filter = filter & Builders<Vacancy>.Filter.Eq(v => v.IsDeleted, false);
 
             var collection = GetCollection<Vacancy>();
             var result = await collection.FindAsync(filter);
@@ -42,7 +41,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         public async Task<IEnumerable<T>> GetVacanciesByEmployerAccountAsync<T>(string employerAccountId)
         {
             var filter = Builders<BsonDocument>.Filter.Eq(EmployerAccountId, employerAccountId);
-            filter = filter & Builders<BsonDocument>.Filter.Eq(IsDeleted, false);
 
             var collection = GetCollection<BsonDocument>();
             var result = await collection.FindAsync<T>(filter);
