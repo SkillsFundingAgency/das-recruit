@@ -220,7 +220,7 @@
                     </div>
                 </div>
                 <div class="column-half">
-                    <img asp-condition="!string.IsNullOrWhiteSpace(Model.MapUrl)" id="static-map" src="@Model.MapUrl" />
+                    <img asp-condition="@Model.HasMapUrl" id="static-map" src="@Model.MapUrl" />
                 </div>
             </div>
             
@@ -250,12 +250,12 @@
                     <div class="@GetSectionClass(Model.ProviderSectionState)">
                         <h3 class="heading-small">Training provider</h3>
                         <span esfa-validation-message-for="ProviderName" class="error-message"></span>
-                        <p asp-condition="Model.HasProviderName">@Model.ProviderName</p>
+                        <p asp-condition="@Model.HasProviderName">@Model.ProviderName</p>
                         <a asp-route="@RouteNames.TrainingProvider_Select_Get">Edit</a>
                     </div>
                     <div class="@GetSectionClass(Model.TrainingSectionState)">
                         <h3 class="heading-small">Apprenticeship @Model.TrainingType</h3>
-                        <p asp-condition="Model.HasTrainingTitle">@Model.TrainingTitle</p>
+                        <p asp-condition="@Model.HasTrainingTitle">@Model.TrainingTitle</p>
                         <a asp-route="@RouteNames.Title_Get">Edit</a>
                     </div>
                 </div>
@@ -265,13 +265,13 @@
 
             <div class="form-group inline">
                 <div class="form-group small-top-margin">
-                    <form asp-condition="Model.CanSubmit" asp-route="@RouteNames.Preview_Submit_Post" class="form-inline">
+                    <form asp-condition="@Model.CanSubmit" asp-route="@RouteNames.Preview_Submit_Post" class="form-inline">
                         <input type="submit" value="Submit vacancy" class="button" />
                     </form>
 
-                    <a asp-condition="Model.CanDelete" asp-route="@RouteNames.Dashboard_Index_Get" class="button-link">Return to dashboard</a>
+                    <a asp-route="@RouteNames.Dashboard_Index_Get" class="button-link">Return to dashboard</a>
                     
-                    <a asp-route="@RouteNames.DeleteVacancy_Delete_Get" class="button-link">Delete</a>
+                    <a asp-condition="@Model.CanDelete"  asp-route="@RouteNames.DeleteVacancy_Delete_Get" class="button-link">Delete</a>
                 </div>
             </div>
         </main>

@@ -40,7 +40,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public VacancyPreviewSectionState PossibleStartDateSectionState { get; internal set; }
         public string ProviderName { get; internal set; }
         public VacancyPreviewSectionState ProviderSectionState { get; internal set; }
-        public List<string> Qualifications { get; internal set; }
+        public IEnumerable<string> Qualifications { get; internal set; }
         public VacancyPreviewSectionState QualificationsSectionState { get; internal set; }
         public string ShortDescription { get; internal set; }
         public VacancyPreviewSectionState ShortDescriptionSectionState { get; internal set; }

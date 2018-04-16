@@ -12,6 +12,8 @@ namespace Esfa.Recruit.Employer.Web.Mappings
 {
     public class DisplayVacancyViewModelMapper
     {
+        private const int MapImageWidth = 465;
+        private const int MapImageHeight = 256;
         private readonly IGeocodeImageService _mapService;
         private readonly IGetMinimumWages _wageService;
         private readonly QualificationsConfiguration _qualificationsConfiguration;
@@ -40,8 +42,8 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             vm.HoursPerWeek = $"{vacancy.Wage.WeeklyHours:0.##}";
             vm.Location = vacancy.EmployerLocation;
             vm.MapUrl = vacancy.EmployerLocation.HasGeocode
-                ? _mapService.GetMapImageUrl(vacancy.EmployerLocation.Latitude.ToString(), vacancy.EmployerLocation.Longitude.ToString())
-                : _mapService.GetMapImageUrl(vacancy.EmployerLocation?.Postcode);
+                ? _mapService.GetMapImageUrl(vacancy.EmployerLocation.Latitude.ToString(), vacancy.EmployerLocation.Longitude.ToString(), MapImageWidth, MapImageHeight)
+                : _mapService.GetMapImageUrl(vacancy.EmployerLocation?.Postcode, MapImageWidth, MapImageHeight);
             vm.NumberOfPositions = vacancy.NumberOfPositions.Value;
             vm.OutcomeDescription = vacancy.OutcomeDescription;
             vm.PossibleStartDate = vacancy.StartDate.Value.AsDisplayDate();

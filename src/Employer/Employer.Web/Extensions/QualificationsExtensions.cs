@@ -55,8 +55,7 @@ namespace Esfa.Recruit.Employer.Web.Extensions
         {
             return qualifications?.OrderBy(q => qualificationTypes.IndexOf(q.QualificationType))
                 .ThenBy(q => q.Weighting, WeightingComparer)
-                .ThenBy(q => q.Subject)
-                .ToList();
+                .ThenBy(q => q.Subject);
         }
 
         private static readonly Comparer<QualificationWeighting?> WeightingComparer = Comparer<QualificationWeighting?>.Create((x, y) =>
