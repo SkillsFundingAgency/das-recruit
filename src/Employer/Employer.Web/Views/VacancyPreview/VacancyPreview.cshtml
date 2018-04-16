@@ -103,7 +103,7 @@
                             <p asp-condition="@Model.HasTrainingLevel">@Model.TrainingLevel Level Apprenticeship</p>
                             <a asp-route="@RouteNames.Title_Get">Edit</a>
                         </li>
-                        <li>
+                        <li asp-condition="@Model.CanShowReference">
                             <h3 class="heading-small">Reference number</h3>
                             <p>@Model.VacancyReferenceNumber</p>
                         </li>

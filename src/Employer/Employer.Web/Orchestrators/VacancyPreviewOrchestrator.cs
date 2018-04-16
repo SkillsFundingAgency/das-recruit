@@ -55,6 +55,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             
             vm.Programme = vacancy.Programme != null;
             vm.Wage = vacancy.Wage != null;
+            vm.CanShowReference = vacancy.Status != VacancyStatus.Draft;
 
             return vm;
         }

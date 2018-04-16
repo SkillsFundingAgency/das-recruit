@@ -30,6 +30,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public bool Wage { get; internal set; }
         public bool Programme { get; internal set; }
 
+        public bool CanShowReference { get; set; }
 
         public IList<string> OrderedFieldNames => new List<string>
         {
