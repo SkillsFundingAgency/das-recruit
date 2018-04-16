@@ -26,7 +26,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         {
             var vacancy = await _client.GetVacancyAsync(vacancyId);
 
-            if (vacancy.Status != VacancyStatus.Draft)
+            if (!vacancy.CanEdit)
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
 
             var vm = new ApplicationProcessViewModel
@@ -59,7 +59,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         {
             var vacancy = await _client.GetVacancyAsync(m.VacancyId);
 
-            if (vacancy.Status != VacancyStatus.Draft)
+            if (!vacancy.CanEdit)
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
 
             vacancy.ApplicationInstructions = m.ApplicationInstructions;
