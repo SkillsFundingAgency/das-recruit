@@ -30,7 +30,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         {
             var vacancy = await _client.GetVacancyAsync(vacancyId);
 
-            if (vacancy.Status != VacancyStatus.Draft)
+            if (!vacancy.CanEdit)
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
 
             var vm = new SelectTrainingProviderViewModel
@@ -53,7 +53,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         {
             var vacancy = await _client.GetVacancyAsync(m.VacancyId);
 
-            if (vacancy.Status != VacancyStatus.Draft)
+            if (!vacancy.CanEdit)
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
 
             if (long.TryParse(m.Ukprn, out var ukprn) && ukprn != vacancy.TrainingProvider?.Ukprn)
