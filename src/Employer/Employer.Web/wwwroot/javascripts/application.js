@@ -56,6 +56,29 @@ sfa.navigation = {
     }
 };
 
+sfa.hookupExampleVacancyToggle = function() {
+    var $exampleLink = $("#example_link");
+    var $exampleVacancy = $("#example_vacancy");
+
+    var showExampleVacancyCookie = Cookies.get('showExampleVacancy');
+
+    if (typeof (showExampleVacancyCookie) === "undefined") {
+        $exampleVacancy.hide();
+    }
+
+    $exampleLink.click(function () {
+        if ($exampleVacancy.is(":visible")) {
+            Cookies.remove('showExampleVacancy');
+            $exampleLink[0].innerText = "Show an example advert";
+        } else {            
+            Cookies.set('showExampleVacancy', 'true');
+            $exampleLink[0].innerText = "Hide example";
+        }
+        $exampleVacancy.slideToggle();
+    });
+};
+
+
 //Legacy floating header script
 $(window).scroll(function () {
     if ($(window).scrollTop() >= 110) {
