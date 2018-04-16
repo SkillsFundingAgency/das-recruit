@@ -10,17 +10,17 @@
             </h1>
             <p class="font-large">
                 The vacancy reference number is <br>
-                <strong class="bold">@Model.VacancyReference</strong>
+                <strong class="bold">VAC@(Model.VacancyReference)</strong>
             </p>
         </div>
         <h2 class="heading-medium">Next steps</h2>
-        <p>Your vacancy advert will now be reviewed by an Education and Skills Funding Agency adviser.</p>
-        <p>You'll be notified via your recruitment home page if any changes are necessary before the advert goes live.</p>
-
+        <p>Your vacancy will now be reviewed by an Education and Skills Funding Agency adviser.</p>
+        <p>You’ll be notified within 24 hours, through your recruitment page, if you need to make any edits to your vacancy.</p>
+        <p>We’ll also confirm on your recruitment page, when your vacancy is live.</p>
         <div class="form-group inline">
             <div class="form-group">
-                <a asp-route="@RouteNames.CreateVacancy_Get" class="button">Create another vacancy</a>
-                <a asp-route="@RouteNames.Dashboard_Index_Get" class="button-link">Return to dashboard</a>
+                <a asp-route="@RouteNames.Dashboard_Index_Get" class="button">Return to dashboard</a>
+                <a asp-route="@RouteNames.CreateVacancy_Get" class="button-link">Create another vacancy</a>
             </div>
         </div>
     </div>
