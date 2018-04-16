@@ -12,7 +12,7 @@
 </p>
 <hr>
 
-<a href="#example_link" id="example_link">Show an example advert</a>
+<a href="#example_link" id="example_link" class="hide-nojs">Show an example advert</a>
 
 <div id="example_vacancy" class="example-advert">
     <h2 class="heading-medium small-top-margin">
@@ -58,17 +58,6 @@
 
 <script>
     $(function () {
-        var $exampleLink = $("#example_link");
-        var $exampleVacancy = $("#example_vacancy");
-        $exampleVacancy.hide();
-
-        $exampleLink.click(function () {
-            if ($exampleVacancy.is(":visible")) {
-                $exampleLink[0].innerText = "Show an example advert";
-            } else {
-                $exampleLink[0].innerText = "Hide example";
-            }
-            $exampleVacancy.slideToggle();
-        });
+        sfa.hookupExampleVacancyToggle();
     });
 </script>
