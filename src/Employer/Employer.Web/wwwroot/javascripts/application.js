@@ -76,7 +76,7 @@ sfa.hookupExampleVacancyToggle = function () {
         if ($exampleVacancy.is(":visible")) {
             Cookies.remove(showExampleVacancyCookieName);
             $exampleLink[0].innerText = showExampleText;
-        } else {            
+        } else {
             Cookies.set(showExampleVacancyCookieName, "yes");
             $exampleLink[0].innerText = hideExampleText;
         }
