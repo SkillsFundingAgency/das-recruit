@@ -57,7 +57,7 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             vm.TrainingType = vacancy.Programme.TrainingType?.GetDisplayName();
             vm.TrainingLevel = vacancy.Programme.LevelName;
             vm.VacancyDescription = vacancy.Description;
-            vm.VacancyReferenceNumber = string.Empty;
+            vm.VacancyReferenceNumber = $"VAC{vacancy.VacancyReference}";
             vm.WageInfo = vacancy.Wage.WageAdditionalInformation;
             vm.WageText = vacancy.Wage?.ToText(
                 () => _wageService.GetNationalMinimumWageRange(vacancy.StartDate.Value),
