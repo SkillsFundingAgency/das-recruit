@@ -2,7 +2,7 @@
 {
     public interface IGeocodeImageService
     {
-        string GetMapImageUrl(string postcode);
-        string GetMapImageUrl(string latitude, string longitude);
+        string GetMapImageUrl(string postcode, int imageWidth, int imageHeight);
+        string GetMapImageUrl(string latitude, string longitude, int imageWidth, int imageHeight);
     }
 }

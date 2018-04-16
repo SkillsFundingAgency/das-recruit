@@ -23,6 +23,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
     public class VacancyPreviewOrchestrator : EntityValidatingOrchestrator<Vacancy, VacancyPreviewViewModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.All;
+        private const int MapImageWidth = 465;
+        private const int MapImageHeight = 256;
         private readonly IVacancyClient _client;
         private readonly IGeocodeImageService _mapService;
         private readonly IGetMinimumWages _wageService;
@@ -77,8 +79,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             {
                 vm.MapUrl = vacancy.EmployerLocation.HasGeocode
                     ? _mapService.GetMapImageUrl(vacancy.EmployerLocation.Latitude.ToString(),
-                        vacancy.EmployerLocation.Longitude.ToString())
-                    : _mapService.GetMapImageUrl(vacancy.EmployerLocation.Postcode);
+                        vacancy.EmployerLocation.Longitude.ToString(), MapImageWidth, MapImageHeight)
+                    : _mapService.GetMapImageUrl(vacancy.EmployerLocation.Postcode, MapImageWidth, MapImageHeight);
                 vm.EmployerAddressElements = new[]
                     {
                         vacancy.EmployerLocation.AddressLine1,
