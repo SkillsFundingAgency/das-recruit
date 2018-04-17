@@ -37,7 +37,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
             }
 
-            var vm = new SkillsViewModel();
+            var vm = new SkillsViewModel
+            {
+                Title = vacancy.Title
+            };
 
             SetViewModelSkills(vm, vacancy.Skills);
             
