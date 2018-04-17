@@ -5,9 +5,6 @@
         <h1 class="heading-large small-bottom-margin">Recruit an apprentice</h1>
 
         <div asp-condition="Model.HasWarning" class="warning-summary no-bottom-margin">
-            <h2 id="warning-summary" class="heading-medium warning-summary-heading">
-                Your changes have not been saved
-            </h2>
             <p>@Model.WarningMessage</p>
         </div>
     </div>
