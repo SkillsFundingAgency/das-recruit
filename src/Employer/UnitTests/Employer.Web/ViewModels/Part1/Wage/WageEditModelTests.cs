@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Wage;
-using Esfa.Recruit.Vacancies.Client.Domain.Enums;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using FluentAssertions;
 using Xunit;
 

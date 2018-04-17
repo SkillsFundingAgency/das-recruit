@@ -4,7 +4,6 @@ using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Domain.Enums;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 

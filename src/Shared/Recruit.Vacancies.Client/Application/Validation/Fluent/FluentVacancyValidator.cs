@@ -6,7 +6,6 @@ using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Services.MinimumWage;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators.VacancyValidators;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Domain.Enums;
 using Esfa.Recruit.Vacancies.Client.Domain.Projections;
 using Esfa.Recruit.Vacancies.Client.Domain.Services;
 using FluentValidation;

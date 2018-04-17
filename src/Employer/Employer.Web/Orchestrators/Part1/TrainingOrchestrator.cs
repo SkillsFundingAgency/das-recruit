@@ -9,7 +9,6 @@ using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using System.Linq;
-using Esfa.Recruit.Vacancies.Client.Domain.Enums;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {

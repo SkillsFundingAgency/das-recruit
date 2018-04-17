@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Esfa.Recruit.Employer.Web.ViewModels.Validations;
-using Esfa.Recruit.Vacancies.Client.Domain.Enums;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.Part2.Qualifications
