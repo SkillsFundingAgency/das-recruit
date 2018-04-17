@@ -1,6 +1,6 @@
 using System.Linq;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using SFA.DAS.Apprenticeships.Api.Types;
-using Esfa.Recruit.Vacancies.Client.Domain.Enums;
 using Esfa.Recruit.Vacancies.Client.Domain.Projections;
 using Esfa.Recruit.Vacancies.Client.Domain.Services;
 

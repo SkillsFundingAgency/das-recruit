@@ -1,4 +1,3 @@
-using Esfa.Recruit.Vacancies.Client.Domain.Enums;
 using System;
 using System.Collections.Generic;
 

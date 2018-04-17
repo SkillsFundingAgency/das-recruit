@@ -2,7 +2,6 @@
 using System.Linq;
 using Esfa.Recruit.Employer.Web.ViewModels.Part2.Qualifications;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Domain.Enums;
 
 namespace Esfa.Recruit.Employer.Web.Extensions
 {

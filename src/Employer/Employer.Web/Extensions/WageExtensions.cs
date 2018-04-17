@@ -1,12 +1,9 @@
 ﻿using System;
 using Esfa.Recruit.Vacancies.Client.Application.Services.MinimumWage;
-using Esfa.Recruit.Vacancies.Client.Domain.Enums;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Employer.Web.Extensions
 {
-    using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-    using System.Linq;
-
     public static class WageExtensions
     {
         const int WeeksPerYear = 52;
