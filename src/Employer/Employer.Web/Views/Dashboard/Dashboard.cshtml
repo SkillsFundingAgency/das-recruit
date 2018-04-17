@@ -3,11 +3,14 @@
 <div class="grid-row dashboard-header">
     <div class="column-two-thirds">
         <h1 class="heading-large small-bottom-margin">Recruit an apprentice</h1>
-    </div>
-</div>
 
-<div asp-condition="Model.HasWarning" class="warning-summary" role="alert" aria-labelledby="error-summary-heading-example-1" data-valmsg-summary="true" tabindex="-1">
-    <p>@Model.WarningMessage</p>
+        <div asp-condition="Model.HasWarning" class="warning-summary no-bottom-margin">
+            <h2 id="warning-summary" class="heading-medium warning-summary-heading">
+                Your changes have not been saved
+            </h2>
+            <p>@Model.WarningMessage</p>
+        </div>
+    </div>
 </div>
 
 <div class="grid-row">
@@ -15,6 +18,7 @@
         <a asp-route="@RouteNames.CreateVacancy_Get" class="button">Create vacancy</a>
         <hr>
     </div>
+    <br>
 </div>
 
 <div class="grid-row">
