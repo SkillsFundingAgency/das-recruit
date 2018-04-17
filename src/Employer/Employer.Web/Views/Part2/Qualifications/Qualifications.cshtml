@@ -6,11 +6,10 @@
 <div class="grid-row">
     <div class="column-full">
 
-        <h1 class="heading-xlarge small-bottom-margin">Qualifications</h1>
+        <h1 class="heading-xlarge small-bottom-margin">@Model.Title</h1>
+        <hr>
 
         @Html.Partial("_ValidationSummary", new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames })
-
-        <hr>
 
         <form asp-route="@RouteNames.Qualifications_Post">
 
