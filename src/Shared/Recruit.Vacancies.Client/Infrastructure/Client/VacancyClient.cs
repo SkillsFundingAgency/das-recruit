@@ -77,7 +77,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return command.Vacancy.Id;
         }
 
-        public async Task<bool> SubmitVacancyAsync(Guid id)
+        public async Task<bool> SubmitVacancyAsync(Guid id, string userName, string userEmail)
         {
             var vacancy = await GetVacancyAsync(id);
 
@@ -88,7 +88,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
             vacancy.Status = VacancyStatus.Submitted;
             vacancy.SubmittedDate = _timeProvider.Now;
-
+            vacancy.SubmittedBy = userName;
+            vacancy.SubmittedByEmail = userEmail;
+            
             var command = new SubmitVacancyCommand
             {
                 Vacancy = vacancy

@@ -14,6 +14,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
     public class SearchResultPreviewOrchestrator
     {
+        private const int MapImageWidth = 190;
+        private const int MapImageHeight = 125;
         private readonly IVacancyClient _client;
         private readonly IGeocodeImageService _mapService;
         private readonly IGetMinimumWages _wageService;
@@ -52,8 +54,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             if (vacancy.EmployerLocation != null)
             {
                 vm.MapUrl = vacancy.EmployerLocation.HasGeocode
-                    ? _mapService.GetMapImageUrl(vacancy.EmployerLocation.Latitude.ToString(), vacancy.EmployerLocation.Longitude.ToString())
-                    : _mapService.GetMapImageUrl(vacancy.EmployerLocation?.Postcode);
+                    ? _mapService.GetMapImageUrl(vacancy.EmployerLocation.Latitude.ToString(), vacancy.EmployerLocation.Longitude.ToString(), MapImageWidth, MapImageHeight)
+                    : _mapService.GetMapImageUrl(vacancy.EmployerLocation?.Postcode, MapImageWidth, MapImageHeight);
             }
             
             return vm;

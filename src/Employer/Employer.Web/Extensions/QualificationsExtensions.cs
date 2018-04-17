@@ -2,6 +2,7 @@
 using System.Linq;
 using Esfa.Recruit.Employer.Web.ViewModels.Part2.Qualifications;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Enums;
 
 namespace Esfa.Recruit.Employer.Web.Extensions
 {
@@ -52,14 +53,24 @@ namespace Esfa.Recruit.Employer.Web.Extensions
 
         public static IOrderedEnumerable<Qualification> SortQualifications(this IEnumerable<Qualification> qualifications, IList<string> qualificationTypes)
         {
-            if (qualifications == null)
-            {
-                return null;
-            }
-
-            return qualifications
-                .OrderBy(q => qualificationTypes.IndexOf(q.QualificationType))
+            return qualifications?.OrderBy(q => qualificationTypes.IndexOf(q.QualificationType))
+                .ThenBy(q => q.Weighting, WeightingComparer)
                 .ThenBy(q => q.Subject);
         }
+
+        private static readonly Comparer<QualificationWeighting?> WeightingComparer = Comparer<QualificationWeighting?>.Create((x, y) =>
+        {
+            if (x == y)
+            {
+                return 0;
+            }
+
+            if (x == QualificationWeighting.Essential)
+            {
+                return -1;
+            }
+
+            return 1;
+        });
     }
 }

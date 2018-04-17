@@ -18,26 +18,26 @@ namespace Esfa.Recruit.Employer.Web.Services
             _privateKey = privateKey;
         }
 
-        public string GetMapImageUrl(string postcode)
+        public string GetMapImageUrl(string postcode, int imageWidth, int imageHeight)
         {
             if (string.IsNullOrWhiteSpace(postcode))
             {
                 return null;
             }
             
-            var staticMapsUrl = $"https://maps.googleapis.com/maps/api/staticmap?markers={WebUtility.UrlEncode(postcode)}&size=190x125&zoom=12";
+            var staticMapsUrl = $"https://maps.googleapis.com/maps/api/staticmap?markers={WebUtility.UrlEncode(postcode)}&size={imageWidth}x{imageHeight}&zoom=12";
             var url = SignUrl(staticMapsUrl);
             return url;
         }
 
-        public string GetMapImageUrl(string latitude, string longitude)
+        public string GetMapImageUrl(string latitude, string longitude, int imageWidth, int imageHeight)
         {
             if (string.IsNullOrWhiteSpace(latitude) || string.IsNullOrWhiteSpace(longitude))
             {
                 return null;
             }
 
-            var staticMapsUrl = $"https://maps.googleapis.com/maps/api/staticmap?markers={latitude},{longitude}&size=190x125&zoom=12";
+            var staticMapsUrl = $"https://maps.googleapis.com/maps/api/staticmap?markers={latitude},{longitude}&size={imageWidth}x{imageHeight}&zoom=12";
             var url = SignUrl(staticMapsUrl);
             return url;
         }

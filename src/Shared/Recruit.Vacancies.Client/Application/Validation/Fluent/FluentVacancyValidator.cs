@@ -115,6 +115,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .WithRuleId(VacancyRuleSet.EmployerName);
 
             RuleFor(x => x.EmployerLocation)
+                .NotNull()
+                    .WithMessage("You must specify an employer location")
+                    .WithErrorCode("98")
                 .SetValidator(new AddressValidator((long)VacancyRuleSet.EmployerAddress))
                 .RunCondition(VacancyRuleSet.EmployerAddress)
                 .WithRuleId(VacancyRuleSet.EmployerAddress);
@@ -178,112 +181,142 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
         private void ValidateTrainingProgramme()
         {
-            RuleFor(x => x.Programme.Id)
+            RuleFor(x => x.Programme)
                 .NotEmpty()
                     .WithMessage("Select apprenticeship training")
                     .WithErrorCode("25")
                 .WithRuleId(VacancyRuleSet.TrainingProgramme)
                 .RunCondition(VacancyRuleSet.TrainingProgramme);
+
+            When(x => x.Programme != null, () =>
+            {
+                RuleFor(x => x.Programme.Id)
+                    .NotEmpty()
+                    .WithMessage("Select apprenticeship training")
+                    .WithErrorCode("25")
+                    .WithRuleId(VacancyRuleSet.TrainingProgramme)
+                    .RunCondition(VacancyRuleSet.TrainingProgramme);
+            });
         }
 
         private void ValidateDuration()
         {
-            RuleFor(x => x.Wage.DurationUnit)
-                .NotEmpty()
+            When(x => x.Wage != null, () =>
+            {
+                RuleFor(x => x.Wage.DurationUnit)
+                    .NotEmpty()
                     .WithMessage("Enter the expected duaration")
                     .WithErrorCode("34")
-                .IsInEnum()
+                    .IsInEnum()
                     .WithMessage("Enter the expected duaration")
                     .WithErrorCode("34")
-                .RunCondition(VacancyRuleSet.Duration)
-                .WithRuleId(VacancyRuleSet.Duration);
+                    .RunCondition(VacancyRuleSet.Duration)
+                    .WithRuleId(VacancyRuleSet.Duration);
 
-            RuleFor(x => x.Wage.Duration)
-                .Cascade(CascadeMode.StopOnFirstFailure)
-                .NotEmpty()
+                RuleFor(x => x.Wage.Duration)
+                    .Cascade(CascadeMode.StopOnFirstFailure)
+                    .NotEmpty()
                     .WithMessage("Enter the expected duaration")
                     .WithErrorCode("34")
-                .GreaterThan(0)
+                    .GreaterThan(0)
                     .WithMessage("Enter the expected duaration")
                     .WithErrorCode("34")
-                .Must((vacancy, value) => 
-                {
-                    if (vacancy.Wage.DurationUnit == DurationUnit.Month && value < 12)
+                    .Must((vacancy, value) =>
                     {
-                        return false;
-                    }
+                        if (vacancy.Wage.DurationUnit == DurationUnit.Month && value < 12)
+                        {
+                            return false;
+                        }
 
-                    return true;
-                })
+                        return true;
+                    })
                     .WithMessage("The expected duration must be at least 12 months (52 weeks)")
                     .WithErrorCode("36")
-                .RunCondition(VacancyRuleSet.Duration)
-                .WithRuleId(VacancyRuleSet.Duration);
+                    .RunCondition(VacancyRuleSet.Duration)
+                    .WithRuleId(VacancyRuleSet.Duration);
+            });
+            
         }
 
         private void ValidateWorkingWeek()
         {
-            RuleFor(x => x.Wage.WorkingWeekDescription)
-                .Cascade(CascadeMode.StopOnFirstFailure)
-                .NotEmpty()
-                    .WithMessage("Enter the working week")
-                    .WithErrorCode("37")
-                .ValidFreeTextCharacters()
-                    .WithMessage("The working week contains some invalid characters")
-                    .WithErrorCode("38")
-                .MaximumLength(250)
-                    .WithMessage("The working week must not be more than {MaxLength} characters")
-                    .WithErrorCode("39")
-                .RunCondition(VacancyRuleSet.WorkingWeekDescription)
-                .WithRuleId(VacancyRuleSet.WorkingWeekDescription);
+            When(x => x.Wage != null, () =>
+            {
+                RuleFor(x => x.Wage.WorkingWeekDescription)
+                    .Cascade(CascadeMode.StopOnFirstFailure)
+                    .NotEmpty()
+                        .WithMessage("Enter the working week")
+                        .WithErrorCode("37")
+                    .ValidFreeTextCharacters()
+                        .WithMessage("The working week contains some invalid characters")
+                        .WithErrorCode("38")
+                    .MaximumLength(250)
+                        .WithMessage("The working week must not be more than {MaxLength} characters")
+                        .WithErrorCode("39")
+                    .RunCondition(VacancyRuleSet.WorkingWeekDescription)
+                    .WithRuleId(VacancyRuleSet.WorkingWeekDescription);
+            });
         }
 
         private void ValidateWeeklyHours()
         {
-            RuleFor(x => x.Wage.WeeklyHours)
-                .NotEmpty()
-                    .WithMessage("Enter the hours per week")
-                    .WithErrorCode("40")
-                .GreaterThanOrEqualTo(16)
-                    .WithMessage("The total hours a week must be at least {ComparisonValue}")
-                    .WithErrorCode("42")
-                .LessThanOrEqualTo(48)
-                    .WithMessage("The paid hours a week must not be more than {ComparisonValue}")
-                    .WithErrorCode("43")
-                .RunCondition(VacancyRuleSet.WeeklyHours)
-                .WithRuleId(VacancyRuleSet.WeeklyHours);
+            When(x => x.Wage != null, () =>
+            {
+                RuleFor(x => x.Wage.WeeklyHours)
+                    .NotEmpty()
+                        .WithMessage("Enter the hours per week")
+                        .WithErrorCode("40")
+                    .GreaterThanOrEqualTo(16)
+                        .WithMessage("The total hours a week must be at least {ComparisonValue}")
+                        .WithErrorCode("42")
+                    .LessThanOrEqualTo(48)
+                        .WithMessage("The paid hours a week must not be more than {ComparisonValue}")
+                        .WithErrorCode("43")
+                    .RunCondition(VacancyRuleSet.WeeklyHours)
+                    .WithRuleId(VacancyRuleSet.WeeklyHours);
+            });
         }
 
         private void ValidateWage()
         {
-            RuleFor(x => x.Wage.WageType)
-                .NotEmpty()
-                    .WithMessage("Select a wage")
-                    .WithErrorCode("46")
-                .IsInEnum()
+            RuleFor(x => x.Wage)
+                .NotNull()
                     .WithMessage("Select a wage")
                     .WithErrorCode("46")
                 .RunCondition(VacancyRuleSet.Wage)
                 .WithRuleId(VacancyRuleSet.Wage);
 
-            RuleFor(x => x.Wage.WageAdditionalInformation)
-                .MaximumLength(241)
-                    .WithMessage("Additional salary information must not be more than {MaxLength} characters")
-                    .WithErrorCode("44")
-                .ValidFreeTextCharacters()
-                    .WithMessage("Additional salary information contains some invalid characters")
-                    .WithErrorCode("45")
-                .RunCondition(VacancyRuleSet.Wage)
-                .WithRuleId(VacancyRuleSet.Wage);
-
-            When(x => x.Wage != null && x.Wage.WageType == WageType.Unspecified, () =>
+            When(x => x.Wage != null, () =>
             {
-                RuleFor(x => x.Wage.WageAdditionalInformation)
+                RuleFor(x => x.Wage.WageType)
                     .NotEmpty()
-                        .WithMessage("Enter a reason why you need to use Unspecified")
-                        .WithErrorCode("50")
+                        .WithMessage("Select a wage")
+                        .WithErrorCode("46")
+                    .IsInEnum()
+                        .WithMessage("Select a wage")
+                        .WithErrorCode("46")
                     .RunCondition(VacancyRuleSet.Wage)
                     .WithRuleId(VacancyRuleSet.Wage);
+
+                RuleFor(x => x.Wage.WageAdditionalInformation)
+                    .MaximumLength(241)
+                        .WithMessage("Additional salary information must not be more than {MaxLength} characters")
+                        .WithErrorCode("44")
+                    .ValidFreeTextCharacters()
+                        .WithMessage("Additional salary information contains some invalid characters")
+                        .WithErrorCode("45")
+                    .RunCondition(VacancyRuleSet.Wage)
+                    .WithRuleId(VacancyRuleSet.Wage);
+
+                When(x => x.Wage.WageType == WageType.Unspecified, () =>
+                {
+                    RuleFor(x => x.Wage.WageAdditionalInformation)
+                        .NotEmpty()
+                        .WithMessage("Enter a reason why you need to use Unspecified")
+                        .WithErrorCode("50")
+                        .RunCondition(VacancyRuleSet.Wage)
+                        .WithRuleId(VacancyRuleSet.Wage);
+                });
             });
         }
 
@@ -481,6 +514,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         private void ValidateTrainingProvider()
         {
             RuleFor(x => x.TrainingProvider)
+                .NotNull()
+                    .WithMessage("You must enter a training provider")
+                    .WithErrorCode("101")
                 .SetValidator(new TrainingProviderValidator((long)VacancyRuleSet.TrainingProvider))
                 .RunCondition(VacancyRuleSet.TrainingProvider)
                 .WithRuleId(VacancyRuleSet.TrainingProvider);

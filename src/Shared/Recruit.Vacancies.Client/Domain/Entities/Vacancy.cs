@@ -28,6 +28,9 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
 
         public DateTime? SubmittedDate { get; set; }
 
+        public string SubmittedBy { get; set; }
+        public string SubmittedByEmail { get; set; }
+
         public bool IsDeleted { get; set; }
         public DateTime? DeletedDate { get; set; }
 

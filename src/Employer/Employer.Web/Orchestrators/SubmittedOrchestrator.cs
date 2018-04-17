@@ -27,7 +27,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             var vm = new IndexViewModel
             {
                 Title = vacancy.Title,
-                VacancyReference = "12345678"
+                VacancyReference = vacancy.VacancyReference?.ToString()
             };
 
             return vm;
