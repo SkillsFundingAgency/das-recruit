@@ -1,5 +1,4 @@
-﻿using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using SFA.DAS.EAS.Account.Api.Types;
+﻿using SFA.DAS.EAS.Account.Api.Types;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

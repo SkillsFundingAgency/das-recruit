@@ -10,7 +10,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
         private readonly string _collectionName;
         private readonly MongoDbConnectionDetails _config;
         
-        public MongoDbCollectionBase(string dbName, string collectionName, IOptions<MongoDbConnectionDetails> config)
+        protected MongoDbCollectionBase(string dbName, string collectionName, IOptions<MongoDbConnectionDetails> config)
         {
             _dbName = dbName;
             _collectionName = collectionName;

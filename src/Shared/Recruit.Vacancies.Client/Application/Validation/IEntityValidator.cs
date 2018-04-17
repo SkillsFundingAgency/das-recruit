@@ -1,6 +1,6 @@
 namespace Esfa.Recruit.Vacancies.Client.Application.Validation
 {
-    public interface IEntityValidator<T, TRules>
+    public interface IEntityValidator<in T, in TRules>
     {
         void ValidateAndThrow(T entity, TRules rules);
 

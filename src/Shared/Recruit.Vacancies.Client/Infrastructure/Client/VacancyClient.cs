@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Services.Models;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
@@ -17,7 +16,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Dashbo
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Models;
-using Microsoft.Extensions.Options;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
@@ -31,7 +29,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly IEntityValidator<Vacancy, VacancyRuleSet> _validator;
         private readonly IApprenticeshipProgrammeProvider _apprenticeshipProgrammesProvider;
         private readonly IEmployerAccountService _employerAccountService;
-        private readonly QualificationsConfiguration _qualificationsConfiguration;
 
         public VacancyClient(
             IVacancyRepository repository, 
@@ -40,7 +37,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             IMessaging messaging, 
             ITimeProvider timeProvider, 
             IEntityValidator<Vacancy, VacancyRuleSet> validator, 
-            IOptions<QualificationsConfiguration> qualificationsConfiguration,
             IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider,
             IEmployerAccountService employerAccountService)
         {
@@ -52,7 +48,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _validator = validator;
             _apprenticeshipProgrammesProvider = apprenticeshipProgrammesProvider;
             _employerAccountService = employerAccountService;
-            _qualificationsConfiguration = qualificationsConfiguration.Value;
         }
 
         public Task UpdateVacancyAsync(Vacancy vacancy)

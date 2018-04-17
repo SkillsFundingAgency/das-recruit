@@ -28,25 +28,25 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
 
         public async Task Handle(VacancyCreatedEvent notification, CancellationToken cancellationToken)
         {
-            _logger.LogInformation($"Handling {notification.GetType().Name} for accountId: {{employerAccountId}}", notification?.EmployerAccountId);
+            _logger.LogInformation($"Handling {notification?.GetType().Name} for accountId: {{employerAccountId}}", notification?.EmployerAccountId);
             await ReBuildDashboard(notification.EmployerAccountId);
         }
 
         public async Task Handle(VacancyUpdatedEvent notification, CancellationToken cancellationToken)
         {
-            _logger.LogInformation($"Handling {notification.GetType().Name} for accountId: {{employerAccountId}}", notification?.EmployerAccountId);
+            _logger.LogInformation($"Handling {notification?.GetType().Name} for accountId: {{employerAccountId}}", notification?.EmployerAccountId);
             await ReBuildDashboard(notification.EmployerAccountId);
         }
 
         public async Task Handle(VacancySubmittedEvent notification, CancellationToken cancellationToken)
         {
-            _logger.LogInformation($"Handling {notification.GetType().Name} for accountId: {{employerAccountId}}", notification?.EmployerAccountId);
+            _logger.LogInformation($"Handling {notification?.GetType().Name} for accountId: {{employerAccountId}}", notification?.EmployerAccountId);
             await ReBuildDashboard(notification.EmployerAccountId);
         }
 
         public async Task Handle(VacancyDeletedEvent notification, CancellationToken cancellationToken)
         {
-            _logger.LogInformation($"Handling {notification.GetType().Name} for accountId: {{employerAccountId}}", notification?.EmployerAccountId);
+            _logger.LogInformation($"Handling {notification?.GetType().Name} for accountId: {{employerAccountId}}", notification?.EmployerAccountId);
             await ReBuildDashboard(notification.EmployerAccountId);
         }
 
@@ -54,7 +54,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
         {
             var vacancySummaries = await _repository.GetVacanciesByEmployerAccountAsync<VacancySummary>(employerAccountId);
 
-            var activeVacancySummaries = vacancySummaries.Where(v => v.IsDeleted == false);
+            var activeVacancySummaries = vacancySummaries.Where(v => v.IsDeleted == false).ToList();
 
             await _queryStoreWriter.UpdateDashboardAsync(employerAccountId, activeVacancySummaries.OrderBy(v => v.CreatedDate));
 
