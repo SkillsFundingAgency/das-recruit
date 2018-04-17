@@ -1,8 +1,8 @@
 ﻿@model Esfa.Recruit.Employer.Web.ViewModels.VacancyDescriptionViewModel
 <div class="grid-row">
     <div class="column-two-thirds">
-        <h1 class="heading-large">@Model.Title</h1>
-        <h1 class="heading-large">Add training provider</h1>
+        <h1 class="heading-xlarge small-bottom-margin">@Model.Title</h1>
+        <hr>
         @Html.Partial("_ValidationSummary", new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames })
         <form asp-route="@RouteNames.VacancyDescription_Index_Post">
             <div esfa-validation-marker-for="VacancyDescription" class="form-group">
