@@ -34,7 +34,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             if (!m.ConfirmDeletion.Value)
             {
-                return RedirectToRoute(RouteNames.Dashboard_Index_Get);
+                return RedirectToRoute(RouteNames.Vacancy_Preview_Get);
             }
 
             var result = await _orchestrator.TryDeleteVacancyAsync(m);
