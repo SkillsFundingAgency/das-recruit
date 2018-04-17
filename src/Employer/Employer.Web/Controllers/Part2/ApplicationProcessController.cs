@@ -5,6 +5,7 @@ using Esfa.Recruit.Employer.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.Extensions;
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part2
 {
@@ -28,7 +29,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
         [HttpPost("application-process", Name = RouteNames.ApplicationProcess_Post)]
         public async Task<IActionResult> ApplicationProcess(ApplicationProcessEditModel m)
         {            
-            var response = await _orchestrator.PostApplicationProcessEditModelAsync(m);
+            var response = await _orchestrator.PostApplicationProcessEditModelAsync(m, User.ToVacancyUser());
 
             if (!response.Success)
             {

@@ -50,8 +50,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _employerAccountService = employerAccountService;
         }
 
-        public Task UpdateVacancyAsync(Vacancy vacancy)
+        public Task UpdateVacancyAsync(Vacancy vacancy, VacancyUser user)
         {
+            vacancy.LastUpdatedDate = _timeProvider.Now;
+            vacancy.LastUpdatedByUser = user;
+            
             var command = new UpdateVacancyCommand
             {
                 Vacancy = vacancy
@@ -65,18 +68,24 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _repository.GetVacancyAsync(id);
         }
 
-        public async Task<Guid> CreateVacancyAsync(string title, string employerAccountId, string user)
+        public async Task<Guid> CreateVacancyAsync(SourceOrigin origin, string title, string employerAccountId, VacancyUser user)
         {
+            var now = _timeProvider.Now;
+
             var command = new CreateVacancyCommand
             {
                 Vacancy = new Vacancy
                 {
                     Id = Guid.NewGuid(),
+                    SourceOrigin = origin,
+                    SourceType = SourceType.New,
                     Title = title,
                     EmployerAccountId = employerAccountId,
                     Status = VacancyStatus.Draft,
-                    CreatedDate = _timeProvider.Now,
-                    CreatedBy = user,
+                    CreatedDate = now,
+                    CreatedByUser = user,
+                    LastUpdatedDate = now,
+                    LastUpdatedByUser = user,
                     IsDeleted = false
                 }
             };
@@ -86,7 +95,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return command.Vacancy.Id;
         }
 
-        public async Task<bool> SubmitVacancyAsync(Guid id, string userName, string userEmail)
+        public async Task<bool> SubmitVacancyAsync(Guid id, VacancyUser user)
         {
             var vacancy = await GetVacancyAsync(id);
 
@@ -95,10 +104,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 return false;
             }
 
+            var now = _timeProvider.Now;
+
             vacancy.Status = VacancyStatus.Submitted;
-            vacancy.SubmittedDate = _timeProvider.Now;
-            vacancy.SubmittedBy = userName;
-            vacancy.SubmittedByEmail = userEmail;
+            vacancy.SubmittedDate = now;
+            vacancy.SubmittedByUser = user;
+            vacancy.LastUpdatedDate = now;
+            vacancy.LastUpdatedByUser = user;
             
             var command = new SubmitVacancyCommand
             {
@@ -110,7 +122,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return true;
         }
 
-        public async Task<bool> DeleteVacancyAsync(Guid id)
+        public async Task<bool> DeleteVacancyAsync(Guid id, VacancyUser user)
         {
             var vacancy = await GetVacancyAsync(id);
             
@@ -119,8 +131,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 return false;
             }
 
+            var now = _timeProvider.Now;
+
             vacancy.IsDeleted = true;
-            vacancy.DeletedDate = _timeProvider.Now;
+            vacancy.DeletedDate = now;
+            vacancy.DeletedByUser = user;
+            vacancy.LastUpdatedDate = now;
+            vacancy.LastUpdatedByUser = user;
 
             var command = new DeleteVacancyCommand
             {

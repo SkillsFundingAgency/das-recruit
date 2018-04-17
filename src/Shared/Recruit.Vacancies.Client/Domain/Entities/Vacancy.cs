@@ -5,25 +5,31 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
 {
     public class Vacancy
     {
-        public Guid Id { get; set; }
-        public long? VacancyReference { get; set; }
-        public VacancyStatus Status { get; set; }
+        public Guid Id { get; internal set; }
+        public string EmployerAccountId { get; internal set; }
+        public long? VacancyReference { get; internal set; }
+        public VacancyStatus Status { get; internal set; }
+        public SourceOrigin SourceOrigin { get; internal set; }
+        public SourceType SourceType { get; internal set; }
+        public long? SourceVacancyReference { get; internal set; }
+
+        public DateTime? CreatedDate { get; internal set; }
+        public VacancyUser CreatedByUser { get; internal set; }
+
+        public DateTime? SubmittedDate { get; internal set; }
+        public VacancyUser SubmittedByUser { get; internal set; }
         
-        public DateTime? CreatedDate { get; set; }
-        public string CreatedBy { get; internal set; }
-
-        public DateTime? SubmittedDate { get; set; }
-        public string SubmittedBy { get; set; }
-        public string SubmittedByEmail { get; set; }
-
-        public bool IsDeleted { get; set; }
-        public DateTime? DeletedDate { get; set; }
+        public DateTime? LastUpdatedDate { get; internal set; }
+        public VacancyUser LastUpdatedByUser { get; internal set; }
+        
+        public bool IsDeleted { get; internal set; }
+        public DateTime? DeletedDate { get; internal set; }
+        public VacancyUser DeletedByUser { get; internal set; }
         
         public string ApplicationInstructions { get; set; }
         public string ApplicationUrl { get; set; }
         public DateTime? ClosingDate { get; set; }
         public string Description { get; set; }
-        public string EmployerAccountId { get; internal set; }
         public string EmployerContactEmail { get; set; }
         public string EmployerContactName { get; set; }
         public string EmployerContactPhone { get; set; }

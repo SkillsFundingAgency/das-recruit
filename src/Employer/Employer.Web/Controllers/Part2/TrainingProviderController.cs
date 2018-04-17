@@ -3,6 +3,7 @@ using Esfa.Recruit.Employer.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 
@@ -66,7 +67,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
                 return await ProviderNotFound(vm);
             }
 
-            var response = await _orchestrator.PostConfirmEditModelAsync(m);
+            var response = await _orchestrator.PostConfirmEditModelAsync(m, User.ToVacancyUser());
 
             if (!response.Success)
             {

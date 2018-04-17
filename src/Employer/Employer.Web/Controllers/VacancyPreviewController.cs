@@ -35,7 +35,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         [HttpPost("preview", Name = RouteNames.Preview_Submit_Post)]
         public async Task<IActionResult> Submit(SubmitEditModel m)
         {
-            var response = await _orchestrator.TrySubmitVacancyAsync(m, User.GetDisplayName(), User.GetEmailAddress());
+            var response = await _orchestrator.TrySubmitVacancyAsync(m, User.ToVacancyUser());
 
             if (!response.Success)
             {

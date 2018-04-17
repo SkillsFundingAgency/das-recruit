@@ -12,10 +12,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
     public interface IEmployerVacancyClient
     {
         Task<Vacancy> GetVacancyAsync(Guid id);
-        Task<Guid> CreateVacancyAsync(string title, string employerAccountId, string user);
-        Task UpdateVacancyAsync(Vacancy vacancy);
-        Task<bool> SubmitVacancyAsync(Guid id, string user, string userEmail);
-        Task<bool> DeleteVacancyAsync(Guid id);
+        Task<Guid> CreateVacancyAsync(SourceOrigin origin, string title, string employerAccountId, VacancyUser user);
+        Task UpdateVacancyAsync(Vacancy vacancy, VacancyUser user);
+        Task<bool> SubmitVacancyAsync(Guid id, VacancyUser user);
+        Task<bool> DeleteVacancyAsync(Guid id, VacancyUser user);
         Task<Dashboard> GetDashboardAsync(string employerAccountId);
         Task RecordEmployerAccountSignInAsync(string employerAccountId);
         Task<EditVacancyInfo> GetEditVacancyInfo(string employerAccountId);

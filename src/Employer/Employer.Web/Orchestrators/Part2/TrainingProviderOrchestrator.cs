@@ -68,7 +68,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             };
         }
 
-        public Task<OrchestratorResponse> PostConfirmEditModelAsync(ConfirmTrainingProviderEditModel m)
+        public Task<OrchestratorResponse> PostConfirmEditModelAsync(ConfirmTrainingProviderEditModel m, VacancyUser user)
         {
             var vacancyTask = _client.GetVacancyAsync(m.VacancyId);
             var providerTask = _providerService.GetProviderAsync(long.Parse(m.Ukprn));
@@ -83,7 +83,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             return ValidateAndExecute(
                 vacancy,
                 v => _client.Validate(v, ValidationRules),
-                v => _client.UpdateVacancyAsync(vacancy)
+                v => _client.UpdateVacancyAsync(vacancy, user)
             );
         }
 

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
+using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Employer.Web.ViewModels.DeleteVacancy;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
@@ -37,7 +39,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 return RedirectToRoute(RouteNames.Vacancy_Preview_Get);
             }
 
-            var result = await _orchestrator.TryDeleteVacancyAsync(m);
+            var result = await _orchestrator.TryDeleteVacancyAsync(m, User.ToVacancyUser());
 
             if (!result)
             {
