@@ -15,13 +15,13 @@ namespace Esfa.Recruit.Vacancies.Jobs
 {
     class Program
     {
-        private static string _environmentName;
-        private static bool _isDevelopment;
+        private static readonly string EnvironmentName;
+        private static readonly bool IsDevelopment;
 
         static Program()
         {
-            _environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-            _isDevelopment = _environmentName?.Equals("Development", StringComparison.CurrentCultureIgnoreCase) ?? false;
+            EnvironmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            IsDevelopment = EnvironmentName?.Equals("Development", StringComparison.CurrentCultureIgnoreCase) ?? false;
         }
 
         static void Main(string[] args)
@@ -53,10 +53,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
             }
             catch (Exception ex)
             {
-                if (logger != null)
-                {
-                    logger.LogCritical(ex, "The Job has met with a horrible end!!");
-                }
+                logger?.LogCritical(ex, "The Job has met with a horrible end!!");
 
                 throw;
             }
@@ -90,7 +87,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
             jobConfiguration.UseTimers();
             jobConfiguration.LoggerFactory = loggerFactory;
             
-            if (_isDevelopment)
+            if (IsDevelopment)
             {
                 jobConfiguration.DashboardConnectionString = null; // Reduces errors in output.
                 jobConfiguration.UseDevelopmentSettings();
@@ -106,10 +103,10 @@ namespace Esfa.Recruit.Vacancies.Jobs
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appSettings.json", optional: false)
-                .AddJsonFile($"appSettings.{_environmentName}.json", true)
+                .AddJsonFile($"appSettings.{EnvironmentName}.json", true)
                 .AddEnvironmentVariables();
 
-            if (_isDevelopment)
+            if (IsDevelopment)
             {
                 builder.AddUserSecrets<Program>();
             }

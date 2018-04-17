@@ -11,7 +11,7 @@ namespace System.Collections.Generic
     {
         public static IEnumerable<ApprenticeshipProgramme> FilterAndMapToApprenticeshipProgrammes(this IEnumerable<StandardSummary> standards, ITimeProvider timeProvider)
         {
-            if (standards == null || standards.Count() == 0)
+            if (standards == null)
                 return Enumerable.Empty<ApprenticeshipProgramme>();
 
             return standards.Select(x => new ApprenticeshipProgramme
@@ -29,7 +29,7 @@ namespace System.Collections.Generic
 
         public static IEnumerable<ApprenticeshipProgramme> FilterAndMapToApprenticeshipProgrammes(this IEnumerable<FrameworkSummary> frameworks, ITimeProvider timeProvider)
         {
-            if (frameworks == null || frameworks.Count() == 0)
+            if (frameworks == null)
                 return Enumerable.Empty<ApprenticeshipProgramme>();
 
             return frameworks.Select(x => new ApprenticeshipProgramme
