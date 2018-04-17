@@ -5,11 +5,10 @@
 <div class="grid-row">
     <div class="column-full">
 
-        <h1 class="heading-xlarge small-bottom-margin">Desired skills or personal qualities</h1>
+        <h1 class="heading-xlarge small-bottom-margin">@Model.Title</h1>
+        <hr>
 
         @Html.Partial("_ValidationSummary", new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames })
-
-        <hr>
 
         <form asp-route="@RouteNames.Skills_Post" id="skillsForm">
             <fieldset>
@@ -52,16 +51,7 @@
             </div>
 
             <div id="custom-skill-container" style="@(Model.CustomSkills.Any() == false ? "display:none" : null)">
-                <h3 class="heading-small">Desired skills or personal qualities</h3>
                 <table>
-                    <thead>
-                        <tr>
-                            <th>
-                                <span class="heading-span">Skill or personal quality</span>
-                            </th>
-                            <th></th>
-                        </tr>
-                    </thead>
                     <tbody id="custom-skill-summary">
                         @foreach (var customSkill in Model.CustomSkills)
                     {
