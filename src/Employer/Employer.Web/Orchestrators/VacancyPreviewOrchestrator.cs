@@ -43,10 +43,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public async Task<VacancyPreviewViewModel> GetVacancyPreviewViewModelAsync(Guid vacancyId)
         {
-            var vacancy = await _client.GetVacancyForEditAsync(vacancyId);
+            var vacancy = await _client.GetVacancyAsync(vacancyId);
 
             if (!vacancy.CanEdit)
-                throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
+                throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
 
             var vm = new VacancyPreviewViewModel();
             _vacancyDisplayMapper.MapFromVacancy(vm, vacancy);
@@ -60,10 +60,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         
         public async Task<OrchestratorResponse<bool>> TrySubmitVacancyAsync(SubmitEditModel m, string user, string userEmail)
         {
-            var vacancy = await _client.GetVacancyForEditAsync(m.VacancyId);
+            var vacancy = await _client.GetVacancyAsync(m.VacancyId);
 
             if (!vacancy.CanEdit)
-                throw new ConcurrencyException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
+                throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
 
             return await ValidateAndExecute(
                 vacancy,
