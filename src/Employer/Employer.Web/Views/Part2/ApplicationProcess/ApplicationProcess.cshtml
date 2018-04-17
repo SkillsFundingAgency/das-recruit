@@ -1,8 +1,8 @@
 ﻿@model Esfa.Recruit.Employer.Web.ViewModels.ApplicationProcessViewModel
 <div class="grid-row">
     <div class="column-two-thirds">
-        <h1 class="heading-large">@Model.Title</h1>
-        <h1 class="heading-large">Application process</h1>
+        <h1 class="heading-xlarge small-bottom-margin">@Model.Title</h1>
+        <hr>
         @Html.Partial("_ValidationSummary", new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames })
         <form asp-route="@RouteNames.ApplicationProcess_Post" novalidate>
             <div esfa-validation-marker-for="ApplicationUrl" class="form-group">
@@ -15,24 +15,18 @@
                 <span esfa-validation-message-for="ApplicationInstructions" class="error-message"></span>
                 <textarea asp-for="ApplicationInstructions" class="form-control form-control-3-4 textarea-expandable" rows="1" cols="20" maxlength="500"></textarea>
             </div>
-            <div class="form-group">
-                <p>
-                    <span class="form-label-bold">Contact details (optional)</span>
-                    <span class="form-hint">Fill in this section if you would like candidates to be able to contact you about this vacancy</span>
-                </p>
-            </div>
             <div esfa-validation-marker-for="EmployerContactName" class="form-group">
-                <label asp-for="EmployerContactName" class="form-label-bold">Contact name</label>
+                <label asp-for="EmployerContactName" class="form-label-bold">Contact name (optional)</label>
                 <span esfa-validation-message-for="EmployerContactName" class="error-message"></span>
                 <input asp-for="EmployerContactName" class="form-control" maxlength="100" />
             </div>
             <div esfa-validation-marker-for="EmployerContactEmail" class="form-group">
-                <label asp-for="EmployerContactEmail" class="form-label-bold">Email</label>
+                <label asp-for="EmployerContactEmail" class="form-label-bold">Email (optional)</label>
                 <span esfa-validation-message-for="EmployerContactEmail" class="error-message"></span>
                 <input asp-for="EmployerContactEmail" class="form-control" maxlength="100" />
             </div>
             <div esfa-validation-marker-for="EmployerContactPhone" class="form-group">
-                <label asp-for="EmployerContactPhone" class="form-label-bold">Contact number</label>
+                <label asp-for="EmployerContactPhone" class="form-label-bold">Contact number (optional)</label>
                 <span esfa-validation-message-for="EmployerContactPhone" class="error-message"></span>
                 <input asp-for="EmployerContactPhone" class="form-control" type="tel" maxlength="16" />
             </div>
