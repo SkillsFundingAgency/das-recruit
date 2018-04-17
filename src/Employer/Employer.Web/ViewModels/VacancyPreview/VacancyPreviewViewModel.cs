@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Esfa.Recruit.Employer.Web.ViewModels
+namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
 {
     public class VacancyPreviewViewModel : DisplayVacancyViewModel
     {
