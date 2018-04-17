@@ -81,13 +81,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         public async Task<OrchestratorResponse> PostTrainingEditModelAsync(TrainingEditModel m)
         {
-            var vacancyTask = _client.GetVacancyAsync(m.VacancyId);
-            var programmesTask = _client.GetActiveApprenticeshipProgrammesAsync();
+            var vacancy = await _client.GetVacancyAsync(m.VacancyId);
 
-            await Task.WhenAll(vacancyTask, programmesTask);
-
-            var vacancy = vacancyTask.Result;
-            
             if (!vacancy.CanEdit)
             {
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
@@ -95,7 +90,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
             vacancy.ClosingDate = m.ClosingDate.AsDateTimeUk()?.ToUniversalTime();
             vacancy.StartDate = m.StartDate.AsDateTimeUk()?.ToUniversalTime();
-            
             vacancy.ProgrammeId = m.SelectedProgrammeId;
             
             return await ValidateAndExecute(
