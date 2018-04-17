@@ -9,6 +9,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.ViewModels;
+using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
@@ -151,7 +152,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             foreach (var property in validProperties)
             {
                 var propertyName = property.GetPropertyName();
-                if (ModelState.Keys.Where(k => k == propertyName).Any(k => ModelState[k].Errors.Any()))
+                if (ModelState.Keys.Any(k => k == propertyName && ModelState[k].Errors.Any()))
                 {
                     return VacancyPreviewSectionState.Invalid;
                 }
