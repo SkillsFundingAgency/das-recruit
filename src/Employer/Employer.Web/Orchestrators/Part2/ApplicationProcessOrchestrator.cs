@@ -13,12 +13,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.ApplicationUrl | VacancyRuleSet.ApplicationInstructions | VacancyRuleSet.EmployerContactDetails;
         private readonly IEmployerVacancyClient _client;
-        private readonly ILogger<ApplicationProcessOrchestrator> _logger;
 
         public ApplicationProcessOrchestrator(IEmployerVacancyClient client, ILogger<ApplicationProcessOrchestrator> logger) : base(logger)
         {
             _client = client;
-            _logger = logger;
         }
 
         public async Task<ApplicationProcessViewModel> GetApplicationProcessViewModelAsync(Guid vacancyId)

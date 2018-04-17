@@ -68,10 +68,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
             var match = await _client.GetApprenticeshipProgrammeAsync(programmeId);
 
-            if (match ==  null)
-                return null;
-
-            return match.Level.GetDisplayName();
+            return match?.Level.GetDisplayName();
         }
     }
 }

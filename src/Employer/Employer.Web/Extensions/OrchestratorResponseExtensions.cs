@@ -6,7 +6,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
     {
         public static void AddErrorsToModelState(this OrchestratorResponse response, ModelStateDictionary modelState)
         {
-            if (!response.Success && response?.Errors?.Errors !=  null)
+            if (!response.Success && response.Errors?.Errors !=  null)
             {
                 foreach (var error in response.Errors.Errors)
                 {

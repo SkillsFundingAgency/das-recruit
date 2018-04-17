@@ -14,11 +14,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.Title;
         private readonly IEmployerVacancyClient _client;
-        private readonly ILogger<TitleOrchestrator> _logger;
 
         public TitleOrchestrator(IEmployerVacancyClient client, ILogger<TitleOrchestrator> logger) : base(logger)
         {
-            _logger = logger;
             _client = client;
         }
 

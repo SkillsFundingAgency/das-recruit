@@ -17,11 +17,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.EmployerName | VacancyRuleSet.EmployerAddress;
         private readonly IEmployerVacancyClient _client;
-        private readonly ILogger<EmployerOrchestrator> _logger;
 
         public EmployerOrchestrator(IEmployerVacancyClient client, ILogger<EmployerOrchestrator> logger) : base(logger)
         {
-            _logger = logger;
             _client = client;
         }
 
@@ -30,7 +28,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var getEmployerDataTask = _client.GetEditVacancyInfo(vrm.EmployerAccountId);
             var getVacancyTask = _client.GetVacancyAsync(vrm.VacancyId);
 
-            await Task.WhenAll(new Task[] { getEmployerDataTask, getVacancyTask });
+            await Task.WhenAll(getEmployerDataTask, getVacancyTask);
 
             var employerData = getEmployerDataTask.Result;
             var vacancy = getVacancyTask.Result;

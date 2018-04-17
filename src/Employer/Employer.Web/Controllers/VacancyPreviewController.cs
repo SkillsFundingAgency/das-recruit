@@ -8,7 +8,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Extensions;
-using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
@@ -107,7 +106,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 if (propertyValue is IEnumerable listProperty)
                 {
                     bool any = false;
-                    foreach (var item in listProperty)
+                    foreach (var unused in listProperty)
                     {
                         any = true;
                         break;

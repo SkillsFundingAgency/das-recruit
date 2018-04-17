@@ -6,7 +6,7 @@ namespace Esfa.Recruit.Employer.Web.Extensions
 {
     public static class WageExtensions
     {
-        const int WeeksPerYear = 52;
+        private const int WeeksPerYear = 52;
 
         public static string ToText(this Wage wage, Func<WageRange> getNationalMinimumWageRange, Func<decimal> getApprenticeNationalMinimumWage)
         {

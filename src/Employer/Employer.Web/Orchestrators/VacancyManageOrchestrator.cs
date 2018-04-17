@@ -12,12 +12,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
     public class VacancyManageOrchestrator
     {
-        private readonly IEmployerVacancyClient _client;
         private readonly DisplayVacancyViewModelMapper _vacancyDisplayMapper;
 
-        public VacancyManageOrchestrator(IEmployerVacancyClient client, DisplayVacancyViewModelMapper vacancyDisplayMapper)
+        public VacancyManageOrchestrator(DisplayVacancyViewModelMapper vacancyDisplayMapper)
         {
-            _client = client;
             _vacancyDisplayMapper = vacancyDisplayMapper;
         }
 

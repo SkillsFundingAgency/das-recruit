@@ -5,8 +5,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
     public class OrchestratorResponse
     {
-        public static OrchestratorResponse SuccessfulResponse = new OrchestratorResponse(true);
-
         public OrchestratorResponse(bool isSuccessful)
         {
             Success = isSuccessful;

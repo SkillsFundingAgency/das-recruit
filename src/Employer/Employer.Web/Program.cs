@@ -25,7 +25,7 @@ namespace Esfa.Recruit.Employer.Web
             }
         }
 
-        public static IWebHost BuildWebHost(string[] args) =>
+        private static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseKestrel(c => c.AddServerHeader = false)
                 .UseStartup<Startup>()

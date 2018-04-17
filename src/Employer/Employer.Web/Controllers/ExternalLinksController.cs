@@ -2,22 +2,19 @@
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Net;
 
-namespace Employer.Web.Controllers
+namespace Esfa.Recruit.Employer.Web.Controllers
 {
     [Route(RoutePrefixPaths.AccountRoutePath)]
     public class ExternalLinksController : Controller
     {
-        ILogger<ExternalLinksController> _logger;
         private readonly AuthenticationConfiguration _authConfig;
         private readonly ManageApprenticeshipsLinkHelper _linkHelper;
 
-        public ExternalLinksController(ILogger<ExternalLinksController> logger, IOptions<AuthenticationConfiguration> authConfig, ManageApprenticeshipsLinkHelper linkHelper)
+        public ExternalLinksController(IOptions<AuthenticationConfiguration> authConfig, ManageApprenticeshipsLinkHelper linkHelper)
         {
-            _logger = logger;
             _authConfig = authConfig.Value;
             _linkHelper = linkHelper;
         }

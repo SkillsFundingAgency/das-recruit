@@ -1,5 +1,4 @@
-﻿using Esfa.Recruit.Employer.Web.Services;
-using Esfa.Recruit.Employer.Web.ViewModels;
+﻿using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Employer.Web.ViewModels.Preview;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -9,34 +8,22 @@ using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
-using Esfa.Recruit.Vacancies.Client.Application.Services.MinimumWage;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
     public class VacancyPreviewOrchestrator : EntityValidatingOrchestrator<Vacancy, VacancyPreviewViewModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.All;
-        private const int MapImageWidth = 465;
-        private const int MapImageHeight = 256;
         private readonly IEmployerVacancyClient _client;
-        private readonly IGeocodeImageService _mapService;
-        private readonly IGetMinimumWages _wageService;
-        private readonly QualificationsConfiguration _qualificationsConfiguration;
         private readonly DisplayVacancyViewModelMapper _vacancyDisplayMapper;
 
-        public VacancyPreviewOrchestrator(IEmployerVacancyClient client, IGeocodeImageService mapService, IGetMinimumWages wageService, 
-            IOptions<QualificationsConfiguration> qualificationsConfigOptions, ILogger<VacancyPreviewOrchestrator> logger,
+        public VacancyPreviewOrchestrator(IEmployerVacancyClient client, ILogger<VacancyPreviewOrchestrator> logger,
             DisplayVacancyViewModelMapper vacancyDisplayMapper) : base(logger)
         {
             _client = client;
-            _mapService = mapService;
-            _wageService = wageService;
-            _qualificationsConfiguration = qualificationsConfigOptions.Value;
             _vacancyDisplayMapper = vacancyDisplayMapper;
         }
 
