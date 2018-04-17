@@ -8,5 +8,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public string EmployerName { get; set; }
 
         public IList<VacancySummary> Vacancies { get; set; }
+        public string WarningMessage { get; internal set; }
+        public bool HasWarning => !string.IsNullOrEmpty(WarningMessage);
     }
 }

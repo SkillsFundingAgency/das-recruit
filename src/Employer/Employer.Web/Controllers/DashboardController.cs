@@ -26,7 +26,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             
             if (TempData.ContainsKey(TempDataKeys.DashboardErrorMessage))
             {
-                ModelState.AddModelError(string.Empty, TempData[TempDataKeys.DashboardErrorMessage].ToString());
+                vm.WarningMessage = TempData[TempDataKeys.DashboardErrorMessage].ToString();
             }
 
             return View(vm);
