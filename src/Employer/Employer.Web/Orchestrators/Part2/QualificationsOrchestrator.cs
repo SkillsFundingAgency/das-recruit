@@ -39,6 +39,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
             var vm = new QualificationsViewModel
             {
+                Title = vacancy.Title,
                 QualificationTypes = _qualificationsConfig.QualificationTypes,
                 Qualifications = vacancy.Qualifications.SortQualifications(_qualificationsConfig.QualificationTypes).ToViewModel().ToList()
             };
