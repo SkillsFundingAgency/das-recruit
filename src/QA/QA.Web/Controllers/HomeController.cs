@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Esfa.Recruit.Qa.Web.Models;
 using Microsoft.AspNetCore.Mvc;
-using NLogTest.Models;
 
-namespace NLogTest.Controllers
+namespace Esfa.Recruit.Qa.Web.Controllers
 {
     public class HomeController : Controller
     {

@@ -9,7 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using NLog.Web;
 
-namespace NLogTest
+namespace Esfa.Recruit.Qa.Web
 {
     public class Program
     {

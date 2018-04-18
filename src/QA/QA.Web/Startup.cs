@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace NLogTest
+namespace Esfa.Recruit.Qa.Web
 {
     public class Startup
     {

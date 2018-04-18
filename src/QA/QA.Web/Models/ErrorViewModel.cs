@@ -1,6 +1,6 @@
 using System;
 
-namespace NLogTest.Models
+namespace Esfa.Recruit.Qa.Web.Models
 {
     public class ErrorViewModel
     {
