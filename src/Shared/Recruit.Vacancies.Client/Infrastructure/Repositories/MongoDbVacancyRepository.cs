@@ -16,7 +16,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         private const string Collection = "vacancies";
 
         private const string EmployerAccountId = "employerAccountId";
-        private const string IsDeleted = "isDeleted";
 
         public MongoDbVacancyRepository(IOptions<MongoDbConnectionDetails> details) 
             : base(Database, Collection, details)
