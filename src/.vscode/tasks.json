@@ -2,7 +2,7 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build-web",
+            "label": "build-emp-web",
             "group":{
                 "kind": "build",
                 "isDefault": true
@@ -12,6 +12,21 @@
             "args": [
                 "build",
                 "${workspaceFolder}/Employer/Employer.sln",
+                "/p:GenerateFullPaths=true"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "build-qa-web",
+            "group":{
+                "kind": "build",
+                "isDefault": true
+            },
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/QA/QA.sln",
                 "/p:GenerateFullPaths=true"
             ],
             "problemMatcher": "$msCompile"
@@ -41,7 +56,7 @@
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "web-unit-tests",
+            "label": "emp-web-unit-tests",
             "group": {
                 "kind": "test",
                 "isDefault": true
@@ -51,6 +66,20 @@
             "args": [
                 "test",
                 "${workspaceFolder}/Employer/UnitTests/UnitTests.csproj",
+                "/p:GenerateFullPaths=true"
+            ]
+        },
+        {
+            "label": "qa-web-unit-tests",
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "test",
+                "${workspaceFolder}/QA/UnitTests/UnitTests.csproj",
                 "/p:GenerateFullPaths=true"
             ]
         },
