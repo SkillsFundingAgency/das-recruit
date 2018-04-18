@@ -11,7 +11,7 @@ using Esfa.Recruit.Employer.Web.Configuration.Routing;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
-    [AllowAnonymous]    
+    [AllowAnonymous]
     public class ErrorController : Controller
     {
         private readonly ILogger<ErrorController> _logger;
@@ -24,29 +24,52 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         [Route("error/{id?}")]
         public IActionResult Error(int id)
         {
+            switch (id)
+            {
+                case 403:
+                    return AccessDenied();
+                default:
+                    break;
+            }
+
             return View(new ErrorViewModel { StatusCode = id, RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
         [Route("error/handle")]
         public IActionResult ErrorHandler()
         {
+            if (HttpContext.Items.TryGetValue(ContextItemKeys.EmployerIdentifier, out var accountId))
+            {
+                ViewBag.EmployerAccountId = accountId;
+            }
+
             var exceptionFeature = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
 
             if (exceptionFeature != null)
             {
-                var accountId = (string)HttpContext.Items[ContextItemKeys.EmployerIdentifier];
                 string routeWhereExceptionOccurred = exceptionFeature.Path;
                 var exception = exceptionFeature.Error;
 
                 if (exception is InvalidStateException)
                 {
-                    _logger.LogError(exception, $"Exception on path: {routeWhereExceptionOccurred}");                    
+                    _logger.LogError(exception, $"Exception on path: {routeWhereExceptionOccurred}");
                     TempData.Add(TempDataKeys.DashboardErrorMessage, exception.Message);
                     return RedirectToRoute(RouteNames.Dashboard_Index_Get, new { EmployerAccountId = accountId });
+                }
+
+                if (exception is AuthorisationException)
+                {
+                    _logger.LogError(exception, exception.Message);
+                    return AccessDenied();
                 }
             }
 
             return View(ViewNames.ErrorView, new ErrorViewModel { StatusCode = (int)HttpStatusCode.InternalServerError, RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        private IActionResult AccessDenied()
+        {
+            return View(ViewNames.AccessDenied);
         }
     }
 }

@@ -1,15 +1,35 @@
 ﻿@using Esfa.Recruit.Employer.Web.Configuration;
 @using Esfa.Recruit.Employer.Web.Configuration.Routing;
 @inject ManageApprenticeshipsLinkHelper ExternalLinks
+@functions
+{
+public bool ParseHideNavFromViewBag()
+{
+    if (ViewBag.ShowNav is bool)
+    {
+        return ViewBag.ShowNav;
+    }
+
+    return true;
+}
+
+public string GetTitle()
+{
+    const string defaultTitle = "Recruit an Apprentice";
+    if (ViewBag.Title != null)
+        return $"{defaultTitle} | {ViewBag.Title}";
+
+    return defaultTitle;
+}
+}
 <!DOCTYPE html>
 <!--[if lt IE 9]><html class="lte-ie8" lang="en"><![endif]-->
 <!--[if gt IE 8]><!-->
 <html lang="en">
 <!--<![endif]-->
-
 <head>
     <meta charset="utf-8" />
-    <title>Recruit an Apprentice</title>
+    <title>@GetTitle()</title>
 
     <!-- TEMPLATE STYLES - START -->
     <!--[if gt IE 8]><!-->
@@ -111,7 +131,7 @@
 
     @if (Context.User.Identity.IsAuthenticated)
     {
-        <div class="header-organisation" role="navigation">
+        <div asp-condition="ParseHideNavFromViewBag()" class="header-organisation" role="navigation">
             <nav class="header-inner">
                 <ul role="menubar" id="global-nav-links">
                     <li><a asp-route="@RouteNames.Dashboard_AccountsTeams" class="" role="menuitem">Home</a></li>
