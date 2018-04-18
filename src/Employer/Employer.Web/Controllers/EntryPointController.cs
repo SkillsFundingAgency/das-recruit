@@ -9,12 +9,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers
     [Route(RoutePrefixPaths.AccountRoutePath)]
     public class EntryPointController : Controller
     {
-        private readonly ILogger<EntryPointController> _logger;
         private readonly EntryPointOrchestrator _orchestrator;
 
-        public EntryPointController(ILogger<EntryPointController> logger, EntryPointOrchestrator orchestrator)
+        public EntryPointController(EntryPointOrchestrator orchestrator)
         {
-            _logger = logger;
             _orchestrator = orchestrator;
         }
 

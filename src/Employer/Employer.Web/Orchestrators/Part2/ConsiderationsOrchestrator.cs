@@ -12,13 +12,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
     public class ConsiderationsOrchestrator : EntityValidatingOrchestrator<Vacancy, ConsiderationsEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.ThingsToConsider;
-        private readonly IVacancyClient _client;
-        private readonly ILogger<ConsiderationsOrchestrator> _logger;
+        private readonly IEmployerVacancyClient _client;
 
-        public ConsiderationsOrchestrator(ILogger<ConsiderationsOrchestrator> logger, IVacancyClient client) : base(logger)
+        public ConsiderationsOrchestrator(ILogger<ConsiderationsOrchestrator> logger, IEmployerVacancyClient client) : base(logger)
         {
             _client = client;
-            _logger = logger;
         }
 
         public async Task<ConsiderationsViewModel> GetConsiderationsViewModelAsync(Guid vacancyId)

@@ -10,12 +10,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers
     [Route(RoutePrefixPaths.AccountRoutePath)]
     public class DashboardController : Controller
     {
-        private readonly ILogger<DashboardController> _logger;
         private readonly DashboardOrchestrator _orchestrator;
 
-        public DashboardController(ILogger<DashboardController> logger, DashboardOrchestrator orchestrator)
+        public DashboardController(DashboardOrchestrator orchestrator)
         {
-            _logger = logger;
             _orchestrator = orchestrator;
         }
 

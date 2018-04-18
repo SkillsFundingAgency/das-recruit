@@ -12,12 +12,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers
     public class LogoutController : Controller
     {
         private readonly ExternalLinksConfiguration _externalLinks;
-        private readonly ILogger<LogoutController> _logger;
 
-        public LogoutController(IOptions<ExternalLinksConfiguration> externalLinksOptions, ILogger<LogoutController> logger)
+        public LogoutController(IOptions<ExternalLinksConfiguration> externalLinksOptions)
         {
             _externalLinks = externalLinksOptions.Value;
-            _logger = logger;
         }
 
         [HttpGet, Route("logout", Name = RouteNames.Logout_Get)]

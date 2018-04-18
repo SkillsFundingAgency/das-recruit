@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Esfa.Recruit.Vacancies.Client.Application.QueryStore;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Domain.Projections;
 using Esfa.Recruit.Vacancies.Client.Domain.Services;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Dashboard;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Models;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 {
@@ -52,11 +51,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             return _queryStore.UpsertAsync<ApprenticeshipProgrammes>(programmesItem);
         }
 
-        public Task<ApprenticeshipProgrammes> GetApprenticeshipProgrammesAsync()
+        public async Task<ApprenticeshipProgrammes> GetApprenticeshipProgrammesAsync()
         {
             var key = QueryViewType.ApprenticeshipProgrammes.GetIdValue();
 
-            return _queryStore.GetAsync<ApprenticeshipProgrammes>(key);
+            var storeItem = await _queryStore.GetAsync<ApprenticeshipProgrammes>(key);
+
+            return storeItem;
         }
 
         public Task UpdateEmployerVacancyDataAsync(string employerAccountId, IEnumerable<LegalEntity> legalEntities)

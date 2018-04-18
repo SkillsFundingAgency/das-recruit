@@ -1,5 +1,4 @@
-﻿using Esfa.Recruit.Employer.Web.Services;
-using Esfa.Recruit.Employer.Web.ViewModels;
+﻿using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Employer.Web.ViewModels.Preview;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -9,34 +8,22 @@ using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
-using Esfa.Recruit.Vacancies.Client.Application.Services.MinimumWage;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
     public class VacancyPreviewOrchestrator : EntityValidatingOrchestrator<Vacancy, VacancyPreviewViewModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.All;
-        private const int MapImageWidth = 465;
-        private const int MapImageHeight = 256;
-        private readonly IVacancyClient _client;
-        private readonly IGeocodeImageService _mapService;
-        private readonly IGetMinimumWages _wageService;
-        private readonly QualificationsConfiguration _qualificationsConfiguration;
+        private readonly IEmployerVacancyClient _client;
         private readonly DisplayVacancyViewModelMapper _vacancyDisplayMapper;
 
-        public VacancyPreviewOrchestrator(IVacancyClient client, IGeocodeImageService mapService, IGetMinimumWages wageService, 
-            IOptions<QualificationsConfiguration> qualificationsConfigOptions, ILogger<VacancyPreviewOrchestrator> logger,
+        public VacancyPreviewOrchestrator(IEmployerVacancyClient client, ILogger<VacancyPreviewOrchestrator> logger,
             DisplayVacancyViewModelMapper vacancyDisplayMapper) : base(logger)
         {
             _client = client;
-            _mapService = mapService;
-            _wageService = wageService;
-            _qualificationsConfiguration = qualificationsConfigOptions.Value;
             _vacancyDisplayMapper = vacancyDisplayMapper;
         }
 
@@ -47,10 +34,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             if (!vacancy.CanEdit)
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
 
+
             var vm = new VacancyPreviewViewModel();
-            _vacancyDisplayMapper.MapFromVacancy(vm, vacancy);
+            await _vacancyDisplayMapper.MapFromVacancyAsync(vm, vacancy);
             
-            vm.Programme = vacancy.Programme != null;
+            vm.Programme = vacancy.ProgrammeId != null;
             vm.Wage = vacancy.Wage != null;
             vm.CanShowReference = vacancy.Status != VacancyStatus.Draft;
 
@@ -98,8 +86,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             mappings.Add(e => e.Wage.Duration, vm => vm.ExpectedDuration);
             mappings.Add(e => e.Wage.DurationUnit, vm => vm.ExpectedDuration);
             mappings.Add(e => e.StartDate, vm => vm.PossibleStartDate);
-            mappings.Add(e => e.Programme, vm => vm.Programme);
-            mappings.Add(e => e.Programme.Level, vm => vm.TrainingLevel);
+            mappings.Add(e => e.ProgrammeId, vm => vm.Programme);
             mappings.Add(e => e.NumberOfPositions, vm => vm.NumberOfPositions);
             mappings.Add(e => e.Description, vm => vm.VacancyDescription);
             mappings.Add(e => e.TrainingDescription, vm => vm.TrainingDescription);
@@ -125,8 +112,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             mappings.Add(e => e.ApplicationUrl, vm => vm.ApplicationUrl);
             mappings.Add(e => e.TrainingProvider, vm => vm.ProviderName);
             mappings.Add(e => e.TrainingProvider.Ukprn, vm => vm.ProviderName);
-            mappings.Add(e => e.Programme.TrainingType, vm => vm.TrainingType);
-            mappings.Add(e => e.Programme.Title, vm => vm.TrainingTitle);
 
             return mappings;
         }

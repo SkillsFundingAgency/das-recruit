@@ -12,18 +12,15 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
     public class AssignVacancyNumberCommandHandler: IRequestHandler<AssignVacancyNumberCommand>
     {
         private readonly IVacancyRepository _repository;
-        private readonly IMessaging _messaging;
         private readonly ILogger<AssignVacancyNumberCommandHandler> _logger;
         private readonly IGenerateVacancyNumbers _generator;
 
         public AssignVacancyNumberCommandHandler(
             IVacancyRepository repository, 
-            IMessaging messaging, 
             ILogger<AssignVacancyNumberCommandHandler> logger, 
             IGenerateVacancyNumbers generator)
         {
             _repository = repository;
-            _messaging = messaging;
             _logger = logger;
             _generator = generator;
         }

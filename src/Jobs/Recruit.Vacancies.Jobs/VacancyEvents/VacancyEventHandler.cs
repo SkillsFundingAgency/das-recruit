@@ -8,10 +8,10 @@ namespace Esfa.Recruit.Vacancies.Jobs.VacancyEvents
 {
     public class VacancyEventHandler
     {
-        private readonly IVacancyClient _client;
+        private readonly IJobsVacancyClient _client;
         private readonly ILogger<VacancyEventHandler> _logger;
 
-        public VacancyEventHandler(IVacancyClient client, ILogger<VacancyEventHandler> logger)
+        public VacancyEventHandler(IJobsVacancyClient client, ILogger<VacancyEventHandler> logger)
         {
             _client = client;
             _logger = logger;

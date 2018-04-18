@@ -10,7 +10,7 @@ namespace Esfa.Recruit.Employer.Web.Extensions
     public static class StringExtensions
     {
         private static readonly IFormatProvider _ukCulture = new CultureInfo("en-GB");
-        const int incodeLength = 3;
+        private const int incodeLength = 3;
         
         public static string AsPostcode(this string postcode)
         {

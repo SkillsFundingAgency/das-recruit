@@ -5,6 +5,7 @@ using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.SearchResultPreview;
 using Esfa.Recruit.Vacancies.Client.Application.Services.MinimumWage;
+using Esfa.Recruit.Vacancies.Client.Application.Services.Models;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -15,11 +16,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
     {
         private const int MapImageWidth = 190;
         private const int MapImageHeight = 125;
-        private readonly IVacancyClient _client;
+        private readonly IEmployerVacancyClient _client;
         private readonly IGeocodeImageService _mapService;
         private readonly IGetMinimumWages _wageService;
 
-        public SearchResultPreviewOrchestrator(IVacancyClient client, IGeocodeImageService mapService, IGetMinimumWages wageService)
+        public SearchResultPreviewOrchestrator(IEmployerVacancyClient client, IGeocodeImageService mapService, IGetMinimumWages wageService)
         {
             _client = client;
             _mapService = mapService;
@@ -42,7 +43,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 ShortDescription = vacancy.ShortDescription,
                 ClosingDate = vacancy.ClosingDate?.AsDisplayDate(),
                 StartDate = vacancy.StartDate?.AsDisplayDate(),
-                LevelName = vacancy.Programme?.LevelName,
+                LevelName = await GetLevelName(vacancy.ProgrammeId),
                 Title = vacancy.Title,
                 Wage = vacancy.Wage?.ToText(
                     () => _wageService.GetNationalMinimumWageRange(vacancy.StartDate.Value),
@@ -58,6 +59,16 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             }
             
             return vm;
+        }
+
+        private async Task<string> GetLevelName(string programmeId)
+        {
+            if (string.IsNullOrWhiteSpace(programmeId))
+                return null;
+
+            var match = await _client.GetApprenticeshipProgrammeAsync(programmeId);
+
+            return match?.Level.GetDisplayName();
         }
     }
 }

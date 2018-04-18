@@ -1,5 +1,5 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Application.Configuration;
-using Esfa.Recruit.Vacancies.Client.Application.QueryStore;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Services.MinimumWage;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
@@ -13,13 +13,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation
     public abstract class VacancyValidationTestsBase
     {
         protected readonly Mock<IGetMinimumWages> MockMinimumWageService;
-        protected readonly Mock<IQueryStoreReader> MockQueryStoreReader;
+        protected readonly Mock<IApprenticeshipProgrammeProvider> MockApprenticeshipProgrammeProvider;
         protected readonly Mock<IOptions<QualificationsConfiguration>> MockQualificationConfiguration;
 
         protected VacancyValidationTestsBase()
         {
             MockMinimumWageService = new Mock<IGetMinimumWages>();
-            MockQueryStoreReader = new Mock<IQueryStoreReader>();
+            MockApprenticeshipProgrammeProvider = new Mock<IApprenticeshipProgrammeProvider>();
             MockQualificationConfiguration = new Mock<IOptions<QualificationsConfiguration>>();
         }
 
@@ -28,7 +28,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation
             get
             {
                 var timeProvider = new CurrentUtcTimeProvider();
-                var fluentValidator = new FluentVacancyValidator(timeProvider, MockMinimumWageService.Object, MockQueryStoreReader.Object, MockQualificationConfiguration.Object);
+                var fluentValidator = new FluentVacancyValidator(timeProvider, MockMinimumWageService.Object, MockApprenticeshipProgrammeProvider.Object, MockQualificationConfiguration.Object);
                 return new EntityValidator<Vacancy, VacancyRuleSet>(fluentValidator);
             }
         }

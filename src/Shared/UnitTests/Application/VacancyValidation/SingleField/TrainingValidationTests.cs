@@ -12,14 +12,14 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         {
             var vacancy = new Vacancy
             {
-                Programme = null
+                ProgrammeId = null
             };
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProgramme);
 
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(1);
-            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Programme)}");
+            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.ProgrammeId)}");
             result.Errors[0].ErrorCode.Should().Be("25");
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.TrainingProgramme);
         }
@@ -29,14 +29,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         {
             var vacancy = new Vacancy
             {
-                Programme = new Programme
-                {
-                    Id = "11",
-                    Level = 2,
-                    LevelName = "Level",
-                    Title = "Test Standard",
-                    TrainingType = TrainingType.Standard
-                }
+                ProgrammeId = "11"
             };
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProgramme);
@@ -52,21 +45,14 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         {
             var vacancy = new Vacancy 
             {
-                Programme = new Programme
-                {
-                    Id = idValue,
-                    Level = 2,
-                    LevelName = "Level",
-                    Title = "Test Standard",
-                    TrainingType = TrainingType.Standard
-                }
+                ProgrammeId = idValue
             };
             
             var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProgramme);
 
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(1);
-            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Programme)}.{nameof(vacancy.Programme.Id)}");
+            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.ProgrammeId)}");
             result.Errors[0].ErrorCode.Should().Be("25");
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.TrainingProgramme);
         }

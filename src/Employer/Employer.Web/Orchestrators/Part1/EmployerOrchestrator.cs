@@ -1,16 +1,14 @@
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer;
-using Esfa.Recruit.Vacancies.Client.Application.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
-using Esfa.Recruit.Vacancies.Client.Domain;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
@@ -18,12 +16,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
     public class EmployerOrchestrator : EntityValidatingOrchestrator<Vacancy, EmployerEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.EmployerName | VacancyRuleSet.EmployerAddress;
-        private readonly IVacancyClient _client;
-        private readonly ILogger<EmployerOrchestrator> _logger;
+        private readonly IEmployerVacancyClient _client;
 
-        public EmployerOrchestrator(IVacancyClient client, ILogger<EmployerOrchestrator> logger) : base(logger)
+        public EmployerOrchestrator(IEmployerVacancyClient client, ILogger<EmployerOrchestrator> logger) : base(logger)
         {
-            _logger = logger;
             _client = client;
         }
 
@@ -32,7 +28,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var getEmployerDataTask = _client.GetEditVacancyInfo(vrm.EmployerAccountId);
             var getVacancyTask = _client.GetVacancyAsync(vrm.VacancyId);
 
-            await Task.WhenAll(new Task[] { getEmployerDataTask, getVacancyTask });
+            await Task.WhenAll(getEmployerDataTask, getVacancyTask);
 
             var employerData = getEmployerDataTask.Result;
             var vacancy = getVacancyTask.Result;
@@ -85,7 +81,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             }
 
             vacancy.EmployerName = m.SelectedOrganisationName?.Trim();
-            vacancy.EmployerLocation = new Address
+            vacancy.EmployerLocation = new Vacancies.Client.Domain.Entities.Address
             {
                 AddressLine1 = m.AddressLine1,
                 AddressLine2 = m.AddressLine2,

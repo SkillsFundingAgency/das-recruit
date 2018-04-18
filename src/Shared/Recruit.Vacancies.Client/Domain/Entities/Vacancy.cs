@@ -60,7 +60,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
 
         public DateTime? StartDate { get; set; }
 
-        public Programme Programme { get; set; }
+        public string ProgrammeId { get; set; }
 
         public Wage Wage { get; set; }
 

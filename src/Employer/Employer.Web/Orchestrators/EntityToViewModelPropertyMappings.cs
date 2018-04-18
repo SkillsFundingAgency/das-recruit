@@ -9,7 +9,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
     {
         public void Add(Expression<Func<TEntity, object>> source, Expression<Func<TViewModel, object>> destination)
         {
-            this.Add(new Tuple<Expression<Func<TEntity, object>>, Expression<Func<TViewModel, object>>>(source, destination));
+            Add(new Tuple<Expression<Func<TEntity, object>>, Expression<Func<TViewModel, object>>>(source, destination));
         }
     }
 }

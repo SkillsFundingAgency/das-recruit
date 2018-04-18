@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Application.Services.MinimumWage;
+using Esfa.Recruit.Vacancies.Client.Application.Services.Models;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Domain.Projections;
 using FluentValidation;
 using FluentValidation.Internal;
 using FluentValidation.Results;
@@ -47,11 +47,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
             });
         }
 
-        internal static IRuleBuilderInitial<Vacancy, Vacancy> TrainingMustBeActiveForStartDate(this IRuleBuilder<Vacancy, Vacancy> ruleBuilder, Lazy<IEnumerable<ApprenticeshipProgramme>> programmes)
+        internal static IRuleBuilderInitial<Vacancy, Vacancy> TrainingMustBeActiveForStartDate(this IRuleBuilder<Vacancy, Vacancy> ruleBuilder, Lazy<IEnumerable<IApprenticeshipProgramme>> programmes)
         {
             return ruleBuilder.Custom((vacancy, context) =>
             {
-                var matchingProgramme = programmes.Value.SingleOrDefault(x => x.Id.Equals(vacancy.Programme.Id, StringComparison.InvariantCultureIgnoreCase));
+                var matchingProgramme = programmes.Value.SingleOrDefault(x => x.Id.Equals(vacancy.ProgrammeId, StringComparison.InvariantCultureIgnoreCase));
 
                 if (matchingProgramme.EffectiveTo != null && matchingProgramme.EffectiveTo < vacancy.StartDate)
                 {

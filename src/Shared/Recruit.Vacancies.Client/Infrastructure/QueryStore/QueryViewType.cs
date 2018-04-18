@@ -3,7 +3,7 @@
     internal struct QueryViewType
     {
         public string TypeName { get; private set; }
-        private string _idFormatString;
+        private readonly string _idFormatString;
 
         private QueryViewType(string name, string formatString)
         {

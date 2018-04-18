@@ -12,24 +12,27 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
     public abstract class EntityValidatingOrchestrator<TEntity, TEditModel>
     {
-        private readonly EntityToViewModelPropertyMappings<TEntity, TEditModel> _mappings;
-        private readonly IDictionary<string, string> _mappingDictionary;
         private readonly ILogger _logger;
+        private EntityToViewModelPropertyMappings<TEntity, TEditModel> _mappings;
+        private IDictionary<string, string> _mappingDictionary;
 
-        public EntityValidatingOrchestrator(ILogger logger)
+        protected EntityValidatingOrchestrator(ILogger logger)
         {
             _logger = logger;
-            _mappings = DefineMappings();
-            
-            _mappingDictionary = BuildMappingDictionary();
         }
 
-        public IDictionary<string, string> PropertyMappingLookup => _mappingDictionary;
-
+        private void BuildMappings()
+        {
+            _mappings = DefineMappings();
+            _mappingDictionary = BuildMappingDictionary();
+        }
+        
         protected abstract EntityToViewModelPropertyMappings<TEntity, TEditModel> DefineMappings();
 
         protected async Task<OrchestratorResponse> ValidateAndExecute(TEntity entity, Func<TEntity, EntityValidationResult> validationFunc, Func<TEntity, Task> action)
         {
+            BuildMappings();
+            
             var validationResult = validationFunc.Invoke(entity);
 
             if (validationResult.HasErrors)
@@ -45,6 +48,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         protected async Task<OrchestratorResponse<T>>ValidateAndExecute<T>(TEntity entity, Func<TEntity, EntityValidationResult> validationFunc, Func<TEntity, Task<T>> action)
         {
+            BuildMappings();
+            
             var validationResult = validationFunc.Invoke(entity);
 
             if (validationResult.HasErrors)
@@ -81,7 +86,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 var entityProperty = item.Item1.GetPropertyName();
                 var viewModelProperty = item.Item2.GetPropertyName();
                 mappings.Add(entityProperty, viewModelProperty);
-            };
+            }
 
             return mappings;
         }

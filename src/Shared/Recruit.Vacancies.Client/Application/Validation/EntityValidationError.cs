@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace Esfa.Recruit.Vacancies.Client.Application.Validation
 {
     public class EntityValidationError

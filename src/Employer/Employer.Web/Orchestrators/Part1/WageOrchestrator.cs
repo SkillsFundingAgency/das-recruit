@@ -14,13 +14,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
     public class WageOrchestrator : EntityValidatingOrchestrator<Vacancy, WageEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.Duration | VacancyRuleSet.WorkingWeekDescription | VacancyRuleSet.WeeklyHours | VacancyRuleSet.Wage | VacancyRuleSet.MinimumWage;
-        private readonly IVacancyClient _client;
-        private readonly ILogger<WageOrchestrator> _logger;
+        private readonly IEmployerVacancyClient _client;
 
-        public WageOrchestrator(IVacancyClient client, ILogger<WageOrchestrator> logger) : base(logger)
+        public WageOrchestrator(IEmployerVacancyClient client, ILogger<WageOrchestrator> logger) : base(logger)
         {
             _client = client;
-            _logger = logger;
         }
 
         public async Task<WageViewModel> GetWageViewModelAsync(Guid vacancyId)

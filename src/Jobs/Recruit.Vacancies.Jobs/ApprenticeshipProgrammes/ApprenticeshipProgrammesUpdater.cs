@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Esfa.Recruit.Vacancies.Client.Domain.Projections;
 using Esfa.Recruit.Vacancies.Client.Domain.Services;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Models;
 using Microsoft.Extensions.Logging;
 using Polly;
 using SFA.DAS.Apprenticeships.Api.Client;
@@ -14,20 +14,20 @@ namespace Esfa.Recruit.Vacancies.Jobs.ApprenticeshipProgrammes
     public sealed class ApprenticeshipProgrammesUpdater
     {
         private readonly ILogger<ApprenticeshipProgrammesUpdater> _logger;
-        private readonly IVacancyClient _queryStoreClient;
+        private readonly IJobsVacancyClient _client;
         private readonly IStandardApiClient _standardsClient;
         private readonly IFrameworkApiClient _frameworksClient;
         private readonly ITimeProvider _timeProvider;
 
         public ApprenticeshipProgrammesUpdater(
             ILogger<ApprenticeshipProgrammesUpdater> logger, 
-            IVacancyClient queryStoreClient,
+            IJobsVacancyClient client,
             IStandardApiClient standardsClient,
             IFrameworkApiClient frameworksClient,
             ITimeProvider timeProvider)
         {
             _logger = logger;
-            _queryStoreClient = queryStoreClient;
+            _client = client;
             _standardsClient = standardsClient;
             _frameworksClient = frameworksClient;
             _timeProvider = timeProvider;
@@ -94,7 +94,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.ApprenticeshipProgrammes
 
         private async Task UpdateQueryStore(IEnumerable<ApprenticeshipProgramme> programmes)
         {
-            await _queryStoreClient.UpdateApprenticeshipProgrammesAsync(programmes);
+            await _client.UpdateApprenticeshipProgrammesAsync(programmes);
         }
         
         private Polly.Retry.RetryPolicy GetApiRetryPolicy()

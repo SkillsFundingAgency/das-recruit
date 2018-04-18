@@ -7,7 +7,6 @@ using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Employer.Web.ViewModels.Part2.Skills;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
-using Esfa.Recruit.Vacancies.Client.Domain;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -19,10 +18,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
     public class SkillsOrchestrator : EntityValidatingOrchestrator<Vacancy, SkillsEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.Skills;
-        private readonly IVacancyClient _client;
+        private readonly IEmployerVacancyClient _client;
         private readonly SkillsConfiguration _skillsConfig;
 
-        public SkillsOrchestrator(IVacancyClient client, IOptions<SkillsConfiguration> skillsConfigOptions, ILogger<SkillsOrchestrator> logger) : base(logger)
+        public SkillsOrchestrator(IEmployerVacancyClient client, IOptions<SkillsConfiguration> skillsConfigOptions, ILogger<SkillsOrchestrator> logger) : base(logger)
         {
             _client = client;
             _skillsConfig = skillsConfigOptions.Value;

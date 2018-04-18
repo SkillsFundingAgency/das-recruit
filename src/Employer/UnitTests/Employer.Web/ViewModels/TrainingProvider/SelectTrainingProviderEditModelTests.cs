@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Xunit;
 
-namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels
+namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.TrainingProvider
 {
     public class SelectTrainingProviderEditModelTests
     {

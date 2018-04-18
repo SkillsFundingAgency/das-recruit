@@ -12,9 +12,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
     public class VacancyDescriptionOrchestrator : EntityValidatingOrchestrator<Vacancy, VacancyDescriptionEditModel>
     {
         private const VacancyRuleSet ValdationRules = VacancyRuleSet.Description | VacancyRuleSet.TrainingDescription | VacancyRuleSet.OutcomeDescription;
-        private readonly IVacancyClient _client;
+        private readonly IEmployerVacancyClient _client;
 
-        public VacancyDescriptionOrchestrator(IVacancyClient client, ILogger<VacancyDescriptionOrchestrator> logger) : base(logger)
+        public VacancyDescriptionOrchestrator(IEmployerVacancyClient client, ILogger<VacancyDescriptionOrchestrator> logger) : base(logger)
         {
             _client = client;
         }

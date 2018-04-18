@@ -7,7 +7,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 {
     public class ContentPolicyReportController : Controller
     {
-        ILogger<ContentPolicyReportController> _logger;
+        private readonly ILogger<ContentPolicyReportController> _logger;
 
         public ContentPolicyReportController(ILogger<ContentPolicyReportController> logger)
         {
