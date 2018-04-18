@@ -1,15 +1,10 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc;
+﻿using System.ComponentModel.DataAnnotations;
+using Esfa.Recruit.Employer.Web.RouteModel;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.DeleteVacancy
 {
-    public class DeleteEditModel
+    public class DeleteEditModel : VacancyRouteModel
     {
-        [Required]
-        [FromRoute]
-        public Guid VacancyId { get; set; }
-
         [Required(ErrorMessage = ValidationMessages.DeleteVacancyConfirmationMessages.SelectionRequired)]
         public bool? ConfirmDeletion { get; set; }
     }

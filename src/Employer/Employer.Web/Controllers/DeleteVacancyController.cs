@@ -1,8 +1,8 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators;
+using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Employer.Web.ViewModels.DeleteVacancy;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -21,17 +21,19 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         }
 
         [HttpGet("delete", Name = RouteNames.DeleteVacancy_Delete_Get)]
-        public Task<IActionResult> Delete(Guid vacancyId)
+        public Task<IActionResult> Delete(VacancyRouteModel vrm)
         {
-            return GetDeleteVacancyConfirmationView(vacancyId);
+            return GetDeleteVacancyConfirmationView(vrm);
         }
 
         [HttpPost("delete", Name = RouteNames.DeleteVacancy_Delete_Post)]
         public async Task<IActionResult> Delete(DeleteEditModel m)
         {
+            var vrm = new VacancyRouteModel { VacancyId = m.VacancyId, EmployerAccountId = m.EmployerAccountId };
+
             if (!ModelState.IsValid)
             {
-                return await GetDeleteVacancyConfirmationView(m.VacancyId);
+                return await GetDeleteVacancyConfirmationView(vrm);
             }
 
             if (!m.ConfirmDeletion.Value)
@@ -44,15 +46,15 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             if (!result)
             {
                 ModelState.AddModelError(string.Empty, ErrorMessages.VacancyAlreadyDeleted);
-                return await GetDeleteVacancyConfirmationView(m.VacancyId);
+                return await GetDeleteVacancyConfirmationView(vrm);
             }
             
             return RedirectToRoute(RouteNames.Dashboard_Index_Get);
         }
 
-        private async Task<IActionResult> GetDeleteVacancyConfirmationView(Guid vacancyId)
+        private async Task<IActionResult> GetDeleteVacancyConfirmationView(VacancyRouteModel vrm)
         {
-            var vm = await _orchestrator.GetDeleteViewModelAsync(vacancyId);
+            var vm = await _orchestrator.GetDeleteViewModelAsync(vrm);
             return View(vm);
         }
     }
