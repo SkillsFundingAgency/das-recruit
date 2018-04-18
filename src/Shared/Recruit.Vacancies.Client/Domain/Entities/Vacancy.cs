@@ -5,38 +5,50 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
 {
     public class Vacancy
     {
-        public Guid Id { get; set; }
-        public long? VacancyReference { get; set; }
-        
-        public string Title { get; set; }
-        
+        public Guid Id { get; internal set; }
         public string EmployerAccountId { get; internal set; }
+        public long? VacancyReference { get; internal set; }
+        public VacancyStatus Status { get; internal set; }
+        public SourceOrigin SourceOrigin { get; internal set; }
+        public SourceType SourceType { get; internal set; }
+        public long? SourceVacancyReference { get; internal set; }
 
+        public DateTime? CreatedDate { get; internal set; }
+        public VacancyUser CreatedByUser { get; internal set; }
+
+        public DateTime? SubmittedDate { get; internal set; }
+        public VacancyUser SubmittedByUser { get; internal set; }
+        
+        public DateTime? LastUpdatedDate { get; internal set; }
+        public VacancyUser LastUpdatedByUser { get; internal set; }
+        
+        public bool IsDeleted { get; internal set; }
+        public DateTime? DeletedDate { get; internal set; }
+        public VacancyUser DeletedByUser { get; internal set; }
+        
         public string ApplicationInstructions { get; set; }
         public string ApplicationUrl { get; set; }
-        
-        public DateTime? CreatedDate { get; set; }
-        public string CreatedBy { get; internal set; }
+        public DateTime? ClosingDate { get; set; }
         public string Description { get; set; }
-        public string EmployerContactName { get; set; }
         public string EmployerContactEmail { get; set; }
+        public string EmployerContactName { get; set; }
         public string EmployerContactPhone { get; set; }
         public string EmployerDescription { get; set; }
+        public Address EmployerLocation { get; set; }
+        public string EmployerName { get; set; }
         public string EmployerWebsiteUrl { get; set; }
-        public VacancyStatus Status { get; set; }
-
-        public DateTime? SubmittedDate { get; set; }
-
-        public string SubmittedBy { get; set; }
-        public string SubmittedByEmail { get; set; }
-
-        public bool IsDeleted { get; set; }
-        public DateTime? DeletedDate { get; set; }
-
-        /// <summary>
-        /// We can only submit draft vacancies that have not been deleted
-        /// </summary>
-        public bool CanSubmit => Status == VacancyStatus.Draft && IsDeleted == false;
+        public int? NumberOfPositions { get; set; }
+        public string OutcomeDescription { get; set; }
+        public string ProgrammeId { get; set; }
+        public List<Qualification> Qualifications { get; set; }
+        public string ShortDescription { get; set; }
+        public List<string> Skills { get; set; }
+        public DateTime? StartDate { get; set; }
+        public string ThingsToConsider { get; set; }
+        public string Title { get; set; }
+        public string TrainingDescription { get; set; }
+        public TrainingProvider TrainingProvider { get; set; }
+        public Wage Wage { get; set; }
 
         /// <summary>
         /// We can only delete draft vacancies that have not been deleted
@@ -47,28 +59,10 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         /// We can only edit draft vacancies that have not been deleted
         /// </summary>
         public bool CanEdit => Status == VacancyStatus.Draft && IsDeleted == false;
-        
-        public string EmployerName { get; set; }
-        public string OutcomeDescription { get; set; }
-        public Address EmployerLocation { get; set; }
 
-        public int? NumberOfPositions { get; set; }
-
-        public string ShortDescription { get; set; }
-        public string ThingsToConsider { get; set; }
-        public DateTime? ClosingDate { get; set; }
-
-        public DateTime? StartDate { get; set; }
-
-        public string ProgrammeId { get; set; }
-
-        public Wage Wage { get; set; }
-
-        public string TrainingDescription { get; set; }
-        
-        public List<string> Skills { get; set; }
-
-        public List<Qualification> Qualifications { get; set; }
-        public TrainingProvider TrainingProvider { get; set; }
+        /// <summary>
+        /// We can only submit draft vacancies that have not been deleted
+        /// </summary>
+        public bool CanSubmit => Status == VacancyStatus.Draft && IsDeleted == false;
     }
 }

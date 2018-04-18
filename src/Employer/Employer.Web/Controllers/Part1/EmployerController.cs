@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
+using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.RouteModel;
@@ -28,7 +29,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         [HttpPost("employer", Name = RouteNames.Employer_Post)]
         public async Task<IActionResult> Employer(EmployerEditModel m)
         {
-            var response = await _orchestrator.PostEmployerEditModelAsync(m);
+            var response = await _orchestrator.PostEmployerEditModelAsync(m, User.ToVacancyUser());
 
             if (!response.Success)
             {

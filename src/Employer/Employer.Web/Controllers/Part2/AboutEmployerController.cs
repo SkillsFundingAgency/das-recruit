@@ -3,6 +3,7 @@ using Esfa.Recruit.Employer.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 
@@ -28,7 +29,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
         [HttpPost("about-employer", Name =  RouteNames.AboutEmployer_Post)]
         public async Task<IActionResult> AboutEmployer(AboutEmployerEditModel m)
         {
-            var response = await _orchestrator.PostAboutEmployerEditModelAsync(m);
+            var response = await _orchestrator.PostAboutEmployerEditModelAsync(m, User.ToVacancyUser());
 
             if (!response.Success)
             {

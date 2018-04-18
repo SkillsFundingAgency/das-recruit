@@ -10,7 +10,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
             {
                 new CamelCaseElementNameConvention(),
                 new EnumRepresentationConvention(MongoDB.Bson.BsonType.String),
-                new IgnoreExtraElementsConvention(true)
+                new IgnoreExtraElementsConvention(true),
+                new IgnoreIfNullConvention(true)
         };
             ConventionRegistry.Register("recruit conventions", pack, t => true);
         }

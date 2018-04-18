@@ -46,7 +46,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             return vm;
         }
 
-        public async Task<OrchestratorResponse> PostAboutEmployerEditModelAsync(AboutEmployerEditModel m)
+        public async Task<OrchestratorResponse> PostAboutEmployerEditModelAsync(AboutEmployerEditModel m, VacancyUser user)
         {
             var vacancy = await _client.GetVacancyAsync(m.VacancyId);
 
@@ -59,7 +59,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             return await ValidateAndExecute(
                 vacancy,
                 v => _client.Validate(v, ValidationRules),
-                v => _client.UpdateVacancyAsync(vacancy)
+                v => _client.UpdateVacancyAsync(vacancy, user)
             );
         }
 

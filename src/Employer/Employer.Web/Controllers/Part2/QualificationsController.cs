@@ -35,7 +35,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
         [HttpPost("qualifications", Name = RouteNames.Qualifications_Post)]
         public async Task<IActionResult> Qualifications(QualificationsEditModel m)
         {
-            var response = await _orchestrator.PostQualificationsEditModelAsync(m);
+            var response = await _orchestrator.PostQualificationsEditModelAsync(m, User.ToVacancyUser());
 
             if (!response.Success)
             {

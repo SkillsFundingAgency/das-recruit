@@ -64,7 +64,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             vm.CustomSkills = GetCustomSkills(skills).ToList();
         }
 
-        public async Task<OrchestratorResponse> PostSkillsEditModelAsync(SkillsEditModel m)
+        public async Task<OrchestratorResponse> PostSkillsEditModelAsync(SkillsEditModel m, VacancyUser user)
         {
             var vacancy = await _client.GetVacancyAsync(m.VacancyId);
 
@@ -93,7 +93,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                     SyncErrorsAndModel(result.Errors, m);
                     return result;
                 },
-                v => validateOnly ? Task.CompletedTask : _client.UpdateVacancyAsync(v));
+                v => validateOnly ? Task.CompletedTask : _client.UpdateVacancyAsync(v, user));
         }
         
         protected override EntityToViewModelPropertyMappings<Vacancy, SkillsEditModel> DefineMappings()

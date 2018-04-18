@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
+using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
 using Esfa.Recruit.Employer.Web.ViewModels.Part2.Skills;
@@ -32,7 +33,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
         [HttpPost("skills", Name = RouteNames.Skills_Post)]
         public async Task<IActionResult> Skills(SkillsEditModel m)
         {
-            var response = await _orchestrator.PostSkillsEditModelAsync(m);
+            var response = await _orchestrator.PostSkillsEditModelAsync(m, User.ToVacancyUser());
 
             if (!response.Success)
             {
