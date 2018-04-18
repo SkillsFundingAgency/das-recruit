@@ -4,9 +4,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using QA.Web.Models;
+using NLogTest.Models;
 
-namespace QA.Web.Controllers
+namespace NLogTest.Controllers
 {
     public class HomeController : Controller
     {

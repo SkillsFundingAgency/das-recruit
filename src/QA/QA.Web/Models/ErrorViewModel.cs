@@ -1,6 +1,6 @@
 using System;
 
-namespace QA.Web.Models
+namespace NLogTest.Models
 {
     public class ErrorViewModel
     {
