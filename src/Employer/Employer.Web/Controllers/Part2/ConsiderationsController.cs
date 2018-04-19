@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
 using Esfa.Recruit.Employer.Web.Orchestrators;
+using Esfa.Recruit.Employer.Web.RouteModel;
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part2
 {
@@ -20,9 +21,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
         }
 
         [HttpGet("considerations", Name = RouteNames.Considerations_Get)]
-        public async Task<IActionResult> Considerations(Guid vacancyId)
+        public async Task<IActionResult> Considerations(VacancyRouteModel vrm)
         {
-            var vm = await _orchestrator.GetConsiderationsViewModelAsync(vacancyId);
+            var vm = await _orchestrator.GetConsiderationsViewModelAsync(vrm);
             return View(vm);
         }
 

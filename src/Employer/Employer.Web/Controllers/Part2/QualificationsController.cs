@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
+using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part2.Qualifications;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,9 +22,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
         }
 
         [HttpGet("qualifications", Name = RouteNames.Qualifications_Get)]
-        public async Task<IActionResult> Qualifications(Guid vacancyId)
+        public async Task<IActionResult> Qualifications(VacancyRouteModel vrm)
         {
-            var vm = await _orchestrator.GetQualificationsViewModelAsync(vacancyId);
+            var vm = await _orchestrator.GetQualificationsViewModelAsync(vrm);
 
             TryUpdateQualificationsFromTempData(vm);
             

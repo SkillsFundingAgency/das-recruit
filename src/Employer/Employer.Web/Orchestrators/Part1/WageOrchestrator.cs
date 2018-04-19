@@ -1,6 +1,6 @@
-using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Extensions;
+using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Wage;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
-    public class WageOrchestrator : EntityValidatingOrchestrator<Vacancy, WageEditModel>
+    public class WageOrchestrator : VacancyValidatingOrchestrator<WageEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.Duration | VacancyRuleSet.WorkingWeekDescription | VacancyRuleSet.WeeklyHours | VacancyRuleSet.Wage | VacancyRuleSet.MinimumWage;
         private readonly IEmployerVacancyClient _client;
@@ -21,14 +21,14 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             _client = client;
         }
 
-        public async Task<WageViewModel> GetWageViewModelAsync(Guid vacancyId)
+        public async Task<WageViewModel> GetWageViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await _client.GetVacancyAsync(vacancyId);
+            var vacancy = await _client.GetVacancyAsync(vrm.VacancyId);
+
+            CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
 
             if (!vacancy.CanEdit)
-            {
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
-            }
 
             var vm = new WageViewModel
             {
@@ -46,7 +46,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         public async Task<WageViewModel> GetWageViewModelAsync(WageEditModel m)
         {
-            var vm = await GetWageViewModelAsync(m.VacancyId);
+            var vm = await GetWageViewModelAsync(m);
 
             vm.Duration = m.Duration;
             vm.DurationUnit = m.DurationUnit;
@@ -63,10 +63,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         {
             var vacancy = await _client.GetVacancyAsync(m.VacancyId);
 
+            CheckAuthorisedAccess(vacancy, m.EmployerAccountId);
+
             if (!vacancy.CanEdit)
-            {
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
-            }
 
             vacancy.Wage = new Wage
             {

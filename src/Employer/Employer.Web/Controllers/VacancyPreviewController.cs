@@ -9,6 +9,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
+using Esfa.Recruit.Employer.Web.RouteModel;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
@@ -23,10 +24,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         }
 
         [HttpGet("preview", Name = RouteNames.Vacancy_Preview_Get)]
-        public async Task<IActionResult> VacancyPreview(Guid vacancyId)
+        public async Task<IActionResult> VacancyPreview(VacancyRouteModel vrm)
         {
-            var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(vacancyId);
-            
+            var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(vrm);
+
             SetViewSectionStates(viewModel);
 
             return View(viewModel);
@@ -41,7 +42,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             {
                 response.AddErrorsToModelState(ModelState);
             }
-            
+
             if (ModelState.IsValid && response.Data)
             {
                 return RedirectToRoute(RouteNames.Submitted_Index_Get);
@@ -52,10 +53,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 ModelState.AddModelError(string.Empty, "Vacancy has already been submitted");
             }
 
-            var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(m.VacancyId);
+            var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(m);
 
             SetSubmitSectionStates(viewModel);
-            
+
             return View("VacancyPreview", viewModel);
         }
 

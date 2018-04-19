@@ -1,15 +1,11 @@
-﻿using Esfa.Recruit.Employer.Web.ViewModels.Validations;
-using Microsoft.AspNetCore.Mvc;
-using System;
+﻿using Esfa.Recruit.Employer.Web.RouteModel;
+using Esfa.Recruit.Employer.Web.ViewModels.Validations;
 using System.ComponentModel.DataAnnotations;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels
 {
-    public class SelectTrainingProviderEditModel
+    public class SelectTrainingProviderEditModel : VacancyRouteModel
     {
-        [FromRoute]
-        public Guid VacancyId { get; set; }
-
         [Required]
         [Display(Name = "UKPRN")]
         [Ukprn(ErrorMessage = ValidationMessages.TrainingProviderValidationMessages.TypeOfUkprn.UkprnFormat)]

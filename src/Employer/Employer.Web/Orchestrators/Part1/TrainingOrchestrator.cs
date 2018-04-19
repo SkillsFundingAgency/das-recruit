@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Training;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
@@ -8,12 +7,11 @@ using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Employer.Web.ViewModels;
-using System.Linq;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
+using Esfa.Recruit.Employer.Web.RouteModel;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
-    public class TrainingOrchestrator : EntityValidatingOrchestrator<Vacancy, TrainingEditModel>
+    public class TrainingOrchestrator : VacancyValidatingOrchestrator<TrainingEditModel>
     {
         private const VacancyRuleSet ValdationRules = VacancyRuleSet.ClosingDate | VacancyRuleSet.StartDate | VacancyRuleSet.TrainingProgramme | VacancyRuleSet.StartDateEndDate | VacancyRuleSet.TrainingExpiryDate;
         private readonly IEmployerVacancyClient _client;
@@ -23,9 +21,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             _client = client;
         }
         
-        public async Task<TrainingViewModel> GetTrainingViewModelAsync(Guid vacancyId)
+        public async Task<TrainingViewModel> GetTrainingViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancyTask = _client.GetVacancyAsync(vacancyId);
+            var vacancyTask = _client.GetVacancyAsync(vrm.VacancyId);
             var programmesTask = _client.GetActiveApprenticeshipProgrammesAsync();
 
             await Task.WhenAll(vacancyTask, programmesTask);
@@ -33,10 +31,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var vacancy = vacancyTask.Result;
             var programmes = programmesTask.Result;
 
+            CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
+
             if (!vacancy.CanEdit)
-            {
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
-            }
 
             var vm = new TrainingViewModel
             {
@@ -64,7 +62,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         public async Task<TrainingViewModel> GetTrainingViewModelAsync(TrainingEditModel m)
         {
-            var vm = await GetTrainingViewModelAsync(m.VacancyId);
+            var vm = await GetTrainingViewModelAsync(m);
 
             vm.ClosingDay = m.ClosingDay;
             vm.ClosingMonth = m.ClosingMonth;
@@ -83,10 +81,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         {
             var vacancy = await _client.GetVacancyAsync(m.VacancyId);
 
+            CheckAuthorisedAccess(vacancy, m.EmployerAccountId);
+
             if (!vacancy.CanEdit)
-            {
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
-            }
 
             vacancy.ClosingDate = m.ClosingDate.AsDateTimeUk()?.ToUniversalTime();
             vacancy.StartDate = m.StartDate.AsDateTimeUk()?.ToUniversalTime();

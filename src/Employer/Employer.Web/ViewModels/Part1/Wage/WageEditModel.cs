@@ -1,22 +1,12 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Validations;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Microsoft.AspNetCore.Mvc;
 using ErrMsg = Esfa.Recruit.Employer.Web.ViewModels.ValidationMessages.WageValidationMessages;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Wage
 {
-    public class WageEditModel
+    public class WageEditModel : VacancyRouteModel
     {
-        [FromRoute]
-        [Required]
-        public string EmployerAccountId { get; set; }
-
-        [FromRoute]
-        [ValidGuid]
-        public Guid VacancyId { get; set; }
-
         [TypeOfInteger(ErrorMessage = ErrMsg.TypeOfInteger.Duration)]
         public string Duration { get; set; }
 

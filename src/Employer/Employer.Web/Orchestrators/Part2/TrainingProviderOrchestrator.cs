@@ -1,4 +1,5 @@
 ﻿using Esfa.Recruit.Employer.Web.Extensions;
+using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
@@ -6,12 +7,11 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 {
-    public class TrainingProviderOrchestrator : EntityValidatingOrchestrator<Vacancy, ConfirmTrainingProviderEditModel>
+    public class TrainingProviderOrchestrator : VacancyValidatingOrchestrator<ConfirmTrainingProviderEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.TrainingProvider;
         private readonly IEmployerVacancyClient _client;
@@ -23,9 +23,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             _providerService = providerService;
         }
 
-        public async Task<SelectTrainingProviderViewModel> GetSelectTrainingProviderViewModel(Guid vacancyId)
+        public async Task<SelectTrainingProviderViewModel> GetSelectTrainingProviderViewModel(VacancyRouteModel vrm)
         {
-            var vacancy = await _client.GetVacancyAsync(vacancyId);
+            var vacancy = await _client.GetVacancyAsync(vrm.VacancyId);
+
+            CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
 
             if (!vacancy.CanEdit)
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
@@ -39,9 +41,18 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             return vm;
         }
 
+        public async Task<SelectTrainingProviderViewModel> GetSelectTrainingProviderViewModel(SelectTrainingProviderEditModel m)
+        {
+            var vm = await GetSelectTrainingProviderViewModel(m);
+            vm.Ukprn = long.TryParse(m.Ukprn, out var submittedUkprn) ? submittedUkprn : default(long);
+            return vm;
+        }
+
         public async Task<ConfirmTrainingProviderViewModel> GetConfirmViewModel(SelectTrainingProviderEditModel m)
         {
             var vacancy = await _client.GetVacancyAsync(m.VacancyId);
+
+            CheckAuthorisedAccess(vacancy, m.EmployerAccountId);
 
             if (!vacancy.CanEdit)
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
@@ -77,6 +88,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
             var vacancy = vacancyTask.Result;
             var provider = providerTask.Result;
+
+            CheckAuthorisedAccess(vacancy, m.EmployerAccountId);
+
+            if (!vacancy.CanEdit)
+                throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
 
             vacancy.TrainingProvider = provider;
 

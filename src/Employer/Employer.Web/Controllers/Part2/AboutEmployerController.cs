@@ -1,11 +1,11 @@
 ﻿using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
 using Esfa.Recruit.Employer.Web.Orchestrators;
+using Esfa.Recruit.Employer.Web.RouteModel;
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part2
 {
@@ -20,9 +20,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
         }
 
         [HttpGet("about-employer", Name = RouteNames.AboutEmployer_Get)]
-        public async Task<IActionResult> AboutEmployer(Guid vacancyId)
+        public async Task<IActionResult> AboutEmployer(VacancyRouteModel vrm)
         {
-            var vm = await _orchestrator.GetAboutEmployerViewModelAsync(vacancyId);
+            var vm = await _orchestrator.GetAboutEmployerViewModelAsync(vrm);
             return View(vm);
         }
 

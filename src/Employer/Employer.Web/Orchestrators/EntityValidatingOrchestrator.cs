@@ -1,11 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Extensions;
-using Esfa.Recruit.Vacancies.Client.Application.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
@@ -90,6 +87,5 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             return mappings;
         }
-        
     }
 }

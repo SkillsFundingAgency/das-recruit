@@ -22,10 +22,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.Part1.Wage
 
                 new object[] { nameof(WageEditModel.FixedWageYearlyAmount), "aa", ErrMsg.TypeOfMoney.FixedWageYearlyAmount},
                 new object[] { nameof(WageEditModel.FixedWageYearlyAmount), "$15,000.01", ErrMsg.TypeOfMoney.FixedWageYearlyAmount},
-                new object[] { nameof(WageEditModel.FixedWageYearlyAmount), "15,000.0135", ErrMsg.TypeOfMoney.FixedWageYearlyAmount},
-
-                new object[] { nameof(WageEditModel.EmployerAccountId), null, "The EmployerAccountId field is required." },
-                new object[] { nameof(WageEditModel.VacancyId), default(Guid), "The field VacancyId is invalid." },
+                new object[] { nameof(WageEditModel.FixedWageYearlyAmount), "15,000.0135", ErrMsg.TypeOfMoney.FixedWageYearlyAmount}                
             };
 
         [Theory]

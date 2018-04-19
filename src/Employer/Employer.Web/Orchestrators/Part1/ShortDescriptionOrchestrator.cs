@@ -1,5 +1,5 @@
-using System;
 using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.ShortDescription;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
-    public class ShortDescriptionOrchestrator : EntityValidatingOrchestrator<Vacancy, ShortDescriptionEditModel>
+    public class ShortDescriptionOrchestrator : VacancyValidatingOrchestrator<ShortDescriptionEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.NumberOfPositions | VacancyRuleSet.ShortDescription;
         private readonly IEmployerVacancyClient _client;
@@ -20,14 +20,14 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             _client = client;
         }
 
-        public async Task<ShortDescriptionViewModel> GetShortDescriptionViewModelAsync(Guid vacancyId)
+        public async Task<ShortDescriptionViewModel> GetShortDescriptionViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await _client.GetVacancyAsync(vacancyId);
+            var vacancy = await _client.GetVacancyAsync(vrm.VacancyId);
+
+            CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
 
             if (!vacancy.CanEdit)
-            {
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
-            }
 
             var vm = new ShortDescriptionViewModel
             {
@@ -41,7 +41,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         public async Task<ShortDescriptionViewModel> GetShortDescriptionViewModelAsync(ShortDescriptionEditModel m)
         {
-            var vm = await GetShortDescriptionViewModelAsync(m.VacancyId);
+            var vm = await GetShortDescriptionViewModelAsync(m);
 
             vm.NumberOfPositions = m.NumberOfPositions;
             vm.ShortDescription = m.ShortDescription;
@@ -53,10 +53,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         {
             var vacancy = await _client.GetVacancyAsync(m.VacancyId);
 
+            CheckAuthorisedAccess(vacancy, m.EmployerAccountId);
+
             if (!vacancy.CanEdit)
-            {
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
-            }
 
             vacancy.NumberOfPositions = int.TryParse(m.NumberOfPositions, out var numberOfPositions) ? numberOfPositions : default(int?);
             vacancy.ShortDescription = m.ShortDescription;
