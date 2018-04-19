@@ -1,15 +1,15 @@
-﻿using Esfa.Recruit.Employer.Web.ViewModels;
+﻿using Esfa.Recruit.Employer.Web.RouteModel;
+using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 {
-    public class AboutEmployerOrchestrator : EntityValidatingOrchestrator<Vacancy, AboutEmployerEditModel>
+    public class AboutEmployerOrchestrator : VacancyValidatingOrchestrator<AboutEmployerEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.EmployerDescription | VacancyRuleSet.EmployerWebsiteUrl;
         private readonly IEmployerVacancyClient _client;
@@ -19,9 +19,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             _client = client;
         }
 
-        public async Task<AboutEmployerViewModel> GetAboutEmployerViewModelAsync(Guid vacancyId)
+        public async Task<AboutEmployerViewModel> GetAboutEmployerViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await _client.GetVacancyAsync(vacancyId);
+            var vacancy = await _client.GetVacancyAsync(vrm.VacancyId);
+
+            CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
 
             if (!vacancy.CanEdit)
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
@@ -38,7 +40,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public async Task<AboutEmployerViewModel> GetAboutEmployerViewModelAsync(AboutEmployerEditModel m)
         {
-            var vm = await GetAboutEmployerViewModelAsync(m.VacancyId);
+            var vm = await GetAboutEmployerViewModelAsync(m);
 
             vm.EmployerDescription = m.EmployerDescription;
             vm.EmployerWebsiteUrl = m.EmployerWebsiteUrl;
@@ -49,6 +51,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         public async Task<OrchestratorResponse> PostAboutEmployerEditModelAsync(AboutEmployerEditModel m, VacancyUser user)
         {
             var vacancy = await _client.GetVacancyAsync(m.VacancyId);
+
+            CheckAuthorisedAccess(vacancy, m.EmployerAccountId);
 
             if (!vacancy.CanEdit)
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));

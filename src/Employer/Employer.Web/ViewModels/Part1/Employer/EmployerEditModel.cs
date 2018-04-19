@@ -1,19 +1,9 @@
-﻿namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer
+﻿using Esfa.Recruit.Employer.Web.RouteModel;
+
+namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer
 {
-    using System;
-    using System.ComponentModel.DataAnnotations;
-    using Validations;
-    using Microsoft.AspNetCore.Mvc;
-
-    public class EmployerEditModel
+    public class EmployerEditModel : VacancyRouteModel
     {
-        [FromRoute]
-        [Required, ValidGuid]
-        public Guid VacancyId { get; set; }
-
-        [Required]
-        [FromRoute]
-        public string EmployerAccountId { get; set; }
 
         public string SelectedOrganisationName { get; set; }
 

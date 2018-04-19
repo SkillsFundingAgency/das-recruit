@@ -1,9 +1,8 @@
-using System;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators;
+using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Title;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,9 +27,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         }
 
         [HttpGet(VacancyTitleRoute, Name = RouteNames.Title_Get)]
-        public async Task<IActionResult> Title(Guid vacancyId)
+        public async Task<IActionResult> Title(VacancyRouteModel vrm)
         {
-            var vm = await _orchestrator.GetTitleViewModelAsync(vacancyId);
+            var vm = await _orchestrator.GetTitleViewModelAsync(vrm);
             return View(vm);
         }
         

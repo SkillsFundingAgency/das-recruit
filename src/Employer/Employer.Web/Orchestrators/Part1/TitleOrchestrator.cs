@@ -7,10 +7,11 @@ using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Employer.Web.ViewModels;
+using Esfa.Recruit.Employer.Web.RouteModel;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
-    public class TitleOrchestrator : EntityValidatingOrchestrator<Vacancy, TitleEditModel>
+    public class TitleOrchestrator : VacancyValidatingOrchestrator<TitleEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.Title;
         private readonly IEmployerVacancyClient _client;
@@ -26,14 +27,14 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return vm;
         }
 
-        public async Task<TitleViewModel> GetTitleViewModelAsync(Guid vacancyId)
+        public async Task<TitleViewModel> GetTitleViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await _client.GetVacancyAsync(vacancyId);
+            var vacancy = await _client.GetVacancyAsync(vrm.VacancyId);
+
+            CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
 
             if (!vacancy.CanEdit)
-            {
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
-            }
 
             var vm = new TitleViewModel
             {
@@ -50,7 +51,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             if (m.VacancyId.HasValue)
             {
-                vm = await GetTitleViewModelAsync(m.VacancyId.Value);
+                vm = await GetTitleViewModelAsync(new VacancyRouteModel { EmployerAccountId = m.EmployerAccountId, VacancyId = m.VacancyId.Value });
             }
             else
             {
@@ -62,26 +63,27 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return vm;
         }
 
-        public async Task<OrchestratorResponse<Guid>> PostTitleEditModelAsync(TitleEditModel vm, VacancyUser user)
+
+        public async Task<OrchestratorResponse<Guid>> PostTitleEditModelAsync(TitleEditModel m, VacancyUser user)
         {
-            if (!vm.VacancyId.HasValue) // Create if it's a new vacancy
+            if (!m.VacancyId.HasValue) // Create if it's a new vacancy
             {
-                var newVacancy = new Vacancy { Title = vm.Title };
+                var newVacancy = new Vacancy { Title = m.Title };
 
                 return await ValidateAndExecute(
                     newVacancy, 
                     v => _client.Validate(v, ValidationRules),
-                    async v => await _client.CreateVacancyAsync(SourceOrigin.EmployerWeb, vm.Title, vm.EmployerAccountId, user));
+                    async v => await _client.CreateVacancyAsync(SourceOrigin.EmployerWeb, m.Title, m.EmployerAccountId, user));
             }
 
-            var vacancy = await _client.GetVacancyAsync(vm.VacancyId.Value);
+            var vacancy = await _client.GetVacancyAsync(m.VacancyId.Value);
+
+            CheckAuthorisedAccess(vacancy, m.EmployerAccountId);
 
             if (!vacancy.CanEdit)
-            {
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
-            }
 
-            vacancy.Title = vm.Title;
+            vacancy.Title = m.Title;
 
             return await ValidateAndExecute(
                 vacancy, 

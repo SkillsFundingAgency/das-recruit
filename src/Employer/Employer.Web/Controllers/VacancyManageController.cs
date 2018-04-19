@@ -2,7 +2,10 @@
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Orchestrators;
+using Esfa.Recruit.Employer.Web.RouteModel;
+using Esfa.Recruit.Vacancies.Client.Application.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,9 +24,12 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         }
 
         [HttpGet("", Name = RouteNames.DisplayVacancy_Get)]
-        public async Task<IActionResult> DisplayVacancy([FromRoute]Guid vacancyId)
+        public async Task<IActionResult> DisplayVacancy(VacancyRouteModel vrm)
         {
-            var vacancy = await _client.GetVacancyAsync(vacancyId);
+            var vacancy = await _client.GetVacancyAsync(vrm.VacancyId);
+
+            if (!vacancy.EmployerAccountId.Equals(vrm.EmployerAccountId, StringComparison.OrdinalIgnoreCase))
+                throw new AuthorisationException(string.Format(ExceptionMessages.VacancyUnauthorisedAccess, vrm.EmployerAccountId, vacancy.EmployerAccountId, vacancy.Title, vacancy.Id));
 
             if (vacancy.CanEdit)
             {

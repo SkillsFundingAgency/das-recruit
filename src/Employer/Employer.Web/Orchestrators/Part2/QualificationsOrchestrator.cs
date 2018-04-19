@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Extensions;
+using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Employer.Web.ViewModels.Part2.Qualifications;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
@@ -15,7 +15,7 @@ using Microsoft.Extensions.Options;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 {
-    public class QualificationsOrchestrator : EntityValidatingOrchestrator<Vacancy, QualificationsEditModel>
+    public class QualificationsOrchestrator : VacancyValidatingOrchestrator<QualificationsEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.Qualifications;
         private readonly IEmployerVacancyClient _client;
@@ -28,14 +28,14 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             _qualificationsConfig = qualificationsConfigOptions.Value;
         }
 
-        public async Task<QualificationsViewModel> GetQualificationsViewModelAsync(Guid vacancyId)
+        public async Task<QualificationsViewModel> GetQualificationsViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await _client.GetVacancyAsync(vacancyId);
+            var vacancy = await _client.GetVacancyAsync(vrm.VacancyId);
+
+            CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
 
             if (!vacancy.CanEdit)
-            {
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
-            }
 
             var vm = new QualificationsViewModel
             {
@@ -49,7 +49,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public async Task<QualificationsViewModel> GetQualificationsViewModelAsync(QualificationsEditModel m)
         {
-            var vm = await GetQualificationsViewModelAsync(m.VacancyId);
+            var vm = await GetQualificationsViewModelAsync(m);
 
             vm.Qualifications = m.Qualifications;
             vm.QualificationType = m.QualificationType;
@@ -64,10 +64,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         {
             var vacancy = await _client.GetVacancyAsync(m.VacancyId);
 
+            CheckAuthorisedAccess(vacancy, m.EmployerAccountId);
+
             if (!vacancy.CanEdit)
-            {
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
-            }
 
             if (m.Qualifications == null)
             {

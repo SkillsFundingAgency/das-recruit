@@ -1,6 +1,5 @@
 ﻿namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.Part1.Title
 {
-    using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.Linq;

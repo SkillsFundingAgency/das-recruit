@@ -1,9 +1,9 @@
 ﻿using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
+using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Extensions;
 
@@ -20,9 +20,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
         }
 
         [HttpGet("application-process", Name = RouteNames.ApplicationProcess_Get)]
-        public async Task<IActionResult> ApplicationProcess(Guid vacancyId)
+        public async Task<IActionResult> ApplicationProcess(VacancyRouteModel vrm)
         {
-            var vm = await _orchestrator.GetApplicationProcessViewModelAsync(vacancyId);
+            var vm = await _orchestrator.GetApplicationProcessViewModelAsync(vrm);
             return View(vm);
         }
 
@@ -39,7 +39,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
             if (!ModelState.IsValid)
             {
                 var vm = await _orchestrator.GetApplicationProcessViewModelAsync(m);
-
                 return View(vm);
             }
 

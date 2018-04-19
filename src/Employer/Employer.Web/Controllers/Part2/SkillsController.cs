@@ -1,10 +1,10 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
+using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part2.Skills;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,9 +21,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
         }
 
         [HttpGet("skills", Name = RouteNames.Skills_Get)]
-        public async Task<IActionResult> Skills(Guid vacancyId)
+        public async Task<IActionResult> Skills(VacancyRouteModel vrm)
         {
-            var vm = await _orchestrator.GetSkillsViewModelAsync(vacancyId);
+            var vm = await _orchestrator.GetSkillsViewModelAsync(vrm);
 
             TryUpdateSkillsFromTempData(vm);
             

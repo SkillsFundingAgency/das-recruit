@@ -19,7 +19,6 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.TrainingProvid
         {
             var vm = new ConfirmTrainingProviderEditModel
             {
-                VacancyId = _dummyVacancyGuid,
                 Ukprn = inputUkprn
             };
 
@@ -37,7 +36,6 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.TrainingProvid
         {
             var vm = new ConfirmTrainingProviderEditModel
             {
-                VacancyId = _dummyVacancyGuid,
                 Ukprn = "12345678"
             };
 

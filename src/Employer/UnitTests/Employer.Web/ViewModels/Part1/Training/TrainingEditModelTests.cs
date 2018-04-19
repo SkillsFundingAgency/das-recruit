@@ -34,10 +34,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.Part1.Training
                 new object[] { nameof(TrainingEditModel.StartMonth), "13", nameof(TrainingEditModel.StartDate), ErrMsg.TypeOfDate.StartDate},
 
                 new object[] { nameof(TrainingEditModel.StartYear), "aa", nameof(TrainingEditModel.StartDate), ErrMsg.TypeOfDate.StartDate},
-                new object[] { nameof(TrainingEditModel.StartYear), "18", nameof(TrainingEditModel.StartDate), ErrMsg.TypeOfDate.StartDate},
-
-                new object[] { nameof(TrainingEditModel.EmployerAccountId), null, nameof(TrainingEditModel.EmployerAccountId), "The EmployerAccountId field is required." },
-                new object[] { nameof(TrainingEditModel.VacancyId), default(Guid), nameof(TrainingEditModel.VacancyId), "The field VacancyId is invalid." },
+                new object[] { nameof(TrainingEditModel.StartYear), "18", nameof(TrainingEditModel.StartDate), ErrMsg.TypeOfDate.StartDate}
             };
 
         [Theory]

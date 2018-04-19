@@ -1,9 +1,9 @@
-using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
+using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Wage;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,9 +20,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         }
         
         [HttpGet("wage", Name = RouteNames.Wage_Get)]
-        public async Task<IActionResult> Wage(Guid vacancyId)
+        public async Task<IActionResult> Wage(VacancyRouteModel vrm)
         {
-            var vm = await _orchestrator.GetWageViewModelAsync(vacancyId);
+            var vm = await _orchestrator.GetWageViewModelAsync(vrm);
             return View(vm);
         }
 

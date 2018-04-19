@@ -2,7 +2,6 @@
 using Esfa.Recruit.Employer.Web.ViewModels.Preview;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,10 +10,11 @@ using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.Extensions.Logging;
+using Esfa.Recruit.Employer.Web.RouteModel;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
-    public class VacancyPreviewOrchestrator : EntityValidatingOrchestrator<Vacancy, VacancyPreviewViewModel>
+    public class VacancyPreviewOrchestrator : VacancyValidatingOrchestrator<VacancyPreviewViewModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.All;
         private readonly IEmployerVacancyClient _client;
@@ -27,13 +27,14 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             _vacancyDisplayMapper = vacancyDisplayMapper;
         }
 
-        public async Task<VacancyPreviewViewModel> GetVacancyPreviewViewModelAsync(Guid vacancyId)
+        public async Task<VacancyPreviewViewModel> GetVacancyPreviewViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await _client.GetVacancyAsync(vacancyId);
+            var vacancy = await _client.GetVacancyAsync(vrm.VacancyId);
+
+            CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
 
             if (!vacancy.CanEdit)
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
-
 
             var vm = new VacancyPreviewViewModel();
             await _vacancyDisplayMapper.MapFromVacancyAsync(vm, vacancy);
@@ -48,6 +49,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         public async Task<OrchestratorResponse<bool>> TrySubmitVacancyAsync(SubmitEditModel m, VacancyUser user)
         {
             var vacancy = await _client.GetVacancyAsync(m.VacancyId);
+
+            CheckAuthorisedAccess(vacancy, m.EmployerAccountId);
 
             if (!vacancy.CanEdit)
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));

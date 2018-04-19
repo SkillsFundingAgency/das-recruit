@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Extensions;
+using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Employer.Web.ViewModels.Part2.Skills;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
@@ -15,7 +15,7 @@ using Microsoft.Extensions.Options;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 {
-    public class SkillsOrchestrator : EntityValidatingOrchestrator<Vacancy, SkillsEditModel>
+    public class SkillsOrchestrator : VacancyValidatingOrchestrator<SkillsEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.Skills;
         private readonly IEmployerVacancyClient _client;
@@ -27,14 +27,14 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             _skillsConfig = skillsConfigOptions.Value;
         }
 
-        public async Task<SkillsViewModel> GetSkillsViewModelAsync(Guid vacancyId)
+        public async Task<SkillsViewModel> GetSkillsViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await _client.GetVacancyAsync(vacancyId);
+            var vacancy = await _client.GetVacancyAsync(vrm.VacancyId);
+
+            CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
 
             if (!vacancy.CanEdit)
-            {
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
-            }
 
             var vm = new SkillsViewModel
             {
@@ -48,7 +48,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public async Task<SkillsViewModel> GetSkillsViewModelAsync(SkillsEditModel m)
         {
-            var vm = await GetSkillsViewModelAsync(m.VacancyId);
+            var vm = await GetSkillsViewModelAsync(m);
 
             SetViewModelSkills(vm, m.Skills);
 
@@ -68,10 +68,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         {
             var vacancy = await _client.GetVacancyAsync(m.VacancyId);
 
+            CheckAuthorisedAccess(vacancy, m.EmployerAccountId);
+
             if (!vacancy.CanEdit)
-            {
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
-            }
 
             if (m.Skills == null)
             {
@@ -139,15 +139,13 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
             var orderedSkills = _skillsConfig.Column1Skills
                 .Union(_skillsConfig.Column2Skills)
-                .Union(selected)
-                .ToList();
+                .Union(selected);
 
             return orderedSkills.Where(filteredSelectedSkills.Contains);
         }
 
         private void SyncErrorsAndModel(IList<EntityValidationError> errors, SkillsEditModel m)
         {
-
             var skillsPropertyName = nameof(Vacancy.Skills);
 
             //Get the first invalid skill
@@ -184,4 +182,3 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         }
     }
 }
-
