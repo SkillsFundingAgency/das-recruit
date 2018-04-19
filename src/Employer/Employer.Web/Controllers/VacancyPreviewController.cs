@@ -72,13 +72,13 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             viewModel.DescriptionsSectionState = GetViewSectionState(viewModel, vm => vm.VacancyDescription, vm => vm.TrainingDescription, vm => vm.OutcomeDescription);
             viewModel.SkillsSectionState = GetViewSectionState(viewModel, vm => vm.Skills);
             viewModel.QualificationsSectionState = GetViewSectionState(viewModel, vm => vm.Qualifications);
-            viewModel.ThingsToConsiderSectionState = VacancyPreviewSectionState.Valid;
+            viewModel.ThingsToConsiderSectionState = GetViewSectionState(viewModel, vm => vm.ThingsToConsider);
             viewModel.EmployerNameSectionState = GetViewSectionState(viewModel, vm => vm.EmployerName);
             viewModel.EmployerDescriptionSectionState = GetViewSectionState(viewModel, vm => vm.EmployerDescription);
-            viewModel.EmployerWebsiteUrlSectionState = VacancyPreviewSectionState.Valid;
-            viewModel.ContactSectionState = VacancyPreviewSectionState.Valid;
+            viewModel.EmployerWebsiteUrlSectionState = GetViewSectionState(viewModel, vm => vm.EmployerWebsiteUrl);
+            viewModel.ContactSectionState = GetViewSectionState(viewModel, vm => vm.ContactName, vm => vm.ContactEmail, vm => vm.ContactTelephone);
             viewModel.EmployerAddressSectionState = GetViewSectionState(viewModel, vm => vm.EmployerAddressElements);
-            viewModel.ApplicationInstructionsSectionState = VacancyPreviewSectionState.Valid;
+            viewModel.ApplicationInstructionsSectionState = GetViewSectionState(viewModel, vm => vm.ApplicationInstructions);
             viewModel.ApplicationUrlSectionState = GetViewSectionState(viewModel, vm => vm.ApplicationUrl);
             viewModel.ProviderSectionState = GetViewSectionState(viewModel, vm => vm.ProviderName);
             viewModel.TrainingSectionState = GetViewSectionState(viewModel, vm => vm.TrainingType, vm => vm.TrainingTitle);
