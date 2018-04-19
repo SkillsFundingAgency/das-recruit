@@ -33,7 +33,7 @@
         <h1 class="heading-xlarge small-bottom-margin">Complete your vacancy</h1>
         @Html.Partial("_ValidationSummary", new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames })
         <div asp-condition="@ViewData.ModelState.IsValid" class="info-summary no-top-margin" role="alert">			
-            <p>Fill in the sections highlighted by a blue bar using the <a href="#" class="button-secondary">Add</a> button</p>    
+            <p>Fill in the sections highlighted by a blue bar using the <a class="button-secondary">Add</a> button</p>    
         </div>
     </div>
 </div>
