@@ -25,7 +25,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         {
             var vacancy = await _client.GetVacancyAsync(vacancyId);
 
-            if (vacancy.Status == VacancyStatus.Draft)
+            if (vacancy.CanEdit)
             {
                 return HandleRedirectOfDraftVacancy(vacancy);
             }
