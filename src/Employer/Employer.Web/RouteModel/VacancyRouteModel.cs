@@ -15,6 +15,6 @@ namespace Esfa.Recruit.Employer.Web.RouteModel
         }
 
         [FromRoute]
-        public Guid VacancyId { get; set; }       
+        public Guid VacancyId { get; set; }
     }
 }
