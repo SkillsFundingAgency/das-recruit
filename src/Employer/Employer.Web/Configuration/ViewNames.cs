@@ -8,7 +8,8 @@
         public const string ManageClosedVacancyView = "Closed";
         public const string ManageReferredVacancyView = "Referred";
 
+        public const string VacancyPreview = "VacancyPreview";
 
-        public const string AccessDenied = "AccessDenied";
+        public const string AccessDenied = "AccessDenied";        
     }
 }
