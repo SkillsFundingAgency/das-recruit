@@ -63,6 +63,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
                 return new ConfirmTrainingProviderViewModel
                 {
+                    EmployerAccountId = m.EmployerAccountId,
+                    VacancyId = m.VacancyId,
                     Title = vacancy.Title,
                     Ukprn = provider.Ukprn.Value,
                     ProviderName = provider.Name,
@@ -72,6 +74,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
             return new ConfirmTrainingProviderViewModel
             {
+                EmployerAccountId = m.EmployerAccountId,
+                VacancyId = m.VacancyId,
                 Title = vacancy.Title,
                 Ukprn = vacancy.TrainingProvider.Ukprn.Value,
                 ProviderName = vacancy.TrainingProvider.Name,

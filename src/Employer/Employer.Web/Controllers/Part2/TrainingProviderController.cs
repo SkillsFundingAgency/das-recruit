@@ -6,6 +6,7 @@ using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.RouteModel;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part2
 {
@@ -13,11 +14,13 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
     public class TrainingProviderController : Controller
     {
         private readonly TrainingProviderOrchestrator _orchestrator;
+        private readonly IEmployerVacancyClient _client;
         private const string InvalidUkprnMessageFormat = "The UKPRN {0} is not valid or the associated provider is not active.";
 
-        public TrainingProviderController(TrainingProviderOrchestrator orchestrator)
+        public TrainingProviderController(TrainingProviderOrchestrator orchestrator, IEmployerVacancyClient client)
         {
             _orchestrator = orchestrator;
+            _client = client;
         }
 
         [HttpGet("select-training-provider", Name = RouteNames.TrainingProvider_Select_Get)]
@@ -46,8 +49,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
         }
 
         [HttpGet("confirm-training-provider", Name = RouteNames.TrainingProvider_Confirm_Get)]
-        public IActionResult ConfirmTrainingProvider(ConfirmTrainingProviderViewModel confirmDetailsVm)
+        public async Task<IActionResult> ConfirmTrainingProvider(ConfirmTrainingProviderViewModel confirmDetailsVm)
         {
+            var vacancy = await _client.GetVacancyAsync(confirmDetailsVm.VacancyId);
+            _orchestrator.CheckAuthorisedAccess(vacancy, confirmDetailsVm.EmployerAccountId);
             return View(confirmDetailsVm);
         }
 

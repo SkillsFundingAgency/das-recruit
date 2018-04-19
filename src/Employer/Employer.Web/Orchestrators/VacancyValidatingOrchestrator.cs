@@ -13,7 +13,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         {
         }
 
-        protected void CheckAuthorisedAccess(Vacancy vacancy, string employerAccountId)
+        public void CheckAuthorisedAccess(Vacancy vacancy, string employerAccountId)
         {
             if (!vacancy.EmployerAccountId.Equals(employerAccountId, StringComparison.OrdinalIgnoreCase))
                 throw new AuthorisationException(string.Format(ExceptionMessages.VacancyUnauthorisedAccess, employerAccountId, vacancy.EmployerAccountId, vacancy.Title, vacancy.Id));
