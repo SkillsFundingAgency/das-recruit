@@ -81,11 +81,11 @@
                 <span esfa-validation-message-for="Wage" class="error-message"></span>
                 <ul class="list" asp-condition="@Model.Wage">
                     <span esfa-validation-message-for="WorkingWeekDescription" class="error-message"></span>
-                    <li asp-condition="@Model.HasWorkingWeekDescription" id="vacancy-working-week">
+                    <li asp-condition="@Model.HasWorkingWeekDescription">
                         @Model.WorkingWeekDescription
                     </li>
                     <span esfa-validation-message-for="HoursPerWeek" class="error-message"></span>
-                    <li asp-condition="@Model.HasHoursPerWeek" id="total-hours-per-week">
+                    <li asp-condition="@Model.HasHoursPerWeek">
                         Total hours per week: @Model.HoursPerWeek
                     </li>
                 </ul>
@@ -136,7 +136,7 @@
             <h3 class="heading-small">
                 Vacancy description
             </h3>
-            <div id="vacancy-full-description">
+            <div>
                 <span esfa-validation-message-for="VacancyDescription" class="error-message"></span>
                 <p asp-condition="@Model.HasVacancyDescription">@Model.VacancyDescription</p>
                 <span esfa-validation-message-for="TrainingDescription" class="error-message"></span>
@@ -198,7 +198,7 @@
     </div>
 </div>
 
-<div class="grid-row" id="employer-info">
+<div class="grid-row">
     <div class="column-full">
         <h2 class="heading-large">About the employer</h2>
     </div>
