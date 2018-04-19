@@ -62,53 +62,81 @@
   margin-top:30px;
 }
 
-/*** Warning summary styles ***/
+/*** Info / Warning summary styles ***/
 
-.warning-summary{
-    border: 4px solid #f47738;
+.info-summary, .warning-summary{
+    
     margin-top: 15px;
     margin-bottom: 15px;
     padding: 15px 10px;
   }
-  
+
+  .info-summary {
+    border: 4px solid #2e358b;
+  }
+
+  .warning-summary {
+    border: 4px solid #f47738;
+  }
+
   @media (min-width: 641px) {
-    .warning-summary {
-      border: 5px solid #f47738;
+    .info-summary , .warning-summary {
       margin-top: 30px;
       margin-bottom: 30px;
       padding: 20px 15px 15px;
     }
+
+    .info-summary {
+        border: 5px solid #2e358b;
+    }
+
+    .warning-summary {
+        border: 5px solid #f47738;
+    }
+
   }
   
+  .info-summaryfocus {
+    outline: 3px solid #2e358b;
+  }
+
   .warning-summaryfocus {
     outline: 3px solid #f47738;
   }
-  
-  .warning-summary .warning-summary-heading {
+
+  .info-summary .info-summary-heading, .warning-summary .warning-summary-heading {
     margin-top: 0;
   }
   
-  .warning-summary p {
+  .info-summary p, .warning-summary p {
     margin-bottom: 10px;
   }
   
-  .warning-summary .warning-summary-list {
+  .info-summary .info-summary-list, .warning-summary .warning-summary-list {
     padding-left: 0;
   }
   
   @media (min-width: 641px) {
-    .warning-summary .warning-summary-list li {
+    .info-summary .info-summary-list li, .warning-summary .warning-summary-list li {
       margin-bottom: 5px;
     }
   }
   
-  .warning-summary .warning-summary-list a {
-    color: #f47738;
+  .info-summary .info-summary-list a, .warning-summary .warning-summary-list a {
+    
     font-weight: bold;
     text-decoration: underline;
   }
 
-  .warning-summary-heading {
+  .info-summary .info-summary-list a{
+    color: #2e358b;
+  }
+
+  .warning-summary .warning-summary-list a{
+    color: #f47738;
+  }
+
+  .info-summary-heading, .warning-summary-heading {
     margin-top: 0;
   }
 
@@ -734,7 +762,7 @@
 }
 
 .preview-empty {
-    border-left: 5px solid #FFBF47;
+    border-left: 5px solid #2e358b;
     min-height: 80px;
     padding-left: 15px;
 }
