@@ -44,7 +44,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public async Task<ApplicationProcessViewModel> GetApplicationProcessViewModelAsync(ApplicationProcessEditModel m)
         {
-            var vm = await GetApplicationProcessViewModelAsync(m);
+            var vrm = new VacancyRouteModel { EmployerAccountId = m.EmployerAccountId, VacancyId = m.VacancyId };
+            var vm = await GetApplicationProcessViewModelAsync(vrm);
 
             vm.ApplicationInstructions = m.ApplicationInstructions;
             vm.ApplicationUrl = m.ApplicationUrl;

@@ -40,9 +40,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public async Task<ConsiderationsViewModel> GetConsiderationsViewModelAsync(ConsiderationsEditModel m)
         {
-            var vm = await GetConsiderationsViewModelAsync(m);
+            var vrm = new VacancyRouteModel { EmployerAccountId = m.EmployerAccountId, VacancyId = m.VacancyId };
+            var vm = await GetConsiderationsViewModelAsync(vrm);
 
-            vm.ThingsToConsider = m.ThingsToConsider;            
+            vm.ThingsToConsider = m.ThingsToConsider;
 
             return vm;
         }

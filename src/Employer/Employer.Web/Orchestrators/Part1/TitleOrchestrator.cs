@@ -51,7 +51,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             if (m.VacancyId.HasValue)
             {
-                vm = await GetTitleViewModelAsync(new VacancyRouteModel { EmployerAccountId = m.EmployerAccountId, VacancyId = m.VacancyId.Value });
+                var vrm = new VacancyRouteModel { EmployerAccountId = m.EmployerAccountId, VacancyId = m.VacancyId.Value };
+                vm = await GetTitleViewModelAsync(vrm);
             }
             else
             {

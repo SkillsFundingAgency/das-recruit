@@ -48,7 +48,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public async Task<SkillsViewModel> GetSkillsViewModelAsync(SkillsEditModel m)
         {
-            var vm = await GetSkillsViewModelAsync(m);
+            var vrm = new VacancyRouteModel { EmployerAccountId = m.EmployerAccountId, VacancyId = m.VacancyId };
+            var vm = await GetSkillsViewModelAsync(vrm);
 
             SetViewModelSkills(vm, m.Skills);
 
