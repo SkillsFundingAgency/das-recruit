@@ -1,5 +1,4 @@
-﻿using Esfa.Recruit.Employer.Web.RouteModel;
-using Esfa.Recruit.Vacancies.Client.Application.Exceptions;
+﻿using Esfa.Recruit.Vacancies.Client.Application.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Microsoft.Extensions.Logging;

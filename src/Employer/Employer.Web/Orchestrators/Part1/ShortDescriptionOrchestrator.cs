@@ -41,8 +41,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         public async Task<ShortDescriptionViewModel> GetShortDescriptionViewModelAsync(ShortDescriptionEditModel m)
         {
-            var vrm = new VacancyRouteModel { EmployerAccountId = m.EmployerAccountId, VacancyId = m.VacancyId };
-            var vm = await GetShortDescriptionViewModelAsync(vrm);
+            var vm = await GetShortDescriptionViewModelAsync((VacancyRouteModel)m);
 
             vm.NumberOfPositions = m.NumberOfPositions;
             vm.ShortDescription = m.ShortDescription;
