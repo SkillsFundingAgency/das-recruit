@@ -46,7 +46,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         public async Task<WageViewModel> GetWageViewModelAsync(WageEditModel m)
         {
-            var vm = await GetWageViewModelAsync(m);
+            var vrm = new VacancyRouteModel { EmployerAccountId = m.EmployerAccountId, VacancyId = m.VacancyId };
+            var vm = await GetWageViewModelAsync(vrm);
 
             vm.Duration = m.Duration;
             vm.DurationUnit = m.DurationUnit;

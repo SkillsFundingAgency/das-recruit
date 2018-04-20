@@ -49,7 +49,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public async Task<QualificationsViewModel> GetQualificationsViewModelAsync(QualificationsEditModel m)
         {
-            var vm = await GetQualificationsViewModelAsync(m);
+            var vrm = new VacancyRouteModel { EmployerAccountId = m.EmployerAccountId, VacancyId = m.VacancyId };
+            var vm = await GetQualificationsViewModelAsync(vrm);
 
             vm.Qualifications = m.Qualifications;
             vm.QualificationType = m.QualificationType;

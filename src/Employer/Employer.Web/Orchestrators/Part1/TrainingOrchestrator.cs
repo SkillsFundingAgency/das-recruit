@@ -62,7 +62,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         public async Task<TrainingViewModel> GetTrainingViewModelAsync(TrainingEditModel m)
         {
-            var vm = await GetTrainingViewModelAsync(m);
+            var vrm = new VacancyRouteModel { EmployerAccountId = m.EmployerAccountId, VacancyId = m.VacancyId };
+            var vm = await GetTrainingViewModelAsync(vrm);
 
             vm.ClosingDay = m.ClosingDay;
             vm.ClosingMonth = m.ClosingMonth;
