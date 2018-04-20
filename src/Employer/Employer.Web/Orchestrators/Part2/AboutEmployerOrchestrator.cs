@@ -40,8 +40,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public async Task<AboutEmployerViewModel> GetAboutEmployerViewModelAsync(AboutEmployerEditModel m)
         {
-            var vrm = new VacancyRouteModel { EmployerAccountId = m.EmployerAccountId, VacancyId = m.VacancyId };
-            var vm = await GetAboutEmployerViewModelAsync(vrm);
+            var vm = await GetAboutEmployerViewModelAsync((VacancyRouteModel)m);
 
             vm.EmployerDescription = m.EmployerDescription;
             vm.EmployerWebsiteUrl = m.EmployerWebsiteUrl;
