@@ -52,14 +52,14 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
                 if (exception is InvalidStateException)
                 {
-                    _logger.LogError(exception, $"Exception on path: {routeWhereExceptionOccurred}");
+                    _logger.LogError(exception, $"Exception on path: {{routeWhereExceptionOccurred}}");
                     TempData.Add(TempDataKeys.DashboardErrorMessage, exception.Message);
                     return RedirectToRoute(RouteNames.Dashboard_Index_Get, new { EmployerAccountId = accountId });
                 }
 
                 if (exception is AuthorisationException)
                 {
-                    _logger.LogError(exception, exception.Message);
+                    _logger.LogWarning(exception, exception.Message);
                     return AccessDenied();
                 }
             }
