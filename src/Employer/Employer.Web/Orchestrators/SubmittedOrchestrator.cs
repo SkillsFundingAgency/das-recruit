@@ -5,8 +5,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Employer.Web.RouteModel;
-using System;
-using Esfa.Recruit.Vacancies.Client.Application.Exceptions;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
@@ -23,8 +21,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         {
             var vacancy = await _client.GetVacancyAsync(vrm.VacancyId);
 
-            if (!vacancy.EmployerAccountId.Equals(vrm.EmployerAccountId, StringComparison.OrdinalIgnoreCase))
-                throw new AuthorisationException(string.Format(ExceptionMessages.VacancyUnauthorisedAccess, vrm.EmployerAccountId, vacancy.EmployerAccountId, vacancy.Title, vacancy.Id));
+            Utility.CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
 
             if (vacancy.Status != VacancyStatus.Submitted)
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotSubmittedSuccessfully, vacancy.Title));

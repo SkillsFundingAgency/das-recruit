@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
-    public class EmployerOrchestrator : VacancyValidatingOrchestrator<EmployerEditModel>
+    public class EmployerOrchestrator : EntityValidatingOrchestrator<Vacancy, EmployerEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.EmployerName | VacancyRuleSet.EmployerAddress;
         private readonly IEmployerVacancyClient _client;
@@ -33,7 +33,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var employerData = getEmployerDataTask.Result;
             var vacancy = getVacancyTask.Result;
 
-            CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
+            Utility.CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
 
             if (!vacancy.CanEdit)
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
@@ -74,7 +74,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         {
             var vacancy = await _client.GetVacancyAsync(m.VacancyId);
 
-            CheckAuthorisedAccess(vacancy, m.EmployerAccountId);
+            Utility.CheckAuthorisedAccess(vacancy, m.EmployerAccountId);
 
             if (!vacancy.CanEdit)
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));

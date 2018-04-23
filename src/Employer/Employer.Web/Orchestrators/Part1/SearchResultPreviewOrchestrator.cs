@@ -1,11 +1,9 @@
-using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.SearchResultPreview;
-using Esfa.Recruit.Vacancies.Client.Application.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Application.Services.MinimumWage;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
@@ -32,8 +30,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         {
             var vacancy = await _client.GetVacancyAsync(vrm.VacancyId);
 
-            if (!vacancy.EmployerAccountId.Equals(vrm.EmployerAccountId, StringComparison.OrdinalIgnoreCase))
-                throw new AuthorisationException(string.Format(ExceptionMessages.VacancyUnauthorisedAccess, vrm.EmployerAccountId, vacancy.EmployerAccountId, vacancy.Title, vacancy.Id));
+            Utility.CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
 
             if (!vacancy.CanEdit)
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
