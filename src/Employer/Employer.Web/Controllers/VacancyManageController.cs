@@ -1,12 +1,8 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.RouteModel;
-using Esfa.Recruit.Vacancies.Client.Application.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
@@ -15,22 +11,17 @@ namespace Esfa.Recruit.Employer.Web.Controllers
     public class VacancyManageController : Controller
     {
         private readonly VacancyManageOrchestrator _orchestrator;
-        private readonly IEmployerVacancyClient _client;
 
-        public VacancyManageController(VacancyManageOrchestrator orchestrator, IEmployerVacancyClient client)
+        public VacancyManageController(VacancyManageOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
-            _client = client;
         }
 
         [HttpGet("", Name = RouteNames.DisplayVacancy_Get)]
         public async Task<IActionResult> DisplayVacancy(VacancyRouteModel vrm)
         {
-            var vacancy = await _client.GetVacancyAsync(vrm.VacancyId);
-
-            if (!vacancy.EmployerAccountId.Equals(vrm.EmployerAccountId, StringComparison.OrdinalIgnoreCase))
-                throw new AuthorisationException(string.Format(ExceptionMessages.VacancyUnauthorisedAccess, vrm.EmployerAccountId, vacancy.EmployerAccountId, vacancy.Title, vacancy.Id));
-
+            var vacancy = await _orchestrator.GetVacancy(vrm);
+            
             if (vacancy.CanEdit)
             {
                 return HandleRedirectOfDraftVacancy(vacancy);

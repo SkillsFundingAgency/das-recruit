@@ -1,12 +1,16 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.Models;
+using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels;
+using Esfa.Recruit.Vacancies.Client.Application.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Domain.Services;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
@@ -14,11 +18,23 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
     {
         private readonly DisplayVacancyViewModelMapper _vacancyDisplayMapper;
         private readonly ITimeProvider _timeProvider;
+        private readonly IEmployerVacancyClient _client;
 
-        public VacancyManageOrchestrator(DisplayVacancyViewModelMapper vacancyDisplayMapper, ITimeProvider timeProvider)
+        public VacancyManageOrchestrator(DisplayVacancyViewModelMapper vacancyDisplayMapper, ITimeProvider timeProvider, IEmployerVacancyClient client)
         {
             _vacancyDisplayMapper = vacancyDisplayMapper;
             _timeProvider = timeProvider;
+            _client = client;
+        }
+
+        public async Task<Vacancy> GetVacancy(VacancyRouteModel vrm)
+        {
+            var vacancy = await _client.GetVacancyAsync(vrm.VacancyId);
+
+            if (!vacancy.EmployerAccountId.Equals(vrm.EmployerAccountId, StringComparison.OrdinalIgnoreCase))
+                throw new AuthorisationException(string.Format(ExceptionMessages.VacancyUnauthorisedAccess, vrm.EmployerAccountId, vacancy.EmployerAccountId, vacancy.Title, vacancy.Id));
+
+            return vacancy;
         }
 
         public async Task<ManageVacancy> GetVacancyDisplayViewModelAsync(Vacancy vacancy)
