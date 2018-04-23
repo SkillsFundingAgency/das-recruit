@@ -1,12 +1,10 @@
-﻿using System;
-using Esfa.Recruit.Employer.Web.ViewModels.DeleteVacancy;
+﻿using Esfa.Recruit.Employer.Web.ViewModels.DeleteVacancy;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Employer.Web.RouteModel;
-using Esfa.Recruit.Vacancies.Client.Application.Exceptions;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
@@ -22,9 +20,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         public async Task<DeleteViewModel> GetDeleteViewModelAsync(VacancyRouteModel vrm)
         {
             var vacancy = await _client.GetVacancyAsync(vrm.VacancyId);
-            
-            if (!vacancy.EmployerAccountId.Equals(vrm.EmployerAccountId, StringComparison.OrdinalIgnoreCase))
-                throw new AuthorisationException(string.Format(ExceptionMessages.VacancyUnauthorisedAccess, vrm.EmployerAccountId, vacancy.EmployerAccountId, vacancy.Title, vacancy.Id));
+
+            Utility.CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
 
             if (!vacancy.CanDelete)
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
@@ -41,8 +38,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         {
             var vacancy = await _client.GetVacancyAsync(m.VacancyId);
 
-            if (!vacancy.EmployerAccountId.Equals(m.EmployerAccountId, StringComparison.OrdinalIgnoreCase))
-                throw new AuthorisationException(string.Format(ExceptionMessages.VacancyUnauthorisedAccess, m.EmployerAccountId, vacancy.EmployerAccountId, vacancy.Title, vacancy.Id));
+            Utility.CheckAuthorisedAccess(vacancy, m.EmployerAccountId);
 
             if (!vacancy.CanDelete)
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));

@@ -59,7 +59,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
 
             TempData.Remove(TrainingProviderJourneyTempDataKey);
             var vacancy = await _client.GetVacancyAsync(confirmDetailsVm.VacancyId);
-            _orchestrator.CheckAuthorisedAccess(vacancy, confirmDetailsVm.EmployerAccountId);
+            Utility.CheckAuthorisedAccess(vacancy, confirmDetailsVm.EmployerAccountId);
             return View(confirmDetailsVm);
         }
 
