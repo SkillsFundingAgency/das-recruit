@@ -1,54 +1,50 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using Esfa.Recruit.Qa.Web.Configuration;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.WsFederation;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
+using Esfa.Recruit.Qa.Web.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Net.Http.Headers;
 
 namespace Esfa.Recruit.Qa.Web
 {
     public partial class Startup
     {
+        private readonly IConfiguration _configuration;
+        private readonly AuthenticationConfiguration _authConfig;
+        private readonly ExternalLinksConfiguration _externalLinks;
+
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            _configuration = configuration;
+            _authConfig = _configuration.GetSection("Authentication").Get<AuthenticationConfiguration>();
+            _externalLinks = _configuration.GetSection("ExternalLinks").Get<ExternalLinksConfiguration>();
         }
-
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var authConfig = Configuration.GetSection("Authentication").Get<AuthenticationConfiguration>();
-             
-            services.AddAuthentication(sharedOptions =>
-                {
-                    sharedOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                    sharedOptions.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                    sharedOptions.DefaultChallengeScheme = WsFederationDefaults.AuthenticationScheme;
-                    sharedOptions.DefaultSignOutScheme = WsFederationDefaults.AuthenticationScheme;
-                })
-                .AddWsFederation(options =>
-                {
-                    options.Wtrealm = authConfig.Wtrealm;
-                    options.MetadataAddress = authConfig.MetaDataAddress;
-                    //options.CallbackPath = "/";
-                    //options.SkipUnrecognizedRequests = true;
-                })
-                .AddCookie();
-                
+            // Routing has to come before adding Mvc
+            services.AddRouting(opt =>
+            {
+                opt.AppendTrailingSlash = true;
+            });
+
             services.AddMvc(options =>
             {
                 options.SslPort = 5025;
                 options.Filters.Add(new RequireHttpsAttribute());
+                options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+                options.AddTrimModelBinderProvider();
+
+                var jsonInputFormatters = options.InputFormatters.OfType<JsonInputFormatter>();
+                foreach (var formatter in jsonInputFormatters)
+                {
+                    formatter.SupportedMediaTypes
+                        .Add(MediaTypeHeaderValue.Parse("application/csp-report"));
+                }
             });
 
             services.AddAntiforgery(
@@ -60,6 +56,9 @@ namespace Esfa.Recruit.Qa.Web
                     options.HeaderName = "X-XSRF-TOKEN";
                 }
             );
+
+            services.AddApplicationInsightsTelemetry(_configuration);
+            services.AddAuthenticationService(_authConfig);
         }
     }
 }

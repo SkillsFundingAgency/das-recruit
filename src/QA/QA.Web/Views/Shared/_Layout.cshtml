@@ -51,9 +51,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta property="og:image" content="/lib/esfa-govuk/assets/images/opengraph-image.png">
 
-    <link rel="stylesheet" media="screen" href="/css/application.css" />
+    <link rel="stylesheet" media="screen" href="wwwroot/css/application.css" />
     <script src="/lib/jquery/dist/jquery.js"></script>
-    
+    <!-- <environment include="Development">
+        <link rel="stylesheet" media="screen" href="wwwroot/css/application.css" />
+        <script src="/lib/jquery/dist/jquery.js"></script>
+    </environment> -->
+    <!-- <environment exclude="Development">
+        <link rel="stylesheet" media="screen" href="~/css/application.min.css" />
+        <script src="/lib/jquery/dist/jquery.min.js"></script>
+    </environment> -->
 </head>
 
 <body>
@@ -85,7 +92,7 @@
                     <ul role="menubar">
                         @if (Context.User.Identity.IsAuthenticated)
                         {
-                            <li><a asp-route="sign-out" role="menuitem" class="menu-main">Sign out</a></li>
+                            <li><a href="~/signout" role="menuitem" class="menu-main">Sign out</a></li>
                         }
                     </ul>
                 </nav>
@@ -120,9 +127,10 @@
     <!-- TODO: LWA - What is this for? -->
     <div id="global-app-error" class="app-error hidden"></div>
 
-    <script src="/lib/esfa-govuk/assets/javascripts/govuk-template.js"></script>
+    <!-- TODO: LWA Do we need these scripts included? -->
+    <!-- <script src="/lib/esfa-govuk/assets/javascripts/govuk-template.js"></script>
     <script src="/lib/esfa-govuk/assets/javascripts/govuk/show-hide-content.js"></script>
-    <script src="/javascripts/application.js"></script>
+    <script src="/javascripts/application.js"></script> -->
 
 </body>
 </html>
