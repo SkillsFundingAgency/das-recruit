@@ -17,6 +17,7 @@ namespace Esfa.Recruit.Qa.Web.Controllers
             return View();
         }
 
+        // TODO: LWA Move this actions somewhere else
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
