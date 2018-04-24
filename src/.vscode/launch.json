@@ -22,10 +22,10 @@
             "internalConsoleOptions": "openOnSessionStart"
        },
        {
-            "name": "Launch Website",
+            "name": "Launch Emp Website",
             "type": "coreclr",
             "request": "launch",
-            "preLaunchTask": "build-web",
+            "preLaunchTask": "build-emp-web",
             // If you have changed target frameworks, make sure to update the program path.
             "program": "${workspaceFolder}/Employer/Employer.Web/bin/Debug/netcoreapp2.0/Esfa.Recruit.Employer.Web.dll",
             "args": [],
@@ -51,6 +51,38 @@
             },
             "sourceFileMap": {
                 "/Views": "${workspaceFolder}/Employer/Employer.Web/Views"
+            }
+        },
+        {
+            "name": "Launch QA Website",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build-qa-web",
+            // If you have changed target frameworks, make sure to update the program path.
+            "program": "${workspaceFolder}/QA/QA.Web/bin/Debug/netcoreapp2.0/Esfa.Recruit.Qa.Web.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/QA/QA.Web",
+            "stopAtEntry": false,
+            "internalConsoleOptions": "openOnSessionStart",
+            "launchBrowser": {
+                "enabled": true,
+                "args": "${auto-detect-url}/",
+                "windows": {
+                    "command": "cmd.exe",
+                    "args": "/C start ${auto-detect-url}/"
+                },
+                "osx": {
+                    "command": "open"
+                },
+                "linux": {
+                    "command": "xdg-open"
+                }
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/QA/QA.Web/Views"
             }
         },
         {
