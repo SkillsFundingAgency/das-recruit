@@ -2,6 +2,10 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "TemplateBaseUrl": {
+      "type": "string",
+      "defaultValue": "https://github.com/SkillsFundingAgency/das-recruit/tree/master/src/Employer/Esfa.Recruit.Azure.Resources"
+    },
     "EnvironmentName": {
       "type": "string"
     },
@@ -49,26 +53,42 @@
     "SharedAppServicePlanResourceGroup": {
       "type": "string"
     },
-    "CustomHostname": {
+    "EmployerCustomHostname": {
       "type": "string"
     },
-    "KeyvaultCertificateName": {
+    "EmployerKeyvaultCertificateName": {
+      "type": "string"
+    },
+    "QAAppCustomHostname": {
+      "type": "string"
+    },
+    "QAAppKeyvaultCertificateName": {
       "type": "string"
     }
   },
   "variables": {
     "EmployerRecruitAppServiceName": "[concat('das-', toLower(parameters('EnvironmentName')), '-rcrt-as')]",
+    "QAAppServiceName": "[concat('das-', toLower(parameters('EnvironmentName')), '-qapp-as')]",
     "CosmosDbName": "[concat('das-', toLower(parameters('EnvironmentName')),'-rcrt-cdb')]",
-    "AppInsightsName": "[concat('das-', toLower(parameters('EnvironmentName')),'-rcrt-ai')]",
     "WebJobAppServiceName": "[concat('das-', toLower(parameters('EnvironmentName')), '-rcrt-webjob-as')]",
     "StorageAccountName": "[concat('das', toLower(parameters('EnvironmentName')), 'rcrtstr')]",
-    "SharedAppServicePlanId": "[resourceId(parameters('SharedAppServicePlanResourceGroup'), 'Microsoft.Web/serverfarms', parameters('SharedAppServicePlanName'))]",
-    "UseCustomHostname": "[greater(length(parameters('CustomHostname')), 0)]"
+    "AppServiceTemplateUri": "[concat(parameters('TemplateBaseUrl'), '/deployments/app-service-resources.json')]",
+    "SharedAppServicePlanId": "[resourceId(parameters('SharedAppServicePlanResourceGroup'), 'Microsoft.Web/serverfarms', parameters('SharedAppServicePlanName'))]"
   },
   "resources": [
     {
       "apiVersion": "2015-05-01",
-      "name": "[variables('AppInsightsName')]",
+      "name": "[variables('EmployerRecruitAppServiceName')]",
+      "type": "Microsoft.Insights/components",
+      "location": "[resourceGroup().location]",
+      "kind": "web",
+      "properties": {
+        "Application_Type": "web"
+      }
+    },
+    {
+      "apiVersion": "2015-05-01",
+      "name": "[variables('QAAppServiceName')]",
       "type": "Microsoft.Insights/components",
       "location": "[resourceGroup().location]",
       "kind": "web",
@@ -91,123 +111,159 @@
       }
     },
     {
-      "name": "[variables('EmployerRecruitAppServiceName')]",
-      "type": "Microsoft.Web/sites",
-      "apiVersion": "2016-08-01",
-      "location": "[resourceGroup().location]",
+      "name": "Employer-Recruit-AppService",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2017-05-10",
       "properties": {
-        "serverFarmId": "[variables('SharedAppServicePlanId')]",
-        "siteConfig": {
-          "appSettings": [
-            {
-              "name": "Authentication:Authority",
-              "value": "[parameters('Authentication').Authority]"
-            },
-            {
-              "name": "Authentication:MetaDataAddress",
-              "value": "[parameters('Authentication').MetaDataAddress]"
-            },
-            {
-              "name": "Authentication:ClientId",
-              "value": "[parameters('Authentication').ClientId]"
-            },
-            {
-              "name": "Authentication:ClientSecret",
-              "value": "[parameters('Authentication').ClientSecret]"
-            },
-            {
-              "name": "AccountApiConfiguration:ApiBaseUrl",
-              "value": "[parameters('AccountApiConfiguration').ApiBaseUrl]"
-            },
-            {
-              "name": "AccountApiConfiguration:ClientId",
-              "value": "[parameters('AccountApiConfiguration').ClientId]"
-            },
-            {
-              "name": "AccountApiConfiguration:ClientSecret",
-              "value": "[parameters('AccountApiConfiguration').ClientSecret]"
-            },
-            {
-              "name": "AccountApiConfiguration:IdentifierUri",
-              "value": "[parameters('AccountApiConfiguration').IdentifierUri]"
-            },
-            {
-              "name": "AccountApiConfiguration:Tenant",
-              "value": "[parameters('AccountApiConfiguration').Tenant]"
-            },
-            {
-              "name": "ApplicationInsights:InstrumentationKey",
-              "value": "[reference(concat('microsoft.insights/components/', variables('AppInsightsName'))).InstrumentationKey]"
-            },
-            {
-              "name": "ExternalLinks:ManageApprenticeshipSiteUrl",
-              "value": "[parameters('ExternalLinks').ManageApprenticeshipSiteUrl]"
-            },
-            {
-              "name": "ExternalLinks:EmployerIdamsSiteUrl",
-              "value": "[parameters('ExternalLinks').EmployerIdamsSiteUrl]"
-            },
-            {
-              "name": "Environment",
-              "value": "[toUpper(parameters('EnvironmentName'))]"
-            },
-            {
-              "name": "GoogleMapsPrivateKey",
-              "value": "[parameters('GoogleMapsPrivateKey')]"
-            }
-          ],
-          "connectionStrings": [
-            {
-              "name": "Redis",
-              "connectionString": "[parameters('LoggingRedisConnectionString')]",
-              "type": "Custom"
-            },
-            {
-              "name": "MongoDb",
-              "connectionString": "[concat('mongodb://', variables('CosmosDbName'), ':', listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', variables('CosmosDbName')), '2015-11-06').primaryMasterKey,'@', variables('CosmosDbName'), '.documents.azure.com:10255/?ssl=true&replicaSet=globaldb')]",
-              "type": "Custom"
-            },
-            {
-              "name": "Storage",
-              "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('StorageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]",
-              "type": "Custom"
-            }
-          ],
-          "alwaysOn": true
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('AppServiceTemplateUri')]",
+          "contentVersion": "1.0.0.0"
         },
-        "httpsOnly": true
-      },
-      "resources": [
-        {
-          "name": "staging",
-          "type": "slots",
-          "apiVersion": "2016-08-01",
-          "location": "[resourceGroup().location]",
-          "properties": {
-            "scmSiteAlsoStopped": true
+        "parameters": {
+          "AppServiceName": {
+            "value": "[variables('EmployerRecruitAppServiceName')]"
           },
-          "dependsOn": [
-            "[variables('EmployerRecruitAppServiceName')]"
-          ]
+          "AppSettings": {
+            "value": [
+              {
+                "name": "Authentication:Authority",
+                "value": "[parameters('Authentication').Authority]"
+              },
+              {
+                "name": "Authentication:MetaDataAddress",
+                "value": "[parameters('Authentication').MetaDataAddress]"
+              },
+              {
+                "name": "Authentication:ClientId",
+                "value": "[parameters('Authentication').ClientId]"
+              },
+              {
+                "name": "Authentication:ClientSecret",
+                "value": "[parameters('Authentication').ClientSecret]"
+              },
+              {
+                "name": "AccountApiConfiguration:ApiBaseUrl",
+                "value": "[parameters('AccountApiConfiguration').ApiBaseUrl]"
+              },
+              {
+                "name": "AccountApiConfiguration:ClientId",
+                "value": "[parameters('AccountApiConfiguration').ClientId]"
+              },
+              {
+                "name": "AccountApiConfiguration:ClientSecret",
+                "value": "[parameters('AccountApiConfiguration').ClientSecret]"
+              },
+              {
+                "name": "AccountApiConfiguration:IdentifierUri",
+                "value": "[parameters('AccountApiConfiguration').IdentifierUri]"
+              },
+              {
+                "name": "AccountApiConfiguration:Tenant",
+                "value": "[parameters('AccountApiConfiguration').Tenant]"
+              },
+              {
+                "name": "ApplicationInsights:InstrumentationKey",
+                "value": "[reference(concat('microsoft.insights/components/', variables('EmployerRecruitAppServiceName'))).InstrumentationKey]"
+              },
+              {
+                "name": "ExternalLinks:ManageApprenticeshipSiteUrl",
+                "value": "[parameters('ExternalLinks').ManageApprenticeshipSiteUrl]"
+              },
+              {
+                "name": "ExternalLinks:EmployerIdamsSiteUrl",
+                "value": "[parameters('ExternalLinks').EmployerIdamsSiteUrl]"
+              },
+              {
+                "name": "Environment",
+                "value": "[toUpper(parameters('EnvironmentName'))]"
+              },
+              {
+                "name": "GoogleMapsPrivateKey",
+                "value": "[parameters('GoogleMapsPrivateKey')]"
+              }
+            ]
+          },
+          "ConnectionString": {
+            "value": [
+              {
+                "name": "Redis",
+                "connectionString": "[parameters('LoggingRedisConnectionString')]",
+                "type": "Custom"
+              },
+              {
+                "name": "MongoDb",
+                "connectionString": "[concat('mongodb://', variables('CosmosDbName'), ':', listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', variables('CosmosDbName')), '2015-11-06').primaryMasterKey,'@', variables('CosmosDbName'), '.documents.azure.com:10255/?ssl=true&replicaSet=globaldb')]",
+                "type": "Custom"
+              },
+              {
+                "name": "Storage",
+                "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('StorageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]",
+                "type": "Custom"
+              }
+            ]
+          },
+          "CustomHostname": {
+            "value": "[parameters('EmployerCustomHostname')]"
+          },
+          "SharedAppServicePlanResourceGroup": {
+            "value": "[parameters('SharedAppServicePlanResourceGroup')]"
+          },
+          "SharedAppServicePlanName": {
+            "value": "[parameters('SharedAppServicePlanName')]"
+          },
+          "KeyvaultCertificateName": {
+            "value": "[parameters('EmployerKeyvaultCertificateName')]"
+          }
         }
-      ],
+      },
       "dependsOn": [
-        "[resourceId('microsoft.insights/components', variables('AppInsightsName'))]",
+        "[resourceId('microsoft.insights/components', variables('EmployerRecruitAppServiceName'))]",
         "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('CosmosDbName'))]"
       ]
     },
     {
-      "type": "Microsoft.Web/sites/hostnameBindings",
-      "condition": "[variables('UseCustomHostname')]",
-      "name": "[concat(variables('EmployerRecruitAppServiceName'), '/', if(variables('UseCustomHostname'), parameters('CustomHostname'), 'placeholder'))]",
-      "apiVersion": "2016-03-01",
-      "location": "[resourceGroup().location]",
+      "name": "QA-App-AppService",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2017-05-10",
       "properties": {
-        "sslState": "SniEnabled",
-        "thumbprint": "[reference(resourceId(parameters('SharedAppServicePlanResourceGroup'), 'Microsoft.Web/certificates', parameters('KeyvaultCertificateName')), '2016-03-01').Thumbprint]"
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('AppServiceTemplateUri')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "AppServiceName": {
+            "value": "[variables('QAAppServiceName')]"
+          },
+          "SharedAppServicePlanName": {
+            "value": "[parameters('SharedAppServicePlanName')]"
+          },
+          "SharedAppServicePlanResourceGroup": {
+            "value": "[parameters('SharedAppServicePlanResourceGroup')]"
+          },
+          "AppSettings": {
+            "value": []
+          },
+          "ConnectionString": {
+            "value": [
+              {
+                "name": "Redis",
+                "connectionString": "[parameters('LoggingRedisConnectionString')]",
+                "type": "Custom"
+              }
+            ]
+          },
+          "CustomHostname": {
+            "value": "[parameters('QAAppCustomHostname')]"
+          },
+          "KeyvaultCertificateName": {
+            "value": "[parameters('QAAppKeyvaultCertificateName')]"
+          }
+        }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Web/sites', variables('EmployerRecruitAppServiceName'))]"
+        "[resourceId('microsoft.insights/components', variables('QAAppServiceName'))]"
       ]
     },
     {
@@ -238,6 +294,7 @@
       "name": "[variables('WebJobAppServiceName')]",
       "type": "Microsoft.Web/sites",
       "apiVersion": "2016-08-01",
+      "comments": "This will become a Function App when Core is GA",
       "location": "[resourceGroup().location]",
       "properties": {
         "serverFarmId": "[variables('SharedAppServicePlanId')]",
