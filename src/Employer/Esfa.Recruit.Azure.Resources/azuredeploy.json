@@ -68,7 +68,7 @@
   },
   "variables": {
     "EmployerRecruitAppServiceName": "[concat('das-', toLower(parameters('EnvironmentName')), '-rcrt-as')]",
-    "QAAppServiceName": "[concat('das-', toLower(parameters('EnvironmentName')), '-qapp-as')]",
+    "QAAppServiceName": "[concat('das-', toLower(parameters('EnvironmentName')), '-rcrt-qa-as')]",
     "CosmosDbName": "[concat('das-', toLower(parameters('EnvironmentName')),'-rcrt-cdb')]",
     "WebJobAppServiceName": "[concat('das-', toLower(parameters('EnvironmentName')), '-rcrt-webjob-as')]",
     "StorageAccountName": "[concat('das', toLower(parameters('EnvironmentName')), 'rcrtstr')]",
