@@ -13,7 +13,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
     public class UpdateDashboardOnVacancyChange : INotificationHandler<VacancyCreatedEvent>,
                                                     INotificationHandler<VacancyUpdatedEvent>,
                                                     INotificationHandler<VacancySubmittedEvent>,
-                                                    INotificationHandler<VacancyDeletedEvent>
+                                                    INotificationHandler<VacancyDeletedEvent>,
+                                                    INotificationHandler<VacancyLiveEvent>
     {
         private readonly IQueryStoreWriter _queryStoreWriter;
         private readonly ILogger<UpdateDashboardOnVacancyChange> _logger;
@@ -45,6 +46,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
         }
 
         public async Task Handle(VacancyDeletedEvent notification, CancellationToken cancellationToken)
+        {
+            _logger.LogInformation($"Handling {notification?.GetType().Name} for accountId: {{employerAccountId}}", notification?.EmployerAccountId);
+            await ReBuildDashboard(notification.EmployerAccountId);
+        }
+
+        public async Task Handle(VacancyLiveEvent notification, CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Handling {notification?.GetType().Name} for accountId: {{employerAccountId}}", notification?.EmployerAccountId);
             await ReBuildDashboard(notification.EmployerAccountId);

@@ -18,7 +18,11 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
 
         public DateTime? SubmittedDate { get; internal set; }
         public VacancyUser SubmittedByUser { get; internal set; }
-        
+
+        public DateTime? ApprovedDate { get; internal set; }
+
+        public DateTime? LiveDate { get; internal set; }
+
         public DateTime? LastUpdatedDate { get; internal set; }
         public VacancyUser LastUpdatedByUser { get; internal set; }
         
@@ -64,5 +68,15 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         /// We can only submit draft vacancies that have not been deleted
         /// </summary>
         public bool CanSubmit => Status == VacancyStatus.Draft && IsDeleted == false;
+
+        /// <summary>
+        /// We can only approve submitted vacancies that have not been deleted
+        /// </summary>
+        public bool CanApprove => Status == VacancyStatus.Submitted && IsDeleted == false;
+
+        /// <summary>
+        /// We can only make approved vacancies live that have not been deleted
+        /// </summary>
+        public bool CanMakeLive => Status == VacancyStatus.Approved && IsDeleted == false;
     }
 }
