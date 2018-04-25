@@ -8,7 +8,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
     public interface IJobsVacancyClient
     {
-        Task AssignVacancyNumber(Guid id);
+        Task AssignVacancyNumber(Guid vacancyId);
 
         Task UpdateApprenticeshipProgrammesAsync(IEnumerable<ApprenticeshipProgramme> programmes);
 

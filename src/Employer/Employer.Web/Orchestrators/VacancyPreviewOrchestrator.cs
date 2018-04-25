@@ -46,15 +46,15 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return vm;
         }
         
-        public async Task<OrchestratorResponse<bool>> TrySubmitVacancyAsync(SubmitEditModel m, VacancyUser user)
+        public async Task<OrchestratorResponse> SubmitVacancyAsync(SubmitEditModel m, VacancyUser user)
         {
             var vacancy = await _client.GetVacancyAsync(m.VacancyId);
 
             Utility.CheckAuthorisedAccess(vacancy, m.EmployerAccountId);
 
-            if (!vacancy.CanEdit)
+            if (!vacancy.CanSubmit)
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
-
+            
             return await ValidateAndExecute(
                 vacancy,
                 v =>

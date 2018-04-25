@@ -36,21 +36,16 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         [HttpPost("preview", Name = RouteNames.Preview_Submit_Post)]
         public async Task<IActionResult> Submit(SubmitEditModel m)
         {
-            var response = await _orchestrator.TrySubmitVacancyAsync(m, User.ToVacancyUser());
+            var response = await _orchestrator.SubmitVacancyAsync(m, User.ToVacancyUser());
 
             if (!response.Success)
             {
                 response.AddErrorsToModelState(ModelState);
             }
 
-            if (ModelState.IsValid && response.Data)
+            if (ModelState.IsValid)
             {
                 return RedirectToRoute(RouteNames.Submitted_Index_Get);
-            }
-
-            if (ModelState.IsValid && !response.Data)
-            {
-                ModelState.AddModelError(string.Empty, "Vacancy has already been submitted");
             }
 
             var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(m);

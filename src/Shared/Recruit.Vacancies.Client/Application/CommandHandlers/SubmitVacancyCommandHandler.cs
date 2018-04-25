@@ -5,6 +5,8 @@ using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Services;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
@@ -12,22 +14,39 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
     {
         private readonly IVacancyRepository _repository;
         private readonly IMessaging _messaging;
+        private readonly ITimeProvider _timeProvider;
 
-        public SubmitVacancyCommandHandler(IVacancyRepository repository, IMessaging messaging)
+        public SubmitVacancyCommandHandler(IVacancyRepository repository, IMessaging messaging, ITimeProvider timeProvider)
         {
             _repository = repository;
             _messaging = messaging;
+            _timeProvider = timeProvider;
         }
 
         public async Task Handle(SubmitVacancyCommand message, CancellationToken cancellationToken)
         {
-            await _repository.UpdateAsync(message.Vacancy);
+            var vacancy = await _repository.GetVacancyAsync(message.VacancyId);
+            
+            if (vacancy == null || vacancy.CanSubmit == false)
+            {
+                return;
+            }
+            
+            var now = _timeProvider.Now;
+
+            vacancy.Status = VacancyStatus.Submitted;
+            vacancy.SubmittedDate = now;
+            vacancy.SubmittedByUser = message.User;
+            vacancy.LastUpdatedDate = now;
+            vacancy.LastUpdatedByUser = message.User;
+
+            await _repository.UpdateAsync(vacancy);
 
             await _messaging.PublishEvent(new VacancySubmittedEvent
             {
                 SourceCommandId = message.CommandId.ToString(),
-                EmployerAccountId = message.Vacancy.EmployerAccountId,
-                VacancyId = message.Vacancy.Id
+                EmployerAccountId = vacancy.EmployerAccountId,
+                VacancyId = vacancy.Id
             });
         }
     }
