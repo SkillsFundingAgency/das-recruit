@@ -6,6 +6,7 @@
         Submitted,
         Referred,
         Live,
-        Closed
+        Closed,
+        Approved
     }
 }
