@@ -3,7 +3,7 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "TemplateBaseUrl": {
-      "value": "https://github.com/SkillsFundingAgency/das-recruit/tree/master/src/Employer/Esfa.Recruit.Azure.Resources"
+      "value": "https://raw.githubusercontent.com/SkillsFundingAgency/das-recruit/master/src/Employer/Esfa.Recruit.Azure.Resources"
     },
     "EnvironmentName": {
       "value": "dev"

@@ -4,7 +4,7 @@
   "parameters": {
     "TemplateBaseUrl": {
       "type": "string",
-      "defaultValue": "https://github.com/SkillsFundingAgency/das-recruit/tree/master/src/Employer/Esfa.Recruit.Azure.Resources"
+      "defaultValue": "https://raw.githubusercontent.com/SkillsFundingAgency/das-recruit/master/src/Employer/Esfa.Recruit.Azure.Resources"
     },
     "EnvironmentName": {
       "type": "string"
@@ -184,7 +184,7 @@
               }
             ]
           },
-          "ConnectionString": {
+          "ConnectionStrings": {
             "value": [
               {
                 "name": "Redis",
@@ -245,7 +245,7 @@
           "AppSettings": {
             "value": []
           },
-          "ConnectionString": {
+          "ConnectionStrings": {
             "value": [
               {
                 "name": "Redis",
