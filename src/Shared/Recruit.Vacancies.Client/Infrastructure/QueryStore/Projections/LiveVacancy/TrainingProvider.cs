@@ -4,6 +4,5 @@
     {
         public long Ukprn { get; set; }
         public string Name { get; set; }
-        public Address Address { get; set; }
     }
 }

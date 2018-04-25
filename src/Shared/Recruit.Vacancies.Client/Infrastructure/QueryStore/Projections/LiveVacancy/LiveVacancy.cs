@@ -23,7 +23,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Li
         public string ProgrammeId { get; set; }
         public IEnumerable<Qualification> Qualifications { get; set; }
         public string ShortDescription { get; set; }
-        public List<string> Skills { get; set; }
+        public IEnumerable<string> Skills { get; set; }
         public DateTime StartDate { get; set; }
         public string ThingsToConsider { get; set; }
         public string Title { get; set; }
