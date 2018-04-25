@@ -16,8 +16,8 @@
                 <input asp-for="EmployerWebsiteUrl" class="form-control" maxlength="100" />
             </div>
             <div class="form-group">
-                <input type="submit" value="Save and continue" class="button" />
-                <a asp-route="@RouteNames.Vacancy_Preview_Get" class="button-link">Cancel</a>
+                <input type="submit" value="Save and continue" id="btn-continue" class="button" />
+                <a asp-route="@RouteNames.Vacancy_Preview_Get" id="link-cancel" lass="button-link">Cancel</a>
             </div>
         </form>
     </div>

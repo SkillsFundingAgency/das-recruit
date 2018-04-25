@@ -24,8 +24,8 @@
                 <textarea asp-for="OutcomeDescription" class="form-control form-control-3-4 textarea-expandable" rows="1" cols="20"></textarea>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save and continue" class="button" />
-                <a asp-route="@RouteNames.Vacancy_Preview_Get" class="button-link">Cancel</a>
+                <input type="submit" value="Save and continue" id="btn-continue" class="button" />
+                <a asp-route="@RouteNames.Vacancy_Preview_Get" id="link-cancel" class="button-link">Cancel</a>
             </div>
         </form>
     </div>
