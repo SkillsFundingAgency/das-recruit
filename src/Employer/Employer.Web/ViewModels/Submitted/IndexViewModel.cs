@@ -4,5 +4,7 @@
     {
         public string Title { get; set; }
         public string VacancyReference { get; set; }
+
+        public bool HasVacancyReference => !string.IsNullOrEmpty(VacancyReference);
     }
 }

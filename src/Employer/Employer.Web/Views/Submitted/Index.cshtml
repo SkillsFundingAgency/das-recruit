@@ -8,7 +8,7 @@
             <h1 class="heading-xlarge">
                 Vacancy submitted for approval
             </h1>
-            <p class="font-large">
+            <p asp-condition="@Model.HasVacancyReference" class="font-large">
                 The vacancy reference number is <br>
                 <strong class="bold">VAC@(Model.VacancyReference)</strong>
             </p>
