@@ -46,7 +46,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             {
                 SourceCommandId = message.CommandId.ToString(),
                 EmployerAccountId = vacancy.EmployerAccountId,
-                VacancyId = vacancy.Id
+                VacancyId = vacancy.Id,
+                VacancyReference = vacancy.VacancyReference.Value
             });
         }
     }

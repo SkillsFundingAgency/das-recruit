@@ -23,6 +23,7 @@ using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using SFA.DAS.EAS.Account.Api.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Slack;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -41,7 +42,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient<IEmployerVacancyClient, VacancyClient>();
             services.AddTransient<IJobsVacancyClient, VacancyClient>();
 
-            RegisterServiceDeps(services);
+            RegisterServiceDeps(services, configuration);
 
             services.AddRepositories(configuration);
 
@@ -56,13 +57,17 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient<IAccountApiClient, AccountApiClient>();
         }
 
-        private static void RegisterServiceDeps(IServiceCollection services)
+        private static void RegisterServiceDeps(IServiceCollection services, IConfiguration configuration)
         {
             services.AddTransient<ITimeProvider, CurrentUtcTimeProvider>();
             services.AddTransient<IEmployerAccountService, EmployerAccountService>();
             services.AddTransient<IGetMinimumWages, StubNationalMinimumWageService>();
             services.AddTransient<IGenerateVacancyNumbers, MongoSequenceStore>();
             services.AddTransient<IApprenticeshipProgrammeProvider, ApprenticeshipProgrammeProvider>(); 
+            
+            services.Configure<SlackConfiguration>(configuration.GetSection("Slack"));
+            services.AddTransient<INotifyVacancyReviewUpdates, VacancyReviewSlackClient>();
+            services.AddTransient<ISlackClient, SlackClient>();
         }
 
         private static void AddRepositories(this IServiceCollection services, IConfiguration configuration)
@@ -76,6 +81,8 @@ namespace Microsoft.Extensions.DependencyInjection
 
             MongoDbConventions.RegisterMongoConventions();
             services.AddTransient<IVacancyRepository, MongoDbVacancyRepository>();
+            services.AddTransient<IVacancyReviewRepository, MongoDbVacancyReviewRepository>();
+
             services.AddTransient<IQueryStore, MongoQueryStore>();
             services.AddTransient<IQueryStoreReader, QueryStoreClient>();
   

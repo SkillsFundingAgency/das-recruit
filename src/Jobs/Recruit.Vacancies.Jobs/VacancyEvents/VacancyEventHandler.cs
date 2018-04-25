@@ -31,9 +31,13 @@ namespace Esfa.Recruit.Vacancies.Jobs.VacancyEvents
             throw new NotImplementedException();
         }
 
-        public Task Handle(VacancySubmittedEvent @event)
+        public async Task Handle(VacancySubmittedEvent @event)
         {
-            throw new NotImplementedException();
+            _logger.LogInformation($"Processing {nameof(VacancySubmittedEvent)} for vacancy: {{VacancyId}}", @event.VacancyId);
+            
+            await _client.CreateVacancyReview(@event.VacancyReference);
+
+            _logger.LogInformation($"Finished Processing {nameof(VacancySubmittedEvent)} for vacancy: {{VacancyId}}", @event.VacancyId);
         }
 
         public Task Handle(VacancyDeletedEvent @event)

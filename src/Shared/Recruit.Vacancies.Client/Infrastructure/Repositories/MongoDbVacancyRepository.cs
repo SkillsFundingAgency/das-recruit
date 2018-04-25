@@ -7,6 +7,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using System.Linq.Expressions;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 {
@@ -28,9 +29,19 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             await collection.InsertOneAsync(vacancy);
         }
 
+        public async Task<Vacancy> GetVacancyAsync(long vacancyReference)
+        {
+            return await FindVacancy(v => v.VacancyReference, vacancyReference);
+        }
+
         public async Task<Vacancy> GetVacancyAsync(Guid id)
         {
-            var filter = Builders<Vacancy>.Filter.Eq(v => v.Id, id);
+            return await FindVacancy(v => v.Id, id);
+        }
+
+        private async Task<Vacancy> FindVacancy<TField>(Expression<Func<Vacancy, TField>> expression, TField value)
+        {
+            var filter = Builders<Vacancy>.Filter.Eq(expression, value);
 
             var collection = GetCollection<Vacancy>();
             var result = await collection.FindAsync(filter);
