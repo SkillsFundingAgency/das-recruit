@@ -20,6 +20,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Update="nlog.config" CopyToOutputDirectory="PreserveNewest"/>
-    <Content Update="localhost.pfx" CopyToOutputDirectory="PreserveNewest"/>
+    <None Update="localhost.pfx" CopyToOutputDirectory="PreserveNewest"/>
   </ItemGroup>
 </Project>
