@@ -118,6 +118,18 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             };
 
             await _messaging.SendCommandAsync(command);
+            
+            return true;
+        }
+
+        public async Task<bool> ApproveVacancyAsync(Guid id)
+        {
+            var command = new ApproveVacancyCommand()
+            {
+                VacancyId = id
+            };
+
+            await _messaging.SendCommandAsync(command);
 
             return true;
         }

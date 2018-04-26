@@ -52,6 +52,15 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                         ViewModel = submittedViewModel,
                         ViewName = ViewNames.ManageSubmittedVacancyView
                     };
+                case VacancyStatus.Approved:
+                    var approvedViewModel = new ApprovedVacancyViewModel();
+                    await _vacancyDisplayMapper.MapFromVacancyAsync(approvedViewModel, vacancy);
+                    approvedViewModel.ApprovedDate = vacancy.ApprovedDate.Value.AsDisplayDate();
+                    return new ManageVacancy
+                    {
+                        ViewModel = approvedViewModel,
+                        ViewName = ViewNames.ManageApprovedVacancyView
+                    };
                 case VacancyStatus.Live:
                     var liveViewModel = new LiveVacancyViewModel();
                     await _vacancyDisplayMapper.MapFromVacancyAsync(liveViewModel, vacancy);

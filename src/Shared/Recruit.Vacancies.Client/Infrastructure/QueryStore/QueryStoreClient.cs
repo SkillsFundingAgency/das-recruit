@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Services;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Dashboard;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.LiveVacancy;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Models;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
@@ -72,12 +73,26 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 
             return _queryStore.UpsertAsync(employerVacancyDataItem);
         }
-
+        
         public Task<EditVacancyInfo> GetEmployerVacancyDataAsync(string employerAccountId)
         {
             var key = QueryViewType.EditVacancyInfo.GetIdValue(employerAccountId);
 
             return _queryStore.GetAsync<EditVacancyInfo>(key);
+        }
+
+        public Task UpdateLiveVacancyAsync(LiveVacancy vacancy)
+        {
+            vacancy.Id = GetLiveVacancyId(vacancy.VacancyReference);
+            vacancy.Type = QueryViewType.LiveVacancy.TypeName;
+            vacancy.LastUpdated = _timeProvider.Now;
+
+            return _queryStore.UpsertAsync(vacancy);
+        }
+
+        private string GetLiveVacancyId(long vacancyReference)
+        {
+            return QueryViewType.LiveVacancy.GetIdValue(vacancyReference.ToString());
         }
     }
 }
