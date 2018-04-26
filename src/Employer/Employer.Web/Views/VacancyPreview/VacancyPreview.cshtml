@@ -24,9 +24,9 @@
     {
         if(state == VacancyPreviewSectionState.Incomplete)
         {
-            return Html.RouteLink("Add", routeName, null, new { @class = "button-secondary", id });
+            return Html.RouteLink("Add", routeName, null, new { @class = "button-secondary", data_automation=id });
         }
-        return Html.RouteLink("Edit", routeName, null, new { id });
+        return Html.RouteLink("Edit", routeName, null, new { data_automation=id });
     }
 }
 
@@ -46,7 +46,7 @@
             @Model.Title
             <span class="heading-secondary">@Model.EmployerName</span>
         </h1>
-        <a id="link-employer-name" asp-route="@RouteNames.Title_Get">Edit</a>
+        <a esfa-automation="link-employer-name" asp-route="@RouteNames.Title_Get">Edit</a>
     </div>
 </div>
 
