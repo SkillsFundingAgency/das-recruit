@@ -54,6 +54,12 @@
     },
     "QAAppKeyvaultCertificateName": {
       "value": ""
+    },
+    "QAAuthentication": {
+      "value": {
+        "Wtrealm": "",
+        "MetaDataAddress": ""
+      }
     }
   }
 }

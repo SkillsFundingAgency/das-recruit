@@ -64,6 +64,13 @@
     },
     "QAAppKeyvaultCertificateName": {
       "type": "string"
+    },
+    "QAAuthentication": {
+      "type": "object",
+      "defaultValue": {
+        "Wtrealm": "",
+        "MetaDataAddress": ""
+      }
     }
   },
   "variables": {
@@ -243,7 +250,16 @@
             "value": "[parameters('SharedAppServicePlanResourceGroup')]"
           },
           "AppSettings": {
-            "value": []
+            "value": [
+              {
+                "name": "Authentication:Wtrealm",
+                "value": "[parameters('QAAuthentication').WtRealm]"
+              },
+              {
+                "name": "Authentication:MetaDataAddress",
+                "value": "[parameters('QAAuthentication').MetaDataAddress]"
+              }
+            ]
           },
           "ConnectionStrings": {
             "value": [
