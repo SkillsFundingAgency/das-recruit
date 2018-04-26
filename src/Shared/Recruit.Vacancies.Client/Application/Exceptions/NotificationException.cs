@@ -9,7 +9,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Exceptions
         public NotificationException() { }
         public NotificationException(string message) : base(message) { }
 
-        public NotificationException(string message, System.Exception inner) : base(message, inner) { }
+        public NotificationException(string message, Exception inner) : base(message, inner) { }
 
         protected NotificationException(SerializationInfo info, StreamingContext context) : base(info, context) { }
     }

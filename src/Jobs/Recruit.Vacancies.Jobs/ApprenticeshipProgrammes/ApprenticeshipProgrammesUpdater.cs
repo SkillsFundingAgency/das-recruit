@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Esfa.Recruit.Vacancies.Client.Domain.Services;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Models;
 using Microsoft.Extensions.Logging;
@@ -17,27 +16,24 @@ namespace Esfa.Recruit.Vacancies.Jobs.ApprenticeshipProgrammes
         private readonly IJobsVacancyClient _client;
         private readonly IStandardApiClient _standardsClient;
         private readonly IFrameworkApiClient _frameworksClient;
-        private readonly ITimeProvider _timeProvider;
 
         public ApprenticeshipProgrammesUpdater(
             ILogger<ApprenticeshipProgrammesUpdater> logger, 
             IJobsVacancyClient client,
             IStandardApiClient standardsClient,
-            IFrameworkApiClient frameworksClient,
-            ITimeProvider timeProvider)
+            IFrameworkApiClient frameworksClient)
         {
             _logger = logger;
             _client = client;
             _standardsClient = standardsClient;
             _frameworksClient = frameworksClient;
-            _timeProvider = timeProvider;
         }
 
         public async Task UpdateAsync()
         {
             var standardsTask = GetStandards();
             var frameworksTask = GetFrameworks();
-            List<Task> tasks = new List<Task>{ standardsTask, frameworksTask };
+            var tasks = new List<Task>{ standardsTask, frameworksTask };
 
             try
             {
@@ -78,7 +74,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.ApprenticeshipProgrammes
 
             var standards = await retryPolicy.ExecuteAsync(() => _standardsClient.GetAllAsync(), new Dictionary<string, object>() {{ "apiCall", "Standards" }});
 
-            return standards.FilterAndMapToApprenticeshipProgrammes(_timeProvider);
+            return standards.FilterAndMapToApprenticeshipProgrammes();
         }
 
         private async Task<IEnumerable<ApprenticeshipProgramme>> GetFrameworks()
@@ -89,7 +85,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.ApprenticeshipProgrammes
 
             var frameworks = await retryPolicy.ExecuteAsync(() => _frameworksClient.GetAllAsync(), new Dictionary<string, object>() {{ "apiCall", "Frameworks" }});
             
-            return frameworks.FilterAndMapToApprenticeshipProgrammes(_timeProvider);
+            return frameworks.FilterAndMapToApprenticeshipProgrammes();
         }
 
         private async Task UpdateQueryStore(IEnumerable<ApprenticeshipProgramme> programmes)

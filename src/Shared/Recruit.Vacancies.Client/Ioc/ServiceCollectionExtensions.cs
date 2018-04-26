@@ -98,7 +98,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 options.ConnectionString = storageConnectionString;
             });
 
-            services.AddSingleton<StorageQueueConnectionDetails>(kernal => kernal.GetService<IOptions<StorageQueueConnectionDetails>>().Value);
+            services.AddSingleton(kernal => kernal.GetService<IOptions<StorageQueueConnectionDetails>>().Value);
 
             services.AddTransient<IEventStore, StorageQueueEventQueue>();
         }

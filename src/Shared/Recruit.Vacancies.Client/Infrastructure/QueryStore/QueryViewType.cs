@@ -11,7 +11,7 @@
             _idFormatString = formatString;
         }
 
-        public string GetIdValue(string[] args)
+        public string GetIdValue(object[] args)
         {
             return string.Format(_idFormatString, args);
         }

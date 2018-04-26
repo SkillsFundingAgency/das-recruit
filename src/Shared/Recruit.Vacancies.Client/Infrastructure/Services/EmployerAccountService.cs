@@ -1,5 +1,4 @@
-﻿using Esfa.Recruit.Vacancies.Client.Application.Services;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using SFA.DAS.EAS.Account.Api.Client;
 using SFA.DAS.EAS.Account.Api.Types;
 using System;

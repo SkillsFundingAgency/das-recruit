@@ -36,7 +36,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
                 LastUpdated = _timeProvider.Now
             };
 
-            return _queryStore.UpsertAsync<Dashboard>(dashboardItem);
+            return _queryStore.UpsertAsync(dashboardItem);
         }
 
         public Task UpdateApprenticeshipProgrammesAsync(IEnumerable<ApprenticeshipProgramme> programmes)
@@ -49,7 +49,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
                 LastUpdated = _timeProvider.Now
             };
             
-            return _queryStore.UpsertAsync<ApprenticeshipProgrammes>(programmesItem);
+            return _queryStore.UpsertAsync(programmesItem);
         }
 
         public async Task<ApprenticeshipProgrammes> GetApprenticeshipProgrammesAsync()

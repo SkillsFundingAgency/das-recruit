@@ -11,7 +11,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Slack
     internal class SlackClient : ISlackClient
     {
         private readonly string _webhookUrl;
-        private static HttpClient _httpClient = new HttpClient { Timeout = new TimeSpan(0, 0, 30) };
+        private static readonly HttpClient _httpClient = new HttpClient { Timeout = new TimeSpan(0, 0, 30) };
 
         public SlackClient(IOptions<SlackConfiguration> slackConfig)
         {

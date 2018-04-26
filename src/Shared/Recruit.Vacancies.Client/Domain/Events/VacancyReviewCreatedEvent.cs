@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using MediatR;
 
