@@ -13,13 +13,15 @@ namespace Esfa.Recruit.Qa.Web
     public partial class Startup
     {
         private readonly IConfiguration _configuration;
-        private readonly AuthenticationConfiguration _authConfig;
+        private readonly AuthenticationConfiguration _authenticationConfig;
+        private readonly AuthorizationConfiguration _authorizationConfig;
         private readonly ExternalLinksConfiguration _externalLinks;
 
         public Startup(IConfiguration configuration)
         {
             _configuration = configuration;
-            _authConfig = _configuration.GetSection("Authentication").Get<AuthenticationConfiguration>();
+            _authenticationConfig = _configuration.GetSection("Authentication").Get<AuthenticationConfiguration>();
+            _authorizationConfig = _configuration.GetSection("Authorization").Get<AuthorizationConfiguration>();
             _externalLinks = _configuration.GetSection("ExternalLinks").Get<ExternalLinksConfiguration>();
         }
 
@@ -32,20 +34,7 @@ namespace Esfa.Recruit.Qa.Web
                 opt.AppendTrailingSlash = true;
             });
 
-            services.AddMvc(options =>
-            {
-                options.SslPort = 5025;
-                options.Filters.Add(new RequireHttpsAttribute());
-                options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
-                options.AddTrimModelBinderProvider();
-
-                var jsonInputFormatters = options.InputFormatters.OfType<JsonInputFormatter>();
-                foreach (var formatter in jsonInputFormatters)
-                {
-                    formatter.SupportedMediaTypes
-                        .Add(MediaTypeHeaderValue.Parse("application/csp-report"));
-                }
-            });
+            services.AddMvcService();
 
             services.AddAntiforgery(
                 options =>
@@ -58,7 +47,8 @@ namespace Esfa.Recruit.Qa.Web
             );
 
             services.AddApplicationInsightsTelemetry(_configuration);
-            services.AddAuthenticationService(_authConfig);
+            services.AddAuthenticationService(_authenticationConfig);
+            services.AddAuthorizationService(_authorizationConfig);
         }
     }
 }

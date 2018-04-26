@@ -36,7 +36,7 @@ namespace Esfa.Recruit.Qa.Web
 
                 app.UseRewriter(rewriteOptions);
 
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/error/handle");
             }
 
              app.UseCsp(options => options
@@ -70,7 +70,7 @@ namespace Esfa.Recruit.Qa.Web
             
             app.UseRedirectValidation(opts => {
                 opts.AllowSameHostRedirectsToHttps();
-                opts.AllowedDestinations(GetAllowableDestinations(_authConfig, _externalLinks));
+                opts.AllowedDestinations(GetAllowableDestinations(_authenticationConfig, _externalLinks));
             }); //Register this earlier if there's middleware that might redirect.
 
             app.UseAuthentication();
