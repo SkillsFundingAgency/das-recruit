@@ -1,12 +1,8 @@
-﻿using System.Linq;
-using Esfa.Recruit.Qa.Web.Configuration;
-using Esfa.Recruit.Qa.Web.Extensions;
+﻿using Esfa.Recruit.Qa.Web.Configuration;
+using Esfa.Recruit.Qa.Web.Orchestrators;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Net.Http.Headers;
 
 namespace Esfa.Recruit.Qa.Web
 {
@@ -49,6 +45,9 @@ namespace Esfa.Recruit.Qa.Web
             services.AddApplicationInsightsTelemetry(_configuration);
             services.AddAuthenticationService(_authenticationConfig);
             services.AddAuthorizationService(_authorizationConfig);
+
+            services.AddRecruitStorageClient(_configuration);
+            services.AddScoped<DashboardOrchestrator>();
         }
     }
 }

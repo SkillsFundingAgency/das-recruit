@@ -4,20 +4,12 @@ using Esfa.Recruit.Qa.Web.Configuration;
 using Esfa.Recruit.Qa.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Qa.Web.Controllers
 {
     [AllowAnonymous]
     public class ErrorController : Controller
     {
-        private readonly ILogger<ErrorController> _logger;
-
-        public ErrorController(ILogger<ErrorController> logger)
-        {
-            _logger = logger;
-        }
-
         [Route("error/{id?}")]
         public IActionResult Error(int id)
         {
@@ -25,8 +17,6 @@ namespace Esfa.Recruit.Qa.Web.Controllers
             {
                 case 403:
                     return AccessDenied();
-                default:
-                    break;
             }
 
             return View(new ErrorViewModel { StatusCode = id, RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });

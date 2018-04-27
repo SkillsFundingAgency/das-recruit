@@ -41,6 +41,7 @@ namespace Microsoft.Extensions.DependencyInjection
             
             services.AddTransient<IEmployerVacancyClient, VacancyClient>();
             services.AddTransient<IJobsVacancyClient, VacancyClient>();
+            services.AddTransient<IQaVacancyClient, QaVacancyClient>();
 
             RegisterServiceDeps(services, configuration);
 

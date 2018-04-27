@@ -1,8 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Microsoft.Extensions.Options;
+using MongoDB.Driver;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 {
@@ -20,6 +23,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         {
             var collection = GetCollection<VacancyReview>();
             await collection.InsertOneAsync(vacancy);
+        }
+
+        public async Task<IEnumerable<VacancyReview>> GetAll()
+        {
+            var collection = GetCollection<VacancyReview>();
+            var result = await collection
+                                    .Find(FilterDefinition<VacancyReview>.Empty)
+                                    .Sort(Builders<VacancyReview>.Sort.Descending(r => r.CreatedDate))
+                                    .ToListAsync();
+
+            return result;
         }
     }
 }

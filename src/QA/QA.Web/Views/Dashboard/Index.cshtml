@@ -1,4 +1,5 @@
 @using Esfa.Recruit.Qa.Web.Configuration.Routing;
+@model DashboardViewModel
 
 <div class="grid-row dashboard-header">
     <div class="column-two-thirds">
@@ -15,29 +16,16 @@
             <th class="bold">Vacancy title</th>
             <th class="bold">Status</th>
         </tr>
-        <tr>
-            <td>
-                <a asp-route="@RouteNames.Vacancy_Review_Get" asp-route-vacancyId="1234">Software development apprenticeship</a>
-            </td>
-            <td>
-                Submitted
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <a>Web developer apprentice</a>
-            </td>
-            <td>
-                Edits required
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <a>Apprentice software developer</a>
-            </td>
-            <td>
-                Submitted
-            </td>
-        </tr>
+        @foreach(var item in Model)
+        {
+            <tr>
+                <td>
+                    <a asp-route="@RouteNames.Vacancy_Review_Get" asp-route-vacancyId="@item.VacancyReference">@item.Title</a>
+                </td>
+                <td>
+                    @item.Status
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
