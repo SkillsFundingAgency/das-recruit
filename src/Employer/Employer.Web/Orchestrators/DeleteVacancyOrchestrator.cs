@@ -34,7 +34,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return vm;
         }
 
-        public async Task<bool> TryDeleteVacancyAsync(DeleteEditModel m, VacancyUser user)
+        public async Task DeleteVacancyAsync(DeleteEditModel m, VacancyUser user)
         {
             var vacancy = await _client.GetVacancyAsync(m.VacancyId);
 
@@ -43,7 +43,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             if (!vacancy.CanDelete)
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
 
-            return await _client.DeleteVacancyAsync(m.VacancyId, user);
+            await _client.DeleteVacancyAsync(vacancy.Id, user);
         }
     }
 }

@@ -9,7 +9,6 @@ using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
-using Esfa.Recruit.Vacancies.Client.Domain.Services;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mappings;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Dashboard;
@@ -25,7 +24,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly IQueryStoreReader _reader;
         private readonly IQueryStoreWriter _writer;
         private readonly IVacancyRepository _repository;
-        private readonly ITimeProvider _timeProvider;
         private readonly IEntityValidator<Vacancy, VacancyRuleSet> _validator;
         private readonly IApprenticeshipProgrammeProvider _apprenticeshipProgrammesProvider;
         private readonly IEmployerAccountService _employerAccountService;
@@ -35,12 +33,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             IQueryStoreReader reader, 
             IQueryStoreWriter writer, 
             IMessaging messaging, 
-            ITimeProvider timeProvider, 
             IEntityValidator<Vacancy, VacancyRuleSet> validator, 
             IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider,
             IEmployerAccountService employerAccountService)
         {
-            _timeProvider = timeProvider;
             _repository = repository;
             _reader = reader;
             _writer = writer;
@@ -52,113 +48,68 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public Task UpdateVacancyAsync(Vacancy vacancy, VacancyUser user)
         {
-            vacancy.LastUpdatedDate = _timeProvider.Now;
-            vacancy.LastUpdatedByUser = user;
-            
             var command = new UpdateVacancyCommand
             {
-                Vacancy = vacancy
+                Vacancy = vacancy,
+                User = user
             };
 
             return _messaging.SendCommandAsync(command);
         }
 
-        public Task<Vacancy> GetVacancyAsync(Guid id)
+        public Task<Vacancy> GetVacancyAsync(Guid vacancyId)
         {
-            return _repository.GetVacancyAsync(id);
+            return _repository.GetVacancyAsync(vacancyId);
         }
 
         public async Task<Guid> CreateVacancyAsync(SourceOrigin origin, string title, string employerAccountId, VacancyUser user)
         {
-            var now = _timeProvider.Now;
+            var vacancyId = Guid.NewGuid();
 
             var command = new CreateVacancyCommand
             {
-                Vacancy = new Vacancy
-                {
-                    Id = Guid.NewGuid(),
-                    SourceOrigin = origin,
-                    SourceType = SourceType.New,
-                    Title = title,
-                    EmployerAccountId = employerAccountId,
-                    Status = VacancyStatus.Draft,
-                    CreatedDate = now,
-                    CreatedByUser = user,
-                    LastUpdatedDate = now,
-                    LastUpdatedByUser = user,
-                    IsDeleted = false
-                }
+                VacancyId = vacancyId,
+                User = user,
+                Title = title,
+                EmployerAccountId = employerAccountId,
+                Origin = origin
             };
 
             await _messaging.SendCommandAsync(command);
 
-            return command.Vacancy.Id;
+            return vacancyId;
         }
 
-        public async Task<bool> SubmitVacancyAsync(Guid id, VacancyUser user)
+        public Task SubmitVacancyAsync(Guid vacancyId, VacancyUser user)
         {
-            var vacancy = await GetVacancyAsync(id);
-
-            if(!vacancy.CanSubmit)
-            {
-                return false;
-            }
-
-            var now = _timeProvider.Now;
-
-            vacancy.Status = VacancyStatus.Submitted;
-            vacancy.SubmittedDate = now;
-            vacancy.SubmittedByUser = user;
-            vacancy.LastUpdatedDate = now;
-            vacancy.LastUpdatedByUser = user;
-            
             var command = new SubmitVacancyCommand
             {
-                Vacancy = vacancy
+                VacancyId = vacancyId,
+                User = user
             };
 
-            await _messaging.SendCommandAsync(command);
-            
-            return true;
+            return _messaging.SendCommandAsync(command);
         }
 
-        public async Task<bool> ApproveVacancyAsync(Guid id)
+        public Task ApproveVacancyAsync(Guid vacancyId)
         {
             var command = new ApproveVacancyCommand()
             {
-                VacancyId = id
+                VacancyId = vacancyId
             };
 
-            await _messaging.SendCommandAsync(command);
-
-            return true;
+            return _messaging.SendCommandAsync(command);
         }
 
-        public async Task<bool> DeleteVacancyAsync(Guid id, VacancyUser user)
+        public Task DeleteVacancyAsync(Guid vacancyId, VacancyUser user)
         {
-            var vacancy = await GetVacancyAsync(id);
-            
-            if (vacancy == null || vacancy.CanDelete == false)
-            {
-                return false;
-            }
-
-            var now = _timeProvider.Now;
-
-            vacancy.IsDeleted = true;
-            vacancy.DeletedDate = now;
-            vacancy.DeletedByUser = user;
-            vacancy.LastUpdatedDate = now;
-            vacancy.LastUpdatedByUser = user;
-
             var command = new DeleteVacancyCommand
             {
-                Vacancy = vacancy
+                VacancyId = vacancyId,
+                User = user
             };
 
-            await _messaging.SendCommandAsync(command);
-
-            return true;
+            return _messaging.SendCommandAsync(command);
         }
         
         public Task<Dashboard> GetDashboardAsync(string employerAccountId)
@@ -202,11 +153,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         }
 
         // Jobs
-        public Task AssignVacancyNumber(Guid id)
+        public Task AssignVacancyNumber(Guid vacancyId)
         {
             var command = new AssignVacancyNumberCommand
             {
-                VacancyId = id
+                VacancyId = vacancyId
             };
 
             return _messaging.SendCommandAsync(command);            

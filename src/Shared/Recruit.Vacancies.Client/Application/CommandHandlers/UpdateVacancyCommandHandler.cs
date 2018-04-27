@@ -5,6 +5,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Domain.Services;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
@@ -12,15 +13,20 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
     {
         private readonly IVacancyRepository _repository;
         private readonly IMessaging _messaging;
+        private ITimeProvider _timeProvider;
 
-        public UpdateVacancyCommandHandler(IVacancyRepository repository, IMessaging messaging)
+        public UpdateVacancyCommandHandler(IVacancyRepository repository, IMessaging messaging, ITimeProvider timeProvider)
         {
             _repository = repository;
             _messaging = messaging;
+            _timeProvider = timeProvider;
         }
 
         public async Task Handle(UpdateVacancyCommand message, CancellationToken cancellationToken)
         {
+            message.Vacancy.LastUpdatedDate = _timeProvider.Now;
+            message.Vacancy.LastUpdatedByUser = message.User;
+
             await _repository.UpdateAsync(message.Vacancy);
 
             await _messaging.PublishEvent(new VacancyUpdatedEvent
