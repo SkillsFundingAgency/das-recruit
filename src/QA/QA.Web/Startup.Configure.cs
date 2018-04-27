@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Esfa.Recruit.Qa.Web.Configuration;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.WsFederation;
@@ -35,8 +36,44 @@ namespace Esfa.Recruit.Qa.Web
 
                 app.UseRewriter(rewriteOptions);
 
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/error/handle");
             }
+
+             app.UseCsp(options => options
+                .DefaultSources(s => s.Self())
+                .StyleSources(s => 
+                    s.Self()
+                    .UnsafeInline()) // TODO: Should see if there's another option that having inline script - currently only need this for the built-in validation-summary which we are going to substitute with our own at some point.
+                .ScriptSources(s => 
+                    s.Self()
+                    .CustomSources("https://az416426.vo.msecnd.net")
+                    .UnsafeInline()
+                ) // TODO: Look at moving AppInsights inline js code.
+                .FontSources(s => 
+                    s.Self()
+                    .CustomSources("data:")
+                )
+                .ConnectSources(s => 
+                    s.Self()
+                    .CustomSources("https://dc.services.visualstudio.com")
+                )
+                .ImageSources(s => 
+                    s.Self()
+                    .CustomSources("https://maps.googleapis.com")
+                 )
+                .ReportUris(r => r.Uris("/ContentPolicyReport/Report")));
+
+            //Registered before static files to always set header
+            app.UseHsts(hsts => hsts.MaxAge(365));
+            app.UseXContentTypeOptions();
+            app.UseReferrerPolicy(opts => opts.NoReferrer());
+            
+            app.UseRedirectValidation(opts => {
+                opts.AllowSameHostRedirectsToHttps();
+                opts.AllowedDestinations(GetAllowableDestinations(_authenticationConfig, _externalLinks));
+            }); //Register this earlier if there's middleware that might redirect.
+
+            app.UseAuthentication();
 
             app.Use(async (context, next) => {
                 if (context.Request.Path.Equals("/signout"))
@@ -56,14 +93,32 @@ namespace Esfa.Recruit.Qa.Web
 
             app.UseStaticFiles();
 
-            app.UseAuthentication();
+             //Registered after static files, to set headers for dynamic content.
+            app.UseXfo(xfo => xfo.Deny());
+            app.UseXDownloadOptions();
+            app.UseXRobotsTag(options => options.NoIndex().NoFollow());
+
+            //app.UseNoCacheHttpHeaders(); // Affectively forces the browser to always request dynamic pages
             
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Dashboard}/{action=Index}/{id?}");
             });
+        }
+
+        private static string[] GetAllowableDestinations(AuthenticationConfiguration authConfig, ExternalLinksConfiguration linksConfig)
+        {
+            var destinations = new List<string>();
+            
+            if (!string.IsNullOrWhiteSpace(authConfig?.MetaDataAddress))
+                destinations.Add(authConfig.MetaDataAddress);
+            
+            if (!string.IsNullOrWhiteSpace(linksConfig?.StaffIdamsUrl))
+                destinations.Add(linksConfig?.StaffIdamsUrl);
+
+            return destinations.ToArray();
         }
     }
 }

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
@@ -16,8 +16,8 @@
     <RootNamespace>Esfa.Recruit.Vacancies.Client</RootNamespace>
   </PropertyGroup>
   <PropertyGroup>
-   <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-  </PropertyGroup> 
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="MediatR" Version="4.0.1" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="4.0.0" />
@@ -32,8 +32,16 @@
     <PackageReference Include="FluentValidation" Version="7.5.2" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Application\QueryStore\" />
     <Folder Include="Application\Validation\Fluent\CustomValidators\VacancyValidators\" />
     <Folder Include="Application\Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Application\QueryStore\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Remove="Application\QueryStore\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Application\QueryStore\**" />
   </ItemGroup>
 </Project>

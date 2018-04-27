@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.EventHandlers
 {
-    public class RePublishEventOnVacancyCreation : INotificationHandler<VacancyCreatedEvent>
+    public class RePublishEventOnVacancyCreation : INotificationHandler<VacancyCreatedEvent>,
+                                                   INotificationHandler<VacancySubmittedEvent>
     {
         private readonly IEventStore _eventStore;
 
@@ -17,6 +18,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.EventHandlers
         }
 
         public async Task Handle(VacancyCreatedEvent notification, CancellationToken cancellationToken)
+        {
+            await HandleUsingEventStore(notification);
+        }
+
+        public async Task Handle(VacancySubmittedEvent notification, CancellationToken cancellationToken)
         {
             await HandleUsingEventStore(notification);
         }

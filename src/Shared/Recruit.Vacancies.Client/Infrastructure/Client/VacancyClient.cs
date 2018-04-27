@@ -173,6 +173,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _writer.UpdateEmployerVacancyDataAsync(employerAccountId, legalEntities);
         }
 
+        public async Task CreateVacancyReview(long vacancyReference)
+        {
+            var command = new CreateVacancyReviewCommand
+            {
+                VacancyReference = vacancyReference
+            };
+
+            await _messaging.SendCommandAsync(command); 
+        }
+
         // Shared
         public async Task<IEnumerable<LegalEntity>> GetEmployerLegalEntitiesAsync(string employerAccountId)
         {

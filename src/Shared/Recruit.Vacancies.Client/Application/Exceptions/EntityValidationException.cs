@@ -17,12 +17,12 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Exceptions
             ValidationResult = validationResult;
         }
 
-        public EntityValidationException(string message, EntityValidationResult validationResult, System.Exception inner) : base(message, inner)
+        public EntityValidationException(string message, EntityValidationResult validationResult, Exception inner) : base(message, inner)
         {
             ValidationResult = validationResult;
         }
 
-        public EntityValidationException(string message, System.Exception inner) : base(message, inner) { }
+        public EntityValidationException(string message, Exception inner) : base(message, inner) { }
 
         protected EntityValidationException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
