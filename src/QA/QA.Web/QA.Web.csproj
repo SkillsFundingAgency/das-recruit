@@ -16,9 +16,11 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.WsFederation" Version="2.0.3" />
     <PackageReference Include="BuildBundlerMinifier" Version="2.6.375" />
     <PackageReference Include="NWebsec.AspNetCore.Middleware" Version="2.0.0" />
+    <PackageReference Include="Humanizer.Core.uk" Version="2.2.0" />    
   </ItemGroup>
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.2" />
+    <DotNetCliToolReference Include="Microsoft.DotNet.Watcher.Tools" Version="2.0.0" />
   </ItemGroup>
   <ItemGroup>
     <Content Update="nlog.config" CopyToOutputDirectory="PreserveNewest" />

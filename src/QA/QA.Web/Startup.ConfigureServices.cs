@@ -48,6 +48,7 @@ namespace Esfa.Recruit.Qa.Web
 
             services.AddRecruitStorageClient(_configuration);
             services.AddScoped<DashboardOrchestrator>();
+            services.AddScoped<ReviewOrchestrator>();
         }
     }
 }
