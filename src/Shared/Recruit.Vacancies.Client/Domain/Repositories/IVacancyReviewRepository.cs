@@ -1,4 +1,5 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -8,7 +9,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Repositories
     {
         Task CreateAsync(VacancyReview vacancy);
         Task<IEnumerable<VacancyReview>> GetAllAsync();
-        Task<VacancyReview> GetAsync(long vacancyReference);
+        Task<VacancyReview> GetAsync(Guid reviewId);
         Task UpdateAsync(VacancyReview review);
     }
 }

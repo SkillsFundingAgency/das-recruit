@@ -25,7 +25,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
         public async Task Handle(ApproveVacancyCommand message, CancellationToken cancellationToken)
         {
-            var vacancy = await _repository.GetVacancyAsync(message.VacancyId);
+            var vacancy = await _repository.GetVacancyAsync(message.VacancyReference);
 
             if (!vacancy.CanApprove)
             {

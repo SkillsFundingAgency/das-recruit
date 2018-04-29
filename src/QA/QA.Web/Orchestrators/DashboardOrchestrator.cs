@@ -31,6 +31,7 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             {
                 vm.Add(new ReviewDashboardItem 
                 { 
+                    ReviewId = review.Id,
                     VacancyReference = review.VacancyReference,
                     Title = review.Title,
                     Status = review.ManualOutcome?.GetDisplayName() ?? "Submitted"

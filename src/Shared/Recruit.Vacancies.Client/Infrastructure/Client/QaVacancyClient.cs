@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
@@ -28,9 +29,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _messaging = messaging;
         }
 
-        public Task ApproveReview(long vacancyReference)
+        public Task ApproveReview(Guid reviewId)
         {
-            return _messaging.SendCommandAsync(new ApproveVacancyReviewCommand());
+            return _messaging.SendCommandAsync(new ApproveVacancyReviewCommand
+            {
+                ReviewId = reviewId
+            });
         }
 
         public Task<IApprenticeshipProgramme> GetApprenticeshipProgrammeAsync(string programmeId)
@@ -46,6 +50,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         public Task<Vacancy> GetVacancyAsync(long vacancyReference)
         {
             return _vacancyRepository.GetVacancyAsync(vacancyReference);
+        }
+
+        public Task<VacancyReview> GetVacancyReviewAsync(Guid reviewId)
+        {
+            return _reviewRepository.GetAsync(reviewId);
         }
     }
 }

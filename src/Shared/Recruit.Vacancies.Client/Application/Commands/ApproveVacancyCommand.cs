@@ -6,6 +6,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Commands
 {
     public class ApproveVacancyCommand : CommandBase, ICommand, IRequest
     {
-        public Guid VacancyId { get; set; }
+        public long VacancyReference { get; set; }
     }
 }

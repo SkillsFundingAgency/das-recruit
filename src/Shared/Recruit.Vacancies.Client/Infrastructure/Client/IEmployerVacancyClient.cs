@@ -15,7 +15,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<Guid> CreateVacancyAsync(SourceOrigin origin, string title, string employerAccountId, VacancyUser user);
         Task UpdateVacancyAsync(Vacancy vacancy, VacancyUser user);
         Task SubmitVacancyAsync(Guid vacancyId, VacancyUser user);
-        Task ApproveVacancyAsync(Guid vacancyId);
+        Task ApproveVacancyAsync(long vacancyReference);
         Task DeleteVacancyAsync(Guid vacancyId, VacancyUser user);
         Task<Dashboard> GetDashboardAsync(string employerAccountId);
         Task RecordEmployerAccountSignInAsync(string employerAccountId);

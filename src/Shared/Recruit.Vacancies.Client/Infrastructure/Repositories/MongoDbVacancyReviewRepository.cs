@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -25,9 +26,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             await collection.InsertOneAsync(vacancy);
         }
 
-        public async Task<VacancyReview> GetAsync(long vacancyReference)
+        public async Task<VacancyReview> GetAsync(Guid reviewId)
         {
-            var filter = Builders<VacancyReview>.Filter.Eq(r => r.VacancyReference, vacancyReference);
+            var filter = Builders<VacancyReview>.Filter.Eq(r => r.Id, reviewId);
 
             var collection = GetCollection<VacancyReview>();
             var result = await collection.FindAsync(filter);

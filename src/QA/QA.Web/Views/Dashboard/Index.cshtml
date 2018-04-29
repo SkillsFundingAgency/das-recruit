@@ -20,7 +20,7 @@
                 {
                     <tr>
                         <td>
-                            <a asp-route="@RouteNames.Vacancy_Review_Get" asp-route-vacancyReference="@item.VacancyReference">@item.Title</a>
+                            <a asp-route="@RouteNames.Vacancy_Review_Get" asp-route-reviewId="@item.ReviewId">@item.Title</a>
                         </td>
                         <td>
                             @item.Status
@@ -31,3 +31,5 @@
         </table>
     </div>
 </div>
+
+

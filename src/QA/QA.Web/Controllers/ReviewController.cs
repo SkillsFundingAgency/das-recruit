@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Esfa.Recruit.Qa.Web.Configuration.Routing;
 using Esfa.Recruit.Qa.Web.Orchestrators;
 using Microsoft.AspNetCore.Mvc;
@@ -16,17 +17,17 @@ namespace Esfa.Recruit.Qa.Web.Controllers
         }
 
         [HttpGet("review", Name = RouteNames.Vacancy_Review_Get)]
-        public async Task<IActionResult> Review([FromRoute] long vacancyReference) 
+        public async Task<IActionResult> Review([FromRoute] Guid reviewId) 
         {
-            var vm = await _orchestrator.GetReviewViewModelAsync(vacancyReference);
+            var vm = await _orchestrator.GetReviewViewModelAsync(reviewId);
 
             return View(vm);
         }
 
         [HttpPost("review", Name = RouteNames.Vacancy_Review_Post)]
-        public async Task<IActionResult> Submit([FromRoute] long vacancyReference) 
+        public async Task<IActionResult> Submit([FromRoute] Guid reviewId) 
         {
-            await _orchestrator.ApproveReviewAsync(vacancyReference);
+            await _orchestrator.ApproveReviewAsync(reviewId);
 
             return RedirectToRoute(RouteNames.Dashboard_Index_Get);
         }

@@ -25,21 +25,19 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
         public async Task Handle(ApproveVacancyReviewCommand message, CancellationToken cancellationToken)
         {
-            var review = await _vacancyReviewRepository.GetAsync(message.VacancyReference);
+            var review = await _vacancyReviewRepository.GetAsync(message.ReviewId);
             review.ManualOutcome = ManualQaOutcome.Approved;
             review.Status = ReviewStatus.Closed;
 
             await _vacancyReviewRepository.UpdateAsync(review);
 
-            // TODO: LWA are we happy about getting vacancy details for this 
-            var vacancy = await _vacancyRepository.GetVacancyAsync(message.VacancyReference);
+            var vacancy = await _vacancyRepository.GetVacancyAsync(review.VacancyReference);
 
-            await _messaging.PublishEvent(new VacancyApprovedEvent
+            await _messaging.PublishEvent(new VacancyReviewApprovedEvent
             {
                 SourceCommandId = message.CommandId.ToString(),
-                EmployerAccountId = vacancy.EmployerAccountId,
-                VacancyId = vacancy.Id,
-                VacancyReference = message.VacancyReference
+                ReviewId = message.ReviewId,
+                VacancyReference = vacancy.VacancyReference.Value
             });
         }
     }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Services.Models;
@@ -10,6 +11,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<IEnumerable<VacancyReview>> GetDashboardAsync();
         Task<Vacancy> GetVacancyAsync(long vacancyReference);
         Task<IApprenticeshipProgramme> GetApprenticeshipProgrammeAsync(string programmeId);
-        Task ApproveReview(long vacancyReference);
+        Task ApproveReview(Guid reviewId);
+        Task<VacancyReview> GetVacancyReviewAsync(Guid reviewId);
     }
 }

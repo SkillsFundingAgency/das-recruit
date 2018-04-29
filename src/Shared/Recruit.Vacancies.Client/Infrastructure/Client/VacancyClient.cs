@@ -91,11 +91,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _messaging.SendCommandAsync(command);
         }
 
-        public Task ApproveVacancyAsync(Guid vacancyId)
+        // TODO: LWA - Do we need this method?
+        public Task ApproveVacancyAsync(long vacancyReference)
         {
             var command = new ApproveVacancyCommand()
             {
-                VacancyId = vacancyId
+                VacancyReference = vacancyReference
             };
 
             return _messaging.SendCommandAsync(command);

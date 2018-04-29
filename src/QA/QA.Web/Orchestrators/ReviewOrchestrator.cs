@@ -19,14 +19,15 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             _vacancyClient = vacancyClient;
         }
 
-        public Task ApproveReviewAsync(long vacancyReference)
+        public Task ApproveReviewAsync(Guid reviewId)
         {
-            return _vacancyClient.ApproveReview(vacancyReference);
+            return _vacancyClient.ApproveReview(reviewId);
         }
 
-        public async Task<ReviewViewModel> GetReviewViewModelAsync(long vacancyReference)
+        public async Task<ReviewViewModel> GetReviewViewModelAsync(Guid reviewId)
         {            
-            var vacancy = await _vacancyClient.GetVacancyAsync(vacancyReference);
+            var review = await _vacancyClient.GetVacancyReviewAsync(reviewId);
+            var vacancy = await _vacancyClient.GetVacancyAsync(review.VacancyReference);
             var vm = await MapToViewModel(vacancy);
             return vm;
         }
