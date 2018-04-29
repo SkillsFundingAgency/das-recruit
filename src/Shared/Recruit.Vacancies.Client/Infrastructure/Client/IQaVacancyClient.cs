@@ -10,5 +10,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<IEnumerable<VacancyReview>> GetDashboardAsync();
         Task<Vacancy> GetVacancyAsync(long vacancyReference);
         Task<IApprenticeshipProgramme> GetApprenticeshipProgrammeAsync(string programmeId);
+        Task ApproveReview(long vacancyReference);
     }
 }

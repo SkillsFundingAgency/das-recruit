@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,23 +14,14 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
     {
         private readonly IQaVacancyClient _vacancyClient;
 
-        public string ContactEmail { get; private set; }
-        public string ContactTelephone { get; private set; }
-        public string EmployerWebsiteUrl { get; private set; }
-        public string TrainingDescription { get; private set; }
-        public string VacancyDescription { get; private set; }
-        public string VacancyReferenceNumber { get; private set; }
-        public object TrainingTitle { get; private set; }
-        public string TrainingType { get; private set; }
-        public string TrainingLevel { get; private set; }
-        public string ExpectedDuration { get; private set; }
-        public string HoursPerWeek { get; private set; }
-        public string WageInfo { get; private set; }
-        public string WorkingWeekDescription { get; private set; }
-
         public ReviewOrchestrator(IQaVacancyClient vacancyClient)
         {
             _vacancyClient = vacancyClient;
+        }
+
+        public Task ApproveReviewAsync(long vacancyReference)
+        {
+            return _vacancyClient.ApproveReview(vacancyReference);
         }
 
         public async Task<ReviewViewModel> GetReviewViewModelAsync(long vacancyReference)

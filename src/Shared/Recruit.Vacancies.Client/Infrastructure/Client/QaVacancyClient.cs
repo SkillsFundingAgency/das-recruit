@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Services.Models;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
@@ -12,12 +14,23 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly IVacancyReviewRepository _reviewRepository;
         private readonly IVacancyRepository _vacancyRepository;
         private readonly IApprenticeshipProgrammeProvider _apprenticeshipProgrammesProvider;
+        private readonly IMessaging _messaging;
 
-        public QaVacancyClient(IVacancyReviewRepository reviewRepository, IVacancyRepository vacancyRepository, IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider)
+        public QaVacancyClient(
+                    IVacancyReviewRepository reviewRepository, 
+                    IVacancyRepository vacancyRepository, 
+                    IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider,
+                    IMessaging messaging)
         {
             _reviewRepository = reviewRepository;
             _vacancyRepository = vacancyRepository;
             _apprenticeshipProgrammesProvider = apprenticeshipProgrammesProvider;
+            _messaging = messaging;
+        }
+
+        public Task ApproveReview(long vacancyReference)
+        {
+            return _messaging.SendCommandAsync(new ApproveVacancyReviewCommand());
         }
 
         public Task<IApprenticeshipProgramme> GetApprenticeshipProgrammeAsync(string programmeId)
@@ -27,7 +40,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public Task<IEnumerable<VacancyReview>> GetDashboardAsync()
         {
-            return _reviewRepository.GetAll();
+            return _reviewRepository.GetAllAsync();
         }
 
         public Task<Vacancy> GetVacancyAsync(long vacancyReference)

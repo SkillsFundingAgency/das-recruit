@@ -25,7 +25,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             await collection.InsertOneAsync(vacancy);
         }
 
-        public async Task<IEnumerable<VacancyReview>> GetAll()
+        public async Task<VacancyReview> GetAsync(long vacancyReference)
+        {
+            var filter = Builders<VacancyReview>.Filter.Eq(r => r.VacancyReference, vacancyReference);
+
+            var collection = GetCollection<VacancyReview>();
+            var result = await collection.FindAsync(filter);
+            return result.SingleOrDefault();
+        }
+
+        public async Task<IEnumerable<VacancyReview>> GetAllAsync()
         {
             var collection = GetCollection<VacancyReview>();
             var result = await collection
@@ -34,6 +43,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
                                     .ToListAsync();
 
             return result;
+        }
+
+        public Task UpdateAsync(VacancyReview review)
+        {
+            var filter = Builders<VacancyReview>.Filter.Eq(v => v.Id, review.Id);
+            var collection = GetCollection<VacancyReview>();
+           
+            return collection.ReplaceOneAsync(filter, review);
         }
     }
 }

@@ -22,5 +22,13 @@ namespace Esfa.Recruit.Qa.Web.Controllers
 
             return View(vm);
         }
+
+        [HttpPost("review", Name = RouteNames.Vacancy_Review_Post)]
+        public async Task<IActionResult> Submit([FromRoute] long vacancyReference) 
+        {
+            await _orchestrator.ApproveReviewAsync(vacancyReference);
+
+            return RedirectToRoute(RouteNames.Dashboard_Index_Get);
+        }
     }
 }
