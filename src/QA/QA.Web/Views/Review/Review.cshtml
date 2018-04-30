@@ -232,9 +232,11 @@
     <div class="column-full">
         <div class="form-group inline">
             <div class="form-group small-top-margin">
-                <a class="button" href="qa-dashboard">Approve vacancy</a>
-                <a class="button-link" href="qa-vacancy-edit">Refer vacancy</a>
-                <a class="button-link" href="qa-dashboard">Back to QA dashboard</a>
+                <form asp-route="@RouteNames.Vacancy_Review_Post" class="form-inline">
+                    <input type="submit" value="Approve vacancy" class="button" />
+                </form>
+                <!-- <a class="button-link" href="qa-vacancy-edit">Refer vacancy</a> -->
+                <a asp-route="@RouteNames.Dashboard_Index_Get" class="button-link">Back to QA dashboard</a>
             </div>
         </div>
     </div>
