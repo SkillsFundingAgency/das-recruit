@@ -71,6 +71,10 @@
         "Wtrealm": "",
         "MetaDataAddress": ""
       }
+    },
+    "QASlackWebhook": {
+      "type": "string",
+      "defaultValue": ""
     }
   },
   "variables": {
@@ -258,6 +262,10 @@
               {
                 "name": "Authentication:MetaDataAddress",
                 "value": "[parameters('QAAuthentication').MetaDataAddress]"
+              },
+              {
+                "name": "Slack:WebhookUrl",
+                "value" : "[parameters('QASlackWebhook')]"
               }
             ]
           },

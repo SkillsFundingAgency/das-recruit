@@ -60,6 +60,9 @@
         "Wtrealm": "",
         "MetaDataAddress": ""
       }
+    },
+    "QASlackWebhook": {
+      "value": ""
     }
   }
 }
