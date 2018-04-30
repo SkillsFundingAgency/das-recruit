@@ -67,7 +67,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient<IApprenticeshipProgrammeProvider, ApprenticeshipProgrammeProvider>(); 
             
             services.Configure<SlackConfiguration>(configuration.GetSection("Slack"));
-            services.AddTransient<INotifyVacancyReviewUpdates, VacancyReviewSlackClient>();
+            services.AddTransient<INotifyVacancyReviewUpdates, SlackNotifyVacancyReviewUpdates>();
             services.AddTransient<ISlackClient, SlackClient>();
         }
 
