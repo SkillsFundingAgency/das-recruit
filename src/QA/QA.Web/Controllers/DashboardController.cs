@@ -15,7 +15,7 @@ namespace Esfa.Recruit.Qa.Web.Controllers
             _orchestrator = orchestrator;
         }
 
-        [HttpGet("review", Name = RouteNames.Dashboard_Index_Get)]
+        [HttpGet("/", Name = RouteNames.Dashboard_Index_Get)]
         public async Task<IActionResult> Index()
         {
             var vm = await _orchestrator.GetDashboardViewModelAsync();

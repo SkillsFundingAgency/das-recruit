@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
@@ -42,9 +43,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _apprenticeshipProgrammesProvider.GetApprenticeshipProgrammeAsync(programmeId);
         }
 
-        public Task<IEnumerable<VacancyReview>> GetDashboardAsync()
+        public async Task<IEnumerable<VacancyReview>> GetDashboardAsync()
         {
-            return _reviewRepository.GetAllAsync();
+            // This will be replaced with a call to the query store for the dashboard view.
+            var allReviews = await _reviewRepository.GetAllAsync();
+            return allReviews.Where(r => (new[] { ReviewStatus.PendingReview, ReviewStatus.UnderReview }.Contains(r.Status)));
         }
 
         public Task<Vacancy> GetVacancyAsync(long vacancyReference)
