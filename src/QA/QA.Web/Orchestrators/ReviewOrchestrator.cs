@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Qa.Web.Extensions;
@@ -43,8 +42,7 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
         public async Task<ReviewViewModel> GetReviewViewModelAsync(Guid reviewId)
         {            
             var review = await _vacancyClient.GetVacancyReviewAsync(reviewId);
-            
-            // TODO: LWA - Should this be in the client i.e. StartReview()
+
             if (review.Status == ReviewStatus.PendingReview)
             {
                 review.Status = ReviewStatus.UnderReview;
@@ -53,6 +51,7 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
 
             var vacancy = await _vacancyClient.GetVacancyAsync(review.VacancyReference);
             var vm = await MapToViewModel(vacancy);
+            
             return vm;
         }
 
@@ -119,94 +118,6 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
                         vacancy.EmployerLocation.Postcode
                     }
                     .Where(x => !string.IsNullOrEmpty(x));
-        }
-    }
-
-    // TODO: LWA These need to be shared accross web solutions. Logic duplicated currently.
-    public static class QualificationsExtensions
-    {
-        
-        public static IOrderedEnumerable<Qualification> SortQualifications(this IEnumerable<Qualification> qualifications, IList<string> qualificationTypes)
-        {
-            return qualifications?.OrderBy(q => qualificationTypes.IndexOf(q.QualificationType))
-                .ThenBy(q => q.Weighting, WeightingComparer)
-                .ThenBy(q => q.Subject);
-        }
-
-        private static readonly Comparer<QualificationWeighting?> WeightingComparer = Comparer<QualificationWeighting?>.Create((x, y) =>
-        {
-            if (x == y)
-            {
-                return 0;
-            }
-
-            if (x == QualificationWeighting.Essential)
-            {
-                return -1;
-            }
-
-            return 1;
-        });
-
-        public static IEnumerable<string> AsText(this IEnumerable<Qualification> qualifications)
-        {
-            if (qualifications == null)
-            {
-                return Enumerable.Empty<string>();
-            }
-            
-            return qualifications.Select(q => $"{q.QualificationType} {q.Subject} (Grade {q.Grade}) {q.Weighting.GetDisplayName().ToLower()}");
-        }
-    }
-
-    public static class WageExtensions
-    {
-        private const int WeeksPerYear = 52;
-        
-        public static string ToText(this Wage wage, Func<WageRange> getNationalMinimumWageRange, Func<decimal> getApprenticeNationalMinimumWage)
-        {
-            string wageText;
-
-            switch (wage.WageType)
-            {
-                case WageType.FixedWage:
-                    wageText = $"£{wage.FixedWageYearlyAmount?.AsMoney()}";
-                    break;
-                case WageType.NationalMinimumWage:
-                    var hourlyRange = getNationalMinimumWageRange();
-
-                    var minYearly = GetYearlyRateFromHourlyRate(hourlyRange.MinimumWage, wage.WeeklyHours.Value);
-                    var maxYearly = GetYearlyRateFromHourlyRate(hourlyRange.MaximumWage, wage.WeeklyHours.Value);
-
-                    wageText = $"£{minYearly.AsMoney()} - £{maxYearly.AsMoney()}";
-                    break;
-                case WageType.NationalMinimumWageForApprentices:
-                    var hourlyRate = getApprenticeNationalMinimumWage();
-
-                    var yearly = GetYearlyRateFromHourlyRate(hourlyRate, wage.WeeklyHours.Value);
-
-                    wageText = $"£{yearly.AsMoney()}";
-                    break;
-                default:
-                    wageText = wage.WageType?.GetDisplayName();
-                    break;
-            }
-
-            return wageText;
-        }
-
-        private static decimal GetYearlyRateFromHourlyRate(decimal hourlyRate, decimal weeklyHours)
-        {
-            var yearlyRate = hourlyRate * weeklyHours * WeeksPerYear;
-            return decimal.Round(yearlyRate, 2, MidpointRounding.AwayFromZero);
-        }
-    }
-
-    public static class DecimalExtensions
-    {
-        public static string AsMoney(this decimal dec)
-        {
-            return $"{dec:N2}".Replace(".00", "");
         }
     }
 }

@@ -4,6 +4,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Qa.Web.Extensions
 {
+    //NOTE: Duplicated from Employer solution
     public static class EnumExtensions
     {
         public static string GetDisplayName(this Enum enumValue)

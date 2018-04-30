@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Qa.Web.Controllers
 {
-    [Route(RoutePrefixPaths.VacancyRoutePath)]
+    [Route(RoutePrefixPaths.VacancyReviewsRoutePath)]
     public class ReviewController : Controller
     {
         private readonly ReviewOrchestrator _orchestrator;
@@ -16,7 +16,7 @@ namespace Esfa.Recruit.Qa.Web.Controllers
             _orchestrator = orchestrator;
         }
 
-        [HttpGet("review", Name = RouteNames.Vacancy_Review_Get)]
+        [HttpGet(Name = RouteNames.Vacancy_Review_Get)]
         public async Task<IActionResult> Review([FromRoute] Guid reviewId) 
         {
             var vm = await _orchestrator.GetReviewViewModelAsync(reviewId);
@@ -24,7 +24,7 @@ namespace Esfa.Recruit.Qa.Web.Controllers
             return View(vm);
         }
 
-        [HttpPost("review", Name = RouteNames.Vacancy_Review_Post)]
+        [HttpPost(Name = RouteNames.Vacancy_Review_Post)]
         public async Task<IActionResult> Submit([FromRoute] Guid reviewId) 
         {
             await _orchestrator.ApproveReviewAsync(reviewId);

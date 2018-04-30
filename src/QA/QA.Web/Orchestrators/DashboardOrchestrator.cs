@@ -23,7 +23,7 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             return vm;
         }
 
-        private DashboardViewModel MapToViewModel(IEnumerable<VacancyReview> reviews)
+        private static DashboardViewModel MapToViewModel(IEnumerable<VacancyReview> reviews)
         {
             var vm = new DashboardViewModel();
 
