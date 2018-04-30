@@ -1,14 +1,14 @@
-using System;
+﻿using System;
+using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Application.Services.MinimumWage;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
-namespace Esfa.Recruit.Qa.Web.Extensions
+namespace Esfa.Recruit.Shared.Web.Extensions
 {
-    //NOTE: Duplicated from Employer solution
     public static class WageExtensions
     {
         private const int WeeksPerYear = 52;
-        
+
         public static string ToText(this Wage wage, Func<WageRange> getNationalMinimumWageRange, Func<decimal> getApprenticeNationalMinimumWage)
         {
             string wageText;

@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
+using Esfa.Recruit.Vacancies.Client.Application.Services.Models;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
-namespace Esfa.Recruit.Qa.Web.Extensions
+namespace Esfa.Recruit.Shared.Web.Extensions
 {
-    //NOTE: Duplicated from Employer solution
     public static class EnumExtensions
     {
         public static string GetDisplayName(this Enum enumValue)
@@ -20,6 +20,11 @@ namespace Esfa.Recruit.Qa.Web.Extensions
 
         private static readonly Dictionary<Enum, string> DisplayNames = new Dictionary<Enum, string>
         {
+            {ProgrammeLevel.FoundationDegree, "Foundation Degree" },
+            {ProgrammeLevel.Masters, "Master's Degree" },
+            {WageType.FixedWage, "Fixed wage" },
+            {WageType.NationalMinimumWage, "National Minimum Wage" },
+            {WageType.NationalMinimumWageForApprentices, "National Minimum Wage for apprentices" },
             {ManualQaOutcome.Referred, "Edits required" }
         };
     }

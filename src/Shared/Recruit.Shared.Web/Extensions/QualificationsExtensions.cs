@@ -2,9 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
-namespace Esfa.Recruit.Qa.Web.Extensions
+namespace Esfa.Recruit.Shared.Web.Extensions
 {
-    //NOTE: Duplicated from Employer solution
     public static class QualificationsExtensions
     {
         
