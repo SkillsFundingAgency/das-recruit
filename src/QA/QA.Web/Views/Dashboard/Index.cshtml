@@ -1,43 +1,33 @@
 @using Esfa.Recruit.Qa.Web.Configuration.Routing;
+@model DashboardViewModel
 
 <div class="grid-row dashboard-header">
-    <div class="column-two-thirds">
-        <h1 class="heading-xlarge no-bottom-margin">
-            QA vacancies
-            <span class="heading-secondary"></span>
-        </h1>
+    <div class="column-full">
+        <h1 class="heading-xlarge no-bottom-margin">QA vacancies</h1>
+        <hr>
     </div>
 </div>
-<hr>
-<table>
-    <tbody>
-        <tr>
-            <th class="bold">Vacancy title</th>
-            <th class="bold">Status</th>
-        </tr>
-        <tr>
-            <td>
-                <a asp-route="@RouteNames.Vacancy_Review_Get" asp-route-vacancyId="1234">Software development apprenticeship</a>
-            </td>
-            <td>
-                Submitted
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <a>Web developer apprentice</a>
-            </td>
-            <td>
-                Edits required
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <a>Apprentice software developer</a>
-            </td>
-            <td>
-                Submitted
-            </td>
-        </tr>
-    </tbody>
-</table>
+
+<div class="grid-row">
+    <div class="column-full">
+        <table>
+            <tbody>
+                <tr>
+                    <th class="bold">Vacancy title</th>
+                    <th class="bold">Status</th>
+                </tr>
+                @foreach(var item in Model)
+                {
+                    <tr>
+                        <td>
+                            <a asp-route="@RouteNames.Vacancy_Review_Get" asp-route-vacancyReference="@item.VacancyReference">@item.Title</a>
+                        </td>
+                        <td>
+                            @item.Status
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

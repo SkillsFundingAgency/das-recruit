@@ -7,6 +7,6 @@ namespace Esfa.Recruit.Qa.Web.Controllers
     public class ReviewController : Controller
     {
         [HttpGet("review", Name = RouteNames.Vacancy_Review_Get)]
-        public IActionResult Review([FromRoute] string vacancyId) => View((object)vacancyId);
+        public IActionResult Review([FromRoute] string vacancyReference) => View((object)vacancyReference);
     }
 }

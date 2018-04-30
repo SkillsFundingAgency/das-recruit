@@ -19,8 +19,7 @@
             }
             var valueProviderResult = bindingContext.ValueProvider.GetValue(bindingContext.ModelName);
 
-            if (valueProviderResult != null &&
-                valueProviderResult.FirstValue is string str &&
+            if (valueProviderResult.FirstValue is string str &&
                 !string.IsNullOrEmpty(str))
             {
                 bindingContext.Result = ModelBindingResult.Success(str.Trim());

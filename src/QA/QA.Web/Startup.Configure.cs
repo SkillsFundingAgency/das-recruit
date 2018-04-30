@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Esfa.Recruit.Qa.Web.Configuration;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -9,8 +6,6 @@ using Microsoft.AspNetCore.Authentication.WsFederation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Rewrite;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Qa.Web
@@ -116,7 +111,7 @@ namespace Esfa.Recruit.Qa.Web
                 destinations.Add(authConfig.MetaDataAddress);
             
             if (!string.IsNullOrWhiteSpace(linksConfig?.StaffIdamsUrl))
-                destinations.Add(linksConfig?.StaffIdamsUrl);
+                destinations.Add(linksConfig.StaffIdamsUrl);
 
             return destinations.ToArray();
         }
