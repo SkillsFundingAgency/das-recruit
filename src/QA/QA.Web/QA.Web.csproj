@@ -24,9 +24,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Update="nlog.config" CopyToOutputDirectory="PreserveNewest" />
-    <None Update="localhost.pfx" CopyToOutputDirectory="PreserveNewest"/>
+    <None Update="localhost.pfx" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\Recruit.Vacancies.Client\Recruit.Vacancies.Client.csproj" />
+    <ProjectReference Include="..\..\Shared\GoogleMapsGeocodeImageService\GoogleMapsGeocodeImageService.csproj" />
   </ItemGroup>
 </Project>
