@@ -62,6 +62,8 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
 
             var vm = new ReviewViewModel();
 
+            vm.SubmittedByName = vacancy.SubmittedByUser.Name;
+            vm.SubmittedByEmail = vacancy.SubmittedByUser.Email;
             vm.ApplicationInstructions = vacancy.ApplicationInstructions;
             vm.ApplicationUrl = vacancy.ApplicationUrl;
             vm.ContactName = vacancy.EmployerContactName;

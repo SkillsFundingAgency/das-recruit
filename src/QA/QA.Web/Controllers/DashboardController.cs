@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Esfa.Recruit.Qa.Web.Configuration.Routing;
 using Esfa.Recruit.Qa.Web.Orchestrators;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,7 +15,7 @@ namespace Esfa.Recruit.Qa.Web.Controllers
             _orchestrator = orchestrator;
         }
 
-        [Authorize]
+        [HttpGet("review", Name = RouteNames.Dashboard_Index_Get)]
         public async Task<IActionResult> Index()
         {
             var vm = await _orchestrator.GetDashboardViewModelAsync();

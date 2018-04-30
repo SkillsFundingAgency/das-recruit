@@ -35,5 +35,7 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public IEnumerable<string> Qualifications { get; internal set; }
         public IEnumerable<string> Skills { get; internal set; }
         public string WageText { get; internal set; }
+        public string SubmittedByName { get; internal set; }
+        public string SubmittedByEmail { get; internal set; }
     }
 }
