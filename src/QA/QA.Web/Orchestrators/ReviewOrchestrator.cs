@@ -27,6 +27,14 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
         public async Task<ReviewViewModel> GetReviewViewModelAsync(Guid reviewId)
         {            
             var review = await _vacancyClient.GetVacancyReviewAsync(reviewId);
+            
+            // TODO: LWA - Should this be in the client i.e. StartReview()
+            if (review.Status == ReviewStatus.PendingReview)
+            {
+                review.Status = ReviewStatus.UnderReview;
+                await _vacancyClient.UpdateVacancyReviewAsync(review);
+            }
+
             var vacancy = await _vacancyClient.GetVacancyAsync(review.VacancyReference);
             var vm = await MapToViewModel(vacancy);
             return vm;

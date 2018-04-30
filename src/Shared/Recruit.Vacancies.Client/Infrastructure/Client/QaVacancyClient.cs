@@ -56,5 +56,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         {
             return _reviewRepository.GetAsync(reviewId);
         }
+
+        public Task UpdateVacancyReviewAsync(VacancyReview review)
+        {
+            return _messaging.SendCommandAsync(new UpdateVacancyReviewCommand
+            {
+                Review = review
+            });
+        }
     }
 }

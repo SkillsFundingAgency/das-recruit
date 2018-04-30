@@ -13,5 +13,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<IApprenticeshipProgramme> GetApprenticeshipProgrammeAsync(string programmeId);
         Task ApproveReview(Guid reviewId);
         Task<VacancyReview> GetVacancyReviewAsync(Guid reviewId);
+        Task UpdateVacancyReviewAsync(VacancyReview review);
     }
 }
