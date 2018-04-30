@@ -1,4 +1,4 @@
-﻿namespace Esfa.Recruit.Shared
+﻿namespace Esfa.Recruit.Shared.Web.Services
 {
     public interface IGeocodeImageService
     {

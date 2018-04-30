@@ -1,6 +1,6 @@
 ﻿using Esfa.Recruit.Qa.Web.Configuration;
 using Esfa.Recruit.Qa.Web.Orchestrators;
-using Esfa.Recruit.Shared;
+using Esfa.Recruit.Shared.Web.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

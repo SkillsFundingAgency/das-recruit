@@ -6,7 +6,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Recruit.Vacancies.Client", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "UnitTests\UnitTests.csproj", "{D39B7FED-2D07-4CCD-B2BC-A08843318A65}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleMapsGeocodeImageService", "GoogleMapsGeocodeImageService\GoogleMapsGeocodeImageService.csproj", "{58376225-E68C-4E3E-965A-B9CE100F996A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Recruit.Shared.Web", "Recruit.Shared.Web\Recruit.Shared.Web.csproj", "{58376225-E68C-4E3E-965A-B9CE100F996A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

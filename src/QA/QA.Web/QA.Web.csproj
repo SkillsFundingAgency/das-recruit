@@ -28,6 +28,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\Recruit.Vacancies.Client\Recruit.Vacancies.Client.csproj" />
-    <ProjectReference Include="..\..\Shared\GoogleMapsGeocodeImageService\GoogleMapsGeocodeImageService.csproj" />
+    <ProjectReference Include="..\..\Shared\Recruit.Shared.Web\Recruit.Shared.Web.csproj" />
   </ItemGroup>
 </Project>

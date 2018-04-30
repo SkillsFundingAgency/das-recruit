@@ -3,7 +3,7 @@ using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Esfa.Recruit.Shared
+namespace Esfa.Recruit.Shared.Web.Services
 {
     public class GoogleMapsGeocodeImageService : IGeocodeImageService
     {
