@@ -72,7 +72,6 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             vm.EmployerName = vacancy.EmployerName;
             vm.EmployerWebsiteUrl = vacancy.EmployerWebsiteUrl;
             SetEmployerAddressElements(vm, vacancy);
-            vm.NumberOfPositions = vacancy.NumberOfPositions.ToString();
             vm.NumberOfPositionsCaption =  $"{"position".ToQuantity(vacancy.NumberOfPositions.Value)} available";
             vm.OutcomeDescription = vacancy.OutcomeDescription;
             vm.PossibleStartDate = vacancy.StartDate.Value.AsDisplayDate();
