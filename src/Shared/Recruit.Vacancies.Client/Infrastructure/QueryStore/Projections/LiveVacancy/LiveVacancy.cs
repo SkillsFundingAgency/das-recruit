@@ -18,9 +18,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Li
         public Address EmployerLocation { get; set; }
         public string EmployerName { get; set; }
         public string EmployerWebsiteUrl { get; set; }
+        public DateTime LiveDate { get; set; }
         public int NumberOfPositions { get; set; }
         public string OutcomeDescription { get; set; }
         public string ProgrammeId { get; set; }
+        public string ProgrammeLevel { get; set; }
+        public string ProgrammeType { get; set; }
         public IEnumerable<Qualification> Qualifications { get; set; }
         public string ShortDescription { get; set; }
         public IEnumerable<string> Skills { get; set; }
