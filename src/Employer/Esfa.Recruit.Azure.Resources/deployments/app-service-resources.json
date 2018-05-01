@@ -50,7 +50,12 @@
                     "apiVersion": "2016-08-01",
                     "location": "[resourceGroup().location]",
                     "properties": {
-                        "scmSiteAlsoStopped": true
+                        "scmSiteAlsoStopped": true,
+                        "siteConfig": {
+                            "appSettings": "[parameters('AppSettings')]",
+                            "connectionStrings": "[parameters('ConnectionStrings')]",
+                            "alwaysOn": true
+                        }
                     },
                     "dependsOn": [
                         "[parameters('AppServiceName')]"
