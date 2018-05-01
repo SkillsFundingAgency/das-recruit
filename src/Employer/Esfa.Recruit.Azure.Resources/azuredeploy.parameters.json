@@ -28,7 +28,8 @@
     "ExternalLinks": {
       "value": {
         "ManageApprenticeshipSiteUrl": "",
-        "EmployerIdamsSiteUrl": ""
+        "EmployerIdamsSiteUrl": "",
+        "StaffIdamsUrl": ""
       }
     },
     "LoggingRedisConnectionString": {
@@ -61,7 +62,13 @@
         "MetaDataAddress": ""
       }
     },
-    "QASlackWebhook": {
+    "QAAuthorization": {
+      "value": {
+        "GroupClaim": "",
+        "GroupName": ""
+      }
+    },
+    "SlackWebhook": {
       "value": ""
     }
   }

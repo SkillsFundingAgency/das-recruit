@@ -32,7 +32,8 @@
       "type": "object",
       "defaultValue": {
         "ManageApprenticeshipSiteUrl": "",
-        "EmployerIdamsSiteUrl": ""
+        "EmployerIdamsSiteUrl": "",
+        "StaffIdamsUrl": ""
       }
     },
     "LoggingRedisConnectionString": {
@@ -72,7 +73,14 @@
         "MetaDataAddress": ""
       }
     },
-    "QASlackWebhook": {
+    "QAAuthorization": {
+      "type": "object",
+      "defaultValue": {
+        "GroupClaim": "",
+        "GroupName": ""
+      }
+    },
+    "SlackWebhook": {
       "type": "string",
       "defaultValue": ""
     }
@@ -264,8 +272,28 @@
                 "value": "[parameters('QAAuthentication').MetaDataAddress]"
               },
               {
-                "name": "Slack:WebhookUrl",
-                "value" : "[parameters('QASlackWebhook')]"
+                "name": "ApplicationInsights:InstrumentationKey",
+                "value": "[reference(concat('microsoft.insights/components/', variables('QAAppServiceName'))).InstrumentationKey]"
+              },
+              {
+                "name": "Environment",
+                "value": "[toUpper(parameters('EnvironmentName'))]"
+              },
+              {
+                "name": "GoogleMapsPrivateKey",
+                "value": "[parameters('GoogleMapsPrivateKey')]"
+              },
+              {
+                "name": "Authorization:GroupClaim",
+                "value": "[parameters('QAAuthorization').GroupClaim]"
+              },
+              {
+                "name": "Authorization:GroupName",
+                "value": "[parameters('QAAuthorization').GroupName]"
+              },
+              {
+                "name": "ExternalLinks:StaffIdamsUrl",
+                "value": "[parameters('ExternalLinks').StaffIdamsUrl]"
               }
             ]
           },
@@ -351,6 +379,10 @@
             {
               "name": "AccountApiConfiguration:Tenant",
               "value": "[parameters('AccountApiConfiguration').Tenant]"
+            },
+            {
+              "name": "Slack:WebhookUrl",
+              "value": "[parameters('SlackWebhook')]"
             }
           ],
           "connectionStrings": [
