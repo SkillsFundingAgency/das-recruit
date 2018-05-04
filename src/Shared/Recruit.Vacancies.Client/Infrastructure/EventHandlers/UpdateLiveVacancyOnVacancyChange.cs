@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
@@ -17,14 +18,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
         private readonly ILogger<UpdateDashboardOnVacancyChange> _logger;
         private readonly IMessaging _messaging;
         private readonly IQueryStoreWriter _queryStoreWriter;
+        private readonly IQueryStoreReader _queryStoreReader;
 
-        public UpdateLiveVacancyOnVacancyChange(IQueryStoreWriter queryStoreWriter, ILogger<UpdateDashboardOnVacancyChange> logger, 
+        public UpdateLiveVacancyOnVacancyChange(IQueryStoreReader queryStoreReader, IQueryStoreWriter queryStoreWriter, ILogger<UpdateDashboardOnVacancyChange> logger, 
             IVacancyRepository repository, IMessaging messaging)
         {
-            _logger = logger;
-            _messaging = messaging;
+            _queryStoreReader = queryStoreReader;
             _queryStoreWriter = queryStoreWriter;
+            _logger = logger;
             _repository = repository;
+            _messaging = messaging;
         }
         
         public Task Handle(VacancyApprovedEvent notification, CancellationToken cancellationToken)
@@ -40,8 +43,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
 
         public async Task Handle(VacancyLiveEvent notification, CancellationToken cancellationToken)
         {
-            var vacancy = await _repository.GetVacancyAsync(notification.VacancyId);
-            await _queryStoreWriter.UpdateLiveVacancyAsync(vacancy.ToLiveVacancyProjection());
+            var vacancyTask = _repository.GetVacancyAsync(notification.VacancyId);
+            var programmeTask = _queryStoreReader.GetApprenticeshipProgrammesAsync();
+
+            await Task.WhenAll(vacancyTask, programmeTask);
+
+            var vacancy = vacancyTask.Result;
+            var programme = programmeTask.Result.Programmes.Single(p => p.Id == vacancy.ProgrammeId);
+
+            await _queryStoreWriter.UpdateLiveVacancyAsync(vacancy.ToLiveVacancyProjection(programme));
         }
     }
 }
