@@ -18,7 +18,7 @@
                     Write a few sentences to describe your vacancy
                 </label>
                 <span esfa-validation-message-for="ShortDescription" class="error-message"></span>
-                <textarea asp-for="ShortDescription" class="form-control form-control-3-4 textarea-expandable" rows="1" cols="20" maxlength="350"></textarea>
+                <textarea asp-for="ShortDescription" class="form-control form-control-3-4" rows="5" maxlength="350"></textarea>
             </div>
             <button type="submit" class="button">Save and continue</button>
             <a asp-route="@RouteNames.Dashboard_Index_Get" class="button-link">Cancel</a>
