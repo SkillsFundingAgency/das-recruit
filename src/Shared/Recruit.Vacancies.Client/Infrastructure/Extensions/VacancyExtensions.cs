@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Models;
 using LiveVacancy = Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.LiveVacancy.LiveVacancy;
 using ProjectionAddress = Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.LiveVacancy.Address;
 using ProjectionQualification = Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.LiveVacancy.Qualification;
@@ -11,7 +12,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
 {
     public static class VacancyExtensions
     {
-        public static LiveVacancy ToLiveVacancyProjection(this Vacancy vacancy)
+        public static LiveVacancy ToLiveVacancyProjection(this Vacancy vacancy, ApprenticeshipProgramme programme)
         {
             return new LiveVacancy
             {
@@ -27,9 +28,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
                 EmployerLocation = vacancy.EmployerLocation.ToProjection(),
                 EmployerName = vacancy.EmployerName,
                 EmployerWebsiteUrl = vacancy.EmployerWebsiteUrl,
+                LiveDate = vacancy.LiveDate.Value,
                 NumberOfPositions = vacancy.NumberOfPositions.Value,
                 OutcomeDescription = vacancy.OutcomeDescription,
                 ProgrammeId = vacancy.ProgrammeId,
+                ProgrammeLevel = programme.Level.ToString(),
+                ProgrammeType = programme.ApprenticeshipType.ToString(),
                 Qualifications = vacancy.Qualifications.ToProjection(),
                 ShortDescription = vacancy.ShortDescription,
                 Skills = vacancy.Skills,
