@@ -91,17 +91,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _messaging.SendCommandAsync(command);
         }
 
-        // TODO: LWA - Do we need this method?
-        public Task ApproveVacancyAsync(long vacancyReference)
-        {
-            var command = new ApproveVacancyCommand()
-            {
-                VacancyReference = vacancyReference
-            };
-
-            return _messaging.SendCommandAsync(command);
-        }
-
         public Task DeleteVacancyAsync(Guid vacancyId, VacancyUser user)
         {
             var command = new DeleteVacancyCommand
