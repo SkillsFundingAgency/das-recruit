@@ -8,6 +8,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Events
     {
         public long VacancyReference { get; set; }
 
-        public Guid VacancyReviewId { get; set; }
+        public Guid ReviewId { get; set; }
     }
 }

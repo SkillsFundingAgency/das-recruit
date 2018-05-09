@@ -44,13 +44,13 @@
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "build-client",
+            "label": "build-shared",
             "group": "build",
             "command": "dotnet",
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/Shared/VacanciesClient.sln",
+                "${workspaceFolder}/Shared/Shared.sln",
                 "/p:GenerateFullPaths=true"
             ],
             "problemMatcher": "$msCompile"

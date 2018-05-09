@@ -1,5 +1,4 @@
-﻿using System;
-using Esfa.Recruit.Vacancies.Client.Application.Commands;
+﻿using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
@@ -38,7 +37,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             {
                 SourceCommandId = message.CommandId.ToString(),
                 VacancyReference = message.VacancyReference,
-                VacancyReviewId =  review.Id
+                ReviewId =  review.Id
             });
         }
 

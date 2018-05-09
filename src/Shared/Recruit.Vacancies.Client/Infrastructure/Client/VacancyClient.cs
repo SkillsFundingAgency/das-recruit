@@ -91,16 +91,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _messaging.SendCommandAsync(command);
         }
 
-        public Task ApproveVacancyAsync(Guid vacancyId)
-        {
-            var command = new ApproveVacancyCommand()
-            {
-                VacancyId = vacancyId
-            };
-
-            return _messaging.SendCommandAsync(command);
-        }
-
         public Task DeleteVacancyAsync(Guid vacancyId, VacancyUser user)
         {
             var command = new DeleteVacancyCommand

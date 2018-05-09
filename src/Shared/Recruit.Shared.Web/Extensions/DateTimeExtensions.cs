@@ -1,8 +1,7 @@
 ﻿using System;
 
-namespace Esfa.Recruit.Employer.Web.Extensions
+namespace Esfa.Recruit.Shared.Web.Extensions
 {
-
     public static class DateTimeExtensions
     {
         private const string DisplayDateFormat = "dd MMM yyyy";

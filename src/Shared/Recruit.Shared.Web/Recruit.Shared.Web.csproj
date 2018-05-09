@@ -1,0 +1,9 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\Recruit.Vacancies.Client\Recruit.Vacancies.Client.csproj" />
+  </ItemGroup>
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>Esfa.Recruit.Shared</RootNamespace>
+  </PropertyGroup>
+</Project>
