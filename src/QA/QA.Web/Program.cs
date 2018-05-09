@@ -18,7 +18,7 @@ namespace Esfa.Recruit.Qa.Web
        public static void Main(string[] args)
         {
             // NLog: setup the logger first to catch all errors
-            var logger = NLog.Web.NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
+            var logger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
             try
             {
                 logger.Info("Starting up host");
@@ -58,7 +58,7 @@ namespace Esfa.Recruit.Qa.Web
             return certificate;
         }
 
-        public static IWebHost BuildWebHost(string[] args, X509Certificate2 certificate) =>
+        private static IWebHost BuildWebHost(string[] args, X509Certificate2 certificate) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseKestrel(c =>
                 {

@@ -2,7 +2,7 @@
 {
     public string GetTitle()
     {
-        const string defaultTitle = "Recruit an Apprentice";
+        const string defaultTitle = "QA Vacancies";
         if (ViewBag.Title != null)
             return $"{defaultTitle} | {ViewBag.Title}";
 
@@ -51,7 +51,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta property="og:image" content="/lib/esfa-govuk/assets/images/opengraph-image.png">
 
-    <link rel="stylesheet" media="screen" href="wwwroot/css/application.css" />
+    <link rel="stylesheet" media="screen" href="/css/application.css" />
     <script src="/lib/jquery/dist/jquery.js"></script>
     <!-- <environment include="Development">
         <link rel="stylesheet" media="screen" href="wwwroot/css/application.css" />
@@ -77,28 +77,26 @@
 
     <header role="banner" id="global-header" class="with-proposition">
         <div class="header-wrapper">
+            <div class="header-global">
+                <div class="header-logo">
+                    <!-- Empty but required for positioning of subsequent elements -->
+                </div>
+            </div>
             <div class='header-proposition'>
                 <div class='content'>
                     <a href='/' id='proposition-name'>Vacancy QA</a>
+                        @if (Context.User.Identity.IsAuthenticated)
+                        {
+                            <nav id='proposition-menu' aria-label="Top Level Navigation">
+                                <p id='proposition-link'>
+                                    <a href="~/signout" role="menuitem" class="menu-main">Sign out</a>
+                                </p>
+                            </nav>
+                        }
                 </div>
             </div>
         </div>
     </header>
-
-    <div id="floating-menu-holder">
-        <div class="account-information floating-menu" role="navigation">
-            <div class="js-float">
-                <nav id="user-nav">
-                    <ul role="menubar">
-                        @if (Context.User.Identity.IsAuthenticated)
-                        {
-                            <li><a href="~/signout" role="menuitem" class="menu-main">Sign out</a></li>
-                        }
-                    </ul>
-                </nav>
-            </div>
-        </div>
-    </div> <!--/floating-menu-holder-->
 
     <main id="content" role="main">
         @RenderBody()
@@ -123,14 +121,6 @@
             </div>
         </div>
     </footer>
-
-    <!-- TODO: LWA - What is this for? -->
-    <div id="global-app-error" class="app-error hidden"></div>
-
-    <!-- TODO: LWA Do we need these scripts included? -->
-    <!-- <script src="/lib/esfa-govuk/assets/javascripts/govuk-template.js"></script>
-    <script src="/lib/esfa-govuk/assets/javascripts/govuk/show-hide-content.js"></script>
-    <script src="/javascripts/application.js"></script> -->
 
 </body>
 </html>
