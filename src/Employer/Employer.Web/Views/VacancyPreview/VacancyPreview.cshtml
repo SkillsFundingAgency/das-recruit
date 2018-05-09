@@ -53,7 +53,7 @@
 <div class="grid-row">
     <div class="column-two-thirds">
         <div class="@GetSectionClass(Model.ShortDescriptionSectionState)">
-            <h3 class="heading-small sfa-no-top-margin">Brief overview of the role</h3>
+            <h3 class="heading-small no-top-margin">Brief overview of the role</h3>
             <span esfa-validation-message-for="ShortDescription" class="error-message"></span>
             <p asp-condition="@Model.HasShortDescription">@Model.ShortDescription</p>
             @EditLink(RouteNames.Title_Get, Model.ShortDescriptionSectionState, "link-overview")
@@ -61,7 +61,7 @@
     </div>
     <div class="column-one-third">
         <div class="@GetSectionClass(Model.ClosingDateSectionState)">
-            <h3 class="heading-small sfa-no-top-margin">Closing Date</h3>
+            <h3 class="heading-small no-top-margin">Closing Date</h3>
             <span esfa-validation-message-for="ClosingDate" class="error-message"></span>
             <p asp-condition="@Model.HasClosingDate">@Model.ClosingDate</p>
             @EditLink(RouteNames.Title_Get, Model.ClosingDateSectionState, "link-closing-date")
@@ -261,23 +261,6 @@
         <img asp-condition="@Model.HasMapUrl" id="static-map" src="@Model.MapUrl" />
     </div>
 </div>
-            
-<div class="grid-row">
-    <div class="column-full">
-        <div class="@GetSectionClass(Model.ApplicationInstructionsSectionState)">
-            <h2 class="heading-small">Employer's application instructions (optional)</h2>
-            <span esfa-validation-message-for="ApplicationInstructions" class="error-message"></span>
-            <p asp-condition="@Model.HasApplicationInstructions">@Model.ApplicationInstructions</p>
-            @EditLink(RouteNames.ApplicationProcess_Get, Model.ApplicationInstructionsSectionState, "link-application-instructions")
-        </div>
-        <div class="@GetSectionClass(Model.ApplicationUrlSectionState)">
-            <h2 class="heading-small">Employer's application website</h2>
-            <span esfa-validation-message-for="ApplicationUrl" class="error-message"></span>
-            <p asp-condition="@Model.HasApplicationUrl">@Model.ApplicationUrl</p>
-            @EditLink(RouteNames.ApplicationProcess_Get, Model.ApplicationUrlSectionState, "link-application-link")
-        </div>
-    </div>
-</div>
 
 <div class="grid-row">
     <div class="column-full">
@@ -290,7 +273,6 @@
         <h2 class="heading-large">Training provider</h2>
     </div>
 </div>
-
 
 <div class="grid-row">
     <div class="column-full">
@@ -316,14 +298,38 @@
 
 <div class="grid-row">
     <div class="column-full">
+        <h2 class="heading-large">Employer's application instructions</h2>
+        <div class="@GetSectionClass(Model.ApplicationInstructionsSectionState)">
+            <h2 class="heading-small">Explain the application process (optional)</h2>
+            <span esfa-validation-message-for="ApplicationInstructions" class="error-message"></span>
+            <p asp-condition="@Model.HasApplicationInstructions">@Model.ApplicationInstructions</p>
+            @EditLink(RouteNames.ApplicationProcess_Get, Model.ApplicationInstructionsSectionState, "link-application-instructions")
+        </div>
+        <p>This apprenticeship requires you to apply through the employer's website.</p>
+        <div class="@GetSectionClass(Model.ApplicationUrlSectionState)"> 
+            <h2 class="heading-small">Apply now web address</h2>
+            <span esfa-validation-message-for="ApplicationUrl" class="error-message"></span>
+            <p asp-condition="@Model.HasApplicationUrl">@Model.ApplicationUrl</p>
+            @EditLink(RouteNames.ApplicationProcess_Get, Model.ApplicationUrlSectionState, "link-application-link")  
+        </div>
+        <p class="font-xsmall">Closing date: @Model.ClosingDate</p>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-full">
+        <hr class="no-bottom-margin">
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-full">
         <div class="form-group inline">
             <div class="form-group small-top-margin">
                 <form asp-condition="@Model.CanSubmit" asp-route="@RouteNames.Preview_Submit_Post" class="form-inline">
                     <input type="submit" value="Submit vacancy" class="button" />
                 </form>
-
                 <a asp-route="@RouteNames.Dashboard_Index_Get" class="button-link">Return to dashboard</a>
-                
                 <a asp-condition="@Model.CanDelete"  asp-route="@RouteNames.DeleteVacancy_Delete_Get" class="button-link">Delete</a>
             </div>
         </div>
