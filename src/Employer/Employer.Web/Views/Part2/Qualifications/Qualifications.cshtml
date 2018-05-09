@@ -46,11 +46,11 @@
                     <span esfa-validation-message-for="Weighting" class="error-message"></span>
                     <div class="multiple-choice">
                         <input asp-for="Weighting" id="WeightingYes" esfa-automation="radio-weighting-yes" type="radio" value="@QualificationWeighting.Essential" data-display="@QualificationWeighting.Essential.GetDisplayName()">
-                        <label asp-for="Weighting">Yes</label>
+                        <label asp-for="WeightingYes">Yes</label>
                     </div>
                     <div class="multiple-choice">
                         <input asp-for="Weighting" id="WeightingNo" esfa-automation="radio-weighting-no" type="radio" value="@QualificationWeighting.Desired" data-display="@QualificationWeighting.Desired.GetDisplayName()">
-                        <label asp-for="Weighting">No</label>
+                        <label asp-for="WeightingNo">No</label>
                     </div>
                 </fieldset>
             </div>
