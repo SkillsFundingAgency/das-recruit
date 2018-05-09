@@ -1,37 +1,16 @@
 ﻿@model Esfa.Recruit.Employer.Web.ViewModels.Error.ErrorViewModel
-@{
-    ViewData["Title"] = "Error";
-}
 <div class="grid-row">
     <div class="column-two-thirds">
+        <header class="page-header group">
+            <h1 class="heading-xlarge small-bottom-margin">@Model.StatusCode Error</h1>
+        </header>
 
-        @if (@Model.StatusCode == 404)
-        {
-            <header class="page-header group">
-                <h1 class="heading-xlarge small-bottom-margin">Page not found</h1>
-            </header>
-
-            <div class="article-container">
-                <article role="article" class="group">
-                    <div class="inner">
-                        <p>If you entered a web address please check it was correct. Or you can <a href="/">return to the homepage</a></p>
-                    </div>
-                </article>
-            </div>
-
-        } else {
-            <header class="page-header group">
-                <h1 class="heading-xlarge small-bottom-margin">@Model.StatusCode Error.</h1>
-            </header>
-
-            <div class="article-container">
-                <article role="article" class="group">
-                    <div class="inner">
-                        <p>An error occurred while processing your request.</p>
-                    </div>
-                </article>
-            </div>
-        }
-
+        <div class="article-container">
+            <article role="article" class="group">
+                <div class="inner">
+                    <p>An error occurred while processing your request.</p>
+                </div>
+            </article>
+        </div>
     </div>
 </div>
