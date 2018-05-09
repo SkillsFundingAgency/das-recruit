@@ -1,22 +1,28 @@
 ﻿@model Esfa.Recruit.Employer.Web.ViewModels.Part1.Title.TitleViewModel
 <div class="grid-row">
     <div class="column-full">
+        <h1 class="heading-xlarge small-bottom-margin">Make your vacancy stand out in a search</h1>
+        <p>
+            Apprentice candidates will see your vacancy in a search along with vacancies from other employers. This is your
+            opportunity to make your vacancy attract the best candidates
+        </p>
         @Html.Partial("_Part1Header")
 
         @Html.Partial("_ValidationSummary", new ValidationSummaryViewModel { ModelState = ViewData.ModelState })
-
-        <form asp-route="@(Model.VacancyId.HasValue ? RouteNames.Title_Post : RouteNames.CreateVacancy_Post)" novalidate>
-            <div esfa-validation-marker-for="Title" class="form-group">
-                <label asp-for="Title" class="form-label-bold">
-                    What do you want to call this vacancy?
-                    <span class="form-hint">For example, Software developer apprenticeship</span>
-                </label>
-                <span esfa-validation-message-for="Title" class="error-message"></span>
-                <input asp-for="Title" class="form-control-3-4 form-control" type="text" maxlength="100" />
-            </div>
-            <button type="submit" class="button">Save and Continue</button>
-            <a asp-route="@RouteNames.Dashboard_Index_Get" class="button-link">Cancel</a>
-        </form>
-        <hr>
+        <div class="todo">
+            <h3 class="heading-medium no-top-margin">Step 1 of 6</h3>
+            <form asp-route="@(Model.VacancyId.HasValue ? RouteNames.Title_Post : RouteNames.CreateVacancy_Post)" novalidate>
+                <div esfa-validation-marker-for="Title" class="form-group">
+                    <label asp-for="Title" class="form-label-bold">
+                        What do you want to call this vacancy?
+                        <span class="form-hint">For example, Software developer apprenticeship</span>
+                    </label>
+                    <span esfa-validation-message-for="Title" class="error-message"></span>
+                    <input asp-for="Title" class="form-control-3-4 form-control" type="text" maxlength="100" />
+                </div>
+                <button type="submit" class="button">Save and Continue</button>
+                <a asp-route="@RouteNames.Dashboard_Index_Get" class="button-link">Cancel</a>
+            </form>
+        </div>
     </div>
 </div>
