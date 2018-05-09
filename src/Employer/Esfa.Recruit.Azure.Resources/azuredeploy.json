@@ -9,6 +9,9 @@
     "EnvironmentName": {
       "type": "string"
     },
+    "EnvironmentFullName": {
+      "type":  "string"
+    },
     "Authentication": {
       "type": "object",
       "defaultValue": {
@@ -195,7 +198,7 @@
               },
               {
                 "name": "Environment",
-                "value": "[toUpper(parameters('EnvironmentName'))]"
+                "value": "[toUpper(parameters('EnvironmentFullName'))]"
               },
               {
                 "name": "GoogleMapsPrivateKey",
