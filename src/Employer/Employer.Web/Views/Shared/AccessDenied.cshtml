@@ -4,20 +4,17 @@
 }
 <div class="grid-row">
     <div class="column-two-thirds">
-        <h1 class="heading-xlarge access-denied">Access denied</h1>
-        <p class="access-denied">Your account does not have sufficient privileges</p>
-    </div>
-</div>
-<div class="grid-row">
-    <div class="column-two-thirds">
-        <p>If you are experiencing difficulty accessing the area of the site you need, first contact an/the account owner to ensure you have the correct role assigned to your account.</p>
-        @if (ViewBag.EmployerAccountId != null)
-        {
-            <a class="button" asp-route="@RouteNames.Dashboard_Index_Get" asp-route-employerAccountId="@ViewBag.EmployerAccountId">Go back to the account home page</a>
-        }
-        else
-        {
-            <a class="button" href="/">Go back to the service home page</a>
-        }
+        <header class="page-header group">
+            <h1 class="heading-xlarge small-bottom-margin">Access denied</h1>
+        </header>
+        <div class="article-container">
+            <article role="article" class="group">
+                <div class="inner">
+                    <p>Your account does not have sufficient privileges</p>
+                    <p>If you are experiencing difficulty accessing the area of the site you need, first contact an/the account owner to ensure you have the correct role assigned to your account.</p>
+                    <a href="/signout" class="button">Sign out</a>
+                </div>
+            </article>
+        </div>
     </div>
 </div>
