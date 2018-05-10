@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Qa.Web.ViewModels;
@@ -34,11 +35,16 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
                     ReviewId = review.Id,
                     VacancyReference = review.VacancyReference,
                     Title = review.Title,
-                    Status = review.ManualOutcome?.GetDisplayName() ?? "Submitted"
+                    Status = CalculateStatus(review)
                 });
             }
 
             return vm;
+        }
+
+        private static string CalculateStatus(VacancyReview review)
+        {
+            return review.Status == ReviewStatus.UnderReview ? review.Status.GetDisplayName() : "Submitted";
         }
     }
 }
