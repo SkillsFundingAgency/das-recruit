@@ -13,6 +13,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Mappings;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Dashboard;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.LiveVacancy;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Models;
 
@@ -29,11 +30,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly IEmployerAccountService _employerAccountService;
 
         public VacancyClient(
-            IVacancyRepository repository, 
-            IQueryStoreReader reader, 
-            IQueryStoreWriter writer, 
-            IMessaging messaging, 
-            IEntityValidator<Vacancy, VacancyRuleSet> validator, 
+            IVacancyRepository repository,
+            IQueryStoreReader reader,
+            IQueryStoreWriter writer,
+            IMessaging messaging,
+            IEntityValidator<Vacancy, VacancyRuleSet> validator,
             IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider,
             IEmployerAccountService employerAccountService)
         {
@@ -101,11 +102,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
             return _messaging.SendCommandAsync(command);
         }
-        
+
         public Task<Dashboard> GetDashboardAsync(string employerAccountId)
         {
-            return  _reader.GetDashboardAsync(employerAccountId);
-        } 
+            return _reader.GetDashboardAsync(employerAccountId);
+        }
 
         public Task RecordEmployerAccountSignInAsync(string employerAccountId)
         {
@@ -124,7 +125,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public EntityValidationResult Validate(Vacancy vacancy, VacancyRuleSet rules)
         {
-            return _validator.Validate(vacancy, rules);           
+            return _validator.Validate(vacancy, rules);
         }
 
         public Task<IEnumerable<IApprenticeshipProgramme>> GetActiveApprenticeshipProgrammesAsync()
@@ -150,7 +151,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 VacancyId = vacancyId
             };
 
-            return _messaging.SendCommandAsync(command);            
+            return _messaging.SendCommandAsync(command);
         }
 
         public Task UpdateApprenticeshipProgrammesAsync(IEnumerable<ApprenticeshipProgramme> programmes)
@@ -170,7 +171,24 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 VacancyReference = vacancyReference
             };
 
-            await _messaging.SendCommandAsync(command); 
+            await _messaging.SendCommandAsync(command);
+        }
+
+        public Task<IEnumerable<LiveVacancy>> GetLiveVacancies()
+        {
+            return _reader.GetLiveVacancies();
+        }
+
+        public async Task CloseVacancy(Guid vacancyId)
+        {
+            var vacancy = await GetVacancyAsync(vacancyId);
+
+            var command = new CloseVacancyCommand
+            {
+                Vacancy = vacancy
+            };
+
+            await _messaging.SendCommandAsync(command);
         }
 
         // Shared

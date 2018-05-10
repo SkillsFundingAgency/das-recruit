@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 
@@ -5,8 +6,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 {
     public interface IQueryStore
     {
+        Task<IEnumerable<T>> GetAllByTypeAsync<T>(string typeName) where T : QueryProjectionBase;
+
         Task<T> GetAsync<T>(string key) where T : QueryProjectionBase;
 
         Task UpsertAsync<T>(T item) where T : QueryProjectionBase;
+        Task<bool> DeleteAsync<T>(string key) where T : QueryProjectionBase;
     }
 }
