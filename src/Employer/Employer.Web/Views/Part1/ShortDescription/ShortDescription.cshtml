@@ -2,27 +2,33 @@
 
 <div class="grid-row">
     <div class="column-full">
-
+        <h1 class="heading-xlarge small-bottom-margin">Make your vacancy stand out in a search</h1>
+        <p>
+            Apprentice candidates will see your vacancy in a search along with vacancies from other employers. This is your
+            opportunity to make your vacancy attract the best candidates
+        </p>
         @Html.Partial("_Part1Header")
 
         @Html.Partial("_ValidationSummary", new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames })
 
-        <form asp-route="@RouteNames.ShortDescription_Post" novalidate>
-            <div esfa-validation-marker-for="NumberOfPositions" class="form-group">
-                <label asp-for="NumberOfPositions" class="form-label-bold">Number of positions for this apprenticeship</label>
-                <span esfa-validation-message-for="NumberOfPositions" class="error-message"></span>
-                <input asp-for="NumberOfPositions" class="form-control form-control-1-8" type="number" min="1" />
-            </div>
-            <div esfa-validation-marker-for="ShortDescription" class="form-group">
-                <label asp-for="ShortDescription" class="form-label-bold">
-                    Write a few sentences to describe your vacancy
-                </label>
-                <span esfa-validation-message-for="ShortDescription" class="error-message"></span>
-                <textarea asp-for="ShortDescription" class="form-control form-control-3-4 textarea-expandable" rows="1" cols="20" maxlength="350"></textarea>
-            </div>
-            <button type="submit" class="button">Save and continue</button>
-            <a asp-route="@RouteNames.Dashboard_Index_Get" class="button-link">Cancel</a>
-        </form>
-        <hr>
+        <div class="todo">
+            <h3 class="heading-medium no-top-margin">Step 3 of 6</h3>
+            <form asp-route="@RouteNames.ShortDescription_Post" novalidate>
+                <div esfa-validation-marker-for="NumberOfPositions" class="form-group">
+                    <label asp-for="NumberOfPositions" class="form-label-bold">Number of positions for this apprenticeship</label>
+                    <span esfa-validation-message-for="NumberOfPositions" class="error-message"></span>
+                    <input asp-for="NumberOfPositions" class="form-control form-control-1-8" type="number" min="1" />
+                </div>
+                <div esfa-validation-marker-for="ShortDescription" class="form-group">
+                    <label asp-for="ShortDescription" class="form-label-bold">
+                        Write a few sentences to describe your vacancy
+                    </label>
+                    <span esfa-validation-message-for="ShortDescription" class="error-message"></span>
+                    <textarea asp-for="ShortDescription" class="form-control form-control-3-4" rows="5" maxlength="350"></textarea>
+                </div>
+                <button type="submit" class="button">Save and continue</button>
+                <a asp-route="@RouteNames.Dashboard_Index_Get" class="button-link">Cancel</a>
+            </form>
+        </div>
     </div>
 </div>

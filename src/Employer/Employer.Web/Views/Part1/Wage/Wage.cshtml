@@ -2,92 +2,96 @@
 @model Esfa.Recruit.Employer.Web.ViewModels.Part1.Wage.WageViewModel
 <div class="grid-row">
     <div class="column-full">
-
-        @Html.Partial("_Part1Header")
+        <h1 class="heading-xlarge small-bottom-margin">Make your vacancy stand out in a search</h1>
+        <p>
+            Apprentice candidates will see your vacancy in a search along with vacancies from other employers. This is your
+            opportunity to make your vacancy attract the best candidates
+        </p>
 
         @Html.Partial("_ValidationSummary", new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames })
+        <div class="todo">
+            <h3 class="heading-medium no-top-margin">Step 5 of 6</h3>
+            <form asp-route="@RouteNames.Wage_Post" novalidate>
+                <div esfa-validation-marker-for="Duration" class="form-group">
+                    <fieldset>
+                        <label asp-for="Duration" class="form-label-bold">How long is the apprenticeship expected to last?</label>
+                        <span esfa-validation-message-for="Duration" class="error-message"></span>
+                        <input asp-for="Duration" class="form-control form-control-1-8" type="number" min="1">
+                        <select asp-for="DurationUnit" class="form-control" style="width: auto">
+                            <option value="@DurationUnit.Month">Month(s)</option>
+                            <option value="@DurationUnit.Year">Year(s)</option>
+                        </select>
+                    </fieldset>
+                </div>
 
-        <form asp-route="@RouteNames.Wage_Post" novalidate>
-            <div esfa-validation-marker-for="Duration" class="form-group">
-                <fieldset>
-                    <label asp-for="Duration" class="form-label-bold">How long is the apprenticeship expected to last?</label>
-                    <span esfa-validation-message-for="Duration" class="error-message"></span>
-                    <input asp-for="Duration" class="form-control form-control-1-8" type="number" min="1">
-                    <select asp-for="DurationUnit" class="form-control" style="width: auto">
-                        <option value="@DurationUnit.Month">Month(s)</option>
-                        <option value="@DurationUnit.Year">Year(s)</option>
-                    </select>
-                </fieldset>
-            </div>
+                <div esfa-validation-marker-for="WorkingWeekDescription" class="form-group">
+                    <label asp-for="WorkingWeekDescription" class="form-label-bold">Working week</label>
+                    <span class="form-hint">For example, Monday to Friday 9am to 5pm, shifts, may work evenings and weekends</span>
+                    <span esfa-validation-message-for="WorkingWeekDescription" class="error-message"></span>
+                    <textarea asp-for="WorkingWeekDescription" class="form-control-3-4 form-control" rows="5" type="text" maxlength="250"></textarea>
+                </div>
 
-            <div esfa-validation-marker-for="WorkingWeekDescription" class="form-group">
-                <label asp-for="WorkingWeekDescription" class="form-label-bold">Working week</label>
-                <span class="form-hint">For example, Monday to Friday 9am to 5pm, shifts, may work evenings and weekends</span>
-                <span esfa-validation-message-for="WorkingWeekDescription" class="error-message"></span>
-                <textarea asp-for="WorkingWeekDescription" class="form-control-3-4 form-control textarea-expandable" rows="1" cols="20" type="text" maxlength="250"></textarea>
-            </div>
+                <div esfa-validation-marker-for="WeeklyHours" class="form-group">
+                    <label asp-for="WeeklyHours" class="form-label-bold">How many hours will the apprentice work each week, including training?</label>
+                    <span esfa-validation-message-for="WeeklyHours" class="error-message"></span>
+                    <input asp-for="WeeklyHours" class="form-control form-control-1-8" type="number" step=".25" min="16" max="48">
+                </div>
+                <div esfa-validation-marker-for="WageType" class="form-group">
+                    <fieldset>
+                        <legend asp-for="WageType" class="heading-small">What is the salary?</legend>
+                        <span class="form-hint">This must be the minimum salary for this vacancy</span>
+                        <span esfa-validation-message-for="WageType" class="error-message"></span>
+                        <div class="multiple-choice" data-target="custom-wage-fixed-panel">
+                            <input asp-for="WageType" value="@WageType.FixedWage" type="radio" id="wage-type-fixed">
+                            <label for="wage-type-fixed">Fixed wage</label>
+                        </div>
 
-            <div esfa-validation-marker-for="WeeklyHours" class="form-group">
-                <label asp-for="WeeklyHours" class="form-label-bold">How many hours will the apprentice work each week, including training?</label>
-                <span esfa-validation-message-for="WeeklyHours" class="error-message"></span>
-                <input asp-for="WeeklyHours" class="form-control form-control-1-8" type="number" step=".25" min="16" max="48">
-            </div>
-            <div esfa-validation-marker-for="WageType" class="form-group">
-                <fieldset>
-                    <legend asp-for="WageType" class="heading-small">What is the salary?</legend>
-                    <span class="form-hint">This must be the minimum salary for this vacancy</span>
-                    <span esfa-validation-message-for="WageType" class="error-message"></span>
-                    <div class="multiple-choice" data-target="custom-wage-fixed-panel">
-                        <input asp-for="WageType" value="@WageType.FixedWage" type="radio" id="wage-type-fixed">
-                        <label for="wage-type-fixed">Fixed wage</label>
-                    </div>
+                        <div id="custom-wage-fixed-panel" class="panel-border-narrow panel">
+                            <fieldset>
+                                <p class="form-hint">
+                                    The wage should not be less then the
+                                    <a href="https://www.gov.uk/national-minimum-wage-rates" target="new">National Minimum Wage</a> for apprentices
+                                </p>
+                                <div esfa-validation-marker-for="FixedWageYearlyAmount" class="form-group">
+                                    <span esfa-validation-message-for="FixedWageYearlyAmount" class="error-message"></span>
+                                    <p style="display: inline;">£</p>
+                                    <label asp-for="FixedWageYearlyAmount" class="visuallyhidden">Minimum wage amount</label>
+                                    <input asp-for="FixedWageYearlyAmount" class="form-control form-control-1-4" type="text">
+                                    <span>yearly</span>
+                                </div>
+                            </fieldset>
+                        </div>
 
-                    <div id="custom-wage-fixed-panel" class="panel-border-narrow panel">
-                        <fieldset>
-                            <p class="form-hint">
-                                The wage should not be less then the
-                                <a href="https://www.gov.uk/national-minimum-wage-rates" target="new">National Minimum Wage</a> for apprentices
-                            </p>
-                            <div esfa-validation-marker-for="FixedWageYearlyAmount" class="form-group">
-                                <span esfa-validation-message-for="FixedWageYearlyAmount" class="error-message"></span>
-                                <p style="display: inline;">£</p>
-                                <label asp-for="FixedWageYearlyAmount" class="visuallyhidden">Minimum wage amount</label>
-                                <input asp-for="FixedWageYearlyAmount" class="form-control form-control-1-4" type="text">
-                                <span>yearly</span>
-                            </div>
-                        </fieldset>
-                    </div>
+                        <div class="multiple-choice">
+                            <input asp-for="WageType" value="@WageType.NationalMinimumWage" type="radio" id="wage-type-national-minimum-wage">
+                            <label for="wage-type-national-minimum-wage">National Minimum Wage</label>
+                        </div>
 
-                    <div class="multiple-choice">
-                        <input asp-for="WageType" value="@WageType.NationalMinimumWage" type="radio" id="wage-type-national-minimum-wage">
-                        <label for="wage-type-national-minimum-wage">National Minimum Wage</label>
-                    </div>
+                        <div class="multiple-choice">
+                            <input asp-for="WageType" value="@WageType.NationalMinimumWageForApprentices" type="radio" id="wage-type-national-minimum-wage-for-apprentices">
+                            <label for="wage-type-national-minimum-wage-for-apprentices">National Minimum Wage for apprentices</label>
+                        </div>
 
-                    <div class="multiple-choice">
-                        <input asp-for="WageType" value="@WageType.NationalMinimumWageForApprentices" type="radio" id="wage-type-national-minimum-wage-for-apprentices">
-                        <label for="wage-type-national-minimum-wage-for-apprentices">National Minimum Wage for apprentices</label>
-                    </div>
+                        <p class="form-block">or</p>
+                        <div class="multiple-choice">
+                            <input asp-for="WageType" value="@WageType.Unspecified" type="radio" id="wage-type-unspecified">
+                            <label for="wage-type-unspecified">Unspecified</label>
+                        </div>
 
-                    <p class="form-block">or</p>
-                    <div class="multiple-choice">
-                        <input asp-for="WageType" value="@WageType.Unspecified" type="radio" id="wage-type-unspecified">
-                        <label for="wage-type-unspecified">Unspecified</label>
-                    </div>
+                    </fieldset>
+                </div>
 
-                </fieldset>
-            </div>
+                <div esfa-validation-marker-for="WageAdditionalInformation" class="form-group">
+                    <label asp-for="WageAdditionalInformation" class="form-label-bold">Additional information about the salary (optional)</label>
+                    <span class="form-hint">For example, subject to experience, bonus scheme, performance increases or non contractual benefits</span>
+                    <span esfa-validation-message-for="WageAdditionalInformation" class="error-message"></span>
+                    <textarea asp-for="WageAdditionalInformation" class="form-control-3-4 form-control" rows="5" type="text" maxlength="240"></textarea>
+                </div>
 
-            <div esfa-validation-marker-for="WageAdditionalInformation" class="form-group">
-                <label asp-for="WageAdditionalInformation" class="form-label-bold">Additional information about the salary (optional)</label>
-                <span class="form-hint">For example, subject to experience, bonus scheme, performance increases or non contractual benefits</span>
-                <span esfa-validation-message-for="WageAdditionalInformation" class="error-message"></span>
-                <textarea asp-for="WageAdditionalInformation" class="form-control-3-4 form-control textarea-expandable" rows="1" cols="20" type="text" maxlength="240"></textarea>
-            </div>
-
-            <button type="submit" class="button">Save and Continue</button>
-            <a asp-route="@RouteNames.Dashboard_Index_Get" class="button-link">Cancel</a>
-        </form>
-        <hr>
+                <button type="submit" class="button">Save and Continue</button>
+                <a asp-route="@RouteNames.Dashboard_Index_Get" class="button-link">Cancel</a>
+            </form>
+        </div>
     </div>
 </div>
 

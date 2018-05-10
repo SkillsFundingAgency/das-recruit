@@ -28,6 +28,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             {
                 case 403:
                     return AccessDenied();
+                case 404:
+                    return PageNotFound();
                 default:
                     break;
             }
@@ -70,6 +72,11 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         private IActionResult AccessDenied()
         {
             return View(ViewNames.AccessDenied);
+        }
+
+        private IActionResult PageNotFound()
+        {
+            return View(ViewNames.PageNotFound);
         }
     }
 }

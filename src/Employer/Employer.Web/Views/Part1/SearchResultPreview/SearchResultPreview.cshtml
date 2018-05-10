@@ -1,14 +1,14 @@
 ﻿@model Esfa.Recruit.Employer.Web.ViewModels.Part1.SearchResultPreview.SearchResultPreviewViewModel
 <div class="grid-row">
     <div class="column-full">
-        @Html.Partial("_Part1Header")
+        <h1 class="heading-xlarge small-bottom-margin">Your search summary</h1>
         <div asp-validation-summary="All" class="error-summary" role="alert" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
             <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
                 Please fix these errors
             </h2>
         </div>
-
-        <div class="preview-advert">
+        <div class="todo">
+            <h3 class="heading-medium no-top-margin">Step 6 of 6</h3>
             <h2 class="heading-medium small-top-margin">@Model.Title</h2>
             <ul class="list">
                 <li class="secondary-text">@Model.EmployerName</li>
@@ -47,17 +47,14 @@
                     <img id="static-map" class="static-map" src="@Model.MapUrl">
                     }
                 </div>
-            </div>
-
-            <div class="form-group inline">
+            </div> 
+        </div>
+        <div class="form-group inline">
                 <div class="form-group small-top-margin">
                     <a asp-route="@RouteNames.Vacancy_Preview_Get" esfa-automation="link-continue" class="button">Save and continue</a>
                     <a asp-route="@RouteNames.Title_Get" esfa-automation="link-change" class="button-link">Make changes</a>
                     <a asp-route="@RouteNames.Dashboard_Index_Get" esfa-automation="link-dashboard" class="button-link">Return to dashboard</a>
                 </div>
             </div>
-        </div>
-
-        <hr>
     </div>
 </div>

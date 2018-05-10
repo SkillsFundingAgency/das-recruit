@@ -4,76 +4,80 @@
 
 <div class="grid-row">
     <div class="column-full">
-
-        @Html.Partial("_Part1Header")
+        <h1 class="heading-xlarge small-bottom-margin">Make your vacancy stand out in a search</h1>
+        <p>
+            Apprentice candidates will see your vacancy in a search along with vacancies from other employers. This is your
+            opportunity to make your vacancy attract the best candidates
+        </p>
 
         @Html.Partial("_ValidationSummary", new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames })
+        <div class="todo">
+            <h3 class="heading-medium no-top-margin">Step 4 of 6</h3>
+            <form asp-route="@RouteNames.Training_Post" novalidate>
 
-        <form asp-route="@RouteNames.Training_Post" novalidate>
+                <div esfa-validation-marker-for="ClosingDate" class="form-group">
+                    <fieldset>
+                        <legend class="form-label-bold">Closing date for applications</legend>
 
-            <div esfa-validation-marker-for="ClosingDate" class="form-group">
-                <fieldset>
-                    <legend class="form-label-bold">Closing date for applications</legend>
+                        <span esfa-validation-message-for="ClosingDate" class="error-message"></span>
 
-                    <span esfa-validation-message-for="ClosingDate" class="error-message"></span>
-
-                    <div class="form-date">
-                        <div class="form-group form-group-day">
-                            <label asp-for="ClosingDay" class="form-label">Day</label>
-                            <input asp-for="ClosingDay" class="form-control" type="number" min="1" max="31">
+                        <div class="form-date">
+                            <div class="form-group form-group-day">
+                                <label asp-for="ClosingDay" class="form-label">Day</label>
+                                <input asp-for="ClosingDay" class="form-control" type="number" min="1" max="31">
+                            </div>
+                            <div class="form-group form-group-month">
+                                <label asp-for="ClosingMonth" class="form-label">Month</label>
+                                <input asp-for="ClosingMonth" class="form-control" type="number" min="1" max="12">
+                            </div>
+                            <div class="form-group form-group-year">
+                                <label asp-for="ClosingYear" class="form-label">Year</label>
+                                <input asp-for="ClosingYear" class="form-control" type="number" min="@timeProvider.Now.Year">
+                            </div>
                         </div>
-                        <div class="form-group form-group-month">
-                            <label asp-for="ClosingMonth" class="form-label">Month</label>
-                            <input asp-for="ClosingMonth" class="form-control" type="number" min="1" max="12">
+                    </fieldset>
+                </div>
+
+                <div esfa-validation-marker-for="StartDate" class="form-group">
+                    <fieldset>
+                        <legend class="form-label-bold">Possible start date</legend>
+
+                        <span esfa-validation-message-for="StartDate" class="error-message"></span>
+
+                        <div class="form-date">
+                            <div class="form-group form-group-day">
+                                <label asp-for="StartDay" class="form-label">Day</label>
+                                <input asp-for="StartDay" class="form-control" type="number" min="1" max="31">
+                            </div>
+                            <div class="form-group form-group-month">
+                                <label asp-for="StartMonth" class="form-label">Month</label>
+                                <input asp-for="StartMonth" class="form-control" type="number" min="1" max="12">
+                            </div>
+                            <div class="form-group form-group-year">
+                                <label asp-for="StartYear" class="form-label">Year</label>
+                                <input asp-for="StartYear" class="form-control" type="number" min="@timeProvider.Now.Year">
+                            </div>
                         </div>
-                        <div class="form-group form-group-year">
-                            <label asp-for="ClosingYear" class="form-label">Year</label>
-                            <input asp-for="ClosingYear" class="form-control" type="number" min="@timeProvider.Now.Year">
-                        </div>
-                    </div>
-                </fieldset>
-            </div>
+                    </fieldset>
+                </div>
 
-            <div esfa-validation-marker-for="StartDate" class="form-group">
-                <fieldset>
-                    <legend class="form-label-bold">Possible start date</legend>
+                <div esfa-validation-marker-for="SelectedProgrammeId" class="form-group">
+                    <label asp-for="SelectedProgrammeId" class="form-label-bold">Search for apprenticeship training (standard or framework)</label>
 
-                    <span esfa-validation-message-for="StartDate" class="error-message"></span>
+                    <span esfa-validation-message-for="SelectedProgrammeId" class="error-message"></span>
 
-                    <div class="form-date">
-                        <div class="form-group form-group-day">
-                            <label asp-for="StartDay" class="form-label">Day</label>
-                            <input asp-for="StartDay" class="form-control" type="number" min="1" max="31">
-                        </div>
-                        <div class="form-group form-group-month">
-                            <label asp-for="StartMonth" class="form-label">Month</label>
-                            <input asp-for="StartMonth" class="form-control" type="number" min="1" max="12">
-                        </div>
-                        <div class="form-group form-group-year">
-                            <label asp-for="StartYear" class="form-label">Year</label>
-                            <input asp-for="StartYear" class="form-control" type="number" min="@timeProvider.Now.Year">
-                        </div>
-                    </div>
-                </fieldset>
-            </div>
-
-            <div esfa-validation-marker-for="SelectedProgrammeId" class="form-group">
-                <label asp-for="SelectedProgrammeId" class="form-label-bold">Search for apprenticeship training (standard or framework)</label>
-
-                <span esfa-validation-message-for="SelectedProgrammeId" class="error-message"></span>
-
-                <select asp-for="SelectedProgrammeId" class="form-control form-control-3-4">
-                    <option value="">Please select</option>
-                    @foreach (var programme in Model.Programmes)
-                    {
-                    <option value="@programme.Id">@programme.Name</option>
-                    }
-                </select>
-            </div>
-            <button type="submit" class="button">Save and continue</button>
-            <a asp-route="@RouteNames.Dashboard_Index_Get" class="button-link">Cancel</a>
-        </form>
-        <hr>
+                    <select asp-for="SelectedProgrammeId" class="form-control form-control-3-4">
+                        <option value="">Please select</option>
+                        @foreach (var programme in Model.Programmes)
+                        {
+                        <option value="@programme.Id">@programme.Name</option>
+                        }
+                    </select>
+                </div>
+                <button type="submit" class="button">Save and continue</button>
+                <a asp-route="@RouteNames.Dashboard_Index_Get" class="button-link">Cancel</a>
+            </form>
+        </div>
     </div>
 </div>
 
