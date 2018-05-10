@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Microsoft.Extensions.Options;
@@ -13,6 +14,26 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         public MongoQueryStore(IOptions<MongoDbConnectionDetails> details)
             : base(Database, Collection, details)
         {
+        }
+
+        async Task<bool> IQueryStore.DeleteAsync<T>(string key)
+        {
+            var filter = Builders<T>.Filter.Eq(d => d.Id, key);
+
+            var collection = GetCollection<T>();
+            var result = await collection.DeleteOneAsync(filter);
+
+            return result.DeletedCount == 1;
+        }
+
+        async Task<IEnumerable<T>> IQueryStore.GetAllByTypeAsync<T>(string typeName)
+        {
+            var filter = Builders<T>.Filter.Eq(d => d.Type, typeName);
+
+            var collection = GetCollection<T>();
+            var result = await collection.FindAsync(filter);
+
+            return result?.ToEnumerable();
         }
 
         async Task<T> IQueryStore.GetAsync<T>(string key)

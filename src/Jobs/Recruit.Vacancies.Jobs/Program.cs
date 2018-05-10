@@ -132,9 +132,11 @@ namespace Esfa.Recruit.Vacancies.Jobs
                 options.AddDebug();
             });
 
-            services.AddScoped<VacancyEventHandler>();     
+            services.AddScoped<VacancyEventHandler>();
             services.AddScoped<ApprenticeshipProgrammesUpdater>();
             services.AddScoped<EditVacancyInfoUpdater>();
+            services.AddScoped<LiveVacancyStatusInspector>();
+
 
             services.AddSingleton<IApprenticeshipProgrammeApiClient, ApprenticeshipProgrammeApiClient>();
             services.AddApprentieshipsApi(configuration);
@@ -144,6 +146,8 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddScoped<VacancyEventsJob>();
             services.AddScoped<ApprenticeshipProgrammesJob>();
             services.AddScoped<EditVacancyInfoJob>();
+            services.AddScoped<VacancyStatusJob>();
+
 
             return services;
         }

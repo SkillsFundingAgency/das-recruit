@@ -89,6 +89,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 
             return _queryStore.UpsertAsync(vacancy);
         }
+        
+        public Task<IEnumerable<LiveVacancy>> GetLiveVacancies()
+        {
+            return _queryStore.GetAllByTypeAsync<LiveVacancy>(QueryViewType.LiveVacancy.TypeName);
+        }
+
+        public Task DeleteLiveVacancyAsync(long vacancyReference)
+        {
+            var liveVacancyId = GetLiveVacancyId(vacancyReference);
+            return _queryStore.DeleteAsync<LiveVacancy>(liveVacancyId);
+        }
 
         private string GetLiveVacancyId(long vacancyReference)
         {

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Dashboard;
@@ -13,5 +14,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         Task UpdateApprenticeshipProgrammesAsync(IEnumerable<ApprenticeshipProgramme> programmes);
         Task UpdateEmployerVacancyDataAsync(string employerAccountId, IEnumerable<LegalEntity> legalEntities);
         Task UpdateLiveVacancyAsync(LiveVacancy vacancy);
+        Task DeleteLiveVacancyAsync(long vacancyReference);
     }
 }
