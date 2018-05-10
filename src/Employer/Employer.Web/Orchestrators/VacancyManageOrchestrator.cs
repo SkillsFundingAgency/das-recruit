@@ -36,11 +36,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public async Task<ManageVacancy> GetVacancyDisplayViewModelAsync(Vacancy vacancy)
         {
-            if (vacancy.ClosingDate.HasValue && vacancy.ClosingDate.Value <= _timeProvider.Now)
-            {
-                return await GetClosedVacancyViewModel(vacancy);
-            }
-
             switch (vacancy.Status)
             {
                 case VacancyStatus.Submitted:
