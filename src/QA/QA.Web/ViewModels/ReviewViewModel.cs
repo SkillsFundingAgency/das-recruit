@@ -4,6 +4,7 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
 {
     public class ReviewViewModel
     {
+        public bool IsEditable { get; internal set; }
         public string Title { get; internal set; }
         public string EmployerName { get; internal set; }
         public string ShortDescription { get; internal set; }
