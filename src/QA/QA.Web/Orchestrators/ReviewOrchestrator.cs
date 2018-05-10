@@ -46,9 +46,7 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
 
             if (review.Status == ReviewStatus.PendingReview)
             {
-                review.Status = ReviewStatus.UnderReview;
-                review.ReviewedByUserId = userId;
-                await _vacancyClient.UpdateVacancyReviewAsync(review);
+                await _vacancyClient.StartReview(review.Id, userId);
             }
 
             var vacancy = await _vacancyClient.GetVacancyAsync(review.VacancyReference);
