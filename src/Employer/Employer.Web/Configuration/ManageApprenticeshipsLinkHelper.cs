@@ -16,6 +16,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
 
         public string MaRoot => _externalLinks.ManageApprenticeshipSiteUrl;
         public string Help => $"{_externalLinks.ManageApprenticeshipSiteUrl}{_maRoutes.ManageApprenticeshipSiteHelpRoute}";
+        public string Privacy => $"{_externalLinks.ManageApprenticeshipSiteUrl}{_maRoutes.ManageApprenticeshipSitePrivacyRoute}";
         public string Accounts => $"{_externalLinks.ManageApprenticeshipSiteUrl}{_maRoutes.ManageApprenticeshipSiteAccountsRoute}";
         public string RenameAccount => $"{_externalLinks.ManageApprenticeshipSiteUrl}{_maRoutes.ManageApprenticeshipSiteRenameAccountRoute}";
         public string ChangePassword => $"{_externalLinks.EmployerIdamsSiteUrl}{_maRoutes.ManageApprenticeshipSiteChangePasswordRoute}";
