@@ -17,6 +17,11 @@
                     "CollectionName": "sequences",
                     "OfferThroughput": 400,
                     "StoredProcedures": []
+                },
+                {
+                    "CollectionName": "vacancyReviews",
+                    "OfferThroughput": 400,
+                    "StoredProcedures": []
                 }
             ]
         }
