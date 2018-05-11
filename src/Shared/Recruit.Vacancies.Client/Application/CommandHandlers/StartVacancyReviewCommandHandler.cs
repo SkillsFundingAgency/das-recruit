@@ -30,7 +30,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             }
 
             review.Status = ReviewStatus.UnderReview;
-            review.ReviewedByUserId = message.UserId;
+            review.ReviewedByUser = message.User;
             review.ReviewedDate = _time.Now;
 
             await _vacancyReviewRepository.UpdateAsync(review);

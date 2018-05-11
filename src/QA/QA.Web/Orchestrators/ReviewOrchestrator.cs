@@ -40,13 +40,13 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             return _vacancyClient.ApproveReview(reviewId);
         }
 
-        public async Task<ReviewViewModel> GetReviewViewModelAsync(Guid reviewId, string userId)
+        public async Task<ReviewViewModel> GetReviewViewModelAsync(Guid reviewId, VacancyUser user)
         {            
             var review = await _vacancyClient.GetVacancyReviewAsync(reviewId);
 
             if (review.Status == ReviewStatus.PendingReview)
             {
-                await _vacancyClient.StartReview(review.Id, userId);
+                await _vacancyClient.StartReview(review.Id, user);
             }
 
             var vacancy = await _vacancyClient.GetVacancyAsync(review.VacancyReference);

@@ -20,7 +20,7 @@ namespace Esfa.Recruit.Qa.Web.Controllers
         [HttpGet(Name = RouteNames.Vacancy_Review_Get)]
         public async Task<IActionResult> Review([FromRoute] Guid reviewId) 
         {
-            var vm = await _orchestrator.GetReviewViewModelAsync(reviewId, User.GetUserId());
+            var vm = await _orchestrator.GetReviewViewModelAsync(reviewId, User.GetVacancyUser());
 
             return View(vm);
         }
