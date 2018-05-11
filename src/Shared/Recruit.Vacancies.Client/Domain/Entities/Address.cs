@@ -11,5 +11,7 @@
         public double? Longitude { get; set; }
 
         public bool HasGeocode => Latitude.HasValue && Longitude.HasValue;
+
+        public bool RequiresGeocoding => HasGeocode == false && !string.IsNullOrEmpty(Postcode);
     }
 }

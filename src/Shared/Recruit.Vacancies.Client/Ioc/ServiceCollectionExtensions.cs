@@ -1,4 +1,5 @@
-﻿using Esfa.Recruit.Vacancies.Client.Application.Configuration;
+﻿using System.Collections.Generic;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Events;
 using Esfa.Recruit.Vacancies.Client.Application.CommandHandlers;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
@@ -17,6 +18,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.SequenceStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
 using FluentValidation;
 using MediatR;
@@ -64,7 +66,14 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient<IEmployerAccountService, EmployerAccountService>();
             services.AddTransient<IGetMinimumWages, StubNationalMinimumWageService>();
             services.AddTransient<IGenerateVacancyNumbers, MongoSequenceStore>();
-            services.AddTransient<IApprenticeshipProgrammeProvider, ApprenticeshipProgrammeProvider>(); 
+            services.AddTransient<IApprenticeshipProgrammeProvider, ApprenticeshipProgrammeProvider>();
+            services.AddTransient<IGeocodeService>(s => new GeocodeService(new List<IGeocodeService>
+            {
+                new ExistingVacancyGeocodeService(),
+                new PostcodesIoGeocodeService(),
+                new PostcodeAnywhereGeocodeService(),
+                new OutcodeGeocodeService()
+            }));
             
             services.Configure<SlackConfiguration>(configuration.GetSection("Slack"));
             services.AddTransient<INotifyVacancyReviewUpdates, SlackNotifyVacancyReviewUpdates>();
