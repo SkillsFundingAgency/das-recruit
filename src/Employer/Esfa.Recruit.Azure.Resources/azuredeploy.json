@@ -197,7 +197,7 @@
                 "value": "[parameters('ExternalLinks').EmployerIdamsSiteUrl]"
               },
               {
-                "name": "Environment",
+                "name": "ASPNETCORE_ENVIRONMENT",
                 "value": "[toUpper(parameters('EnvironmentFullName'))]"
               },
               {
@@ -279,7 +279,7 @@
                 "value": "[reference(concat('microsoft.insights/components/', variables('QAAppServiceName'))).InstrumentationKey]"
               },
               {
-                "name": "Environment",
+                "name": "ASPNETCORE_ENVIRONMENT",
                 "value": "[toUpper(parameters('EnvironmentName'))]"
               },
               {
@@ -366,7 +366,7 @@
         "siteConfig": {
           "appSettings": [
             {
-              "name": "Environment",
+              "name": "ASPNETCORE_ENVIRONMENT",
               "value": "[toUpper(parameters('EnvironmentName'))]"
             },
             {
