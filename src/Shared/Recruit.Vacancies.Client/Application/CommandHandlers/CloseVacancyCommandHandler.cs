@@ -25,17 +25,19 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
         public async Task Handle(CloseVacancyCommand message, CancellationToken cancellationToken)
         {
-            message.Vacancy.ClosedDate = _timeProvider.Now;
-            message.Vacancy.Status = VacancyStatus.Closed;
+            var vacancy = await _repository.GetVacancyAsync(message.VacancyId);
 
-            await _repository.UpdateAsync(message.Vacancy);
+            vacancy.ClosedDate = _timeProvider.Now;
+            vacancy.Status = VacancyStatus.Closed;
+
+            await _repository.UpdateAsync(vacancy);
 
             await _messaging.PublishEvent(new VacancyClosedEvent
             {
                 SourceCommandId = message.CommandId.ToString(),
-                EmployerAccountId = message.Vacancy.EmployerAccountId,
-                VacancyReference = message.Vacancy.VacancyReference.Value,
-                VacancyId = message.Vacancy.Id
+                EmployerAccountId = vacancy.EmployerAccountId,
+                VacancyReference = vacancy.VacancyReference.Value,
+                VacancyId = vacancy.Id
             });
         }
     }

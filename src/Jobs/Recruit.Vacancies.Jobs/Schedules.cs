@@ -2,6 +2,6 @@
 {
     internal static class Schedules
     {
-        internal const string Midnight = "0 0 * * *";
+        internal const string MidnightDaily = "0 0 * * *";
     }
 }

@@ -8,26 +8,27 @@ namespace Esfa.Recruit.Vacancies.Jobs.ApprenticeshipProgrammes
 {
     public class VacancyStatusJob
     {
+#if DEBUG
+        private const bool CanRunOnStartup = true;
+#else
+        private const bool CanRunOnStartup = false;
+#endif
         private readonly ILogger<VacancyStatusJob> _logger;
-        private LiveVacancyStatusInspector _updater;
+        private LiveVacancyStatusInspector _inspector;
 
-        public VacancyStatusJob(ILogger<VacancyStatusJob> logger, LiveVacancyStatusInspector updater)
+        public VacancyStatusJob(ILogger<VacancyStatusJob> logger, LiveVacancyStatusInspector inspector)
         {
             _logger = logger;
-            _updater = updater;
+            _inspector = inspector;
         }
 
-#if DEBUG
-        public async Task UpdateStandardsAndFrameworks([TimerTrigger(Schedules.Midnight, RunOnStartup = true)] TimerInfo timerInfo, TextWriter log)
-#else
-        public async Task UpdateStandardsAndFrameworks([TimerTrigger(Schedules.Midnight, RunOnStartup = false)] TimerInfo timerInfo, TextWriter log)
-#endif
+        public async Task Run([TimerTrigger(Schedules.MidnightDaily, RunOnStartup = CanRunOnStartup)] TimerInfo timerInfo, TextWriter log)
         {
             _logger.LogInformation("Starting vacancy status checking.");
 
             try
             {
-                await _updater.InspectAsync();
+                await _inspector.InspectAsync();
                 _logger.LogInformation("Finished vacancy status checking.");
             }
             catch (Exception ex)
