@@ -44,7 +44,12 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
 
         private static string CalculateStatus(VacancyReview review)
         {
-            return review.Status == ReviewStatus.UnderReview ? review.Status.GetDisplayName() : "Submitted";
+            if (review.Status == ReviewStatus.UnderReview && review?.ManualOutcome == ManualQaOutcome.Referred)
+            {
+                return review.Status.GetDisplayName();
+            }
+            
+            return "Submitted";
         }
     }
 }

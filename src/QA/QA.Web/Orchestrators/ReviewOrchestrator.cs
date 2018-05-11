@@ -8,6 +8,7 @@ using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Services.MinimumWage;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Humanizer;
 using Microsoft.Extensions.Options;
@@ -44,6 +45,11 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
         {            
             var review = await _vacancyClient.GetVacancyReviewAsync(reviewId);
 
+            if (review.Status != ReviewStatus.PendingReview && review.Status != ReviewStatus.UnderReview)
+            {
+                throw new InvalidStateException($"Review is not in a correct state. State: {review.Status}");
+            }
+
             if (review.Status == ReviewStatus.PendingReview)
             {
                 await _vacancyClient.StartReview(review.Id, user);
@@ -51,6 +57,22 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
 
             var vacancy = await _vacancyClient.GetVacancyAsync(review.VacancyReference);
             var vm = await MapToViewModel(vacancy);
+            
+            return vm;
+        }
+
+        public async Task<ReviewViewModel> GetReferralViewModelAsync(Guid reviewId)
+        {            
+            var review = await _vacancyClient.GetVacancyReviewAsync(reviewId);
+
+            if (review?.ManualOutcome != ManualQaOutcome.Referred)
+            {
+                await _vacancyClient.ReferVacancyReviewAsync(review.Id);
+            }
+
+            var vacancy = await _vacancyClient.GetVacancyAsync(review.VacancyReference);
+            var vm = await MapToViewModel(vacancy);
+            vm.IsEditable = true;
             
             return vm;
         }

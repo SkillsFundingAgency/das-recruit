@@ -37,14 +37,12 @@ namespace Esfa.Recruit.Qa.Web.Controllers
         [HttpGet("referral", Name = RouteNames.Vacancy_Review_Referral_Get)]
         public async Task<IActionResult> Referral([FromRoute] Guid reviewId) 
         {
-            var vm = await _orchestrator.GetReviewViewModelAsync(reviewId);
-
-            vm.IsEditable = true;
+            var vm = await _orchestrator.GetReferralViewModelAsync(reviewId);
 
             return View("Review", vm);
         }
 
-        [HttpPost(Name = RouteNames.Vacancy_Review_Referral_Post)]
+        [HttpPost("referral", Name = RouteNames.Vacancy_Review_Referral_Post)]
         public async Task<IActionResult> ReferralApprove([FromRoute] Guid reviewId, ReferralViewModel reviewChanges) 
         {
             await _orchestrator.ApproveReviewAsync(reviewId);
