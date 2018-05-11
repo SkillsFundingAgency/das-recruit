@@ -45,7 +45,7 @@ namespace Esfa.Recruit.Qa.Web.Controllers
         [HttpPost("referral", Name = RouteNames.Vacancy_Review_Referral_Post)]
         public async Task<IActionResult> ReferralApprove([FromRoute] Guid reviewId, ReferralViewModel reviewChanges) 
         {
-            await _orchestrator.ApproveReviewAsync(reviewId);
+            await _orchestrator.ApproveReferredReviewAsync(reviewId, reviewChanges);
 
             return RedirectToRoute(RouteNames.Dashboard_Index_Get);
         }

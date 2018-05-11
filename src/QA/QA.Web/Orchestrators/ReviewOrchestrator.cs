@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Esfa.Recruit.Qa.Web.Extensions;
 using Esfa.Recruit.Qa.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Services;
@@ -39,6 +38,16 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
         public Task ApproveReviewAsync(Guid reviewId)
         {
             return _vacancyClient.ApproveReview(reviewId);
+        }
+
+        public async Task ApproveReferredReviewAsync(Guid reviewId, ReferralViewModel reviewChanges)
+        {
+            var review = await _vacancyClient.GetVacancyReviewAsync(reviewId);
+            var vacancy = await _vacancyClient.GetVacancyAsync(review.VacancyReference);
+
+            MapChangesOnVacancy(vacancy, reviewChanges);
+
+            await _vacancyClient.ApproveReferredReviewAsync(reviewId, vacancy);
         }
 
         public async Task<ReviewViewModel> GetReviewViewModelAsync(Guid reviewId, VacancyUser user)
@@ -140,6 +149,16 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
                         vacancy.EmployerLocation.Postcode
                     }
                     .Where(x => !string.IsNullOrEmpty(x));
+        }
+
+        private void MapChangesOnVacancy(Vacancy vacancy, ReferralViewModel reviewChanges)
+        {
+            vacancy.ShortDescription = reviewChanges.ShortDescription;
+            vacancy.Description = reviewChanges.VacancyDescription;
+            vacancy.TrainingDescription = reviewChanges.TrainingDescription;
+            vacancy.OutcomeDescription = reviewChanges.OutcomeDescription;
+            vacancy.ThingsToConsider = reviewChanges.ThingsToConsider;
+            vacancy.EmployerDescription = reviewChanges.EmployerDescription;
         }
     }
 }
