@@ -8,5 +8,6 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public long VacancyReference { get; set; }
         public string Title { get; set; }  
         public string Status { get; set; }
+        public bool IsReferred { get; set; }
     }
 }

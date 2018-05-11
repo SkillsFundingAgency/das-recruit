@@ -35,7 +35,8 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
                     ReviewId = review.Id,
                     VacancyReference = review.VacancyReference,
                     Title = review.Title,
-                    Status = CalculateStatus(review)
+                    Status = CalculateStatus(review),
+                    IsReferred = review.ManualOutcome == ManualQaOutcome.Referred
                 });
             }
 
