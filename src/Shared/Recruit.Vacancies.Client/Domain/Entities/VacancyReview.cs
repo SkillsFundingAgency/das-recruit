@@ -10,7 +10,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public ReviewStatus Status { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ReviewedDate { get; set; }
-        public string ReviewedByUserId { get; set; }
+        public VacancyUser ReviewedByUser { get; set; }
         public DateTime? ClosedDate { get; set; }
         public ManualQaOutcome? ManualOutcome { get; set; }
         public string PrivateReviewNotes { get; set; }

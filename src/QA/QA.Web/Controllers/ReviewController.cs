@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Qa.Web.Configuration.Routing;
+using Esfa.Recruit.Qa.Web.Extensions;
 using Esfa.Recruit.Qa.Web.Orchestrators;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,7 +20,7 @@ namespace Esfa.Recruit.Qa.Web.Controllers
         [HttpGet(Name = RouteNames.Vacancy_Review_Get)]
         public async Task<IActionResult> Review([FromRoute] Guid reviewId) 
         {
-            var vm = await _orchestrator.GetReviewViewModelAsync(reviewId);
+            var vm = await _orchestrator.GetReviewViewModelAsync(reviewId, User.GetVacancyUser());
 
             return View(vm);
         }
