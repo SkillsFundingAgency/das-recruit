@@ -81,16 +81,16 @@
             <li class="@GetSectionClass(Model.WorkingWeekSectionState)">
                 <h3 class="heading-small">Working week</h3>
                 <span esfa-validation-message-for="Wage" class="error-message"></span>
-                <ul class="list" asp-condition="@Model.Wage">
+                <div asp-condition="@Model.Wage">
                     <span esfa-validation-message-for="WorkingWeekDescription" class="error-message"></span>
-                    <li asp-condition="@Model.HasWorkingWeekDescription">
+                    <div asp-condition="@Model.HasWorkingWeekDescription">
                         @Model.WorkingWeekDescription
-                    </li>
+                    </div>
                     <span esfa-validation-message-for="HoursPerWeek" class="error-message"></span>
-                    <li asp-condition="@Model.HasHoursPerWeek">
+                    <div asp-condition="@Model.HasHoursPerWeek">
                         Total hours per week: @Model.HoursPerWeek
-                    </li>
-                </ul>
+                    </div>
+                </div>
                 @EditLink(RouteNames.Title_Get, Model.WorkingWeekSectionState, "link-working-week")
             </li>
             <li class="@GetSectionClass(Model.WageTextSectionState)">
@@ -258,7 +258,7 @@
         </div>
     </div>
     <div class="column-half">
-        <img asp-condition="@Model.HasMapUrl" id="static-map" src="@Model.MapUrl" />
+        <img asp-condition="@Model.HasMapUrl" id="static-map" src="@Model.MapUrl" alt="Location map" />
     </div>
 </div>
 
