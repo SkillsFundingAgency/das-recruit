@@ -67,17 +67,13 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient<IGetMinimumWages, StubNationalMinimumWageService>();
             services.AddTransient<IGenerateVacancyNumbers, MongoSequenceStore>();
             services.AddTransient<IApprenticeshipProgrammeProvider, ApprenticeshipProgrammeProvider>();
-            services.AddTransient<IGeocodeService>(s => new GeocodeService(new List<IGeocodeService>
-            {
-                new ExistingVacancyGeocodeService(),
-                new PostcodesIoGeocodeService(),
-                new PostcodeAnywhereGeocodeService(),
-                new OutcodeGeocodeService()
-            }));
             
             services.Configure<SlackConfiguration>(configuration.GetSection("Slack"));
             services.AddTransient<INotifyVacancyReviewUpdates, SlackNotifyVacancyReviewUpdates>();
             services.AddTransient<ISlackClient, SlackClient>();
+
+            services.Configure<GeocodeConfiguration>(configuration.GetSection("Geocode"));
+            services.AddTransient<IGeocodeServiceFactory, GeocodeServiceFactory>();
         }
 
         private static void AddRepositories(this IServiceCollection services, IConfiguration configuration)

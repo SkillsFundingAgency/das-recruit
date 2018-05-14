@@ -194,7 +194,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         {
             var vacancy = await _repository.GetVacancyAsync(vacancyId);
 
-            if (vacancy?.EmployerLocation?.RequiresGeocoding == true)
+            if (!string.IsNullOrEmpty(vacancy?.EmployerLocation?.Postcode))
             {
                 await GeocodeVacancyAsync(vacancy.Id);
             }

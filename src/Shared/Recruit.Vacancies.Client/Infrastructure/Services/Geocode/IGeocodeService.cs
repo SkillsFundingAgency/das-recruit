@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode
 {
     public interface IGeocodeService
     {
-        Geocode Geocode(string postcode);
+        Task<Geocode> Geocode(string postcode);
     }
 }

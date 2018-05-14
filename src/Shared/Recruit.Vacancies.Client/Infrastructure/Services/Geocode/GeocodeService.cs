@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode
 {
@@ -13,11 +12,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode
             _geocodeServices = geocodeServices;
         }
 
-        public Geocode Geocode(string postcode)
+        public async Task<Geocode> Geocode(string postcode)
         {
             foreach (var service in _geocodeServices)
             {
-                var geocode = service.Geocode(postcode);
+                var geocode = await service.Geocode(postcode);
 
                 if (geocode != null)
                 {
