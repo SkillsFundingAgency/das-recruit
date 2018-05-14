@@ -1,15 +1,25 @@
 ﻿using System.Diagnostics;
 using System.Net;
 using Esfa.Recruit.Qa.Web.Configuration;
+using Esfa.Recruit.Qa.Web.Exceptions;
 using Esfa.Recruit.Qa.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Qa.Web.Controllers
 {
     [AllowAnonymous]
     public class ErrorController : Controller
     {
+        private readonly ILogger<ErrorController> _logger;
+
+        public ErrorController(ILogger<ErrorController> logger)
+        {
+            _logger = logger;
+        }
+        
         [Route("error/{id?}")]
         public IActionResult Error(int id)
         {
@@ -25,7 +35,26 @@ namespace Esfa.Recruit.Qa.Web.Controllers
         [Route("error/handle")]
         public IActionResult ErrorHandler()
         {
-            return View(ViewNames.ErrorView, new ErrorViewModel { StatusCode = (int)HttpStatusCode.InternalServerError, RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var exceptionFeature = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
+
+            if (exceptionFeature != null)
+            {
+                var exception = exceptionFeature.Error;
+
+                switch (exception)
+                {
+                    case NotFoundException _:
+                        _logger.LogError(exception, $"Exception on path: {{routeWhereExceptionOccurred}}", exceptionFeature.Path);
+                        return View(ViewNames.ErrorView, GetViewModel(HttpStatusCode.NotFound));
+                }
+            }
+
+            return base.View(ViewNames.ErrorView, GetViewModel(HttpStatusCode.InternalServerError));
+        }
+
+        private ErrorViewModel GetViewModel(HttpStatusCode statusCode)
+        {
+            return new ErrorViewModel { StatusCode = (int)statusCode, RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier };
         }
 
         private IActionResult AccessDenied()

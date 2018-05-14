@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Qa.Web.ViewModels;
@@ -45,7 +44,7 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
 
         private static string CalculateStatus(VacancyReview review)
         {
-            if (review.Status == ReviewStatus.UnderReview && review?.ManualOutcome == ManualQaOutcome.Referred)
+            if (review.Status == ReviewStatus.UnderReview && review.ManualOutcome == ManualQaOutcome.Referred)
             {
                 return review.Status.GetDisplayName();
             }

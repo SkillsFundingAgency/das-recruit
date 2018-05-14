@@ -11,7 +11,7 @@ using Microsoft.Net.Http.Headers;
 
 namespace Esfa.Recruit.Qa.Web.Configuration
 {
-    public static class IServiceCollectionExtensions
+    public static class ServiceCollectionExtensions
     {
         private const string DoesUserBelongToGroupPolicyName = "DoesUserBelongToGroup";
         
