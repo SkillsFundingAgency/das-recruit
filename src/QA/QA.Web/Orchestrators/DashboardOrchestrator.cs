@@ -49,7 +49,7 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
                 return review.Status.GetDisplayName();
             }
             
-            return "Submitted";
+            return VacancyStatus.Submitted.GetDisplayName();
         }
     }
 }

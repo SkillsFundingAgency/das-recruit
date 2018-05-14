@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Esfa.Recruit.Qa.Web.Configuration;
 using Esfa.Recruit.Qa.Web.Configuration.Routing;
 using Esfa.Recruit.Qa.Web.Extensions;
 using Esfa.Recruit.Qa.Web.Orchestrators;
@@ -39,7 +40,7 @@ namespace Esfa.Recruit.Qa.Web.Controllers
         {
             var vm = await _orchestrator.GetReferralViewModelAsync(reviewId);
 
-            return View("Review", vm);
+            return View(ViewNames.Review, vm);
         }
 
         [HttpPost("referral", Name = RouteNames.Vacancy_Review_Referral_Post)]

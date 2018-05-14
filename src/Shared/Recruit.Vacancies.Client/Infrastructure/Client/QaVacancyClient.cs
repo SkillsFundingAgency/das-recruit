@@ -81,7 +81,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         {
             return _messaging.SendCommandAsync(new StartVacancyReviewCommand
             {
-                ReviewId = reviewId
+                ReviewId = reviewId,
+                User = user
             });
         }
     }
