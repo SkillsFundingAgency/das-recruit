@@ -637,7 +637,7 @@
   }
 
 /*** Vacancy Styles ***/
-.table-summary .section-name h2,  {
+.table-summary .section-name h2  {
   font-size: 18px;
   line-height: 1.2;
   font-weight: 700;
@@ -960,7 +960,7 @@ input.form-control, textarea.form-control {
 
 .select2-hidden-accessible {
     border: 0 !important;
-    clip: rect(0 0 0 0) !important;
+    clip: rect(0, 0, 0, 0) !important;
     height: 1px !important;
     margin: -1px !important;
     overflow: hidden !important;
@@ -1207,7 +1207,7 @@ input.form-control, textarea.form-control {
     background-image: -o-linear-gradient(top, #fff 50%, #eee 100%);
     background-image: linear-gradient(to bottom, #fff 50%, #eee 100%);
     background-repeat: repeat-x;
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFFFF', endColorstr='#FFEEEEEE', GradientType=0)
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFFFF', endColorstr='#FFEEEEEE', GradientType=0);
 }
 
 .select2-container--classic .select2-selection--single:focus {
@@ -1243,7 +1243,7 @@ input.form-control, textarea.form-control {
     background-image: -o-linear-gradient(top, #eee 50%, #ccc 100%);
     background-image: linear-gradient(to bottom, #eee 50%, #ccc 100%);
     background-repeat: repeat-x;
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFEEEEEE', endColorstr='#FFCCCCCC', GradientType=0)
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFEEEEEE', endColorstr='#FFCCCCCC', GradientType=0);
 }
 
 .select2-container--classic .select2-selection--single .select2-selection__arrow b {
@@ -1293,7 +1293,7 @@ input.form-control, textarea.form-control {
     background-image: -o-linear-gradient(top, #fff 0%, #eee 50%);
     background-image: linear-gradient(to bottom, #fff 0%, #eee 50%);
     background-repeat: repeat-x;
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFFFF', endColorstr='#FFEEEEEE', GradientType=0)
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFFFF', endColorstr='#FFEEEEEE', GradientType=0);
 }
 
 .select2-container--classic.select2-container--open.select2-container--below .select2-selection--single {
@@ -1304,7 +1304,7 @@ input.form-control, textarea.form-control {
     background-image: -o-linear-gradient(top, #eee 50%, #fff 100%);
     background-image: linear-gradient(to bottom, #eee 50%, #fff 100%);
     background-repeat: repeat-x;
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFEEEEEE', endColorstr='#FFFFFFFF', GradientType=0)
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFEEEEEE', endColorstr='#FFFFFFFF', GradientType=0);
 }
 
 .select2-container--classic .select2-selection--multiple {
