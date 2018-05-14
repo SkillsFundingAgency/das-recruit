@@ -1,0 +1,13 @@
+﻿{
+  "_id": "QualificationTypes",
+  "QualificationTypes": [
+    "GCSE",
+    "AS Level",
+    "A Level",
+    "BTEC",
+    "NVQ or SVQ Level 1",
+    "NVQ or SVQ Level 2",
+    "NVQ or SVQ Level 3",
+    "Other"
+  ]
+}

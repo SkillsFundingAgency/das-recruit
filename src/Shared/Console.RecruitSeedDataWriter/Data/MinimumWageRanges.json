@@ -1,0 +1,12 @@
+﻿{
+  "_id": "MinimumWageRanges",
+  "Ranges": [
+    {
+      "ValidFrom": ISODate("2018-04-01T00:00:00.000Z"),
+      "ValidTo": ISODate("2100-12-31T00:00:00.000Z"),
+      "ApprenticeshipMinimumWage": NumberDecimal("3.70"),
+      "NationalMinimumWageLowerBound": NumberDecimal("4.20"),
+      "NationalMinimumWageUpperBound": NumberDecimal("7.83")
+    }
+  ]
+}
