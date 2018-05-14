@@ -172,33 +172,9 @@
     border: 1px solid #bfc1c3;
   }
   
-  .preview-advert {
-    border: 1px solid #006435; 
-  }
-  
-  .similar-adverts {
-    border: 1px solid #F47738; 
-  }
-  
-  .example-advert:before{
-    content: "EXAMPLE VACANCY";
+  .example-advert-before { 
     background: #bfc1c3;
-    color: white;
-  }
-  
-  .preview-advert:before{
-    content: "PREVIEW VACANCY";
-    background: #006435;
-    color: white;
-  }
-  
-  .similar-adverts:before{
-    content: "SIMILAR VACANCIES";
-    background: #F47738;
-    color: white;
-  }
-  
-  .example-advert:before, .preview-advert:before, .similar-adverts:before {  
+    color: white; 
     position: absolute;
     top: 0;
     left: 0;
@@ -211,7 +187,7 @@
   }
   
   @media (min-width: 641px) {
-    .example-advert:before, .preview-adver:before {
+    .example-advert-before {
       font-size: 14px;
       line-height: 1.42857; 
     } 
