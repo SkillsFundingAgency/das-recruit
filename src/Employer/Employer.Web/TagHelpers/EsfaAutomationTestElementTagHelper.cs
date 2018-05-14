@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using Esfa.Recruit.Employer.Web.Configuration;
+using Esfa.Recruit.Shared.Configuration;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using System.Threading.Tasks;
 
@@ -21,7 +23,7 @@ namespace Esfa.Recruit.Employer.Web.TagHelpers
         
         public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
-            if (!_env.IsProduction())
+            if (!_env.IsEnvironment(EnvironmentNames.PROD))
             {
                 output.Attributes.SetAttribute(DataAutomationAttributeName, TargetName);
             }

@@ -1,5 +1,4 @@
 using Esfa.Recruit.Employer.Web.Configuration;
-using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Razor;
@@ -21,7 +20,7 @@ namespace Esfa.Recruit.Employer.Web
             _hostingEnvironment = env;
             _authConfig = _configuration.GetSection("Authentication").Get<AuthenticationConfiguration>();
 
-            if (env.IsDevelopment()  && _authConfig.IsEnabledForDev == false)
+            if (env.IsDevelopment() && _authConfig.IsEnabledForDev == false)
             {
                 _isAuthEnabled = false;
             }
