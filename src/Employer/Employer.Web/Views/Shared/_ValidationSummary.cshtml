@@ -3,7 +3,7 @@
 @{ 
     var validationSummaryClass = Model.ModelState.IsValid ? "validation-summary-valid" : "validation-summary-errors";
 }
-<div class="@validationSummaryClass error-summary" role="alert" aria-labelledby="error-summary-heading-example-1" data-valmsg-summary="true" tabindex="-1">
+<div class="@validationSummaryClass error-summary" role="alert" data-valmsg-summary="true" tabindex="-1">
     <h2 id="error-summary" class="heading-medium error-summary-heading">
         Please fix these errors
     </h2>
