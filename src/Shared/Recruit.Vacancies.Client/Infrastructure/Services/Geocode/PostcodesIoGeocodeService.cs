@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode.Responses;
 using Microsoft.Extensions.Logging;
 using RestSharp;
 
@@ -22,14 +21,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode
         {
             try
             {
-                //http://api.postcodes.io/postcodes?q=SW1A2AA
-
                 var client = new RestClient(_postcodesIoUrl);
 
-                var request = new RestRequest("postcodes?q={q}", Method.GET);
-                request.AddUrlSegment("q", postcode);
+                var request = new RestRequest("postcodes?q={postcode}", Method.GET);
+                request.AddUrlSegment("postcode", postcode);
 
-                var response = await client.ExecuteTaskAsync<PostcodesResponse>(request);
+                var response = await client.ExecuteTaskAsync<PostcodesIoResponse>(request);
 
                 if (response.IsSuccessful)
                 {
@@ -43,31 +40,20 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode
                             Longitude = result.Longitude.Value,
                         };
 
-                        _logger.LogInformation("Resolved geocode {geocode} for postcode {postcode} using postcodes.io", geocode, postcode);
+                        _logger.LogInformation("Resolved geocode:{geocode} for postcode:{postcode} using postcodes.io", geocode, postcode);
 
                         return geocode;
                     }
                 }
 
-                _logger.LogInformation("Cannot resolve geocode for postcode {postcode} using postcodes.io", postcode);
+                _logger.LogInformation("Cannot resolve geocode for postcode:{postcode} using postcodes.io", postcode);
                 return null;
             }
             catch (Exception ex)
             {
-                _logger.LogWarning(ex, "Calling postcodes.io service caused an error. {postcode}", postcode);
+                _logger.LogWarning(ex, "Calling postcodes.io service caused an error for postcode:{postcode}", postcode);
                 return null;
             }
-        }
-
-        public class PostcodesResponse
-        {
-            public List<PostcodesResponseResult> Result { get; set; }   
-        }
-
-        public class PostcodesResponseResult
-        {
-            public double? Longitude { get; set; }
-            public double? Latitude { get; set; }
         }
     }
 

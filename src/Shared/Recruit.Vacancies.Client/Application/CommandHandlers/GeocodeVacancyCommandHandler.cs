@@ -34,15 +34,16 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             if (string.IsNullOrEmpty(vacancy?.EmployerLocation?.Postcode))
             {
-                _logger.LogWarning("Geocode Vacancy: {vacancyId} cannot geocode as no postcode");
+                _logger.LogWarning("Geocode vacancyId:{vacancyId} cannot geocode as vacancy has no postcode", vacancy.Id);
                 return;
             }
 
+            _logger.LogInformation("Attempting to geocode postcode:{postcode} for vacancyId:{vacancyId}", vacancy.EmployerLocation.Postcode, vacancy.Id);
             var geocode = await _geocodeService.Geocode(vacancy.EmployerLocation.Postcode);
 
             if (geocode == null)
             {
-                _logger.LogWarning("Geocode Vacancy: {vacancyId} cannot geocode postcode:{postcode}", vacancy.Id, vacancy.EmployerLocation.Postcode);
+                _logger.LogWarning("Geocode vacancyId:{vacancyId} failed to geocode postcode:{postcode}", vacancy.Id, vacancy.EmployerLocation.Postcode);
                 return;
             }
 
@@ -53,18 +54,27 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         {
             var vacancy = await _repository.GetVacancyAsync(vacancyId);
 
-            if (vacancy.EmployerLocation.Latitude == geocode.Latitude &&
-                vacancy.EmployerLocation.Longitude == geocode.Longitude)
+            if (vacancy.EmployerLocation == null)
             {
-                _logger.LogInformation("Vacancy geocode not changed {vacancyId}", vacancy.Id);
+                _logger.LogInformation("Vacancy:{vacancyId} does not have employer location information. Cannot update vacancy", geocode, vacancy.Id);
                 return;
+            }
+
+            if (vacancy.EmployerLocation?.Latitude != null && vacancy.EmployerLocation?.Longitude != null)
+            {
+                if (Math.Abs(vacancy.EmployerLocation.Latitude.Value - geocode.Latitude) < 0.0001 &&
+                    Math.Abs(vacancy.EmployerLocation.Longitude.Value - geocode.Longitude) < 0.0001)
+                {
+                    _logger.LogInformation("Vacancy geocode:{geocode} has not changed for vacancy:{vacancyId}. Not updating vacancy", geocode, vacancy.Id);
+                    return;
+                }
             }
 
             vacancy.EmployerLocation.Latitude = geocode.Latitude;
             vacancy.EmployerLocation.Longitude = geocode.Longitude;
             await _repository.UpdateAsync(vacancy);
 
-            _logger.LogInformation("Geocode Vacancy: {vacancyId} with geocode Latitude: {latitude} Logtitude: {longitude}", vacancy.Id, vacancy.EmployerLocation.Latitude, vacancy.EmployerLocation.Longitude);
+            _logger.LogInformation("Geocode Vacancy:{vacancyId} with geocode Latitude: {latitude} Logtitude: {longitude}", vacancy.Id, vacancy.EmployerLocation.Latitude, vacancy.EmployerLocation.Longitude);
         }
     }
 }
