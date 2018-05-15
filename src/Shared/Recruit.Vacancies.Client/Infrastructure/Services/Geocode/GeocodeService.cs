@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
@@ -19,13 +20,32 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode
         {
             foreach (var service in _geocodeServices)
             {
-                _logger.LogInformation("Using {geocodeService} to resolve postcode:{postcode}", service.GetType().Name, postcode);
-                var geocode = await service.Geocode(postcode);
+                var geocodeService = service.GetType().Name;
 
-                if (geocode != null)
+                try
                 {
-                    return geocode;
+                    _logger.LogInformation("Calling {geocodeService} to resolve postcode:{postcode}",
+                        geocodeService, postcode);
+
+                    var geocode = await service.Geocode(postcode);
+
+                    if (geocode != null)
+                    {
+                        _logger.LogInformation("{geocodeService} successfully geocoded postcode:{postcode} geocode:{geocode}",
+                            geocodeService, postcode, geocode);
+
+                        return geocode;
+                    }
+
+                    _logger.LogInformation("{geocodeService} failed to geocode postcode:{postcode}",
+                        geocodeService, postcode);
                 }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex, "{geocodeService} threw exception for postcode:{postcode}",
+                        geocodeService, postcode);
+                }
+                
             }
 
             return null;

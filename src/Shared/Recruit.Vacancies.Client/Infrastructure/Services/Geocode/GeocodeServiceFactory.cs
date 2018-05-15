@@ -31,20 +31,20 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode
             //2) Next try postcodes.io
             if (!string.IsNullOrEmpty(_config.PostcodesIoUrl))
             {
-                services.Add(new PostcodesIoGeocodeService(_logger, _config.PostcodesIoUrl));
+                services.Add(new PostcodesIoGeocodeService(_config.PostcodesIoUrl));
             }
 
             //3) Next try PostcodeAnywhere
             if (!string.IsNullOrEmpty(_config.PostcodeAnywhereUrl) &&
                 !string.IsNullOrEmpty(_config.PostcodeAnywhereKey))
             {
-                services.Add(new PostcodeAnywhereGeocodeService(_logger, _config.PostcodeAnywhereUrl, _config.PostcodeAnywhereKey));
+                services.Add(new PostcodeAnywhereGeocodeService(_config.PostcodeAnywhereUrl, _config.PostcodeAnywhereKey));
             }
 
             //4) Finally just resolve the outcode
             if (!string.IsNullOrEmpty(_config.PostcodesIoUrl))
             {
-                services.Add(new PostcodesIoOutcodeGeocodeService(_logger, _config.PostcodesIoUrl));
+                services.Add(new PostcodesIoOutcodeGeocodeService(_config.PostcodesIoUrl));
             }
 
             return new GeocodeService(_logger, services);

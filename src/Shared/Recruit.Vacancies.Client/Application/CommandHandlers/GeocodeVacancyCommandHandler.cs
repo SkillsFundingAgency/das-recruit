@@ -43,7 +43,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             if (geocode == null)
             {
-                _logger.LogWarning("Geocode vacancyId:{vacancyId} failed to geocode postcode:{postcode}", vacancy.Id, vacancy.EmployerLocation.Postcode);
+                _logger.LogError("Geocode vacancyId:{vacancyId} failed to geocode postcode:{postcode}", vacancy.Id, vacancy.EmployerLocation.Postcode);
                 return;
             }
 

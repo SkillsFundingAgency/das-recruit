@@ -9,51 +9,37 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode
 {
     public class PostcodesIoGeocodeService : IGeocodeService
     {
-        private readonly ILogger<GeocodeService> _logger;
         private readonly string _postcodesIoUrl;
 
-        public PostcodesIoGeocodeService(ILogger<GeocodeService> logger, string postcodesIoUrl)
+        public PostcodesIoGeocodeService(string postcodesIoUrl)
         {
-            _logger = logger;
             _postcodesIoUrl = postcodesIoUrl;
         }
         public async Task<Geocode> Geocode(string postcode)
         {
-            try
+            
+            var client = new RestClient(_postcodesIoUrl);
+
+            var request = new RestRequest("postcodes?q={postcode}", Method.GET);
+            request.AddUrlSegment("postcode", postcode);
+
+            var response = await client.ExecuteTaskAsync<PostcodesIoResponse>(request);
+
+            if (response.IsSuccessful)
             {
-                var client = new RestClient(_postcodesIoUrl);
+                var result = response.Data.Result?.FirstOrDefault();
 
-                var request = new RestRequest("postcodes?q={postcode}", Method.GET);
-                request.AddUrlSegment("postcode", postcode);
-
-                var response = await client.ExecuteTaskAsync<PostcodesIoResponse>(request);
-
-                if (response.IsSuccessful)
+                if (result?.Latitude != null && result?.Longitude != null)
                 {
-                    var result = response.Data.Result?.FirstOrDefault();
-
-                    if (result?.Latitude != null && result?.Longitude != null)
+                    return new Geocode
                     {
-                        var geocode = new Geocode
-                        {
-                            Latitude = result.Latitude.Value,
-                            Longitude = result.Longitude.Value,
-                        };
-
-                        _logger.LogInformation("Resolved geocode:{geocode} for postcode:{postcode} using postcodes.io", geocode, postcode);
-
-                        return geocode;
-                    }
+                        Latitude = result.Latitude.Value,
+                        Longitude = result.Longitude.Value,
+                    };
                 }
-
-                _logger.LogInformation("Cannot resolve geocode for postcode:{postcode} using postcodes.io", postcode);
-                return null;
             }
-            catch (Exception ex)
-            {
-                _logger.LogWarning(ex, "Calling postcodes.io service caused an error for postcode:{postcode}", postcode);
-                return null;
-            }
+            
+            return null;
         }
     }
 
