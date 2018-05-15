@@ -5,5 +5,7 @@
         public const string Dashboard_Index_Get = "Dashboard_Index_Get";
         public const string Vacancy_Review_Get = "Vacancy_Review_Get";
         public const string Vacancy_Review_Post = "Vacancy_Review_Post";
+        public const string Vacancy_Review_Referral_Get = "Vacancy_Review_Referral_Get";
+        public const string Vacancy_Review_Referral_Post = "Vacancy_Review_Referral_Post";
     }
 }

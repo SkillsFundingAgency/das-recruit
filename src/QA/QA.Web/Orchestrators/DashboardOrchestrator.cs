@@ -34,11 +34,22 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
                     ReviewId = review.Id,
                     VacancyReference = review.VacancyReference,
                     Title = review.Title,
-                    Status = review.ManualOutcome?.GetDisplayName() ?? "Submitted"
+                    Status = CalculateStatus(review),
+                    IsReferred = review.ManualOutcome == ManualQaOutcome.Referred
                 });
             }
 
             return vm;
+        }
+
+        private static string CalculateStatus(VacancyReview review)
+        {
+            if (review.Status == ReviewStatus.UnderReview && review.ManualOutcome == ManualQaOutcome.Referred)
+            {
+                return review.Status.GetDisplayName();
+            }
+            
+            return VacancyStatus.Submitted.GetDisplayName();
         }
     }
 }

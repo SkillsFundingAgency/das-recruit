@@ -30,6 +30,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _messaging = messaging;
         }
 
+        public Task ApproveReferredReviewAsync(Guid reviewId, Vacancy vacancy)
+        {
+            return _messaging.SendCommandAsync(new ApproveReferredVacancyReviewCommand
+            {
+                ReviewId = reviewId,
+                Vacancy = vacancy
+            });
+        }
+
         public Task ApproveReview(Guid reviewId)
         {
             return _messaging.SendCommandAsync(new ApproveVacancyReviewCommand
@@ -58,6 +67,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         public Task<VacancyReview> GetVacancyReviewAsync(Guid reviewId)
         {
             return _reviewRepository.GetAsync(reviewId);
+        }
+
+        public Task ReferVacancyReviewAsync(Guid reviewId)
+        {
+            return _messaging.SendCommandAsync(new ReferVacancyReviewCommand
+            {
+                ReviewId = reviewId
+            });
         }
 
         public Task StartReview(Guid reviewId, VacancyUser user)

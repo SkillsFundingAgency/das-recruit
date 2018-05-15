@@ -20,12 +20,13 @@ namespace Esfa.Recruit.Shared.Web.Extensions
 
         private static readonly Dictionary<Enum, string> DisplayNames = new Dictionary<Enum, string>
         {
-            {ProgrammeLevel.FoundationDegree, "Foundation Degree" },
-            {ProgrammeLevel.Masters, "Master's Degree" },
-            {WageType.FixedWage, "Fixed wage" },
-            {WageType.NationalMinimumWage, "National Minimum Wage" },
-            {WageType.NationalMinimumWageForApprentices, "National Minimum Wage for apprentices" },
-            {ManualQaOutcome.Referred, "Edits required" }
+            { ProgrammeLevel.FoundationDegree, "Foundation Degree" },
+            { ProgrammeLevel.Masters, "Master's Degree" },
+            { WageType.FixedWage, "Fixed wage" },
+            { WageType.NationalMinimumWage, "National Minimum Wage" },
+            { WageType.NationalMinimumWageForApprentices, "National Minimum Wage for apprentices" },
+            { ManualQaOutcome.Referred, "Edits required" },
+            { ReviewStatus.UnderReview, "Under review" }
         };
     }
 }
