@@ -70,6 +70,15 @@
     },
     "SlackWebhook": {
       "value": ""
+    },
+    "GeocodePostcodesIoUrl": {
+      "value": ""
+    },
+    "GeocodePostcodeAnywhereUrl": {
+      "value": ""
+    },
+    "GeocodePostcodeAnywhereKey": {
+      "value": ""
     }
   }
 }
