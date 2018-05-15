@@ -74,7 +74,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             vacancy.EmployerLocation.Longitude = geocode.Longitude;
             await _repository.UpdateAsync(vacancy);
 
-            _logger.LogInformation("Geocode Vacancy:{vacancyId} with geocode Latitude: {latitude} Logtitude: {longitude}", vacancy.Id, vacancy.EmployerLocation.Latitude, vacancy.EmployerLocation.Longitude);
+            _logger.LogInformation("Successfully geocoded vacancy:{vacancyId} with geocode Latitude:{latitude} Logtitude:{longitude}", vacancy.Id, vacancy.EmployerLocation.Latitude, vacancy.EmployerLocation.Longitude);
         }
     }
 }

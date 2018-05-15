@@ -86,7 +86,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 AddressLine2 = m.AddressLine2,
                 AddressLine3 = m.AddressLine3,
                 AddressLine4 = m.AddressLine4,
-                Postcode = m.Postcode.AsPostcode()
+                Postcode = m.Postcode.AsPostcode(),
+                Latitude = null,
+                Longitude = null
             };
 
             return await ValidateAndExecute(
