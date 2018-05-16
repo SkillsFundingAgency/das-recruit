@@ -26,13 +26,9 @@ namespace Esfa.Recruit.Vacancies.Jobs.VacancyEvents
             _logger.LogInformation($"Finished Processing {nameof(VacancyCreatedEvent)} for vacancy: {{VacancyId}}", @event.VacancyId);
         }
 
-        public async Task Handle(VacancyUpdatedEvent @event)
+        public Task Handle(VacancyUpdatedEvent @event)
         {
-            _logger.LogInformation($"Processing {nameof(VacancyUpdatedEvent)} for vacancy: {{VacancyId}}", @event.VacancyId);
-
-            await _client.EnsureVacancyIsGeocodedAsync(@event.VacancyId);
-
-            _logger.LogInformation($"Finished Processing {nameof(VacancyUpdatedEvent)} for vacancy: {{VacancyId}}", @event.VacancyId);
+            throw new NotImplementedException();
         }
 
         public async Task Handle(VacancySubmittedEvent @event)
