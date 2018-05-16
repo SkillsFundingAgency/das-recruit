@@ -13,7 +13,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services.MinimumWage
         {
             return new WageRange
             {
-                MinimumWage = 4.05m,
+                MinimumWage = 4.20m,
                 MaximumWage = 7.83m
             };
         }
