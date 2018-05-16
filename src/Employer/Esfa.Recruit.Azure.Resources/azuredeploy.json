@@ -87,17 +87,13 @@
       "type": "string",
       "defaultValue": ""
     },
-    "GeocodePostcodesIoUrl": {
-      "type": "string",
-      "defaultValue": ""
-    },
-    "GeocodePostcodeAnywhereUrl": {
-      "type": "string",
-      "defaultValue": ""
-    },
-    "GeocodePostcodeAnywhereKey": {
-      "type": "string",
-      "defaultValue": ""
+    "Geocode": {
+      "type": "object",
+      "defaultValue": {
+        "GeocodePostcodesIoUrl": "",
+        "GeocodePostcodeAnywhereUrl": "",
+        "GeocodePostcodeAnywhereKey": ""
+      }
     }
   },
   "variables": {
@@ -411,15 +407,15 @@
             },
             {
               "name": "Geocode:PostcodesIoUrl",
-              "value": "[parameters('GeocodePostcodesIoUrl')]"
+              "value": "[parameters('Geocode').PostcodesIoUrl]"
             },
             {
               "name": "Geocode:PostcodeAnywhereUrl",
-              "value": "[parameters('GeocodePostcodeAnywhereUrl')]"
+              "value": "[parameters('Geocode').PostcodeAnywhereUrl]"
             },
             {
               "name": "Geocode:PostcodeAnywhereKey",
-              "value": "[parameters('GeocodePostcodeAnywhereKey')]"
+              "value": "[parameters('Geocode').PostcodeAnywhereKey]"
             }
           ],
           "connectionStrings": [
