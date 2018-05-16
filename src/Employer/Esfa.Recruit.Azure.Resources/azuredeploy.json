@@ -10,7 +10,7 @@
       "type": "string"
     },
     "EnvironmentFullName": {
-      "type":  "string"
+      "type": "string"
     },
     "Authentication": {
       "type": "object",
@@ -86,6 +86,14 @@
     "SlackWebhook": {
       "type": "string",
       "defaultValue": ""
+    },
+    "Geocode": {
+      "type": "object",
+      "defaultValue": {
+        "GeocodePostcodesIoUrl": "",
+        "GeocodePostcodeAnywhereUrl": "",
+        "GeocodePostcodeAnywhereKey": ""
+      }
     }
   },
   "variables": {
@@ -396,6 +404,18 @@
             {
               "name": "Slack:WebhookUrl",
               "value": "[parameters('SlackWebhook')]"
+            },
+            {
+              "name": "Geocode:PostcodesIoUrl",
+              "value": "[parameters('Geocode').PostcodesIoUrl]"
+            },
+            {
+              "name": "Geocode:PostcodeAnywhereUrl",
+              "value": "[parameters('Geocode').PostcodeAnywhereUrl]"
+            },
+            {
+              "name": "Geocode:PostcodeAnywhereKey",
+              "value": "[parameters('Geocode').PostcodeAnywhereKey]"
             }
           ],
           "connectionStrings": [

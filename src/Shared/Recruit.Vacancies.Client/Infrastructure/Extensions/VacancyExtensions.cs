@@ -56,10 +56,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
                 AddressLine3 = address.AddressLine3,
                 AddressLine4 = address.AddressLine4,
                 Postcode = address.Postcode,
-
-                //TODO: Stubbing lat & long for now.
-                Latitude = address.Latitude ?? 51.4070006848, 
-                Longitude = address.Longitude ?? -0.0277119777
+                Latitude = address.Latitude.Value, 
+                Longitude = address.Longitude.Value
             };
         }
 
