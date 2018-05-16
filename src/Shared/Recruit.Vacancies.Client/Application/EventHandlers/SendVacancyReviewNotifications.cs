@@ -8,7 +8,9 @@ using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.EventHandlers
 {
-    public class SendVacancyReviewNotifications : INotificationHandler<VacancyReviewCreatedEvent>
+    public class SendVacancyReviewNotifications : INotificationHandler<VacancyReviewCreatedEvent>,
+                                                  INotificationHandler<VacancyReviewReferredEvent>,
+                                                  INotificationHandler<VacancyReviewApprovedEvent>
     {
         private readonly INotifyVacancyReviewUpdates _notifier;
         private readonly ILogger<SendVacancyReviewNotifications> _logger;
@@ -23,11 +25,35 @@ namespace Esfa.Recruit.Vacancies.Client.Application.EventHandlers
         {
             try
             {
-                await _notifier.NewVacancyReview(notification.VacancyReference);
+                await _notifier.VacancyReviewCreated(notification.VacancyReference);
             }
             catch(NotificationException ex)
             {
                 _logger.LogError(ex, $"Unable to send notification for {nameof(VacancyReviewCreatedEvent)} and VacancyReference: {{vacancyReference}}", notification.VacancyReference);
+            }
+        }
+
+        public async Task Handle(VacancyReviewReferredEvent notification, CancellationToken cancellationToken)
+        {
+            try
+            {
+                await _notifier.VacancyReviewReferred(notification.VacancyReference);
+            }
+            catch(NotificationException ex)
+            {
+                _logger.LogError(ex, $"Unable to send notification for {nameof(VacancyReviewReferredEvent)} and VacancyReference: {{vacancyReference}}", notification.VacancyReference);
+            }
+        }
+
+        public async Task Handle(VacancyReviewApprovedEvent notification, CancellationToken cancellationToken)
+        {
+            try
+            {
+                await _notifier.VacancyReviewApproved(notification.VacancyReference);
+            }
+            catch(NotificationException ex)
+            {
+                _logger.LogError(ex, $"Unable to send notification for {nameof(VacancyReviewApprovedEvent)} and VacancyReference: {{vacancyReference}}", notification.VacancyReference);
             }
         }
     }

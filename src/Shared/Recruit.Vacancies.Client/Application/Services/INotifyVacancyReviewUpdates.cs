@@ -4,6 +4,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
 {
     public interface INotifyVacancyReviewUpdates
     {
-        Task NewVacancyReview(long vacancyReference);
+        Task VacancyReviewCreated(long vacancyReference);
+        Task VacancyReviewReferred(long vacancyReference);
+        Task VacancyReviewApproved(long vacancyReference);
     }
 }
