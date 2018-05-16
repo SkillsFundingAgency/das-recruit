@@ -15,7 +15,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Dashbo
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.LiveVacancy;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Models;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
@@ -183,27 +182,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         public async Task CloseVacancy(Guid vacancyId)
         {
             var command = new CloseVacancyCommand
-            {
-                VacancyId = vacancyId
-            };
-
-            await _messaging.SendCommandAsync(command);
-        }
-
-        public async Task EnsureVacancyIsGeocodedAsync(Guid vacancyId)
-        {
-            var vacancy = await _repository.GetVacancyAsync(vacancyId);
-
-            if (!string.IsNullOrEmpty(vacancy?.EmployerLocation?.Postcode) &&
-                vacancy?.EmployerLocation?.HasGeocode == false)
-            {
-                await GeocodeVacancyAsync(vacancy.Id);
-            }
-        }
-
-        private async Task GeocodeVacancyAsync(Guid vacancyId)
-        {
-            var command = new GeocodeVacancyCommand()
             {
                 VacancyId = vacancyId
             };

@@ -58,24 +58,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             return await result.ToListAsync();
         }
 
-        public async Task<Vacancy> GetSingleVacancyForPostcode(string postcode)
-        {
-            var builder = Builders<Vacancy>.Filter;
-            var filter = builder.Eq(v => v.EmployerLocation.Postcode, postcode) &
-                         builder.Ne(v => v.EmployerLocation.Latitude, null) &
-                         builder.Ne(v => v.EmployerLocation.Longitude, null);
-
-            var options = new FindOptions<Vacancy>
-            {
-                Sort = Builders<Vacancy>.Sort.Descending(v => v.VacancyReference),
-                Limit = 1
-            };
-
-            var collection = GetCollection<Vacancy>();
-            var result = await collection.FindAsync(filter, options);
-            return result.SingleOrDefault();
-        }
-
         public async Task UpdateAsync(Vacancy vacancy)
         {
             var filter = Builders<Vacancy>.Filter.Eq(v => v.Id, vacancy.Id);

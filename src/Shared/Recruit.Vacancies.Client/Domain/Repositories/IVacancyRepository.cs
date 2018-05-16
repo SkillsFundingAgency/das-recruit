@@ -12,6 +12,5 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Repositories
         Task<Vacancy> GetVacancyAsync(Guid id);
         Task<Vacancy> GetVacancyAsync(long vacancyReference);
         Task<IEnumerable<T>> GetVacanciesByEmployerAccountAsync<T>(string employerAccountId);
-        Task<Vacancy> GetSingleVacancyForPostcode(string postcode);
     }
 }
