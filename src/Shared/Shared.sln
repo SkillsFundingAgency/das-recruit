@@ -8,8 +8,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "UnitTests\Unit
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Recruit.Shared.Web", "Recruit.Shared.Web\Recruit.Shared.Web.csproj", "{58376225-E68C-4E3E-965A-B9CE100F996A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Console.RecruitSeedDataWriter", "Console.RecruitSeedDataWriter\Console.RecruitSeedDataWriter.csproj", "{8C8600AA-54FD-4560-A5C7-D1045B34382E}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -56,18 +54,6 @@ Global
 		{58376225-E68C-4E3E-965A-B9CE100F996A}.Release|x64.Build.0 = Release|Any CPU
 		{58376225-E68C-4E3E-965A-B9CE100F996A}.Release|x86.ActiveCfg = Release|Any CPU
 		{58376225-E68C-4E3E-965A-B9CE100F996A}.Release|x86.Build.0 = Release|Any CPU
-		{8C8600AA-54FD-4560-A5C7-D1045B34382E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8C8600AA-54FD-4560-A5C7-D1045B34382E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8C8600AA-54FD-4560-A5C7-D1045B34382E}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{8C8600AA-54FD-4560-A5C7-D1045B34382E}.Debug|x64.Build.0 = Debug|Any CPU
-		{8C8600AA-54FD-4560-A5C7-D1045B34382E}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{8C8600AA-54FD-4560-A5C7-D1045B34382E}.Debug|x86.Build.0 = Debug|Any CPU
-		{8C8600AA-54FD-4560-A5C7-D1045B34382E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8C8600AA-54FD-4560-A5C7-D1045B34382E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8C8600AA-54FD-4560-A5C7-D1045B34382E}.Release|x64.ActiveCfg = Release|Any CPU
-		{8C8600AA-54FD-4560-A5C7-D1045B34382E}.Release|x64.Build.0 = Release|Any CPU
-		{8C8600AA-54FD-4560-A5C7-D1045B34382E}.Release|x86.ActiveCfg = Release|Any CPU
-		{8C8600AA-54FD-4560-A5C7-D1045B34382E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
