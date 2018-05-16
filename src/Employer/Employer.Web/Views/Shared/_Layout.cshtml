@@ -92,7 +92,7 @@ public string GetTitle()
             </div>
             <div class='header-proposition'>
                 <div class='content'>
-                    <a href='/govuk_template/' id='proposition-name'>Manage apprenticeships</a>
+                    <a href='@ExternalLinks.MaRoot' id='proposition-name'>Manage apprenticeships</a>
                 </div>
             </div>
         </div>
@@ -134,13 +134,13 @@ public string GetTitle()
         <div asp-condition="ParseHideNavFromViewBag()" class="header-organisation" role="navigation">
             <nav class="header-inner">
                 <ul role="menubar" id="global-nav-links">
-                    <li><a asp-route="@RouteNames.Dashboard_AccountsTeams" class="" role="menuitem">Home</a></li>
-                    <li><a asp-route="@RouteNames.Dashboard_AccountsFinance" class="" role="menuitem">Finance</a></li>
+                    <li><a asp-route="@RouteNames.Dashboard_Account_Home" role="menuitem">Home</a></li>
+                    <li><a asp-route="@RouteNames.Dashboard_AccountsFinance" role="menuitem">Finance</a></li>
                     <li><a asp-route="@RouteNames.Dashboard_Index_Get" class="selected" role="menuitem">Recruit</a></li>
-                    <li><a asp-route="@RouteNames.Dashboard_AccountsApprentices" class="" role="menuitem">Apprentices</a></li>
-                    <li><a asp-route="@RouteNames.Dashboard_AccountsTeams" class="" role="menuitem">Your team</a></li>
-                    <li><a asp-route="@RouteNames.Dashboard_AccountsAgreements" class="" role="menuitem">Your organisations and agreements</a></li>
-                    <li><a asp-route="@RouteNames.Dashboard_AccountsSchemes" class="" role="menuitem">PAYE schemes</a></li>
+                    <li><a asp-route="@RouteNames.Dashboard_AccountsApprentices" role="menuitem">Apprentices</a></li>
+                    <li><a asp-route="@RouteNames.Dashboard_AccountsTeams" role="menuitem">Your team</a></li>
+                    <li><a asp-route="@RouteNames.Dashboard_AccountsAgreements" role="menuitem">Your organisations and agreements</a></li>
+                    <li><a asp-route="@RouteNames.Dashboard_AccountsSchemes" role="menuitem">PAYE schemes</a></li>
                 </ul>
             </nav>
         </div>

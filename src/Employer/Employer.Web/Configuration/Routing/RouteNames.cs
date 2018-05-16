@@ -27,6 +27,7 @@
         public const string Dashboard_AccountsTeams = "Dashboard_AccountsTeams";
         public const string Dashboard_AccountsAgreements = "Dashboard_AccountsAgreements";
         public const string Dashboard_AccountsSchemes = "Dashboard_AccountsSchemes";
+        public const string Dashboard_Account_Home = "Dashboard_Account_Home";
 
         public const string EmployerDetails_Index_Get = "EmployerDetails_Index_Get";
         public const string EmployerDetails_Index_Post = "EmployerDetails_Index_Post";

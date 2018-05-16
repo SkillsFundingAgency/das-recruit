@@ -19,6 +19,14 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             _linkHelper = linkHelper;
         }
 
+        [HttpGet("account-home", Name = RouteNames.Dashboard_Account_Home)]
+        public IActionResult AccountHome(string employerAccountId)
+        {
+            var url = string.Format(_linkHelper.AccountHome, employerAccountId);
+            return Redirect(url);
+        }
+
+
         [HttpGet("change-email", Name = RouteNames.Dashboard_ChangeEmail)]
         public IActionResult ChangeEmailAddress(string returnUrl)
         {
