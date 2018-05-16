@@ -1,4 +1,6 @@
-﻿using Esfa.Recruit.Vacancies.Client.Domain.Events;
+﻿using System;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Dashboard;
@@ -28,40 +30,43 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
             _logger = logger;
         }
 
-        public async Task Handle(VacancyCreatedEvent notification, CancellationToken cancellationToken)
+        public Task Handle(VacancyCreatedEvent notification, CancellationToken cancellationToken)
         {
-            _logger.LogInformation($"Handling {notification?.GetType().Name} for accountId: {{employerAccountId}}", notification?.EmployerAccountId);
-            await ReBuildDashboard(notification.EmployerAccountId);
+            return Handle(notification);
         }
 
-        public async Task Handle(VacancyUpdatedEvent notification, CancellationToken cancellationToken)
+        public Task Handle(VacancyUpdatedEvent notification, CancellationToken cancellationToken)
         {
-            _logger.LogInformation($"Handling {notification?.GetType().Name} for accountId: {{employerAccountId}}", notification?.EmployerAccountId);
-            await ReBuildDashboard(notification.EmployerAccountId);
+            return Handle(notification);
         }
 
-        public async Task Handle(VacancySubmittedEvent notification, CancellationToken cancellationToken)
+        public Task Handle(VacancySubmittedEvent notification, CancellationToken cancellationToken)
         {
-            _logger.LogInformation($"Handling {notification?.GetType().Name} for accountId: {{employerAccountId}}", notification?.EmployerAccountId);
-            await ReBuildDashboard(notification.EmployerAccountId);
+            return Handle(notification);
         }
 
-        public async Task Handle(VacancyDeletedEvent notification, CancellationToken cancellationToken)
+        public Task Handle(VacancyDeletedEvent notification, CancellationToken cancellationToken)
         {
-            _logger.LogInformation($"Handling {notification?.GetType().Name} for accountId: {{employerAccountId}}", notification?.EmployerAccountId);
-            await ReBuildDashboard(notification.EmployerAccountId);
+            return Handle(notification);
         }
 
-        public async Task Handle(VacancyLiveEvent notification, CancellationToken cancellationToken)
+        public Task Handle(VacancyLiveEvent notification, CancellationToken cancellationToken)
         {
-            _logger.LogInformation($"Handling {notification?.GetType().Name} for accountId: {{employerAccountId}}", notification?.EmployerAccountId);
-            await ReBuildDashboard(notification.EmployerAccountId);
+            return Handle(notification);
         }
 
-        public async Task Handle(VacancyClosedEvent notification, CancellationToken cancellationToken)
+        public Task Handle(VacancyClosedEvent notification, CancellationToken cancellationToken)
         {
-            _logger.LogInformation($"Handling {notification?.GetType().Name} for accountId: {{employerAccountId}} and vacancyId: {notification.VacancyId}", notification?.EmployerAccountId);
-            await ReBuildDashboard(notification.EmployerAccountId);
+            return Handle(notification);
+        }
+        
+        private Task Handle(IVacancyEvent notification)
+        {
+            if (notification == null)
+                throw new ArgumentNullException(nameof(notification), "Should not be null");
+            
+            _logger.LogInformation($"Handling {notification.GetType().Name} for accountId: {{employerAccountId}} and vacancyId: {notification.VacancyId}", notification.EmployerAccountId);
+            return ReBuildDashboard(notification.EmployerAccountId);
         }
 
         private async Task ReBuildDashboard(string employerAccountId)
@@ -70,9 +75,18 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
 
             var activeVacancySummaries = vacancySummaries.Where(v => v.IsDeleted == false).ToList();
 
+            foreach(var summary in activeVacancySummaries)
+            {
+                // PendingReview shows as Submitted in Dashboard.
+                if (summary.Status == VacancyStatus.PendingReview)
+                {
+                    summary.Status = VacancyStatus.Submitted;
+                }
+            }
+
             await _queryStoreWriter.UpdateDashboardAsync(employerAccountId, activeVacancySummaries.OrderBy(v => v.CreatedDate));
 
-            _logger.LogDebug("Update dashboard with {count} summary records for account: {employerAccountId}", activeVacancySummaries.Count(), employerAccountId);
+            _logger.LogDebug("Update dashboard with {count} summary records for account: {employerAccountId}", activeVacancySummaries.Count, employerAccountId);
         }
     }
 }
