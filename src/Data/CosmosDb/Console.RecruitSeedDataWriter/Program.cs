@@ -86,8 +86,6 @@ namespace Console.RecruitSeedDataWriter
             ForegroundColor = ConsoleColor.Green;
             WriteLine(message);
             ForegroundColor = ConsoleColor.White;
-
-            if (Debugger.IsAttached) WaitPrompt();
         }
 
         private static void WriteErrorLine(string message)
@@ -95,6 +93,8 @@ namespace Console.RecruitSeedDataWriter
             ForegroundColor = ConsoleColor.Red;
             WriteLine(message);
             ForegroundColor = ConsoleColor.White;
+
+            if (Debugger.IsAttached) WaitPrompt();
         }
 
         private static void WaitPrompt()
