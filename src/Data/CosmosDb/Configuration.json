@@ -11,6 +11,7 @@
                 {
                     "CollectionName": "queryViews",
                     "OfferThroughput": 400,
+                    "PartitionKey": "_id",
                     "StoredProcedures": []
                 },
                 {
@@ -21,6 +22,7 @@
                 {
                     "CollectionName": "vacancyReviews",
                     "OfferThroughput": 400,
+                    "PartitionKey": "vacancyReference",
                     "StoredProcedures": []
                 }
             ]
