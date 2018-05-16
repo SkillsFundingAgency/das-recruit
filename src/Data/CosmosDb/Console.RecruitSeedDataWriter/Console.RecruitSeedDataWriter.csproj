@@ -21,6 +21,9 @@
     <None Update="Data\QualificationTypes.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="SeedScript.ps1">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Sequence\Sequence_Vacancy.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
