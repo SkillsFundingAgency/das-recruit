@@ -22,26 +22,22 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode
 
         public IGeocodeService GetGeocodeService()
         {
-            //1) Try to resolve using the geocode from an existing vacancy with the same postcode
             var services = new List<IGeocodeService>
             {
                 new ExistingVacancyGeocodeService(_logger, _repository)
             };
 
-            //2) Next try postcodes.io
             if (!string.IsNullOrEmpty(_config.PostcodesIoUrl))
             {
                 services.Add(new PostcodesIoGeocodeService(_config.PostcodesIoUrl));
             }
 
-            //3) Next try PostcodeAnywhere
             if (!string.IsNullOrEmpty(_config.PostcodeAnywhereUrl) &&
                 !string.IsNullOrEmpty(_config.PostcodeAnywhereKey))
             {
                 services.Add(new PostcodeAnywhereGeocodeService(_config.PostcodeAnywhereUrl, _config.PostcodeAnywhereKey));
             }
 
-            //4) Finally just resolve the outcode
             if (!string.IsNullOrEmpty(_config.PostcodesIoUrl))
             {
                 services.Add(new PostcodesIoOutcodeGeocodeService(_config.PostcodesIoUrl));

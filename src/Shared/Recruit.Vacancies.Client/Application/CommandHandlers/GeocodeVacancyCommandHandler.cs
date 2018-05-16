@@ -56,7 +56,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             if (vacancy.EmployerLocation == null)
             {
-                _logger.LogInformation("Vacancy:{vacancyId} does not have employer location information. Cannot update vacancy", geocode, vacancy.Id);
+                _logger.LogInformation("Vacancy:{vacancyId} does not have employer location information. Cannot update vacancy", vacancy.Id);
                 return;
             }
 
