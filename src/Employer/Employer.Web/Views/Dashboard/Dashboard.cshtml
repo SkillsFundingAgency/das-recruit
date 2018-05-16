@@ -32,7 +32,7 @@
                 {
                 <tr>
                     <td><a asp-route="@RouteNames.DisplayVacancy_Get" asp-route-vacancyId="@vacancy.Id">@vacancy.Title</a></td>
-                    <td>@vacancy.Status</td>
+                    <td>@vacancy.Status.GetDisplayName()</td>
                 </tr>
                 }
             </tbody>

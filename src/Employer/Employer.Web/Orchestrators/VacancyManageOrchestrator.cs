@@ -39,6 +39,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             switch (vacancy.Status)
             {
                 case VacancyStatus.Submitted:
+                case VacancyStatus.PendingReview:
+                case VacancyStatus.UnderReview:
                     var submittedViewModel = new SubmittedVacancyViewModel();
                     await _vacancyDisplayMapper.MapFromVacancyAsync(submittedViewModel, vacancy);
                     submittedViewModel.SubmittedDate = vacancy.SubmittedDate.Value.AsDisplayDate();
