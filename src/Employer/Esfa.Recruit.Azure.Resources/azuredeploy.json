@@ -90,9 +90,9 @@
     "Geocode": {
       "type": "object",
       "defaultValue": {
-        "GeocodePostcodesIoUrl": "",
-        "GeocodePostcodeAnywhereUrl": "",
-        "GeocodePostcodeAnywhereKey": ""
+        "PostcodesIoUrl": "",
+        "PostcodeAnywhereUrl": "",
+        "PostcodeAnywhereKey": ""
       }
     }
   },

@@ -73,9 +73,9 @@
     },
     "Geocode": {
       "value": {
-        "GeocodePostcodesIoUrl": "",
-        "GeocodePostcodeAnywhereUrl": "",
-        "GeocodePostcodeAnywhereKey": ""
+        "PostcodesIoUrl": "",
+        "PostcodeAnywhereUrl": "",
+        "PostcodeAnywhereKey": ""
       }
     }
   }
