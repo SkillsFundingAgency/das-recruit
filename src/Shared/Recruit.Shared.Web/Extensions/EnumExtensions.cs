@@ -26,7 +26,8 @@ namespace Esfa.Recruit.Shared.Web.Extensions
             { WageType.NationalMinimumWage, "National Minimum Wage" },
             { WageType.NationalMinimumWageForApprentices, "National Minimum Wage for apprentices" },
             { ManualQaOutcome.Referred, "Edits required" },
-            { ReviewStatus.UnderReview, "Under review" }
+            { ReviewStatus.UnderReview, "Under review" },
+            { VacancyStatus.UnderReview, "Under review" }
         };
     }
 }
