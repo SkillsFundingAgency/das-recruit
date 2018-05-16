@@ -2,6 +2,7 @@
 using MongoDB.Bson;
 using MongoDB.Driver;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
@@ -11,15 +12,20 @@ namespace Console.RecruitSeedDataWriter
 {
     class Program
     {
-        public static async Task Main(string[] args)
+        public static async Task<int> Main(string[] args)
         {
             await CommandLine.Parser.Default.ParseArguments<Options>(args)
-                                        .MapResult(opts => RunOptionsAndReturnExitCode(opts),
-                                                    errs => { return Task.CompletedTask; });
-
+                                        .MapResult(opts => RunOptionsAndReturnExitCode(opts), ArgumentsNotParsed);
+            
             if (Debugger.IsAttached) WaitPrompt();
 
-            Environment.Exit(0);
+            return 0;
+        }
+
+        private static Task ArgumentsNotParsed(IEnumerable<Error> errs)
+        {
+            Environment.Exit((int)SystemErrorCode.ERROR_INVALID_PARAMETER);
+            return null;
         }
 
         private static async Task RunOptionsAndReturnExitCode(Options opts)
@@ -33,8 +39,8 @@ namespace Console.RecruitSeedDataWriter
 
                 try
                 {
-                    await writer.Write(bsonDoc, opts.Overwrite).ConfigureAwait(false);
-                    WriteSuccessLine($"Succeeded loading {opts.InputFile} into {opts.ConnectionString.DatabaseName} DB collection: {opts.Collection}.");
+                    var writeResult = await writer.Write(bsonDoc, opts.Overwrite).ConfigureAwait(false);
+                    WriteSuccessLine($"Loading {opts.InputFile} into {opts.ConnectionString.DatabaseName} DB collection {opts.Collection} {writeResult.ToString().ToLower()}.");
                 }
                 catch (Exception ex)
                 {

@@ -15,22 +15,35 @@ namespace Console.RecruitSeedDataWriter
             _writerOptions = writerOptions;
         }
 
-        internal async Task Write(BsonDocument bsonDocument, bool canOverwrite = false)
+        internal async Task<WriteOperationResult> Write(BsonDocument bsonDocument, bool canOverwrite = false)
         {
-            var collection = new MongoDbCollection(_writerOptions.ConnectionString, _writerOptions.CollectionName).GetCollection();
+            var collection = await new MongoDbCollection(_writerOptions.ConnectionString, _writerOptions.CollectionName).GetCollection();
+
+            var bsonDocId = bsonDocument.Single(field => field.Name.Equals(KeyFieldName)).Value.AsString;
+            var filter = Builders<BsonDocument>.Filter.Eq(KeyFieldName, bsonDocId);
 
             if (canOverwrite)
-            {   
-                var bsonDocId = bsonDocument.Single(field => field.Name.Equals(KeyFieldName)).Value.AsString;
-                var filter = Builders<BsonDocument>.Filter.Eq(KeyFieldName, bsonDocId);
+            {
                 await collection.ReplaceOneAsync(filter, bsonDocument, new UpdateOptions { IsUpsert = true });
+                return WriteOperationResult.Replaced;
             }
             else
             {
-                await collection.InsertOneAsync(bsonDocument);
-            }
+                var options = new FindOptions<BsonDocument>
+                {
+                    Limit = 1
+                };
 
-            await Task.CompletedTask;
+                var existingMatchingDocuments = await collection.FindAsync(filter, options);
+
+                if (existingMatchingDocuments.Any() == false)
+                {
+                    await collection.InsertOneAsync(bsonDocument);
+                    return WriteOperationResult.Inserted;
+                }
+
+                return WriteOperationResult.Skipped;
+            }
         }
     }
 }
