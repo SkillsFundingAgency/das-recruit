@@ -56,7 +56,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         {
             // This will be replaced with a call to the query store for the dashboard view.
             var allReviews = await _reviewRepository.GetAllAsync();
-            return allReviews.Where(r => (new[] { ReviewStatus.PendingReview, ReviewStatus.UnderReview }.Contains(r.Status)));
+            return allReviews
+                    .Where(r => (new[] { ReviewStatus.PendingReview, ReviewStatus.UnderReview }.Contains(r.Status)))
+                    .OrderBy(x => x.CreatedDate);
         }
 
         public Task<Vacancy> GetVacancyAsync(long vacancyReference)
