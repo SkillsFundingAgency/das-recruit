@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System;
 
-namespace Console.RecruitSeedDataWriter
+namespace Esfa.Recruit.Console.RecruitSeedDataWriter
 {
     internal class MongoDbCollection
     {

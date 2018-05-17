@@ -8,7 +8,7 @@ using System.IO;
 using System.Threading.Tasks;
 using static System.Console;
 
-namespace Console.RecruitSeedDataWriter
+namespace Esfa.Recruit.Console.RecruitSeedDataWriter
 {
     class Program
     {
@@ -39,7 +39,7 @@ namespace Console.RecruitSeedDataWriter
 
                 try
                 {
-                    var writeResult = await writer.Write(bsonDoc, opts.Overwrite).ConfigureAwait(false);
+                    var writeResult = await writer.Write(bsonDoc, opts.Overwrite);
                     WriteSuccessLine($"Loading {opts.InputFile} into {opts.ConnectionString.DatabaseName} DB collection {opts.Collection} {writeResult.ToString().ToLower()}.");
                 }
                 catch (Exception ex)
