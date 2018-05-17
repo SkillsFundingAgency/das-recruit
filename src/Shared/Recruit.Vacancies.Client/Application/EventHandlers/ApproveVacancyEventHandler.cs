@@ -13,21 +13,22 @@ using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.EventHandlers
 {
-    public class ApproveVacancyEventHandler : INotificationHandler<VacancyReviewApprovedEvent>
-    {
-        private readonly IMessaging _messaging;
+    // TODO: LWA - This handler isn't needed.
+    // public class ApproveVacancyEventHandler : INotificationHandler<VacancyReviewApprovedEvent>
+    // {
+    //     private readonly IMessaging _messaging;
 
-        public ApproveVacancyEventHandler(IMessaging messaging)
-        {
-            _messaging = messaging;
-        }
+    //     public ApproveVacancyEventHandler(IMessaging messaging)
+    //     {
+    //         _messaging = messaging;
+    //     }
 
-        public async Task Handle(VacancyReviewApprovedEvent notification, CancellationToken cancellationToken)
-        {
-           await _messaging.SendCommandAsync(new ApproveVacancyCommand
-           {
-               VacancyReference = notification.VacancyReference
-           });
-        }
-    }
+    //     public async Task Handle(VacancyReviewApprovedEvent notification, CancellationToken cancellationToken)
+    //     {
+    //        await _messaging.SendCommandAsync(new ApproveVacancyCommand
+    //        {
+    //            VacancyReference = notification.VacancyReference
+    //        });
+    //     }
+    // }
 }

@@ -33,6 +33,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.EventHandlers
             }
         }
 
+        // TODO: LWA - This should be done on VacancyApproved Event not Review event.        
         public async Task Handle(VacancyReviewReferredEvent notification, CancellationToken cancellationToken)
         {
             try
@@ -45,6 +46,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.EventHandlers
             }
         }
 
+        // TODO: LWA - This should be done on VacancyApproved Event not Review event.
         public async Task Handle(VacancyReviewApprovedEvent notification, CancellationToken cancellationToken)
         {
             try
