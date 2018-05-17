@@ -1,6 +1,6 @@
 ﻿using MongoDB.Driver;
 
-namespace Console.RecruitSeedDataWriter
+namespace Esfa.Recruit.Console.RecruitSeedDataWriter
 {
     internal class WriterOptions
     {

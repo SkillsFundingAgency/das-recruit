@@ -1,4 +1,4 @@
-﻿namespace Console.RecruitSeedDataWriter
+﻿namespace Esfa.Recruit.Console.RecruitSeedDataWriter
 {
     /// <summary>
     /// Taken from https://msdn.microsoft.com/en-us/library/ms681382.aspx

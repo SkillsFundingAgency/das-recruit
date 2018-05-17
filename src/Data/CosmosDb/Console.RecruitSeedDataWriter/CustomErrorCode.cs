@@ -1,4 +1,4 @@
-﻿namespace Console.RecruitSeedDataWriter
+﻿namespace Esfa.Recruit.Console.RecruitSeedDataWriter
 {
     public enum CustomErrorCode
     {

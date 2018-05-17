@@ -1,4 +1,4 @@
-﻿namespace Console.RecruitSeedDataWriter
+﻿namespace Esfa.Recruit.Console.RecruitSeedDataWriter
 {
     internal enum WriteOperationResult
     {

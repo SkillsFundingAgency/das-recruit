@@ -3,7 +3,7 @@ using MongoDB.Driver;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Console.RecruitSeedDataWriter
+namespace Esfa.Recruit.Console.RecruitSeedDataWriter
 {
     internal class MongoWriter
     {
