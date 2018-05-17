@@ -2,7 +2,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration.Routing
 {
     public sealed class ManageApprenticeshipsRoutes
     {
-        public string ManageApprenticeshipSiteAccountsHome { get; set; }
+        public string ManageApprenticeshipSiteAccountsHomeRoute { get; set; }
         public string ManageApprenticeshipSiteHelpRoute { get; set; }
         public string ManageApprenticeshipSiteAccountsRoute { get; set; }
         public string ManageApprenticeshipSiteRenameAccountRoute { get; set; }
