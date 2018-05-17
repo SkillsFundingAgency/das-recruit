@@ -76,9 +76,6 @@
         public const string VacancyDescription_Index_Get = "VacancyDescription_Index_Get";
         public const string VacancyDescription_Index_Post = "VacancyDescription_Index_Post";
 
-        public const string WageAndhours_Index_Get = "WageAndhours_Index_Get";
-        public const string WageAndhours_Index_Post = "WageAndhours_Index_Post";
-
         public const string SearchResultPreview_Get = "SearchResultPreview_Get";
 
         public const string Skills_Get = "Skills_Get";

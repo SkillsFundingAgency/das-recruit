@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using Esfa.Recruit.Employer.Web.ViewModels.Error;
@@ -8,6 +9,7 @@ using Esfa.Recruit.Employer.Web.Configuration;
 using System.Net;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
+using Esfa.Recruit.Employer.Web.RouteModel;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
@@ -49,7 +51,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             if (exceptionFeature != null)
             {
-                string routeWhereExceptionOccurred = exceptionFeature.Path;
                 var exception = exceptionFeature.Error;
 
                 if (exception is InvalidStateException)
@@ -57,6 +58,12 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                     _logger.LogError(exception, $"Exception on path: {{routeWhereExceptionOccurred}}");
                     TempData.Add(TempDataKeys.DashboardErrorMessage, exception.Message);
                     return RedirectToRoute(RouteNames.Dashboard_Index_Get, new { EmployerAccountId = accountId });
+                }
+
+                if (exception is InvalidRouteForVacancyException invalidRouteException)
+                {
+                    _logger.LogInformation(exception.Message);
+                    return RedirectToRoute(invalidRouteException.RouteNameToRedirectTo, invalidRouteException.RouteValues);
                 }
 
                 if (exception is AuthorisationException)
