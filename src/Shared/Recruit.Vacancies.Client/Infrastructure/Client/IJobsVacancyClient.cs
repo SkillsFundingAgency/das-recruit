@@ -18,5 +18,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<IEnumerable<LiveVacancy>> GetLiveVacancies();
         Task CloseVacancy(Guid vacancyId);
         Task EnsureVacancyIsGeocodedAsync(Guid vacancyId);
+        Task ApproveVacancy(long vacancyReference);
+        Task ReferVacancy(long vacancyReference);
     }
 }

@@ -45,8 +45,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Events
 
         private static string GetQueueName(IEvent @event)
         {
-            if (@event is IVacancyEvent)
-                return QueueNames.VacancyEventsQueueName;
+            switch (@event)
+            {
+                case IVacancyEvent _:
+                    return QueueNames.VacancyEventsQueueName;
+                case IVacancyReviewEvent _:
+                    return QueueNames.VacancyReviewEventsQueueName;
+            }
 
             return @event.GetType().Name.Replace("Event", "Queue").PascalToKebabCase();
         }

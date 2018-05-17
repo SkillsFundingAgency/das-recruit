@@ -4,6 +4,7 @@ using System.IO;
 using Esfa.Recruit.Vacancies.Jobs.ApprenticeshipProgrammes;
 using Esfa.Recruit.Vacancies.Jobs.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Jobs.VacancyEvents;
+using Esfa.Recruit.Vacancies.Jobs.VacancyReviewEvents;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -133,6 +134,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
             });
 
             services.AddScoped<VacancyEventHandler>();
+            services.AddScoped<VacancyReviewEventHandler>();
             services.AddScoped<ApprenticeshipProgrammesUpdater>();
             services.AddScoped<EditVacancyInfoUpdater>();
             services.AddScoped<LiveVacancyStatusInspector>();
@@ -144,6 +146,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
 
             // Add Jobs
             services.AddScoped<VacancyEventsJob>();
+            services.AddScoped<VacancyReviewEventsJob>();
             services.AddScoped<ApprenticeshipProgrammesJob>();
             services.AddScoped<EditVacancyInfoJob>();
             services.AddScoped<VacancyStatusJob>();

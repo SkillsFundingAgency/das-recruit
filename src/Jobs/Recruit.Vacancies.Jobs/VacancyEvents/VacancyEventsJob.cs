@@ -12,12 +12,12 @@ namespace Esfa.Recruit.Vacancies.Jobs.VacancyEvents
     public class VacancyEventsJob
     {
         private readonly ILogger<VacancyEventsJob> _logger;
-        private readonly VacancyEventHandler _handler;
+        private readonly VacancyEventHandler _vacancyHandler;
 
-        public VacancyEventsJob(ILogger<VacancyEventsJob> logger, VacancyEventHandler handler)
+        public VacancyEventsJob(ILogger<VacancyEventsJob> logger, VacancyEventHandler vacancyHandler)
         {
             _logger = logger;
-            _handler = handler;
+            _vacancyHandler = vacancyHandler;
         }
 
         public async Task HandleVacancyEvent([QueueTrigger(QueueNames.VacancyEventsQueueName, Connection = "EventQueueConnectionString")] string message, TextWriter log)
@@ -30,7 +30,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.VacancyEvents
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Unable to handle vacancy event");
+                _logger.LogError(ex, "Unable to handle vacancy event");
             }
         }
 
@@ -39,13 +39,13 @@ namespace Esfa.Recruit.Vacancies.Jobs.VacancyEvents
             switch (eventType)
             {
                 case nameof(VacancyCreatedEvent):
-                    return _handler.Handle(JsonConvert.DeserializeObject<VacancyCreatedEvent>(data));
-                case nameof(VacancyUpdatedEvent):
-                    return _handler.Handle(JsonConvert.DeserializeObject<VacancyUpdatedEvent>(data));
+                    return _vacancyHandler.Handle(JsonConvert.DeserializeObject<VacancyCreatedEvent>(data));
+                case nameof(VacancyDraftUpdatedEvent):
+                    return _vacancyHandler.Handle(JsonConvert.DeserializeObject<VacancyDraftUpdatedEvent>(data));
                 case nameof(VacancySubmittedEvent):
-                    return _handler.Handle(JsonConvert.DeserializeObject<VacancySubmittedEvent>(data));
+                    return _vacancyHandler.Handle(JsonConvert.DeserializeObject<VacancySubmittedEvent>(data));
                 case nameof(VacancyDeletedEvent):
-                    return _handler.Handle(JsonConvert.DeserializeObject<VacancyDeletedEvent>(data));
+                    return _vacancyHandler.Handle(JsonConvert.DeserializeObject<VacancyDeletedEvent>(data));
                 default: 
                     throw new ArgumentOutOfRangeException(nameof(eventType), $"Unexpected value for event type: {eventType}");
             }

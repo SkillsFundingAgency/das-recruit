@@ -14,13 +14,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
     {
         private readonly IVacancyRepository _repository;
         private readonly IMessaging _messaging;
-        private readonly ITimeProvider _timeProvider;
 
         public ReferVacancyCommandHandler(IVacancyRepository repository, IMessaging messaging, ITimeProvider timeprovider)
         {
             _repository = repository;
             _messaging = messaging;
-            _timeProvider = timeprovider;
         }
 
         public async Task Handle(ReferVacancyCommand message, CancellationToken cancellationToken)
@@ -36,7 +34,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             
             await _repository.UpdateAsync(vacancy);
 
-            await _messaging.PublishEvent(new VacancyUpdatedEvent
+            await _messaging.PublishEvent(new VacancyReferredEvent
             {
                 SourceCommandId = message.CommandId.ToString(),
                 EmployerAccountId = vacancy.EmployerAccountId,
