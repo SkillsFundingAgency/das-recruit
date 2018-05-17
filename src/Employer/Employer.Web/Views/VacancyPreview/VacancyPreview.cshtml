@@ -238,7 +238,7 @@
             <p asp-condition="@Model.HasContactEmail">@Model.ContactEmail</p>
             <span esfa-validation-message-for="ContactTelephone" class="error-message"></span>
             <p asp-condition="@Model.HasContactTelephone">@Model.ContactTelephone</p>
-            @EditLink(RouteNames.ApplicationProcess_Get, Model.ContactSectionState, "link-contact-details")
+            @EditLink(RouteNames.EmployerContactDetails_Get, Model.ContactSectionState, "link-contact-details")
         </div>
     </div>
 </div>
