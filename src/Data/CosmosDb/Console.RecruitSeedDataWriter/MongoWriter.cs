@@ -24,8 +24,10 @@ namespace Esfa.Recruit.Console.RecruitSeedDataWriter
 
             if (canOverwrite)
             {
-                await collection.ReplaceOneAsync(filter, bsonDocument, new UpdateOptions { IsUpsert = true });
-                return WriteOperationResult.Replaced;
+                var replaceResult = await collection.ReplaceOneAsync(filter, bsonDocument, new UpdateOptions { IsUpsert = true });
+                return  replaceResult.UpsertedId != null 
+                        ? WriteOperationResult.Inserted
+                        : WriteOperationResult.Replaced;
             }
             else
             {
