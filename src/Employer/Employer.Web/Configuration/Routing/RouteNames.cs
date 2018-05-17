@@ -30,7 +30,10 @@
 
         public const string EmployerDetails_Index_Get = "EmployerDetails_Index_Get";
         public const string EmployerDetails_Index_Post = "EmployerDetails_Index_Post";
-        
+
+        public const string EmployerContactDetails_Get = "EmployerContactDetails_Get";
+        public const string EmployerContactDetails_Post = "EmployerContactDetails_Post";
+
         public const string Logout_Get = "Logout_Get";
 
         public const string DisplayVacancy_Get = "DisplayVacancy_Get";
