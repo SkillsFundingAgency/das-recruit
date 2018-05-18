@@ -17,9 +17,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         }
 
         [HttpGet("submitted", Name = RouteNames.Submitted_Index_Get)]
-        public async Task<IActionResult> Index(VacancyRouteModel vrm)
+        public async Task<IActionResult> Confirmation(VacancyRouteModel vrm)
         {
-            var vm = await _orchestrator.GetIndexViewModelAsync(vrm);
+            var vm = await _orchestrator.GetVacancySubmittedConfirmationViewModelAsync(vrm);
             return View(vm);
         }
     }
