@@ -17,7 +17,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             _client = client;
         }
 
-        public async Task<IndexViewModel> GetIndexViewModelAsync(VacancyRouteModel vrm)
+        public async Task<VacancySubmittedConfirmationViewModel> GetVacancySubmittedConfirmationViewModelAsync(VacancyRouteModel vrm)
         {
             var vacancy = await _client.GetVacancyAsync(vrm.VacancyId);
 
@@ -26,7 +26,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             if (vacancy.Status != VacancyStatus.Submitted)
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotSubmittedSuccessfully, vacancy.Title));
 
-            var vm = new IndexViewModel
+            var vm = new VacancySubmittedConfirmationViewModel
             {
                 Title = vacancy.Title,
                 VacancyReference = vacancy.VacancyReference?.ToString()
