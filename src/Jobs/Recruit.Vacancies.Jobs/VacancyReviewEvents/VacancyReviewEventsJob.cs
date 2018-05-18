@@ -20,7 +20,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.VacancyReviewEvents
             _reviewHandler = reviewHandler;
         }
 
-        public async Task HandleVacancyEvent([QueueTrigger(QueueNames.VacancyReviewEventsQueueName, Connection = "EventQueueConnectionString")] string message, TextWriter log)
+        public async Task HandleVacancyReviewEvent([QueueTrigger(QueueNames.VacancyReviewEventsQueueName, Connection = "EventQueueConnectionString")] string message, TextWriter log)
         {
             try
             {
