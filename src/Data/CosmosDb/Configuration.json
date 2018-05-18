@@ -15,9 +15,8 @@
                     "StoredProcedures": []
                 },
                 {
-                    "CollectionName": "leeTest",
+                    "CollectionName": "referenceData",
                     "OfferThroughput": 400,
-                    "PartitionKey": "_id",
                     "StoredProcedures": []
                 },
                 {
