@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Training;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -23,19 +24,14 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         
         public async Task<TrainingViewModel> GetTrainingViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancyTask = _client.GetVacancyAsync(vrm.VacancyId);
+            var vacancyTask = Utility.GetAuthorisedVacancyForEditAsync(_client, vrm.VacancyId, vrm.EmployerAccountId, RouteNames.Training_Get);
             var programmesTask = _client.GetActiveApprenticeshipProgrammesAsync();
 
             await Task.WhenAll(vacancyTask, programmesTask);
 
             var vacancy = vacancyTask.Result;
             var programmes = programmesTask.Result;
-
-            Utility.CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
-
-            if (!vacancy.CanEdit)
-                throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
-
+            
             var vm = new TrainingViewModel
             {
                 VacancyId = vacancy.Id,
@@ -79,13 +75,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         public async Task<OrchestratorResponse> PostTrainingEditModelAsync(TrainingEditModel m, VacancyUser user)
         {
-            var vacancy = await _client.GetVacancyAsync(m.VacancyId);
-
-            Utility.CheckAuthorisedAccess(vacancy, m.EmployerAccountId);
-
-            if (!vacancy.CanEdit)
-                throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
-
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, m.VacancyId, m.EmployerAccountId, RouteNames.Training_Post);
+            
             vacancy.ClosingDate = m.ClosingDate.AsDateTimeUk()?.ToUniversalTime();
             vacancy.StartDate = m.StartDate.AsDateTimeUk()?.ToUniversalTime();
             vacancy.ProgrammeId = m.SelectedProgrammeId;

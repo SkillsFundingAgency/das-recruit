@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels;
@@ -24,13 +25,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         public async Task<WageViewModel> GetWageViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await _client.GetVacancyAsync(vrm.VacancyId);
-
-            Utility.CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
-
-            if (!vacancy.CanEdit)
-                throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
-
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, vrm.VacancyId, vrm.EmployerAccountId, RouteNames.Wage_Get);
+            
             var vm = new WageViewModel
             {
                 Duration = vacancy.Wage?.Duration?.ToString(),
@@ -62,13 +58,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         public async Task<OrchestratorResponse> PostWageEditModelAsync(WageEditModel m, VacancyUser user)
         {
-            var vacancy = await _client.GetVacancyAsync(m.VacancyId);
-
-            Utility.CheckAuthorisedAccess(vacancy, m.EmployerAccountId);
-
-            if (!vacancy.CanEdit)
-                throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
-
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, m.VacancyId, m.EmployerAccountId, RouteNames.Wage_Post);
+            
             vacancy.Wage = new Wage
             {
                 Duration = int.TryParse(m.Duration, out int duration) == true ? duration : default(int?),

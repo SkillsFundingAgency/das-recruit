@@ -15,11 +15,18 @@ namespace Esfa.Recruit.Employer.Web
     {
         public static async Task<Vacancy> GetAuthorisedVacancyForEditAsync(IEmployerVacancyClient client, Guid vacancyId, string employerAccountId, string routeName)
         {
+            var vacancy = await GetAuthorisedVacancyAsync(client, vacancyId, employerAccountId, routeName);
+
+            CheckCanEdit(vacancy);
+
+            return vacancy;
+        }
+
+        public static async Task<Vacancy> GetAuthorisedVacancyAsync(IEmployerVacancyClient client, Guid vacancyId, string employerAccountId, string routeName)
+        {
             var vacancy = await client.GetVacancyAsync(vacancyId);
 
             CheckAuthorisedAccess(vacancy, employerAccountId);
-
-            CheckCanEdit(vacancy);
 
             CheckRouteIsValidForVacancy(vacancy, routeName);
 

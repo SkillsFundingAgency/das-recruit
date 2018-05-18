@@ -3,6 +3,7 @@ using Esfa.Recruit.Employer.Web.ViewModels.Submitted;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Employer.Web.RouteModel;
 
@@ -19,9 +20,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public async Task<IndexViewModel> GetIndexViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await _client.GetVacancyAsync(vrm.VacancyId);
-
-            Utility.CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
+            var vacancy = await Utility.GetAuthorisedVacancyAsync(_client, vrm.VacancyId, vrm.EmployerAccountId, RouteNames.Submitted_Index_Get);
 
             if (vacancy.Status != VacancyStatus.Submitted)
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotSubmittedSuccessfully, vacancy.Title));

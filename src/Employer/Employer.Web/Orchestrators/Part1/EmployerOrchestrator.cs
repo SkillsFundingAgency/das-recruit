@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels;
@@ -26,17 +27,13 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         public async Task<EmployerViewModel> GetEmployerViewModelAsync(VacancyRouteModel vrm)
         {
             var getEmployerDataTask = _client.GetEditVacancyInfo(vrm.EmployerAccountId);
-            var getVacancyTask = _client.GetVacancyAsync(vrm.VacancyId);
+            var getVacancyTask = Utility.GetAuthorisedVacancyForEditAsync(_client,
+                vrm.VacancyId, vrm.EmployerAccountId, RouteNames.Employer_Get);
 
             await Task.WhenAll(getEmployerDataTask, getVacancyTask);
 
             var employerData = getEmployerDataTask.Result;
             var vacancy = getVacancyTask.Result;
-
-            Utility.CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
-
-            if (!vacancy.CanEdit)
-                throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
 
             var vm = new EmployerViewModel
             {
@@ -72,12 +69,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         public async Task<OrchestratorResponse> PostEmployerEditModelAsync(EmployerEditModel m, VacancyUser user)
         {
-            var vacancy = await _client.GetVacancyAsync(m.VacancyId);
-
-            Utility.CheckAuthorisedAccess(vacancy, m.EmployerAccountId);
-
-            if (!vacancy.CanEdit)
-                throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client,
+                m.VacancyId, m.EmployerAccountId, RouteNames.Employer_Post);
 
             vacancy.EmployerName = m.SelectedOrganisationName?.Trim();
             vacancy.EmployerLocation = new Vacancies.Client.Domain.Entities.Address

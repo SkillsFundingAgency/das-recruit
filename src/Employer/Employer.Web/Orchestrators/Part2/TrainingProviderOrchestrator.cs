@@ -8,6 +8,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.Configuration.Routing;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 {
@@ -25,13 +26,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public async Task<SelectTrainingProviderViewModel> GetSelectTrainingProviderViewModel(VacancyRouteModel vrm)
         {
-            var vacancy = await _client.GetVacancyAsync(vrm.VacancyId);
-
-            Utility.CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
-
-            if (!vacancy.CanEdit)
-                throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
-
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, vrm.VacancyId, vrm.EmployerAccountId, RouteNames.TrainingProvider_Select_Get);
+            
             var vm = new SelectTrainingProviderViewModel
             {
                 Title = vacancy.Title,
@@ -50,13 +46,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public async Task<ConfirmTrainingProviderViewModel> GetConfirmViewModel(SelectTrainingProviderEditModel m)
         {
-            var vacancy = await _client.GetVacancyAsync(m.VacancyId);
-
-            Utility.CheckAuthorisedAccess(vacancy, m.EmployerAccountId);
-
-            if (!vacancy.CanEdit)
-                throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
-
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, m.VacancyId, m.EmployerAccountId, RouteNames.TrainingProvider_Confirm_Get);
+            
             if (long.TryParse(m.Ukprn, out var ukprn) && ukprn != vacancy.TrainingProvider?.Ukprn)
             {
                 var provider = await _providerService.GetProviderAsync(ukprn);
@@ -85,19 +76,14 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public Task<OrchestratorResponse> PostConfirmEditModelAsync(ConfirmTrainingProviderEditModel m, VacancyUser user)
         {
-            var vacancyTask = _client.GetVacancyAsync(m.VacancyId);
+            var vacancyTask = Utility.GetAuthorisedVacancyForEditAsync(_client, m.VacancyId, m.EmployerAccountId, RouteNames.TrainingProvider_Confirm_Post);
             var providerTask = _providerService.GetProviderAsync(long.Parse(m.Ukprn));
 
-            Task.WaitAll(new Task[] { vacancyTask, providerTask });
+            Task.WaitAll(vacancyTask, providerTask);
 
             var vacancy = vacancyTask.Result;
             var provider = providerTask.Result;
-
-            Utility.CheckAuthorisedAccess(vacancy, m.EmployerAccountId);
-
-            if (!vacancy.CanEdit)
-                throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
-
+            
             vacancy.TrainingProvider = provider;
 
             return ValidateAndExecute(

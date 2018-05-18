@@ -1,6 +1,7 @@
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using System;
 using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Title;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
@@ -29,12 +30,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public async Task<TitleViewModel> GetTitleViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await _client.GetVacancyAsync(vrm.VacancyId);
-
-            Utility.CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
-
-            if (!vacancy.CanEdit)
-                throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, 
+                vrm.VacancyId, vrm.EmployerAccountId, RouteNames.Title_Get);
 
             var vm = new TitleViewModel
             {
@@ -77,12 +74,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                     async v => await _client.CreateVacancyAsync(SourceOrigin.EmployerWeb, m.Title, m.EmployerAccountId, user));
             }
 
-            var vacancy = await _client.GetVacancyAsync(m.VacancyId.Value);
-
-            Utility.CheckAuthorisedAccess(vacancy, m.EmployerAccountId);
-
-            if (!vacancy.CanEdit)
-                throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client,
+                m.VacancyId.Value, m.EmployerAccountId, RouteNames.Title_Post);
 
             vacancy.Title = m.Title;
 
