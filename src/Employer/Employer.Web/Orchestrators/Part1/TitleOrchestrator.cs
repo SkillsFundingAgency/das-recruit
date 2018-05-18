@@ -3,11 +3,9 @@ using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Title;
-using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Employer.Web.RouteModel;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators

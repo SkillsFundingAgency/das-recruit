@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using Esfa.Recruit.Employer.Web.ViewModels.Error;
@@ -9,7 +8,6 @@ using Esfa.Recruit.Employer.Web.Configuration;
 using System.Net;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
-using Esfa.Recruit.Employer.Web.RouteModel;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {

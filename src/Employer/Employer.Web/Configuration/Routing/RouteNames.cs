@@ -7,13 +7,7 @@
         
         public const string ApplicationProcess_Get = "ApplicationProcess_Get";
         public const string ApplicationProcess_Post = "ApplicationProcess_Post";
-
-        public const string ApprenticeshipDetails_Index_Get = "ApprenticeshipDetails_Index_Get";
-        public const string ApprenticeshipDetails_Index_Post = "ApprenticeshipDetails_Index_Post";
-
-        public const string CandidateProfile_Index_Get = "CandidateProfile_Index_Get";
-        public const string CandidateProfile_Index_Post = "CandidateProfile_Index_Post";
-
+        
         public const string Considerations_Get = "Considerations_Get";
         public const string Considerations_Post = "Considerations_Post";
 
@@ -59,9 +53,6 @@
 
         public const string Vacancy_Preview_Get = "Vacancy_Preview_Get";
         public const string Preview_Submit_Post = "Preview_Submit_Post";
-
-        public const string RoleDescription_Index_Get = "RoleDescription_Index_Get";
-        public const string RoleDescription_Index_Post = "RoleDescription_Index_Post";
         
         public const string DeleteVacancy_Delete_Get = "DeleteVacancy_Delete_Get";
         public const string DeleteVacancy_Delete_Post = "DeleteVacancy_Delete_Post";
