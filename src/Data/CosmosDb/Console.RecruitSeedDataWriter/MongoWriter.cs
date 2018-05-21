@@ -15,7 +15,7 @@ namespace Esfa.Recruit.Console.RecruitSeedDataWriter
             _writerOptions = writerOptions;
         }
 
-        internal async Task<WriteOperationResult> Write(BsonDocument bsonDocument, bool canOverwrite = false)
+        internal async Task<WriteOperationResult> Write(BsonDocument bsonDocument, bool canOverwrite)
         {
             var collection = await new MongoDbCollection(_writerOptions.ConnectionString, _writerOptions.CollectionName).GetCollection();
 
