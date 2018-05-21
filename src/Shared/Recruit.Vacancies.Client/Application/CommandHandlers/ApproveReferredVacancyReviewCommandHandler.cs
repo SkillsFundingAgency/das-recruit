@@ -26,7 +26,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
         public async Task Handle(ApproveReferredVacancyReviewCommand message, CancellationToken cancellationToken)
         {
-            // TODO: LWA Should we be checking the status of the vacancy??
+            var vacancy = await _vacancyRepository.GetVacancyAsync(message.Vacancy.Id);
+
+            if (!vacancy.CanApprove)
+            {
+                return;
+            }
+
             await _vacancyRepository.UpdateAsync(message.Vacancy);
             
             var review = await _vacancyReviewRepository.GetAsync(message.ReviewId);
