@@ -85,5 +85,11 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         /// We can only make approved vacancies live that have not been deleted
         /// </summary>
         public bool CanMakeLive => Status == VacancyStatus.Approved && IsDeleted == false;
+
+        /// <summary>
+        /// We can send for review vacancies that are submitted and that have not been deleted
+        /// </summary>
+        public bool CanSendForReview => Status == VacancyStatus.Submitted && IsDeleted == false;
+        
     }
 }

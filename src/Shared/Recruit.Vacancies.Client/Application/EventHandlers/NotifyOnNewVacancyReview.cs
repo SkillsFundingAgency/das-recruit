@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.EventHandlers
 {
-    public class SendVacancyReviewNotifications : INotificationHandler<VacancyReviewCreatedEvent>
+    public class NotifyOnNewVacancyReview : INotificationHandler<VacancyReviewCreatedEvent>
     {
         private readonly INotifyVacancyReviewUpdates _notifier;
-        private readonly ILogger<SendVacancyReviewNotifications> _logger;
+        private readonly ILogger<NotifyOnNewVacancyReview> _logger;
 
-        public SendVacancyReviewNotifications(INotifyVacancyReviewUpdates notifier, ILogger<SendVacancyReviewNotifications> logger)
+        public NotifyOnNewVacancyReview(INotifyVacancyReviewUpdates notifier, ILogger<NotifyOnNewVacancyReview> logger)
         {
             _notifier = notifier;
             _logger = logger;
@@ -23,7 +23,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.EventHandlers
         {
             try
             {
-                await _notifier.NewVacancyReview(notification.VacancyReference);
+                await _notifier.VacancyReviewCreated(notification.VacancyReference);
             }
             catch(NotificationException ex)
             {

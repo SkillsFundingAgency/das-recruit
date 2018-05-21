@@ -93,7 +93,7 @@ namespace Esfa.Recruit.Qa.Web
             app.UseXDownloadOptions();
             app.UseXRobotsTag(options => options.NoIndex().NoFollow());
 
-            //app.UseNoCacheHttpHeaders(); // Affectively forces the browser to always request dynamic pages
+            app.UseNoCacheHttpHeaders(); // Affectively forces the browser to always request dynamic pages
             
             app.UseMvc(routes =>
             {

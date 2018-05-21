@@ -39,9 +39,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 VacancyReference = message.VacancyReference,
                 ReviewId =  review.Id
             });
-
-            vacancy.Status = VacancyStatus.PendingReview;
-            await _vacancyRepository.UpdateAsync(vacancy);
         }
 
         private VacancyReview BuildNewReview(Vacancy vacancy)

@@ -13,7 +13,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
     {
         private readonly IVacancyRepository _repository;
         private readonly IMessaging _messaging;
-        private ITimeProvider _timeProvider;
+        private readonly ITimeProvider _timeProvider;
 
         public UpdateVacancyCommandHandler(IVacancyRepository repository, IMessaging messaging, ITimeProvider timeProvider)
         {
@@ -29,7 +29,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             await _repository.UpdateAsync(message.Vacancy);
 
-            await _messaging.PublishEvent(new VacancyUpdatedEvent
+            await _messaging.PublishEvent(new VacancyDraftUpdatedEvent
             {
                 SourceCommandId = message.CommandId.ToString(),
                 EmployerAccountId = message.Vacancy.EmployerAccountId,

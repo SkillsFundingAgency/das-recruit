@@ -211,6 +211,22 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             await _messaging.SendCommandAsync(command);
         }
 
+        public async Task ApproveVacancy(long vacancyReference)
+        {
+            await _messaging.SendCommandAsync(new ApproveVacancyCommand
+            {
+                VacancyReference = vacancyReference
+            });
+        }
+
+        public Task ReferVacancy(long vacancyReference)
+        {
+            return _messaging.SendCommandAsync(new ReferVacancyCommand
+            {
+                VacancyReference = vacancyReference
+            });
+        }
+
         // Shared
         public async Task<IEnumerable<LegalEntity>> GetEmployerLegalEntitiesAsync(string employerAccountId)
         {

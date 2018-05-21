@@ -7,6 +7,7 @@ using System;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
+using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
@@ -26,18 +27,20 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         public async Task Handle(ApproveVacancyReviewCommand message, CancellationToken cancellationToken)
         {
             var review = await _vacancyReviewRepository.GetAsync(message.ReviewId);
+
+            if (review.Status != ReviewStatus.UnderReview)
+                throw new InvalidStateException($"Review not in correct state to approve. State: {review.Status}");
+
             review.ManualOutcome = ManualQaOutcome.Approved;
             review.Status = ReviewStatus.Closed;
 
             await _vacancyReviewRepository.UpdateAsync(review);
 
-            var vacancy = await _vacancyRepository.GetVacancyAsync(review.VacancyReference);
-
             await _messaging.PublishEvent(new VacancyReviewApprovedEvent
             {
                 SourceCommandId = message.CommandId.ToString(),
                 ReviewId = message.ReviewId,
-                VacancyReference = vacancy.VacancyReference.Value
+                VacancyReference = review.VacancyReference
             });
         }
     }

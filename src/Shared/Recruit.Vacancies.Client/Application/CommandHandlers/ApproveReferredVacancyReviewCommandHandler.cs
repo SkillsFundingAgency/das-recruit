@@ -7,6 +7,7 @@ using System;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
+using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
@@ -25,9 +26,14 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
         public async Task Handle(ApproveReferredVacancyReviewCommand message, CancellationToken cancellationToken)
         {
+            // TODO: LWA Should we be checking the status of the vacancy??
             await _vacancyRepository.UpdateAsync(message.Vacancy);
-
+            
             var review = await _vacancyReviewRepository.GetAsync(message.ReviewId);
+
+            if (review.Status != ReviewStatus.UnderReview)
+                throw new InvalidStateException($"Review not in correct state to approve. State: {review.Status}");
+
             review.ManualOutcome = ManualQaOutcome.Approved;
             review.Status = ReviewStatus.Closed;
 

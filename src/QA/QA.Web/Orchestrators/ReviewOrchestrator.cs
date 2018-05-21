@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Qa.Web.Exceptions;
 using Esfa.Recruit.Qa.Web.Mappings;
@@ -36,45 +37,113 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
         }
 
         public async Task<ReviewViewModel> GetReviewViewModelAsync(Guid reviewId, VacancyUser user)
-        {            
+        {
             var review = await _vacancyClient.GetVacancyReviewAsync(reviewId);
-            
-            if (review == null)
-                throw new NotFoundException($"Unable to find review with id: {reviewId}");
 
-            if (review.Status != ReviewStatus.PendingReview && review.Status != ReviewStatus.UnderReview)
-            {
-                throw new InvalidStateException($"Review is not in a correct state. State: {review.Status}");
-            }
+            ValidateReviewStateForViewing(review);
+
+            var vacancy = await _vacancyClient.GetVacancyAsync(review.VacancyReference);
+            
+            ValidateVacancyStateForViewing(review, vacancy);
 
             if (review.Status == ReviewStatus.PendingReview)
             {
                 await _vacancyClient.StartReview(review.Id, user);
             }
 
-            var vacancy = await _vacancyClient.GetVacancyAsync(review.VacancyReference);
             var vm = await _mapper.MapFromVacancy(vacancy);
-            
+
             return vm;
         }
 
         public async Task<ReviewViewModel> GetReferralViewModelAsync(Guid reviewId)
-        {            
+        {
             var review = await _vacancyClient.GetVacancyReviewAsync(reviewId);
+
+            ValidateReviewStateForReferral(review);
+
+            var vacancy = await _vacancyClient.GetVacancyAsync(review.VacancyReference);
             
-            if (review == null)
-                throw new NotFoundException($"Unable to find review with id: {reviewId}");
+            ValidateVacancyForReferral(review, vacancy);
 
             if (review.ManualOutcome != ManualQaOutcome.Referred)
             {
                 await _vacancyClient.ReferVacancyReviewAsync(review.Id);
             }
 
-            var vacancy = await _vacancyClient.GetVacancyAsync(review.VacancyReference);
             var vm = await _mapper.MapFromVacancy(vacancy);
             vm.IsEditable = true;
-            
+
             return vm;
+        }
+
+        private void ValidateVacancyForReferral(VacancyReview review, Vacancy vacancy)
+        {
+            if (vacancy == null)
+            {
+                throw new NotFoundException($"Unable to find vacancy with reference: {review.VacancyReference}");
+            }
+
+            if (!IsValidStateForReferral(vacancy.Status))
+            {
+                throw new InvalidStateException($"Vacancy is not in a correct state for referral view. State: {vacancy.Status}");
+            }
+        }
+
+        private static void ValidateReviewStateForReferral(VacancyReview review)
+        {
+            if (review == null)
+                throw new NotFoundException($"Unable to find review with id: {review.Id}");
+
+            if (review.Status != ReviewStatus.UnderReview)
+            {
+                throw new InvalidStateException($"Review is not in a correct state for referring. State: {review.Status}");
+            }
+        }
+
+        private void ValidateVacancyStateForViewing(VacancyReview review, Vacancy vacancy)
+        {
+            if (vacancy == null)
+            {
+                throw new NotFoundException($"Unable to find vacancy with reference: {review.VacancyReference}");
+            }
+
+            if (!IsValidStateForViewing(vacancy.Status))
+            {
+                throw new InvalidStateException($"Vacancy is not in a correct state for viewing. State: {vacancy.Status}");
+            }
+        }
+
+        private static void ValidateReviewStateForViewing(VacancyReview review)
+        {
+            if (review == null)
+                throw new NotFoundException($"Unable to find review with id: {review.Id}");
+
+            if (review.Status != ReviewStatus.PendingReview && review.Status != ReviewStatus.UnderReview)
+            {
+                throw new InvalidStateException($"Review is not in a correct state for viewing. State: {review.Status}");
+            }
+        }
+
+        private bool IsValidStateForViewing(VacancyStatus status)
+        {
+            var validStatuses = new VacancyStatus[] 
+                { 
+                    VacancyStatus.PendingReview
+                };
+
+            return validStatuses.Contains(status);
+        }
+
+        private bool IsValidStateForReferral(VacancyStatus status)
+        {
+            var validStatuses = new VacancyStatus[] 
+                { 
+                    VacancyStatus.PendingReview,
+                    VacancyStatus.UnderReview
+                };
+
+            return validStatuses.Contains(status);
         }
     }
 }
