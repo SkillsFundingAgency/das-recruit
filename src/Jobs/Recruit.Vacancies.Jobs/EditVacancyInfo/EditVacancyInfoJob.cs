@@ -23,9 +23,11 @@ namespace Esfa.Recruit.Vacancies.Jobs.EditVacancyInfo
 
         public async Task GenerateEmployerVacancyData([QueueTrigger("setup-employer-queue", Connection = "EventQueueConnectionString")] string message, TextWriter log)
         {
+            EventItem eventItem = null;
+
             try
             {
-                var eventItem = JsonConvert.DeserializeObject<EventItem>(message);
+                eventItem = JsonConvert.DeserializeObject<EventItem>(message);
                 var data = JsonConvert.DeserializeObject<SetupEmployerEvent>(eventItem.Data);
                 _logger.LogInformation($"Start {JobName} For Employer Account: {data.EmployerAccountId}");
                 await _job.UpdateEditVacancyInfo(data.EmployerAccountId);
@@ -33,7 +35,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.EditVacancyInfo
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Unable to run {JobName}.");
+                _logger.LogError(ex, $"Unable to run {JobName}. Event: {{eventBody}}", message);
             }
         }
     }
