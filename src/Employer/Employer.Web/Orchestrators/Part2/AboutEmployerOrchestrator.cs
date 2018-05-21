@@ -21,7 +21,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public async Task<AboutEmployerViewModel> GetAboutEmployerViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, vrm.VacancyId, vrm.EmployerAccountId, RouteNames.AboutEmployer_Get);
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, vrm, RouteNames.AboutEmployer_Get);
 
             var vm = new AboutEmployerViewModel
             {
@@ -45,7 +45,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public async Task<OrchestratorResponse> PostAboutEmployerEditModelAsync(AboutEmployerEditModel m, VacancyUser user)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, m.VacancyId, m.EmployerAccountId, RouteNames.AboutEmployer_Post);
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, m, RouteNames.AboutEmployer_Post);
 
             vacancy.EmployerDescription = m.EmployerDescription;
             vacancy.EmployerWebsiteUrl = m.EmployerWebsiteUrl;

@@ -30,7 +30,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public async Task<QualificationsViewModel> GetQualificationsViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, vrm.VacancyId, vrm.EmployerAccountId, RouteNames.Qualifications_Get);
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, vrm, RouteNames.Qualifications_Get);
             
             var vm = new QualificationsViewModel
             {
@@ -58,7 +58,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public async Task<OrchestratorResponse> PostQualificationsEditModelAsync(QualificationsEditModel m, VacancyUser user)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, m.VacancyId, m.EmployerAccountId, RouteNames.Qualifications_Post);
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, new VacancyRouteModel{EmployerAccountId = m.EmployerAccountId, VacancyId = m.VacancyId}, RouteNames.Qualifications_Post);
             
             if (m.Qualifications == null)
             {

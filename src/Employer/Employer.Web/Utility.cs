@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
+using Esfa.Recruit.Employer.Web.Exceptions;
+using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 
@@ -13,20 +15,20 @@ namespace Esfa.Recruit.Employer.Web
 {
     public static class Utility
     {
-        public static async Task<Vacancy> GetAuthorisedVacancyForEditAsync(IEmployerVacancyClient client, Guid vacancyId, string employerAccountId, string routeName)
+        public static async Task<Vacancy> GetAuthorisedVacancyForEditAsync(IEmployerVacancyClient client, VacancyRouteModel vrm, string routeName)
         {
-            var vacancy = await GetAuthorisedVacancyAsync(client, vacancyId, employerAccountId, routeName);
+            var vacancy = await GetAuthorisedVacancyAsync(client, vrm, routeName);
 
             CheckCanEdit(vacancy);
 
             return vacancy;
         }
 
-        public static async Task<Vacancy> GetAuthorisedVacancyAsync(IEmployerVacancyClient client, Guid vacancyId, string employerAccountId, string routeName)
+        public static async Task<Vacancy> GetAuthorisedVacancyAsync(IEmployerVacancyClient client, VacancyRouteModel vrm, string routeName)
         {
-            var vacancy = await client.GetVacancyAsync(vacancyId);
+            var vacancy = await client.GetVacancyAsync(vrm.VacancyId);
 
-            CheckAuthorisedAccess(vacancy, employerAccountId);
+            CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
 
             CheckRouteIsValidForVacancy(vacancy, routeName);
 
@@ -58,10 +60,10 @@ namespace Esfa.Recruit.Employer.Web
             var redirectRoute = validRoutes.Last();
             
             throw new InvalidRouteForVacancyException(string.Format(ExceptionMessages.RouteNotValidForVacancy, currentRouteName, redirectRoute),
-                redirectRoute, new { vacancy.EmployerAccountId, VacancyId = vacancy.Id });
+                redirectRoute, new VacancyRouteModel{EmployerAccountId = vacancy.EmployerAccountId, VacancyId = vacancy.Id});
         }
 
-        private static IList<string> GetValidRoutesForVacancy(Vacancy vacancy)
+        public static IList<string> GetValidRoutesForVacancy(Vacancy vacancy)
         {
             var validRoutes = new List<string>();
 
@@ -86,6 +88,11 @@ namespace Esfa.Recruit.Employer.Web
                 return validRoutes;
             
             return null;
+        }
+
+        public static bool VacancyHasCompletedPartOne(Vacancy vacancy)
+        {
+            return GetValidRoutesForVacancy(vacancy) == null;
         }
     }
 }

@@ -22,7 +22,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         
         public async Task<TrainingViewModel> GetTrainingViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancyTask = Utility.GetAuthorisedVacancyForEditAsync(_client, vrm.VacancyId, vrm.EmployerAccountId, RouteNames.Training_Get);
+            var vacancyTask = Utility.GetAuthorisedVacancyForEditAsync(_client, vrm, RouteNames.Training_Get);
             var programmesTask = _client.GetActiveApprenticeshipProgrammesAsync();
 
             await Task.WhenAll(vacancyTask, programmesTask);
@@ -73,7 +73,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         public async Task<OrchestratorResponse> PostTrainingEditModelAsync(TrainingEditModel m, VacancyUser user)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, m.VacancyId, m.EmployerAccountId, RouteNames.Training_Post);
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, m, RouteNames.Training_Post);
             
             vacancy.ClosingDate = m.ClosingDate.AsDateTimeUk()?.ToUniversalTime();
             vacancy.StartDate = m.StartDate.AsDateTimeUk()?.ToUniversalTime();

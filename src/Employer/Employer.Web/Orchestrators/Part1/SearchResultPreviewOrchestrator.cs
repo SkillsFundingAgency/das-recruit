@@ -27,7 +27,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         
         public async Task<SearchResultPreviewViewModel> GetSearchResultPreviewViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, vrm.VacancyId, vrm.EmployerAccountId, RouteNames.SearchResultPreview_Get);
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, vrm, RouteNames.SearchResultPreview_Get);
 
             var vm = new SearchResultPreviewViewModel
             {

@@ -20,7 +20,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public async Task<IndexViewModel> GetIndexViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyAsync(_client, vrm.VacancyId, vrm.EmployerAccountId, RouteNames.Submitted_Index_Get);
+            var vacancy = await Utility.GetAuthorisedVacancyAsync(_client, vrm, RouteNames.Submitted_Index_Get);
 
             if (vacancy.Status != VacancyStatus.Submitted)
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotSubmittedSuccessfully, vacancy.Title));

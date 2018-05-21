@@ -22,7 +22,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public async Task<EmployerContactDetailsViewModel> GetEmployerContactDetailsViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, vrm.VacancyId, vrm.EmployerAccountId, RouteNames.EmployerContactDetails_Get);
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, vrm, RouteNames.EmployerContactDetails_Get);
 
             var vm = new EmployerContactDetailsViewModel
             {
@@ -48,7 +48,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public async Task<OrchestratorResponse> PostEmployerContactDetailsEditModelAsync(EmployerContactDetailsEditModel m, VacancyUser user)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, m.VacancyId, m.EmployerAccountId, RouteNames.EmployerContactDetails_Post);
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, m, RouteNames.EmployerContactDetails_Post);
 
             vacancy.EmployerContactName = m.EmployerContactName;
             vacancy.EmployerContactEmail = m.EmployerContactEmail;

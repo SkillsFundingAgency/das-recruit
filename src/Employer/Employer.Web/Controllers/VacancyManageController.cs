@@ -21,7 +21,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         public async Task<IActionResult> DisplayVacancy(VacancyRouteModel vrm)
         {
             var vacancy = await _orchestrator.GetVacancy(vrm);
-            
+
             if (vacancy.CanEdit)
             {
                 return HandleRedirectOfDraftVacancy(vacancy);
@@ -33,12 +33,12 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
         private IActionResult HandleRedirectOfDraftVacancy(Vacancy vacancy)
         {
-            if (vacancy.Wage == null)
+            if (Utility.VacancyHasCompletedPartOne(vacancy))
             {
-                return RedirectToRoute(RouteNames.Title_Get);
+                return RedirectToRoute(RouteNames.Vacancy_Preview_Get);
             }
-
-            return RedirectToRoute(RouteNames.Vacancy_Preview_Get);
+            
+            return RedirectToRoute(RouteNames.Title_Get);
         }
     }
 }

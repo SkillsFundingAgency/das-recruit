@@ -8,6 +8,7 @@ using Esfa.Recruit.Employer.Web.Configuration;
 using System.Net;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
+using Esfa.Recruit.Employer.Web.Exceptions;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
@@ -49,11 +50,12 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             if (exceptionFeature != null)
             {
+                string routeWhereExceptionOccurred = exceptionFeature.Path;
                 var exception = exceptionFeature.Error;
 
                 if (exception is InvalidStateException)
                 {
-                    _logger.LogError(exception, $"Exception on path: {{routeWhereExceptionOccurred}}");
+                    _logger.LogError(exception, "Exception on path: {routeWhereExceptionOccurred}", routeWhereExceptionOccurred);
                     TempData.Add(TempDataKeys.DashboardErrorMessage, exception.Message);
                     return RedirectToRoute(RouteNames.Dashboard_Index_Get, new { EmployerAccountId = accountId });
                 }

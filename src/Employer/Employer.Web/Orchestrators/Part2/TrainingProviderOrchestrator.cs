@@ -25,7 +25,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public async Task<SelectTrainingProviderViewModel> GetSelectTrainingProviderViewModel(VacancyRouteModel vrm)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, vrm.VacancyId, vrm.EmployerAccountId, RouteNames.TrainingProvider_Select_Get);
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, vrm, RouteNames.TrainingProvider_Select_Get);
             
             var vm = new SelectTrainingProviderViewModel
             {
@@ -45,7 +45,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public async Task<ConfirmTrainingProviderViewModel> GetConfirmViewModel(SelectTrainingProviderEditModel m)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, m.VacancyId, m.EmployerAccountId, RouteNames.TrainingProvider_Confirm_Get);
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, m, RouteNames.TrainingProvider_Confirm_Get);
             
             if (long.TryParse(m.Ukprn, out var ukprn) && ukprn != vacancy.TrainingProvider?.Ukprn)
             {
@@ -75,7 +75,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public Task<OrchestratorResponse> PostConfirmEditModelAsync(ConfirmTrainingProviderEditModel m, VacancyUser user)
         {
-            var vacancyTask = Utility.GetAuthorisedVacancyForEditAsync(_client, m.VacancyId, m.EmployerAccountId, RouteNames.TrainingProvider_Confirm_Post);
+            var vacancyTask = Utility.GetAuthorisedVacancyForEditAsync(_client, m, RouteNames.TrainingProvider_Confirm_Post);
             var providerTask = _providerService.GetProviderAsync(long.Parse(m.Ukprn));
 
             Task.WaitAll(vacancyTask, providerTask);

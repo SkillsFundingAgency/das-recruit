@@ -6,9 +6,11 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using Esfa.Recruit.Employer.Web;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
+using Esfa.Recruit.Employer.Web.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using FluentAssertions;
+using Microsoft.CodeAnalysis;
 using Xunit;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web
@@ -23,7 +25,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web
         {
             var vacancy = new Vacancy
             {
-                EmployerAccountId = "employer account id",
+                EmployerAccountId = "EMPLOYER ACCOUNT ID",
                 Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e")
             };
 
@@ -40,7 +42,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web
         {
             var vacancy = new Vacancy
             {
-                EmployerAccountId = "employer account id",
+                EmployerAccountId = "EMPLOYER ACCOUNT ID",
                 Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
                 Title = "has a value"
             };
@@ -60,7 +62,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web
         {
             var vacancy = new Vacancy
             {
-                EmployerAccountId = "employer account id",
+                EmployerAccountId = "EMPLOYER ACCOUNT ID",
                 Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
                 Title = "has a value",
                 EmployerLocation = new Address { Postcode = "has a value"}
@@ -83,7 +85,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web
         {
             var vacancy = new Vacancy
             {
-                EmployerAccountId = "employer account id",
+                EmployerAccountId = "EMPLOYER ACCOUNT ID",
                 Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
                 Title = "has a value",
                 EmployerLocation = new Address { Postcode = "has a value" },
@@ -109,7 +111,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web
         {
             var vacancy = new Vacancy
             {
-                EmployerAccountId = "employer account id",
+                EmployerAccountId = "EMPLOYER ACCOUNT ID",
                 Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
                 Title = "has a value",
                 EmployerLocation = new Address { Postcode = "has a value" },
@@ -126,7 +128,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web
         {
             var vacancy = new Vacancy
             {
-                EmployerAccountId = "employer account id",
+                EmployerAccountId = "EMPLOYER ACCOUNT ID",
                 Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
                 Title = "has a value",
                 EmployerLocation = new Address { Postcode = "has a value" },
@@ -140,33 +142,17 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web
 
         private void CheckRouteIsValidForVacancyTest(Vacancy vacancy, string route, bool shouldRedirect, string expectedRedirectRoute)
         {
-            bool isRedirecting = false;
-            string actualRedirectRoute = null;
-            string actualEmployerAccountId = null;
-            Guid actualVacancyId;
-
-            try
+            if (!shouldRedirect)
             {
                 Utility.CheckRouteIsValidForVacancy(vacancy, route);
+                return;
             }
-            catch (InvalidRouteForVacancyException ex)
-            {
-                dynamic routeValues = ex.RouteValues;
+            
+            var ex = Assert.Throws<InvalidRouteForVacancyException>(() => Utility.CheckRouteIsValidForVacancy(vacancy, route));
 
-                isRedirecting = true;
-                actualRedirectRoute = ex.RouteNameToRedirectTo;
-                actualEmployerAccountId = routeValues.GetType().GetProperty("EmployerAccountId")?.GetValue(routeValues, null);
-                actualVacancyId = routeValues.GetType().GetProperty("VacancyId")?.GetValue(routeValues, null);
-            }
-
-            isRedirecting.Should().Be(shouldRedirect);
-
-            if (shouldRedirect)
-            {
-                actualRedirectRoute.Should().Be(expectedRedirectRoute);
-                actualEmployerAccountId.Should().Be(vacancy.EmployerAccountId);
-                actualVacancyId.Should().Be(vacancy.Id);
-            }
+            ex.RouteNameToRedirectTo.Should().Be(expectedRedirectRoute);
+            ex.RouteValues.EmployerAccountId.Should().Be(vacancy.EmployerAccountId);
+            ex.RouteValues.VacancyId.Should().Be(vacancy.Id);
         }
 
     }

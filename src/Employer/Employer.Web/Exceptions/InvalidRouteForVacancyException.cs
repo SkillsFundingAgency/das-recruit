@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using Esfa.Recruit.Employer.Web.RouteModel;
 
-namespace Esfa.Recruit.Vacancies.Client.Domain.Exceptions
+namespace Esfa.Recruit.Employer.Web.Exceptions
 {
     [Serializable]
     public class InvalidRouteForVacancyException : Exception
     {
-        public InvalidRouteForVacancyException(string message, string routeNameToRedirectTo, object routeValues) : base(message)
+        public InvalidRouteForVacancyException(string message, string routeNameToRedirectTo, VacancyRouteModel routeValues) : base(message)
         {
             RouteNameToRedirectTo = routeNameToRedirectTo;
             RouteValues = routeValues;
@@ -15,6 +14,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Exceptions
 
         public string RouteNameToRedirectTo { get; }
 
-        public object RouteValues { get; set; }
+        public VacancyRouteModel RouteValues { get; set; }
     }
 }
