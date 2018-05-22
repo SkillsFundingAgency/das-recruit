@@ -66,7 +66,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
             if (notification == null)
                 throw new ArgumentNullException(nameof(notification), "Should not be null");
             
-            _logger.LogInformation($"Handling {notification.GetType().Name} for accountId: {{employerAccountId}} and vacancyId: {notification.VacancyId}", notification.EmployerAccountId);
+            _logger.LogInformation("Handling {eventType} for accountId: {employerAccountId} and vacancyId: {vacancyId}", notification.GetType().Name, notification.EmployerAccountId, notification.VacancyId);
             return _dashboardService.ReBuildDashboardAsync(notification.EmployerAccountId);
         }
     }
