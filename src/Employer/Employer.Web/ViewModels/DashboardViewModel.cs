@@ -9,7 +9,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public IList<VacancySummary> Vacancies { get; set; }
         public string WarningMessage { get; internal set; }
 
-        public bool ShowNoVacanciesMessage => Vacancies.Count == 0;
+        public bool ShowNoVacanciesMessage => !HasVacancies;
         public bool HasVacancies => Vacancies.Any();
         public bool HasWarning => !string.IsNullOrEmpty(WarningMessage);
     }
