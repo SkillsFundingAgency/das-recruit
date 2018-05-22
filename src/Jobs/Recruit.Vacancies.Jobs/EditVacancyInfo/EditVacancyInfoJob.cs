@@ -21,12 +21,12 @@ namespace Esfa.Recruit.Vacancies.Jobs.EditVacancyInfo
             _job = job;
         }
 
-        public async Task GenerateEmployerVacancyData([QueueTrigger("user-signed-in-queue", Connection = "EventQueueConnectionString")] string message, TextWriter log)
+        public async Task GenerateEmployerVacancyData([QueueTrigger("setup-employer-queue", Connection = "EventQueueConnectionString")] string message, TextWriter log)
         {
             try
             {
                 var eventItem = JsonConvert.DeserializeObject<EventItem>(message);
-                var data = JsonConvert.DeserializeObject<UserSignedInEvent>(eventItem.Data);
+                var data = JsonConvert.DeserializeObject<SetupEmployerEvent>(eventItem.Data);
                 _logger.LogInformation($"Start {JobName} For Employer Account: {data.EmployerAccountId}");
                 await _job.UpdateEditVacancyInfo(data.EmployerAccountId);
                 _logger.LogInformation($"Finished {JobName} For Employer Account: {data.EmployerAccountId}");

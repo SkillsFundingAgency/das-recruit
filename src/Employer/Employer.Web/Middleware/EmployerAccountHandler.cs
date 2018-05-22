@@ -3,14 +3,23 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Esfa.Recruit.Employer.Web.Middleware
 {
     public class EmployerAccountHandler : AuthorizationHandler<EmployerAccountRequirement>
     {
-        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, EmployerAccountRequirement requirement)
+        private readonly IEmployerVacancyClient _client;
+
+        public EmployerAccountHandler(IEmployerVacancyClient client)
+        {
+            _client = client;
+        }
+
+        protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, EmployerAccountRequirement requirement)
         {
             if (context.Resource is AuthorizationFilterContext mvcContext && mvcContext.RouteData.Values.ContainsKey(RouteValues.EmployerAccountId))
             {
@@ -22,12 +31,23 @@ namespace Esfa.Recruit.Employer.Web.Middleware
                     if (employerAccounts.Contains(accountIdFromUrl))
                     {
                         mvcContext.HttpContext.Items.Add(ContextItemKeys.EmployerIdentifier, accountIdFromUrl);
+
+                        await EnsureEmployerIsSetup(mvcContext.HttpContext, accountIdFromUrl);
+                        
                         context.Succeed(requirement);
                     }
                 }
             }
+        }
 
-            return Task.CompletedTask;
+        private async Task EnsureEmployerIsSetup(HttpContext context, string employerAccountId)
+        {
+            var key = $"setup-employer-{employerAccountId}";
+            if (!context.Session.TryGetValue(key, out _))
+            {
+                await _client.SetupEmployer(employerAccountId);
+                context.Session.SetString(key, "true");
+            }
         }
     }
 }

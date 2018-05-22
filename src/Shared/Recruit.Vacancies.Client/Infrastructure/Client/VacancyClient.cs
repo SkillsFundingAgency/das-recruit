@@ -108,12 +108,21 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _reader.GetDashboardAsync(employerAccountId);
         }
 
-        public Task UserSignedInAsync(string employerAccountId, VacancyUser user)
+        public Task UserSignedInAsync(VacancyUser user)
         {
             var command = new UserSignedInCommand
             {
-                EmployerAccountId = employerAccountId,
                 User = user
+            };
+
+            return _messaging.SendCommandAsync(command);
+        }
+
+        public Task SetupEmployer(string employerAccountId)
+        {
+            var command = new SetupEmployerCommand
+            {
+                EmployerAccountId = employerAccountId
             };
 
             return _messaging.SendCommandAsync(command);

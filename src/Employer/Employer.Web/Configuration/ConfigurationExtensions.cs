@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -33,7 +34,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
                 });
             });
 
-            services.AddSingleton<IAuthorizationHandler, EmployerAccountHandler>();
+            services.AddTransient<IAuthorizationHandler, EmployerAccountHandler>();
         }
 
         public static void AddMvcService(this IServiceCollection services, IHostingEnvironment hostingEnvironment, bool isAuthEnabled)
@@ -117,10 +118,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
         private static Task HandleUserSignedIn(Microsoft.AspNetCore.Authentication.OpenIdConnect.TokenValidatedContext ctx, IEmployerVacancyClient vacancyClient)
         {
             var user = ctx.Principal.ToVacancyUser();
-            var employerAccountId = ctx.Principal.GetEmployerAccounts()
-                .FirstOrDefault(a => ctx.Properties.RedirectUri.Contains(a));
-            
-            return vacancyClient.UserSignedInAsync(employerAccountId, user);
+            return vacancyClient.UserSignedInAsync(user);
         }
     }
 }

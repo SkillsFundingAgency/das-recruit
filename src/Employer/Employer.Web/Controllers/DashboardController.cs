@@ -17,7 +17,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             _orchestrator = orchestrator;
         }
 
-        [HttpGet("dashboard", Name = RouteNames.Dashboard_Index_Get)]
+        [HttpGet("", Name = RouteNames.Dashboard_Index_Get)]
         public async Task<IActionResult> Dashboard([FromRoute]string employerAccountId)
         {
             var vm = await _orchestrator.GetDashboardViewModelAsync(employerAccountId);

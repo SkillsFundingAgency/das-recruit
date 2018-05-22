@@ -1,7 +1,5 @@
 ﻿using System;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
-using Esfa.Recruit.Vacancies.Client.Application.Events;
-using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,13 +11,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
     public class UserSignedInCommandHandler : IRequestHandler<UserSignedInCommand>
     {
-        private readonly IMessaging _messaging;
         private readonly IUserRepository _userRepository;
         private readonly ITimeProvider _timeProvider;
 
-        public UserSignedInCommandHandler(IMessaging messaging, IUserRepository userRepository, ITimeProvider timeProvider)
+        public UserSignedInCommandHandler(IUserRepository userRepository, ITimeProvider timeProvider)
         {
-            _messaging = messaging;
             _userRepository = userRepository;
             _timeProvider = timeProvider;
         }
@@ -27,16 +23,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         public async Task Handle(UserSignedInCommand message, CancellationToken cancellationToken)
         {
             await UpsertUserAsync(message.User);
-
-            await _messaging.PublishEvent(new UserSignedInEvent
-            {
-                SourceCommandId = message.CommandId.ToString(),
-                EmployerAccountId = message.EmployerAccountId,
-                User = message.User
-            });
         }
 
-        public async Task UpsertUserAsync(VacancyUser user)
+        private async Task UpsertUserAsync(VacancyUser user)
         {
             var now = _timeProvider.Now;
 
