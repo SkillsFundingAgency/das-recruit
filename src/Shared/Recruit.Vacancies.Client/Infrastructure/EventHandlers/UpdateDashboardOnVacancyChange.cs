@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
 {
@@ -19,14 +20,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
                                                     INotificationHandler<VacancyLiveEvent>,
                                                     INotificationHandler<VacancyClosedEvent>
     {
-        private readonly IQueryStoreWriter _queryStoreWriter;
+        
+        private readonly IDashboardService _dashboardService;
         private readonly ILogger<UpdateDashboardOnVacancyChange> _logger;
-        private readonly IVacancyRepository _repository;
+        
 
-        public UpdateDashboardOnVacancyChange(IVacancyRepository repository, IQueryStoreWriter queryStoreWriter, ILogger<UpdateDashboardOnVacancyChange> logger)
+        public UpdateDashboardOnVacancyChange(IDashboardService dashboardService, ILogger<UpdateDashboardOnVacancyChange> logger)
         {
-            _repository = repository;
-            _queryStoreWriter = queryStoreWriter;
+            _dashboardService = dashboardService;
             _logger = logger;
         }
 
@@ -66,27 +67,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
                 throw new ArgumentNullException(nameof(notification), "Should not be null");
             
             _logger.LogInformation($"Handling {notification.GetType().Name} for accountId: {{employerAccountId}} and vacancyId: {notification.VacancyId}", notification.EmployerAccountId);
-            return ReBuildDashboard(notification.EmployerAccountId);
-        }
-
-        private async Task ReBuildDashboard(string employerAccountId)
-        {
-            var vacancySummaries = await _repository.GetVacanciesByEmployerAccountAsync<VacancySummary>(employerAccountId);
-
-            var activeVacancySummaries = vacancySummaries.Where(v => v.IsDeleted == false).ToList();
-
-            foreach(var summary in activeVacancySummaries)
-            {
-                // PendingReview shows as Submitted in Dashboard.
-                if (summary.Status == VacancyStatus.PendingReview)
-                {
-                    summary.Status = VacancyStatus.Submitted;
-                }
-            }
-
-            await _queryStoreWriter.UpdateDashboardAsync(employerAccountId, activeVacancySummaries.OrderBy(v => v.CreatedDate));
-
-            _logger.LogDebug("Update dashboard with {count} summary records for account: {employerAccountId}", activeVacancySummaries.Count, employerAccountId);
+            return _dashboardService.ReBuildDashboard(notification.EmployerAccountId);
         }
     }
 }
