@@ -21,7 +21,14 @@ namespace Esfa.Recruit.Vacancies.Jobs.VacancyEvents
         {
             _logger.LogInformation($"Processing {nameof(VacancyCreatedEvent)} for vacancy: {{VacancyId}}", @event.VacancyId);
             
-            await _client.AssignVacancyNumber(@event.VacancyId);
+            try
+            {
+                await _client.AssignVacancyNumber(@event.VacancyId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unable to process {eventBody}", @event);
+            }
 
             _logger.LogInformation($"Finished Processing {nameof(VacancyCreatedEvent)} for vacancy: {{VacancyId}}", @event.VacancyId);
         }
@@ -30,7 +37,14 @@ namespace Esfa.Recruit.Vacancies.Jobs.VacancyEvents
         {
             _logger.LogInformation($"Processing {nameof(VacancyDraftUpdatedEvent)} for vacancy: {{VacancyId}}", @event.VacancyId);
 
-            await _client.EnsureVacancyIsGeocodedAsync(@event.VacancyId);
+            try
+            {
+                await _client.EnsureVacancyIsGeocodedAsync(@event.VacancyId);
+            }
+            catch (System.Exception)
+            {
+                _logger.LogError(ex, "Unable to process {eventBody}", @event);
+            }
 
             _logger.LogInformation($"Finished Processing {nameof(VacancyDraftUpdatedEvent)} for vacancy: {{VacancyId}}", @event.VacancyId);
         }
@@ -39,14 +53,16 @@ namespace Esfa.Recruit.Vacancies.Jobs.VacancyEvents
         {
             _logger.LogInformation($"Processing {nameof(VacancySubmittedEvent)} for vacancy: {{VacancyId}}", @event.VacancyId);
             
-            await _client.CreateVacancyReview(@event.VacancyReference);
+            try
+            {
+                await _client.CreateVacancyReview(@event.VacancyReference);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unable to process {eventBody}", @event);
+            }
 
             _logger.LogInformation($"Finished Processing {nameof(VacancySubmittedEvent)} for vacancy: {{VacancyId}}", @event.VacancyId);
-        }
-
-        public Task Handle(VacancyDeletedEvent @event)
-        {
-            throw new NotImplementedException();
         }
     }
 }
