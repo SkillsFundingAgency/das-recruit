@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
@@ -25,6 +26,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.SequenceStore
             var options = new FindOneAndUpdateOptions<Sequence> { ReturnDocument = ReturnDocument.After };
             
             var newSequence = await collection.FindOneAndUpdateAsync(filter, update, options);
+
+            if (newSequence == null)
+            {
+                throw new InfrastructureException($"Sequence not found in store: {VacancyNumberSequenceName}.");
+            }
 
             return newSequence.LastValue;
         }

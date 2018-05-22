@@ -9,13 +9,13 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
     public abstract class EntityValidatingOrchestrator<TEntity, TEditModel>
     {
-        private readonly ILogger _logger;
+        protected readonly ILogger Logger;
         private EntityToViewModelPropertyMappings<TEntity, TEditModel> _mappings;
         private IDictionary<string, string> _mappingDictionary;
 
         protected EntityValidatingOrchestrator(ILogger logger)
         {
-            _logger = logger;
+            Logger = logger;
         }
 
         private void BuildMappings()
