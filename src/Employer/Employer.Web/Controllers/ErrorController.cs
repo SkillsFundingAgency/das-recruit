@@ -56,7 +56,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
                 if (exception is InvalidStateException)
                 {
-                    _logger.LogError(exception, "Exception on path: {routeWhereExceptionOccurred}", routeWhereExceptionOccurred);
+                    _logger.LogError(exception, "Exception on path: {route}", routeWhereExceptionOccurred);
                     TempData.Add(TempDataKeys.DashboardErrorMessage, exception.Message);
                     return RedirectToRoute(RouteNames.Dashboard_Index_Get, new { EmployerAccountId = accountId });
                 }
@@ -78,6 +78,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                     _logger.LogWarning(exception, exception.Message);
                     return AccessDenied();
                 }
+
+                _logger.LogError(ex, "An unexpected exception occurred.")
             }
 
             return View(ViewNames.ErrorView, new ErrorViewModel { StatusCode = (int)HttpStatusCode.InternalServerError, RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
