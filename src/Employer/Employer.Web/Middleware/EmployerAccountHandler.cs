@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Employer.Web.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Newtonsoft.Json;
 
 namespace Esfa.Recruit.Employer.Web.Middleware
 {
@@ -18,10 +17,9 @@ namespace Esfa.Recruit.Employer.Web.Middleware
                 if (context.User.HasClaim(c => c.Type.Equals(EmployerRecruitClaims.AccountsClaimsTypeIdentifier)))
                 {
                     var accountIdFromUrl = mvcContext.RouteData.Values[RouteValues.EmployerAccountId].ToString().ToUpper();
-                    var employerAccountClaim = context.User.FindFirst(c => c.Type.Equals(EmployerRecruitClaims.AccountsClaimsTypeIdentifier));
-                    var employerAccounts = JsonConvert.DeserializeObject<List<string>>(employerAccountClaim?.Value);
+                    var employerAccounts = context.User.GetEmployerAccounts();
 
-                    if (employerAccountClaim != null && employerAccounts.Contains(accountIdFromUrl))
+                    if (employerAccounts.Contains(accountIdFromUrl))
                     {
                         mvcContext.HttpContext.Items.Add(ContextItemKeys.EmployerIdentifier, accountIdFromUrl);
                         context.Succeed(requirement);

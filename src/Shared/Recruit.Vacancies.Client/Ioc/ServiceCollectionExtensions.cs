@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
+﻿using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Events;
 using Esfa.Recruit.Vacancies.Client.Application.CommandHandlers;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
@@ -88,6 +87,7 @@ namespace Microsoft.Extensions.DependencyInjection
             MongoDbConventions.RegisterMongoConventions();
             services.AddTransient<IVacancyRepository, MongoDbVacancyRepository>();
             services.AddTransient<IVacancyReviewRepository, MongoDbVacancyReviewRepository>();
+            services.AddTransient<IUserRepository, MongoDbUserRepository>();
 
             services.AddTransient<IQueryStore, MongoQueryStore>();
             services.AddTransient<IQueryStoreReader, QueryStoreClient>();

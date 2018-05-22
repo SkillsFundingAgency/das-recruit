@@ -1,6 +1,9 @@
-﻿using Esfa.Recruit.Employer.Web.Configuration;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Esfa.Recruit.Employer.Web.Configuration;
 using System.Security.Claims;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Newtonsoft.Json;
 
 namespace Esfa.Recruit.Employer.Web.Extensions
 {
@@ -19,6 +22,17 @@ namespace Esfa.Recruit.Employer.Web.Extensions
         public static string GetUserId(this ClaimsPrincipal user)
         {
             return user.FindFirstValue(EmployerRecruitClaims.IdamsUserIdClaimTypeIdentifier);
+        }
+
+        public static IEnumerable<string> GetEmployerAccounts(this ClaimsPrincipal user)
+        {
+            var employerAccountClaim = user.FindFirst(c => c.Type.Equals(EmployerRecruitClaims.AccountsClaimsTypeIdentifier));
+
+            if (string.IsNullOrEmpty(employerAccountClaim?.Value))
+                return Enumerable.Empty<string>();
+            
+            var employerAccounts = JsonConvert.DeserializeObject<List<string>>(employerAccountClaim.Value);
+            return employerAccounts;
         }
 
         public static VacancyUser ToVacancyUser(this ClaimsPrincipal user)
