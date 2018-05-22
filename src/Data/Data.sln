@@ -8,6 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7E161207-438D-4679-AA26-E0FE5D62B233}"
 	ProjectSection(SolutionItems) = preProject
 		CosmosDb\Configuration.json = CosmosDb\Configuration.json
+		README.md = README.md
 	EndProjectSection
 EndProject
 Global
