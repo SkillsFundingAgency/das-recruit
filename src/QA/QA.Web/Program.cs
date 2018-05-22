@@ -70,14 +70,6 @@ namespace Esfa.Recruit.Qa.Web
                 })
                 .UseStartup<Startup>()
                 .UseUrls("https://localhost:5025")
-                .ConfigureAppConfiguration((hostingContext, config) =>
-                    {
-                        var hostingEnvironment = hostingContext.HostingEnvironment;
-                        if (hostingEnvironment.IsDevelopment())
-                        {
-                            config.AddUserSecrets<Startup>();
-                        }
-                    })
                 .UseNLog()
                 .Build();
     }

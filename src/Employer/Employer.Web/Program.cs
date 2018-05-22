@@ -30,14 +30,6 @@ namespace Esfa.Recruit.Employer.Web
                 .UseKestrel(c => c.AddServerHeader = false)
                 .UseStartup<Startup>()
                 .UseUrls("http://localhost:5020")
-                .ConfigureAppConfiguration((hostingContext, config) =>
-                    {
-                        var hostingEnvironment = hostingContext.HostingEnvironment;
-                        if (hostingEnvironment.IsDevelopment())
-                        {
-                            config.AddUserSecrets<Startup>();
-                        }
-                    })
                 .UseNLog()
                 .Build();
     }
