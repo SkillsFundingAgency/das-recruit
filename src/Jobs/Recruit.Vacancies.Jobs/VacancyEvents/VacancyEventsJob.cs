@@ -39,11 +39,11 @@ namespace Esfa.Recruit.Vacancies.Jobs.VacancyEvents
             switch (eventType)
             {
                 case nameof(VacancyCreatedEvent):
-                    return _handler.Handle(JsonConvert.DeserializeObject<VacancyCreatedEvent>(data));
+                    return _vacancyHandler.Handle(JsonConvert.DeserializeObject<VacancyCreatedEvent>(data));
                 case nameof(VacancyDraftUpdatedEvent):
                     return _vacancyHandler.Handle(JsonConvert.DeserializeObject<VacancyDraftUpdatedEvent>(data));
                 case nameof(VacancySubmittedEvent):
-                    return _handler.Handle(JsonConvert.DeserializeObject<VacancySubmittedEvent>(data));
+                    return _vacancyHandler.Handle(JsonConvert.DeserializeObject<VacancySubmittedEvent>(data));
                 default: 
                     throw new ArgumentOutOfRangeException(nameof(eventType), $"Unexpected value for event type: {eventType}");
             }

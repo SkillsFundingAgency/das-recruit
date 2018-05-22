@@ -79,7 +79,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                     return AccessDenied();
                 }
 
-                _logger.LogError(ex, "An unexpected exception occurred.")
+                _logger.LogError(exception, "An unexpected exception occurred.");
             }
 
             return View(ViewNames.ErrorView, new ErrorViewModel { StatusCode = (int)HttpStatusCode.InternalServerError, RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });

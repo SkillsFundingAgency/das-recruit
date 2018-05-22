@@ -41,7 +41,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.VacancyEvents
             {
                 await _client.EnsureVacancyIsGeocodedAsync(@event.VacancyId);
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
                 _logger.LogError(ex, "Unable to process {eventBody}", @event);
             }
