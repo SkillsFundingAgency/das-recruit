@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 
-namespace Esfa.Recruit.Vacancies.Jobs.ApprenticeshipProgrammes
+namespace Esfa.Recruit.Vacancies.Jobs.VacancyStatus
 {
     public class VacancyStatusJob
     {
@@ -14,7 +14,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.ApprenticeshipProgrammes
         private const bool CanRunOnStartup = false;
 #endif
         private readonly ILogger<VacancyStatusJob> _logger;
-        private LiveVacancyStatusInspector _inspector;
+        private readonly LiveVacancyStatusInspector _inspector;
 
         public VacancyStatusJob(ILogger<VacancyStatusJob> logger, LiveVacancyStatusInspector inspector)
         {
