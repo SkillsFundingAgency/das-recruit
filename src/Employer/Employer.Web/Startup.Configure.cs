@@ -57,7 +57,7 @@ namespace Esfa.Recruit.Employer.Web
                 )
                 .ImageSources(s => 
                     s.Self()
-                    .CustomSources("https://maps.googleapis.com")
+                    .CustomSources("https://maps.googleapis.com", "data:")
                  )
                 .ReportUris(r => r.Uris("/ContentPolicyReport/Report")));
 
