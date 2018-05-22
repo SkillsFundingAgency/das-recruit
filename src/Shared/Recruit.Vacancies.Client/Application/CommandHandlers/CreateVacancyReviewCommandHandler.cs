@@ -7,18 +7,25 @@ using Esfa.Recruit.Vacancies.Client.Domain.Services;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
     public class CreateVacancyReviewCommandHandler: IRequestHandler<CreateVacancyReviewCommand>
     {
+        private readonly ILogger<CreateVacancyReviewCommandHandler> _logger;
         private readonly IVacancyRepository _vacancyRepository;
         private readonly IVacancyReviewRepository _vacancyReviewRepository;
         private readonly IMessaging _messaging;
         private readonly ITimeProvider _time;
 
-        public CreateVacancyReviewCommandHandler(IVacancyRepository vacancyRepository, IVacancyReviewRepository vacancyReviewRepository, IMessaging messaging, ITimeProvider time)
+        public CreateVacancyReviewCommandHandler(
+            ILogger<CreateVacancyReviewCommandHandler> logger,
+            IVacancyRepository vacancyRepository, 
+            IVacancyReviewRepository vacancyReviewRepository, 
+            IMessaging messaging, ITimeProvider time)
         {
+            _logger = logger;
             _vacancyRepository = vacancyRepository;
             _vacancyReviewRepository = vacancyReviewRepository;
             _messaging = messaging;
@@ -27,6 +34,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
         public async Task Handle(CreateVacancyReviewCommand message, CancellationToken cancellationToken)
         {
+            _logger.LogInformation("Creating vacancy review for vacancy {vacancyReference}.", message.VacancyReference);
+
             var vacancy = await _vacancyRepository.GetVacancyAsync(message.VacancyReference);
 
             var review = BuildNewReview(vacancy);

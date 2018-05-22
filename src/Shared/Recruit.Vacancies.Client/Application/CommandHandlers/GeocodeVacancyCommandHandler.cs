@@ -19,7 +19,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         private readonly IGeocodeService _geocodeService;
         private readonly ILogger<GeoVacancyCommandHandler> _logger;
 
-        public GeoVacancyCommandHandler(IVacancyRepository repository, 
+        public GeoVacancyCommandHandler(
+            IVacancyRepository repository, 
             IGeocodeServiceFactory geocodeServiceFactory,
             ILogger<GeoVacancyCommandHandler> logger)
         {
@@ -30,6 +31,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
         public async Task Handle(GeocodeVacancyCommand message, CancellationToken cancellationToken)
         {
+            _logger.LogInformation("Geocoding vacancy {vacancyId}.", message.VacancyId);
+
             var vacancy = await _repository.GetVacancyAsync(message.VacancyId);
 
             if (string.IsNullOrEmpty(vacancy?.EmployerLocation?.Postcode))

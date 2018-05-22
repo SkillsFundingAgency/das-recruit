@@ -7,17 +7,24 @@ using System.Threading;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Services;
+using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
     public class CreateVacancyCommandHandler: IRequestHandler<CreateVacancyCommand>
     {
+        private readonly ILogger<CreateVacancyCommandHandler> _logger;
         private readonly IVacancyRepository _repository;
         private readonly IMessaging _messaging;
         private readonly ITimeProvider _timeProvider;
 
-        public CreateVacancyCommandHandler(IVacancyRepository repository, IMessaging messaging, ITimeProvider timeProvider)
+        public CreateVacancyCommandHandler(
+            ILogger<CreateVacancyCommandHandler> logger,
+            IVacancyRepository repository, 
+            IMessaging messaging, 
+            ITimeProvider timeProvider)
         {
+            _logger = logger;
             _repository = repository;
             _messaging = messaging;
             _timeProvider = timeProvider;
@@ -25,6 +32,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
         public async Task Handle(CreateVacancyCommand message, CancellationToken cancellationToken)
         {
+            _logger.LogInformation("Creating vacancy with id {vacancyId}.", message.VacancyId);
+
             var now = _timeProvider.Now;
 
             var vacancy = new Vacancy
