@@ -81,6 +81,8 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             .AddCookie("Cookies", options =>
             {
                 options.AccessDeniedPath = "/Error/403";
+                options.SlidingExpiration = true;
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(Startup.SessionTimeoutMinutes);
             })
             .AddOpenIdConnect("oidc", options =>
             {

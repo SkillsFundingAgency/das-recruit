@@ -1,3 +1,4 @@
+using System;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.AspNetCore.Hosting;
@@ -9,6 +10,8 @@ namespace Esfa.Recruit.Employer.Web
 {
     public partial class Startup
     {
+        public const int SessionTimeoutMinutes = 60;
+
         private readonly bool _isAuthEnabled = true;
         private IConfiguration _configuration { get; }
         private IHostingEnvironment _hostingEnvironment { get; }
@@ -44,6 +47,12 @@ namespace Esfa.Recruit.Employer.Web
             });
 
             services.AddMvcService(_hostingEnvironment, _isAuthEnabled);
+
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(SessionTimeoutMinutes);
+                options.Cookie.HttpOnly = true;
+            });
 
             services.AddApplicationInsightsTelemetry(_configuration);
 
