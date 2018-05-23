@@ -9,6 +9,7 @@ using System.Net;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Exceptions;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
@@ -64,6 +65,12 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 {
                     _logger.LogInformation(exception.Message);
                     return RedirectToRoute(invalidRouteException.RouteNameToRedirectTo, invalidRouteException.RouteValues);
+                }
+
+                if (exception is VacancyNotFoundException)
+                {
+                    _logger.LogError(exception, exception.Message);
+                    return PageNotFound();
                 }
 
                 if (exception is AuthorisationException)

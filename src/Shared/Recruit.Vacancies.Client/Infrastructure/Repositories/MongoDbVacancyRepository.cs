@@ -8,6 +8,8 @@ using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using System.Linq.Expressions;
+using Esfa.Recruit.Vacancies.Client.Application.Exceptions;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 {
@@ -31,20 +33,31 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 
         public async Task<Vacancy> GetVacancyAsync(long vacancyReference)
         {
-            return await FindVacancy(v => v.VacancyReference, vacancyReference);
+            var vacancy = await FindVacancy(v => v.VacancyReference, vacancyReference);
+
+            if (vacancy == null)
+                throw new VacancyNotFoundException(string.Format(ExceptionMessages.VacancyWithReferenceNotFound, vacancyReference));
+
+            return vacancy;
         }
 
         public async Task<Vacancy> GetVacancyAsync(Guid id)
         {
-            return await FindVacancy(v => v.Id, id);
+            var vacancy =  await FindVacancy(v => v.Id, id);
+
+            if (vacancy == null)
+                throw new VacancyNotFoundException(string.Format(ExceptionMessages.VacancyWithIdNotFound, id));
+
+            return vacancy;
         }
 
         private async Task<Vacancy> FindVacancy<TField>(Expression<Func<Vacancy, TField>> expression, TField value)
         {
             var filter = Builders<Vacancy>.Filter.Eq(expression, value);
+            var options = new FindOptions<Vacancy> { Limit = 1 };
 
             var collection = GetCollection<Vacancy>();
-            var result = await collection.FindAsync(filter);
+            var result = await collection.FindAsync(filter, options);
             return result.SingleOrDefault();
         }
 
