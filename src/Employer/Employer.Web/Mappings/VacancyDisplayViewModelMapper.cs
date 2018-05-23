@@ -64,7 +64,9 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             vm.Title = vacancy.Title;
             vm.TrainingDescription = vacancy.TrainingDescription;
             vm.VacancyDescription = vacancy.Description;
-            vm.VacancyReferenceNumber = vacancy.VacancyReference?.ToString();
+            vm.VacancyReferenceNumber = vacancy.VacancyReference.HasValue 
+                                        ? $"VAC{vacancy.VacancyReference.ToString()}" 
+                                        : string.Empty;
 
             if (vacancy.EmployerLocation != null)
             {

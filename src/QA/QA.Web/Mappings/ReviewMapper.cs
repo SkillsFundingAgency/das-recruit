@@ -68,7 +68,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 vm.Title = vacancy.Title;
                 vm.TrainingDescription = vacancy.TrainingDescription;
                 vm.VacancyDescription = vacancy.Description;
-                vm.VacancyReferenceNumber = vacancy.VacancyReference.ToString();
+                vm.VacancyReferenceNumber = $"VAC{vacancy.VacancyReference.ToString()}";
                 vm.TrainingTitle = programme.Title;
                 vm.TrainingType = programme.ApprenticeshipType.GetDisplayName();
                 vm.TrainingLevel = programme.Level.GetDisplayName();
