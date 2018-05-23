@@ -50,7 +50,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                 return View(vm);
             }
             
-            return RedirectToRoute(RouteNames.Employer_Get, new { vacancyId = response.Data });
+            return RedirectToRoute(RouteNames.ShortDescription_Get, new { vacancyId = response.Data });
         }
     }
 }
