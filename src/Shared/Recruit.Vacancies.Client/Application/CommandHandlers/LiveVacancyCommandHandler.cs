@@ -32,7 +32,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
         public async Task Handle(LiveVacancyCommand message, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Setting vacancy Live for vacancy {vacancyReference}.", message.VacancyId);
+            _logger.LogInformation("Setting vacancy Live for vacancy {vacancyId}.", message.VacancyId);
 
             var vacancy = await _repository.GetVacancyAsync(message.VacancyId);
 

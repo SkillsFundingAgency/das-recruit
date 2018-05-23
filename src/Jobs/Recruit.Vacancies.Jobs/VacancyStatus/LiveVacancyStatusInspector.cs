@@ -24,14 +24,11 @@ namespace Esfa.Recruit.Vacancies.Jobs.VacancyStatus
             var vacancies = (await _client.GetLiveVacancies()).ToList();
             int numberClosed = 0;
             
-            foreach (var vacancy in vacancies)
+            foreach (var vacancy in vacancies.Where(x => x.ClosingDate  <= _timeProvider.Now))
             {
-                if (vacancy.ClosingDate <= _timeProvider.Now)
-                {
-                    _logger.LogInformation($"Closing vacancy {vacancy.VacancyReference} with closing date of {vacancy.ClosingDate}");
-                    await _client.CloseVacancy(vacancy.VacancyId);
-                    numberClosed++;
-                }
+                _logger.LogInformation($"Closing vacancy {vacancy.VacancyReference} with closing date of {vacancy.ClosingDate}");
+                await _client.CloseVacancy(vacancy.VacancyId);
+                numberClosed++;
             }
             
             _logger.LogInformation("Closed {closedCount} from {liveVacancyCount} live vacancies", numberClosed, vacancies.Count);
