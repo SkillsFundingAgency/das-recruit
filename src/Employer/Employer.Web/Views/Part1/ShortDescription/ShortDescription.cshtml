@@ -14,11 +14,6 @@
         <div class="todo">
             <h3 class="heading-medium no-top-margin">Step 3 of 6</h3>
             <form asp-route="@RouteNames.ShortDescription_Post" novalidate>
-                <div esfa-validation-marker-for="NumberOfPositions" class="form-group">
-                    <label asp-for="NumberOfPositions" class="form-label-bold">Number of positions for this apprenticeship</label>
-                    <span esfa-validation-message-for="NumberOfPositions" class="error-message"></span>
-                    <input asp-for="NumberOfPositions" class="form-control form-control-1-8" type="number" min="1" />
-                </div>
                 <div esfa-validation-marker-for="ShortDescription" class="form-group">
                     <label asp-for="ShortDescription" class="form-label-bold">
                         Write a few sentences to describe your vacancy

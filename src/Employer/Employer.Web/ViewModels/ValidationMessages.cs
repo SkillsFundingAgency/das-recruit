@@ -2,7 +2,7 @@
 {
     public static class ValidationMessages
     {
-        public class ShortDescriptionValidationMessages
+        public class TitleValidationMessages
         {
             public static class TypeOfInteger
             {

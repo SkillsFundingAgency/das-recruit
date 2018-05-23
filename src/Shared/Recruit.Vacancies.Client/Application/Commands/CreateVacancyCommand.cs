@@ -10,6 +10,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Commands
         public Guid VacancyId { get; set; }
         public SourceOrigin Origin { get; set; }
         public string Title { get;set; }
+        public int NumberOfPositions { get; set; }
         public string EmployerAccountId { get; set; }
         public VacancyUser User { get; set; }
     }
