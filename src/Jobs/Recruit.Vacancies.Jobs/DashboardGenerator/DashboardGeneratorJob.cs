@@ -29,6 +29,10 @@ namespace Esfa.Recruit.Vacancies.Jobs.DashboardGenerator
                 await _job.RunAsync(data.EmployerAccountId);
                 _logger.LogInformation($"Finished {JobName} For Employer Account: {data.EmployerAccountId}");
             }
+            catch (JsonException ex)
+            {
+                _logger.LogError(ex, "Unable to deserialise event: {eventBody}", message);
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Unable to run {JobName}.");
