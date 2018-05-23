@@ -3,6 +3,7 @@ using System.Net;
 using Esfa.Recruit.Qa.Web.Configuration;
 using Esfa.Recruit.Qa.Web.Exceptions;
 using Esfa.Recruit.Qa.Web.ViewModels;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
@@ -46,6 +47,9 @@ namespace Esfa.Recruit.Qa.Web.Controllers
                     case NotFoundException _:
                         _logger.LogError(exception, $"Exception on path: {{routeWhereExceptionOccurred}}", exceptionFeature.Path);
                         return View(ViewNames.ErrorView, GetViewModel(HttpStatusCode.NotFound));
+                    case VacancyNotFoundException _:
+                        _logger.LogError(exception, exception.Message);
+                        return PageNotFound();
                 }
             }
 
@@ -60,6 +64,11 @@ namespace Esfa.Recruit.Qa.Web.Controllers
         private IActionResult AccessDenied()
         {
             return View(ViewNames.AccessDenied);
+        }
+
+        private IActionResult PageNotFound()
+        {
+            return View(ViewNames.PageNotFound);
         }
     }
 }
