@@ -59,7 +59,7 @@ namespace Esfa.Recruit.Employer.Web
 
             var redirectRoute = validRoutes.Last();
             
-            throw new InvalidRouteForVacancyException(string.Format(ExceptionMessages.RouteNotValidForVacancy, currentRouteName, redirectRoute),
+            throw new InvalidRouteForVacancyException(string.Format(RecruitWebExceptionMessages.RouteNotValidForVacancy, currentRouteName, redirectRoute),
                 redirectRoute, new VacancyRouteModel{EmployerAccountId = vacancy.EmployerAccountId, VacancyId = vacancy.Id});
         }
 
