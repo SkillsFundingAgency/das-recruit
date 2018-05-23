@@ -10,7 +10,7 @@ namespace Esfa.Recruit.Employer.Web
 {
     public partial class Startup
     {
-        public const int SessionTimeoutMinutes = 60;
+        public const int SessionTimeoutMinutes = 30;
 
         private readonly bool _isAuthEnabled = true;
         private IConfiguration _configuration { get; }
