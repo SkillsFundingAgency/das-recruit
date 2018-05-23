@@ -14,7 +14,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.EventHandlers
                                             INotificationHandler<VacancySubmittedEvent>,
                                             INotificationHandler<VacancyReviewApprovedEvent>,
                                             INotificationHandler<VacancyReviewReferredEvent>,
-                                            INotificationHandler<UserSignedInEvent>
+                                            INotificationHandler<SetupEmployerEvent>
     {
         private readonly ILogger<RePublishEventToEventStore> _logger;
         private readonly IEventStore _eventStore;
@@ -35,7 +35,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.EventHandlers
 
         public Task Handle(VacancyReviewReferredEvent notification, CancellationToken cancellationToken) => HandleUsingEventStore(notification);
 
-        public Task Handle(UserSignedInEvent notification, CancellationToken cancellationToken) => HandleUsingEventStore(notification);
+        public Task Handle(SetupEmployerEvent notification, CancellationToken cancellationToken) => HandleUsingEventStore(notification);
         
         private async Task HandleUsingEventStore(IEvent @event)
         {
