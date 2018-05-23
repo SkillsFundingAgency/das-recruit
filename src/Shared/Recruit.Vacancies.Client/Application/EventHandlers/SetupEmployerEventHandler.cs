@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.EventHandlers
 {
-    public class UserSignedInEventHandler : INotificationHandler<UserSignedInEvent>
+    public class SetupEmployerEventHandler : INotificationHandler<SetupEmployerEvent>
     {
         private readonly IEventStore _eventStore;
 
-        public UserSignedInEventHandler(IEventStore eventStore)
+        public SetupEmployerEventHandler(IEventStore eventStore)
         {
             _eventStore = eventStore;
         }
 
-        public async Task Handle(UserSignedInEvent notification, CancellationToken cancellationToken)
+        public async Task Handle(SetupEmployerEvent notification, CancellationToken cancellationToken)
         {
             await HandleUsingEventStore(notification);
         }

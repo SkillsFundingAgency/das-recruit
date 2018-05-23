@@ -29,6 +29,11 @@
                     "OfferThroughput": 400,
                     "PartitionKey": "vacancyReference",
                     "StoredProcedures": []
+                },
+                {
+                    "CollectionName": "users",
+                    "OfferThroughput": 400,
+                    "StoredProcedures": []
                 }
             ]
         }

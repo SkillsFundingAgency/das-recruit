@@ -15,7 +15,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Dashbo
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.LiveVacancy;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Models;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
@@ -109,9 +108,19 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _reader.GetDashboardAsync(employerAccountId);
         }
 
-        public Task RecordEmployerAccountSignInAsync(string employerAccountId)
+        public Task UserSignedInAsync(VacancyUser user)
         {
-            var command = new UpdateUserCommand
+            var command = new UserSignedInCommand
+            {
+                User = user
+            };
+
+            return _messaging.SendCommandAsync(command);
+        }
+
+        public Task SetupEmployer(string employerAccountId)
+        {
+            var command = new SetupEmployerCommand
             {
                 EmployerAccountId = employerAccountId
             };

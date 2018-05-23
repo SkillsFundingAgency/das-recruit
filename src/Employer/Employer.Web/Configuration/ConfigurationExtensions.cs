@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -33,7 +34,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
                 });
             });
 
-            services.AddSingleton<IAuthorizationHandler, EmployerAccountHandler>();
+            services.AddTransient<IAuthorizationHandler, EmployerAccountHandler>();
         }
 
         public static void AddMvcService(this IServiceCollection services, IHostingEnvironment hostingEnvironment, bool isAuthEnabled)
@@ -81,6 +82,8 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             .AddCookie("Cookies", options =>
             {
                 options.AccessDeniedPath = "/Error/403";
+                options.SlidingExpiration = true;
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(Startup.SessionTimeoutMinutes);
             })
             .AddOpenIdConnect("oidc", options =>
             {
@@ -94,18 +97,28 @@ namespace Esfa.Recruit.Employer.Web.Configuration
                 options.ClientSecret = authConfig.ClientSecret;
                 options.Scope.Add("profile");
 
-                options.Events.OnTokenValidated = async (ctx) => await PopulateAccountsClaim(ctx, vacancyClient);
+                options.Events.OnTokenValidated = async (ctx) =>
+                {
+                    await PopulateAccountsClaim(ctx, vacancyClient);
+                    await HandleUserSignedIn(ctx, vacancyClient);
+                };
             });
         }
         
         private static async Task PopulateAccountsClaim(Microsoft.AspNetCore.Authentication.OpenIdConnect.TokenValidatedContext ctx, IEmployerVacancyClient vacancyClient)
         {
-            var userId = ctx.Principal.Claims.First(c => c.Type.Equals(EmployerRecruitClaims.IdamsUserIdClaimTypeIdentifier)).Value;
+            var userId = ctx.Principal.GetUserId();
             var accounts = await vacancyClient.GetEmployerIdentifiersAsync(userId);
             var accountsAsJson = JsonConvert.SerializeObject(accounts);
             var associatedAccountsClaim = new Claim(EmployerRecruitClaims.AccountsClaimsTypeIdentifier, accountsAsJson, JsonClaimValueTypes.Json);
 
             ctx.Principal.Identities.First().AddClaim(associatedAccountsClaim);
+        }
+
+        private static Task HandleUserSignedIn(Microsoft.AspNetCore.Authentication.OpenIdConnect.TokenValidatedContext ctx, IEmployerVacancyClient vacancyClient)
+        {
+            var user = ctx.Principal.ToVacancyUser();
+            return vacancyClient.UserSignedInAsync(user);
         }
     }
 }

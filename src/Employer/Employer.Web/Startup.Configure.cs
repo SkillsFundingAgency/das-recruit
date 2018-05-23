@@ -84,7 +84,9 @@ namespace Esfa.Recruit.Employer.Web
             app.UseXRobotsTag(options => options.NoIndex().NoFollow());
 
             app.UseNoCacheHttpHeaders(); // Affectively forces the browser to always request dynamic pages
-            
+
+            app.UseSession();
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

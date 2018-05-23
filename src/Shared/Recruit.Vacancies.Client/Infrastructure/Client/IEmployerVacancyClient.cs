@@ -17,12 +17,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task SubmitVacancyAsync(Guid vacancyId, VacancyUser user);
         Task DeleteVacancyAsync(Guid vacancyId, VacancyUser user);
         Task<Dashboard> GetDashboardAsync(string employerAccountId);
-        Task RecordEmployerAccountSignInAsync(string employerAccountId);
+        Task UserSignedInAsync(VacancyUser user);
         Task<EditVacancyInfo> GetEditVacancyInfo(string employerAccountId);
         EntityValidationResult Validate(Vacancy vacancy, VacancyRuleSet rules);
         Task<IEnumerable<IApprenticeshipProgramme>> GetActiveApprenticeshipProgrammesAsync();
         Task<IApprenticeshipProgramme> GetApprenticeshipProgrammeAsync(string programmeId);
         Task<IEnumerable<LegalEntity>> GetEmployerLegalEntitiesAsync(string employerAccountId);
         Task<IEnumerable<string>> GetEmployerIdentifiersAsync(string userId);
+        Task SetupEmployer(string employerAccountId);
     }
 }
