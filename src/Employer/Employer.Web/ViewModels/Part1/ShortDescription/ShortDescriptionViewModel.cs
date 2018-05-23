@@ -6,8 +6,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.ShortDescription
     {
         public IList<string> OrderedFieldNames => new List<string>
         {
-            nameof(ShortDescriptionEditModel.NumberOfPositions),
-            nameof(ShortDescriptionEditModel.ShortDescription)
+            nameof(ShortDescription)
         };
     }
 }

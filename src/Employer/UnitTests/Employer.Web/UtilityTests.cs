@@ -35,26 +35,6 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web
         [Theory]
         [InlineData(RouteNames.Title_Get, false)]
         [InlineData(RouteNames.Title_Post, false)]
-        [InlineData(RouteNames.Employer_Get, false)]
-        [InlineData(RouteNames.Employer_Post, false)]
-        [InlineData("any other route", true)]
-        public void CheckRouteIsValidForVacancy_ShouldRedirectToEmployer(string route, bool shouldRedirect)
-        {
-            var vacancy = new Vacancy
-            {
-                EmployerAccountId = "EMPLOYER ACCOUNT ID",
-                Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
-                Title = "has a value"
-            };
-
-            CheckRouteIsValidForVacancyTest(vacancy, route, shouldRedirect, RouteNames.Employer_Get);
-        }
-
-        [Theory]
-        [InlineData(RouteNames.Title_Get, false)]
-        [InlineData(RouteNames.Title_Post, false)]
-        [InlineData(RouteNames.Employer_Get, false)]
-        [InlineData(RouteNames.Employer_Post, false)]
         [InlineData(RouteNames.ShortDescription_Get, false)]
         [InlineData(RouteNames.ShortDescription_Post, false)]
         [InlineData("any other route", true)]
@@ -64,8 +44,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web
             {
                 EmployerAccountId = "EMPLOYER ACCOUNT ID",
                 Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
-                Title = "has a value",
-                EmployerLocation = new Address { Postcode = "has a value"}
+                Title = "has a value"
             };
 
             CheckRouteIsValidForVacancyTest(vacancy, route, shouldRedirect, RouteNames.ShortDescription_Get);
@@ -74,10 +53,31 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web
         [Theory]
         [InlineData(RouteNames.Title_Get, false)]
         [InlineData(RouteNames.Title_Post, false)]
-        [InlineData(RouteNames.Employer_Get, false)]
-        [InlineData(RouteNames.Employer_Post, false)]
         [InlineData(RouteNames.ShortDescription_Get, false)]
         [InlineData(RouteNames.ShortDescription_Post, false)]
+        [InlineData(RouteNames.Employer_Get, false)]
+        [InlineData(RouteNames.Employer_Post, false)]
+        [InlineData("any other route", true)]
+        public void CheckRouteIsValidForVacancy_ShouldRedirectToEmployer(string route, bool shouldRedirect)
+        {
+            var vacancy = new Vacancy
+            {
+                EmployerAccountId = "EMPLOYER ACCOUNT ID",
+                Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
+                Title = "has a value",
+                ShortDescription = "has a value"
+            };
+
+            CheckRouteIsValidForVacancyTest(vacancy, route, shouldRedirect, RouteNames.Employer_Get);
+        }
+
+        [Theory]
+        [InlineData(RouteNames.Title_Get, false)]
+        [InlineData(RouteNames.Title_Post, false)]
+        [InlineData(RouteNames.ShortDescription_Get, false)]
+        [InlineData(RouteNames.ShortDescription_Post, false)]
+        [InlineData(RouteNames.Employer_Get, false)]
+        [InlineData(RouteNames.Employer_Post, false)]
         [InlineData(RouteNames.Training_Get, false)]
         [InlineData(RouteNames.Training_Post, false)]
         [InlineData("any other route", true)]
@@ -98,10 +98,10 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web
         [Theory]
         [InlineData(RouteNames.Title_Get, false)]
         [InlineData(RouteNames.Title_Post, false)]
-        [InlineData(RouteNames.Employer_Get, false)]
-        [InlineData(RouteNames.Employer_Post, false)]
         [InlineData(RouteNames.ShortDescription_Get, false)]
         [InlineData(RouteNames.ShortDescription_Post, false)]
+        [InlineData(RouteNames.Employer_Get, false)]
+        [InlineData(RouteNames.Employer_Post, false)]
         [InlineData(RouteNames.Training_Get, false)]
         [InlineData(RouteNames.Training_Post, false)]
         [InlineData(RouteNames.Wage_Get, false)]

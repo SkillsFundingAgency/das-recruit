@@ -20,6 +20,11 @@
                     <span esfa-validation-message-for="Title" class="error-message"></span>
                     <input asp-for="Title" class="form-control-3-4 form-control" type="text" maxlength="100" />
                 </div>
+                <div esfa-validation-marker-for="NumberOfPositions" class="form-group">
+                    <label asp-for="NumberOfPositions" class="form-label-bold">Number of positions for this apprenticeship</label>
+                    <span esfa-validation-message-for="NumberOfPositions" class="error-message"></span>
+                    <input asp-for="NumberOfPositions" class="form-control form-control-1-8" type="number" min="1" />
+                </div>
                 <button type="submit" class="button">Save and Continue</button>
                 <a asp-route="@RouteNames.Dashboard_Index_Get" class="button-link">Cancel</a>
             </form>

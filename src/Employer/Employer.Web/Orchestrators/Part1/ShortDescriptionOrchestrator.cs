@@ -11,7 +11,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
     public class ShortDescriptionOrchestrator : EntityValidatingOrchestrator<Vacancy, ShortDescriptionEditModel>
     {
-        private const VacancyRuleSet ValidationRules = VacancyRuleSet.NumberOfPositions | VacancyRuleSet.ShortDescription;
+        private const VacancyRuleSet ValidationRules = VacancyRuleSet.ShortDescription;
         private readonly IEmployerVacancyClient _client;
 
         public ShortDescriptionOrchestrator(IEmployerVacancyClient client, ILogger<ShortDescriptionOrchestrator> logger) : base(logger)
@@ -26,7 +26,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var vm = new ShortDescriptionViewModel
             {
                 VacancyId = vacancy.Id,
-                NumberOfPositions = vacancy.NumberOfPositions?.ToString(),
                 ShortDescription = vacancy.ShortDescription
             };
 
@@ -36,8 +35,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         public async Task<ShortDescriptionViewModel> GetShortDescriptionViewModelAsync(ShortDescriptionEditModel m)
         {
             var vm = await GetShortDescriptionViewModelAsync((VacancyRouteModel)m);
-
-            vm.NumberOfPositions = m.NumberOfPositions;
+            
             vm.ShortDescription = m.ShortDescription;
 
             return vm;
@@ -47,7 +45,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         {
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, m, RouteNames.ShortDescription_Post);
 
-            vacancy.NumberOfPositions = int.TryParse(m.NumberOfPositions, out var numberOfPositions) ? numberOfPositions : default(int?);
             vacancy.ShortDescription = m.ShortDescription;
 
             return await ValidateAndExecute(
@@ -61,7 +58,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         {
             var mappings = new EntityToViewModelPropertyMappings<Vacancy, ShortDescriptionEditModel>();
 
-            mappings.Add(e => e.NumberOfPositions, vm => vm.NumberOfPositions);
             mappings.Add(e => e.ShortDescription, vm => vm.ShortDescription);
 
             return mappings;
