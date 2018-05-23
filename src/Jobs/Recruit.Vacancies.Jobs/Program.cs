@@ -6,6 +6,7 @@ using Esfa.Recruit.Vacancies.Jobs.DashboardGenerator;
 using Esfa.Recruit.Vacancies.Jobs.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Jobs.VacancyEvents;
 using Esfa.Recruit.Vacancies.Jobs.VacancyReviewEvents;
+using Esfa.Recruit.Vacancies.Jobs.VacancyStatus;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

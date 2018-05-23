@@ -11,15 +11,18 @@ namespace Esfa.Recruit.Vacancies.Client.Application.EventHandlers
 {
     public class UpdateVacancyOnReviewCreation : INotificationHandler<VacancyReviewCreatedEvent>
     {
+        private readonly ILogger<UpdateVacancyOnReviewCreation> _logger;
         private readonly IVacancyRepository _repository;
 
-        public UpdateVacancyOnReviewCreation(IVacancyRepository repository)
+        public UpdateVacancyOnReviewCreation(ILogger<UpdateVacancyOnReviewCreation> logger, IVacancyRepository repository)
         {
+            _logger = logger;
             _repository = repository;
         }
 
         public async Task Handle(VacancyReviewCreatedEvent notification, CancellationToken cancellationToken)
         {
+            _logger.LogInformation("Updating vacancy {vacancyReference} after review {reviewId} creation", notification.VacancyReference, notification.ReviewId);
             var vacancy = await _repository.GetVacancyAsync(notification.VacancyReference);
 
             if (!vacancy.CanSendForReview)

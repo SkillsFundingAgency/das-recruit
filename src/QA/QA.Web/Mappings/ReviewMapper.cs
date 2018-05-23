@@ -93,16 +93,6 @@ namespace Esfa.Recruit.Qa.Web.Mappings
             return vm;
         }
         
-        public void MapChangesOntoVacancy(Vacancy vacancy, ReferralViewModel reviewChanges)
-        {
-            vacancy.ShortDescription = reviewChanges.ShortDescription;
-            vacancy.Description = reviewChanges.VacancyDescription;
-            vacancy.TrainingDescription = reviewChanges.TrainingDescription;
-            vacancy.OutcomeDescription = reviewChanges.OutcomeDescription;
-            vacancy.ThingsToConsider = reviewChanges.ThingsToConsider;
-            vacancy.EmployerDescription = reviewChanges.EmployerDescription;
-        }
-        
         private void SetEmployerAddressElements(ReviewViewModel vm, Vacancy vacancy)
         {
             vm.MapUrl = vacancy.EmployerLocation.HasGeocode

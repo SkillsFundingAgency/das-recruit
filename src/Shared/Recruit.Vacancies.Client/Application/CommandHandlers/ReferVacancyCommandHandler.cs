@@ -5,28 +5,36 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
-using Esfa.Recruit.Vacancies.Client.Domain.Services;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
     public class ReferVacancyCommandHandler : IRequestHandler<ReferVacancyCommand>
     {
+        private readonly ILogger<ReferVacancyCommandHandler> _logger;
         private readonly IVacancyRepository _repository;
         private readonly IMessaging _messaging;
 
-        public ReferVacancyCommandHandler(IVacancyRepository repository, IMessaging messaging, ITimeProvider timeprovider)
+        public ReferVacancyCommandHandler(
+            ILogger<ReferVacancyCommandHandler> logger,
+            IVacancyRepository repository, 
+            IMessaging messaging)
         {
+            _logger = logger;
             _repository = repository;
             _messaging = messaging;
         }
 
         public async Task Handle(ReferVacancyCommand message, CancellationToken cancellationToken)
         {
+            _logger.LogInformation("Referring vacancy {vacancyReference}.", message.VacancyReference);
+
             var vacancy = await _repository.GetVacancyAsync(message.VacancyReference);
 
             if (!vacancy.CanRefer)
             {
+                _logger.LogWarning($"Unable to refer vacancy {{vacancyReference}} due to vacancy having a status of {vacancy.Status}.", vacancy.VacancyReference);
                 return;
             }
             

@@ -45,15 +45,18 @@ namespace Esfa.Recruit.Qa.Web.Controllers
                 switch (exception)
                 {
                     case NotFoundException _:
-                        _logger.LogError(exception, $"Exception on path: {{routeWhereExceptionOccurred}}", exceptionFeature.Path);
+                        _logger.LogError(exception, "Exception on path: {route}", exceptionFeature.Path);
                         return View(ViewNames.ErrorView, GetViewModel(HttpStatusCode.NotFound));
                     case VacancyNotFoundException _:
                         _logger.LogError(exception, exception.Message);
                         return PageNotFound();
+                    default:
+                        _logger.LogError(exception, "An unexpected exception occurred.");
+                        break;
                 }
             }
 
-            return base.View(ViewNames.ErrorView, GetViewModel(HttpStatusCode.InternalServerError));
+            return View(ViewNames.ErrorView, GetViewModel(HttpStatusCode.InternalServerError));
         }
 
         private ErrorViewModel GetViewModel(HttpStatusCode statusCode)

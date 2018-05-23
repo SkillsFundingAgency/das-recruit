@@ -28,9 +28,9 @@ namespace Esfa.Recruit.Vacancies.Jobs.VacancyEvents
                 
                 await UnpackAndExecute(eventItem.EventType, eventItem.Data);
             }
-            catch (Exception ex)
+            catch (JsonException ex)
             {
-                _logger.LogError(ex, "Unable to handle vacancy event");
+                _logger.LogError(ex, "Unable to deserialise event: {eventBody}", message);
             }
         }
 
@@ -44,13 +44,10 @@ namespace Esfa.Recruit.Vacancies.Jobs.VacancyEvents
                     return _vacancyHandler.Handle(JsonConvert.DeserializeObject<VacancyDraftUpdatedEvent>(data));
                 case nameof(VacancySubmittedEvent):
                     return _vacancyHandler.Handle(JsonConvert.DeserializeObject<VacancySubmittedEvent>(data));
-                case nameof(VacancyDeletedEvent):
-                    return _vacancyHandler.Handle(JsonConvert.DeserializeObject<VacancyDeletedEvent>(data));
                 default: 
                     throw new ArgumentOutOfRangeException(nameof(eventType), $"Unexpected value for event type: {eventType}");
             }
         }
     }
-
 }
 

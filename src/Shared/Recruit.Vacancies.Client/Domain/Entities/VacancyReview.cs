@@ -16,5 +16,20 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public string PrivateReviewNotes { get; set; }
         public string EmployerAccountId { get; set; }
         public VacancyUser SubmittedByUser { get; set; }
+
+        /// <summary>
+        /// We can only approve reviews that are under review.
+        /// </summary>
+        public bool CanApprove => Status == ReviewStatus.UnderReview;
+
+        /// <summary>
+        /// We can only refer when the review is in progress.
+        /// </summary>
+        public bool CanRefer => Status == ReviewStatus.UnderReview;
+
+        /// <summary>
+        /// We can only start the review when it is pending.
+        /// </summary>
+        public bool CanStart => Status == ReviewStatus.PendingReview;
     }
 }

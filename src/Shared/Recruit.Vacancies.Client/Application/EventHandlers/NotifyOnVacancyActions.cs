@@ -24,6 +24,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.EventHandlers
         {
             try
             {
+                _logger.LogInformation("Sending notification for vacancy {vacancyReference} approval.", notification.VacancyReference);
                 await _notifier.VacancyReviewApproved(notification.VacancyReference);
             }
             catch(NotificationException ex)
@@ -36,6 +37,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.EventHandlers
         {
             try
             {
+                _logger.LogInformation("Sending notification for vacancy {vacancyReference} referral.", notification.VacancyReference);
                 await _notifier.VacancyReviewReferred(notification.VacancyReference);
             }
             catch(NotificationException ex)

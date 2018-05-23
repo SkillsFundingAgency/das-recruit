@@ -1,11 +1,10 @@
-﻿using Esfa.Recruit.Vacancies.Client.Application.Events;
+﻿using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Domain.Services;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Threading.Tasks;
 
-namespace Esfa.Recruit.Vacancies.Jobs.ApprenticeshipProgrammes
+namespace Esfa.Recruit.Vacancies.Jobs.VacancyStatus
 {
     public class LiveVacancyStatusInspector
     {
@@ -22,16 +21,17 @@ namespace Esfa.Recruit.Vacancies.Jobs.ApprenticeshipProgrammes
 
         internal async Task InspectAsync()
         {
-            var vacancies = await _client.GetLiveVacancies();
-
-            foreach (var vacancy in vacancies)
+            var vacancies = (await _client.GetLiveVacancies()).ToList();
+            int numberClosed = 0;
+            
+            foreach (var vacancy in vacancies.Where(x => x.ClosingDate  <= _timeProvider.Now))
             {
-                if (vacancy.ClosingDate <= _timeProvider.Now)
-                {
-                    _logger.LogInformation($"Closing vacancy {vacancy.VacancyReference} with closing date of {vacancy.ClosingDate}");
-                    await _client.CloseVacancy(vacancy.VacancyId);
-                }
+                _logger.LogInformation($"Closing vacancy {vacancy.VacancyReference} with closing date of {vacancy.ClosingDate}");
+                await _client.CloseVacancy(vacancy.VacancyId);
+                numberClosed++;
             }
+            
+            _logger.LogInformation("Closed {closedCount} from {liveVacancyCount} live vacancies", numberClosed, vacancies.Count);
 
             await Task.CompletedTask;
         }

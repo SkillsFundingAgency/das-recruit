@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
@@ -34,7 +35,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
             var vm = new EmployerViewModel
             {
-                Organisations = employerData.LegalEntities.Select(MapLegalEntitiesToOrgs).ToList(),
+                Organisations = BuildLegalEntityViewModels(employerData, vrm.EmployerAccountId),
                 SelectedOrganisationName = vacancy.EmployerName
             };
 
@@ -104,6 +105,17 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         private LocationOrganisationViewModel MapLegalEntitiesToOrgs(LegalEntity data)
         {
             return new LocationOrganisationViewModel { Id = data.LegalEntityId.ToString(), Name = data.Name };
+        }
+        
+        private IEnumerable<LocationOrganisationViewModel> BuildLegalEntityViewModels(EditVacancyInfo info, string employerAccountId)
+        {
+            if (info == null || !info.LegalEntities.Any())
+            {
+                Logger.LogError("No legal entities found for {employerAccountId}", employerAccountId);
+                return null; // TODO: Can we carry on without a list of legal entities.
+            }
+
+            return info.LegalEntities.Select(MapLegalEntitiesToOrgs).ToList();
         }
     }
 }

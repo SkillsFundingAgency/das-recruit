@@ -28,12 +28,14 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
 
         public async Task ApproveReferredReviewAsync(Guid reviewId, ReferralViewModel reviewChanges)
         {
-            var review = await _vacancyClient.GetVacancyReviewAsync(reviewId);
-            var vacancy = await _vacancyClient.GetVacancyAsync(review.VacancyReference);
-
-            _mapper.MapChangesOntoVacancy(vacancy, reviewChanges);
-
-            await _vacancyClient.ApproveReferredReviewAsync(reviewId, vacancy);
+            await _vacancyClient.ApproveReferredReviewAsync(
+                reviewId, 
+                reviewChanges.ShortDescription,
+                reviewChanges.VacancyDescription,
+                reviewChanges.TrainingDescription,
+                reviewChanges.OutcomeDescription,
+                reviewChanges.ThingsToConsider,
+                reviewChanges.EmployerDescription);
         }
 
         public async Task<ReviewViewModel> GetReviewViewModelAsync(Guid reviewId, VacancyUser user)

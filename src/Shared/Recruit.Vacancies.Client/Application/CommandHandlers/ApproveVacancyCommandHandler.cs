@@ -7,17 +7,24 @@ using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Domain.Services;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
     public class ApproveVacancyCommandHandler : IRequestHandler<ApproveVacancyCommand>
     {
+        private readonly ILogger<ApproveVacancyCommandHandler> _logger;
         private readonly IVacancyRepository _repository;
         private readonly IMessaging _messaging;
         private readonly ITimeProvider _timeProvider;
 
-        public ApproveVacancyCommandHandler(IVacancyRepository repository, IMessaging messaging, ITimeProvider timeprovider)
+        public ApproveVacancyCommandHandler(
+                        ILogger<ApproveVacancyCommandHandler> logger, 
+                        IVacancyRepository repository, 
+                        IMessaging messaging, 
+                        ITimeProvider timeprovider)
         {
+            _logger = logger;
             _repository = repository;
             _messaging = messaging;
             _timeProvider = timeprovider;
@@ -25,10 +32,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
         public async Task Handle(ApproveVacancyCommand message, CancellationToken cancellationToken)
         {
+            _logger.LogInformation("Approving vacancy {vacancyReference}.", message.VacancyReference);
+            
             var vacancy = await _repository.GetVacancyAsync(message.VacancyReference);
 
             if (!vacancy.CanApprove)
             {
+                _logger.LogWarning($"Unable to approve vacancy {{vacancyReference}} due to vacancy having a status of {vacancy.Status}.", vacancy.VacancyReference);
                 return;
             }
             

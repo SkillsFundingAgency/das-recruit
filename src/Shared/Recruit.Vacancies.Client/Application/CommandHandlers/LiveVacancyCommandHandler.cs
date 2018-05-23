@@ -7,17 +7,24 @@ using System.Threading;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Services;
+using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
     public class LiveVacancyCommandHandler : IRequestHandler<LiveVacancyCommand>
     {
+        private readonly ILogger<LiveVacancyCommandHandler> _logger;
         private readonly IVacancyRepository _repository;
         private readonly IMessaging _messaging;
         private readonly ITimeProvider _timeProvider;
 
-        public LiveVacancyCommandHandler(IVacancyRepository repository, IMessaging messaging, ITimeProvider timeProvider)
+        public LiveVacancyCommandHandler(
+            ILogger<LiveVacancyCommandHandler> logger,
+            IVacancyRepository repository, 
+            IMessaging messaging, 
+            ITimeProvider timeProvider)
         {
+            _logger = logger;
             _repository = repository;
             _messaging = messaging;
             _timeProvider = timeProvider;
@@ -25,10 +32,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
         public async Task Handle(LiveVacancyCommand message, CancellationToken cancellationToken)
         {
+            _logger.LogInformation("Setting vacancy Live for vacancy {vacancyId}.", message.VacancyId);
+
             var vacancy = await _repository.GetVacancyAsync(message.VacancyId);
 
             if (!vacancy.CanMakeLive)
             {
+                _logger.LogWarning($"Cannot make vacancy {{vacancyId}} Live due to vacancy having a status of {vacancy.Status}.", vacancy.Id);
                 return;
             }
 

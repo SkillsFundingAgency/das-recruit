@@ -17,7 +17,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.ApprenticeshipProgrammes
             _updater = updater;
         }
 
-        public async Task UpdateStandardsAndFrameworks([TimerTrigger("0 0 4 * * *", RunOnStartup = true)] TimerInfo timerInfo, TextWriter log)
+        public async Task UpdateStandardsAndFrameworks([TimerTrigger(Schedules.FourAmDaily, RunOnStartup = true)] TimerInfo timerInfo, TextWriter log)
         {
             _logger.LogInformation("Starting populating standards and frameworks into Query Store");
 

@@ -26,6 +26,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
         public async Task Handle(AssignVacancyNumberCommand message, CancellationToken cancellationToken)
         {
+            _logger.LogInformation("Assigning vacancy number for vacancy {vacancyId}.", message.VacancyId);
+
             var vacancy = await _repository.GetVacancyAsync(message.VacancyId);
             
             if (vacancy.VacancyReference.HasValue)

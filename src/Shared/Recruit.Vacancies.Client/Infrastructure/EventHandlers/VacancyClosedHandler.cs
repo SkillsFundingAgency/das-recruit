@@ -20,7 +20,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
 
         public async Task Handle(VacancyClosedEvent notification, CancellationToken cancellationToken)
         {
-            _logger.LogInformation($"Deleting LiveVacancy {notification.VacancyReference} from query store.");
+            _logger.LogInformation("Deleting LiveVacancy {vacancyReference} from query store.", notification.VacancyReference);
             await _queryStore.DeleteLiveVacancyAsync(notification.VacancyReference);
         }
     }
