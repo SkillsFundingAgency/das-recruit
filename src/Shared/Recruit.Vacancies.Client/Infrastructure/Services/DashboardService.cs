@@ -21,7 +21,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services
             _queryStoreWriter = queryStoreWriter;
         }
 
-        public async Task ReBuildDashboard(string employerAccountId)
+        public async Task ReBuildDashboardAsync(string employerAccountId)
         {
             var vacancySummaries = await _repository.GetVacanciesByEmployerAccountAsync<VacancySummary>(employerAccountId);
 

@@ -14,7 +14,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.DashboardGenerator
 
         public Task RunAsync(string employerId)
         {
-            return _dashboardService.ReBuildDashboard(employerId);
+            return _dashboardService.ReBuildDashboardAsync(employerId);
         }
     }
 }
