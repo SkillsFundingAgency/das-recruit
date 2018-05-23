@@ -30,12 +30,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _messaging = messaging;
         }
 
-        public Task ApproveReferredReviewAsync(Guid reviewId, Vacancy vacancy)
+        public Task ApproveReferredReviewAsync(Guid reviewId, string shortDescription, string vacancyDescription, string trainingDescription, string outcomeDescription, string thingsToConsider, string employerDescription)
         {
             return _messaging.SendCommandAsync(new ApproveReferredVacancyReviewCommand
             {
                 ReviewId = reviewId,
-                Vacancy = vacancy
+                ShortDescription = shortDescription,
+                VacancyDescription = vacancyDescription,
+                TrainingDescription = trainingDescription,
+                OutcomeDescription = outcomeDescription,
+                ThingsToConsider = thingsToConsider,
+                EmployerDescription = employerDescription
             });
         }
 

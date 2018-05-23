@@ -31,28 +31,35 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
         public async Task Handle(ApproveReferredVacancyReviewCommand message, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Approving referred review {reviewId} for vacancy {vacancyReference}.", message.ReviewId, message.Vacancy.VacancyReference);
+            _logger.LogInformation("Approving referred review {reviewId}", message.ReviewId);
             
-            var vacancy = await _vacancyRepository.GetVacancyAsync(message.Vacancy.Id);
+            var review = await _vacancyReviewRepository.GetAsync(message.ReviewId);
+
+            if (!review.CanApprove)
+            {
+                _logger.LogWarning($"Unable to approve review {{reviewId}} for vacancy {{vacancyReference}} due to review having a status of {review.Status}.", message.ReviewId, review.VacancyReference);
+                return;
+            }
+
+            var vacancy = await _vacancyRepository.GetVacancyAsync(review.VacancyReference);
 
             if (!vacancy.CanApprove)
             {
                 _logger.LogWarning($"Unable to approve review {{reviewId}} for vacancy {{vacancyReference}} due to vacancy having a status of {vacancy.Status}.", message.ReviewId, vacancy.VacancyReference);
                 return;
             }
-            
-            var review = await _vacancyReviewRepository.GetAsync(message.ReviewId);
-
-            if (!review.CanApprove)
-            {
-                _logger.LogWarning($"Unable to approve review {{reviewId}} for vacancy {{vacancyReference}} due to review having a status of {review.Status}.", message.ReviewId, vacancy.VacancyReference);
-                return;
-            }
 
             review.ManualOutcome = ManualQaOutcome.Approved;
             review.Status = ReviewStatus.Closed;
 
-            await _vacancyRepository.UpdateAsync(message.Vacancy);
+            vacancy.ShortDescription = message.ShortDescription;
+            vacancy.Description = message.VacancyDescription;
+            vacancy.TrainingDescription = message.TrainingDescription;
+            vacancy.OutcomeDescription = message.OutcomeDescription;
+            vacancy.ThingsToConsider = message.ThingsToConsider;
+            vacancy.EmployerDescription = message.EmployerDescription;
+
+            await _vacancyRepository.UpdateAsync(vacancy);
 
             await _vacancyReviewRepository.UpdateAsync(review);
 
@@ -60,7 +67,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             {
                 SourceCommandId = message.CommandId.ToString(),
                 ReviewId = message.ReviewId,
-                VacancyReference = message.Vacancy.VacancyReference.Value
+                VacancyReference = vacancy.VacancyReference.Value
             });
         }
     }

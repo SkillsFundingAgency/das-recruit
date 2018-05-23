@@ -15,6 +15,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<VacancyReview> GetVacancyReviewAsync(Guid reviewId);
         Task StartReview(Guid reviewId, VacancyUser user);
         Task ReferVacancyReviewAsync(Guid reviewId);
-        Task ApproveReferredReviewAsync(Guid reviewId, Vacancy vacancy);
+        Task ApproveReferredReviewAsync(Guid reviewId, string shortDescription, string vacancyDescription, string trainingDescription, string outcomeDescription, string thingsToConsider, string employerDescription);
     }
 }
