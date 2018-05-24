@@ -5,34 +5,34 @@
             "Collections": [
                 {
                     "CollectionName": "vacancies",
-                    "OfferThroughput": 400,
+                    "OfferThroughput": 1000,
                     "StoredProcedures": []
                 },
                 {
                     "CollectionName": "queryViews",
-                    "OfferThroughput": 400,
+                    "OfferThroughput": 1000,
                     "PartitionKey": "_id",
                     "StoredProcedures": []
                 },
                 {
                     "CollectionName": "referenceData",
-                    "OfferThroughput": 400,
+                    "OfferThroughput": 1000,
                     "StoredProcedures": []
                 },
                 {
                     "CollectionName": "sequences",
-                    "OfferThroughput": 400,
+                    "OfferThroughput": 1000,
                     "StoredProcedures": []
                 },
                 {
                     "CollectionName": "vacancyReviews",
-                    "OfferThroughput": 400,
+                    "OfferThroughput": 1000,
                     "PartitionKey": "vacancyReference",
                     "StoredProcedures": []
                 },
                 {
                     "CollectionName": "users",
-                    "OfferThroughput": 400,
+                    "OfferThroughput": 1000,
                     "StoredProcedures": []
                 }
             ]
