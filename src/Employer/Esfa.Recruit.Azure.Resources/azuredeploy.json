@@ -131,7 +131,7 @@
       "kind": "MongoDB",
       "properties": {
         "consistencyPolicy": {
-          "defaultConsistencyLevel": "Session"
+          "defaultConsistencyLevel": "Strong"
         },
         "databaseAccountOfferType": "Standard"
       }
