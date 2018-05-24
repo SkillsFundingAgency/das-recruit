@@ -85,8 +85,6 @@ namespace Esfa.Recruit.Employer.Web
 
             app.UseNoCacheHttpHeaders(); // Affectively forces the browser to always request dynamic pages
 
-            app.UseSession();
-
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

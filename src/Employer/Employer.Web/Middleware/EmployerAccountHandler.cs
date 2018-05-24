@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
@@ -42,11 +43,11 @@ namespace Esfa.Recruit.Employer.Web.Middleware
 
         private async Task EnsureEmployerIsSetup(HttpContext context, string employerAccountId)
         {
-            var key = $"setup-employer-{employerAccountId}";
-            if (!context.Session.TryGetValue(key, out _))
+            var key = $"setup_employer_{employerAccountId}";
+            if (context.Request.Cookies[key] == null)
             {
                 await _client.SetupEmployer(employerAccountId);
-                context.Session.SetString(key, "true");
+                context.Response.Cookies.Append(key, String.Empty);
             }
         }
     }
