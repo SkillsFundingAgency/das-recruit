@@ -21,6 +21,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
     public static class ConfigurationExtensions
     {
         private const string HasEmployerAccountPolicyName = "HasEmployerAccount";
+        public const int SessionTimeoutMinutes = 30;
 
         public static void AddAuthorizationService(this IServiceCollection services)
         {
@@ -83,7 +84,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             {
                 options.AccessDeniedPath = "/Error/403";
                 options.SlidingExpiration = true;
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(Startup.SessionTimeoutMinutes);
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(SessionTimeoutMinutes);
             })
             .AddOpenIdConnect("oidc", options =>
             {
