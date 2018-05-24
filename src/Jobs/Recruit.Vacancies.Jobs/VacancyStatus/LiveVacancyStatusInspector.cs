@@ -22,7 +22,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.VacancyStatus
         internal async Task InspectAsync()
         {
             var vacancies = (await _client.GetLiveVacancies()).ToList();
-            int numberClosed = 0;
+            var numberClosed = 0;
             
             foreach (var vacancy in vacancies.Where(x => x.ClosingDate  <= _timeProvider.Now))
             {

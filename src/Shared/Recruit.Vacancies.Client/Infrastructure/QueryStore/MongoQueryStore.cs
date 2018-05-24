@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
@@ -18,9 +19,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 
         async Task<bool> IQueryStore.DeleteAsync<T>(string key)
         {
-            var filter = Builders<T>.Filter.Eq(d => d.Id, key);
-
             var collection = GetCollection<T>();
+            
+            if (!collection.Exists())
+                throw new InfrastructureException($"Expected that collection: {Collection} would already be created.");
+
+            var filter = Builders<T>.Filter.Eq(d => d.Id, key);
             var result = await collection.DeleteOneAsync(filter);
 
             return result.DeletedCount == 1;
@@ -48,9 +52,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 
         Task IQueryStore.UpsertAsync<T>(T item)
         {
-            var filter = Builders<T>.Filter.Eq(d => d.Id, item.Id);
             var collection = GetCollection<T>();
+            
+            if (!collection.Exists())
+                throw new InfrastructureException($"Expected that collection: {Collection} would already be created.");
 
+            var filter = Builders<T>.Filter.Eq(d => d.Id, item.Id);
+            
             return collection.ReplaceOneAsync(filter, item, new UpdateOptions { IsUpsert = true });
         }
     }
