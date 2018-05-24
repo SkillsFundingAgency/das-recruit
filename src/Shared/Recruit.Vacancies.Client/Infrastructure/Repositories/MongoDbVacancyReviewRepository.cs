@@ -48,7 +48,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 
         public Task UpdateAsync(VacancyReview review)
         {
-            var filter = Builders<VacancyReview>.Filter.Eq(v => v.Id, review.Id);
+            var filterBuilder = Builders<VacancyReview>.Filter;
+            var filter = filterBuilder.Eq(v => v.Id, review.Id) & filterBuilder.Eq(v => v.VacancyReference, review.VacancyReference);
             var collection = GetCollection<VacancyReview>();
            
             return collection.ReplaceOneAsync(filter, review);
