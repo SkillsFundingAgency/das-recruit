@@ -36,6 +36,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.EditVacancyInfo
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Unable to run {JobName}. Event: {{eventBody}}", message);
+                throw;
             }
         }
     }

@@ -28,6 +28,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.VacancyEvents
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unable to process {eventBody}", @event);
+                throw;
             }
 
             _logger.LogInformation($"Finished Processing {nameof(VacancyCreatedEvent)} for vacancy: {{VacancyId}}", @event.VacancyId);
@@ -44,6 +45,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.VacancyEvents
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unable to process {eventBody}", @event);
+                throw;
             }
 
             _logger.LogInformation($"Finished Processing {nameof(VacancyDraftUpdatedEvent)} for vacancy: {{VacancyId}}", @event.VacancyId);
@@ -60,6 +62,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.VacancyEvents
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unable to process {eventBody}", @event);
+                throw;
             }
 
             _logger.LogInformation($"Finished Processing {nameof(VacancySubmittedEvent)} for vacancy: {{VacancyId}}", @event.VacancyId);

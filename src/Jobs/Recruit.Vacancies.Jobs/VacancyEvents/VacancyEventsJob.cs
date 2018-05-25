@@ -31,6 +31,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.VacancyEvents
             catch (JsonException ex)
             {
                 _logger.LogError(ex, "Unable to deserialise event: {eventBody}", message);
+                throw;
             }
         }
 

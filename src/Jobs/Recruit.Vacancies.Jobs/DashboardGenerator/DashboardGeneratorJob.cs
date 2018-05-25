@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 
 namespace Esfa.Recruit.Vacancies.Jobs.DashboardGenerator
 {
-    public class DashboardGeneratorJob
+    public partial class DashboardGeneratorJob
     {
         private readonly ILogger<DashboardGeneratorJob> _logger;
         private readonly DashboardCreator _job;
@@ -32,16 +32,13 @@ namespace Esfa.Recruit.Vacancies.Jobs.DashboardGenerator
             catch (JsonException ex)
             {
                 _logger.LogError(ex, "Unable to deserialise event: {eventBody}", message);
+                throw;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Unable to run {JobName}.");
+                throw;
             }
-        }
-
-        class DashboardCreateMessage
-        {
-            public string EmployerAccountId { get; set; }
         }
     }
 }
