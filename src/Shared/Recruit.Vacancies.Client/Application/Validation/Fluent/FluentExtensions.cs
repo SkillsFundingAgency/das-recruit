@@ -18,7 +18,18 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
         internal static bool BeValidWebUrl(string arg)
         {
-            return Uri.IsWellFormedUriString(arg, UriKind.RelativeOrAbsolute);
+            if (string.IsNullOrEmpty(arg))
+                return false;
+
+            // cannot contain spaces
+            if (arg.Contains(" "))
+                return false;
+
+            // must have a period
+            if (!arg.Contains("."))
+                return false;
+
+            return Uri.TryCreate(arg, UriKind.RelativeOrAbsolute, out _);
         }
 
         internal static IRuleBuilderOptions<T, TElement> WithRuleId<T, TElement>(this IConfigurable<PropertyRule, IRuleBuilderOptions<T, TElement>> ruleBuilder, long ruleId)
