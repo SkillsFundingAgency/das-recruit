@@ -48,7 +48,6 @@ namespace Esfa.Recruit.Qa.Web.Controllers
                         _logger.LogError(exception, "Exception on path: {route}", exceptionFeature.Path);
                         return View(ViewNames.ErrorView, GetViewModel(HttpStatusCode.NotFound));
                     case VacancyNotFoundException _:
-                        _logger.LogError(exception, exception.Message);
                         return PageNotFound();
                     default:
                         break;

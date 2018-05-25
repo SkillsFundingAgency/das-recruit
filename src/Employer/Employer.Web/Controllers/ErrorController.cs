@@ -63,23 +63,18 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
                 if (exception is InvalidRouteForVacancyException invalidRouteException)
                 {
-                    _logger.LogInformation(exception.Message);
                     return RedirectToRoute(invalidRouteException.RouteNameToRedirectTo, invalidRouteException.RouteValues);
                 }
 
                 if (exception is VacancyNotFoundException)
                 {
-                    _logger.LogError(exception, exception.Message);
                     return PageNotFound();
                 }
 
                 if (exception is AuthorisationException)
                 {
-                    _logger.LogWarning(exception, exception.Message);
                     return AccessDenied();
                 }
-
-                _logger.LogError(exception, "An unexpected exception occurred.");
             }
 
             return View(ViewNames.ErrorView, new ErrorViewModel { StatusCode = (int)HttpStatusCode.InternalServerError, RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });

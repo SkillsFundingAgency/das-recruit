@@ -19,10 +19,8 @@ namespace Esfa.Recruit.Vacancies.Jobs.VacancyEvents
 
         public async Task Handle(VacancyCreatedEvent @event)
         {
-            
             try
             {
-                
                 _logger.LogInformation($"Processing {nameof(VacancyCreatedEvent)} for vacancy: {{VacancyId}}", @event.VacancyId);
                 await _client.AssignVacancyNumber(@event.VacancyId);
                 
@@ -33,12 +31,10 @@ namespace Esfa.Recruit.Vacancies.Jobs.VacancyEvents
                 _logger.LogError(ex, "Unable to process {eventBody}", @event);
                 throw;
             }
-
         }
 
         public async Task Handle(VacancyDraftUpdatedEvent @event)
         {
-
             try
             {
                 _logger.LogInformation($"Processing {nameof(VacancyDraftUpdatedEvent)} for vacancy: {{VacancyId}}", @event.VacancyId);
@@ -52,12 +48,10 @@ namespace Esfa.Recruit.Vacancies.Jobs.VacancyEvents
                 _logger.LogError(ex, "Unable to process {eventBody}", @event);
                 throw;
             }
-
         }
 
         public async Task Handle(VacancySubmittedEvent @event)
         {
-            
             try
             {
                 _logger.LogInformation($"Processing {nameof(VacancySubmittedEvent)} for vacancy: {{VacancyId}}", @event.VacancyId);
@@ -71,7 +65,6 @@ namespace Esfa.Recruit.Vacancies.Jobs.VacancyEvents
                 _logger.LogError(ex, "Unable to process {eventBody}", @event);
                 throw;
             }
-
         }
     }
 }
