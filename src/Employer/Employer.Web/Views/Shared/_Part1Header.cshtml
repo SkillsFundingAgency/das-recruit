@@ -1,59 +1,26 @@
-﻿@using Esfa.Recruit.Vacancies.Client.Domain.Services;
-@inject ITimeProvider timeProvider;
-@{
+﻿@{
+    const string ShowExampleText = "Show example summary";
+    const string HideExampleText = "Hide example";
     var hasShowVacancyCookie = ViewContext.HttpContext.Request.Cookies.ContainsKey("showExampleVacancy");
-    var exampleVacancyStyleValue = hasShowVacancyCookie ? "display:none" : string.Empty;
-    var exampleClosingDate = timeProvider.Now.AddMonths(2);
-    var exampleStartingDate = exampleClosingDate.AddDays(14);
+    var exampleVacancyStyleValue = hasShowVacancyCookie ? string.Empty : "display: none";
+    var exampleLinkText = hasShowVacancyCookie ? HideExampleText : ShowExampleText;
 }
+<div id="example-vacancy-js-container" class="hide">
+    <a href="#example_link" id="example_link">@exampleLinkText</a>
 
-<a href="#example_link" id="example_link" class="hide-nojs">Show example summary</a>
-
-<div id="example_vacancy" class="example-advert" style="@exampleVacancyStyleValue">
-    <div class="example-advert-before">EXAMPLE VACANCY</div>
-    <h2 class="heading-medium small-top-margin">
-        <h2 class="heading-medium small-top-margin">Software developer apprenticeship</h2>
-    </h2>
-    <ul class="list">
-        <li class="secondary-text">Your Organisation</li>
-        <li class="font-xsmall secondary-text">1 position available</li>
-    </ul>
-    <p>
-        We are not looking for programming heroes! We want you to develop to be one of the next generation of Engineers for software based systems!
-    </p>
-    <div class="grid-row">
-        <div class="column-two-thirds">
-            <ul class="list vacancy-details-list ">
-                <li>
-                    <span class="bold-small">Distance:</span>
-                    <span>1</span> mile
-                </li>
-                <li data-show="DisplayClosingDate">
-                    <span class="bold-small ">Closing date:</span>
-                    <span>@($"{exampleClosingDate:dd MMM yyyy}")</span>
-                </li>
-                <li>
-                    <span class="bold-small ">Possible start date:</span>
-                    <span>@($"{exampleStartingDate:dd MMM yyyy}")</span>
-                </li>
-                <li>
-                    <span class="bold-small">Apprenticeship level:</span> Advanced
-                </li>
-                <li>
-                    <span class="bold-small">Wage:</span> £20,000 a year
-                </li>
-            </ul>
-        </div>
-        <div class="column-one-third map-container hide-nojs toggle-content--mob">
-            <div class="map-placeholder"></div>
-            <img class="static-map" src="https://maps.googleapis.com/maps/api/staticmap?markers=52.4025709122,-1.5099275323&size=190x125&zoom=12&client=gme-skillsfundingagency&signature=GONvv_qpwzkdaTvUvs4yoO9o_NQ="  alt="Example location map">
-        </div>
+    <div id="example_vacancy" class="example-advert" style="@exampleVacancyStyleValue">
+        @Html.Partial("_ExampleVacancyPartial")
     </div>
 </div>
+<noscript>
+    <div class="example-advert">
+        @Html.Partial("_ExampleVacancyPartial")
+    </div>
+</noscript>
 <br><br>
 
 <script>
     $(function () {
-        sfa.hookupExampleVacancyToggle();
+        sfa.hookupExampleVacancyToggle("@ShowExampleText", "@HideExampleText");
     });
 </script>

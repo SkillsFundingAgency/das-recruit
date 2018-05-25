@@ -66,6 +66,10 @@
   float: right;
 }
 
+.hide {
+  display: none;
+}
+
 .todo {
     border: 1px solid #bfc1c3;
     padding: 15px;

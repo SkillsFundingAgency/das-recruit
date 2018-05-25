@@ -56,12 +56,13 @@ sfa.navigation = {
     }
 };
 
-sfa.hookupExampleVacancyToggle = function () {
-    var hideExampleText = "Hide example",
-        showExampleText = "Show an example advert",
-        $exampleLink = $("#example_link"),
+sfa.hookupExampleVacancyToggle = function (showExampleText, hideExampleText) {
+    var $exampleLink = $("#example_link"),
         $exampleVacancy = $("#example_vacancy"),
-        showExampleVacancyCookieName = "showExampleVacancy";
+        showExampleVacancyCookieName = "showExampleVacancy",
+        $exampleVacancyContainer = $("#example-vacancy-js-container");
+
+    $exampleVacancyContainer.show();
 
     var showExampleVacancyCookie = Cookies.get(showExampleVacancyCookieName);
 
@@ -77,10 +78,10 @@ sfa.hookupExampleVacancyToggle = function () {
             Cookies.remove(showExampleVacancyCookieName);
             $exampleLink[0].innerText = showExampleText;
         } else {
-            Cookies.set(showExampleVacancyCookieName, "yes");
+            Cookies.set(showExampleVacancyCookieName, "1");
             $exampleLink[0].innerText = hideExampleText;
         }
-        $exampleVacancy.slideToggle();
+        $exampleVacancy.slideToggle(0);
     });
 };
 
