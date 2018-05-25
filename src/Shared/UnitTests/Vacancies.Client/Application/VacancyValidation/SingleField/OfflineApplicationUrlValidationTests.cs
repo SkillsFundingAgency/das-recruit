@@ -8,11 +8,12 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
     public class OfflineApplicationUrlValidationTests : VacancyValidationTestsBase
     {
         [Theory]
-        [InlineData("applyhere")]
         [InlineData("applyhere.com")]
         [InlineData("www.applyhere.com")]
         [InlineData("http://www.applyhere.com")]
         [InlineData("https://www.applyhere.com")]
+        [InlineData("applyhere.com#anchor")]
+        [InlineData("applyhere.com?term=query")]
         public void NoErrorsWhenOfflineApplicationUrlIsValid(string url)
         {
             var vacancy = new Vacancy
@@ -62,6 +63,8 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
 
         [Theory]
         [InlineData("Invalid Url")]
+        [InlineData("applyhere")]
+        [InlineData("domain.com ?term=query")]
         public void OfflineApplicationUrlMustBeAValidWebAddress(string invalidUrl)
         {
             var vacancy = new Vacancy

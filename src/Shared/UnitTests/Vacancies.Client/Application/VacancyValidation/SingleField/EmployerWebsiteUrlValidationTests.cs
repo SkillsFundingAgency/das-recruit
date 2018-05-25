@@ -10,7 +10,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        [InlineData("company")]
         [InlineData("company.com")]
         [InlineData("www.company.com")]
         [InlineData("http://www.company.com")]
@@ -46,6 +45,8 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
 
         [Theory]
         [InlineData("invalid url")]
+        [InlineData("company")]
+        [InlineData("domain.com ?term=query")]
         public void EmployerWebsiteUrlMustBeAValidWebAddress(string invalidUrl)
         {
             var vacancy = new Vacancy
