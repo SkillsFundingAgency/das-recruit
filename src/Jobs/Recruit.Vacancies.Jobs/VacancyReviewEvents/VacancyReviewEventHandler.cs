@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -18,22 +19,37 @@ namespace Esfa.Recruit.Vacancies.Jobs.VacancyReviewEvents
 
         public async Task Handle(VacancyReviewApprovedEvent @event)
         {
-            _logger.LogInformation($"Processing {nameof(VacancyReviewApprovedEvent)} for review: {{ReviewId}} vacancy: {{VacancyReference}}", @event.ReviewId, @event.VacancyReference);
-            
-            await _client.ApproveVacancy(@event.VacancyReference);
+            try
+            {
+                _logger.LogInformation($"Processing {nameof(VacancyReviewApprovedEvent)} for review: {{ReviewId}} vacancy: {{VacancyReference}}", @event.ReviewId, @event.VacancyReference);
+                
+                await _client.ApproveVacancy(@event.VacancyReference);
 
-            _logger.LogInformation($"Finished Processing {nameof(VacancyCreatedEvent)} for review: {{ReviewId}} vacancy: {{VacancyReference}}", @event.ReviewId, @event.VacancyReference);
+                _logger.LogInformation($"Finished Processing {nameof(VacancyCreatedEvent)} for review: {{ReviewId}} vacancy: {{VacancyReference}}", @event.ReviewId, @event.VacancyReference);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unable to process {eventBody}", @event);
+                throw;
+            }
         }
 
         public async Task Handle(VacancyReviewReferredEvent @event)
         {
-            _logger.LogInformation($"Processing {nameof(VacancyReviewReferredEvent)} for referral: {{ReviewId}} vacancy: {{VacancyReference}}", @event.ReviewId, @event.VacancyReference);
+            try
+            {
+                _logger.LogInformation($"Processing {nameof(VacancyReviewReferredEvent)} for referral: {{ReviewId}} vacancy: {{VacancyReference}}", @event.ReviewId, @event.VacancyReference);
             
-            await _client.ReferVacancy(@event.VacancyReference);
+                await _client.ReferVacancy(@event.VacancyReference);
 
-            _logger.LogInformation($"Finished Processing {nameof(VacancyReviewReferredEvent)} for referral: {{ReviewId}} vacancy: {{VacancyReference}}", @event.ReviewId, @event.VacancyReference);
+                _logger.LogInformation($"Finished Processing {nameof(VacancyReviewReferredEvent)} for referral: {{ReviewId}} vacancy: {{VacancyReference}}", @event.ReviewId, @event.VacancyReference);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unable to process {eventBody}", @event);
+                throw;
+            }
         }
-        
     }
 }
 
