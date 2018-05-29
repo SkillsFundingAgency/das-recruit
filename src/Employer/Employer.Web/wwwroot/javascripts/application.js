@@ -56,10 +56,9 @@ sfa.navigation = {
     }
 };
 
-sfa.hookupExampleVacancyToggle = function (showExampleText, hideExampleText) {
+sfa.hookupExampleVacancyToggle = function (showExampleText, hideExampleText, showExampleVacancyCookieName) {
     var $exampleLink = $("#example_link"),
         $exampleVacancy = $("#example_vacancy"),
-        showExampleVacancyCookieName = "showExampleVacancy",
         $exampleVacancyContainer = $("#example-vacancy-js-container");
 
     $exampleVacancyContainer.show();
@@ -77,11 +76,13 @@ sfa.hookupExampleVacancyToggle = function (showExampleText, hideExampleText) {
         if ($exampleVacancy.is(":visible")) {
             Cookies.remove(showExampleVacancyCookieName);
             $exampleLink[0].innerText = showExampleText;
-        } else {
+        }
+        else {
             Cookies.set(showExampleVacancyCookieName, "1");
             $exampleLink[0].innerText = hideExampleText;
         }
         $exampleVacancy.slideToggle(0);
+        return false;
     });
 };
 
