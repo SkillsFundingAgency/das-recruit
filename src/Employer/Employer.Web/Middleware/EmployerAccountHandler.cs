@@ -43,11 +43,11 @@ namespace Esfa.Recruit.Employer.Web.Middleware
 
         private async Task EnsureEmployerIsSetup(HttpContext context, string employerAccountId)
         {
-            var key = $"setup_employer_{employerAccountId}";
+            var key = string.Format(CookieNames.SetupEmployer, employerAccountId);
             if (context.Request.Cookies[key] == null)
             {
                 await _client.SetupEmployerAsync(employerAccountId);
-                context.Response.Cookies.Append(key, String.Empty);
+                context.Response.Cookies.Append(key, string.Empty);
             }
         }
     }

@@ -21,7 +21,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
     public static class ConfigurationExtensions
     {
         private const string HasEmployerAccountPolicyName = "HasEmployerAccount";
-        public const int SessionTimeoutMinutes = 30;
+        private const int SessionTimeoutMinutes = 30;
 
         public static void AddAuthorizationService(this IServiceCollection services)
         {
