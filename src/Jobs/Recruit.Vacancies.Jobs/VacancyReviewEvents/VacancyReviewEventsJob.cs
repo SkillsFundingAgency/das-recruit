@@ -28,9 +28,10 @@ namespace Esfa.Recruit.Vacancies.Jobs.VacancyReviewEvents
                 
                 await UnpackAndExecute(eventItem.EventType, eventItem.Data);
             }
-            catch (Exception ex)
+            catch (JsonException ex)
             {
-                _logger.LogError(ex, "Unable to handle vacancy event");
+                _logger.LogError(ex, "Unable to deserialise event: {eventBody}", message);
+                throw;
             }
         }
 

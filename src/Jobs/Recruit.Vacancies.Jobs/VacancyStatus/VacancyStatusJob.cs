@@ -34,6 +34,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.VacancyStatus
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unable to check vacancy statuses.");
+                throw;
             }
         }
     }

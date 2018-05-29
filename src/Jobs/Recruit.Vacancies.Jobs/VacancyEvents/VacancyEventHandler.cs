@@ -19,50 +19,52 @@ namespace Esfa.Recruit.Vacancies.Jobs.VacancyEvents
 
         public async Task Handle(VacancyCreatedEvent @event)
         {
-            _logger.LogInformation($"Processing {nameof(VacancyCreatedEvent)} for vacancy: {{VacancyId}}", @event.VacancyId);
-            
             try
             {
+                _logger.LogInformation($"Processing {nameof(VacancyCreatedEvent)} for vacancy: {{VacancyId}}", @event.VacancyId);
                 await _client.AssignVacancyNumber(@event.VacancyId);
+                
+                _logger.LogInformation($"Finished Processing {nameof(VacancyCreatedEvent)} for vacancy: {{VacancyId}}", @event.VacancyId);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unable to process {eventBody}", @event);
+                throw;
             }
-
-            _logger.LogInformation($"Finished Processing {nameof(VacancyCreatedEvent)} for vacancy: {{VacancyId}}", @event.VacancyId);
         }
 
         public async Task Handle(VacancyDraftUpdatedEvent @event)
         {
-            _logger.LogInformation($"Processing {nameof(VacancyDraftUpdatedEvent)} for vacancy: {{VacancyId}}", @event.VacancyId);
-
             try
             {
+                _logger.LogInformation($"Processing {nameof(VacancyDraftUpdatedEvent)} for vacancy: {{VacancyId}}", @event.VacancyId);
+               
                 await _client.EnsureVacancyIsGeocodedAsync(@event.VacancyId);
+               
+                _logger.LogInformation($"Finished Processing {nameof(VacancyDraftUpdatedEvent)} for vacancy: {{VacancyId}}", @event.VacancyId);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unable to process {eventBody}", @event);
+                throw;
             }
-
-            _logger.LogInformation($"Finished Processing {nameof(VacancyDraftUpdatedEvent)} for vacancy: {{VacancyId}}", @event.VacancyId);
         }
 
         public async Task Handle(VacancySubmittedEvent @event)
         {
-            _logger.LogInformation($"Processing {nameof(VacancySubmittedEvent)} for vacancy: {{VacancyId}}", @event.VacancyId);
-            
             try
             {
+                _logger.LogInformation($"Processing {nameof(VacancySubmittedEvent)} for vacancy: {{VacancyId}}", @event.VacancyId);
+                
                 await _client.CreateVacancyReview(@event.VacancyReference);
+                
+                _logger.LogInformation($"Finished Processing {nameof(VacancySubmittedEvent)} for vacancy: {{VacancyId}}", @event.VacancyId);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unable to process {eventBody}", @event);
+                throw;
             }
-
-            _logger.LogInformation($"Finished Processing {nameof(VacancySubmittedEvent)} for vacancy: {{VacancyId}}", @event.VacancyId);
         }
     }
 }

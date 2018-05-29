@@ -72,7 +72,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.ApprenticeshipProgrammes
 
             var retryPolicy = GetApiRetryPolicy();
 
-            var standards = await retryPolicy.ExecuteAsync(() => _standardsClient.GetAllAsync(), new Dictionary<string, object>() {{ "apiCall", "Standards" }});
+            var standards = await retryPolicy.ExecuteAsync(context => _standardsClient.GetAllAsync(), new Dictionary<string, object>() {{ "apiCall", "Standards" }});
 
             return standards.FilterAndMapToApprenticeshipProgrammes();
         }
@@ -83,7 +83,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.ApprenticeshipProgrammes
             
             var retryPolicy = GetApiRetryPolicy();
 
-            var frameworks = await retryPolicy.ExecuteAsync(() => _frameworksClient.GetAllAsync(), new Dictionary<string, object>() {{ "apiCall", "Frameworks" }});
+            var frameworks = await retryPolicy.ExecuteAsync(context => _frameworksClient.GetAllAsync(), new Dictionary<string, object>() {{ "apiCall", "Frameworks" }});
             
             return frameworks.FilterAndMapToApprenticeshipProgrammes();
         }

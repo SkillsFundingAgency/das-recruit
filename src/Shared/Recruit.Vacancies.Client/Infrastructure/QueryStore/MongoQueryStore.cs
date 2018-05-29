@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
@@ -12,8 +13,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         private const string Database = "recruit";
         private const string Collection = "queryViews";
 
-        public MongoQueryStore(IOptions<MongoDbConnectionDetails> details)
-            : base(Database, Collection, details)
+        public MongoQueryStore(ILogger<MongoQueryStore> logger, IOptions<MongoDbConnectionDetails> details)
+            : base(logger, Database, Collection, details)
         {
         }
 
@@ -25,7 +26,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
                 throw new InfrastructureException($"Expected that collection: {Collection} would already be created.");
 
             var filter = Builders<T>.Filter.Eq(d => d.Id, key);
-            var result = await collection.DeleteOneAsync(filter);
+            var result = await RetryPolicy.ExecuteAsync(() => collection.DeleteOneAsync(filter));
 
             return result.DeletedCount == 1;
         }
@@ -35,7 +36,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             var filter = Builders<T>.Filter.Eq(d => d.Type, typeName);
 
             var collection = GetCollection<T>();
-            var result = await collection.FindAsync(filter);
+            var result = await RetryPolicy.ExecuteAsync(() => collection.FindAsync(filter));
 
             return result?.ToEnumerable();
         }
@@ -45,7 +46,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             var filter = Builders<T>.Filter.Eq(d => d.Id, key);
 
             var collection = GetCollection<T>();
-            var result = await collection.FindAsync(filter);
+            var result = await RetryPolicy.ExecuteAsync(() => collection.FindAsync(filter));
 
             return result?.FirstOrDefault();
         }
@@ -59,7 +60,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 
             var filter = Builders<T>.Filter.Eq(d => d.Id, item.Id);
             
-            return collection.ReplaceOneAsync(filter, item, new UpdateOptions { IsUpsert = true });
+            return RetryPolicy.ExecuteAsync(() => collection.ReplaceOneAsync(filter, item, new UpdateOptions { IsUpsert = true }));
         }
     }
 }

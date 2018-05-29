@@ -29,6 +29,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.ApprenticeshipProgrammes
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unable to update standards and frameworks.");
+                throw;
             }
         }
     }
