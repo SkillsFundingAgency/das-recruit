@@ -40,6 +40,8 @@ namespace Esfa.Recruit.Employer.Web.Configuration
 
         public static void AddMvcService(this IServiceCollection services, IHostingEnvironment hostingEnvironment, bool isAuthEnabled)
         {
+            services.AddAntiforgery(options => options.Cookie.Name = CookieNames.AntiForgeryCookie);
+            services.Configure<CookieTempDataProviderOptions>(options => options.Cookie.Name = CookieNames.RecruitTempData);
             services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
 
             services.AddMvc(opts =>
@@ -82,6 +84,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             })
             .AddCookie("Cookies", options =>
             {
+                options.Cookie.Name = CookieNames.RecruitData;
                 options.AccessDeniedPath = "/Error/403";
                 options.SlidingExpiration = true;
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(SessionTimeoutMinutes);
