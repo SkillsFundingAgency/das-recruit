@@ -34,7 +34,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 
         public async Task<Vacancy> GetVacancyAsync(long vacancyReference)
         {
-            var vacancy = await RetryPolicy.ExecuteAsync(() => FindVacancy(v => v.VacancyReference, vacancyReference));
+            var vacancy = await FindVacancy(v => v.VacancyReference, vacancyReference);
 
             if (vacancy == null)
                 throw new VacancyNotFoundException(string.Format(ExceptionMessages.VacancyWithReferenceNotFound, vacancyReference));
@@ -44,7 +44,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 
         public async Task<Vacancy> GetVacancyAsync(Guid id)
         {
-            var vacancy = await RetryPolicy.ExecuteAsync(() => FindVacancy(v => v.Id, id));
+            var vacancy = await FindVacancy(v => v.Id, id);
 
             if (vacancy == null)
                 throw new VacancyNotFoundException(string.Format(ExceptionMessages.VacancyWithIdNotFound, id));

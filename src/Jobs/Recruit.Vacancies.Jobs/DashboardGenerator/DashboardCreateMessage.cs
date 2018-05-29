@@ -1,10 +1,7 @@
 namespace Esfa.Recruit.Vacancies.Jobs.DashboardGenerator
 {
-    public partial class DashboardGeneratorJob
+    internal class DashboardCreateMessage
     {
-        class DashboardCreateMessage
-        {
-            public string EmployerAccountId { get; set; }
-        }
+        public string EmployerAccountId { get; set; }
     }
 }

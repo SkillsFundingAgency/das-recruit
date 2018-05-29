@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 
 namespace Esfa.Recruit.Vacancies.Jobs.DashboardGenerator
 {
-    public partial class DashboardGeneratorJob
+    public class DashboardGeneratorJob
     {
         private readonly ILogger<DashboardGeneratorJob> _logger;
         private readonly DashboardCreator _job;
