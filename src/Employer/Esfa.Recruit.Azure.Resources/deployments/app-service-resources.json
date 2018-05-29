@@ -34,15 +34,17 @@
             "type": "Microsoft.Web/sites",
             "apiVersion": "2016-08-01",
             "location": "[resourceGroup().location]",
-            "properties": {
-                "serverFarmId": "[variables('SharedAppServicePlanId')]",
-                "siteConfig": {
-                    "appSettings": "[parameters('AppSettings')]",
-                    "connectionStrings": "[parameters('ConnectionStrings')]",
-                    "alwaysOn": true
-                },
-                "httpsOnly": true
+          "properties": {
+            "phpVersion": "Off",
+            "clientAffinityEnabled": false,
+            "serverFarmId": "[variables('SharedAppServicePlanId')]",
+            "siteConfig": {
+              "appSettings": "[parameters('AppSettings')]",
+              "connectionStrings": "[parameters('ConnectionStrings')]",
+              "alwaysOn": true
             },
+            "httpsOnly": true
+          },
             "resources": [
                 {
                     "name": "staging",
@@ -64,7 +66,7 @@
             ]
         },
         {
-            "type": "Microsoft.Web/sites/hostnameBindings",
+            "type": "Microsoft.Web/sites/hostNameBindings",
             "condition": "[variables('UseCustomHostname')]",
             "name": "[concat(parameters('AppServiceName'), '/', if(variables('UseCustomHostname'), parameters('CustomHostname'), 'placeholder'))]",
             "apiVersion": "2016-03-01",

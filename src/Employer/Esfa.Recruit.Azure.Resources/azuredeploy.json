@@ -366,6 +366,8 @@
       "comments": "This will become a Function App when Core is GA",
       "location": "[resourceGroup().location]",
       "properties": {
+        "phpVersion": "Off",
+        "clientAffinityEnabled": false,
         "serverFarmId": "[variables('SharedAppServicePlanId')]",
         "siteConfig": {
           "appSettings": [
