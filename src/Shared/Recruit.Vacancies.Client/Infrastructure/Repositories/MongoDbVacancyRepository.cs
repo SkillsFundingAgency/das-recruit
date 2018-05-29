@@ -10,6 +10,7 @@ using MongoDB.Driver;
 using System.Linq.Expressions;
 using Esfa.Recruit.Vacancies.Client.Application.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
+using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 {
@@ -20,20 +21,20 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 
         private const string EmployerAccountId = "employerAccountId";
 
-        public MongoDbVacancyRepository(IOptions<MongoDbConnectionDetails> details) 
-            : base(Database, Collection, details)
+        public MongoDbVacancyRepository(ILogger<MongoDbVacancyRepository> logger, IOptions<MongoDbConnectionDetails> details) 
+            : base(logger, Database, Collection, details)
         {
         }
 
         public async Task CreateAsync(Vacancy vacancy)
         {
             var collection = GetCollection<Vacancy>();
-            await collection.InsertOneAsync(vacancy);
+            await RetryPolicy.ExecuteAsync(() => collection.InsertOneAsync(vacancy));
         }
 
         public async Task<Vacancy> GetVacancyAsync(long vacancyReference)
         {
-            var vacancy = await FindVacancy(v => v.VacancyReference, vacancyReference);
+            var vacancy = await RetryPolicy.ExecuteAsync(() => FindVacancy(v => v.VacancyReference, vacancyReference));
 
             if (vacancy == null)
                 throw new VacancyNotFoundException(string.Format(ExceptionMessages.VacancyWithReferenceNotFound, vacancyReference));
@@ -43,7 +44,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 
         public async Task<Vacancy> GetVacancyAsync(Guid id)
         {
-            var vacancy =  await FindVacancy(v => v.Id, id);
+            var vacancy = await RetryPolicy.ExecuteAsync(() => FindVacancy(v => v.Id, id));
 
             if (vacancy == null)
                 throw new VacancyNotFoundException(string.Format(ExceptionMessages.VacancyWithIdNotFound, id));
@@ -57,7 +58,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var options = new FindOptions<Vacancy> { Limit = 1 };
 
             var collection = GetCollection<Vacancy>();
-            var result = await collection.FindAsync(filter, options);
+            var result = await RetryPolicy.ExecuteAsync(() => collection.FindAsync(filter, options));
             return result.SingleOrDefault();
         }
 
@@ -66,7 +67,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var filter = Builders<BsonDocument>.Filter.Eq(EmployerAccountId, employerAccountId);
 
             var collection = GetCollection<BsonDocument>();
-            var result = await collection.FindAsync<T>(filter);
+
+            var result = await RetryPolicy.ExecuteAsync(() => collection.FindAsync<T>(filter));
     
             return await result.ToListAsync();
         }
@@ -85,7 +87,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             };
 
             var collection = GetCollection<Vacancy>();
-            var result = await collection.FindAsync(filter, options);
+            var result = await RetryPolicy.ExecuteAsync(() => collection.FindAsync(filter, options));
             return result.SingleOrDefault();
         }
 
@@ -93,7 +95,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         {
             var filter = Builders<Vacancy>.Filter.Eq(v => v.Id, vacancy.Id);
             var collection = GetCollection<Vacancy>();
-            await collection.ReplaceOneAsync(filter, vacancy);
+            await RetryPolicy.ExecuteAsync(() => collection.ReplaceOneAsync(filter, vacancy));
         }
     }
 }

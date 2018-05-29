@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
@@ -13,8 +14,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.SequenceStore
         private const string Collection = "sequences";
         private const string VacancyNumberSequenceName = "Sequence_Vacancy";
 
-        public MongoSequenceStore(IOptions<MongoDbConnectionDetails> details)
-            : base(Database, Collection, details)
+        public MongoSequenceStore(ILogger<MongoSequenceStore> logger, IOptions<MongoDbConnectionDetails> details)
+            : base(logger, Database, Collection, details)
         {
         }
 
@@ -25,7 +26,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.SequenceStore
             var update = Builders<Sequence>.Update.Inc(x => x.LastValue, 1);
             var options = new FindOneAndUpdateOptions<Sequence> { ReturnDocument = ReturnDocument.After };
             
-            var newSequence = await collection.FindOneAndUpdateAsync(filter, update, options);
+            var newSequence = await RetryPolicy.ExecuteAsync(() => collection.FindOneAndUpdateAsync(filter, update, options));
 
             if (newSequence == null)
             {

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
@@ -19,30 +19,31 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="MediatR" Version="4.0.1" />
-    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="4.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.0.0" />
-    <PackageReference Include="MongoDB.Driver" Version="2.5.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
-    <PackageReference Include="RestSharp" Version="106.2.2" />
-    <PackageReference Include="SFA.DAS.Account.Api.Client" Version="1.2.0.62882" />
-    <PackageReference Include="WindowsAzure.Storage" Version="9.1.0" />
-    <PackageReference Include="FluentValidation" Version="7.5.2" />
+    <PackageReference Include="MediatR" Version="4.0.1"/>
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="4.0.0"/>
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0"/>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.0.1"/>
+    <PackageReference Include="Microsoft.Extensions.Options" Version="2.0.0"/>
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.0.0"/>
+    <PackageReference Include="MongoDB.Driver" Version="2.5.0"/>
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.3"/>
+    <PackageReference Include="RestSharp" Version="106.2.2"/>
+    <PackageReference Include="SFA.DAS.Account.Api.Client" Version="1.2.0.62882"/>
+    <PackageReference Include="WindowsAzure.Storage" Version="9.1.0"/>
+    <PackageReference Include="FluentValidation" Version="7.5.2"/>
+    <PackageReference Include="Polly" Version="6.0.1"/>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Application\Validation\Fluent\CustomValidators\VacancyValidators\" />
-    <Folder Include="Application\Services\" />
+    <Folder Include="Application\Validation\Fluent\CustomValidators\VacancyValidators\"/>
+    <Folder Include="Application\Services\"/>
   </ItemGroup>
   <ItemGroup>
-    <Compile Remove="Application\QueryStore\**" />
+    <Compile Remove="Application\QueryStore\**"/>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Remove="Application\QueryStore\**" />
+    <EmbeddedResource Remove="Application\QueryStore\**"/>
   </ItemGroup>
   <ItemGroup>
-    <None Remove="Application\QueryStore\**" />
+    <None Remove="Application\QueryStore\**"/>
   </ItemGroup>
 </Project>
