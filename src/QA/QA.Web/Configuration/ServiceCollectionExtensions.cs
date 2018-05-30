@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Esfa.Recruit.Qa.Web.Configuration.Routing;
 using Esfa.Recruit.Qa.Web.Extensions;
@@ -14,7 +15,8 @@ namespace Esfa.Recruit.Qa.Web.Configuration
     public static class ServiceCollectionExtensions
     {
         private const string DoesUserBelongToGroupPolicyName = "DoesUserBelongToGroup";
-        
+        private const int SessionTimeoutMinutes = 30;
+
         public static void AddAuthenticationService(this IServiceCollection services, AuthenticationConfiguration authConfig)
         {
             services.AddAuthentication(sharedOptions =>
@@ -34,6 +36,8 @@ namespace Esfa.Recruit.Qa.Web.Configuration
                 .AddCookie(options =>
                 {
                     options.AccessDeniedPath = RoutePrefixPaths.AccessDeniedPath;
+                    options.SlidingExpiration = true;
+                    options.ExpireTimeSpan = TimeSpan.FromMinutes(SessionTimeoutMinutes);
                 });
         }
 
