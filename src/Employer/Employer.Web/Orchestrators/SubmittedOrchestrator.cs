@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Employer.Web.RouteModel;
+using System;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
@@ -20,7 +21,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public async Task<VacancySubmittedConfirmationViewModel> GetVacancySubmittedConfirmationViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyAsync(_client, vrm, RouteNames.Submitted_Index_Get);
+            var vacancy = await Utility.GetAuthorisedVacancyAsync(async (Guid id) => await _client.GetVacancyAsync(id), vrm, RouteNames.Submitted_Index_Get);
 
             if (vacancy.Status != VacancyStatus.Submitted)
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotSubmittedSuccessfully, vacancy.Title));
