@@ -284,7 +284,7 @@
               },
               {
                 "name": "ASPNETCORE_ENVIRONMENT",
-                "value": "[toUpper(parameters('EnvironmentName'))]"
+                "value": "[toUpper(parameters('EnvironmentFullName'))]"
               },
               {
                 "name": "GoogleMapsPrivateKey",
@@ -371,7 +371,7 @@
           "appSettings": [
             {
               "name": "ASPNETCORE_ENVIRONMENT",
-              "value": "[toUpper(parameters('EnvironmentName'))]"
+              "value": "[toUpper(parameters('EnvironmentFullName'))]"
             },
             {
               "name": "ApprenticeshipProgrammesApiBaseUrl",
