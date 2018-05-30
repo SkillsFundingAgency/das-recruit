@@ -25,6 +25,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             if (arg.Contains(" "))
                 return false;
 
+            if (arg.StartsWith(".") || arg.EndsWith("."))
+                return false;
+
             // must have a period
             if (!arg.Contains("."))
                 return false;
