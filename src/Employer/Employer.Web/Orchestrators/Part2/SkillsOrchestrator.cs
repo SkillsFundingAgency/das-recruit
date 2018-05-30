@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
@@ -19,6 +20,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.Skills;
         private readonly IEmployerVacancyClient _client;
         private readonly SkillsConfiguration _skillsConfig;
+        private async Task<Vacancy> GetVacancy(Guid id) => await _client.GetVacancyAsync(id);
 
         public SkillsOrchestrator(IEmployerVacancyClient client, IOptions<SkillsConfiguration> skillsConfigOptions, ILogger<SkillsOrchestrator> logger) : base(logger)
         {
@@ -28,7 +30,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public async Task<SkillsViewModel> GetSkillsViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, vrm, RouteNames.Skills_Get);
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(GetVacancy, vrm, RouteNames.Skills_Get);
             
             var vm = new SkillsViewModel
             {
@@ -60,7 +62,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public async Task<OrchestratorResponse> PostSkillsEditModelAsync(SkillsEditModel m, VacancyUser user)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, m, RouteNames.Skills_Post);
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(GetVacancy, m, RouteNames.Skills_Post);
 
             if (m.Skills == null)
             {

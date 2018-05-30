@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.RouteModel;
@@ -27,7 +28,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         
         public async Task<SearchResultPreviewViewModel> GetSearchResultPreviewViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, vrm, RouteNames.SearchResultPreview_Get);
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(async (Guid id) => await _client.GetVacancyAsync(id), vrm, RouteNames.SearchResultPreview_Get);
 
             var vm = new SearchResultPreviewViewModel
             {

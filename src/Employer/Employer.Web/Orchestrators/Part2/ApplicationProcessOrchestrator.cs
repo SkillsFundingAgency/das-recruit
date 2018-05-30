@@ -6,6 +6,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
+using System;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 {
@@ -13,6 +14,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.ApplicationUrl | VacancyRuleSet.ApplicationInstructions;
         private readonly IEmployerVacancyClient _client;
+        private async Task<Vacancy> GetVacancy(Guid id) => await _client.GetVacancyAsync(id);
 
         public ApplicationProcessOrchestrator(IEmployerVacancyClient client, ILogger<ApplicationProcessOrchestrator> logger) : base(logger)
         {
@@ -21,7 +23,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public async Task<ApplicationProcessViewModel> GetApplicationProcessViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, vrm, RouteNames.ApplicationProcess_Get);
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(GetVacancy, vrm, RouteNames.ApplicationProcess_Get);
 
             var vm = new ApplicationProcessViewModel
             {
@@ -45,7 +47,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public async Task<OrchestratorResponse> PostApplicationProcessEditModelAsync(ApplicationProcessEditModel m, VacancyUser user)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, m, RouteNames.ApplicationProcess_Post);
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(GetVacancy, m, RouteNames.ApplicationProcess_Post);
             
             vacancy.ApplicationInstructions = m.ApplicationInstructions;
             vacancy.ApplicationUrl = m.ApplicationUrl;

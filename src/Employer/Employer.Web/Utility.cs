@@ -9,24 +9,23 @@ using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Exceptions;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 
 namespace Esfa.Recruit.Employer.Web
 {
     public static class Utility
     {
-        public static async Task<Vacancy> GetAuthorisedVacancyForEditAsync(IEmployerVacancyClient client, VacancyRouteModel vrm, string routeName)
+        public static async Task<Vacancy> GetAuthorisedVacancyForEditAsync(Func<Guid, Task<Vacancy>> GetVacancy, VacancyRouteModel vrm, string routeName)
         {
-            var vacancy = await GetAuthorisedVacancyAsync(client, vrm, routeName);
+            var vacancy = await GetAuthorisedVacancyAsync(GetVacancy, vrm, routeName);
 
             CheckCanEdit(vacancy);
 
             return vacancy;
         }
 
-        public static async Task<Vacancy> GetAuthorisedVacancyAsync(IEmployerVacancyClient client, VacancyRouteModel vrm, string routeName)
+        public static async Task<Vacancy> GetAuthorisedVacancyAsync(Func<Guid, Task<Vacancy>> GetVacancy, VacancyRouteModel vrm, string routeName)
         {
-            var vacancy = await client.GetVacancyAsync(vrm.VacancyId);
+            var vacancy = await GetVacancy(vrm.VacancyId);
 
             CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
 

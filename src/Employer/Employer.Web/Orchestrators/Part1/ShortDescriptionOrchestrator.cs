@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.RouteModel;
@@ -14,6 +15,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.ShortDescription;
         private readonly IEmployerVacancyClient _client;
 
+        private async Task<Vacancy> GetVacancy(Guid id) => await _client.GetVacancyAsync(id);
+
         public ShortDescriptionOrchestrator(IEmployerVacancyClient client, ILogger<ShortDescriptionOrchestrator> logger) : base(logger)
         {
             _client = client;
@@ -21,7 +24,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         public async Task<ShortDescriptionViewModel> GetShortDescriptionViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, vrm, RouteNames.ShortDescription_Get);
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(GetVacancy, vrm, RouteNames.ShortDescription_Get);
 
             var vm = new ShortDescriptionViewModel
             {
@@ -43,7 +46,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         public async Task<OrchestratorResponse> PostShortDescriptionEditModelAsync(ShortDescriptionEditModel m, VacancyUser user)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, m, RouteNames.ShortDescription_Post);
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(GetVacancy, m, RouteNames.ShortDescription_Post);
 
             vacancy.ShortDescription = m.ShortDescription;
 

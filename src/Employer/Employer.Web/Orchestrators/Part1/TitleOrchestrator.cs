@@ -14,6 +14,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.Title | VacancyRuleSet.NumberOfPositions;
         private readonly IEmployerVacancyClient _client;
+        private async Task<Vacancy> GetVacancy(Guid id) => await _client.GetVacancyAsync(id);
 
         public TitleOrchestrator(IEmployerVacancyClient client, ILogger<TitleOrchestrator> logger) : base(logger)
         {
@@ -28,7 +29,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public async Task<TitleViewModel> GetTitleViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, vrm, RouteNames.Title_Get);
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(GetVacancy, vrm, RouteNames.Title_Get);
 
             var vm = new TitleViewModel
             {
@@ -79,7 +80,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                     async v => await _client.CreateVacancyAsync(SourceOrigin.EmployerWeb, m.Title, numberOfPositions.Value, m.EmployerAccountId, user));
             }
 
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, 
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(GetVacancy, 
                 new VacancyRouteModel{EmployerAccountId = m.EmployerAccountId, VacancyId = m.VacancyId.Value}, RouteNames.Title_Post);
 
             vacancy.Title = m.Title;

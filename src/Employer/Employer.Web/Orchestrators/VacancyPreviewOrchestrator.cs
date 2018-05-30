@@ -12,6 +12,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Employer.Web.RouteModel;
+using System;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
@@ -20,6 +21,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.All;
         private readonly IEmployerVacancyClient _client;
         private readonly DisplayVacancyViewModelMapper _vacancyDisplayMapper;
+        private async Task<Vacancy> GetVacancy(Guid id) => await _client.GetVacancyAsync(id);
 
         public VacancyPreviewOrchestrator(IEmployerVacancyClient client, ILogger<VacancyPreviewOrchestrator> logger,
             DisplayVacancyViewModelMapper vacancyDisplayMapper) : base(logger)
@@ -30,7 +32,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public async Task<VacancyPreviewViewModel> GetVacancyPreviewViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, vrm, RouteNames.Vacancy_Preview_Get);
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(GetVacancy, vrm, RouteNames.Vacancy_Preview_Get);
             
             var vm = new VacancyPreviewViewModel();
             await _vacancyDisplayMapper.MapFromVacancyAsync(vm, vacancy);
@@ -44,7 +46,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         
         public async Task<OrchestratorResponse> SubmitVacancyAsync(SubmitEditModel m, VacancyUser user)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyAsync(_client, m, RouteNames.Preview_Submit_Post);
+            var vacancy = await Utility.GetAuthorisedVacancyAsync(GetVacancy, m, RouteNames.Preview_Submit_Post);
 
             if (!vacancy.CanSubmit)
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));

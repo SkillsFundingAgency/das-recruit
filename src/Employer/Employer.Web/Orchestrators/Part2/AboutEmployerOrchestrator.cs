@@ -6,6 +6,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
+using System;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 {
@@ -13,6 +14,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.EmployerDescription | VacancyRuleSet.EmployerWebsiteUrl;
         private readonly IEmployerVacancyClient _client;
+        private async Task<Vacancy> GetVacancy(Guid id) => await _client.GetVacancyAsync(id);
 
         public AboutEmployerOrchestrator(IEmployerVacancyClient client, ILogger<AboutEmployerOrchestrator> logger) : base(logger)
         {
@@ -21,7 +23,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public async Task<AboutEmployerViewModel> GetAboutEmployerViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, vrm, RouteNames.AboutEmployer_Get);
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(GetVacancy, vrm, RouteNames.AboutEmployer_Get);
 
             var vm = new AboutEmployerViewModel
             {
@@ -45,7 +47,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public async Task<OrchestratorResponse> PostAboutEmployerEditModelAsync(AboutEmployerEditModel m, VacancyUser user)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, m, RouteNames.AboutEmployer_Post);
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(GetVacancy, m, RouteNames.AboutEmployer_Post);
 
             vacancy.EmployerDescription = m.EmployerDescription;
             vacancy.EmployerWebsiteUrl = m.EmployerWebsiteUrl;
