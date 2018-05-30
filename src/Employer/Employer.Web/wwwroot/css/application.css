@@ -935,7 +935,6 @@ input.form-control, textarea.form-control {
     opacity: 0;
     z-index: 99;
     background-color: #fff;
-    filter: alpha(opacity=0)
 }
 
 .select2-hidden-accessible {
@@ -1183,11 +1182,8 @@ input.form-control, textarea.form-control {
     background-color: #f7f7f7;
     border: 2px solid #000;
     outline: 0;
-    background-image: -webkit-linear-gradient(top, #fff 50%, #eee 100%);
-    background-image: -o-linear-gradient(top, #fff 50%, #eee 100%);
     background-image: linear-gradient(to bottom, #fff 50%, #eee 100%);
     background-repeat: repeat-x;
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFFFF', endColorstr='#FFEEEEEE', GradientType=0);
 }
 
 .select2-container--classic .select2-selection--single:focus {
@@ -1219,11 +1215,8 @@ input.form-control, textarea.form-control {
     top: 1px;
     right: 1px;
     width: 20px;
-    background-image: -webkit-linear-gradient(top, #eee 50%, #ccc 100%);
-    background-image: -o-linear-gradient(top, #eee 50%, #ccc 100%);
     background-image: linear-gradient(to bottom, #eee 50%, #ccc 100%);
     background-repeat: repeat-x;
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFEEEEEE', endColorstr='#FFCCCCCC', GradientType=0);
 }
 
 .select2-container--classic .select2-selection--single .select2-selection__arrow b {
@@ -1269,22 +1262,16 @@ input.form-control, textarea.form-control {
     border-top: none;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
-    background-image: -webkit-linear-gradient(top, #fff 0%, #eee 50%);
-    background-image: -o-linear-gradient(top, #fff 0%, #eee 50%);
     background-image: linear-gradient(to bottom, #fff 0%, #eee 50%);
     background-repeat: repeat-x;
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFFFF', endColorstr='#FFEEEEEE', GradientType=0);
 }
 
 .select2-container--classic.select2-container--open.select2-container--below .select2-selection--single {
     border-bottom: none;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
-    background-image: -webkit-linear-gradient(top, #eee 50%, #fff 100%);
-    background-image: -o-linear-gradient(top, #eee 50%, #fff 100%);
     background-image: linear-gradient(to bottom, #eee 50%, #fff 100%);
     background-repeat: repeat-x;
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFEEEEEE', endColorstr='#FFFFFFFF', GradientType=0);
 }
 
 .select2-container--classic .select2-selection--multiple {
