@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.RouteModel;
@@ -9,23 +9,29 @@ using Esfa.Recruit.Employer.Web.ViewModels.Part2.Skills;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Entities;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 {
     public class SkillsOrchestrator : EntityValidatingOrchestrator<Vacancy, SkillsEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.Skills;
-        private readonly IEmployerVacancyClient _client;
-        private readonly SkillsConfiguration _skillsConfig;
+        private const int ColumnOneCutOffIndex = 9;
 
-        public SkillsOrchestrator(IEmployerVacancyClient client, IOptions<SkillsConfiguration> skillsConfigOptions, ILogger<SkillsOrchestrator> logger) : base(logger)
+        private readonly IEmployerVacancyClient _client;
+        private readonly Lazy<CandidateSkills> _lazyCandidateSkills;
+
+        private CandidateSkills CandidateSkills => _lazyCandidateSkills.Value;
+        private IEnumerable<string> Column1Skills => CandidateSkills.Skills.Take(ColumnOneCutOffIndex);
+        private IEnumerable<string> Column2Skills => CandidateSkills.Skills.Skip(ColumnOneCutOffIndex);
+
+        public SkillsOrchestrator(IEmployerVacancyClient client, ILogger<SkillsOrchestrator> logger) : base(logger)
         {
             _client = client;
-            _skillsConfig = skillsConfigOptions.Value;
+            _lazyCandidateSkills = new Lazy<CandidateSkills>(() => _client.GetCandidateSkillsAsync().Result);
         }
-
+        
         public async Task<SkillsViewModel> GetSkillsViewModelAsync(VacancyRouteModel vrm)
         {
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, vrm, RouteNames.Skills_Get);
@@ -51,11 +57,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             return vm;
         }
 
-        public void SetViewModelSkills(SkillsViewModel vm, IEnumerable<string> skills)
+        public void SetViewModelSkills(SkillsViewModel vm, IList<string> selectedSkills)
         {
-            vm.Column1Checkboxes = GetColumn1ViewModel(skills).ToList();
-            vm.Column2Checkboxes = GetColumn2ViewModel(skills).ToList();
-            vm.CustomSkills = GetCustomSkills(skills).ToList();
+            vm.Column1Checkboxes = GetSkillsColumnViewModel(Column1Skills, selectedSkills).ToList();
+            vm.Column2Checkboxes = GetSkillsColumnViewModel(Column2Skills, selectedSkills).ToList();
+            vm.CustomSkills = GetCustomSkills(selectedSkills).ToList();
         }
 
         public async Task<OrchestratorResponse> PostSkillsEditModelAsync(SkillsEditModel m, VacancyUser user)
@@ -94,24 +100,15 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             return mappings;
         }
 
-        private IEnumerable<SkillViewModel> GetColumn1ViewModel(IEnumerable<string> selected)
+        private IEnumerable<SkillViewModel> GetSkillsColumnViewModel(IEnumerable<string> skills, IEnumerable<string> selectedSkills)
         {
-            return _skillsConfig.Column1Skills.Select(c => new SkillViewModel
+            return skills.Select(c => new SkillViewModel
             {
                 Name = c,
-                Selected = selected != null && selected.Any(s => s == c)
+                Selected = selectedSkills != null && selectedSkills.Any(s => s == c)
             });
         }
-
-        private IEnumerable<SkillViewModel> GetColumn2ViewModel(IEnumerable<string> selected)
-        {
-            return _skillsConfig.Column2Skills.Select(c => new SkillViewModel
-            {
-                Name = c,
-                Selected = selected != null && selected.Any(s => s == c)
-            });
-        }
-
+        
         private IEnumerable<string> GetCustomSkills(IEnumerable<string> selected)
         {
             if (selected == null)
@@ -119,15 +116,14 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                 return new List<string>();
             }
 
-            return selected.Except(_skillsConfig.Column1Skills).Except(_skillsConfig.Column2Skills);
+            return selected.Except(CandidateSkills.Skills);
         }
 
-        private IEnumerable<string> SortSkills(IEnumerable<string> selected)
+        private IEnumerable<string> SortSkills(IList<string> selected)
         {
             var filteredSelectedSkills = selected.Distinct();
 
-            var orderedSkills = _skillsConfig.Column1Skills
-                .Union(_skillsConfig.Column2Skills)
+            var orderedSkills = CandidateSkills.Skills
                 .Union(selected);
 
             return orderedSkills.Where(filteredSelectedSkills.Contains);

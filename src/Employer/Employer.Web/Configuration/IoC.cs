@@ -23,7 +23,6 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.Configure<ManageApprenticeshipsRoutes>(configuration.GetSection("ManageApprenticeshipsRoutes"));
             services.AddSingleton<ManageApprenticeshipsLinkHelper>();
             services.Configure<AuthenticationConfiguration>(configuration.GetSection("Authentication"));
-            services.Configure<SkillsConfiguration>(configuration.GetSection("SkillsConfiguration"));
 
             RegisterProviderApiClientDep(services, configuration);
 
