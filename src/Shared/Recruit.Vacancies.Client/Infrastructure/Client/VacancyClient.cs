@@ -119,7 +119,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _messaging.SendCommandAsync(command);
         }
 
-        public Task SetupEmployer(string employerAccountId)
+        public Task SetupEmployerAsync(string employerAccountId)
         {
             var command = new SetupEmployerCommand
             {

@@ -46,7 +46,7 @@ namespace Esfa.Recruit.Employer.Web.Middleware
             var key = $"setup_employer_{employerAccountId}";
             if (context.Request.Cookies[key] == null)
             {
-                await _client.SetupEmployer(employerAccountId);
+                await _client.SetupEmployerAsync(employerAccountId);
                 context.Response.Cookies.Append(key, String.Empty);
             }
         }

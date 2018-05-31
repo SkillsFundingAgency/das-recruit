@@ -6,6 +6,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Dashboard;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Entities;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
@@ -24,6 +25,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<IApprenticeshipProgramme> GetApprenticeshipProgrammeAsync(string programmeId);
         Task<IEnumerable<LegalEntity>> GetEmployerLegalEntitiesAsync(string employerAccountId);
         Task<IEnumerable<string>> GetEmployerIdentifiersAsync(string userId);
-        Task SetupEmployer(string employerAccountId);
+        Task SetupEmployerAsync(string employerAccountId);
+        Task<CandidateSkills> GetCandidateSkillsAsync();
     }
 }
