@@ -43,11 +43,19 @@ namespace Esfa.Recruit.Employer.Web.Middleware
 
         private async Task EnsureEmployerIsSetup(HttpContext context, string employerAccountId)
         {
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                SameSite = SameSiteMode.Strict,
+                Secure = true
+            };
+
             var key = string.Format(CookieNames.SetupEmployer, employerAccountId);
+
             if (context.Request.Cookies[key] == null)
             {
                 await _client.SetupEmployerAsync(employerAccountId);
-                context.Response.Cookies.Append(key, string.Empty);
+                context.Response.Cookies.Append(key, string.Empty, cookieOptions);
             }
         }
     }
