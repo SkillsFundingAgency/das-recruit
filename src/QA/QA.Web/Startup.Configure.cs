@@ -62,7 +62,8 @@ namespace Esfa.Recruit.Qa.Web
             app.UseHsts(hsts => hsts.MaxAge(365));
             app.UseXContentTypeOptions();
             app.UseReferrerPolicy(opts => opts.NoReferrer());
-            
+            app.UseXXssProtection(opts => opts.EnabledWithBlockMode());
+
             app.UseRedirectValidation(opts => {
                 opts.AllowSameHostRedirectsToHttps();
                 opts.AllowedDestinations(GetAllowableDestinations(_authenticationConfig, _externalLinks));
