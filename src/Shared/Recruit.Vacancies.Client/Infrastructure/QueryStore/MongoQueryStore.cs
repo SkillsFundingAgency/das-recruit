@@ -37,7 +37,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             var filter = Builders<T>.Filter.Eq(d => d.Type, typeName);
 
             var collection = GetCollection<T>();
-            var result = await RetryPolicy.ExecuteAsync(context => collection.FindAsync(filter),  new Context(nameof(IQueryStore.GetAllByTypeAsync)));
+            var result = await RetryPolicy.ExecuteAsync(context => collection.FindAsync(filter), new Context(nameof(IQueryStore.GetAllByTypeAsync)));
 
             return result?.ToEnumerable();
         }

@@ -42,10 +42,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var collection = GetCollection<VacancyReview>();
             var result = await RetryPolicy.ExecuteAsync(context => collection
                                     .Find(FilterDefinition<VacancyReview>.Empty)
-                                    .Sort(Builders<VacancyReview>.Sort.Descending(r => r.CreatedDate))
                                     .ToListAsync(), new Context(nameof(GetAllAsync)));
 
-            return result;
+            return result.OrderByDescending(x => x.CreatedDate);
         }
 
         public Task UpdateAsync(VacancyReview review)
