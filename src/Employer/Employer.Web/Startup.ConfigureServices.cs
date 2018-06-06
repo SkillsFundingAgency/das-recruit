@@ -1,4 +1,3 @@
-using System;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.AspNetCore.Hosting;
