@@ -39,20 +39,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
             return collection;
         }
 
-        protected Task Retry(Func<Task> func)
-        {
-            var policy = GetRetryPolicy();
-
-            return policy.ExecuteAsync(func);
-        }
-
-        protected Task<T> Retry<T>(Func<Task<T>> func)
-        {
-            var policy = GetRetryPolicy();
-
-            return policy.ExecuteAsync(func);
-        }
-
         private Polly.Retry.RetryPolicy GetRetryPolicy()
         {
             return Policy
@@ -63,7 +49,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
                         TimeSpan.FromSeconds(2),
                         TimeSpan.FromSeconds(4)
                     }, (exception, timeSpan, retryCount, context) => {
-                        _logger.LogWarning($"Error executing Mongo Command for {context["methodName"]}. Retrying in {timeSpan.Seconds} secs...attempt: {retryCount}");    
+                        _logger.LogWarning($"Error executing Mongo Command for method {context.OperationKey}. Retrying in {timeSpan.Seconds} secs...attempt: {retryCount}");    
                     });
         }
     }
