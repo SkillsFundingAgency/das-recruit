@@ -30,6 +30,7 @@ namespace Esfa.Recruit.Qa.Web.Configuration
                 {
                     options.Wtrealm = authConfig.Wtrealm;
                     options.MetadataAddress = authConfig.MetaDataAddress;
+                    options.UseTokenLifetime = false;
                     //options.CallbackPath = "/";
                     //options.SkipUnrecognizedRequests = true;
                 })
