@@ -5,7 +5,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
-using Polly;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 {
@@ -27,7 +26,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
                 throw new InfrastructureException($"Expected that collection: {Collection} would already be created.");
 
             var filter = Builders<T>.Filter.Eq(d => d.Id, key);
-            var result = await RetryPolicy.ExecuteAsync(context => collection.DeleteOneAsync(filter), new Context(nameof(IQueryStore.DeleteAsync)));
+            var result = await RetryPolicy.ExecuteAsync(() => collection.DeleteOneAsync(filter));
 
             return result.DeletedCount == 1;
         }
@@ -37,7 +36,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             var filter = Builders<T>.Filter.Eq(d => d.Type, typeName);
 
             var collection = GetCollection<T>();
-            var result = await RetryPolicy.ExecuteAsync(context => collection.FindAsync(filter),  new Context(nameof(IQueryStore.GetAllByTypeAsync)));
+            var result = await RetryPolicy.ExecuteAsync(() => collection.FindAsync(filter));
 
             return result?.ToEnumerable();
         }
@@ -47,7 +46,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             var filter = Builders<T>.Filter.Eq(d => d.Id, key);
 
             var collection = GetCollection<T>();
-            var result = await RetryPolicy.ExecuteAsync(context => collection.FindAsync(filter), new Context(nameof(IQueryStore.GetAsync)));
+            var result = await RetryPolicy.ExecuteAsync(() => collection.FindAsync(filter));
 
             return result?.FirstOrDefault();
         }
@@ -61,7 +60,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 
             var filter = Builders<T>.Filter.Eq(d => d.Id, item.Id);
             
-            return RetryPolicy.ExecuteAsync(context => collection.ReplaceOneAsync(filter, item, new UpdateOptions { IsUpsert = true }), new Context(nameof(IQueryStore.UpsertAsync)));
+            return RetryPolicy.ExecuteAsync(() => collection.ReplaceOneAsync(filter, item, new UpdateOptions { IsUpsert = true }));
         }
     }
 }

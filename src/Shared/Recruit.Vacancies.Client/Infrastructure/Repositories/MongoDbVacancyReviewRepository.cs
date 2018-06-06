@@ -8,7 +8,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
-using Polly;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 {
@@ -25,7 +24,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         public Task CreateAsync(VacancyReview vacancy)
         {
             var collection = GetCollection<VacancyReview>();
-            return RetryPolicy.ExecuteAsync(context => collection.InsertOneAsync(vacancy), new Context(nameof(CreateAsync)));
+            return RetryPolicy.ExecuteAsync(() => collection.InsertOneAsync(vacancy));
         }
 
         public async Task<VacancyReview> GetAsync(Guid reviewId)
@@ -33,17 +32,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var filter = Builders<VacancyReview>.Filter.Eq(r => r.Id, reviewId);
 
             var collection = GetCollection<VacancyReview>();
-            var result = await RetryPolicy.ExecuteAsync(context => collection.FindAsync(filter), new Context(nameof(GetAsync)));
+            var result = await RetryPolicy.ExecuteAsync(() => collection.FindAsync(filter));
             return result.SingleOrDefault();
         }
 
         public async Task<IEnumerable<VacancyReview>> GetAllAsync()
         {
             var collection = GetCollection<VacancyReview>();
-            var result = await RetryPolicy.ExecuteAsync(context => collection
+            var result = await RetryPolicy.ExecuteAsync(() => collection
                                     .Find(FilterDefinition<VacancyReview>.Empty)
                                     .Sort(Builders<VacancyReview>.Sort.Descending(r => r.CreatedDate))
-                                    .ToListAsync(), new Context(nameof(GetAllAsync)));
+                                    .ToListAsync());
 
             return result;
         }
@@ -54,7 +53,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var filter = filterBuilder.Eq(v => v.Id, review.Id) & filterBuilder.Eq(v => v.VacancyReference, review.VacancyReference);
             var collection = GetCollection<VacancyReview>();
            
-            return RetryPolicy.ExecuteAsync(context => collection.ReplaceOneAsync(filter, review), new Context(nameof(UpdateAsync)));
+            return RetryPolicy.ExecuteAsync(() => collection.ReplaceOneAsync(filter, review));
         }
     }
 }

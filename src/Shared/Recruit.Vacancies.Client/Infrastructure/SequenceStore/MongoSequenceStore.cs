@@ -5,7 +5,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
-using Polly;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.SequenceStore
 {
@@ -27,7 +26,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.SequenceStore
             var update = Builders<Sequence>.Update.Inc(x => x.LastValue, 1);
             var options = new FindOneAndUpdateOptions<Sequence> { ReturnDocument = ReturnDocument.After };
             
-            var newSequence = await RetryPolicy.ExecuteAsync(context => collection.FindOneAndUpdateAsync(filter, update, options), new Context(nameof(GenerateAsync)));
+            var newSequence = await RetryPolicy.ExecuteAsync(() => collection.FindOneAndUpdateAsync(filter, update, options));
 
             if (newSequence == null)
             {
