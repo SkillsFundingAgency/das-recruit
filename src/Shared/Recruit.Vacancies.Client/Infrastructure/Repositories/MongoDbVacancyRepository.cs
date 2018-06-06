@@ -11,7 +11,6 @@ using System.Linq.Expressions;
 using Esfa.Recruit.Vacancies.Client.Application.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
 using Microsoft.Extensions.Logging;
-using Polly;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 {
@@ -30,7 +29,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         public async Task CreateAsync(Vacancy vacancy)
         {
             var collection = GetCollection<Vacancy>();
-            await RetryPolicy.ExecuteAsync(context => collection.InsertOneAsync(vacancy), new Context(nameof(CreateAsync)));
+            await RetryPolicy.ExecuteAsync(() => collection.InsertOneAsync(vacancy));
         }
 
         public async Task<Vacancy> GetVacancyAsync(long vacancyReference)
@@ -59,7 +58,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var options = new FindOptions<Vacancy> { Limit = 1 };
 
             var collection = GetCollection<Vacancy>();
-            var result = await RetryPolicy.ExecuteAsync(context => collection.FindAsync(filter, options), new Context(nameof(FindVacancy)));
+            var result = await RetryPolicy.ExecuteAsync(() => collection.FindAsync(filter, options));
             return result.SingleOrDefault();
         }
 
@@ -69,7 +68,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 
             var collection = GetCollection<BsonDocument>();
 
-            var result = await RetryPolicy.ExecuteAsync(context => collection.FindAsync<T>(filter), new Context(nameof(GetVacanciesByEmployerAccountAsync)));
+            var result = await RetryPolicy.ExecuteAsync(() => collection.FindAsync<T>(filter));
     
             return await result.ToListAsync();
         }
@@ -88,7 +87,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             };
 
             var collection = GetCollection<Vacancy>();
-            var result = await RetryPolicy.ExecuteAsync(context => collection.FindAsync(filter, options), new Context(nameof(GetSingleVacancyForPostcode)));
+            var result = await RetryPolicy.ExecuteAsync(() => collection.FindAsync(filter, options));
             return result.SingleOrDefault();
         }
 
@@ -96,7 +95,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         {
             var filter = Builders<Vacancy>.Filter.Eq(v => v.Id, vacancy.Id);
             var collection = GetCollection<Vacancy>();
-            await RetryPolicy.ExecuteAsync(context => collection.ReplaceOneAsync(filter, vacancy), new Context(nameof(UpdateAsync)));
+            await RetryPolicy.ExecuteAsync(() => collection.ReplaceOneAsync(filter, vacancy));
         }
     }
 }

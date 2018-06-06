@@ -5,7 +5,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
-using Polly;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 {
@@ -24,7 +23,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var filter = Builders<User>.Filter.Eq(v => v.IdamsUserId, idamsUserId);
 
             var collection = GetCollection<User>();
-            var result = await RetryPolicy.ExecuteAsync(context => collection.FindAsync(filter), new Context(nameof(GetAsync)));
+            var result = await RetryPolicy.ExecuteAsync(() => collection.FindAsync(filter));
             return result.SingleOrDefault();
         }
         
@@ -32,7 +31,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         {
             var filter = Builders<User>.Filter.Eq(v => v.Id, user.Id);
             var collection = GetCollection<User>();
-            return RetryPolicy.ExecuteAsync(context => collection.ReplaceOneAsync(filter, user, new UpdateOptions { IsUpsert = true }), new Context(nameof(UpsertUserAsync)));
+            return RetryPolicy.ExecuteAsync(() => collection.ReplaceOneAsync(filter, user, new UpdateOptions { IsUpsert = true }));
         }
     }
 }
