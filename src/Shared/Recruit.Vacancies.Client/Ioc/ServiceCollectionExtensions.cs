@@ -14,6 +14,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Events;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Messaging;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.SequenceStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services;
@@ -92,8 +93,9 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.AddTransient<IQueryStore, MongoQueryStore>();
             services.AddTransient<IQueryStoreReader, QueryStoreClient>();
-  
             services.AddTransient<IQueryStoreWriter, QueryStoreClient>();
+
+            services.AddTransient<IReferenceDataReader, MongoDbReferenceDataRepository>();
         }
 
         private static void RegisterStorageProviderDeps(IServiceCollection services, IConfiguration configuration)

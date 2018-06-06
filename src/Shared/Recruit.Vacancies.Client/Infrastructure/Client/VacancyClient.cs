@@ -14,6 +14,8 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Dashboard;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.LiveVacancy;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Models;
 
@@ -28,6 +30,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly IEntityValidator<Vacancy, VacancyRuleSet> _validator;
         private readonly IApprenticeshipProgrammeProvider _apprenticeshipProgrammesProvider;
         private readonly IEmployerAccountService _employerAccountService;
+        private readonly IReferenceDataReader _referenceDataReader;
 
         public VacancyClient(
             IVacancyRepository repository,
@@ -36,7 +39,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             IMessaging messaging,
             IEntityValidator<Vacancy, VacancyRuleSet> validator,
             IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider,
-            IEmployerAccountService employerAccountService)
+            IEmployerAccountService employerAccountService,
+            IReferenceDataReader referenceDataReader)
         {
             _repository = repository;
             _reader = reader;
@@ -45,6 +49,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _validator = validator;
             _apprenticeshipProgrammesProvider = apprenticeshipProgrammesProvider;
             _employerAccountService = employerAccountService;
+            _referenceDataReader = referenceDataReader;
         }
 
         public Task UpdateVacancyAsync(Vacancy vacancy, VacancyUser user)
@@ -119,7 +124,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _messaging.SendCommandAsync(command);
         }
 
-        public Task SetupEmployer(string employerAccountId)
+        public Task SetupEmployerAsync(string employerAccountId)
         {
             var command = new SetupEmployerCommand
             {
@@ -152,6 +157,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         public Task<IEnumerable<string>> GetEmployerIdentifiersAsync(string userId)
         {
             return _employerAccountService.GetEmployerIdentifiersAsync(userId);
+        }
+
+        public Task<CandidateSkills> GetCandidateSkillsAsync()
+        {
+            return _referenceDataReader.GetCandidateSkillsAsync();
         }
 
         // Jobs
