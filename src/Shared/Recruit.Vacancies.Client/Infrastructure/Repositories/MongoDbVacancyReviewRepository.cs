@@ -8,6 +8,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using Polly;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 {
@@ -24,7 +25,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         public Task CreateAsync(VacancyReview vacancy)
         {
             var collection = GetCollection<VacancyReview>();
-            return RetryPolicy.ExecuteAsync(() => collection.InsertOneAsync(vacancy));
+            return RetryPolicy.ExecuteAsync(context => collection.InsertOneAsync(vacancy), new Context(nameof(CreateAsync)));
         }
 
         public async Task<VacancyReview> GetAsync(Guid reviewId)
@@ -32,19 +33,18 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var filter = Builders<VacancyReview>.Filter.Eq(r => r.Id, reviewId);
 
             var collection = GetCollection<VacancyReview>();
-            var result = await RetryPolicy.ExecuteAsync(() => collection.FindAsync(filter));
+            var result = await RetryPolicy.ExecuteAsync(context => collection.FindAsync(filter), new Context(nameof(GetAsync)));
             return result.SingleOrDefault();
         }
 
         public async Task<IEnumerable<VacancyReview>> GetAllAsync()
         {
             var collection = GetCollection<VacancyReview>();
-            var result = await RetryPolicy.ExecuteAsync(() => collection
+            var result = await RetryPolicy.ExecuteAsync(context => collection
                                     .Find(FilterDefinition<VacancyReview>.Empty)
-                                    .Sort(Builders<VacancyReview>.Sort.Descending(r => r.CreatedDate))
-                                    .ToListAsync());
+                                    .ToListAsync(), new Context(nameof(GetAllAsync)));
 
-            return result;
+            return result.OrderByDescending(x => x.CreatedDate);
         }
 
         public Task UpdateAsync(VacancyReview review)
@@ -53,7 +53,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var filter = filterBuilder.Eq(v => v.Id, review.Id) & filterBuilder.Eq(v => v.VacancyReference, review.VacancyReference);
             var collection = GetCollection<VacancyReview>();
            
-            return RetryPolicy.ExecuteAsync(() => collection.ReplaceOneAsync(filter, review));
+            return RetryPolicy.ExecuteAsync(context => collection.ReplaceOneAsync(filter, review), new Context(nameof(UpdateAsync)));
         }
     }
 }
