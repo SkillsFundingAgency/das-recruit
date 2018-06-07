@@ -4,8 +4,8 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
 {
     public class VacancyPreviewViewModel : DisplayVacancyViewModel
     {
-        
         public VacancyPreviewSectionState ApplicationInstructionsSectionState { get; internal set; }
+        public VacancyPreviewSectionState ApplicationMethodSectionState { get; internal set; }
         public VacancyPreviewSectionState ApplicationUrlSectionState { get; internal set; }
         public VacancyPreviewSectionState ContactSectionState { get; internal set; }
         public VacancyPreviewSectionState ClosingDateSectionState { get; internal set; }
@@ -60,6 +60,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
             nameof(ContactTelephone),
             nameof(ContactEmail),
             nameof(EmployerAddressElements),
+            nameof(ApplicationMethod),
             nameof(ApplicationInstructions),
             nameof(ApplicationUrl),
             nameof(ProviderName),

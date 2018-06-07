@@ -9,13 +9,11 @@
         <p id="vacancy-closing-date">@Model.ClosingDate</p>
     </div>
 </div>
-
 <div class="grid-row">
     <div class="column-full">
         <h2 class="heading-large">Apprenticeship summary</h2>
     </div>
 </div>
-
 <div class="grid-row">
     <div class="column-one-third">
         <ul class="list">
@@ -66,19 +64,16 @@
         </div>
     </div>
 </div>
-
 <div class="grid-row">
     <div class="column-full">
         <hr class="no-bottom-margin">
     </div>
 </div>
-
 <div class="grid-row">
     <div class="column-full">
         <h2 class="heading-large">Requirements and prospects</h2>
     </div>
 </div>
-
 <div class="grid-row">
     <div class="column-half">
         <h3 class="heading-small">Desired skills and personal qualities</h3>
@@ -91,19 +86,16 @@
         <p>@Model.ThingsToConsider</p>
     </div>
 </div>
-
 <div class="grid-row">
     <div class="column-full">
         <hr class="no-bottom-margin">
     </div>
 </div>
-
 <div class="grid-row">
     <div class="column-full">
         <h2 class="heading-large">About the employer</h2>
     </div>
 </div>
-
 <div class="grid-row">
     <div class="column-two-thirds">
         <h3 class="heading-small">Employer</h3>
@@ -120,34 +112,30 @@
         <p>@Model.ContactTelephone</p>
     </div>
 </div>
-
 <div class="grid-row">
     <div class="column-half">
         <h3 class="heading-small">Location</h3>
         <ul class="list">
             @foreach (var addrLine in Model.EmployerAddressElements)
-                        {
-            <li>@addrLine</li>
-                        }
+            {
+                <li>@addrLine</li>
+            }
         </ul>
     </div>
     <div class="column-half">
         <img asp-condition="@Model.HasMapUrl" id="static-map" src="@Model.MapUrl" />
     </div>
 </div>
-
 <div class="grid-row">
     <div class="column-full">
         <hr class="no-bottom-margin">
     </div>
 </div>
-
 <div class="grid-row">
     <div class="column-full">
         <h2 class="heading-large">Training provider</h2>
     </div>
 </div>
-
 <div class="grid-row">
     <div class="column-full">
         <p> @Model.ProviderName</p>
@@ -155,23 +143,28 @@
         <p>@Model.TrainingTitle</p>
     </div>
 </div>
-
 <div class="grid-row">
     <div class="column-full">
         <hr class="no-bottom-margin">
     </div>
 </div>
-
 <div id="offline-vacancy">
     <div class="grid-row">
         <div class="column-full">
-            <h2 class="heading-large">Employer's application instructions</h2>
-            <p class="application-instructions">
-                @Model.ApplicationInstructions
-            </p>
-            <p>This apprenticeship requires you to apply through the employer's website.</p>
-            <p>@Model.ApplicationUrl</p>
-            <p class="font-xsmall">Closing date: @Model.ClosingDate</p>
+            <h2 asp-condition="@Model.ShowGeneralApplicationProcessSectionTitle" class="heading-large">Application process</h2>
+            <h2 asp-condition="@Model.HasSpecifiedThroughExternalApplicationMethod" class="heading-large">Employer's application instructions</h2>
+            <div asp-condition="@Model.HasSpecifiedThroughFaaApplicationMethod">
+                <p>Candidates will apply through the <a href="@Model.FindAnApprenticeshipUrl" target="_blank">find an apprenticeship service</a></p>
+            </div>
+            <div asp-condition="@Model.HasSpecifiedThroughExternalApplicationMethod">
+                <p>This apprenticeship requires you to apply through the employer's website.</p>
+                <p>@Model.ApplicationUrl</p>
+            </div>
+            <div asp-condition="@Model.HasApplicationInstructions">
+                <p class="application-instructions">
+                    @Model.ApplicationInstructions
+                </p>
+            </div>
         </div>
     </div>
 </div>

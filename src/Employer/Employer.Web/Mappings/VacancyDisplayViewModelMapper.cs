@@ -1,4 +1,5 @@
-﻿using Esfa.Recruit.Employer.Web.Extensions;
+﻿using Esfa.Recruit.Employer.Web.Configuration;
+using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Services;
@@ -21,17 +22,20 @@ namespace Esfa.Recruit.Employer.Web.Mappings
         private readonly IGeocodeImageService _mapService;
         private readonly IGetMinimumWages _wageService;
         private readonly QualificationsConfiguration _qualificationsConfiguration;
+        private readonly ExternalLinksConfiguration _externalLinksConfiguration;
         private readonly IEmployerVacancyClient _client;
 
         public DisplayVacancyViewModelMapper(
                 IGeocodeImageService mapService,
                 IGetMinimumWages wageService, 
                 IOptions<QualificationsConfiguration> qualificationsConfigOptions,
+                IOptions<ExternalLinksConfiguration> externalLinksOptions,
                 IEmployerVacancyClient client)
         {
             _mapService = mapService;
             _wageService = wageService;
             _qualificationsConfiguration = qualificationsConfigOptions.Value;
+            _externalLinksConfiguration = externalLinksOptions.Value;
             _client = client;
         }
 
@@ -39,6 +43,7 @@ namespace Esfa.Recruit.Employer.Web.Mappings
         {
             var programme = await _client.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
 
+            vm.ApplicationMethod = vacancy.ApplicationMethod;
             vm.ApplicationInstructions = vacancy.ApplicationInstructions;
             vm.ApplicationUrl = vacancy.ApplicationUrl;
             vm.CanDelete = vacancy.CanDelete;
@@ -51,6 +56,7 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             vm.EmployerName = vacancy.EmployerName;
             vm.EmployerWebsiteUrl = vacancy.EmployerWebsiteUrl;
             vm.EmployerAddressElements = Enumerable.Empty<string>();
+            vm.FindAnApprenticeshipUrl = _externalLinksConfiguration.FindAnApprenticeshipUrl;
             vm.NumberOfPositions = vacancy.NumberOfPositions?.ToString();
             vm.NumberOfPositionsCaption = vacancy.NumberOfPositions.HasValue
                 ? $"{"position".ToQuantity(vacancy.NumberOfPositions.Value)} available"
@@ -76,21 +82,21 @@ namespace Esfa.Recruit.Employer.Web.Mappings
                         vacancy.EmployerLocation.Longitude.ToString(), MapImageWidth, MapImageHeight)
                     : _mapService.GetMapImageUrl(vacancy.EmployerLocation.Postcode, MapImageWidth, MapImageHeight);
                 vm.EmployerAddressElements = new[]
-                    {
-                        vacancy.EmployerLocation.AddressLine1,
-                        vacancy.EmployerLocation.AddressLine2,
-                        vacancy.EmployerLocation.AddressLine3,
-                        vacancy.EmployerLocation.AddressLine4,
-                        vacancy.EmployerLocation.Postcode
-                    }
-                    .Where(x => !string.IsNullOrEmpty(x));
+                {
+                    vacancy.EmployerLocation.AddressLine1,
+                    vacancy.EmployerLocation.AddressLine2,
+                    vacancy.EmployerLocation.AddressLine3,
+                    vacancy.EmployerLocation.AddressLine4,
+                    vacancy.EmployerLocation.Postcode
+                }
+                .Where(x => !string.IsNullOrEmpty(x));
             }
 
             if (vacancy.ProgrammeId != null)
             {
                 vm.TrainingTitle = programme?.Title;
                 vm.TrainingType = programme?.ApprenticeshipType.GetDisplayName();
-                vm.TrainingLevel = programme == null ? null : programme.Level.GetDisplayName();
+                vm.TrainingLevel = programme?.Level.GetDisplayName();
             }
 
             if (vacancy.Wage != null)

@@ -130,9 +130,9 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
         private bool IsValidStateForViewing(VacancyStatus status)
         {
             var validStatuses = new VacancyStatus[] 
-                { 
-                    VacancyStatus.PendingReview
-                };
+            {
+                VacancyStatus.PendingReview
+            };
 
             return validStatuses.Contains(status);
         }
@@ -140,10 +140,10 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
         private bool IsValidStateForReferral(VacancyStatus status)
         {
             var validStatuses = new VacancyStatus[] 
-                { 
-                    VacancyStatus.PendingReview,
-                    VacancyStatus.UnderReview
-                };
+            {
+                VacancyStatus.PendingReview,
+                VacancyStatus.UnderReview
+            };
 
             return validStatuses.Contains(status);
         }

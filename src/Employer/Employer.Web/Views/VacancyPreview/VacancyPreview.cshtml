@@ -298,19 +298,33 @@
 
 <div class="grid-row">
     <div class="column-full">
-        <h2 class="heading-large">Employer's application instructions</h2>
-        <div class="@GetSectionClass(Model.ApplicationInstructionsSectionState)">
-            <h2 class="heading-small">Explain the application process (optional)</h2>
-            <span esfa-validation-message-for="ApplicationInstructions" class="error-message"></span>
-            <p asp-condition="@Model.HasApplicationInstructions">@Model.ApplicationInstructions</p>
-            @EditLink(RouteNames.ApplicationProcess_Get, Model.ApplicationInstructionsSectionState, "link-application-instructions")
+        <h2 asp-condition="@Model.ShowGeneralApplicationProcessSectionTitle" class="heading-large">Application process</h2>
+        <h2 asp-condition="@Model.HasSpecifiedThroughExternalApplicationMethod" class="heading-large">Employer's application instructions</h2>
+        <div asp-condition="@Model.HasNotSpecifiedApplicationMethod" class="@GetSectionClass(Model.ApplicationMethodSectionState)">
+            <h2 class="heading-small">How will the candidates apply for this vacancy?</h2>
+            <span esfa-validation-message-for="ApplicationMethod" class="error-message"></span>
+            @EditLink(RouteNames.ApplicationProcess_Get, Model.ApplicationMethodSectionState, "link-application-method")
         </div>
-        <p>This apprenticeship requires you to apply through the employer's website.</p>
-        <div class="@GetSectionClass(Model.ApplicationUrlSectionState)"> 
-            <h2 class="heading-small">Apply now web address</h2>
-            <span esfa-validation-message-for="ApplicationUrl" class="error-message"></span>
-            <p asp-condition="@Model.HasApplicationUrl">@Model.ApplicationUrl</p>
-            @EditLink(RouteNames.ApplicationProcess_Get, Model.ApplicationUrlSectionState, "link-application-link")  
+        <div asp-condition="@Model.HasSpecifiedThroughFaaApplicationMethod">
+            <p>Candidates will apply through the <a href="@Model.FindAnApprenticeshipUrl" target="_blank">find an apprenticeship service</a></p>
+            @EditLink(RouteNames.ApplicationProcess_Get, Model.ApplicationMethodSectionState, "link-application-method")
+        </div>
+        <div asp-condition="@Model.HasSpecifiedThroughExternalApplicationMethod">
+            <div asp-condition="@Model.HasApplicationUrl">
+                <p>This apprenticeship requires you to apply through the employer's website.</p>
+                <div class="@GetSectionClass(Model.ApplicationUrlSectionState)">
+                    <h2 class="heading-small">Apply now web address</h2>
+                    <span esfa-validation-message-for="ApplicationUrl" class="error-message"></span>
+                    <p>@Model.ApplicationUrl</p>
+                    @EditLink(RouteNames.ApplicationProcess_Get, Model.ApplicationUrlSectionState, "link-application-link")
+                </div>
+            </div>
+            <div class="@GetSectionClass(Model.ApplicationInstructionsSectionState)">
+                <h2 class="heading-small">Explain the application process (optional)</h2>
+                <span esfa-validation-message-for="ApplicationInstructions" class="error-message"></span>
+                <p>@Model.ApplicationInstructions</p>
+                @EditLink(RouteNames.ApplicationProcess_Get, Model.ApplicationInstructionsSectionState, "link-application-instructions")
+            </div>
         </div>
     </div>
 </div>

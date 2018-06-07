@@ -6,17 +6,21 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
+using Esfa.Recruit.Employer.Web.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 {
     public class ApplicationProcessOrchestrator : EntityValidatingOrchestrator<Vacancy, ApplicationProcessEditModel>
     {
-        private const VacancyRuleSet ValidationRules = VacancyRuleSet.ApplicationUrl | VacancyRuleSet.ApplicationInstructions;
+        private const VacancyRuleSet ValidationRules = VacancyRuleSet.ApplicationMethod;
         private readonly IEmployerVacancyClient _client;
+        private readonly ExternalLinksConfiguration _externalLinks;
 
-        public ApplicationProcessOrchestrator(IEmployerVacancyClient client, ILogger<ApplicationProcessOrchestrator> logger) : base(logger)
+        public ApplicationProcessOrchestrator(IEmployerVacancyClient client, IOptions<ExternalLinksConfiguration> externalLinks, ILogger<ApplicationProcessOrchestrator> logger) : base(logger)
         {
             _client = client;
+            _externalLinks = externalLinks.Value;
         }
 
         public async Task<ApplicationProcessViewModel> GetApplicationProcessViewModelAsync(VacancyRouteModel vrm)
@@ -26,6 +30,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             var vm = new ApplicationProcessViewModel
             {
                 Title = vacancy.Title,
+                FindAnApprenticeshipUrl = _externalLinks.FindAnApprenticeshipUrl,
+                ApplicationMethod = vacancy.ApplicationMethod,
                 ApplicationInstructions = vacancy.ApplicationInstructions,
                 ApplicationUrl = vacancy.ApplicationUrl
             };
@@ -37,6 +43,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         {
             var vm = await GetApplicationProcessViewModelAsync((VacancyRouteModel)m);
 
+            vm.ApplicationMethod = m.ApplicationMethod;
             vm.ApplicationInstructions = m.ApplicationInstructions;
             vm.ApplicationUrl = m.ApplicationUrl;
 
@@ -46,9 +53,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         public async Task<OrchestratorResponse> PostApplicationProcessEditModelAsync(ApplicationProcessEditModel m, VacancyUser user)
         {
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, m, RouteNames.ApplicationProcess_Post);
-            
-            vacancy.ApplicationInstructions = m.ApplicationInstructions;
-            vacancy.ApplicationUrl = m.ApplicationUrl;
+            var hasSelectedApplyThroughFaa = m.ApplicationMethod == ApplicationMethod.ThroughFindAnApprenticeship;
+
+            vacancy.ApplicationMethod = m.ApplicationMethod;
+            vacancy.ApplicationInstructions = hasSelectedApplyThroughFaa ? null : m.ApplicationInstructions;
+            vacancy.ApplicationUrl = hasSelectedApplyThroughFaa ? null : m.ApplicationUrl;
 
             return await ValidateAndExecute(
                 vacancy,
@@ -59,10 +68,12 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         protected override EntityToViewModelPropertyMappings<Vacancy, ApplicationProcessEditModel> DefineMappings()
         {
-            var mappings = new EntityToViewModelPropertyMappings<Vacancy, ApplicationProcessEditModel>();
-
-            mappings.Add(e => e.ApplicationUrl, vm => vm.ApplicationUrl);
-            mappings.Add(e => e.ApplicationInstructions, vm => vm.ApplicationInstructions);
+            var mappings = new EntityToViewModelPropertyMappings<Vacancy, ApplicationProcessEditModel>
+            {
+                { e => e.ApplicationMethod, vm => vm.ApplicationMethod },
+                { e => e.ApplicationUrl, vm => vm.ApplicationUrl },
+                { e => e.ApplicationInstructions, vm => vm.ApplicationInstructions }
+            };
 
             return mappings;
         }

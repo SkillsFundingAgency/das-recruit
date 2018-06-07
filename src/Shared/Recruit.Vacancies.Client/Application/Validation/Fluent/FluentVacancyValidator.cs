@@ -65,9 +65,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
             ValidateOutcomeDescription();
 
-            ValidateApplicationUrl();
-
-            ValidateApplicationInstructions();
+            ValidateApplicationMethod();
 
             ValidateEmployerContactDetails();
 
@@ -223,7 +221,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .RunCondition(VacancyRuleSet.Duration)
                     .WithRuleId(VacancyRuleSet.Duration);
             });
-            
         }
 
         private void ValidateWorkingWeek()
@@ -389,6 +386,42 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .WithRuleId(VacancyRuleSet.OutcomeDescription);
         }
 
+        private void ValidateApplicationMethod()
+        {
+            RuleFor(x => x.ApplicationMethod)
+                    .NotEmpty()
+                        .WithMessage("You must select an application method")
+                        .WithErrorCode("85")
+                    .IsInEnum()
+                        .WithMessage("You must select an application method")
+                        .WithErrorCode("85")
+                    .RunCondition(VacancyRuleSet.ApplicationMethod)
+                    .WithRuleId(VacancyRuleSet.ApplicationMethod);
+
+            When(x => x.ApplicationMethod == ApplicationMethod.ThroughFindAnApprenticeship, () =>
+            {
+                RuleFor(x => x.ApplicationUrl)
+                    .Empty()
+                        .WithMessage("The application url must be empty when application through external website option is specified")
+                        .WithErrorCode("86")
+                    .RunCondition(VacancyRuleSet.ApplicationMethod)
+                    .WithRuleId(VacancyRuleSet.ApplicationMethod);
+
+                RuleFor(x => x.ApplicationInstructions)
+                    .Empty()
+                        .WithMessage("The application process must be empty when application through external website option is specified")
+                        .WithErrorCode("89")
+                    .RunCondition(VacancyRuleSet.ApplicationMethod)
+                    .WithRuleId(VacancyRuleSet.ApplicationMethod);
+            });
+
+            When(x => x.ApplicationMethod == ApplicationMethod.ThroughEmployerApplicationSite, () =>
+            {
+                ValidateApplicationUrl();
+                ValidateApplicationInstructions();
+            });
+        }
+
         private void ValidateApplicationUrl()
         {
             RuleFor(x => x.ApplicationUrl)
@@ -401,8 +434,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .Must(FluentExtensions.BeValidWebUrl)
                     .WithMessage("Enter a valid website address")
                     .WithErrorCode("86")
-                .RunCondition(VacancyRuleSet.ApplicationUrl)
-                .WithRuleId(VacancyRuleSet.ApplicationUrl);
+                .RunCondition(VacancyRuleSet.ApplicationMethod)
+                .WithRuleId(VacancyRuleSet.ApplicationMethod);
         }
 
         private void ValidateApplicationInstructions()
@@ -414,8 +447,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .ValidFreeTextCharacters()
                     .WithMessage("You have entered invalid characters")
                     .WithErrorCode("89")
-                .RunCondition(VacancyRuleSet.ApplicationInstructions)
-                .WithRuleId(VacancyRuleSet.ApplicationInstructions);
+                .RunCondition(VacancyRuleSet.ApplicationMethod)
+                .WithRuleId(VacancyRuleSet.ApplicationMethod);
         }
 
         private void ValidateEmployerContactDetails()

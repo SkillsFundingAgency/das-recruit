@@ -1,22 +1,49 @@
-﻿@model Esfa.Recruit.Employer.Web.ViewModels.ApplicationProcessViewModel
+﻿@using Esfa.Recruit.Vacancies.Client.Domain.Entities
+@model Esfa.Recruit.Employer.Web.ViewModels.ApplicationProcessViewModel
 <div class="grid-row">
     <div class="column-two-thirds">
         <h1 class="heading-xlarge small-bottom-margin">@Model.Title</h1>
         <hr>
         @Html.Partial("_ValidationSummary", new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames })
         <form asp-route="@RouteNames.ApplicationProcess_Post" novalidate>
-            <div esfa-validation-marker-for="ApplicationUrl" class="form-group">
-                <label asp-for="ApplicationUrl" class="form-label-bold">Enter the web address candidates should use to apply for this vacancy</label>
-                <span esfa-validation-message-for="ApplicationUrl" class="error-message"></span>
-                <input asp-for="ApplicationUrl" class="form-control" maxlength="200" />
+            <div esfa-validation-marker-for="ApplicationMethod" class="form-group">
+                <fieldset>
+                    <label class="form-label-bold sfa-small-bottom-margin">
+                        Application process?
+                        <span class="form-hint">How will candidates apply for this vacancy</span>
+                    </label>
+                    <span esfa-validation-message-for="ApplicationMethod" class="error-message"></span>
+                    <br />
+                    <div class="multiple-choice" data-target="application-method-faa">
+                        <input asp-for="ApplicationMethod" value="@ApplicationMethod.ThroughFindAnApprenticeship" type="radio" id="application-method-faa" aria-labelledby="apprenticeship-vacancy-management-type-label">
+                        <label for="application-method-faa" class="block-label selection-button-radio">
+                            Candidates will apply through the <a href="@Model.FindAnApprenticeshipUrl" target="_blank">find an apprenticeship service</a>
+                        </label>
+                    </div>
+                    <div class="multiple-choice" data-target="application-method-external-panel">
+                        <input asp-for="ApplicationMethod" value="@ApplicationMethod.ThroughEmployerApplicationSite" type="radio" id="application-method-external" aria-controls="application-method-external-panel" aria-labelledby="apprenticeship-vacancy-management-type-label">
+                        <label for="application-method-external" class="block-label selection-button-radio">
+                            Candidates will apply through an external website
+                        </label>
+                    </div>
+                </fieldset>
             </div>
-            <div esfa-validation-marker-for="ApplicationInstructions" class="form-group">
-                <label asp-for="ApplicationInstructions" class="form-label-bold">Explain the application process (optional)</label>
-                <span esfa-validation-message-for="ApplicationInstructions" class="error-message"></span>
-                <textarea asp-for="ApplicationInstructions" class="form-control form-control-3-4 character-count" rows="5" data-val-length-max="500"></textarea>
-                <span class="maxchar-count">500</span>
-                <span class="maxchar-text"> characters remaining</span>
+
+            <div id="application-method-external-panel" class="panel panel-border-narrow">
+                <div esfa-validation-marker-for="ApplicationUrl" class="form-group">
+                    <label asp-for="ApplicationUrl" class="form-label-bold">Enter the web address candidates should use to apply for this vacancy</label>
+                    <span esfa-validation-message-for="ApplicationUrl" class="error-message"></span>
+                    <input asp-for="ApplicationUrl" class="form-control" maxlength="200" />
+                </div>
+                <div esfa-validation-marker-for="ApplicationInstructions" class="form-group">
+                    <label asp-for="ApplicationInstructions" class="form-label-bold">Explain the application process (optional)</label>
+                    <span esfa-validation-message-for="ApplicationInstructions" class="error-message"></span>
+                    <textarea asp-for="ApplicationInstructions" class="form-control form-control-3-4" rows="5" data-val-length-max="500"></textarea>
+                    <span class="maxchar-count">500</span>
+                    <span class="maxchar-text"> characters remaining</span>
+                </div>
             </div>
+
             <div class="form-group">
                 <input type="submit" value="Save and continue" esfa-automation="btn-continue" class="button save-button" />
                 <a asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@ApplicationProcessViewModel.PreviewSectionAnchor" esfa-automation="link-cancel" class="button-link">Cancel</a>
@@ -24,3 +51,13 @@
         </form>
     </div>
 </div>
+
+@section footerJS
+{
+    <script>
+        $(function () {
+            var showHideContent = new GOVUK.ShowHideContent();
+            showHideContent.init();
+        });
+    </script>
+}
