@@ -87,7 +87,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             return result
                         .ToList()
                         .OrderByDescending(x => x.VacancyReference)
-                        .SingleOrDefault();
+                        .FirstOrDefault();
         }
 
         public async Task UpdateAsync(Vacancy vacancy)
