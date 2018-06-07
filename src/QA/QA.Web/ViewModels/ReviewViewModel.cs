@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Qa.Web.ViewModels
 {
@@ -10,6 +11,7 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public string ShortDescription { get; internal set; }
         public string ClosingDate { get; internal set; }
         public string ApplicationInstructions { get; internal set; }
+        public ApplicationMethod ApplicationMethod { get; internal set; }
         public string ApplicationUrl { get; internal set; }
         public string ContactName { get; internal set; }
         public string ContactEmail { get; internal set; }

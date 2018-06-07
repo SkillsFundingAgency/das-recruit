@@ -228,7 +228,7 @@
             <img id="static-map" src="@Model.MapUrl" alt="Location map" />
         </div>
     </div>
-                
+
     <div class="grid-row">
         <div class="column-full">
             <div>
@@ -247,13 +247,12 @@
             <hr class="no-bottom-margin">
         </div>
     </div>
-                
+
     <div class="grid-row">
         <div class="column-full">
             <h2 class="heading-large">Training provider</h2>
         </div>
     </div>
-
 
     <div class="grid-row">
         <div class="column-full">
@@ -278,7 +277,7 @@
         <div class="column-full">
             <div class="form-group inline">
                 <div class="form-group small-top-margin">
-                        <input type="submit" value="Approve vacancy" class="button" />                
+                        <input type="submit" value="Approve vacancy" class="button" />
                         @if(!Model.IsEditable)
                         {
                             <a asp-route="@RouteNames.Vacancy_Review_Referral_Get" class="button-link">Refer vacancy</a>

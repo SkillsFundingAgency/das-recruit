@@ -75,6 +75,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             viewModel.ContactSectionState = GetViewSectionState(viewModel, false, vm => vm.ContactName, vm => vm.ContactEmail, vm => vm.ContactTelephone);
             viewModel.EmployerAddressSectionState = GetViewSectionState(viewModel, true, vm => vm.EmployerAddressElements);
             viewModel.ApplicationInstructionsSectionState = GetViewSectionState(viewModel, true, vm => vm.ApplicationInstructions);
+            viewModel.ApplicationMethodSectionState = GetViewSectionState(viewModel, true, vm => vm.ApplicationMethod);
             viewModel.ApplicationUrlSectionState = GetViewSectionState(viewModel, true, vm => vm.ApplicationUrl);
             viewModel.ProviderSectionState = GetViewSectionState(viewModel, true, vm => vm.ProviderName);
             viewModel.TrainingSectionState = GetViewSectionState(viewModel, true, vm => vm.TrainingType, vm => vm.TrainingTitle);
@@ -140,6 +141,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             viewModel.ContactSectionState = GetSubmitSectionState(vm => vm.ContactName, vm => vm.ContactEmail, vm => vm.ContactTelephone);
             viewModel.EmployerAddressSectionState = GetSubmitSectionState(vm => vm.EmployerAddressElements);
             viewModel.ApplicationInstructionsSectionState = GetSubmitSectionState(vm => vm.ApplicationInstructions);
+            viewModel.ApplicationMethodSectionState = GetSubmitSectionState(vm => vm.ApplicationMethod);
             viewModel.ApplicationUrlSectionState = GetSubmitSectionState(vm => vm.ApplicationUrl);
             viewModel.ProviderSectionState = GetSubmitSectionState(vm => vm.ProviderName);
             viewModel.TrainingSectionState = GetSubmitSectionState(vm => vm.Programme, vm => vm.TrainingType, vm => vm.TrainingTitle);

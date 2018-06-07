@@ -48,6 +48,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 vm.SubmittedByName = vacancy.SubmittedByUser.Name;
                 vm.SubmittedByEmail = vacancy.SubmittedByUser.Email;
                 vm.ApplicationInstructions = vacancy.ApplicationInstructions;
+                vm.ApplicationMethod = vacancy.ApplicationMethod.Value;
                 vm.ApplicationUrl = vacancy.ApplicationUrl;
                 vm.ContactName = vacancy.EmployerContactName;
                 vm.ContactEmail = vacancy.EmployerContactEmail;

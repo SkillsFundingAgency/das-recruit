@@ -33,6 +33,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public VacancyUser DeletedByUser { get; internal set; }
         
         public string ApplicationInstructions { get; set; }
+        public ApplicationMethod? ApplicationMethod { get; set; }
         public string ApplicationUrl { get; set; }
         public DateTime? ClosingDate { get; set; }
         public string Description { get; set; }

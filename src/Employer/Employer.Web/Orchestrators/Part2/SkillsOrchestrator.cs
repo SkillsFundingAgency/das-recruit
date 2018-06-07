@@ -93,9 +93,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         
         protected override EntityToViewModelPropertyMappings<Vacancy, SkillsEditModel> DefineMappings()
         {
-            var mappings = new EntityToViewModelPropertyMappings<Vacancy, SkillsEditModel>();
-
-            mappings.Add(e => e.Skills, vm => vm.Skills);
+            var mappings = new EntityToViewModelPropertyMappings<Vacancy, SkillsEditModel>
+            {
+                { e => e.Skills, vm => vm.Skills }
+            };
 
             return mappings;
         }

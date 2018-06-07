@@ -7,6 +7,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
     public abstract class DisplayVacancyViewModel
     {
         public string ApplicationInstructions { get; internal set; }
+        public ApplicationMethod? ApplicationMethod { get; internal set; }
         public string ApplicationUrl { get; internal set; }
         public bool CanDelete { get; internal set; }
         public bool CanSubmit { get; internal set; }
@@ -18,6 +19,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public string EmployerName { get; internal set; }
         public string EmployerWebsiteUrl { get; internal set; }
         public string ExpectedDuration { get; internal set; }
+        public string FindAnApprenticeshipUrl { get; internal set; }
         public string HoursPerWeek { get; internal set; }
         public bool IsDisabilityConfident { get; internal set; }
         public Address Location { get; internal set; }
@@ -93,9 +95,13 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public bool HasContactTelephone => !string.IsNullOrWhiteSpace(ContactTelephone);
 
         public bool HasEmployerAddressElements => EmployerAddressElements != null && EmployerAddressElements.Any();
-
+        public bool HasNotSpecifiedApplicationMethod => !ApplicationMethod.HasValue;
+        public bool HasApplicationMethod => ApplicationMethod.HasValue;
+        public bool HasSpecifiedThroughFaaApplicationMethod => HasApplicationMethod && ApplicationMethod.Value == Esfa.Recruit.Vacancies.Client.Domain.Entities.ApplicationMethod.ThroughFindAnApprenticeship;
+        public bool HasSpecifiedThroughExternalApplicationMethod => HasApplicationMethod && ApplicationMethod.Value == Esfa.Recruit.Vacancies.Client.Domain.Entities.ApplicationMethod.ThroughEmployerApplicationSite;
         public bool HasApplicationInstructions => !string.IsNullOrWhiteSpace(ApplicationInstructions);
-
         public bool HasApplicationUrl => !string.IsNullOrWhiteSpace(ApplicationUrl);
+
+        public bool ShowGeneralApplicationProcessSectionTitle => ApplicationMethod == null || ApplicationMethod.Value != Esfa.Recruit.Vacancies.Client.Domain.Entities.ApplicationMethod.ThroughEmployerApplicationSite;
     }
 }
