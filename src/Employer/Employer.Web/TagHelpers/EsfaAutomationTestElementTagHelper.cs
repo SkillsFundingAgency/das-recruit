@@ -1,5 +1,4 @@
-﻿using Esfa.Recruit.Employer.Web.Configuration;
-using Esfa.Recruit.Shared.Configuration;
+﻿using Esfa.Recruit.Shared.Configuration;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using System.Threading.Tasks;

@@ -2,6 +2,7 @@
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
 using Esfa.Recruit.Employer.Web.ViewModels;
+using Esfa.Recruit.Shared;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -16,10 +17,13 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
     public class ApplicationProcessOrchestratorTests
     {
         private readonly Mock<IEmployerVacancyClient> _mockClient;
+        private readonly Mock<IFeature> _mockFeatureToggler;
 
         public ApplicationProcessOrchestratorTests()
         {
             _mockClient = new Mock<IEmployerVacancyClient>();
+            _mockFeatureToggler = new Mock<IFeature>();
+            _mockFeatureToggler.Setup(x => x.IsFeatureEnabled(FeatureNames.AllowThroughFaaApplicationMethod)).Returns(true);
         }
 
         [Fact]
@@ -34,7 +38,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
                         .Returns(new EntityValidationResult());
             _mockClient.Setup(x => x.UpdateVacancyAsync(It.IsAny<Vacancy>(), user));
 
-            var sut = new ApplicationProcessOrchestrator(_mockClient.Object, Options.Create(new ExternalLinksConfiguration()), Mock.Of<ILogger<ApplicationProcessOrchestrator>>());
+            var sut = new ApplicationProcessOrchestrator(_mockClient.Object, Options.Create(new ExternalLinksConfiguration()), Mock.Of<ILogger<ApplicationProcessOrchestrator>>(), _mockFeatureToggler.Object);
 
             var applicationProcessEditModel = new ApplicationProcessEditModel
             {
@@ -64,7 +68,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
                         .Returns(new EntityValidationResult());
             _mockClient.Setup(x => x.UpdateVacancyAsync(It.IsAny<Vacancy>(), user));
 
-            var sut = new ApplicationProcessOrchestrator(_mockClient.Object, Options.Create(new ExternalLinksConfiguration()), Mock.Of<ILogger<ApplicationProcessOrchestrator>>());
+            var sut = new ApplicationProcessOrchestrator(_mockClient.Object, Options.Create(new ExternalLinksConfiguration()), Mock.Of<ILogger<ApplicationProcessOrchestrator>>(), _mockFeatureToggler.Object);
 
             var applicationProcessEditModel = new ApplicationProcessEditModel
             {

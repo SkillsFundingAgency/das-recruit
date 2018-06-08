@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Microsoft.Extensions.Options;
+using Esfa.Recruit.Shared;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 {
@@ -16,11 +17,13 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.ApplicationMethod;
         private readonly IEmployerVacancyClient _client;
         private readonly ExternalLinksConfiguration _externalLinks;
+        private readonly IFeature _featureToggler;
 
-        public ApplicationProcessOrchestrator(IEmployerVacancyClient client, IOptions<ExternalLinksConfiguration> externalLinks, ILogger<ApplicationProcessOrchestrator> logger) : base(logger)
+        public ApplicationProcessOrchestrator(IEmployerVacancyClient client, IOptions<ExternalLinksConfiguration> externalLinks, ILogger<ApplicationProcessOrchestrator> logger, IFeature featureToggler) : base(logger)
         {
             _client = client;
             _externalLinks = externalLinks.Value;
+            _featureToggler = featureToggler;
         }
 
         public async Task<ApplicationProcessViewModel> GetApplicationProcessViewModelAsync(VacancyRouteModel vrm)
@@ -53,11 +56,21 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         public async Task<OrchestratorResponse> PostApplicationProcessEditModelAsync(ApplicationProcessEditModel m, VacancyUser user)
         {
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, m, RouteNames.ApplicationProcess_Post);
-            var hasSelectedApplyThroughFaa = m.ApplicationMethod == ApplicationMethod.ThroughFindAnApprenticeship;
 
-            vacancy.ApplicationMethod = m.ApplicationMethod;
-            vacancy.ApplicationInstructions = hasSelectedApplyThroughFaa ? null : m.ApplicationInstructions;
-            vacancy.ApplicationUrl = hasSelectedApplyThroughFaa ? null : m.ApplicationUrl;
+            if (_featureToggler.IsFeatureEnabled(FeatureNames.AllowThroughFaaApplicationMethod))
+            {
+                var hasSelectedApplyThroughFaa = m.ApplicationMethod == ApplicationMethod.ThroughFindAnApprenticeship;
+
+                vacancy.ApplicationMethod = m.ApplicationMethod;
+                vacancy.ApplicationInstructions = hasSelectedApplyThroughFaa ? null : m.ApplicationInstructions;
+                vacancy.ApplicationUrl = hasSelectedApplyThroughFaa ? null : m.ApplicationUrl;
+            }
+            else
+            {
+                vacancy.ApplicationMethod = ApplicationMethod.ThroughExternalApplicationSite;
+                vacancy.ApplicationInstructions = m.ApplicationInstructions;
+                vacancy.ApplicationUrl = m.ApplicationUrl;
+            }
 
             return await ValidateAndExecute(
                 vacancy,
