@@ -415,7 +415,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithRuleId(VacancyRuleSet.ApplicationMethod);
             });
 
-            When(x => x.ApplicationMethod == ApplicationMethod.ThroughEmployerApplicationSite, () =>
+            When(x => x.ApplicationMethod == ApplicationMethod.ThroughExternalApplicationSite, () =>
             {
                 ValidateApplicationUrl();
                 ValidateApplicationInstructions();
