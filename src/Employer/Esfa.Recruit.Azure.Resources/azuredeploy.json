@@ -39,6 +39,12 @@
         "StaffIdamsUrl": ""
       }
     },
+    "Features": {
+      "type": "object",
+      "defaultValue": {
+        "AllowThroughFaaApplicationMethod": false
+      }
+    },
     "LoggingRedisConnectionString": {
       "type": "securestring",
       "defaultValue": ""
@@ -199,6 +205,10 @@
               {
                 "name": "ExternalLinks:EmployerIdamsSiteUrl",
                 "value": "[parameters('ExternalLinks').EmployerIdamsSiteUrl]"
+              },
+              {
+                "name": "Features:AllowThroughFaaApplicationMethod",
+                "value": "[parameters('Features').AllowThroughFaaApplicationMethod]"
               },
               {
                 "name": "ASPNETCORE_ENVIRONMENT",
