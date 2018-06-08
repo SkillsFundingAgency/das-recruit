@@ -18,6 +18,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
             {
                 VacancyId = vacancy.Id,
                 ApplicationInstructions = vacancy.ApplicationInstructions,
+                ApplicationMethod = vacancy.ApplicationMethod.Value.ToString(),
                 ApplicationUrl = vacancy.ApplicationUrl,
                 ClosingDate = vacancy.ClosingDate.Value,
                 Description = vacancy.Description,
