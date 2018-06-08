@@ -16,7 +16,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         {
             var vacancy = new Vacancy
             {
-                ApplicationMethod = ApplicationMethod.ThroughEmployerApplicationSite,
+                ApplicationMethod = ApplicationMethod.ThroughExternalApplicationSite,
                 ApplicationUrl = "http://www.apply.com",
                 ApplicationInstructions = instructions
             };
@@ -32,7 +32,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         {
             var vacancy = new Vacancy
             {
-                ApplicationMethod = ApplicationMethod.ThroughEmployerApplicationSite,
+                ApplicationMethod = ApplicationMethod.ThroughExternalApplicationSite,
                 ApplicationUrl = "http://www.apply.com",
                 ApplicationInstructions = "instructions".PadRight(501, 'w')
             };
@@ -51,7 +51,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         {
             var vacancy = new Vacancy
             {
-                ApplicationMethod = ApplicationMethod.ThroughEmployerApplicationSite,
+                ApplicationMethod = ApplicationMethod.ThroughExternalApplicationSite,
                 ApplicationUrl = "http://www.apply.com",
                 ApplicationInstructions = invalidChar
             };
