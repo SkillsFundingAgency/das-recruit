@@ -18,7 +18,6 @@ namespace Esfa.Recruit.Shared.TagHelpers
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
-            //output.TagName = "DIV";
             if (!_feature.IsFeatureEnabled(Name))
                 output.SuppressOutput();
         }
