@@ -8,6 +8,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Li
         public Guid VacancyId { get; set; }
         
         public string ApplicationInstructions { get; set; }
+        public string ApplicationMethod { get; set; }
         public string ApplicationUrl { get; set; }
         public DateTime ClosingDate { get; set; }
         public string Description { get; set; }
