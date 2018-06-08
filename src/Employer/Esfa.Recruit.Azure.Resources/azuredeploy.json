@@ -133,7 +133,12 @@
         "consistencyPolicy": {
           "defaultConsistencyLevel": "Strong"
         },
-        "databaseAccountOfferType": "Standard"
+        "databaseAccountOfferType": "Standard",
+        "capabilities": [
+          {
+            "name": "EnableAggregationPipeline"
+          }
+        ]
       }
     },
     {
