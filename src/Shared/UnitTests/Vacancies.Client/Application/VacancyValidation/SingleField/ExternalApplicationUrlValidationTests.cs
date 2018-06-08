@@ -18,7 +18,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         {
             var vacancy = new Vacancy
             {
-                ApplicationMethod = ApplicationMethod.ThroughEmployerApplicationSite,
+                ApplicationMethod = ApplicationMethod.ThroughExternalApplicationSite,
                 ApplicationUrl = url
             };
 
@@ -35,7 +35,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         {
             var vacancy = new Vacancy
             {
-                ApplicationMethod = ApplicationMethod.ThroughEmployerApplicationSite,
+                ApplicationMethod = ApplicationMethod.ThroughExternalApplicationSite,
                 ApplicationUrl = url
             };
 
@@ -52,7 +52,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         {
             var vacancy = new Vacancy
             {
-                ApplicationMethod = ApplicationMethod.ThroughEmployerApplicationSite,
+                ApplicationMethod = ApplicationMethod.ThroughExternalApplicationSite,
                 ApplicationUrl = "http://www.applyhere.com".PadRight(201, 'w')
             };
 
@@ -75,7 +75,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         {
             var vacancy = new Vacancy
             {
-                ApplicationMethod = ApplicationMethod.ThroughEmployerApplicationSite,
+                ApplicationMethod = ApplicationMethod.ThroughExternalApplicationSite,
                 ApplicationUrl = invalidUrl
             };
 
