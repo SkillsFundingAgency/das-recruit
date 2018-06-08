@@ -32,6 +32,11 @@
         "StaffIdamsUrl": ""
       }
     },
+    "Features": {
+      "value": {
+        "AllowThroughFaaApplicationMethod": false
+      }
+    },
     "LoggingRedisConnectionString": {
       "value": ""
     },
