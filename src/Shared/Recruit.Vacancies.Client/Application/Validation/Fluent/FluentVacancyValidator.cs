@@ -402,14 +402,14 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             {
                 RuleFor(x => x.ApplicationUrl)
                     .Empty()
-                        .WithMessage("The application url must be empty when application through external website option is specified")
+                        .WithMessage("The application url must be empty when apply through find an apprenticeship service option is specified")
                         .WithErrorCode("86")
                     .RunCondition(VacancyRuleSet.ApplicationMethod)
                     .WithRuleId(VacancyRuleSet.ApplicationMethod);
 
                 RuleFor(x => x.ApplicationInstructions)
                     .Empty()
-                        .WithMessage("The application process must be empty when application through external website option is specified")
+                        .WithMessage("The application process must be empty when apply through find an apprenticeship service option is specified")
                         .WithErrorCode("89")
                     .RunCondition(VacancyRuleSet.ApplicationMethod)
                     .WithRuleId(VacancyRuleSet.ApplicationMethod);
