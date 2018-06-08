@@ -5,7 +5,6 @@
 }
 
 <form asp-route="@postRoute" class="form-inline">
-
     <div class="grid-row">
         <div class="column-two-thirds">
             <h1 class="heading-xlarge small-bottom-margin">Vacancy Review</h1>
@@ -24,12 +23,11 @@
             </div>
         </div>
     </div>
-
     <div class="grid-row">
         <div class="column-two-thirds">
             <div>
                 <h3 class="heading-small sfa-no-top-margin">Brief overview of the role</h3>
-                @if(Model.IsEditable)
+                @if (Model.IsEditable)
                 {
                     <textarea asp-for="ShortDescription" class="form-control form-control-3-4" rows="5"></textarea>
                 }
@@ -46,13 +44,11 @@
             </div>
         </div>
     </div>
-
     <div class="grid-row">
         <div class="column-full">
             <h2 class="heading-large">Apprenticeship summary</h2>
         </div>
     </div>
-
     <div class="grid-row">
         <div class="column-one-third">
             <ul class="list">
@@ -74,7 +70,7 @@
                 </li>
                 <li>
                     <h3 class="heading-small">Expected apprenticeship duration</h3>
-                    <p>@Model.ExpectedDuration</p>              
+                    <p>@Model.ExpectedDuration</p>
                 </li>
                 <li>
                     <h3 class="heading-small">Possible start date</h3>
@@ -98,7 +94,7 @@
             <div>
                 <h3 class="heading-small">Vacancy description</h3>
                 <div>
-                    @if(Model.IsEditable)
+                    @if (Model.IsEditable)
                     {
                         <div class="form-group">
                             <label class="form-label-bold" for="full-description-1">What does the apprenticeship involve?</label>
@@ -123,20 +119,17 @@
             </div>
         </div>
     </div>
-
     <div class="grid-row">
         <div class="column-full">
             <hr class="no-bottom-margin">
         </div>
     </div>
 
-
     <div class="grid-row">
         <div class="column-full">
             <h2 class="heading-large">Requirements and prospects</h2>
         </div>
     </div>
-
     <div class="grid-row">
         <div class="column-half">
             <div>
@@ -146,17 +139,17 @@
             <div>
                 <h3 class="heading-small">Qualifications</h3>
                 <p>
-                @foreach (var qualification in Model.Qualifications)
-                {
-                    @qualification<br />
-                }
+                    @foreach (var qualification in Model.Qualifications)
+                    {
+                        @qualification<br />
+                    }
                 </p>
             </div>
         </div>
         <div class="column-half">
             <div>
                 <h3 class="heading-small">Things to consider (optional)</h3>
-                @if(Model.IsEditable)
+                @if (Model.IsEditable)
                 {
                     <textarea asp-for="ThingsToConsider" class="form-control form-control-3-4" rows="5"></textarea>
                 }
@@ -167,19 +160,16 @@
             </div>
         </div>
     </div>
-
     <div class="grid-row">
         <div class="column-full">
             <hr class="no-bottom-margin">
         </div>
     </div>
-
     <div class="grid-row">
         <div class="column-full">
             <h2 class="heading-large">About the employer</h2>
         </div>
     </div>
-
     <div class="grid-row">
         <div class="column-two-thirds">
             <div>
@@ -188,7 +178,7 @@
             </div>
             <div>
                 <h3 class="heading-small">Description</h3>
-                @if(Model.IsEditable)
+                @if (Model.IsEditable)
                 {
                     <textarea asp-for="EmployerDescription" class="form-control form-control-3-4" rows="5"></textarea>
                 }
@@ -211,7 +201,6 @@
             </div>
         </div>
     </div>
-
     <div class="grid-row">
         <div class="column-half">
             <div>
@@ -228,32 +217,16 @@
             <img id="static-map" src="@Model.MapUrl" alt="Location map" />
         </div>
     </div>
-
-    <div class="grid-row">
-        <div class="column-full">
-            <div>
-                <h2 class="heading-small">Employer's application instructions (optional)</h2>
-                <p>@Model.ApplicationInstructions</p>
-            </div>
-            <div>
-                <h2 class="heading-small">Employer's application website</h2>
-                <p>@Model.ApplicationUrl</p>
-            </div>
-        </div>
-    </div>
-
     <div class="grid-row">
         <div class="column-full">
             <hr class="no-bottom-margin">
         </div>
     </div>
-
     <div class="grid-row">
         <div class="column-full">
             <h2 class="heading-large">Training provider</h2>
         </div>
     </div>
-
     <div class="grid-row">
         <div class="column-full">
             <div>
@@ -266,22 +239,38 @@
             </div>
         </div>
     </div>
-
     <div class="grid-row">
         <div class="column-full">
             <hr class="no-bottom-margin">
         </div>
     </div>
-
+    <div class="grid-row">
+        <div class="column-full">
+            <h2 class="heading-large">Application process</h2>
+        </div>
+    </div>
+    <div class="grid-row">
+        <div class="column-full">
+            <p asp-condition="@Model.HasSpecifiedThroughFaaApplicationMethod">Candidates will apply through the find an apprenticeship service</p>
+            <div asp-condition="@Model.HasApplicationUrl">
+                <h2 class="heading-small">Employer's application website</h2>
+                <p>@Model.ApplicationUrl</p>
+            </div>
+            <div asp-condition="@Model.HasApplicationInstructions">
+                <h2 class="heading-small">Employer's application instructions (optional)</h2>
+                <p>@Model.ApplicationInstructions</p>
+            </div>
+        </div>
+    </div>
     <div class="grid-row">
         <div class="column-full">
             <div class="form-group inline">
                 <div class="form-group small-top-margin">
-                        <input type="submit" value="Approve vacancy" class="button" />
-                        @if(!Model.IsEditable)
-                        {
-                            <a asp-route="@RouteNames.Vacancy_Review_Referral_Get" class="button-link">Refer vacancy</a>
-                        }
+                    <input type="submit" value="Approve vacancy" class="button" />
+                    @if (!Model.IsEditable)
+                    {
+                        <a asp-route="@RouteNames.Vacancy_Review_Referral_Get" class="button-link">Refer vacancy</a>
+                    }
                     <a asp-route="@RouteNames.Dashboard_Index_Get" class="button-link">Back to QA dashboard</a>
                 </div>
             </div>

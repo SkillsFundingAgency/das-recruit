@@ -40,5 +40,9 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public string WageText { get; internal set; }
         public string SubmittedByName { get; internal set; }
         public string SubmittedByEmail { get; internal set; }
+        
+        public bool HasSpecifiedThroughFaaApplicationMethod => ApplicationMethod == ApplicationMethod.ThroughFindAnApprenticeship;
+        public bool HasApplicationInstructions => !string.IsNullOrEmpty(ApplicationInstructions);
+        public bool HasApplicationUrl => !string.IsNullOrEmpty(ApplicationUrl);
     }
 }
