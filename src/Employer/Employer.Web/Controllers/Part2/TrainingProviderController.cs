@@ -92,7 +92,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
                 return View(ViewNames.SelectTrainingProvider, vm);
             }
 
-            return RedirectToRoute(RouteNames.Vacancy_Preview_Get);
+            return RedirectToRoute(RouteNames.Vacancy_Preview_Get, ConfirmTrainingProviderViewModel.PreviewSectionAnchor);
         }
 
         private async Task<IActionResult> ProviderNotFound(SelectTrainingProviderEditModel m)

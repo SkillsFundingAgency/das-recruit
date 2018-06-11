@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Esfa.Recruit.Employer.Web.Views;
+using System.Collections.Generic;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.Part2.Skills
 {
@@ -8,7 +9,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part2.Skills
         public List<SkillViewModel> Column1Checkboxes { get; set; }
         public List<SkillViewModel> Column2Checkboxes { get; set; }
         public List<string> CustomSkills { get; set; }
-
+        public static string PreviewSectionAnchor => PreviewAnchors.RequirementsAndProspectsSection;
         public IList<string> OrderedFieldNames => new List<string>
         {
             

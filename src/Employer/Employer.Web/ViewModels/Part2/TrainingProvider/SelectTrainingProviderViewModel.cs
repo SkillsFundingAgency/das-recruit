@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Esfa.Recruit.Employer.Web.Views;
+using System.ComponentModel.DataAnnotations;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels
 {
@@ -7,5 +8,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public string Title { get; set; }
         [Display(Name = "UKPRN")]
         public long? Ukprn { get; set; }
+        public static string PreviewSectionAnchor => PreviewAnchors.TrainingProviderSection;
     }
 }

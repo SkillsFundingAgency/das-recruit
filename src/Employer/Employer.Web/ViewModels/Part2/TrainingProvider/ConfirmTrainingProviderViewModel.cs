@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Esfa.Recruit.Employer.Web.Views;
+using System;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels
 {
@@ -12,5 +13,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public string ProviderName { get; set; }
         public string ProviderAddress { get; set; }
         public long Ukprn { get; set; }
+        public static string PreviewSectionAnchor => PreviewAnchors.TrainingProviderSection;
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Esfa.Recruit.Employer.Web.Views;
+using System.Collections.Generic;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels
 {
@@ -8,7 +9,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public string VacancyDescription { get; internal set; }
         public string TrainingDescription { get; internal set; }
         public string OutcomeDescription { get; internal set; }
-
+        public static string PreviewSectionAnchor => PreviewAnchors.ApprenticeshipSummarySection;
         public IList<string> OrderedFieldNames => new List<string>
         {
             nameof(VacancyDescriptionEditModel.VacancyDescription),
