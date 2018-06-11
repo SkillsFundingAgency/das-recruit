@@ -4,6 +4,7 @@ using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
@@ -37,8 +38,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             {
                 return RedirectToRoute(RouteNames.Vacancy_Preview_Get);
             }
-            
-            return RedirectToRoute(RouteNames.Title_Get);
+
+            var resumeRouteName = Utility.GetValidRoutesForVacancy(vacancy).Last();
+
+            return RedirectToRoute(resumeRouteName);
         }
     }
 }
