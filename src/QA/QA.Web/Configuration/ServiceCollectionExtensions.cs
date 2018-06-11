@@ -59,7 +59,12 @@ namespace Esfa.Recruit.Qa.Web.Configuration
 
         public static void AddMvcService(this IServiceCollection services)
         {
-            services.AddAntiforgery(options => options.Cookie.Name = CookieNames.AntiForgeryCookie);
+            services.AddAntiforgery(options =>
+            {
+                options.Cookie.Name = CookieNames.AntiForgeryCookie;
+                options.FormFieldName = "_csrfToken";
+                options.HeaderName = "X-XSRF-TOKEN";
+            });
             services.Configure<CookieTempDataProviderOptions>(options => options.Cookie.Name = CookieNames.QaTempData);
             services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
 
