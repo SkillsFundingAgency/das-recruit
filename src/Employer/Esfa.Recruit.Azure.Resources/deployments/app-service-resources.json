@@ -1,82 +1,86 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-        "AppServiceName": {
-            "type": "string"
-        },
-        "SharedAppServicePlanName": {
-            "type": "string"
-        },
-        "SharedAppServicePlanResourceGroup": {
-            "type": "string"
-        },
-        "AppSettings": {
-            "type": "array"
-        },
-        "ConnectionStrings": {
-            "type": "array"
-        },
-        "CustomHostname": {
-            "type": "string"
-        },
-        "KeyvaultCertificateName": {
-            "type": "string"
-        }
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "AppServiceName": {
+      "type": "string"
     },
-    "variables": {
-        "UseCustomHostname": "[greater(length(parameters('CustomHostname')), 0)]",
-        "SharedAppServicePlanId": "[resourceId(parameters('SharedAppServicePlanResourceGroup'), 'Microsoft.Web/serverfarms', parameters('SharedAppServicePlanName'))]"
+    "SharedAppServicePlanName": {
+      "type": "string"
     },
-    "resources": [
-        {
-            "name": "[parameters('AppServiceName')]",
-            "type": "Microsoft.Web/sites",
-            "apiVersion": "2016-08-01",
-            "location": "[resourceGroup().location]",
-            "properties": {
-                "serverFarmId": "[variables('SharedAppServicePlanId')]",
-                "siteConfig": {
-                    "appSettings": "[parameters('AppSettings')]",
-                    "connectionStrings": "[parameters('ConnectionStrings')]",
-                    "alwaysOn": true
-                },
-                "httpsOnly": true
-            },
-            "resources": [
-                {
-                    "name": "staging",
-                    "type": "slots",
-                    "apiVersion": "2016-08-01",
-                    "location": "[resourceGroup().location]",
-                    "properties": {
-                        "scmSiteAlsoStopped": true,
-                        "siteConfig": {
-                            "appSettings": "[parameters('AppSettings')]",
-                            "connectionStrings": "[parameters('ConnectionStrings')]",
-                            "alwaysOn": true
-                        }
-                    },
-                    "dependsOn": [
-                        "[parameters('AppServiceName')]"
-                    ]
-                }
-            ]
+    "SharedAppServicePlanResourceGroup": {
+      "type": "string"
+    },
+    "AppSettings": {
+      "type": "array"
+    },
+    "ConnectionStrings": {
+      "type": "array"
+    },
+    "CustomHostname": {
+      "type": "string"
+    },
+    "KeyvaultCertificateName": {
+      "type": "string"
+    }
+  },
+  "variables": {
+    "UseCustomHostname": "[greater(length(parameters('CustomHostname')), 0)]",
+    "SharedAppServicePlanId": "[resourceId(parameters('SharedAppServicePlanResourceGroup'), 'Microsoft.Web/serverfarms', parameters('SharedAppServicePlanName'))]"
+  },
+  "resources": [
+    {
+      "name": "[parameters('AppServiceName')]",
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2016-08-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "clientAffinityEnabled": false,
+        "serverFarmId": "[variables('SharedAppServicePlanId')]",
+        "siteConfig": {
+          "appSettings": "[parameters('AppSettings')]",
+          "connectionStrings": "[parameters('ConnectionStrings')]",
+          "alwaysOn": true,
+          "phpVersion": ""
         },
+        "httpsOnly": true
+      },
+      "resources": [
         {
-            "type": "Microsoft.Web/sites/hostnameBindings",
-            "condition": "[variables('UseCustomHostname')]",
-            "name": "[concat(parameters('AppServiceName'), '/', if(variables('UseCustomHostname'), parameters('CustomHostname'), 'placeholder'))]",
-            "apiVersion": "2016-03-01",
-            "location": "[resourceGroup().location]",
-            "properties": {
-                "sslState": "SniEnabled",
-                "thumbprint": "[reference(resourceId(parameters('SharedAppServicePlanResourceGroup'), 'Microsoft.Web/certificates', parameters('KeyvaultCertificateName')), '2016-03-01').Thumbprint]"
-            },
-            "dependsOn": [
-                "[resourceId('Microsoft.Web/sites', parameters('AppServiceName'))]"
-            ]
+          "name": "staging",
+          "type": "slots",
+          "apiVersion": "2016-08-01",
+          "location": "[resourceGroup().location]",
+          "properties": {
+            "scmSiteAlsoStopped": true,
+            "clientAffinityEnabled": false,
+            "siteConfig": {
+              "appSettings": "[parameters('AppSettings')]",
+              "connectionStrings": "[parameters('ConnectionStrings')]",
+              "alwaysOn": true,
+              "phpVersion": ""
+            }
+          },
+          "dependsOn": [
+            "[parameters('AppServiceName')]"
+          ]
         }
-    ],
-    "outputs": {}
+      ]
+    },
+    {
+      "type": "Microsoft.Web/sites/hostNameBindings",
+      "condition": "[variables('UseCustomHostname')]",
+      "name": "[concat(parameters('AppServiceName'), '/', if(variables('UseCustomHostname'), parameters('CustomHostname'), 'placeholder'))]",
+      "apiVersion": "2016-03-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "sslState": "SniEnabled",
+        "thumbprint": "[reference(resourceId(parameters('SharedAppServicePlanResourceGroup'), 'Microsoft.Web/certificates', parameters('KeyvaultCertificateName')), '2016-03-01').Thumbprint]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', parameters('AppServiceName'))]"
+      ]
+    }
+  ],
+  "outputs": {}
 }

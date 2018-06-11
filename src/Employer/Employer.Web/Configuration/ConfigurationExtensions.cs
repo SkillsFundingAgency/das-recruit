@@ -21,7 +21,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
     public static class ConfigurationExtensions
     {
         private const string HasEmployerAccountPolicyName = "HasEmployerAccount";
-        public const int SessionTimeoutMinutes = 30;
+        private const int SessionTimeoutMinutes = 30;
 
         public static void AddAuthorizationService(this IServiceCollection services)
         {
@@ -40,6 +40,13 @@ namespace Esfa.Recruit.Employer.Web.Configuration
 
         public static void AddMvcService(this IServiceCollection services, IHostingEnvironment hostingEnvironment, bool isAuthEnabled)
         {
+            services.AddAntiforgery(options =>
+            {
+                options.Cookie.Name = CookieNames.AntiForgeryCookie;
+                options.FormFieldName = "_csrfToken";
+                options.HeaderName = "X-XSRF-TOKEN";
+            });
+            services.Configure<CookieTempDataProviderOptions>(options => options.Cookie.Name = CookieNames.RecruitTempData);
             services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
 
             services.AddMvc(opts =>
@@ -82,6 +89,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             })
             .AddCookie("Cookies", options =>
             {
+                options.Cookie.Name = CookieNames.RecruitData;
                 options.AccessDeniedPath = "/Error/403";
                 options.SlidingExpiration = true;
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(SessionTimeoutMinutes);
