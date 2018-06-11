@@ -40,7 +40,12 @@ namespace Esfa.Recruit.Employer.Web.Configuration
 
         public static void AddMvcService(this IServiceCollection services, IHostingEnvironment hostingEnvironment, bool isAuthEnabled)
         {
-            services.AddAntiforgery(options => options.Cookie.Name = CookieNames.AntiForgeryCookie);
+            services.AddAntiforgery(options =>
+            {
+                options.Cookie.Name = CookieNames.AntiForgeryCookie;
+                options.FormFieldName = "_csrfToken";
+                options.HeaderName = "X-XSRF-TOKEN";
+            });
             services.Configure<CookieTempDataProviderOptions>(options => options.Cookie.Name = CookieNames.RecruitTempData);
             services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
 
