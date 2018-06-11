@@ -17,7 +17,7 @@
             </div>
             <div class="form-group">
                 <input type="submit" value="Save and continue" esfa-automation="btn-continue" class="button" />
-                <a asp-route="@RouteNames.Vacancy_Preview_Get" esfa-automation="link-cancel" class="button-link">Cancel</a>
+                <a asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@ApplicationProcessViewModel.PreviewSectionAnchor" esfa-automation="link-cancel" class="button-link">Cancel</a>
             </div>
         </form>
     </div>

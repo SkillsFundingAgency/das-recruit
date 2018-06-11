@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Esfa.Recruit.Employer.Web.Views;
+using System.Collections.Generic;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels
 {
@@ -8,7 +9,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public string EmployerContactName { get; internal set; }
         public string EmployerContactEmail { get; internal set; }
         public string EmployerContactPhone { get; internal set; }
-
+        public static string PreviewSectionAnchor => PreviewAnchors.AboutEmployerSection;
         public IList<string> OrderedFieldNames => new List<string>
         {
             nameof(EmployerContactDetailsEditModel.EmployerContactName),
