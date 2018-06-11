@@ -41,7 +41,7 @@
           "appSettings": "[parameters('AppSettings')]",
           "connectionStrings": "[parameters('ConnectionStrings')]",
           "alwaysOn": true,
-          "phpVersion": "Off"
+          "phpVersion": ""
         },
         "httpsOnly": true
       },
@@ -58,7 +58,7 @@
               "appSettings": "[parameters('AppSettings')]",
               "connectionStrings": "[parameters('ConnectionStrings')]",
               "alwaysOn": true,
-              "phpVersion": "Off"
+              "phpVersion": ""
             }
           },
           "dependsOn": [
