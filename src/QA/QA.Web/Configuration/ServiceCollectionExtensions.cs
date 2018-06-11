@@ -4,6 +4,7 @@ using Esfa.Recruit.Qa.Web.Configuration.Routing;
 using Esfa.Recruit.Qa.Web.Extensions;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.WsFederation;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Formatters;
@@ -20,8 +21,7 @@ namespace Esfa.Recruit.Qa.Web.Configuration
 
         public static void AddAuthenticationService(this IServiceCollection services, AuthenticationConfiguration authConfig)
         {
-            services
-            .AddAuthentication(sharedOptions =>
+            services.AddAuthentication(sharedOptions =>
             {
                 sharedOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 sharedOptions.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -39,6 +39,7 @@ namespace Esfa.Recruit.Qa.Web.Configuration
             .AddCookie(options =>
             {
                 options.Cookie.Name = CookieNames.QaData;
+                options.Cookie.SecurePolicy = Microsoft.AspNetCore.Http.CookieSecurePolicy.Always;
                 options.AccessDeniedPath = RoutePrefixPaths.AccessDeniedPath;
                 options.SlidingExpiration = true;
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(SessionTimeoutMinutes);

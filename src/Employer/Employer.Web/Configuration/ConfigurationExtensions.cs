@@ -78,7 +78,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             });
         }
 
-        public static void AddAuthenticationService(this IServiceCollection services, AuthenticationConfiguration authConfig, IEmployerVacancyClient vacancyClient)
+        public static void AddAuthenticationService(this IServiceCollection services, AuthenticationConfiguration authConfig, IEmployerVacancyClient vacancyClient, IHostingEnvironment hostingEnvironment)
         {
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
@@ -90,6 +90,12 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             .AddCookie("Cookies", options =>
             {
                 options.Cookie.Name = CookieNames.RecruitData;
+
+                if (!hostingEnvironment.IsDevelopment())
+                {
+                    options.Cookie.SecurePolicy = Microsoft.AspNetCore.Http.CookieSecurePolicy.Always;
+                }
+
                 options.AccessDeniedPath = "/Error/403";
                 options.SlidingExpiration = true;
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(SessionTimeoutMinutes);

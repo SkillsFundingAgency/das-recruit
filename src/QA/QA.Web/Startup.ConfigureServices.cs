@@ -2,6 +2,7 @@
 using Esfa.Recruit.Qa.Web.Mappings;
 using Esfa.Recruit.Qa.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,6 +27,9 @@ namespace Esfa.Recruit.Qa.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //A service provider for resolving services configured in IoC
+            var sp = services.BuildServiceProvider();
+
             // Routing has to come before adding Mvc
             services.AddRouting(opt =>
             {
@@ -52,7 +56,7 @@ namespace Esfa.Recruit.Qa.Web
             services.AddScoped<DashboardOrchestrator>();
             services.AddScoped<ReviewOrchestrator>();
 
-            services.AddTransient<IGeocodeImageService>(_ => new GoogleMapsGeocodeImageService(_configuration.GetValue<string>("GoogleMapsPrivateKey")));            
+            services.AddTransient<IGeocodeImageService>(_ => new GoogleMapsGeocodeImageService(_configuration.GetValue<string>("GoogleMapsPrivateKey")));
             services.AddScoped<ReviewMapper>();
         }
     }
