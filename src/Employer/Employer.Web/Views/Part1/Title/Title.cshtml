@@ -18,7 +18,10 @@
                         <span class="form-hint">For example, Software developer apprenticeship</span>
                     </label>
                     <span esfa-validation-message-for="Title" class="error-message"></span>
-                    <input asp-for="Title" class="form-control-3-4 form-control" type="text" maxlength="100" />
+                    <input asp-for="Title" class="form-control-3-4 form-control character-count" type="text" data-val-length-max="100"/>
+                    <br>
+                    <span class="maxchar-count">100</span>
+                    <span class="maxchar-text"> characters remaining</span>
                 </div>
                 <div esfa-validation-marker-for="NumberOfPositions" class="form-group">
                     <label asp-for="NumberOfPositions" class="form-label-bold">Number of positions for this apprenticeship</label>

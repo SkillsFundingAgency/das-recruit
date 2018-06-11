@@ -28,7 +28,9 @@
                     <label asp-for="WorkingWeekDescription" class="form-label-bold">Working week</label>
                     <span class="form-hint">For example, Monday to Friday 9am to 5pm, shifts, may work evenings and weekends</span>
                     <span esfa-validation-message-for="WorkingWeekDescription" class="error-message"></span>
-                    <textarea asp-for="WorkingWeekDescription" class="form-control-3-4 form-control" rows="5" type="text" maxlength="250"></textarea>
+                    <textarea asp-for="WorkingWeekDescription" class="form-control-3-4 form-control character-count" rows="5" type="text" data-val-length-max="250"></textarea>
+                    <span class="maxchar-count">250</span>
+                    <span class="maxchar-text"> characters remaining</span>
                 </div>
 
                 <div esfa-validation-marker-for="WeeklyHours" class="form-group">
@@ -77,7 +79,9 @@
                     <label asp-for="WageAdditionalInformation" class="form-label-bold">Additional information about the salary (optional)</label>
                     <span class="form-hint">For example, subject to experience, bonus scheme, performance increases or non contractual benefits</span>
                     <span esfa-validation-message-for="WageAdditionalInformation" class="error-message"></span>
-                    <textarea asp-for="WageAdditionalInformation" class="form-control-3-4 form-control" rows="5" type="text" maxlength="240"></textarea>
+                    <textarea asp-for="WageAdditionalInformation" class="form-control-3-4 form-control character-count" rows="5" type="text" data-val-length-max="240"></textarea>
+                    <span class="maxchar-count">240</span>
+                    <span class="maxchar-text"> characters remaining</span>
                 </div>
 
                 <button type="submit" class="button">Save and Continue</button>

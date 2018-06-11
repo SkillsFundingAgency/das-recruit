@@ -8,7 +8,9 @@
             <div esfa-validation-marker-for="EmployerDescription" class="form-group">
                 <label asp-for="EmployerDescription" class="form-label-bold">Tell us about your organisation</label>
                 <span esfa-validation-message-for="EmployerDescription" class="error-message"></span>
-                <textarea asp-for="EmployerDescription" class="form-control form-control-3-4" rows="5" maxlength="500"></textarea>
+                <textarea asp-for="EmployerDescription" class="form-control form-control-3-4 character-count" rows="5" data-val-length-max="500"></textarea>
+                <span class="maxchar-count">500</span>
+                <span class="maxchar-text"> characters remaining</span>
             </div>
             <div esfa-validation-marker-for="EmployerWebsiteUrl" class="form-group">
                 <label asp-for="EmployerWebsiteUrl" class="form-label-bold">Your organisation's website (optional)</label>

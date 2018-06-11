@@ -94,7 +94,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithMessage("Enter the title of the vacancy")
                     .WithErrorCode("1")
                 .MaximumLength(100)
-                    .WithMessage("The title must not be more than {MaxLength}")
+                    .WithMessage("The title must not be more than {MaxLength} characters")
                     .WithErrorCode("2")
                 .ValidFreeTextCharacters()
                     .WithMessage("The title contains some invalid characters")
