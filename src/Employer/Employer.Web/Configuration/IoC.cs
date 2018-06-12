@@ -22,7 +22,9 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.Configure<ExternalLinksConfiguration>(configuration.GetSection("ExternalLinks"));
             services.Configure<ManageApprenticeshipsRoutes>(configuration.GetSection("ManageApprenticeshipsRoutes"));
             services.AddSingleton<ManageApprenticeshipsLinkHelper>();
+
             services.Configure<AuthenticationConfiguration>(configuration.GetSection("Authentication"));
+            services.Configure<GoogleAnalyticsConfiguration>(configuration.GetSection("GoogleAnalytics"));
 
             RegisterProviderApiClientDep(services, configuration);
 
