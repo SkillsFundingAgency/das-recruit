@@ -9,7 +9,9 @@
                 <label asp-for="ThingsToConsider" class="form-label-bold">Things to consider (optional)</label>
                 <span class="form-hint">For example, if the vacancy will involve working outdoors, or lifting heavy objects</span>
                 <span esfa-validation-message-for="ThingsToConsider" class="error-message"></span>
-                <textarea asp-for="ThingsToConsider" class="form-control form-control-3-4" rows="5" maxlength="350"></textarea>
+                <textarea asp-for="ThingsToConsider" class="form-control form-control-3-4 character-count" rows="5" data-val-length-max="350"></textarea>
+                <span class="maxchar-count">350</span>
+                <span class="maxchar-text"> characters remaining</span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save and continue" esfa-automation="btn-continue" class="button" />
