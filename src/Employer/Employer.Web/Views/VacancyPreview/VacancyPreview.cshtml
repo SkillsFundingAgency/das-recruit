@@ -329,7 +329,7 @@
                     <input type="submit" value="Submit vacancy" class="button" />
                 </form>
                 <a asp-route="@RouteNames.Dashboard_Index_Get" class="button-link">Return to dashboard</a>
-                <a asp-condition="@Model.CanDelete"  asp-route="@RouteNames.DeleteVacancy_Delete_Get" class="button-link">Delete</a>
+                <a asp-condition="@Model.CanDelete"  asp-route="@RouteNames.DeleteVacancy_Delete_Get" class="button delete-button">Delete</a>
             </div>
         </div>
     </div>

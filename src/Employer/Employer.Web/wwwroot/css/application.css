@@ -46,6 +46,15 @@
     box-shadow: none;
 }
 
+.delete-button {
+    background-color: #b10e1e;
+    box-shadow: 0 2px 0 #C54A56;
+}
+
+.delete-button:hover{
+    background-color: #C54A56;
+}
+
 .no-bottom-margin {
   margin-bottom:0px;
 }
