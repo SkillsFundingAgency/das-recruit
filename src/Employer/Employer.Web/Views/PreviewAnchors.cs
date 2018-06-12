@@ -1,6 +1,6 @@
 ﻿namespace Esfa.Recruit.Employer.Web.Views
 {
-    internal static class PreviewAnchors
+    public static class PreviewAnchors
     {
         public const string ApprenticeshipSummarySection = "apprenticeshipSummary";
         public const string RequirementsAndProspectsSection = "reqAndProspects";
