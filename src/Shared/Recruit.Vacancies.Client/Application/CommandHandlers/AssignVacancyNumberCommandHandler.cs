@@ -1,5 +1,7 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
+using Esfa.Recruit.Vacancies.Client.Domain.Events;
+using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -11,15 +13,18 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
     public class AssignVacancyNumberCommandHandler: IRequestHandler<AssignVacancyNumberCommand>
     {
         private readonly IVacancyRepository _repository;
+        private readonly IMessaging _messaging;
         private readonly ILogger<AssignVacancyNumberCommandHandler> _logger;
         private readonly IGenerateVacancyNumbers _generator;
 
         public AssignVacancyNumberCommandHandler(
-            IVacancyRepository repository, 
+            IVacancyRepository repository,
+            IMessaging messaging,
             ILogger<AssignVacancyNumberCommandHandler> logger, 
             IGenerateVacancyNumbers generator)
         {
             _repository = repository;
+            _messaging = messaging;
             _logger = logger;
             _generator = generator;
         }
@@ -38,6 +43,12 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             vacancy.VacancyReference = await _generator.GenerateAsync();
 
             await _repository.UpdateAsync(vacancy);
+            await _messaging.PublishEvent(new VacancyDraftUpdatedEvent
+            {
+                SourceCommandId = message.CommandId.ToString(),
+                EmployerAccountId = vacancy.EmployerAccountId,
+                VacancyId = vacancy.Id
+            });
 
             _logger.LogInformation("Updated Vacancy: {vacancyId} with vacancy number: {vacancyNumber}", vacancy.Id, vacancy.VacancyReference);
         }
