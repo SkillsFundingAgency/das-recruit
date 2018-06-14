@@ -41,7 +41,7 @@ namespace Esfa.Recruit.Qa.Web
             services.AddAntiforgery(
                 options =>
                 {
-                    options.Cookie.Name = "qa-x-csrf";
+                    options.Cookie.Name = CookieNames.AntiForgeryCookie;
                     options.Cookie.HttpOnly = true;
                     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                     options.HeaderName = "X-XSRF-TOKEN";
