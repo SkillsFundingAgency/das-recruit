@@ -55,6 +55,10 @@
     background-color: #C54A56;
 }
 
+.delete-button:visited{
+    background-color: #b10e1e;
+}
+
 .no-bottom-margin {
   margin-bottom:0px;
 }
