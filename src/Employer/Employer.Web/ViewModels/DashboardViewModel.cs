@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Dashboard;
+using Esfa.Recruit.Shared.Web.Extensions;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels
 {
@@ -26,5 +27,8 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
                                                                 : Vacancies;
 
         public VacancyStatus? Filter { get; internal set; }
+
+        public bool HasNoFilteredVacanciesToShow => Filter.HasValue && DisplayVacancies.Any() == false;
+        public string FilterDisplayText => Filter.HasValue ? Filter.Value.GetDisplayName().ToLower() : string.Empty;
     }
 }

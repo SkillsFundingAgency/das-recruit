@@ -13,6 +13,9 @@
         <p asp-condition="@Model.ShowNoVacanciesMessage">
             Your dashboard is empty, start by creating your first apprenticeship vacancy.
         </p>
+        <p asp-condition="@Model.HasVacancies">
+            You can use filters to show only vacancies that match your criteria.
+        </p>
         <a asp-route="@RouteNames.CreateVacancy_Get" class="button">Create vacancy</a>
     </div>
     <br>
@@ -22,7 +25,7 @@
         <div class="grid-row">
             <div class="column-one-quarter">
                 <div class="data lottery-ticket">
-                    <a asp-route="@RouteNames.Dashboard_Index_Get" asp-route-statusFilter="" class="prototype-link">
+                    <a asp-route="@RouteNames.Dashboard_Index_Get" class="prototype-link">
                         <h2 class="bold-xlarge">@Model.NoOfVacancies</h2>
                         <p class="bold-xsmall">All</p>
                     </a>
@@ -85,7 +88,7 @@
             <thead>
                 <tr>
                     <th class="bold">Vacancy title</th>
-                    <th class="bold">Vacancy reference number</th>
+                    <th class="bold">Reference number</th>
                     <th class="bold">Status</th>
                 </tr>
             </thead>
@@ -102,6 +105,9 @@
                     <td>@vacancy.Status.GetDisplayName()</td>
                 </tr>
 }
+                <tr asp-condition="@Model.HasNoFilteredVacanciesToShow">
+                    <td colspan="3">You do not have any @Model.FilterDisplayText vacancies. Please select <a asp-route="@RouteNames.Dashboard_Index_Get">'All'</a>.</td>
+                </tr>
             </tbody>
         </table>
     </div>
