@@ -18,7 +18,7 @@
 
             <div class="form-group inline">
                 <div class="form-group small-top-margin">
-                    <a asp-route="@RouteNames.Dashboard_Index_Get" class="button">Return to dashboard</a>
+                    <a asp-route="@RouteNames.Dashboard_Index_Get" asp-route-statusFilter="@Context.Request.Cookies[CookieNames.VacancyStatusFilter]" class="button">Return to dashboard</a>
                 </div>
             </div>
         </main>
