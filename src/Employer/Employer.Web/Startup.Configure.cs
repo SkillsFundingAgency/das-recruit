@@ -34,7 +34,7 @@ namespace Esfa.Recruit.Employer.Web
             }
 
             // Redirect requests to root to the MA site.
-            app.UseRootRedirect(externalLinks.Value.ManageApprenticeshipSiteUrl);    
+            app.UseRootRedirect(externalLinks.Value.ManageApprenticeshipSiteUrl);
             
             // Add Content Security Policy
             app.UseCsp(options => options
@@ -44,7 +44,9 @@ namespace Esfa.Recruit.Employer.Web
                     .UnsafeInline()) // TODO: Should see if there's another option that having inline script - currently only need this for the built-in validation-summary which we are going to substitute with our own at some point.
                 .ScriptSources(s => 
                     s.Self()
-                    .CustomSources("https://az416426.vo.msecnd.net")
+                    .CustomSources("https://az416426.vo.msecnd.net", 
+                                    "https://www.google-analytics.com/analytics.js", 
+                                    $"https://www.googletagmanager.com/")
                     .UnsafeInline()
                 ) // TODO: Look at moving AppInsights inline js code.
                 .FontSources(s => 
@@ -57,7 +59,9 @@ namespace Esfa.Recruit.Employer.Web
                 )
                 .ImageSources(s => 
                     s.Self()
-                    .CustomSources("https://maps.googleapis.com", "data:")
+                    .CustomSources("https://maps.googleapis.com", 
+                                    "https://www.google-analytics.com", 
+                                    "data:")
                  )
                 .ReportUris(r => r.Uris("/ContentPolicyReport/Report")));
 
