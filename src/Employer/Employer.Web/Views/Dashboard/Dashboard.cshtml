@@ -1,43 +1,107 @@
-﻿@model DashboardViewModel
-
+﻿@using Esfa.Recruit.Vacancies.Client.Domain.Entities
+@model DashboardViewModel
 <div class="grid-row dashboard-header">
     <div class="column-two-thirds">
         <h1 class="heading-large small-bottom-margin">Your vacancies</h1>
-
         <div asp-condition="Model.HasWarning" class="warning-summary no-bottom-margin">
             <p>@Model.WarningMessage</p>
         </div>
     </div>
 </div>
-
 <div class="grid-row">
     <div class="column-full">
         <p asp-condition="@Model.ShowNoVacanciesMessage">
             Your dashboard is empty, start by creating your first apprenticeship vacancy.
         </p>
         <a asp-route="@RouteNames.CreateVacancy_Get" class="button">Create vacancy</a>
-        <hr>
     </div>
     <br>
 </div>
-
 <div class="grid-row" asp-condition="@Model.HasVacancies">
+    <div id="selection-active" class="lottery-tickets">
+        <div class="grid-row">
+            <div class="column-one-quarter">
+                <div class="data lottery-ticket">
+                    <a asp-route="@RouteNames.Dashboard_Index_Get" asp-route-statusFilter="" class="prototype-link">
+                        <h2 class="bold-xlarge">@Model.NoOfVacancies</h2>
+                        <p class="bold-xsmall">All</p>
+                    </a>
+                </div>
+            </div>
+            <div class="column-one-quarter">
+                <div class="data lottery-ticket">
+                    <a asp-route="@RouteNames.Dashboard_Index_Get" asp-route-statusFilter="@VacancyStatus.Draft.GetDisplayName()" class="prototype-link">
+                        <h2 class="bold-xlarge">@Model.NoOfDraftVacancies</h2>
+                        <p class="bold-xsmall">@VacancyStatus.Draft.GetDisplayName()</p>
+                    </a>
+                </div>
+            </div>
+            <div class="column-one-quarter">
+                <div class="data lottery-ticket">
+                    <a asp-route="@RouteNames.Dashboard_Index_Get" asp-route-statusFilter="@VacancyStatus.Submitted.GetDisplayName()" class="prototype-link">
+                        <h2 class="bold-xlarge">@Model.NoOfSubmittedVacancies</h2>
+                        <p class="bold-xsmall">@VacancyStatus.Submitted.GetDisplayName()</p>
+                    </a>
+                </div>
+            </div>
+            <div class="column-one-quarter">
+                <div class="data lottery-ticket">
+                    <a asp-route="@RouteNames.Dashboard_Index_Get" asp-route-statusFilter="@VacancyStatus.Referred.GetDisplayName()" class="prototype-link">
+                        <h2 class="bold-xlarge">@Model.NoOfEditsRequiredVacancies</h2>
+                        <p class="bold-xsmall">@VacancyStatus.Referred.GetDisplayName()</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="grid-row">
+            <div class="column-one-quarter">
+                <div class="data lottery-ticket">
+                    <a asp-route="@RouteNames.Dashboard_Index_Get" asp-route-statusFilter="@VacancyStatus.Live.GetDisplayName()" class="prototype-link">
+                        <h2 class="bold-xlarge">@Model.NoOfLiveVacancies</h2>
+                        <p class="bold-xsmall">@VacancyStatus.Live.GetDisplayName()</p>
+                    </a>
+                </div>
+            </div>
+            @*<div class="column-one-quarter">
+                    <div class="data lottery-ticket">
+                        <a href="#1" class="prototype-link">
+                            <h2 class="bold-xlarge">2</h2>
+                            <p class="bold-xsmall">Closed</p>
+                        </a>
+                    </div>
+                </div>
+                <div class="column-one-quarter">
+                    <div class="data lottery-ticket">
+                        <a href="#1" class="prototype-link">
+                            <h2 class="bold-xlarge">0</h2>
+                            <p class="bold-xsmall">Archived</p>
+                        </a>
+                    </div>
+                </div>*@
+        </div>
+    </div>
     <div class="column-full">
         <table>
             <thead>
                 <tr>
                     <th class="bold">Vacancy title</th>
+                    <th class="bold">Vacancy reference number</th>
                     <th class="bold">Status</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var vacancy in Model.Vacancies)
-                {
+@foreach (var vacancy in Model.DisplayVacancies)
+{
+    var isMissingVacancyReferenceNo = !vacancy.HasVacancyReference;
                 <tr>
                     <td><a asp-route="@RouteNames.DisplayVacancy_Get" asp-route-vacancyId="@vacancy.Id">@vacancy.Title</a></td>
+                    <td>
+                        <span asp-condition="@vacancy.HasVacancyReference"><span>VAC</span>@vacancy.VacancyReference</span>
+                        <span asp-condition="@isMissingVacancyReferenceNo">Not available</span>
+                    </td>
                     <td>@vacancy.Status.GetDisplayName()</td>
                 </tr>
-                }
+}
             </tbody>
         </table>
     </div>
