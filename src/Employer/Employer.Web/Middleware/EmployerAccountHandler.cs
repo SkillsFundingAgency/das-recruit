@@ -6,6 +6,7 @@ using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
 
@@ -13,10 +14,12 @@ namespace Esfa.Recruit.Employer.Web.Middleware
 {
     public class EmployerAccountHandler : AuthorizationHandler<EmployerAccountRequirement>
     {
+        private readonly IHostingEnvironment _hostingEnvironment;
         private readonly IEmployerVacancyClient _client;
 
-        public EmployerAccountHandler(IEmployerVacancyClient client)
+        public EmployerAccountHandler(IHostingEnvironment hostingEnvironment, IEmployerVacancyClient client)
         {
+            _hostingEnvironment = hostingEnvironment;
             _client = client;
         }
 
@@ -43,19 +46,12 @@ namespace Esfa.Recruit.Employer.Web.Middleware
 
         private async Task EnsureEmployerIsSetup(HttpContext context, string employerAccountId)
         {
-            var cookieOptions = new CookieOptions
-            {
-                HttpOnly = true,
-                SameSite = SameSiteMode.Strict,
-                Secure = true
-            };
-
             var key = string.Format(CookieNames.SetupEmployer, employerAccountId);
 
             if (context.Request.Cookies[key] == null)
             {
                 await _client.SetupEmployerAsync(employerAccountId);
-                context.Response.Cookies.Append(key, string.Empty, cookieOptions);
+                context.Response.Cookies.Append(key, string.Empty, EsfaCookieOptions.GetDefaultHttpCookieOption(_hostingEnvironment));
             }
         }
     }
