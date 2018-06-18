@@ -90,6 +90,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient<IVacancyRepository, MongoDbVacancyRepository>();
             services.AddTransient<IVacancyReviewRepository, MongoDbVacancyReviewRepository>();
             services.AddTransient<IUserRepository, MongoDbUserRepository>();
+            services.AddTransient<IApplicationReviewRepository, MongoDbApplicationReviewRepository>();
 
             services.AddTransient<IQueryStore, MongoQueryStore>();
             services.AddTransient<IQueryStoreReader, QueryStoreClient>();

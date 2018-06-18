@@ -4,6 +4,7 @@ using System.IO;
 using Esfa.Recruit.Vacancies.Jobs.ApprenticeshipProgrammes;
 using Esfa.Recruit.Vacancies.Jobs.DashboardGenerator;
 using Esfa.Recruit.Vacancies.Jobs.EditVacancyInfo;
+using Esfa.Recruit.Vacancies.Jobs.VacancyApplication;
 using Esfa.Recruit.Vacancies.Jobs.VacancyEvents;
 using Esfa.Recruit.Vacancies.Jobs.VacancyReviewEvents;
 using Esfa.Recruit.Vacancies.Jobs.VacancyStatus;
@@ -141,7 +142,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddScoped<EditVacancyInfoUpdater>();
             services.AddScoped<LiveVacancyStatusInspector>();
             services.AddScoped<DashboardCreator>();
-
+            services.AddScoped<VacancyApplicationCommandHandler>();
 
             services.AddSingleton<IApprenticeshipProgrammeApiClient, ApprenticeshipProgrammeApiClient>();
             services.AddApprentieshipsApi(configuration);
@@ -154,6 +155,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddScoped<EditVacancyInfoJob>();
             services.AddScoped<VacancyStatusJob>();
             services.AddScoped<DashboardGeneratorJob>();
+            services.AddScoped<VacancyApplicationJob>();
 
             return services;
         }
