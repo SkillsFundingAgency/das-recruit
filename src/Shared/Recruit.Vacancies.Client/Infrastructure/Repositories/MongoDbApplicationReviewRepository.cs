@@ -7,7 +7,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Polly;
-using System.Linq;
 using MongoDB.Bson;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
@@ -17,6 +16,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         private const string Database = "recruit";
         private const string Collection = "applicationReviews";
         private const string EmployerAccountId = "employerAccountId";
+        private const string VacancyReference = "vacancyReference";
+        
 
         public MongoDbApplicationReviewRepository(ILogger<MongoDbApplicationReviewRepository> logger, IOptions<MongoDbConnectionDetails> details)
             : base(logger, Database, Collection, details)
@@ -32,6 +33,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         public async Task<List<T>> GetApplicationReviewsForEmployerAsync<T>(string employerAccountId)
         {
             var filter = Builders<BsonDocument>.Filter.Eq(EmployerAccountId, employerAccountId);
+            return await QueryApplicationReviews<T>(filter);
+        }
+
+        public async Task<List<T>> GetApplicationReviewsForVacancyAsync<T>(long vacancyReference)
+        {
+            var filter = Builders<BsonDocument>.Filter.Eq(VacancyReference, vacancyReference);
+            return await QueryApplicationReviews<T>(filter);
+        }
+
+        private async Task<List<T>> QueryApplicationReviews<T>(FilterDefinition<BsonDocument> filter)
+        {
             var collection = GetCollection<BsonDocument>();
 
             var result = await RetryPolicy.ExecuteAsync(context => collection.FindAsync<T>(filter),

@@ -4,6 +4,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Services;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Dashboard;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.LiveVacancy;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Models;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
@@ -99,6 +100,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         {
             var liveVacancyId = GetLiveVacancyId(vacancyReference);
             return _queryStore.DeleteAsync<LiveVacancy>(liveVacancyId);
+        }
+
+        public Task UpdateVacancyApplicationsAsync(VacancyApplications vacancyApplications)
+        {
+            vacancyApplications.Id = QueryViewType.VacancyApplications.GetIdValue(vacancyApplications.VacancyReference.ToString());
+            vacancyApplications.Type = QueryViewType.VacancyApplications.TypeName;
+            vacancyApplications.LastUpdated = _timeProvider.Now;
+
+            return _queryStore.UpsertAsync(vacancyApplications);
         }
 
         private string GetLiveVacancyId(long vacancyReference)
