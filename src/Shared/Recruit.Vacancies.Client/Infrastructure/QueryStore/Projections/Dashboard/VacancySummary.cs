@@ -16,5 +16,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Da
         public bool IsDeleted { get; set; }
 
         public DateTime? SubmittedDate { get; set; }
+
+        public long? VacancyReference {get;set;}
+
+        public int AllApplicationsCount { get; set; }
+
+        public int NewApplicationsCount { get; set; }
     }
 }

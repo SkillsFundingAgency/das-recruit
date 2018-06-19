@@ -13,17 +13,27 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services
         private readonly ILogger<DashboardService> _logger;
         private readonly IVacancyRepository _repository;
         private readonly IQueryStoreWriter _queryStoreWriter;
+        private readonly IApplicationReviewRepository _applicationReviewRepository;
 
-        public DashboardService(IVacancyRepository repository, IQueryStoreWriter queryStoreWriter, ILogger<DashboardService> logger)
+        public DashboardService(IVacancyRepository repository, IApplicationReviewRepository applicationReviewRepository, IQueryStoreWriter queryStoreWriter, ILogger<DashboardService> logger)
         {
             _logger = logger;
             _repository = repository;
             _queryStoreWriter = queryStoreWriter;
+            _applicationReviewRepository = applicationReviewRepository;
         }
 
         public async Task ReBuildDashboardAsync(string employerAccountId)
         {
-            var vacancySummaries = await _repository.GetVacanciesByEmployerAccountAsync<VacancySummary>(employerAccountId);
+            var vacancySummariesTask = _repository.GetVacanciesByEmployerAccountAsync<VacancySummary>(employerAccountId);
+
+            var applicationReviewsTask = _applicationReviewRepository.GetApplicationReviewsForEmployerAsync<ApplicationReviewSummary>(
+                    employerAccountId);
+
+            await Task.WhenAll(vacancySummariesTask, applicationReviewsTask);
+
+            var vacancySummaries = vacancySummariesTask.Result;
+            var applicationReviews = applicationReviewsTask.Result;
 
             var activeVacancySummaries = vacancySummaries.Where(v => v.IsDeleted == false).ToList();
 
@@ -34,6 +44,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services
                 {
                     summary.Status = VacancyStatus.Submitted;
                 }
+
+                if (summary.VacancyReference.HasValue)
+                {
+                    var vacancyApplicationReviews = applicationReviews.Where(r => r.VacancyReference == summary.VacancyReference.Value).ToList();
+                    summary.AllApplicationsCount = vacancyApplicationReviews.Count;
+                    summary.NewApplicationsCount = vacancyApplicationReviews.Count(r => r.Status == ApplicationReviewStatus.New);
+                }                
             }
 
             await _queryStoreWriter.UpdateDashboardAsync(employerAccountId, activeVacancySummaries.OrderBy(v => v.CreatedDate));
