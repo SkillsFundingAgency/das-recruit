@@ -30,5 +30,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public string Support { get; set; }
         public List<ApplicationTrainingCourse> TrainingCourses { get; set; }
         public List<ApplicationWorkExperience> WorkExperiences { get; set; }
+
+        public string FullName => $"{FirstName} {LastName}";
     }
 }
