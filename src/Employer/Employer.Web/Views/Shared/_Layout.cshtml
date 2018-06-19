@@ -68,7 +68,7 @@ public string GetTitle()
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta property="og:image" content="/lib/esfa-govuk/assets/images/opengraph-image.png">
 
-    <link rel="stylesheet" media="screen" href="/css/application.css" />
+    <link asp-append-version="true" rel="stylesheet" media="screen" href="/css/application.css" />
     <script src="/lib/jquery/dist/jquery.js"></script>
     <script src="/lib/jscookie/js.cookie.js"></script>
     <environment exclude="@EnvironmentNames.GetNonProdEnvironmentNamesCommaDelimited()">
@@ -191,7 +191,7 @@ public string GetTitle()
 
     <script src="/lib/esfa-govuk/assets/javascripts/govuk-template.js"></script>
     <script src="/lib/esfa-govuk/assets/javascripts/govuk/show-hide-content.js"></script>
-    <script src="/javascripts/application.js"></script>
+    <script asp-append-version="true" src="/javascripts/application.js"></script>
 
 </body>
 </html>
