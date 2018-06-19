@@ -71,8 +71,9 @@ public string GetTitle()
     <link rel="stylesheet" media="screen" href="/css/application.css" />
     <script src="/lib/jquery/dist/jquery.js"></script>
     <script src="/lib/jscookie/js.cookie.js"></script>
-
+    <environment exclude="@EnvironmentNames.GetNonProdEnvironmentNamesCommaDelimited()">
     @Html.Partial("_GoogleAnalyticsPartial.cshtml")
+    </environment>
 
     @Html.Raw(JavaScriptSnippet.FullScript) <!-- AppInsights script -->
 </head>
