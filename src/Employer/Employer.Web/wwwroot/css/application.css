@@ -46,13 +46,9 @@
     box-shadow: none;
 }
 
-.delete-button, .delete-button:visited {
+.delete-button, .delete-button:visited, .delete-button:hover {
     background-color: #b10e1e;
-    box-shadow: 0 2px 0 #C54A56;
-}
-
-.delete-button:hover {
-    background-color: #C54A56;
+    box-shadow: 0 2px 0 #003618;
 }
 
 .no-bottom-margin {
