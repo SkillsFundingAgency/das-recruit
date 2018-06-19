@@ -8,6 +8,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
 {
@@ -16,22 +17,26 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
         private readonly IVacancyRepository _vacancyRepository;
         private readonly IApplicationReviewRepository _applicationReviewRepository;
         private readonly IQueryStoreWriter _writer;
-        
-        public UpdateVacancyApplicationsOnApplicationReviewChange(IVacancyRepository vacancyRepository, IApplicationReviewRepository applicationReviewRepository, IQueryStoreWriter writer)
+        private readonly ILogger<UpdateVacancyApplicationsOnApplicationReviewChange> _logger;
+
+        public UpdateVacancyApplicationsOnApplicationReviewChange(IVacancyRepository vacancyRepository, IApplicationReviewRepository applicationReviewRepository, IQueryStoreWriter writer, ILogger<UpdateVacancyApplicationsOnApplicationReviewChange> logger)
         {
             _vacancyRepository = vacancyRepository;
             _applicationReviewRepository = applicationReviewRepository;
             _writer = writer;
+            _logger = logger;
         }
 
         public Task Handle(ApplicationReviewCreatedEvent notification, CancellationToken cancellationToken)
         {
-            return Handle(notification.VacancyId);
+            return Handle(notification);
         }
 
-        public async Task Handle(Guid vacancyId)
+        private async Task Handle(ApplicationReviewCreatedEvent notification)
         {
-            var vacancy = await _vacancyRepository.GetVacancyAsync(vacancyId);
+            _logger.LogInformation("Handling {notificationType} for vacancyId: {vacancyId}", notification.GetType().Name, notification?.VacancyId);
+
+            var vacancy = await _vacancyRepository.GetVacancyAsync(notification.VacancyId);
             var vacancyApplicationReviews = await _applicationReviewRepository.GetApplicationReviewsForVacancyAsync<ApplicationReview>(vacancy.VacancyReference.Value);
 
             var vacancyApplications = new VacancyApplications

@@ -1,5 +1,7 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Application.CommandHandlers;
+using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Events;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
@@ -19,11 +21,23 @@ namespace Esfa.Recruit.Vacancies.Jobs.VacancyApplication
             _handler = handler;
         }
 
-        public Task VacancyApplicationSubmitted([QueueTrigger(QueueNames.ApplicationSubmittedQueueName, Connection = "EventQueueConnectionString")] string message, TextWriter log)
+        public async Task VacancyApplicationSubmitted([QueueTrigger(QueueNames.ApplicationSubmittedQueueName, Connection = "EventQueueConnectionString")] string message, TextWriter log)
         {
-            var command = JsonConvert.DeserializeObject<ApplicationSubmitCommand>(message);
-            
-            return _handler.Handle(command);
+            try
+            {
+                var command = JsonConvert.DeserializeObject<ApplicationSubmitCommand>(message);
+
+                _logger.LogInformation("Start {JobName} for vacancyId: {vacancyReference} for candidateId: {candidateId} ", JobName, command.Application.VacancyReference, command.Application.CandidateId);
+
+                await _handler.Handle(command);
+
+                _logger.LogInformation("Finished {JobName} for vacancyId: {vacancyReference} for candidateId: {candidateId} ", JobName, command.Application.VacancyReference, command.Application.CandidateId);
+            }
+            catch (JsonException ex)
+            {
+                _logger.LogError(ex, "Unable to deserialise event: {eventBody}", message);
+                throw;
+            }
         }
     }
 }

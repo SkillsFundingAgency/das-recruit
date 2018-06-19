@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using Esfa.Recruit.Vacancies.Client.Application.CommandHandlers;
 using Esfa.Recruit.Vacancies.Jobs.ApprenticeshipProgrammes;
 using Esfa.Recruit.Vacancies.Jobs.DashboardGenerator;
 using Esfa.Recruit.Vacancies.Jobs.EditVacancyInfo;

@@ -74,8 +74,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
             
             _logger.LogInformation("Handling {eventType} for accountId: {employerAccountId} and vacancyId: {vacancyId}", notification.GetType().Name, notification.EmployerAccountId, notification.VacancyId);
             return _dashboardService.ReBuildDashboardAsync(notification.EmployerAccountId);
-        }
-
-        
+        }   
     }
 }
