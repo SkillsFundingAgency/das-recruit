@@ -33,7 +33,7 @@
             </div>
             <div class="column-one-quarter">
                 <div class="data lottery-ticket">
-                    <a asp-route="@RouteNames.Dashboard_Index_Get" asp-route-statusFilter="@VacancyStatus.Draft.GetDisplayName()" class="prototype-link">
+                    <a asp-route="@RouteNames.Dashboard_Index_Get" asp-route-statusFilter="@VacancyStatus.Draft.ToString()" class="prototype-link">
                         <h2 class="bold-xlarge">@Model.NoOfDraftVacancies</h2>
                         <p class="bold-xsmall">@VacancyStatus.Draft.GetDisplayName()</p>
                     </a>
@@ -41,7 +41,7 @@
             </div>
             <div class="column-one-quarter">
                 <div class="data lottery-ticket">
-                    <a asp-route="@RouteNames.Dashboard_Index_Get" asp-route-statusFilter="@VacancyStatus.Submitted.GetDisplayName()" class="prototype-link">
+                    <a asp-route="@RouteNames.Dashboard_Index_Get" asp-route-statusFilter="@VacancyStatus.Submitted.ToString()" class="prototype-link">
                         <h2 class="bold-xlarge">@Model.NoOfSubmittedVacancies</h2>
                         <p class="bold-xsmall">@VacancyStatus.Submitted.GetDisplayName()</p>
                     </a>
@@ -49,7 +49,7 @@
             </div>
             <div class="column-one-quarter">
                 <div class="data lottery-ticket">
-                    <a asp-route="@RouteNames.Dashboard_Index_Get" asp-route-statusFilter="@VacancyStatus.Referred.GetDisplayName()" class="prototype-link">
+                    <a asp-route="@RouteNames.Dashboard_Index_Get" asp-route-statusFilter="@VacancyStatus.Referred.ToString()" class="prototype-link">
                         <h2 class="bold-xlarge">@Model.NoOfEditsRequiredVacancies</h2>
                         <p class="bold-xsmall">@VacancyStatus.Referred.GetDisplayName()</p>
                     </a>
@@ -59,7 +59,7 @@
         <div class="grid-row">
             <div class="column-one-quarter">
                 <div class="data lottery-ticket">
-                    <a asp-route="@RouteNames.Dashboard_Index_Get" asp-route-statusFilter="@VacancyStatus.Live.GetDisplayName()" class="prototype-link">
+                    <a asp-route="@RouteNames.Dashboard_Index_Get" asp-route-statusFilter="@VacancyStatus.Live.ToString()" class="prototype-link">
                         <h2 class="bold-xlarge">@Model.NoOfLiveVacancies</h2>
                         <p class="bold-xsmall">@VacancyStatus.Live.GetDisplayName()</p>
                     </a>

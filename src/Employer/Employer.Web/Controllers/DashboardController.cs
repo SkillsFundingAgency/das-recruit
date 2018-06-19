@@ -7,6 +7,7 @@ using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Microsoft.AspNetCore.Hosting;
+using Esfa.Recruit.Employer.Web.ViewModels;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
@@ -26,23 +27,28 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         public async Task<IActionResult> Dashboard([FromRoute]string employerAccountId, [FromQuery]string statusFilter)
         {
             var vm = await _orchestrator.GetDashboardViewModelAsync(employerAccountId);
-            
+
             if (TempData.ContainsKey(TempDataKeys.DashboardErrorMessage))
             {
                 vm.WarningMessage = TempData[TempDataKeys.DashboardErrorMessage].ToString();
             }
-            
+
+            ManageDashboardFilter(statusFilter, vm);
+
+            return View(vm);
+        }
+
+        private void ManageDashboardFilter(string statusFilter, DashboardViewModel vm)
+        {
             if (!string.IsNullOrEmpty(statusFilter) && Enum.TryParse<VacancyStatus>(statusFilter, out var filter))
             {
                 vm.Filter = filter;
-                Response.Cookies.Append(CookieNames.VacancyStatusFilter, filter.GetDisplayName(), EsfaCookieOptions.GetDefaultHttpCookieOption(_hostingEnvironment));
+                Response.Cookies.Append(CookieNames.VacancyStatusFilter, filter.ToString(), EsfaCookieOptions.GetDefaultHttpCookieOption(_hostingEnvironment));
             }
             else
             {
                 Response.Cookies.Delete(CookieNames.VacancyStatusFilter, EsfaCookieOptions.GetDefaultHttpCookieOption(_hostingEnvironment));
             }
-
-            return View(vm);
         }
     }
 }
