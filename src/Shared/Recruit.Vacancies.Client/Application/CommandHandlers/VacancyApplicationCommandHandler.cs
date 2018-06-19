@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
@@ -7,7 +8,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Domain.Services;
 using Microsoft.Extensions.Logging;
 
-namespace Esfa.Recruit.Vacancies.Jobs.VacancyApplication
+namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
     public class VacancyApplicationCommandHandler
     {
@@ -28,6 +29,8 @@ namespace Esfa.Recruit.Vacancies.Jobs.VacancyApplication
 
         public async Task Handle(ApplicationSubmitCommand command)
         {
+            _logger.LogInformation("Submitting application for vacancyId: {vacancyReference} for candidateId: {candidateId}", command.Application.VacancyReference, command.Application.CandidateId);
+
             var vacancy = await _vacancyRepository.GetVacancyAsync(command.Application.VacancyReference);
 
             var review = new ApplicationReview
