@@ -46,6 +46,7 @@ namespace Esfa.Recruit.Qa.Web.Controllers
                 {
                     case NotFoundException _:
                         _logger.LogError(exception, "Exception on path: {route}", exceptionFeature.Path);
+                        Response.StatusCode = (int)HttpStatusCode.NotFound;
                         return View(ViewNames.ErrorView, GetViewModel(HttpStatusCode.NotFound));
                     case VacancyNotFoundException _:
                         return PageNotFound();
@@ -64,11 +65,13 @@ namespace Esfa.Recruit.Qa.Web.Controllers
 
         private IActionResult AccessDenied()
         {
+            Response.StatusCode = (int)HttpStatusCode.Unauthorized;
             return View(ViewNames.AccessDenied);
         }
 
         private IActionResult PageNotFound()
         {
+            Response.StatusCode = (int)HttpStatusCode.NotFound;
             return View(ViewNames.PageNotFound);
         }
     }
