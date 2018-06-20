@@ -72,7 +72,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 }
 
                 if (exception is AuthorisationException)
-                {
+                {   
                     return AccessDenied();
                 }
             }
@@ -82,11 +82,13 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
         private IActionResult AccessDenied()
         {
+            Response.StatusCode = (int)HttpStatusCode.Unauthorized;
             return View(ViewNames.AccessDenied);
         }
 
         private IActionResult PageNotFound()
         {
+            Response.StatusCode = (int)HttpStatusCode.NotFound;
             return View(ViewNames.PageNotFound);
         }
     }
