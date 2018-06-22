@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
@@ -17,6 +19,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         private const string Collection = "applicationReviews";
         private const string EmployerAccountId = "employerAccountId";
         private const string VacancyReference = "vacancyReference";
+        private const string Id = "_id";
         
 
         public MongoDbApplicationReviewRepository(ILogger<MongoDbApplicationReviewRepository> logger, IOptions<MongoDbConnectionDetails> details)
@@ -40,6 +43,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         {
             var filter = Builders<BsonDocument>.Filter.Eq(VacancyReference, vacancyReference);
             return await QueryApplicationReviews<T>(filter);
+        }
+
+        public async Task<T> GetApplicationReviewAsync<T>(Guid applicationReviewId)
+        {
+            var filter = Builders<BsonDocument>.Filter.Eq(Id, applicationReviewId);
+            var applicationReview = await QueryApplicationReviews<T>(filter);
+            return applicationReview.SingleOrDefault();
         }
 
         private async Task<List<T>> QueryApplicationReviews<T>(FilterDefinition<BsonDocument> filter)

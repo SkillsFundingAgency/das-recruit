@@ -94,5 +94,17 @@ namespace Esfa.Recruit.Employer.Web
         {
             return GetValidRoutesForVacancy(vacancy) == null;
         }
+
+        public static async Task<ApplicationReview> GetAuthorisedApplicationReviewAsync(IEmployerVacancyClient client, ApplicationReviewRouteModel rm)
+        {
+            var applicationReview = await client.GetApplicationReviewAsync(rm.ApplicationReviewId);
+
+            if (applicationReview.EmployerAccountId == rm.EmployerAccountId)
+            {
+                return applicationReview;
+            }
+
+            throw new AuthorisationException(string.Format(ExceptionMessages.ApplicationReviewUnauthorisedAccess, rm.EmployerAccountId, applicationReview.EmployerAccountId, applicationReview.Id, applicationReview.VacancyReference));
+        }
     }
 }

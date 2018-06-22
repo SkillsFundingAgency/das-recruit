@@ -14,6 +14,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Dashboard;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.LiveVacancy;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services;
@@ -31,6 +32,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly IApprenticeshipProgrammeProvider _apprenticeshipProgrammesProvider;
         private readonly IEmployerAccountService _employerAccountService;
         private readonly IReferenceDataReader _referenceDataReader;
+        private readonly IApplicationReviewRepository _applicationReviewRepository;
 
         public VacancyClient(
             IVacancyRepository repository,
@@ -40,7 +42,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             IEntityValidator<Vacancy, VacancyRuleSet> validator,
             IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider,
             IEmployerAccountService employerAccountService,
-            IReferenceDataReader referenceDataReader)
+            IReferenceDataReader referenceDataReader,
+            IApplicationReviewRepository applicationReviewRepository)
         {
             _repository = repository;
             _reader = reader;
@@ -50,6 +53,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _apprenticeshipProgrammesProvider = apprenticeshipProgrammesProvider;
             _employerAccountService = employerAccountService;
             _referenceDataReader = referenceDataReader;
+            _applicationReviewRepository = applicationReviewRepository;
         }
 
         public Task UpdateVacancyAsync(Vacancy vacancy, VacancyUser user)
@@ -162,6 +166,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         public Task<CandidateSkills> GetCandidateSkillsAsync()
         {
             return _referenceDataReader.GetCandidateSkillsAsync();
+        }
+
+        public Task<ApplicationReview> GetApplicationReviewAsync(Guid applicationReviewId)
+        {
+            return _applicationReviewRepository.GetApplicationReviewAsync<ApplicationReview>(applicationReviewId);
         }
 
         // Jobs
