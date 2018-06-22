@@ -1,0 +1,303 @@
+﻿@using Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview
+@model Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview.ApplicationReviewViewModel
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <h1 class="heading-xlarge">@Model.Name</h1>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <div class="panel panel-border-narrow">
+            <p>
+                @Model.Name
+                <br> @Model.AddressLine1
+                <br> @Model.AddressLine2
+                <br> @Model.AddressLine3
+                <br> @Model.AddressLine4
+                <br> @Model.Phone
+                <br>
+                <a href="mailto:@Model.Email">@Model.Email</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <h2 class="heading-large">About you</h2>
+    </div>
+
+</div>
+
+<div class="form-group">
+    <span class="form-label-bold">What are your main strengths?</span>
+    <span>@Model.Strengths</span>
+</div>
+<div class="form-group">
+    <span class="form-label-bold">What skills would you like to improve during this apprenticeship?</span>
+    <span>@Model.Improvements</span>
+</div>
+<div class="form-group">
+    <span class="form-label-bold">What are your hobbies and interests?</span>
+    <span>@Model.HobbiesAndInterests</span>
+</div>
+<hr>
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <section>
+
+            <div class="grid-row">
+                <div class="column-two-thirds">
+                    <h2 class="heading-large">Education</h2>
+                </div>
+            </div>
+
+            <h3 class="heading-small">Name of most recent school/college</h3>
+            <p>@Model.EducationInstitution</p>
+
+            <h3 class="heading-small">Years attended</h3>
+            <div>
+                <div class="form-group form-group-year">
+                    <span class="form-label">Started</span>
+                    <span>@Model.EducationFromYear</span>
+                </div>
+                <div class="form-group form-group-year">
+                    <span class="form-label">Finished</span>
+                    <span>@Model.EducationToYear</span>
+                </div>
+            </div>
+        </section>
+        <br>
+        <hr>
+        <section>
+            <div class="grid-row">
+                <div class="column-two-thirds">
+                    <h2 class="heading-large">Qualifications</h2>
+                </div>
+
+            </div>
+
+            <p asp-condition="@Model.HasNoQualifications">
+                I don't have any qualifications
+            </p>
+
+            @foreach (var group in Model.Qualifcations.GroupBy(item => item.QualificationType))
+            {
+            <div>
+                <div>
+                    <h3 class="heading-small">@Html.Encode(group.Key)</h3>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Subject</th>
+                            <th>Grade</th>
+                            <th>Year</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in group)
+                        {
+                        <tr>
+                            <td>@item.Subject"></td>
+                            <td>@item.Grade @(item.IsPredicted ? "predicted" : "")</td>
+                            <td>@item.Year" readonly</td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            }
+        </section>
+        <section>
+            <div class="grid-row">
+                <div class="column-two-thirds">
+                    <h2 class="heading-large">Work experience</h2>
+                </div>
+
+            </div>
+
+            <p asp-condition="@Model.HasNoWorkExperience">I don't have any work experience</p>
+
+            @foreach (var experience in Model.WorkExperiences)
+            {
+            <div class="grid-3-4">
+                <div class="grid-row">
+                    <div class="column-one-half">
+                        <table>
+                            <colgroup>
+                                <col>
+                                <col>
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <span>Work experience</span>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <span>@experience.Employer</span>
+                                        <span>-</span>
+                                        <span>@experience.JobTitle</span>
+                                        <div></div>
+                                        <span>@experience.Description</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="column-one-half">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>From</th>
+                                    <th>To</th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>@experience.FromDateAsText</td>
+                                    <td>@experience.ToDateAsText</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+    }
+
+
+        </section>
+        <section>
+            <div class="grid-row">
+                <div class="column-two-thirds">
+                    <h2 class="heading-large">Training courses</h2>
+                </div>
+
+            </div>
+
+            <p asp-condition="@Model.HasNoTrainingCourses">
+                I have not been on any training courses
+            </p>
+
+            @foreach (var trainingCourse in Model.TrainingCourses)
+    {
+            <div>
+                <div class="grid-row">
+                    <div class="column-one-half">
+                        <table>
+                            <colgroup>
+                                <col>
+                                <col>
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>Training course</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <span>@trainingCourse.Provider</span>
+                                        <span>-</span>
+                                        <span>@trainingCourse.Title</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="column-one-half">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>From</th>
+                                    <th>To</th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>@trainingCourse.FromDateAsText</td>
+                                    <td>@trainingCourse.ToDateAsText</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+    }
+
+        </section>
+
+        <div class="grid-row">
+            <div class="column-two-thirds">
+                <h2 class="heading-large">Skills the Employer wants</h2>
+            </div>
+
+        </div>
+
+        <p asp-condition="@Model.HasNoSkills">I don't have the skills the employer wants</p>
+
+        <p asp-condition="@Model.HasSkills">
+            @Html.Raw(string.Join(", ", Model.Skills.Select(s => string.Format("<span>{0}</span>", Html.Encode(s)))))
+        </p>
+
+        <section>
+            <h3 class="heading-small">Do you have a learning difficulty, disability or health problem?</h3>
+            <p>@Model.DisabilityStatus</p>
+
+            <h3 class="heading-small">Is there anything we can do to support your interview?</h3>
+            <p>@Model.Support</p>
+            <br>
+            <hr>
+        </section>
+
+        <div>
+            <h3 class="heading-large">Outcome</h3>
+            
+
+            <div class="form-group">
+                <fieldset>
+
+                    <div class="multiple-choice">
+                        <input name="outcome" type="radio" value="True">
+                        <label for="outcome-successful">Successful</label>
+                    </div>
+
+                    <div class="multiple-choice" data-target="unsuccessful-reason">
+                        <input name="outcome" type="radio" value="False">
+                        <label for="outcome-unsuccessful">Unsuccessful</label>
+                    </div>
+                </fieldset>
+            </div>
+
+            <div class="panel panel-border-narrow js-hidden">
+                <div class="form-group">
+                    <label class="form-label-bold" for="reason">Feedback</label>
+                    <span class="form-hint">Explain why the application has been unsucessful, your comments will be sent to the candidate.</span>
+                    <textarea class="form-control form-control-3-4 textarea-expandable" cols="20" name="reason" size="12" type="text"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<hr>
+
+<div class="form-group hide-print">
+    <a href="vacancy-preview" class="button">Save</a>
+    <a href="vacancy-preview" class="button-link">Cancel</a>
+</div>

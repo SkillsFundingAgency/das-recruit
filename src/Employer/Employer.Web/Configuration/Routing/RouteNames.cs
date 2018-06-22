@@ -74,5 +74,7 @@
 
         public const string Qualifications_Get = "Qualifications_Get";
         public const string Qualifications_Post = "Qualifications_Post";
+
+        public const string ApplicationReview_Get = "ApplicationReview_Get";
     }
 }

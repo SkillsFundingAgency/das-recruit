@@ -1,16 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Text;
+using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Exceptions;
+using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using FluentAssertions;
-using Microsoft.CodeAnalysis;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel.Utilities;
+using Moq;
 using Xunit;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web
@@ -138,6 +137,48 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web
             };
 
             CheckRouteIsValidForVacancyTest(vacancy, route, shouldRedirect, null);
+        }
+
+        [Theory]
+        [InlineData("EMPLOYER ACCOUNT ID", "EMPLOYER ACCOUNT ID", true)]
+        [InlineData("EMPLOYER ACCOUNT ID", "ANOTHER EMPLOYER ACCOUNT ID", false)]
+        public void GetAuthorisedApplicationReviewAsync_ShouldAllowForEmployerAccountId(string applicationReviewEmployerAccountId,
+            string requestedEmployerAccountId, bool shouldAllow)
+        {
+            var applicationReviewId = Guid.NewGuid();
+
+            var client = new Mock<IEmployerVacancyClient>();
+            client.Setup(c => c.GetApplicationReviewAsync(applicationReviewId)).Returns(Task.FromResult(
+                new ApplicationReview
+                {
+                    Id = applicationReviewId,
+                    EmployerAccountId = applicationReviewEmployerAccountId,
+                    VacancyReference = 1000000001
+                }));
+
+            var rm = new ApplicationReviewRouteModel
+            {
+                EmployerAccountId = requestedEmployerAccountId,
+                ApplicationReviewId = applicationReviewId
+            };
+
+            Func<Task<ApplicationReview>> act = () => Utility.GetAuthorisedApplicationReviewAsync(client.Object, rm);
+
+            if (shouldAllow)
+            {
+                var applicationReview = act().Result;
+                applicationReview.EmployerAccountId.Should().Be(requestedEmployerAccountId);
+            }
+            else
+            {
+                var ex = Assert.ThrowsAsync<AuthorisationException>(act);
+                ex.Result.Message.Should().Be($"The employer account 'ANOTHER EMPLOYER ACCOUNT ID' cannot access employer account 'EMPLOYER ACCOUNT ID' application '{applicationReviewId}' for vacancy '1000000001'.");
+            }
+        }
+
+        private void throwanexception()
+        {
+            throw new Exception();
         }
 
         private void CheckRouteIsValidForVacancyTest(Vacancy vacancy, string route, bool shouldRedirect, string expectedRedirectRoute)
