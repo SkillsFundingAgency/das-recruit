@@ -1,4 +1,5 @@
 ﻿using System;
+using Esfa.Recruit.Employer.Web.Extensions;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview
 {
@@ -9,7 +10,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview
         public DateTime FromDate { get; set; }
         public DateTime ToDate { get; set; }
 
-        public string FromDateAsText => FromDate.ToString("MMMM yyyy");
-        public string ToDateAsText => ToDate.ToString("MMMM yyyy");
+        public string FromDateAsText => FromDate.ToMonthYearString();
+        public string ToDateAsText => ToDate.ToMonthYearString();
     }
 }
