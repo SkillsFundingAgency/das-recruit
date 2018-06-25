@@ -16,11 +16,12 @@
         <p asp-condition="@Model.HasVacancies">
             You can use filters to show only vacancies that match your criteria.
         </p>
-        <a asp-route="@RouteNames.CreateVacancy_Get" class="button">Create vacancy</a>
+        <a asp-route="@RouteNames.CreateVacancy_Get" class="button small-bottom-margin">Create vacancy</a>
     </div>
     <br>
 </div>
-<div class="grid-row" asp-condition="@Model.HasVacancies">
+
+<div asp-condition="@Model.HasVacancies">
     <div id="selection-active" class="lottery-tickets">
         <div class="grid-row">
             <div class="column-one-quarter">
@@ -81,34 +82,37 @@
                         </a>
                     </div>
                 </div>*@
+
         </div>
     </div>
-    <div class="column-full">
-        <table>
-            <thead>
-                <tr>
-                    <th class="bold">Vacancy title</th>
-                    <th class="bold">Reference number</th>
-                    <th class="bold">Status</th>
-                </tr>
-            </thead>
-            <tbody>
-@foreach (var vacancy in Model.DisplayVacancies)
-{
-    var isMissingVacancyReferenceNo = !vacancy.HasVacancyReference;
-                <tr>
-                    <td><a asp-route="@RouteNames.DisplayVacancy_Get" asp-route-vacancyId="@vacancy.Id">@vacancy.Title</a></td>
-                    <td>
-                        <span asp-condition="@vacancy.HasVacancyReference"><span>VAC</span>@vacancy.VacancyReference</span>
-                        <span asp-condition="@isMissingVacancyReferenceNo">Not available</span>
-                    </td>
-                    <td>@vacancy.Status.GetDisplayName()</td>
-                </tr>
-}
-                <tr asp-condition="@Model.HasNoFilteredVacanciesToShow">
-                    <td colspan="3">You do not have any @Model.FilterDisplayText vacancies. Please select all.</td>
-                </tr>
-            </tbody>
-        </table>
+    <div class="grid-row">
+        <div class="column-full">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="bold">Vacancy title</th>
+                        <th class="bold">Reference number</th>
+                        <th class="bold">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+    @foreach (var vacancy in Model.DisplayVacancies)
+    {
+        var isMissingVacancyReferenceNo = !vacancy.HasVacancyReference;
+                    <tr>
+                        <td><a asp-route="@RouteNames.DisplayVacancy_Get" asp-route-vacancyId="@vacancy.Id">@vacancy.Title</a></td>
+                        <td>
+                            <span asp-condition="@vacancy.HasVacancyReference"><span>VAC</span>@vacancy.VacancyReference</span>
+                            <span asp-condition="@isMissingVacancyReferenceNo">Not available</span>
+                        </td>
+                        <td>@vacancy.Status.GetDisplayName()</td>
+                    </tr>
+    }
+                    <tr asp-condition="@Model.HasNoFilteredVacanciesToShow">
+                        <td colspan="3">You do not have any @Model.FilterDisplayText vacancies. Please select all.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
