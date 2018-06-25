@@ -29,5 +29,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task SetupEmployerAsync(string employerAccountId);
         Task<CandidateSkills> GetCandidateSkillsAsync();
         Task<ApplicationReview> GetApplicationReviewAsync(Guid applicationReviewId);
+        Task<VacancyApplications> GetVacancyApplicationsAsync(string vacancyReference);
+        
     }
 }
