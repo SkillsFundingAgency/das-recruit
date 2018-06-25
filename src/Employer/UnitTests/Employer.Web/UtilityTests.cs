@@ -8,7 +8,6 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel.Utilities;
 using Moq;
 using Xunit;
 
@@ -174,11 +173,6 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web
                 var ex = Assert.ThrowsAsync<AuthorisationException>(act);
                 ex.Result.Message.Should().Be($"The employer account 'ANOTHER EMPLOYER ACCOUNT ID' cannot access employer account 'EMPLOYER ACCOUNT ID' application '{applicationReviewId}' for vacancy '1000000001'.");
             }
-        }
-
-        private void throwanexception()
-        {
-            throw new Exception();
         }
 
         private void CheckRouteIsValidForVacancyTest(Vacancy vacancy, string route, bool shouldRedirect, string expectedRedirectRoute)
