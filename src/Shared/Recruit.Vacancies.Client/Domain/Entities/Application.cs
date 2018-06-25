@@ -13,7 +13,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public string AddressLine4 { get; set; }
         public DateTime ApplicationDate { get; set; }
         public DateTime BirthDate { get; set; }
-        public string DisabilityStatus { get; set; }
+        public ApplicationReviewDisabilityStatus DisabilityStatus { get; set; }
         public int EducationFromYear { get; set; }
         public string EducationInstitution { get; set; }
         public int EducationToYear { get; set; }

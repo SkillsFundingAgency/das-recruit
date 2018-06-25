@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
+using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Employer.Web.Extensions
@@ -28,7 +29,7 @@ namespace Esfa.Recruit.Employer.Web.Extensions
                 AddressLine2 = r.Application.AddressLine2,
                 AddressLine3 = r.Application.AddressLine3,
                 AddressLine4 = r.Application.AddressLine4,
-                DisabilityStatus = r.Application.DisabilityStatus,
+                DisabilityStatus = r.Application.DisabilityStatus.GetDisplayName(),
                 EducationFromYear = r.Application.EducationFromYear,
                 EducationInstitution = r.Application.EducationInstitution,
                 EducationToYear = r.Application.EducationToYear,
