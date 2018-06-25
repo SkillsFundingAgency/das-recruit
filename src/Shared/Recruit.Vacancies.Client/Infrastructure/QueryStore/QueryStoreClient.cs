@@ -82,6 +82,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             return _queryStore.GetAsync<EditVacancyInfo>(key);
         }
 
+        public Task<VacancyApplications> GetVacancyApplicationsAsync(string vacancyReference)
+        {
+            var key = QueryViewType.VacancyApplications.GetIdValue(vacancyReference);
+
+            return _queryStore.GetAsync<VacancyApplications>(key);
+        }
+
         public Task UpdateLiveVacancyAsync(LiveVacancy vacancy)
         {
             vacancy.Id = GetLiveVacancyId(vacancy.VacancyReference);
