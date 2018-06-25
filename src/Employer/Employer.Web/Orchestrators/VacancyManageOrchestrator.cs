@@ -67,7 +67,13 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                         ViewName = ViewNames.ManageLiveVacancyView
                     };
                 case VacancyStatus.Closed:
-                    return await GetClosedVacancyViewModel(vacancy);
+                    var closedViewModel = new ClosedVacancyViewModel();
+                    await _vacancyDisplayMapper.MapFromVacancyAsync(closedViewModel, vacancy);
+                    return new ManageVacancy
+                    {
+                        ViewModel = closedViewModel,
+                        ViewName = ViewNames.ManageClosedVacancyView
+                    };
                 case VacancyStatus.Referred:
                     var referredViewModel = new ReferredVacancyViewModel();
                     await _vacancyDisplayMapper.MapFromVacancyAsync(referredViewModel, vacancy);
@@ -79,17 +85,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 default:
                     throw new InvalidStateException(string.Format(ErrorMessages.VacancyCannotBeViewed, vacancy.Title));
             }
-        }
-
-        private async Task<ManageVacancy> GetClosedVacancyViewModel(Vacancy vacancy)
-        {
-            var closedViewModel = new ClosedVacancyViewModel();
-            await _vacancyDisplayMapper.MapFromVacancyAsync(closedViewModel, vacancy);
-            return new ManageVacancy
-            {
-                ViewModel = closedViewModel,
-                ViewName = ViewNames.ManageClosedVacancyView
-            };
         }
     }
 }
