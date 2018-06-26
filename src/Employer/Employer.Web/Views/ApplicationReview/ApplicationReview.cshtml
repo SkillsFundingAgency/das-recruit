@@ -1,67 +1,57 @@
 ﻿@using System.Net
-@using Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview
+@using Esfa.Recruit.Vacancies.Client.Domain.Entities
 @model Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview.ApplicationReviewViewModel
 
 <div class="grid-row">
     <div class="column-two-thirds">
-        <h1 class="heading-xlarge">@Model.Name</h1>
-    </div>
-</div>
-
-<div class="grid-row">
-    <div class="column-two-thirds">
-        <div class="panel panel-border-narrow">
-            <p>
-                @Html.Raw(
-                              string.Join("<br>",
-                                  new[]
-                                  {
-                                    @Model.Name,
-                                    @Model.AddressLine1,
-                                    @Model.AddressLine2,
-                                    @Model.AddressLine3,
-                                    @Model.AddressLine4,
-                                    @Model.Postcode
-                                  }.Where(s => !string.IsNullOrWhiteSpace(s))
-                                      .Select(WebUtility.HtmlEncode)))
-            </p>
-            <p>
-                @Model.Phone
-                <br> <a href="mailto:@Model.Email">@Model.Email</a>
-            </p>
-        </div>
-    </div>
-</div>
-
-<div class="grid-row">
-    <div class="column-two-thirds">
-        <h2 class="heading-large">About you</h2>
-    </div>
-
-</div>
-
-<div class="form-group">
-    <span class="form-label-bold">What are your main strengths?</span>
-    <span>@Model.Strengths</span>
-</div>
-<div class="form-group">
-    <span class="form-label-bold">What skills would you like to improve during this apprenticeship?</span>
-    <span>@Model.Improvements</span>
-</div>
-<div class="form-group">
-    <span class="form-label-bold">What are your hobbies and interests?</span>
-    <span>@Model.HobbiesAndInterests</span>
-</div>
-<hr>
-<div class="grid-row">
-    <div class="column-two-thirds">
         <section>
+            <h1 class="heading-xlarge">@Model.Name</h1>
 
-            <div class="grid-row">
-                <div class="column-two-thirds">
-                    <h2 class="heading-large">Education</h2>
-                </div>
+            @Html.Partial("_ValidationSummary", new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames })
+
+            <div class="panel panel-border-narrow">
+                <p>
+                    @Html.Raw(
+                                         string.Join("<br>",
+                                             new[]
+                                             {
+                                                        @Model.Name,
+                                                        @Model.AddressLine1,
+                                                        @Model.AddressLine2,
+                                                        @Model.AddressLine3,
+                                                        @Model.AddressLine4,
+                                                        @Model.Postcode
+                                             }.Where(s => !string.IsNullOrWhiteSpace(s))
+                                                 .Select(WebUtility.HtmlEncode)))
+                </p>
+                <p>
+                    @Model.Phone
+                    <br> <a href="mailto:@Model.Email">@Model.Email</a>
+                </p>
             </div>
+        </section>
+
+        <section>
+            <h2 class="heading-large">About you</h2>
+
+            <div class="form-group">
+                <span class="form-label-bold">What are your main strengths?</span>
+                <span>@Model.Strengths</span>
+            </div>
+            <div class="form-group">
+                <span class="form-label-bold">What skills would you like to improve during this apprenticeship?</span>
+                <span>@Model.Improvements</span>
+            </div>
+            <div class="form-group">
+                <span class="form-label-bold">What are your hobbies and interests?</span>
+                <span>@Model.HobbiesAndInterests</span>
+            </div>
+        </section>
+
+        <hr>
+
+        <section>
+            <h2 class="heading-large">Education</h2>
 
             <h3 class="heading-small">Name of most recent school/college</h3>
             <p>@Model.EducationInstitution</p>
@@ -82,19 +72,13 @@
                 </tbody>
             </table>
         </section>
-        <br>
+
         <hr>
+
         <section>
-            <div class="grid-row">
-                <div class="column-two-thirds">
-                    <h2 class="heading-large">Qualifications</h2>
-                </div>
+            <h2 class="heading-large">Qualifications</h2>
 
-            </div>
-
-            <p asp-condition="@Model.HasNoQualifications">
-                I don't have any qualifications
-            </p>
+            <p asp-condition="@Model.HasNoQualifications">I don't have any qualifications</p>
 
             @foreach (var group in Model.Qualifcations.GroupBy(item => item.QualificationType))
             {
@@ -124,13 +108,9 @@
                 </div>
             }
         </section>
-        <section>
-            <div class="grid-row">
-                <div class="column-two-thirds">
-                    <h2 class="heading-large">Work experience</h2>
-                </div>
 
-            </div>
+        <section>
+            <h2 class="heading-large">Work experience</h2>
 
             <p asp-condition="@Model.HasNoWorkExperience">I don't have any work experience</p>
 
@@ -187,20 +167,12 @@
                     </div>
                 </div>
             }
-
-
         </section>
+
         <section>
-            <div class="grid-row">
-                <div class="column-two-thirds">
-                    <h2 class="heading-large">Training courses</h2>
-                </div>
+            <h2 class="heading-large">Training courses</h2>
 
-            </div>
-
-            <p asp-condition="@Model.HasNoTrainingCourses">
-                I have not been on any training courses
-            </p>
+            <p asp-condition="@Model.HasNoTrainingCourses">I have not been on any training courses</p>
 
             @foreach (var trainingCourse in Model.TrainingCourses)
             {
@@ -253,13 +225,9 @@
             }
 
         </section>
-        <section>
-            <div class="grid-row">
-                <div class="column-two-thirds">
-                    <h2 class="heading-large">Skills the Employer wants</h2>
-                </div>
 
-            </div>
+        <section>
+            <h2 class="heading-large">Skills the Employer wants</h2>
 
             <p asp-condition="@Model.HasNoSkills">I don't have the skills the employer wants</p>
 
@@ -267,7 +235,8 @@
                 @Html.Raw(string.Join(", ", Model.Skills.Select(s => string.Format("<span>{0}</span>", Html.Encode(s)))))
             </p>
         </section>
-        <hr />
+
+        <hr>
 
         <section>
             <h3 class="heading-small">Do you have a learning difficulty, disability or health problem?</h3>
@@ -282,40 +251,48 @@
             <hr>
         </section>
 
-        <div>
+        <section asp-condition="@Model.CanNotChangeOutcome">
             <h3 class="heading-large">Outcome</h3>
+            <p>@Model.Outcome.GetDisplayName()</p>
+        </section>
 
+        <form asp-condition="@Model.CanChangeOutcome" asp-route="@RouteNames.ApplicationReview_Post">
+            <section>
+                <h3 class="heading-large">Outcome</h3>
 
-            <div class="form-group">
-                <fieldset>
+                <div esfa-validation-marker-for="Outcome" class="form-group">
+                    <fieldset>
+                        <span esfa-validation-message-for="Outcome" class="error-message"></span>
+                        <div class="multiple-choice">
+                            <input asp-for="Outcome" id="outcome-successful" type="radio" value="@ApplicationReviewStatus.Successful.ToString()">
+                            <label for="outcome-successful">Successful</label>
+                        </div>
 
-                    <div class="multiple-choice">
-                        <input name="outcome" type="radio" value="True">
-                        <label for="outcome-successful">Successful</label>
-                    </div>
-
-                    <div class="multiple-choice" data-target="unsuccessful-reason">
-                        <input name="outcome" type="radio" value="False">
-                        <label for="outcome-unsuccessful">Unsuccessful</label>
-                    </div>
-                </fieldset>
-            </div>
-
-            <div class="panel panel-border-narrow js-hidden">
-                <div class="form-group">
-                    <label class="form-label-bold" for="reason">Feedback</label>
-                    <span class="form-hint">Explain why the application has been unsucessful, your comments will be sent to the candidate.</span>
-                    <textarea class="form-control form-control-3-4 textarea-expandable" cols="20" name="reason" size="12" type="text"></textarea>
+                        <div class="multiple-choice" data-target="unsuccessful-reason">
+                            <input asp-for="Outcome" id="outcome-unsuccessful" type="radio" value="@ApplicationReviewStatus.Unsuccessful.ToString()">
+                            <label for="outcome-unsuccessful">Unsuccessful</label>
+                        </div>
+                    </fieldset>
                 </div>
-            </div>
-        </div>
+                <div class="panel panel-border-narrow js-hidden">
+                    <div class="form-group">
+                        <label asp-for="Reason" class="form-label-bold">Feedback</label>
+                        <span class="form-hint">Explain why the application has been unsucessful, your comments will be sent to the candidate.</span>
+                        <textarea asp-for="Reason" class="form-control form-control-3-4" cols="20" size="12" type="text"></textarea>
+                    </div>
+                </div>
+
+            </section>
+
+            <hr>
+
+            <section>
+                <div class="form-group hide-print">
+                    <button type="submit" class="button">Save</button>
+
+                    <a href="#" class="button-link">Cancel</a>
+                </div>
+            </section>
+        </form>
     </div>
-
-</div>
-
-<hr>
-
-<div class="form-group hide-print">
-    <a href="#" class="button save-button">Save</a>
-    <a href="#" class="button-link">Cancel</a>
 </div>

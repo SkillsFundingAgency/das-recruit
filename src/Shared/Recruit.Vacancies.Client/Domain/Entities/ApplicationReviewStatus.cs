@@ -2,6 +2,8 @@
 {
     public enum ApplicationReviewStatus
     {
-        New
+        New,
+        Successful,
+        Unsuccessful
     }
 }

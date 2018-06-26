@@ -4,7 +4,9 @@ using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.RouteModel;
+using Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.ShortDescription;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
@@ -25,5 +27,20 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             var vm = await _orchestrator.GetApplicationReviewViewModelAsync(rm);
             return View(vm);
         }
+
+        [HttpPost("", Name = RouteNames.ApplicationReview_Post)]
+        public async Task<IActionResult> ApplicationReview(ApplicationReviewEditModel m)
+        {
+            if (ModelState.IsValid == false)
+            {
+                var vm = await _orchestrator.GetApplicationReviewViewModelAsync(m);
+                return View(vm);
+            }
+
+            await _orchestrator.PostApplicationReviewEditModelAsync(m, User.ToVacancyUser());
+
+            return RedirectToRoute(RouteNames.ApplicationReview_Get);
+        }
+        
     }
 }
