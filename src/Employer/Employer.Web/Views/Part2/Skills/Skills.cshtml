@@ -47,7 +47,7 @@
                 <label asp-for="AddCustomSkillName" class="form-label-bold">Add a new desired skill or personal quality</label>
                 <span asp-validation-for="AddCustomSkillName" class="error-message"></span>
                 <input asp-for="AddCustomSkillName" value="@Model.AddCustomSkillName" type="text" class="form-control">
-                <button name="AddCustomSkillAction" id="add-custom-skill" value="AddCustomSkill" type="submit" class="button button-secondary">+ Add this skill</button>
+                <button name="AddCustomSkillAction" id="add-custom-skill" value="AddCustomSkill" type="submit" class="button button-secondary save-button">+ Add this skill</button>
             </div>
 
             <div id="custom-skill-container" style="@(Model.CustomSkills.Any() == false ? "display:none" : null)">
@@ -69,7 +69,7 @@
 
             <br />
 
-            <button type="submit" esfa-automation="btn-continue" class="button">Save and continue</button>
+            <button type="submit" esfa-automation="btn-continue" class="button save-button">Save and continue</button>
             <a asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="reqAndProspects" esfa-automation="link-cancel" class="button-link">Cancel</a>
         </form>
         <hr>
