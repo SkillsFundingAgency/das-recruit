@@ -12,7 +12,9 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
 {
-    public class UpdateVacancyApplicationsOnApplicationReviewChange : INotificationHandler<ApplicationReviewCreatedEvent>
+    public class UpdateVacancyApplicationsOnApplicationReviewChange : 
+        INotificationHandler<ApplicationReviewCreatedEvent>,
+        INotificationHandler<ApplicationReviewSuccessfulEvent>
     {
         private readonly IVacancyRepository _vacancyRepository;
         private readonly IApplicationReviewRepository _applicationReviewRepository;
@@ -32,7 +34,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
             return Handle(notification);
         }
 
-        private async Task Handle(ApplicationReviewCreatedEvent notification)
+        public Task Handle(ApplicationReviewSuccessfulEvent notification, CancellationToken cancellationToken)
+        {
+            return Handle(notification);
+        }
+
+        private async Task Handle(IVacancyEvent notification)
         {
             _logger.LogInformation("Handling {notificationType} for vacancyId: {vacancyId}", notification.GetType().Name, notification?.VacancyId);
 
@@ -53,6 +60,5 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
 
             await _writer.UpdateVacancyApplicationsAsync(vacancyApplications);
         }
-
     }
 }
