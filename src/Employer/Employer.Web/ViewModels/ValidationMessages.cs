@@ -49,5 +49,10 @@
         {
             public const string SelectionRequired = "You must select one option.";
         }
+
+        public static class ApplicationReview
+        {
+            public const string OutcomeRequired = "You must select either successful or unsuccessful";
+        }
     }
 }

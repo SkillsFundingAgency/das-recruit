@@ -12,6 +12,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public DateTime SubmittedDate { get; set; }
         public string EmployerAccountId { get; set; }
         public Application Application { get; set; }
-
+        public DateTime? StatusUpdatedDate { get; set; }
+        public VacancyUser StatusUpdatedBy { get;set; }
     }
 }

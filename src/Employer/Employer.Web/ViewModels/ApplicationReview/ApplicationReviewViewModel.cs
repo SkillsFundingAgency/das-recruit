@@ -4,7 +4,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview
 {
-    public class ApplicationReviewViewModel
+    public class ApplicationReviewViewModel : ApplicationReviewEditModel
     {
         public string AddressLine1 { get; set; }
         public string AddressLine2 { get; set; }
@@ -33,5 +33,12 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview
         public bool HasSkills => Skills.Any();
         public bool HasNoSkills => !HasSkills;
         public bool HasNoSupportRequirements => string.IsNullOrWhiteSpace(Support);
+        public bool CanChangeOutcome => Outcome == ApplicationReviewStatus.New;
+        public bool CanNotChangeOutcome => !CanChangeOutcome;
+
+        public IList<string> OrderedFieldNames => new List<string>
+        {
+            nameof(Outcome)
+        };
     }
 }
