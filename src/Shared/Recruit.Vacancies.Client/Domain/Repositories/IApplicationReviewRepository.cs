@@ -8,8 +8,9 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Repositories
     public interface IApplicationReviewRepository
     {
         Task CreateAsync(ApplicationReview review);
-        Task<List<T>> GetApplicationReviewsForEmployerAsync<T>(string employerAccountId);
-        Task<List<T>> GetApplicationReviewsForVacancyAsync<T>(long vacancyReference);
-        Task<T> GetApplicationReviewAsync<T>(Guid applicationReviewId);
+        Task<ApplicationReview> GetAsync(Guid applicationReviewId);
+        Task UpdateAsync(ApplicationReview applicationReview);
+        Task<List<T>> GetForEmployerAsync<T>(string employerAccountId);
+        Task<List<T>> GetForVacancyAsync<T>(long vacancyReference);
     }
 }

@@ -37,7 +37,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
             _logger.LogInformation("Handling {notificationType} for vacancyId: {vacancyId}", notification.GetType().Name, notification?.VacancyId);
 
             var vacancy = await _vacancyRepository.GetVacancyAsync(notification.VacancyId);
-            var vacancyApplicationReviews = await _applicationReviewRepository.GetApplicationReviewsForVacancyAsync<ApplicationReview>(vacancy.VacancyReference.Value);
+            var vacancyApplicationReviews = await _applicationReviewRepository.GetForVacancyAsync<ApplicationReview>(vacancy.VacancyReference.Value);
 
             var vacancyApplications = new VacancyApplications
             {

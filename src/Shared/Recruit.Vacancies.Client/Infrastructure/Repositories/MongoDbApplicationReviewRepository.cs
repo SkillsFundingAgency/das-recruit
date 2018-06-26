@@ -33,31 +33,44 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             return RetryPolicy.ExecuteAsync(context => collection.InsertOneAsync(review), new Context(nameof(CreateAsync)));
         }
 
-        public async Task<List<T>> GetApplicationReviewsForEmployerAsync<T>(string employerAccountId)
+        public async Task<ApplicationReview> GetAsync(Guid applicationReviewId)
+        {
+            var filter = Builders<ApplicationReview>.Filter.Eq(r => r.Id, applicationReviewId);
+            var collection = GetCollection<ApplicationReview>();
+
+            var result = await RetryPolicy.ExecuteAsync(context => collection.FindAsync(filter),
+                new Context(nameof(GetAsync)));
+
+            return result.SingleOrDefault();
+        }
+
+        public Task UpdateAsync(ApplicationReview applicationReview)
+        {
+            var filter = Builders<ApplicationReview>.Filter.Eq(r => r.Id, applicationReview.Id);
+            var collection = GetCollection<ApplicationReview>();
+
+            return RetryPolicy.ExecuteAsync(context => collection.ReplaceOneAsync(filter, applicationReview),
+                new Context(nameof(UpdateAsync)));
+        }
+
+        public async Task<List<T>> GetForEmployerAsync<T>(string employerAccountId)
         {
             var filter = Builders<BsonDocument>.Filter.Eq(EmployerAccountId, employerAccountId);
-            return await QueryApplicationReviews<T>(filter);
-        }
-
-        public async Task<List<T>> GetApplicationReviewsForVacancyAsync<T>(long vacancyReference)
-        {
-            var filter = Builders<BsonDocument>.Filter.Eq(VacancyReference, vacancyReference);
-            return await QueryApplicationReviews<T>(filter);
-        }
-
-        public async Task<T> GetApplicationReviewAsync<T>(Guid applicationReviewId)
-        {
-            var filter = Builders<BsonDocument>.Filter.Eq(Id, applicationReviewId);
-            var applicationReview = await QueryApplicationReviews<T>(filter);
-            return applicationReview.SingleOrDefault();
-        }
-
-        private async Task<List<T>> QueryApplicationReviews<T>(FilterDefinition<BsonDocument> filter)
-        {
             var collection = GetCollection<BsonDocument>();
 
             var result = await RetryPolicy.ExecuteAsync(context => collection.FindAsync<T>(filter),
-                new Context(nameof(GetApplicationReviewsForEmployerAsync)));
+                new Context(nameof(GetForEmployerAsync)));
+
+            return await result.ToListAsync();
+        }
+
+        public async Task<List<T>> GetForVacancyAsync<T>(long vacancyReference)
+        {
+            var filter = Builders<BsonDocument>.Filter.Eq(VacancyReference, vacancyReference);
+            var collection = GetCollection<BsonDocument>();
+
+            var result = await RetryPolicy.ExecuteAsync(context => collection.FindAsync<T>(filter),
+                new Context(nameof(GetForVacancyAsync)));
 
             return await result.ToListAsync();
         }

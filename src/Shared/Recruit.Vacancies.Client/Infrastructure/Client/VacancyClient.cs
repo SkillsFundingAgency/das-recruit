@@ -170,7 +170,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public Task<ApplicationReview> GetApplicationReviewAsync(Guid applicationReviewId)
         {
-            return _applicationReviewRepository.GetApplicationReviewAsync<ApplicationReview>(applicationReviewId);
+            return _applicationReviewRepository.GetAsync(applicationReviewId);
         }
 
         public Task<VacancyApplications> GetVacancyApplicationsAsync(string vacancyReference)
