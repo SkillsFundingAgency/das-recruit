@@ -38,6 +38,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
         public async Task Handle(ApplicationReviewSuccessfulCommand message, CancellationToken cancellationToken)
         {
+            _logger.LogInformation("Setting application review:{applicationReviewId} to successful", message.ApplicationReviewId);
+
             var applicationReview = await _applicationReviewRepository.GetAsync(message.ApplicationReviewId);
             var vacancy = await _vacancyRepository.GetVacancyAsync(applicationReview.VacancyReference);
 
