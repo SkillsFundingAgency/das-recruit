@@ -1,12 +1,7 @@
 ﻿using System;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
-using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Dashboard;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services;
@@ -19,7 +14,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
                                                     INotificationHandler<VacancyDeletedEvent>,
                                                     INotificationHandler<VacancyLiveEvent>,
                                                     INotificationHandler<VacancyClosedEvent>,
-                                                    INotificationHandler<ApplicationReviewCreatedEvent>
+                                                    INotificationHandler<ApplicationReviewCreatedEvent>,
+                                                    INotificationHandler<ApplicationReviewSuccessfulEvent>
     {
         
         private readonly IDashboardService _dashboardService;
@@ -67,6 +63,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
             return Handle(notification);
         }
 
+        public Task Handle(ApplicationReviewSuccessfulEvent notification, CancellationToken cancellationToken)
+        {
+            return Handle(notification);
+        }
+
         private Task Handle(IVacancyEvent notification)
         {
             if (notification == null)
@@ -74,6 +75,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
             
             _logger.LogInformation("Handling {eventType} for accountId: {employerAccountId} and vacancyId: {vacancyId}", notification.GetType().Name, notification.EmployerAccountId, notification.VacancyId);
             return _dashboardService.ReBuildDashboardAsync(notification.EmployerAccountId);
-        }   
+        }
     }
 }
