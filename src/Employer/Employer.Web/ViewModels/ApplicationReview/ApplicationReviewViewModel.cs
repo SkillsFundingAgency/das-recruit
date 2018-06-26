@@ -33,7 +33,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview
         public bool HasSkills => Skills.Any();
         public bool HasNoSkills => !HasSkills;
         public bool HasNoSupportRequirements => string.IsNullOrWhiteSpace(Support);
-        public bool CanChangeOutcome => Outcome == ApplicationReviewStatus.New;
+        public bool CanChangeOutcome => Outcome.HasValue == false || Outcome == ApplicationReviewStatus.New;
         public bool CanNotChangeOutcome => !CanChangeOutcome;
 
         public IList<string> OrderedFieldNames => new List<string>
