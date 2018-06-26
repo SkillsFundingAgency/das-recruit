@@ -26,44 +26,44 @@
         <div class="grid-row">
             <div class="column-one-quarter">
                 <div class="data lottery-ticket">
-                    <a asp-route="@RouteNames.Dashboard_Index_Get" class="prototype-link">
+                    <esfa-dashboard-badge asp-route="@RouteNames.Dashboard_Index_Get" asp-for="Filter" class="prototype-link">
                         <h2 class="bold-xlarge">@Model.NoOfVacancies</h2>
                         <p class="bold-xsmall">All</p>
-                    </a>
+                    </esfa-dashboard-badge>
                 </div>
             </div>
             <div class="column-one-quarter">
                 <div class="data lottery-ticket">
-                    <a asp-route="@RouteNames.Dashboard_Index_Get" asp-route-statusFilter="@VacancyStatus.Draft.ToString()" class="prototype-link">
+                    <esfa-dashboard-badge asp-route="@RouteNames.Dashboard_Index_Get" asp-route-statusFilter="@VacancyStatus.Draft.ToString()" asp-for="Filter" class="prototype-link">
                         <h2 class="bold-xlarge">@Model.NoOfDraftVacancies</h2>
                         <p class="bold-xsmall">@VacancyStatus.Draft.GetDisplayName()</p>
-                    </a>
+                    </esfa-dashboard-badge>
                 </div>
             </div>
             <div class="column-one-quarter">
                 <div class="data lottery-ticket">
-                    <a asp-route="@RouteNames.Dashboard_Index_Get" asp-route-statusFilter="@VacancyStatus.Submitted.ToString()" class="prototype-link">
+                    <esfa-dashboard-badge asp-route="@RouteNames.Dashboard_Index_Get" asp-route-statusFilter="@VacancyStatus.Submitted.ToString()" asp-for="Filter" class="prototype-link">
                         <h2 class="bold-xlarge">@Model.NoOfSubmittedVacancies</h2>
                         <p class="bold-xsmall">@VacancyStatus.Submitted.GetDisplayName()</p>
-                    </a>
+                    </esfa-dashboard-badge>
                 </div>
             </div>
             <div class="column-one-quarter">
                 <div class="data lottery-ticket">
-                    <a asp-route="@RouteNames.Dashboard_Index_Get" asp-route-statusFilter="@VacancyStatus.Referred.ToString()" class="prototype-link">
+                    <esfa-dashboard-badge asp-route="@RouteNames.Dashboard_Index_Get" asp-route-statusFilter="@VacancyStatus.Referred.ToString()" asp-for="Filter" class="prototype-link">
                         <h2 class="bold-xlarge">@Model.NoOfEditsRequiredVacancies</h2>
                         <p class="bold-xsmall">@VacancyStatus.Referred.GetDisplayName()</p>
-                    </a>
+                    </esfa-dashboard-badge>
                 </div>
             </div>
         </div>
         <div class="grid-row">
             <div class="column-one-quarter">
                 <div class="data lottery-ticket">
-                    <a asp-route="@RouteNames.Dashboard_Index_Get" asp-route-statusFilter="@VacancyStatus.Live.ToString()" class="prototype-link">
+                    <esfa-dashboard-badge asp-route="@RouteNames.Dashboard_Index_Get" asp-route-statusFilter="@VacancyStatus.Live.ToString()" asp-for="Filter" class="prototype-link">
                         <h2 class="bold-xlarge">@Model.NoOfLiveVacancies</h2>
                         <p class="bold-xsmall">@VacancyStatus.Live.GetDisplayName()</p>
-                    </a>
+                    </esfa-dashboard-badge>
                 </div>
             </div>
             @*<div class="column-one-quarter">
@@ -82,7 +82,6 @@
                         </a>
                     </div>
                 </div>*@
-
         </div>
     </div>
     <div class="grid-row">
@@ -96,9 +95,9 @@
                     </tr>
                 </thead>
                 <tbody>
-    @foreach (var vacancy in Model.DisplayVacancies)
-    {
-        var isMissingVacancyReferenceNo = !vacancy.HasVacancyReference;
+@foreach (var vacancy in Model.DisplayVacancies)
+{
+    var isMissingVacancyReferenceNo = !vacancy.HasVacancyReference;
                     <tr>
                         <td><a asp-route="@RouteNames.DisplayVacancy_Get" asp-route-vacancyId="@vacancy.Id">@vacancy.Title</a></td>
                         <td>
@@ -107,7 +106,7 @@
                         </td>
                         <td>@vacancy.Status.GetDisplayName()</td>
                     </tr>
-    }
+}
                     <tr asp-condition="@Model.HasNoFilteredVacanciesToShow">
                         <td colspan="3">You do not have any @Model.FilterDisplayText vacancies. Please select all.</td>
                     </tr>
