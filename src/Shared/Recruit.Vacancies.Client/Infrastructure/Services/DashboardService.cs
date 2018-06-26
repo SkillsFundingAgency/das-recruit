@@ -27,7 +27,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services
         {
             var vacancySummariesTask = _repository.GetVacanciesByEmployerAccountAsync<VacancySummary>(employerAccountId);
 
-            var applicationReviewsTask = _applicationReviewRepository.GetApplicationReviewsForEmployerAsync<ApplicationReviewSummary>(
+            var applicationReviewsTask = _applicationReviewRepository.GetForEmployerAsync<ApplicationReviewSummary>(
                     employerAccountId);
 
             await Task.WhenAll(vacancySummariesTask, applicationReviewsTask);
