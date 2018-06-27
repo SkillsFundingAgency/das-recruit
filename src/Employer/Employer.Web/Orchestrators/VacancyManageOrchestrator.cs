@@ -32,6 +32,28 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         }
 
         /// <summary>
+        /// Gets vacancy for display without applications.
+        /// </summary>
+        /// <param name="vacancy"></param>
+        /// <returns></returns>
+        public async Task<DisplayVacancyViewModel> GetFullVacancyDisplayViewModelAsync(Vacancy vacancy)
+        {
+            switch (vacancy.Status)
+            {
+                case VacancyStatus.Live:
+                    var liveViewModel = new LiveVacancyViewModel();
+                    await _vacancyDisplayMapper.MapFromVacancyAsync(liveViewModel, vacancy);
+                    return liveViewModel;
+                case VacancyStatus.Closed:
+                    var closedViewModel = new ClosedVacancyViewModel();
+                    await _vacancyDisplayMapper.MapFromVacancyAsync(closedViewModel, vacancy);
+                    return closedViewModel;
+                default:
+                    throw new InvalidStateException(string.Format(ErrorMessages.VacancyCannotBeViewed, vacancy.Title));
+            }
+        }
+
+        /// <summary>
         /// Gets vacancy for display with applications (where available)
         /// </summary>
         /// <param name="vacancy"></param>

@@ -5,6 +5,7 @@ using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
+using Esfa.Recruit.Employer.Web.Configuration;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
@@ -30,6 +31,25 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             var m = await _orchestrator.GetVacancyDisplayViewModelAsync(vacancy);
             return View(m.ViewName, m.ViewModel);
+        }
+
+        [HttpGet("view", Name = RouteNames.DisplayFullVacancy_Get)]
+        public async Task<IActionResult> DisplayFullVacancy(VacancyRouteModel vrm)
+        {
+            var vacancy = await _orchestrator.GetVacancy(vrm);
+
+            if (vacancy.CanEdit)
+            {
+                return HandleRedirectOfDraftVacancy(vacancy);
+            }
+
+            if (!string.IsNullOrEmpty(vacancy.ApplicationUrl) || (vacancy.Status != VacancyStatus.Live && vacancy.Status != VacancyStatus.Closed))
+            {
+                return RedirectToRoute(RouteNames.DisplayVacancy_Get);
+            }
+
+            var vm = await _orchestrator.GetFullVacancyDisplayViewModelAsync(vacancy);
+            return View(ViewNames.FullVacancyView, vm);
         }
 
         private IActionResult HandleRedirectOfDraftVacancy(Vacancy vacancy)
