@@ -15,6 +15,7 @@ using Esfa.Recruit.Employer.Web.Middleware;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using FluentValidation.AspNetCore;
 
 namespace Esfa.Recruit.Employer.Web.Configuration
 {
@@ -75,7 +76,8 @@ namespace Esfa.Recruit.Employer.Web.Configuration
                 opts.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
 
                 opts.AddTrimModelBinderProvider();
-            });
+            })
+            .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>());
         }
 
         public static void AddAuthenticationService(this IServiceCollection services, AuthenticationConfiguration authConfig, IEmployerVacancyClient vacancyClient, IHostingEnvironment hostingEnvironment)
