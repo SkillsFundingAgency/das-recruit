@@ -32,6 +32,7 @@
         public const string Logout_Get = "Logout_Get";
 
         public const string DisplayVacancy_Get = "DisplayVacancy_Get";
+        public const string DisplayFullVacancy_Get = "DisplayFullVacancy_Get";
 
         public const string Employer_Get = "Employer_Get";
         public const string Employer_Post = "Employer_Post";

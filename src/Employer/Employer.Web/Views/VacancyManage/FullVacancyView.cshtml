@@ -1,0 +1,20 @@
+﻿@model DisplayVacancyViewModel
+@{
+    Layout = LayoutNames.LayoutWithoutNavigation;
+}
+<div class="grid-row">
+    <div class="column-full">
+        <main id="content" role="main">
+            <div class="grid-row">
+                <div class="column-full">
+                    <h1 class="heading-xlarge" id="vacancy-header">
+                        @Model.Title
+                        <span class="heading-secondary">@Model.EmployerName</span>
+                    </h1>
+                </div>
+            </div>
+
+            @Html.Partial("_NonEditableVacancyDisplayPartial", Model)
+        </main>
+    </div>
+</div>
