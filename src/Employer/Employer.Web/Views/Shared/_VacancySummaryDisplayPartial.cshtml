@@ -1,0 +1,33 @@
+﻿@model DisplayVacancyViewModel
+<div class="todo small-top-margin">
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            <h1 class="heading-xlarge small-bottom-margin">
+                @Model.Title
+                <span class="heading-secondary">@Model.VacancyReferenceNumber</span>
+            </h1>
+        </div>
+    </div>
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            <h3 class="heading-small no-top-margin">Closing date</h3>
+            <p id="vacancy-closing-date">@Model.ClosingDate</p>
+        </div>
+    </div>
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            <h3 class="heading-small no-top-margin">Possible start date</h3>
+            <p id="vacancy-closing-date">@Model.PossibleStartDate</p>
+        </div>
+    </div>
+    <div class="grid-row" asp-condition="Model.IsDisabilityConfident">
+        <div class="column-two-thirds small-bottom-margin">
+            <img src="/img/disability-confident_545x172.png" class="disability-confident-logo" alt="Employer is registered as disability confident">
+        </div>
+    </div>
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            <a asp-route="@RouteNames.DisplayFullVacancy_Get" title="View full vacancy" target="_blank">View full vacancy</a>
+        </div>
+    </div>
+</div>
