@@ -2,7 +2,7 @@
 
 ## Introduction ##
 
-This output of this project can be used to load initial data into the Recruit document database used by the following applications:
+This output of the `Console.RecruitSeedDataWriter` project can be used to load initial data into the Recruit document database used by the following applications:
 - Employer Recruit
 - QA Recruit
 - Provider Recruit (TBC)
@@ -26,3 +26,20 @@ The project can be opened within Visual Studio or VS Code. Once built, from the 
 ## Deployment ##
 
 The project can be published by running `dotnet publish` in the project directory.
+
+&nbsp;
+
+# Running migration scripts locally in Mongo shell :leaves: :shell:
+
+## Prerequisites ##
+
+- Mongo shell
+- A target document database created in MongoDB :leaves: or Azure CosmosDB :rocket:.
+
+
+## Instructions ##
+
+1. From the Mongo shell you can navigate to the directory that holds the `databaseMigration.js` and child scripts using `cd("../../../dev/das-recruit/src/data/CosmosDb")` assuming you have cloned the repository into the dev folder of your root dir. You can use `pwd()` to print your working directory to help you navigate.
+
+2. Enter the command `load("documentMigration.js")` and press `Enter`
+3. You should see output relating to the chnages including the migration script.
