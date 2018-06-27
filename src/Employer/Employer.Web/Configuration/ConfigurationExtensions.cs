@@ -94,11 +94,11 @@ namespace Esfa.Recruit.Employer.Web.Configuration
                 if (!hostingEnvironment.IsDevelopment())
                 {
                     options.Cookie.SecurePolicy = Microsoft.AspNetCore.Http.CookieSecurePolicy.Always;
+                    options.SlidingExpiration = true;
+                    options.ExpireTimeSpan = TimeSpan.FromMinutes(SessionTimeoutMinutes);
                 }
 
                 options.AccessDeniedPath = "/Error/403";
-                options.SlidingExpiration = true;
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(SessionTimeoutMinutes);
             })
             .AddOpenIdConnect("oidc", options =>
             {
