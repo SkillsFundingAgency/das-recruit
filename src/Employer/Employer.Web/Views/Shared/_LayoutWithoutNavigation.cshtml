@@ -56,7 +56,7 @@ public string GetTitle()
     <script src="/lib/jquery/dist/jquery.js"></script>
 
     <environment exclude="@EnvironmentNames.GetNonProdEnvironmentNamesCommaDelimited()">
-        @Html.Partial("_GoogleAnalyticsPartial")
+    @Html.Partial(PartialNames.GoogleAnalyticsSnippet)
     </environment>
 
     @Html.Raw(JavaScriptSnippet.FullScript) <!-- AppInsights script -->
