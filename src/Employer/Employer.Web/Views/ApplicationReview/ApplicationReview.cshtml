@@ -254,6 +254,8 @@
         <section asp-condition="@Model.CanNotChangeOutcome">
             <h3 class="heading-large">Outcome</h3>
             <p>@Model.Outcome.GetDisplayName()</p>
+
+            <p><a asp-route="@RouteNames.DisplayVacancy_Get" class="button">Return to vacancy</a></p>
         </section>
 
         <form asp-condition="@Model.CanChangeOutcome" asp-route="@RouteNames.ApplicationReview_Post">
@@ -290,7 +292,7 @@
                 <div class="form-group hide-print">
                     <button type="submit" class="button">Save</button>
 
-                    <a href="#" class="button-link">Cancel</a>
+                    <a asp-route="@RouteNames.DisplayVacancy_Get" class="button-link">Cancel</a>
                 </div>
             </section>
         </form>

@@ -3,8 +3,17 @@ using System;
 
 namespace Esfa.Recruit.Employer.Web.RouteModel
 {
-    public class VacancyRouteModel : RouteModel
+    public class VacancyRouteModel
     {
+        private string _employerAccountId;
+
+        [FromRoute]
+        public string EmployerAccountId
+        {
+            get => _employerAccountId;
+            set => _employerAccountId = value.ToUpper();
+        }
+
         [FromRoute]
         public Guid VacancyId { get; set; }
     }

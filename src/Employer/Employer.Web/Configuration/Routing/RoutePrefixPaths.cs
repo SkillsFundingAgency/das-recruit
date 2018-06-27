@@ -8,6 +8,6 @@
         public const string AccountVacancyRoutePath = AccountRoutePath + "/" + VacancyRoutePath;
 
         public const string ApplicationReviewPath = "applications/{applicationReviewId:guid}";
-        public const string AccountApplicationReviewRoutePath = AccountRoutePath + "/" + ApplicationReviewPath;
+        public const string AccountApplicationReviewRoutePath = AccountVacancyRoutePath + "/" + ApplicationReviewPath;
     }
 }
