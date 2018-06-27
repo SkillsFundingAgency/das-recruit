@@ -82,6 +82,12 @@
     overflow: auto;
 }
 
+.disability-confident-logo {
+    width: 150px;
+    margin-top: 10px;
+}
+
+
 /*** Info / Warning summary styles ***/
 
 .info-summary, .warning-summary{
