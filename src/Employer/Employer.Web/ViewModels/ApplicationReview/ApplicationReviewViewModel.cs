@@ -22,6 +22,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview
         public string Postcode { get; set; }
         public List<QualificationViewModel> Qualifications { get; set; }
         public List<string> Skills { get; set; }
+        public ApplicationReviewStatus? Status { get; set; }
         public string Strengths { get; set; }
         public string Support { get; set; }
         public List<TrainingCoursesViewModel> TrainingCourses { get; set; }
@@ -33,9 +34,9 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview
         public bool HasSkills => Skills.Any();
         public bool HasNoSkills => !HasSkills;
         public bool HasNoSupportRequirements => string.IsNullOrWhiteSpace(Support);
-        public bool CanChangeOutcome => Outcome.HasValue == false || Outcome == ApplicationReviewStatus.New;
-        public bool CanNotChangeOutcome => !CanChangeOutcome;
-
+        public bool CanNotChangeOutcome => (Status == ApplicationReviewStatus.Successful || Status == ApplicationReviewStatus.Unsuccessful);
+        public bool CanChangeOutcome => !CanNotChangeOutcome;
+        
         public IList<string> OrderedFieldNames => new List<string>
         {
             nameof(Outcome)

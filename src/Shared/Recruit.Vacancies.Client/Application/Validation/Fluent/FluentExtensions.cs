@@ -5,9 +5,9 @@ using System;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 {
-    internal static class FluentExtensions
+    public static class FluentExtensions
     {
-        internal static IRuleBuilderOptions<T, string> ValidFreeTextCharacters<T>(this IRuleBuilder<T, string> ruleBuilder) {
+        public static IRuleBuilderOptions<T, string> ValidFreeTextCharacters<T>(this IRuleBuilder<T, string> ruleBuilder) {
 			return ruleBuilder.SetValidator(new FreeTextValidator());
 		}
 

@@ -189,6 +189,18 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _messaging.SendCommandAsync(command);
         }
 
+        public Task SetApplicationReviewUnsuccessful(Guid applicationReviewId, string candidateFeedback, VacancyUser user)
+        {
+            var command = new ApplicationReviewUnsuccessfulCommand
+            {
+                ApplicationReviewId = applicationReviewId,
+                CandidateFeedback = candidateFeedback,
+                User = user
+            };
+
+            return _messaging.SendCommandAsync(command);
+        }
+
         // Jobs
         public Task AssignVacancyNumber(Guid vacancyId)
         {
@@ -279,7 +291,5 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
             return results.Select(LegalEntityMapper.MapFromAccountApiLegalEntity);
         }
-
-        
     }
 }

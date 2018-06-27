@@ -253,7 +253,8 @@
 
         <section asp-condition="@Model.CanNotChangeOutcome">
             <h3 class="heading-large">Outcome</h3>
-            <p>@Model.Outcome.GetDisplayName()</p>
+            <p>@Model.Status.Value.GetDisplayName()</p>
+            <p>@Model.CandidateFeedback</p>
 
             <p><a asp-route="@RouteNames.DisplayVacancy_Get" class="button">Return to vacancy</a></p>
         </section>
@@ -266,21 +267,22 @@
                     <fieldset>
                         <span esfa-validation-message-for="Outcome" class="error-message"></span>
                         <div class="multiple-choice">
-                            <input asp-for="Outcome" id="outcome-successful" type="radio" value="@ApplicationReviewStatus.Successful.ToString()">
+                            <input asp-for="Outcome" id="outcome-successful" type="radio" value="@ApplicationReviewStatus.Successful.ToString()" checked="@(Model.Outcome == ApplicationReviewStatus.Successful ? "checked" : null)">
                             <label for="outcome-successful">Successful</label>
                         </div>
 
-                        <div class="multiple-choice" data-target="unsuccessful-reason">
-                            <input asp-for="Outcome" id="outcome-unsuccessful" type="radio" value="@ApplicationReviewStatus.Unsuccessful.ToString()">
+                        <div class="multiple-choice" data-target="unsuccessful-candidate-feedback">
+                            <input asp-for="Outcome" id="outcome-unsuccessful" type="radio" value="@ApplicationReviewStatus.Unsuccessful.ToString()" checked="@(Model.Outcome == ApplicationReviewStatus.Unsuccessful ? "checked" : null)">
                             <label for="outcome-unsuccessful">Unsuccessful</label>
                         </div>
                     </fieldset>
                 </div>
-                <div class="panel panel-border-narrow js-hidden">
+                <div esfa-validation-marker-for="CandidateFeedback" id="unsuccessful-candidate-feedback" class="panel panel-border-narrow js-hidden">
                     <div class="form-group">
-                        <label asp-for="Reason" class="form-label-bold">Feedback</label>
+                        <label asp-for="CandidateFeedback" class="form-label-bold">Feedback</label>
+                        <span esfa-validation-message-for="CandidateFeedback" class="error-message"></span>
                         <span class="form-hint">Explain why the application has been unsucessful, your comments will be sent to the candidate.</span>
-                        <textarea asp-for="Reason" class="form-control form-control-3-4" cols="20" size="12" type="text"></textarea>
+                        <textarea asp-for="CandidateFeedback" class="form-control form-control-3-4" cols="20" size="12" type="text"></textarea>
                     </div>
                 </div>
 
@@ -298,3 +300,10 @@
         </form>
     </div>
 </div>
+
+<script>
+    $(function () {
+        var showHideContent = new GOVUK.ShowHideContent();
+        showHideContent.init();
+    });
+</script>
