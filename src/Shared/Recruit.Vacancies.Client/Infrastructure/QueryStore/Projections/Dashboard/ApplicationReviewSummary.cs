@@ -6,6 +6,5 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Da
     {
         public long VacancyReference { get; set; }
         public ApplicationReviewStatus Status { get; set; }
-
     }
 }
