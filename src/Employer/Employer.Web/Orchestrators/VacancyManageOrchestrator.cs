@@ -7,7 +7,6 @@ using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
-using Esfa.Recruit.Vacancies.Client.Domain.Services;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
@@ -15,13 +14,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
     public class VacancyManageOrchestrator
     {
         private readonly DisplayVacancyViewModelMapper _vacancyDisplayMapper;
-        private readonly ITimeProvider _timeProvider;
         private readonly IEmployerVacancyClient _client;
 
-        public VacancyManageOrchestrator(DisplayVacancyViewModelMapper vacancyDisplayMapper, ITimeProvider timeProvider, IEmployerVacancyClient client)
+        public VacancyManageOrchestrator(DisplayVacancyViewModelMapper vacancyDisplayMapper, IEmployerVacancyClient client)
         {
             _vacancyDisplayMapper = vacancyDisplayMapper;
-            _timeProvider = timeProvider;
             _client = client;
         }
 
@@ -34,6 +31,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return vacancy;
         }
 
+        /// <summary>
+        /// Gets vacancy for display with applications (where available)
+        /// </summary>
+        /// <param name="vacancy"></param>
+        /// <returns></returns>
         public async Task<ManageVacancy> GetVacancyDisplayViewModelAsync(Vacancy vacancy)
         {
             switch (vacancy.Status)
@@ -41,50 +43,86 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 case VacancyStatus.Submitted:
                 case VacancyStatus.PendingReview:
                 case VacancyStatus.UnderReview:
-                    var submittedViewModel = new SubmittedVacancyViewModel();
-                    await _vacancyDisplayMapper.MapFromVacancyAsync(submittedViewModel, vacancy);
-                    submittedViewModel.SubmittedDate = vacancy.SubmittedDate.Value.AsDisplayDate();
-                    return new ManageVacancy
-                    {
-                        ViewModel = submittedViewModel,
-                        ViewName = ViewNames.ManageSubmittedVacancyView
-                    };
+                    return await GetDisplayViewModelForSubmittedVacancy(vacancy);
                 case VacancyStatus.Approved:
-                    var approvedViewModel = new ApprovedVacancyViewModel();
-                    await _vacancyDisplayMapper.MapFromVacancyAsync(approvedViewModel, vacancy);
-                    approvedViewModel.ApprovedDate = vacancy.ApprovedDate.Value.AsDisplayDate();
-                    return new ManageVacancy
-                    {
-                        ViewModel = approvedViewModel,
-                        ViewName = ViewNames.ManageApprovedVacancyView
-                    };
+                    return await GetDisplayViewModelForApprovedVacancy(vacancy);
                 case VacancyStatus.Live:
-                    var liveViewModel = new LiveVacancyViewModel();
-                    await _vacancyDisplayMapper.MapFromVacancyAsync(liveViewModel, vacancy);
-                    return new ManageVacancy
-                    {
-                        ViewModel = liveViewModel,
-                        ViewName = ViewNames.ManageLiveVacancyView
-                    };
+                    return GetDisplayViewModelForLiveVacancy(vacancy);
                 case VacancyStatus.Closed:
-                    var closedViewModel = new ClosedVacancyViewModel();
-                    await _vacancyDisplayMapper.MapFromVacancyAsync(closedViewModel, vacancy);
-                    return new ManageVacancy
-                    {
-                        ViewModel = closedViewModel,
-                        ViewName = ViewNames.ManageClosedVacancyView
-                    };
+                    return GetDisplayViewModelForClosedVacancy(vacancy);
                 case VacancyStatus.Referred:
-                    var referredViewModel = new ReferredVacancyViewModel();
-                    await _vacancyDisplayMapper.MapFromVacancyAsync(referredViewModel, vacancy);
-                    return new ManageVacancy
-                    {
-                        ViewModel = referredViewModel,
-                        ViewName = ViewNames.ManageReferredVacancyView
-                    };
+                    return await GetDisplayViewModelForReferredVacancy(vacancy);
                 default:
                     throw new InvalidStateException(string.Format(ErrorMessages.VacancyCannotBeViewed, vacancy.Title));
             }
+        }
+
+        private async Task<ManageVacancy> GetDisplayViewModelForSubmittedVacancy(Vacancy vacancy)
+        {
+            var submittedViewModel = new SubmittedVacancyViewModel();
+            await _vacancyDisplayMapper.MapFromVacancyAsync(submittedViewModel, vacancy);
+            submittedViewModel.SubmittedDate = vacancy.SubmittedDate.Value.AsDisplayDate();
+            return new ManageVacancy
+            {
+                ViewModel = submittedViewModel,
+                ViewName = ViewNames.ManageSubmittedVacancyView
+            };
+        }
+
+        private async Task<ManageVacancy> GetDisplayViewModelForApprovedVacancy(Vacancy vacancy)
+        {
+            var approvedViewModel = new ApprovedVacancyViewModel();
+            await _vacancyDisplayMapper.MapFromVacancyAsync(approvedViewModel, vacancy);
+            approvedViewModel.ApprovedDate = vacancy.ApprovedDate.Value.AsDisplayDate();
+            return new ManageVacancy
+            {
+                ViewModel = approvedViewModel,
+                ViewName = ViewNames.ManageApprovedVacancyView
+            };
+        }
+
+        private ManageVacancy GetDisplayViewModelForLiveVacancy(Vacancy vacancy)
+        {
+            var liveViewModel = new LiveVacancyViewModel();
+            PopulateViewModelWithApplications(vacancy, liveViewModel);
+            return new ManageVacancy
+            {
+                ViewModel = liveViewModel,
+                ViewName = liveViewModel.HasApplications ? ViewNames.ManageLiveVacancyWithApplicationsView : ViewNames.ManageLiveVacancyView
+            };
+        }
+
+        private ManageVacancy GetDisplayViewModelForClosedVacancy(Vacancy vacancy)
+        {
+            var closedViewModel = new ClosedVacancyViewModel();
+            PopulateViewModelWithApplications(vacancy, closedViewModel);
+            closedViewModel.ClosedDate = vacancy.ClosedDate.Value.AsDisplayDate();
+            return new ManageVacancy
+            {
+                ViewModel = closedViewModel,
+                ViewName = closedViewModel.HasApplications ? ViewNames.ManageClosedVacancyWithApplicationsView : ViewNames.ManageClosedVacancyView
+            };
+        }
+
+        private void PopulateViewModelWithApplications(Vacancy vacancy, DisplayVacancyApplicationViewModel viewModel)
+        {
+            var mappedDisplayVacancyViewModelTask = _vacancyDisplayMapper.MapFromVacancyAsync(viewModel, vacancy);
+            var vacancyApplicationsTask = _client.GetVacancyApplicationsAsync(vacancy.VacancyReference.Value.ToString());
+
+            Task.WaitAll(mappedDisplayVacancyViewModelTask, vacancyApplicationsTask);
+
+            viewModel.Applications = vacancyApplicationsTask.Result.Applications;
+        }
+
+        private async Task<ManageVacancy> GetDisplayViewModelForReferredVacancy(Vacancy vacancy)
+        {
+            var referredViewModel = new ReferredVacancyViewModel();
+            await _vacancyDisplayMapper.MapFromVacancyAsync(referredViewModel, vacancy);
+            return new ManageVacancy
+            {
+                ViewModel = referredViewModel,
+                ViewName = ViewNames.ManageReferredVacancyView
+            };
         }
     }
 }
