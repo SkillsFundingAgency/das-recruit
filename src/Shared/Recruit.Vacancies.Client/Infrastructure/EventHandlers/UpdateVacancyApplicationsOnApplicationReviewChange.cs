@@ -12,9 +12,9 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
 {
-    public class UpdateVacancyApplicationsOnApplicationReviewChange : 
+    public class UpdateVacancyApplicationsOnApplicationReviewChange :
         INotificationHandler<ApplicationReviewCreatedEvent>,
-        INotificationHandler<ApplicationReviewSuccessfulEvent>
+        INotificationHandler<ApplicationReviewedEvent>
     {
         private readonly IVacancyRepository _vacancyRepository;
         private readonly IApplicationReviewRepository _applicationReviewRepository;
@@ -34,7 +34,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
             return Handle(notification);
         }
 
-        public Task Handle(ApplicationReviewSuccessfulEvent notification, CancellationToken cancellationToken)
+        public Task Handle(ApplicationReviewedEvent notification, CancellationToken cancellationToken)
         {
             return Handle(notification);
         }

@@ -29,13 +29,13 @@ namespace Esfa.Recruit.Employer.Web.Extensions
                 AddressLine2 = r.Application.AddressLine2,
                 AddressLine3 = r.Application.AddressLine3,
                 AddressLine4 = r.Application.AddressLine4,
+                CandidateFeedback = r.CandidateFeedback,
                 DisabilityStatus = r.Application.DisabilityStatus.GetDisplayName(),
                 EducationFromYear = r.Application.EducationFromYear,
                 EducationInstitution = r.Application.EducationInstitution,
                 EducationToYear = r.Application.EducationToYear,
                 HobbiesAndInterests = r.Application.HobbiesAndInterests,
                 Improvements = r.Application.Improvements,
-                Outcome = r.Status,
                 Phone = r.Application.Phone,
                 Qualifications = r.Application.Qualifications?.Select(q =>
                     new QualificationViewModel
@@ -47,6 +47,7 @@ namespace Esfa.Recruit.Employer.Web.Extensions
                         Year = q.Year
                     }).ToList() ?? new List<QualificationViewModel>(),
                 Skills = r.Application.Skills ?? new List<string>(),
+                Status = r.Status,
                 Strengths = r.Application.Strengths,
                 Support = r.Application.Support,
                 WorkExperiences = r.Application.WorkExperiences?.Select(w => new WorkExperienceViewModel

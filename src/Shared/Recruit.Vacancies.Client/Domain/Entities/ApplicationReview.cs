@@ -14,5 +14,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public Application Application { get; set; }
         public DateTime? StatusUpdatedDate { get; set; }
         public VacancyUser StatusUpdatedBy { get;set; }
+        public string CandidateFeedback { get; set; }
     }
 }
