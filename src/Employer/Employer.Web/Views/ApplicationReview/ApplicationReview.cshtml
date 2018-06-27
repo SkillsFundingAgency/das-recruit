@@ -80,7 +80,7 @@
 
             <p asp-condition="@Model.HasNoQualifications">I don't have any qualifications</p>
 
-            @foreach (var group in Model.Qualifcations.GroupBy(item => item.QualificationType))
+            @foreach (var group in Model.Qualifications.GroupBy(item => item.QualificationType))
             {
                 <div>
                     <div>
@@ -232,7 +232,7 @@
             <p asp-condition="@Model.HasNoSkills">I don't have the skills the employer wants</p>
 
             <p asp-condition="@Model.HasSkills">
-                @Html.Raw(string.Join(", ", Model.Skills.Select(s => string.Format("<span>{0}</span>", Html.Encode(s)))))
+                @Html.Raw(string.Join(", ", Model.Skills.Select(s => Html.Encode(s))))
             </p>
         </section>
 
