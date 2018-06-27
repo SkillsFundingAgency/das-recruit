@@ -28,7 +28,7 @@
                     <span esfa-validation-message-for="NumberOfPositions" class="error-message"></span>
                     <input asp-for="NumberOfPositions" class="form-control form-control-1-8" type="number" min="1" />
                 </div>
-                <button type="submit" class="button">Save and Continue</button>
+                <button type="submit" class="button save-button">Save and Continue</button>
                 <a asp-route="@RouteNames.Dashboard_Index_Get" asp-route-statusFilter="@Context.Request.Cookies[CookieNames.VacancyStatusFilter]" class="button-link">Cancel</a>
             </form>
         </div>

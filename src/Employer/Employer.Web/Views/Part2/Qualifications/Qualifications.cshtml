@@ -56,7 +56,7 @@
             </div>
 
             <div class="form-group">
-                <button type="submit" name="AddQualificationAction" id="add-qualification" value="AddQualification" class="button button-secondary">+ Add this qualification</button>
+                <button type="submit" name="AddQualificationAction" id="add-qualification" value="AddQualification" class="button button-secondary save-button">+ Add this qualification</button>
             </div>
 
             <table id="qualifications-container" style="@(Model.Qualifications.Any() == false ? "display:none" : null)">
@@ -101,7 +101,7 @@
 
             <br />
 
-            <button type="submit" esfa-automation="btn-continue" class="button">Save and continue</button>
+            <button type="submit" esfa-automation="btn-continue" class="button save-button">Save and continue</button>
             <a asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@QualificationsViewModel.PreviewSectionAnchor" esfa-automation="link-cancel" class="button-link">Cancel</a>
         </form>
         <hr>
