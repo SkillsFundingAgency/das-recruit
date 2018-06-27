@@ -50,9 +50,9 @@
             </div>
             <div class="column-one-quarter">
                 <div class="data lottery-ticket">
-                    <esfa-dashboard-badge asp-route="@RouteNames.Dashboard_Index_Get" asp-route-statusFilter="@VacancyStatus.Referred.ToString()" asp-for="Filter" class="prototype-link">
+                    <esfa-dashboard-badge asp-route="@RouteNames.Dashboard_Index_Get" asp-route-statusFilter="@VacancyStatus.UnderReview.ToString()" asp-for="Filter" class="prototype-link">
                         <h2 class="bold-xlarge">@Model.NoOfEditsRequiredVacancies</h2>
-                        <p class="bold-xsmall">@VacancyStatus.Referred.GetDisplayName()</p>
+                        <p class="bold-xsmall">@VacancyStatus.UnderReview.GetDisplayName()</p>
                     </esfa-dashboard-badge>
                 </div>
             </div>
@@ -66,22 +66,14 @@
                     </esfa-dashboard-badge>
                 </div>
             </div>
-            @*<div class="column-one-quarter">
-                    <div class="data lottery-ticket">
-                        <a href="#1" class="prototype-link">
-                            <h2 class="bold-xlarge">2</h2>
-                            <p class="bold-xsmall">Closed</p>
-                        </a>
-                    </div>
+            <div class="column-one-quarter">
+                <div class="data lottery-ticket">
+                    <esfa-dashboard-badge asp-route="@RouteNames.Dashboard_Index_Get" asp-route-statusFilter="@VacancyStatus.Closed.ToString()" asp-for="Filter" class="prototype-link">
+                        <h2 class="bold-xlarge">@Model.NoOfClosedVacancies</h2>
+                        <p class="bold-xsmall">@VacancyStatus.Closed.GetDisplayName()</p>
+                    </esfa-dashboard-badge>
                 </div>
-                <div class="column-one-quarter">
-                    <div class="data lottery-ticket">
-                        <a href="#1" class="prototype-link">
-                            <h2 class="bold-xlarge">0</h2>
-                            <p class="bold-xsmall">Archived</p>
-                        </a>
-                    </div>
-                </div>*@
+            </div>
         </div>
     </div>
     <div class="grid-row">
