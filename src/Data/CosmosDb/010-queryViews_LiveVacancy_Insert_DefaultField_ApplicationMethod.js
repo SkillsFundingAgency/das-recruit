@@ -4,7 +4,7 @@ var matchedDocs = db.queryViews.find(
     "applicationMethod": { $exists: false }
 });
 
-print("Found " + matchedDocs.length() + " documents to operate on.");
+print("Found " + matchedDocs.count() + " documents to operate on.");
 
 while (matchedDocs.hasNext()) {
     var doc = matchedDocs.next();
