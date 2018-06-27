@@ -20,14 +20,14 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview
         public string Name { get; set; }
         public string Phone { get; set; }
         public string Postcode { get; set; }
-        public List<QualificationViewModel> Qualifcations { get; set; }
+        public List<QualificationViewModel> Qualifications { get; set; }
         public List<string> Skills { get; set; }
         public string Strengths { get; set; }
         public string Support { get; set; }
         public List<TrainingCoursesViewModel> TrainingCourses { get; set; }
         public List<WorkExperienceViewModel> WorkExperiences { get; set; }
 
-        public bool HasNoQualifications => Qualifcations.Any() == false;
+        public bool HasNoQualifications => Qualifications.Any() == false;
         public bool HasNoTrainingCourses => TrainingCourses.Any() == false;
         public bool HasNoWorkExperience => WorkExperiences.Any() == false;
         public bool HasSkills => Skills.Any();
