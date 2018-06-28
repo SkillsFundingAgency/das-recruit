@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.Models;
@@ -8,6 +9,7 @@ using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
@@ -133,7 +135,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             Task.WaitAll(mappedDisplayVacancyViewModelTask, vacancyApplicationsTask);
 
-            viewModel.Applications = vacancyApplicationsTask.Result.Applications;
+            var applications = vacancyApplicationsTask.Result?.Applications ?? new List<VacancyApplication>();
+
+            viewModel.Applications = applications;
         }
 
         private async Task<ManageVacancy> GetDisplayViewModelForReferredVacancy(Vacancy vacancy)
