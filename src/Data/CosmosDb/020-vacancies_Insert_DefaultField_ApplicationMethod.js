@@ -1,3 +1,14 @@
+// https://stackoverflow.com/a/44564089/5596802
+function toGUID(hex) {
+    var a = hex.substr(6, 2) + hex.substr(4, 2) + hex.substr(2, 2) + hex.substr(0, 2);
+    var b = hex.substr(10, 2) + hex.substr(8, 2);
+    var c = hex.substr(14, 2) + hex.substr(12, 2);
+    var d = hex.substr(16, 16);
+    hex = a + b + c + d;
+    var uuid = hex.substr(0, 8) + "-" + hex.substr(8, 4) + "-" + hex.substr(12, 4) + "-" + hex.substr(16, 4) + "-" + hex.substr(20, 12);
+    return uuid;
+}
+
 print("Start adding/updating Vacancies with default applicationMethod.");
 
 var query = {
@@ -26,7 +37,7 @@ do {
             quit(14);
         }
 
-        print("Updated document '" + doc._id + "' with applicationMethod: ThroughExternalApplicationSite.");
+        print("Updated document '" + toGUID(doc._id.hex()) + "' with applicationMethod: ThroughExternalApplicationSite.");
     }
 } while (db.vacancies.count(query) > 0);
 
