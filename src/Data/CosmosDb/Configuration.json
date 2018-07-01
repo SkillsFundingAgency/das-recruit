@@ -6,7 +6,7 @@
                 {
                     "CollectionName": "vacancies",
                     "OfferThroughput": 1000,
-                    "StoredProcedures": [ "vacancies__010_Insert_DefaultField_ApplicationMethod.js" ]
+                    "StoredProcedures": []
                 },
                 {
                     "CollectionName": "queryViews",
