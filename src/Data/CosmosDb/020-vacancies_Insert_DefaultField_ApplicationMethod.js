@@ -12,11 +12,12 @@ function toGUID(hex) {
 print("Start adding/updating Vacancies with default applicationMethod.");
 
 var query = {
-    "applicationMethod": { $exists: false }
-};
+        "applicationMethod": { $exists: false }
+    },
+    batchUpdateLimit = 500;
 
 do {
-    var matchedDocs = db.vacancies.find(query).sort({ "dateCreated": 1 });
+    var matchedDocs = db.vacancies.find(query).limit(batchUpdateLimit).sort({ "dateCreated": 1 });
 
     print("Found " + matchedDocs.count() + " document(s) to operate on.");
 

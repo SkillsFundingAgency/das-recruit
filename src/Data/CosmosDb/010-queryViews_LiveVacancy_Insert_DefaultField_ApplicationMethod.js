@@ -1,12 +1,13 @@
 print("Start adding/updating LiveVacancy queryViews with default applicationMethod.");
 
 var query = {
-    "type": "LiveVacancy",
-    "applicationMethod": { $exists: false }
-};
+        "type": "LiveVacancy",
+        "applicationMethod": { $exists: false }
+    },
+    batchUpdateLimit = 500;
 
 do {
-    var matchedDocs = db.queryViews.find(query).sort({ "lastUpdated": 1 });
+    var matchedDocs = db.queryViews.find(query).limit(batchUpdateLimit).sort({ "lastUpdated": 1 });
 
     print("Found " + matchedDocs.count() + " document(s) to operate on.");
 
