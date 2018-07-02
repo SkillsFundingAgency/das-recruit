@@ -14,12 +14,19 @@ print("Start adding/updating Vacancies with default applicationMethod.");
 var query = {
         "applicationMethod": { $exists: false }
     },
-    batchUpdateLimit = 500;
+    batchUpdateLimit = 500,
+    passThrough = 1;
+
+var maxLoops = Math.ceil(db.queryViews.count(query) / batchUpdateLimit);
+
+if (maxLoops === 0) {
+    maxLoops = 1;
+}
 
 do {
     var matchedDocs = db.vacancies.find(query).limit(batchUpdateLimit).sort({ "dateCreated": 1 });
 
-    print("Found " + matchedDocs.count() + " document(s) to operate on.");
+    print("Found " + matchedDocs.count() + " document(s) to operate on in passThrough " + passThrough + " of " + maxLoops + ".");
 
     while (matchedDocs.hasNext()) {
         var doc = matchedDocs.next();
@@ -40,6 +47,8 @@ do {
 
         print("Updated document '" + toGUID(doc._id.hex()) + "' with applicationMethod: ThroughExternalApplicationSite.");
     }
-} while (db.vacancies.count(query) > 0);
+
+    passThrough++;
+} while (passThrough <= maxLoops && db.vacancies.count(query) > 0);
 
 print("Finished adding/updating Vacancies with default applicationMethod.");
