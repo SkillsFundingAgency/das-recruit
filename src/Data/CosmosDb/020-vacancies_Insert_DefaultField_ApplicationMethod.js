@@ -16,7 +16,7 @@ var query = {
 };
 
 do {
-    var matchedDocs = db.vacancies.find(query);
+    var matchedDocs = db.vacancies.find(query).sort({ "dateCreated": 1 });
 
     print("Found " + matchedDocs.count() + " document(s) to operate on.");
 
