@@ -6,6 +6,7 @@ using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
 using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Shared.Configuration;
 using Esfa.Recruit.Shared.Web.Services;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.FAA;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,6 +28,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.Configure<AuthenticationConfiguration>(configuration.GetSection("Authentication"));
             services.Configure<GoogleAnalyticsConfiguration>(configuration.GetSection("GoogleAnalytics"));
             services.Configure<PostcodeAnywhereConfiguration>(configuration.GetSection("PostcodeAnywhere"));
+            services.Configure<FaaConfiguration>(configuration.GetSection("FaaConfiguration"));
 
             services.AddFeatureToggle();
 
@@ -45,6 +47,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
         {
             services.AddTransient<ITrainingProviderService, TrainingProviderService>();
             services.AddTransient<IGeocodeImageService>(_ => new GoogleMapsGeocodeImageService(configuration.GetValue<string>("GoogleMapsPrivateKey")));
+            services.AddTransient<IFaaService, FaaService>();
         }
 
         private static void RegisterProviderApiClientDep(IServiceCollection services, IConfiguration configuration)
