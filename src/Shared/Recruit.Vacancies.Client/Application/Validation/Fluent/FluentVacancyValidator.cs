@@ -193,10 +193,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             {
                 RuleFor(x => x.Wage.DurationUnit)
                     .NotEmpty()
-                    .WithMessage("Enter the expected duaration")
+                    .WithMessage("Enter the expected duration")
                     .WithErrorCode("34")
                     .IsInEnum()
-                    .WithMessage("Enter the expected duaration")
+                    .WithMessage("Enter the expected duration")
                     .WithErrorCode("34")
                     .RunCondition(VacancyRuleSet.Duration)
                     .WithRuleId(VacancyRuleSet.Duration);
@@ -204,10 +204,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 RuleFor(x => x.Wage.Duration)
                     .Cascade(CascadeMode.StopOnFirstFailure)
                     .NotEmpty()
-                    .WithMessage("Enter the expected duaration")
+                    .WithMessage("Enter the expected duration")
                     .WithErrorCode("34")
                     .GreaterThan(0)
-                    .WithMessage("Enter the expected duaration")
+                    .WithMessage("Enter the expected duration")
                     .WithErrorCode("34")
                     .Must((vacancy, value) =>
                     {
