@@ -8,5 +8,7 @@
   },
   "author": "sachin.patel",
   "license": "MIT",
-  "devDependencies": {}
+  "devDependencies": {
+    "eslint": "^5.0.1"
+  }
 }
