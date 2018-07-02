@@ -33,7 +33,7 @@ The project can be published by running `dotnet publish` in the project director
 
 ## Prerequisites ##
 
-- Mongo shell
+- Mongo shell (Pointing at your target database server.)
 - A target document database created in MongoDB :leaves: or Azure CosmosDB :rocket:.
 
 
@@ -42,4 +42,4 @@ The project can be published by running `dotnet publish` in the project director
 1. From the Mongo shell you can navigate to the directory that holds the `databaseMigration.js` and child scripts using `cd("../../../dev/das-recruit/src/data/CosmosDb")` assuming you have cloned the repository into the dev folder of your root dir. You can use `pwd()` to print your working directory to help you navigate.
 
 2. Enter the command `load("documentMigration.js")` and press `Enter`
-3. You should see output relating to the chnages including the migration script.
+3. You should see output relating to the changes included in the migration script.
