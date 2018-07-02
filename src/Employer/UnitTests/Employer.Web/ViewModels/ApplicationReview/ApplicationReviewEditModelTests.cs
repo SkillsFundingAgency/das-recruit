@@ -29,9 +29,9 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.ApplicationRev
             result.Errors[0].ErrorMessage.Should().Be(ApplicationReviewValidator.OutcomeRequired);
         }
 
-        public class ShouldRequireCandiateFeedbackIfUnsuccessfulTestData : TheoryData<string, string>
+        public class ShouldRequireCandidateFeedbackIfUnsuccessfulTestData : TheoryData<string, string>
         {
-            public ShouldRequireCandiateFeedbackIfUnsuccessfulTestData()
+            public ShouldRequireCandidateFeedbackIfUnsuccessfulTestData()
             {
                 var candidateFeedbackTooLong =
                     new string('a', ApplicationReviewValidator.CandidateFeedbackMaxLength + 1);
@@ -44,7 +44,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.ApplicationRev
         }
 
         [Theory]
-        [ClassData(typeof(ShouldRequireCandiateFeedbackIfUnsuccessfulTestData))]
+        [ClassData(typeof(ShouldRequireCandidateFeedbackIfUnsuccessfulTestData))]
         public void ShouldRequireCandiateFeedbackIfUnsuccessful(string candidateFeedback, string expectedErrorMessage)
         {
             var m = new ApplicationReviewEditModel
