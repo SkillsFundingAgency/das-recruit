@@ -6,7 +6,7 @@ var query = {
 };
 
 do {
-    var matchedDocs = db.queryViews.find(query);
+    var matchedDocs = db.queryViews.find(query).sort({ "lastUpdated": 1 });
 
     print("Found " + matchedDocs.count() + " document(s) to operate on.");
 
