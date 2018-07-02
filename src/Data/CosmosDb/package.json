@@ -4,6 +4,7 @@
   "description": "JS project containing Mongo shell scripts for the setup and data migrations for the recruit database.",
   "main": "documentMigration.js",
   "scripts": {
+    "lint": "eslint *.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "sachin.patel",
