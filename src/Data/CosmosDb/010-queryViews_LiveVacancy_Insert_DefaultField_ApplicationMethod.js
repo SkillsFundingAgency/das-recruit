@@ -7,7 +7,7 @@ var query = {
     batchUpdateLimit = 500,
     passThrough = 1;
 
-var maxLoops = Math.ceil(db.queryViews.count(query) / batchUpdateLimit);
+var maxLoops = Math.ceil(db.queryViews.find().count(query) / batchUpdateLimit);
 
 if (maxLoops === 0) {
     maxLoops = 1;
@@ -40,6 +40,6 @@ do {
 
     passThrough++;
 }
-while (passThrough <= maxLoops && db.queryViews.count(query) > 0);
+while (passThrough <= maxLoops && db.queryViews.find().count(query) > 0);
 
 print("Finished adding/updating LiveVacancy queryViews with default applicationMethod.");
