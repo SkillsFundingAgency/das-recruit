@@ -12,7 +12,8 @@ function toGUID(hex) {
 print("Start adding/updating Vacancies with default applicationMethod.");
 
 var query = {
-        "applicationMethod": { $exists: false }
+        "applicationMethod": { $exists: false },
+        "status": { $not: /^Draft$/ }
     },
     batchUpdateLimit = 500,
     passThrough = 1;
