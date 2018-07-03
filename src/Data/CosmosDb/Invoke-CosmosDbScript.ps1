@@ -37,6 +37,7 @@ Param (
 )
 
 try{
+    (Get-Item $MongoScript).DirectoryName | Set-Location
     . "mongo" --host $CosmosDb --username $Username --password $Password --ssl $MongoScript
 }
 catch {
