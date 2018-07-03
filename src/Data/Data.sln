@@ -12,6 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		CosmosDb\020-vacancies_Insert_DefaultField_ApplicationMethod.js = CosmosDb\020-vacancies_Insert_DefaultField_ApplicationMethod.js
 		CosmosDb\Configuration.json = CosmosDb\Configuration.json
 		CosmosDb\documentMigration.js = CosmosDb\documentMigration.js
+		CosmosDb\Invoke-CosmosDbScript.ps1 = CosmosDb\Invoke-CosmosDbScript.ps1
 		CosmosDb\package-lock.json = CosmosDb\package-lock.json
 		CosmosDb\package.json = CosmosDb\package.json
 		README.md = README.md
