@@ -2,7 +2,9 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.RouteModel;
+using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Wage;
+using Esfa.Recruit.Employer.Web.Views;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -33,7 +35,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 WeeklyHours = $"{vacancy.Wage?.WeeklyHours:0.##}",
                 WageType = vacancy.Wage?.WageType ?? WageType.FixedWage,
                 FixedWageYearlyAmount = vacancy.Wage?.FixedWageYearlyAmount?.AsMoney(),
-                WageAdditionalInformation = vacancy.Wage?.WageAdditionalInformation
+                WageAdditionalInformation = vacancy.Wage?.WageAdditionalInformation,
+                CancelButtonRouteParameters = Utility.GetCancelButtonRouteParametersForVacancy(vacancy, PreviewAnchors.ApprenticeshipSummarySection)
             };
             
             return vm;
@@ -54,10 +57,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             return vm;
         }
 
-        public async Task<OrchestratorResponse> PostWageEditModelAsync(WageEditModel m, VacancyUser user)
+        public async Task<OrchestratorResponse<VacancyRouteParameters>> PostWageEditModelAsync(WageEditModel m, VacancyUser user)
         {
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, m, RouteNames.Wage_Post);
-            
+
             vacancy.Wage = new Wage
             {
                 Duration = int.TryParse(m.Duration, out int duration) == true ? duration : default(int?),
@@ -72,21 +75,25 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             return await ValidateAndExecute(
                 vacancy, 
                 v => _client.Validate(v, ValidationRules),
-                v => _client.UpdateVacancyAsync(vacancy, user)
-            );
+                async v =>
+                {
+                    await _client.UpdateVacancyAsync(vacancy, user);
+                    return Utility.GetRedirectRouteParametersForVacancy(vacancy, PreviewAnchors.ApprenticeshipSummarySection);
+                });
         }
 
         protected override EntityToViewModelPropertyMappings<Vacancy, WageEditModel> DefineMappings()
         {
-            var mappings = new EntityToViewModelPropertyMappings<Vacancy, WageEditModel>();
-
-            mappings.Add(e => e.Wage.Duration, vm => vm.Duration);
-            mappings.Add(e => e.Wage.DurationUnit, vm => vm.DurationUnit);
-            mappings.Add(e => e.Wage.WorkingWeekDescription, vm => vm.WorkingWeekDescription);
-            mappings.Add(e => e.Wage.WeeklyHours, vm => vm.WeeklyHours);
-            mappings.Add(e => e.Wage.WageType, vm => vm.WageType);
-            mappings.Add(e => e.Wage.FixedWageYearlyAmount, vm => vm.FixedWageYearlyAmount);
-            mappings.Add(e => e.Wage.WageAdditionalInformation, vm => vm.WageAdditionalInformation);
+            var mappings = new EntityToViewModelPropertyMappings<Vacancy, WageEditModel>
+            {
+                { e => e.Wage.Duration, vm => vm.Duration},
+                { e => e.Wage.DurationUnit, vm => vm.DurationUnit},
+                { e => e.Wage.WorkingWeekDescription, vm => vm.WorkingWeekDescription},
+                { e => e.Wage.WeeklyHours, vm => vm.WeeklyHours},
+                { e => e.Wage.WageType, vm => vm.WageType},
+                { e => e.Wage.FixedWageYearlyAmount, vm => vm.FixedWageYearlyAmount},
+                { e => e.Wage.WageAdditionalInformation, vm => vm.WageAdditionalInformation}
+            };
 
             return mappings;
         }
