@@ -4,7 +4,9 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.RouteModel;
+using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer;
+using Esfa.Recruit.Employer.Web.Views;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -36,7 +38,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var vm = new EmployerViewModel
             {
                 Organisations = BuildLegalEntityViewModels(employerData, vrm.EmployerAccountId),
-                SelectedOrganisationName = vacancy.EmployerName
+                SelectedOrganisationName = vacancy.EmployerName,
+                CancelButtonRouteParameters = Utility.GetCancelButtonRouteParametersForVacancy(vacancy, PreviewAnchors.EmployerSection)
             };
 
             if (vacancy.EmployerLocation != null)
@@ -65,7 +68,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             return vm;
         }
 
-        public async Task<OrchestratorResponse> PostEmployerEditModelAsync(EmployerEditModel m, VacancyUser user)
+        public async Task<OrchestratorResponse<VacancyRouteParameters>> PostEmployerEditModelAsync(EmployerEditModel m, VacancyUser user)
         {
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, m, RouteNames.Employer_Post);
 
@@ -84,20 +87,24 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             return await ValidateAndExecute(
                 vacancy, 
                 v => _client.Validate(v, ValidationRules),
-                v => _client.UpdateVacancyAsync(vacancy, user)
-            );
+                async v =>
+                {
+                    await _client.UpdateVacancyAsync(vacancy, user);
+                    return Utility.GetRedirectRouteParametersForVacancy(vacancy, PreviewAnchors.EmployerSection);
+                });
         }
 
         protected override EntityToViewModelPropertyMappings<Vacancy, EmployerEditModel> DefineMappings()
         {
-            var mappings = new EntityToViewModelPropertyMappings<Vacancy, EmployerEditModel>();
-
-            mappings.Add(e => e.EmployerName, vm => vm.SelectedOrganisationName);
-            mappings.Add(e => e.EmployerLocation.AddressLine1, vm => vm.AddressLine1);
-            mappings.Add(e => e.EmployerLocation.AddressLine2, vm => vm.AddressLine2);
-            mappings.Add(e => e.EmployerLocation.AddressLine3, vm => vm.AddressLine3);
-            mappings.Add(e => e.EmployerLocation.AddressLine4, vm => vm.AddressLine4);
-            mappings.Add(e => e.EmployerLocation.Postcode, vm => vm.Postcode);
+            var mappings = new EntityToViewModelPropertyMappings<Vacancy, EmployerEditModel>
+            {
+                { e => e.EmployerName, vm => vm.SelectedOrganisationName},
+                { e => e.EmployerLocation.AddressLine1, vm => vm.AddressLine1},
+                { e => e.EmployerLocation.AddressLine2, vm => vm.AddressLine2},
+                { e => e.EmployerLocation.AddressLine3, vm => vm.AddressLine3},
+                { e => e.EmployerLocation.AddressLine4, vm => vm.AddressLine4},
+                { e => e.EmployerLocation.Postcode, vm => vm.Postcode}
+            };
 
             return mappings;
         }
@@ -119,3 +126,4 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         }
     }
 }
+

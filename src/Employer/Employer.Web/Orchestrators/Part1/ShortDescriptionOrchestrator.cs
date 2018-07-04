@@ -29,7 +29,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             {
                 VacancyId = vacancy.Id,
                 ShortDescription = vacancy.ShortDescription,
-                CancelButtonRouteParameters = Utility.GetCancelButtonRouteParametersForVacancy(vacancy, PreviewAnchors.ShortDescription)
+                CancelButtonRouteParameters = Utility.GetCancelButtonRouteParametersForVacancy(vacancy, PreviewAnchors.ShortDescriptionSection)
             };
 
             return vm;
@@ -56,7 +56,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 async v =>
                 {
                     await _client.UpdateVacancyAsync(vacancy, user);
-                    return Utility.GetRedirectRouteParametersForVacancy(vacancy, PreviewAnchors.ShortDescription);
+                    return Utility.GetRedirectRouteParametersForVacancy(vacancy, PreviewAnchors.ShortDescriptionSection);
                 });
         }
 
