@@ -7,6 +7,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Exceptions;
+using Esfa.Recruit.Employer.Web.Orchestrators;
+using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -93,6 +95,22 @@ namespace Esfa.Recruit.Employer.Web
         public static bool VacancyHasCompletedPartOne(Vacancy vacancy)
         {
             return GetValidRoutesForVacancy(vacancy) == null;
+        }
+
+        public static VacancyRouteParameters GetRedirectRouteParametersForVacancy(Vacancy vacancy, string vacancyPreviewFragment)
+        {
+            var routeName = GetValidRoutesForVacancy(vacancy)?.Last() ?? RouteNames.Vacancy_Preview_Get;
+
+            return new VacancyRouteParameters(routeName, vacancy.Id, routeName == RouteNames.Vacancy_Preview_Get ? vacancyPreviewFragment : null);
+        }
+
+        public static VacancyRouteParameters GetCancelButtonRouteParametersForVacancy(Vacancy vacancy, string vacancyPreviewFragment)
+        {
+            var routeName = VacancyHasCompletedPartOne(vacancy)
+                ? RouteNames.Vacancy_Preview_Get
+                : RouteNames.Dashboard_Index_Get;
+
+            return new VacancyRouteParameters(routeName, vacancy.Id, routeName == RouteNames.Vacancy_Preview_Get ? vacancyPreviewFragment : null);
         }
 
         public static async Task<ApplicationReview> GetAuthorisedApplicationReviewAsync(IEmployerVacancyClient client, ApplicationReviewRouteModel rm)

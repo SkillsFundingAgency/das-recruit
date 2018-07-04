@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators;
+using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Title;
 using Microsoft.AspNetCore.Mvc;
@@ -49,8 +50,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                 var vm = await _orchestrator.GetTitleViewModelAsync(m);
                 return View(vm);
             }
-            
-            return RedirectToRoute(RouteNames.ShortDescription_Get, new { vacancyId = response.Data });
+
+            return RedirectToRoute(response.Data.RouteName, response.Data.RouteValues, response.Data.Fragment);
         }
     }
 }
