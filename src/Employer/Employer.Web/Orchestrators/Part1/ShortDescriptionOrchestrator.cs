@@ -1,7 +1,9 @@
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.RouteModel;
+using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.ShortDescription;
+using Esfa.Recruit.Employer.Web.Views;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -26,7 +28,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var vm = new ShortDescriptionViewModel
             {
                 VacancyId = vacancy.Id,
-                ShortDescription = vacancy.ShortDescription
+                ShortDescription = vacancy.ShortDescription,
+                CancelButtonRouteParameters = Utility.GetCancelButtonRouteParametersForVacancy(vacancy, PreviewAnchors.ShortDescription)
             };
 
             return vm;
@@ -41,7 +44,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             return vm;
         }
 
-        public async Task<OrchestratorResponse> PostShortDescriptionEditModelAsync(ShortDescriptionEditModel m, VacancyUser user)
+        public async Task<OrchestratorResponse<VacancyRouteParameters>> PostShortDescriptionEditModelAsync(ShortDescriptionEditModel m, VacancyUser user)
         {
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, m, RouteNames.ShortDescription_Post);
 
@@ -50,15 +53,19 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             return await ValidateAndExecute(
                 vacancy, 
                 v => _client.Validate(v, ValidationRules),
-                v => _client.UpdateVacancyAsync(vacancy, user)
-            );
+                async v =>
+                {
+                    await _client.UpdateVacancyAsync(vacancy, user);
+                    return Utility.GetRedirectRouteParametersForVacancy(vacancy, PreviewAnchors.ShortDescription);
+                });
         }
 
         protected override EntityToViewModelPropertyMappings<Vacancy, ShortDescriptionEditModel> DefineMappings()
         {
-            var mappings = new EntityToViewModelPropertyMappings<Vacancy, ShortDescriptionEditModel>();
-
-            mappings.Add(e => e.ShortDescription, vm => vm.ShortDescription);
+            var mappings = new EntityToViewModelPropertyMappings<Vacancy, ShortDescriptionEditModel>
+            {
+                {e => e.ShortDescription, vm => vm.ShortDescription}
+            };
 
             return mappings;
         }

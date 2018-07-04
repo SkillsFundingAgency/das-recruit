@@ -12,7 +12,7 @@
         @Html.Partial("_ValidationSummary", new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames })
 
         <div class="todo">
-            <h3 class="heading-medium no-top-margin">Step 2 of 6</h3>
+            <h3 asp-condition="@Model.ShowStep" class="heading-medium no-top-margin">Step 2 of 6</h3>
             <form asp-route="@RouteNames.ShortDescription_Post" novalidate>
                 <div esfa-validation-marker-for="ShortDescription" class="form-group">
                     <label asp-for="ShortDescription" class="form-label-bold">
@@ -24,8 +24,8 @@
                     <span class="maxchar-count">350</span>
                     <span class="maxchar-text"> characters remaining</span>
                 </div>
-                <button type="submit" class="button save-button">Save and continue</button>
-                <a asp-route="@RouteNames.Dashboard_Index_Get" asp-route-statusFilter="@Context.Request.Cookies[CookieNames.VacancyStatusFilter]" class="button-link">Cancel</a>
+                <button type="submit" class="button save-button">@Model.SubmitButtonText</button>
+                <a asp-route="@Model.CancelButtonRouteParameters.RouteName" asp-fragment="@Model.CancelButtonRouteParameters.Fragment" class="button-link">Cancel</a>
             </form>
         </div>
     </div>

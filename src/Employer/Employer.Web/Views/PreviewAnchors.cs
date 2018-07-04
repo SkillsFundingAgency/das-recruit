@@ -4,6 +4,7 @@
     {
         //Part 1
         public const string TitleSection = "title";
+        public const string ShortDescription = "shortDescription";
         
         //Part 2
         public const string ApprenticeshipSummarySection = "apprenticeshipSummary";
