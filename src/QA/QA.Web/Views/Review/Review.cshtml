@@ -92,7 +92,6 @@
         </div>
         <div class="column-two-thirds">
             <div>
-                <h3 class="heading-small">Vacancy description</h3>
                 <div>
                     @if (Model.IsEditable)
                     {
@@ -111,9 +110,12 @@
                     }
                     else
                     {
-                        <p>@Model.VacancyDescription</p>
-                        <p>@Model.TrainingDescription</p>
-                        <p>@Model.OutcomeDescription</p>
+                        <h3 class="heading-small">Vacancy description</h3>
+                        <p class="preserve-format">@Model.VacancyDescription</p>
+                        <h3 class="heading-small">Training description</h3>
+                        <p class="preserve-format">@Model.TrainingDescription</p>
+                        <h3 class="heading-small">Outcome description</h3>
+                        <p class="preserve-format">@Model.OutcomeDescription</p>
                     }
                 </div>
             </div>
