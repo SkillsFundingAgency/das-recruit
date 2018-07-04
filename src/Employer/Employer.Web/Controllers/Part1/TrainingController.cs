@@ -43,8 +43,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                 return View(vm);
             }
 
-            return RedirectToRoute(RouteNames.Wage_Get);
+            return RedirectToRoute(response.Data.RouteName, response.Data.RouteValues, response.Data.Fragment);
         }
-        
     }
 }
