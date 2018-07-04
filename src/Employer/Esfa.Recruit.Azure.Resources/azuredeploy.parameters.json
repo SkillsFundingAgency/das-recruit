@@ -1,86 +1,91 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
-	"parameters": {
-		"TemplateBaseUrl": {
-			"value": "https://raw.githubusercontent.com/SkillsFundingAgency/das-recruit/master/src/Employer/Esfa.Recruit.Azure.Resources"
-		},
-		"EnvironmentName": {
-			"value": "dev"
-		},
-		"Authentication": {
-			"value": {
-				"Authority": "",
-				"MetaDataAddress": "",
-				"ClientId": "",
-				"ClientSecret": ""
-			}
-		},
-		"AccountApiConfiguration": {
-			"value": {
-				"ApiBaseUrl": "",
-				"ClientId": "",
-				"ClientSecret": "",
-				"IdentifierUri": "",
-				"Tenant": ""
-			}
-		},
-		"ExternalLinks": {
-			"value": {
-				"ManageApprenticeshipSiteUrl": "",
-				"EmployerIdamsSiteUrl": "",
-				"StaffIdamsUrl": ""
-			}
-		},
-		"Features": {
-			"value": {
-				"AllowThroughFaaApplicationMethod": false
-			}
-		},
-		"LoggingRedisConnectionString": {
-			"value": ""
-		},
-		"ApprenticeshipProgrammesApiBaseUrl": {
-			"value": ""
-		},
-		"SharedAppServicePlanName": {
-			"value": ""
-		},
-		"SharedAppServicePlanResourceGroup": {
-			"value": ""
-		},
-		"EmployerCustomHostname": {
-			"value": ""
-		},
-		"EmployerKeyvaultCertificateName": {
-			"value": ""
-		},
-		"QAAppCustomHostname": {
-			"value": ""
-		},
-		"QAAppKeyvaultCertificateName": {
-			"value": ""
-		},
-		"QAAuthentication": {
-			"value": {
-				"Wtrealm": "",
-				"MetaDataAddress": ""
-			}
-		},
-		"QAAuthorization": {
-			"value": {
-				"GroupClaim": "",
-				"GroupName": ""
-			}
-		},
-		"SlackWebhook": {
-			"value": ""
-		},
-		"GeocodePostcodeAnywhereKey": {
-			"value": ""
-		},
-		"PostcodeAnywhereKey": {
-			"value": ""
-		}
-	}
+  "parameters": {
+    "TemplateBaseUrl": {
+      "value": "https://raw.githubusercontent.com/SkillsFundingAgency/das-recruit/master/src/Employer/Esfa.Recruit.Azure.Resources"
+    },
+    "EnvironmentName": {
+      "value": "dev"
+    },
+    "Authentication": {
+      "value": {
+        "Authority": "",
+        "MetaDataAddress": "",
+        "ClientId": "",
+        "ClientSecret": ""
+      }
+    },
+    "AccountApiConfiguration": {
+      "value": {
+        "ApiBaseUrl": "",
+        "ClientId": "",
+        "ClientSecret": "",
+        "IdentifierUri": "",
+        "Tenant": ""
+      }
+    },
+    "ExternalLinks": {
+      "value": {
+        "ManageApprenticeshipSiteUrl": "",
+        "EmployerIdamsSiteUrl": "",
+        "StaffIdamsUrl": ""
+      }
+    },
+    "Features": {
+      "value": {
+        "AllowThroughFaaApplicationMethod": false
+      }
+    },
+    "LoggingRedisConnectionString": {
+      "value": ""
+    },
+    "ApprenticeshipProgrammesApiBaseUrl": {
+      "value": ""
+    },
+    "SharedAppServicePlanName": {
+      "value": ""
+    },
+    "SharedAppServicePlanResourceGroup": {
+      "value": ""
+    },
+    "EmployerCustomHostname": {
+      "value": ""
+    },
+    "EmployerKeyvaultCertificateName": {
+      "value": ""
+    },
+    "QAAppCustomHostname": {
+      "value": ""
+    },
+    "QAAppKeyvaultCertificateName": {
+      "value": ""
+    },
+    "QAAuthentication": {
+      "value": {
+        "Wtrealm": "",
+        "MetaDataAddress": ""
+      }
+    },
+    "QAAuthorization": {
+      "value": {
+        "GroupClaim": "",
+        "GroupName": ""
+      }
+    },
+    "SlackWebhook": {
+      "value": ""
+    },
+    "GeocodePostcodeAnywhereKey": {
+      "value": ""
+    },
+    "PostcodeAnywhereKey": {
+      "value": ""
+    },
+    "FaaConfiguration": {
+      "value": {
+        "StorageConnectionString": ""
+      }
+    }
+  }
 }
