@@ -18,16 +18,26 @@ var query = {
     batchUpdateLimit = 500,
     passThrough = 1;
 
-var maxLoops = Math.ceil(db.queryViews.count(query) / batchUpdateLimit);
+var maxLoops = Math.ceil(db.queryViews.find().count(query) / batchUpdateLimit);
 
 if (maxLoops === 0) {
     maxLoops = 1;
 }
 
 do {
-    var matchedDocs = db.vacancies.find(query).limit(batchUpdateLimit).sort({ "dateCreated": 1 });
+    var matchedDocs = db.vacancies.aggregate([
+        {
+            $match: query
+        },
+        {
+            $sort: { "dateCreated": 1 }
+        },
+        {
+            $limit: batchUpdateLimit
+        }
+    ]);
 
-    print("Found " + matchedDocs.count() + " document(s) to operate on in passThrough " + passThrough + " of " + maxLoops + ".");
+    print("Found " + matchedDocs._batch.length + " document(s) to operate on in passThrough " + passThrough + " of " + maxLoops + ".");
 
     while (matchedDocs.hasNext()) {
         var doc = matchedDocs.next();
@@ -50,6 +60,6 @@ do {
     }
 
     passThrough++;
-} while (passThrough <= maxLoops && db.vacancies.count(query) > 0);
+} while (passThrough <= maxLoops && db.vacancies.find().count(query) > 0);
 
 print("Finished adding/updating Vacancies with default applicationMethod.");

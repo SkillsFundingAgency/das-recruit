@@ -14,9 +14,19 @@ if (maxLoops === 0) {
 }
 
 do {
-    var matchedDocs = db.queryViews.find(query).limit(batchUpdateLimit).sort({ "lastUpdated": 1 });
+    var matchedDocs = db.queryViews.aggregate([
+        {
+            $match: query
+        },
+        {
+            $sort: { "lastUpdated": 1 }
+        },
+        {
+            $limit: batchUpdateLimit
+        }
+    ]);
 
-    print("Found " + matchedDocs.count() + " document(s) to operate on in passThrough " + passThrough + " of " + maxLoops + ".");
+    print("Found " + matchedDocs._batch.length + " document(s) to operate on in passThrough " + passThrough + " of " + maxLoops + ".");
 
     while (matchedDocs.hasNext()) {
         var doc = matchedDocs.next();
@@ -29,7 +39,7 @@ do {
         }, {
             upsert: false
         });
-
+        
         if (writeResult.hasWriteConcernError()) {
             printjson(writeResult.writeConcernError);
             quit(14);
