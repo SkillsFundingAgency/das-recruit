@@ -105,6 +105,9 @@
       "type": "object",
       "defaultValue": {
         "StorageConnectionString": ""
+      },
+      "metadata": {
+        "description" : "StorageConnectionString requires at least the Send claim for the relevant Service Bus endpoint"
       }
     }
   },
