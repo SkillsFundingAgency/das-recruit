@@ -32,6 +32,8 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
 
         public bool CanShowReference { get; set; }
 
+        public bool HasIncompleteVacancyDescription => !HasVacancyDescription;
+
         public IList<string> OrderedFieldNames => new List<string>
         {
             nameof(ShortDescription),

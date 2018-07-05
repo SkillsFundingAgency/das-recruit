@@ -135,13 +135,14 @@
     </div>
     <div class="column-two-thirds">
         <div class="@GetSectionClass(Model.DescriptionsSectionState)">
-            <h3 class="heading-small">Vacancy description</h3>
+            <h3 asp-condition="@Model.HasIncompleteVacancyDescription" class="heading-small">Vacancy description</h3>
+            <h3 asp-condition="@Model.HasVacancyDescription" class="heading-small">Typical working day</h3>
             <span esfa-validation-message-for="VacancyDescription" class="error-message"></span>
             <p asp-condition="@Model.HasVacancyDescription">@Model.VacancyDescription</p>
-            <h3 class="heading-small">Training description</h3>
+            <h3 asp-condition="@Model.HasTrainingDescription" class="heading-small">Training to be provided</h3>
             <span esfa-validation-message-for="TrainingDescription" class="error-message"></span>
             <p asp-condition="@Model.HasTrainingDescription">@Model.TrainingDescription</p>
-            <h3 class="heading-small">Outcome description</h3>
+            <h3 asp-condition="@Model.HasOutcomeDescription" class="heading-small">Future prospects</h3>
             <span esfa-validation-message-for="OutcomeDescription" class="error-message"></span>
             <p asp-condition="@Model.HasOutcomeDescription">@Model.OutcomeDescription</p>
             @EditLink(RouteNames.VacancyDescription_Index_Get, Model.DescriptionsSectionState, "link-vacancy-description")
