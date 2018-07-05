@@ -18,7 +18,7 @@ var query = {
     batchUpdateLimit = 500,
     passThrough = 1;
 
-var maxLoops = Math.ceil(db.queryViews.find().count(query) / batchUpdateLimit);
+var maxLoops = Math.ceil(db.vacancies.find().count(query) / batchUpdateLimit);
 
 if (maxLoops === 0) {
     maxLoops = 1;
