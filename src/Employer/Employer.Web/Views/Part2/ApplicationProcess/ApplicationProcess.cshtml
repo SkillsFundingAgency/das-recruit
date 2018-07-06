@@ -47,7 +47,7 @@
                     <div esfa-validation-marker-for="ApplicationInstructions" class="form-group">
                         <label asp-for="ApplicationInstructions" class="form-label-bold">Explain the application process (optional)</label>
                         <span esfa-validation-message-for="ApplicationInstructions" class="error-message"></span>
-                        <textarea asp-for="ApplicationInstructions" class="form-control form-control-3-4" rows="5" data-val-length-max="500"></textarea>
+                        <textarea asp-for="ApplicationInstructions" class="form-control form-control-3-4 character-count" rows="5" data-val-length-max="500"></textarea>
                         <span class="maxchar-count">500</span>
                         <span class="maxchar-text"> characters remaining</span>
                     </div>
@@ -65,7 +65,7 @@
 </div>
 </div>
 @section footerJS
-    {
+{
     <feature name="@FeatureNames.AllowThroughFaaApplicationMethod">
         <script>
             $(function () {
