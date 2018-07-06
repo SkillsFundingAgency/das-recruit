@@ -15,7 +15,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.HardMocks
                 EmployerLocation = new Address { Postcode = "has a value" },
                 ShortDescription = "has a value",
                 ProgrammeId = "has a value",
-                Wage = new Wage { WageType = WageType.FixedWage }
+                Wage = new Wage { WageType = WageType.FixedWage },
+                HasCompletedPart1 = true
             };
         }
 
