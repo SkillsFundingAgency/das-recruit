@@ -39,16 +39,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 SelectedOrganisationName = vacancy.EmployerName
             };
 
-            if (employerData.LegalEntities.Count() == 1 && vacancy.EmployerLocation == null)
-            {
-                var defaultLegalEntity = employerData.LegalEntities.First();
-                vm.AddressLine1 = defaultLegalEntity.Address.AddressLine1;
-                vm.AddressLine2 = defaultLegalEntity.Address.AddressLine2;
-                vm.AddressLine3 = defaultLegalEntity.Address.AddressLine3;
-                vm.AddressLine4 = defaultLegalEntity.Address.AddressLine4;
-                vm.Postcode = defaultLegalEntity.Address.Postcode;
-            }
-
             if (vacancy.EmployerLocation != null)
             {
                 vm.AddressLine1 = vacancy.EmployerLocation.AddressLine1;
@@ -56,6 +46,15 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 vm.AddressLine3 = vacancy.EmployerLocation.AddressLine3;
                 vm.AddressLine4 = vacancy.EmployerLocation.AddressLine4;
                 vm.Postcode = vacancy.EmployerLocation.Postcode;
+            }
+            else if (employerData.LegalEntities.Count() == 1 && vacancy.EmployerLocation == null)
+            {
+                var defaultLegalEntity = employerData.LegalEntities.First();
+                vm.AddressLine1 = defaultLegalEntity.Address.AddressLine1;
+                vm.AddressLine2 = defaultLegalEntity.Address.AddressLine2;
+                vm.AddressLine3 = defaultLegalEntity.Address.AddressLine3;
+                vm.AddressLine4 = defaultLegalEntity.Address.AddressLine4;
+                vm.Postcode = defaultLegalEntity.Address.Postcode;
             }
 
             return vm;
