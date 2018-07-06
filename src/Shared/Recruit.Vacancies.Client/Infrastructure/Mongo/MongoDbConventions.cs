@@ -1,4 +1,6 @@
-﻿using MongoDB.Bson.Serialization.Conventions;
+﻿using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Conventions;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
 {
@@ -12,8 +14,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
                 new EnumRepresentationConvention(MongoDB.Bson.BsonType.String),
                 new IgnoreExtraElementsConvention(true),
                 new IgnoreIfNullConvention(true)
-        };
+            };
             ConventionRegistry.Register("recruit conventions", pack, t => true);
+
+            BsonClassMap.RegisterClassMap<Vacancy>(cm => {
+                cm.AutoMap();
+                cm.GetMemberMap(c => c.HasCompletedPart1).SetDefaultValue(true);
+            });
         }
     }
 }

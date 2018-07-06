@@ -25,7 +25,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         {
             var vm = new TitleViewModel
             {
-                CancelButtonRouteParameters = new VacancyRouteParameters(RouteNames.Dashboard_Index_Get)
+                CancelButtonRouteParameters = new VacancyRouteParameters(RouteNames.Dashboard_Index_Get),
+                InWizardMode = true
             };
             return vm;
         }
@@ -39,7 +40,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 VacancyId = vacancy.Id,
                 Title = vacancy.Title,
                 NumberOfPositions = vacancy.NumberOfPositions?.ToString(),
-                CancelButtonRouteParameters = Utility.GetCancelButtonRouteParametersForVacancy(vacancy, PreviewAnchors.TitleSection)
+                CancelButtonRouteParameters = Utility.GetCancelButtonRouteParametersForVacancy(vacancy, PreviewAnchors.TitleSection),
+                InWizardMode = vacancy.HasCompletedPart1 == false
             };
 
             return vm;
@@ -75,7 +77,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 var newVacancy = new Vacancy
                 {
                     Title = m.Title,
-                    NumberOfPositions = numberOfPositions
+                    NumberOfPositions = numberOfPositions,
+                    HasCompletedPart1 = false
                 };
 
                 return await ValidateAndExecute(
@@ -102,7 +105,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 async v =>
                 {
                     await _client.UpdateVacancyAsync(vacancy, user);
-                    return Utility.GetRedirectRouteParametersForVacancy(vacancy, PreviewAnchors.TitleSection); 
+                    return Utility.GetRedirectRouteParametersForVacancy(vacancy, PreviewAnchors.TitleSection, RouteNames.Title_Post); 
                 }
             );
         }

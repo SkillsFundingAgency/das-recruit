@@ -39,7 +39,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             {
                 Organisations = BuildLegalEntityViewModels(employerData, vrm.EmployerAccountId),
                 SelectedOrganisationName = vacancy.EmployerName,
-                CancelButtonRouteParameters = Utility.GetCancelButtonRouteParametersForVacancy(vacancy, PreviewAnchors.EmployerSection)
+                CancelButtonRouteParameters = Utility.GetCancelButtonRouteParametersForVacancy(vacancy, PreviewAnchors.EmployerSection),
+                InWizardMode = vacancy.HasCompletedPart1 == false
             };
 
             if (vacancy.EmployerLocation != null)
@@ -90,7 +91,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 async v =>
                 {
                     await _client.UpdateVacancyAsync(vacancy, user);
-                    return Utility.GetRedirectRouteParametersForVacancy(vacancy, PreviewAnchors.EmployerSection);
+                    return Utility.GetRedirectRouteParametersForVacancy(vacancy, PreviewAnchors.EmployerSection, RouteNames.Employer_Post);
                 });
         }
 

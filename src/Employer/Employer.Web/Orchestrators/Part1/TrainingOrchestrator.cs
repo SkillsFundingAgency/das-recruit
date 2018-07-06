@@ -38,7 +38,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 SelectedProgrammeId = vacancy.ProgrammeId,
                 Programmes = programmes.ToViewModel(),
                 IsDisabilityConfident = vacancy.DisabilityConfident == DisabilityConfident.Yes,
-                CancelButtonRouteParameters = Utility.GetCancelButtonRouteParametersForVacancy(vacancy, PreviewAnchors.ApprenticeshipSummarySection)
+                CancelButtonRouteParameters = Utility.GetCancelButtonRouteParametersForVacancy(vacancy, PreviewAnchors.ApprenticeshipSummarySection),
+                InWizardMode = vacancy.HasCompletedPart1 == false
             };
 
             if (vacancy.ClosingDate.HasValue)
@@ -92,7 +93,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 async v =>
                 {
                     await _client.UpdateVacancyAsync(vacancy, user);
-                    return Utility.GetRedirectRouteParametersForVacancy(vacancy, PreviewAnchors.ApprenticeshipSummarySection);
+                    return Utility.GetRedirectRouteParametersForVacancy(vacancy, PreviewAnchors.ApprenticeshipSummarySection, RouteNames.Training_Post);
                 });
         }
 

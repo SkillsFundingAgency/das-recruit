@@ -36,7 +36,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 WageType = vacancy.Wage?.WageType ?? WageType.FixedWage,
                 FixedWageYearlyAmount = vacancy.Wage?.FixedWageYearlyAmount?.AsMoney(),
                 WageAdditionalInformation = vacancy.Wage?.WageAdditionalInformation,
-                CancelButtonRouteParameters = Utility.GetCancelButtonRouteParametersForVacancy(vacancy, PreviewAnchors.ApprenticeshipSummarySection)
+                CancelButtonRouteParameters = Utility.GetCancelButtonRouteParametersForVacancy(vacancy, PreviewAnchors.ApprenticeshipSummarySection),
+                InWizardMode = vacancy.HasCompletedPart1 == false
             };
             
             return vm;
@@ -78,7 +79,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 async v =>
                 {
                     await _client.UpdateVacancyAsync(vacancy, user);
-                    return Utility.GetRedirectRouteParametersForVacancy(vacancy, PreviewAnchors.ApprenticeshipSummarySection);
+                    return Utility.GetRedirectRouteParametersForVacancy(vacancy, PreviewAnchors.ApprenticeshipSummarySection, RouteNames.Wage_Post);
                 });
         }
 

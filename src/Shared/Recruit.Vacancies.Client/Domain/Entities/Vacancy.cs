@@ -31,7 +31,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public bool IsDeleted { get; internal set; }
         public DateTime? DeletedDate { get; internal set; }
         public VacancyUser DeletedByUser { get; internal set; }
-        
+
         public string ApplicationInstructions { get; set; }
         public ApplicationMethod? ApplicationMethod { get; set; }
         public string ApplicationUrl { get; set; }
@@ -45,6 +45,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public Address EmployerLocation { get; set; }
         public string EmployerName { get; set; }
         public string EmployerWebsiteUrl { get; set; }
+        public bool HasCompletedPart1 { get; set; }
         public int? NumberOfPositions { get; set; }
         public string OutcomeDescription { get; set; }
         public string ProgrammeId { get; set; }

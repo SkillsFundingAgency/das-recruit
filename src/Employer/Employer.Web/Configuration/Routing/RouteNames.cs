@@ -69,6 +69,7 @@
         public const string VacancyDescription_Index_Post = "VacancyDescription_Index_Post";
 
         public const string SearchResultPreview_Get = "SearchResultPreview_Get";
+        public const string SearchResultPreview_Post = "SearchResultPreview_Post";
 
         public const string Skills_Get = "Skills_Get";
         public const string Skills_Post = "Skills_Post";

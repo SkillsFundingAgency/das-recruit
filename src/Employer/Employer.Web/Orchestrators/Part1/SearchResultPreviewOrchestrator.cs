@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.RouteModel;
+using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.SearchResultPreview;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Services;
@@ -53,6 +54,17 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             }
             
             return vm;
+        }
+
+        public async Task<VacancyRouteParameters> PostSearchResultPreviewViewModelAsync(VacancyRouteModel vrm, VacancyUser user)
+        {
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, vrm, RouteNames.SearchResultPreview_Post);
+
+            vacancy.HasCompletedPart1 = true;
+
+            await _client.UpdateVacancyAsync(vacancy, user);
+
+            return Utility.GetRedirectRouteParametersForVacancy(vacancy, null, RouteNames.SearchResultPreview_Post);
         }
 
         private async Task<string> GetLevelName(string programmeId)
