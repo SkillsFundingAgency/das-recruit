@@ -46,7 +46,8 @@ namespace Esfa.Recruit.Employer.Web
                     s.Self()
                     .CustomSources("https://az416426.vo.msecnd.net", 
                                     "https://www.google-analytics.com/analytics.js", 
-                                    $"https://www.googletagmanager.com/")
+                                    $"https://www.googletagmanager.com/",
+                                    "http://services.postcodeanywhere.co.uk/")
                     .UnsafeInline()
                 ) // TODO: Look at moving AppInsights inline js code.
                 .FontSources(s => 
@@ -55,7 +56,8 @@ namespace Esfa.Recruit.Employer.Web
                 )
                 .ConnectSources(s => 
                     s.Self()
-                    .CustomSources("https://dc.services.visualstudio.com")
+                    .CustomSources("https://dc.services.visualstudio.com",
+                                    "https://api.postcodes.io/")
                 )
                 .ImageSources(s => 
                     s.Self()
