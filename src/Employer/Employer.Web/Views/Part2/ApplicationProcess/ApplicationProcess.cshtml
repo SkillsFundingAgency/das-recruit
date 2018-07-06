@@ -35,34 +35,36 @@
                     </fieldset>
                 </div>
             </esfaFeature>
-            @if (_canShowGreyBorder)
+            @if (Model.HasEmptyApplicationMethod && _canShowGreyBorder)
+            {
+                @:<div id="application-method-external-panel" class="panel panel-border-narrow js-hidden">
+            }
+            else if (_canShowGreyBorder)
             {
                 @:<div id="application-method-external-panel" class="panel panel-border-narrow">
             }
-                    <div esfa-validation-marker-for="ApplicationUrl" class="form-group">
-                        <label asp-for="ApplicationUrl" class="form-label-bold">Enter the web address candidates should use to apply for this vacancy</label>
-                        <span esfa-validation-message-for="ApplicationUrl" class="error-message"></span>
-                        <input asp-for="ApplicationUrl" class="form-control" maxlength="200" />
-                    </div>
-                    <div esfa-validation-marker-for="ApplicationInstructions" class="form-group">
-                        <label asp-for="ApplicationInstructions" class="form-label-bold">Explain the application process (optional)</label>
-                        <span esfa-validation-message-for="ApplicationInstructions" class="error-message"></span>
-                        <textarea asp-for="ApplicationInstructions" class="form-control form-control-3-4 character-count" rows="5" data-val-length-max="500"></textarea>
-                        <span class="maxchar-count">500</span>
-                        <span class="maxchar-text"> characters remaining</span>
-                    </div>
-
+            <div esfa-validation-marker-for="ApplicationUrl" class="form-group">
+                <label asp-for="ApplicationUrl" class="form-label-bold">Enter the web address candidates should use to apply for this vacancy</label>
+                <span esfa-validation-message-for="ApplicationUrl" class="error-message"></span>
+                <input asp-for="ApplicationUrl" class="form-control" maxlength="200" />
+            </div>
+            <div esfa-validation-marker-for="ApplicationInstructions" class="form-group">
+                <label asp-for="ApplicationInstructions" class="form-label-bold">Explain the application process (optional)</label>
+                <span esfa-validation-message-for="ApplicationInstructions" class="error-message"></span>
+                <textarea asp-for="ApplicationInstructions" class="form-control form-control-3-4 character-count" rows="5" data-val-length-max="500"></textarea>
+                <span class="maxchar-count">500</span>
+                <span class="maxchar-text"> characters remaining</span>
+            </div>
             @if (_canShowGreyBorder)
             {
                 @:</div>
             }
-
             <div class="form-group">
                 <input type="submit" value="Save and continue" esfa-automation="btn-continue" class="button save-button" />
                 <a asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@ApplicationProcessViewModel.PreviewSectionAnchor" esfa-automation="link-cancel" class="button-link">Cancel</a>
             </div>
         </form>
-</div>
+    </div>
 </div>
 @section footerJS
 {

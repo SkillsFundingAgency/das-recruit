@@ -11,6 +11,8 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public string ApplicationInstructions { get; internal set; }
         public string ApplicationUrl { get; internal set; }
 
+        public bool HasEmptyApplicationMethod => !ApplicationMethod.HasValue;
+
         public static string PreviewSectionAnchor => PreviewAnchors.ApplicationProcessSection;
 
         public IList<string> OrderedFieldNames => new List<string>
