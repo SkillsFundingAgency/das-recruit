@@ -37,7 +37,7 @@ do {
         }
     ]);
 
-    print("Found " + matchedDocs._batch.length + " document(s) to operate on in passThrough " + passThrough + " of " + maxLoops + ".");
+    print(`Found ${matchedDocs._batch.length} document(s) to operate on in pass-through ${passThrough} of ${maxLoops}.`);
 
     while (matchedDocs.hasNext()) {
         var doc = matchedDocs.next();
@@ -56,7 +56,7 @@ do {
             quit(14);
         }
 
-        print("Updated document '" + toGUID(doc._id.hex()) + "' with applicationMethod: ThroughExternalApplicationSite.");
+        print(`Updated document '${toGUID(doc._id.hex())}' with applicationMethod: ThroughExternalApplicationSite.`);
     }
 
     passThrough++;
