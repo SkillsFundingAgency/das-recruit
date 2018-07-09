@@ -16,11 +16,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
                 new IgnoreIfNullConvention(true)
             };
             ConventionRegistry.Register("recruit conventions", pack, t => true);
-
-            BsonClassMap.RegisterClassMap<Vacancy>(cm => {
-                cm.AutoMap();
-                cm.GetMemberMap(c => c.HasCompletedPart1).SetDefaultValue(true);
-            });
         }
     }
 }
