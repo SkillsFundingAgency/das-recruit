@@ -56,8 +56,7 @@ namespace Esfa.Recruit.Employer.Web
                 )
                 .ConnectSources(s => 
                     s.Self()
-                    .CustomSources("https://dc.services.visualstudio.com",
-                                    "https://api.postcodes.io/")
+                    .CustomSources("https://dc.services.visualstudio.com")
                 )
                 .ImageSources(s => 
                     s.Self()
