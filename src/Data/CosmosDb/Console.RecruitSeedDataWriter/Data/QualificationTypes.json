@@ -1,6 +1,6 @@
 ﻿{
   "_id": "QualificationTypes",
-  "QualificationTypes": [
+  "qualificationTypes": [
     "GCSE",
     "AS Level",
     "A Level",
