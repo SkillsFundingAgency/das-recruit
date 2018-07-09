@@ -45,5 +45,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Training
         }
 
         public string SelectedProgrammeId { get; set; }
+
+        public bool IsDisabilityConfident { get; set; }
     }
 }

@@ -34,7 +34,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             {
                 VacancyId = vacancy.Id,
                 SelectedProgrammeId = vacancy.ProgrammeId,
-                Programmes = programmes.ToViewModel()
+                Programmes = programmes.ToViewModel(),
+                IsDisabilityConfident = vacancy.DisabilityConfident == DisabilityConfident.Yes
             };
 
             if (vacancy.ClosingDate.HasValue)
@@ -68,6 +69,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
             vm.SelectedProgrammeId = m.SelectedProgrammeId;
 
+            vm.IsDisabilityConfident = m.IsDisabilityConfident;
+
             return vm;
         }
 
@@ -78,6 +81,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             vacancy.ClosingDate = m.ClosingDate.AsDateTimeUk()?.ToUniversalTime();
             vacancy.StartDate = m.StartDate.AsDateTimeUk()?.ToUniversalTime();
             vacancy.ProgrammeId = m.SelectedProgrammeId;
+            vacancy.DisabilityConfident = m.IsDisabilityConfident ? DisabilityConfident.Yes : DisabilityConfident.No;
             
             return await ValidateAndExecute(
                 vacancy, 

@@ -40,6 +40,10 @@
                             <span>@Model.Wage</span><span asp-condition="@Model.HasYearlyWage"> yearly</span>
                         </li>
                     </ul>
+
+                    <img asp-condition="@Model.IsDisabilityConfident" src="~/img/disability-confident_545x172.png" alt="This vacancy is disability confident" style="width:200px;margin:10px 0;" />
+                    @Html.Partial(PartialNames.DisabilityConfident, @Model.IsDisabilityConfident)
+
                 </div>
                 <div class="column-one-third map-container hide-nojs toggle-content--mob">
                     @if (!string.IsNullOrWhiteSpace(Model.MapUrl))

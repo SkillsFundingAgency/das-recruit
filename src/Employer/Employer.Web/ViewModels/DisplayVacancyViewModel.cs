@@ -103,5 +103,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public bool HasApplicationUrl => !string.IsNullOrWhiteSpace(ApplicationUrl);
 
         public bool ShowGeneralApplicationProcessSectionTitle => ApplicationMethod == null || ApplicationMethod.Value != Esfa.Recruit.Vacancies.Client.Domain.Entities.ApplicationMethod.ThroughExternalApplicationSite;
+
+        public bool IsNotDisabilityConfident => !IsDisabilityConfident;
     }
 }
