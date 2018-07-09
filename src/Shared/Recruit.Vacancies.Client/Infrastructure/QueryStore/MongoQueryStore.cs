@@ -34,7 +34,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 
         async Task<IEnumerable<T>> IQueryStore.GetAllByTypeAsync<T>(string typeName)
         {
-            var filter = Builders<T>.Filter.Eq(d => d.Type, typeName);
+            var filter = Builders<T>.Filter.Eq(d => d.ViewType, typeName);
 
             var collection = GetCollection<T>();
             var result = await RetryPolicy.ExecuteAsync(context => collection.FindAsync(filter), new Context(nameof(IQueryStore.GetAllByTypeAsync)));
