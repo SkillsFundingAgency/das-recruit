@@ -37,6 +37,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public string ApplicationUrl { get; set; }
         public DateTime? ClosingDate { get; set; }
         public string Description { get; set; }
+        public DisabilityConfident DisabilityConfident { get; set; }
         public string EmployerContactEmail { get; set; }
         public string EmployerContactName { get; set; }
         public string EmployerContactPhone { get; set; }
