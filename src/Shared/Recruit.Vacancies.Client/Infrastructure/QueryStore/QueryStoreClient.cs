@@ -32,7 +32,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             var dashboardItem = new Dashboard
             {
                 Id = QueryViewType.Dashboard.GetIdValue(employerAccountId),
-                Type = QueryViewType.Dashboard.TypeName,
+                ViewType = QueryViewType.Dashboard.TypeName,
                 Vacancies = vacancySummaries,
                 LastUpdated = _timeProvider.Now
             };
@@ -45,7 +45,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             var programmesItem = new ApprenticeshipProgrammes
             {
                 Id = QueryViewType.ApprenticeshipProgrammes.GetIdValue(),
-                Type = QueryViewType.ApprenticeshipProgrammes.TypeName,
+                ViewType = QueryViewType.ApprenticeshipProgrammes.TypeName,
                 Programmes = programmes,
                 LastUpdated = _timeProvider.Now
             };
@@ -67,7 +67,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             var employerVacancyDataItem = new EditVacancyInfo
             {
                 Id = QueryViewType.EditVacancyInfo.GetIdValue(employerAccountId),
-                Type = QueryViewType.EditVacancyInfo.TypeName,
+                ViewType = QueryViewType.EditVacancyInfo.TypeName,
                 LegalEntities = legalEntities,
                 LastUpdated = _timeProvider.Now
             };
@@ -92,7 +92,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         public Task UpdateLiveVacancyAsync(LiveVacancy vacancy)
         {
             vacancy.Id = GetLiveVacancyId(vacancy.VacancyReference);
-            vacancy.Type = QueryViewType.LiveVacancy.TypeName;
+            vacancy.ViewType = QueryViewType.LiveVacancy.TypeName;
             vacancy.LastUpdated = _timeProvider.Now;
 
             return _queryStore.UpsertAsync(vacancy);
@@ -112,7 +112,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         public Task UpdateVacancyApplicationsAsync(VacancyApplications vacancyApplications)
         {
             vacancyApplications.Id = QueryViewType.VacancyApplications.GetIdValue(vacancyApplications.VacancyReference.ToString());
-            vacancyApplications.Type = QueryViewType.VacancyApplications.TypeName;
+            vacancyApplications.ViewType = QueryViewType.VacancyApplications.TypeName;
             vacancyApplications.LastUpdated = _timeProvider.Now;
 
             return _queryStore.UpsertAsync(vacancyApplications);
