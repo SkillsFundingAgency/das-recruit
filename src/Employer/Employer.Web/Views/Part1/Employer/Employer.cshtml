@@ -36,18 +36,6 @@
                     }
                 </div>
 
-                <div id="address-lookup" class="hide-nojs">
-
-                    <div class="form-group form-group-compound" id="addressInputWrapper">
-                        <label for="postcode-search" class="form-label-bold">Type the postcode or start typing address where the apprentice will work?</label>
-                        <input id="postcode-search" type="text" class="form-control form-control-1-3" spellcheck="false" autocorrect="off">
-                        <span class="visuallyhidden" id="ariaAddressEntered" aria-live="polite"></span>
-                    </div>
-                    <div id="address-manual" class="form-group form-group-compound">
-                        <a href="#" class="copy-19" id="enterAddressManually">Or enter address manually</a>
-                    </div>
-                </div>
-
                 <div id="address-details" class="address-manual-input">
                     <label class="form-label-bold">Enter the address where the apprenticeship will take place.</label>
                     <div esfa-validation-marker-for="AddressLine1" class="form-group-compound address-item form-group">
@@ -83,10 +71,5 @@
     </div>
 </div>
 
-<script>
-    var key = "JY37-NM56-JA37-WT99";
-    $(function () {
-        $('#address-details').addClass('disabled');
-    });
-</script>
+<script src="/lib/jquery-ui/dist/jquery-ui.min.js"></script>
 <script src="/lib/esfa-postcode/lookupservice.js?v=-63-7NMAeFxj2don0m5f5Of3dsxI8HjzZRwlpYJ47WI1"></script>
