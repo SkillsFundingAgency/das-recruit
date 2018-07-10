@@ -8,7 +8,12 @@
     if (db !== targetDbName) {
         db = db.getSiblingDB(targetDbName);
     }
-}
 
-load("010-queryViews_LiveVacancy_Insert_DefaultField_ApplicationMethod.js");
-load("020-vacancies_Insert_DefaultField_ApplicationMethod.js");
+    let changeScriptFileRegex = /^\.\/\d{3}.*js$/,
+        changeScripts = ls().filter(scr => changeScriptFileRegex.test(scr));
+
+    print(`Found ${changeScripts.length} change scripts to run:`);
+    changeScripts.forEach(scr => print(scr));
+
+    changeScripts.forEach(scr => load(scr));
+}
