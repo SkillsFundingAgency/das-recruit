@@ -22,6 +22,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
                 ApplicationUrl = vacancy.ApplicationUrl,
                 ClosingDate = vacancy.ClosingDate.Value,
                 Description = vacancy.Description,
+                DisabilityConfident = vacancy.DisabilityConfident,
                 EmployerContactEmail = vacancy.EmployerContactEmail,
                 EmployerContactName = vacancy.EmployerContactName,
                 EmployerContactPhone = vacancy.EmployerContactPhone,

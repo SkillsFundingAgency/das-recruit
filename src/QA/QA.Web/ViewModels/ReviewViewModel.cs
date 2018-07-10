@@ -19,6 +19,7 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public string EmployerDescription { get; internal set; }
         public string EmployerWebsiteUrl { get; internal set; }
         public IEnumerable<string> EmployerAddressElements { get; internal set; }
+        public bool IsDisabilityConfident { get; set; }
         public string NumberOfPositionsCaption { get; internal set; }
         public string OutcomeDescription { get; internal set; }
         public string HoursPerWeek { get; internal set; }
