@@ -19,7 +19,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.LiveVacanciesGenerator
             _job = job;
         }
 
-        public async Task GenerateLiveVacanciesProjectionsAsync([QueueTrigger(QueueNames.LiveVacanciesQueueName, Connection = "EventQueueConnectionString")] string message, TextWriter log)
+        public async Task GenerateLiveVacanciesProjectionsAsync([QueueTrigger(QueueNames.GenerateLiveVacanciesQueueName, Connection = "EventQueueConnectionString")] string message, TextWriter log)
         {
             try
             {
