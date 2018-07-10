@@ -42,7 +42,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.ApprenticeshipProgrammes
                 var standardsFromApi = standardsTask.Result.ToList();
                 var frameworksFromApi = frameworksTask.Result.ToList();
 
-                List<ApprenticeshipProgramme> newList = new List<ApprenticeshipProgramme>();
+                var newList = new List<ApprenticeshipProgramme>();
                 newList.AddRange(standardsFromApi);
                 newList.AddRange(frameworksFromApi);
 
