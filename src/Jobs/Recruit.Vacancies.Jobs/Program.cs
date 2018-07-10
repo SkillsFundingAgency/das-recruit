@@ -7,6 +7,7 @@ using Esfa.Recruit.Vacancies.Jobs.BankHoliday;
 using Esfa.Recruit.Vacancies.Jobs.DashboardGenerator;
 using Esfa.Recruit.Vacancies.Jobs.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Jobs.QaDashboard;
+using Esfa.Recruit.Vacancies.Jobs.LiveVacanciesGenerator;
 using Esfa.Recruit.Vacancies.Jobs.VacancyApplication;
 using Esfa.Recruit.Vacancies.Jobs.VacancyEvents;
 using Esfa.Recruit.Vacancies.Jobs.VacancyReviewEvents;
@@ -146,6 +147,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddScoped<LiveVacancyStatusInspector>();
             services.AddScoped<DashboardCreator>();
             services.AddScoped<VacancyApplicationCommandHandler>();
+            services.AddScoped<LiveVacanciesCreator>();
 
             services.AddSingleton<IApprenticeshipProgrammeApiClient, ApprenticeshipProgrammeApiClient>();
             services.AddApprentieshipsApi(configuration);
@@ -159,6 +161,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddScoped<VacancyStatusJob>();
             services.AddScoped<DashboardGeneratorJob>();
             services.AddScoped<VacancyApplicationJob>();
+            services.AddScoped<LiveVacanciesGeneratorJob>();
             services.AddScoped<BankHolidayJob>();
             services.AddScoped<QaDashboardJob>();
 
