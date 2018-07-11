@@ -71,5 +71,16 @@
     </div>
 </div>
 
-<script src="/lib/jquery-ui/dist/jquery-ui.min.js"></script>
-<script src="/lib/esfa-postcode/lookupservice.js?v=-63-7NMAeFxj2don0m5f5Of3dsxI8HjzZRwlpYJ47WI1"></script>
+@section FooterJS
+{
+
+<script>
+
+    var addresses = @Json.Serialize(Model.Organisations);
+
+</script>
+
+
+    <script src="/lib/jquery-ui/dist/jquery-ui.min.js"></script>
+    <script src="/lib/esfa-postcode/lookupservice.js"></script>
+}

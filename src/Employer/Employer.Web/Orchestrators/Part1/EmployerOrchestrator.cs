@@ -116,7 +116,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         private LocationOrganisationViewModel MapLegalEntitiesToOrgs(LegalEntity data)
         {
-            return new LocationOrganisationViewModel { Id = data.LegalEntityId.ToString(), Name = data.Name };
+            return new LocationOrganisationViewModel { Id = data.LegalEntityId.ToString(), Name = data.Name, Address = data.Address };
         }
         
         private IEnumerable<LocationOrganisationViewModel> BuildLegalEntityViewModels(EditVacancyInfo info, string employerAccountId)
