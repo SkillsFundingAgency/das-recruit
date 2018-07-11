@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer
 {
@@ -23,5 +24,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer
     {
         public string Id { get; set; }
         public string Name { get; set; }
+        public Address Address { get; internal set; }
     }
 }
