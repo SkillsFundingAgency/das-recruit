@@ -224,7 +224,7 @@
             <img asp-condition="@Model.IsDisabilityConfident" src="~/img/disability-confident_545x172.png" class="disability-confident-logo" alt="A logo confirming that the employer is registered as disability confident" />
             @Html.Partial(PartialNames.DisabilityConfident, Model.IsDisabilityConfident)
             <p asp-condition="@Model.IsNotDisabilityConfident" class="form-hint">This vacancy is not Disability Confident<br />This will not appear on the vacancy when it goes live</p>
-            @EditLink(RouteNames.Title_Get, Model.TrainingSectionState, "link-standard")
+            @EditLink(RouteNames.Training_Get, Model.TrainingSectionState, "link-standard")
         </div>
         <div class="@GetSectionClass(Model.EmployerWebsiteUrlSectionState)">
             <h3 class="heading-small">Website (optional)</h3>
