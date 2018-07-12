@@ -207,6 +207,12 @@
 
 <div class="grid-row">
     <div class="column-two-thirds">
+        <div class="@GetSectionClass(Model.EmployerDescriptionSectionState)">
+            <h3 class="heading-small">Description</h3>
+            <span esfa-validation-message-for="EmployerDescription" class="error-message"></span>
+            <p asp-condition="@Model.HasEmployerDescription">@Model.EmployerDescription</p>
+            @EditLink(RouteNames.AboutEmployer_Get, Model.EmployerDescriptionSectionState, "link-description")
+        </div>
         <div class="@GetSectionClass(Model.EmployerNameSectionState)">
             <h3 class="heading-small">Employer</h3>
             <span esfa-validation-message-for="EmployerName" class="error-message"></span>
@@ -219,13 +225,6 @@
             @Html.Partial(PartialNames.DisabilityConfident, Model.IsDisabilityConfident)
             <p asp-condition="@Model.IsNotDisabilityConfident" class="form-hint">This vacancy is not Disability Confident<br />This will not appear on the vacancy when it goes live</p>
             @EditLink(RouteNames.Title_Get, Model.TrainingSectionState, "link-standard")
-        </div>
-
-        <div class="@GetSectionClass(Model.EmployerDescriptionSectionState)">
-            <h3 class="heading-small">Description</h3>
-            <span esfa-validation-message-for="EmployerDescription" class="error-message"></span>
-            <p asp-condition="@Model.HasEmployerDescription">@Model.EmployerDescription</p>
-            @EditLink(RouteNames.AboutEmployer_Get, Model.EmployerDescriptionSectionState, "link-description")
         </div>
         <div class="@GetSectionClass(Model.EmployerWebsiteUrlSectionState)">
             <h3 class="heading-small">Website (optional)</h3>
