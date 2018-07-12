@@ -74,7 +74,7 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             vm.VacancyReferenceNumber = vacancy.VacancyReference.HasValue 
                                         ? $"VAC{vacancy.VacancyReference.ToString()}" 
                                         : string.Empty;
-            vm.IsDisabilityConfident = vacancy.DisabilityConfident == DisabilityConfident.Yes;
+            vm.IsDisabilityConfident = vacancy.IsDisabilityConfident;
             if (vacancy.EmployerLocation != null)
             {
                 vm.MapUrl = vacancy.EmployerLocation.HasGeocode
