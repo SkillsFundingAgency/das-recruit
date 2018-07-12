@@ -18,6 +18,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.SequenceStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.FAA;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
 using FluentValidation;
@@ -75,6 +76,8 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.Configure<GeocodeConfiguration>(configuration.GetSection("Geocode"));
             services.AddTransient<IGeocodeServiceFactory, GeocodeServiceFactory>();
+
+            services.Configure<FaaConfiguration>(configuration.GetSection("FaaConfiguration"));
         }
 
         private static void AddRepositories(this IServiceCollection services, IConfiguration configuration)
