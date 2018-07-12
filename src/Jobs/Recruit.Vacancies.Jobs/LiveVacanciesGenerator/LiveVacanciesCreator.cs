@@ -26,17 +26,18 @@ namespace Esfa.Recruit.Vacancies.Jobs.LiveVacanciesGenerator
         public async Task RunAsync()
         {
             var vacanciesTask = _repository.GetVacanciesByStatusAsync(Client.Domain.Entities.VacancyStatus.Live);
-            var programmeTask = _queryStoreReader.GetApprenticeshipProgrammesAsync();
+            var programmesTask = _queryStoreReader.GetApprenticeshipProgrammesAsync();
 
-            await Task.WhenAll(vacanciesTask, programmeTask);
+            await Task.WhenAll(vacanciesTask, programmesTask);
 
             var vacancies = vacanciesTask.Result;
+            var programmesData = programmesTask.Result;
 
             _logger.LogInformation($"Found {vacancies.Count()} live vacancies to create LiveVacancy queryViews for.");
 
             Parallel.ForEach(vacancies, async v =>
             {
-                var programme = programmeTask.Result.Programmes.Single(p => p.Id == v.ProgrammeId);
+                var programme = programmesData.Programmes.Single(p => p.Id == v.ProgrammeId);
                 await _queryStoreWriter.UpdateLiveVacancyAsync(v.ToLiveVacancyProjection(programme));
             });
 
