@@ -92,6 +92,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         /// We can send for review vacancies that are submitted and that have not been deleted
         /// </summary>
         public bool CanSendForReview => Status == VacancyStatus.Submitted && IsDeleted == false;
-        
+
+        public bool IsDisabilityConfident => DisabilityConfident == DisabilityConfident.Yes;
     }
 }

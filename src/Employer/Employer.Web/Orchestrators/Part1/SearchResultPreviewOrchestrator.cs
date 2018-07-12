@@ -42,7 +42,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                     () => _wageService.GetNationalMinimumWageRange(vacancy.StartDate.Value),
                     () => _wageService.GetApprenticeNationalMinimumWage(vacancy.StartDate.Value)),
                 HasYearlyWage = (vacancy.Wage != null && vacancy.Wage.WageType != WageType.Unspecified),
-                IsDisabilityConfident = vacancy.DisabilityConfident == DisabilityConfident.Yes
+                IsDisabilityConfident = vacancy.IsDisabilityConfident
             };
 
             if (vacancy.EmployerLocation != null)
