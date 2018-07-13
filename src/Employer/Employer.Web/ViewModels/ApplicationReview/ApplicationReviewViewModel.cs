@@ -10,7 +10,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview
         public string AddressLine2 { get; set; }
         public string AddressLine3 { get; set; }
         public string AddressLine4 { get; set; }
-        public string DisabilityStatus { get; set; }
+        public ApplicationReviewDisabilityStatus DisabilityStatus { get; set; }
         public int EducationFromYear { get; set; }
         public string EducationInstitution { get; set; }
         public int EducationToYear { get; set; }
@@ -36,7 +36,8 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview
         public bool HasNoSupportRequirements => string.IsNullOrWhiteSpace(Support);
         public bool CanNotChangeOutcome => (Status == ApplicationReviewStatus.Successful || Status == ApplicationReviewStatus.Unsuccessful);
         public bool CanChangeOutcome => !CanNotChangeOutcome;
-        
+        public bool ShowDisabilityStatusAlert => DisabilityStatus == ApplicationReviewDisabilityStatus.Yes;
+
         public IList<string> OrderedFieldNames => new List<string>
         {
             nameof(Outcome)

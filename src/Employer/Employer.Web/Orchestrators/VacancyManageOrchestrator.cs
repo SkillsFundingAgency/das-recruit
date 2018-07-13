@@ -5,6 +5,7 @@ using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels;
+using Esfa.Recruit.Employer.Web.ViewModels.VacancyManage;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
@@ -137,7 +138,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             var applications = vacancyApplicationsTask.Result?.Applications ?? new List<VacancyApplication>();
 
-            viewModel.Applications = applications;
+            viewModel.Applications = new VacancyApplicationsViewModel
+            {
+                Applications = applications,
+                ShowDisability = vacancy.IsDisabilityConfident
+            };
         }
 
         private async Task<ManageVacancy> GetDisplayViewModelForReferredVacancy(Vacancy vacancy)

@@ -2,6 +2,7 @@
 {
     public enum ApplicationReviewDisabilityStatus
     {
+        Unknown = 0,
         No,
         PreferNotToSay,
         Yes
