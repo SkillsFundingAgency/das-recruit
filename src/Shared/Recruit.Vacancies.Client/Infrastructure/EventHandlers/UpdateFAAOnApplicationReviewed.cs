@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
@@ -22,29 +19,24 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
 
         public Task Handle(ApplicationReviewedEvent notification, CancellationToken cancellationToken)
         {
+            if (notification.Status != ApplicationReviewStatus.Successful 
+                && notification.Status != ApplicationReviewStatus.Unsuccessful)
+            {
+                return Task.CompletedTask;
+            }
+
             var message = new FaaApplicationStatusSummary
             {
                 VacancyReference = (int)notification.VacancyReference,
                 UnsuccessfulReason = notification.CandidateFeedback,
-                ApplicationStatus = GetApplicationStatus(notification.Status),
                 CandidateId = notification.CandidateId,
-                IsRecruitVacancy = true
+                IsRecruitVacancy = true,
+                ApplicationStatus = notification.Status == ApplicationReviewStatus.Successful 
+                    ? FaaApplicationStatus.Successful 
+                    : FaaApplicationStatus.Unsuccessful
             };
 
             return _faaService.PublishApplicationStatusSummaryAsync(message);
-        }
-
-        private FaaApplicationStatus GetApplicationStatus(ApplicationReviewStatus status)
-        {
-            switch (status)
-            {
-                case ApplicationReviewStatus.Successful:
-                    return FaaApplicationStatus.Successful;
-                case ApplicationReviewStatus.Unsuccessful:
-                    return FaaApplicationStatus.Unsuccessful;
-                default:
-                    throw new NotImplementedException($"Cannot handle notification status:{status}");
-            }
         }
     }
 }
