@@ -7,6 +7,8 @@ using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Employer.Web.RouteModel;
+using Esfa.Recruit.Employer.Web.ViewModels;
+using Esfa.Recruit.Employer.Web.Views;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
@@ -35,7 +37,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 VacancyId = vacancy.Id,
                 SelectedProgrammeId = vacancy.ProgrammeId,
                 Programmes = programmes.ToViewModel(),
-                IsDisabilityConfident = vacancy.DisabilityConfident == DisabilityConfident.Yes
+                IsDisabilityConfident = vacancy.DisabilityConfident == DisabilityConfident.Yes,
+                CancelButtonRouteParameters = Utility.GetCancelButtonRouteParametersForVacancy(vacancy, PreviewAnchors.ApprenticeshipSummarySection),
+                InWizardMode = vacancy.HasCompletedPart1 == false
             };
 
             if (vacancy.ClosingDate.HasValue)
@@ -74,7 +78,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             return vm;
         }
 
-        public async Task<OrchestratorResponse> PostTrainingEditModelAsync(TrainingEditModel m, VacancyUser user)
+        public async Task<OrchestratorResponse<VacancyRouteParameters>> PostTrainingEditModelAsync(TrainingEditModel m, VacancyUser user)
         {
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, m, RouteNames.Training_Post);
             
@@ -86,17 +90,21 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             return await ValidateAndExecute(
                 vacancy, 
                 v => _client.Validate(v, ValdationRules),
-                v => _client.UpdateVacancyAsync(vacancy, user)
-            );
+                async v =>
+                {
+                    await _client.UpdateVacancyAsync(vacancy, user);
+                    return Utility.GetRedirectRouteParametersForVacancy(vacancy, PreviewAnchors.ApprenticeshipSummarySection, RouteNames.Training_Post);
+                });
         }
 
         protected override EntityToViewModelPropertyMappings<Vacancy, TrainingEditModel> DefineMappings()
         {
-            var mappings = new EntityToViewModelPropertyMappings<Vacancy, TrainingEditModel>();
-
-            mappings.Add(e => e.ProgrammeId, vm => vm.SelectedProgrammeId);
-            mappings.Add(e => e.StartDate, vm => vm.StartDate);
-            mappings.Add(e => e.ClosingDate, vm => vm.ClosingDate);
+            var mappings = new EntityToViewModelPropertyMappings<Vacancy, TrainingEditModel>
+            {
+                { e => e.ProgrammeId, vm => vm.SelectedProgrammeId},
+                { e => e.StartDate, vm => vm.StartDate},
+                { e => e.ClosingDate, vm => vm.ClosingDate}
+            };
 
             return mappings;
         }

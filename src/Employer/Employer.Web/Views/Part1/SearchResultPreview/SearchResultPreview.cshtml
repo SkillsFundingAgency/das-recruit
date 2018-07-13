@@ -54,11 +54,13 @@
             </div> 
         </div>
         <div class="form-group inline">
-                <div class="form-group small-top-margin">
-                    <a asp-route="@RouteNames.Vacancy_Preview_Get" esfa-automation="link-continue" class="button">Add full vacancy details</a>
+            <div class="form-group small-top-margin">
+                <form asp-route="@RouteNames.SearchResultPreview_Post">
+                    <button type="submit" class="button save-button" esfa-automation="link-continue">Add full vacancy details</button>
                     <a asp-route="@RouteNames.Title_Get" esfa-automation="link-change" class="button-link">Make changes</a>
                     <a asp-route="@RouteNames.Dashboard_Index_Get" asp-route-statusFilter="@Context.Request.Cookies[CookieNames.VacancyStatusFilter]" esfa-automation="link-dashboard" class="button-link">Return to dashboard</a>
-                </div>
+                </form>
             </div>
+        </div>
     </div>
 </div>

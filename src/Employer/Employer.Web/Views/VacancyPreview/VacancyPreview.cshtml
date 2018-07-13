@@ -40,7 +40,7 @@
     </div>
 </div>
 
-<div class="grid-row">
+<div class="grid-row" id="@PreviewAnchors.TitleSection">
     <div class="column-two-thirds">
         <h2 class="heading-xlarge small-bottom-margin">
             @Model.Title
@@ -50,7 +50,7 @@
     </div>
 </div>
 
-<div class="grid-row">
+<div class="grid-row" id="@PreviewAnchors.ShortDescriptionSection">
     <div class="column-two-thirds">
         <div class="@GetSectionClass(Model.ShortDescriptionSectionState)">
             <h3 class="heading-small no-top-margin">Brief overview of the role</h3>
@@ -193,7 +193,7 @@
     </div>
 </div>
 
-<div class="grid-row" id="@PreviewAnchors.AboutEmployerSection">
+<div class="grid-row" id="@PreviewAnchors.EmployerSection">
     <div class="column-full">
         <hr class="no-bottom-margin">
     </div>
@@ -291,7 +291,7 @@
         <div class="@GetSectionClass(Model.TrainingSectionState)">
             <h3 class="heading-small">Apprenticeship @Model.TrainingType</h3>
             <p asp-condition="@Model.HasTrainingTitle">@Model.TrainingTitle</p>
-            @EditLink(RouteNames.Title_Get, Model.TrainingSectionState, "link-standard")
+            @EditLink(RouteNames.Training_Get, Model.TrainingSectionState, "link-standard")
         </div>
     </div>
 </div>

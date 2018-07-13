@@ -1,14 +1,15 @@
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
-using Esfa.Recruit.Employer.Web.ViewModels.Part1.Title;
-using Esfa.Recruit.Vacancies.Client.Application.Validation;
-using Microsoft.Extensions.Logging;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Employer.Web.RouteModel;
+using Esfa.Recruit.Employer.Web.ViewModels;
+using Esfa.Recruit.Employer.Web.ViewModels.Part1.Title;
+using Esfa.Recruit.Employer.Web.Views;
+using Esfa.Recruit.Vacancies.Client.Application.Validation;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Microsoft.Extensions.Logging;
 
-namespace Esfa.Recruit.Employer.Web.Orchestrators
+namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
     public class TitleOrchestrator : EntityValidatingOrchestrator<Vacancy, TitleEditModel>
     {
@@ -22,19 +23,25 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public TitleViewModel GetTitleViewModel()
         {
-            var vm = new TitleViewModel();
+            var vm = new TitleViewModel
+            {
+                CancelButtonRouteParameters = new VacancyRouteParameters(RouteNames.Dashboard_Index_Get),
+                InWizardMode = true
+            };
             return vm;
         }
 
         public async Task<TitleViewModel> GetTitleViewModelAsync(VacancyRouteModel vrm)
         {
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, vrm, RouteNames.Title_Get);
-
+            
             var vm = new TitleViewModel
             {
                 VacancyId = vacancy.Id,
                 Title = vacancy.Title,
                 NumberOfPositions = vacancy.NumberOfPositions?.ToString(),
+                CancelButtonRouteParameters = Utility.GetCancelButtonRouteParametersForVacancy(vacancy, PreviewAnchors.TitleSection),
+                InWizardMode = vacancy.HasCompletedPart1 == false
             };
 
             return vm;
@@ -61,7 +68,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         }
 
 
-        public async Task<OrchestratorResponse<Guid>> PostTitleEditModelAsync(TitleEditModel m, VacancyUser user)
+        public async Task<OrchestratorResponse<VacancyRouteParameters>> PostTitleEditModelAsync(TitleEditModel m, VacancyUser user)
         {
             var numberOfPositions = int.TryParse(m.NumberOfPositions, out var n)? n : default(int?);
 
@@ -70,13 +77,20 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 var newVacancy = new Vacancy
                 {
                     Title = m.Title,
-                    NumberOfPositions = numberOfPositions
+                    NumberOfPositions = numberOfPositions,
+                    HasCompletedPart1 = false
                 };
 
                 return await ValidateAndExecute(
                     newVacancy, 
                     v => _client.Validate(v, ValidationRules),
-                    async v => await _client.CreateVacancyAsync(SourceOrigin.EmployerWeb, m.Title, numberOfPositions.Value, m.EmployerAccountId, user));
+                    async v =>
+                    {
+                        var id = await _client.CreateVacancyAsync(SourceOrigin.EmployerWeb, m.Title,
+                            numberOfPositions.Value, m.EmployerAccountId, user);
+
+                        return new VacancyRouteParameters(RouteNames.ShortDescription_Get, id);
+                    });
             }
 
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, 
@@ -91,18 +105,19 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 async v =>
                 {
                     await _client.UpdateVacancyAsync(vacancy, user);
-                    return v.Id;
+                    return Utility.GetRedirectRouteParametersForVacancy(vacancy, PreviewAnchors.TitleSection, RouteNames.Title_Post); 
                 }
             );
         }
 
         protected override EntityToViewModelPropertyMappings<Vacancy, TitleEditModel> DefineMappings()
         {
-            var mappings = new EntityToViewModelPropertyMappings<Vacancy, TitleEditModel>();
-
-            mappings.Add(e => e.Title, vm => vm.Title);
-            mappings.Add(e => e.NumberOfPositions, vm => vm.NumberOfPositions);
-
+            var mappings = new EntityToViewModelPropertyMappings<Vacancy, TitleEditModel>
+            {
+                {e => e.Title, vm => vm.Title},
+                {e => e.NumberOfPositions, vm => vm.NumberOfPositions}
+            };
+            
             return mappings;
         }
     }

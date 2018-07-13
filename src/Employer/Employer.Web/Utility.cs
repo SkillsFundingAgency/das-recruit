@@ -7,9 +7,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Exceptions;
+using Esfa.Recruit.Employer.Web.Orchestrators;
+using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Esfa.Recruit.Employer.Web
 {
@@ -52,7 +55,7 @@ namespace Esfa.Recruit.Employer.Web
         {
             var validRoutes = GetValidRoutesForVacancy(vacancy);
 
-            if (validRoutes == null || validRoutes.Contains(currentRouteName))
+            if (validRoutes.Contains(currentRouteName) || validRoutes.Last() == RouteNames.Vacancy_Preview_Get)
             {
                 return;
             }
@@ -87,12 +90,59 @@ namespace Esfa.Recruit.Employer.Web
             if (vacancy.Wage?.WageType == null)
                 return validRoutes;
             
-            return null;
+            validRoutes.AddRange(new []{RouteNames.SearchResultPreview_Post, RouteNames.SearchResultPreview_Get});
+            if (vacancy.HasCompletedPart1 == false)
+                return validRoutes;
+
+            validRoutes.Add(RouteNames.Vacancy_Preview_Get);
+            return validRoutes;
         }
 
-        public static bool VacancyHasCompletedPartOne(Vacancy vacancy)
+        public static string GetNextPart1WizardRoute(string currentRouteName)
         {
-            return GetValidRoutesForVacancy(vacancy) == null;
+            switch (currentRouteName)
+            {
+                case RouteNames.Title_Post:
+                    return RouteNames.ShortDescription_Get;
+                case RouteNames.ShortDescription_Post:
+                    return RouteNames.Employer_Get;
+                case RouteNames.Employer_Post:
+                    return RouteNames.Training_Get;
+                case RouteNames.Training_Post:
+                    return RouteNames.Wage_Get;
+                case RouteNames.Wage_Post:
+                    return RouteNames.SearchResultPreview_Get;
+                default:
+                    throw new NotImplementedException($"No next route configured for '{currentRouteName}'");
+            }
+        }
+
+        public static VacancyRouteParameters GetRedirectRouteParametersForVacancy(Vacancy vacancy, string vacancyPreviewFragment, string currentRouteName)
+        {
+            string routeName;
+            if (vacancy.HasCompletedPart1 == false)
+            {
+                //We are in wizard mode (Steps 1-6) so get the next step
+                routeName = GetNextPart1WizardRoute(currentRouteName);
+            }
+            else
+            {
+                //otherwise redirect to the last valid route
+                var validRoutes = GetValidRoutesForVacancy(vacancy);
+                routeName = validRoutes.Last();
+            }
+
+            var fragment = routeName == RouteNames.Vacancy_Preview_Get ? vacancyPreviewFragment : null;
+            return new VacancyRouteParameters(routeName, vacancy.Id, fragment);
+        }
+
+        public static VacancyRouteParameters GetCancelButtonRouteParametersForVacancy(Vacancy vacancy, string vacancyPreviewFragment)
+        {
+            var routeName = vacancy.HasCompletedPart1
+                ? RouteNames.Vacancy_Preview_Get
+                : RouteNames.Dashboard_Index_Get;
+
+            return new VacancyRouteParameters(routeName, vacancy.Id, routeName == RouteNames.Vacancy_Preview_Get ? vacancyPreviewFragment : null);
         }
 
         public static async Task<ApplicationReview> GetAuthorisedApplicationReviewAsync(IEmployerVacancyClient client, ApplicationReviewRouteModel rm)

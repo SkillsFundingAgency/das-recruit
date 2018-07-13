@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Exceptions;
 using Esfa.Recruit.Employer.Web.RouteModel;
@@ -11,9 +10,9 @@ using FluentAssertions;
 using Moq;
 using Xunit;
 
-namespace Esfa.Recruit.Employer.UnitTests.Employer.Web
+namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Utility
 {
-    public class UtilityTests
+    public class CheckRouteIsValidForVacancyTests
     {
         [Theory]
         [InlineData(RouteNames.Title_Get, false)]
@@ -24,7 +23,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web
             var vacancy = new Vacancy
             {
                 EmployerAccountId = "EMPLOYER ACCOUNT ID",
-                Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e")
+                Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
+                HasCompletedPart1 = false
             };
 
             CheckRouteIsValidForVacancyTest(vacancy, route, shouldRedirect, RouteNames.Title_Get);
@@ -42,7 +42,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web
             {
                 EmployerAccountId = "EMPLOYER ACCOUNT ID",
                 Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
-                Title = "has a value"
+                Title = "has a value",
+                HasCompletedPart1 = false
             };
 
             CheckRouteIsValidForVacancyTest(vacancy, route, shouldRedirect, RouteNames.ShortDescription_Get);
@@ -63,7 +64,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web
                 EmployerAccountId = "EMPLOYER ACCOUNT ID",
                 Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
                 Title = "has a value",
-                ShortDescription = "has a value"
+                ShortDescription = "has a value",
+                HasCompletedPart1 = false
             };
 
             CheckRouteIsValidForVacancyTest(vacancy, route, shouldRedirect, RouteNames.Employer_Get);
@@ -87,7 +89,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web
                 Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
                 Title = "has a value",
                 EmployerLocation = new Address { Postcode = "has a value" },
-                ShortDescription = "has a value"
+                ShortDescription = "has a value",
+                HasCompletedPart1 = false
             };
 
             CheckRouteIsValidForVacancyTest(vacancy, route, shouldRedirect, RouteNames.Training_Get);
@@ -114,10 +117,42 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web
                 Title = "has a value",
                 EmployerLocation = new Address { Postcode = "has a value" },
                 ShortDescription = "has a value",
-                ProgrammeId = "has a value"
+                ProgrammeId = "has a value",
+                HasCompletedPart1 = false
             };
 
             CheckRouteIsValidForVacancyTest(vacancy, route, shouldRedirect, RouteNames.Wage_Get);
+        }
+
+        [Theory]
+        [InlineData(RouteNames.Title_Get, false)]
+        [InlineData(RouteNames.Title_Post, false)]
+        [InlineData(RouteNames.ShortDescription_Get, false)]
+        [InlineData(RouteNames.ShortDescription_Post, false)]
+        [InlineData(RouteNames.Employer_Get, false)]
+        [InlineData(RouteNames.Employer_Post, false)]
+        [InlineData(RouteNames.Training_Get, false)]
+        [InlineData(RouteNames.Training_Post, false)]
+        [InlineData(RouteNames.Wage_Get, false)]
+        [InlineData(RouteNames.Wage_Post, false)]
+        [InlineData(RouteNames.SearchResultPreview_Get, false)]
+        [InlineData(RouteNames.SearchResultPreview_Post, false)]
+        [InlineData("any other route", true)]
+        public void CheckRouteIsValidForVacancy_ShouldRedirectToSearchPreview(string route, bool shouldRedirect)
+        {
+            var vacancy = new Vacancy
+            {
+                EmployerAccountId = "EMPLOYER ACCOUNT ID",
+                Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
+                Title = "has a value",
+                EmployerLocation = new Address { Postcode = "has a value" },
+                ShortDescription = "has a value",
+                ProgrammeId = "has a value",
+                Wage = new Wage { WageType = WageType.FixedWage },
+                HasCompletedPart1 = false
+            };
+
+            CheckRouteIsValidForVacancyTest(vacancy, route, shouldRedirect, RouteNames.SearchResultPreview_Get);
         }
 
         [Theory]
@@ -132,7 +167,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web
                 EmployerLocation = new Address { Postcode = "has a value" },
                 ShortDescription = "has a value",
                 ProgrammeId = "has a value",
-                Wage = new Wage { WageType = WageType.FixedWage}
+                Wage = new Wage { WageType = WageType.FixedWage},
+                HasCompletedPart1 = true
             };
 
             CheckRouteIsValidForVacancyTest(vacancy, route, shouldRedirect, null);
@@ -161,7 +197,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web
                 ApplicationReviewId = applicationReviewId
             };
 
-            Func<Task<ApplicationReview>> act = () => Utility.GetAuthorisedApplicationReviewAsync(client.Object, rm);
+            Func<Task<ApplicationReview>> act = () => Esfa.Recruit.Employer.Web.Utility.GetAuthorisedApplicationReviewAsync(client.Object, rm);
 
             if (shouldAllow)
             {
@@ -174,16 +210,16 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web
                 ex.Result.Message.Should().Be($"The employer account 'ANOTHER EMPLOYER ACCOUNT ID' cannot access employer account 'EMPLOYER ACCOUNT ID' application '{applicationReviewId}' for vacancy '1000000001'.");
             }
         }
-
+        
         private void CheckRouteIsValidForVacancyTest(Vacancy vacancy, string route, bool shouldRedirect, string expectedRedirectRoute)
         {
             if (!shouldRedirect)
             {
-                Utility.CheckRouteIsValidForVacancy(vacancy, route);
+                Esfa.Recruit.Employer.Web.Utility.CheckRouteIsValidForVacancy(vacancy, route);
                 return;
             }
             
-            var ex = Assert.Throws<InvalidRouteForVacancyException>(() => Utility.CheckRouteIsValidForVacancy(vacancy, route));
+            var ex = Assert.Throws<InvalidRouteForVacancyException>(() => Esfa.Recruit.Employer.Web.Utility.CheckRouteIsValidForVacancy(vacancy, route));
 
             ex.RouteNameToRedirectTo.Should().Be(expectedRedirectRoute);
             ex.RouteValues.EmployerAccountId.Should().Be(vacancy.EmployerAccountId);

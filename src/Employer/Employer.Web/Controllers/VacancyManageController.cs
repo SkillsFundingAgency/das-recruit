@@ -54,11 +54,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
         private IActionResult HandleRedirectOfDraftVacancy(Vacancy vacancy)
         {
-            if (Utility.VacancyHasCompletedPartOne(vacancy))
-            {
-                return RedirectToRoute(RouteNames.Vacancy_Preview_Get);
-            }
-
             var resumeRouteName = Utility.GetValidRoutesForVacancy(vacancy).Last();
 
             return RedirectToRoute(resumeRouteName);
