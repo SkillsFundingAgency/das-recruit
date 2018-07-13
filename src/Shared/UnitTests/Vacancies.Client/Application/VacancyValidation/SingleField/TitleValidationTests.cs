@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -12,8 +11,8 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         public static IEnumerable<object[]> ValidTitles =>
             new List<object[]>
             {
-                new object[] { new String('a', 100) },
-                new object[] { new String('a', 1) }
+                new object[] { $"apprentice {new string('a', 89)}" },
+                new object[] { "apprentice" }
             };
 
         [Theory]
@@ -50,12 +49,54 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Title);
         }
 
+        [Theory]
+        [InlineData("Apprentice mage")]
+        [InlineData("Apprenticeship in sorcery")]
+        [InlineData("Mage apprentice")]
+        [InlineData("Witchcraft apprenticeship")]
+        [InlineData("junior apprentice mage")]
+        [InlineData("junior apprenticeship in sorcery")]
+        public void NoErrorsWhenTitleContainsTheWordApprenticeOrApprenticeship(string testValue)
+        {
+            var vacancy = new Vacancy
+            {
+                Title = testValue
+            };
+
+            var result = Validator.Validate(vacancy, VacancyRuleSet.Title);
+
+            result.HasErrors.Should().BeFalse();
+        }
+
+        [Theory]
+        [InlineData("mage")]
+        [InlineData("Apprenticeshipin sorcery")]
+        [InlineData("Mage apprenticesip")]
+        [InlineData("Witchcraft aprentice")]
+        [InlineData("aprentice mage")]
+        [InlineData("junior apprenteeship in sorcery")]
+        public void TitleMustContainTheWordApprenticeOrApprenticeship(string testValue)
+        {
+            var vacancy = new Vacancy
+            {
+                Title = testValue
+            };
+
+            var result = Validator.Validate(vacancy, VacancyRuleSet.Title);
+
+            result.HasErrors.Should().BeTrue();
+            result.Errors.Should().HaveCount(1);
+            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.Title));
+            result.Errors[0].ErrorCode.Should().Be("200");
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Title);
+        }
+
         [Fact]
         public void TitleBeLongerThan100Characters()
         {
             var vacancy = new Vacancy 
             {
-                Title = new String('a', 110)
+                Title = $"apprentice {new string('a', 110)}"
             };
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.Title);
@@ -68,9 +109,9 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         }
 
         [Theory]
-        [InlineData("<")]
-        [InlineData(">")]
-        public void TitleMustContainVaildCharacters(string testValue)
+        [InlineData("apprentice<")]
+        [InlineData("apprentice>")]
+        public void TitleMustContainValidCharacters(string testValue)
         {
             var vacancy = new Vacancy 
             {
