@@ -61,7 +61,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
         [Theory]
         [InlineData(ApplicationReviewStatus.Successful, null)]
         [InlineData(ApplicationReviewStatus.Unsuccessful, "Some candidate feedback")]
-        public void ShouldVeValid(ApplicationReviewStatus status, string feedback)
+        public void ApplicationReviewShouldBeValid(ApplicationReviewStatus status, string feedback)
         {
             var m = new Recruit.Vacancies.Client.Domain.Entities.ApplicationReview
             {
