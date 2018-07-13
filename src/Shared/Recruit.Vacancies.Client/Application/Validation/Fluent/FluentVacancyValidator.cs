@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Services.MinimumWage;
@@ -88,6 +89,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         private void ValidateTitle()
         {
             RuleFor(x => x.Title)
+                .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty()
                     .WithMessage("Enter the title of the vacancy")
                     .WithErrorCode("1")
@@ -97,6 +99,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .ValidFreeTextCharacters()
                     .WithMessage("The title contains some invalid characters")
                     .WithErrorCode("3")
+                .Matches(ValidationConstants.ContainsApprenticeOrApprenticeshipRegex)
+                    .WithMessage("The title must contain the word 'apprentice' or 'apprenticeship'")
+                    .WithErrorCode("200")
                 .RunCondition(VacancyRuleSet.Title)
                 .WithRuleId(VacancyRuleSet.Title);
         }
