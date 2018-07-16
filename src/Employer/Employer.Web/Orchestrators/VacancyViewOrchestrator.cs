@@ -61,7 +61,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         /// </summary>
         /// <param name="vacancy"></param>
         /// <returns></returns>
-        public async Task<ManageVacancy> GetVacancyDisplayViewModelAsync(Vacancy vacancy)
+        public async Task<ViewVacancy> GetVacancyDisplayViewModelAsync(Vacancy vacancy)
         {
             switch (vacancy.Status)
             {
@@ -82,47 +82,47 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             }
         }
 
-        private async Task<ManageVacancy> GetDisplayViewModelForSubmittedVacancy(Vacancy vacancy)
+        private async Task<ViewVacancy> GetDisplayViewModelForSubmittedVacancy(Vacancy vacancy)
         {
             var submittedViewModel = new SubmittedVacancyViewModel();
             await _vacancyDisplayMapper.MapFromVacancyAsync(submittedViewModel, vacancy);
             submittedViewModel.SubmittedDate = vacancy.SubmittedDate.Value.AsDisplayDate();
-            return new ManageVacancy
+            return new ViewVacancy
             {
                 ViewModel = submittedViewModel,
                 ViewName = ViewNames.ManageSubmittedVacancyView
             };
         }
 
-        private async Task<ManageVacancy> GetDisplayViewModelForApprovedVacancy(Vacancy vacancy)
+        private async Task<ViewVacancy> GetDisplayViewModelForApprovedVacancy(Vacancy vacancy)
         {
             var approvedViewModel = new ApprovedVacancyViewModel();
             await _vacancyDisplayMapper.MapFromVacancyAsync(approvedViewModel, vacancy);
             approvedViewModel.ApprovedDate = vacancy.ApprovedDate.Value.AsDisplayDate();
-            return new ManageVacancy
+            return new ViewVacancy
             {
                 ViewModel = approvedViewModel,
                 ViewName = ViewNames.ManageApprovedVacancyView
             };
         }
 
-        private ManageVacancy GetDisplayViewModelForLiveVacancy(Vacancy vacancy)
+        private ViewVacancy GetDisplayViewModelForLiveVacancy(Vacancy vacancy)
         {
             var liveViewModel = new LiveVacancyViewModel();
             PopulateViewModelWithApplications(vacancy, liveViewModel);
-            return new ManageVacancy
+            return new ViewVacancy
             {
                 ViewModel = liveViewModel,
                 ViewName = liveViewModel.HasApplications ? ViewNames.ManageLiveVacancyWithApplicationsView : ViewNames.ManageLiveVacancyView
             };
         }
 
-        private ManageVacancy GetDisplayViewModelForClosedVacancy(Vacancy vacancy)
+        private ViewVacancy GetDisplayViewModelForClosedVacancy(Vacancy vacancy)
         {
             var closedViewModel = new ClosedVacancyViewModel();
             PopulateViewModelWithApplications(vacancy, closedViewModel);
             closedViewModel.ClosedDate = vacancy.ClosedDate.Value.AsDisplayDate();
-            return new ManageVacancy
+            return new ViewVacancy
             {
                 ViewModel = closedViewModel,
                 ViewName = closedViewModel.HasApplications ? ViewNames.ManageClosedVacancyWithApplicationsView : ViewNames.ManageClosedVacancyView
@@ -145,11 +145,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             };
         }
 
-        private async Task<ManageVacancy> GetDisplayViewModelForReferredVacancy(Vacancy vacancy)
+        private async Task<ViewVacancy> GetDisplayViewModelForReferredVacancy(Vacancy vacancy)
         {
             var referredViewModel = new ReferredVacancyViewModel();
             await _vacancyDisplayMapper.MapFromVacancyAsync(referredViewModel, vacancy);
-            return new ManageVacancy
+            return new ViewVacancy
             {
                 ViewModel = referredViewModel,
                 ViewName = ViewNames.ManageReferredVacancyView
