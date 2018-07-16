@@ -32,5 +32,11 @@
     <Content Update="nlog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Update="Views\VacancyManage\Live.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ViewModels\VacancyManage\" />
   </ItemGroup>
 </Project>
