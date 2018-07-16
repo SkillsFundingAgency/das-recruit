@@ -111,20 +111,12 @@
             timeout: 5000,
             success: function(data) {
                 if (data.Items.length) {
-                    $('#address-details').removeClass('disabled');
-                    $('#addressLoading').hide();
-                    $('#enterAddressManually').show();
-                    $('#addressManualWrapper').unbind('click');
-                    $searchField.val('');
 
                     populateAddress(data.Items[0]);
                 }
             },
             error: function() {
-                $('#postcodeServiceUnavailable').show();
-                $('#enterAddressManually').hide();
-                $('#addressLoading').hide();
-                $('#address-details').removeClass('disabled');
+
             }
         });
     }
