@@ -207,17 +207,24 @@
 
 <div class="grid-row">
     <div class="column-two-thirds">
+        <div class="@GetSectionClass(Model.EmployerDescriptionSectionState)">
+            <h3 class="heading-small">Description</h3>
+            <span esfa-validation-message-for="EmployerDescription" class="error-message"></span>
+            <p asp-condition="@Model.HasEmployerDescription">@Model.EmployerDescription</p>
+            @EditLink(RouteNames.AboutEmployer_Get, Model.EmployerDescriptionSectionState, "link-description")
+        </div>
         <div class="@GetSectionClass(Model.EmployerNameSectionState)">
             <h3 class="heading-small">Employer</h3>
             <span esfa-validation-message-for="EmployerName" class="error-message"></span>
             <p asp-condition="@Model.HasEmployerName">@Model.EmployerName</p>
             @EditLink(RouteNames.Employer_Get, Model.EmployerNameSectionState, "link-employer")
         </div>
-        <div class="@GetSectionClass(Model.EmployerDescriptionSectionState)">
-            <h3 class="heading-small">Description</h3>
-            <span esfa-validation-message-for="EmployerDescription" class="error-message"></span>
-            <p asp-condition="@Model.HasEmployerDescription">@Model.EmployerDescription</p>
-            @EditLink(RouteNames.AboutEmployer_Get, Model.EmployerDescriptionSectionState, "link-description")
+        <div>
+            <h3 class="heading-small">Disability Confident (optional)</h3>
+            <img asp-condition="@Model.IsDisabilityConfident" src="~/img/disability-confident_545x172.png" class="disability-confident-logo" alt="A logo confirming that the employer is registered as disability confident" />
+            @Html.Partial(PartialNames.DisabilityConfident, Model.IsDisabilityConfident)
+            <p asp-condition="@Model.IsNotDisabilityConfident" class="form-hint">This vacancy is not Disability Confident<br />This will not appear on the vacancy when it goes live</p>
+            @EditLink(RouteNames.Training_Get, Model.TrainingSectionState, "link-standard")
         </div>
         <div class="@GetSectionClass(Model.EmployerWebsiteUrlSectionState)">
             <h3 class="heading-small">Website (optional)</h3>

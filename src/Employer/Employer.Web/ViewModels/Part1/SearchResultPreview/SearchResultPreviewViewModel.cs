@@ -28,6 +28,8 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.SearchResultPreview
         public string MapUrl { get; set; }
 
         public string Title { get; internal set; }
+        
+        public bool IsDisabilityConfident { get; set; }
 
         public IList<string> OrderedFieldNames => new List<string>
         {

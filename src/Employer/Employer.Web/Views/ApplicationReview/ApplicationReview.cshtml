@@ -2,6 +2,15 @@
 @using Esfa.Recruit.Vacancies.Client.Domain.Entities
 @model Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview.ApplicationReviewViewModel
 
+<div asp-condition="@Model.ShowDisabilityStatusAlert" class="grid-row">
+    <div class="column-full">
+        <div class="info-summary small-top-margin" role="alert" aria-labelledby="error-summary-heading-example-2" tabindex="-1">
+            <h3 class="heading-medium no-top-margin">Disability Confident - Alert</h3>
+            <p>This applicant has stated that they have either a learning difficulty, disability or medical condition.</p>
+        </div>
+    </div>
+</div>
+
 <div class="grid-row">
     <div class="column-two-thirds">
         <section>
@@ -240,7 +249,7 @@
 
         <section>
             <h3 class="heading-small">Do you have a learning difficulty, disability or health problem?</h3>
-            <p>@Model.DisabilityStatus</p>
+            <p>@Model.DisabilityStatus.GetDisplayName()</p>
 
             <h3 class="heading-small">Is there anything we can do to support your interview?</h3>
             <p>

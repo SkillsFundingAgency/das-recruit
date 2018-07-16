@@ -43,7 +43,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 return HandleRedirectOfDraftVacancy(vacancy);
             }
 
-            if (!string.IsNullOrEmpty(vacancy.ApplicationUrl) || (vacancy.Status != VacancyStatus.Live && vacancy.Status != VacancyStatus.Closed))
+            if (vacancy.ApplicationMethod == ApplicationMethod.ThroughExternalApplicationSite || (vacancy.Status != VacancyStatus.Live && vacancy.Status != VacancyStatus.Closed))
             {
                 return RedirectToRoute(RouteNames.DisplayVacancy_Get);
             }

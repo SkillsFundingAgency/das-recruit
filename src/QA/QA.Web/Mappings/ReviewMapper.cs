@@ -58,6 +58,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 vm.EmployerName = vacancy.EmployerName;
                 vm.EmployerWebsiteUrl = vacancy.EmployerWebsiteUrl;
                 SetEmployerAddressElements(vm, vacancy);
+                vm.IsDisabilityConfident = vacancy.IsDisabilityConfident;
                 vm.NumberOfPositionsCaption =  $"{"position".ToQuantity(vacancy.NumberOfPositions.Value)} available";
                 vm.OutcomeDescription = vacancy.OutcomeDescription;
                 vm.PossibleStartDate = vacancy.StartDate?.AsDisplayDate();

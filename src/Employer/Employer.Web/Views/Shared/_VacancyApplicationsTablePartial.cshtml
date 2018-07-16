@@ -1,5 +1,5 @@
-﻿@using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications
-@model IEnumerable<VacancyApplication>
+﻿@using Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
+@model VacancyApplicationsViewModel
 <div class="grid-row">
     <div class="column-full">
         <h2 class="heading-large">Applications</h2>
@@ -9,17 +9,22 @@
                     <th class="bold">Name</th>
                     <th class="bold">Status</th>
                     <th class="bold">Date applied</th>
+                    <th asp-condition="@Model.ShowDisability" class="bold">Disability</th>
                 </tr>
             </thead>
             <tbody>
-@foreach (var application in Model)
-{
-                <tr>
-                    <td><a asp-route="@RouteNames.ApplicationReview_Get" asp-route-applicationReviewId="@application.ApplicationReviewId">@application.CandidateName</a></td>
-                    <td>@application.Status.GetDisplayName()</td>
-                    <td>@application.SubmittedDate.AsDisplayDate()</td>
-                </tr>
-}
+                @foreach (var applicationStatusGroup in Model.OrderedApplications)
+                {
+                    foreach (var application in applicationStatusGroup)
+                    {
+                        <tr>
+                            <td><a asp-route="@RouteNames.ApplicationReview_Get" asp-route-applicationReviewId="@application.ApplicationReviewId">@application.CandidateName</a></td>
+                            <td>@application.Status.GetDisplayName()</td>
+                            <td>@application.SubmittedDate.AsDisplayDate()</td>
+                            <td asp-condition="@Model.ShowDisability">@application.DisabilityStatus.GetDisplayName()</td>
+                        </tr>
+                    }
+                }
             </tbody>
         </table>
     </div>

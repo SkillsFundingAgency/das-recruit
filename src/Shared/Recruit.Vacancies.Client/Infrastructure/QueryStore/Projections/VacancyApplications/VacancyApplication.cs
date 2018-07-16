@@ -9,5 +9,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
         public ApplicationReviewStatus Status { get; set; }
         public string CandidateName { get; set; }
         public Guid ApplicationReviewId { get; set; }
+        public ApplicationReviewDisabilityStatus DisabilityStatus { get; set; }
     }
 }
