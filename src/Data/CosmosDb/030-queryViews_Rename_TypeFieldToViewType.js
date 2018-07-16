@@ -1,5 +1,5 @@
 {
-    print("Start rename of document field named 'type' to 'viewType' in queryViews collection documents.");
+    print("Start copy of document field named 'type' to a new field 'viewType' in queryViews collection documents.");
 
     const query = {
             "viewType": { $exists: false }
@@ -33,7 +33,7 @@
             let writeResult = db.queryViews.update({
                 "_id": doc._id
             }, {
-                $rename: { "type": "viewType" }
+                $set: { "viewType": doc.type }
             });
 
             if (writeResult.hasWriteConcernError()) {
@@ -41,12 +41,12 @@
                 quit(14);
             }
 
-            print(`Updated document '${doc._id}', renamed field 'type' to 'viewType'.`);
+            print(`Updated document '${doc._id}', copied field 'type' to a new field 'viewType'.`);
         }
 
         passThrough++;
     }
     while (passThrough <= maxLoops && db.queryViews.find().count(query) > 0);
 
-    print("Finished rename of document field named 'type' to 'viewType' in queryViews collection documents.");
+    print("Finished copy of document field named 'type' to a new field 'viewType' in queryViews collection documents.");
 }
