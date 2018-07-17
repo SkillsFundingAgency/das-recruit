@@ -30,7 +30,7 @@ namespace Esfa.Recruit.Employer.Web.Extensions
                 AddressLine3 = r.Application.AddressLine3,
                 AddressLine4 = r.Application.AddressLine4,
                 CandidateFeedback = r.CandidateFeedback,
-                DisabilityStatus = r.Application.DisabilityStatus,
+                DisabilityStatus = r.Application.DisabilityStatus ?? ApplicationReviewDisabilityStatus.Unknown,
                 EducationFromYear = r.Application.EducationFromYear,
                 EducationInstitution = r.Application.EducationInstitution,
                 EducationToYear = r.Application.EducationToYear,

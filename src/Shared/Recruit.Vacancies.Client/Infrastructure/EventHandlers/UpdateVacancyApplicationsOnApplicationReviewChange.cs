@@ -55,7 +55,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
                     SubmittedDate = r.SubmittedDate,
                     ApplicationReviewId = r.Id,
                     CandidateName = r.Application.FullName,
-                    DisabilityStatus = r.Application.DisabilityStatus
+                    DisabilityStatus = r.Application.DisabilityStatus ?? ApplicationReviewDisabilityStatus.Unknown
                 }).ToList()
             };
 
