@@ -1,11 +1,10 @@
 // provides the matching addresses from postcode
 (function($) {
     var searchContext = '',
-        findAddressVal = $('#AddressLine1').val(),
-        key = 'JY37-NM56-JA37-WT99',
-        $searchField = $('#AddressLine1')
+        $searchField = $('#AddressLine1'),
+        findAddressVal = $searchField.val(),
+        key = ''
         
-
     $searchField.keyup(function() {
         findAddressVal = $(this).val();
     });
