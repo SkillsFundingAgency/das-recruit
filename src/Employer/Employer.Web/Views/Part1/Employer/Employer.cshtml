@@ -73,25 +73,30 @@
 
 @section FooterJS
 {
+    <script>
 
-<script>
+        var addresses = @Json.Serialize(Model.Organisations);
 
-    var addresses = @Json.Serialize(Model.Organisations);
+        var setAddressById = function(id){
+            for (var i in addresses){
+                if (addresses[i].id === id){
+                    $("#AddressLine1").val(addresses[i].address.addressLine1);
+                    $("#AddressLine2").val(addresses[i].address.addressLine2);
+                    $("#AddressLine3").val(addresses[i].address.addressLine3);
+                    $("#AddressLine4").val(addresses[i].address.addressLine4);
+                    $("#Postcode").val(addresses[i].address.postcode);
+                }
+            }  
+        }
 
-    function setAddressById(id){
-        console.log(id);
-        $("#AddressLine1").val(addresses[0].address.addressLine1);
-    }
+        $(document).ready(function () {
+            $("input[name='SelectedOrganisationName']").click(function () {
+                var inputId = $("input[name='SelectedOrganisationName']:checked").attr('id').slice(4);
+                setAddressById(inputId);
+            });
+        });
 
-    $(document).ready(function () {
-		$("input[name='SelectedOrganisationName']").click(function () {
-            var inputId = $("input[name='SelectedOrganisationName']:checked").attr('id').slice(4);
-            setAddressById(inputId);
-		});
-	});
-
-</script>
-
+    </script>
 
     <script src="/lib/jquery-ui/dist/jquery-ui.min.js"></script>
     <script src="/lib/esfa-postcode/lookupservice.js"></script>
