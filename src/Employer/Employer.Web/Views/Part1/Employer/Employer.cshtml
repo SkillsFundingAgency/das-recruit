@@ -78,6 +78,18 @@
 
     var addresses = @Json.Serialize(Model.Organisations);
 
+    function setAddressById(id){
+        console.log(id);
+        $("#AddressLine1").val(addresses[0].address.addressLine1);
+    }
+
+    $(document).ready(function () {
+		$("input[name='SelectedOrganisationName']").click(function () {
+            var inputId = $("input[name='SelectedOrganisationName']:checked").attr('id').slice(4);
+            setAddressById(inputId);
+		});
+	});
+
 </script>
 
 
