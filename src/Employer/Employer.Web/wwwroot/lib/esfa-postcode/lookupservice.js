@@ -1,7 +1,7 @@
 // provides the matching addresses from postcode
 (function($) {
     var searchContext = '',
-        $searchField = $('#AddressLine1'),
+        $searchField = $('.postcode-lookup'),
         findAddressVal = $searchField.val(),
         key = ''
         
