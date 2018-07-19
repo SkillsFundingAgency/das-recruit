@@ -348,7 +348,7 @@
                 <form asp-condition="@Model.CanSubmit" asp-route="@RouteNames.Preview_Submit_Post" class="form-inline">
                     <input type="submit" value="Submit vacancy" class="button" />
                 </form>
-                <a asp-route="@RouteNames.Dashboard_Index_Get" asp-route-statusFilter="@Context.Request.Cookies[CookieNames.VacancyStatusFilter]" class="button-link">Return to dashboard</a>
+                <a asp-route="@RouteNames.Dashboard_Index_Get" class="button-link">Return to dashboard</a>
                 <a asp-condition="@Model.CanDelete" asp-route="@RouteNames.DeleteVacancy_Delete_Get" class="button delete-button">Delete</a>
             </div>
         </div>

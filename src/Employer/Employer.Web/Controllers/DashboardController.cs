@@ -33,6 +33,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 vm.WarningMessage = TempData[TempDataKeys.DashboardErrorMessage].ToString();
             }
 
+            if (string.IsNullOrEmpty(statusFilter))
+                statusFilter = Request.Cookies[CookieNames.VacancyStatusFilter];
+
             ManageDashboardFilter(statusFilter, vm);
 
             return View(vm);

@@ -26,7 +26,7 @@ namespace Esfa.Recruit.Employer.Web.TagHelpers
 
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
-            if (For.Model == null && string.IsNullOrEmpty(TagStatusFilter)) // All (empty statusFilter)
+            if (For.Model == null && TagStatusFilter == "all") // All (empty statusFilter)
             {
                 output.TagName = DefaultNonAnchorTagName;
             }
