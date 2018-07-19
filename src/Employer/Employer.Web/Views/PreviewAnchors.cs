@@ -7,5 +7,7 @@
         public const string AboutEmployerSection = "aboutEmployer";
         public const string ApplicationProcessSection = "applicationProcess";
         public const string TrainingProviderSection = "trainingProvider";
+        public const string TitleSection = "title";
+        public const string ShortDescriptionSection = "shortDescription";
     }
 }

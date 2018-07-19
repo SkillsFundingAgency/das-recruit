@@ -20,13 +20,13 @@
         }
     }
 
-    public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state, string id)
+    public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state, string id, object routeValues = null)
     {
         if(state == VacancyPreviewSectionState.Incomplete)
         {
-            return Html.RouteLink("Add", routeName, null, new { @class = "button-secondary", data_automation=id });
+            return Html.RouteLink("Add", routeName, routeValues, new { @class = "button-secondary", data_automation=id });
         }
-        return Html.RouteLink("Edit", routeName, null, new { data_automation=id });
+        return Html.RouteLink("Edit", routeName, routeValues, new { data_automation=id });
     }
 }
 
@@ -40,23 +40,23 @@
     </div>
 </div>
 
-<div class="grid-row">
+<div class="grid-row" id="@PreviewAnchors.TitleSection">
     <div class="column-two-thirds">
         <h2 class="heading-xlarge small-bottom-margin">
             @Model.Title
             <span class="heading-secondary">@Model.EmployerName</span>
         </h2>
-        <a esfa-automation="link-employer-name" asp-route="@RouteNames.Title_Get">Edit</a>
+        <a esfa-automation="link-employer-name" asp-route="@RouteNames.Title_Get" asp-route-wizard="false">Edit</a>
     </div>
 </div>
 
-<div class="grid-row">
+<div class="grid-row" id="@PreviewAnchors.ShortDescriptionSection">
     <div class="column-two-thirds">
         <div class="@GetSectionClass(Model.ShortDescriptionSectionState)">
             <h3 class="heading-small no-top-margin">Brief overview of the role</h3>
             <span esfa-validation-message-for="ShortDescription" class="error-message"></span>
             <p asp-condition="@Model.HasShortDescription">@Model.ShortDescription</p>
-            @EditLink(RouteNames.ShortDescription_Get, Model.ShortDescriptionSectionState, "link-overview")
+            @EditLink(RouteNames.ShortDescription_Get, Model.ShortDescriptionSectionState, "link-overview", new{wizard = false})
         </div>
     </div>
     <div class="column-one-third">
@@ -64,7 +64,7 @@
             <h3 class="heading-small no-top-margin">Closing Date</h3>
             <span esfa-validation-message-for="ClosingDate" class="error-message"></span>
             <p asp-condition="@Model.HasClosingDate">@Model.ClosingDate</p>
-            @EditLink(RouteNames.Training_Get, Model.ClosingDateSectionState, "link-closing-date")
+            @EditLink(RouteNames.Training_Get, Model.ClosingDateSectionState, "link-closing-date", new { wizard = false })
         </div>
     </div>
 </div>
@@ -91,7 +91,7 @@
                         Total hours per week: @Model.HoursPerWeek
                     </div>
                 </div>
-                @EditLink(RouteNames.Wage_Get, Model.WorkingWeekSectionState, "link-working-week")
+                @EditLink(RouteNames.Wage_Get, Model.WorkingWeekSectionState, "link-working-week", new { wizard = false })
             </li>
             <li class="@GetSectionClass(Model.WageTextSectionState)">
                 <h3 class="heading-small">Yearly wage</h3>
@@ -99,27 +99,27 @@
                 <p asp-condition="@Model.HasWageText">@Model.WageText</p>
                 <span esfa-validation-message-for="WageInfo" class="error-message"></span>
                 <p asp-condition="@Model.HasWageInfo">@Model.WageInfo</p>
-                @EditLink(RouteNames.Wage_Get, Model.WageTextSectionState, "link-salary")
+                @EditLink(RouteNames.Wage_Get, Model.WageTextSectionState, "link-salary", new { wizard = false })
             </li>
             <li class="@GetSectionClass(Model.ExpectedDurationSectionState)">
                 <h3 class="heading-small">Expected apprenticeship duration</h3>
                 <span esfa-validation-message-for="ExpectedDuration" class="error-message"></span>
                 <p asp-condition="@Model.HasExpectedDuration">@Model.ExpectedDuration</p>
-                @EditLink(RouteNames.Wage_Get, Model.ExpectedDurationSectionState, "link-duration")
+                @EditLink(RouteNames.Wage_Get, Model.ExpectedDurationSectionState, "link-duration", new { wizard = false })
                 
             </li>
             <li class="@GetSectionClass(Model.PossibleStartDateSectionState)">
                 <h3 class="heading-small">Possible start date</h3>
                 <span esfa-validation-message-for="PossibleStartDate" class="error-message"></span>
                 <p asp-condition="@Model.HasPossibleStartDate">@Model.PossibleStartDate</p>
-                @EditLink(RouteNames.Training_Get, Model.PossibleStartDateSectionState, "link-start-date")
+                @EditLink(RouteNames.Training_Get, Model.PossibleStartDateSectionState, "link-start-date", new { wizard = false })
             </li>
             <li class="@GetSectionClass(Model.TrainingLevelSectionState)">
                 <h3 class="heading-small">Apprenticeship level</h3>
                 <span esfa-validation-message-for="Programme" class="error-message"></span>
                 <span esfa-validation-message-for="TrainingLevel" class="error-message"></span>
                 <p asp-condition="@Model.HasTrainingLevel">@Model.TrainingLevel Level Apprenticeship</p>
-                @EditLink(RouteNames.Training_Get, Model.TrainingLevelSectionState, "link-apprenticeship-level")
+                @EditLink(RouteNames.Training_Get, Model.TrainingLevelSectionState, "link-apprenticeship-level", new { wizard = false })
             </li>
             <li asp-condition="@Model.CanShowReference">
                 <h3 class="heading-small">Reference number</h3>
@@ -129,7 +129,7 @@
                 <h3 class="heading-small">Positions</h3>
                 <span esfa-validation-message-for="NumberOfPositions" class="error-message"></span>
                 <p asp-condition="@Model.HasNumberOfPositionsCaption">@Model.NumberOfPositionsCaption</p>
-                @EditLink(RouteNames.Title_Get, Model.NumberOfPositionsSectionState, "link-positions")
+                @EditLink(RouteNames.Title_Get, Model.NumberOfPositionsSectionState, "link-positions", new { wizard = false })
             </li>
         </ul>
     </div>
@@ -217,14 +217,14 @@
             <h3 class="heading-small">Employer</h3>
             <span esfa-validation-message-for="EmployerName" class="error-message"></span>
             <p asp-condition="@Model.HasEmployerName">@Model.EmployerName</p>
-            @EditLink(RouteNames.Employer_Get, Model.EmployerNameSectionState, "link-employer")
+            @EditLink(RouteNames.Employer_Get, Model.EmployerNameSectionState, "link-employer", new{ wizard = false})
         </div>
         <div>
             <h3 class="heading-small">Disability Confident (optional)</h3>
             <img asp-condition="@Model.IsDisabilityConfident" src="~/img/disability-confident_545x172.png" class="disability-confident-logo" alt="A logo confirming that the employer is registered as disability confident" />
             @Html.Partial(PartialNames.DisabilityConfident, Model.IsDisabilityConfident)
             <p asp-condition="@Model.IsNotDisabilityConfident" class="form-hint">This vacancy is not Disability Confident<br />This will not appear on the vacancy when it goes live</p>
-            @EditLink(RouteNames.Training_Get, Model.TrainingSectionState, "link-standard")
+            @EditLink(RouteNames.Training_Get, Model.TrainingSectionState, "link-standard", new {wizard = false})
         </div>
         <div class="@GetSectionClass(Model.EmployerWebsiteUrlSectionState)">
             <h3 class="heading-small">Website (optional)</h3>
@@ -260,7 +260,7 @@
                     <li>@addrLine</li>
                 }
             </ul>
-            @EditLink(RouteNames.Employer_Get, Model.EmployerAddressSectionState, "link-location")
+            @EditLink(RouteNames.Employer_Get, Model.EmployerAddressSectionState, "link-location", new { wizard = false })
         </div>
     </div>
     <div class="column-half">
@@ -291,7 +291,7 @@
         <div class="@GetSectionClass(Model.TrainingSectionState)">
             <h3 class="heading-small">Apprenticeship @Model.TrainingType</h3>
             <p asp-condition="@Model.HasTrainingTitle">@Model.TrainingTitle</p>
-            @EditLink(RouteNames.Title_Get, Model.TrainingSectionState, "link-standard")
+            @EditLink(RouteNames.Training_Get, Model.TrainingSectionState, "link-standard", new {wizard = false})
         </div>
     </div>
 </div>

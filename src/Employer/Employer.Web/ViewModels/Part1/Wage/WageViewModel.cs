@@ -13,5 +13,9 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Wage
             nameof(WageEditModel.FixedWageYearlyAmount),
             nameof(WageEditModel.WageAdditionalInformation)
         };
+
+        public bool IsWizard { get; set; }
+        public bool IsNotWizard => !IsWizard;
+        public string SubmitButtonText => IsWizard ? "Save and Continue" : "Save and Preview";
     }
 }

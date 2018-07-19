@@ -12,6 +12,10 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Training
             nameof(TrainingEditModel.StartDate),
             nameof(TrainingEditModel.SelectedProgrammeId)
         };
+
+        public bool IsWizard { get; set; }
+        public bool IsNotWizard => !IsWizard;
+        public string SubmitButtonText => IsWizard ? "Save and Continue" : "Save and Preview";
     }
 
     public class ApprenticeshipProgrammeViewModel
