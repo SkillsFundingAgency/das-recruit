@@ -86,13 +86,27 @@ namespace Esfa.Recruit.Employer.Web
             validRoutes.AddRange(new[] { RouteNames.Wage_Post, RouteNames.Wage_Get});
             if (vacancy.Wage?.WageType == null)
                 return validRoutes;
-            
+
             return null;
         }
 
         public static bool VacancyHasCompletedPartOne(Vacancy vacancy)
         {
             return GetValidRoutesForVacancy(vacancy) == null;
+        }
+
+        public static bool VacancyHasStartedPartTwo(Vacancy vacancy)
+        {
+            return !string.IsNullOrWhiteSpace(vacancy.EmployerDescription) ||
+                   vacancy.ApplicationMethod != null ||
+                   !string.IsNullOrWhiteSpace(vacancy.ThingsToConsider) ||
+                   !string.IsNullOrWhiteSpace(vacancy.EmployerContactName) ||
+                   !string.IsNullOrWhiteSpace(vacancy.EmployerContactEmail) ||
+                   !string.IsNullOrWhiteSpace(vacancy.EmployerContactPhone) ||
+                   vacancy.Qualifications != null ||
+                   vacancy.Skills != null ||
+                   vacancy.TrainingProvider != null ||
+                   !string.IsNullOrWhiteSpace(vacancy.Description);
         }
 
         public static async Task<ApplicationReview> GetAuthorisedApplicationReviewAsync(IEmployerVacancyClient client, ApplicationReviewRouteModel rm)
