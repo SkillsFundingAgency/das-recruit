@@ -26,7 +26,7 @@
         <div class="grid-row">
             <div class="column-one-quarter">
                 <div class="data lottery-ticket">
-                    <esfa-dashboard-badge asp-route="@RouteNames.Dashboard_Index_Get" asp-for="Filter" class="prototype-link">
+                    <esfa-dashboard-badge asp-route="@RouteNames.Dashboard_Index_Get" asp-route-statusFilter="all" asp-for="Filter" class="prototype-link">
                         <h2 class="bold-xlarge">@Model.NoOfVacancies</h2>
                         <p class="bold-xsmall">All</p>
                     </esfa-dashboard-badge>

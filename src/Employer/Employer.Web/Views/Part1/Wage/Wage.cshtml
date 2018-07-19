@@ -86,7 +86,7 @@
 
                 <button type="submit" class="button save-button">@Model.SubmitButtonText</button>
 
-                <a asp-condition="@Model.IsWizard" asp-route="@RouteNames.Dashboard_Index_Get" asp-route-statusFilter="@Context.Request.Cookies[CookieNames.VacancyStatusFilter]" class="button-link">Cancel</a>
+                <a asp-condition="@Model.IsWizard" asp-route="@RouteNames.Dashboard_Index_Get" class="button-link">Cancel</a>
                 <a asp-condition="@Model.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@PreviewAnchors.ApprenticeshipSummarySection" class="button-link">Cancel</a>
             </form>
         </div>
