@@ -5,6 +5,7 @@ using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.ShortDescription;
+using Esfa.Recruit.Employer.Web.Views;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part1
@@ -20,14 +21,15 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         }
         
         [HttpGet("description", Name = RouteNames.ShortDescription_Get)]
-        public async Task<IActionResult> ShortDescription(VacancyRouteModel vrm)
+        public async Task<IActionResult> ShortDescription(VacancyRouteModel vrm, bool wizard = true)
         {
             var vm = await _orchestrator.GetShortDescriptionViewModelAsync(vrm);
+            vm.IsWizard = wizard;
             return View(vm);
         }
 
         [HttpPost("description", Name = RouteNames.ShortDescription_Post)]
-        public async Task<IActionResult> ShortDescription(ShortDescriptionEditModel m)
+        public async Task<IActionResult> ShortDescription(ShortDescriptionEditModel m, bool wizard = true)
         {
             var response = await _orchestrator.PostShortDescriptionEditModelAsync(m, User.ToVacancyUser());
 
@@ -39,11 +41,13 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             if (!ModelState.IsValid)
             {
                 var vm = await _orchestrator.GetShortDescriptionViewModelAsync(m);
-
+                vm.IsWizard = wizard;
                 return View(vm);
             }
 
-            return RedirectToRoute(RouteNames.Employer_Get);
+            return wizard 
+                ? RedirectToRoute(RouteNames.Employer_Get)
+                : RedirectToRoute(RouteNames.Vacancy_Preview_Get, null, PreviewAnchors.ShortDescriptionSection);
         }
     }
 }

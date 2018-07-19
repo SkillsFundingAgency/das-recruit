@@ -5,6 +5,7 @@ using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Wage;
+using Esfa.Recruit.Employer.Web.Views;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part1
@@ -20,14 +21,15 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         }
         
         [HttpGet("wage", Name = RouteNames.Wage_Get)]
-        public async Task<IActionResult> Wage(VacancyRouteModel vrm)
+        public async Task<IActionResult> Wage(VacancyRouteModel vrm, bool wizard = true)
         {
             var vm = await _orchestrator.GetWageViewModelAsync(vrm);
+            vm.IsWizard = wizard;
             return View(vm);
         }
 
         [HttpPost("wage", Name = RouteNames.Wage_Get)]
-        public async Task<IActionResult> Wage(WageEditModel m)
+        public async Task<IActionResult> Wage(WageEditModel m, bool wizard = true)
         {
             var response = await _orchestrator.PostWageEditModelAsync(m, User.ToVacancyUser());
             
@@ -39,11 +41,13 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             if (!ModelState.IsValid)
             {
                 var vm = await _orchestrator.GetWageViewModelAsync(m);
-
+                vm.IsWizard = wizard;
                 return View(vm);
             }
 
-            return RedirectToRoute(RouteNames.SearchResultPreview_Get);
+            return wizard
+                ? RedirectToRoute(RouteNames.SearchResultPreview_Get)
+                : RedirectToRoute(RouteNames.Vacancy_Preview_Get, null, PreviewAnchors.ApprenticeshipSummarySection);
         }
     }
 }

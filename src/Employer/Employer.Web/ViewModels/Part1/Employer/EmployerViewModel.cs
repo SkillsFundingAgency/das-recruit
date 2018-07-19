@@ -17,6 +17,10 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer
             nameof(EmployerEditModel.AddressLine4),
             nameof(EmployerEditModel.Postcode)
         };
+
+        public bool IsWizard { get; set; }
+        public bool IsNotWizard => !IsWizard;
+        public string SubmitButtonText => IsWizard ? "Save and Continue" : "Save and Preview";
     }
 
     public class LocationOrganisationViewModel

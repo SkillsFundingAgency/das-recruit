@@ -10,8 +10,8 @@
 
         @Html.Partial("_ValidationSummary", new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames })
         <div class="todo">
-            <h3 class="heading-medium no-top-margin">Step 5 of 6</h3>
-            <form asp-route="@RouteNames.Wage_Post" novalidate>
+            <h3 asp-condition="@Model.IsWizard" class="heading-medium no-top-margin">Step 5 of 6</h3>
+            <form asp-route="@RouteNames.Wage_Post" asp-route-wizard="@Model.IsWizard" novalidate>
                 <div esfa-validation-marker-for="Duration" class="form-group">
                     <fieldset>
                         <label asp-for="Duration" class="form-label-bold">How long is the apprenticeship expected to last?</label>
@@ -84,8 +84,10 @@
                     <span class="maxchar-text"> characters remaining</span>
                 </div>
 
-                <button type="submit" class="button save-button">Save and Continue</button>
-                <a asp-route="@RouteNames.Dashboard_Index_Get" asp-route-statusFilter="@Context.Request.Cookies[CookieNames.VacancyStatusFilter]" class="button-link">Cancel</a>
+                <button type="submit" class="button save-button">@Model.SubmitButtonText</button>
+
+                <a asp-condition="@Model.IsWizard" asp-route="@RouteNames.Dashboard_Index_Get" asp-route-statusFilter="@Context.Request.Cookies[CookieNames.VacancyStatusFilter]" class="button-link">Cancel</a>
+                <a asp-condition="@Model.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@PreviewAnchors.ApprenticeshipSummarySection" class="button-link">Cancel</a>
             </form>
         </div>
     </div>
