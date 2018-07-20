@@ -35,7 +35,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 VacancyId = vacancy.Id,
                 SelectedProgrammeId = vacancy.ProgrammeId,
                 Programmes = programmes.ToViewModel(),
-                IsDisabilityConfident = vacancy.IsDisabilityConfident
+                IsDisabilityConfident = vacancy.IsDisabilityConfident,
+                PageInfo = Utility.GetPartOnePageInfo(vacancy)
             };
 
             if (vacancy.ClosingDate.HasValue)

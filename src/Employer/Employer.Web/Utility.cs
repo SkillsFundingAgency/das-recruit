@@ -9,6 +9,7 @@ using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Exceptions;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels;
+using Esfa.Recruit.Employer.Web.ViewModels.Part1;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 
 namespace Esfa.Recruit.Employer.Web
@@ -107,6 +108,15 @@ namespace Esfa.Recruit.Employer.Web
                    vacancy.Skills != null ||
                    vacancy.TrainingProvider != null ||
                    !string.IsNullOrWhiteSpace(vacancy.Description);
+        }
+
+        public static PartOnePageInfoViewModel GetPartOnePageInfo(Vacancy vacancy)
+        {
+            return new PartOnePageInfoViewModel
+            {
+                HasCompletedPartOne = VacancyHasCompletedPartOne(vacancy),
+                HasStartedPartTwo = VacancyHasStartedPartTwo(vacancy)
+            };
         }
 
         public static async Task<ApplicationReview> GetAuthorisedApplicationReviewAsync(IEmployerVacancyClient client, ApplicationReviewRouteModel rm)

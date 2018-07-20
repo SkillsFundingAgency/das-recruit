@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.RouteModel;
+using Esfa.Recruit.Employer.Web.ViewModels.Part1;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -36,7 +37,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var vm = new EmployerViewModel
             {
                 Organisations = BuildLegalEntityViewModels(employerData, vrm.EmployerAccountId),
-                SelectedOrganisationName = vacancy.EmployerName
+                SelectedOrganisationName = vacancy.EmployerName,
+                PageInfo = Utility.GetPartOnePageInfo(vacancy)
             };
 
             if (vacancy.EmployerLocation != null)

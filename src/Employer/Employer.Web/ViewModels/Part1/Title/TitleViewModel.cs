@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics.SymbolStore;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Title
@@ -12,10 +11,8 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Title
             nameof(TitleEditModel.Title)
         };
 
-        public bool IsWizard { get; set; }
-        public bool IsNotWizard => !IsWizard;
-        public string SubmitButtonText => IsWizard ? "Save and Continue" : "Save and Preview";
         public string FormPostRouteName => VacancyId.HasValue ? RouteNames.Title_Post : RouteNames.CreateVacancy_Post;
 
+        public PartOnePageInfoViewModel PageInfo { get; set; }
     }
 }
