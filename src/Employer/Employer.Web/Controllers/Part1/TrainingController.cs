@@ -21,15 +21,15 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         }
         
         [HttpGet("training", Name = RouteNames.Training_Get)]
-        public async Task<IActionResult> Training(VacancyRouteModel vrm, bool wizard = true)
+        public async Task<IActionResult> Training(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
         {
             var vm = await _orchestrator.GetTrainingViewModelAsync(vrm);
-            vm.IsWizard = wizard;
+            vm.PageInfo.SetWizard(wizard);
             return View(vm);
         }
 
         [HttpPost("training", Name = RouteNames.Training_Post)]
-        public async Task<IActionResult> Training(TrainingEditModel m, bool wizard = true)
+        public async Task<IActionResult> Training(TrainingEditModel m, [FromQuery] bool wizard)
         {
             var response = await _orchestrator.PostTrainingEditModelAsync(m, User.ToVacancyUser());
             
@@ -41,7 +41,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             if (!ModelState.IsValid)
             {
                 var vm = await _orchestrator.GetTrainingViewModelAsync(m);
-                vm.IsWizard = wizard;
+                vm.PageInfo.SetWizard(wizard);
                 return View(vm);
             }
 

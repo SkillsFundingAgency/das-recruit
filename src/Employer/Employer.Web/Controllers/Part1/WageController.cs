@@ -21,15 +21,15 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         }
         
         [HttpGet("wage", Name = RouteNames.Wage_Get)]
-        public async Task<IActionResult> Wage(VacancyRouteModel vrm, bool wizard = true)
+        public async Task<IActionResult> Wage(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
         {
             var vm = await _orchestrator.GetWageViewModelAsync(vrm);
-            vm.IsWizard = wizard;
+            vm.PageInfo.SetWizard(wizard);
             return View(vm);
         }
 
-        [HttpPost("wage", Name = RouteNames.Wage_Get)]
-        public async Task<IActionResult> Wage(WageEditModel m, bool wizard = true)
+        [HttpPost("wage", Name = RouteNames.Wage_Post)]
+        public async Task<IActionResult> Wage(WageEditModel m, [FromQuery] bool wizard)
         {
             var response = await _orchestrator.PostWageEditModelAsync(m, User.ToVacancyUser());
             
@@ -41,7 +41,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             if (!ModelState.IsValid)
             {
                 var vm = await _orchestrator.GetWageViewModelAsync(m);
-                vm.IsWizard = wizard;
+                vm.PageInfo.SetWizard(wizard);
                 return View(vm);
             }
 

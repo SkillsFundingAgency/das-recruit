@@ -24,21 +24,21 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         public IActionResult Title()
         {
             var vm = _orchestrator.GetTitleViewModel();
-            vm.IsWizard = true;
+            vm.PageInfo.SetWizard();
             return View(vm);
         }
 
         [HttpGet(VacancyTitleRoute, Name = RouteNames.Title_Get)]
-        public async Task<IActionResult> Title(VacancyRouteModel vrm, bool wizard = true)
+        public async Task<IActionResult> Title(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
         {
             var vm = await _orchestrator.GetTitleViewModelAsync(vrm);
-            vm.IsWizard = wizard;
+            vm.PageInfo.SetWizard(wizard);
             return View(vm);
         }
         
         [HttpPost("create-vacancy", Name = RouteNames.CreateVacancy_Post)]
         [HttpPost(VacancyTitleRoute, Name = RouteNames.Title_Post)]
-        public async Task<IActionResult> Title(TitleEditModel m, bool wizard = true)
+        public async Task<IActionResult> Title(TitleEditModel m, [FromQuery] bool wizard)
         {
             var response = await _orchestrator.PostTitleEditModelAsync(m, User.ToVacancyUser());
 
@@ -50,7 +50,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             if(!ModelState.IsValid)
             {
                 var vm = await _orchestrator.GetTitleViewModelAsync(m);
-                vm.IsWizard = wizard;
+                vm.PageInfo.SetWizard(wizard);
                 return View(vm);
             }
 

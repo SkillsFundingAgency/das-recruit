@@ -7,6 +7,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Employer.Web.RouteModel;
+using Esfa.Recruit.Employer.Web.ViewModels.Part1;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
@@ -22,7 +23,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public TitleViewModel GetTitleViewModel()
         {
-            var vm = new TitleViewModel();
+            var vm = new TitleViewModel
+            {
+                PageInfo = new PartOnePageInfoViewModel()
+            };
             return vm;
         }
 
@@ -35,6 +39,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 VacancyId = vacancy.Id,
                 Title = vacancy.Title,
                 NumberOfPositions = vacancy.NumberOfPositions?.ToString(),
+                PageInfo = Utility.GetPartOnePageInfo(vacancy)
             };
 
             return vm;

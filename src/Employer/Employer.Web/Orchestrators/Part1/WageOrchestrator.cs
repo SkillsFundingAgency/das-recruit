@@ -33,7 +33,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 WeeklyHours = $"{vacancy.Wage?.WeeklyHours:0.##}",
                 WageType = vacancy.Wage?.WageType ?? WageType.FixedWage,
                 FixedWageYearlyAmount = vacancy.Wage?.FixedWageYearlyAmount?.AsMoney(),
-                WageAdditionalInformation = vacancy.Wage?.WageAdditionalInformation
+                WageAdditionalInformation = vacancy.Wage?.WageAdditionalInformation,
+                PageInfo = Utility.GetPartOnePageInfo(vacancy)
             };
             
             return vm;

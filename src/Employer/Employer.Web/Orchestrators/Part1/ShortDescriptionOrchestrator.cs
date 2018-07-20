@@ -26,7 +26,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var vm = new ShortDescriptionViewModel
             {
                 VacancyId = vacancy.Id,
-                ShortDescription = vacancy.ShortDescription
+                ShortDescription = vacancy.ShortDescription,
+                PageInfo = Utility.GetPartOnePageInfo(vacancy)
             };
 
             return vm;
