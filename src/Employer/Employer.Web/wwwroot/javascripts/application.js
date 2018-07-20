@@ -102,6 +102,8 @@ $(window).scroll(function () {
 $(function() {
     //Legacy menu script
     sfa.navigation.init();
+    // Dirty forms handling
+    $('form').areYouSure();
 });
 
 /* -----------------------
@@ -149,4 +151,9 @@ $('button, input[type="submit"], a.button').on("click", function() {
         $(".form-group.error").length > 0 ? button.text(label).removeClass("disabled") : $(".block-label.error").length > 0 && button.text(label).removeClass("disabled");
         button.attr("disabled")
     }, 50)
+});
+
+/* Disable Are you sure for links */
+$('a').on("click", function() {
+    $('form').areYouSure( {'silent':true} );
 });
