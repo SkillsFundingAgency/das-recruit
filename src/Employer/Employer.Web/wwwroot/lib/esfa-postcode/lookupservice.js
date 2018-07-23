@@ -88,14 +88,6 @@
             searchContext = '';
         });
 
-    function hasValue(elem) {
-        return (
-            $(elem).filter(function() {
-                return $(this).val();
-            }).length > 0
-        );
-    }
-
     function retrieveAddress(id) {
 		$.ajax({
 			url: pcaConfig.retrieveEndpoint,
