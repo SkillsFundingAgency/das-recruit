@@ -1,13 +1,13 @@
-// provides the matching addresses from postcode
-(function($) {
-    var searchContext = '',
-        $searchField = $('.postcode-lookup'),
-        findAddressVal = $searchField.val(),
-        key = ''
-        
-    $searchField.keyup(function() {
-        findAddressVal = $(this).val();
-    });
+'use strict';
+(function ($, pcaConfig) {
+	var	pcaConfig = pcaConfig,
+		searchContext = '',
+		$searchField = $('.postcode-lookup'),
+		findAddressVal = $searchField.val();
+
+	$searchField.keyup(function(e) {
+		findAddressVal = $(e.target).val();
+	});
 
     $searchField
         .autocomplete({
@@ -15,15 +15,14 @@
                 $('#addressLoading').show();
                 $('#enterAddressManually').hide();
             },
-            source: function(request, response) {
-                $.ajax({
-                    url:
-                        '//services.postcodeanywhere.co.uk/CapturePlus/Interactive/Find/v2.10/json3.ws',
+			source: function (request, response) {
+				$.ajax({
+					url: pcaConfig.findEndpoint,
                     dataType: 'jsonp',
-                    data: {
-                        key: key,
-                        country: 'GB',
-                        searchTerm: request.term,
+					data: {
+						key: pcaConfig.key,
+						country: 'GB',
+						searchTerm: request.term,
                         lastId: searchContext
                     },
                     timeout: 5000,
@@ -58,12 +57,11 @@
             select: function(event, ui) {
                 var item = ui.item.data;
 
-                if (item.Next == 'Retrieve') {
-                    //retrieve the address
+                if (item.Next === 'Retrieve') {
                     retrieveAddress(item.Id);
                     searchContext = '';
                 } else {
-                    var field = $(this);
+                    var field = $(event.target);
                     searchContext = item.Id;
 
                     if (searchContext === 'GBR|') {
@@ -99,18 +97,16 @@
     }
 
     function retrieveAddress(id) {
-        $.ajax({
-            url:
-                '//services.postcodeanywhere.co.uk/CapturePlus/Interactive/Retrieve/v2.10/json3.ws',
+		$.ajax({
+			url: pcaConfig.retrieveEndpoint,
             dataType: 'jsonp',
-            data: {
-                key: key,
-                id: id
+			data: {
+				key: pcaConfig.key,
+				id: id
             },
             timeout: 5000,
             success: function(data) {
                 if (data.Items.length) {
-
                     populateAddress(data.Items[0]);
                 }
             },
@@ -121,7 +117,6 @@
     }
 
     function populateAddress(address) {
-
         $('#AddressLine1').val(address.Line1);
         $('#AddressLine2').val(address.Line2);
         $('#AddressLine3').val(address.Line3);
@@ -130,5 +125,4 @@
 
         $('#ariaAddressEntered').text('Your address has been entered into the fields below.');
     }
-
-})(jQuery);
+})(jQuery, window.EsfaRecruit.PcaConfig);
