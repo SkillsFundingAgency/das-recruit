@@ -1,4 +1,6 @@
-﻿@model Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer.EmployerViewModel
+﻿@using Microsoft.Extensions.Options;
+@model Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer.EmployerViewModel
+@inject IOptions<PostcodeAnywhereConfiguration> PcaConfig
 <div class="grid-row">
     <div class="column-full">
         <h1 class="heading-xlarge small-bottom-margin">Make your vacancy stand out in a search</h1>
@@ -68,34 +70,41 @@
         </div>
     </div>
 </div>
-
+@section HeadJS
+{
+<script>
+    window.EsfaRecruit.PcaConfig = {
+        key: '@PcaConfig.Value.Key',
+        findEndpoint: '@PcaConfig.Value.FindEndpoint',
+        retrieveEndpoint: '@PcaConfig.Value.RetrieveEndpoint'
+    };
+</script>
+}
 @section FooterJS
 {
-    <script>
+<script asp-condition="@Model.HasMoreThanOneOrganisation">
+    var addresses = @Json.Serialize(Model.Organisations);
 
-        var addresses = @Json.Serialize(Model.Organisations);
+	var setAddressById = function (id) {
+		for (var i in addresses) {
+			if (addresses[i].id === id) {
+				$("#AddressLine1").val(addresses[i].address.addressLine1);
+				$("#AddressLine2").val(addresses[i].address.addressLine2);
+				$("#AddressLine3").val(addresses[i].address.addressLine3);
+				$("#AddressLine4").val(addresses[i].address.addressLine4);
+				$("#Postcode").val(addresses[i].address.postcode);
+			}
+		}
+	};
 
-        var setAddressById = function(id){
-            for (var i in addresses){
-                if (addresses[i].id === id){
-                    $("#AddressLine1").val(addresses[i].address.addressLine1);
-                    $("#AddressLine2").val(addresses[i].address.addressLine2);
-                    $("#AddressLine3").val(addresses[i].address.addressLine3);
-                    $("#AddressLine4").val(addresses[i].address.addressLine4);
-                    $("#Postcode").val(addresses[i].address.postcode);
-                }
-            }  
-        }
-
-        $(document).ready(function () {
-            $("input[name='SelectedOrganisationName']").click(function () {
-                var inputId = $("input[name='SelectedOrganisationName']:checked").attr('id').slice(4);
-                setAddressById(inputId);
-            });
+    $(document).ready(function() {
+        $("input[name='SelectedOrganisationName']").click(function(e) {
+            var orgId = $(e.target).attr('id').slice(4);
+            setAddressById(orgId);
         });
+    });
+</script>
 
-    </script>
-
-    <script src="/lib/jquery-ui/dist/jquery-ui.min.js"></script>
-    <script src="/lib/esfa-postcode/lookupservice.js"></script>
+<script src="/lib/jquery-ui/dist/jquery-ui.min.js"></script>
+<script asp-append-version="true" src="/lib/esfa-postcode/lookupservice.js"></script>
 }
