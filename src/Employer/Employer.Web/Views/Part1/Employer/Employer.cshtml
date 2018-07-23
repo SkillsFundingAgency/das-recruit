@@ -15,27 +15,24 @@
             <div asp-condition="@Model.HasOnlyOneOrganisation"><p>@Model.Organisations.First().Name</p></div>
             <form asp-route="@RouteNames.Employer_Post">
                 <div esfa-validation-marker-for="SelectedOrganisationName" class="form-group">
-                    @if (Model.HasOnlyOneOrganisation)
-                    {
-                        <input asp-for="SelectedOrganisationName" value="@Model.Organisations.First().Name" type="hidden" />
-                    }
-                    else
-                    {
-                        <fieldset>
-                            <legend>
-                                <span class="form-label-bold">Which organisation is the vacancy for?</span>
-                            </legend>
-                            <span esfa-validation-message-for="SelectedOrganisationName" class="error-message"></span>
 
-                            @foreach (var organisation in Model.Organisations)
-                            {
-                                <div class="multiple-choice">
-                                    <input asp-for="SelectedOrganisationName" type="radio" value="@organisation.Name" id="org-@organisation.Id">
-                                    <label for="org-@organisation.Id">@organisation.Name</label>
-                                </div>
-                            }
-                        </fieldset>
-                    }
+                    <input asp-condition="@Model.HasOnlyOneOrganisation" asp-for="SelectedOrganisationName" value="@Model.Organisations.First().Name" type="hidden" />
+
+                    <fieldset asp-condition="@Model.HasMoreThanOneOrganisation">
+                        <legend>
+                            <span class="form-label-bold">Which organisation is the vacancy for?</span>
+                        </legend>
+                        <span esfa-validation-message-for="SelectedOrganisationName" class="error-message"></span>
+
+                        @foreach (var organisation in Model.Organisations)
+                        {
+                            <div class="multiple-choice">
+                                <input asp-for="SelectedOrganisationName" type="radio" value="@organisation.Name" id="org-@organisation.Id">
+                                <label for="org-@organisation.Id">@organisation.Name</label>
+                            </div>
+                        }
+                    </fieldset>
+
                 </div>
 
                 <div id="address-details" class="address-manual-input">
