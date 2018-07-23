@@ -75,8 +75,11 @@ public string GetTitle()
     @Html.Partial(PartialNames.GoogleAnalyticsSnippet)
     </environment>
     @Html.Raw(JavaScriptSnippet.FullScript) <!-- AppInsights script -->
+    <script>
+        window.EsfaRecruit = {};
+    </script>
+    @RenderSection(RazorSections.HeadJS, required: false)
 </head>
-
 <body>
     <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
     <div id="skiplink-container">
