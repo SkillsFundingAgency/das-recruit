@@ -10,15 +10,15 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class UpdateVacancyCommandHandler : IRequestHandler<UpdateVacancyCommand>
+    public class UpdateDraftVacancyCommandHandler : IRequestHandler<UpdateDraftVacancyCommand>
     {
-        private readonly ILogger<UpdateVacancyCommandHandler> _logger;
+        private readonly ILogger<UpdateDraftVacancyCommandHandler> _logger;
         private readonly IVacancyRepository _repository;
         private readonly IMessaging _messaging;
         private readonly ITimeProvider _timeProvider;
 
-        public UpdateVacancyCommandHandler(
-            ILogger<UpdateVacancyCommandHandler> logger,
+        public UpdateDraftVacancyCommandHandler(
+            ILogger<UpdateDraftVacancyCommandHandler> logger,
             IVacancyRepository repository, 
             IMessaging messaging, 
             ITimeProvider timeProvider)
@@ -29,7 +29,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _timeProvider = timeProvider;
         }
 
-        public async Task Handle(UpdateVacancyCommand message, CancellationToken cancellationToken)
+        public async Task Handle(UpdateDraftVacancyCommand message, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Updating vacancy {vacancyId}.", message.Vacancy.Id);
 
@@ -38,7 +38,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             await _repository.UpdateAsync(message.Vacancy);
 
-            await _messaging.PublishEvent(new VacancyDraftUpdatedEvent
+            await _messaging.PublishEvent(new DraftVacancyUpdatedEvent
             {
                 SourceCommandId = message.CommandId.ToString(),
                 EmployerAccountId = message.Vacancy.EmployerAccountId,

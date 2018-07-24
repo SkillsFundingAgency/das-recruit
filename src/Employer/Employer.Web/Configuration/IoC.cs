@@ -4,7 +4,7 @@ using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
 using Esfa.Recruit.Employer.Web.Services;
-using Esfa.Recruit.Shared.Configuration;
+using Esfa.Recruit.Shared.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.FAA;
 using Microsoft.AspNetCore.Http;

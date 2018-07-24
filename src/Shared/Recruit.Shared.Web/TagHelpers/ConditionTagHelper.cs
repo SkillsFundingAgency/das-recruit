@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Razor.TagHelpers;
 
-namespace Esfa.Recruit.Employer.Web.TagHelpers
+namespace Esfa.Recruit.Shared.Web.TagHelpers
 {
     [HtmlTargetElement(Attributes = "asp-condition")]
     public class ConditionTagHelper : TagHelper

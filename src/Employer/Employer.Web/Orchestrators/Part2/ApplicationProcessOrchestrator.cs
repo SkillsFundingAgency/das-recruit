@@ -9,6 +9,8 @@ using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Microsoft.Extensions.Options;
 using Esfa.Recruit.Shared;
+using Esfa.Recruit.Shared.Web;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 {
@@ -75,7 +77,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             return await ValidateAndExecute(
                 vacancy,
                 v => _client.Validate(v, ValidationRules),
-                v => _client.UpdateVacancyAsync(vacancy, user)
+                v => _client.UpdateDraftVacancyAsync(vacancy, user)
             );
         }
 

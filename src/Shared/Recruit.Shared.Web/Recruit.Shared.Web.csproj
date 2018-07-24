@@ -7,6 +7,6 @@
   </ItemGroup>
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <RootNamespace>Esfa.Recruit.Shared</RootNamespace>
+    <RootNamespace>Esfa.Recruit.Shared.Web</RootNamespace>
   </PropertyGroup>
 </Project>

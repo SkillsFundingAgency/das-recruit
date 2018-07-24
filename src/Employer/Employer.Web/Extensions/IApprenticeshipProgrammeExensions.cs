@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Training;
-using Esfa.Recruit.Vacancies.Client.Application.Services.Models;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Employer.Web.Extensions
 {

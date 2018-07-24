@@ -88,7 +88,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                     SyncErrorsAndModel(result.Errors, m);
                     return result;
                 },
-                v => validateOnly ? Task.CompletedTask : _client.UpdateVacancyAsync(v, user));
+                v => validateOnly ? Task.CompletedTask : _client.UpdateDraftVacancyAsync(v, user));
         }
         
         protected override EntityToViewModelPropertyMappings<Vacancy, SkillsEditModel> DefineMappings()

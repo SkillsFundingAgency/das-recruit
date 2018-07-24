@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
 {
-    public class VacancyClosedHandler : INotificationHandler<VacancyClosedEvent>
+    public class VacancyClosedEventHandler : INotificationHandler<VacancyClosedEvent>
     {
-        private readonly ILogger<VacancyClosedHandler> _logger;
+        private readonly ILogger<VacancyClosedEventHandler> _logger;
         private readonly IQueryStoreWriter _queryStore;
 
-        public VacancyClosedHandler(ILogger<VacancyClosedHandler> logger, IQueryStoreWriter queryStore)
+        public VacancyClosedEventHandler(ILogger<VacancyClosedEventHandler> logger, IQueryStoreWriter queryStore)
         {
             _logger = logger;
             _queryStore = queryStore;

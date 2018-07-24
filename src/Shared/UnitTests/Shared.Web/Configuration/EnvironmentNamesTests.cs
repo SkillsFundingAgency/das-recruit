@@ -1,6 +1,6 @@
-﻿using Esfa.Recruit.Shared.Configuration;
-using FluentAssertions;
+﻿using FluentAssertions;
 using System.Text.RegularExpressions;
+using Esfa.Recruit.Shared.Web.Configuration;
 using Xunit;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.Configuration

@@ -3,6 +3,8 @@ using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Shared;
+using Esfa.Recruit.Shared.Web;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -36,7 +38,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
                         .ReturnsAsync(vacancy);
             _mockClient.Setup(x => x.Validate(vacancy, VacancyRuleSet.ApplicationMethod))
                         .Returns(new EntityValidationResult());
-            _mockClient.Setup(x => x.UpdateVacancyAsync(It.IsAny<Vacancy>(), user));
+            _mockClient.Setup(x => x.UpdateDraftVacancyAsync(It.IsAny<Vacancy>(), user));
 
             var sut = new ApplicationProcessOrchestrator(_mockClient.Object, Options.Create(new ExternalLinksConfiguration()), Mock.Of<ILogger<ApplicationProcessOrchestrator>>(), _mockFeatureToggler.Object);
 
@@ -53,7 +55,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
             vacancy.ApplicationMethod.HasValue.Should().BeTrue();
             vacancy.ApplicationMethod.Value.Should().Be(ApplicationMethod.ThroughFindAnApprenticeship);
             vacancy.ApplicationUrl.Should().BeNull();
-            _mockClient.Verify(x => x.UpdateVacancyAsync(vacancy, user), Times.Once);
+            _mockClient.Verify(x => x.UpdateDraftVacancyAsync(vacancy, user), Times.Once);
         }
 
         [Fact]
@@ -66,7 +68,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
                         .ReturnsAsync(vacancy);
             _mockClient.Setup(x => x.Validate(vacancy, VacancyRuleSet.ApplicationMethod))
                         .Returns(new EntityValidationResult());
-            _mockClient.Setup(x => x.UpdateVacancyAsync(It.IsAny<Vacancy>(), user));
+            _mockClient.Setup(x => x.UpdateDraftVacancyAsync(It.IsAny<Vacancy>(), user));
 
             var sut = new ApplicationProcessOrchestrator(_mockClient.Object, Options.Create(new ExternalLinksConfiguration()), Mock.Of<ILogger<ApplicationProcessOrchestrator>>(), _mockFeatureToggler.Object);
 
@@ -83,7 +85,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
             vacancy.ApplicationMethod.HasValue.Should().BeTrue();
             vacancy.ApplicationMethod.Value.Should().Be(ApplicationMethod.ThroughFindAnApprenticeship);
             vacancy.ApplicationInstructions.Should().BeNull();
-            _mockClient.Verify(x => x.UpdateVacancyAsync(vacancy, user), Times.Once);
+            _mockClient.Verify(x => x.UpdateDraftVacancyAsync(vacancy, user), Times.Once);
         }
     }
 }

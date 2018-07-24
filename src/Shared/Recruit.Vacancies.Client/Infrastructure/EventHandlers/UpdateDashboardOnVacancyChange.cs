@@ -9,7 +9,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services;
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
 {
     public class UpdateDashboardOnVacancyChange : INotificationHandler<VacancyCreatedEvent>,
-                                                    INotificationHandler<VacancyDraftUpdatedEvent>,
+                                                    INotificationHandler<DraftVacancyUpdatedEvent>,
                                                     INotificationHandler<VacancySubmittedEvent>,
                                                     INotificationHandler<VacancyDeletedEvent>,
                                                     INotificationHandler<VacancyLiveEvent>,
@@ -33,7 +33,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
             return Handle(notification);
         }
 
-        public Task Handle(VacancyDraftUpdatedEvent notification, CancellationToken cancellationToken)
+        public Task Handle(DraftVacancyUpdatedEvent notification, CancellationToken cancellationToken)
         {
             return Handle(notification);
         }
