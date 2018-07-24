@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
-using Esfa.Recruit.Vacancies.Client.Application.Services.Models;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
@@ -56,9 +55,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _applicationReviewRepository = applicationReviewRepository;
         }
 
-        public Task UpdateVacancyAsync(Vacancy vacancy, VacancyUser user)
+        public Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user)
         {
-            var command = new UpdateVacancyCommand
+            var command = new UpdateDraftVacancyCommand
             {
                 Vacancy = vacancy,
                 User = user

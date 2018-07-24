@@ -95,7 +95,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 v => _client.Validate(v, ValidationRules),
                 async v =>
                 {
-                    await _client.UpdateVacancyAsync(vacancy, user);
+                    await _client.UpdateDraftVacancyAsync(vacancy, user);
                     return v.Id;
                 }
             );

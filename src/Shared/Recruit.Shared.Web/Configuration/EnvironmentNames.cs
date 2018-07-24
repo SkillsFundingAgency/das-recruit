@@ -1,4 +1,4 @@
-﻿namespace Esfa.Recruit.Shared.Configuration
+﻿namespace Esfa.Recruit.Shared.Web.Configuration
 {
     public static class EnvironmentNames
     {

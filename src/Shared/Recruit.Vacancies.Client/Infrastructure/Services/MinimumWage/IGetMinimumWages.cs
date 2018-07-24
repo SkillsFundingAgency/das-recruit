@@ -1,6 +1,7 @@
 ﻿using System;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
-namespace Esfa.Recruit.Vacancies.Client.Application.Services.MinimumWage
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.MinimumWage
 {
     public interface IGetMinimumWages
     {

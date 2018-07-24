@@ -1,6 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Esfa.Recruit.Shared.Web.FeatureToggle;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Esfa.Recruit.Shared.Configuration
+namespace Esfa.Recruit.Shared.Web.Configuration
 {
     public static class FeatureExtensions
     {

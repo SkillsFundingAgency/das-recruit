@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 
-namespace Esfa.Recruit.Shared
+namespace Esfa.Recruit.Shared.Web.FeatureToggle
 {
     public class Feature : IFeature
     {

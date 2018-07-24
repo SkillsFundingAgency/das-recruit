@@ -41,8 +41,8 @@ namespace Esfa.Recruit.Vacancies.Jobs.VacancyEvents
             {
                 case nameof(VacancyCreatedEvent):
                     return _vacancyHandler.Handle(JsonConvert.DeserializeObject<VacancyCreatedEvent>(data));
-                case nameof(VacancyDraftUpdatedEvent):
-                    return _vacancyHandler.Handle(JsonConvert.DeserializeObject<VacancyDraftUpdatedEvent>(data));
+                case nameof(DraftVacancyUpdatedEvent):
+                    return _vacancyHandler.Handle(JsonConvert.DeserializeObject<DraftVacancyUpdatedEvent>(data));
                 case nameof(VacancySubmittedEvent):
                     return _vacancyHandler.Handle(JsonConvert.DeserializeObject<VacancySubmittedEvent>(data));
                 default: 

@@ -33,15 +33,15 @@ namespace Esfa.Recruit.Vacancies.Jobs.VacancyEvents
             }
         }
 
-        public async Task Handle(VacancyDraftUpdatedEvent @event)
+        public async Task Handle(DraftVacancyUpdatedEvent @event)
         {
             try
             {
-                _logger.LogInformation($"Processing {nameof(VacancyDraftUpdatedEvent)} for vacancy: {{VacancyId}}", @event.VacancyId);
+                _logger.LogInformation($"Processing {nameof(DraftVacancyUpdatedEvent)} for vacancy: {{VacancyId}}", @event.VacancyId);
                
                 await _client.EnsureVacancyIsGeocodedAsync(@event.VacancyId);
                
-                _logger.LogInformation($"Finished Processing {nameof(VacancyDraftUpdatedEvent)} for vacancy: {{VacancyId}}", @event.VacancyId);
+                _logger.LogInformation($"Finished Processing {nameof(DraftVacancyUpdatedEvent)} for vacancy: {{VacancyId}}", @event.VacancyId);
             }
             catch (Exception ex)
             {

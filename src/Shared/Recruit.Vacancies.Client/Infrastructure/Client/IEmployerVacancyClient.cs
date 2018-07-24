@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Esfa.Recruit.Vacancies.Client.Application.Services.Models;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Dashboard;
@@ -15,7 +14,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
     {
         Task<Vacancy> GetVacancyAsync(Guid vacancyId);
         Task<Guid> CreateVacancyAsync(SourceOrigin origin, string title, int numberOfPositions, string employerAccountId, VacancyUser user);
-        Task UpdateVacancyAsync(Vacancy vacancy, VacancyUser user);
+        Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user);
         Task SubmitVacancyAsync(Guid vacancyId, VacancyUser user);
         Task DeleteVacancyAsync(Guid vacancyId, VacancyUser user);
         Task<Dashboard> GetDashboardAsync(string employerAccountId);

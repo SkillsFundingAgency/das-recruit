@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Razor.TagHelpers;
+﻿using Esfa.Recruit.Shared.Web.FeatureToggle;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 
-namespace Esfa.Recruit.Shared.TagHelpers
+namespace Esfa.Recruit.Shared.Web.TagHelpers
 {
     [HtmlTargetElement(TagName)]
     public class EsfaFeatureTagHelper : TagHelper
