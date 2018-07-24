@@ -82,17 +82,18 @@
 @section FooterJS
 {
 <script asp-condition="@Model.HasMoreThanOneOrganisation">
-	$(document).ready(function () {
+	$(document).ready(function() {
 		var addresses = @Json.Serialize(Model.Organisations);
 
-		var setAddressById = function (id) {
-			for (var i in addresses) {
-				if (addresses[i].id === id) {
-					$("#AddressLine1").val(addresses[i].address.addressLine1);
-					$("#AddressLine2").val(addresses[i].address.addressLine2);
-					$("#AddressLine3").val(addresses[i].address.addressLine3);
-					$("#AddressLine4").val(addresses[i].address.addressLine4);
-					$("#Postcode").val(addresses[i].address.postcode);
+		var setAddressById = function(id) {
+			for (var pos in addresses) {
+				if (addresses[pos].id === id) {
+					var matchedItem = addresses[pos];
+					$("#AddressLine1").val(matchedItem.address.addressLine1);
+					$("#AddressLine2").val(matchedItem.address.addressLine2);
+					$("#AddressLine3").val(matchedItem.address.addressLine3);
+					$("#AddressLine4").val(matchedItem.address.addressLine4);
+					$("#Postcode").val(matchedItem.address.postcode);
 				}
 			}
 		};
