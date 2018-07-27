@@ -809,6 +809,19 @@ input.form-control, textarea.form-control {
     border-radius: 0;
 }
 
+/** Qualifications table **/
+table th.th-50 {
+    width: 50%;
+}
+
+table th.th-30 {
+  width: 30%;
+}
+
+table th.th-20 {
+  width: 20%;
+}
+
 /*** Select2 Styles **/
 .select2-container {
     box-sizing: border-box;
