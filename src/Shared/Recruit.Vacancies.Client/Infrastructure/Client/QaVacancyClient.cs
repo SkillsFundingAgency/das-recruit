@@ -7,22 +7,27 @@ using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.QA;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
     public class QaVacancyClient : IQaVacancyClient
     {
+        private readonly IQueryStoreReader _queryStoreReader;
         private readonly IVacancyReviewRepository _reviewRepository;
         private readonly IVacancyRepository _vacancyRepository;
         private readonly IApprenticeshipProgrammeProvider _apprenticeshipProgrammesProvider;
         private readonly IMessaging _messaging;
 
         public QaVacancyClient(
+                    IQueryStoreReader queryStoreReader,
                     IVacancyReviewRepository reviewRepository, 
                     IVacancyRepository vacancyRepository, 
                     IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider,
                     IMessaging messaging)
         {
+            _queryStoreReader = queryStoreReader;
             _reviewRepository = reviewRepository;
             _vacancyRepository = vacancyRepository;
             _apprenticeshipProgrammesProvider = apprenticeshipProgrammesProvider;
@@ -56,13 +61,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _apprenticeshipProgrammesProvider.GetApprenticeshipProgrammeAsync(programmeId);
         }
 
-        public async Task<IEnumerable<VacancyReview>> GetDashboardAsync()
+        public async Task<QaDashboard> GetDashboardAsync()
         {
-            // This will be replaced with a call to the query store for the dashboard view.
-            var allReviews = await _reviewRepository.GetAllAsync();
-            return allReviews
-                    .Where(r => (new[] { ReviewStatus.PendingReview, ReviewStatus.UnderReview }.Contains(r.Status)))
-                    .OrderBy(x => x.CreatedDate);
+            var dashboard = await _queryStoreReader.GetQaDashboardAsync();
+
+            //todo - will be deleted
+            var allReviews = await _reviewRepository.GetActiveAsync();
+            dashboard.AllReviews = allReviews.ToList();
+            return dashboard;
         }
 
         public Task<Vacancy> GetVacancyAsync(long vacancyReference)

@@ -37,12 +37,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             return result.SingleOrDefault();
         }
 
-        public async Task<IEnumerable<VacancyReview>> GetAllAsync()
+        public async Task<IEnumerable<VacancyReview>> GetActiveAsync()
         {
+            var filterBuilder = Builders<VacancyReview>.Filter;
+
+            var filter = filterBuilder.Eq(r => r.Status, ReviewStatus.PendingReview)
+                         | filterBuilder.Eq(r => r.Status, ReviewStatus.UnderReview);
+
             var collection = GetCollection<VacancyReview>();
             var result = await RetryPolicy.ExecuteAsync(context => collection
-                                    .Find(FilterDefinition<VacancyReview>.Empty)
-                                    .ToListAsync(), new Context(nameof(GetAllAsync)));
+                                    .Find(filter)
+                                    .ToListAsync(), new Context(nameof(GetActiveAsync)));
 
             return result.OrderByDescending(x => x.CreatedDate);
         }

@@ -1,6 +1,5 @@
 @model DashboardViewModel
-
-<div class="grid-row dashboard-header">
+<div class="grid-row">
     <div class="column-full">
         <h1 class="heading-xlarge no-bottom-margin">QA vacancies</h1>
         <hr>
@@ -9,23 +8,47 @@
 
 <div class="grid-row">
     <div class="column-full">
+        <h2 class="heading-medium no-bottom-margin">Statistics</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>Total vacancies</th>
+                <th>Submitted +24 hours</th>
+                <th>Resubmitted vacancies</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>@Model.TotalVacanciesForReview</td>
+                <td>@Model.TotalVacanciesBrokenSla</td>
+                <td>@Model.TotalVacanciesResubmitted</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<br/><br/>
+
+<div class="grid-row">
+    <div class="column-full">
         <table>
             <tbody>
+            <tr>
+                <th class="bold">Vacancy title</th>
+                <th class="bold">Status</th>
+            </tr>
+            @foreach (var item in Model.AllReviews)
+            {
                 <tr>
-                    <th class="bold">Vacancy title</th>
-                    <th class="bold">Status</th>
+                    <td>
+                        <a asp-route="@GetRoute(item)" asp-route-reviewId="@item.ReviewId">@item.Title</a>
+                    </td>
+                    <td>
+                        @item.Status
+                    </td>
                 </tr>
-                @foreach(var item in Model)
-                {
-                    <tr>
-                        <td>
-                            <a asp-route="@GetRoute(item)" asp-route-reviewId="@item.ReviewId">@item.Title</a>
-                        </td>
-                        <td>
-                            @item.Status
-                        </td>
-                    </tr>
-                }
+            }
             </tbody>
         </table>
     </div>
@@ -37,4 +60,3 @@
         return item.IsReferred ? RouteNames.Vacancy_Review_Referral_Get : RouteNames.Vacancy_Review_Get;
     }
 }
-
