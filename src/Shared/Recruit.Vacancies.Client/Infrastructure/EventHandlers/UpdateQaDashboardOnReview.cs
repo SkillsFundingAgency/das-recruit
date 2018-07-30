@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,13 +18,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
                                              INotificationHandler<VacancyReviewReferredEvent>
     {
         private readonly IVacancyReviewRepository _reviewRepository;
-        private readonly IQueryStoreWriter _queryStoryWriter;
+        private readonly IQueryStoreWriter _queryStoreWriter;
         private readonly ILogger<UpdateQaDashboardOnReview> _logger;
 
-        public UpdateQaDashboardOnReview(IVacancyReviewRepository reviewRepository, IQueryStoreWriter queryStoryWriter, ILogger<UpdateQaDashboardOnReview> logger)
+        public UpdateQaDashboardOnReview(IVacancyReviewRepository reviewRepository, IQueryStoreWriter queryStoreWriter, ILogger<UpdateQaDashboardOnReview> logger)
         {
             _reviewRepository = reviewRepository;
-            _queryStoryWriter = queryStoryWriter;
+            _queryStoreWriter = queryStoreWriter;
             _logger = logger;
         }
 
@@ -50,10 +51,21 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
 
             var qaDashboard = new QaDashboard
             {
+                TotalVacanciesForReview = activeReviews.Count,
+                TotalVacanciesResubmitted = GetTotalVacanciesResubmittedCount(activeReviews),
                 AllReviews = activeReviews.ToList()
             };
             
-            await _queryStoryWriter.UpdateQaDashboardAsync(qaDashboard);
+            await _queryStoreWriter.UpdateQaDashboardAsync(qaDashboard);
+        }
+
+        private int GetTotalVacanciesResubmittedCount(IEnumerable<VacancyReview> activeReviews)
+        {
+            return activeReviews
+                .Where(r => r.SubmissionCount > 1)
+                .Select(r => r.VacancyReference)
+                .Distinct()
+                .Count();
         }
     }
 }

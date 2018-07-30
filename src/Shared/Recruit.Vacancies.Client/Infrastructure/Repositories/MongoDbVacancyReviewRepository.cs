@@ -37,7 +37,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             return result.SingleOrDefault();
         }
 
-        public async Task<IEnumerable<VacancyReview>> GetActiveAsync()
+        public async Task<List<VacancyReview>> GetActiveAsync()
         {
             var filterBuilder = Builders<VacancyReview>.Filter;
 
@@ -49,7 +49,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
                                     .Find(filter)
                                     .ToListAsync(), new Context(nameof(GetActiveAsync)));
 
-            return result.OrderByDescending(x => x.CreatedDate);
+            return result.OrderByDescending(x => x.CreatedDate).ToList();
         }
 
         public Task UpdateAsync(VacancyReview review)
@@ -59,6 +59,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var collection = GetCollection<VacancyReview>();
            
             return RetryPolicy.ExecuteAsync(context => collection.ReplaceOneAsync(filter, review), new Context(nameof(UpdateAsync)));
+        }
+
+        public Task<List<VacancyReview>> GetForVacancyAsyc(long vacancyReference)
+        {
+            var filter = Builders<VacancyReview>.Filter.Eq(r => r.VacancyReference, vacancyReference);
+
+            var collection = GetCollection<VacancyReview>();
+            return RetryPolicy.ExecuteAsync(context => collection
+                .Find(filter)
+                .ToListAsync(), new Context(nameof(GetForVacancyAsyc)));
         }
     }
 }
