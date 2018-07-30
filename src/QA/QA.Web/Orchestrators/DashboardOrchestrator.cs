@@ -1,9 +1,11 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Qa.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.QA;
 
 namespace Esfa.Recruit.Qa.Web.Orchestrators
 {
@@ -23,21 +25,24 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             return vm;
         }
 
-        private static DashboardViewModel MapToViewModel(IEnumerable<VacancyReview> reviews)
+        private static DashboardViewModel MapToViewModel(QaDashboard dashboard)
         {
-            var vm = new DashboardViewModel();
-
-            foreach(var review in reviews)
+            var vm = new DashboardViewModel
             {
-                vm.Add(new ReviewDashboardItem 
-                { 
-                    ReviewId = review.Id,
-                    VacancyReference = review.VacancyReference,
-                    Title = review.Title,
-                    Status = CalculateStatus(review),
-                    IsReferred = review.ManualOutcome == ManualQaOutcome.Referred
-                });
-            }
+                TotalVacanciesBrokenSla = dashboard.TotalVacanciesBrokenSla,
+                TotalVacanciesForReview = dashboard.TotalVacanciesForReview,
+                TotalVacanciesResubmitted = dashboard.TotalVacanciesResubmitted,
+
+                //todo: remove this
+                AllReviews = dashboard.AllReviews.Select(r => new ReviewDashboardItem
+                {
+                    ReviewId = r.Id,
+                    VacancyReference = r.VacancyReference,
+                    Title = r.Title,
+                    Status = CalculateStatus(r),
+                    IsReferred = r.ManualOutcome == ManualQaOutcome.Referred
+                }).ToList()
+            };
 
             return vm;
         }

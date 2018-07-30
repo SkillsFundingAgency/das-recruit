@@ -4,6 +4,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.FAA;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
 {
@@ -11,14 +12,18 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
         INotificationHandler<ApplicationReviewedEvent>
     {
         private readonly IFaaService _faaService;
+        private readonly ILogger<UpdateFaaOnApplicationReviewed> _logger;
 
-        public UpdateFaaOnApplicationReviewed(IFaaService faaService)
+        public UpdateFaaOnApplicationReviewed(IFaaService faaService, ILogger<UpdateFaaOnApplicationReviewed> logger)
         {
             _faaService = faaService;
+            _logger = logger;
         }
 
         public Task Handle(ApplicationReviewedEvent notification, CancellationToken cancellationToken)
         {
+            _logger.LogInformation("Handling {notificationType}", notification.GetType().Name);
+
             if (notification.Status != ApplicationReviewStatus.Successful 
                 && notification.Status != ApplicationReviewStatus.Unsuccessful)
             {
