@@ -29,11 +29,11 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
         {
             var vm = new DashboardViewModel
             {
-                TotalVacanciesBrokenSla = dashboard.TotalVacanciesBrokenSla,
                 TotalVacanciesForReview = dashboard.TotalVacanciesForReview,
+                TotalVacanciesBrokenSla = dashboard.TotalVacanciesBrokenSla,
                 TotalVacanciesResubmitted = dashboard.TotalVacanciesResubmitted,
 
-                //todo: remove this
+                //todo: this will be deleted
                 AllReviews = dashboard.AllReviews.Select(r => new ReviewDashboardItem
                 {
                     ReviewId = r.Id,

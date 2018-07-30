@@ -1,4 +1,5 @@
-﻿using Esfa.Recruit.Vacancies.Client.Application.Commands;
+﻿using System;
+using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
@@ -36,9 +37,15 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         {
             _logger.LogInformation("Creating vacancy review for vacancy {vacancyReference}.", message.VacancyReference);
 
-            var vacancy = await _vacancyRepository.GetVacancyAsync(message.VacancyReference);
+            var vacancyTask = _vacancyRepository.GetVacancyAsync(message.VacancyReference);
+            var previousReviewsTasks = _vacancyReviewRepository.GetForVacancyAsyc(message.VacancyReference);
 
-            var review = BuildNewReview(vacancy);
+            await Task.WhenAll(vacancyTask, previousReviewsTasks);
+
+            var vacancy = vacancyTask.Result;
+            var previousReviews = previousReviewsTasks.Result;
+            
+            var review = BuildNewReview(vacancy, previousReviews.Count);
 
             await _vacancyReviewRepository.CreateAsync(review);
 
@@ -50,7 +57,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             });
         }
 
-        private VacancyReview BuildNewReview(Vacancy vacancy)
+        private VacancyReview BuildNewReview(Vacancy vacancy, int previousReviewCount)
         {
             var review = new VacancyReview
             {
@@ -59,7 +66,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 Status = ReviewStatus.PendingReview,    // NOTE: This is temporary for private beta.
                 CreatedDate = _time.Now,                // NOTE: This is temporary for private beta.
                 EmployerAccountId = vacancy.EmployerAccountId,
-                SubmittedByUser = vacancy.SubmittedByUser
+                SubmittedByUser = vacancy.SubmittedByUser,
+                SubmissionCount = previousReviewCount + 1
             };
 
             return review;
