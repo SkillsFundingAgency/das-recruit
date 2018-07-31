@@ -6,6 +6,7 @@ using Esfa.Recruit.Vacancies.Jobs.ApprenticeshipProgrammes;
 using Esfa.Recruit.Vacancies.Jobs.BankHoliday;
 using Esfa.Recruit.Vacancies.Jobs.DashboardGenerator;
 using Esfa.Recruit.Vacancies.Jobs.EditVacancyInfo;
+using Esfa.Recruit.Vacancies.Jobs.QaDashboard;
 using Esfa.Recruit.Vacancies.Jobs.VacancyApplication;
 using Esfa.Recruit.Vacancies.Jobs.VacancyEvents;
 using Esfa.Recruit.Vacancies.Jobs.VacancyReviewEvents;
@@ -159,6 +160,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddScoped<DashboardGeneratorJob>();
             services.AddScoped<VacancyApplicationJob>();
             services.AddScoped<BankHolidayJob>();
+            services.AddScoped<QaDashboardJob>();
 
             return services;
         }

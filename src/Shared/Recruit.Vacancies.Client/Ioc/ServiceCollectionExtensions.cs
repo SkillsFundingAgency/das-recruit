@@ -70,6 +70,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient<IGetMinimumWages, StubNationalMinimumWageService>();
             services.AddTransient<IGenerateVacancyNumbers, MongoSequenceStore>();
             services.AddTransient<IApprenticeshipProgrammeProvider, ApprenticeshipProgrammeProvider>();
+            services.AddTransient<IQaDashboardService, QaDashboardService>();
 
             services.Configure<BankHolidayConfiguration>(configuration.GetSection("BankHoliday"));
             services.AddTransient<IBankHolidayService, BankHolidayService>();
