@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Entities
 {
     public class BankHolidays
     {
+        public string Id { get; set; }
+        public DateTime LastUpdatedDate { get; set; } 
         public BankHolidaysData Data { get; set; }
 
         public class Event
