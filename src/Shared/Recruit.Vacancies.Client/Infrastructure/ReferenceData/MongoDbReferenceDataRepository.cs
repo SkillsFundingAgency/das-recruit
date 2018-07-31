@@ -50,7 +50,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData
             return result?.SingleOrDefault();
         }
 
-        public Task UpsertBankHolidays(BankHolidays bankHolidays)
+        Task IReferenceDataWriter.UpsertBankHolidays(BankHolidays bankHolidays)
         {
             bankHolidays.Id = BankHolidays;
             bankHolidays.LastUpdatedDate = _timeProvider.Now;
@@ -64,7 +64,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData
                     filter, 
                     bankHolidays, 
                     new UpdateOptions { IsUpsert = true }), 
-                new Context(nameof(UpsertBankHolidays)));
+                new Context(nameof(IReferenceDataWriter.UpsertBankHolidays)));
         }
     }
 }

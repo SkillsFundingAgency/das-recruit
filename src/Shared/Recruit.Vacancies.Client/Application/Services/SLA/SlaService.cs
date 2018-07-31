@@ -21,7 +21,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services.SLA
 
         public async Task<DateTime> GetSlaDeadlineAsync(DateTime utcDate)
         {
-            //https://www.gov.uk/bank-holidays.json
             var bankHolidays = await _bankholidayService.GetBankHolidaysAsync();
 
             var slaDate = utcDate;
