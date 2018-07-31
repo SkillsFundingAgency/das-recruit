@@ -42,15 +42,14 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _logger.LogInformation("Creating vacancy review for vacancy {vacancyReference}.", message.VacancyReference);
 
             var vacancyTask = _vacancyRepository.GetVacancyAsync(message.VacancyReference);
-            var previousReviewsTasks = _vacancyReviewRepository.GetForVacancyAsyc(message.VacancyReference);
+            var previousReviewsTask = _vacancyReviewRepository.GetForVacancyAsyc(message.VacancyReference);
 
-            await Task.WhenAll(vacancyTask, previousReviewsTasks);
+            await Task.WhenAll(vacancyTask, previousReviewsTask);
 
             var vacancy = vacancyTask.Result;
-            var previousReviews = previousReviewsTasks.Result;
+            var previousReviews = previousReviewsTask.Result;
 
-            var slaDeadline = vacancy.SubmittedDate.HasValue
-                ? await _slaService.GetSlaDeadlineAsync(vacancy.SubmittedDate.Value) : (DateTime?)null;
+            var slaDeadline = await _slaService.GetSlaDeadlineAsync(vacancy.SubmittedDate.Value);
             
             var review = BuildNewReview(vacancy, previousReviews.Count, slaDeadline);
 
@@ -64,7 +63,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             });
         }
 
-        private VacancyReview BuildNewReview(Vacancy vacancy, int previousReviewCount, DateTime? slaDeadline)
+        private VacancyReview BuildNewReview(Vacancy vacancy, int previousReviewCount, DateTime slaDeadline)
         {
             var review = new VacancyReview
             {
