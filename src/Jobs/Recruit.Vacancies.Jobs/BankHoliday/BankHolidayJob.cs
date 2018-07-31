@@ -17,12 +17,14 @@ namespace Esfa.Recruit.Vacancies.Jobs.BankHoliday
             _bankHolidaysService = bankHolidaysService;
         }
 
-        public Task UpdateBankHolidays([TimerTrigger(Schedules.MidnightDaily, RunOnStartup = true)]
+        public async Task UpdateBankHolidays([TimerTrigger(Schedules.MidnightDaily, RunOnStartup = true)]
             TimerInfo timerInfo, TextWriter log)
         {
-            _logger.LogInformation("Starting updating of Bank Holidays into ReferenceData");
+            _logger.LogInformation("Starting updating Bank Holidays ReferenceData");
 
-            return _bankHolidaysService.UpdateBankHolidaysAsync();
+            await _bankHolidaysService.UpdateBankHolidaysAsync();
+
+            _logger.LogInformation("Finished updating Bank Holidays ReferenceData");
         }
     }
 }
