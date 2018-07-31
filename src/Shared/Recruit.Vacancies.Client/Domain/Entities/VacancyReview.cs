@@ -17,6 +17,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public string EmployerAccountId { get; set; }
         public VacancyUser SubmittedByUser { get; set; }
         public int SubmissionCount { get; set; }
+        public DateTime? SlaDeadline { get; set; }
 
         /// <summary>
         /// We can only approve reviews that are under review.

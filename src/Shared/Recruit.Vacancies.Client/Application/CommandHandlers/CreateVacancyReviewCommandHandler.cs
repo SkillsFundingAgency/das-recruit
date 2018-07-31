@@ -19,18 +19,22 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         private readonly IVacancyReviewRepository _vacancyReviewRepository;
         private readonly IMessaging _messaging;
         private readonly ITimeProvider _time;
+        private readonly ISlaService _slaService;
 
         public CreateVacancyReviewCommandHandler(
             ILogger<CreateVacancyReviewCommandHandler> logger,
             IVacancyRepository vacancyRepository, 
             IVacancyReviewRepository vacancyReviewRepository, 
-            IMessaging messaging, ITimeProvider time)
+            IMessaging messaging, 
+            ITimeProvider time,
+            ISlaService slaService)
         {
             _logger = logger;
             _vacancyRepository = vacancyRepository;
             _vacancyReviewRepository = vacancyReviewRepository;
             _messaging = messaging;
             _time = time;
+            _slaService = slaService;
         }
 
         public async Task Handle(CreateVacancyReviewCommand message, CancellationToken cancellationToken)
@@ -44,8 +48,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             var vacancy = vacancyTask.Result;
             var previousReviews = previousReviewsTasks.Result;
+
+            var slaDeadline = vacancy.SubmittedDate.HasValue
+                ? await _slaService.GetSlaDeadlineAsync(vacancy.SubmittedDate.Value) : (DateTime?)null;
             
-            var review = BuildNewReview(vacancy, previousReviews.Count);
+            var review = BuildNewReview(vacancy, previousReviews.Count, slaDeadline);
 
             await _vacancyReviewRepository.CreateAsync(review);
 
@@ -57,7 +64,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             });
         }
 
-        private VacancyReview BuildNewReview(Vacancy vacancy, int previousReviewCount)
+        private VacancyReview BuildNewReview(Vacancy vacancy, int previousReviewCount, DateTime? slaDeadline)
         {
             var review = new VacancyReview
             {
@@ -67,7 +74,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 CreatedDate = _time.Now,                // NOTE: This is temporary for private beta.
                 EmployerAccountId = vacancy.EmployerAccountId,
                 SubmittedByUser = vacancy.SubmittedByUser,
-                SubmissionCount = previousReviewCount + 1
+                SubmissionCount = previousReviewCount + 1,
+                SlaDeadline = slaDeadline
             };
 
             return review;

@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Castle.Core.Logging;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.FAA;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
 
@@ -26,7 +28,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
                 .Callback<FaaApplicationStatusSummary>(f => actualFaaApplicationStatusSummary = f)
                 .Returns(Task.CompletedTask);
 
-            var sut = new UpdateFaaOnApplicationReviewed(faaServiceMock.Object);
+            var sut = new UpdateFaaOnApplicationReviewed(faaServiceMock.Object, new Mock<ILogger<UpdateFaaOnApplicationReviewed>>().Object);
 
             var @event = new ApplicationReviewedEvent
             {
