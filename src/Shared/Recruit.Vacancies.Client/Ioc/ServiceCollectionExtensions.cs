@@ -70,7 +70,9 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient<IGetMinimumWages, StubNationalMinimumWageService>();
             services.AddTransient<IGenerateVacancyNumbers, MongoSequenceStore>();
             services.AddTransient<IApprenticeshipProgrammeProvider, ApprenticeshipProgrammeProvider>();
-            services.AddTransient<IBankHolidayService, BankHolidaysService>();
+
+            services.Configure<BankHolidayConfiguration>(configuration.GetSection("BankHoliday"));
+            services.AddTransient<IBankHolidayService, BankHolidayService>();
             services.AddTransient<ISlaService, SlaService>();
             
             services.Configure<SlackConfiguration>(configuration.GetSection("Slack"));
@@ -103,6 +105,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient<IQueryStoreWriter, QueryStoreClient>();
 
             services.AddTransient<IReferenceDataReader, MongoDbReferenceDataRepository>();
+            services.AddTransient<IReferenceDataWriter, MongoDbReferenceDataRepository>();
         }
 
         private static void RegisterStorageProviderDeps(IServiceCollection services, IConfiguration configuration)

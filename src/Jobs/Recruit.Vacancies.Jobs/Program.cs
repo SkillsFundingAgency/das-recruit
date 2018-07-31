@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using Esfa.Recruit.Vacancies.Client.Application.CommandHandlers;
 using Esfa.Recruit.Vacancies.Jobs.ApprenticeshipProgrammes;
+using Esfa.Recruit.Vacancies.Jobs.BankHoliday;
 using Esfa.Recruit.Vacancies.Jobs.DashboardGenerator;
 using Esfa.Recruit.Vacancies.Jobs.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Jobs.VacancyApplication;
@@ -157,6 +158,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddScoped<VacancyStatusJob>();
             services.AddScoped<DashboardGeneratorJob>();
             services.AddScoped<VacancyApplicationJob>();
+            services.AddScoped<BankHolidayJob>();
 
             return services;
         }

@@ -1,14 +1,17 @@
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Domain.Services;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Entities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using Polly;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData
 {
-    internal sealed class MongoDbReferenceDataRepository : MongoDbCollectionBase, IReferenceDataReader
+    internal sealed class MongoDbReferenceDataRepository : MongoDbCollectionBase, IReferenceDataReader, IReferenceDataWriter
     {
         private const string Database = "recruit";
         private const string Collection = "referenceData";
@@ -17,9 +20,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData
         private const string CandidateSkills = "CandidateSkills";
         private const string BankHolidays = "BankHolidays";
 
-        public MongoDbReferenceDataRepository(ILogger<MongoDbReferenceDataRepository> logger, IOptions<MongoDbConnectionDetails> details)
+        private ITimeProvider _timeProvider;
+
+        public MongoDbReferenceDataRepository(ILogger<MongoDbReferenceDataRepository> logger, IOptions<MongoDbConnectionDetails> details, ITimeProvider timeProvider)
             : base(logger, Database, Collection, details)
         {
+            _timeProvider = timeProvider;
         }
 
         async Task<CandidateSkills> IReferenceDataReader.GetCandidateSkillsAsync()
@@ -42,6 +48,23 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData
             var result = await collection.FindAsync(filter, options);
 
             return result?.SingleOrDefault();
+        }
+
+        public Task UpsertBankHolidays(BankHolidays bankHolidays)
+        {
+            bankHolidays.Id = BankHolidays;
+            bankHolidays.LastUpdatedDate = _timeProvider.Now;
+            
+            var collection = GetCollection<BankHolidays>();
+
+            var filter = Builders<BankHolidays>.Filter.Eq(Id, BankHolidays);
+
+            return RetryPolicy.ExecuteAsync(context => 
+                collection.ReplaceOneAsync(
+                    filter, 
+                    bankHolidays, 
+                    new UpdateOptions { IsUpsert = true }), 
+                new Context(nameof(UpsertBankHolidays)));
         }
     }
 }
