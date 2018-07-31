@@ -6,7 +6,8 @@ using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.MinimumWage;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Wages
+;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {

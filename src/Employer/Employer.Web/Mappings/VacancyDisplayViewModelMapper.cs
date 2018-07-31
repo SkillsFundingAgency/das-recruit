@@ -5,11 +5,11 @@ using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Wages;
 using Humanizer;
 using Microsoft.Extensions.Options;
 using System.Linq;
 using System.Threading.Tasks;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.MinimumWage;
 
 namespace Esfa.Recruit.Employer.Web.Mappings
 {

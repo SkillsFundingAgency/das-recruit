@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.MinimumWage;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Wages;
 using FluentValidation;
 using FluentValidation.Internal;
 using FluentValidation.Results;
