@@ -34,7 +34,7 @@
             "internalConsoleOptions": "openOnSessionStart",
             "launchBrowser": {
                 "enabled": true,
-                "args": "${auto-detect-url}/accounts/MXD78R/dashboard",
+                "args": "${auto-detect-url}/accounts/${env:EmployerAccount}/",
                 "windows": {
                     "command": "cmd.exe",
                     "args": "/C start ${auto-detect-url}/accounts/MXD78R/dashboard"
