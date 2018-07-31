@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Domain.Services;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.QA;
 using MediatR;
@@ -20,9 +21,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
         private readonly IVacancyReviewRepository _reviewRepository;
         private readonly IQueryStoreWriter _queryStoreWriter;
         private readonly ILogger<UpdateQaDashboardOnReview> _logger;
+        private readonly ITimeProvider _timeProvider;
 
-        public UpdateQaDashboardOnReview(IVacancyReviewRepository reviewRepository, IQueryStoreWriter queryStoreWriter, ILogger<UpdateQaDashboardOnReview> logger)
+        public UpdateQaDashboardOnReview(IVacancyReviewRepository reviewRepository, IQueryStoreWriter queryStoreWriter, ILogger<UpdateQaDashboardOnReview> logger, ITimeProvider timeProvider)
         {
+            _timeProvider = timeProvider;
             _reviewRepository = reviewRepository;
             _queryStoreWriter = queryStoreWriter;
             _logger = logger;
@@ -53,6 +56,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
             {
                 TotalVacanciesForReview = activeReviews.Count,
                 TotalVacanciesResubmitted = GetTotalVacanciesResubmittedCount(activeReviews),
+                TotalVacanciesBrokenSla = GetTotalVacanciesBrokenSla(activeReviews),
                 AllReviews = activeReviews.ToList()
             };
             
@@ -66,6 +70,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
                 .Select(r => r.VacancyReference)
                 .Distinct()
                 .Count();
+        }
+
+        private int GetTotalVacanciesBrokenSla(IEnumerable<VacancyReview> activeReviews)
+        {
+            return activeReviews.Count(r => r.SlaDeadline.HasValue && r.SlaDeadline.Value < _timeProvider.Now);
         }
     }
 }

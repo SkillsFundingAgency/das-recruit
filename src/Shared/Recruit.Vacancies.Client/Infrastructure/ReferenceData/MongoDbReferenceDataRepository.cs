@@ -15,6 +15,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData
 
         private const string Id = "_id";
         private const string CandidateSkills = "CandidateSkills";
+        private const string BankHolidays = "BankHolidays";
 
         public MongoDbReferenceDataRepository(ILogger<MongoDbReferenceDataRepository> logger, IOptions<MongoDbConnectionDetails> details)
             : base(logger, Database, Collection, details)
@@ -25,6 +26,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData
         {
             var filter = Builders<BsonDocument>.Filter.Eq(Id, CandidateSkills);
             var options = new FindOptions<BsonDocument, CandidateSkills> { Limit = 1 };
+
+            var collection = GetCollection<BsonDocument>();
+            var result = await collection.FindAsync(filter, options);
+
+            return result?.SingleOrDefault();
+        }
+
+        async Task<BankHolidays> IReferenceDataReader.GetBankHolidaysAsync()
+        {
+            var filter = Builders<BsonDocument>.Filter.Eq(Id, BankHolidays);
+            var options = new FindOptions<BsonDocument, BankHolidays> { Limit = 1 };
 
             var collection = GetCollection<BsonDocument>();
             var result = await collection.FindAsync(filter, options);
