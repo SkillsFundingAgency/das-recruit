@@ -34,6 +34,11 @@
                     "CollectionName": "users",
                     "OfferThroughput": 1000,
                     "StoredProcedures": []
+                },
+                {
+                    "CollectionName": "applicationReviews",
+                    "OfferThroughput": 1000,
+                    "StoredProcedures": []
                 }
             ]
         }
