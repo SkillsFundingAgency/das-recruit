@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Esfa.Recruit.Vacancies.Client.Domain.Services
+namespace Esfa.Recruit.Vacancies.Client.Application.Services
 {
     public interface IBankHolidayService
     {

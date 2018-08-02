@@ -8,6 +8,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Services;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers

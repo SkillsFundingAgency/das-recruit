@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Services.SLA;
 using Esfa.Recruit.Vacancies.Client.Domain.Services;
 using FluentAssertions;
@@ -12,8 +13,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.S
 {
     public class SlaServiceTests
     {
-        private const int SlaHours = 24;
-
         [Fact]
         public void GetSlaDeadlineAsync_ShouldHandleWorkingDays()
         {
