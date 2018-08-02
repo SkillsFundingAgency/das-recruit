@@ -64,11 +64,25 @@ services:
       - 6379:6379
     networks:
       - recruit-network
+ 
+  azurite:
+    image: arafato/azurite
+    container_name: azurite
+    volumes:
+      - azurite1:/opt/azurite/data
+    ports:
+      - 10000:10000
+      - 10001:10001
+      - 10002:10002
+    networks:
+      - recruit-network
 
 volumes:
   esdata1:
     driver: local
   mongodata1:
+    driver: local
+  azurite1:
     driver: local
 
 networks:
