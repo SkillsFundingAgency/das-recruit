@@ -1,4 +1,4 @@
-﻿namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode
+﻿namespace Esfa.Recruit.Vacancies.Client.Application.Configuration
 {
     public class BankHolidayConfiguration
     {

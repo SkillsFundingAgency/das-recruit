@@ -1,6 +1,6 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
-using Esfa.Recruit.Vacancies.Client.Domain.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 
