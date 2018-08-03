@@ -1,5 +1,6 @@
 ﻿{
   "_id": "MinimumWageRanges",
+  "lastUpdatedDate": "2018-07-01T00:00:00.000Z",
   "ranges": [
     {
       "validFrom": ISODate("2018-04-01T00:00:00.000Z"),
