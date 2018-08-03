@@ -35,13 +35,13 @@ namespace Esfa.Recruit.Vacancies.Jobs.LiveVacanciesGenerator
 
             _logger.LogInformation($"Found {vacancies.Count()} live vacancies to create LiveVacancy queryViews for.");
 
-            Parallel.ForEach(vacancies, async v =>
+            var liveVacancyTasks = vacancies.Select(v =>
             {
                 var programme = programmesData.Programmes.Single(p => p.Id == v.ProgrammeId);
-                await _queryStoreWriter.UpdateLiveVacancyAsync(v.ToLiveVacancyProjection(programme));
+                return _queryStoreWriter.UpdateLiveVacancyAsync(v.ToLiveVacancyProjection(programme));
             });
 
-            await Task.CompletedTask;
+            await Task.WhenAll(liveVacancyTasks);
         }
     }
 }
