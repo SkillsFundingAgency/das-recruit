@@ -23,9 +23,12 @@ namespace Esfa.Recruit.Vacancies.Jobs.LiveVacanciesGenerator
         {
             try
             {
-                _logger.LogInformation($"Start {JobName}");
-                await _job.RunAsync();
-                _logger.LogInformation($"Finished {JobName}");
+                if (!string.IsNullOrEmpty(message))
+                {
+                    _logger.LogInformation($"Start {JobName}");
+                    await _job.RunAsync();
+                    _logger.LogInformation($"Finished {JobName}");
+                }
             }
             catch (Exception ex)
             {
