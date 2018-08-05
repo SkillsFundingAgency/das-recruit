@@ -32,7 +32,7 @@
     <Compile Include="010-queryViews_LiveVacancy_Insert_DefaultField_ApplicationMethod.js" />
     <Compile Include="020-vacancies_Insert_DefaultField_ApplicationMethod.js" />
     <Compile Include="030-queryViews_Unset_TypeField.js" />
-    <Compile Include="archived\030-queryViews_Copy_TypeFieldToViewTypeField.js" />
+    <Compile Include="archived\2018-08-03_030-queryViews_Copy_TypeFieldToViewTypeField.js" />
     <Compile Include="documentMigration.js" />
     <Content Include=".eslintrc.json" />
     <Content Include="Invoke-CosmosDbScript.ps1" />
