@@ -29,9 +29,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             var vm = await _orchestrator.GetDashboardViewModelAsync(employerAccountId);
 
             if (TempData.ContainsKey(TempDataKeys.DashboardErrorMessage))
-            {
                 vm.WarningMessage = TempData[TempDataKeys.DashboardErrorMessage].ToString();
-            }
+
+            if (TempData.ContainsKey(TempDataKeys.DashboardInfoMessage))
+                vm.InfoMessage = TempData[TempDataKeys.DashboardInfoMessage].ToString();
 
             if (string.IsNullOrEmpty(statusFilter))
                 statusFilter = Request.Cookies[CookieNames.VacancyStatusFilter];

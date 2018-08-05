@@ -47,7 +47,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             var vacancy = await Utility.GetAuthorisedVacancyAsync(_client, m, RouteNames.Preview_Submit_Post);
 
             if (!vacancy.CanSubmit)
-                throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
+                throw new InvalidStateException(string.Format(ViewModels.ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
             
             return await ValidateAndExecute(
                 vacancy,

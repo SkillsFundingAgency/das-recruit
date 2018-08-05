@@ -1,0 +1,75 @@
+﻿@using Esfa.Recruit.Vacancies.Client.Domain.Services
+@model Esfa.Recruit.Employer.Web.ViewModels.EditVacancyDates.EditVacancyDatesViewModel
+@inject ITimeProvider timeProvider
+
+<div class="grid-row">
+    <div class="column-full">
+        @Html.Partial("_ValidationSummary", new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames })
+        <div class="todo">
+            <form asp-route="@RouteNames.VacancyEditDates_Post" novalidate>
+                <div esfa-validation-marker-for="ClosingDate" class="form-group">
+                    <fieldset>
+                        <legend class="form-label-bold">Closing date for applications</legend>
+                        <span esfa-validation-message-for="ClosingDate" class="error-message"></span>
+                        <div class="form-date">
+                            <div class="form-group form-group-day">
+                                <label asp-for="ClosingDay" class="form-label">Day</label>
+                                <input asp-for="ClosingDay" class="form-control" type="number" min="1" max="31">
+                            </div>
+                            <div class="form-group form-group-month">
+                                <label asp-for="ClosingMonth" class="form-label">Month</label>
+                                <input asp-for="ClosingMonth" class="form-control" type="number" min="1" max="12">
+                            </div>
+                            <div class="form-group form-group-year">
+                                <label asp-for="ClosingYear" class="form-label">Year</label>
+                                <input asp-for="ClosingYear" class="form-control" type="number" min="@timeProvider.Now.Year">
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <div class="form-group">
+                    <details role="group">
+                        <summary role="button" aria-controls="details-content-0" aria-expanded="true">
+                            <span class="summary">Information about extending closing dates</span>
+                        </summary>
+
+                        <div class="panel panel-border-narrow" id="details-content-0" aria-hidden="false">
+                            <p>If you extend a closing date, your chosen apprenticeship training may no longer be available.</p>
+                            <p>If you need to change the apprenticeship training, you will need to create a new vacancy.</p>
+                        </div>
+                    </details>
+                </div>
+
+
+                <div esfa-validation-marker-for="StartDate" class="form-group">
+                    <fieldset>
+                        <legend class="form-label-bold">Possible start date</legend>
+                        <span esfa-validation-message-for="StartDate" class="error-message"></span>
+                        <div class="form-date">
+                            <div class="form-group form-group-day">
+                                <label asp-for="StartDay" class="form-label">Day</label>
+                                <input asp-for="StartDay" class="form-control" type="number" min="1" max="31">
+                            </div>
+                            <div class="form-group form-group-month">
+                                <label asp-for="StartMonth" class="form-label">Month</label>
+                                <input asp-for="StartMonth" class="form-control" type="number" min="1" max="12">
+                            </div>
+                            <div class="form-group form-group-year">
+                                <label asp-for="StartYear" class="form-label">Year</label>
+                                <input asp-for="StartYear" class="form-control" type="number" min="@timeProvider.Now.Year">
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label-bold" for="apprenticeship-type">Apprenticeship training</label>
+                    <p>@Model.ProgammeName</p>
+                </div>
+                <button type="submit" class="button save-button">Preview changes</button>
+                <a asp-route="@RouteNames.VacancyManage_Get" class="button-link">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>

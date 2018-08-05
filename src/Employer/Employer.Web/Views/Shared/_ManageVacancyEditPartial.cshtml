@@ -1,0 +1,183 @@
+﻿@model Esfa.Recruit.Employer.Web.ViewModels.VacancyManage.ManageVacancyViewModel
+@{
+    var proposedClosingDate = ViewContext.HttpContext.Request.Query[QueryString.ParameterNames.ProposedClosingDate];
+    var proposedStartDate = ViewContext.HttpContext.Request.Query[QueryString.ParameterNames.ProposedStartDate];
+}
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <h3 class="heading-small no-top-margin">Brief overview of the role</h3>
+        <p class="preserve-format">@Model.ShortDescription</p>
+    </div>
+    <div class="column-one-third" id="closingDateSection">
+        <h3 class="heading-small no-top-margin">Closing Date</h3>
+        <p id="vacancy-closing-date">@Model.DisplayableClosingDate</p>
+        <a asp-route="@RouteNames.VacancyEditDates_Get" asp-route-proposedClosingDate="@proposedClosingDate" asp-route-proposedStartDate="@proposedStartDate" esfa-automation="edit-closing-date">Edit</a>
+    </div>
+</div>
+<div class="grid-row">
+    <div class="column-full">
+        <h2 class="heading-large">Apprenticeship summary</h2>
+    </div>
+</div>
+<div class="grid-row">
+    <div class="column-one-third">
+        <ul class="list">
+            <li>
+                <h3 class="heading-small">Working week</h3>
+                <ul class="list">
+                    <li>
+                        @Model.WorkingWeekDescription
+                    </li>
+                    <li>
+                        Total hours per week: @Model.HoursPerWeek
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <h3 class="heading-small">Yearly wage</h3>
+                <p>@Model.WageText</p>
+                <p>@Model.WageInfo</p>
+            </li>
+            <li>
+                <h3 class="heading-small">Expected apprenticeship duration</h3>
+                <p>@Model.ExpectedDuration</p>
+            </li>
+            <li id="possibleStartDateSection">
+                <h3 class="heading-small">Possible start date</h3>
+                <p>@Model.DisplayableStartDate</p>
+                <a asp-route="@RouteNames.VacancyEditDates_Get" asp-route-proposedClosingDate="@proposedClosingDate" asp-route-proposedStartDate="@proposedStartDate" esfa-automation="edit-start-date">Edit</a>
+            </li>
+            <li>
+                <h3 class="heading-small">Apprenticeship level</h3>
+                <p>@Model.TrainingLevel Level Apprenticeship</p>
+            </li>
+            <li>
+                <h3 class="heading-small">Reference number</h3>
+                <p>@Model.VacancyReferenceNumber</p>
+            </li>
+            <li>
+                <h3 class="heading-small">Positions</h3>
+                <p>@Model.NumberOfPositionsCaption</p>
+            </li>
+        </ul>
+    </div>
+    <div class="column-two-thirds">
+        <h3 class="heading-small">Typical working day</h3>
+        <p class="preserve-format">@Model.VacancyDescription</p>
+        <h3 class="heading-small">Training to be provided</h3>
+        <p class="preserve-format">@Model.TrainingDescription</p>
+        <h3 class="heading-small">Future prospects</h3>
+        <p class="preserve-format">@Model.OutcomeDescription</p>
+    </div>
+</div>
+<div class="grid-row">
+    <div class="column-full">
+        <hr class="no-bottom-margin">
+    </div>
+</div>
+<div class="grid-row">
+    <div class="column-full">
+        <h2 class="heading-large">Requirements and prospects</h2>
+    </div>
+</div>
+<div class="grid-row">
+    <div class="column-half">
+        <h3 class="heading-small">Desired skills and personal qualities</h3>
+        <p class="preserve-format">@string.Join(", ", Model.Skills)</p>
+        <h3 class="heading-small">Qualifications</h3>
+        <p class="preserve-format">@Html.Raw(string.Join("<br />", Model.Qualifications))</p>
+    </div>
+    <div class="column-half">
+        <h3 class="heading-small">Things to consider</h3>
+        <p>@Model.ThingsToConsider</p>
+    </div>
+</div>
+<div class="grid-row">
+    <div class="column-full">
+        <hr class="no-bottom-margin">
+    </div>
+</div>
+<div class="grid-row">
+    <div class="column-full">
+        <h2 class="heading-large">About the employer</h2>
+    </div>
+</div>
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <h3 class="heading-small">Description</h3>
+        <p>@Model.EmployerDescription</p>
+        <h3 class="heading-small">Employer</h3>
+        <p>@Model.EmployerName</p>
+        <img asp-condition="@Model.IsDisabilityConfident" src="~/img/disability-confident_545x172.png" class="disability-confident-logo" alt="A logo confirming that the employer is registered as disability confident" />
+        <span class="visuallyhidden">This vacancy meets disability confident requirements</span>
+        <h3 class="heading-small">Website</h3>
+        <p>@Model.EmployerWebsiteUrl</p>
+    </div>
+    <div class="column-one-third">
+        <h3 class="heading-small">Contact</h3>
+        <p>@Model.ContactName</p>
+        <p>@Model.ContactEmail</p>
+        <p>@Model.ContactTelephone</p>
+    </div>
+</div>
+<div class="grid-row">
+    <div class="column-half">
+        <h3 class="heading-small">Location</h3>
+        <ul class="list">
+            @foreach (var addrLine in Model.EmployerAddressElements)
+            {
+                <li>@addrLine</li>
+            }
+        </ul>
+    </div>
+    <div class="column-half">
+        <img asp-condition="@Model.HasMapUrl" id="static-map" src="@Model.MapUrl" />
+    </div>
+</div>
+<div class="grid-row">
+    <div class="column-full">
+        <hr class="no-bottom-margin">
+    </div>
+</div>
+<div class="grid-row">
+    <div class="column-full">
+        <h2 class="heading-large">Training provider</h2>
+    </div>
+</div>
+<div class="grid-row">
+    <div class="column-full">
+        <p> @Model.ProviderName</p>
+        <h3 class="heading-small">Apprenticeship @Model.TrainingType</h3>
+        <p>@Model.TrainingTitle</p>
+    </div>
+</div>
+<div class="grid-row">
+    <div class="column-full">
+        <hr class="no-bottom-margin">
+    </div>
+</div>
+<div id="offline-vacancy">
+    <div class="grid-row">
+        <div class="column-full">
+            <h2 asp-condition="@Model.ShowGeneralApplicationProcessSectionTitle" class="heading-large">Application process</h2>
+            <h2 asp-condition="@Model.HasSpecifiedThroughExternalApplicationMethod" class="heading-large">Employer's application instructions</h2>
+            <div asp-condition="@Model.HasSpecifiedThroughFaaApplicationMethod">
+                <p>Candidates will apply through the <a href="@Model.FindAnApprenticeshipUrl" target="_blank">find an apprenticeship service</a></p>
+            </div>
+            <div asp-condition="@Model.HasSpecifiedThroughExternalApplicationMethod">
+                <p>This apprenticeship requires you to apply through the employer's website.</p>
+                <p>@Model.ApplicationUrl</p>
+            </div>
+            <div asp-condition="@Model.HasApplicationInstructions">
+                <p class="application-instructions">
+                    @Model.ApplicationInstructions
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="grid-row">
+    <div class="column-full">
+        <hr class="no-bottom-margin">
+    </div>
+</div>

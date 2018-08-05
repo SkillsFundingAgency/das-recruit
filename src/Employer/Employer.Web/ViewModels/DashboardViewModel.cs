@@ -10,10 +10,12 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
     {
         public IList<VacancySummary> Vacancies { get; set; }
         public string WarningMessage { get; internal set; }
+        public string InfoMessage { get; internal set; }
 
         public bool ShowNoVacanciesMessage => !HasVacancies;
         public bool HasVacancies => Vacancies.Any();
         public bool HasWarning => !string.IsNullOrEmpty(WarningMessage);
+        public bool HasInfo => !string.IsNullOrEmpty(InfoMessage);
 
         public int NoOfVacancies => Vacancies.Count;
         public int NoOfDraftVacancies => Vacancies.Count(v => v.Status == VacancyStatus.Draft);
@@ -25,6 +27,8 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public IEnumerable<VacancySummary> DisplayVacancies =>  Filter.HasValue
                                                                 ? Vacancies.Where(v => v.Status == Filter.Value)
                                                                 : Vacancies;
+
+        public bool HasDisplayVacanciesContainingLiveVacancies => DisplayVacancies.Any(v => v.Status == VacancyStatus.Live);
 
         public VacancyStatus? Filter { get; internal set; }
 

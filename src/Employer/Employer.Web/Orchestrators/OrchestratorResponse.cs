@@ -8,6 +8,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         public OrchestratorResponse(bool isSuccessful)
         {
             Success = isSuccessful;
+            Errors = new EntityValidationResult();
         }
 
         public OrchestratorResponse(EntityValidationResult errorResult) : this(false)
