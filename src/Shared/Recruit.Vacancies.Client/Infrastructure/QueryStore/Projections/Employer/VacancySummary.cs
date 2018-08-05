@@ -11,6 +11,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Em
         public DateTime? CreatedDate { get; set; }
         public VacancyStatus Status { get; set; }
         public bool IsDeleted { get; set; }
+        public bool IsLive => Status == VacancyStatus.Live;
         public DateTime? SubmittedDate { get; set; }
         public int AllApplicationsCount { get; set; }
         public int NewApplicationsCount { get; set; }

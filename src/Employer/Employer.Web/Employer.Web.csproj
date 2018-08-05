@@ -32,11 +32,13 @@
     <Content Update="nlog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Update="Views\VacancyManage\Live.cshtml">
+    <Content Update="Views\VacancyManage\ManageVacancy.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="ViewModels\VacancyManage\" />
+    <Folder Include="ViewModels\EditVacancyDates\" />
+    <Folder Include="Views\EditVacancyDates\" />
+    <Folder Include="QueryStringModels\" />
   </ItemGroup>
 </Project>

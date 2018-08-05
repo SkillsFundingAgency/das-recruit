@@ -10,7 +10,7 @@
             }
         }
 
-        public static class TrainingValidationMessages
+        public static class DateValidationMessages
         {
             public static class TypeOfDate
             {

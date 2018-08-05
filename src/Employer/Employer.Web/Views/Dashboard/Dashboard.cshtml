@@ -6,6 +6,9 @@
         <div asp-condition="Model.HasWarning" class="warning-summary no-bottom-margin">
             <p>@Model.WarningMessage</p>
         </div>
+        <div asp-condition="Model.HasInfo" class="info-summary no-bottom-margin">
+            <p>@Model.InfoMessage</p>
+        </div>
     </div>
 </div>
 <div class="grid-row">
@@ -84,6 +87,7 @@
                         <th class="bold">Vacancy title</th>
                         <th class="bold">Reference number</th>
                         <th class="bold">Status</th>
+                        <th asp-condition="@Model.HasDisplayVacanciesContainingLiveVacancies">&nbsp;</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -97,6 +101,9 @@
                             <span asp-condition="@isMissingVacancyReferenceNo">Not available</span>
                         </td>
                         <td>@vacancy.Status.GetDisplayName()</td>
+                        <td asp-condition="@Model.HasDisplayVacanciesContainingLiveVacancies">
+                            <a asp-condition="@vacancy.IsLive" asp-route="@RouteNames.VacancyManage_Get" asp-route-vacancyId="@vacancy.Id">Edit</a>
+                        </td>
                     </tr>
 }
                     <tr asp-condition="@Model.HasNoFilteredVacanciesToShow">

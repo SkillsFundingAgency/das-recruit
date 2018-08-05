@@ -9,7 +9,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.Part1.Training
     using Esfa.Recruit.Employer.Web.ViewModels.Part1.Training;
     using FluentAssertions;
     using Xunit;
-    using ErrMsg = ValidationMessages.TrainingValidationMessages;
+    using ErrMsg = ValidationMessages.DateValidationMessages;
 
     public class TrainingEditModelTests
     {

@@ -1,5 +1,6 @@
 ﻿@using Microsoft.Extensions.Options;
-@model Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer.EmployerViewModel
+@using Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer;
+@model EmployerViewModel
 @inject IOptions<PostcodeAnywhereConfiguration> PcaConfig
 <div class="grid-row">
     <div class="column-full">
@@ -75,37 +76,38 @@
 @section HeadJS
 {
 <script>
-    window.EsfaRecruit.PcaConfig = {
-        key: '@PcaConfig.Value.Key',
-        findEndpoint: '@PcaConfig.Value.FindEndpoint',
-        retrieveEndpoint: '@PcaConfig.Value.RetrieveEndpoint'
-    };
+window.EsfaRecruit.PcaConfig = {
+    key: '@PcaConfig.Value.Key',
+    findEndpoint: '@PcaConfig.Value.FindEndpoint',
+    retrieveEndpoint: '@PcaConfig.Value.RetrieveEndpoint'
+};
 </script>
 }
 @section FooterJS
 {
 <script asp-condition="@Model.HasMoreThanOneOrganisation">
-	$(document).ready(function() {
-		var addresses = @Json.Serialize(Model.Organisations);
+$(document).ready(function() {
+    var orgInputName = @nameof(EmployerViewModel.SelectedOrganisationName);
+	var addresses = @Json.Serialize(Model.Organisations);
 
-		var setAddressById = function(id) {
-			for (var pos in addresses) {
-				if (addresses[pos].id === id) {
-					var matchedItem = addresses[pos];
-					$("#AddressLine1").val(matchedItem.address.addressLine1);
-					$("#AddressLine2").val(matchedItem.address.addressLine2);
-					$("#AddressLine3").val(matchedItem.address.addressLine3);
-					$("#AddressLine4").val(matchedItem.address.addressLine4);
-					$("#Postcode").val(matchedItem.address.postcode);
-				}
+	var setAddressById = function(id) {
+		for (var pos in addresses) {
+			if (addresses[pos].id === id) {
+				var matchedItem = addresses[pos];
+				$("#AddressLine1").val(matchedItem.address.addressLine1);
+				$("#AddressLine2").val(matchedItem.address.addressLine2);
+				$("#AddressLine3").val(matchedItem.address.addressLine3);
+				$("#AddressLine4").val(matchedItem.address.addressLine4);
+				$("#Postcode").val(matchedItem.address.postcode);
 			}
-		};
+		}
+	};
 
-        $("input[name='SelectedOrganisationName']").click(function(e) {
-            var orgId = $(e.target).attr('id').slice(4);
-            setAddressById(orgId);
-        });
+    $("input[name='" + orgInputName + "']").click(function(e) {
+        var orgId = $(e.target).attr('id').slice(4);
+        setAddressById(orgId);
     });
+});
 </script>
 
 <script src="/lib/jquery-ui/dist/jquery-ui.min.js"></script>

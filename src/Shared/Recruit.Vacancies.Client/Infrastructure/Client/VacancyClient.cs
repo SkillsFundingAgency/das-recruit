@@ -64,6 +64,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _messaging.SendCommandAsync(command);
         }
 
+        public Task UpdatePublishedVacancyAsync(Vacancy vacancy, VacancyUser user)
+        {
+            var command = new UpdateLiveVacancyCommand
+            {
+                Vacancy = vacancy,
+                User = user
+            };
+
+            return _messaging.SendCommandAsync(command);
+        }
+
         public Task<Vacancy> GetVacancyAsync(Guid vacancyId)
         {
             return _repository.GetVacancyAsync(vacancyId);
