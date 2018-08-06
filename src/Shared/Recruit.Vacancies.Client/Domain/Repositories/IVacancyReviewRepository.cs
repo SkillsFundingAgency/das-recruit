@@ -11,6 +11,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Repositories
         Task<List<VacancyReview>> GetActiveAsync();
         Task<VacancyReview> GetAsync(Guid reviewId);
         Task UpdateAsync(VacancyReview review);
-        Task<List<VacancyReview>> GetForVacancyAsyc(long vacancyReference);
+        Task<List<VacancyReview>> GetForVacancyAsync(long vacancyReference);
     }
 }

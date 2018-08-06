@@ -61,14 +61,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             return RetryPolicy.ExecuteAsync(context => collection.ReplaceOneAsync(filter, review), new Context(nameof(UpdateAsync)));
         }
 
-        public Task<List<VacancyReview>> GetForVacancyAsyc(long vacancyReference)
+        public Task<List<VacancyReview>> GetForVacancyAsync(long vacancyReference)
         {
             var filter = Builders<VacancyReview>.Filter.Eq(r => r.VacancyReference, vacancyReference);
 
             var collection = GetCollection<VacancyReview>();
             return RetryPolicy.ExecuteAsync(context => collection
                 .Find(filter)
-                .ToListAsync(), new Context(nameof(GetForVacancyAsyc)));
+                .ToListAsync(), new Context(nameof(GetForVacancyAsync)));
         }
     }
 }

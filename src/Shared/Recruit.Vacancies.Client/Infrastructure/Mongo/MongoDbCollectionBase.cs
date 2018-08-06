@@ -49,7 +49,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
                         TimeSpan.FromSeconds(2),
                         TimeSpan.FromSeconds(4)
                     }, (exception, timeSpan, retryCount, context) => {
-                        _logger.LogWarning($"Error executing Mongo Command for method {context.OperationKey}. Retrying in {timeSpan.Seconds} secs...attempt: {retryCount}");    
+                        _logger.LogWarning($"Error executing Mongo Command for method {context.OperationKey} Reason: {exception.Message}. Retrying in {timeSpan.Seconds} secs...attempt: {retryCount}");    
                     });
         }
     }

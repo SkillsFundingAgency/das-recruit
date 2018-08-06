@@ -43,7 +43,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _logger.LogInformation("Creating vacancy review for vacancy {vacancyReference}.", message.VacancyReference);
 
             var vacancyTask = _vacancyRepository.GetVacancyAsync(message.VacancyReference);
-            var previousReviewsTask = _vacancyReviewRepository.GetForVacancyAsyc(message.VacancyReference);
+            var previousReviewsTask = _vacancyReviewRepository.GetForVacancyAsync(message.VacancyReference);
 
             await Task.WhenAll(vacancyTask, previousReviewsTask);
 
