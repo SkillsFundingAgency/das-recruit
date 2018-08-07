@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
@@ -6,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Polly;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 {
@@ -62,6 +64,20 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             var filter = Builders<T>.Filter.Eq(d => d.Id, item.Id);
             
             return RetryPolicy.ExecuteAsync(context => collection.ReplaceOneAsync(filter, item, new UpdateOptions { IsUpsert = true }), new Context(nameof(IQueryStore.UpsertAsync)));
+        }
+
+        async Task IQueryStore.RefreshAllAsync<T>(IEnumerable<T> items)
+        {
+            var collection = GetCollection<T>();
+            
+            if (!collection.Exists())
+                throw new InfrastructureException($"Expected that collection: {Collection} would already be created.");
+
+            var filter = Builders<T>.Filter.Eq(d => d.ViewType, items.First().ViewType);
+
+            await RetryPolicy.ExecuteAsync(context => collection.DeleteManyAsync(filter), new Context(nameof(IQueryStore.RefreshAllAsync)));
+
+            await RetryPolicy.ExecuteAsync(context => collection.InsertManyAsync(items), new Context(nameof(IQueryStore.RefreshAllAsync)));
         }
     }
 }

@@ -16,6 +16,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         Task UpdateEmployerVacancyDataAsync(string employerAccountId, IEnumerable<LegalEntity> legalEntities);
         Task UpdateLiveVacancyAsync(LiveVacancy vacancy);
         Task DeleteLiveVacancyAsync(long vacancyReference);
+        Task RefreshLiveVacancies(IEnumerable<LiveVacancy> liveVacancies);
         Task UpdateVacancyApplicationsAsync(VacancyApplications vacancyApplications);
         Task UpdateQaDashboardAsync(QaDashboard qaDashboard);
     }

@@ -6,6 +6,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Li
 {
     public class LiveVacancy : QueryProjectionBase
     {
+        public LiveVacancy()
+        {
+            ViewType = QueryViewType.LiveVacancy.TypeName;
+        }
+
         public Guid VacancyId { get; set; }
         
         public string ApplicationInstructions { get; set; }
@@ -38,5 +43,4 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Li
         public long VacancyReference { get; set; }
         public Wage Wage { get; set; }
     }
-    
 }
