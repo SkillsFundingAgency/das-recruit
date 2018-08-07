@@ -92,10 +92,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 
         public Task UpdateLiveVacancyAsync(LiveVacancy vacancy)
         {
-            vacancy.Id = GetLiveVacancyId(vacancy.VacancyReference);
-            vacancy.ViewType = QueryViewType.LiveVacancy.TypeName;
-            vacancy.LastUpdated = _timeProvider.Now;
-
             return _queryStore.UpsertAsync(vacancy);
         }
         
@@ -108,6 +104,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         {
             var liveVacancyId = GetLiveVacancyId(vacancyReference);
             return _queryStore.DeleteAsync<LiveVacancy>(liveVacancyId);
+        }
+
+        public Task RefreshLiveVacancies(IEnumerable<LiveVacancy> liveVacancies)
+        {
+            return _queryStore.RefreshAllAsync(liveVacancies);
         }
 
         public Task UpdateVacancyApplicationsAsync(VacancyApplications vacancyApplications)
