@@ -20,11 +20,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         {
         }
 
-        async Task<bool> IQueryStore.DeleteAsync<T>(string key)
+        async Task<bool> IQueryStore.DeleteAsync<T>(string typeName, string key)
         {
             var collection = GetCollection<T>();
 
-            var filter = Builders<T>.Filter.Eq(d => d.Id, key);
+            var filterBuilder = Builders<T>.Filter;
+
+            var filter = filterBuilder.Eq(d => d.ViewType, typeName)
+                        & filterBuilder.Eq(d => d.Id, key);
+
             var result = await RetryPolicy.ExecuteAsync(context => collection.DeleteOneAsync(filter), new Context(nameof(IQueryStore.DeleteAsync)));
 
             return result.DeletedCount == 1;
@@ -40,9 +44,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             return result?.ToEnumerable();
         }
 
-        async Task<T> IQueryStore.GetAsync<T>(string key)
+        async Task<T> IQueryStore.GetAsync<T>(string typeName, string key)
         {
-            var filter = Builders<T>.Filter.Eq(d => d.Id, key);
+            var filterBuilder = Builders<T>.Filter;
+
+            var filter = filterBuilder.Eq(d => d.ViewType, typeName)
+                        & filterBuilder.Eq(d => d.Id, key);
 
             var collection = GetCollection<T>();
             var result = await RetryPolicy.ExecuteAsync(context => collection.FindAsync(filter), new Context(nameof(IQueryStore.GetAsync)));
@@ -54,7 +61,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         {
             var collection = GetCollection<T>();
 
-            var filter = Builders<T>.Filter.Eq(d => d.Id, item.Id);
+            var filterBuilder = Builders<T>.Filter;
+
+            var filter = filterBuilder.Eq(d => d.ViewType, item.ViewType)
+                        & filterBuilder.Eq(d => d.Id, item.Id);
 
             return RetryPolicy.ExecuteAsync(context => collection.ReplaceOneAsync(filter, item, new UpdateOptions { IsUpsert = true }), new Context(nameof(IQueryStore.UpsertAsync)));
         }
