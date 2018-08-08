@@ -14,6 +14,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 
         Task<bool> DeleteAsync<T>(string key) where T : QueryProjectionBase;
 
-        Task RefreshAllAsync<T>(IEnumerable<T> items) where T : QueryProjectionBase;
+        Task RecreateAsync<T>(IList<T> items) where T : QueryProjectionBase;
     }
 }

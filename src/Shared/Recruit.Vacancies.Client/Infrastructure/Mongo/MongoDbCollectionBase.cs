@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Security.Authentication;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
@@ -35,6 +36,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
             var client = new MongoClient(settings);
             var database = client.GetDatabase(_dbName);
             var collection = database.GetCollection<T>(_collectionName);
+
+            if (!collection.Exists())
+                throw new InfrastructureException($"Expected that collection: {collection} would already be created.");
 
             return collection;
         }

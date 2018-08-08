@@ -4,6 +4,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Ed
 {
     public class EditVacancyInfo : QueryProjectionBase
     {
+        public EditVacancyInfo()  : base(QueryViewType.EditVacancyInfo.TypeName)
+        {
+        }
+
         public IEnumerable<LegalEntity> LegalEntities { get; set; }
     }
 }

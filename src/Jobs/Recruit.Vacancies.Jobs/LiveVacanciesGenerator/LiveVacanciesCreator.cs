@@ -30,7 +30,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.LiveVacanciesGenerator
 
             await Task.WhenAll(vacanciesTask, programmesTask);
 
-            var vacancies = vacanciesTask.Result;
+            var vacancies = vacanciesTask.Result.ToList();
             var programmesData = programmesTask.Result;
 
             _logger.LogInformation($"Found {vacancies.Count()} live vacancies to create LiveVacancy queryViews for.");
@@ -41,7 +41,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.LiveVacanciesGenerator
                 return v.ToLiveVacancyProjection(programme);
             });
 
-            await _queryStoreWriter.RefreshLiveVacancies(liveVacancies);
+            await _queryStoreWriter.RecreateLiveVacancies(liveVacancies);
         }
     }
 }

@@ -7,7 +7,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Polly;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 {
@@ -24,9 +23,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         async Task<bool> IQueryStore.DeleteAsync<T>(string key)
         {
             var collection = GetCollection<T>();
-            
-            if (!collection.Exists())
-                throw new InfrastructureException($"Expected that collection: {Collection} would already be created.");
 
             var filter = Builders<T>.Filter.Eq(d => d.Id, key);
             var result = await RetryPolicy.ExecuteAsync(context => collection.DeleteOneAsync(filter), new Context(nameof(IQueryStore.DeleteAsync)));
@@ -57,27 +53,21 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         Task IQueryStore.UpsertAsync<T>(T item)
         {
             var collection = GetCollection<T>();
-            
-            if (!collection.Exists())
-                throw new InfrastructureException($"Expected that collection: {Collection} would already be created.");
 
             var filter = Builders<T>.Filter.Eq(d => d.Id, item.Id);
-            
+
             return RetryPolicy.ExecuteAsync(context => collection.ReplaceOneAsync(filter, item, new UpdateOptions { IsUpsert = true }), new Context(nameof(IQueryStore.UpsertAsync)));
         }
 
-        async Task IQueryStore.RefreshAllAsync<T>(IEnumerable<T> items)
+        async Task IQueryStore.RecreateAsync<T>(IList<T> items)
         {
             var collection = GetCollection<T>();
-            
-            if (!collection.Exists())
-                throw new InfrastructureException($"Expected that collection: {Collection} would already be created.");
 
             var filter = Builders<T>.Filter.Eq(d => d.ViewType, items.First().ViewType);
 
-            await RetryPolicy.ExecuteAsync(context => collection.DeleteManyAsync(filter), new Context(nameof(IQueryStore.RefreshAllAsync)));
+            await RetryPolicy.ExecuteAsync(context => collection.DeleteManyAsync(filter), new Context(nameof(IQueryStore.RecreateAsync)));
 
-            await RetryPolicy.ExecuteAsync(context => collection.InsertManyAsync(items), new Context(nameof(IQueryStore.RefreshAllAsync)));
+            await RetryPolicy.ExecuteAsync(context => collection.InsertManyAsync(items), new Context(nameof(IQueryStore.RecreateAsync)));
         }
     }
 }
