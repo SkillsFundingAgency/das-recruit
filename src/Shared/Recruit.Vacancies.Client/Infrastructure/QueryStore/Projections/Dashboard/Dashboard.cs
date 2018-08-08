@@ -4,6 +4,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Da
 {
     public class Dashboard : QueryProjectionBase
     {
+        public Dashboard() : base(QueryViewType.Dashboard.TypeName)
+        {
+        }
+
         public IEnumerable<VacancySummary> Vacancies { get; set; }
     }
 }

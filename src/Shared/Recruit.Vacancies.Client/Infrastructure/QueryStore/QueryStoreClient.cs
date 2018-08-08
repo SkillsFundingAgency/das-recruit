@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Services;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Dashboard;
@@ -33,7 +34,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             var dashboardItem = new Dashboard
             {
                 Id = QueryViewType.Dashboard.GetIdValue(employerAccountId),
-                ViewType = QueryViewType.Dashboard.TypeName,
                 Vacancies = vacancySummaries,
                 LastUpdated = _timeProvider.Now
             };
@@ -46,7 +46,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             var programmesItem = new ApprenticeshipProgrammes
             {
                 Id = QueryViewType.ApprenticeshipProgrammes.GetIdValue(),
-                ViewType = QueryViewType.ApprenticeshipProgrammes.TypeName,
                 Programmes = programmes,
                 LastUpdated = _timeProvider.Now
             };
@@ -68,7 +67,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             var employerVacancyDataItem = new EditVacancyInfo
             {
                 Id = QueryViewType.EditVacancyInfo.GetIdValue(employerAccountId),
-                ViewType = QueryViewType.EditVacancyInfo.TypeName,
                 LegalEntities = legalEntities,
                 LastUpdated = _timeProvider.Now
             };
@@ -106,15 +104,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             return _queryStore.DeleteAsync<LiveVacancy>(liveVacancyId);
         }
 
-        public Task RefreshLiveVacancies(IEnumerable<LiveVacancy> liveVacancies)
+        public Task RecreateLiveVacancies(IEnumerable<LiveVacancy> liveVacancies)
         {
-            return _queryStore.RefreshAllAsync(liveVacancies);
+            return _queryStore.RecreateAsync(liveVacancies.ToList());
         }
 
         public Task UpdateVacancyApplicationsAsync(VacancyApplications vacancyApplications)
         {
             vacancyApplications.Id = QueryViewType.VacancyApplications.GetIdValue(vacancyApplications.VacancyReference.ToString());
-            vacancyApplications.ViewType = QueryViewType.VacancyApplications.TypeName;
             vacancyApplications.LastUpdated = _timeProvider.Now;
 
             return _queryStore.UpsertAsync(vacancyApplications);
@@ -130,7 +127,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         public Task UpdateQaDashboardAsync(QaDashboard qaDashboard)
         {
             qaDashboard.Id = QueryViewType.QaDashboard.GetIdValue();
-            qaDashboard.ViewType = QueryViewType.QaDashboard.TypeName;
             qaDashboard.LastUpdated = _timeProvider.Now;
 
             return _queryStore.UpsertAsync(qaDashboard);

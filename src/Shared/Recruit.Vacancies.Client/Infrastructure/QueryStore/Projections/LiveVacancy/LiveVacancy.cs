@@ -6,9 +6,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Li
 {
     public class LiveVacancy : QueryProjectionBase
     {
-        public LiveVacancy()
+        public LiveVacancy() : base(QueryViewType.LiveVacancy.TypeName)
         {
-            ViewType = QueryViewType.LiveVacancy.TypeName;
         }
 
         public Guid VacancyId { get; set; }
