@@ -57,7 +57,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         {
             var key = QueryViewType.ApprenticeshipProgrammes.GetIdValue();
 
-            var storeItem = await _queryStore.GetAsync<ApprenticeshipProgrammes>(key);
+            var storeItem = await _queryStore.GetAsync<ApprenticeshipProgrammes>(QueryViewType.ApprenticeshipProgrammes.TypeName, key);
 
             return storeItem;
         }
@@ -78,14 +78,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         {
             var key = QueryViewType.EditVacancyInfo.GetIdValue(employerAccountId);
 
-            return _queryStore.GetAsync<EditVacancyInfo>(key);
+            return _queryStore.GetAsync<EditVacancyInfo>(QueryViewType.EditVacancyInfo.TypeName, key);
         }
 
         public Task<VacancyApplications> GetVacancyApplicationsAsync(string vacancyReference)
         {
             var key = QueryViewType.VacancyApplications.GetIdValue(vacancyReference);
 
-            return _queryStore.GetAsync<VacancyApplications>(key);
+            return _queryStore.GetAsync<VacancyApplications>(QueryViewType.VacancyApplications.TypeName, key);
         }
 
         public Task UpdateLiveVacancyAsync(LiveVacancy vacancy)
@@ -101,7 +101,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         public Task DeleteLiveVacancyAsync(long vacancyReference)
         {
             var liveVacancyId = GetLiveVacancyId(vacancyReference);
-            return _queryStore.DeleteAsync<LiveVacancy>(liveVacancyId);
+            return _queryStore.DeleteAsync<LiveVacancy>(QueryViewType.LiveVacancy.TypeName, liveVacancyId);
         }
 
         public Task RecreateLiveVacancies(IEnumerable<LiveVacancy> liveVacancies)
@@ -121,7 +121,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         {
             var key = QueryViewType.QaDashboard.GetIdValue();
 
-            return _queryStore.GetAsync<QaDashboard>(key);
+            return _queryStore.GetAsync<QaDashboard>(QueryViewType.QaDashboard.TypeName, key);
         }
 
         public Task UpdateQaDashboardAsync(QaDashboard qaDashboard)
