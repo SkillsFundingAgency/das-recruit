@@ -4,7 +4,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections
 {
     public abstract class QueryProjectionBase
     {
-        public QueryProjectionBase(string viewType)
+        protected QueryProjectionBase(string viewType)
         {
             ViewType = viewType;
         }
