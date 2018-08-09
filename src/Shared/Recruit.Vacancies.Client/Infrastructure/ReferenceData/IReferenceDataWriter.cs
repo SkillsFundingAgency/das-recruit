@@ -5,6 +5,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData
 {
     public interface IReferenceDataWriter
     {
-        Task UpsertBankHolidays(BankHolidays bankHolidays);
+        Task UpsertReferenceData<T>(T referenceData) where T : class, IReferenceDataItem;
     }
 }

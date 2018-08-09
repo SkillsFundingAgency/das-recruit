@@ -4,7 +4,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Entities
 {
-    public class BankHolidays
+    public class BankHolidays : IReferenceDataItem
     {
         public string Id { get; set; }
         public DateTime LastUpdatedDate { get; set; } 

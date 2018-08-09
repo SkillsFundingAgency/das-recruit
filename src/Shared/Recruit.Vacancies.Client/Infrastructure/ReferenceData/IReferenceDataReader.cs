@@ -5,8 +5,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData
 {
     public interface IReferenceDataReader
     {
-        Task<CandidateSkills> GetCandidateSkillsAsync();
-
-        Task<BankHolidays> GetBankHolidaysAsync();
+        Task<T> GetReferenceData<T>() where T : class, IReferenceDataItem;
     }
 }

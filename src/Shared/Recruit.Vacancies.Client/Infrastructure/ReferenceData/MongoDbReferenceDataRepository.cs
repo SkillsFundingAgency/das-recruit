@@ -1,7 +1,8 @@
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Services;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Entities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -15,56 +16,63 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData
     {
         private const string Database = "recruit";
         private const string Collection = "referenceData";
-
         private const string Id = "_id";
-        private const string CandidateSkills = "CandidateSkills";
-        private const string BankHolidays = "BankHolidays";
-
-        private ITimeProvider _timeProvider;
+        private readonly IDictionary<Type, string> _itemIdLookup;
+        private readonly ITimeProvider _timeProvider;
 
         public MongoDbReferenceDataRepository(ILogger<MongoDbReferenceDataRepository> logger, IOptions<MongoDbConnectionDetails> details, ITimeProvider timeProvider)
             : base(logger, Database, Collection, details)
         {
             _timeProvider = timeProvider;
+            _itemIdLookup = BuildLookup();
         }
 
-        async Task<CandidateSkills> IReferenceDataReader.GetCandidateSkillsAsync()
+        public async Task<T> GetReferenceData<T>() where T : class, IReferenceDataItem
         {
-            var filter = Builders<BsonDocument>.Filter.Eq(Id, CandidateSkills);
-            var options = new FindOptions<BsonDocument, CandidateSkills> { Limit = 1 };
+            try
+            {
+                var id = _itemIdLookup[typeof(T)];
 
-            var collection = GetCollection<BsonDocument>();
-            var result = await collection.FindAsync(filter, options);
+                var filter = Builders<BsonDocument>.Filter.Eq(Id, id);
+                var options = new FindOptions<BsonDocument, T> { Limit = 1 };
 
-            return result?.SingleOrDefault();
+                var collection = GetCollection<BsonDocument>();
+                var result = await collection.FindAsync(filter, options);
+                
+                return result?.SingleOrDefault();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                throw new ArgumentOutOfRangeException($"{typeof(T).Name} is not a recognised reference data type", ex);
+            }
         }
 
-        async Task<BankHolidays> IReferenceDataReader.GetBankHolidaysAsync()
+        public Task UpsertReferenceData<T>(T referenceData) where T : class, IReferenceDataItem
         {
-            var filter = Builders<BsonDocument>.Filter.Eq(Id, BankHolidays);
-            var options = new FindOptions<BsonDocument, BankHolidays> { Limit = 1 };
-
-            var collection = GetCollection<BsonDocument>();
-            var result = await collection.FindAsync(filter, options);
-
-            return result?.SingleOrDefault();
-        }
-
-        Task IReferenceDataWriter.UpsertBankHolidays(BankHolidays bankHolidays)
-        {
-            bankHolidays.Id = BankHolidays;
-            bankHolidays.LastUpdatedDate = _timeProvider.Now;
+            var id = _itemIdLookup[typeof(T)];
+            referenceData.Id = id;
+            referenceData.LastUpdatedDate = _timeProvider.Now;
             
-            var collection = GetCollection<BankHolidays>();
+            var collection = GetCollection<T>();
 
-            var filter = Builders<BankHolidays>.Filter.Eq(Id, BankHolidays);
+            var filter = Builders<T>.Filter.Eq(Id, id);
 
             return RetryPolicy.ExecuteAsync(context => 
                 collection.ReplaceOneAsync(
                     filter, 
-                    bankHolidays, 
+                    referenceData, 
                     new UpdateOptions { IsUpsert = true }), 
-                new Context(nameof(IReferenceDataWriter.UpsertBankHolidays)));
+                new Context(nameof(IReferenceDataWriter.UpsertReferenceData)));
+        }
+
+        private IDictionary<Type, string> BuildLookup()
+        {
+            return new Dictionary<Type, string> 
+                {
+                    { typeof(CandidateSkills), "CandidateSkills" },
+                    { typeof(MinimumWages), "MinimumWageRanges" },
+                    { typeof(BankHolidays), "BankHolidays" }
+                };
         }
     }
 }

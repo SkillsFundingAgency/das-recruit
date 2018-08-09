@@ -29,7 +29,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services
 
         public async Task<List<DateTime>> GetBankHolidaysAsync()
         {
-            var bankHolidayReferenceData = await _referenceDataReader.GetBankHolidaysAsync();
+            var bankHolidayReferenceData = await _referenceDataReader.GetReferenceData<BankHolidays>();
 
             return bankHolidayReferenceData.Data.EnglandAndWales.Events
                 .Select(e => DateTime.Parse(e.Date))
@@ -48,7 +48,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services
             var bankHolidays = new BankHolidays
                 {Data = response.Data};
 
-            await _referenceDataWriter.UpsertBankHolidays(bankHolidays);
+            await _referenceDataWriter.UpsertReferenceData(bankHolidays);
 
             _logger.LogInformation($"Upserted bank holidays into ReferenceData store. Last England and Wales date:{bankHolidays.Data.EnglandAndWales.Events.Last().Date}");
         }

@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators.VacancyValidators;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Services;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.MinimumWage;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Wages;
 using FluentValidation;
 using Microsoft.Extensions.Options;
 
