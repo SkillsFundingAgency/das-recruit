@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Esfa.Recruit.Vacancies.Client.Domain.Events
 {
-    public class VacancyLiveEvent : EventBase, INotification, IVacancyEvent
+    public class VacancyPublishedEvent : EventBase, INotification, IVacancyEvent
     {
         public string EmployerAccountId { get; set; }
         public Guid VacancyId { get; set; }

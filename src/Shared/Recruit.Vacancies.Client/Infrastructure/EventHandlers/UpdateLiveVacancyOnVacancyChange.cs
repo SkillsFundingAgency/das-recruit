@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
 {
-    public class UpdateLiveVacancyOnVacancyChange : INotificationHandler<VacancyApprovedEvent>, INotificationHandler<VacancyLiveEvent>
+    public class UpdateLiveVacancyOnVacancyChange : INotificationHandler<VacancyApprovedEvent>, INotificationHandler<VacancyPublishedEvent>
     {
         private readonly IVacancyRepository _repository;
         private readonly ILogger<UpdateDashboardOnVacancyChange> _logger;
@@ -41,7 +41,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
             });
         }
 
-        public async Task Handle(VacancyLiveEvent notification, CancellationToken cancellationToken)
+        public async Task Handle(VacancyPublishedEvent notification, CancellationToken cancellationToken)
         {
             var vacancyTask = _repository.GetVacancyAsync(notification.VacancyId);
             var programmeTask = _queryStoreReader.GetApprenticeshipProgrammesAsync();

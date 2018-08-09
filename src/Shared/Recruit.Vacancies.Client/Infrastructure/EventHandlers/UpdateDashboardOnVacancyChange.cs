@@ -12,7 +12,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
                                                     INotificationHandler<DraftVacancyUpdatedEvent>,
                                                     INotificationHandler<VacancySubmittedEvent>,
                                                     INotificationHandler<VacancyDeletedEvent>,
-                                                    INotificationHandler<VacancyLiveEvent>,
+                                                    INotificationHandler<VacancyPublishedEvent>,
                                                     INotificationHandler<VacancyClosedEvent>,
                                                     INotificationHandler<ApplicationReviewCreatedEvent>,
                                                     INotificationHandler<ApplicationReviewedEvent>
@@ -48,7 +48,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
             return Handle(notification);
         }
 
-        public Task Handle(VacancyLiveEvent notification, CancellationToken cancellationToken)
+        public Task Handle(VacancyPublishedEvent notification, CancellationToken cancellationToken)
         {
             return Handle(notification);
         }
