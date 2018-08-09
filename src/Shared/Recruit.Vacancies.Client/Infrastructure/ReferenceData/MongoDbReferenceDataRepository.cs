@@ -71,7 +71,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData
                 {
                     { typeof(CandidateSkills), "CandidateSkills" },
                     { typeof(MinimumWages), "MinimumWageRanges" },
-                    { typeof(BankHolidays), "BankHolidays" }
+                    { typeof(BankHolidays), "BankHolidays" },
+                    { typeof(Qualifications), "QualificationTypes"}
                 };
         }
     }

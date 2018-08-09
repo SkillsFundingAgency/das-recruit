@@ -1,8 +1,8 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.QA;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Entities;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
@@ -16,6 +16,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task StartReview(Guid reviewId, VacancyUser user);
         Task ReferVacancyReviewAsync(Guid reviewId);
         Task ApproveReferredReviewAsync(Guid reviewId, string shortDescription, string vacancyDescription, string trainingDescription, string outcomeDescription, string thingsToConsider, string employerDescription);
-        
+        Task<Qualifications> GetCandidateQualificationsAsync();
     }
 }

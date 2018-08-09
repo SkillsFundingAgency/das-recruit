@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using FluentAssertions;
+using Moq;
 using Xunit;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.SingleField
@@ -11,10 +11,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
     {
         public QualificationsTests()
         {
-            MockQualificationConfiguration.Setup(q => q.Value).Returns(new QualificationsConfiguration
-            {
-                QualificationTypes = new List<string>{"type"}
-            });
+            MockQualificationsProvider.Setup(q => q.GetQualificationsAsync()).ReturnsAsync(new List<string>{"type"});
         }
 
         [Fact]

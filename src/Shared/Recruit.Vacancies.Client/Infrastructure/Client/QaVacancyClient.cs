@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
@@ -9,12 +8,15 @@ using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.QA;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Entities;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
     public class QaVacancyClient : IQaVacancyClient
     {
         private readonly IQueryStoreReader _queryStoreReader;
+        private readonly IReferenceDataReader _referenceDataReader;
         private readonly IVacancyReviewRepository _reviewRepository;
         private readonly IVacancyRepository _vacancyRepository;
         private readonly IApprenticeshipProgrammeProvider _apprenticeshipProgrammesProvider;
@@ -22,12 +24,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public QaVacancyClient(
                     IQueryStoreReader queryStoreReader,
+                    IReferenceDataReader referenceDataReader,
                     IVacancyReviewRepository reviewRepository, 
                     IVacancyRepository vacancyRepository, 
                     IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider,
                     IMessaging messaging)
         {
             _queryStoreReader = queryStoreReader;
+            _referenceDataReader = referenceDataReader;
             _reviewRepository = reviewRepository;
             _vacancyRepository = vacancyRepository;
             _apprenticeshipProgrammesProvider = apprenticeshipProgrammesProvider;
@@ -59,6 +63,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         public Task<IApprenticeshipProgramme> GetApprenticeshipProgrammeAsync(string programmeId)
         {
             return _apprenticeshipProgrammesProvider.GetApprenticeshipProgrammeAsync(programmeId);
+        }
+
+        public Task<Qualifications> GetCandidateQualificationsAsync()
+        {
+            return _referenceDataReader.GetReferenceData<Qualifications>();
         }
 
         public async Task<QaDashboard> GetDashboardAsync()

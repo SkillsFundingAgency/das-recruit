@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators.VacancyValidators;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Services;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Wages;
 using FluentValidation;
-using Microsoft.Extensions.Options;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 {
@@ -16,14 +14,14 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         private readonly ITimeProvider _timeProvider;
         private readonly IGetMinimumWages _minimumWageService;
         private readonly Lazy<IEnumerable<IApprenticeshipProgramme>> _trainingProgrammes;
-        private readonly QualificationsConfiguration _qualificationsConfiguration;
+        private readonly IList<string> _qualifications;
 
-        public FluentVacancyValidator(ITimeProvider timeProvider, IGetMinimumWages minimumWageService, IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider, IOptions<QualificationsConfiguration> qualificationsConfiguration)
+        public FluentVacancyValidator(ITimeProvider timeProvider, IGetMinimumWages minimumWageService, IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider, IQualificationsProvider qualificationsProvider)
         {
             _timeProvider = timeProvider;
             _minimumWageService = minimumWageService;
             _trainingProgrammes = new Lazy<IEnumerable<IApprenticeshipProgramme>>(() => apprenticeshipProgrammesProvider.GetApprenticeshipProgrammesAsync().Result);
-            _qualificationsConfiguration = qualificationsConfiguration.Value;
+            _qualifications = qualificationsProvider.GetQualificationsAsync().Result;
 
             SingleFieldValidations();
 
@@ -336,7 +334,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .Must(q => q != null && q.Count > 0)
                     .WithMessage("You must have at least one qualification")
                     .WithErrorCode("52")
-                .SetCollectionValidator(new QualificationValidator((long)VacancyRuleSet.Qualifications, _qualificationsConfiguration))
+                .SetCollectionValidator(new QualificationValidator((long)VacancyRuleSet.Qualifications, _qualifications))
                 .RunCondition(VacancyRuleSet.Qualifications)
                 .WithRuleId(VacancyRuleSet.Qualifications);
         }
