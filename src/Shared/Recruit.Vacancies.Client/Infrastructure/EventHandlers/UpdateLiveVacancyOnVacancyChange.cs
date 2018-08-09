@@ -35,7 +35,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
             _logger.LogInformation("Handling {notificationType} for vacancyId: {vacancyId}", notification.GetType().Name, notification?.VacancyId);
             
             //For now approved vacancies are immediately made Live
-            return _messaging.SendCommandAsync(new LiveVacancyCommand
+            return _messaging.SendCommandAsync(new PublishVacancyCommand
             {
                 VacancyId = notification.VacancyId
             });

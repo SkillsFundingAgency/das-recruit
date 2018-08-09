@@ -11,15 +11,15 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class LiveVacancyCommandHandler : IRequestHandler<LiveVacancyCommand>
+    public class PublishVacancyCommandHandler : IRequestHandler<PublishVacancyCommand>
     {
-        private readonly ILogger<LiveVacancyCommandHandler> _logger;
+        private readonly ILogger<PublishVacancyCommandHandler> _logger;
         private readonly IVacancyRepository _repository;
         private readonly IMessaging _messaging;
         private readonly ITimeProvider _timeProvider;
 
-        public LiveVacancyCommandHandler(
-            ILogger<LiveVacancyCommandHandler> logger,
+        public PublishVacancyCommandHandler(
+            ILogger<PublishVacancyCommandHandler> logger,
             IVacancyRepository repository, 
             IMessaging messaging, 
             ITimeProvider timeProvider)
@@ -30,7 +30,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _timeProvider = timeProvider;
         }
 
-        public async Task Handle(LiveVacancyCommand message, CancellationToken cancellationToken)
+        public async Task Handle(PublishVacancyCommand message, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Setting vacancy Live for vacancy {vacancyId}.", message.VacancyId);
 
