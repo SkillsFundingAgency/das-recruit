@@ -14,7 +14,7 @@
             <form asp-route="@RouteNames.Wage_Post" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
                 <div esfa-validation-marker-for="Duration" class="form-group">
                     <fieldset>
-                        <label asp-for="Duration" class="form-label-bold">How long is the apprenticeship expected to last?</label>
+                        <label asp-for="Duration" class="form-label-bold">How long is the apprenticeship expected to last?<span class="visuallyhidden"> (enter a numeric value and then select Month(s) or Year(s) in the next field)</span></label>
                         <span esfa-validation-message-for="Duration" class="error-message"></span>
                         <input asp-for="Duration" class="form-control form-control-1-8" type="number" min="1">
                         <select asp-for="DurationUnit" class="form-control" style="width: auto">
