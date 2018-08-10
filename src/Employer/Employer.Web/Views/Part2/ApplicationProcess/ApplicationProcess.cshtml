@@ -20,14 +20,14 @@
                         </label>
                         <span esfa-validation-message-for="ApplicationMethod" class="error-message"></span>
                         <br />
-                        <div class="multiple-choice" data-target="application-method-faa">
-                            <input asp-for="ApplicationMethod" value="@ApplicationMethod.ThroughFindAnApprenticeship" type="radio" id="application-method-faa" aria-labelledby="apprenticeship-vacancy-management-type-label">
+                        <div class="multiple-choice">
+                            <input asp-for="ApplicationMethod" value="@ApplicationMethod.ThroughFindAnApprenticeship" type="radio">
                             <label for="application-method-faa" class="block-label selection-button-radio">
                                 Candidates will apply through the <a href="@Model.FindAnApprenticeshipUrl" target="_blank">find an apprenticeship service</a>
                             </label>
                         </div>
                         <div class="multiple-choice" data-target="application-method-external-panel">
-                            <input asp-for="ApplicationMethod" value="@ApplicationMethod.ThroughExternalApplicationSite" type="radio" id="application-method-external" aria-controls="application-method-external-panel" aria-labelledby="apprenticeship-vacancy-management-type-label">
+                            <input asp-for="ApplicationMethod" value="@ApplicationMethod.ThroughExternalApplicationSite" type="radio" id="application-method-external">
                             <label for="application-method-external" class="block-label selection-button-radio">
                                 Candidates will apply through an external website
                             </label>
