@@ -17,7 +17,7 @@
 
     let insertResult = db.queryStore.insertMany(queryViewDocs);
 
-    print(`Inserted ${insertResult.insertedIds.length} documents into queryStore.`)
+    print(`Inserted ${insertResult.insertedIds.length} documents into queryStore.`);
 
     uniqueQueryViewsViewTypes.forEach(vt => {
         print(`queryStore collection has ${db.queryStore.count({ "viewType": vt.viewType })} ${vt.viewType}.`);
