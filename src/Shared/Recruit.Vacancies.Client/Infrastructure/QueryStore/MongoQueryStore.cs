@@ -20,7 +20,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         {
         }
 
-        async Task<bool> IQueryStore.DeleteAsync<T>(string typeName, string key)
+        Task IQueryStore.DeleteAsync<T>(string typeName, string key)
         {
             var collection = GetCollection<T>();
 
@@ -29,9 +29,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             var filter = filterBuilder.Eq(d => d.ViewType, typeName)
                         & filterBuilder.Eq(d => d.Id, key);
 
-            var result = await RetryPolicy.ExecuteAsync(context => collection.DeleteOneAsync(filter), new Context(nameof(IQueryStore.DeleteAsync)));
-
-            return result.DeletedCount == 1;
+            return RetryPolicy.ExecuteAsync(context => collection.DeleteOneAsync(filter), new Context(nameof(IQueryStore.DeleteAsync)));
         }
 
         async Task<IEnumerable<T>> IQueryStore.GetAllByTypeAsync<T>(string typeName)
