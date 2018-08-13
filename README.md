@@ -1,18 +1,20 @@
 ![Build badge](https://sfa-gov-uk.visualstudio.com/_apis/public/build/definitions/c39e0c0b-7aff-4606-b160-3566f3bbce23/788/badge)
 
-# Employer Recruit (Alpha)
+# Employer Recruit (Private Beta)
 
-This solution represents the Employer Recruit code base currently in alpha.
+This respository represents the Employer Recruit code base currently in beta.
 
 ## Developer setup
 
 ### Requirements
 
-In order to run this solution locally you will need the following installed:
+In order to run this solution locally you will need the following:
 
+* An employer account setup against the DAS test environment
 * [.NET Core SDK >= 2.1.4](https://www.microsoft.com/net/download/)
 * (VS Code Only) [C# Extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode.csharp)
 * [Docker for X](https://docs.docker.com/install/#supported-platforms)
+* Optionally run [Azure Cosmos DB emulator](https://docs.microsoft.com/en-us/azure/cosmos-db/local-emulator) locally instead of MongoDB docker container (Windows Only)
 
 ### Environment Setup
 
@@ -22,6 +24,7 @@ The default development environment uses docker containers to host it's dependen
 * Elasticsearch
 * Logstash
 * MongoDb
+* Azurite (Cross platform Azure Storage Emulator)
 
 On first setup run the following command from _**/setup/containers/**_ to create the docker container images:
 
@@ -71,7 +74,7 @@ Windows cmd
 set ASPNETCORE_ENVIRONMENT=Development
 dotnet run
 ```
-* Browse to `http://localhost:5020/accounts/abc/dashboard`
+* Browse to `http://localhost:5020/accounts/{employerAccountId}`
 
 ### Application logs
 Application logs are logged to [Elasticsearch](https://www.elastic.co/products/elasticsearch) and can be viewed using [Kibana](https://www.elastic.co/products/kibana) at http://localhost:5601
