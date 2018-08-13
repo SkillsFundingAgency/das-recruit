@@ -1,6 +1,7 @@
 # Table of Contents
 * [Data Seeder Tool](#user-content-seedDataWriterTool)
 * [Writing Change Migration Scripts](#user-content-authoringChangeMigrationScripts)
+* [Archiving Chnage Migration Scripts](#archivingChangeMigrationScripts)
 * [Running Change Migration Scripts](#user-content-runningChangeMigrationScripts)
 
 &nbsp;
@@ -48,11 +49,17 @@ The project can be published by running `dotnet publish` in the project director
 ## Instructions
 
 1. Create new script following the convention used for existing files which are number ordered by prefixing the filename with a three digit sequence e.g. 010.
-2. Add a call to the new script from the `documentMigration.js` file by adding a `load("{filename.js}");` line.
+2. Add a call to the new script from the **_documentMigration.js_** file by adding a `load("{filename.js}");` line.
 
    **If you do not have ESLint installed globally, then run the following step in a command shell, otherwise skip to step 4.**
 3. From the CosmosDb directory in a command shell, run `npm install`. If you do not already have ESLint installed globally.
 4. In a command shell in the same directory, run `npm run lint` to check the script-Java is written in a standard format.
+
+&nbsp;
+
+# Archiving change migration scripts :leaves: :scroll: <a name="archivingChangeMigrationScripts"></a>
+
+Any scripts that are no longer required to be run during release should be moved to the `archived` folder. The filename should be prefixed with the date that the script is no longer to be used in the format of `yyyy-mm-dd_`.
 
 &nbsp;
 
@@ -65,6 +72,6 @@ The project can be published by running `dotnet publish` in the project director
 
 ## Instructions
 
-1. From the Mongo shell you can navigate to the directory that holds the `databaseMigration.js` and child scripts using `cd("../../../dev/das-recruit/src/data/CosmosDb")` assuming you have cloned the repository into the dev folder of your root dir. You can use `pwd()` to print your working directory to help you navigate.
+1. From the Mongo shell you can navigate to the directory that holds the **_databaseMigration.js_** and child scripts using `cd("../../../dev/das-recruit/src/data/CosmosDb")` assuming you have cloned the repository into the dev folder of your root dir. You can use `pwd()` to print your working directory to help you navigate.
 2. Enter the command `load("documentMigration.js")` and press `Enter`
 3. You should see output relating to the changes included in the change migration script(s).
