@@ -89,6 +89,10 @@ Application logs are logged to [Elasticsearch](https://www.elastic.co/products/e
 
 * Open solution _**/src/Jobs/Jobs.sln**_
 
+#### Database
+
+* If using MongoDb container, connect to Recruit database in a terminal using `mongo recruit --authenticationDatabase admin -u dbadmin -p changeme`
+* If using Azure Cosmos Emulator, connect to Recruit database in a terminal using `mongo --authenticationDatabase admin --host localhost --port 10255 -u localhost -p C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw== --ssl`
 
 ## License
 
