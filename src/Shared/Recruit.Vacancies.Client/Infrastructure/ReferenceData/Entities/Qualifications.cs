@@ -7,7 +7,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Entities
     {
         public string Id { get; set; }
         public DateTime LastUpdatedDate { get; set; }
-
         public List<string> QualificationTypes { get; set; }
     }
 }

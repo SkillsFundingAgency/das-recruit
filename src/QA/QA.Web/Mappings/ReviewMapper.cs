@@ -1,16 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Qa.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Services;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Wages;
 using Humanizer;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace Esfa.Recruit.Qa.Web.Mappings
 {
@@ -21,20 +20,19 @@ namespace Esfa.Recruit.Qa.Web.Mappings
         private readonly ILogger<ReviewMapper> _logger;
         private readonly IQaVacancyClient _vacancyClient;
         private readonly IGeocodeImageService _mapService;
-        private readonly QualificationsConfiguration _qualificationsConfiguration;
         private readonly IGetMinimumWages _wageService;
+        private readonly Lazy<IList<string>> _qualifications;
 
         public ReviewMapper(ILogger<ReviewMapper> logger,
                     IQaVacancyClient vacancyClient, 
                     IGeocodeImageService mapService, 
-                    IOptions<QualificationsConfiguration> qualificationsConfigOptions,
                     IGetMinimumWages wageService)
         {
             _logger = logger;
             _vacancyClient = vacancyClient;
             _mapService = mapService;
-            _qualificationsConfiguration = qualificationsConfigOptions.Value;
             _wageService = wageService;
+            _qualifications = new Lazy<IList<string>>(() => _vacancyClient.GetCandidateQualificationsAsync().Result.QualificationTypes);
         }
         
         public async Task<ReviewViewModel> MapFromVacancy(Vacancy vacancy)
@@ -63,7 +61,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 vm.OutcomeDescription = vacancy.OutcomeDescription;
                 vm.PossibleStartDate = vacancy.StartDate?.AsDisplayDate();
                 vm.ProviderName = vacancy.TrainingProvider.Name;
-                vm.Qualifications = vacancy.Qualifications.SortQualifications(_qualificationsConfiguration.QualificationTypes).AsText();
+                vm.Qualifications = vacancy.Qualifications.SortQualifications(_qualifications.Value).AsText();
                 vm.ShortDescription = vacancy.ShortDescription;
                 vm.Skills = vacancy.Skills ?? Enumerable.Empty<string>();
                 vm.ThingsToConsider = vacancy.ThingsToConsider;

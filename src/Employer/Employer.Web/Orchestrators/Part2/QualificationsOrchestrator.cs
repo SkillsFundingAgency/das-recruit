@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
@@ -6,12 +7,10 @@ using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part2.Qualifications;
 using Esfa.Recruit.Shared.Web.Extensions;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 {
@@ -19,13 +18,14 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.Qualifications;
         private readonly IEmployerVacancyClient _client;
-        private readonly QualificationsConfiguration _qualificationsConfig;
+        private readonly Lazy<List<string>> _lazyQualifications;
 
-        public QualificationsOrchestrator(IEmployerVacancyClient client, IOptions<QualificationsConfiguration> qualificationsConfigOptions, ILogger<QualificationsOrchestrator> logger)
+
+        public QualificationsOrchestrator(IEmployerVacancyClient client, ILogger<QualificationsOrchestrator> logger)
             : base(logger)
         {
             _client = client;
-            _qualificationsConfig = qualificationsConfigOptions.Value;
+            _lazyQualifications = new Lazy<List<string>>(() => _client.GetCandidateQualificationsAsync().Result.QualificationTypes);
         }
 
         public async Task<QualificationsViewModel> GetQualificationsViewModelAsync(VacancyRouteModel vrm)
@@ -35,8 +35,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             var vm = new QualificationsViewModel
             {
                 Title = vacancy.Title,
-                QualificationTypes = _qualificationsConfig.QualificationTypes,
-                Qualifications = vacancy.Qualifications.SortQualifications(_qualificationsConfig.QualificationTypes).ToViewModel().ToList()
+                QualificationTypes = _lazyQualifications.Value,
+                Qualifications = vacancy.Qualifications.SortQualifications(_lazyQualifications.Value).ToViewModel().ToList()
             };
 
             return vm;
@@ -68,7 +68,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             HandleQualificationChange(m);
 
             var qualifications = m.Qualifications.ToEntity();
-            vacancy.Qualifications = qualifications.SortQualifications(_qualificationsConfig.QualificationTypes).ToList();
+            vacancy.Qualifications = qualifications.SortQualifications(_lazyQualifications.Value).ToList();
             m.Qualifications = vacancy.Qualifications.ToViewModel().ToList();
 
             //if we are adding/removing a qualification then just validate and don't persist

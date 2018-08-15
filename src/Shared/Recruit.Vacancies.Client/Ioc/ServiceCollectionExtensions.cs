@@ -36,7 +36,6 @@ namespace Microsoft.Extensions.DependencyInjection
         public static void AddRecruitStorageClient(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<AccountApiConfiguration>(configuration.GetSection("AccountApiConfiguration"));
-            services.Configure<QualificationsConfiguration>(configuration.GetSection("QualificationsConfiguration"));
 
             RegisterAccountApiClientDeps(services);
 
@@ -70,6 +69,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient<IGetMinimumWages, NationalMinimumWageService>();
             services.AddTransient<IGenerateVacancyNumbers, MongoSequenceStore>();
             services.AddTransient<IApprenticeshipProgrammeProvider, ApprenticeshipProgrammeProvider>();
+            services.AddTransient<IQualificationsProvider, QualificationsProvider>();
             services.AddTransient<IQaDashboardService, QaDashboardService>();
 
             services.Configure<BankHolidayConfiguration>(configuration.GetSection("BankHoliday"));

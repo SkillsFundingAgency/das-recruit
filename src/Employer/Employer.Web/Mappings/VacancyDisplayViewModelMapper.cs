@@ -1,13 +1,14 @@
-﻿using Esfa.Recruit.Employer.Web.Configuration;
+﻿using System;
+using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Services;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Wages;
 using Humanizer;
 using Microsoft.Extensions.Options;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -19,22 +20,21 @@ namespace Esfa.Recruit.Employer.Web.Mappings
         private const int MapImageHeight = 256;
         private readonly IGeocodeImageService _mapService;
         private readonly IGetMinimumWages _wageService;
-        private readonly QualificationsConfiguration _qualificationsConfiguration;
         private readonly ExternalLinksConfiguration _externalLinksConfiguration;
         private readonly IEmployerVacancyClient _client;
+        private readonly Lazy<IList<string>> _qualifications;
 
         public DisplayVacancyViewModelMapper(
                 IGeocodeImageService mapService,
                 IGetMinimumWages wageService, 
-                IOptions<QualificationsConfiguration> qualificationsConfigOptions,
                 IOptions<ExternalLinksConfiguration> externalLinksOptions,
                 IEmployerVacancyClient client)
         {
             _mapService = mapService;
             _wageService = wageService;
-            _qualificationsConfiguration = qualificationsConfigOptions.Value;
             _externalLinksConfiguration = externalLinksOptions.Value;
             _client = client;
+            _qualifications = new Lazy<IList<string>>(() => _client.GetCandidateQualificationsAsync().Result.QualificationTypes);
         }
 
         public async Task MapFromVacancyAsync(DisplayVacancyViewModel vm, Vacancy vacancy)
@@ -62,7 +62,7 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             vm.OutcomeDescription = vacancy.OutcomeDescription;
             vm.PossibleStartDate = vacancy.StartDate?.AsDisplayDate();
             vm.ProviderName = vacancy.TrainingProvider?.Name;
-            vm.Qualifications = vacancy.Qualifications.SortQualifications(_qualificationsConfiguration.QualificationTypes).AsText();
+            vm.Qualifications = vacancy.Qualifications.SortQualifications(_qualifications.Value).AsText();
             vm.ShortDescription = vacancy.ShortDescription;
             vm.Skills = vacancy.Skills ?? Enumerable.Empty<string>();
             vm.ThingsToConsider = vacancy.ThingsToConsider;

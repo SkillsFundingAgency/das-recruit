@@ -167,6 +167,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _referenceDataReader.GetReferenceData<CandidateSkills>();
         }
 
+        public Task<Qualifications> GetCandidateQualificationsAsync()
+        {
+            return _referenceDataReader.GetReferenceData<Qualifications>();
+        }
+
         public Task<ApplicationReview> GetApplicationReviewAsync(Guid applicationReviewId)
         {
             return _applicationReviewRepository.GetAsync(applicationReviewId);

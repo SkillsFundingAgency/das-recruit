@@ -1,4 +1,4 @@
-﻿using Esfa.Recruit.Vacancies.Client.Application.Configuration;
+﻿using System.Collections.Generic;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using FluentValidation;
 
@@ -6,16 +6,16 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 {
     internal class QualificationValidator : AbstractValidator<Qualification>
     {
-        public QualificationValidator(long ruleId, QualificationsConfiguration qualificationsConfiguration)
+        public QualificationValidator(long ruleId, IList<string> qualifications)
         {
-            var configuration = qualificationsConfiguration;
-
+            qualifications = qualifications ?? new List<string>();
+            
             RuleFor(x => x.QualificationType)
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty()
                     .WithMessage("Select a qualification")
                     .WithErrorCode("53")
-                .Must(q => configuration.QualificationTypes.Contains(q))
+                .Must(qualifications.Contains)
                     .WithMessage("Invalid qualification type")
                     .WithErrorCode("57")
                 .WithRuleId(ruleId);
