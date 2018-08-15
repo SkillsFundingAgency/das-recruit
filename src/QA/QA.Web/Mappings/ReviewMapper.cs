@@ -21,7 +21,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
         private readonly IQaVacancyClient _vacancyClient;
         private readonly IGeocodeImageService _mapService;
         private readonly IGetMinimumWages _wageService;
-        private readonly IList<string> _qualifications;
+        private readonly Lazy<IList<string>> _qualifications;
 
         public ReviewMapper(ILogger<ReviewMapper> logger,
                     IQaVacancyClient vacancyClient, 
@@ -32,8 +32,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
             _vacancyClient = vacancyClient;
             _mapService = mapService;
             _wageService = wageService;
-            _qualifications = _vacancyClient.GetCandidateQualificationsAsync().Result.QualificationTypes;
-
+            _qualifications = new Lazy<IList<string>>(() => _vacancyClient.GetCandidateQualificationsAsync().Result.QualificationTypes);
         }
         
         public async Task<ReviewViewModel> MapFromVacancy(Vacancy vacancy)
@@ -62,7 +61,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 vm.OutcomeDescription = vacancy.OutcomeDescription;
                 vm.PossibleStartDate = vacancy.StartDate?.AsDisplayDate();
                 vm.ProviderName = vacancy.TrainingProvider.Name;
-                vm.Qualifications = vacancy.Qualifications.SortQualifications(_qualifications).AsText();
+                vm.Qualifications = vacancy.Qualifications.SortQualifications(_qualifications.Value).AsText();
                 vm.ShortDescription = vacancy.ShortDescription;
                 vm.Skills = vacancy.Skills ?? Enumerable.Empty<string>();
                 vm.ThingsToConsider = vacancy.ThingsToConsider;
