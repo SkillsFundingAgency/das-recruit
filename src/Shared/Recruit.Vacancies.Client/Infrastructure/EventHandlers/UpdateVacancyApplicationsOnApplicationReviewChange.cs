@@ -40,7 +40,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
             return Handle(notification);
         }
 
-        private async Task Handle(IVacancyEvent notification)
+        private async Task Handle(IApplicationReviewEvent notification)
         {
             _logger.LogInformation("Handling {notificationType} for vacancyId: {vacancyId}", notification.GetType().Name, notification?.VacancyId);
 

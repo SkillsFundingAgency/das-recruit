@@ -13,10 +13,10 @@ namespace Esfa.Recruit.Vacancies.Jobs.VacancyApplication
     public class VacancyApplicationJob
     {
         private readonly ILogger<VacancyApplicationJob> _logger;
-        private readonly VacancyApplicationCommandHandler _handler;
+        private readonly CreateApplicationReviewCommandHandler _handler;
         private string JobName => GetType().Name;
 
-        public VacancyApplicationJob(ILogger<VacancyApplicationJob> logger, VacancyApplicationCommandHandler handler)
+        public VacancyApplicationJob(ILogger<VacancyApplicationJob> logger, CreateApplicationReviewCommandHandler handler)
         {
             _logger = logger;
             _handler = handler;

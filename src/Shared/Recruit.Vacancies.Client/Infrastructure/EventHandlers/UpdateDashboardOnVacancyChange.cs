@@ -69,6 +69,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
             return Handle(notification);
         }
 
+        private Task Handle(IApplicationReviewEvent notification)
+        {
+            if (notification == null)
+                throw new ArgumentNullException(nameof(notification), "Should not be null");
+            
+            _logger.LogInformation("Handling {eventType} for accountId: {employerAccountId} and vacancyId: {vacancyId}", notification.GetType().Name, notification.EmployerAccountId, notification.VacancyId);
+            return _dashboardService.ReBuildDashboardAsync(notification.EmployerAccountId);
+        }
+
         private Task Handle(IVacancyEvent notification)
         {
             if (notification == null)

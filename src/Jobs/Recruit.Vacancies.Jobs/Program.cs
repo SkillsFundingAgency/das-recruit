@@ -146,7 +146,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddScoped<EditVacancyInfoUpdater>();
             services.AddScoped<LiveVacancyStatusInspector>();
             services.AddScoped<DashboardCreator>();
-            services.AddScoped<VacancyApplicationCommandHandler>();
+            services.AddScoped<CreateApplicationReviewCommandHandler>();
             services.AddScoped<LiveVacanciesCreator>();
 
             services.AddSingleton<IApprenticeshipProgrammeApiClient, ApprenticeshipProgrammeApiClient>();
