@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.CommandHandlers;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
+using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Events;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
@@ -25,11 +26,11 @@ namespace Esfa.Recruit.Vacancies.Jobs.VacancyApplication
         {
             try
             {
-                var command = JsonConvert.DeserializeObject<ApplicationSubmitCommand>(message);
+                var command = JsonConvert.DeserializeObject<ApplicationSubmittedEvent>(message);
 
                 _logger.LogInformation("Start {JobName} for vacancyId: {vacancyReference} for candidateId: {candidateId} ", JobName, command.Application.VacancyReference, command.Application.CandidateId);
 
-                await _handler.Handle(command);
+                await _handler.Handle(new CreateApplicationReviewCommand { Application = command.Application });
 
                 _logger.LogInformation("Finished {JobName} for vacancyId: {vacancyReference} for candidateId: {candidateId} ", JobName, command.Application.VacancyReference, command.Application.CandidateId);
             }
