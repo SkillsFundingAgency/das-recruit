@@ -3,9 +3,9 @@ using System.Linq;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Training;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
-namespace Esfa.Recruit.Employer.Web.Extensions
+namespace Esfa.Recruit.Employer.Web.Mappings.Extensions
 {
-    public static class IApprenticeshipProgrammeExensions
+    public static class IApprenticeshipProgrammeMapperExtensions
     {
         public static IEnumerable<ApprenticeshipProgrammeViewModel> ToViewModel(
             this IEnumerable<IApprenticeshipProgramme> programmes)
