@@ -7,6 +7,7 @@ using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Queue;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Domain.Events.Interfaces;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Events
 {
