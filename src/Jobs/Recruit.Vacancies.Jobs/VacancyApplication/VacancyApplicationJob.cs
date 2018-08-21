@@ -1,8 +1,7 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
-using Esfa.Recruit.Vacancies.Client.Application.CommandHandlers;
-using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Events;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
@@ -13,13 +12,13 @@ namespace Esfa.Recruit.Vacancies.Jobs.VacancyApplication
     public class VacancyApplicationJob
     {
         private readonly ILogger<VacancyApplicationJob> _logger;
-        private readonly CreateApplicationReviewCommandHandler _handler;
+        private readonly IJobsVacancyClient _client;
         private string JobName => GetType().Name;
 
-        public VacancyApplicationJob(ILogger<VacancyApplicationJob> logger, CreateApplicationReviewCommandHandler handler)
+        public VacancyApplicationJob(ILogger<VacancyApplicationJob> logger, IJobsVacancyClient client)
         {
             _logger = logger;
-            _handler = handler;
+            _client = client;
         }
 
         public async Task VacancyApplicationSubmitted([QueueTrigger(QueueNames.ApplicationSubmittedQueueName, Connection = "EventQueueConnectionString")] string message, TextWriter log)
@@ -30,7 +29,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.VacancyApplication
 
                 _logger.LogInformation("Start {JobName} for vacancyId: {vacancyReference} for candidateId: {candidateId} ", JobName, command.Application.VacancyReference, command.Application.CandidateId);
 
-                await _handler.Handle(new CreateApplicationReviewCommand { Application = command.Application });
+                await _client.CreateApplicationReviewAsync(command.Application);
 
                 _logger.LogInformation("Finished {JobName} for vacancyId: {vacancyReference} for candidateId: {candidateId} ", JobName, command.Application.VacancyReference, command.Application.CandidateId);
             }

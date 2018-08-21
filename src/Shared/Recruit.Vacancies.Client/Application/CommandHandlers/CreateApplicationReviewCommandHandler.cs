@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -6,11 +7,12 @@ using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Domain.Services;
+using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class CreateApplicationReviewCommandHandler
+    public class CreateApplicationReviewCommandHandler : IRequestHandler<CreateApplicationReviewCommand>
     {
         private readonly IVacancyRepository _vacancyRepository;
         private readonly ILogger<CreateApplicationReviewCommandHandler> _logger;
@@ -27,29 +29,29 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _messaging = messaging;
         }
 
-        public async Task Handle(CreateApplicationReviewCommand command)
+        public async Task Handle(CreateApplicationReviewCommand message, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Submitting application for vacancyId: {vacancyReference} for candidateId: {candidateId}", command.Application.VacancyReference, command.Application.CandidateId);
+            _logger.LogInformation("Submitting application for vacancyId: {vacancyReference} for candidateId: {candidateId}", message.Application.VacancyReference, message.Application.CandidateId);
 
-            var vacancy = await _vacancyRepository.GetVacancyAsync(command.Application.VacancyReference);
+            var vacancy = await _vacancyRepository.GetVacancyAsync(message.Application.VacancyReference);
 
             var review = new ApplicationReview
             {
                 Id = Guid.NewGuid(),
                 VacancyReference = vacancy.VacancyReference.Value,
-                Application = command.Application,
-                CandidateId = command.Application.CandidateId,
+                Application = message.Application,
+                CandidateId = message.Application.CandidateId,
                 CreatedDate = _timeProvider.Now,
                 EmployerAccountId = vacancy.EmployerAccountId,
                 Status = ApplicationReviewStatus.New,
-                SubmittedDate = command.Application.ApplicationDate
+                SubmittedDate = message.Application.ApplicationDate
             };
 
             await _applicationReviewRepository.CreateAsync(review);
 
             await _messaging.PublishEvent(new ApplicationReviewCreatedEvent
             {
-                SourceCommandId = command.CommandId.ToString(),
+                SourceCommandId = message.CommandId.ToString(),
                 EmployerAccountId = vacancy.EmployerAccountId,
                 VacancyId = vacancy.Id
             });

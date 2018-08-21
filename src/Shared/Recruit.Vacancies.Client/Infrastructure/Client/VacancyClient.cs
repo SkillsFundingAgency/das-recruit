@@ -295,5 +295,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
             return results.Select(LegalEntityMapper.MapFromAccountApiLegalEntity);
         }
+
+        public async Task CreateApplicationReviewAsync(Domain.Entities.Application application)
+        {
+            await _messaging.SendCommandAsync(new CreateApplicationReviewCommand { Application = application });
+
+        }
     }
 }
