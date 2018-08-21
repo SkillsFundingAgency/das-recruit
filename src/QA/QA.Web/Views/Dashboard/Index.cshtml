@@ -5,55 +5,92 @@
         <hr>
     </div>
 </div>
-
+<form asp-route="RouteNames.Dashboard_Index_Post">
+    <div class="grid-row">
+        <input asp-for="SearchTerm" placeholder="Search vacancies" />
+        <button type="submit">Search</button>
+    </div>
+</form>
 <div class="grid-row">
     <div class="column-full">
         <h2 class="heading-medium no-bottom-margin">Statistics</h2>
         <table>
             <thead>
-            <tr>
-                <th>Total vacancies</th>
-                <th>Submitted +24 hours</th>
-                <th>Resubmitted vacancies</th>
-            </tr>
+                <tr>
+                    <th>Total vacancies</th>
+                    <th>Submitted +24 hours</th>
+                    <th>Resubmitted vacancies</th>
+                </tr>
             </thead>
             <tbody>
-            <tr>
-                <td>@Model.TotalVacanciesForReview</td>
-                <td>@Model.TotalVacanciesBrokenSla</td>
-                <td>@Model.TotalVacanciesResubmitted</td>
-            </tr>
+                <tr>
+                    <td>@Model.TotalVacanciesForReview</td>
+                    <td>@Model.TotalVacanciesBrokenSla</td>
+                    <td>@Model.TotalVacanciesResubmitted</td>
+                </tr>
             </tbody>
         </table>
     </div>
 </div>
+<br /><br />
 
-<br/><br/>
+<h2 asp-condition="@Model.IsPostBack" class="heading-medium no-bottom-margin">Search results for [@Model.LastSearchTerm]</h2>
 
+<span asp-condition="@Model.IsPostBack && Model.SearchResults.Any() == false">No results</span>
+
+<div asp-condition="@Model.SearchResults.Any()" class="grid-row">
+    <table>
+        <tbody>
+        <tr>
+            <th class="bold">Employer</th>
+            <th class="bold">Vacancy Title</th>
+            <th class="bold">Reference Number</th>
+            <th class="bold">Submitted Date</th>
+            <th class="bold">Closing Date</th>
+            <th class="bold"></th>
+        </tr>
+        </tbody>
+        @foreach (var vacancy in Model.SearchResults)
+        {
+            <tr>
+                <td>@vacancy.EmployerName</td>
+                <td>@vacancy.VacancyTitle</td>
+                <td>@vacancy.VacancyReference</td>
+                <td>@vacancy.SubmittedDate</td>
+                <td>@vacancy.ClosingDate</td>
+                <td>
+                    <a asp-condition="@vacancy.IsAvailableForReview" asp-route="@RouteNames.Vacancy_Review_Get" asp-route-reviewId="@vacancy.ReviewId">Review</a>
+                    <span asp-condition="@vacancy.IsAvailableForReview == false">@vacancy.AssignmentInfo</span>
+                </td>
+            </tr>
+        }
+    </table>
+</div>
+
+<br /><br />
 <div class="grid-row">
     <div class="column-full">
         <table>
             <tbody>
-            <tr>
-                <th class="bold">Vacancy title</th>
-                <th class="bold">Status</th>
-            </tr>
-            @foreach (var item in Model.AllReviews)
-            {
                 <tr>
-                    <td>
-                        <a asp-route="@GetRoute(item)" asp-route-reviewId="@item.ReviewId">@item.Title</a>
-                    </td>
-                    <td>
-                        @item.Status
-                    </td>
+                    <th class="bold">Vacancy title</th>
+                    <th class="bold">Status</th>
                 </tr>
-            }
+                @foreach (var item in Model.AllReviews)
+                {
+                    <tr>
+                        <td>
+                            <a asp-route="@GetRoute(item)" asp-route-reviewId="@item.ReviewId">@item.Title</a>
+                        </td>
+                        <td>
+                            @item.Status
+                        </td>
+                    </tr>
+                }
             </tbody>
         </table>
     </div>
 </div>
-
 @functions{
     public string GetRoute(ReviewDashboardItem item)
     {
