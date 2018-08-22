@@ -11,11 +11,11 @@ using Esfa.Recruit.Vacancies.Client.Domain.Events.Interfaces;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Events
 {
-    internal sealed class StorageQueueEventQueue : IEventStore
+    internal sealed class StorageQueueEventStore : IEventStore
     {
         private readonly string _connectionString;
 
-        public StorageQueueEventQueue(StorageQueueConnectionDetails details)
+        public StorageQueueEventStore(StorageQueueConnectionDetails details)
         {
             _connectionString = details.ConnectionString;
         }

@@ -119,7 +119,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.AddSingleton(kernal => kernal.GetService<IOptions<StorageQueueConnectionDetails>>().Value);
 
-            services.AddTransient<IEventStore, StorageQueueEventQueue>();
+            services.AddTransient<IEventStore, StorageQueueEventStore>();
         }
 
         private static void AddValidation(this IServiceCollection services)
