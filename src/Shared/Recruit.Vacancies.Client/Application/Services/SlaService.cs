@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Services;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Esfa.Recruit.Vacancies.Client.Application.Services.SLA
+namespace Esfa.Recruit.Vacancies.Client.Application.Services
 {
     public class SlaService : ISlaService
     {
