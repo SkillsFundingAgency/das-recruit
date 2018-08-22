@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
-using Esfa.Recruit.Vacancies.Client.Application.Services.SLA;
 using Esfa.Recruit.Vacancies.Client.Domain.Services;
 using FluentAssertions;
 using Moq;
 using Xunit;
 
-namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.Services.SLA
+namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.Services
 {
     public class SlaServiceTests
     {
