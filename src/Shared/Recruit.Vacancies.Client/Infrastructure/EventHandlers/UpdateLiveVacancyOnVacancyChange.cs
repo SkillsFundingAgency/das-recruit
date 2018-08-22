@@ -15,12 +15,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
     public class UpdateLiveVacancyOnVacancyChange : INotificationHandler<VacancyApprovedEvent>, INotificationHandler<VacancyPublishedEvent>
     {
         private readonly IVacancyRepository _repository;
-        private readonly ILogger<UpdateDashboardOnVacancyChange> _logger;
+        private readonly ILogger<UpdateDashboardOnChange> _logger;
         private readonly IMessaging _messaging;
         private readonly IQueryStoreWriter _queryStoreWriter;
         private readonly IQueryStoreReader _queryStoreReader;
 
-        public UpdateLiveVacancyOnVacancyChange(IQueryStoreReader queryStoreReader, IQueryStoreWriter queryStoreWriter, ILogger<UpdateDashboardOnVacancyChange> logger, 
+        public UpdateLiveVacancyOnVacancyChange(IQueryStoreReader queryStoreReader, IQueryStoreWriter queryStoreWriter, ILogger<UpdateDashboardOnChange> logger, 
             IVacancyRepository repository, IMessaging messaging)
         {
             _queryStoreReader = queryStoreReader;

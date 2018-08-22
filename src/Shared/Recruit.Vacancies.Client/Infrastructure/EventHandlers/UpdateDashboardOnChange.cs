@@ -9,21 +9,22 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
 {
-    public class UpdateDashboardOnVacancyChange : INotificationHandler<VacancyCreatedEvent>,
-                                                    INotificationHandler<DraftVacancyUpdatedEvent>,
-                                                    INotificationHandler<VacancySubmittedEvent>,
-                                                    INotificationHandler<VacancyDeletedEvent>,
-                                                    INotificationHandler<VacancyPublishedEvent>,
-                                                    INotificationHandler<VacancyClosedEvent>,
-                                                    INotificationHandler<ApplicationReviewCreatedEvent>,
-                                                    INotificationHandler<ApplicationReviewedEvent>
+    public class UpdateDashboardOnChange :  INotificationHandler<VacancyCreatedEvent>,
+                                            INotificationHandler<DraftVacancyUpdatedEvent>,
+                                            INotificationHandler<VacancySubmittedEvent>,
+                                            INotificationHandler<VacancyDeletedEvent>,
+                                            INotificationHandler<VacancyPublishedEvent>,
+                                            INotificationHandler<VacancyClosedEvent>,
+                                            INotificationHandler<ApplicationReviewCreatedEvent>,
+                                            INotificationHandler<ApplicationReviewedEvent>,
+                                            INotificationHandler<SetupEmployerEvent>
     {
         
         private readonly IDashboardService _dashboardService;
-        private readonly ILogger<UpdateDashboardOnVacancyChange> _logger;
+        private readonly ILogger<UpdateDashboardOnChange> _logger;
         
 
-        public UpdateDashboardOnVacancyChange(IDashboardService dashboardService, ILogger<UpdateDashboardOnVacancyChange> logger)
+        public UpdateDashboardOnChange(IDashboardService dashboardService, ILogger<UpdateDashboardOnChange> logger)
         {
             _dashboardService = dashboardService;
             _logger = logger;
@@ -67,6 +68,20 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
         public Task Handle(ApplicationReviewedEvent notification, CancellationToken cancellationToken)
         {
             return Handle(notification);
+        }
+
+        public Task Handle(SetupEmployerEvent notification, CancellationToken cancellationToken)
+        {
+            return Handle(notification);
+        }
+ 
+        private Task Handle(IEmployerEvent notification)
+        {
+            if (notification == null)
+                throw new ArgumentNullException(nameof(notification), "Should not be null");
+            
+            _logger.LogInformation("Handling {eventType} for accountId: {employerAccountId}", notification.GetType().Name, notification.EmployerAccountId);
+            return _dashboardService.ReBuildDashboardAsync(notification.EmployerAccountId);
         }
 
         private Task Handle(IApplicationReviewEvent notification)
