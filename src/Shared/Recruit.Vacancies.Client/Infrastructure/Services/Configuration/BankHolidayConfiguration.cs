@@ -1,4 +1,4 @@
-﻿namespace Esfa.Recruit.Vacancies.Client.Application.Configuration
+﻿namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Configuration
 {
     public class BankHolidayConfiguration
     {
