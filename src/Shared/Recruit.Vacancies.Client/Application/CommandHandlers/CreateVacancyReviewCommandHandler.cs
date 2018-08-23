@@ -75,7 +75,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 EmployerAccountId = vacancy.EmployerAccountId,
                 SubmittedByUser = vacancy.SubmittedByUser,
                 SubmissionCount = previousReviewCount + 1,
-                SlaDeadline = slaDeadline
+                SlaDeadline = slaDeadline,
+                VacancySnapshot = vacancy
             };
 
             return review;
