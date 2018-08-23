@@ -64,7 +64,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             services.AddTransient<ITimeProvider, CurrentUtcTimeProvider>();
             services.AddTransient<IEmployerAccountService, EmployerAccountService>();
-            services.AddTransient<IEmployerDashboardService, EmployerDashboardService>();
+            services.AddTransient<IDashboardService, EmployerDashboardService>();
             services.AddTransient<IGetMinimumWages, NationalMinimumWageService>();
             services.AddTransient<IGenerateVacancyNumbers, MongoSequenceStore>();
             services.AddTransient<IApprenticeshipProgrammeProvider, ApprenticeshipProgrammeProvider>();

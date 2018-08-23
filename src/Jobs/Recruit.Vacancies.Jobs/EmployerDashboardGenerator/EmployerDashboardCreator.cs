@@ -5,9 +5,9 @@ namespace Esfa.Recruit.Vacancies.Jobs.EmployerDashboardGenerator
 {
     public class EmployerDashboardCreator
     {
-        private readonly IEmployerDashboardService _dashboardService;
+        private readonly IDashboardService _dashboardService;
 
-        public EmployerDashboardCreator(IEmployerDashboardService dashboardService)
+        public EmployerDashboardCreator(IDashboardService dashboardService)
         {
             _dashboardService = dashboardService;
         }

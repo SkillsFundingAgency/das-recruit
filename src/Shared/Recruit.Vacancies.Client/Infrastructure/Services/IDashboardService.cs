@@ -2,7 +2,7 @@
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services
 {
-    public interface IEmployerDashboardService
+    public interface IDashboardService
     {
         Task ReBuildDashboardAsync(string employerAccountId);
     }

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services
 {
-    internal class EmployerDashboardService : IEmployerDashboardService
+    internal class EmployerDashboardService : IDashboardService
     {
         private readonly ILogger<EmployerDashboardService> _logger;
         private readonly IVacancyRepository _repository;

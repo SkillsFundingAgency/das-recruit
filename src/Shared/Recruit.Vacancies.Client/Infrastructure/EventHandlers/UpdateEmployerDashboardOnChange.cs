@@ -20,11 +20,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
                                             INotificationHandler<SetupEmployerEvent>
     {
         
-        private readonly IEmployerDashboardService _dashboardService;
+        private readonly IDashboardService _dashboardService;
         private readonly ILogger<UpdateEmployerDashboardOnChange> _logger;
         
 
-        public UpdateEmployerDashboardOnChange(IEmployerDashboardService dashboardService, ILogger<UpdateEmployerDashboardOnChange> logger)
+        public UpdateEmployerDashboardOnChange(IDashboardService dashboardService, ILogger<UpdateEmployerDashboardOnChange> logger)
         {
             _dashboardService = dashboardService;
             _logger = logger;
