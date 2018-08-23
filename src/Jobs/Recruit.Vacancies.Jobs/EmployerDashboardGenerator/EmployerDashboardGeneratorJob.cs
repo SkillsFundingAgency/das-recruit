@@ -6,25 +6,25 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
-namespace Esfa.Recruit.Vacancies.Jobs.DashboardGenerator
+namespace Esfa.Recruit.Vacancies.Jobs.EmployerDashboardGenerator
 {
-    public class DashboardGeneratorJob
+    public class EmployerDashboardGeneratorJob
     {
-        private readonly ILogger<DashboardGeneratorJob> _logger;
-        private readonly DashboardCreator _job;
+        private readonly ILogger<EmployerDashboardGeneratorJob> _logger;
+        private readonly EmployerDashboardCreator _job;
         private string JobName => GetType().Name;
 
-        public DashboardGeneratorJob(ILogger<DashboardGeneratorJob> logger, DashboardCreator job)
+        public EmployerDashboardGeneratorJob(ILogger<EmployerDashboardGeneratorJob> logger, EmployerDashboardCreator job)
         {
             _logger = logger;
             _job = job;
         }
 
-        public async Task GenerateEmployerVacancyData([QueueTrigger(QueueNames.DashboardQueueName, Connection = "EventQueueConnectionString")] string message, TextWriter log)
+        public async Task GenerateEmployerVacancyData([QueueTrigger(QueueNames.EmployerDashboardQueueName, Connection = "EventQueueConnectionString")] string message, TextWriter log)
         {
             try
             {
-                var data = JsonConvert.DeserializeObject<DashboardCreateMessage>(message);
+                var data = JsonConvert.DeserializeObject<EmployerDashboardCreateMessage>(message);
                 _logger.LogInformation($"Start {JobName} For Employer Account: {data.EmployerAccountId}");
                 await _job.RunAsync(data.EmployerAccountId);
                 _logger.LogInformation($"Finished {JobName} For Employer Account: {data.EmployerAccountId}");

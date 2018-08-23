@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Services;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Dashboard;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.LiveVacancy;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.QA;
@@ -22,18 +22,18 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             _timeProvider = timeProvider;
         }
 
-        public Task<Dashboard> GetDashboardAsync(string employerAccountId)
+        public Task<EmployerDashboard> GetEmployerDashboardAsync(string employerAccountId)
         {
-            var key = QueryViewType.Dashboard.GetIdValue(employerAccountId);
+            var key = QueryViewType.EmployerDashboard.GetIdValue(employerAccountId);
 
-            return _queryStore.GetAsync<Dashboard>(key);
+            return _queryStore.GetAsync<EmployerDashboard>(key);
         }
 
-        public Task UpdateDashboardAsync(string employerAccountId, IEnumerable<VacancySummary> vacancySummaries)
+        public Task UpdateEmployerDashboardAsync(string employerAccountId, IEnumerable<VacancySummary> vacancySummaries)
         {
-            var dashboardItem = new Dashboard
+            var dashboardItem = new EmployerDashboard
             {
-                Id = QueryViewType.Dashboard.GetIdValue(employerAccountId),
+                Id = QueryViewType.EmployerDashboard.GetIdValue(employerAccountId),
                 Vacancies = vacancySummaries,
                 LastUpdated = _timeProvider.Now
             };

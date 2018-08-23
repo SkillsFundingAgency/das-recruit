@@ -9,7 +9,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
 {
-    public class UpdateDashboardOnChange :  INotificationHandler<VacancyCreatedEvent>,
+    public class UpdateEmployerDashboardOnChange :  INotificationHandler<VacancyCreatedEvent>,
                                             INotificationHandler<DraftVacancyUpdatedEvent>,
                                             INotificationHandler<VacancySubmittedEvent>,
                                             INotificationHandler<VacancyDeletedEvent>,
@@ -20,11 +20,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
                                             INotificationHandler<SetupEmployerEvent>
     {
         
-        private readonly IDashboardService _dashboardService;
-        private readonly ILogger<UpdateDashboardOnChange> _logger;
+        private readonly IEmployerDashboardService _dashboardService;
+        private readonly ILogger<UpdateEmployerDashboardOnChange> _logger;
         
 
-        public UpdateDashboardOnChange(IDashboardService dashboardService, ILogger<UpdateDashboardOnChange> logger)
+        public UpdateEmployerDashboardOnChange(IEmployerDashboardService dashboardService, ILogger<UpdateEmployerDashboardOnChange> logger)
         {
             _dashboardService = dashboardService;
             _logger = logger;

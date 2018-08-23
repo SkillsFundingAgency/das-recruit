@@ -1,21 +1,22 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Dashboard;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.ApplicationReview;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer;
 using Microsoft.Extensions.Logging;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services
 {
-    internal class DashboardService : IDashboardService
+    internal class EmployerDashboardService : IEmployerDashboardService
     {
-        private readonly ILogger<DashboardService> _logger;
+        private readonly ILogger<EmployerDashboardService> _logger;
         private readonly IVacancyRepository _repository;
         private readonly IQueryStoreWriter _queryStoreWriter;
         private readonly IApplicationReviewRepository _applicationReviewRepository;
 
-        public DashboardService(IVacancyRepository repository, IApplicationReviewRepository applicationReviewRepository, IQueryStoreWriter queryStoreWriter, ILogger<DashboardService> logger)
+        public EmployerDashboardService(IVacancyRepository repository, IApplicationReviewRepository applicationReviewRepository, IQueryStoreWriter queryStoreWriter, ILogger<EmployerDashboardService> logger)
         {
             _logger = logger;
             _repository = repository;
@@ -53,7 +54,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services
                 }                
             }
 
-            await _queryStoreWriter.UpdateDashboardAsync(employerAccountId, activeVacancySummaries.OrderBy(v => v.CreatedDate));
+            await _queryStoreWriter.UpdateEmployerDashboardAsync(employerAccountId, activeVacancySummaries.OrderBy(v => v.CreatedDate));
 
             _logger.LogDebug("Update dashboard with {count} summary records for account: {employerAccountId}", activeVacancySummaries.Count, employerAccountId);
         }

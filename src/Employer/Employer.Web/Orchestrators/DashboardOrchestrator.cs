@@ -17,7 +17,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         public async Task<DashboardViewModel> GetDashboardViewModelAsync(string employerAccountId)
         {            
             var dashboard = await _vacancyClient.GetDashboardAsync(employerAccountId);
-            var vm = DashboardMapper.MapFromDashboard(dashboard);
+            var vm = DashboardMapper.MapFromEmployerDashboard(dashboard);
             return vm;
         }
     }

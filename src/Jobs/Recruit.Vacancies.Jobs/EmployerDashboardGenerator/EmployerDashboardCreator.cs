@@ -1,13 +1,13 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Infrastructure.Services;
 using System.Threading.Tasks;
 
-namespace Esfa.Recruit.Vacancies.Jobs.DashboardGenerator
+namespace Esfa.Recruit.Vacancies.Jobs.EmployerDashboardGenerator
 {
-    public class DashboardCreator
+    public class EmployerDashboardCreator
     {
-        private readonly IDashboardService _dashboardService;
+        private readonly IEmployerDashboardService _dashboardService;
 
-        public DashboardCreator(IDashboardService dashboardService)
+        public EmployerDashboardCreator(IEmployerDashboardService dashboardService)
         {
             _dashboardService = dashboardService;
         }

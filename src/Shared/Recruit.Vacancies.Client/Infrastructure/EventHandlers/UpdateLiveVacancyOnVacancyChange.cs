@@ -15,12 +15,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
     public class UpdateLiveVacancyOnVacancyChange : INotificationHandler<VacancyApprovedEvent>, INotificationHandler<VacancyPublishedEvent>
     {
         private readonly IVacancyRepository _repository;
-        private readonly ILogger<UpdateDashboardOnChange> _logger;
+        private readonly ILogger<UpdateLiveVacancyOnVacancyChange> _logger;
         private readonly IMessaging _messaging;
         private readonly IQueryStoreWriter _queryStoreWriter;
         private readonly IQueryStoreReader _queryStoreReader;
 
-        public UpdateLiveVacancyOnVacancyChange(IQueryStoreReader queryStoreReader, IQueryStoreWriter queryStoreWriter, ILogger<UpdateDashboardOnChange> logger, 
+        public UpdateLiveVacancyOnVacancyChange(IQueryStoreReader queryStoreReader, IQueryStoreWriter queryStoreWriter, ILogger<UpdateLiveVacancyOnVacancyChange> logger, 
             IVacancyRepository repository, IMessaging messaging)
         {
             _queryStoreReader = queryStoreReader;
@@ -32,7 +32,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
         
         public Task Handle(VacancyApprovedEvent notification, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Handling {notificationType} for vacancyId: {vacancyId}", notification.GetType().Name, notification?.VacancyId);
+            _logger.LogInformation("Handling {notificationType} for vacancyId: {vacancyId}", notification?.GetType().Name, notification?.VacancyId);
             
             //For now approved vacancies are immediately made Live
             return _messaging.SendCommandAsync(new PublishVacancyCommand
