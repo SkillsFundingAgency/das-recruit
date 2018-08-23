@@ -6,6 +6,7 @@ using Esfa.Recruit.Qa.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Wages;
 using Humanizer;
@@ -51,7 +52,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 vm.ContactName = vacancy.EmployerContactName;
                 vm.ContactEmail = vacancy.EmployerContactEmail;
                 vm.ContactTelephone = vacancy.EmployerContactPhone;
-                vm.ClosingDate = vacancy.ClosingDate?.AsDisplayDate();
+                vm.ClosingDate = vacancy.ClosingDate?.AsGdsDate();
                 vm.EmployerDescription = vacancy.EmployerDescription;
                 vm.EmployerName = vacancy.EmployerName;
                 vm.EmployerWebsiteUrl = vacancy.EmployerWebsiteUrl;
@@ -59,7 +60,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 vm.IsDisabilityConfident = vacancy.IsDisabilityConfident;
                 vm.NumberOfPositionsCaption =  $"{"position".ToQuantity(vacancy.NumberOfPositions.Value)} available";
                 vm.OutcomeDescription = vacancy.OutcomeDescription;
-                vm.PossibleStartDate = vacancy.StartDate?.AsDisplayDate();
+                vm.PossibleStartDate = vacancy.StartDate?.AsGdsDate();
                 vm.ProviderName = vacancy.TrainingProvider.Name;
                 vm.Qualifications = vacancy.Qualifications.SortQualifications(_qualifications.Value).AsText();
                 vm.ShortDescription = vacancy.ShortDescription;

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Dashboard;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.LiveVacancy;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.QA;
@@ -11,7 +11,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 {
     public interface IQueryStoreReader
     {
-        Task<Dashboard> GetDashboardAsync(string employerAccountId);
+        Task<EmployerDashboard> GetEmployerDashboardAsync(string employerAccountId);
         Task<ApprenticeshipProgrammes> GetApprenticeshipProgrammesAsync();
         Task<EditVacancyInfo> GetEmployerVacancyDataAsync(string employerAccountId);
         Task<IEnumerable<LiveVacancy>> GetLiveVacancies();

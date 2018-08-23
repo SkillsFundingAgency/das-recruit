@@ -9,7 +9,8 @@ using System.Threading.Tasks;
 namespace Esfa.Recruit.Vacancies.Client.Application.EventHandlers
 {
     public class NotifyOnVacancyActions : INotificationHandler<VacancyApprovedEvent>,
-                                          INotificationHandler<VacancyReferredEvent>
+                                          INotificationHandler<VacancyReferredEvent>,
+                                          INotificationHandler<VacancyReviewCreatedEvent>
     {
         private readonly INotifyVacancyReviewUpdates _notifier;
         private readonly ILogger<NotifyOnVacancyActions> _logger;
@@ -43,6 +44,18 @@ namespace Esfa.Recruit.Vacancies.Client.Application.EventHandlers
             catch(NotificationException ex)
             {
                 _logger.LogError(ex, $"Unable to send notification for {nameof(VacancyReviewReferredEvent)} and VacancyReference: {{vacancyReference}}", notification.VacancyReference);
+            }
+        }
+
+        public async Task Handle(VacancyReviewCreatedEvent notification, CancellationToken cancellationToken)
+        {
+            try
+            {
+                await _notifier.VacancyReviewCreated(notification.VacancyReference);
+            }
+            catch(NotificationException ex)
+            {
+                _logger.LogError(ex, $"Unable to send notification for {nameof(VacancyReviewCreatedEvent)} and VacancyReference: {{vacancyReference}}", notification.VacancyReference);
             }
         }
     }

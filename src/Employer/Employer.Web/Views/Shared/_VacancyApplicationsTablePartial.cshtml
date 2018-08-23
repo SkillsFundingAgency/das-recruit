@@ -20,7 +20,7 @@
                         <tr>
                             <td><a asp-route="@RouteNames.ApplicationReview_Get" asp-route-applicationReviewId="@application.ApplicationReviewId">@application.CandidateName</a></td>
                             <td>@application.Status.GetDisplayName()</td>
-                            <td>@application.SubmittedDate.AsDisplayDate()</td>
+                            <td>@application.SubmittedDate.AsGdsDate()</td>
                             <td asp-condition="@Model.ShowDisability">@application.DisabilityStatus.GetDisplayName()</td>
                         </tr>
                     }

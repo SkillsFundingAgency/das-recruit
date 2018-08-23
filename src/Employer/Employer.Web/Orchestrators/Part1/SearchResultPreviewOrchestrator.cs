@@ -4,6 +4,7 @@ using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.SearchResultPreview;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Services;
+using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Wages
@@ -35,8 +36,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 EmployerName = vacancy.EmployerName,
                 NumberOfPositions = vacancy.NumberOfPositions?.ToString(),
                 ShortDescription = vacancy.ShortDescription,
-                ClosingDate = vacancy.ClosingDate?.AsDisplayDate(),
-                StartDate = vacancy.StartDate?.AsDisplayDate(),
+                ClosingDate = vacancy.ClosingDate?.AsGdsDate(),
+                StartDate = vacancy.StartDate?.AsGdsDate(),
                 LevelName = await GetLevelName(vacancy.ProgrammeId),
                 Title = vacancy.Title,
                 Wage = vacancy.Wage?.ToText(

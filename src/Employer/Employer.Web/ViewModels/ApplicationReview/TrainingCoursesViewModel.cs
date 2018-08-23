@@ -1,5 +1,5 @@
 ﻿using System;
-using Esfa.Recruit.Employer.Web.Extensions;
+using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview
 {

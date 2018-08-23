@@ -4,7 +4,7 @@ using System.IO;
 using Esfa.Recruit.Vacancies.Client.Application.CommandHandlers;
 using Esfa.Recruit.Vacancies.Jobs.ApprenticeshipProgrammes;
 using Esfa.Recruit.Vacancies.Jobs.BankHoliday;
-using Esfa.Recruit.Vacancies.Jobs.DashboardGenerator;
+using Esfa.Recruit.Vacancies.Jobs.EmployerDashboardGenerator;
 using Esfa.Recruit.Vacancies.Jobs.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Jobs.QaDashboard;
 using Esfa.Recruit.Vacancies.Jobs.LiveVacanciesGenerator;
@@ -145,8 +145,8 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddScoped<ApprenticeshipProgrammesUpdater>();
             services.AddScoped<EditVacancyInfoUpdater>();
             services.AddScoped<LiveVacancyStatusInspector>();
-            services.AddScoped<DashboardCreator>();
-            services.AddScoped<VacancyApplicationCommandHandler>();
+            services.AddScoped<EmployerDashboardCreator>();
+            services.AddScoped<CreateApplicationReviewCommandHandler>();
             services.AddScoped<LiveVacanciesCreator>();
 
             services.AddSingleton<IApprenticeshipProgrammeApiClient, ApprenticeshipProgrammeApiClient>();
@@ -159,7 +159,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddScoped<ApprenticeshipProgrammesJob>();
             services.AddScoped<EditVacancyInfoJob>();
             services.AddScoped<VacancyStatusJob>();
-            services.AddScoped<DashboardGeneratorJob>();
+            services.AddScoped<EmployerDashboardGeneratorJob>();
             services.AddScoped<VacancyApplicationJob>();
             services.AddScoped<LiveVacanciesGeneratorJob>();
             services.AddScoped<BankHolidayJob>();

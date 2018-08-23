@@ -1,5 +1,6 @@
 ﻿using System;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 
 namespace Esfa.Recruit.Shared.Web.Extensions
 {
