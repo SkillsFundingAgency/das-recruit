@@ -26,7 +26,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         {
             var key = QueryViewType.EmployerDashboard.GetIdValue(employerAccountId);
 
-            return _queryStore.GetAsync<EmployerDashboard>(key);
+            return _queryStore.GetAsync<EmployerDashboard>(QueryViewType.EmployerDashboard.TypeName, key);
         }
 
         public Task UpdateEmployerDashboardAsync(string employerAccountId, IEnumerable<VacancySummary> vacancySummaries)
