@@ -19,7 +19,7 @@ function millisToMinutesAndSeconds(millis) {
     let queryViewDocs = db.queryViews.find().toArray();
 
     uniqueQueryViewsViewTypes.forEach(vt => {
-        print(`queryViews collection has ${db.queryViews.find({}).toArray().filter(d => d.viewType == vt ).length} ${vt} documents.`);
+        print(`queryViews collection has ${db.queryViews.find({}).toArray().filter(d => d.viewType === vt ).length} ${vt} documents.`);
     });
 
     let insertCount = 0,
