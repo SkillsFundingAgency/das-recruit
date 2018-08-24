@@ -19,7 +19,7 @@ function millisToMinutesAndSeconds(millis) {
     let queryViewDocs = db.queryViews.find().toArray();
 
     uniqueQueryViewsViewTypes.forEach(vt => {
-        print(`queryViews collection has ${db.queryViews.count({ "viewType": vt })} ${vt}.`);
+        print(`queryViews collection has ${db.queryViews.find().count({ "viewType": vt })} ${vt}.`);
     });
 
     var startTime = new Date().getTime();
