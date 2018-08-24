@@ -12,6 +12,7 @@ function millisToMinutesAndSeconds(millis) {
     let uniqueViewTypes = db.queryStore.distinct("viewType");
 
     uniqueViewTypes.forEach(vt => {
+        print(`Deleting documents of viewType ${vt} from queryStore.`);
         db.queryStore.deleteMany({ "viewType": vt });
     });
 
