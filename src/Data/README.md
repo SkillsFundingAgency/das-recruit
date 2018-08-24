@@ -72,6 +72,6 @@ Any scripts that are no longer required to be run during release should be moved
 
 ## Instructions
 
-1. From the Mongo shell you can navigate to the directory that holds the **_databaseMigration.js_** and child scripts using `cd("../../../dev/das-recruit/src/data/CosmosDb")` assuming you have cloned the repository into the dev folder of your root dir. You can use `pwd()` to print your working directory to help you navigate.
+1. From the Mongo shell you can navigate to the directory that holds the **_documentMigration.js_** and child scripts using `cd("../../../dev/das-recruit/src/Data/Recruit.ChangeScipts")` assuming you have cloned the repository into the dev folder of your root dir. You can use `pwd()` to print your working directory to help you navigate.
 2. Enter the command `load("documentMigration.js")` and press `Enter`
 3. You should see output relating to the changes included in the change migration script(s).
