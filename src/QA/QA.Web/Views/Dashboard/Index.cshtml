@@ -1,3 +1,4 @@
+@using Esfa.Recruit.Vacancies.Client.Domain.Extensions
 @model DashboardViewModel
 <div class="grid-row">
     <div class="column-full">
@@ -5,7 +6,7 @@
         <hr>
     </div>
 </div>
-<form asp-route="RouteNames.Dashboard_Index_Post">
+<form asp-route="@RouteNames.Dashboard_Index_Post" method="post">
     <div class="grid-row">
         <input asp-for="SearchTerm" placeholder="Search vacancies" />
         <button type="submit">Search</button>
@@ -56,8 +57,8 @@
                 <td>@vacancy.EmployerName</td>
                 <td>@vacancy.VacancyTitle</td>
                 <td>@vacancy.VacancyReference</td>
-                <td>@vacancy.SubmittedDate</td>
-                <td>@vacancy.ClosingDate</td>
+                <td>@vacancy.SubmittedDate.AsGdsDateTime()</td>
+                <td>@vacancy.ClosingDate.AsGdsDate()</td>
                 <td>
                     <a asp-condition="@vacancy.IsAvailableForReview" asp-route="@RouteNames.Vacancy_Review_Get" asp-route-reviewId="@vacancy.ReviewId">Review</a>
                     <span asp-condition="@vacancy.IsAvailableForReview == false">@vacancy.AssignmentInfo</span>

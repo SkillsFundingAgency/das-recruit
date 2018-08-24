@@ -25,24 +25,17 @@ namespace Esfa.Recruit.Qa.Web.Controllers
             return View(vm);
         }
 
-        [HttpPost(Name = RouteNames.Dashboard_Index_Post)]
-        public async Task<IActionResult> Index(DashboardViewModel viewModel)
+        [HttpPost("/", Name = RouteNames.Dashboard_Index_Post)]
+        public async Task<IActionResult> Index(string searchTerm)
         {
-            var vm = await _orchestrator.GetDashboardViewModelAsync();
+            var vm = await _orchestrator.GetDashboardViewModelAsync().ConfigureAwait(false);
 
-            vm.LastSearchTerm = viewModel.SearchTerm;
-            vm.IsPostBack = true;
-            if (int.TryParse(vm.LastSearchTerm, out int _))
+            if (!string.IsNullOrWhiteSpace(searchTerm))
             {
-                vm.SearchResults = new List<ReviewVacancyModel>()
-                {
-                    new ReviewVacancyModel() { AssignedTo = "John Doe", VacancyReference = "VAC100101", ClosingDate = DateTime.Now.AddDays(10), EmployerName = "Manufacturing Engineering Ltd.", VacancyTitle = "Mechanical Apprenticeship", SubmittedDate = DateTime.Now.AddDays(-1), AssignedTimeElapsed = "1h 20m", ReviewId = Guid.Empty},
-                    new ReviewVacancyModel() { AssignedTo = "Steve Smith", VacancyReference = "VAC100123", ClosingDate = DateTime.Now.AddDays(20), EmployerName = "Amazing Restaurant", VacancyTitle = "Chef Apprenticeship", SubmittedDate = DateTime.Now.AddDays(-1), AssignedTimeElapsed = "20h 5m", ReviewId = Guid.Empty},
-                    new ReviewVacancyModel() { AssignedTo = null, VacancyReference = "VAC100111", ClosingDate = DateTime.Now.AddDays(30), EmployerName = "Newspaper Company.", VacancyTitle = "Journalist Apprenticeship", SubmittedDate = DateTime.Now.AddDays(-2), AssignedTimeElapsed = null, ReviewId = Guid.Empty},
-                    new ReviewVacancyModel() { AssignedTo = null, VacancyReference = "VAC100135", ClosingDate = DateTime.Now.AddDays(40), EmployerName = "Amazing Restaurant", VacancyTitle = "Chef Apprenticeship", SubmittedDate = DateTime.Now.AddDays(-1), AssignedTimeElapsed = null, ReviewId = Guid.Empty},
-                };
+                vm.SearchResults = await _orchestrator.GetSearchResultsAsync(searchTerm).ConfigureAwait(true);
+                vm.LastSearchTerm = searchTerm;
+                vm.IsPostBack = true;
             }
-
             return View(vm);
         }
     }

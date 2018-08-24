@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
@@ -52,7 +54,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             });
         }
 
-        public Task ApproveReview(Guid reviewId)
+        public Task ApproveReviewAsync(Guid reviewId)
         {
             return _messaging.SendCommandAsync(new ApproveVacancyReviewCommand
             {
@@ -72,12 +74,39 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public async Task<QaDashboard> GetDashboardAsync()
         {
-            var dashboard = await _queryStoreReader.GetQaDashboardAsync();
+            var dashboard = await _queryStoreReader.GetQaDashboardAsync().ConfigureAwait(true);
 
             //todo - will be deleted
-            var allReviews = await _reviewRepository.GetActiveAsync();
+            var allReviews = await _reviewRepository.GetActiveAsync().ConfigureAwait(true);
             dashboard.AllReviews = allReviews.ToList();
+
             return dashboard;
+        }
+
+        public async Task<List<VacancyReviewSearch>> GetSearchResultsAsync(string searchTerm)
+        {
+            if (TryGetVacancyReference(searchTerm, out var vacancyReference))
+            {
+                return await _reviewRepository.SearchAsync(vacancyReference).ConfigureAwait(false);
+            }
+            return new List<VacancyReviewSearch>();
+        }
+
+        /// <summary>
+        /// This could be somewhere more common, we can refactor when we come across a second use
+        /// </summary>
+        private static bool TryGetVacancyReference(string value, out long vacancyReference)
+        {
+            vacancyReference = 0;
+            if (string.IsNullOrEmpty(value)) return false;
+            
+            var regex = new Regex(@"^(VAC)?(\d{10})$", RegexOptions.IgnoreCase);
+            var result = regex.Match(value);
+            if (result.Success)
+            {
+                vacancyReference = long.Parse(result.Groups[2].Value);
+            }
+            return result.Success;
         }
 
         public Task<Vacancy> GetVacancyAsync(long vacancyReference)
@@ -98,7 +127,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             });
         }
 
-        public Task StartReview(Guid reviewId, VacancyUser user)
+        public Task StartReviewAsync(Guid reviewId, VacancyUser user)
         {
             return _messaging.SendCommandAsync(new StartVacancyReviewCommand
             {

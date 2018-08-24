@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Qa.Web.ViewModels
 {
-    public struct ReviewVacancyModel
+    public struct VacancyReviewSearchModel
     {
         public Guid ReviewId { get; set; }
 

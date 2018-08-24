@@ -14,7 +14,7 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
 
         public string LastSearchTerm { get; set; }
 
-        public List<ReviewVacancyModel> SearchResults { get; set; } = new List<ReviewVacancyModel>();
+        public List<VacancyReviewSearchModel> SearchResults { get; set; } = new List<VacancyReviewSearchModel>();
         public bool IsPostBack { get; set; }
     }
 }

@@ -22,6 +22,37 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         {
         }
 
+        public async Task<List<VacancyReviewSearch>> SearchAsync(long vacancyReference)
+        {
+            var filterBuilder = Builders<VacancyReview>.Filter;
+
+            var filter = (filterBuilder.Eq(r => r.Status, ReviewStatus.PendingReview)
+                         | filterBuilder.Eq(r => r.Status, ReviewStatus.UnderReview)) 
+                         & filterBuilder.Eq(r => r.VacancyReference, vacancyReference);
+            var collection = GetCollection<VacancyReview>();
+            
+            var result = await RetryPolicy
+                .ExecuteAsync( 
+                    context => collection
+                        .Find(filter)
+                        .Project(r => new VacancyReviewSearch()
+                        {
+                            Id = r.Id,
+                            Title = r.Title,
+                            VacancyReference = r.VacancyReference,
+                            ReviewAssignedTo = r.ReviewedByUser.Name,
+                            ReviewStartedOn = r.ReviewedDate,
+                            EmployerName = r.VacancySnapshot.EmployerName,
+                            ClosingDate = r.VacancySnapshot.ClosingDate.Value,
+                            SubmittedDate = r.VacancySnapshot.SubmittedDate.Value
+                        })
+                        .ToListAsync(),
+                    new Context(nameof(SearchAsync)))
+                .ConfigureAwait(false);
+
+            return result;
+        }
+
         public Task CreateAsync(VacancyReview vacancy)
         {
             var collection = GetCollection<VacancyReview>();
