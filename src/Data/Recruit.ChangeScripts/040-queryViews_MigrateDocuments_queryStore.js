@@ -19,19 +19,37 @@ function millisToMinutesAndSeconds(millis) {
     let queryViewDocs = db.queryViews.find().toArray();
 
     uniqueQueryViewsViewTypes.forEach(vt => {
-        print(`queryViews collection has ${db.queryViews.find().count({ "viewType": vt })} ${vt}.`);
+        print(`queryViews collection has ${db.queryViews.find({ "viewType": vt }).count() + 0} ${vt} documents.`);
     });
 
-    var startTime = new Date().getTime();
+    let insertCount = 0,
+        insertLoopCount = 0,
+        startTime = new Date().getTime();
 
-    let insertResult = db.queryStore.insertMany(queryViewDocs);
+    if (queryViewDocs.length > 0) {
 
-    let timeTaken = millisToMinutesAndSeconds(new Date().getTime() - startTime);
+        for (let pos = 0, insertBatchSize = 5; pos <= queryViewDocs.length; pos += insertBatchSize) {
+            print("... insert processing ...");
+            insertLoopCount++;
+            let docs = queryViewDocs.slice(pos, pos + insertBatchSize);
 
-    print(`Inserted ${insertResult.insertedIds.length} documents into queryStore. Took ${timeTaken}`);
+            if (docs.length > 0) {
+                let insertResult = db.queryStore.insertMany(docs);
+                insertCount += insertResult.insertedIds.length;
+            }
+            /* eslint-disable */
+            sleep(1000);
+            /* eslint-disable */
+        }
+    }
+
+    let timeTaken = millisToMinutesAndSeconds((new Date().getTime() - startTime) - (insertLoopCount * 1000));
+
+    print(`Inserted ${insertCount} documents into queryStore. Took ${timeTaken}`);
+    print(`Looped insert ${insertLoopCount} times.`);
 
     uniqueQueryViewsViewTypes.forEach(vt => {
-        print(`queryStore collection has ${db.queryStore.count({ "viewType": vt })} ${vt}.`);
+        print(`queryStore collection has ${db.queryStore.count({ "viewType": vt }) + 0} ${vt} documents.`);
     });
 
     print("Finished copy of documents from queryViews collection to queryStore collection.");
