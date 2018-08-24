@@ -10,7 +10,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mappings;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Dashboard;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.LiveVacancy;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
@@ -112,9 +112,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _messaging.SendCommandAsync(command);
         }
 
-        public Task<Dashboard> GetDashboardAsync(string employerAccountId)
+        public Task<EmployerDashboard> GetDashboardAsync(string employerAccountId)
         {
-            return _reader.GetDashboardAsync(employerAccountId);
+            return _reader.GetEmployerDashboardAsync(employerAccountId);
         }
 
         public Task UserSignedInAsync(VacancyUser user)
@@ -294,6 +294,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             var results = await _employerAccountService.GetEmployerLegalEntitiesAsync(employerAccountId);
 
             return results.Select(LegalEntityMapper.MapFromAccountApiLegalEntity);
+        }
+
+        public async Task CreateApplicationReviewAsync(Domain.Entities.Application application)
+        {
+            await _messaging.SendCommandAsync(new CreateApplicationReviewCommand { Application = application });
+
         }
     }
 }

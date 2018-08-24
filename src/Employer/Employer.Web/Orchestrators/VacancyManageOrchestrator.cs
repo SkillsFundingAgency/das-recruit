@@ -8,6 +8,7 @@ using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Employer.Web.ViewModels.VacancyManage;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
@@ -86,7 +87,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         {
             var submittedViewModel = new SubmittedVacancyViewModel();
             await _vacancyDisplayMapper.MapFromVacancyAsync(submittedViewModel, vacancy);
-            submittedViewModel.SubmittedDate = vacancy.SubmittedDate.Value.AsDisplayDate();
+            submittedViewModel.SubmittedDate = vacancy.SubmittedDate.Value.AsGdsDate();
             return new ManageVacancy
             {
                 ViewModel = submittedViewModel,
@@ -98,7 +99,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         {
             var approvedViewModel = new ApprovedVacancyViewModel();
             await _vacancyDisplayMapper.MapFromVacancyAsync(approvedViewModel, vacancy);
-            approvedViewModel.ApprovedDate = vacancy.ApprovedDate.Value.AsDisplayDate();
+            approvedViewModel.ApprovedDate = vacancy.ApprovedDate.Value.AsGdsDate();
             return new ManageVacancy
             {
                 ViewModel = approvedViewModel,
@@ -121,7 +122,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         {
             var closedViewModel = new ClosedVacancyViewModel();
             PopulateViewModelWithApplications(vacancy, closedViewModel);
-            closedViewModel.ClosedDate = vacancy.ClosedDate.Value.AsDisplayDate();
+            closedViewModel.ClosedDate = vacancy.ClosedDate.Value.AsGdsDate();
             return new ManageVacancy
             {
                 ViewModel = closedViewModel,

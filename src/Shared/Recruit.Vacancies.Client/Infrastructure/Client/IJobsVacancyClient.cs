@@ -20,5 +20,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task EnsureVacancyIsGeocodedAsync(Guid vacancyId);
         Task ApproveVacancy(long vacancyReference);
         Task ReferVacancy(long vacancyReference);
+        Task CreateApplicationReviewAsync(Domain.Entities.Application application);
     }
 }

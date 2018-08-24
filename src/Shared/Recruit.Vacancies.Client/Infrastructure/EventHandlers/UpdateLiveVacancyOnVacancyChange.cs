@@ -12,15 +12,15 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
 {
-    public class UpdateLiveVacancyOnVacancyChange : INotificationHandler<VacancyApprovedEvent>, INotificationHandler<VacancyLiveEvent>
+    public class UpdateLiveVacancyOnVacancyChange : INotificationHandler<VacancyApprovedEvent>, INotificationHandler<VacancyPublishedEvent>
     {
         private readonly IVacancyRepository _repository;
-        private readonly ILogger<UpdateDashboardOnVacancyChange> _logger;
+        private readonly ILogger<UpdateLiveVacancyOnVacancyChange> _logger;
         private readonly IMessaging _messaging;
         private readonly IQueryStoreWriter _queryStoreWriter;
         private readonly IQueryStoreReader _queryStoreReader;
 
-        public UpdateLiveVacancyOnVacancyChange(IQueryStoreReader queryStoreReader, IQueryStoreWriter queryStoreWriter, ILogger<UpdateDashboardOnVacancyChange> logger, 
+        public UpdateLiveVacancyOnVacancyChange(IQueryStoreReader queryStoreReader, IQueryStoreWriter queryStoreWriter, ILogger<UpdateLiveVacancyOnVacancyChange> logger, 
             IVacancyRepository repository, IMessaging messaging)
         {
             _queryStoreReader = queryStoreReader;
@@ -32,16 +32,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
         
         public Task Handle(VacancyApprovedEvent notification, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Handling {notificationType} for vacancyId: {vacancyId}", notification.GetType().Name, notification?.VacancyId);
+            _logger.LogInformation("Handling {notificationType} for vacancyId: {vacancyId}", notification?.GetType().Name, notification?.VacancyId);
             
             //For now approved vacancies are immediately made Live
-            return _messaging.SendCommandAsync(new LiveVacancyCommand
+            return _messaging.SendCommandAsync(new PublishVacancyCommand
             {
                 VacancyId = notification.VacancyId
             });
         }
 
-        public async Task Handle(VacancyLiveEvent notification, CancellationToken cancellationToken)
+        public async Task Handle(VacancyPublishedEvent notification, CancellationToken cancellationToken)
         {
             var vacancyTask = _repository.GetVacancyAsync(notification.VacancyId);
             var programmeTask = _queryStoreReader.GetApprenticeshipProgrammesAsync();

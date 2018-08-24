@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
+using Esfa.Recruit.Vacancies.Client.Domain.Events.Interfaces;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services;
 using MediatR;
 using Microsoft.Extensions.Logging;

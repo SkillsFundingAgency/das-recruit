@@ -15,6 +15,12 @@
                     "StoredProcedures": []
                 },
                 {
+                    "CollectionName": "queryStore",
+                    "OfferThroughput": 1000,
+                    "PartitionKey": "viewType",
+                    "StoredProcedures": []
+                },
+                {
                     "CollectionName": "referenceData",
                     "OfferThroughput": 1000,
                     "StoredProcedures": []
