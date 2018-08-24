@@ -46,14 +46,17 @@ namespace Esfa.Recruit.Qa.Web.Configuration
             });
         }
 
-        public static void AddAuthorizationService(this IServiceCollection services, AuthorizationConfiguration authorizationConfig)
+        public static void AddAuthorizationService(this IServiceCollection services, AuthorizationConfiguration legacyAuthorizationConfig, AuthorizationConfiguration authorizationConfig)
         {
             services.AddAuthorization(options =>
             {
                 options.AddPolicy(DoesUserBelongToGroupPolicyName, policy =>
                 {
                     policy.RequireAuthenticatedUser();
-                    policy.RequireClaim(authorizationConfig.GroupClaim, authorizationConfig.GroupName);
+                    policy.RequireAssertion(context => 
+                        context.User.HasClaim(legacyAuthorizationConfig.GroupClaim, legacyAuthorizationConfig.GroupName) 
+                        || context.User.HasClaim(authorizationConfig.GroupClaim, authorizationConfig.GroupName)
+                    );
                 });
             });
         }

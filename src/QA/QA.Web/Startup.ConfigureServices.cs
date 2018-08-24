@@ -13,6 +13,7 @@ namespace Esfa.Recruit.Qa.Web
     {
         private readonly IConfiguration _configuration;
         private readonly AuthenticationConfiguration _authenticationConfig;
+        private readonly AuthorizationConfiguration _legacyAuthorizationConfig;
         private readonly AuthorizationConfiguration _authorizationConfig;
         private readonly ExternalLinksConfiguration _externalLinks;
 
@@ -20,6 +21,7 @@ namespace Esfa.Recruit.Qa.Web
         {
             _configuration = configuration;
             _authenticationConfig = _configuration.GetSection("Authentication").Get<AuthenticationConfiguration>();
+            _legacyAuthorizationConfig = _configuration.GetSection("LegacyAuthorization").Get<AuthorizationConfiguration>();
             _authorizationConfig = _configuration.GetSection("Authorization").Get<AuthorizationConfiguration>();
             _externalLinks = _configuration.GetSection("ExternalLinks").Get<ExternalLinksConfiguration>();
         }
@@ -50,7 +52,7 @@ namespace Esfa.Recruit.Qa.Web
 
             services.AddApplicationInsightsTelemetry(_configuration);
             services.AddAuthenticationService(_authenticationConfig);
-            services.AddAuthorizationService(_authorizationConfig);
+            services.AddAuthorizationService(_legacyAuthorizationConfig, _authorizationConfig);
 
             services.AddRecruitStorageClient(_configuration);
             services.AddScoped<DashboardOrchestrator>();
