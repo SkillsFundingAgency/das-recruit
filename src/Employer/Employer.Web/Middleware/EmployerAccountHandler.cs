@@ -51,7 +51,7 @@ namespace Esfa.Recruit.Employer.Web.Middleware
             if (context.Request.Cookies[key] == null)
             {
                 await _client.SetupEmployerAsync(employerAccountId);
-                context.Response.Cookies.Append(key, string.Empty, EsfaCookieOptions.GetDefaultHttpCookieOption(_hostingEnvironment));
+                context.Response.Cookies.Append(key, "1", EsfaCookieOptions.GetDefaultHttpCookieOption(_hostingEnvironment));
             }
         }
     }
