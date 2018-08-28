@@ -7,6 +7,7 @@ function millisToMinutesAndSeconds(millis) {
 {
     print("Start copy of documents from queryViews collection to queryStore collection.");
 
+    const oneSecondInMilliseconds = 1000;
     let uniqueQueryViewsViewTypes = db.queryViews.distinct("viewType");
 
     let uniqueViewTypes = db.queryStore.distinct("viewType");
@@ -19,7 +20,7 @@ function millisToMinutesAndSeconds(millis) {
     let queryViewDocs = db.queryViews.find().toArray();
 
     uniqueQueryViewsViewTypes.forEach(vt => {
-        print(`queryViews collection has ${db.queryViews.find({}).toArray().filter(d => d.viewType === vt ).length} ${vt} documents.`);
+        print(`queryViews collection has ${db.queryViews.find({}).toArray().filter(doc => doc.viewType === vt).length} ${vt} documents.`);
     });
 
     let insertCount = 0,
@@ -38,15 +39,17 @@ function millisToMinutesAndSeconds(millis) {
                 insertCount += insertResult.insertedIds.length;
             }
             /* eslint-disable */
-            sleep(1000);
+            sleep(oneSecondInMilliseconds);
             /* eslint-disable */
         }
     }
 
-    let timeTaken = millisToMinutesAndSeconds((new Date().getTime() - startTime) - (insertLoopCount * 1000));
+    let totalTime = (new Date().getTime() - startTime),
+        totalTimeTaken = millisToMinutesAndSeconds(totalTime),
+        totalInsertTimeTaken = millisToMinutesAndSeconds(totalTime - (insertLoopCount * oneSecondInMilliseconds));
 
-    print(`Inserted ${insertCount} documents into queryStore. Took ${timeTaken}`);
-    print(`Looped insert ${insertLoopCount} times.`);
+    print(`Inserted ${insertCount} documents into queryStore. Took ${totalInsertTimeTaken}`);
+    print(`Looped insert ${insertLoopCount} times. Took overall ${totalTimeTaken}`);
 
     uniqueQueryViewsViewTypes.forEach(vt => {
         print(`queryStore collection has ${db.queryStore.count({ "viewType": vt }) + 0} ${vt} documents.`);
