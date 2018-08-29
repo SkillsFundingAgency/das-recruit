@@ -142,9 +142,6 @@ namespace Esfa.Recruit.Vacancies.Jobs
                 options.AddDebug();
             });
 
-
-            services.AddScoped<VacancyEventHandler>();
-            services.AddScoped<VacancyReviewEventHandler>();
             services.AddScoped<EditVacancyInfoUpdater>();
             services.AddScoped<LiveVacancyStatusInspector>();
             services.AddScoped<EmployerDashboardCreator>();
