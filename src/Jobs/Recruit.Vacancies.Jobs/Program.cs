@@ -8,9 +8,6 @@ using Esfa.Recruit.Vacancies.Jobs.EmployerDashboardGenerator;
 using Esfa.Recruit.Vacancies.Jobs.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Jobs.QaDashboard;
 using Esfa.Recruit.Vacancies.Jobs.LiveVacanciesGenerator;
-using Esfa.Recruit.Vacancies.Jobs.VacancyApplication;
-using Esfa.Recruit.Vacancies.Jobs.VacancyEvents;
-using Esfa.Recruit.Vacancies.Jobs.VacancyReviewEvents;
 using Esfa.Recruit.Vacancies.Jobs.VacancyStatus;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Configuration;
@@ -18,6 +15,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 using SFA.DAS.Apprenticeships.Api.Client;
+using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
+using Esfa.Recruit.Vacancies.Jobs.DomainEvents;
+using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy;
+using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.VacancyReview;
+using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Application;
 
 namespace Esfa.Recruit.Vacancies.Jobs
 {
@@ -140,8 +142,6 @@ namespace Esfa.Recruit.Vacancies.Jobs
                 options.AddDebug();
             });
 
-            services.AddScoped<VacancyEventHandler>();
-            services.AddScoped<VacancyReviewEventHandler>();
             services.AddScoped<ApprenticeshipProgrammesUpdater>();
             services.AddScoped<EditVacancyInfoUpdater>();
             services.AddScoped<LiveVacancyStatusInspector>();
@@ -154,16 +154,28 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddRecruitStorageClient(configuration);
 
             // Add Jobs
-            services.AddScoped<VacancyEventsJob>();
-            services.AddScoped<VacancyReviewEventsJob>();
+            services.AddScoped<DomainEventsJob>();
             services.AddScoped<ApprenticeshipProgrammesJob>();
             services.AddScoped<EditVacancyInfoJob>();
             services.AddScoped<VacancyStatusJob>();
             services.AddScoped<EmployerDashboardGeneratorJob>();
-            services.AddScoped<VacancyApplicationJob>();
             services.AddScoped<LiveVacanciesGeneratorJob>();
             services.AddScoped<BankHolidayJob>();
             services.AddScoped<QaDashboardJob>();
+
+            // Domain Event Queue Handlers
+
+            // Vacancy
+            services.AddScoped<IDomainEventHandler<IEvent>, VacancyCreatedHandler>();
+            services.AddScoped<IDomainEventHandler<IEvent>, DraftVacancyUpdatedHandler>();
+            services.AddScoped<IDomainEventHandler<IEvent>, VacancySubmittedHandler>();
+
+            // VacancyReview
+            services.AddScoped<IDomainEventHandler<IEvent>, VacancyReviewApprovedHandler>();
+            services.AddScoped<IDomainEventHandler<IEvent>, VacancyReviewReferredHandler>();
+            
+            // Application
+            services.AddScoped<IDomainEventHandler<IEvent>, ApplicationSubmittedHandler>();
 
             return services;
         }
