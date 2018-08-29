@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 using System.Threading;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Events.Interfaces;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
 {
@@ -20,11 +20,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
                                             INotificationHandler<SetupEmployerEvent>
     {
         
-        private readonly IDashboardService _dashboardService;
+        private readonly IEmployerDashboardProjectionService _dashboardService;
         private readonly ILogger<UpdateEmployerDashboardOnChange> _logger;
         
 
-        public UpdateEmployerDashboardOnChange(IDashboardService dashboardService, ILogger<UpdateEmployerDashboardOnChange> logger)
+        public UpdateEmployerDashboardOnChange(IEmployerDashboardProjectionService dashboardService, ILogger<UpdateEmployerDashboardOnChange> logger)
         {
             _dashboardService = dashboardService;
             _logger = logger;

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Entities
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Wages
 {
     public class MinimumWages : IReferenceDataItem
     {

@@ -33,6 +33,8 @@
     <PackageReference Include="WindowsAzure.Storage" Version="9.1.0" />
     <PackageReference Include="FluentValidation" Version="7.5.2" />
     <PackageReference Include="Polly" Version="6.0.1" />
+    <PackageReference Include="SFA.DAS.Apprenticeships.Api.Client" Version="0.10.138" />
+    <PackageReference Include="SFA.DAS.Apprenticeships.Api.Types" Version="0.10.139" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Application\Validation\Fluent\CustomValidators\VacancyValidators\" />

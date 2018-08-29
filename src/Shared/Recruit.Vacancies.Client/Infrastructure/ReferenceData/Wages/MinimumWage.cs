@@ -1,6 +1,6 @@
 using System;
 
-namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Entities
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Wages
 {
     public class MinimumWage
     {

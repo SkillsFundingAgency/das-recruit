@@ -9,15 +9,15 @@ using Esfa.Recruit.Vacancies.Client.Domain.Services;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.QA;
 
-namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
 {
-    public class QaDashboardService : IQaDashboardService
+    public class QaDashboardProjectionService : IQaDashboardProjectionService
     {
         private readonly IVacancyReviewRepository _reviewRepository;
         private readonly IQueryStoreWriter _queryStoreWriter;
         private readonly ITimeProvider _timeProvider;
 
-        public QaDashboardService(IVacancyReviewRepository reviewRepository, IQueryStoreWriter queryStoreWriter, ITimeProvider timeProvider)
+        public QaDashboardProjectionService(IVacancyReviewRepository reviewRepository, IQueryStoreWriter queryStoreWriter, ITimeProvider timeProvider)
         {
             _reviewRepository = reviewRepository;
             _queryStoreWriter = queryStoreWriter;

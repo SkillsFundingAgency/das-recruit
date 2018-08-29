@@ -5,14 +5,12 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVa
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.LiveVacancy;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.QA;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Models;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 {
     public interface IQueryStoreReader
     {
         Task<EmployerDashboard> GetEmployerDashboardAsync(string employerAccountId);
-        Task<ApprenticeshipProgrammes> GetApprenticeshipProgrammesAsync();
         Task<EditVacancyInfo> GetEmployerVacancyDataAsync(string employerAccountId);
         Task<IEnumerable<LiveVacancy>> GetLiveVacancies();
         Task<VacancyApplications> GetVacancyApplicationsAsync(string vacancyReference);

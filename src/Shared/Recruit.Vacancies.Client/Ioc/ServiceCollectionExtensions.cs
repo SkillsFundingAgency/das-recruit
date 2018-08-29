@@ -19,7 +19,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Configuration;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.FAA;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Wages;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
 using FluentValidation;
 using MediatR;
@@ -27,6 +26,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using SFA.DAS.EAS.Account.Api.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Slack;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
+using Esfa.Recruit.Vacancies.Client.Application.Services.ReferenceData;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Qualifications;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Wages;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -64,15 +69,17 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             services.AddTransient<ITimeProvider, CurrentUtcTimeProvider>();
             services.AddTransient<IEmployerAccountService, EmployerAccountService>();
-            services.AddTransient<IDashboardService, EmployerDashboardService>();
-            services.AddTransient<IGetMinimumWages, NationalMinimumWageService>();
+            services.AddTransient<IEmployerDashboardProjectionService, EmployerDashboardProjectionService>();
+            services.AddTransient<IMinimumWageProvider, NationalMinimumWageProvider>();
             services.AddTransient<IGenerateVacancyNumbers, MongoSequenceStore>();
             services.AddTransient<IApprenticeshipProgrammeProvider, ApprenticeshipProgrammeProvider>();
             services.AddTransient<IQualificationsProvider, QualificationsProvider>();
-            services.AddTransient<IQaDashboardService, QaDashboardService>();
+            services.AddTransient<IQaDashboardProjectionService, QaDashboardProjectionService>();
 
+            services.AddTransient<IApprenticeshipProgrammeUpdateService, ApprenticeshipProgrammeUpdateService>();
             services.Configure<BankHolidayConfiguration>(configuration.GetSection("BankHoliday"));
-            services.AddTransient<IBankHolidayService, BankHolidayService>();
+            services.AddTransient<IBankHolidayUpdateService, BankHolidayUpdateService>();
+            services.AddTransient<IBankHolidayProvider, BankHolidayProvider>();
             services.AddTransient<ISlaService, SlaService>();
             
             services.Configure<SlackConfiguration>(configuration.GetSection("Slack"));
@@ -83,6 +90,8 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient<IGeocodeServiceFactory, GeocodeServiceFactory>();
 
             services.Configure<FaaConfiguration>(configuration.GetSection("FaaConfiguration"));
+            
+            services.AddApprentieshipsApi(configuration);
         }
 
         private static void AddRepositories(this IServiceCollection services, IConfiguration configuration)

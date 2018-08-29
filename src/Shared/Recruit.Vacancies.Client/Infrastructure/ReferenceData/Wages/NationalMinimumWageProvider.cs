@@ -1,20 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Entities;
 using Microsoft.Extensions.Logging;
-using MinWageEntity = Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Entities.MinimumWage;
+using MinWageEntity = Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Wages.MinimumWage;
 
-namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Wages
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Wages
 {
-    public class NationalMinimumWageService : IGetMinimumWages
+    public class NationalMinimumWageProvider : IMinimumWageProvider
     {
-        private readonly ILogger<NationalMinimumWageService> _logger;
+        private readonly ILogger<NationalMinimumWageProvider> _logger;
         private readonly Lazy<IList<MinWageEntity>> _wagePeriods;
         
-        public NationalMinimumWageService(IReferenceDataReader referenceDataReader, ILogger<NationalMinimumWageService> logger)
+        public NationalMinimumWageProvider(IReferenceDataReader referenceDataReader, ILogger<NationalMinimumWageProvider> logger)
         {
             _logger = logger;
             _wagePeriods = new Lazy<IList<MinWageEntity>>(() => referenceDataReader.GetReferenceData<MinimumWages>().Result.Ranges);

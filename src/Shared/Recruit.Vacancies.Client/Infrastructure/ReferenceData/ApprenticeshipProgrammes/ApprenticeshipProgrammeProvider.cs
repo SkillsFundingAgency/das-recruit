@@ -1,19 +1,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Esfa.Recruit.Vacancies.Client.Application.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 
-namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes
 {
     public class ApprenticeshipProgrammeProvider : IApprenticeshipProgrammeProvider
     {
-        private readonly IQueryStoreReader _queryStoreReader;
+        private readonly IReferenceDataReader _referenceDataReader;
 
-        public ApprenticeshipProgrammeProvider(IQueryStoreReader queryStoreReader)
+        public ApprenticeshipProgrammeProvider(IReferenceDataReader queryStoreReader)
         {
-            _queryStoreReader = queryStoreReader;
+            _referenceDataReader = queryStoreReader;
         }
 
         public async Task<IApprenticeshipProgramme> GetApprenticeshipProgrammeAsync(string programmeId)
@@ -25,12 +24,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services
 
         public async Task<IEnumerable<IApprenticeshipProgramme>> GetApprenticeshipProgrammesAsync(bool includeExpired = false)
         {
-            var queryItem = await _queryStoreReader.GetApprenticeshipProgrammesAsync();
+            var queryItem = await _referenceDataReader.GetReferenceData<ApprenticeshipProgrammes>();
 
             if (includeExpired)
-                return queryItem.Programmes;
+                return queryItem.Data;
             else
-                return queryItem.Programmes.Where(x => x.IsActive);
+                return queryItem.Data.Where(x => x.IsActive);
         }
     }
 }

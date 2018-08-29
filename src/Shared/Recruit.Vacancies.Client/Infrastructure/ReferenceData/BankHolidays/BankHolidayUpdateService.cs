@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Esfa.Recruit.Vacancies.Client.Application.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Services.ReferenceData;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Entities;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BankHolidays;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -12,28 +12,17 @@ using RestSharp;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services
 {
-    public class BankHolidayService : IBankHolidayService
+    public class BankHolidayUpdateService : IBankHolidayUpdateService
     {
         private readonly BankHolidayConfiguration _config;
-        private readonly IReferenceDataReader _referenceDataReader;
         private readonly IReferenceDataWriter _referenceDataWriter;
-        private readonly ILogger<BankHolidayService> _logger;
+        private readonly ILogger<BankHolidayUpdateService> _logger;
 
-        public BankHolidayService(IOptions<BankHolidayConfiguration> config, IReferenceDataReader referenceDataReader, IReferenceDataWriter referenceDataWriter, ILogger<BankHolidayService> logger)
+        public BankHolidayUpdateService(IOptions<BankHolidayConfiguration> config, IReferenceDataWriter referenceDataWriter, ILogger<BankHolidayUpdateService> logger)
         {
             _config = config.Value;
-            _referenceDataReader = referenceDataReader;
             _referenceDataWriter = referenceDataWriter;
             _logger = logger;
-        }
-
-        public async Task<List<DateTime>> GetBankHolidaysAsync()
-        {
-            var bankHolidayReferenceData = await _referenceDataReader.GetReferenceData<BankHolidays>();
-
-            return bankHolidayReferenceData.Data.EnglandAndWales.Events
-                .Select(e => DateTime.Parse(e.Date))
-                .ToList();
         }
 
         public async Task UpdateBankHolidaysAsync()
@@ -42,11 +31,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services
             var request = new RestRequest();
             var response = await client.ExecuteTaskAsync<BankHolidays.BankHolidaysData>(request);
 
-            if(!response.Data.EnglandAndWales.Events.Any())
+            if (!response.Data.EnglandAndWales.Events.Any())
                 throw new Exception($"Expected a list of bank holidays from url:{_config.Url}");
 
             var bankHolidays = new BankHolidays
-                {Data = response.Data};
+            {
+                Data = response.Data
+            };
 
             await _referenceDataWriter.UpsertReferenceData(bankHolidays);
 

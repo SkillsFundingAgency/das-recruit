@@ -7,6 +7,8 @@ using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -17,17 +19,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
         private readonly IVacancyRepository _repository;
         private readonly ILogger<UpdateLiveVacancyOnVacancyChange> _logger;
         private readonly IMessaging _messaging;
+        private readonly IReferenceDataReader _referenceDataReader;
         private readonly IQueryStoreWriter _queryStoreWriter;
-        private readonly IQueryStoreReader _queryStoreReader;
 
-        public UpdateLiveVacancyOnVacancyChange(IQueryStoreReader queryStoreReader, IQueryStoreWriter queryStoreWriter, ILogger<UpdateLiveVacancyOnVacancyChange> logger, 
-            IVacancyRepository repository, IMessaging messaging)
+        public UpdateLiveVacancyOnVacancyChange(IQueryStoreWriter queryStoreWriter, ILogger<UpdateLiveVacancyOnVacancyChange> logger, 
+            IVacancyRepository repository, IMessaging messaging, IReferenceDataReader referenceDataReader)
         {
-            _queryStoreReader = queryStoreReader;
             _queryStoreWriter = queryStoreWriter;
             _logger = logger;
             _repository = repository;
             _messaging = messaging;
+            _referenceDataReader = referenceDataReader;
         }
         
         public Task Handle(VacancyApprovedEvent notification, CancellationToken cancellationToken)
@@ -44,12 +46,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
         public async Task Handle(VacancyPublishedEvent notification, CancellationToken cancellationToken)
         {
             var vacancyTask = _repository.GetVacancyAsync(notification.VacancyId);
-            var programmeTask = _queryStoreReader.GetApprenticeshipProgrammesAsync();
+            var programmeTask = _referenceDataReader.GetReferenceData<ApprenticeshipProgrammes>();
 
             await Task.WhenAll(vacancyTask, programmeTask);
 
             var vacancy = vacancyTask.Result;
-            var programme = programmeTask.Result.Programmes.Single(p => p.Id == vacancy.ProgrammeId);
+            var programme = programmeTask.Result.Data.Single(p => p.Id == vacancy.ProgrammeId);
 
             await _queryStoreWriter.UpdateLiveVacancyAsync(vacancy.ToLiveVacancyProjection(programme));
         }

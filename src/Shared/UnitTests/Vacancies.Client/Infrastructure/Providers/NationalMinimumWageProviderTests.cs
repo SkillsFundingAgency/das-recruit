@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Entities;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Wages;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Wages;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Internal;
@@ -11,18 +10,18 @@ using Xunit;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructure.Services
 {
-    public class NationalMinimumWageServiceTests
+    public class NationalMinimumWageProviderTests
     {
-        private readonly NationalMinimumWageService _service;
-        private readonly Mock<ILogger<NationalMinimumWageService>> _mockLogger;
+        private readonly NationalMinimumWageProvider _service;
+        private readonly Mock<ILogger<NationalMinimumWageProvider>> _mockLogger;
         
-        public NationalMinimumWageServiceTests()
+        public NationalMinimumWageProviderTests()
         {
-            _mockLogger = new Mock<ILogger<NationalMinimumWageService>>();
+            _mockLogger = new Mock<ILogger<NationalMinimumWageProvider>>();
             var mockReferenceDataReader = new Mock<IReferenceDataReader>();
             mockReferenceDataReader.Setup(x => x.GetReferenceData<MinimumWages>()).ReturnsAsync(GetTestData());
 
-            _service = new NationalMinimumWageService(mockReferenceDataReader.Object, _mockLogger.Object);
+            _service = new NationalMinimumWageProvider(mockReferenceDataReader.Object, _mockLogger.Object);
         }
 
         [Fact]

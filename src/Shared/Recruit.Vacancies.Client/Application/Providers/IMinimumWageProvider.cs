@@ -1,9 +1,9 @@
 ﻿using System;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
-namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Wages
+namespace Esfa.Recruit.Vacancies.Client.Application.Providers
 {
-    public interface IGetMinimumWages
+    public interface IMinimumWageProvider
     {
         decimal GetApprenticeNationalMinimumWage(DateTime date);
 

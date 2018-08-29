@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.QA;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Entities;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Qualifications;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {

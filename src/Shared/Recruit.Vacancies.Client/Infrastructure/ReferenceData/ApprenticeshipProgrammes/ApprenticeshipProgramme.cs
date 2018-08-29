@@ -1,7 +1,7 @@
 using System;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
- 
-namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Models
+
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes
 {
     public class ApprenticeshipProgramme : IApprenticeshipProgramme
     {

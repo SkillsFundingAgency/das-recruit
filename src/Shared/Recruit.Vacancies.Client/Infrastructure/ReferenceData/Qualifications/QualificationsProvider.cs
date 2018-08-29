@@ -1,10 +1,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Esfa.Recruit.Vacancies.Client.Application.Services;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Entities;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
 
-namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Qualifications
 {
     public class QualificationsProvider : IQualificationsProvider
     {

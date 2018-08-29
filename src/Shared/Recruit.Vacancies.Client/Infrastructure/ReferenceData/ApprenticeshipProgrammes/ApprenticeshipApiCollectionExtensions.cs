@@ -1,7 +1,7 @@
 using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
 using SFA.DAS.Apprenticeships.Api.Types;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Models;
 
 namespace System.Collections.Generic
 {

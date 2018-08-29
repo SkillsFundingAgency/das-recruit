@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
-using Esfa.Recruit.Vacancies.Client.Application.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators.VacancyValidators;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Services;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Wages;
 using FluentValidation;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
@@ -12,11 +11,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
     public sealed class FluentVacancyValidator : AbstractValidator<Vacancy>
     {
         private readonly ITimeProvider _timeProvider;
-        private readonly IGetMinimumWages _minimumWageService;
+        private readonly IMinimumWageProvider _minimumWageService;
         private readonly Lazy<IEnumerable<IApprenticeshipProgramme>> _trainingProgrammes;
         private readonly IList<string> _qualifications;
 
-        public FluentVacancyValidator(ITimeProvider timeProvider, IGetMinimumWages minimumWageService, IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider, IQualificationsProvider qualificationsProvider)
+        public FluentVacancyValidator(ITimeProvider timeProvider, IMinimumWageProvider minimumWageService, IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider, IQualificationsProvider qualificationsProvider)
         {
             _timeProvider = timeProvider;
             _minimumWageService = minimumWageService;

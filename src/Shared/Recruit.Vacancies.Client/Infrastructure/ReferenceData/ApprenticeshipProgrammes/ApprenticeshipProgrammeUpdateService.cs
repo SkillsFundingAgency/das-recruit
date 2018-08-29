@@ -2,34 +2,33 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Models;
+using Esfa.Recruit.Vacancies.Client.Application.Services.ReferenceData;
 using Microsoft.Extensions.Logging;
 using Polly;
 using SFA.DAS.Apprenticeships.Api.Client;
 
-namespace Esfa.Recruit.Vacancies.Jobs.ApprenticeshipProgrammes
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes
 {
-    public sealed class ApprenticeshipProgrammesUpdater
+    public class ApprenticeshipProgrammeUpdateService : IApprenticeshipProgrammeUpdateService
     {
-        private readonly ILogger<ApprenticeshipProgrammesUpdater> _logger;
-        private readonly IJobsVacancyClient _client;
+        private readonly ILogger<ApprenticeshipProgrammeUpdateService> _logger;
         private readonly IStandardApiClient _standardsClient;
         private readonly IFrameworkApiClient _frameworksClient;
+        private readonly IReferenceDataWriter _referenceDataWriter;
 
-        public ApprenticeshipProgrammesUpdater(
-            ILogger<ApprenticeshipProgrammesUpdater> logger, 
-            IJobsVacancyClient client,
+        public ApprenticeshipProgrammeUpdateService(
+            ILogger<ApprenticeshipProgrammeUpdateService> logger, 
             IStandardApiClient standardsClient,
-            IFrameworkApiClient frameworksClient)
+            IFrameworkApiClient frameworksClient,
+            IReferenceDataWriter referenceDataWriter)
         {
             _logger = logger;
-            _client = client;
             _standardsClient = standardsClient;
             _frameworksClient = frameworksClient;
+            _referenceDataWriter = referenceDataWriter;
         }
 
-        public async Task UpdateAsync()
+        public async Task UpdateApprenticeshipProgrammesAsync()
         {
             var standardsTask = GetStandards();
             var frameworksTask = GetFrameworks();
@@ -46,7 +45,10 @@ namespace Esfa.Recruit.Vacancies.Jobs.ApprenticeshipProgrammes
                 newList.AddRange(standardsFromApi);
                 newList.AddRange(frameworksFromApi);
 
-                await UpdateQueryStore(newList);
+                await _referenceDataWriter.UpsertReferenceData(new ApprenticeshipProgrammes
+                {
+                    Data = newList
+                });
 
                 _logger.LogInformation("Inserted: {standardCount} standards and {frameworkCount} frameworks.", standardsFromApi.Count, frameworksFromApi.Count);
             }
@@ -88,11 +90,6 @@ namespace Esfa.Recruit.Vacancies.Jobs.ApprenticeshipProgrammes
             return frameworks.FilterAndMapToApprenticeshipProgrammes();
         }
 
-        private async Task UpdateQueryStore(IEnumerable<ApprenticeshipProgramme> programmes)
-        {
-            await _client.UpdateApprenticeshipProgrammesAsync(programmes);
-        }
-        
         private Polly.Retry.RetryPolicy GetApiRetryPolicy()
         {
             return Policy

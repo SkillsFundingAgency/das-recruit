@@ -28,7 +28,6 @@
 
         public static QueryViewType EmployerDashboard => new QueryViewType("EmployerDashboard", "EmployerDashboard_{0}");
         public static QueryViewType EditVacancyInfo => new QueryViewType("EditVacancyInfo", "EditVacancyInfo_{0}");
-        public static QueryViewType ApprenticeshipProgrammes => new QueryViewType("ApprenticeshipProgrammes", "ApprenticeshipProgrammes");
         public static QueryViewType LiveVacancy => new QueryViewType("LiveVacancy", "LiveVacancy_{0}");
         public static QueryViewType VacancyApplications => new QueryViewType("VacancyApplications", "VacancyApplications_{0}");
         public static QueryViewType QaDashboard => new QueryViewType("QaDashboard", "QaDashboard");

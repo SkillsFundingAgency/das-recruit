@@ -1,6 +1,6 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 
@@ -9,9 +9,9 @@ namespace Esfa.Recruit.Vacancies.Jobs.QaDashboard
     public class QaDashboardJob
     {
         private readonly ILogger<QaDashboardJob> _logger;
-        private readonly IQaDashboardService _qaDashboardService;
+        private readonly IQaDashboardProjectionService _qaDashboardService;
 
-        public QaDashboardJob(ILogger<QaDashboardJob> logger, IQaDashboardService qaDashboardService)
+        public QaDashboardJob(ILogger<QaDashboardJob> logger, IQaDashboardProjectionService qaDashboardService)
         {
             _logger = logger;
             _qaDashboardService = qaDashboardService;

@@ -7,16 +7,16 @@ using Microsoft.Extensions.Logging;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
 {
-    internal class EmployerDashboardService : IDashboardService
+    internal class EmployerDashboardProjectionService : IEmployerDashboardProjectionService
     {
-        private readonly ILogger<EmployerDashboardService> _logger;
+        private readonly ILogger<EmployerDashboardProjectionService> _logger;
         private readonly IVacancyRepository _repository;
         private readonly IQueryStoreWriter _queryStoreWriter;
         private readonly IApplicationReviewRepository _applicationReviewRepository;
 
-        public EmployerDashboardService(IVacancyRepository repository, IApplicationReviewRepository applicationReviewRepository, IQueryStoreWriter queryStoreWriter, ILogger<EmployerDashboardService> logger)
+        public EmployerDashboardProjectionService(IVacancyRepository repository, IApplicationReviewRepository applicationReviewRepository, IQueryStoreWriter queryStoreWriter, ILogger<EmployerDashboardProjectionService> logger)
         {
             _logger = logger;
             _repository = repository;
