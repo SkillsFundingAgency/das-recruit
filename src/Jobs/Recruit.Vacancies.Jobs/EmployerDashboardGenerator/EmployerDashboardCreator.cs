@@ -5,16 +5,16 @@ namespace Esfa.Recruit.Vacancies.Jobs.EmployerDashboardGenerator
 {
     public class EmployerDashboardCreator
     {
-        private readonly IEmployerDashboardProjectionService _dashboardService;
+        private readonly IEmployerDashboardProjectionService _projectionService;
 
         public EmployerDashboardCreator(IEmployerDashboardProjectionService dashboardService)
         {
-            _dashboardService = dashboardService;
+            _projectionService = dashboardService;
         }
 
         public Task RunAsync(string employerId)
         {
-            return _dashboardService.ReBuildDashboardAsync(employerId);
+            return _projectionService.ReBuildDashboardAsync(employerId);
         }
     }
 }

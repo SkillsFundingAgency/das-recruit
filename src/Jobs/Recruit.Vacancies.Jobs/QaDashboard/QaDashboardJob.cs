@@ -9,12 +9,12 @@ namespace Esfa.Recruit.Vacancies.Jobs.QaDashboard
     public class QaDashboardJob
     {
         private readonly ILogger<QaDashboardJob> _logger;
-        private readonly IQaDashboardProjectionService _qaDashboardService;
+        private readonly IQaDashboardProjectionService _projectionService;
 
         public QaDashboardJob(ILogger<QaDashboardJob> logger, IQaDashboardProjectionService qaDashboardService)
         {
             _logger = logger;
-            _qaDashboardService = qaDashboardService;
+            _projectionService = qaDashboardService;
         }
 
         public async Task RebuildQaDashboard([TimerTrigger(Schedules.EveryFiveMinutes, RunOnStartup = true)]
@@ -22,7 +22,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.QaDashboard
         {
             _logger.LogInformation("Starting rebuilding QA Dashboard");
 
-            await _qaDashboardService.RebuildQaDashboardAsync();
+            await _projectionService.RebuildQaDashboardAsync();
 
             _logger.LogInformation("Finished rebuilding QA Dashboard");
         }
