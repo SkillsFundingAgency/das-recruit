@@ -7,8 +7,7 @@ using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Wages
-;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
@@ -18,13 +17,13 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         private const int MapImageHeight = 125;
         private readonly IEmployerVacancyClient _client;
         private readonly IGeocodeImageService _mapService;
-        private readonly IGetMinimumWages _wageService;
+        private readonly IMinimumWageProvider _wageProvider;
 
-        public SearchResultPreviewOrchestrator(IEmployerVacancyClient client, IGeocodeImageService mapService, IGetMinimumWages wageService)
+        public SearchResultPreviewOrchestrator(IEmployerVacancyClient client, IGeocodeImageService mapService, IMinimumWageProvider wageProvider)
         {
             _client = client;
             _mapService = mapService;
-            _wageService = wageService;
+            _wageProvider = wageProvider;
         }
         
         public async Task<SearchResultPreviewViewModel> GetSearchResultPreviewViewModelAsync(VacancyRouteModel vrm)
@@ -41,8 +40,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 LevelName = await GetLevelName(vacancy.ProgrammeId),
                 Title = vacancy.Title,
                 Wage = vacancy.Wage?.ToText(
-                    () => _wageService.GetNationalMinimumWageRange(vacancy.StartDate.Value),
-                    () => _wageService.GetApprenticeNationalMinimumWage(vacancy.StartDate.Value)),
+                    () => _wageProvider.GetNationalMinimumWageRange(vacancy.StartDate.Value),
+                    () => _wageProvider.GetApprenticeNationalMinimumWage(vacancy.StartDate.Value)),
                 HasYearlyWage = (vacancy.Wage != null && vacancy.Wage.WageType != WageType.Unspecified),
                 IsDisabilityConfident = vacancy.IsDisabilityConfident
             };

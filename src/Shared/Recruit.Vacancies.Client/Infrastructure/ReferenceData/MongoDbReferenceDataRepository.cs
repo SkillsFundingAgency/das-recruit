@@ -3,12 +3,16 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Services;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Entities;
+using Holidays = Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BankHolidays;
+using Quals = Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Qualifications;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Skills;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Wages;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Polly;
+using Programmes = Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData
 {
@@ -71,8 +75,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData
                 {
                     { typeof(CandidateSkills), "CandidateSkills" },
                     { typeof(MinimumWages), "MinimumWageRanges" },
-                    { typeof(BankHolidays), "BankHolidays" },
-                    { typeof(Qualifications), "QualificationTypes"}
+                    { typeof(Holidays.BankHolidays), "BankHolidays" },
+                    { typeof(Quals.Qualifications), "QualificationTypes" },
+                    { typeof(Programmes.ApprenticeshipProgrammes), "ApprenticeshipProgrammes" }
                 };
         }
     }

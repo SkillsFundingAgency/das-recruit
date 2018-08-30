@@ -1,22 +1,21 @@
-﻿using Esfa.Recruit.Vacancies.Client.Application.Services;
+﻿using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Wages;
 using Moq;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation
 {
     public abstract class VacancyValidationTestsBase
     {
-        protected readonly Mock<IGetMinimumWages> MockMinimumWageService;
+        protected readonly Mock<IMinimumWageProvider> MockMinimumWageService;
         protected readonly Mock<IApprenticeshipProgrammeProvider> MockApprenticeshipProgrammeProvider;
         protected readonly Mock<IQualificationsProvider> MockQualificationsProvider;
 
         protected VacancyValidationTestsBase()
         {
-            MockMinimumWageService = new Mock<IGetMinimumWages>();
+            MockMinimumWageService = new Mock<IMinimumWageProvider>();
             MockApprenticeshipProgrammeProvider = new Mock<IApprenticeshipProgrammeProvider>();
             MockQualificationsProvider = new Mock<IQualificationsProvider>();
         }

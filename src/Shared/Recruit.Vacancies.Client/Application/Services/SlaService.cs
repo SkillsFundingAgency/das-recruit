@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Esfa.Recruit.Vacancies.Client.Domain.Services;
-using Microsoft.IdentityModel.Tokens;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
+using Esfa.Recruit.Vacancies.Client.Application.Services.ReferenceData;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Services
 {
@@ -12,16 +11,16 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
     {
         private const int SlaHours = 24;
 
-        private readonly IBankHolidayService _bankholidayService;
+        private readonly IBankHolidayProvider _bankholidayProvider;
 
-        public SlaService(IBankHolidayService bankholidayService)
+        public SlaService(IBankHolidayProvider bankholidayProvider)
         {
-            _bankholidayService = bankholidayService;
+            _bankholidayProvider = bankholidayProvider;
         }
 
         public async Task<DateTime> GetSlaDeadlineAsync(DateTime utcDate)
         {
-            var bankHolidays = await _bankholidayService.GetBankHolidaysAsync();
+            var bankHolidays = await _bankholidayProvider.GetBankHolidaysAsync();
 
             var slaDate = utcDate;
 

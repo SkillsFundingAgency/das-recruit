@@ -1,6 +1,6 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
-using Esfa.Recruit.Vacancies.Client.Application.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Services.ReferenceData;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 
@@ -9,9 +9,9 @@ namespace Esfa.Recruit.Vacancies.Jobs.BankHoliday
     public class BankHolidayJob
     {
         private readonly ILogger<BankHolidayJob> _logger;
-        private readonly IBankHolidayService _bankHolidaysService;
+        private readonly IBankHolidayUpdateService _bankHolidaysService;
 
-        public BankHolidayJob(ILogger<BankHolidayJob> logger, IBankHolidayService bankHolidaysService)
+        public BankHolidayJob(ILogger<BankHolidayJob> logger, IBankHolidayUpdateService bankHolidaysService)
         {
             _logger = logger;
             _bankHolidaysService = bankHolidaysService;

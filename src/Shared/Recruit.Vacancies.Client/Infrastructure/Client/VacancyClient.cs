@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
-using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
@@ -15,9 +14,11 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVa
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.LiveVacancy;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Models;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Qualifications;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Skills;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
@@ -216,9 +217,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _messaging.SendCommandAsync(command);
         }
 
-        public Task UpdateApprenticeshipProgrammesAsync(IEnumerable<ApprenticeshipProgramme> programmes)
+        public Task UpdateApprenticeshipProgrammesAsync()
         {
-            return _writer.UpdateApprenticeshipProgrammesAsync(programmes);
+            var command = new UpdateApprenticeshipProgrammesCommand();
+
+            return _messaging.SendCommandAsync(command);
         }
 
         public Task UpdateEmployerVacancyDataAsync(string employerAccountId, IEnumerable<LegalEntity> legalEntities)

@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Qa.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Wages;
 using Humanizer;
 using Microsoft.Extensions.Logging;
 
@@ -21,18 +21,18 @@ namespace Esfa.Recruit.Qa.Web.Mappings
         private readonly ILogger<ReviewMapper> _logger;
         private readonly IQaVacancyClient _vacancyClient;
         private readonly IGeocodeImageService _mapService;
-        private readonly IGetMinimumWages _wageService;
+        private readonly IMinimumWageProvider _wageProvider;
         private readonly Lazy<IList<string>> _qualifications;
 
         public ReviewMapper(ILogger<ReviewMapper> logger,
                     IQaVacancyClient vacancyClient, 
                     IGeocodeImageService mapService, 
-                    IGetMinimumWages wageService)
+                    IMinimumWageProvider wageProvider)
         {
             _logger = logger;
             _vacancyClient = vacancyClient;
             _mapService = mapService;
-            _wageService = wageService;
+            _wageProvider = wageProvider;
             _qualifications = new Lazy<IList<string>>(() => _vacancyClient.GetCandidateQualificationsAsync().Result.QualificationTypes);
         }
         
@@ -80,8 +80,8 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 vm.WageInfo = vacancy.Wage.WageAdditionalInformation;
                 vm.WageText = vacancy.StartDate.HasValue
                     ? vacancy.Wage.ToText(
-                        () => _wageService.GetNationalMinimumWageRange(vacancy.StartDate.Value),
-                        () => _wageService.GetApprenticeNationalMinimumWage(vacancy.StartDate.Value))
+                        () => _wageProvider.GetNationalMinimumWageRange(vacancy.StartDate.Value),
+                        () => _wageProvider.GetApprenticeNationalMinimumWage(vacancy.StartDate.Value))
                     : null;
                 vm.WorkingWeekDescription = vacancy.Wage.WorkingWeekDescription;
             }

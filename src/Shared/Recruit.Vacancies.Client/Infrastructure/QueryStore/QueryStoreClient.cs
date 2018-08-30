@@ -7,7 +7,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVa
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.LiveVacancy;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.QA;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Models;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 {
@@ -39,27 +38,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             };
 
             return _queryStore.UpsertAsync(dashboardItem);
-        }
-
-        public Task UpdateApprenticeshipProgrammesAsync(IEnumerable<ApprenticeshipProgramme> programmes)
-        {
-            var programmesItem = new ApprenticeshipProgrammes
-            {
-                Id = QueryViewType.ApprenticeshipProgrammes.GetIdValue(),
-                Programmes = programmes,
-                LastUpdated = _timeProvider.Now
-            };
-            
-            return _queryStore.UpsertAsync(programmesItem);
-        }
-
-        public async Task<ApprenticeshipProgrammes> GetApprenticeshipProgrammesAsync()
-        {
-            var key = QueryViewType.ApprenticeshipProgrammes.GetIdValue();
-
-            var storeItem = await _queryStore.GetAsync<ApprenticeshipProgrammes>(QueryViewType.ApprenticeshipProgrammes.TypeName, key);
-
-            return storeItem;
         }
 
         public Task UpdateEmployerVacancyDataAsync(string employerAccountId, IEnumerable<LegalEntity> legalEntities)

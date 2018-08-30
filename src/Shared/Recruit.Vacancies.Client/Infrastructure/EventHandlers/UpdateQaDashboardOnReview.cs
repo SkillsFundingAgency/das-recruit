@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using Esfa.Recruit.Vacancies.Client.Domain.Events.Interfaces;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -13,9 +13,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
                                              INotificationHandler<VacancyReviewReferredEvent>
     {
         private readonly ILogger<UpdateQaDashboardOnReview> _logger;
-        private readonly IQaDashboardService _qaDashboardService;
+        private readonly IQaDashboardProjectionService _qaDashboardService;
         
-        public UpdateQaDashboardOnReview(ILogger<UpdateQaDashboardOnReview> logger, IQaDashboardService qaDashboardService)
+        public UpdateQaDashboardOnReview(ILogger<UpdateQaDashboardOnReview> logger, IQaDashboardProjectionService qaDashboardService)
         {
             _logger = logger;
             _qaDashboardService = qaDashboardService;
