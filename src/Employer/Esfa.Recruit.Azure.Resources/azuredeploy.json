@@ -338,7 +338,7 @@
               },
               {
                 "name": "Authorization:GroupClaim",
-                "value": "[parameters('QAuthorization').GroupClaim]"
+                "value": "[parameters('QAAuthorization').GroupClaim]"
               },
               {
                 "name": "Authorization:GroupName",
