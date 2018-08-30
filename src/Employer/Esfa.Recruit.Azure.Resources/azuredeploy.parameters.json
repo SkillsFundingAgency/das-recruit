@@ -67,6 +67,12 @@
         "MetaDataAddress": ""
       }
     },
+    "QALegacyAuthorization": {
+      "value": {
+        "GroupClaim": "",
+        "GroupName": ""
+      }
+    },
     "QAAuthorization": {
       "value": {
         "GroupClaim": "",
