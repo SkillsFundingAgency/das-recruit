@@ -83,11 +83,11 @@ Application logs are logged to [Elasticsearch](https://www.elastic.co/products/e
 
 #### Website
 
-* Open solution _**/src/Employer/Employer.sln**_
+* Open the solution _**/src/Employer/Employer.sln**_
 
 #### Webjobs
 
-* Open solution _**/src/Jobs/Jobs.sln**_
+* Open the solution _**/src/Jobs/Jobs.sln**_
 
 #### Database
 
