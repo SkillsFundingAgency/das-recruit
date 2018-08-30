@@ -82,6 +82,13 @@
         "MetaDataAddress": ""
       }
     },
+    "QALegacyAuthorization": {
+      "type": "object",
+      "defaultValue": {
+        "GroupClaim": "",
+        "GroupName": ""
+      }
+    },
     "QAAuthorization": {
       "type": "object",
       "defaultValue": {
@@ -322,12 +329,20 @@
                 "value": "[parameters('GoogleMapsPrivateKey')]"
               },
               {
-                "name": "Authorization:GroupClaim",
-                "value": "[parameters('QAAuthorization').GroupClaim]"
+                "name": "LegacyAuthorization:GroupClaim",
+                "value": "[parameters('QALegacyAuthorization').GroupClaim]"
+              },
+              {
+                "name": "LegacyAuthorization:GroupName",
+                "value": "[parameters('QALegacyAuthorization').GroupName]"
               },
               {
                 "name": "Authorization:GroupName",
                 "value": "[parameters('QAAuthorization').GroupName]"
+              },
+              {
+                "name": "ExternalLinks:StaffIdamsUrl",
+                "value": "[parameters('ExternalLinks').StaffIdamsUrl]"
               },
               {
                 "name": "ExternalLinks:StaffIdamsUrl",
