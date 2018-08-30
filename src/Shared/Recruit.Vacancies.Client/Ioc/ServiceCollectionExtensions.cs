@@ -91,7 +91,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.Configure<FaaConfiguration>(configuration.GetSection("FaaConfiguration"));
             
-            services.AddApprentieshipsApi(configuration);
+            services.AddApprenticeshipsApi(configuration);
         }
 
         private static void AddRepositories(this IServiceCollection services, IConfiguration configuration)

@@ -13,9 +13,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
 
         private readonly IBankHolidayProvider _bankholidayProvider;
 
-        public SlaService(IBankHolidayProvider bankholidayService)
+        public SlaService(IBankHolidayProvider bankholidayProvider)
         {
-            _bankholidayProvider = bankholidayService;
+            _bankholidayProvider = bankholidayProvider;
         }
 
         public async Task<DateTime> GetSlaDeadlineAsync(DateTime utcDate)

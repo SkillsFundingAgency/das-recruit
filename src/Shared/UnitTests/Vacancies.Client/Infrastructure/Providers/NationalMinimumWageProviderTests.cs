@@ -12,7 +12,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
 {
     public class NationalMinimumWageProviderTests
     {
-        private readonly NationalMinimumWageProvider _service;
+        private readonly NationalMinimumWageProvider _provider;
         private readonly Mock<ILogger<NationalMinimumWageProvider>> _mockLogger;
         
         public NationalMinimumWageProviderTests()
@@ -21,15 +21,15 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             var mockReferenceDataReader = new Mock<IReferenceDataReader>();
             mockReferenceDataReader.Setup(x => x.GetReferenceData<MinimumWages>()).ReturnsAsync(GetTestData());
 
-            _service = new NationalMinimumWageProvider(mockReferenceDataReader.Object, _mockLogger.Object);
+            _provider = new NationalMinimumWageProvider(mockReferenceDataReader.Object, _mockLogger.Object);
         }
 
         [Fact]
         public void ShouldPickCorrectWageRangeBasedOnDate()
         {
             var testDate = new DateTime(2017, 5, 22);
-            var apprenticeshipMinimumWage = _service.GetApprenticeNationalMinimumWage(testDate);
-            var nationMinimumWage = _service.GetNationalMinimumWageRange(testDate);
+            var apprenticeshipMinimumWage = _provider.GetApprenticeNationalMinimumWage(testDate);
+            var nationMinimumWage = _provider.GetNationalMinimumWageRange(testDate);
 
             apprenticeshipMinimumWage.Should().Be(1.65m);
             nationMinimumWage.MinimumWage.Should().Be(1.9m);            
@@ -40,8 +40,8 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         public void StartDateShouldBeInclusive()
         {
             var testDate = new DateTime(2018, 4, 1);
-            var apprenticeshipMinimumWage = _service.GetApprenticeNationalMinimumWage(testDate);
-            var nationMinimumWage = _service.GetNationalMinimumWageRange(testDate);
+            var apprenticeshipMinimumWage = _provider.GetApprenticeNationalMinimumWage(testDate);
+            var nationMinimumWage = _provider.GetNationalMinimumWageRange(testDate);
 
             apprenticeshipMinimumWage.Should().Be(2.5m);
             nationMinimumWage.MinimumWage.Should().Be(2.9m);            
@@ -52,8 +52,8 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         public void EndDateShouldBeInclusive()
         {
             var testDate = new DateTime(2018, 3, 31);
-            var apprenticeshipMinimumWage = _service.GetApprenticeNationalMinimumWage(testDate);
-            var nationMinimumWage = _service.GetNationalMinimumWageRange(testDate);
+            var apprenticeshipMinimumWage = _provider.GetApprenticeNationalMinimumWage(testDate);
+            var nationMinimumWage = _provider.GetNationalMinimumWageRange(testDate);
 
             apprenticeshipMinimumWage.Should().Be(1.65m);
             nationMinimumWage.MinimumWage.Should().Be(1.9m);            
@@ -64,8 +64,8 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         public void ShouldIgnoreTimePartOfDateTime()
         {
             var testDate = new DateTime(2019, 3, 31, 13, 22, 11);
-            var apprenticeshipMinimumWage = _service.GetApprenticeNationalMinimumWage(testDate);
-            var nationMinimumWage = _service.GetNationalMinimumWageRange(testDate);
+            var apprenticeshipMinimumWage = _provider.GetApprenticeNationalMinimumWage(testDate);
+            var nationMinimumWage = _provider.GetNationalMinimumWageRange(testDate);
 
             apprenticeshipMinimumWage.Should().Be(2.5m);
             nationMinimumWage.MinimumWage.Should().Be(2.9m);            
@@ -76,7 +76,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         public void IfMultipelMatchesThrowInvalidOperationException()
         {
             var testDate = new DateTime(2022, 6, 24);
-            _service.Invoking(x => x.GetNationalMinimumWageRange(testDate)).Should().Throw<InvalidOperationException>();
+            _provider.Invoking(x => x.GetNationalMinimumWageRange(testDate)).Should().Throw<InvalidOperationException>();
             
             _mockLogger.Verify(
                 m => m.Log(
@@ -93,7 +93,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         public void IfNoMatchesThrowInvalidOperationException()
         {
             var testDate = new DateTime(2022, 6, 24);
-            _service.Invoking(x => x.GetNationalMinimumWageRange(testDate)).Should().Throw<InvalidOperationException>();
+            _provider.Invoking(x => x.GetNationalMinimumWageRange(testDate)).Should().Throw<InvalidOperationException>();
             
             _mockLogger.Verify(
                 m => m.Log(

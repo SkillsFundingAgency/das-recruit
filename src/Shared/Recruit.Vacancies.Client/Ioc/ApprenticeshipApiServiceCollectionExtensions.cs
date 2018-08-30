@@ -5,7 +5,7 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class ApprenticeshipApiServiceCollectionExtensions
     {
-        public static IServiceCollection AddApprentieshipsApi(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddApprenticeshipsApi(this IServiceCollection services, IConfiguration configuration)
         {
             var baseUrl = configuration.GetValue<string>("ApprenticeshipProgrammesApiBaseUrl");
 
