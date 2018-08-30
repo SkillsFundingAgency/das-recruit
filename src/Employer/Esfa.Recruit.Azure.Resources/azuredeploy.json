@@ -337,12 +337,12 @@
                 "value": "[parameters('QALegacyAuthorization').GroupName]"
               },
               {
-                "name": "Authorization:GroupName",
-                "value": "[parameters('QAAuthorization').GroupName]"
+                "name": "Authorization:GroupClaim",
+                "value": "[parameters('QAuthorization').GroupClaim]"
               },
               {
-                "name": "ExternalLinks:StaffIdamsUrl",
-                "value": "[parameters('ExternalLinks').StaffIdamsUrl]"
+                "name": "Authorization:GroupName",
+                "value": "[parameters('QAAuthorization').GroupName]"
               },
               {
                 "name": "ExternalLinks:StaffIdamsUrl",
