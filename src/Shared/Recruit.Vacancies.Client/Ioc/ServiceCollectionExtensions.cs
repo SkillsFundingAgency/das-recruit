@@ -75,6 +75,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient<IApprenticeshipProgrammeProvider, ApprenticeshipProgrammeProvider>();
             services.AddTransient<IQualificationsProvider, QualificationsProvider>();
             services.AddTransient<IQaDashboardProjectionService, QaDashboardProjectionService>();
+            services.AddTransient<IEditVacancyInfoProjectionService, EditVacancyInfoProjectionService>();
 
             services.AddTransient<IApprenticeshipProgrammeUpdateService, ApprenticeshipProgrammeUpdateService>();
             services.Configure<BankHolidayConfiguration>(configuration.GetSection("BankHoliday"));

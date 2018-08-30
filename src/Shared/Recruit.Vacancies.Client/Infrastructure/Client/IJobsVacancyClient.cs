@@ -10,7 +10,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
     {
         Task AssignVacancyNumber(Guid vacancyId);
         Task UpdateApprenticeshipProgrammesAsync();
-        Task UpdateEmployerVacancyDataAsync(string employerAccountId, IEnumerable<LegalEntity> legalEntities);
         Task<IEnumerable<LegalEntity>> GetEmployerLegalEntitiesAsync(string employerAccountId);
         Task CreateVacancyReview(long vacancyReference);
         Task<IEnumerable<LiveVacancy>> GetLiveVacancies();
