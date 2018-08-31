@@ -11,10 +11,10 @@ namespace Esfa.Recruit.Vacancies.Jobs.QaDashboard
         private readonly ILogger<QaDashboardJob> _logger;
         private readonly IQaDashboardProjectionService _projectionService;
 
-        public QaDashboardJob(ILogger<QaDashboardJob> logger, IQaDashboardProjectionService qaDashboardService)
+        public QaDashboardJob(ILogger<QaDashboardJob> logger, IQaDashboardProjectionService projectionService)
         {
             _logger = logger;
-            _projectionService = qaDashboardService;
+            _projectionService = projectionService;
         }
 
         public async Task RebuildQaDashboard([TimerTrigger(Schedules.EveryFiveMinutes, RunOnStartup = true)]
