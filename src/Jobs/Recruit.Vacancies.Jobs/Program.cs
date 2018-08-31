@@ -5,7 +5,6 @@ using Esfa.Recruit.Vacancies.Client.Application.CommandHandlers;
 using Esfa.Recruit.Vacancies.Jobs.ApprenticeshipProgrammes;
 using Esfa.Recruit.Vacancies.Jobs.BankHoliday;
 using Esfa.Recruit.Vacancies.Jobs.EmployerDashboardGenerator;
-using Esfa.Recruit.Vacancies.Jobs.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Jobs.QaDashboard;
 using Esfa.Recruit.Vacancies.Jobs.LiveVacanciesGenerator;
 using Esfa.Recruit.Vacancies.Jobs.VacancyStatus;
@@ -20,6 +19,8 @@ using Esfa.Recruit.Vacancies.Jobs.DomainEvents;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.VacancyReview;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Application;
+using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Employer;
+using SetupEmployerEventHandler = Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Application.SetupEmployerHandler;
 
 namespace Esfa.Recruit.Vacancies.Jobs
 {
@@ -142,7 +143,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
                 options.AddDebug();
             });
 
-            services.AddScoped<EditVacancyInfoUpdater>();
+            services.AddScoped<SetupEmployerUpdater>();
             services.AddScoped<LiveVacancyStatusInspector>();
             services.AddScoped<EmployerDashboardCreator>();
             services.AddScoped<CreateApplicationReviewCommandHandler>();
@@ -154,7 +155,6 @@ namespace Esfa.Recruit.Vacancies.Jobs
             // Add Jobs
             services.AddScoped<DomainEventsJob>();
             services.AddScoped<ApprenticeshipProgrammesJob>();
-            services.AddScoped<EditVacancyInfoJob>();
             services.AddScoped<VacancyStatusJob>();
             services.AddScoped<EmployerDashboardGeneratorJob>();
             services.AddScoped<LiveVacanciesGeneratorJob>();
@@ -174,6 +174,10 @@ namespace Esfa.Recruit.Vacancies.Jobs
             
             // Application
             services.AddScoped<IDomainEventHandler<IEvent>, ApplicationSubmittedHandler>();
+
+            // Employer
+            services.AddScoped<IDomainEventHandler<IEvent>, SetupEmployerEventHandler>();
+            
 
             return services;
         }

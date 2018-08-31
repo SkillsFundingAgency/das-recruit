@@ -3,14 +3,14 @@ using Microsoft.Extensions.Logging;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Esfa.Recruit.Vacancies.Jobs.EditVacancyInfo
+namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Employer
 {
-    public class EditVacancyInfoUpdater
+    public class SetupEmployerUpdater
     {
         private readonly IJobsVacancyClient _client;
-        private readonly ILogger<EditVacancyInfoUpdater> _logger;
+        private readonly ILogger<SetupEmployerUpdater> _logger;
 
-        public EditVacancyInfoUpdater(IJobsVacancyClient client, ILogger<EditVacancyInfoUpdater> logger)
+        public SetupEmployerUpdater(IJobsVacancyClient client, ILogger<SetupEmployerUpdater> logger)
         {
             _client = client;
             _logger = logger;
