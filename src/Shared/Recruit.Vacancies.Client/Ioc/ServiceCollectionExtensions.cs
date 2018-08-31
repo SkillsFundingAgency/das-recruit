@@ -79,6 +79,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient<IGenerateVacancyNumbers, MongoSequenceStore>();
             services.AddTransient<ISlaService, SlaService>();
             services.AddTransient<INotifyVacancyReviewUpdates, SlackNotifyVacancyReviewUpdates>();
+            services.AddTransient<IVacancyService, VacancyService>();
 
             // Infrastructure Services
             services.AddTransient<IEmployerAccountService, EmployerAccountService>();
@@ -89,6 +90,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient<IEmployerDashboardProjectionService, EmployerDashboardProjectionService>();
             services.AddTransient<IQaDashboardProjectionService, QaDashboardProjectionService>();
             services.AddTransient<IEditVacancyInfoProjectionService, EditVacancyInfoProjectionService>();
+            services.AddTransient<ILiveVacancyProjectionService, LiveVacancyProjectionService>();
 
             // Reference Data Providers
             services.AddTransient<IMinimumWageProvider, NationalMinimumWageProvider>();
