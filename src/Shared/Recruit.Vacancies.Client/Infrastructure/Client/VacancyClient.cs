@@ -243,12 +243,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _reader.GetLiveVacancies();
         }
 
-        public async Task CloseVacancy(Guid vacancyId)
+        public async Task CloseExpiredVacancies()
         {
-            var command = new CloseVacancyCommand
-            {
-                VacancyId = vacancyId
-            };
+            var command = new CloseExpiredVacanciesCommand();
 
             await _messaging.SendCommandAsync(command);
         }

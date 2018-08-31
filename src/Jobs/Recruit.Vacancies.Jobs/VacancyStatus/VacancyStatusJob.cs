@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 
@@ -14,12 +15,12 @@ namespace Esfa.Recruit.Vacancies.Jobs.VacancyStatus
         private const bool CanRunOnStartup = false;
 #endif
         private readonly ILogger<VacancyStatusJob> _logger;
-        private readonly LiveVacancyStatusInspector _inspector;
+        private readonly IJobsVacancyClient _client;
 
-        public VacancyStatusJob(ILogger<VacancyStatusJob> logger, LiveVacancyStatusInspector inspector)
+        public VacancyStatusJob(ILogger<VacancyStatusJob> logger, IJobsVacancyClient client)
         {
             _logger = logger;
-            _inspector = inspector;
+            _client = client;
         }
 
         public async Task Run([TimerTrigger(Schedules.MidnightDaily, RunOnStartup = CanRunOnStartup)] TimerInfo timerInfo, TextWriter log)
@@ -28,7 +29,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.VacancyStatus
 
             try
             {
-                await _inspector.InspectAsync();
+                await _client.CloseExpiredVacancies();
                 _logger.LogInformation("Finished vacancy status checking.");
             }
             catch (Exception ex)
