@@ -17,7 +17,9 @@ function millisToMinutesAndSeconds(millis) {
         db.queryStore.deleteMany({ "viewType": vt });
     });
 
-    let queryViewDocs = db.queryViews.find().toArray();
+    /* Excluding dashboard documents as they have been renamed and will be re-generated */
+    /* Excluding ApprenticeshipProgrammes as they have been moved to ReferenceData collection */
+    let queryViewDocs = db.queryViews.find({ $and: [{ "viewType": { $ne: "Dashboard"}}, { "viewType": { $ne: "ApprenticeshipProgrammes"}}]}).toArray();
 
     uniqueQueryViewsViewTypes.forEach(vt => {
         print(`queryViews collection has ${db.queryViews.find({}).toArray().filter(doc => doc.viewType === vt).length} ${vt} documents.`);
