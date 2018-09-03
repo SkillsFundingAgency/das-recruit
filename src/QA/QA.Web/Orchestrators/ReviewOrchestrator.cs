@@ -23,7 +23,7 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
 
         public Task ApproveReviewAsync(Guid reviewId)
         {
-            return _vacancyClient.ApproveReview(reviewId);
+            return _vacancyClient.ApproveReviewAsync(reviewId);
         }
 
         public async Task ApproveReferredReviewAsync(Guid reviewId, ReferralViewModel reviewChanges)
@@ -50,7 +50,7 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
 
             if (review.Status == ReviewStatus.PendingReview)
             {
-                await _vacancyClient.StartReview(review.Id, user);
+                await _vacancyClient.StartReviewAsync(review.Id, user);
             }
 
             var vm = await _mapper.MapFromVacancy(vacancy);
