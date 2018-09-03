@@ -22,7 +22,7 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             _timeProvider = timeProvider;
         }
 
-        public async Task<DashboardViewModel> GetDashboardViewModelAsync(string searchTerm)
+        public async Task<DashboardViewModel> GetDashboardViewModelAsync(string searchTerm, VacancyUser vacancyUser)
         {            
             var reviews = await _vacancyClient.GetDashboardAsync();
             var vm = MapToViewModel(reviews);
@@ -30,28 +30,25 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             if(string.IsNullOrEmpty(searchTerm)) return vm;
 
             vm.LastSearchTerm = searchTerm;
-            vm.SearchResults = await GetSearchResultsAsync(searchTerm);
+            var result = await _vacancyClient.GetSearchResultsAsync(searchTerm);
+            vm.SearchResults = result.Select(v => MapToViewModel(v, vacancyUser)).ToList();
             return vm;
         }
 
-        private async Task<List<VacancyReviewSearchModel>> GetSearchResultsAsync(string searchTerm)
-        {
-            var result = await _vacancyClient.GetSearchResultsAsync(searchTerm);
-            return result.Select(MapToViewModel).ToList();
-        }
-
-        private VacancyReviewSearchModel MapToViewModel(VacancyReviewSearch vacancyReviewSearch)
+        private VacancyReviewSearchModel MapToViewModel(VacancyReviewSearch vacancyReviewSearch, VacancyUser vacancyUser)
         {
             return new VacancyReviewSearchModel()
             {
-                AssignedTo = vacancyReviewSearch.ReviewAssignedTo,
+                AssignedTo = vacancyReviewSearch.ReviewAssignedToUserName,
                 AssignedTimeElapsed = GetElapsedTime(vacancyReviewSearch.ReviewStartedOn),
                 ClosingDate = vacancyReviewSearch.ClosingDate.ToLocalTime(),
                 EmployerName = vacancyReviewSearch.EmployerName,
                 VacancyReference = $"VAC{vacancyReviewSearch.VacancyReference}",
                 VacancyTitle = vacancyReviewSearch.Title,
                 ReviewId = vacancyReviewSearch.Id,
-                SubmittedDate = vacancyReviewSearch.SubmittedDate.ToLocalTime()
+                SubmittedDate = vacancyReviewSearch.SubmittedDate.ToLocalTime(),
+                IsAvailableForReview = string.IsNullOrEmpty(vacancyReviewSearch.ReviewAssignedToUserId) || vacancyReviewSearch.ReviewAssignedToUserId == vacancyUser.UserId,
+                IsNotAvailableForReview = !string.IsNullOrEmpty(vacancyReviewSearch.ReviewAssignedToUserId) && vacancyReviewSearch.ReviewAssignedToUserId != vacancyUser.UserId
             };
         }
 

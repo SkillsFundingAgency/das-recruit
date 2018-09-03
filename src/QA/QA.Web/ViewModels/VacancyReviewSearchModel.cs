@@ -20,7 +20,9 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
 
         public string AssignedTimeElapsed { get; set; }
 
-        public bool IsAvailableForReview => string.IsNullOrEmpty(AssignedTo);
+        public bool IsAvailableForReview { get; set; }
+
+        public bool IsNotAvailableForReview { get; set; }
 
         public string AssignmentInfo => 
             IsAvailableForReview 

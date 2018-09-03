@@ -18,8 +18,10 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
 
         public DateTime ClosingDate { get; set; }
 
-        public string ReviewAssignedTo { get; set; }
-
         public DateTime? ReviewStartedOn { get; set; }
+
+        public string ReviewAssignedToUserName { get; set; }
+
+        public string ReviewAssignedToUserId { get; set; }
     }
 }
