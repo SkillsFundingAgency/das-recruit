@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode
@@ -45,10 +46,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode
                     _logger.LogWarning(ex, "{geocodeService} threw exception for postcode:{postcode}",
                         geocodeService, postcode);
                 }
-                
             }
 
-            return null;
+            return new Geocode { GeoCodeMethod = GeoCodeMethod.FailedToGeoCode };
         }
     }
 }
