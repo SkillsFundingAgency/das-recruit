@@ -77,7 +77,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             var dashboard = await _queryStoreReader.GetQaDashboardAsync().ConfigureAwait(true);
 
             //todo - will be deleted
-            var allReviews = await _reviewRepository.GetActiveAsync().ConfigureAwait(true);
+            var allReviews = await _reviewRepository.GetActiveAsync();
             dashboard.AllReviews = allReviews.ToList();
 
             return dashboard;
@@ -87,7 +87,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         {
             if (TryGetVacancyReference(searchTerm, out var vacancyReference))
             {
-                return await _reviewRepository.SearchAsync(vacancyReference).ConfigureAwait(false);
+                return await _reviewRepository.SearchAsync(vacancyReference);
             }
             return new List<VacancyReviewSearch>();
         }

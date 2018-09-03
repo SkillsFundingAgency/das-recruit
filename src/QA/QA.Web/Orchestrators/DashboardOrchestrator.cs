@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Qa.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
+using Esfa.Recruit.Vacancies.Client.Domain.Services;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.QA;
 
@@ -14,22 +14,24 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
     public class DashboardOrchestrator
     {
         private readonly IQaVacancyClient _vacancyClient;
+        private readonly ITimeProvider _timeProvider;
 
-        public DashboardOrchestrator(IQaVacancyClient vacancyClient)
+        public DashboardOrchestrator(IQaVacancyClient vacancyClient, ITimeProvider timeProvider)
         {
             _vacancyClient = vacancyClient;
+            _timeProvider = timeProvider;
         }
 
         public async Task<DashboardViewModel> GetDashboardViewModelAsync()
         {            
-            var reviews = await _vacancyClient.GetDashboardAsync().ConfigureAwait(false);
+            var reviews = await _vacancyClient.GetDashboardAsync();
             var vm = MapToViewModel(reviews);            
             return vm;
         }
 
         public async Task<List<VacancyReviewSearchModel>> GetSearchResultsAsync(string searchTerm)
         {
-            var result = await _vacancyClient.GetSearchResultsAsync(searchTerm).ConfigureAwait(false);
+            var result = await _vacancyClient.GetSearchResultsAsync(searchTerm);
             return result.Select(MapToViewModel).ToList();
         }
 
@@ -38,7 +40,7 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             return new VacancyReviewSearchModel()
             {
                 AssignedTo = vacancyReviewSearch.ReviewAssignedTo,
-                AssignedTimeElapsed = GetElapsedTime(vacancyReviewSearch.ReviewStartedOn?.ToLocalTime()),
+                AssignedTimeElapsed = GetElapsedTime(vacancyReviewSearch.ReviewStartedOn),
                 ClosingDate = vacancyReviewSearch.ClosingDate.ToLocalTime(),
                 EmployerName = vacancyReviewSearch.EmployerName,
                 VacancyReference = $"VAC{vacancyReviewSearch.VacancyReference}",
@@ -48,10 +50,10 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             };
         }
 
-        private static string GetElapsedTime(DateTime? value)
+        private string GetElapsedTime(DateTime? value)
         {
             if (value == null) return string.Empty;
-            var diff = DateTime.Now - value.Value;
+            var diff = _timeProvider.Now - value.Value;
 
             var hours = diff.Hours > 0 ? $"{diff.Hours}h " : string.Empty;
             var minutes = diff.Minutes > 0 ? $"{diff.Minutes}m" : string.Empty;
