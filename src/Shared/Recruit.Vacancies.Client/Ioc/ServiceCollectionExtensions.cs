@@ -20,11 +20,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Configuration;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.FAA;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
-using FluentValidation;
-using MediatR;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-using SFA.DAS.EAS.Account.Api.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Slack;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services.ReferenceData;
@@ -32,6 +27,11 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipP
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Qualifications;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Wages;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections;
+using SFA.DAS.EAS.Account.Api.Client;
+using FluentValidation;
+using MediatR;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -41,60 +41,73 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             services.Configure<AccountApiConfiguration>(configuration.GetSection("AccountApiConfiguration"));
 
-            RegisterAccountApiClientDeps(services);
-
             services.AddMediatR(typeof(CreateVacancyCommandHandler).Assembly);
             services.AddTransient<IMessaging, MediatrMessaging>();
             
+            // Vacancy Clients
             services.AddTransient<IEmployerVacancyClient, VacancyClient>();
             services.AddTransient<IJobsVacancyClient, VacancyClient>();
             services.AddTransient<IQaVacancyClient, QaVacancyClient>();
 
-            RegisterServiceDeps(services, configuration);
+            services.RegisterServiceDeps(configuration);
 
-            services.AddRepositories(configuration);
+            services.RegisterRepositories(configuration);
 
-            RegisterStorageProviderDeps(services, configuration);
+            services.RegisterStorageProviderDeps(configuration);
 
             services.AddValidation();
         }
 
-        private static void RegisterAccountApiClientDeps(IServiceCollection services)
+        private static void RegisterAccountApiClientDeps(this IServiceCollection services)
         {
             services.AddSingleton<IAccountApiConfiguration>(kernal => kernal.GetService<IOptions<AccountApiConfiguration>>().Value);
             services.AddTransient<IAccountApiClient, AccountApiClient>();
         }
 
-        private static void RegisterServiceDeps(IServiceCollection services, IConfiguration configuration)
+        private static void RegisterServiceDeps(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddTransient<ITimeProvider, CurrentUtcTimeProvider>();
-            services.AddTransient<IEmployerAccountService, EmployerAccountService>();
-            services.AddTransient<IEmployerDashboardProjectionService, EmployerDashboardProjectionService>();
-            services.AddTransient<IMinimumWageProvider, NationalMinimumWageProvider>();
-            services.AddTransient<IGenerateVacancyNumbers, MongoSequenceStore>();
-            services.AddTransient<IApprenticeshipProgrammeProvider, ApprenticeshipProgrammeProvider>();
-            services.AddTransient<IQualificationsProvider, QualificationsProvider>();
-            services.AddTransient<IQaDashboardProjectionService, QaDashboardProjectionService>();
-
-            services.AddTransient<IApprenticeshipProgrammeUpdateService, ApprenticeshipProgrammeUpdateService>();
-            services.Configure<BankHolidayConfiguration>(configuration.GetSection("BankHoliday"));
-            services.AddTransient<IBankHolidayUpdateService, BankHolidayUpdateService>();
-            services.AddTransient<IBankHolidayProvider, BankHolidayProvider>();
-            services.AddTransient<ISlaService, SlaService>();
-            
-            services.Configure<SlackConfiguration>(configuration.GetSection("Slack"));
-            services.AddTransient<INotifyVacancyReviewUpdates, SlackNotifyVacancyReviewUpdates>();
-            services.AddTransient<ISlackClient, SlackClient>();
-
+            // Configuration
             services.Configure<GeocodeConfiguration>(configuration.GetSection("Geocode"));
+            services.Configure<BankHolidayConfiguration>(configuration.GetSection("BankHoliday"));
+            services.Configure<FaaConfiguration>(configuration.GetSection("FaaConfiguration"));
+            services.Configure<SlackConfiguration>(configuration.GetSection("Slack"));
+
+            // Domain services
+            services.AddTransient<ITimeProvider, CurrentUtcTimeProvider>();
+
+            // Application Service
+            services.AddTransient<IGenerateVacancyNumbers, MongoSequenceStore>();
+            services.AddTransient<ISlaService, SlaService>();
+            services.AddTransient<INotifyVacancyReviewUpdates, SlackNotifyVacancyReviewUpdates>();
+            services.AddTransient<IVacancyService, VacancyService>();
+
+            // Infrastructure Services
+            services.AddTransient<IEmployerAccountService, EmployerAccountService>();
+            services.AddTransient<ISlackClient, SlackClient>();
             services.AddTransient<IGeocodeServiceFactory, GeocodeServiceFactory>();
 
-            services.Configure<FaaConfiguration>(configuration.GetSection("FaaConfiguration"));
+            // Projection services
+            services.AddTransient<IEmployerDashboardProjectionService, EmployerDashboardProjectionService>();
+            services.AddTransient<IQaDashboardProjectionService, QaDashboardProjectionService>();
+            services.AddTransient<IEditVacancyInfoProjectionService, EditVacancyInfoProjectionService>();
+            services.AddTransient<ILiveVacancyProjectionService, LiveVacancyProjectionService>();
+
+            // Reference Data Providers
+            services.AddTransient<IMinimumWageProvider, NationalMinimumWageProvider>();
+            services.AddTransient<IApprenticeshipProgrammeProvider, ApprenticeshipProgrammeProvider>();
+            services.AddTransient<IQualificationsProvider, QualificationsProvider>();
+
+            // Reference Data update services
+            services.AddTransient<IApprenticeshipProgrammeUpdateService, ApprenticeshipProgrammeUpdateService>();
+            services.AddTransient<IBankHolidayUpdateService, BankHolidayUpdateService>();
+            services.AddTransient<IBankHolidayProvider, BankHolidayProvider>();
             
+            // External client dependencies
             services.AddApprenticeshipsApi(configuration);
+            services.RegisterAccountApiClientDeps();
         }
 
-        private static void AddRepositories(this IServiceCollection services, IConfiguration configuration)
+        private static void RegisterRepositories(this IServiceCollection services, IConfiguration configuration)
         {
             var mongoConnectionString = configuration.GetConnectionString("MongoDb");
             
@@ -117,7 +130,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient<IReferenceDataWriter, MongoDbReferenceDataRepository>();
         }
 
-        private static void RegisterStorageProviderDeps(IServiceCollection services, IConfiguration configuration)
+        private static void RegisterStorageProviderDeps(this IServiceCollection services, IConfiguration configuration)
         {
             var storageConnectionString = configuration.GetConnectionString("Storage");
 

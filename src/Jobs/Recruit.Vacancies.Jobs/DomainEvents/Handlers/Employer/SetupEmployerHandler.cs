@@ -1,21 +1,24 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Employer;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections;
 using Microsoft.Extensions.Logging;
 
-namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Application
+namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Employer
 {
     public class SetupEmployerHandler : DomainEventHandler,  IDomainEventHandler<SetupEmployerEvent>
     {
         private readonly ILogger<SetupEmployerHandler> _logger;
-        private readonly SetupEmployerUpdater _updater;
+        private readonly IJobsVacancyClient _client;
+        private readonly IEditVacancyInfoProjectionService _projectionService;
 
-        public SetupEmployerHandler(ILogger<SetupEmployerHandler> logger, SetupEmployerUpdater updater) : base(logger)
+        public SetupEmployerHandler(ILogger<SetupEmployerHandler> logger, IJobsVacancyClient client, IEditVacancyInfoProjectionService projectionService) : base(logger)
         {
             _logger = logger;
-            _updater = updater;
+            _client = client;
+            _projectionService = projectionService;
         }
 
         public async Task HandleAsync(string eventPayload)
@@ -26,7 +29,11 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Application
             {
                 _logger.LogInformation($"Processing {nameof(SetupEmployerEvent)} for Account: {{AccountId}}", @event.EmployerAccountId);
 
-                await _updater.UpdateEditVacancyInfo(@event.EmployerAccountId);
+                var legalEntities = (await _client.GetEmployerLegalEntitiesAsync(@event.EmployerAccountId)).ToList();
+
+                await _projectionService.UpdateEmployerVacancyDataAsync(@event.EmployerAccountId, legalEntities);
+
+                _logger.LogDebug("Legal Entities inserted: {count} for Employer: {EmployerAccountId}", legalEntities.Count, @event.EmployerAccountId);
 
                 _logger.LogInformation($"Finished Processing {nameof(SetupEmployerEvent)} for Account: {{AccountId}}", @event.EmployerAccountId);
             }

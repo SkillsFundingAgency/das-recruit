@@ -1,6 +1,6 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
-using Esfa.Recruit.Vacancies.Client.Application.Services.ReferenceData;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 
@@ -9,12 +9,12 @@ namespace Esfa.Recruit.Vacancies.Jobs.BankHoliday
     public class BankHolidayJob
     {
         private readonly ILogger<BankHolidayJob> _logger;
-        private readonly IBankHolidayUpdateService _bankHolidaysService;
+        private readonly IJobsVacancyClient _client;
 
-        public BankHolidayJob(ILogger<BankHolidayJob> logger, IBankHolidayUpdateService bankHolidaysService)
+        public BankHolidayJob(ILogger<BankHolidayJob> logger, IJobsVacancyClient client)
         {
             _logger = logger;
-            _bankHolidaysService = bankHolidaysService;
+            _client = client;
         }
 
         public async Task UpdateBankHolidays([TimerTrigger(Schedules.MidnightDaily, RunOnStartup = true)]
@@ -22,7 +22,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.BankHoliday
         {
             _logger.LogInformation("Starting updating Bank Holidays ReferenceData");
 
-            await _bankHolidaysService.UpdateBankHolidaysAsync();
+            await _client.UpdateBankHolidaysAsync();
 
             _logger.LogInformation("Finished updating Bank Holidays ReferenceData");
         }

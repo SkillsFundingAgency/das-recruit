@@ -20,7 +20,6 @@ using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.VacancyReview;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Application;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Employer;
-using SetupEmployerEventHandler = Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Application.SetupEmployerHandler;
 
 namespace Esfa.Recruit.Vacancies.Jobs
 {
@@ -143,12 +142,6 @@ namespace Esfa.Recruit.Vacancies.Jobs
                 options.AddDebug();
             });
 
-            services.AddScoped<SetupEmployerUpdater>();
-            services.AddScoped<LiveVacancyStatusInspector>();
-            services.AddScoped<EmployerDashboardCreator>();
-            services.AddScoped<CreateApplicationReviewCommandHandler>();
-            services.AddScoped<LiveVacanciesCreator>();
-
             services.AddSingleton<IApprenticeshipProgrammeApiClient, ApprenticeshipProgrammeApiClient>();
             services.AddRecruitStorageClient(configuration);
 
@@ -176,7 +169,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddScoped<IDomainEventHandler<IEvent>, ApplicationSubmittedHandler>();
 
             // Employer
-            services.AddScoped<IDomainEventHandler<IEvent>, SetupEmployerEventHandler>();
+            services.AddScoped<IDomainEventHandler<IEvent>, DomainEvents.Handlers.Employer.SetupEmployerHandler>();
             
 
             return services;

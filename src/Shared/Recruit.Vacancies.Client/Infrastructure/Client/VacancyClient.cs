@@ -26,7 +26,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
     {
         private readonly IMessaging _messaging;
         private readonly IQueryStoreReader _reader;
-        private readonly IQueryStoreWriter _writer;
         private readonly IVacancyRepository _repository;
         private readonly IEntityValidator<Vacancy, VacancyRuleSet> _validator;
         private readonly IApprenticeshipProgrammeProvider _apprenticeshipProgrammesProvider;
@@ -37,7 +36,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         public VacancyClient(
             IVacancyRepository repository,
             IQueryStoreReader reader,
-            IQueryStoreWriter writer,
             IMessaging messaging,
             IEntityValidator<Vacancy, VacancyRuleSet> validator,
             IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider,
@@ -47,7 +45,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         {
             _repository = repository;
             _reader = reader;
-            _writer = writer;
             _messaging = messaging;
             _validator = validator;
             _apprenticeshipProgrammesProvider = apprenticeshipProgrammesProvider;
@@ -224,9 +221,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _messaging.SendCommandAsync(command);
         }
 
-        public Task UpdateEmployerVacancyDataAsync(string employerAccountId, IEnumerable<LegalEntity> legalEntities)
+        public Task UpdateBankHolidaysAsync()
         {
-            return _writer.UpdateEmployerVacancyDataAsync(employerAccountId, legalEntities);
+            var command = new UpdateBankHolidaysCommand();
+
+            return _messaging.SendCommandAsync(command);
         }
 
         public async Task CreateVacancyReview(long vacancyReference)
@@ -244,12 +243,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _reader.GetLiveVacancies();
         }
 
-        public async Task CloseVacancy(Guid vacancyId)
+        public async Task CloseExpiredVacancies()
         {
-            var command = new CloseVacancyCommand
-            {
-                VacancyId = vacancyId
-            };
+            var command = new CloseExpiredVacanciesCommand();
 
             await _messaging.SendCommandAsync(command);
         }
@@ -291,7 +287,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             });
         }
 
-        // Shared
         public async Task<IEnumerable<LegalEntity>> GetEmployerLegalEntitiesAsync(string employerAccountId)
         {
             var results = await _employerAccountService.GetEmployerLegalEntitiesAsync(employerAccountId);
