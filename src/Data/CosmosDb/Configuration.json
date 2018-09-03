@@ -9,12 +9,6 @@
                     "StoredProcedures": []
                 },
                 {
-                    "CollectionName": "queryViews",
-                    "OfferThroughput": 1000,
-                    "PartitionKey": "_id",
-                    "StoredProcedures": []
-                },
-                {
                     "CollectionName": "queryStore",
                     "OfferThroughput": 1000,
                     "PartitionKey": "viewType",
