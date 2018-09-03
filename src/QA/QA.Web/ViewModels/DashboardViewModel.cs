@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Esfa.Recruit.Qa.Web.ViewModels
 {
@@ -15,6 +16,8 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public string LastSearchTerm { get; set; }
 
         public List<VacancyReviewSearchModel> SearchResults { get; set; } = new List<VacancyReviewSearchModel>();
-        public bool IsPostBack { get; set; }
+        public bool DisplayLastSearchTerm => !string.IsNullOrEmpty(LastSearchTerm);
+        public bool DisplayNoResultsMessage => DisplayLastSearchTerm && !SearchResults.Any();
+        public bool DisplaySearchResults => DisplayLastSearchTerm && SearchResults.Any();
     }
 }

@@ -22,14 +22,19 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             _timeProvider = timeProvider;
         }
 
-        public async Task<DashboardViewModel> GetDashboardViewModelAsync()
+        public async Task<DashboardViewModel> GetDashboardViewModelAsync(string searchTerm)
         {            
             var reviews = await _vacancyClient.GetDashboardAsync();
-            var vm = MapToViewModel(reviews);            
+            var vm = MapToViewModel(reviews);
+
+            if(string.IsNullOrEmpty(searchTerm)) return vm;
+
+            vm.LastSearchTerm = searchTerm;
+            vm.SearchResults = await GetSearchResultsAsync(searchTerm);
             return vm;
         }
 
-        public async Task<List<VacancyReviewSearchModel>> GetSearchResultsAsync(string searchTerm)
+        private async Task<List<VacancyReviewSearchModel>> GetSearchResultsAsync(string searchTerm)
         {
             var result = await _vacancyClient.GetSearchResultsAsync(searchTerm);
             return result.Select(MapToViewModel).ToList();

@@ -34,11 +34,11 @@
     </div>
 </div>
 
-<h2 asp-condition="@Model.IsPostBack" class="heading-medium no-bottom-margin">Search results for [@Model.LastSearchTerm]</h2>
+<h2 asp-condition="@Model.DisplayLastSearchTerm" class="heading-medium no-bottom-margin">Search results for [@Model.LastSearchTerm]</h2>
 
-<span asp-condition="@Model.IsPostBack && Model.SearchResults.Any() == false">No results</span>
+<span asp-condition="@Model.DisplayNoResultsMessage">No results</span>
 
-<div asp-condition="@Model.SearchResults.Any()" class="grid-row">
+<div asp-condition="@Model.DisplaySearchResults" class="grid-row">
     <table>
         <tbody>
         <tr>
