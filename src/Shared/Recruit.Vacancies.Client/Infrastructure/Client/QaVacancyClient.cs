@@ -92,9 +92,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return new List<VacancyReviewSearch>();
         }
 
-        /// <summary>
-        /// This could be somewhere more common, we can refactor when we come across a second use
-        /// </summary>
         private static bool TryGetVacancyReference(string value, out long vacancyReference)
         {
             vacancyReference = 0;
