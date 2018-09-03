@@ -6,7 +6,7 @@
         <hr>
     </div>
 </div>
-<form asp-route="@RouteNames.Dashboard_Index_Post" method="post">
+<form asp-route="@RouteNames.Dashboard_Index_Get" method="get">
     <div class="grid-row">
         <input asp-for="SearchTerm" placeholder="Search vacancies" />
         <button type="submit">Search</button>
@@ -33,7 +33,6 @@
         </table>
     </div>
 </div>
-<br /><br />
 
 <h2 asp-condition="@Model.IsPostBack" class="heading-medium no-bottom-margin">Search results for [@Model.LastSearchTerm]</h2>
 
