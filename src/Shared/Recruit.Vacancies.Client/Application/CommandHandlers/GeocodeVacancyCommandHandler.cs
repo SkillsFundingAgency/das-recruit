@@ -44,12 +44,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _logger.LogInformation("Attempting to geocode postcode:{postcode} for vacancyId:{vacancyId}", vacancy.EmployerLocation.Postcode, vacancy.Id);
             var geocode = await _geocodeService.Geocode(vacancy.EmployerLocation.Postcode);
 
-            if (geocode == null)
-            {
-                _logger.LogError("Geocode vacancyId:{vacancyId} failed to geocode postcode:{postcode}", vacancy.Id, vacancy.EmployerLocation.Postcode);
-                return;
-            }
-
             await SetVacancyGeocode(vacancy.Id, geocode);
         }
 
@@ -75,6 +69,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             vacancy.EmployerLocation.Latitude = geocode.Latitude;
             vacancy.EmployerLocation.Longitude = geocode.Longitude;
+            vacancy.GeoCodeMethod = geocode.GeoCodeMethod;
+
             await _repository.UpdateAsync(vacancy);
 
             _logger.LogInformation("Successfully geocoded vacancy:{vacancyId} with geocode Latitude:{latitude} Logtitude:{longitude}", vacancy.Id, vacancy.EmployerLocation.Latitude, vacancy.EmployerLocation.Longitude);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Microsoft.Extensions.Logging;
 
@@ -28,7 +29,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode
             var geocode = new Geocode
             {
                 Latitude = vacancy.EmployerLocation.Latitude.Value,
-                Longitude = vacancy.EmployerLocation.Longitude.Value
+                Longitude = vacancy.EmployerLocation.Longitude.Value,
+                GeoCodeMethod = GeoCodeMethod.ExistingVacancy
             };
 
             _logger.LogInformation("Resolved geocode:{geocode} for postcode:{postcode} using existing vacancy:{vacancyId}", geocode, postcode, vacancy.Id);

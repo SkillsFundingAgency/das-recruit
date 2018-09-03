@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode.Responses;
 using Microsoft.Extensions.Logging;
 using RestSharp;
@@ -44,6 +45,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode
                         {
                             Latitude = result.Latitude.Value,
                             Longitude = result.Longitude.Value,
+                            GeoCodeMethod = GeoCodeMethod.PostcodesIoOutcode
                         };
                     }
                 }

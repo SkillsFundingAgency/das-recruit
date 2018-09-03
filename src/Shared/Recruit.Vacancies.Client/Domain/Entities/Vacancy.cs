@@ -44,6 +44,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public string EmployerDescription { get; set; }
         public Address EmployerLocation { get; set; }
         public string EmployerName { get; set; }
+        public GeoCodeMethod? GeoCodeMethod { get; set; }
         public string EmployerWebsiteUrl { get; set; }
         public int? NumberOfPositions { get; set; }
         public string OutcomeDescription { get; set; }
