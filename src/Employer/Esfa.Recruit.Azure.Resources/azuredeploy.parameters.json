@@ -69,14 +69,16 @@
     },
     "QALegacyAuthorization": {
       "value": {
-        "GroupClaim": "",
-        "GroupName": ""
+        "ClaimType": "",
+        "UserClaimValue": "",
+        "TeamLeadClaimValue": ""
       }
     },
     "QAAuthorization": {
       "value": {
-        "GroupClaim": "",
-        "GroupName": ""
+        "ClaimType": "",
+        "UserClaimValue": "",
+        "TeamLeadClaimValue": ""
       }
     },
     "SlackWebhook": {
