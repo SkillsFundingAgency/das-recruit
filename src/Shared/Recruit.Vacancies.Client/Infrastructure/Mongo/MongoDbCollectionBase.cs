@@ -38,7 +38,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
             var collection = database.GetCollection<T>(_collectionName);
 
             if (!collection.Exists())
-                throw new InfrastructureException($"Expected that collection: {collection} would already be created.");
+                throw new InfrastructureException($"Expected that collection: '{_collectionName}' would already be created.");
 
             return collection;
         }
