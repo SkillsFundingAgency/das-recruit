@@ -16,7 +16,6 @@ namespace Esfa.Recruit.Qa.Web.Configuration
 {
     public static class ServiceCollectionExtensions
     {
-        private const string DoesUserBelongToGroupPolicyName = "DoesUserBelongToGroup";
         private const int SessionTimeoutMinutes = 30;
 
         public static void AddAuthenticationService(this IServiceCollection services, AuthenticationConfiguration authConfig)
@@ -50,12 +49,22 @@ namespace Esfa.Recruit.Qa.Web.Configuration
         {
             services.AddAuthorization(options =>
             {
-                options.AddPolicy(DoesUserBelongToGroupPolicyName, policy =>
+                options.AddPolicy(AuthorizationPolicyNames.DoesUserBelongToGroupPolicyName, policy =>
                 {
                     policy.RequireAuthenticatedUser();
                     policy.RequireAssertion(context => 
-                        context.User.HasClaim(legacyAuthorizationConfig.GroupClaim, legacyAuthorizationConfig.GroupName) 
-                        || context.User.HasClaim(authorizationConfig.GroupClaim, authorizationConfig.GroupName)
+                        context.User.HasClaim(legacyAuthorizationConfig.ClaimType, legacyAuthorizationConfig.UserClaimValue) 
+                        || context.User.HasClaim(legacyAuthorizationConfig.ClaimType, legacyAuthorizationConfig.TeamLeadClaimValue) 
+                        || context.User.HasClaim(authorizationConfig.ClaimType, authorizationConfig.UserClaimValue)
+                        || context.User.HasClaim(authorizationConfig.ClaimType, authorizationConfig.TeamLeadClaimValue)
+                    );
+                });
+                options.AddPolicy(AuthorizationPolicyNames.IsUserATeamLeadPolicyName, policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireAssertion(context => 
+                        context.User.HasClaim(legacyAuthorizationConfig.ClaimType, legacyAuthorizationConfig.TeamLeadClaimValue)
+                        || context.User.HasClaim(authorizationConfig.ClaimType, authorizationConfig.TeamLeadClaimValue)
                     );
                 });
             });
@@ -77,7 +86,7 @@ namespace Esfa.Recruit.Qa.Web.Configuration
                 options.SslPort = 5025;
                 options.Filters.Add(new RequireHttpsAttribute());
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
-                options.Filters.Add(new AuthorizeFilter(DoesUserBelongToGroupPolicyName));
+                options.Filters.Add(new AuthorizeFilter(AuthorizationPolicyNames.DoesUserBelongToGroupPolicyName));
                 options.AddTrimModelBinderProvider();
 
                 var jsonInputFormatters = options.InputFormatters.OfType<JsonInputFormatter>();
