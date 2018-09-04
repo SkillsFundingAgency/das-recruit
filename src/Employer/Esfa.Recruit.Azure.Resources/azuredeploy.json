@@ -85,15 +85,17 @@
     "QALegacyAuthorization": {
       "type": "object",
       "defaultValue": {
-        "GroupClaim": "",
-        "GroupName": ""
+        "ClaimType": "",
+        "UserClaimValue": "",
+        "TeamLeadClaimValue": ""
       }
     },
     "QAAuthorization": {
       "type": "object",
       "defaultValue": {
-        "GroupClaim": "",
-        "GroupName": ""
+        "ClaimType": "",
+        "UserClaimValue": "",
+        "TeamLeadClaimValue": ""
       }
     },
     "SlackWebhook": {
@@ -329,20 +331,28 @@
                 "value": "[parameters('GoogleMapsPrivateKey')]"
               },
               {
-                "name": "LegacyAuthorization:GroupClaim",
-                "value": "[parameters('QALegacyAuthorization').GroupClaim]"
+                "name": "LegacyAuthorization:ClaimType",
+                "value": "[parameters('QALegacyAuthorization').ClaimType]"
               },
               {
-                "name": "LegacyAuthorization:GroupName",
-                "value": "[parameters('QALegacyAuthorization').GroupName]"
+                "name": "LegacyAuthorization:UserClaimValue",
+                "value": "[parameters('QALegacyAuthorization').UserClaimValue]"
               },
               {
-                "name": "Authorization:GroupClaim",
-                "value": "[parameters('QAAuthorization').GroupClaim]"
+                "name": "LegacyAuthorization:TeamLeadClaimValue",
+                "value": "[parameters('QALegacyAuthorization').TeamLeadClaimValue]"
               },
               {
-                "name": "Authorization:GroupName",
-                "value": "[parameters('QAAuthorization').GroupName]"
+                "name": "Authorization:ClaimType",
+                "value": "[parameters('QAAuthorization').ClaimType]"
+              },
+              {
+                "name": "Authorization:UserClaimValue",
+                "value": "[parameters('QAAuthorization').UserClaimValue]"
+              },
+              {
+                "name": "Authorization:TeamLeadClaimValue",
+                "value": "[parameters('QAAuthorization').TeamLeadClaimValue]"
               },
               {
                 "name": "ExternalLinks:StaffIdamsUrl",
