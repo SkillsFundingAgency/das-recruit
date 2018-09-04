@@ -23,6 +23,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Slack;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services.ReferenceData;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Providers;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Qualifications;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Wages;
@@ -80,6 +81,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient<ISlaService, SlaService>();
             services.AddTransient<INotifyVacancyReviewUpdates, SlackNotifyVacancyReviewUpdates>();
             services.AddTransient<IVacancyService, VacancyService>();
+            services.AddTransient<INextVacancyReviewProvider, NextVacancyReviewProvider>();
 
             // Infrastructure Services
             services.AddTransient<IEmployerAccountService, EmployerAccountService>();

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Threading.Tasks;
 using Esfa.Recruit.Qa.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.Extensions;
@@ -61,6 +62,13 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             var minutes = diff.Minutes > 0 ? $"{diff.Minutes}m" : string.Empty;
 
             return hours + minutes;
+        }
+
+        public async Task<Guid?> AssignNextVacancyReviewAsync(VacancyUser user)
+        {
+            var nextVacancyReview = await _vacancyClient.AssignNextVacancyReviewAsync(user);
+
+            return nextVacancyReview?.Id;
         }
 
         private static DashboardViewModel MapToViewModel(QaDashboard dashboard)
