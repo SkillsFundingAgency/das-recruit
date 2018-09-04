@@ -69,6 +69,18 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             return result.SingleOrDefault();
         }
 
+        public async Task<List<VacancyReview>> GetByStatusAsync(ReviewStatus status)
+        {
+            var filter = Builders<VacancyReview>.Filter.Eq(r => r.Status, status);
+
+            var collection = GetCollection<VacancyReview>();
+            var result = await RetryPolicy.ExecuteAsync(context => collection
+                .Find(filter)
+                .ToListAsync(), new Context(nameof(GetByStatusAsync)));
+
+            return result;
+        }
+
         public async Task<List<VacancyReview>> GetActiveAsync()
         {
             var filterBuilder = Builders<VacancyReview>.Filter;

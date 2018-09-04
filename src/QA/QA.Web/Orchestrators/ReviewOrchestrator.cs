@@ -48,11 +48,6 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             
             ValidateVacancyStateForViewing(review, vacancy);
 
-            if (review.Status == ReviewStatus.PendingReview)
-            {
-                await _vacancyClient.StartReviewAsync(review.Id, user);
-            }
-
             var vm = await _mapper.MapFromVacancy(vacancy);
 
             return vm;

@@ -22,5 +22,16 @@ namespace Esfa.Recruit.Qa.Web.Controllers
 
             return View(vm);
         }
+
+        [HttpPost("next-vacancy", Name = RouteNames.Dashboard_Next_Vacancy_Post)]
+        public async Task<IActionResult> NextVacancy()
+        {
+            var vacancyReviewId = await _orchestrator.AssignNextVacancyReviewAsync(User.GetVacancyUser());
+
+            if (vacancyReviewId == null)
+                return RedirectToRoute(RouteNames.Dashboard_Index_Get);
+
+            return RedirectToRoute(RouteNames.Vacancy_Review_Get, new {reviewId = vacancyReviewId});
+        }
     }
 }

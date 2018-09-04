@@ -32,9 +32,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             var review = await _vacancyReviewRepository.GetAsync(message.ReviewId);
 
-            if (!review.CanStart)
+            if (!review.CanAssign)
             {
-                _logger.LogWarning($"Unable to start review {{reviewId}} for vacancy {{vacancyReference}} due to review having a status of {review.Status}.", message.ReviewId, review.VacancyReference);
+                _logger.LogWarning($"Unable to assign review {{reviewId}} for vacancy {{vacancyReference}} due to review having a status of {review.Status}.", message.ReviewId, review.VacancyReference);
             }
 
             review.Status = ReviewStatus.UnderReview;
