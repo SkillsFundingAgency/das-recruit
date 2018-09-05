@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Domain.Services;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Providers;
 using Moq;
 using Xunit;
 
@@ -40,7 +40,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.S
                     CreateVacancyReview("8353063d-bc67-4588-83d9-2281080f8112", null, ReviewStatus.PendingReview, null, "2018-08-20T18:00:00Z")
                 }));
 
-            var sut = new NextVacancyReviewProvider(timeProvider.Object, vacancyReviewRepository.Object);
+            var sut = new NextVacancyReviewServices(timeProvider.Object, vacancyReviewRepository.Object);
 
             var nextVacancyReview = sut.GetNextVacancyReviewAsync(userId).Result;
 

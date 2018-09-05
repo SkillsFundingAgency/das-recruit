@@ -1,18 +1,17 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Domain.Services;
 
-namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Providers
+namespace Esfa.Recruit.Vacancies.Client.Application.Services
 {
-    public class NextVacancyReviewProvider : INextVacancyReviewProvider
+    public class NextVacancyReviewServices : INextVacancyReviewService
     {
         private readonly ITimeProvider _timeProvider;
         private readonly IVacancyReviewRepository _vacancyReviewRepository;
 
-        public NextVacancyReviewProvider(ITimeProvider timeProvider, IVacancyReviewRepository vacancyReviewRepository)
+        public NextVacancyReviewServices(ITimeProvider timeProvider, IVacancyReviewRepository vacancyReviewRepository)
         {
             _timeProvider = timeProvider;   
             _vacancyReviewRepository = vacancyReviewRepository;
