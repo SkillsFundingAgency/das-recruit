@@ -1,11 +1,15 @@
 @using Esfa.Recruit.Vacancies.Client.Domain.Extensions
 @model DashboardViewModel
-<div class="grid-row">
+
+<div asp-condition="@Model.HasDashboardMessage" class="grid-row">
     <div class="column-full">
-        <h1 class="heading-xlarge no-bottom-margin">QA vacancies</h1>
-        <hr>
+        <div class="info-summary">
+            <h2 class="heading-medium error-summary-heading">@Model.DashboardMessage</h2>
+        </div>
     </div>
 </div>
+
+<div class="grid-row">
 <form asp-route="@RouteNames.Dashboard_Index_Get" method="get">
     <div class="grid-row">
         <input asp-for="SearchTerm" placeholder="Search vacancies" />
