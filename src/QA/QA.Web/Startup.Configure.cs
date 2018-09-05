@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Esfa.Recruit.Qa.Web.Configuration;
+using Esfa.Recruit.Qa.Web.Security;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.WsFederation;

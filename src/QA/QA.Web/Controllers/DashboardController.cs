@@ -18,7 +18,7 @@ namespace Esfa.Recruit.Qa.Web.Controllers
         [HttpGet("/", Name = RouteNames.Dashboard_Index_Get)]
         public async Task<IActionResult> Index([FromQuery]string searchTerm)
         {
-            var vm = await _orchestrator.GetDashboardViewModelAsync(searchTerm, User.GetVacancyUser());
+            var vm = await _orchestrator.GetDashboardViewModelAsync(searchTerm, User);
 
             return View(vm);
         }
