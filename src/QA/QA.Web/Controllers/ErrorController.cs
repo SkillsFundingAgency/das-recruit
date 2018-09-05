@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Net;
 using Esfa.Recruit.Qa.Web.Configuration;
+using Esfa.Recruit.Qa.Web.Configuration.Routing;
 using Esfa.Recruit.Qa.Web.Exceptions;
 using Esfa.Recruit.Qa.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
@@ -50,6 +51,9 @@ namespace Esfa.Recruit.Qa.Web.Controllers
                         return View(ViewNames.ErrorView, GetViewModel(HttpStatusCode.NotFound));
                     case VacancyNotFoundException _:
                         return PageNotFound();
+                    case UnassignedVacancyReviewException _:
+                        TempData.Add(TempDataKeys.DashboardMessage, exception.Message);
+                        return RedirectToRoute(RouteNames.Dashboard_Index_Get);
                     default:
                         break;
                 }

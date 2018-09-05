@@ -8,8 +8,8 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public int TotalVacanciesForReview { get; set; }
         public int TotalVacanciesBrokenSla { get; set; }
         public int TotalVacanciesResubmitted { get; set; }
-
         public List<ReviewDashboardItem> AllReviews { get; set; }
+        public string DashboardMessage { get; set; }
 
         public string SearchTerm { get; set; }
 
@@ -19,5 +19,6 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public bool DisplayLastSearchTerm => !string.IsNullOrEmpty(LastSearchTerm);
         public bool DisplayNoResultsMessage => DisplayLastSearchTerm && !SearchResults.Any();
         public bool DisplaySearchResults => DisplayLastSearchTerm && SearchResults.Any();
+        public bool HasDashboardMessage => string.IsNullOrWhiteSpace(DashboardMessage) == false;
     }
 }

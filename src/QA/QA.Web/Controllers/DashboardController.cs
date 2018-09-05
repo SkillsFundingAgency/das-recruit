@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Esfa.Recruit.Qa.Web.Configuration;
 using Esfa.Recruit.Qa.Web.Configuration.Routing;
 using Esfa.Recruit.Qa.Web.Extensions;
 using Esfa.Recruit.Qa.Web.Orchestrators;
@@ -20,6 +21,8 @@ namespace Esfa.Recruit.Qa.Web.Controllers
         {
             var vm = await _orchestrator.GetDashboardViewModelAsync(searchTerm, User.GetVacancyUser());
 
+            vm.DashboardMessage = TempData[TempDataKeys.DashboardMessage]?.ToString();
+            
             return View(vm);
         }
 
