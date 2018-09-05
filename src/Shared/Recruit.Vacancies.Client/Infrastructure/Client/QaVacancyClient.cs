@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
@@ -23,7 +24,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly IVacancyRepository _vacancyRepository;
         private readonly IApprenticeshipProgrammeProvider _apprenticeshipProgrammesProvider;
         private readonly IMessaging _messaging;
-        private readonly INextVacancyReviewProvider _nextVacancyReviewProvider;
+        private readonly INextVacancyReviewService _nextVacancyReviewService;
 
         public QaVacancyClient(
                     IQueryStoreReader queryStoreReader,
@@ -32,7 +33,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                     IVacancyRepository vacancyRepository, 
                     IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider,
                     IMessaging messaging,
-                    INextVacancyReviewProvider nextVacancyReviewProvider)
+                    INextVacancyReviewService nextVacancyReviewService)
         {
             _queryStoreReader = queryStoreReader;
             _referenceDataReader = referenceDataReader;
@@ -40,7 +41,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _vacancyRepository = vacancyRepository;
             _apprenticeshipProgrammesProvider = apprenticeshipProgrammesProvider;
             _messaging = messaging;
-            _nextVacancyReviewProvider = nextVacancyReviewProvider;
+            _nextVacancyReviewService = nextVacancyReviewService;
         }
 
         public Task ApproveReferredReviewAsync(Guid reviewId, string shortDescription, string vacancyDescription, string trainingDescription, string outcomeDescription, string thingsToConsider, string employerDescription)
@@ -139,7 +140,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public async Task<VacancyReview> AssignNextVacancyReviewAsync(VacancyUser user)
         {
-            var nextVacancyReview = await _nextVacancyReviewProvider.GetNextVacancyReviewAsync(user.UserId);
+            var nextVacancyReview = await _nextVacancyReviewService.GetNextVacancyReviewAsync(user.UserId);
 
             if (nextVacancyReview == null)
                 return null;
