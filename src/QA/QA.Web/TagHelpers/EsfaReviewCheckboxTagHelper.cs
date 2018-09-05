@@ -1,4 +1,6 @@
-﻿namespace Esfa.Recruit.Qa.Web.TagHelpers
+﻿using System.Collections.Generic;
+
+namespace Esfa.Recruit.Qa.Web.TagHelpers
 {
     using Microsoft.AspNetCore.Mvc.Rendering;
     using System.Threading.Tasks;
@@ -13,28 +15,35 @@
         [HtmlAttributeName("asp-for")]
         public ModelExpression For { get; set; }
 
+        [HtmlAttributeName("value")]
+        public string Value { get; set; }
+
         public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
             /*
             <div class="form-group">
                 <div class="multiple-choice">
-                    <input type="checkbox" id="[For.Name]" name="[For.Name]" value="true">
-                    <label for="[For.Name]"></label>
+                    <input type="checkbox" name="[For.Name]" id="[For.Name]-[Value]" value="Value" class="field-identifer-checkbox">
+                    <label for="[For.Name]-[Value]"></label>
                 </div>
             </div> 
             */
 
+            var model = (List<string>) For.Model;
+            var id = $"{For.Name}-{Value}";
+
             var input = new TagBuilder("input");
             input.Attributes.Add("type", "checkbox");
-            input.Attributes.Add("id", For.Name);
+            input.Attributes.Add("id", id);
             input.Attributes.Add("name", For.Name);
-            input.Attributes.Add("value", "true");
+            input.Attributes.Add("value", Value);
+            input.AddCssClass("field-identifer-checkbox");
 
-            if((bool)For.Model)
+            if(model.Contains(Value))
                 input.Attributes.Add("checked", "checked");
 
             var label = new TagBuilder("label");
-            label.Attributes.Add("for", For.Name);
+            label.Attributes.Add("for", id);
 
             var inputParent = new TagBuilder("div");
             inputParent.AddCssClass("multiple-choice");
