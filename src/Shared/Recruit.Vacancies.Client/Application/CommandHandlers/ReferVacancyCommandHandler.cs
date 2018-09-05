@@ -38,7 +38,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 return;
             }
             
-            vacancy.Status = VacancyStatus.UnderReview; // This will be changed after private beta.
+            vacancy.Status = VacancyStatus.Referred;
             
             await _repository.UpdateAsync(vacancy);
 

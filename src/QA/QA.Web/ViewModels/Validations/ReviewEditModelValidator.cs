@@ -1,4 +1,5 @@
-﻿using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
+﻿using System.Linq;
+using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using FluentValidation;
 
 namespace Esfa.Recruit.Qa.Web.ViewModels.Validations
@@ -12,6 +13,13 @@ namespace Esfa.Recruit.Qa.Web.ViewModels.Validations
                 .WithMessage(string.Format(VacancyReviewValidator.ManualQaCommentLengthMessage, VacancyReviewValidator.ManualQaCommentMaxLength))
                 .ValidFreeTextCharacters()
                 .WithMessage(VacancyReviewValidator.ManualQaCommentFreeTextCharactersMessage);
+
+            When(x => x.IsRefer, () =>
+            {
+                RuleFor(x => x.ReviewerComment)
+                    .NotEmpty()
+                    .WithMessage(VacancyReviewValidator.ManualQaCommentRequired);
+            });
         }
     }
 }

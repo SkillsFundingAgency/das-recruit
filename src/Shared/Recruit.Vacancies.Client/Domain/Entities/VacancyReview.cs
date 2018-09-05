@@ -67,13 +67,12 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
             public const string PossibleStartDate = "PossibleStartDate";
             public const string TrainingLevel = "TrainingLevel";
             public const string NumberOfPositions = "NumberOfPositions";
-            public const string VacancyDescription = "VacancyDescription";
-            public const string TrainingDescription = "TrainingDescription";
-            public const string OutcomeDescription = "OutcomeDescription";
+            public const string Description = "VacancyDescription";
             public const string Skills = "Skills";
             public const string Qualifications = "Qualifications";
             public const string ThingsToConsider = "ThingsToConsider";
             public const string EmployerDescription = "EmployerDescription";
+            public const string DisabilityConfident = "DisabilityConfident";
             public const string EmployerWebsiteUrl = "EmployerWebsiteUrl";
             public const string Contact = "Contact";
             public const string EmployerAddress = "EmployerAddress";
