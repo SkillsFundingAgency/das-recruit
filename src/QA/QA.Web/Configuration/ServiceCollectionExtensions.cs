@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Esfa.Recruit.Qa.Web.Configuration.Routing;
 using Esfa.Recruit.Qa.Web.Extensions;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.WsFederation;
 using Microsoft.AspNetCore.Hosting;
@@ -86,7 +87,8 @@ namespace Esfa.Recruit.Qa.Web.Configuration
                     formatter.SupportedMediaTypes
                         .Add(MediaTypeHeaderValue.Parse("application/csp-report"));
                 }
-            });
+            })
+            .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>());
         }
     }
 }

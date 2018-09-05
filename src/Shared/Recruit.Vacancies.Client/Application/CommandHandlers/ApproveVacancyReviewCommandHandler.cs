@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
+using FluentValidation;
 using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
@@ -15,14 +16,17 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         private readonly ILogger<ApproveVacancyReviewCommandHandler> _logger;
         private readonly IVacancyReviewRepository _vacancyReviewRepository;
         private readonly IMessaging _messaging;
+        private readonly AbstractValidator<VacancyReview> _vacancyReviewValidator;
 
         public ApproveVacancyReviewCommandHandler(ILogger<ApproveVacancyReviewCommandHandler> logger, 
                                         IVacancyReviewRepository vacancyReviewRepository, 
-                                        IMessaging messaging)
+                                        IMessaging messaging,
+                                        AbstractValidator<VacancyReview> vacancyReviewValidator)
         {
             _logger = logger;
             _vacancyReviewRepository = vacancyReviewRepository;
             _messaging = messaging;
+            _vacancyReviewValidator = vacancyReviewValidator;
         }
 
         public async Task Handle(ApproveVacancyReviewCommand message, CancellationToken cancellationToken)
@@ -38,6 +42,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             }
             review.ManualOutcome = ManualQaOutcome.Approved;
             review.Status = ReviewStatus.Closed;
+            review.ManualQaComment = message.ManualQaComment;
+
+            Validate(review);
 
             await _vacancyReviewRepository.UpdateAsync(review);
 
@@ -47,6 +54,15 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 ReviewId = message.ReviewId,
                 VacancyReference = review.VacancyReference
             });
+        }
+
+        private void Validate(VacancyReview review)
+        {
+            var validationResult = _vacancyReviewValidator.Validate(review);
+            if (!validationResult.IsValid)
+            {
+                throw new ValidationException(validationResult.Errors);
+            }
         }
     }
 }

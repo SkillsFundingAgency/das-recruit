@@ -8,6 +8,7 @@ using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
+using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Humanizer;
 using Microsoft.Extensions.Logging;
@@ -26,7 +27,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
 
         public ReviewMapper(ILogger<ReviewMapper> logger,
                     IQaVacancyClient vacancyClient, 
-                    IGeocodeImageService mapService, 
+                    IGeocodeImageService mapService,
                     IMinimumWageProvider wageProvider)
         {
             _logger = logger;
@@ -38,7 +39,13 @@ namespace Esfa.Recruit.Qa.Web.Mappings
         
         public async Task<ReviewViewModel> MapFromVacancy(Vacancy vacancy)
         {
-            var programme = await _vacancyClient.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
+            var programmeTask = _vacancyClient.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
+            var approvedCountTask = _vacancyClient.GetApprovedCountAsync(vacancy.SubmittedByUser.UserId);
+            var approvedFirstTimeCountTask = _vacancyClient.GetApprovedFirstTimeCountAsync(vacancy.SubmittedByUser.UserId);
+
+            await Task.WhenAll(programmeTask, approvedCountTask, approvedFirstTimeCountTask);
+
+            var programme = programmeTask.Result;
 
             var vm = new ReviewViewModel();
 
@@ -84,6 +91,9 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                         () => _wageProvider.GetApprenticeNationalMinimumWage(vacancy.StartDate.Value))
                     : null;
                 vm.WorkingWeekDescription = vacancy.Wage.WorkingWeekDescription;
+                vm.SubmittedDate = vacancy.SubmittedDate.Value;
+                vm.VacancyReviewsApprovedCount = approvedCountTask.Result;
+                vm.VacancyReviewsApprovedFirstTimeCount = approvedFirstTimeCountTask.Result;
             }
             catch (NullReferenceException ex)
             {

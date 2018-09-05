@@ -114,5 +114,36 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
                 .Find(filter)
                 .ToListAsync(), new Context(nameof(GetForVacancyAsync)));
         }
+
+        public async Task<int> GetApprovedFirstTimeCountAsync(string submittedByUserId)
+        {
+            var filterBuilder = Builders<VacancyReview>.Filter;
+            var filter = filterBuilder.Eq(r => r.SubmittedByUser.UserId, submittedByUserId) &
+                         filterBuilder.Eq(r => r.Status, ReviewStatus.Closed) &
+                         filterBuilder.Eq(r => r.ManualOutcome, ManualQaOutcome.Approved) &
+                         filterBuilder.Eq(r => r.SubmissionCount, 1);
+
+            var collection = GetCollection<VacancyReview>();
+            var count = await RetryPolicy.ExecuteAsync(context => collection
+                .CountAsync(filter), 
+                new Context(nameof(GetApprovedFirstTimeCountAsync)));
+
+            return (int) count;
+        }
+
+        public async Task<int> GetApprovedCountAsync(string submittedByUserId)
+        {
+            var filterBuilder = Builders<VacancyReview>.Filter;
+            var filter = filterBuilder.Eq(r => r.SubmittedByUser.UserId, submittedByUserId) &
+                         filterBuilder.Eq(r => r.Status, ReviewStatus.Closed) &
+                         filterBuilder.Eq(r => r.ManualOutcome, ManualQaOutcome.Approved);
+
+            var collection = GetCollection<VacancyReview>();
+            var count = await RetryPolicy.ExecuteAsync(context => collection
+                    .CountAsync(filter),
+                new Context(nameof(GetApprovedCountAsync)));
+
+            return (int)count;
+        }
     }
 }

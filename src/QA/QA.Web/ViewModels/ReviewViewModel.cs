@@ -1,9 +1,10 @@
+using System;
 using System.Collections.Generic;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Qa.Web.ViewModels
 {
-    public class ReviewViewModel
+    public class ReviewViewModel : ReviewEditModel
     {
         public bool IsEditable { get; internal set; }
         public string Title { get; internal set; }
@@ -41,9 +42,17 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public string WageText { get; internal set; }
         public string SubmittedByName { get; internal set; }
         public string SubmittedByEmail { get; internal set; }
-        
+        public int VacancyReviewsApprovedCount { get; internal set; }
+        public int VacancyReviewsApprovedFirstTimeCount { get; internal set; }
+        public DateTime SubmittedDate { get; internal set; }
+
+
         public bool HasSpecifiedThroughFaaApplicationMethod => ApplicationMethod == ApplicationMethod.ThroughFindAnApprenticeship;
         public bool HasApplicationInstructions => !string.IsNullOrEmpty(ApplicationInstructions);
         public bool HasApplicationUrl => !string.IsNullOrEmpty(ApplicationUrl);
+        public bool HasPreviouslySubmitted => VacancyReviewsApprovedCount > 0;
+        public bool HasNotPreviouslySubmitted => HasPreviouslySubmitted == false;
+        public string SubmittedDateDay => SubmittedDate.ToShortDateString();
+        public string SubmittedDateTime => SubmittedDate.ToString("hh:mm tt");
     }
 }
