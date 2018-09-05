@@ -1,6 +1,7 @@
 ﻿using Esfa.Recruit.Qa.Web.Configuration;
 using Esfa.Recruit.Qa.Web.Mappings;
 using Esfa.Recruit.Qa.Web.Orchestrators;
+using Esfa.Recruit.Qa.Web.Security;
 using Esfa.Recruit.Shared.Web.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
