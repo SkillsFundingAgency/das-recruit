@@ -7,6 +7,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Commands
     public class ApproveVacancyReviewCommand : CommandBase, ICommand, IRequest
     {
         public Guid ReviewId { get; internal set; }
-        public string ManualQaComment { get; set; }
+        public string ManualQaComment { get; internal set; }
     }
 }

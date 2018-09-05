@@ -25,7 +25,7 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             _timeProvider = timeProvider;
         }
 
-        public async Task<Guid?> ApproveReviewAsync(ReviewEditModel m, VacancyUser user)
+        public async Task<Guid?> SubmitReviewAsync(ReviewEditModel m, VacancyUser user)
         {
             var review = await _vacancyClient.GetVacancyReviewAsync(m.ReviewId);
             await EnsureUserIsAssignedAsync(review, user.UserId);
@@ -72,28 +72,8 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
         {
             var vm = await GetReviewViewModelAsync(model.ReviewId, user);
 
-            vm.EmployerNameChecked = model.EmployerNameChecked;
-            vm.ShortDescriptionChecked = model.ShortDescriptionChecked;
-            vm.ClosingDateChecked = model.ClosingDateChecked;
-            vm.WorkingWeekChecked = model.WorkingWeekChecked;
-            vm.WageChecked = model.WageChecked;
-            vm.ExpectedDurationChecked = model.ExpectedDurationChecked;
-            vm.PossibleStartDateChecked = model.PossibleStartDateChecked;
-            vm.TrainingLevelChecked = model.TrainingLevelChecked;
-            vm.NumberOfPositionsChecked = model.NumberOfPositionsChecked;
-            vm.VacancyDescriptionChecked = model.VacancyDescriptionChecked;
-            vm.TrainingDescriptionChecked = model.TrainingDescriptionChecked;
-            vm.OutcomeDescriptionChecked = model.OutcomeDescriptionChecked;
-            vm.SkillsChecked = model.SkillsChecked;
-            vm.QualificationsChecked = model.QualificationsChecked;
-            vm.ThingsToConsiderChecked = model.ThingsToConsiderChecked;
-            vm.EmployerDescriptionChecked = model.EmployerDescriptionChecked;
-            vm.EmployerWebsiteUrlChecked = model.EmployerWebsiteUrlChecked;
-            vm.ContactChecked = model.ContactChecked;
-            vm.EmployerAddressChecked = model.EmployerAddressChecked;
-            vm.ProviderChecked = model.ProviderChecked;
-            vm.TrainingChecked = model.TrainingChecked;
-            vm.ApplicationProcessChecked = model.ApplicationProcessChecked;
+            vm.FieldIdentifers = model.FieldIdentifers;
+
             vm.ReviewerComment = model.ReviewerComment;
 
             return vm;

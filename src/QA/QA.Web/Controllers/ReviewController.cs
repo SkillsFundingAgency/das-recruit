@@ -28,7 +28,7 @@ namespace Esfa.Recruit.Qa.Web.Controllers
         }
 
         [HttpPost(Name = RouteNames.Vacancy_Review_Post)]
-        public async Task<IActionResult> Approve(ReviewEditModel model) 
+        public async Task<IActionResult> Submit(ReviewEditModel model) 
         {
             if (ModelState.IsValid == false)
             {
@@ -36,7 +36,7 @@ namespace Esfa.Recruit.Qa.Web.Controllers
                 return View("Review", vm);
             }
 
-            var nextVacancyReviewId = await _orchestrator.ApproveReviewAsync(model, User.GetVacancyUser());
+            var nextVacancyReviewId = await _orchestrator.SubmitReviewAsync(model, User.GetVacancyUser());
 
             if (nextVacancyReviewId == null)
                 return RedirectToRoute(RouteNames.Dashboard_Index_Get);
