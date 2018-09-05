@@ -20,6 +20,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<Qualifications> GetCandidateQualificationsAsync();
         Task<List<QaVacancySummary>> GetSearchResultsAsync(string searchTerm);
         Task<int> GetApprovedCountAsync(string submittedByUserId);
+        Task<List<QaVacancySummary>> GetVacancyReviewsInProgressAsync();
         Task<int> GetApprovedFirstTimeCountAsync(string submittedByUserId);
         Task AssignNextVacancyReviewAsync(VacancyUser user);
         Task AssignVacancyReviewAsync(VacancyUser user, Guid reviewId);
