@@ -152,6 +152,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient(typeof(IEntityValidator<,>), typeof(EntityValidator<,>));
 
             services.AddSingleton<AbstractValidator<ApplicationReview>, ApplicationReviewValidator>();
+            services.AddSingleton<AbstractValidator<VacancyReview>, VacancyReviewValidator>();
         }
     }
 }

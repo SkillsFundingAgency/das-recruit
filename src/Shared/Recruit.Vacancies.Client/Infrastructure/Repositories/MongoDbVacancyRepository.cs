@@ -92,8 +92,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 
         public async Task<IEnumerable<Vacancy>> GetVacanciesByStatusAsync(VacancyStatus status)
         {
-            var builder = Builders<Vacancy>.Filter;
-            var filter = builder.Eq(v => v.Status, status);
+            var filter = Builders<Vacancy>.Filter.Eq(v => v.Status, status);
 
             var collection = GetCollection<Vacancy>();
             var result = await RetryPolicy.ExecuteAsync(context => collection.FindAsync(filter), new Context(nameof(GetVacanciesByStatusAsync)));

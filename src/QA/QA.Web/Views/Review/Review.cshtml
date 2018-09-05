@@ -1,282 +1,354 @@
+@using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 @model ReviewViewModel
-
 @{
     var postRoute = Model.IsEditable ? RouteNames.Vacancy_Review_Referral_Post : RouteNames.Vacancy_Review_Post;
 }
 
-<form asp-route="@postRoute" class="form-inline">
-    <div class="grid-row">
-        <div class="column-two-thirds">
-            <h1 class="heading-xlarge small-bottom-margin">Vacancy Review</h1>
-            <h1 class="heading-xlarge small-bottom-margin">
-                @Model.Title
-                <span class="heading-secondary">@Model.EmployerName</span>
-            </h1>
+<div class="review-container">
+    <form asp-route="@postRoute">
+        <div class="grid-row">
+            <div asp-validation-summary="All" class="error-summary" style="display:@(ViewData.ModelState.IsValid ? "none" : "block")"></div>
+            <div class="column-one-quarter">
+                <h2 class="heading-small">Submitted by</h2>
+                <p>@Model.SubmittedByName</p>
+            </div>
+            <div class="column-one-quarter">
+                <h2 class="heading-small">Email</h2>
+                <a href="mailto:@Model.SubmittedByEmail">@Model.SubmittedByEmail</a>
+            </div>
+            <div class="column-one-quarter">
+                <h2 class="heading-small">User history</h2>
+                <p asp-condition="@Model.HasPreviouslySubmitted">
+                    @Model.VacancyReviewsApprovedCount vacancies previously reviewed.
+                    <br>@Model.VacancyReviewsApprovedFirstTimeCount passed QA first time.
+                </p>
+
+                <p asp-condition="@Model.HasNotPreviouslySubmitted">This is the first vacancy posted by this user.</p>
+            </div>
+            <div class="column-one-quarter">
+                <h2 class="heading-small">Submitted date</h2>
+                @Model.SubmittedDateDay
+                <br>
+                @Model.SubmittedDateTime
+            </div>
         </div>
-        <div class="column-one-third">
-            <div class="info-summary small-top-margin">
-                <h2 class="heading-medium info-summary-heading">User profile</h2>
-                <div class="heading-small">@Model.SubmittedByName</div>
+        <div class="grid-row">
+            <div class="column-two-thirds">
+                <h1 class="heading-xlarge small-bottom-margin">
+                    @Model.Title
+                    <span class="heading-secondary">@Model.EmployerName</span>
+                </h1>
+                <esfa-review-checkbox asp-for="EmployerNameChecked"></esfa-review-checkbox>
+            </div>
+        </div>
+        <div class="grid-row">
+            <div class="column-two-thirds">
                 <div>
-                    <a href="mailto:@Model.SubmittedByEmail">@Model.SubmittedByEmail</a>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="grid-row">
-        <div class="column-two-thirds">
-            <div>
-                <h3 class="heading-small sfa-no-top-margin">Brief overview of the role</h3>
-                @if (Model.IsEditable)
-                {
-                    <textarea asp-for="ShortDescription" class="form-control form-control-3-4" rows="5"></textarea>
-                }
-                else
-                {
-                    <p>@Model.ShortDescription</p>
-                }
-            </div>
-        </div>
-        <div class="column-one-third">
-            <div>
-                <h3 class="heading-small sfa-no-top-margin">Closing Date</h3>
-                <p>@Model.ClosingDate</p>
-            </div>
-        </div>
-    </div>
-    <div class="grid-row">
-        <div class="column-full">
-            <h2 class="heading-large">Apprenticeship summary</h2>
-        </div>
-    </div>
-    <div class="grid-row">
-        <div class="column-one-third">
-            <ul class="list">
-                <li>
-                    <h3 class="heading-small">Working week</h3>
-                    <ul class="list">
-                        <li>
-                            @Model.WorkingWeekDescription
-                        </li>
-                        <li>
-                            Total hours per week: @Model.HoursPerWeek
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <h3 class="heading-small">Yearly wage</h3>
-                    <p>@Model.WageText</p>
-                    <p>@Model.WageInfo</p>
-                </li>
-                <li>
-                    <h3 class="heading-small">Expected apprenticeship duration</h3>
-                    <p>@Model.ExpectedDuration</p>
-                </li>
-                <li>
-                    <h3 class="heading-small">Possible start date</h3>
-                    <p>@Model.PossibleStartDate</p>
-                </li>
-                <li>
-                    <h3 class="heading-small">Apprenticeship level</h3>
-                    <p>@Model.TrainingLevel Level Apprenticeship</p>
-                </li>
-                <li>
-                    <h3 class="heading-small">Reference number</h3>
-                    <p>@Model.VacancyReferenceNumber</p>
-                </li>
-                <li>
-                    <h3 class="heading-small">Positions</h3>
-                    <p>@Model.NumberOfPositionsCaption</p>
-                </li>
-            </ul>
-        </div>
-        <div class="column-two-thirds">
-            <div>
-                <div>
+                    <h3 class="heading-small sfa-no-top-margin">Brief overview of the role</h3>
                     @if (Model.IsEditable)
                     {
-                        <div class="form-group">
-                            <label class="form-label-bold" for="full-description-1">What does the apprenticeship involve?</label>
-                            <textarea asp-for="VacancyDescription" class="form-control form-control-3-4" rows="5"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label-bold" for="full-description-1">What training will your apprentice get?</label>
-                            <textarea asp-for="TrainingDescription" class="form-control form-control-3-4" rows="5"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label-bold" for="full-description-1">What can the apprentice expect at the end of the apprenticeship?</label>
-                            <textarea asp-for="OutcomeDescription" class="form-control form-control-3-4" rows="5"></textarea>
-                        </div>
+                        <textarea asp-for="ShortDescription" class="form-control form-control-3-4" rows="5"></textarea>
                     }
                     else
                     {
-                        <h3 class="heading-small">Typical working day</h3>
-                        <p class="preserve-format">@Model.VacancyDescription</p>
-                        <h3 class="heading-small">Training to be provided</h3>
-                        <p class="preserve-format">@Model.TrainingDescription</p>
-                        <h3 class="heading-small">Future prospects</h3>
-                        <p class="preserve-format">@Model.OutcomeDescription</p>
+                        <p>@Model.ShortDescription</p>
                     }
+                    <esfa-review-checkbox asp-for="ShortDescriptionChecked"></esfa-review-checkbox>
+                </div>
+            </div>
+            <div class="column-one-third">
+                <div>
+                    <h3 class="heading-small sfa-no-top-margin">Closing Date</h3>
+                    <p>@Model.ClosingDate</p>
+                    <esfa-review-checkbox asp-for="ClosingDateChecked"></esfa-review-checkbox>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="grid-row">
-        <div class="column-full">
-            <hr class="no-bottom-margin">
-        </div>
-    </div>
-
-    <div class="grid-row">
-        <div class="column-full">
-            <h2 class="heading-large">Requirements and prospects</h2>
-        </div>
-    </div>
-    <div class="grid-row">
-        <div class="column-half">
-            <div>
-                <h3 class="heading-small">Desired skills and personal qualities</h3>
-                <p>@string.Join(", ", Model.Skills)</p>
-            </div>
-            <div>
-                <h3 class="heading-small">Qualifications</h3>
-                <p>
-                    @foreach (var qualification in Model.Qualifications)
-                    {
-                        @qualification<br />
-                    }
-                </p>
+        <div class="grid-row">
+            <div class="column-full">
+                <h2 class="heading-large">Apprenticeship summary</h2>
             </div>
         </div>
-        <div class="column-half">
-            <div>
-                <h3 class="heading-small">Things to consider (optional)</h3>
-                @if (Model.IsEditable)
-                {
-                    <textarea asp-for="ThingsToConsider" class="form-control form-control-3-4" rows="5"></textarea>
-                }
-                else
-                {
-                    <p>@Model.ThingsToConsider</p>
-                }
-            </div>
-        </div>
-    </div>
-    <div class="grid-row">
-        <div class="column-full">
-            <hr class="no-bottom-margin">
-        </div>
-    </div>
-    <div class="grid-row">
-        <div class="column-full">
-            <h2 class="heading-large">About the employer</h2>
-        </div>
-    </div>
-    <div class="grid-row">
-        <div class="column-two-thirds">
-            <div>
-                <h3 class="heading-small">Description</h3>
-                @if (Model.IsEditable)
-                {
-                    <textarea asp-for="EmployerDescription" class="form-control form-control-3-4" rows="5"></textarea>
-                }
-                else
-                {
-                    <p>@Model.EmployerDescription</p>
-                }
-            </div>
-            <div>
-                <h3 class="heading-small">Employer</h3>
-                <p>@Model.EmployerName</p>
-            </div>
-            <img asp-condition="@Model.IsDisabilityConfident" src="~/img/disability-confident_545x172.png" class="disability-confident-logo" alt="A logo confirming that the employer is registered as disability confident" />
-            <div>
-                <h3 class="heading-small">Website (optional)</h3>
-                <p>@Model.EmployerWebsiteUrl</p>
-            </div>
-        </div>
-        <div class="column-one-third">
-            <div>
-                <h3 class="heading-small">Contact details (optional)</h3>
-                <p>@Model.ContactName</p>
-                <p>@Model.ContactEmail</p>
-                <p>@Model.ContactTelephone</p>
-            </div>
-        </div>
-    </div>
-    <div class="grid-row">
-        <div class="column-half">
-            <div>
-                <h3 class="heading-small">Location</h3>
+        <div class="grid-row">
+            <div class="column-one-third">
                 <ul class="list">
-                    @foreach (var addrLine in Model.EmployerAddressElements)
-                    {
-                        <li>@addrLine</li>
-                    }
+                    <li>
+                        <h3 class="heading-small">Working week</h3>
+                        <ul class="list">
+                            <li>
+                                @Model.WorkingWeekDescription
+                            </li>
+                            <li>
+                                Total hours per week: @Model.HoursPerWeek
+                            </li>
+                        </ul>
+                        <esfa-review-checkbox asp-for="WorkingWeekChecked"></esfa-review-checkbox>
+                    </li>
+                    <li>
+                        <h3 class="heading-small">Yearly wage</h3>
+                        <p>@Model.WageText</p>
+                        <p>@Model.WageInfo</p>
+                        <esfa-review-checkbox asp-for="WageChecked"></esfa-review-checkbox>
+                    </li>
+                    <li>
+                        <h3 class="heading-small">Expected apprenticeship duration</h3>
+                        <p>@Model.ExpectedDuration</p>
+                        <esfa-review-checkbox asp-for="ExpectedDurationChecked"></esfa-review-checkbox>
+                    </li>
+                    <li>
+                        <h3 class="heading-small">Possible start date</h3>
+                        <p>@Model.PossibleStartDate</p>
+                        <esfa-review-checkbox asp-for="PossibleStartDateChecked"></esfa-review-checkbox>
+                    </li>
+                    <li>
+                        <h3 class="heading-small">Apprenticeship level</h3>
+                        <p>@Model.TrainingLevel Level Apprenticeship</p>
+                        <esfa-review-checkbox asp-for="TrainingLevelChecked"></esfa-review-checkbox>
+                    </li>
+                    <li>
+                        <h3 class="heading-small">Reference number</h3>
+                        <p>@Model.VacancyReferenceNumber</p>
+                    </li>
+                    <li>
+                        <h3 class="heading-small">Positions</h3>
+                        <p>@Model.NumberOfPositionsCaption</p>
+                        <esfa-review-checkbox asp-for="NumberOfPositionsChecked"></esfa-review-checkbox>
+                    </li>
                 </ul>
             </div>
-        </div>
-        <div class="column-half">
-            <img id="static-map" src="@Model.MapUrl" alt="Location map" />
-        </div>
-    </div>
-    <div class="grid-row">
-        <div class="column-full">
-            <hr class="no-bottom-margin">
-        </div>
-    </div>
-    <div class="grid-row">
-        <div class="column-full">
-            <h2 class="heading-large">Training provider</h2>
-        </div>
-    </div>
-    <div class="grid-row">
-        <div class="column-full">
-            <div>
-                <h3 class="heading-small">Training provider</h3>
-                <p>@Model.ProviderName</p>
-            </div>
-            <div>
-                <h3 class="heading-small">Apprenticeship @Model.TrainingType</h3>
-                <p>@Model.TrainingTitle</p>
-            </div>
-        </div>
-    </div>
-    <div class="grid-row">
-        <div class="column-full">
-            <hr class="no-bottom-margin">
-        </div>
-    </div>
-    <div class="grid-row">
-        <div class="column-full">
-            <h2 class="heading-large">Application process</h2>
-        </div>
-    </div>
-    <div class="grid-row">
-        <div class="column-full">
-            <p asp-condition="@Model.HasSpecifiedThroughFaaApplicationMethod">Candidates will apply through the find an apprenticeship service</p>
-            <div asp-condition="@Model.HasApplicationUrl">
-                <h2 class="heading-small">Employer's application website</h2>
-                <p>@Model.ApplicationUrl</p>
-            </div>
-            <div asp-condition="@Model.HasApplicationInstructions">
-                <h2 class="heading-small">Employer's application instructions (optional)</h2>
-                <p>@Model.ApplicationInstructions</p>
-            </div>
-        </div>
-    </div>
-    <div class="grid-row">
-        <div class="column-full">
-            <div class="form-group inline">
-                <div class="form-group small-top-margin">
-                    <input type="submit" value="Approve vacancy" class="button" />
-                    @if (!Model.IsEditable)
-                    {
-                        <a asp-route="@RouteNames.Vacancy_Review_Referral_Get" class="button-link">Refer vacancy</a>
-                    }
-                    <a asp-route="@RouteNames.Dashboard_Index_Get" class="button-link">Back to QA dashboard</a>
+            <div class="column-two-thirds">
+                <div>
+                    <div>
+                        @if (Model.IsEditable)
+                        {
+                            <div class="form-group">
+                                <label class="form-label-bold" for="full-description-1">What does the apprenticeship involve?</label>
+                                <textarea asp-for="VacancyDescription" class="form-control form-control-3-4" rows="5"></textarea>
+                            </div>
+                        }
+                        else
+                        {
+                            <h3 class="heading-small">Typical working day</h3>
+                            <p class="preserve-format">@Model.VacancyDescription</p>
+                        }
+                        <esfa-review-checkbox asp-for="VacancyDescriptionChecked"></esfa-review-checkbox>
+
+                        @if (Model.IsEditable)
+                        {
+                            <div class="form-group">
+                                <label class="form-label-bold" for="full-description-1">What training will your apprentice get?</label>
+                                <textarea asp-for="TrainingDescription" class="form-control form-control-3-4" rows="5"></textarea>
+                            </div>
+                        }
+                        else
+                        {
+                            <h3 class="heading-small">Training to be provided</h3>
+                            <p class="preserve-format">@Model.TrainingDescription</p>
+                        }
+                        <esfa-review-checkbox asp-for="TrainingDescriptionChecked"></esfa-review-checkbox>
+
+                        @if (Model.IsEditable)
+                        {
+                            <div class="form-group">
+                                <label class="form-label-bold" for="full-description-1">What can the apprentice expect at the end of the apprenticeship?</label>
+                                <textarea asp-for="OutcomeDescription" class="form-control form-control-3-4" rows="5"></textarea>
+                            </div>
+                        }
+                        else
+                        {
+                            <h3 class="heading-small">Future prospects</h3>
+                            <p class="preserve-format">@Model.OutcomeDescription</p>
+                        }
+                        <esfa-review-checkbox asp-for="OutcomeDescriptionChecked"></esfa-review-checkbox>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</form>
+        <div class="grid-row">
+            <div class="column-full">
+                <hr class="no-bottom-margin">
+            </div>
+        </div>
+        <div class="grid-row">
+            <div class="column-full">
+                <h2 class="heading-large">Requirements and prospects</h2>
+            </div>
+        </div>
+        <div class="grid-row">
+            <div class="column-half">
+                <div>
+                    <h3 class="heading-small">Desired skills and personal qualities</h3>
+                    <p>@string.Join(", ", Model.Skills)</p>
+                    <esfa-review-checkbox asp-for="SkillsChecked"></esfa-review-checkbox>
+                </div>
+                <div>
+                    <h3 class="heading-small">Qualifications</h3>
+                    <p>
+                        @foreach (var qualification in Model.Qualifications)
+                        {
+                            @qualification<br />
+                        }
+                    </p>
+                    <esfa-review-checkbox asp-for="QualificationsChecked"></esfa-review-checkbox>
+                </div>
+            </div>
+            <div class="column-half">
+                <div>
+                    <h3 class="heading-small">Things to consider (optional)</h3>
+                    @if (Model.IsEditable)
+                    {
+                        <textarea asp-for="ThingsToConsider" class="form-control form-control-3-4" rows="5"></textarea>
+                    }
+                    else
+                    {
+                        <p>@Model.ThingsToConsider</p>
+                    }
+                    <esfa-review-checkbox asp-for="ThingsToConsiderChecked"></esfa-review-checkbox>
+                </div>
+            </div>
+        </div>
+        <div class="grid-row">
+            <div class="column-full">
+                <hr class="no-bottom-margin">
+            </div>
+        </div>
+        <div class="grid-row">
+            <div class="column-full">
+                <h2 class="heading-large">About the employer</h2>
+            </div>
+        </div>
+        <div class="grid-row">
+            <div class="column-two-thirds">
+                <div>
+                    <h3 class="heading-small">Description</h3>
+                    @if (Model.IsEditable)
+                    {
+                        <textarea asp-for="EmployerDescription" class="form-control form-control-3-4" rows="5"></textarea>
+                    }
+                    else
+                    {
+                        <p>@Model.EmployerDescription</p>
+                    }
+                    <esfa-review-checkbox asp-for="EmployerDescriptionChecked"></esfa-review-checkbox>
+                </div>
+                <div>
+                    <h3 class="heading-small">Employer</h3>
+                    <p>@Model.EmployerName</p>
+                </div>
+                <img asp-condition="@Model.IsDisabilityConfident" src="~/img/disability-confident_545x172.png" class="disability-confident-logo" alt="A logo confirming that the employer is registered as disability confident" />
+                <div>
+                    <h3 class="heading-small">Website (optional)</h3>
+                    <p>@Model.EmployerWebsiteUrl</p>
+                    <esfa-review-checkbox asp-for="EmployerWebsiteUrlChecked"></esfa-review-checkbox>
+                </div>
+            </div>
+            <div class="column-one-third">
+                <div>
+                    <h3 class="heading-small">Contact details (optional)</h3>
+                    <p>@Model.ContactName</p>
+                    <p>@Model.ContactEmail</p>
+                    <p>@Model.ContactTelephone</p>
+                    <esfa-review-checkbox asp-for="ContactChecked"></esfa-review-checkbox>
+                </div>
+            </div>
+        </div>
+        <div class="grid-row">
+            <div class="column-half">
+                <div>
+                    <h3 class="heading-small">Location</h3>
+                    <ul class="list">
+                        @foreach (var addrLine in Model.EmployerAddressElements)
+                        {
+                            <li>@addrLine</li>
+                        }
+                    </ul>
+                    <esfa-review-checkbox asp-for="EmployerAddressChecked"></esfa-review-checkbox>
+                </div>
+            </div>
+            <div class="column-half">
+                <img id="static-map" src="@Model.MapUrl" alt="Location map" />
+            </div>
+        </div>
+        <div class="grid-row">
+            <div class="column-full">
+                <hr class="no-bottom-margin">
+            </div>
+        </div>
+        <div class="grid-row">
+            <div class="column-full">
+                <h2 class="heading-large">Training provider</h2>
+            </div>
+        </div>
+        <div class="grid-row">
+            <div class="column-full">
+                <div>
+                    <h3 class="heading-small">Training provider</h3>
+                    <p>@Model.ProviderName</p>
+                    <esfa-review-checkbox asp-for="ProviderChecked"></esfa-review-checkbox>
+                </div>
+                <div>
+                    <h3 class="heading-small">Apprenticeship @Model.TrainingType</h3>
+                    <p>@Model.TrainingTitle</p>
+                    <esfa-review-checkbox asp-for="TrainingChecked"></esfa-review-checkbox>
+                </div>
+            </div>
+        </div>
+        <div class="grid-row">
+            <div class="column-full">
+                <hr class="no-bottom-margin">
+            </div>
+        </div>
+        <div class="grid-row">
+            <div class="column-full">
+                <h2 class="heading-large">Application process</h2>
+            </div>
+        </div>
+        <div class="grid-row">
+            <div class="column-full">
+                <p asp-condition="@Model.HasSpecifiedThroughFaaApplicationMethod">Candidates will apply through the find an apprenticeship service</p>
+                <div asp-condition="@Model.HasApplicationUrl">
+                    <h2 class="heading-small">Employer's application website</h2>
+                    <p>@Model.ApplicationUrl</p>
+                </div>
+                <div asp-condition="@Model.HasApplicationInstructions">
+                    <h2 class="heading-small">Employer's application instructions (optional)</h2>
+                    <p>@Model.ApplicationInstructions</p>
+                </div>
+                <esfa-review-checkbox asp-for="ApplicationProcessChecked"></esfa-review-checkbox>
+            </div>
+        </div>
+        <hr>
+        <div class="grid-row">
+            <div class="column-full">
+                <h2 class="heading-medium no-top-margin">Reviewer's Comments</h2>
+                <span asp-validation-for="ReviewerComment" class="error-message"></span>
+                <div class="form-group">
+                    <textarea asp-for="ReviewerComment"
+                              class="form-control form-control-3-4"
+                              cols="20"
+                              rows="5"
+                              size="12"
+                              type="text"
+                              maxlength="@VacancyReviewValidator.ManualQaCommentMaxLength"
+                              data-val-length-max="@VacancyReviewValidator.ManualQaCommentMaxLength"></textarea>
+                    <span class="maxchar-count"></span>
+                    <span class="maxchar-text"></span>
+                </div>
+            </div>
+        </div>
+        <div class="grid-row">
+            <div class="column-full">
+                <div class="form-group inline">
+                    <div class="form-group small-top-margin">
+                        <input type="submit" value="Approve vacancy" class="button" />
+                        @if (!Model.IsEditable)
+                        {
+                            <a asp-route="@RouteNames.Vacancy_Review_Referral_Get" class="button-link">Refer vacancy</a>
+                        }
+                        <a asp-route="@RouteNames.Dashboard_Index_Get" class="button-link">Back to QA dashboard</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

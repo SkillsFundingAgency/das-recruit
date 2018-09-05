@@ -5,7 +5,6 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
-using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
@@ -24,7 +23,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly IVacancyRepository _vacancyRepository;
         private readonly IApprenticeshipProgrammeProvider _apprenticeshipProgrammesProvider;
         private readonly IMessaging _messaging;
-        private readonly INextVacancyReviewProvider _nextVacancyReviewService;
+        private readonly INextVacancyReviewProvider _nextVacancyReviewProvider;
 
         public QaVacancyClient(
                     IQueryStoreReader queryStoreReader,
@@ -33,7 +32,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                     IVacancyRepository vacancyRepository, 
                     IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider,
                     IMessaging messaging,
-                    INextVacancyReviewProvider nextVacancyReviewService)
+                    INextVacancyReviewProvider nextVacancyReviewProvider)
         {
             _queryStoreReader = queryStoreReader;
             _referenceDataReader = referenceDataReader;
@@ -41,7 +40,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _vacancyRepository = vacancyRepository;
             _apprenticeshipProgrammesProvider = apprenticeshipProgrammesProvider;
             _messaging = messaging;
-            _nextVacancyReviewService = nextVacancyReviewService;
+            _nextVacancyReviewProvider = nextVacancyReviewProvider;
         }
 
         public Task ApproveReferredReviewAsync(Guid reviewId, string shortDescription, string vacancyDescription, string trainingDescription, string outcomeDescription, string thingsToConsider, string employerDescription)
@@ -58,11 +57,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             });
         }
 
-        public Task ApproveReviewAsync(Guid reviewId)
+        public Task ApproveVacancyReviewAsync(Guid reviewId, string manualQaComment)
         {
             return _messaging.SendCommandAsync(new ApproveVacancyReviewCommand
             {
-                ReviewId = reviewId
+                ReviewId = reviewId,
+                ManualQaComment = manualQaComment
             });
         }
 
@@ -139,7 +139,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public async Task<VacancyReview> AssignNextVacancyReviewAsync(VacancyUser user)
         {
-            var nextVacancyReview = await _nextVacancyReviewService.GetNextVacancyReviewAsync(user.UserId);
+            var nextVacancyReview = await _nextVacancyReviewProvider.GetNextVacancyReviewAsync(user.UserId);
 
             if (nextVacancyReview == null)
                 return null;
@@ -147,6 +147,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             await StartReviewAsync(nextVacancyReview.Id, user);
 
             return nextVacancyReview;
+        }
+
+        public Task<int> GetApprovedCountAsync(string submittedByUserId)
+        {
+            return _reviewRepository.GetApprovedCountAsync(submittedByUserId);
+        }
+
+        public Task<int> GetApprovedFirstTimeCountAsync(string submittedByUserId)
+        {
+            return _reviewRepository.GetApprovedFirstTimeCountAsync(submittedByUserId);
         }
     }
 }

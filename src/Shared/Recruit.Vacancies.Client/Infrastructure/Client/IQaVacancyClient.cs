@@ -12,7 +12,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<QaDashboard> GetDashboardAsync();
         Task<Vacancy> GetVacancyAsync(long vacancyReference);
         Task<IApprenticeshipProgramme> GetApprenticeshipProgrammeAsync(string programmeId);
-        Task ApproveReviewAsync(Guid reviewId);
+        Task ApproveVacancyReviewAsync(Guid reviewId, string reviewerComment);
         Task<VacancyReview> GetVacancyReviewAsync(Guid reviewId);
         Task StartReviewAsync(Guid reviewId, VacancyUser user);
         Task ReferVacancyReviewAsync(Guid reviewId);
@@ -20,5 +20,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<Qualifications> GetCandidateQualificationsAsync();
         Task<List<VacancyReviewSearch>> GetSearchResultsAsync(string searchTerm);
         Task<VacancyReview> AssignNextVacancyReviewAsync(VacancyUser user);
+        Task<int> GetApprovedCountAsync(string submittedByUserId);
+        Task<int> GetApprovedFirstTimeCountAsync(string submittedByUserId);
     }
 }
