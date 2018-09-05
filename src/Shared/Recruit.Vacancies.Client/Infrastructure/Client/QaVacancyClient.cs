@@ -112,6 +112,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return result.Success;
         }
 
+        public Task<List<QaVacancySummary>> GetVacancyReviewsInProgressAsync()
+        {
+            return _reviewRepository.GetVacancyReviewsInProgressAsync();
+        }
+
         public Task<Vacancy> GetVacancyAsync(long vacancyReference)
         {
             return _vacancyRepository.GetVacancyAsync(vacancyReference);

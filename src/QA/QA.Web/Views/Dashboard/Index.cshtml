@@ -29,26 +29,57 @@
         <h2 class="heading-medium no-bottom-margin">Statistics</h2>
         <table>
             <thead>
-                <tr>
-                    <th>Total vacancies</th>
-                    <th>Submitted +24 hours</th>
-                    <th>Resubmitted vacancies</th>
-                </tr>
+            <tr>
+                <th>Total vacancies</th>
+                <th>Submitted +24 hours</th>
+                <th>Resubmitted vacancies</th>
+            </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>@Model.TotalVacanciesForReview</td>
-                    <td>@Model.TotalVacanciesBrokenSla</td>
-                    <td>@Model.TotalVacanciesResubmitted</td>
-                </tr>
+            <tr>
+                <td>@Model.TotalVacanciesForReview</td>
+                <td>@Model.TotalVacanciesBrokenSla</td>
+                <td>@Model.TotalVacanciesResubmitted</td>
+            </tr>
             </tbody>
         </table>
     </div>
 </div>
 
+<h2 asp-condition="@Model.DisplayInProgressVacancies" class="heading-medium no-bottom-margin">In-progress vacancies</h2>
+
+<span asp-condition="@Model.DisplayNoInProgressVacanciesMessage">There are no vacancy reviews currently in progress</span>
+
+<div asp-condition="@Model.DisplayInProgressResults" class="grid-row">
+    <table>
+        <tbody>
+            <tr>
+                <th class="bold">Employer</th>
+                <th class="bold">Vacancy Title</th>
+                <th class="bold">Reference Number</th>
+                <th class="bold">Submitted Date</th>
+                <th class="bold">Closing Date</th>
+                <th class="bold"></th>
+            </tr>
+        </tbody>
+        @foreach (var vacancy in Model.InProgressVacancies)
+        {
+            <tr>
+                <td>@vacancy.EmployerName</td>
+                <td>@vacancy.VacancyTitle</td>
+                <td>@vacancy.VacancyReference</td>
+                <td>@vacancy.SubmittedDate.AsGdsDateTime()</td>
+                <td>@vacancy.ClosingDate.AsGdsDate()</td>
+                <td>@vacancy.AssignmentInfo</td>
+            </tr>
+        }
+    </table>
+</div>
+
+
 <h2 asp-condition="@Model.DisplayLastSearchTerm" class="heading-medium no-bottom-margin">Search results for [@Model.LastSearchTerm]</h2>
 
-<span asp-condition="@Model.DisplayNoResultsMessage">No results</span>
+<span asp-condition="@Model.DisplayNoSearchResultsMessage">No results</span>
 
 <div asp-condition="@Model.DisplaySearchResults" class="grid-row">
     <table>

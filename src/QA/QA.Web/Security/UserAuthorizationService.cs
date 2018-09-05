@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Esfa.Recruit.Qa.Web.Security
 {
-    public class UserAuthorizationService : IUserAuthorizationService
+    public class UserAuthorizationService 
     {
         private readonly IAuthorizationService _authorizationService;
 
