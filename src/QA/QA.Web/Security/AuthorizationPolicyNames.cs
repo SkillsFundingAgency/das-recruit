@@ -1,4 +1,4 @@
-namespace Esfa.Recruit.Qa.Web.Configuration
+namespace Esfa.Recruit.Qa.Web.Security
 {
     internal class AuthorizationPolicyNames
     {
