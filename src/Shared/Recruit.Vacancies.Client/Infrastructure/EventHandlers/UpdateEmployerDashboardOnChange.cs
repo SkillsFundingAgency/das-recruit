@@ -17,7 +17,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
                                             INotificationHandler<VacancyClosedEvent>,
                                             INotificationHandler<ApplicationReviewCreatedEvent>,
                                             INotificationHandler<ApplicationReviewedEvent>,
-                                            INotificationHandler<SetupEmployerEvent>
+                                            INotificationHandler<SetupEmployerEvent>,
+                                            INotificationHandler<VacancyReferredEvent>
     {
         
         private readonly IEmployerDashboardProjectionService _dashboardService;
@@ -74,7 +75,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
         {
             return Handle(notification);
         }
- 
+
+        public Task Handle(VacancyReferredEvent notification, CancellationToken cancellationToken)
+        {
+            return Handle(notification);
+        }
+
         private Task Handle(IEmployerEvent notification)
         {
             if (notification == null)

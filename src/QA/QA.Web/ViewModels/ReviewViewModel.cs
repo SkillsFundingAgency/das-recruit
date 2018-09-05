@@ -48,11 +48,12 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
 
 
         public bool HasSpecifiedThroughFaaApplicationMethod => ApplicationMethod == ApplicationMethod.ThroughFindAnApprenticeship;
-        public bool HasApplicationInstructions => !string.IsNullOrEmpty(ApplicationInstructions);
-        public bool HasApplicationUrl => !string.IsNullOrEmpty(ApplicationUrl);
+        public bool HasApplicationInstructions => string.IsNullOrEmpty(ApplicationInstructions) == false;
+        public bool HasApplicationUrl => string.IsNullOrEmpty(ApplicationUrl) == false;
         public bool HasPreviouslySubmitted => VacancyReviewsApprovedCount > 0;
         public bool HasNotPreviouslySubmitted => HasPreviouslySubmitted == false;
         public string SubmittedDateDay => SubmittedDate.ToShortDateString();
         public string SubmittedDateTime => SubmittedDate.ToString("hh:mm tt");
+        public bool IsNotDisabilityConfident => IsDisabilityConfident == false;
     }
 }

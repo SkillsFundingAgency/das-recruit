@@ -5,6 +5,8 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Domain.Services;
+using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -15,15 +17,21 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         private readonly ILogger<ReferVacancyCommandHandler> _logger;
         private readonly IVacancyReviewRepository _reviewRepository;
         private readonly IMessaging _messaging;
+        private readonly AbstractValidator<VacancyReview> _vacancyReviewValidator;
+        private readonly ITimeProvider _timeProvider;
 
         public ReferVacancyReviewCommandHandler(
             ILogger<ReferVacancyCommandHandler> logger,
             IVacancyReviewRepository reviewRepository, 
-            IMessaging messaging)
+            IMessaging messaging,
+            AbstractValidator<VacancyReview> vacancyReviewValidator,
+            ITimeProvider timeProvider)
         {
             _logger = logger;
             _reviewRepository = reviewRepository;
             _messaging = messaging;
+            _timeProvider = timeProvider;
+            _vacancyReviewValidator = vacancyReviewValidator;
         }
 
         public async Task Handle(ReferVacancyReviewCommand message, CancellationToken cancellationToken)
@@ -39,6 +47,12 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             }
 
             review.ManualOutcome = ManualQaOutcome.Referred;
+            review.Status = ReviewStatus.Closed;
+            review.ClosedDate = _timeProvider.Now;
+            review.ManualQaComment = message.ManualQaComment;
+            review.ManualQaFieldIndicators = message.ManualQaFieldIndicators;
+
+            Validate(review);
 
             await _reviewRepository.UpdateAsync(review);
             
@@ -48,6 +62,15 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 VacancyReference = review.VacancyReference,
                 ReviewId = review.Id
             });
+        }
+
+        private void Validate(VacancyReview review)
+        {
+            var validationResult = _vacancyReviewValidator.Validate(review);
+            if (!validationResult.IsValid)
+            {
+                throw new ValidationException(validationResult.Errors);
+            }
         }
     }
 }
