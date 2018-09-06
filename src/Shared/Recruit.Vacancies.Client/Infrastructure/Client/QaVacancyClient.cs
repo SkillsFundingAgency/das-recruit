@@ -83,13 +83,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return dashboard;
         }
 
-        public async Task<List<VacancyReviewSearch>> GetSearchResultsAsync(string searchTerm)
+        public async Task<List<QaVacancySummary>> GetSearchResultsAsync(string searchTerm)
         {
             if (TryGetVacancyReference(searchTerm, out var vacancyReference))
             {
                 return await _reviewRepository.SearchAsync(vacancyReference);
             }
-            return new List<VacancyReviewSearch>();
+            return new List<QaVacancySummary>();
         }
 
         private static bool TryGetVacancyReference(string value, out long vacancyReference)
@@ -104,6 +104,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 vacancyReference = long.Parse(result.Groups[2].Value);
             }
             return result.Success;
+        }
+
+        public Task<List<QaVacancySummary>> GetVacancyReviewsInProgressAsync()
+        {
+            return _reviewRepository.GetVacancyReviewsInProgressAsync();
         }
 
         public Task<Vacancy> GetVacancyAsync(long vacancyReference)

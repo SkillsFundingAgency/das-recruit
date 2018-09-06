@@ -1,6 +1,7 @@
 ﻿using Esfa.Recruit.Qa.Web.Configuration;
 using Esfa.Recruit.Qa.Web.Mappings;
 using Esfa.Recruit.Qa.Web.Orchestrators;
+using Esfa.Recruit.Qa.Web.Security;
 using Esfa.Recruit.Shared.Web.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -57,6 +58,7 @@ namespace Esfa.Recruit.Qa.Web
             services.AddRecruitStorageClient(_configuration);
             services.AddScoped<DashboardOrchestrator>();
             services.AddScoped<ReviewOrchestrator>();
+            services.AddTransient<UserAuthorizationService>();
 
             services.AddTransient<IGeocodeImageService>(_ => new GoogleMapsGeocodeImageService(_configuration.GetValue<string>("GoogleMapsPrivateKey")));
             services.AddScoped<ReviewMapper>();

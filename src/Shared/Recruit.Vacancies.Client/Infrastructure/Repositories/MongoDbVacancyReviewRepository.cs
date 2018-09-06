@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Domain.Services;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.QA;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
@@ -14,44 +16,69 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 {
     internal sealed class MongoDbVacancyReviewRepository : MongoDbCollectionBase, IVacancyReviewRepository
     {
+        private readonly ITimeProvider _timeProvider;
         private const string Database = "recruit";
         private const string Collection = "vacancyReviews";
 
-        public MongoDbVacancyReviewRepository(ILogger<MongoDbVacancyReviewRepository> logger, IOptions<MongoDbConnectionDetails> details) 
+        public MongoDbVacancyReviewRepository(
+            ILogger<MongoDbVacancyReviewRepository> logger, IOptions<MongoDbConnectionDetails> details, 
+            ITimeProvider timeProvider) 
             : base(logger, Database, Collection, details)
         {
+            _timeProvider = timeProvider;
         }
 
-        public async Task<List<VacancyReviewSearch>> SearchAsync(long vacancyReference)
+        public Task<List<QaVacancySummary>> SearchAsync(long vacancyReference)
         {
             var filterBuilder = Builders<VacancyReview>.Filter;
 
             var filter = (filterBuilder.Eq(r => r.Status, ReviewStatus.PendingReview)
                          | filterBuilder.Eq(r => r.Status, ReviewStatus.UnderReview)) 
                          & filterBuilder.Eq(r => r.VacancyReference, vacancyReference);
+            return GetQaVacancySummaries(filter);
+        }
+
+        public Task<List<QaVacancySummary>> GetVacancyReviewsInProgressAsync()
+        {
+            var reviewExpiration = _timeProvider.Now.AddHours(-3);
+            var filterBuilder = Builders<VacancyReview>.Filter;
+            var filter = filterBuilder.Eq(r => r.Status, ReviewStatus.UnderReview)
+                & filterBuilder.Gt(r => r.ReviewedDate, reviewExpiration);
+            return GetQaVacancySummaries(filter);
+        }
+
+        private async Task<List<QaVacancySummary>> GetQaVacancySummaries(FilterDefinition<VacancyReview> filter)
+        {
             var collection = GetCollection<VacancyReview>();
-            
+
             var result = await RetryPolicy
-                .ExecuteAsync( 
+                .ExecuteAsync(
                     context => collection
                         .Find(filter)
-                        .Project(r => new VacancyReviewSearch()
-                        {
-                            Id = r.Id,
-                            Title = r.Title,
-                            VacancyReference = r.VacancyReference,
-                            ReviewAssignedToUserName = r.ReviewedByUser.Name,
-                            ReviewAssignedToUserId = r.ReviewedByUser.UserId,
-                            ReviewStartedOn = r.ReviewedDate,
-                            EmployerName = r.VacancySnapshot.EmployerName,
-                            ClosingDate = r.VacancySnapshot.ClosingDate.Value,
-                            SubmittedDate = r.VacancySnapshot.SubmittedDate.Value
-                        })
+                        .Project(GetQaVacancySummaryProjection())
                         .ToListAsync(),
                     new Context(nameof(SearchAsync)))
                 .ConfigureAwait(false);
 
             return result;
+        }
+
+        private ProjectionDefinition<VacancyReview, QaVacancySummary> GetQaVacancySummaryProjection()
+        {
+            return Builders<VacancyReview>.Projection.Expression(r =>
+                new QaVacancySummary()
+                {
+                    Id = r.Id,
+                    Title = r.Title,
+                    VacancyReference = r.VacancyReference,
+                    ReviewAssignedToUserName = r.ReviewedByUser.Name,
+                    ReviewAssignedToUserId = r.ReviewedByUser.UserId,
+                    ReviewStartedOn = r.ReviewedDate,
+                    EmployerName = r.VacancySnapshot != null ? r.VacancySnapshot.EmployerName : null,
+                    ClosingDate = r.VacancySnapshot != null ? r.VacancySnapshot.ClosingDate.GetValueOrDefault() : DateTime.MinValue,
+                    SubmittedDate = r.VacancySnapshot != null ? r.VacancySnapshot.SubmittedDate.GetValueOrDefault() : DateTime.MinValue
+                });
+
         }
 
         public Task CreateAsync(VacancyReview vacancy)
