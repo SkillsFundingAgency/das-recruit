@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
-using Esfa.Recruit.Vacancies.Client.Application.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Services.NextVacancyReview;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
@@ -159,5 +159,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         {
             return _reviewRepository.GetApprovedFirstTimeCountAsync(submittedByUserId);
         }
+
+        public bool UserIsAssignedToVacancyReview(VacancyReview review, string userId) => _nextVacancyReviewService.UserIsAssignedToVacancyReview(review, userId);
     }
 }
