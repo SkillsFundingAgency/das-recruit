@@ -145,5 +145,21 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 
             return (int)count;
         }
+
+        public async Task<List<VacancyReview>> GetAssignedForUserAsync(string userId, DateTime assignationExpiryDateTime)
+        {
+            var filterBuilder = Builders<VacancyReview>.Filter;
+
+            var filter = filterBuilder.Eq(r => r.Status, ReviewStatus.UnderReview)
+                         & filterBuilder.Eq(r => r.ReviewedByUser.UserId, userId)
+                         & filterBuilder.Gt(r => r.ReviewedDate, assignationExpiryDateTime);
+
+            var collection = GetCollection<VacancyReview>();
+            var result = await RetryPolicy.ExecuteAsync(context => collection
+                .Find(filter)
+                .ToListAsync(), new Context(nameof(GetAssignedForUserAsync)));
+
+            return result.OrderByDescending(x => x.ReviewedDate).ToList();
+        }
     }
 }

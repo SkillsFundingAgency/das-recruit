@@ -24,7 +24,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly IVacancyRepository _vacancyRepository;
         private readonly IApprenticeshipProgrammeProvider _apprenticeshipProgrammesProvider;
         private readonly IMessaging _messaging;
-        private readonly INextVacancyReviewService _nextVacancyReviewService;
+        private readonly INextVacancyReviewService _nextVacacnyReviewService;
 
         public QaVacancyClient(
                     IQueryStoreReader queryStoreReader,
@@ -33,7 +33,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                     IVacancyRepository vacancyRepository, 
                     IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider,
                     IMessaging messaging,
-                    INextVacancyReviewService nextVacancyReviewService)
+                    INextVacancyReviewService nextVacacnyReviewService)
         {
             _queryStoreReader = queryStoreReader;
             _referenceDataReader = referenceDataReader;
@@ -41,7 +41,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _vacancyRepository = vacancyRepository;
             _apprenticeshipProgrammesProvider = apprenticeshipProgrammesProvider;
             _messaging = messaging;
-            _nextVacancyReviewService = nextVacancyReviewService;
+            _nextVacacnyReviewService = nextVacacnyReviewService;
         }
 
         public Task ApproveReferredReviewAsync(Guid reviewId, string shortDescription, string vacancyDescription, string trainingDescription, string outcomeDescription, string thingsToConsider, string employerDescription)
@@ -129,25 +129,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             });
         }
 
-        public Task StartReviewAsync(Guid reviewId, VacancyUser user)
+        public Task AssignNextVacancyReviewAsync(VacancyUser user)
         {
-            return _messaging.SendCommandAsync(new StartVacancyReviewCommand
+            return _messaging.SendCommandAsync(new AssignNextVacancyReviewCommand
             {
-                ReviewId = reviewId,
                 User = user
             });
-        }
-
-        public async Task<VacancyReview> AssignNextVacancyReviewAsync(VacancyUser user)
-        {
-            var nextVacancyReview = await _nextVacancyReviewService.GetNextVacancyReviewAsync(user.UserId);
-
-            if (nextVacancyReview == null)
-                return null;
-
-            await StartReviewAsync(nextVacancyReview.Id, user);
-
-            return nextVacancyReview;
         }
 
         public Task<int> GetApprovedCountAsync(string submittedByUserId)
@@ -159,7 +146,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         {
             return _reviewRepository.GetApprovedFirstTimeCountAsync(submittedByUserId);
         }
-
-        public bool UserIsAssignedToVacancyReview(VacancyReview review, string userId) => _nextVacancyReviewService.UserIsAssignedToVacancyReview(review, userId);
+        
+        public Task<List<VacancyReview>> GetAssignedVacancyReviewsForUserAsync(string userId)
+        {            
+            return _reviewRepository.GetAssignedForUserAsync(userId, _nextVacacnyReviewService.GetExpiredAssignationDateTime());
+        }
     }
 }

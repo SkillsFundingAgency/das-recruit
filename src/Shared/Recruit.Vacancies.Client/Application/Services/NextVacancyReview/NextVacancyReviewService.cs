@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
@@ -7,13 +8,13 @@ using Microsoft.Extensions.Options;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Services.NextVacancyReview
 {
-    public class NextVacancyReviewServices : INextVacancyReviewService
+    public class NextVacancyReviewService : INextVacancyReviewService
     {
         private readonly ITimeProvider _timeProvider;
         private readonly IVacancyReviewRepository _vacancyReviewRepository;
         private readonly NextVacancyReviewServiceConfiguration _config;
 
-        public NextVacancyReviewServices(IOptions<NextVacancyReviewServiceConfiguration> config, ITimeProvider timeProvider, IVacancyReviewRepository vacancyReviewRepository)
+        public NextVacancyReviewService(IOptions<NextVacancyReviewServiceConfiguration> config, ITimeProvider timeProvider, IVacancyReviewRepository vacancyReviewRepository)
         {
             _timeProvider = timeProvider;   
             _vacancyReviewRepository = vacancyReviewRepository;
@@ -54,10 +55,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services.NextVacancyReview
             return nextVacancyReview;
         }
 
-        public bool UserIsAssignedToVacancyReview(VacancyReview review, string userId)
+        public DateTime GetExpiredAssignationDateTime()
         {
-            var assignationExpiry = review.ReviewedDate?.AddMinutes(_config.VacancyReviewAssignationTimeoutMinutes);
-            return (review.ReviewedByUser?.UserId != userId || assignationExpiry < _timeProvider.Now);
+            return _timeProvider.Now.AddMinutes(_config.VacancyReviewAssignationTimeoutMinutes * -1);
         }
     }
 }

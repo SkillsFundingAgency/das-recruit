@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Qa.Web.Exceptions;
 using Esfa.Recruit.Qa.Web.Mappings;
@@ -27,13 +28,13 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
         public async Task<Guid?> ApproveReviewAsync(ReviewEditModel m, VacancyUser user)
         {
             var review = await _vacancyClient.GetVacancyReviewAsync(m.ReviewId);
-            EnsureUserIsAssigned(review, user.UserId);
+            await EnsureUserIsAssignedAsync(review, user.UserId);
 
             await _vacancyClient.ApproveVacancyReviewAsync(m.ReviewId, m.ReviewerComment);
 
-            var nextVacancyReview = await _vacancyClient.AssignNextVacancyReviewAsync(user);
+            var nextVacancyReviewId = await AssignNextVacancyReviewAsync(user);
 
-            return nextVacancyReview?.Id;
+            return nextVacancyReviewId;
         }
 
         public async Task ApproveReferredReviewAsync(Guid reviewId, ReferralViewModel reviewChanges)
@@ -53,7 +54,7 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             var review = await _vacancyClient.GetVacancyReviewAsync(reviewId);
 
             ValidateReviewStateForViewing(review);
-            EnsureUserIsAssigned(review, user.UserId);
+            await EnsureUserIsAssignedAsync(review, user.UserId);
 
             var vm = await _mapper.MapFromVacancy(review.VacancySnapshot);
 
@@ -96,7 +97,7 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             var review = await _vacancyClient.GetVacancyReviewAsync(reviewId);
 
             ValidateReviewStateForReferral(review);
-            EnsureUserIsAssigned(review, user.UserId);
+            await EnsureUserIsAssignedAsync(review, user.UserId);
 
             if (review.ManualOutcome != ManualQaOutcome.Referred)
             {
@@ -133,10 +134,21 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
                 throw new NotFoundException($"Vacancy snapshot is null for review with id: {review.Id}");
         }
 
-        private void EnsureUserIsAssigned(VacancyReview review, string userId)
+        private async Task EnsureUserIsAssignedAsync(VacancyReview review, string userId)
         {
-            if (_vacancyClient.UserIsAssignedToVacancyReview(review, userId))
+            var userReviews = await _vacancyClient.GetAssignedVacancyReviewsForUserAsync(userId);
+
+            if(userReviews.Any(r => r.Id == review.Id) == false)
                 throw new UnassignedVacancyReviewException($"You have been unassigned from {review.VacancyReference}");
+        }
+
+        public async Task<Guid?> AssignNextVacancyReviewAsync(VacancyUser user)
+        {
+            await _vacancyClient.AssignNextVacancyReviewAsync(user);
+
+            var userVacancyReviews = await _vacancyClient.GetAssignedVacancyReviewsForUserAsync(user.UserId);
+
+            return userVacancyReviews.FirstOrDefault()?.Id;
         }
     }
 }

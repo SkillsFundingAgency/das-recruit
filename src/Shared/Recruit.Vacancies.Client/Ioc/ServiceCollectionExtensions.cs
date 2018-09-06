@@ -82,7 +82,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient<ISlaService, SlaService>();
             services.AddTransient<INotifyVacancyReviewUpdates, SlackNotifyVacancyReviewUpdates>();
             services.AddTransient<IVacancyService, VacancyService>();
-            services.AddTransient<INextVacancyReviewService, NextVacancyReviewServices>();
+            services.AddTransient<INextVacancyReviewService, NextVacancyReviewService>();
 
             // Infrastructure Services
             services.AddTransient<IEmployerAccountService, EmployerAccountService>();
