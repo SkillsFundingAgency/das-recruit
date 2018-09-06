@@ -22,6 +22,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Slack;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
+using Esfa.Recruit.Vacancies.Client.Application.Services.NextVacancyReview;
 using Esfa.Recruit.Vacancies.Client.Application.Services.ReferenceData;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Qualifications;
@@ -71,6 +72,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.Configure<BankHolidayConfiguration>(configuration.GetSection("BankHoliday"));
             services.Configure<FaaConfiguration>(configuration.GetSection("FaaConfiguration"));
             services.Configure<SlackConfiguration>(configuration.GetSection("Slack"));
+            services.Configure<NextVacancyReviewServiceConfiguration>(o => o.VacancyReviewAssignationTimeoutMinutes = configuration.GetValue<int>("VacancyReviewAssignationTimeoutMinutes"));
 
             // Domain services
             services.AddTransient<ITimeProvider, CurrentUtcTimeProvider>();

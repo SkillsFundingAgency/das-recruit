@@ -3,23 +3,26 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Domain.Services;
+using Microsoft.Extensions.Options;
 
-namespace Esfa.Recruit.Vacancies.Client.Application.Services
+namespace Esfa.Recruit.Vacancies.Client.Application.Services.NextVacancyReview
 {
     public class NextVacancyReviewServices : INextVacancyReviewService
     {
         private readonly ITimeProvider _timeProvider;
         private readonly IVacancyReviewRepository _vacancyReviewRepository;
+        private readonly NextVacancyReviewServiceConfiguration _config;
 
-        public NextVacancyReviewServices(ITimeProvider timeProvider, IVacancyReviewRepository vacancyReviewRepository)
+        public NextVacancyReviewServices(IOptions<NextVacancyReviewServiceConfiguration> config, ITimeProvider timeProvider, IVacancyReviewRepository vacancyReviewRepository)
         {
             _timeProvider = timeProvider;   
             _vacancyReviewRepository = vacancyReviewRepository;
+            _config = config.Value;
         }
 
         public async Task<VacancyReview> GetNextVacancyReviewAsync(string userId)
         {
-            var assignationExpiryTime = _timeProvider.Now.AddHours(VacancyReview.AssignationTimeoutHours * -1);
+            var assignationExpiryTime = _timeProvider.Now.AddMinutes(_config.VacancyReviewAssignationTimeoutMinutes * -1);
 
             var assignedReviews = await _vacancyReviewRepository.GetByStatusAsync(ReviewStatus.UnderReview);
 
@@ -49,6 +52,12 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
                 .FirstOrDefault();
 
             return nextVacancyReview;
+        }
+
+        public bool UserIsAssignedToVacancyReview(VacancyReview review, string userId)
+        {
+            var assignationExpiry = review.ReviewedDate?.AddMinutes(_config.VacancyReviewAssignationTimeoutMinutes);
+            return (review.ReviewedByUser?.UserId != userId || assignationExpiry < _timeProvider.Now);
         }
     }
 }

@@ -135,7 +135,7 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
 
         private void EnsureUserIsAssigned(VacancyReview review, string userId)
         {
-            if (review.ReviewedByUser?.UserId != userId || review.AssignationExpiry < _timeProvider.Now)
+            if (_vacancyClient.UserIsAssignedToVacancyReview(review, userId))
                 throw new UnassignedVacancyReviewException($"You have been unassigned from {review.VacancyReference}");
         }
     }

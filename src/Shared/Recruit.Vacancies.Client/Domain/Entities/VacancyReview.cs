@@ -5,8 +5,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
 {
     public class VacancyReview
     {
-        public const int AssignationTimeoutHours = 3;
-
         public Guid Id { get; set; }
         public long VacancyReference { get; set; }
         public string Title { get; set; }
@@ -62,7 +60,5 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         /// We can only assign the review when it is pending or underreview.
         /// </summary>
         public bool CanAssign => Status == ReviewStatus.PendingReview || Status == ReviewStatus.UnderReview;
-
-        public DateTime? AssignationExpiry => ReviewedDate?.AddHours(AssignationTimeoutHours);
     }
 }
