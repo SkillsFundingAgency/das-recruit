@@ -17,7 +17,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Wage
         [TypeOfDecimal(2, ErrorMessage = ErrMsg.TypeOfDecimal.WeeklyHours)]
         public string WeeklyHours { get; set; }
 
-        public WageType WageType { get; set; }
+        public WageType? WageType { get; set; }
 
         [TypeOfMoney(ErrorMessage = ErrMsg.TypeOfMoney.FixedWageYearlyAmount)]
         public string FixedWageYearlyAmount { get; set; }

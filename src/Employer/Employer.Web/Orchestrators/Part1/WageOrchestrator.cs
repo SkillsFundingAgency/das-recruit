@@ -31,7 +31,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 DurationUnit = vacancy.Wage?.DurationUnit ?? DurationUnit.Year,
                 WorkingWeekDescription = vacancy.Wage?.WorkingWeekDescription,
                 WeeklyHours = $"{vacancy.Wage?.WeeklyHours:0.##}",
-                WageType = vacancy.Wage?.WageType ?? WageType.FixedWage,
+                WageType = vacancy.Wage?.WageType,
                 FixedWageYearlyAmount = vacancy.Wage?.FixedWageYearlyAmount?.AsMoney(),
                 WageAdditionalInformation = vacancy.Wage?.WageAdditionalInformation,
                 PageInfo = Utility.GetPartOnePageInfo(vacancy)
