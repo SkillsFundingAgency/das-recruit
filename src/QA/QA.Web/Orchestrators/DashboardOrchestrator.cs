@@ -64,9 +64,11 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
 
         public async Task<Guid?> AssignNextVacancyReviewAsync(VacancyUser user)
         {
-            var nextVacancyReview = await _vacancyClient.AssignNextVacancyReviewAsync(user);
+            await _vacancyClient.AssignNextVacancyReviewAsync(user);
 
-            return nextVacancyReview?.Id;
+            var userVacancyReviews = await _vacancyClient.GetAssignedVacancyReviewsForUserAsync(user.UserId);
+
+            return userVacancyReviews.FirstOrDefault()?.Id;
         }
 
         private static DashboardViewModel MapToViewModel(QaDashboard dashboard)

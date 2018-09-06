@@ -55,10 +55,5 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         /// We can only refer when the review is in progress.
         /// </summary>
         public bool CanRefer => Status == ReviewStatus.UnderReview;
-
-        /// <summary>
-        /// We can only assign the review when it is pending or underreview.
-        /// </summary>
-        public bool CanAssign => Status == ReviewStatus.PendingReview || Status == ReviewStatus.UnderReview;
     }
 }

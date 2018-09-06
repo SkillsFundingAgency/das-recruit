@@ -11,7 +11,7 @@ using Xunit;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.Services
 {
-    public class NextVacancyReviewProviderTests
+    public class NextVacancyReviewServiceTests
     {
         [Theory]
         [InlineData("2018-08-20T17:00:00Z", "user A", "92a9b68b-4555-425d-92a1-5d8ea625cf5b")]
@@ -46,7 +46,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.S
                 VacancyReviewAssignationTimeoutMinutes = 180
             });
             
-            var sut = new NextVacancyReviewServices(config, timeProvider.Object, vacancyReviewRepository.Object);
+            var sut = new NextVacancyReviewService(config, timeProvider.Object, vacancyReviewRepository.Object);
 
             var nextVacancyReview = sut.GetNextVacancyReviewAsync(userId).Result;
 
