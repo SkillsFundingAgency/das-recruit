@@ -157,3 +157,11 @@ $('button, input[type="submit"], a.button').on("click", function() {
 $('a').on("click", function() {
     $('form').areYouSure( {'silent':true} );
 });
+
+/* Validation accessibility fix */
+$(window).load(function() {
+    // If there is an error summary, set focus to the summary
+    if ($('.error-summary').length) {
+      $('.error-summary').focus();
+    } 
+});
