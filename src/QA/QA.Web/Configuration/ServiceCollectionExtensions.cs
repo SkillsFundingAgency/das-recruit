@@ -49,7 +49,7 @@ namespace Esfa.Recruit.Qa.Web.Configuration
         {
             services.AddAuthorization(options =>
             {
-                options.AddPolicy(AuthorizationPolicyNames.DoesUserBelongToGroupPolicyName, policy =>
+                options.AddPolicy(AuthorizationPolicyNames.QaUserPolicyName, policy =>
                 {
                     policy.RequireAuthenticatedUser();
                     policy.RequireAssertion(context => 
@@ -59,7 +59,7 @@ namespace Esfa.Recruit.Qa.Web.Configuration
                         || context.User.HasClaim(authorizationConfig.ClaimType, authorizationConfig.TeamLeadClaimValue)
                     );
                 });
-                options.AddPolicy(AuthorizationPolicyNames.IsUserATeamLeadPolicyName, policy =>
+                options.AddPolicy(AuthorizationPolicyNames.TeamLeadUserPolicyName, policy =>
                 {
                     policy.RequireAuthenticatedUser();
                     policy.RequireAssertion(context => 
@@ -86,7 +86,7 @@ namespace Esfa.Recruit.Qa.Web.Configuration
                 options.SslPort = 5025;
                 options.Filters.Add(new RequireHttpsAttribute());
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
-                options.Filters.Add(new AuthorizeFilter(AuthorizationPolicyNames.DoesUserBelongToGroupPolicyName));
+                options.Filters.Add(new AuthorizeFilter(AuthorizationPolicyNames.QaUserPolicyName));
                 options.AddTrimModelBinderProvider();
 
                 var jsonInputFormatters = options.InputFormatters.OfType<JsonInputFormatter>();
