@@ -2,7 +2,7 @@ namespace Esfa.Recruit.Qa.Web.Security
 {
     internal class AuthorizationPolicyNames
     {
-        internal const string DoesUserBelongToGroupPolicyName = "DoesUserBelongToGroup";
-        internal const string IsUserATeamLeadPolicyName = "TeamLeadPolicy";
+        internal const string QaUserPolicyName = "QaUserPolicyName";
+        internal const string TeamLeadUserPolicyName = "TeamLeadUserPolicyName";
     }
 }
