@@ -24,7 +24,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly IVacancyRepository _vacancyRepository;
         private readonly IApprenticeshipProgrammeProvider _apprenticeshipProgrammesProvider;
         private readonly IMessaging _messaging;
-        private readonly INextVacancyReviewService _nextVacacnyReviewService;
+        private readonly INextVacancyReviewService _nextVacancyReviewService;
 
         public QaVacancyClient(
                     IQueryStoreReader queryStoreReader,
@@ -33,7 +33,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                     IVacancyRepository vacancyRepository, 
                     IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider,
                     IMessaging messaging,
-                    INextVacancyReviewService nextVacacnyReviewService)
+                    INextVacancyReviewService nextVacancyReviewService)
         {
             _queryStoreReader = queryStoreReader;
             _referenceDataReader = referenceDataReader;
@@ -41,7 +41,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _vacancyRepository = vacancyRepository;
             _apprenticeshipProgrammesProvider = apprenticeshipProgrammesProvider;
             _messaging = messaging;
-            _nextVacacnyReviewService = nextVacacnyReviewService;
+            _nextVacancyReviewService = nextVacancyReviewService;
         }
 
         public Task ApproveReferredReviewAsync(Guid reviewId, string shortDescription, string vacancyDescription, string trainingDescription, string outcomeDescription, string thingsToConsider, string employerDescription)
@@ -149,7 +149,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         
         public Task<List<VacancyReview>> GetAssignedVacancyReviewsForUserAsync(string userId)
         {            
-            return _reviewRepository.GetAssignedForUserAsync(userId, _nextVacacnyReviewService.GetExpiredAssignationDateTime());
+            return _reviewRepository.GetAssignedForUserAsync(userId, _nextVacancyReviewService.GetExpiredAssignationDateTime());
         }
     }
 }
