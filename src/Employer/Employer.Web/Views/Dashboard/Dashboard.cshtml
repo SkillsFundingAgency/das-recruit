@@ -50,9 +50,9 @@
             </div>
             <div class="column-one-quarter">
                 <div class="data lottery-ticket">
-                    <esfa-dashboard-badge asp-route="@RouteNames.Dashboard_Index_Get" asp-route-statusFilter="@VacancyStatus.UnderReview.ToString()" asp-for="Filter" class="prototype-link">
-                        <h2 class="bold-xlarge">@Model.NoOfEditsRequiredVacancies</h2>
-                        <p class="bold-xsmall">@VacancyStatus.UnderReview.GetDisplayName()</p>
+                    <esfa-dashboard-badge asp-route="@RouteNames.Dashboard_Index_Get" asp-route-statusFilter="@VacancyStatus.Referred.ToString()" asp-for="Filter" class="prototype-link">
+                        <h2 class="bold-xlarge">@Model.NoOfReferredVacancies</h2>
+                        <p class="bold-xsmall">@VacancyStatus.Referred.GetDisplayName()</p>
                     </esfa-dashboard-badge>
                 </div>
             </div>
