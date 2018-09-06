@@ -16,7 +16,7 @@ namespace Esfa.Recruit.Qa.Web.Security
         public async Task<bool> IsTeamLeadAsync(ClaimsPrincipal user)
         {
             var authResult =
-                await _authorizationService.AuthorizeAsync(user, AuthorizationPolicyNames.IsUserATeamLeadPolicyName);
+                await _authorizationService.AuthorizeAsync(user, AuthorizationPolicyNames.TeamLeadUserPolicyName);
 
             return authResult.Succeeded;
         }
