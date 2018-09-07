@@ -131,9 +131,18 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public Task AssignNextVacancyReviewAsync(VacancyUser user)
         {
-            return _messaging.SendCommandAsync(new AssignNextVacancyReviewCommand
+            return _messaging.SendCommandAsync(new AssignVacancyReviewCommand
             {
                 User = user
+            });
+        }
+
+        public Task AssignVacancyReviewAsync(VacancyUser user, Guid reviewId)
+        {
+            return _messaging.SendCommandAsync(new AssignVacancyReviewCommand
+            {
+                User = user,
+                ReviewId = reviewId
             });
         }
 
@@ -150,6 +159,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         public Task<List<VacancyReview>> GetAssignedVacancyReviewsForUserAsync(string userId)
         {            
             return _reviewRepository.GetAssignedForUserAsync(userId, _nextVacancyReviewService.GetExpiredAssignationDateTime());
+        }
+
+        public bool VacancyReviewCanBeAssigned(VacancyReview review)
+        {
+            return _nextVacancyReviewService.VacancyReviewCanBeAssigned(review);
         }
     }
 }
