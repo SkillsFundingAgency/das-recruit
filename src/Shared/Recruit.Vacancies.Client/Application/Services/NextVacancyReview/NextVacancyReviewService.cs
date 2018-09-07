@@ -60,12 +60,12 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services.NextVacancyReview
             return _timeProvider.Now.AddMinutes(_config.VacancyReviewAssignationTimeoutMinutes * -1);
         }
 
-        public bool VacancyReviewCanBeAssigned(VacancyReview review)
+        public bool VacancyReviewCanBeAssigned(ReviewStatus reviewStatus, DateTime? reviewedDate)
         {
-            if (review.Status == ReviewStatus.PendingReview)
+            if (reviewStatus == ReviewStatus.PendingReview)
                 return true;
 
-            return review.ReviewedDate < GetExpiredAssignationDateTime();
+            return reviewedDate < GetExpiredAssignationDateTime();
         }
     }
 }

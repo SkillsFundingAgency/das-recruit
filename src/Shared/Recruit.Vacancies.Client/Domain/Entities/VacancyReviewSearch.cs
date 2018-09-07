@@ -23,5 +23,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public string ReviewAssignedToUserName { get; set; }
 
         public string ReviewAssignedToUserId { get; set; }
+        public ReviewStatus Status { get; set; }
     }
 }

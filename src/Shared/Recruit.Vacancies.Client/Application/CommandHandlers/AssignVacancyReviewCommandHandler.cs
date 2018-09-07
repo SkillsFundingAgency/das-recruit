@@ -61,7 +61,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         {
             var review = await _vacancyReviewRepository.GetAsync(reviewId);
 
-            if (_nextVacancyReviewService.VacancyReviewCanBeAssigned(review))
+            if (_nextVacancyReviewService.VacancyReviewCanBeAssigned(review.Status, review.ReviewedDate))
                 return review;
 
             _logger.LogWarning($"Unable to assign review {{reviewId}} for vacancy {{vacancyReference}} due to review having a status of {review.Status}.", review.Id, review.VacancyReference);
