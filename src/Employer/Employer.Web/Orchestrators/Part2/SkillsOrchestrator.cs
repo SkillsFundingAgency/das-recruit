@@ -234,12 +234,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                 {
                     baseSkillList.Add(m.AddCustomSkillName);
                 }
-                else
+                else if (!CandidateSkills.Skills.Contains(m.AddCustomSkillName) && !customSkillList.Contains(m.AddCustomSkillName))
                 {
-                    if (!customSkillList.Contains(m.AddCustomSkillName))
-                    {
-                        customSkillList.Add(m.AddCustomSkillName);
-                    }
+                    customSkillList.Add(m.AddCustomSkillName);
                 }
             }
 
