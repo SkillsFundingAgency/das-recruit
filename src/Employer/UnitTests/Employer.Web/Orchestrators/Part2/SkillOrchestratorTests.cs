@@ -146,22 +146,6 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
         }
 
         [Fact]
-        public async Task WhenCustomDraftSkillsHaveBeenAdded_ShouldBeOrderedByTheirPrefix()
-        {
-            _testVacancy.Skills = new List<string>(); // No selected skills already persisted
-
-            var draftSkills = new [] { "2-Draft2", "3-Draft3", "1-Draft1" };
-
-            _mockClient.Setup(x => x.GetVacancyAsync(It.IsAny<Guid>())).ReturnsAsync(_testVacancy);
-
-            var result = await _orchestrator.GetSkillsViewModelAsync(_testRouteModel, draftSkills);
-
-            result.Column2Checkboxes.FindIndex(x => x.Name == "Draft1").Should().Be(8); // 9th item in list
-            result.Column1Checkboxes.FindIndex(x => x.Name == "Draft2").Should().Be(9); // 10th item in list
-            result.Column2Checkboxes.FindIndex(x => x.Name == "Draft3").Should().Be(9); // 10th item in list
-        }
-
-        [Fact]
         public async Task WhenCustomDraftSkillsAdded_ShouldIncludeIndicatorOfItsOrder()
         {
             _testVacancy.Skills = new List<string>(); // No selected skills already persisted
@@ -175,6 +159,22 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
             result.Column2Checkboxes.Single(x => x.Name == "Draft1").Value.Should().Be("1-Draft1"); 
             result.Column1Checkboxes.Single(x => x.Name == "Draft2").Value.Should().Be("2-Draft2");
             result.Column2Checkboxes.Single(x => x.Name == "Draft3").Value.Should().Be("3-Draft3");
+        }
+        
+        [Fact]
+        public async Task WhenCustomDraftSkillsHaveBeenAdded_ShouldBeOrderedByTheirPrefix()
+        {
+            _testVacancy.Skills = new List<string>(); // No selected skills already persisted
+
+            var draftSkills = new [] { "2-Draft2", "3-Draft3", "1-Draft1" };
+
+            _mockClient.Setup(x => x.GetVacancyAsync(It.IsAny<Guid>())).ReturnsAsync(_testVacancy);
+
+            var result = await _orchestrator.GetSkillsViewModelAsync(_testRouteModel, draftSkills);
+
+            result.Column2Checkboxes.FindIndex(x => x.Name == "Draft1").Should().Be(8); // 9th item in list
+            result.Column1Checkboxes.FindIndex(x => x.Name == "Draft2").Should().Be(9); // 10th item in list
+            result.Column2Checkboxes.FindIndex(x => x.Name == "Draft3").Should().Be(9); // 10th item in list
         }
 
         private static Vacancy GetTestVacancy()

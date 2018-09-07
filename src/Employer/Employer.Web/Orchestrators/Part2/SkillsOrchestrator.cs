@@ -72,7 +72,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             SetViewModelSkills(vm, baseSkills, orderedCustomSkills);
         }
 
-        private void SetViewModelSkillsFromDraftSkills(SkillsViewModel vm, IEnumerable<string> draftSkills)
+        private void SetViewModelSkillsFromDraftSkills(SkillsViewModel vm, IList<string> draftSkills)
         {
             var orderedCustomSkills = ExtractAndSort(GetCustomSkills(draftSkills).ToArray());
             var baseSkills = GetBaseSkills(draftSkills).ToArray();
@@ -80,7 +80,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             SetViewModelSkills(vm, baseSkills, orderedCustomSkills);
         }
 
-        private void SetViewModelSkills(SkillsViewModel vm, IEnumerable<string> baseSkills, IEnumerable<string> orderedCustomSkills)
+        private void SetViewModelSkills(SkillsViewModel vm, IList<string> baseSkills, IEnumerable<string> orderedCustomSkills)
         {
             var col1Skills = GetSkillsColumnViewModel(Column1BuiltInSkills, baseSkills);
             var col2Skills = GetSkillsColumnViewModel(Column2BuiltInSkills, baseSkills);
@@ -134,8 +134,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
             HandleCustomSkillChange(m, baseSkills, sortedCustomSkills);
 
-            sortedCustomSkills = sortedCustomSkills.ToList();
-            
             vacancy.Skills = baseSkills.Union(sortedCustomSkills).ToList();
 
             // Adding in the ordering of the custom skill entries
@@ -215,6 +213,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             var invalidSkill = vacancy.Skills[skillIndex];
             m.AddCustomSkillName = invalidSkill;
             
+            // Remove from vacancy and view model lists
             m.Skills.RemoveAt(skillIndex);
             vacancy.Skills.RemoveAt(skillIndex);
 
