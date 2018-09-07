@@ -18,13 +18,13 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.Skills;
         private const int ColumnOneCutOffIndex = 9;
-
+        private const char SortPrefixSeparator = '-';
         private readonly IEmployerVacancyClient _client;
         private readonly Lazy<CandidateSkills> _lazyCandidateSkills;
 
         private CandidateSkills CandidateSkills => _lazyCandidateSkills.Value;
-        private IEnumerable<string> Column1Skills => CandidateSkills.Skills.Take(ColumnOneCutOffIndex);
-        private IEnumerable<string> Column2Skills => CandidateSkills.Skills.Skip(ColumnOneCutOffIndex);
+        private IEnumerable<string> Column1BuiltInSkills => CandidateSkills.Skills.Take(ColumnOneCutOffIndex);
+        private IEnumerable<string> Column2BuiltInSkills => CandidateSkills.Skills.Skip(ColumnOneCutOffIndex);
 
         public SkillsOrchestrator(IEmployerVacancyClient client, ILogger<SkillsOrchestrator> logger) : base(logger)
         {
@@ -32,16 +32,23 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             _lazyCandidateSkills = new Lazy<CandidateSkills>(() => _client.GetCandidateSkillsAsync().Result);
         }
         
-        public async Task<SkillsViewModel> GetSkillsViewModelAsync(VacancyRouteModel vrm)
+        public async Task<SkillsViewModel> GetSkillsViewModelAsync(VacancyRouteModel vrm, string[] draftSkills = null)
         {
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, vrm, RouteNames.Skills_Get);
-            
+
             var vm = new SkillsViewModel
             {
                 Title = vacancy.Title
             };
 
-            SetViewModelSkills(vm, vacancy.Skills);
+            if (draftSkills == null)
+            {
+                SetViewModelSkillsFromVacancy(vm, vacancy);
+            }
+            else
+            {
+                SetViewModelSkillsFromDraftSkills(vm, draftSkills);
+            }
             
             return vm;
         }
@@ -50,18 +57,66 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         {
             var vm = await GetSkillsViewModelAsync((VacancyRouteModel)m);
 
-            SetViewModelSkills(vm, m.Skills);
+            SetViewModelSkillsFromDraftSkills(vm, m.Skills);
 
             vm.AddCustomSkillName = m.AddCustomSkillName;
             
             return vm;
         }
 
-        public void SetViewModelSkills(SkillsViewModel vm, IList<string> selectedSkills)
+        private void SetViewModelSkillsFromVacancy(SkillsViewModel vm, Vacancy vacancy)
         {
-            vm.Column1Checkboxes = GetSkillsColumnViewModel(Column1Skills, selectedSkills).ToList();
-            vm.Column2Checkboxes = GetSkillsColumnViewModel(Column2Skills, selectedSkills).ToList();
-            vm.CustomSkills = GetCustomSkills(selectedSkills).ToList();
+            var orderedCustomSkills = GetCustomSkills(vacancy.Skills).ToArray();
+            var baseSkills = GetBaseSkills(vacancy.Skills).ToArray();
+
+            SetViewModelSkills(vm, baseSkills, orderedCustomSkills);
+        }
+
+        private void SetViewModelSkillsFromDraftSkills(SkillsViewModel vm, IList<string> draftSkills)
+        {
+            var orderedCustomSkills = ExtractAndSort(GetCustomSkills(draftSkills).ToArray());
+            var baseSkills = GetBaseSkills(draftSkills).ToArray();
+
+            SetViewModelSkills(vm, baseSkills, orderedCustomSkills);
+        }
+
+        private void SetViewModelSkills(SkillsViewModel vm, IList<string> baseSkills, IEnumerable<string> orderedCustomSkills)
+        {
+            var col1Skills = GetSkillsColumnViewModel(Column1BuiltInSkills, baseSkills);
+            var col2Skills = GetSkillsColumnViewModel(Column2BuiltInSkills, baseSkills);
+
+            var allCustomSkillViewModels = GetDraftSkillsColumnViewModel(orderedCustomSkills).ToList();
+            var col1CustomSkillViewModels = allCustomSkillViewModels.Where((_, index) => index % 2 == 1);
+            var col2CustomSkillViewModels = allCustomSkillViewModels.Where((_, index) => index % 2 == 0);
+
+            vm.Column1Checkboxes = col1Skills.Union(col1CustomSkillViewModels).ToList();
+            vm.Column2Checkboxes = col2Skills.Union(col2CustomSkillViewModels).ToList();
+        }
+
+    
+        //
+        // Custom skills have an order value pre-fixed to their name in order to retain their order.
+        // This method extracts the name part and orders the returned list by the pre-fix
+        //
+        private static IEnumerable<string> ExtractAndSort(string[] skills)
+        {
+            if (skills == null || skills.Length == 0)
+            {
+                return skills ?? new string[0];
+            }
+
+            var skillNames = new SortedList<int, string>();
+
+            foreach (var skillValue in skills)
+            {
+                var separatorIndex = skillValue.IndexOf(SortPrefixSeparator);
+                var skillIndex = int.Parse(skillValue.Substring(0, separatorIndex));
+                var skillName = skillValue.Substring(separatorIndex + 1);
+
+                skillNames.Add(skillIndex, skillName);
+            }
+
+            return skillNames.Select(x => x.Value);
         }
 
         public async Task<OrchestratorResponse> PostSkillsEditModelAsync(SkillsEditModel m, VacancyUser user)
@@ -73,10 +128,16 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                 m.Skills = new List<string>();
             }
 
-            HandleCustomSkillChange(m);
-            
-            vacancy.Skills = SortSkills(m.Skills).ToList();
-            m.Skills = vacancy.Skills;
+            var baseSkills = GetBaseSkills(m.Skills).ToList();
+            var customSkills = GetCustomSkills(m.Skills);
+            var sortedCustomSkills = ExtractAndSort(customSkills.ToArray()).ToList();
+
+            HandleCustomSkillChange(m, baseSkills, sortedCustomSkills);
+
+            vacancy.Skills = baseSkills.Union(sortedCustomSkills).ToList();
+
+            // Adding in the ordering of the custom skill entries
+            m.Skills = baseSkills.Union(AddOrdering(sortedCustomSkills)).ToList(); 
 
             //if we are adding/removing a skill then just validate and don't persist
             var validateOnly = m.IsAddingCustomSkill || m.IsRemovingCustomSkill;
@@ -85,12 +146,17 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                 v =>
                 {
                     var result = _client.Validate(v, ValidationRules);
-                    SyncErrorsAndModel(result.Errors, m);
+                    SyncErrorsAndModel(result.Errors, m, vacancy);
                     return result;
                 },
                 v => validateOnly ? Task.CompletedTask : _client.UpdateDraftVacancyAsync(v, user));
         }
-        
+
+        private IEnumerable<string> AddOrdering(List<string> extractedCustomSkills)
+        {
+            return extractedCustomSkills.Select((c, index) => $"{index + 1}-{c}");
+        }
+
         protected override EntityToViewModelPropertyMappings<Vacancy, SkillsEditModel> DefineMappings()
         {
             var mappings = new EntityToViewModelPropertyMappings<Vacancy, SkillsEditModel>
@@ -106,33 +172,34 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             return skills.Select(c => new SkillViewModel
             {
                 Name = c,
-                Selected = selectedSkills != null && selectedSkills.Any(s => s == c)
+                Selected = selectedSkills != null && selectedSkills.Any(s => s == c),
+                Value = c
+            });
+        }
+
+        private IEnumerable<SkillViewModel> GetDraftSkillsColumnViewModel(IEnumerable<string> draftSkills)
+        {
+            return draftSkills.Select((c, index) => new SkillViewModel
+            {
+                Name = c,
+                Selected = true, // Always selected
+                Value = $"{index + 1}-{c}"
             });
         }
         
         private IEnumerable<string> GetCustomSkills(IEnumerable<string> selected)
         {
-            if (selected == null)
-            {
-                return new List<string>();
-            }
-
-            return selected.Except(CandidateSkills.Skills);
+            return selected == null ? new List<string>() : selected.Except(CandidateSkills.Skills);
         }
 
-        private IEnumerable<string> SortSkills(IList<string> selected)
+        private IEnumerable<string> GetBaseSkills(IEnumerable<string> selected)
         {
-            var filteredSelectedSkills = selected.Distinct();
-
-            var orderedSkills = CandidateSkills.Skills
-                .Union(selected);
-
-            return orderedSkills.Where(filteredSelectedSkills.Contains);
+            return selected == null ? new List<string>() : selected.Intersect(CandidateSkills.Skills);
         }
 
-        private void SyncErrorsAndModel(IList<EntityValidationError> errors, SkillsEditModel m)
+        private void SyncErrorsAndModel(ICollection<EntityValidationError> errors, SkillsEditModel m, Vacancy vacancy)
         {
-            var skillsPropertyName = nameof(Vacancy.Skills);
+            const string skillsPropertyName = nameof(Vacancy.Skills);
 
             //Get the first invalid skill
             var skillError = errors.FirstOrDefault(e => e.PropertyName.StartsWith($"{skillsPropertyName}["));
@@ -142,9 +209,13 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             }
 
             //Populate AddCustomSkillName so we can edit the invalid skill
-            var invalidSkill = m.Skills[skillError.GetIndexPosition().Value];
+            var skillIndex = skillError.GetIndexPosition().Value;
+            var invalidSkill = vacancy.Skills[skillIndex];
             m.AddCustomSkillName = invalidSkill;
-            m.Skills.Remove(invalidSkill);
+            
+            // Remove from vacancy and view model lists
+            m.Skills.RemoveAt(skillIndex);
+            vacancy.Skills.RemoveAt(skillIndex);
 
             //Attach the error to AddCustomSkillName
             skillError.PropertyName = nameof(m.AddCustomSkillName);
@@ -154,16 +225,24 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                 .ForEach(r => errors.Remove(r));
         }
 
-        private void HandleCustomSkillChange(SkillsEditModel m)
+        private void HandleCustomSkillChange(SkillsEditModel m, IList<string> baseSkillList, IList<string> customSkillList)
         {
             if (m.IsAddingCustomSkill)
             {
-                m.Skills.Add(m.AddCustomSkillName);
+                // If the user has tried to add a custom skill that exists in the default skills list.
+                if (CandidateSkills.Skills.Contains(m.AddCustomSkillName) && !baseSkillList.Contains(m.AddCustomSkillName))
+                {
+                    baseSkillList.Add(m.AddCustomSkillName);
+                }
+                else if (!CandidateSkills.Skills.Contains(m.AddCustomSkillName) && !customSkillList.Contains(m.AddCustomSkillName))
+                {
+                    customSkillList.Add(m.AddCustomSkillName);
+                }
             }
 
             if (m.IsRemovingCustomSkill)
             {
-                m.Skills.Remove(m.RemoveCustomSkill);
+               customSkillList.Remove(m.RemoveCustomSkill);
             }
         }
     }
