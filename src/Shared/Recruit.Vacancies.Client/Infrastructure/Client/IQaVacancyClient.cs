@@ -21,6 +21,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<int> GetApprovedCountAsync(string submittedByUserId);
         Task<int> GetApprovedFirstTimeCountAsync(string submittedByUserId);
         Task AssignNextVacancyReviewAsync(VacancyUser user);
+        Task AssignVacancyReviewAsync(VacancyUser user, Guid reviewId);
         Task<List<VacancyReview>> GetAssignedVacancyReviewsForUserAsync(string userId);
+        bool VacancyReviewCanBeAssigned(VacancyReview review);
     }
 }

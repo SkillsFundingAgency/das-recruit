@@ -8,5 +8,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services.NextVacancyReview
     {
         Task<VacancyReview> GetNextVacancyReviewAsync(string userId);
         DateTime GetExpiredAssignationDateTime();
+        bool VacancyReviewCanBeAssigned(VacancyReview review);
     }
 }

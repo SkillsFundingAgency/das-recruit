@@ -54,6 +54,13 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             var review = await _vacancyClient.GetVacancyReviewAsync(reviewId);
 
             ValidateReviewStateForViewing(review);
+
+            if (_vacancyClient.VacancyReviewCanBeAssigned(review))
+            {
+                await _vacancyClient.AssignVacancyReviewAsync(user, review.Id);
+                review = await _vacancyClient.GetVacancyReviewAsync(reviewId);
+            }
+
             await EnsureUserIsAssignedAsync(review, user.UserId);
 
             var vm = await _mapper.MapFromVacancy(review.VacancySnapshot);
