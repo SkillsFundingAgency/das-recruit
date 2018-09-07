@@ -45,7 +45,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
                             ReviewStartedOn = r.ReviewedDate,
                             EmployerName = r.VacancySnapshot.EmployerName,
                             ClosingDate = r.VacancySnapshot.ClosingDate.Value,
-                            SubmittedDate = r.VacancySnapshot.SubmittedDate.Value
+                            SubmittedDate = r.VacancySnapshot.SubmittedDate.Value,
+                            Status = r.Status
                         })
                         .ToListAsync(),
                     new Context(nameof(SearchAsync)))

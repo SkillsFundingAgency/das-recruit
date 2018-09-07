@@ -46,8 +46,8 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
                 VacancyTitle = vacancyReviewSearch.Title,
                 ReviewId = vacancyReviewSearch.Id,
                 SubmittedDate = vacancyReviewSearch.SubmittedDate.ToLocalTime(),
-                IsAvailableForReview = string.IsNullOrEmpty(vacancyReviewSearch.ReviewAssignedToUserId) || vacancyReviewSearch.ReviewAssignedToUserId == vacancyUser.UserId,
-                IsNotAvailableForReview = !string.IsNullOrEmpty(vacancyReviewSearch.ReviewAssignedToUserId) && vacancyReviewSearch.ReviewAssignedToUserId != vacancyUser.UserId
+                IsAvailableForReview = vacancyReviewSearch.ReviewAssignedToUserId == vacancyUser.UserId ||
+                                       _vacancyClient.VacancyReviewCanBeAssigned(vacancyReviewSearch.Status, vacancyReviewSearch.ReviewStartedOn)
             };
         }
 

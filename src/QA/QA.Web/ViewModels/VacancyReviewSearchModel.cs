@@ -22,7 +22,7 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
 
         public bool IsAvailableForReview { get; set; }
 
-        public bool IsNotAvailableForReview { get; set; }
+        public bool IsNotAvailableForReview => !IsAvailableForReview;
 
         public string AssignmentInfo => 
             IsAvailableForReview 
