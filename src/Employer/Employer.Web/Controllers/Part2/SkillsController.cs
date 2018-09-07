@@ -23,6 +23,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
         [HttpGet("skills", Name = RouteNames.Skills_Get)]
         public async Task<IActionResult> Skills(VacancyRouteModel vrm)
         {
+            // If adding/removing skill, tempdata will have the current draft list.
             var vm = await _orchestrator.GetSkillsViewModelAsync(vrm, TempData[TempDataKeys.Skills] as string[]);
 
             return View(vm);
@@ -52,15 +53,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
             }
 
             return RedirectToRoute(RouteNames.Vacancy_Preview_Get, SkillsViewModel.PreviewSectionAnchor);
-        }
-        
-        private void TryUpdateSkillsFromTempData(SkillsViewModel vm)
-        {
-            if (TempData.ContainsKey(TempDataKeys.Skills))
-            {
-                var tempDataSkills = TempData[TempDataKeys.Skills] as string[] ?? new string[0];
-                _orchestrator.SetViewModelSkills(vm, tempDataSkills);
-            }
         }
     }
 }
