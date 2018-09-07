@@ -17,7 +17,6 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
     {
         private readonly IQaVacancyClient _vacancyClient;
         private readonly ReviewMapper _mapper;
-        private readonly ITimeProvider _timeProvider;
 
         private static readonly List<string> FieldIndicators = new List<string>
         {
@@ -44,11 +43,10 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             VacancyReview.FieldIdentifiers.WorkingWeek,
         };
 
-        public ReviewOrchestrator(IQaVacancyClient vacancyClient, ReviewMapper mapper, ITimeProvider timeProvider)
+        public ReviewOrchestrator(IQaVacancyClient vacancyClient, ReviewMapper mapper)
         {
             _vacancyClient = vacancyClient;
             _mapper = mapper;
-            _timeProvider = timeProvider;
         }
 
         public async Task<Guid?> SubmitReviewAsync(ReviewEditModel m, VacancyUser user)
@@ -59,7 +57,7 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             var manualQaFieldIndicators = FieldIndicators.Select(f => new ManualQaFieldIndicator
             {
                 FieldIdentifier = f,
-                IsChangeRequested = m.FieldIdentifers.Contains(f)
+                IsChangeRequested = m.SelectedFieldIdentifers.Contains(f)
             }).ToList();
 
             if (m.IsRefer)
@@ -111,7 +109,7 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
         {
             var vm = await GetReviewViewModelAsync(model.ReviewId, user);
 
-            vm.FieldIdentifers = model.FieldIdentifers;
+            vm.SelectedFieldIdentifers = model.SelectedFieldIdentifers;
 
             vm.ReviewerComment = model.ReviewerComment;
 
