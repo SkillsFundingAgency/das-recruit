@@ -23,10 +23,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
         [HttpGet("skills", Name = RouteNames.Skills_Get)]
         public async Task<IActionResult> Skills(VacancyRouteModel vrm)
         {
-            var vm = await _orchestrator.GetSkillsViewModelAsync(vrm);
+            var vm = await _orchestrator.GetSkillsViewModelAsync(vrm, TempData[TempDataKeys.Skills] as string[]);
 
-            TryUpdateSkillsFromTempData(vm);
-            
             return View(vm);
         }
 
