@@ -10,17 +10,22 @@
 </div>
 
 <div class="grid-row">
-<form asp-route="@RouteNames.Dashboard_Index_Get" method="get">
-    <div class="grid-row">
-        <input asp-for="SearchTerm" placeholder="Search vacancies" />
-        <button type="submit">Search</button>
-    </div>
-</form>
-<div class="grid-row">
     <div class="column-two-thirds">
         <form asp-route="@RouteNames.Dashboard_Next_Vacancy_Post">
             <button class="button small-top-margin" type="submit">Review First Vacancy</button>
-        </form>        
+        </form> 
+    </div>
+    <div class="column-one-third">
+        <form asp-route="@RouteNames.Dashboard_Index_Get" method="get">
+            <div class="search-field small-top-margin">
+                <fieldset class="search-input ">
+                    <input asp-for="SearchTerm" placeholder="Search vacancies" class="form-control" maxlength="200"/>
+                </fieldset>
+                <fieldset class="search-submit">
+                    <button class="button" type="submit">Search</button>
+                </fieldset>
+            </div>
+        </form>
     </div>
 </div>
 
