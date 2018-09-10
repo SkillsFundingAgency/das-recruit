@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
-namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.QA
 {
-    public class VacancyReviewSearch
+    public class QaVacancySummary
     {
         public Guid Id { get; set; }
 
