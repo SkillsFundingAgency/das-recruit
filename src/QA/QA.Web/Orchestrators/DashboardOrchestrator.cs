@@ -34,20 +34,20 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             return vm;
         }
 
-        private VacancyReviewSearchModel MapToViewModel(VacancyReviewSearch vacancyReviewSearch, VacancyUser vacancyUser)
+        private VacancyReviewSearchModel MapToViewModel(QaVacancySummary qaVacancySummary, VacancyUser vacancyUser)
         {
             return new VacancyReviewSearchModel()
             {
-                AssignedTo = vacancyReviewSearch.ReviewAssignedToUserName,
-                AssignedTimeElapsed = GetElapsedTime(vacancyReviewSearch.ReviewStartedOn),
-                ClosingDate = vacancyReviewSearch.ClosingDate.ToLocalTime(),
-                EmployerName = vacancyReviewSearch.EmployerName,
-                VacancyReference = $"VAC{vacancyReviewSearch.VacancyReference}",
-                VacancyTitle = vacancyReviewSearch.Title,
-                ReviewId = vacancyReviewSearch.Id,
-                SubmittedDate = vacancyReviewSearch.SubmittedDate.ToLocalTime(),
-                IsAvailableForReview = vacancyReviewSearch.ReviewAssignedToUserId == vacancyUser.UserId ||
-                                       _vacancyClient.VacancyReviewCanBeAssigned(vacancyReviewSearch.Status, vacancyReviewSearch.ReviewStartedOn)
+                AssignedTo = qaVacancySummary.ReviewAssignedToUserName,
+                AssignedTimeElapsed = GetElapsedTime(qaVacancySummary.ReviewStartedOn),
+                ClosingDate = qaVacancySummary.ClosingDate.ToLocalTime(),
+                EmployerName = qaVacancySummary.EmployerName,
+                VacancyReference = $"VAC{qaVacancySummary.VacancyReference}",
+                VacancyTitle = qaVacancySummary.Title,
+                ReviewId = qaVacancySummary.Id,
+                SubmittedDate = qaVacancySummary.SubmittedDate.ToLocalTime(),
+                IsAvailableForReview = qaVacancySummary.ReviewAssignedToUserId == vacancyUser.UserId ||
+                                       _vacancyClient.VacancyReviewCanBeAssigned(qaVacancySummary.Status, qaVacancySummary.ReviewStartedOn)
             };
         }
 

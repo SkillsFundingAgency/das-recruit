@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.QA;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
@@ -22,7 +23,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         {
         }
 
-        public async Task<List<VacancyReviewSearch>> SearchAsync(long vacancyReference)
+        public async Task<List<QaVacancySummary>> SearchAsync(long vacancyReference)
         {
             var filterBuilder = Builders<VacancyReview>.Filter;
 
@@ -35,7 +36,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
                 .ExecuteAsync( 
                     context => collection
                         .Find(filter)
-                        .Project(r => new VacancyReviewSearch()
+                        .Project(r => new QaVacancySummary()
                         {
                             Id = r.Id,
                             Title = r.Title,
