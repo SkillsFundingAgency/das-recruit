@@ -38,9 +38,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             return GetQaVacancySummaries(filter);
         }
 
-        public Task<List<QaVacancySummary>> GetVacancyReviewsInProgressAsync()
+        public Task<List<QaVacancySummary>> GetVacancyReviewsInProgressAsync(DateTime reviewExpiration)
         {
-            var reviewExpiration = _timeProvider.Now.AddHours(-3);
             var filterBuilder = Builders<VacancyReview>.Filter;
             var filter = filterBuilder.Eq(r => r.Status, ReviewStatus.UnderReview)
                 & filterBuilder.Gt(r => r.ReviewedDate, reviewExpiration);
