@@ -15,7 +15,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Repositories
         Task<List<VacancyReview>> GetForVacancyAsync(long vacancyReference);
         Task<List<QaVacancySummary>> SearchAsync(long vacancyReference);
         Task<List<VacancyReview>> GetByStatusAsync(ReviewStatus status);
-        Task<List<QaVacancySummary>> GetVacancyReviewsInProgressAsync();
+        Task<List<QaVacancySummary>> GetVacancyReviewsInProgressAsync(DateTime getExpiredAssignationDateTime);
         Task<int> GetApprovedCountAsync(string submittedByUserId);
         Task<int> GetApprovedFirstTimeCountAsync(string submittedByUserId);
         Task<List<VacancyReview>> GetAssignedForUserAsync(string userId, DateTime assignationExpiryDateTime);
