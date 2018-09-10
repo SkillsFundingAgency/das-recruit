@@ -8,7 +8,6 @@ using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Employer.Web.Extensions;
-using Esfa.Recruit.Employer.Web.Configuration;
 using static Esfa.Recruit.Employer.Web.ViewModels.ValidationMessages;
 using Esfa.Recruit.Shared.Web.Extensions;
 
@@ -76,7 +75,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             {
                 if (proposedClosingDate?.Length > 0)
                 {
-                    if (DateTime.TryParseExact(proposedClosingDate, QueryString.Formats.DateFormat, null, System.Globalization.DateTimeStyles.None, out var parsedClosingDate) == false)
+                    if (DateTime.TryParse(proposedClosingDate, out var parsedClosingDate) == false)
                     {
                         resp.Errors.Errors.Add(new EntityValidationError((long)VacancyRuleSet.ClosingDate, nameof(EditVacancyDatesEditModel.ClosingDate), DateValidationMessages.TypeOfDate.ClosingDate, "202"));
                     }
@@ -90,7 +89,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
                 if (proposedStartDate?.Length > 0)
                 {
-                    if (DateTime.TryParseExact(proposedStartDate, QueryString.Formats.DateFormat, null, System.Globalization.DateTimeStyles.None, out var parsedStartDate) == false)
+                    if (DateTime.TryParse(proposedStartDate, out var parsedStartDate) == false)
                     {
                         resp.Errors.Errors.Add(new EntityValidationError((long)VacancyRuleSet.StartDate, nameof(EditVacancyDatesEditModel.StartDate), DateValidationMessages.TypeOfDate.StartDate, "202"));
                     }
