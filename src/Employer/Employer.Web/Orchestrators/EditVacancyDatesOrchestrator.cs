@@ -106,7 +106,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public async Task<EditVacancyDatesViewModel> GetEditVacancyDatesViewModel(EditVacancyDatesEditModel m)
         {
-            var resp = await GetEditVacancyDatesViewModel((VacancyRouteModel)m, m.ClosingDate.ToDateQueryString(), m.StartDate.ToDateQueryString());
+            var resp = await GetEditVacancyDatesViewModel(m, m.ClosingDate.ToDateQueryString(), m.StartDate.ToDateQueryString());
 
             resp.Data.ClosingDay = m.ClosingDay;
             resp.Data.ClosingMonth = m.ClosingMonth;

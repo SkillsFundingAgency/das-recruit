@@ -8,7 +8,6 @@ using Esfa.Recruit.Employer.Web.ViewModels.VacancyManage;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Shared.Web.Extensions;
-using Esfa.Recruit.Employer.Web.QueryStringModels;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
