@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
@@ -9,8 +9,8 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Extensions;
-using Esfa.Recruit.Employer.Web.QueryStringModels;
 using Esfa.Recruit.Employer.Web.ViewModels;
+using Microsoft.AspNetCore.Hosting;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
@@ -18,15 +18,19 @@ namespace Esfa.Recruit.Employer.Web.Controllers
     public class VacancyManageController : Controller
     {
         private readonly VacancyManageOrchestrator _orchestrator;
+        private readonly IHostingEnvironment _hostingEnvironment;
 
-        public VacancyManageController(VacancyManageOrchestrator orchestrator)
+        public VacancyManageController(VacancyManageOrchestrator orchestrator, IHostingEnvironment hostingEnvironment)
         {
             _orchestrator = orchestrator;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         [HttpGet("manage", Name = RouteNames.VacancyManage_Get)]
-        public async Task<IActionResult> ManageVacancy(VacancyRouteModel vrm, [FromQuery]string proposedClosingDate, [FromQuery]string proposedStartDate)
+        public async Task<IActionResult> ManageVacancy(VacancyRouteModel vrm)
         {
+            string proposedClosingDate = Request.Cookies[string.Format(CookieNames.VacancyProposedClosingDate, vrm.VacancyId)]?.Trim();
+            string proposedStartDate = Request.Cookies[string.Format(CookieNames.VacancyProposedStartDate, vrm.VacancyId)]?.Trim();
             var vacancy = await _orchestrator.GetVacancy(vrm);
 
             if (vacancy.CanEdit)
@@ -42,18 +46,18 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             DateTime parsedClosingDate = DateTime.MinValue;
             if (proposedClosingDate?.Length > 0)
             {
-                if (DateTime.TryParseExact(proposedClosingDate, QueryString.Formats.DateFormat, null, System.Globalization.DateTimeStyles.None, out parsedClosingDate) == false)
+                if (DateTime.TryParse(proposedClosingDate, out parsedClosingDate) == false)
                 {
-                    return RedirectToRoute(RouteNames.VacancyEditDates_Get, new EditDatesQueryStringModel { ProposedClosingDate = proposedClosingDate, ProposedStartDate = proposedStartDate });
+                    return RedirectToRoute(RouteNames.VacancyEditDates_Get);
                 }
             }
 
             DateTime parsedStartDate = DateTime.MinValue;
             if (proposedStartDate?.Length > 0)
             {
-                if (DateTime.TryParseExact(proposedStartDate, QueryString.Formats.DateFormat, null, System.Globalization.DateTimeStyles.None, out parsedStartDate) == false)
+                if (DateTime.TryParse(proposedStartDate, out parsedStartDate) == false)
                 {
-                    return RedirectToRoute(RouteNames.VacancyEditDates_Get, new EditDatesQueryStringModel { ProposedClosingDate = proposedClosingDate, ProposedStartDate = proposedStartDate });
+                    return RedirectToRoute(RouteNames.VacancyEditDates_Get);
                 }
             }
 
@@ -69,12 +73,28 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             if (!response.Success)
             {
-                return RedirectToRoute(RouteNames.VacancyEditDates_Get, new EditDatesQueryStringModel { ProposedClosingDate = m.ProposedClosingDate, ProposedStartDate = m.ProposedStartDate });
+                return RedirectToRoute(RouteNames.VacancyEditDates_Get);
             }
 
             var vacancy = await _orchestrator.GetVacancy(m);
             TempData.Add(TempDataKeys.DashboardInfoMessage, string.Format(InfoMessages.VacancyUpdated, vacancy.Title));
+            ClearEditDatesCookies(m.VacancyId);
+
             return RedirectToRoute(RouteNames.Dashboard_Index_Get);
+        }
+
+        [HttpGet("cancel-vacancy-changes", Name = RouteNames.CancelVacancyChanges_Get)]
+        public IActionResult CancelChanges(VacancyRouteModel vrm)
+        {
+            ClearEditDatesCookies(vrm.VacancyId);
+
+            return RedirectToRoute(RouteNames.Dashboard_Index_Get);
+        }
+
+        private void ClearEditDatesCookies(Guid vacancyId)
+        {
+            Response.Cookies.Delete(string.Format(CookieNames.VacancyProposedClosingDate, vacancyId), EsfaCookieOptions.GetShortLifeHttpCookieOption(_hostingEnvironment));
+            Response.Cookies.Delete(string.Format(CookieNames.VacancyProposedStartDate, vacancyId), EsfaCookieOptions.GetShortLifeHttpCookieOption(_hostingEnvironment));
         }
 
         private IActionResult HandleRedirectOfDraftVacancy(Vacancy vacancy)

@@ -1,8 +1,4 @@
 ﻿@model Esfa.Recruit.Employer.Web.ViewModels.VacancyManage.ManageVacancyViewModel
-@{
-    var proposedClosingDate = ViewContext.HttpContext.Request.Query[QueryString.ParameterNames.ProposedClosingDate];
-    var proposedStartDate = ViewContext.HttpContext.Request.Query[QueryString.ParameterNames.ProposedStartDate];
-}
 <div class="grid-row">
     <div class="column-two-thirds">
         <h3 class="heading-small no-top-margin">Brief overview of the role</h3>
@@ -11,7 +7,7 @@
     <div class="column-one-third" id="closingDateSection">
         <h3 class="heading-small no-top-margin">Closing Date</h3>
         <p id="vacancy-closing-date">@Model.DisplayableClosingDate</p>
-        <a asp-route="@RouteNames.VacancyEditDates_Get" asp-route-proposedClosingDate="@proposedClosingDate" asp-route-proposedStartDate="@proposedStartDate" esfa-automation="edit-closing-date">Edit</a>
+        <a asp-route="@RouteNames.VacancyEditDates_Get" esfa-automation="edit-closing-date">Edit</a>
     </div>
 </div>
 <div class="grid-row">
@@ -45,7 +41,7 @@
             <li id="possibleStartDateSection">
                 <h3 class="heading-small">Possible start date</h3>
                 <p>@Model.DisplayableStartDate</p>
-                <a asp-route="@RouteNames.VacancyEditDates_Get" asp-route-proposedClosingDate="@proposedClosingDate" asp-route-proposedStartDate="@proposedStartDate" esfa-automation="edit-start-date">Edit</a>
+                <a asp-route="@RouteNames.VacancyEditDates_Get" esfa-automation="edit-start-date">Edit</a>
             </li>
             <li>
                 <h3 class="heading-small">Apprenticeship level</h3>

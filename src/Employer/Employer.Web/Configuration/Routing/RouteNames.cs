@@ -82,7 +82,9 @@
         public const string VacancyManage_Get = "VacancyManage_Get";
         public const string VacancyEditDates_Get = "VacancyEditDates_Get";
         public const string VacancyEditDates_Post = "VacancyEditDates_Post";
+        public const string VacancyEditDatesCancel_Get = "VacancyEditDatesCancel_Get";
 
         public const string SubmitVacancyChanges_Post = "SubmitVacancyChanges_Post";
+        public const string CancelVacancyChanges_Get = "CancelVacancyChanges_Get";
     }
 }

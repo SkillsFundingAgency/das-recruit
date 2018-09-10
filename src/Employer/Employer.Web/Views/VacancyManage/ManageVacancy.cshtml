@@ -30,7 +30,7 @@
                         <input type="hidden" name="ProposedStartDate" value="@Model.ProposedStartDateFormValue" />
                         <button type="submit" class="button save-button">Publish</button>
                     </form>
-                    <a asp-condition="@Model.HasChanges" asp-route="@RouteNames.Dashboard_Index_Get" class="button-link">Cancel</a>
+                    <a asp-condition="@Model.HasChanges" asp-route="@RouteNames.CancelVacancyChanges_Get" class="button-link">Cancel</a>
                     <a asp-condition="@Model.IsUnchanged" asp-route="@RouteNames.Dashboard_Index_Get" class="button">Return to dashboard</a>
                 </div>
             </div>
