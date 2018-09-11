@@ -320,7 +320,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             var vacancyReview = vacancyReviews.Where(r => r.Status == ReviewStatus.Closed &&
                                       r.ManualOutcome == ManualQaOutcome.Referred)
                 .OrderByDescending(r => r.ClosedDate)
-                .SingleOrDefault();
+                .FirstOrDefault();
 
             return vacancyReview;
         }
