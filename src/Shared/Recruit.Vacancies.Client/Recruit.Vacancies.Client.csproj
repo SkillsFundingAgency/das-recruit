@@ -38,6 +38,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Application\Validation\Fluent\CustomValidators\VacancyValidators\" />
+    <Folder Include="Domain\Services\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Application\QueryStore\**" />
