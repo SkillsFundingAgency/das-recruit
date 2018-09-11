@@ -3,9 +3,9 @@ using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
-using Esfa.Recruit.Vacancies.Client.Domain.Services;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {

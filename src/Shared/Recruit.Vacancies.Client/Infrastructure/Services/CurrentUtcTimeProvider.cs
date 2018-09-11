@@ -1,5 +1,5 @@
 ﻿using System;
-using Esfa.Recruit.Vacancies.Client.Domain.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services
 {

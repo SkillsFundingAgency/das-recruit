@@ -7,7 +7,6 @@ using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Domain.Services;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode;
 using Microsoft.Extensions.Logging;
 
