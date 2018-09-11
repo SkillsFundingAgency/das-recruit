@@ -102,8 +102,9 @@
                 <td>@vacancy.SubmittedDate.AsGdsDateTime()</td>
                 <td>@vacancy.ClosingDate.AsGdsDate()</td>
                 <td>
+                    <span>@vacancy.AssignmentInfo</span>
+                    <br asp-condition="@vacancy.IsAvailableForReview == false"/>
                     <a asp-condition="@vacancy.IsAvailableForReview" asp-route="@RouteNames.Vacancy_Review_Get" asp-route-reviewId="@vacancy.ReviewId">Review</a>
-                    <span asp-condition="@vacancy.IsNotAvailableForReview">@vacancy.AssignmentInfo</span>
                 </td>
             </tr>
         }
