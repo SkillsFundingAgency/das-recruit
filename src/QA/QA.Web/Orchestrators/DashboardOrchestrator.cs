@@ -50,22 +50,27 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
 
         private VacancyReviewSearchModel MapToViewModel(QaVacancySummary qaVacancySummary, VacancyUser vacancyUser)
         {
+            var userName = vacancyUser.UserId == qaVacancySummary.ReviewAssignedToUserId
+                ? "you"
+                : qaVacancySummary.ReviewAssignedToUserName;
+            var isAvailableForReview =
+                _vacancyClient.VacancyReviewCanBeAssigned(qaVacancySummary.Status, qaVacancySummary.ReviewStartedOn);
             return new VacancyReviewSearchModel()
             {
-                AssignedTo = qaVacancySummary.ReviewAssignedToUserName,
-                AssignedTimeElapsedMessage = GetFormattedElapsedTime(qaVacancySummary.ReviewStartedOn),
+                
+                AssignmentInfo = isAvailableForReview ? string.Empty : GetAssignmentInfo(qaVacancySummary.ReviewStartedOn, userName),
                 ClosingDate = qaVacancySummary.ClosingDate.ToLocalTime(),
                 EmployerName = qaVacancySummary.EmployerName,
                 VacancyReference = $"VAC{qaVacancySummary.VacancyReference}",
                 VacancyTitle = qaVacancySummary.Title,
                 ReviewId = qaVacancySummary.Id,
                 SubmittedDate = qaVacancySummary.SubmittedDate.ToLocalTime(),
-                IsAvailableForReview = qaVacancySummary.ReviewAssignedToUserId == vacancyUser.UserId ||
-                                       _vacancyClient.VacancyReviewCanBeAssigned(qaVacancySummary.Status, qaVacancySummary.ReviewStartedOn)
+                IsAvailableForReview = qaVacancySummary.ReviewAssignedToUserId == vacancyUser.UserId || isAvailableForReview,
+                IsNotAvailableForReview = !isAvailableForReview
             };
         }
 
-        private string GetFormattedElapsedTime(DateTime? value)
+        private string GetAssignmentInfo(DateTime? value, string userName)
         {
             if (value == null) return string.Empty;
             var diff = _timeProvider.Now - value.Value;
@@ -76,7 +81,7 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             var hours = diff.Hours > 0 ? $"{diff.Hours}h" : string.Empty;
             var minutes = diff.Minutes > 0 ? $"{diff.Minutes}m" : string.Empty;
 
-            return $"Being reviewed for {hours} {minutes}.";
+            return $"Assigned to {userName}. Being reviewed for {hours} {minutes}.";
         }
 
         public async Task<Guid?> AssignNextVacancyReviewAsync(VacancyUser user)
