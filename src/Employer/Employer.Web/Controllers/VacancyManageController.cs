@@ -29,8 +29,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         [HttpGet("manage", Name = RouteNames.VacancyManage_Get)]
         public async Task<IActionResult> ManageVacancy(VacancyRouteModel vrm)
         {
-            string proposedClosingDate = Request.Cookies[string.Format(CookieNames.VacancyProposedClosingDate, vrm.VacancyId)]?.Trim();
-            string proposedStartDate = Request.Cookies[string.Format(CookieNames.VacancyProposedStartDate, vrm.VacancyId)]?.Trim();
+            var proposedClosingDate = Request.Cookies[string.Format(CookieNames.VacancyProposedClosingDate, vrm.VacancyId)]?.Trim();
+            var proposedStartDate = Request.Cookies[string.Format(CookieNames.VacancyProposedStartDate, vrm.VacancyId)]?.Trim();
             var vacancy = await _orchestrator.GetVacancy(vrm);
 
             if (vacancy.CanEdit)
@@ -44,22 +44,12 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             }
 
             DateTime parsedClosingDate = DateTime.MinValue;
-            if (proposedClosingDate?.Length > 0)
-            {
-                if (DateTime.TryParse(proposedClosingDate, out parsedClosingDate) == false)
-                {
-                    return RedirectToRoute(RouteNames.VacancyEditDates_Get);
-                }
-            }
+            if (proposedClosingDate?.Length > 0 && DateTime.TryParse(proposedClosingDate, out parsedClosingDate) == false)
+                return RedirectToRoute(RouteNames.VacancyEditDates_Get);
 
             DateTime parsedStartDate = DateTime.MinValue;
-            if (proposedStartDate?.Length > 0)
-            {
-                if (DateTime.TryParse(proposedStartDate, out parsedStartDate) == false)
-                {
-                    return RedirectToRoute(RouteNames.VacancyEditDates_Get);
-                }
-            }
+            if (proposedStartDate?.Length > 0 && DateTime.TryParse(proposedStartDate, out parsedStartDate) == false)
+                return RedirectToRoute(RouteNames.VacancyEditDates_Get);
 
             var viewModel = await _orchestrator.GetViewModelForManageVacancy(vrm, parsedClosingDate, parsedStartDate);
 
@@ -93,8 +83,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
         private void ClearEditDatesCookies(Guid vacancyId)
         {
-            Response.Cookies.Delete(string.Format(CookieNames.VacancyProposedClosingDate, vacancyId), EsfaCookieOptions.GetShortLifeHttpCookieOption(_hostingEnvironment));
-            Response.Cookies.Delete(string.Format(CookieNames.VacancyProposedStartDate, vacancyId), EsfaCookieOptions.GetShortLifeHttpCookieOption(_hostingEnvironment));
+            Response.Cookies.Delete(string.Format(CookieNames.VacancyProposedClosingDate, vacancyId), EsfaCookieOptions.GetSessionLifetimeHttpCookieOption(_hostingEnvironment));
+            Response.Cookies.Delete(string.Format(CookieNames.VacancyProposedStartDate, vacancyId), EsfaCookieOptions.GetSessionLifetimeHttpCookieOption(_hostingEnvironment));
         }
 
         private IActionResult HandleRedirectOfDraftVacancy(Vacancy vacancy)
