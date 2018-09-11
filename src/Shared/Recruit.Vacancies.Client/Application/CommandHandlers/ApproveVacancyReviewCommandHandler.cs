@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
+using Esfa.Recruit.Vacancies.Client.Domain.Services;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 
@@ -17,16 +18,19 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         private readonly IVacancyReviewRepository _vacancyReviewRepository;
         private readonly IMessaging _messaging;
         private readonly AbstractValidator<VacancyReview> _vacancyReviewValidator;
+        private readonly ITimeProvider _timeProvider;
 
         public ApproveVacancyReviewCommandHandler(ILogger<ApproveVacancyReviewCommandHandler> logger, 
                                         IVacancyReviewRepository vacancyReviewRepository, 
                                         IMessaging messaging,
-                                        AbstractValidator<VacancyReview> vacancyReviewValidator)
+                                        AbstractValidator<VacancyReview> vacancyReviewValidator,
+                                        ITimeProvider timeProvider)
         {
             _logger = logger;
             _vacancyReviewRepository = vacancyReviewRepository;
             _messaging = messaging;
             _vacancyReviewValidator = vacancyReviewValidator;
+            _timeProvider = timeProvider;
         }
 
         public async Task Handle(ApproveVacancyReviewCommand message, CancellationToken cancellationToken)
@@ -42,7 +46,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             }
             review.ManualOutcome = ManualQaOutcome.Approved;
             review.Status = ReviewStatus.Closed;
+            review.ClosedDate = _timeProvider.Now;
             review.ManualQaComment = message.ManualQaComment;
+            review.ManualQaFieldIndicators = message.ManualQaFieldIndicators;
 
             Validate(review);
 

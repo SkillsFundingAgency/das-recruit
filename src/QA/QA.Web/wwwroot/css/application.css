@@ -135,3 +135,59 @@
     display: block;
     margin-bottom: 20px;
 }
+
+/** Dashboard styles **/
+.search-field {
+  position: relative;
+  margin-bottom: 15px;
+}
+
+.search-field fieldset {
+  width: auto;
+}
+
+.search-field .search-input {
+  padding: 0 38px 0 0;
+}
+
+.search-field .search-input input {
+  width: 100%;
+  padding: 2px 0 0 10px;
+  display: block;
+  height: 40px;
+  border: 1px solid #6f777b;
+  border-right: none;
+}
+
+.search-field .search-input label {
+  display: block;
+}
+
+.search-field .search-submit {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  height: 40px;
+  width: 40px;
+  overflow: visible;
+}
+
+.search-field .search-submit button {
+  border-radius: 0;
+  box-shadow: none;
+  position: absolute;
+  z-index: 4;
+  right: 0;
+  top: 0;
+  width: 40px;
+  height: 40px;
+  border: none;
+  overflow: hidden;
+  text-indent: -5000px;
+  color: #fff;
+  background-color: #fff;
+  background-image: url(../img/search-glass.png);
+  background-repeat: no-repeat;
+  background-position: 5px 5px;
+  border: 1px solid #6f777b;
+}

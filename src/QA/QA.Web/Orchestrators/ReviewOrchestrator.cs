@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Qa.Web.Exceptions;
@@ -16,21 +17,57 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
     {
         private readonly IQaVacancyClient _vacancyClient;
         private readonly ReviewMapper _mapper;
-        private readonly ITimeProvider _timeProvider;
 
-        public ReviewOrchestrator(IQaVacancyClient vacancyClient, ReviewMapper mapper, ITimeProvider timeProvider)
+        private static readonly List<string> FieldIndicators = new List<string>
+        {
+            VacancyReview.FieldIdentifiers.ApplicationProcess,
+            VacancyReview.FieldIdentifiers.ClosingDate,
+            VacancyReview.FieldIdentifiers.Contact,
+            VacancyReview.FieldIdentifiers.Description,
+            VacancyReview.FieldIdentifiers.DisabilityConfident,
+            VacancyReview.FieldIdentifiers.EmployerAddress,
+            VacancyReview.FieldIdentifiers.EmployerName,
+            VacancyReview.FieldIdentifiers.EmployerDescription,
+            VacancyReview.FieldIdentifiers.EmployerWebsiteUrl,
+            VacancyReview.FieldIdentifiers.ExpectedDuration,
+            VacancyReview.FieldIdentifiers.NumberOfPositions,
+            VacancyReview.FieldIdentifiers.PossibleStartDate,
+            VacancyReview.FieldIdentifiers.Provider,
+            VacancyReview.FieldIdentifiers.Qualifications,
+            VacancyReview.FieldIdentifiers.Skills,
+            VacancyReview.FieldIdentifiers.ShortDescription,
+            VacancyReview.FieldIdentifiers.ThingsToConsider,
+            VacancyReview.FieldIdentifiers.Training,
+            VacancyReview.FieldIdentifiers.TrainingLevel,
+            VacancyReview.FieldIdentifiers.Wage,
+            VacancyReview.FieldIdentifiers.WorkingWeek,
+        };
+
+        public ReviewOrchestrator(IQaVacancyClient vacancyClient, ReviewMapper mapper)
         {
             _vacancyClient = vacancyClient;
             _mapper = mapper;
-            _timeProvider = timeProvider;
         }
 
-        public async Task<Guid?> ApproveReviewAsync(ReviewEditModel m, VacancyUser user)
+        public async Task<Guid?> SubmitReviewAsync(ReviewEditModel m, VacancyUser user)
         {
             var review = await _vacancyClient.GetVacancyReviewAsync(m.ReviewId);
             await EnsureUserIsAssignedAsync(review, user.UserId);
 
-            await _vacancyClient.ApproveVacancyReviewAsync(m.ReviewId, m.ReviewerComment);
+            var manualQaFieldIndicators = FieldIndicators.Select(f => new ManualQaFieldIndicator
+            {
+                FieldIdentifier = f,
+                IsChangeRequested = m.SelectedFieldIdentifers.Contains(f)
+            }).ToList();
+
+            if (m.IsRefer)
+            {
+                await _vacancyClient.ReferVacancyReviewAsync(m.ReviewId, m.ReviewerComment, manualQaFieldIndicators);
+            }
+            else
+            {
+                await _vacancyClient.ApproveVacancyReviewAsync(m.ReviewId, m.ReviewerComment, manualQaFieldIndicators);
+            }
 
             var nextVacancyReviewId = await AssignNextVacancyReviewAsync(user);
 
@@ -72,28 +109,8 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
         {
             var vm = await GetReviewViewModelAsync(model.ReviewId, user);
 
-            vm.EmployerNameChecked = model.EmployerNameChecked;
-            vm.ShortDescriptionChecked = model.ShortDescriptionChecked;
-            vm.ClosingDateChecked = model.ClosingDateChecked;
-            vm.WorkingWeekChecked = model.WorkingWeekChecked;
-            vm.WageChecked = model.WageChecked;
-            vm.ExpectedDurationChecked = model.ExpectedDurationChecked;
-            vm.PossibleStartDateChecked = model.PossibleStartDateChecked;
-            vm.TrainingLevelChecked = model.TrainingLevelChecked;
-            vm.NumberOfPositionsChecked = model.NumberOfPositionsChecked;
-            vm.VacancyDescriptionChecked = model.VacancyDescriptionChecked;
-            vm.TrainingDescriptionChecked = model.TrainingDescriptionChecked;
-            vm.OutcomeDescriptionChecked = model.OutcomeDescriptionChecked;
-            vm.SkillsChecked = model.SkillsChecked;
-            vm.QualificationsChecked = model.QualificationsChecked;
-            vm.ThingsToConsiderChecked = model.ThingsToConsiderChecked;
-            vm.EmployerDescriptionChecked = model.EmployerDescriptionChecked;
-            vm.EmployerWebsiteUrlChecked = model.EmployerWebsiteUrlChecked;
-            vm.ContactChecked = model.ContactChecked;
-            vm.EmployerAddressChecked = model.EmployerAddressChecked;
-            vm.ProviderChecked = model.ProviderChecked;
-            vm.TrainingChecked = model.TrainingChecked;
-            vm.ApplicationProcessChecked = model.ApplicationProcessChecked;
+            vm.SelectedFieldIdentifers = model.SelectedFieldIdentifers;
+
             vm.ReviewerComment = model.ReviewerComment;
 
             return vm;
@@ -105,11 +122,6 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
 
             ValidateReviewStateForReferral(review);
             await EnsureUserIsAssignedAsync(review, user.UserId);
-
-            if (review.ManualOutcome != ManualQaOutcome.Referred)
-            {
-                await _vacancyClient.ReferVacancyReviewAsync(review.Id);
-            }
 
             var vm = await _mapper.MapFromVacancy(review.VacancySnapshot);
             vm.IsEditable = true;

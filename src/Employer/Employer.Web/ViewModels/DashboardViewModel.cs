@@ -18,7 +18,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public int NoOfVacancies => Vacancies.Count;
         public int NoOfDraftVacancies => Vacancies.Count(v => v.Status == VacancyStatus.Draft);
         public int NoOfSubmittedVacancies => Vacancies.Count(v => v.Status == VacancyStatus.Submitted);
-        public int NoOfEditsRequiredVacancies => Vacancies.Count(v => v.Status == VacancyStatus.Referred);
+        public int NoOfReferredVacancies => Vacancies.Count(v => v.Status == VacancyStatus.Referred);
         public int NoOfLiveVacancies => Vacancies.Count(v => v.Status == VacancyStatus.Live);
         public int NoOfClosedVacancies => Vacancies.Count(v => v.Status == VacancyStatus.Closed);
 

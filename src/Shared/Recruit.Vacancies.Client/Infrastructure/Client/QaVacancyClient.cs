@@ -59,12 +59,23 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             });
         }
 
-        public Task ApproveVacancyReviewAsync(Guid reviewId, string manualQaComment)
+        public Task ApproveVacancyReviewAsync(Guid reviewId, string manualQaComment, List<ManualQaFieldIndicator> manualQaFieldIndicators)
         {
             return _messaging.SendCommandAsync(new ApproveVacancyReviewCommand
             {
                 ReviewId = reviewId,
-                ManualQaComment = manualQaComment
+                ManualQaComment = manualQaComment,
+                ManualQaFieldIndicators = manualQaFieldIndicators
+            });
+        }
+
+        public Task ReferVacancyReviewAsync(Guid reviewId, string manualQaComment, List<ManualQaFieldIndicator> manualQaFieldIndicators)
+        {
+            return _messaging.SendCommandAsync(new ReferVacancyReviewCommand
+            {
+                ReviewId = reviewId,
+                ManualQaComment = manualQaComment,
+                ManualQaFieldIndicators = manualQaFieldIndicators
             });
         }
 
@@ -125,14 +136,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         public Task<VacancyReview> GetVacancyReviewAsync(Guid reviewId)
         {
             return _reviewRepository.GetAsync(reviewId);
-        }
-
-        public Task ReferVacancyReviewAsync(Guid reviewId)
-        {
-            return _messaging.SendCommandAsync(new ReferVacancyReviewCommand
-            {
-                ReviewId = reviewId
-            });
         }
 
         public Task AssignNextVacancyReviewAsync(VacancyUser user)
