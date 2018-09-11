@@ -22,7 +22,6 @@ namespace Esfa.Recruit.Employer.Web.Configuration
     public static class ConfigurationExtensions
     {
         private const string HasEmployerAccountPolicyName = "HasEmployerAccount";
-        private const int SessionTimeoutMinutes = 30;
 
         public static void AddAuthorizationService(this IServiceCollection services)
         {
@@ -97,7 +96,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
                 {
                     options.Cookie.SecurePolicy = Microsoft.AspNetCore.Http.CookieSecurePolicy.Always;
                     options.SlidingExpiration = true;
-                    options.ExpireTimeSpan = TimeSpan.FromMinutes(SessionTimeoutMinutes);
+                    options.ExpireTimeSpan = TimeSpan.FromMinutes(AuthenticationConfiguration.SessionTimeoutMinutes);
                 }
 
                 options.AccessDeniedPath = "/Error/403";

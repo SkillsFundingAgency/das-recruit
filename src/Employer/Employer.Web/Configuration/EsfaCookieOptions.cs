@@ -13,12 +13,12 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             HttpOnly = true
         };
 
-        public static CookieOptions GetShortLifeHttpCookieOption(IHostingEnvironment env) => new CookieOptions
+        public static CookieOptions GetSessionLifetimeHttpCookieOption(IHostingEnvironment env) => new CookieOptions
         {
             Secure = !env.IsDevelopment(),
             SameSite = SameSiteMode.Strict,
             HttpOnly = true,
-            Expires = DateTimeOffset.UtcNow.AddMinutes(5)
+            Expires = DateTimeOffset.UtcNow.AddMinutes(AuthenticationConfiguration.SessionTimeoutMinutes)
         };
     }
 }

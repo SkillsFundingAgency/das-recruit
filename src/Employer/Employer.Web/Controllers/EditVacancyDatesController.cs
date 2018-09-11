@@ -27,9 +27,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         [HttpGet("edit-dates", Name = RouteNames.VacancyEditDates_Get)]
         public async Task<IActionResult> EditVacancyDates(VacancyRouteModel vrm)
         {
-            string proposedClosingDate = Request.Cookies[string.Format(CookieNames.VacancyProposedClosingDate, vrm.VacancyId)]?.Trim();
-            string proposedStartDate = Request.Cookies[string.Format(CookieNames.VacancyProposedStartDate, vrm.VacancyId)]?.Trim();
-
+            var proposedClosingDate = Request.Cookies[string.Format(CookieNames.VacancyProposedClosingDate, vrm.VacancyId)]?.Trim();
+            var proposedStartDate = Request.Cookies[string.Format(CookieNames.VacancyProposedStartDate, vrm.VacancyId)]?.Trim();
             var vacancy = await _orchestrator.GetVacancyAsync(vrm);
 
             if (vacancy.CanEdit)
@@ -80,8 +79,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 return View(vm);
             }
 
-            Response.Cookies.Append(string.Format(CookieNames.VacancyProposedClosingDate, m.VacancyId), DateTime.Parse(m.ClosingDate).ToShortDateString(), EsfaCookieOptions.GetShortLifeHttpCookieOption(_hostingEnvironment));
-            Response.Cookies.Append(string.Format(CookieNames.VacancyProposedStartDate, m.VacancyId), DateTime.Parse(m.StartDate).ToShortDateString(), EsfaCookieOptions.GetShortLifeHttpCookieOption(_hostingEnvironment));
+            Response.Cookies.Append(string.Format(CookieNames.VacancyProposedClosingDate, m.VacancyId), DateTime.Parse(m.ClosingDate).ToShortDateString(), EsfaCookieOptions.GetSessionLifetimeHttpCookieOption(_hostingEnvironment));
+            Response.Cookies.Append(string.Format(CookieNames.VacancyProposedStartDate, m.VacancyId), DateTime.Parse(m.StartDate).ToShortDateString(), EsfaCookieOptions.GetSessionLifetimeHttpCookieOption(_hostingEnvironment));
 
             return RedirectToRoute(RouteNames.VacancyManage_Get);
         }
@@ -96,8 +95,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
         private void ClearEditDatesCookies(Guid vacancyId)
         {
-            Response.Cookies.Delete(string.Format(CookieNames.VacancyProposedClosingDate, vacancyId), EsfaCookieOptions.GetShortLifeHttpCookieOption(_hostingEnvironment));
-            Response.Cookies.Delete(string.Format(CookieNames.VacancyProposedStartDate, vacancyId), EsfaCookieOptions.GetShortLifeHttpCookieOption(_hostingEnvironment));
+            Response.Cookies.Delete(string.Format(CookieNames.VacancyProposedClosingDate, vacancyId), EsfaCookieOptions.GetSessionLifetimeHttpCookieOption(_hostingEnvironment));
+            Response.Cookies.Delete(string.Format(CookieNames.VacancyProposedStartDate, vacancyId), EsfaCookieOptions.GetSessionLifetimeHttpCookieOption(_hostingEnvironment));
         }
 
         private IActionResult HandleRedirectOfDraftVacancy(Vacancy vacancy)
