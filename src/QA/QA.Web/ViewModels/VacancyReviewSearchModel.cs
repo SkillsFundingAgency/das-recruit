@@ -18,7 +18,7 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
 
         public string AssignedTo { get; set; }
 
-        public string AssignedTimeElapsed { get; set; }
+        public string AssignedTimeElapsedMessage { get; set; }
 
         public bool IsAvailableForReview { get; set; }
 
@@ -27,6 +27,6 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public string AssignmentInfo => 
             IsAvailableForReview 
             ? null 
-            : $"Assigned to {AssignedTo}. Being reviewed for {AssignedTimeElapsed}.";
+            : $"Assigned to {AssignedTo}. {AssignedTimeElapsedMessage}";
     }
 }
