@@ -65,9 +65,11 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public bool CanDelete => Status == VacancyStatus.Draft && IsDeleted == false;
 
         /// <summary>
-        /// We can only edit draft vacancies that have not been deleted
+        /// We can only edit draft & referred vacancies that have not been deleted
         /// </summary>
-        public bool CanEdit => Status == VacancyStatus.Draft && IsDeleted == false;
+        public bool CanEdit => (Status == VacancyStatus.Draft || 
+                                Status == VacancyStatus.Referred ) 
+                               && IsDeleted == false;
 
         /// <summary>
         /// We can only submit draft vacancies that have not been deleted

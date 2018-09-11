@@ -18,7 +18,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Qualifications;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Skills;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
@@ -32,6 +31,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly IEmployerAccountService _employerAccountService;
         private readonly IReferenceDataReader _referenceDataReader;
         private readonly IApplicationReviewRepository _applicationReviewRepository;
+        private readonly IVacancyReviewRepository _vacancyReviewRepository;
 
         public VacancyClient(
             IVacancyRepository repository,
@@ -41,7 +41,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider,
             IEmployerAccountService employerAccountService,
             IReferenceDataReader referenceDataReader,
-            IApplicationReviewRepository applicationReviewRepository)
+            IApplicationReviewRepository applicationReviewRepository,
+            IVacancyReviewRepository vacancyReviewRepository)
         {
             _repository = repository;
             _reader = reader;
@@ -51,6 +52,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _employerAccountService = employerAccountService;
             _referenceDataReader = referenceDataReader;
             _applicationReviewRepository = applicationReviewRepository;
+            _vacancyReviewRepository = vacancyReviewRepository;
         }
 
         public Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user)
@@ -309,6 +311,18 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         {
             await _messaging.SendCommandAsync(new CreateApplicationReviewCommand { Application = application });
 
+        }
+
+        public async Task<VacancyReview> GetVacancyReviewAsync(long vacancyReference)
+        {
+            var vacancyReviews = await _vacancyReviewRepository.GetForVacancyAsync(vacancyReference);
+
+            var vacancyReview = vacancyReviews.Where(r => r.Status == ReviewStatus.Closed &&
+                                      r.ManualOutcome == ManualQaOutcome.Referred)
+                .OrderByDescending(r => r.ClosedDate)
+                .SingleOrDefault();
+
+            return vacancyReview;
         }
     }
 }

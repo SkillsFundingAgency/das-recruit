@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using Esfa.Recruit.Employer.Web.Mappings;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
 {
@@ -9,6 +11,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
         public VacancyPreviewSectionState ApplicationUrlSectionState { get; internal set; }
         public VacancyPreviewSectionState ContactSectionState { get; internal set; }
         public VacancyPreviewSectionState ClosingDateSectionState { get; internal set; }
+        public VacancyPreviewSectionState DisabilityConfidentSectionState { get; internal set; }
         public VacancyPreviewSectionState EmployerDescriptionSectionState { get; internal set; }
         public VacancyPreviewSectionState EmployerNameSectionState { get; internal set; }
         public VacancyPreviewSectionState EmployerWebsiteUrlSectionState { get; internal set; }
@@ -20,6 +23,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
         public VacancyPreviewSectionState QualificationsSectionState { get; internal set; }
         public VacancyPreviewSectionState ShortDescriptionSectionState { get; internal set; }
         public VacancyPreviewSectionState SkillsSectionState { get; internal set; }
+        public VacancyPreviewSectionState TitleSectionState { get; internal set; }
         public VacancyPreviewSectionState ThingsToConsiderSectionState { get; internal set; }
         public VacancyPreviewSectionState TrainingSectionState { get; internal set; }
         public VacancyPreviewSectionState TrainingLevelSectionState { get; internal set; }
@@ -33,6 +37,12 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
         public bool CanShowReference { get; set; }
 
         public bool HasIncompleteVacancyDescription => !HasVacancyDescription;
+        public bool DisplayDraftHeader { get; internal set; }
+
+        //Referred
+        public bool DisplayReferredHeader { get; internal set; }
+        public string ReviewerComments { get; internal set; }
+        public IEnumerable<ReviewFieldIndicatorViewModel> ReviewFieldIndicators { get; internal set; } = new List<ReviewFieldIndicatorViewModel>();
 
         public IList<string> OrderedFieldNames => new List<string>
         {
@@ -75,7 +85,8 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
     {
         Incomplete,
         Valid,
-        Invalid
+        Invalid,
+        Review
     }
 }
 

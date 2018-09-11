@@ -38,6 +38,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             vm.Programme = vacancy.ProgrammeId != null;
             vm.Wage = vacancy.Wage != null;
             vm.CanShowReference = vacancy.Status != VacancyStatus.Draft;
+            vm.DisplayDraftHeader = vacancy.Status == VacancyStatus.Draft;
+            vm.DisplayReferredHeader = vacancy.Status == VacancyStatus.Referred;
+
+            if (vacancy.Status == VacancyStatus.Referred)
+                await AddReferralToViewModelAsync(vm, vacancy.VacancyReference.Value);
 
             return vm;
         }
@@ -59,6 +64,13 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 },
                 v => _client.SubmitVacancyAsync(v.Id, user)
             );
+        }
+
+        private async Task AddReferralToViewModelAsync(VacancyPreviewViewModel vm, long vacancyReference)
+        {
+            var review = await _client.GetVacancyReviewAsync(vacancyReference);
+            vm.ReviewerComments = review.ManualQaComment;
+            vm.ReviewFieldIndicators = ReviewFieldIndicatorMapper.MapFromFieldIndicators(review.ManualQaFieldIndicators);
         }
 
         private void SyncErrorsAndModel(IList<EntityValidationError> errors)
