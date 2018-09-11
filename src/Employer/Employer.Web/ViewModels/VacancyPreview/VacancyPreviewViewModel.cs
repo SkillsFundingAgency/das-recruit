@@ -38,6 +38,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
 
         public bool HasIncompleteVacancyDescription => !HasVacancyDescription;
         public bool DisplayDraftHeader { get; internal set; }
+        public string SubmitButtonText { get; internal set; }
 
         //Referred
         public bool DisplayReferredHeader { get; internal set; }
