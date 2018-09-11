@@ -35,7 +35,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             if (vacancy.CanEdit)
             {
-                return HandleRedirectOfDraftVacancy(vacancy);
+                return HandleRedirectOfEditableVacancy(vacancy);
             }
 
             if (vacancy.Status != VacancyStatus.Live)
@@ -87,7 +87,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             Response.Cookies.Delete(string.Format(CookieNames.VacancyProposedStartDate, vacancyId), EsfaCookieOptions.GetSessionLifetimeHttpCookieOption(_hostingEnvironment));
         }
 
-        private IActionResult HandleRedirectOfDraftVacancy(Vacancy vacancy)
+        private IActionResult HandleRedirectOfEditableVacancy(Vacancy vacancy)
         {
             if (Utility.VacancyHasCompletedPartOne(vacancy))
             {

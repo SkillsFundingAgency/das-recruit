@@ -26,7 +26,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             if (vacancy.CanEdit)
             {
-                return HandleRedirectOfDraftVacancy(vacancy);
+                return HandleRedirectOfEditableVacancy(vacancy);
             }
 
             var m = await _orchestrator.GetVacancyDisplayViewModelAsync(vacancy);
@@ -40,7 +40,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             if (vacancy.CanEdit)
             {
-                return HandleRedirectOfDraftVacancy(vacancy);
+                return HandleRedirectOfEditableVacancy(vacancy);
             }
 
             if (vacancy.ApplicationMethod == ApplicationMethod.ThroughExternalApplicationSite || (vacancy.Status != VacancyStatus.Live && vacancy.Status != VacancyStatus.Closed))
@@ -52,7 +52,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             return View(ViewNames.FullVacancyView, vm);
         }
 
-        private IActionResult HandleRedirectOfDraftVacancy(Vacancy vacancy)
+        private IActionResult HandleRedirectOfEditableVacancy(Vacancy vacancy)
         {
             if (Utility.VacancyHasCompletedPartOne(vacancy))
             {
