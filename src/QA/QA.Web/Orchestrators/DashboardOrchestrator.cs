@@ -53,7 +53,7 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             return new VacancyReviewSearchModel()
             {
                 AssignedTo = qaVacancySummary.ReviewAssignedToUserName,
-                AssignedTimeElapsed = GetElapsedTime(qaVacancySummary.ReviewStartedOn),
+                AssignedTimeElapsedMessage = GetFormattedElapsedTime(qaVacancySummary.ReviewStartedOn),
                 ClosingDate = qaVacancySummary.ClosingDate.ToLocalTime(),
                 EmployerName = qaVacancySummary.EmployerName,
                 VacancyReference = $"VAC{qaVacancySummary.VacancyReference}",
@@ -65,15 +65,18 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             };
         }
 
-        private string GetElapsedTime(DateTime? value)
+        private string GetFormattedElapsedTime(DateTime? value)
         {
             if (value == null) return string.Empty;
             var diff = _timeProvider.Now - value.Value;
 
-            var hours = diff.Hours > 0 ? $"{diff.Hours}h " : string.Empty;
+            if (diff < TimeSpan.FromMinutes(1))
+                return "Being reviewed now.";
+
+            var hours = diff.Hours > 0 ? $"{diff.Hours}h" : string.Empty;
             var minutes = diff.Minutes > 0 ? $"{diff.Minutes}m" : string.Empty;
 
-            return hours + minutes;
+            return $"Being reviewed for {hours} {minutes}.";
         }
 
         public async Task<Guid?> AssignNextVacancyReviewAsync(VacancyUser user)
