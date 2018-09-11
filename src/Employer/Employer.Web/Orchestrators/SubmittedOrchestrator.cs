@@ -25,10 +25,18 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             if (vacancy.Status != VacancyStatus.Submitted && vacancy.Status != VacancyStatus.PendingReview)
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotSubmittedSuccessfully, vacancy.Title));
 
+            var isResubmit = false;
+            if (vacancy.VacancyReference.HasValue)
+            {
+                var review = await _client.GetVacancyReviewAsync(vacancy.VacancyReference.Value);
+                isResubmit = review != null;
+            }
+
             var vm = new VacancySubmittedConfirmationViewModel
             {
                 Title = vacancy.Title,
-                VacancyReference = vacancy.VacancyReference?.ToString()
+                VacancyReference = vacancy.VacancyReference?.ToString(),
+                IsResubmit = isResubmit   
             };
 
             return vm;

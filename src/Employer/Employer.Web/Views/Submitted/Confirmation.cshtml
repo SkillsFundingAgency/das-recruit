@@ -7,7 +7,7 @@
 
 <div class="grid-row">
     <div class="column-two-thirds">
-        <div class="govuk-box-highlight">
+        <div asp-condition="@Model.IsNotResubmit" class="govuk-box-highlight">
             <h1 class="heading-xlarge">
                 Vacancy submitted for approval
             </h1>
@@ -15,6 +15,11 @@
                 The vacancy reference number is <br>
                 <strong class="bold">VAC@(Model.VacancyReference)</strong>
             </p>
+        </div>
+        <div asp-condition="@Model.IsResubmit" class="govuk-box-highlight">
+            <h1 class="heading-xlarge">
+                Vacancy resubmitted for approval
+            </h1>
         </div>
         <h2 class="heading-medium">Next steps</h2>
         <p>Your vacancy will now be reviewed by an Education and Skills Funding Agency adviser.</p>

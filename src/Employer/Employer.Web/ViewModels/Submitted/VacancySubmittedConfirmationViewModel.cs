@@ -4,7 +4,9 @@
     {
         public string Title { get; set; }
         public string VacancyReference { get; set; }
+        public bool IsResubmit { get; set; }
 
         public bool HasVacancyReference => !string.IsNullOrEmpty(VacancyReference);
+        public bool IsNotResubmit => !IsResubmit;
     }
 }
