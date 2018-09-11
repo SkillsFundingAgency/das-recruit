@@ -16,6 +16,7 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace Esfa.Recruit.Employer.Web.Configuration
 {
@@ -48,6 +49,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             });
             services.Configure<CookieTempDataProviderOptions>(options => options.Cookie.Name = CookieNames.RecruitTempData);
             services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
             services.AddMvc(opts =>
             {

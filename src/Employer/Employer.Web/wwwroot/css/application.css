@@ -768,6 +768,11 @@
     font-weight: 400;
 }
 
+/*** Review summary ***/
+.review-summary {
+    border: 5px solid #f47738;
+}
+
 .preview-empty {
     border-left: 5px solid #2e358b;
     min-height: 80px;
@@ -776,6 +781,12 @@
 
 .preview-error {
     border-left: 5px solid #b10e1e;
+    min-height: 80px;
+    padding-left: 15px;
+}
+
+.preview-review {
+    border-left: 5px solid #f47738;
     min-height: 80px;
     padding-left: 15px;
 }

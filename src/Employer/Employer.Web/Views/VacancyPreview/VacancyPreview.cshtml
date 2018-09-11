@@ -1,11 +1,13 @@
 ﻿@using Microsoft.AspNetCore.Html
 @using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
+@using Esfa.Recruit.Vacancies.Client.Domain.Entities
 @model Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview.VacancyPreviewViewModel
 
 @functions
 {
-    const string emptySectionClass = "preview-empty";
-    const string errorSectionClass = "preview-error";
+    const string EmptySectionClass = "preview-empty";
+    const string ErrorSectionClass = "preview-error";
+    const string ReviewSectionClass = "preview-review";
 
     public string GetSectionClass(VacancyPreviewSectionState state)
     {
@@ -14,9 +16,11 @@
             case VacancyPreviewSectionState.Valid:
                 return string.Empty;
             case VacancyPreviewSectionState.Incomplete:
-                return emptySectionClass;
+                return EmptySectionClass;
+            case VacancyPreviewSectionState.Review:
+                return ReviewSectionClass;
             default:
-                return errorSectionClass;
+                return ErrorSectionClass;
         }
     }
 
@@ -30,7 +34,7 @@
     }
 }
 
-<div class="grid-row">
+<div asp-condition="@Model.DisplayDraftHeader" class="grid-row">
     <div class="column-full">
         <h1 class="heading-xlarge small-bottom-margin">Complete your vacancy</h1>
         @Html.Partial("_ValidationSummary", new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames })
@@ -40,28 +44,60 @@
     </div>
 </div>
 
+<div asp-condition="@Model.DisplayReferredHeader" class="grid-row">
+    <div class="column-two-thirds">
+        <div class="error-summary no-top-margin review-summary" role="alert" aria-labelledby="error-summary-heading-example-2" tabindex="-1">
+
+            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-2">
+                <img src="~/img/red-cross.png" class="red-cross-logo" alt="red cross"> Edits needed
+            </h2>
+
+            <p>@Model.ReviewerComments</p>
+            <ul class="list">
+                @foreach (var fieldIndicator in Model.ReviewFieldIndicators)
+                {
+                    <li><a href="#@fieldIndicator.Anchor">@fieldIndicator.Text</a></li>
+                }
+            </ul>
+            <ul class="error-summary-list">
+
+            </ul>
+        </div>
+
+    </div>
+</div>
+
 <div class="grid-row" id="@PreviewAnchors.TitleSection">
     <div class="column-two-thirds">
-        <h2 class="heading-xlarge small-bottom-margin">
-            @Model.Title
-            <span class="heading-secondary">@Model.EmployerName</span>
-        </h2>
-        <a esfa-automation="link-employer-name" asp-route="@RouteNames.Title_Get" asp-route-wizard="false">Edit</a>
+        <div class="@GetSectionClass(Model.TitleSectionState)">
+            <h2 class="heading-xlarge small-bottom-margin" id="@PreviewAnchors.Title">
+                <esfa-review-marker asp-for="ReviewFieldIndicators" value="@VacancyReview.FieldIdentifiers.Title" />
+                @Model.Title
+                <span class="heading-secondary">@Model.EmployerName</span>
+            </h2>
+            <a esfa-automation="link-employer-name" asp-route="@RouteNames.Title_Get" asp-route-wizard="false">Edit</a>
+        </div>
     </div>
 </div>
 
 <div class="grid-row" id="@PreviewAnchors.ShortDescriptionSection">
     <div class="column-two-thirds">
         <div class="@GetSectionClass(Model.ShortDescriptionSectionState)">
-            <h3 class="heading-small no-top-margin">Brief overview of the role</h3>
+            <h3 class="heading-small no-top-margin" id="@PreviewAnchors.ShortDescription">
+                <esfa-review-marker asp-for="ReviewFieldIndicators" value="@VacancyReview.FieldIdentifiers.ShortDescription" />
+                Brief overview of the role
+            </h3>            
             <span esfa-validation-message-for="ShortDescription" class="error-message"></span>
             <p asp-condition="@Model.HasShortDescription">@Model.ShortDescription</p>
-            @EditLink(RouteNames.ShortDescription_Get, Model.ShortDescriptionSectionState, "link-overview", new{wizard = false})
+            @EditLink(RouteNames.ShortDescription_Get, Model.ShortDescriptionSectionState, "link-overview", new { wizard = false })
         </div>
     </div>
     <div class="column-one-third">
         <div class="@GetSectionClass(Model.ClosingDateSectionState)">
-            <h3 class="heading-small no-top-margin">Closing Date</h3>
+            <h3 class="heading-small no-top-margin" id="@PreviewAnchors.ClosingDate">
+                <esfa-review-marker asp-for="ReviewFieldIndicators" value="@VacancyReview.FieldIdentifiers.ClosingDate" />
+                Closing Date
+            </h3>
             <span esfa-validation-message-for="ClosingDate" class="error-message"></span>
             <p asp-condition="@Model.HasClosingDate">@Model.ClosingDate</p>
             @EditLink(RouteNames.Training_Get, Model.ClosingDateSectionState, "link-closing-date", new { wizard = false })
@@ -79,7 +115,10 @@
     <div class="column-one-third">
         <ul class="list">
             <li class="@GetSectionClass(Model.WorkingWeekSectionState)">
-                <h3 class="heading-small">Working week</h3>
+                <h3 class="heading-small" id="@PreviewAnchors.WorkingWeek">
+                    <esfa-review-marker asp-for="ReviewFieldIndicators" value="@VacancyReview.FieldIdentifiers.WorkingWeek" />
+                    Working week
+                </h3>
                 <span esfa-validation-message-for="Wage" class="error-message"></span>
                 <div asp-condition="@Model.Wage">
                     <span esfa-validation-message-for="WorkingWeekDescription" class="error-message"></span>
@@ -94,7 +133,10 @@
                 @EditLink(RouteNames.Wage_Get, Model.WorkingWeekSectionState, "link-working-week", new { wizard = false })
             </li>
             <li class="@GetSectionClass(Model.WageTextSectionState)">
-                <h3 class="heading-small">Yearly wage</h3>
+                <h3 class="heading-small" id="@PreviewAnchors.YearlyWage">
+                    <esfa-review-marker asp-for="ReviewFieldIndicators" value="@VacancyReview.FieldIdentifiers.Wage" />
+                    Yearly wage
+                </h3>
                 <span esfa-validation-message-for="WageText" class="error-message"></span>
                 <p asp-condition="@Model.HasWageText">@Model.WageText</p>
                 <span esfa-validation-message-for="WageInfo" class="error-message"></span>
@@ -102,20 +144,29 @@
                 @EditLink(RouteNames.Wage_Get, Model.WageTextSectionState, "link-salary", new { wizard = false })
             </li>
             <li class="@GetSectionClass(Model.ExpectedDurationSectionState)">
-                <h3 class="heading-small">Expected apprenticeship duration</h3>
+                <h3 class="heading-small" id="@PreviewAnchors.ExpectedDuration">
+                    <esfa-review-marker asp-for="ReviewFieldIndicators" value="@VacancyReview.FieldIdentifiers.ExpectedDuration" />
+                    Expected apprenticeship duration
+                </h3>
                 <span esfa-validation-message-for="ExpectedDuration" class="error-message"></span>
                 <p asp-condition="@Model.HasExpectedDuration">@Model.ExpectedDuration</p>
                 @EditLink(RouteNames.Wage_Get, Model.ExpectedDurationSectionState, "link-duration", new { wizard = false })
                 
             </li>
             <li class="@GetSectionClass(Model.PossibleStartDateSectionState)">
-                <h3 class="heading-small">Possible start date</h3>
+                <h3 class="heading-small" id="@PreviewAnchors.PossibleStartDate">
+                    <esfa-review-marker asp-for="ReviewFieldIndicators" value="@VacancyReview.FieldIdentifiers.PossibleStartDate" />
+                    Possible start date
+                </h3>
                 <span esfa-validation-message-for="PossibleStartDate" class="error-message"></span>
                 <p asp-condition="@Model.HasPossibleStartDate">@Model.PossibleStartDate</p>
                 @EditLink(RouteNames.Training_Get, Model.PossibleStartDateSectionState, "link-start-date", new { wizard = false })
             </li>
             <li class="@GetSectionClass(Model.TrainingLevelSectionState)">
-                <h3 class="heading-small">Apprenticeship level</h3>
+                <h3 class="heading-small" id="@PreviewAnchors.TrainingLevel">
+                    <esfa-review-marker asp-for="ReviewFieldIndicators" value="@VacancyReview.FieldIdentifiers.TrainingLevel" />
+                    Apprenticeship level
+                </h3>
                 <span esfa-validation-message-for="Programme" class="error-message"></span>
                 <span esfa-validation-message-for="TrainingLevel" class="error-message"></span>
                 <p asp-condition="@Model.HasTrainingLevel">@Model.TrainingLevel Level Apprenticeship</p>
@@ -126,7 +177,10 @@
                 <p>@Model.VacancyReferenceNumber</p>
             </li>
             <li class="@GetSectionClass(Model.NumberOfPositionsSectionState)">
-                <h3 class="heading-small">Positions</h3>
+                <h3 class="heading-small" id="@PreviewAnchors.NumberOfPositions">
+                    <esfa-review-marker asp-for="ReviewFieldIndicators" value="@VacancyReview.FieldIdentifiers.NumberOfPositions" />
+                    Positions
+                </h3>
                 <span esfa-validation-message-for="NumberOfPositions" class="error-message"></span>
                 <p asp-condition="@Model.HasNumberOfPositionsCaption">@Model.NumberOfPositionsCaption</p>
                 @EditLink(RouteNames.Title_Get, Model.NumberOfPositionsSectionState, "link-positions", new { wizard = false })
@@ -136,13 +190,22 @@
     <div class="column-two-thirds">
         <div class="@GetSectionClass(Model.DescriptionsSectionState)">
             <h3 asp-condition="@Model.HasIncompleteVacancyDescription" class="heading-small">Vacancy description</h3>
-            <h3 asp-condition="@Model.HasVacancyDescription" class="heading-small">Typical working day</h3>
+            <h3 asp-condition="@Model.HasVacancyDescription" class="heading-small" id="@PreviewAnchors.VacancyDescription">
+                <esfa-review-marker asp-for="ReviewFieldIndicators" value="@VacancyReview.FieldIdentifiers.VacancyDescription" />
+                Typical working day
+            </h3>
             <span esfa-validation-message-for="VacancyDescription" class="error-message"></span>
             <p asp-condition="@Model.HasVacancyDescription">@Model.VacancyDescription</p>
-            <h3 asp-condition="@Model.HasTrainingDescription" class="heading-small">Training to be provided</h3>
+            <h3 asp-condition="@Model.HasTrainingDescription" class="heading-small" id="@PreviewAnchors.TrainingDescription">
+                <esfa-review-marker asp-for="ReviewFieldIndicators" value="@VacancyReview.FieldIdentifiers.TrainingDescription" />
+                Training to be provided
+            </h3>
             <span esfa-validation-message-for="TrainingDescription" class="error-message"></span>
             <p asp-condition="@Model.HasTrainingDescription">@Model.TrainingDescription</p>
-            <h3 asp-condition="@Model.HasOutcomeDescription" class="heading-small">Future prospects</h3>
+            <h3 asp-condition="@Model.HasOutcomeDescription" class="heading-small" id="@PreviewAnchors.OutcomeDescription">
+                <esfa-review-marker asp-for="ReviewFieldIndicators" value="@VacancyReview.FieldIdentifiers.OutcomeDescription" />
+                Future prospects
+            </h3>
             <span esfa-validation-message-for="OutcomeDescription" class="error-message"></span>
             <p asp-condition="@Model.HasOutcomeDescription">@Model.OutcomeDescription</p>
             @EditLink(RouteNames.VacancyDescription_Index_Get, Model.DescriptionsSectionState, "link-vacancy-description")
@@ -166,13 +229,19 @@
 <div class="grid-row">
     <div class="column-half">
         <div class="@GetSectionClass(Model.SkillsSectionState)">
-            <h3 class="heading-small">Desired skills and personal qualities</h3>
+            <h3 class="heading-small" id="@PreviewAnchors.Skills">
+                <esfa-review-marker asp-for="ReviewFieldIndicators" value="@VacancyReview.FieldIdentifiers.Skills" />
+                Desired skills and personal qualities
+            </h3>
             <span esfa-validation-message-for="Skills" class="error-message"></span>
             <p asp-condition="@Model.HasSkills" >@string.Join(", ", Model.Skills)</p>
             @EditLink(RouteNames.Skills_Get, Model.SkillsSectionState, "link-skills")
         </div>
         <div class="@GetSectionClass(Model.QualificationsSectionState)">
-            <h3 class="heading-small">Qualifications</h3>
+            <h3 class="heading-small" id="@PreviewAnchors.Qualifications">
+                <esfa-review-marker asp-for="ReviewFieldIndicators" value="@VacancyReview.FieldIdentifiers.Qualifications" />
+                Qualifications
+            </h3>
             <span esfa-validation-message-for="Qualifications" class="error-message"></span>
             <p asp-condition="@Model.HasQualifications">
                 @foreach (var qualification in Model.Qualifications)
@@ -185,7 +254,10 @@
     </div>
     <div class="column-half">
         <div class="@GetSectionClass(Model.ThingsToConsiderSectionState)">
-            <h3 class="heading-small">Things to consider (optional)</h3>
+            <h3 class="heading-small" id="@PreviewAnchors.ThingsToConsider">
+                <esfa-review-marker asp-for="ReviewFieldIndicators" value="@VacancyReview.FieldIdentifiers.ThingsToConsider" />
+                Things to consider (optional)
+            </h3>
             <span esfa-validation-message-for="ThingsToConsider" class="error-message"></span>
             <p asp-condition="@Model.HasThingsToConsider">@Model.ThingsToConsider</p>
             @EditLink(RouteNames.Considerations_Get, Model.ThingsToConsiderSectionState, "link-things-to-consider")
@@ -208,7 +280,10 @@
 <div class="grid-row">
     <div class="column-two-thirds">
         <div class="@GetSectionClass(Model.EmployerDescriptionSectionState)">
-            <h3 class="heading-small">Description</h3>
+            <h3 class="heading-small" id="@PreviewAnchors.EmployerDescription">
+                <esfa-review-marker asp-for="ReviewFieldIndicators" value="@VacancyReview.FieldIdentifiers.EmployerDescription" />
+                Description
+            </h3>
             <span esfa-validation-message-for="EmployerDescription" class="error-message"></span>
             <p asp-condition="@Model.HasEmployerDescription">@Model.EmployerDescription</p>
             @EditLink(RouteNames.AboutEmployer_Get, Model.EmployerDescriptionSectionState, "link-description")
@@ -219,15 +294,21 @@
             <p asp-condition="@Model.HasEmployerName">@Model.EmployerName</p>
             @EditLink(RouteNames.Employer_Get, Model.EmployerNameSectionState, "link-employer", new{ wizard = false})
         </div>
-        <div>
-            <h3 class="heading-small">Disability Confident (optional)</h3>
+        <div class="@GetSectionClass(Model.DisabilityConfidentSectionState)">
+            <h3 class="heading-small" id="@PreviewAnchors.DisabilityConfident">
+                <esfa-review-marker asp-for="ReviewFieldIndicators" value="@VacancyReview.FieldIdentifiers.DisabilityConfident" />
+                Disability Confident (optional)
+            </h3>
             <img asp-condition="@Model.IsDisabilityConfident" src="~/img/disability-confident_545x172.png" class="disability-confident-logo" alt="A logo confirming that the employer is registered as disability confident" />
             @Html.Partial(PartialNames.DisabilityConfident, Model.IsDisabilityConfident)
             <p asp-condition="@Model.IsNotDisabilityConfident" class="form-hint">This vacancy is not Disability Confident<br />This will not appear on the vacancy when it goes live</p>
             @EditLink(RouteNames.Training_Get, Model.TrainingSectionState, "link-standard", new {wizard = false})
         </div>
         <div class="@GetSectionClass(Model.EmployerWebsiteUrlSectionState)">
-            <h3 class="heading-small">Website (optional)</h3>
+            <h3 class="heading-small" id="@PreviewAnchors.EmployerWebsiteUrl">
+                <esfa-review-marker asp-for="ReviewFieldIndicators" value="@VacancyReview.FieldIdentifiers.EmployerWebsiteUrl" />
+                Website (optional)
+            </h3>
             <span esfa-validation-message-for="EmployerWebsiteUrl" class="error-message"></span>
             <p asp-condition="@Model.HasEmployerWebsiteUrl">@Model.EmployerWebsiteUrl</p>
             @EditLink(RouteNames.AboutEmployer_Get, Model.EmployerWebsiteUrlSectionState, "link-website")
@@ -235,7 +316,8 @@
     </div>
     <div class="column-one-third">
         <div class="@GetSectionClass(Model.ContactSectionState)">
-            <h3 class="heading-small">
+            <h3 class="heading-small" id="@PreviewAnchors.EmployerContact">
+                <esfa-review-marker asp-for="ReviewFieldIndicators" value="@VacancyReview.FieldIdentifiers.EmployerContact" />
                 Contact details (optional)
             </h3>
             <span esfa-validation-message-for="ContactName" class="error-message"></span>
@@ -252,7 +334,10 @@
 <div class="grid-row">
     <div class="column-half">
         <div class="@GetSectionClass(Model.EmployerAddressSectionState)">
-            <h3 class="heading-small">Location</h3>
+            <h3 class="heading-small" id="@PreviewAnchors.EmployerAddress">
+                <esfa-review-marker asp-for="ReviewFieldIndicators" value="@VacancyReview.FieldIdentifiers.EmployerAddress" />
+                Location
+            </h3>
             <span esfa-validation-message-for="EmployerAddressElements" class="error-message"></span>
             <ul asp-condition="@Model.HasEmployerAddressElements" class="list">
                 @foreach (var addrLine in Model.EmployerAddressElements)
@@ -283,13 +368,19 @@
 <div class="grid-row">
     <div class="column-full">
         <div class="@GetSectionClass(Model.ProviderSectionState)">
-            <h3 class="heading-small">Training provider</h3>
+            <h3 class="heading-small" id="@PreviewAnchors.Provider">
+                <esfa-review-marker asp-for="ReviewFieldIndicators" value="@VacancyReview.FieldIdentifiers.Provider" />
+                Training provider
+            </h3>
             <span esfa-validation-message-for="ProviderName" class="error-message"></span>
             <p asp-condition="@Model.HasProviderName">@Model.ProviderName</p>
             @EditLink(RouteNames.TrainingProvider_Select_Get, Model.ProviderSectionState, "link-training-provider")
         </div>
         <div class="@GetSectionClass(Model.TrainingSectionState)">
-            <h3 class="heading-small">Apprenticeship @Model.TrainingType</h3>
+            <h3 class="heading-small" id="@PreviewAnchors.Training">
+                <esfa-review-marker asp-for="ReviewFieldIndicators" value="@VacancyReview.FieldIdentifiers.Training" />
+                Apprenticeship @Model.TrainingType
+            </h3>
             <p asp-condition="@Model.HasTrainingTitle">@Model.TrainingTitle</p>
             @EditLink(RouteNames.Training_Get, Model.TrainingSectionState, "link-standard", new {wizard = false})
         </div>
@@ -311,22 +402,31 @@
             <span esfa-validation-message-for="ApplicationMethod" class="error-message"></span>
             @EditLink(RouteNames.ApplicationProcess_Get, Model.ApplicationMethodSectionState, "link-application-method")
         </div>
-        <div asp-condition="@Model.HasSpecifiedThroughFaaApplicationMethod">
-            <p>Candidates will apply through the <a href="@Model.FindAnApprenticeshipUrl" target="_blank">find an apprenticeship service</a></p>
+        <div asp-condition="@Model.HasSpecifiedThroughFaaApplicationMethod" class="@GetSectionClass(Model.ApplicationMethodSectionState)">
+            <p id="@PreviewAnchors.ApplicationMethod">
+                <esfa-review-marker asp-for="ReviewFieldIndicators" value="@VacancyReview.FieldIdentifiers.ApplicationMethod" />
+                Candidates will apply through the <a href="@Model.FindAnApprenticeshipUrl" target="_blank">find an apprenticeship service</a>
+            </p>
             @EditLink(RouteNames.ApplicationProcess_Get, Model.ApplicationMethodSectionState, "link-application-method")
         </div>
         <div asp-condition="@Model.HasSpecifiedThroughExternalApplicationMethod">
             <div asp-condition="@Model.HasApplicationUrl">
                 <p>This apprenticeship requires you to apply through the employer's website.</p>
                 <div class="@GetSectionClass(Model.ApplicationUrlSectionState)">
-                    <h2 class="heading-small">Apply now web address</h2>
+                    <h2 class="heading-small" id="@PreviewAnchors.ApplicationUrl">
+                        <esfa-review-marker asp-for="ReviewFieldIndicators" value="@VacancyReview.FieldIdentifiers.ApplicationUrl" />
+                        Apply now web address
+                    </h2>
                     <span esfa-validation-message-for="ApplicationUrl" class="error-message"></span>
                     <p>@Model.ApplicationUrl</p>
                     @EditLink(RouteNames.ApplicationProcess_Get, Model.ApplicationUrlSectionState, "link-application-link")
                 </div>
             </div>
             <div class="@GetSectionClass(Model.ApplicationInstructionsSectionState)">
-                <h2 class="heading-small">Explain the application process (optional)</h2>
+                <h2 class="heading-small" id="@PreviewAnchors.ApplicationInstructions">
+                    <esfa-review-marker asp-for="ReviewFieldIndicators" value="@VacancyReview.FieldIdentifiers.ApplicationUrl" />
+                    Explain the application process (optional)
+                </h2>
                 <span esfa-validation-message-for="ApplicationInstructions" class="error-message"></span>
                 <p>@Model.ApplicationInstructions</p>
                 @EditLink(RouteNames.ApplicationProcess_Get, Model.ApplicationInstructionsSectionState, "link-application-instructions")

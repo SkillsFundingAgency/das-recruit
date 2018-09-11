@@ -10,10 +10,10 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         [FromRoute]
         public Guid ReviewId {get;set;}
 
-        public List<string> SelectedFieldIdentifers { get; set; } = new List<string>();
+        public List<string> SelectedFieldIdentifiers { get; set; } = new List<string>();
 
         public string ReviewerComment { get; set; }
 
-        public bool IsRefer => SelectedFieldIdentifers.Any();
+        public bool IsRefer => SelectedFieldIdentifiers.Any();
     }
 }

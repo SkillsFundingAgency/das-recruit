@@ -20,17 +20,18 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
 
         private static readonly List<string> FieldIndicators = new List<string>
         {
-            VacancyReview.FieldIdentifiers.ApplicationProcess,
+            VacancyReview.FieldIdentifiers.ApplicationInstructions,
+            VacancyReview.FieldIdentifiers.ApplicationMethod,
+            VacancyReview.FieldIdentifiers.ApplicationUrl,
             VacancyReview.FieldIdentifiers.ClosingDate,
-            VacancyReview.FieldIdentifiers.Contact,
-            VacancyReview.FieldIdentifiers.Description,
+            VacancyReview.FieldIdentifiers.EmployerContact,
             VacancyReview.FieldIdentifiers.DisabilityConfident,
             VacancyReview.FieldIdentifiers.EmployerAddress,
-            VacancyReview.FieldIdentifiers.EmployerName,
             VacancyReview.FieldIdentifiers.EmployerDescription,
             VacancyReview.FieldIdentifiers.EmployerWebsiteUrl,
             VacancyReview.FieldIdentifiers.ExpectedDuration,
             VacancyReview.FieldIdentifiers.NumberOfPositions,
+            VacancyReview.FieldIdentifiers.OutcomeDescription,
             VacancyReview.FieldIdentifiers.PossibleStartDate,
             VacancyReview.FieldIdentifiers.Provider,
             VacancyReview.FieldIdentifiers.Qualifications,
@@ -38,7 +39,9 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             VacancyReview.FieldIdentifiers.ShortDescription,
             VacancyReview.FieldIdentifiers.ThingsToConsider,
             VacancyReview.FieldIdentifiers.Training,
+            VacancyReview.FieldIdentifiers.TrainingDescription,
             VacancyReview.FieldIdentifiers.TrainingLevel,
+            VacancyReview.FieldIdentifiers.VacancyDescription,
             VacancyReview.FieldIdentifiers.Wage,
             VacancyReview.FieldIdentifiers.WorkingWeek,
         };
@@ -57,7 +60,7 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             var manualQaFieldIndicators = FieldIndicators.Select(f => new ManualQaFieldIndicator
             {
                 FieldIdentifier = f,
-                IsChangeRequested = m.SelectedFieldIdentifers.Contains(f)
+                IsChangeRequested = m.SelectedFieldIdentifiers.Contains(f)
             }).ToList();
 
             if (m.IsRefer)
@@ -109,7 +112,7 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
         {
             var vm = await GetReviewViewModelAsync(model.ReviewId, user);
 
-            vm.SelectedFieldIdentifers = model.SelectedFieldIdentifers;
+            vm.SelectedFieldIdentifiers = model.SelectedFieldIdentifiers;
 
             vm.ReviewerComment = model.ReviewerComment;
 
