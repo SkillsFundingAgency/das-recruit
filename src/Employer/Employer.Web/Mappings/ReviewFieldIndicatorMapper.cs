@@ -44,6 +44,15 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             new ReviewFieldIndicatorViewModel(FieldIdentifiers.ShortDescription, "ShortDescription", "Brief overview of the role requires edit"),
         };
 
+        public static readonly List<ReviewFieldIndicatorViewModel> TrainingReviewFieldIndicators = new List<ReviewFieldIndicatorViewModel>
+        {
+            new ReviewFieldIndicatorViewModel(FieldIdentifiers.ClosingDate, "ClosingDay", "Closing date requires edit"),
+            new ReviewFieldIndicatorViewModel(FieldIdentifiers.PossibleStartDate, "StartDay", "Possible start date requires edit"),
+            new ReviewFieldIndicatorViewModel(FieldIdentifiers.Training, "SelectedProgrammeId", "Training requires edit"),
+            new ReviewFieldIndicatorViewModel(FieldIdentifiers.TrainingLevel, "SelectedProgrammeId", "Apprenticeship level requires edit"),
+            new ReviewFieldIndicatorViewModel(FieldIdentifiers.DisabilityConfident, "IsDisabilityConfident", "Disability confident requires edit"),
+        };
+
         public static IEnumerable<ReviewFieldIndicatorViewModel> MapFromFieldIndicators(IEnumerable<ReviewFieldIndicatorViewModel> reviewFieldIndicatorsForPage, List<ManualQaFieldIndicator> reviewFieldIndicators)
         {
             var selectedFieldIdentifiers = reviewFieldIndicators
