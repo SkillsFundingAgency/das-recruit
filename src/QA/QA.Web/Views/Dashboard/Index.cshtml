@@ -1,11 +1,5 @@
 @using Esfa.Recruit.Vacancies.Client.Domain.Extensions
 @model DashboardViewModel
-@functions {
-    string GetAssignmentInfo(string assignedToCaption, string assignedTimeElapsedCaption)
-    {
-        return $"Assigned to {assignedToCaption}. Being reviewed {assignedTimeElapsedCaption}.";
-    }
-}
 <div asp-condition="@Model.HasDashboardMessage" class="grid-row">
     <div class="column-full">
         <div class="info-summary">
@@ -18,12 +12,12 @@
     <div class="column-two-thirds">
         <form asp-route="@RouteNames.Dashboard_Next_Vacancy_Post">
             <button class="button small-top-margin" type="submit">Review First Vacancy</button>
-        </form> 
+        </form>
     </div>
     <div class="column-one-third">
         <form asp-route="@RouteNames.Dashboard_Index_Get" method="get">
             <div class="search-field small-top-margin">
-                <fieldset class="search-input ">
+                <fieldset class="search-input">
                     <input asp-for="SearchTerm" placeholder="Search vacancies" class="form-control" maxlength="200"/>
                 </fieldset>
                 <fieldset class="search-submit">
@@ -39,18 +33,18 @@
         <h2 class="heading-medium no-bottom-margin">Statistics</h2>
         <table>
             <thead>
-            <tr>
-                <th>Total vacancies</th>
-                <th>Submitted +24 hours</th>
-                <th>Resubmitted vacancies</th>
-            </tr>
+                <tr>
+                    <th>Total vacancies</th>
+                    <th>Submitted +24 hours</th>
+                    <th>Resubmitted vacancies</th>
+                </tr>
             </thead>
             <tbody>
-            <tr>
-                <td>@Model.TotalVacanciesForReview</td>
-                <td>@Model.TotalVacanciesBrokenSla</td>
-                <td>@Model.TotalVacanciesResubmitted</td>
-            </tr>
+                <tr>
+                    <td>@Model.TotalVacanciesForReview</td>
+                    <td>@Model.TotalVacanciesBrokenSla</td>
+                    <td>@Model.TotalVacanciesResubmitted</td>
+                </tr>
             </tbody>
         </table>
     </div>
@@ -62,7 +56,7 @@
 
 <div asp-condition="@Model.DisplayInProgressResults" class="grid-row">
     <table>
-        <tbody>
+        <thead>
             <tr>
                 <th class="bold">Employer</th>
                 <th class="bold">Vacancy Title</th>
@@ -71,10 +65,11 @@
                 <th class="bold">Closing Date</th>
                 <th class="bold"></th>
             </tr>
-        </tbody>
+        </thead>
+        <tbody>
         @foreach (var vacancy in Model.InProgressVacancies)
         {
-            var assignmentInfoCaption = GetAssignmentInfo(vacancy.AssignmentToCaption, vacancy.AssignedTimeElapsedCaption);
+            var assignmentInfoCaption = vacancy.GetAssignmentInfoCaption(vacancy.AssignmentToCaption, vacancy.AssignedTimeElapsedCaption);
             <tr>
                 <td>@vacancy.EmployerName</td>
                 <td>@vacancy.VacancyTitle</td>
@@ -84,6 +79,7 @@
                 <td>@assignmentInfoCaption</td>
             </tr>
         }
+        </tbody>
     </table>
 </div>
 
@@ -94,19 +90,20 @@
 
 <div asp-condition="@Model.DisplaySearchResults" class="grid-row">
     <table>
+        <thead>
+            <tr>
+                <th class="bold">Employer</th>
+                <th class="bold">Vacancy Title</th>
+                <th class="bold">Reference Number</th>
+                <th class="bold">Submitted Date</th>
+                <th class="bold">Closing Date</th>
+                <th class="bold"></th>
+            </tr>
+        </thead>
         <tbody>
-        <tr>
-            <th class="bold">Employer</th>
-            <th class="bold">Vacancy Title</th>
-            <th class="bold">Reference Number</th>
-            <th class="bold">Submitted Date</th>
-            <th class="bold">Closing Date</th>
-            <th class="bold"></th>
-        </tr>
-        </tbody>
         @foreach (var vacancy in Model.SearchResults)
         {
-            var assignmentInfoCaption = GetAssignmentInfo(vacancy.AssignmentToCaption, vacancy.AssignedTimeElapsedCaption);
+            var assignmentInfoCaption = vacancy.GetAssignmentInfoCaption(vacancy.AssignmentToCaption, vacancy.AssignedTimeElapsedCaption);
             <tr>
                 <td>@vacancy.EmployerName</td>
                 <td>@vacancy.VacancyTitle</td>
@@ -115,11 +112,12 @@
                 <td>@vacancy.ClosingDate.AsGdsDate()</td>
                 <td>
                     <span>@assignmentInfoCaption</span>
-                    <br asp-condition="@vacancy.IsAvailableForReview == false"/>
+                    <br asp-condition="@vacancy.IsNotAvailableForReview"/>
                     <a asp-condition="@vacancy.IsAvailableForReview" asp-route="@RouteNames.Vacancy_Review_Get" asp-route-reviewId="@vacancy.ReviewId">Review</a>
                 </td>
             </tr>
         }
+        </tbody>
     </table>
 </div>
 
@@ -127,22 +125,24 @@
 <div class="grid-row">
     <div class="column-full">
         <table>
-            <tbody>
+            <thead>
                 <tr>
                     <th class="bold">Vacancy title</th>
                     <th class="bold">Status</th>
                 </tr>
-                @foreach (var item in Model.AllReviews)
-                {
-                    <tr>
-                        <td>
-                            <a asp-route="@GetRoute(item)" asp-route-reviewId="@item.ReviewId">@item.Title</a>
-                        </td>
-                        <td>
-                            @item.Status
-                        </td>
-                    </tr>
-                }
+            </thead>
+            <tbody>
+            @foreach (var item in Model.AllReviews)
+            {
+                <tr>
+                    <td>
+                        <a asp-route="@GetRoute(item)" asp-route-reviewId="@item.ReviewId">@item.Title</a>
+                    </td>
+                    <td>
+                        @item.Status
+                    </td>
+                </tr>
+            }
             </tbody>
         </table>
     </div>
