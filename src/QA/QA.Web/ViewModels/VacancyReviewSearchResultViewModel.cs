@@ -2,7 +2,7 @@
 
 namespace Esfa.Recruit.Qa.Web.ViewModels
 {
-    public class VacancyReviewSearchModel
+    public class VacancyReviewSearchResultViewModel
     {
         public Guid ReviewId { get; internal set; }
 

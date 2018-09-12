@@ -69,7 +69,7 @@
         <tbody>
         @foreach (var vacancy in Model.InProgressVacancies)
         {
-            var assignmentInfoCaption = vacancy.GetAssignmentInfoCaption(vacancy.AssignmentToCaption, vacancy.AssignedTimeElapsedCaption);
+            var assignmentInfoCaption = vacancy.GetAssignmentInfoCaption();
             <tr>
                 <td>@vacancy.EmployerName</td>
                 <td>@vacancy.VacancyTitle</td>
@@ -103,7 +103,7 @@
         <tbody>
         @foreach (var vacancy in Model.SearchResults)
         {
-            var assignmentInfoCaption = vacancy.GetAssignmentInfoCaption(vacancy.AssignmentToCaption, vacancy.AssignedTimeElapsedCaption);
+            var assignmentInfoCaption = vacancy.GetAssignmentInfoCaption();
             <tr>
                 <td>@vacancy.EmployerName</td>
                 <td>@vacancy.VacancyTitle</td>
