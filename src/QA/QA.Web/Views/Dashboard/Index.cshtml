@@ -1,5 +1,11 @@
 @using Esfa.Recruit.Vacancies.Client.Domain.Extensions
 @model DashboardViewModel
+@functions {
+    string GetAssignmentInfo(string assignedToCaption, string assignedTimeElapsedCaption)
+    {
+        return $"Assigned to {assignedToCaption}. Being reviewed {assignedTimeElapsedCaption}.";
+    }
+}
 <div asp-condition="@Model.HasDashboardMessage" class="grid-row">
     <div class="column-full">
         <div class="info-summary">
@@ -68,7 +74,7 @@
         </tbody>
         @foreach (var vacancy in Model.InProgressVacancies)
         {
-            var assignmentInfoCaption = $"Assigned to {@vacancy.AssignmentToCaption}. Being reviewed {@vacancy.AssignedTimeElapsedCaption}.";
+            var assignmentInfoCaption = GetAssignmentInfo(vacancy.AssignmentToCaption, vacancy.AssignedTimeElapsedCaption);
             <tr>
                 <td>@vacancy.EmployerName</td>
                 <td>@vacancy.VacancyTitle</td>
@@ -100,7 +106,7 @@
         </tbody>
         @foreach (var vacancy in Model.SearchResults)
         {
-            var assignmentInfoCaption = $"Assigned to {@vacancy.AssignmentToCaption}. Being reviewed {@vacancy.AssignedTimeElapsedCaption}.";
+            var assignmentInfoCaption = GetAssignmentInfo(vacancy.AssignmentToCaption, vacancy.AssignedTimeElapsedCaption);
             <tr>
                 <td>@vacancy.EmployerName</td>
                 <td>@vacancy.VacancyTitle</td>
