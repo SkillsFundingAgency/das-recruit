@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Esfa.Recruit.Employer.Web.ViewModels.Part1.ShortDescription;
+using Esfa.Recruit.Employer.Web.ViewModels.Part1.Training;
 using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Employer.Web.Views;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -9,7 +11,7 @@ namespace Esfa.Recruit.Employer.Web.Mappings
 {
     public static class ReviewFieldIndicatorMapper
     {
-        public static readonly List<ReviewFieldIndicatorViewModel> PreviewReviewFieldIndicators = new List<ReviewFieldIndicatorViewModel>
+        public static readonly IReadOnlyList<ReviewFieldIndicatorViewModel> PreviewReviewFieldIndicators = new List<ReviewFieldIndicatorViewModel>
         {
             //These need to be added in display order
             new ReviewFieldIndicatorViewModel(FieldIdentifiers.Title, PreviewAnchors.Title, "Title requires edit"),
@@ -39,18 +41,18 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             new ReviewFieldIndicatorViewModel(FieldIdentifiers.ApplicationInstructions, PreviewAnchors.ApplicationInstructions, "Application process requires edit")
         };
 
-        public static readonly List<ReviewFieldIndicatorViewModel> ShortDescriptionReviewFieldIndicators = new List<ReviewFieldIndicatorViewModel>
+        public static readonly IReadOnlyList<ReviewFieldIndicatorViewModel> ShortDescriptionReviewFieldIndicators = new List<ReviewFieldIndicatorViewModel>
         {
-            new ReviewFieldIndicatorViewModel(FieldIdentifiers.ShortDescription, "ShortDescription", "Brief overview of the role requires edit"),
+            new ReviewFieldIndicatorViewModel(FieldIdentifiers.ShortDescription, nameof(ShortDescriptionEditModel.ShortDescription), "Brief overview of the role requires edit"),
         };
 
-        public static readonly List<ReviewFieldIndicatorViewModel> TrainingReviewFieldIndicators = new List<ReviewFieldIndicatorViewModel>
+        public static readonly IReadOnlyList<ReviewFieldIndicatorViewModel> TrainingReviewFieldIndicators = new List<ReviewFieldIndicatorViewModel>
         {
-            new ReviewFieldIndicatorViewModel(FieldIdentifiers.ClosingDate, "ClosingDay", "Closing date requires edit"),
-            new ReviewFieldIndicatorViewModel(FieldIdentifiers.PossibleStartDate, "StartDay", "Possible start date requires edit"),
-            new ReviewFieldIndicatorViewModel(FieldIdentifiers.Training, "SelectedProgrammeId", "Training requires edit"),
-            new ReviewFieldIndicatorViewModel(FieldIdentifiers.TrainingLevel, "SelectedProgrammeId", "Apprenticeship level requires edit"),
-            new ReviewFieldIndicatorViewModel(FieldIdentifiers.DisabilityConfident, "IsDisabilityConfident", "Disability confident requires edit"),
+            new ReviewFieldIndicatorViewModel(FieldIdentifiers.ClosingDate, nameof(TrainingEditModel.ClosingDay), "Closing date requires edit"),
+            new ReviewFieldIndicatorViewModel(FieldIdentifiers.PossibleStartDate, nameof(TrainingEditModel.StartDay), "Possible start date requires edit"),
+            new ReviewFieldIndicatorViewModel(FieldIdentifiers.Training, nameof(TrainingEditModel.SelectedProgrammeId), "Training requires edit"),
+            new ReviewFieldIndicatorViewModel(FieldIdentifiers.TrainingLevel, nameof(TrainingEditModel.SelectedProgrammeId), "Apprenticeship level requires edit"),
+            new ReviewFieldIndicatorViewModel(FieldIdentifiers.DisabilityConfident, nameof(TrainingEditModel.IsDisabilityConfident), "Disability confident requires edit"),
         };
 
         public static IEnumerable<ReviewFieldIndicatorViewModel> MapFromFieldIndicators(IEnumerable<ReviewFieldIndicatorViewModel> reviewFieldIndicatorsForPage, List<ManualQaFieldIndicator> reviewFieldIndicators)
