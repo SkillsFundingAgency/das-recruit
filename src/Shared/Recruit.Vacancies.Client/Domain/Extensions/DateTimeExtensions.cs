@@ -23,5 +23,19 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Extensions
         {
             return date.Year == DateTime.MinValue.Year ? "Current" : date.ToString("MMM yyyy");
         }
+
+        public static string GetShortTimeElapsed(this DateTime? value, DateTime currentTime)
+        {
+            if (value == null) return string.Empty;
+            var diff = currentTime - value.Value;
+
+            if (diff < TimeSpan.FromMinutes(1))
+                return null;
+
+            var hours = diff.Hours > 0 ? $"{diff.Hours}h" : string.Empty;
+            var minutes = diff.Minutes > 0 ? $"{diff.Minutes}m" : string.Empty;
+
+            return $"{hours} {minutes}";
+        }
     }
 }
