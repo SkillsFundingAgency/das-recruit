@@ -38,5 +38,8 @@
         public const string ApplicationMethod = "ApplicationMethod";
         public const string ApplicationUrl = "ApplicationUrl";
         public const string ApplicationInstructions = "ApplicationInstructions";
+
+        //Wage
+        public const string WageTypeHeading = "WageTypeHeading";
     }
 }

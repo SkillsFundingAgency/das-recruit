@@ -2,6 +2,7 @@
 using System.Linq;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.ShortDescription;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Training;
+using Esfa.Recruit.Employer.Web.ViewModels.Part1.Wage;
 using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Employer.Web.Views;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -53,6 +54,13 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             new ReviewFieldIndicatorViewModel(FieldIdentifiers.Training, nameof(TrainingEditModel.SelectedProgrammeId), "Training requires edit"),
             new ReviewFieldIndicatorViewModel(FieldIdentifiers.TrainingLevel, nameof(TrainingEditModel.SelectedProgrammeId), "Apprenticeship level requires edit"),
             new ReviewFieldIndicatorViewModel(FieldIdentifiers.DisabilityConfident, nameof(TrainingEditModel.IsDisabilityConfident), "Disability confident requires edit"),
+        };
+
+        public static readonly IReadOnlyList<ReviewFieldIndicatorViewModel> WageReviewFieldIndicators = new List<ReviewFieldIndicatorViewModel>
+        {
+            new ReviewFieldIndicatorViewModel(FieldIdentifiers.ExpectedDuration, nameof(WageViewModel.Duration), "Expected duration requires edit"),
+            new ReviewFieldIndicatorViewModel(FieldIdentifiers.WorkingWeek, nameof(WageViewModel.WorkingWeekDescription), "Working week requires edit"),
+            new ReviewFieldIndicatorViewModel(FieldIdentifiers.Wage, Anchors.WageTypeHeading, "Wage requires edit")
         };
 
         public static IEnumerable<ReviewFieldIndicatorViewModel> MapFromFieldIndicators(IEnumerable<ReviewFieldIndicatorViewModel> reviewFieldIndicatorsForPage, List<ManualQaFieldIndicator> reviewFieldIndicators)
