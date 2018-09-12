@@ -1,8 +1,8 @@
 ﻿namespace Esfa.Recruit.Employer.Web.Views
 {
-    public static class PreviewAnchors
+    public static class Anchors
     {
-        //Sections
+        //Preview Sections
         public const string ApprenticeshipSummarySection = "apprenticeshipSummary";
         public const string RequirementsAndProspectsSection = "reqAndProspects";
         public const string AboutEmployerSection = "aboutEmployer";
@@ -12,7 +12,7 @@
         public const string ShortDescriptionSection = "shortDescription";
         public const string VacancyDescriptionSection = "vacancyDescription";
 
-        //Fields
+        //Preview Fields
         public const string Title = "Title";
         public const string ShortDescription = "ShortDescription";
         public const string ClosingDate = "ClosingDate";
@@ -38,6 +38,5 @@
         public const string ApplicationMethod = "ApplicationMethod";
         public const string ApplicationUrl = "ApplicationUrl";
         public const string ApplicationInstructions = "ApplicationInstructions";
-
     }
 }
