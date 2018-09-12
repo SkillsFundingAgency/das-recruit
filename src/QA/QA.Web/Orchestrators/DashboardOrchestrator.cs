@@ -10,6 +10,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.QA;
+using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 
 namespace Esfa.Recruit.Qa.Web.Orchestrators
 {
@@ -55,30 +56,16 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             return new VacancyReviewSearchModel()
             {
                 AssignedTo = vacancyUser.UserId == qaVacancySummary.ReviewAssignedToUserId ? null : qaVacancySummary.ReviewAssignedToUserName,
-                AssignedTimeElapsed = GetAssignmentTimeElapsed(qaVacancySummary.ReviewStartedOn),
+                AssignedTimeElapsed = qaVacancySummary.ReviewStartedOn.GetShortTimeElapsed(_timeProvider.Now),
                 ClosingDate = qaVacancySummary.ClosingDate.ToLocalTime(),
                 EmployerName = qaVacancySummary.EmployerName,
-                VacancyReference = $"VAC{qaVacancySummary.VacancyReference}",
+                VacancyReference = qaVacancySummary.VacancyReference.ToString(),
                 VacancyTitle = qaVacancySummary.Title,
                 ReviewId = qaVacancySummary.Id,
                 SubmittedDate = qaVacancySummary.SubmittedDate.ToLocalTime(),
                 IsAvailableForReview = qaVacancySummary.ReviewAssignedToUserId == vacancyUser.UserId || isAvailableForReview,
                 IsNotAvailableForReview = !isAvailableForReview
             };
-        }
-
-        private string GetAssignmentTimeElapsed(DateTime? value)
-        {
-            if (value == null) return string.Empty;
-            var diff = _timeProvider.Now - value.Value;
-
-            if (diff < TimeSpan.FromMinutes(1))
-                return null;
-
-            var hours = diff.Hours > 0 ? $"{diff.Hours}h" : string.Empty;
-            var minutes = diff.Minutes > 0 ? $"{diff.Minutes}m" : string.Empty;
-
-            return $"{hours} {minutes}";
         }
 
         public async Task<Guid?> AssignNextVacancyReviewAsync(VacancyUser user)
