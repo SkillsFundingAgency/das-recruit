@@ -49,15 +49,15 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             return vm;
         }
 
-        private VacancyReviewSearchModel MapToViewModel(QaVacancySummary qaVacancySummary, VacancyUser vacancyUser)
+        private VacancyReviewSearchResultViewModel MapToViewModel(QaVacancySummary qaVacancySummary, VacancyUser vacancyUser)
         {
             var isAvailableForReview =
                 _vacancyClient.VacancyReviewCanBeAssigned(qaVacancySummary.Status, qaVacancySummary.ReviewStartedOn);
 
-            return new VacancyReviewSearchModel()
+            return new VacancyReviewSearchResultViewModel()
             {
-                AssignedTo = vacancyUser.UserId == qaVacancySummary.ReviewAssignedToUserId ? null : qaVacancySummary.ReviewAssignedToUserName,
-                AssignedTimeElapsed = qaVacancySummary.ReviewStartedOn.GetShortTimeElapsed(_timeProvider.Now),
+                AssignedTo = isAvailableForReview && vacancyUser.UserId == qaVacancySummary.ReviewAssignedToUserId ? null : qaVacancySummary.ReviewAssignedToUserName,
+                AssignedTimeElapsed = isAvailableForReview ? null : qaVacancySummary.ReviewStartedOn.GetShortTimeElapsed(_timeProvider.Now),
                 ClosingDate = qaVacancySummary.ClosingDate.ToLocalTime(),
                 EmployerName = qaVacancySummary.EmployerName,
                 VacancyReference = qaVacancySummary.VacancyReference.ToString(),
