@@ -6,11 +6,14 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Training
     public class TrainingViewModel : TrainingEditModel
     {
         public IEnumerable<ApprenticeshipProgrammeViewModel> Programmes { get; set; }
+
+        public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
+
         public IList<string> OrderedFieldNames => new List<string>
         {
-            nameof(TrainingEditModel.ClosingDate),
-            nameof(TrainingEditModel.StartDate),
-            nameof(TrainingEditModel.SelectedProgrammeId)
+            nameof(ClosingDate),
+            nameof(StartDate),
+            nameof(SelectedProgrammeId)
         };
 
         public PartOnePageInfoViewModel PageInfo { get; set; }
