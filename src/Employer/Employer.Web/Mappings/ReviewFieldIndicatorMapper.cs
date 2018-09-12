@@ -39,6 +39,11 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             new ReviewFieldIndicatorViewModel(FieldIdentifiers.ApplicationInstructions, PreviewAnchors.ApplicationInstructions, "Application process requires edit")
         };
 
+        public static readonly List<ReviewFieldIndicatorViewModel> ShortDescriptionReviewFieldIndicators = new List<ReviewFieldIndicatorViewModel>
+        {
+            new ReviewFieldIndicatorViewModel(FieldIdentifiers.ShortDescription, "ShortDescription", "Brief overview of the role requires edit"),
+        };
+
         public static IEnumerable<ReviewFieldIndicatorViewModel> MapFromFieldIndicators(IEnumerable<ReviewFieldIndicatorViewModel> reviewFieldIndicatorsForPage, List<ManualQaFieldIndicator> reviewFieldIndicators)
         {
             var selectedFieldIdentifiers = reviewFieldIndicators

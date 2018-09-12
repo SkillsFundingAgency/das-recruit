@@ -10,5 +10,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.ShortDescription
         };
 
         public PartOnePageInfoViewModel PageInfo { get; set; }
+
+        public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
     }
 }
