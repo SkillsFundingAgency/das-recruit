@@ -87,7 +87,7 @@
                 <button type="submit" class="button save-button">@Model.PageInfo.SubmitButtonText</button>
 
                 <a asp-condition="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Index_Get" class="button-link">Cancel</a>
-                <a asp-condition="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@PreviewAnchors.ApprenticeshipSummarySection" class="button-link">Cancel</a>
+                <a asp-condition="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.ApprenticeshipSummarySection" class="button-link">Cancel</a>
             </form>
         </div>
     </div>
