@@ -17,13 +17,13 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
 
         public string LastSearchTerm { get; set; }
 
-        public List<VacancyReviewSearchModel> SearchResults { get; set; } = new List<VacancyReviewSearchModel>();
+        public List<VacancyReviewSearchResultViewModel> SearchResults { get; set; } = new List<VacancyReviewSearchResultViewModel>();
         public bool DisplayLastSearchTerm => !string.IsNullOrEmpty(LastSearchTerm);
         public bool DisplayNoSearchResultsMessage => DisplayLastSearchTerm && !SearchResults.Any();
         public bool DisplaySearchResults => DisplayLastSearchTerm && SearchResults.Any();
         public bool HasDashboardMessage => string.IsNullOrWhiteSpace(DashboardMessage) == false;
         public bool DisplayInProgressVacancies { get; set; }
-        public List<VacancyReviewSearchModel> InProgressVacancies { get; set; } = new List<VacancyReviewSearchModel>();
+        public List<VacancyReviewSearchResultViewModel> InProgressVacancies { get; set; } = new List<VacancyReviewSearchResultViewModel>();
         public bool DisplayNoInProgressVacanciesMessage => DisplayInProgressVacancies && !InProgressVacancies.Any();
         public bool DisplayInProgressResults => DisplayInProgressVacancies && InProgressVacancies.Any();
     }
