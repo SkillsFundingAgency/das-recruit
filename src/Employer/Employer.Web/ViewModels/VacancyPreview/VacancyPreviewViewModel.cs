@@ -65,9 +65,8 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
         public bool HasIncompleteSections => HasIncompleteMandatorySections || HasIncompleteOptionalSections;
 
         public bool DisplayReferredHeader { get; internal set; }
-        public string ReviewerComments { get; internal set; }
-        public IEnumerable<ReviewFieldIndicatorViewModel> ReviewFieldIndicators { get; internal set; } = new List<ReviewFieldIndicatorViewModel>();
-
+        public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
+        
         public IList<string> OrderedFieldNames => new List<string>
         {
             nameof(ShortDescription),

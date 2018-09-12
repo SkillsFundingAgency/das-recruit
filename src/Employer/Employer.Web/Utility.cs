@@ -7,9 +7,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Exceptions;
+using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1;
+using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 
 namespace Esfa.Recruit.Employer.Web
@@ -129,6 +131,29 @@ namespace Esfa.Recruit.Employer.Web
             }
 
             throw new AuthorisationException(string.Format(ExceptionMessages.ApplicationReviewUnauthorisedAccess, rm.EmployerAccountId, applicationReview.EmployerAccountId, applicationReview.Id, applicationReview.VacancyReference));
+        }
+
+        public static async Task<ReviewSummaryViewModel> GetReviewSummaryViewModel(IEmployerVacancyClient client, long vacancyReference, IEnumerable<ReviewFieldIndicatorViewModel> reviewFieldIndicatorsForPage)
+        {
+            ReviewSummaryViewModel vm;
+            var review = await client.GetVacancyReviewAsync(vacancyReference);
+            if (review != null)
+            {
+                var fieldIndicators = ReviewFieldIndicatorMapper.MapFromFieldIndicators(reviewFieldIndicatorsForPage, review.ManualQaFieldIndicators).ToList();
+                
+                vm = new ReviewSummaryViewModel
+                {
+                    DisplayReviewHeader = true,
+                    ReviewerComments = review.ManualQaComment,
+                    FieldIndicators = fieldIndicators
+                };
+            }
+            else
+            {
+                vm = new ReviewSummaryViewModel {DisplayReviewHeader = false};
+            }
+
+            return vm;
         }
     }
 }
