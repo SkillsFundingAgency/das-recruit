@@ -1,6 +1,5 @@
 @using Esfa.Recruit.Vacancies.Client.Domain.Extensions
 @model DashboardViewModel
-
 <div asp-condition="@Model.HasDashboardMessage" class="grid-row">
     <div class="column-full">
         <div class="info-summary">
@@ -69,13 +68,14 @@
         </tbody>
         @foreach (var vacancy in Model.InProgressVacancies)
         {
+            var assignmentInfoCaption = $"Assigned to {@vacancy.AssignmentToCaption}. Being reviewed {@vacancy.AssignedTimeElapsedCaption}.";
             <tr>
                 <td>@vacancy.EmployerName</td>
                 <td>@vacancy.VacancyTitle</td>
                 <td>@vacancy.VacancyReference</td>
                 <td>@vacancy.SubmittedDate.AsGdsDateTime()</td>
                 <td>@vacancy.ClosingDate.AsGdsDate()</td>
-                <td>@vacancy.AssignmentInfo</td>
+                <td>@assignmentInfoCaption</td>
             </tr>
         }
     </table>
@@ -100,6 +100,7 @@
         </tbody>
         @foreach (var vacancy in Model.SearchResults)
         {
+            var assignmentInfoCaption = $"Assigned to {@vacancy.AssignmentToCaption}. Being reviewed {@vacancy.AssignedTimeElapsedCaption}.";
             <tr>
                 <td>@vacancy.EmployerName</td>
                 <td>@vacancy.VacancyTitle</td>
@@ -107,7 +108,7 @@
                 <td>@vacancy.SubmittedDate.AsGdsDateTime()</td>
                 <td>@vacancy.ClosingDate.AsGdsDate()</td>
                 <td>
-                    <span>@vacancy.AssignmentInfo</span>
+                    <span>@assignmentInfoCaption</span>
                     <br asp-condition="@vacancy.IsAvailableForReview == false"/>
                     <a asp-condition="@vacancy.IsAvailableForReview" asp-route="@RouteNames.Vacancy_Review_Get" asp-route-reviewId="@vacancy.ReviewId">Review</a>
                 </td>
