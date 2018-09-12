@@ -88,7 +88,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
         private VacancyPreviewSectionState GetViewSectionState(VacancyPreviewViewModel vm, string reviewFieldIndicator)
         {
-            if (vm.ReviewFieldIndicators.Select(r => r.ReviewFieldIdentifier).Contains(reviewFieldIndicator))
+            if (vm.Review.FieldIndicators.Select(r => r.ReviewFieldIdentifier).Contains(reviewFieldIndicator))
                 return VacancyPreviewSectionState.Review;
 
             return VacancyPreviewSectionState.Valid;
@@ -105,7 +105,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         private VacancyPreviewSectionState GetViewSectionState(VacancyPreviewViewModel vm, IEnumerable<string> reviewFieldIndicators, bool requiresAll, params Func<VacancyPreviewViewModel, object>[] requiredProperties)
         {
             if (reviewFieldIndicators != null && reviewFieldIndicators.Any(reviewFieldIndicator => 
-                vm.ReviewFieldIndicators.Select(r => r.ReviewFieldIdentifier)
+                vm.Review.FieldIndicators.Select(r => r.ReviewFieldIdentifier)
                     .Contains(reviewFieldIndicator)))
             {
                 return VacancyPreviewSectionState.Review;

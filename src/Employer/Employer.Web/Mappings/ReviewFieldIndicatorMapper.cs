@@ -9,7 +9,7 @@ namespace Esfa.Recruit.Employer.Web.Mappings
 {
     public static class ReviewFieldIndicatorMapper
     {
-        private static readonly List<ReviewFieldIndicatorViewModel> ReviewFieldIndicators = new List<ReviewFieldIndicatorViewModel>
+        public static readonly List<ReviewFieldIndicatorViewModel> PreviewReviewFieldIndicators = new List<ReviewFieldIndicatorViewModel>
         {
             //These need to be added in display order
             new ReviewFieldIndicatorViewModel(FieldIdentifiers.Title, PreviewAnchors.Title, "Title requires edit"),
@@ -39,14 +39,14 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             new ReviewFieldIndicatorViewModel(FieldIdentifiers.ApplicationInstructions, PreviewAnchors.ApplicationInstructions, "Application process requires edit")
         };
 
-        public static IEnumerable<ReviewFieldIndicatorViewModel> MapFromFieldIndicators(List<ManualQaFieldIndicator> reviewFieldIndicators)
+        public static IEnumerable<ReviewFieldIndicatorViewModel> MapFromFieldIndicators(IEnumerable<ReviewFieldIndicatorViewModel> reviewFieldIndicatorsForPage, List<ManualQaFieldIndicator> reviewFieldIndicators)
         {
             var selectedFieldIdentifiers = reviewFieldIndicators
                 .Where(r => r.IsChangeRequested)
                 .Select(r => r.FieldIdentifier)
                 .ToList();
 
-            return ReviewFieldIndicators.Where(r => selectedFieldIdentifiers.Contains(r.ReviewFieldIdentifier));
+            return reviewFieldIndicatorsForPage.Where(r => selectedFieldIdentifiers.Contains(r.ReviewFieldIdentifier));
         }
     }
 }

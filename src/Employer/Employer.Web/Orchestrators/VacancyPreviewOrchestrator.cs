@@ -42,8 +42,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             vm.SubmitButtonText = "Submit vacancy";
 
             if (vacancy.Status == VacancyStatus.Referred)
-                await AddReviewToViewModelAsync(vm, vacancy.VacancyReference.Value);
-
+            {
+                vm.SubmitButtonText = "Resubmit vacancy";
+                vm.Review = await Utility.GetReviewSummaryViewModel(_client, vacancy.VacancyReference.Value, ReviewFieldIndicatorMapper.PreviewReviewFieldIndicators);
+            }
+            
             return vm;
         }
         
@@ -64,18 +67,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 },
                 v => _client.SubmitVacancyAsync(v.Id, user)
             );
-        }
-
-        private async Task AddReviewToViewModelAsync(VacancyPreviewViewModel vm, long vacancyReference)
-        {
-            vm.SubmitButtonText = "Resubmit vacancy";
-
-            var review = await _client.GetVacancyReviewAsync(vacancyReference);
-            if (review != null)
-            {
-                vm.ReviewerComments = review.ManualQaComment;
-                vm.ReviewFieldIndicators = ReviewFieldIndicatorMapper.MapFromFieldIndicators(review.ManualQaFieldIndicators);
-            }
         }
 
         private void SyncErrorsAndModel(IList<EntityValidationError> errors)
