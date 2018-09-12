@@ -16,10 +16,21 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
 
         public DateTime ClosingDate { get; set; }
 
+        public string AssignedTo { get; set; }
+
+        public string AssignedTimeElapsed { get; set; }
+
         public bool IsAvailableForReview { get; set; }
 
         public bool IsNotAvailableForReview { get; set; }
 
-        public string AssignmentInfo { get; set; }
+        public string AssignmentToCaption => 
+            IsAvailableForReview 
+            ? null 
+            : AssignedTo ?? "You";
+            
+        public string AssignedTimeElapsedCaption => string.IsNullOrEmpty(AssignedTimeElapsed) 
+                                                    ? "now" 
+                                                    : $"for {AssignedTimeElapsed}";
     }
 }

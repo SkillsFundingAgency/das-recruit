@@ -50,15 +50,12 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
 
         private VacancyReviewSearchModel MapToViewModel(QaVacancySummary qaVacancySummary, VacancyUser vacancyUser)
         {
-            var userName = vacancyUser.UserId == qaVacancySummary.ReviewAssignedToUserId
-                ? "you"
-                : qaVacancySummary.ReviewAssignedToUserName;
             var isAvailableForReview =
                 _vacancyClient.VacancyReviewCanBeAssigned(qaVacancySummary.Status, qaVacancySummary.ReviewStartedOn);
             return new VacancyReviewSearchModel()
             {
-                
-                AssignmentInfo = isAvailableForReview ? string.Empty : GetAssignmentInfo(qaVacancySummary.ReviewStartedOn, userName),
+                AssignedTo = vacancyUser.UserId == qaVacancySummary.ReviewAssignedToUserId ? null : qaVacancySummary.ReviewAssignedToUserName,
+                AssignedTimeElapsed = GetAssignmentTimeElapsed(qaVacancySummary.ReviewStartedOn),
                 ClosingDate = qaVacancySummary.ClosingDate.ToLocalTime(),
                 EmployerName = qaVacancySummary.EmployerName,
                 VacancyReference = $"VAC{qaVacancySummary.VacancyReference}",
@@ -70,18 +67,18 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             };
         }
 
-        private string GetAssignmentInfo(DateTime? value, string userName)
+        private string GetAssignmentTimeElapsed(DateTime? value)
         {
             if (value == null) return string.Empty;
             var diff = _timeProvider.Now - value.Value;
 
             if (diff < TimeSpan.FromMinutes(1))
-                return "Being reviewed now.";
+                return null;
 
             var hours = diff.Hours > 0 ? $"{diff.Hours}h" : string.Empty;
             var minutes = diff.Minutes > 0 ? $"{diff.Minutes}m" : string.Empty;
 
-            return $"Assigned to {userName}. Being reviewed for {hours} {minutes}.";
+            return $"{hours} {minutes}";
         }
 
         public async Task<Guid?> AssignNextVacancyReviewAsync(VacancyUser user)
