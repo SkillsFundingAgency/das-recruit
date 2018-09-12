@@ -2,35 +2,40 @@
 
 namespace Esfa.Recruit.Qa.Web.ViewModels
 {
-    public struct VacancyReviewSearchModel
+    public class VacancyReviewSearchModel
     {
-        public Guid ReviewId { get; set; }
+        public Guid ReviewId { get; internal set; }
 
-        public string EmployerName { get; set; }
+        public string EmployerName { get; internal set; }
 
-        public string VacancyTitle { get; set; }
+        public string VacancyTitle { get; internal set; }
 
-        public string VacancyReference { get; set; }
+        public string VacancyReference { get; internal set; }
 
-        public DateTime SubmittedDate { get; set; }
+        public DateTime SubmittedDate { get; internal set; }
 
-        public DateTime ClosingDate { get; set; }
+        public DateTime ClosingDate { get; internal set; }
 
-        public string AssignedTo { get; set; }
+        public bool IsAvailableForReview { get; internal set; }
 
-        public string AssignedTimeElapsed { get; set; }
+        public bool IsNotAvailableForReview => !IsAvailableForReview;
 
-        public bool IsAvailableForReview { get; set; }
+        internal string AssignedTo { get; set; }
 
-        public bool IsNotAvailableForReview { get; set; }
+        internal string AssignedTimeElapsed { get; set; }
 
-        public string AssignmentToCaption => 
-            IsAvailableForReview 
-            ? null 
-            : AssignedTo ?? "You";
+        private string AssignedToCaption => 
+            IsNotAvailableForReview 
+            ? AssignedTo ?? "you"
+            : null;
             
-        public string AssignedTimeElapsedCaption => string.IsNullOrEmpty(AssignedTimeElapsed) 
+        private string AssignedTimeElapsedCaption => string.IsNullOrEmpty(AssignedTimeElapsed) 
                                                     ? "now" 
                                                     : $"for {AssignedTimeElapsed}";
+
+        public string GetAssignmentInfoCaption()
+        {
+            return $"Assigned to {AssignedToCaption}. Being reviewed {AssignedTimeElapsedCaption}.";
+        }
     }
 }
