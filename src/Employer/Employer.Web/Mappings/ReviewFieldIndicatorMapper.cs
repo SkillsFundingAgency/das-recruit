@@ -99,6 +99,12 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             new ReviewFieldIndicatorViewModel(FieldIdentifiers.ThingsToConsider, nameof(ConsiderationsEditModel.ThingsToConsider), "Things to consider requires edit"),
         };
 
+        public static readonly IReadOnlyList<ReviewFieldIndicatorViewModel> AboutEmployerFieldIndicators = new List<ReviewFieldIndicatorViewModel>
+        {
+            new ReviewFieldIndicatorViewModel(FieldIdentifiers.EmployerDescription, nameof(AboutEmployerEditModel.EmployerDescription), "Tell us about your organisation requires edit"),
+            new ReviewFieldIndicatorViewModel(FieldIdentifiers.EmployerWebsiteUrl, nameof(AboutEmployerEditModel.EmployerWebsiteUrl), "Your organisation's website requires edit")
+        };
+
         public static IEnumerable<ReviewFieldIndicatorViewModel> MapFromFieldIndicators(IEnumerable<ReviewFieldIndicatorViewModel> reviewFieldIndicatorsForPage, List<ManualQaFieldIndicator> reviewFieldIndicators)
         {
             var selectedFieldIdentifiers = reviewFieldIndicators

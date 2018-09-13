@@ -4,6 +4,9 @@
         <h1 class="heading-xlarge small-bottom-margin">@Model.Title</h1>
         <hr>
         @Html.Partial("_ValidationSummary", new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames })
+
+        @Html.Partial("_ReviewSummary", Model.Review)
+
         <form asp-route="@RouteNames.AboutEmployer_Get">
             <div esfa-validation-marker-for="EmployerDescription" class="form-group">
                 <label asp-for="EmployerDescription" class="form-label-bold">Tell us about your organisation</label>
