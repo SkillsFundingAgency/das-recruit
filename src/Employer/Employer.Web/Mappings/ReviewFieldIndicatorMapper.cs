@@ -89,6 +89,11 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             new ReviewFieldIndicatorViewModel(FieldIdentifiers.Skills, Anchors.SkillsHeading, "Desired skills or personal qualities requires edit"),
         };
 
+        public static readonly IReadOnlyList<ReviewFieldIndicatorViewModel> QualificationsFieldIndicators = new List<ReviewFieldIndicatorViewModel>
+        {
+            new ReviewFieldIndicatorViewModel(FieldIdentifiers.Qualifications, Anchors.QualificationsHeading, "Qualifications requires edit"),
+        };
+
         public static IEnumerable<ReviewFieldIndicatorViewModel> MapFromFieldIndicators(IEnumerable<ReviewFieldIndicatorViewModel> reviewFieldIndicatorsForPage, List<ManualQaFieldIndicator> reviewFieldIndicators)
         {
             var selectedFieldIdentifiers = reviewFieldIndicators

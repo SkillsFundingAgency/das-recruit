@@ -2,7 +2,6 @@
 @using Esfa.Recruit.Vacancies.Client.Domain.Entities
 @model QualificationsViewModel
 
-
 <div class="grid-row">
     <div class="column-full">
 
@@ -10,11 +9,13 @@
         <hr>
 
         @Html.Partial("_ValidationSummary", new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames })
+        
+        @Html.Partial("_ReviewSummary", Model.Review)
 
         <form asp-route="@RouteNames.Qualifications_Post">
 
             <div esfa-validation-marker-for="QualificationType" class="form-group form-group-compound">
-                <label asp-for="QualificationType" class="form-label-bold">Type of qualification</label>
+                <label asp-for="QualificationType" class="form-label-bold" id="@Anchors.QualificationsHeading">Type of qualification</label>
                 <span esfa-validation-message-for="QualificationType" class="error-message"></span>
                 <select asp-for="QualificationType" class="form-control">
                     <option value="">Select from list</option>

@@ -44,5 +44,8 @@
 
         //Skills
         public const string SkillsHeading = "SkillsHeading";
+
+        //Qualifications
+        public const string QualificationsHeading = "QualificationsHeading";
     }
 }

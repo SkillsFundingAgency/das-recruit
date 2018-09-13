@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
+using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.Mappings.Extensions;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part2.Qualifications;
@@ -39,6 +40,13 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                 QualificationTypes = _lazyQualifications.Value,
                 Qualifications = vacancy.Qualifications.SortQualifications(_lazyQualifications.Value).ToViewModel().ToList()
             };
+
+            if (vacancy.Status == VacancyStatus.Referred)
+            {
+                vm.Review = await Utility.GetReviewSummaryViewModel(_client,
+                    vacancy.VacancyReference.Value,
+                    ReviewFieldIndicatorMapper.QualificationsFieldIndicators);
+            }
 
             return vm;
         }
