@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.ShortDescription;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Title;
@@ -74,6 +75,13 @@ namespace Esfa.Recruit.Employer.Web.Mappings
         public static readonly IReadOnlyList<ReviewFieldIndicatorViewModel> EmployerFieldIndicators = new List<ReviewFieldIndicatorViewModel>
         {
             new ReviewFieldIndicatorViewModel(FieldIdentifiers.EmployerAddress, nameof(EmployerEditModel.AddressLine1), "Employer address requires edit"),
+        };
+
+        public static readonly IReadOnlyList<ReviewFieldIndicatorViewModel> VacancyDescriptionFieldIndicators = new List<ReviewFieldIndicatorViewModel>
+        {
+            new ReviewFieldIndicatorViewModel(FieldIdentifiers.VacancyDescription, nameof(VacancyDescriptionEditModel.VacancyDescription), "What does the apprenticeship involve requires edit"),
+            new ReviewFieldIndicatorViewModel(FieldIdentifiers.TrainingDescription, nameof(VacancyDescriptionEditModel.TrainingDescription), "What training will your apprentice get requires edit"),
+            new ReviewFieldIndicatorViewModel(FieldIdentifiers.OutcomeDescription, nameof(VacancyDescriptionEditModel.OutcomeDescription), "What can the apprentice expect at the end of the apprenticeship requires edit"),
         };
 
         public static IEnumerable<ReviewFieldIndicatorViewModel> MapFromFieldIndicators(IEnumerable<ReviewFieldIndicatorViewModel> reviewFieldIndicatorsForPage, List<ManualQaFieldIndicator> reviewFieldIndicators)
