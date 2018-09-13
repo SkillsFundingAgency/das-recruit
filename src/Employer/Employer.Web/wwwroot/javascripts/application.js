@@ -99,13 +99,6 @@ $(window).scroll(function () {
     }
 });
 
-$(function() {
-    //Legacy menu script
-    sfa.navigation.init();
-    // Dirty forms handling
-    $('form').areYouSure();
-});
-
 /* -----------------------
 Character count behaviour
 -------------------------- */
@@ -164,4 +157,59 @@ $(window).load(function() {
     if ($('.error-summary').length) {
       $('.error-summary').focus();
     } 
+});
+
+function handleAnchorClicks() {
+    if (document.documentElement.scrollIntoView) {
+
+        var $menu = $("#floating-menu-holder .account-information");
+
+        $(".review-anchor-link").on("click", function (e) {
+            
+            var hash = $(this)[0].hash;
+            var $element = $(hash);
+            $element.focus();
+
+            //if the element has a label scroll to that instead
+            var $label = $("label[for='" + $element.attr("id") + "']");
+            if ($label.length === 1) {
+                $element = $label;
+            }
+
+            $element[0].scrollIntoView(true);
+
+            if(history.pushState) {
+                history.pushState(null, null, hash);
+            }
+            else {
+                location.hash = hash;
+            }
+
+            //handle floating menu height (may or may not be completely visible in Viewport after initial scroll)
+            setTimeout(function () {
+                var visibleMenuHeight = inViewport($menu);
+                var scrollY = $element.offset().top - visibleMenuHeight;
+                    window.scrollTo(0, scrollY);
+                }, 100);
+
+            e.preventDefault();
+            return false;
+        });
+    }
+}
+
+function inViewport($el) {
+    var elH = $el.outerHeight(),
+        wH = $(window).height(),
+        r = $el[0].getBoundingClientRect(), t = r.top, b = r.bottom;
+    return Math.max(0, t > 0 ? Math.min(elH, wH - t) : Math.min(b, wH));
+}
+
+$(function () {
+    //Legacy menu script
+    sfa.navigation.init();
+    // Dirty forms handling
+    $('form').areYouSure();
+    //handle anchor clicks to account for floating menu
+    handleAnchorClicks();
 });
