@@ -11,6 +11,9 @@
         </p>
 
         @Html.Partial("_ValidationSummary", new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames })
+
+        @Html.Partial("_ReviewSummary", Model.Review)
+
         <div class="todo">
             <h3 asp-condition="@Model.PageInfo.IsWizard" class="heading-medium no-top-margin">Step 3 of 6</h3>
             <div asp-condition="@Model.HasOnlyOneOrganisation"><p>@Model.Organisations.First().Name</p></div>
@@ -26,12 +29,12 @@
                         <span esfa-validation-message-for="SelectedOrganisationName" class="error-message"></span>
 
                         @foreach (var organisation in Model.Organisations)
-                        {
-                            <div class="multiple-choice">
-                                <input asp-for="SelectedOrganisationName" type="radio" value="@organisation.Name" id="org-@organisation.Id">
-                                <label for="org-@organisation.Id">@organisation.Name</label>
-                            </div>
-                        }
+                    {
+                        <div class="multiple-choice">
+                            <input asp-for="SelectedOrganisationName" type="radio" value="@organisation.Name" id="org-@organisation.Id">
+                            <label for="org-@organisation.Id">@organisation.Name</label>
+                        </div>
+                }
                     </fieldset>
 
                 </div>

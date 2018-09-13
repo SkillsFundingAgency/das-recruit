@@ -11,13 +11,15 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer
         public bool HasOnlyOneOrganisation => Organisations.Count() == 1;
 		public bool HasMoreThanOneOrganisation => Organisations.Count() > 1;
 
-		public IList<string> OrderedFieldNames => new List<string>
+        public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
+
+        public IList<string> OrderedFieldNames => new List<string>
         {
-            nameof(EmployerEditModel.AddressLine1),
-            nameof(EmployerEditModel.AddressLine2),
-            nameof(EmployerEditModel.AddressLine3),
-            nameof(EmployerEditModel.AddressLine4),
-            nameof(EmployerEditModel.Postcode)
+            nameof(AddressLine1),
+            nameof(AddressLine2),
+            nameof(AddressLine3),
+            nameof(AddressLine4),
+            nameof(Postcode)
         };
 
         public PartOnePageInfoViewModel PageInfo { get; set; }
