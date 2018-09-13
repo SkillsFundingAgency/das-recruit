@@ -37,6 +37,7 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             VacancyReview.FieldIdentifiers.Skills,
             VacancyReview.FieldIdentifiers.ShortDescription,
             VacancyReview.FieldIdentifiers.ThingsToConsider,
+            VacancyReview.FieldIdentifiers.Title,
             VacancyReview.FieldIdentifiers.Training,
             VacancyReview.FieldIdentifiers.TrainingDescription,
             VacancyReview.FieldIdentifiers.TrainingLevel,

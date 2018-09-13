@@ -2,6 +2,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
+using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Title;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Microsoft.Extensions.Logging;
@@ -41,6 +42,13 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 NumberOfPositions = vacancy.NumberOfPositions?.ToString(),
                 PageInfo = Utility.GetPartOnePageInfo(vacancy)
             };
+
+            if (vacancy.Status == VacancyStatus.Referred)
+            {
+                vm.Review = await Utility.GetReviewSummaryViewModel(_client,
+                    vacancy.VacancyReference.Value,
+                    ReviewFieldIndicatorMapper.TitleFieldIndicators);
+            }
 
             return vm;
         }
