@@ -40,10 +40,12 @@ namespace Esfa.Recruit.Qa.Web.Mappings
         public async Task<ReviewViewModel> MapFromVacancy(Vacancy vacancy)
         {
             var programmeTask = _vacancyClient.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
-            var approvedCountTask = _vacancyClient.GetApprovedCountAsync(vacancy.SubmittedByUser.UserId);
-            var approvedFirstTimeCountTask = _vacancyClient.GetApprovedFirstTimeCountAsync(vacancy.SubmittedByUser.UserId);
-
-            await Task.WhenAll(programmeTask, approvedCountTask, approvedFirstTimeCountTask);
+            
+            // Temporarily disabling counts until we remove the shard key from vacancyReviews collection
+            //var approvedCountTask = _vacancyClient.GetApprovedCountAsync(vacancy.SubmittedByUser.UserId);
+            //var approvedFirstTimeCountTask = _vacancyClient.GetApprovedFirstTimeCountAsync(vacancy.SubmittedByUser.UserId);
+            //await Task.WhenAll(programmeTask, approvedCountTask, approvedFirstTimeCountTask);
+            await Task.WhenAll(programmeTask);
 
             var programme = programmeTask.Result;
 
@@ -92,8 +94,8 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                     : null;
                 vm.WorkingWeekDescription = vacancy.Wage.WorkingWeekDescription;
                 vm.SubmittedDate = vacancy.SubmittedDate.Value;
-                vm.VacancyReviewsApprovedCount = approvedCountTask.Result;
-                vm.VacancyReviewsApprovedFirstTimeCount = approvedFirstTimeCountTask.Result;
+                //vm.VacancyReviewsApprovedCount = approvedCountTask.Result;
+                //vm.VacancyReviewsApprovedFirstTimeCount = approvedFirstTimeCountTask.Result;
             }
             catch (NullReferenceException ex)
             {
