@@ -47,5 +47,8 @@
 
         //Qualifications
         public const string QualificationsHeading = "QualificationsHeading";
+
+        //Application process
+        public const string ApplicationMethodHeading = "ApplicationMethodHeading";
     }
 }
