@@ -10,9 +10,11 @@
 
         @Html.Partial("_ValidationSummary", new ValidationSummaryViewModel { ModelState = ViewData.ModelState })
 
+        @Html.Partial("_ReviewSummary", Model.Review)
+
         <form asp-route="@RouteNames.Skills_Post" id="skillsForm">
             <fieldset>
-                <legend class="heading-small">Desired skills or personal qualities?</legend>
+                <legend class="heading-small" id="@Anchors.SkillsHeading">Desired skills or personal qualities?</legend>
 
                 <div class="body-text">Select all that apply</div>
 
@@ -21,23 +23,23 @@
                 <div class="two-column-checkbox-container">
                     <fieldset class="two-column-checkbox">
                         @for (var i = 0; i < Model.Column1Checkboxes.Count; i++)
-                        {
-                            var checkbox = Model.Column1Checkboxes[i];
-                            <div class="multiple-choice">
-                                <input name="Skills" id="col1-@i" type="checkbox" value="@checkbox.Value" checked="@checkbox.Selected">
-                                <label for="col1-@i">@checkbox.Name</label>
-                            </div>
-                        }
+                    {
+                        var checkbox = Model.Column1Checkboxes[i];
+                        <div class="multiple-choice">
+                            <input name="Skills" id="col1-@i" type="checkbox" value="@checkbox.Value" checked="@checkbox.Selected">
+                            <label for="col1-@i">@checkbox.Name</label>
+                        </div>
+                }
                     </fieldset>
                     <fieldset class="two-column-checkbox">
                         @for (var i = 0; i < Model.Column2Checkboxes.Count; i++)
-                        {
-                            var checkbox = Model.Column2Checkboxes[i];
-                            <div class="multiple-choice">
-                                <input name="Skills" id="col2-@i" type="checkbox" value="@checkbox.Value" checked="@checkbox.Selected">
-                                <label for="col2-@i">@checkbox.Name</label>
-                            </div>
-                        }
+                    {
+                        var checkbox = Model.Column2Checkboxes[i];
+                        <div class="multiple-choice">
+                            <input name="Skills" id="col2-@i" type="checkbox" value="@checkbox.Value" checked="@checkbox.Selected">
+                            <label for="col2-@i">@checkbox.Name</label>
+                        </div>
+                }
                     </fieldset>
                 </div>
             </fieldset>

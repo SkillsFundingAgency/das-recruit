@@ -41,5 +41,8 @@
 
         //Wage
         public const string WageTypeHeading = "WageTypeHeading";
+
+        //Skills
+        public const string SkillsHeading = "SkillsHeading";
     }
 }
