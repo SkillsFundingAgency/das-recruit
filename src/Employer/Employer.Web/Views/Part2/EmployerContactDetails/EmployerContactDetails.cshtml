@@ -4,7 +4,10 @@
         <h1 class="heading-xlarge small-bottom-margin">@Model.Title</h1>
         <hr>
         @Html.Partial("_ValidationSummary", new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames })
-        <form asp-route="@RouteNames.EmployerContactDetails_Post" novalidate>            
+
+        @Html.Partial("_ReviewSummary", Model.Review)
+
+        <form asp-route="@RouteNames.EmployerContactDetails_Post" novalidate>
             <div esfa-validation-marker-for="EmployerContactName" class="form-group">
                 <label asp-for="EmployerContactName" class="form-label-bold">Contact name (optional)</label>
                 <span esfa-validation-message-for="EmployerContactName" class="error-message"></span>
