@@ -2,6 +2,7 @@
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
+using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.Extensions.Logging;
@@ -30,6 +31,13 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                 TrainingDescription = vacancy.TrainingDescription,
                 OutcomeDescription = vacancy.OutcomeDescription
             };
+
+            if (vacancy.Status == VacancyStatus.Referred)
+            {
+                vm.Review = await Utility.GetReviewSummaryViewModel(_client,
+                    vacancy.VacancyReference.Value,
+                    ReviewFieldIndicatorMapper.VacancyDescriptionFieldIndicators);
+            }
 
             return vm;
         }
