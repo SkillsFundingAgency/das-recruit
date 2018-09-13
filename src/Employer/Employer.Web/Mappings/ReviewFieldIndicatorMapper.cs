@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.ShortDescription;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Title;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Training;
@@ -59,15 +60,20 @@ namespace Esfa.Recruit.Employer.Web.Mappings
 
         public static readonly IReadOnlyList<ReviewFieldIndicatorViewModel> WageReviewFieldIndicators = new List<ReviewFieldIndicatorViewModel>
         {
-            new ReviewFieldIndicatorViewModel(FieldIdentifiers.ExpectedDuration, nameof(WageViewModel.Duration), "How long is the apprenticeship expected to last requires edit"),
-            new ReviewFieldIndicatorViewModel(FieldIdentifiers.WorkingWeek, nameof(WageViewModel.WorkingWeekDescription), "Working week requires edit"),
+            new ReviewFieldIndicatorViewModel(FieldIdentifiers.ExpectedDuration, nameof(WageEditModel.Duration), "How long is the apprenticeship expected to last requires edit"),
+            new ReviewFieldIndicatorViewModel(FieldIdentifiers.WorkingWeek, nameof(WageEditModel.WorkingWeekDescription), "Working week requires edit"),
             new ReviewFieldIndicatorViewModel(FieldIdentifiers.Wage, Anchors.WageTypeHeading, "What is the salary requires edit")
         };
 
         public static readonly IReadOnlyList<ReviewFieldIndicatorViewModel> TitleFieldIndicators = new List<ReviewFieldIndicatorViewModel>
         {
-            new ReviewFieldIndicatorViewModel(FieldIdentifiers.Title, nameof(TitleViewModel.Title), "What do you want to call this vacancy requires edit"),
-            new ReviewFieldIndicatorViewModel(FieldIdentifiers.NumberOfPositions, nameof(TitleViewModel.NumberOfPositions), "Number of positions for this apprenticeship requires edit")
+            new ReviewFieldIndicatorViewModel(FieldIdentifiers.Title, nameof(TitleEditModel.Title), "What do you want to call this vacancy requires edit"),
+            new ReviewFieldIndicatorViewModel(FieldIdentifiers.NumberOfPositions, nameof(TitleEditModel.NumberOfPositions), "Number of positions for this apprenticeship requires edit")
+        };
+
+        public static readonly IReadOnlyList<ReviewFieldIndicatorViewModel> EmployerFieldIndicators = new List<ReviewFieldIndicatorViewModel>
+        {
+            new ReviewFieldIndicatorViewModel(FieldIdentifiers.EmployerAddress, nameof(EmployerEditModel.AddressLine1), "Employer address requires edit"),
         };
 
         public static IEnumerable<ReviewFieldIndicatorViewModel> MapFromFieldIndicators(IEnumerable<ReviewFieldIndicatorViewModel> reviewFieldIndicatorsForPage, List<ManualQaFieldIndicator> reviewFieldIndicators)

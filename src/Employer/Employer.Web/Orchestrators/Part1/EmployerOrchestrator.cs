@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
+using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer;
@@ -57,6 +58,13 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 vm.AddressLine3 = defaultLegalEntity.Address.AddressLine3;
                 vm.AddressLine4 = defaultLegalEntity.Address.AddressLine4;
                 vm.Postcode = defaultLegalEntity.Address.Postcode;
+            }
+
+            if (vacancy.Status == VacancyStatus.Referred)
+            {
+                vm.Review = await Utility.GetReviewSummaryViewModel(_client,
+                    vacancy.VacancyReference.Value,
+                    ReviewFieldIndicatorMapper.EmployerFieldIndicators);
             }
 
             return vm;
