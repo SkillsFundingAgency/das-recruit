@@ -58,6 +58,7 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             {
                 IsAssignedToLoggedInUser = vacancyUser.UserId == qaVacancySummary.ReviewAssignedToUserId,
                 AssignedTo = isAvailableForReview ? null : qaVacancySummary.ReviewAssignedToUserName,
+                AssignedTimeElapsed = qaVacancySummary.ReviewStartedOn.GetShortTimeElapsed(_timeProvider.Now),
                 ClosingDate = qaVacancySummary.ClosingDate.ToLocalTime(),
                 EmployerName = qaVacancySummary.EmployerName,
                 VacancyReference = qaVacancySummary.VacancyReference.ToString(),
