@@ -4,6 +4,9 @@
         <h1 class="heading-xlarge small-bottom-margin">@Model.Title</h1>
         <hr>
         @Html.Partial("_ValidationSummary", new ValidationSummaryViewModel { ModelState = ViewData.ModelState })
+
+        @Html.Partial("_ReviewSummary", Model.Review)
+
         <form asp-route="@RouteNames.Considerations_Post">
             <div esfa-validation-marker-for="ThingsToConsider" class="form-group">
                 <label asp-for="ThingsToConsider" class="form-label-bold">Things to consider (optional)</label>
