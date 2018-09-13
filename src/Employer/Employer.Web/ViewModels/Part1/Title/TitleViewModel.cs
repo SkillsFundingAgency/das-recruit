@@ -5,10 +5,12 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Title
 {
     public class TitleViewModel : TitleEditModel
     {
+        public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
+
         public IList<string> OrderedFieldNames => new List<string>
         {
-            nameof(TitleEditModel.NumberOfPositions),
-            nameof(TitleEditModel.Title)
+            nameof(Title),
+            nameof(NumberOfPositions)
         };
 
         public string FormPostRouteName => VacancyId.HasValue ? RouteNames.Title_Post : RouteNames.CreateVacancy_Post;

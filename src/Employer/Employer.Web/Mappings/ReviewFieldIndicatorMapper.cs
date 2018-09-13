@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.ShortDescription;
+using Esfa.Recruit.Employer.Web.ViewModels.Part1.Title;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Training;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Wage;
 using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
@@ -19,7 +20,7 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             new ReviewFieldIndicatorViewModel(FieldIdentifiers.ShortDescription, Anchors.ShortDescription, "Brief overview of the role requires edit"),
             new ReviewFieldIndicatorViewModel(FieldIdentifiers.ClosingDate, Anchors.ClosingDate, "Closing date requires edit"),
             new ReviewFieldIndicatorViewModel(FieldIdentifiers.WorkingWeek, Anchors.WorkingWeek, "Working week requires edit"),
-            new ReviewFieldIndicatorViewModel(FieldIdentifiers.Wage, Anchors.YearlyWage, "Wage requires edit"),
+            new ReviewFieldIndicatorViewModel(FieldIdentifiers.Wage, Anchors.YearlyWage, "Yearly wage requires edit"),
             new ReviewFieldIndicatorViewModel(FieldIdentifiers.ExpectedDuration, Anchors.ExpectedDuration, "Expected duration requires edit"),
             new ReviewFieldIndicatorViewModel(FieldIdentifiers.PossibleStartDate, Anchors.PossibleStartDate, "Possible start date requires edit"),
             new ReviewFieldIndicatorViewModel(FieldIdentifiers.TrainingLevel, Anchors.TrainingLevel, "Apprenticeship level requires edit"),
@@ -58,9 +59,15 @@ namespace Esfa.Recruit.Employer.Web.Mappings
 
         public static readonly IReadOnlyList<ReviewFieldIndicatorViewModel> WageReviewFieldIndicators = new List<ReviewFieldIndicatorViewModel>
         {
-            new ReviewFieldIndicatorViewModel(FieldIdentifiers.ExpectedDuration, nameof(WageViewModel.Duration), "Expected duration requires edit"),
+            new ReviewFieldIndicatorViewModel(FieldIdentifiers.ExpectedDuration, nameof(WageViewModel.Duration), "How long is the apprenticeship expected to last requires edit"),
             new ReviewFieldIndicatorViewModel(FieldIdentifiers.WorkingWeek, nameof(WageViewModel.WorkingWeekDescription), "Working week requires edit"),
-            new ReviewFieldIndicatorViewModel(FieldIdentifiers.Wage, Anchors.WageTypeHeading, "Wage requires edit")
+            new ReviewFieldIndicatorViewModel(FieldIdentifiers.Wage, Anchors.WageTypeHeading, "What is the salary requires edit")
+        };
+
+        public static readonly IReadOnlyList<ReviewFieldIndicatorViewModel> TitleFieldIndicators = new List<ReviewFieldIndicatorViewModel>
+        {
+            new ReviewFieldIndicatorViewModel(FieldIdentifiers.Title, nameof(TitleViewModel.Title), "What do you want to call this vacancy requires edit"),
+            new ReviewFieldIndicatorViewModel(FieldIdentifiers.NumberOfPositions, nameof(TitleViewModel.NumberOfPositions), "Number of positions for this apprenticeship requires edit")
         };
 
         public static IEnumerable<ReviewFieldIndicatorViewModel> MapFromFieldIndicators(IEnumerable<ReviewFieldIndicatorViewModel> reviewFieldIndicatorsForPage, List<ManualQaFieldIndicator> reviewFieldIndicators)
