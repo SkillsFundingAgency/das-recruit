@@ -4,6 +4,9 @@
         <h1 class="heading-xlarge small-bottom-margin">@Model.Title</h1>
         <hr>
         @Html.Partial("_ValidationSummary", new ValidationSummaryViewModel { ModelState = ViewData.ModelState })
+
+        @Html.Partial("_ReviewSummary", Model.Review)
+
         <form asp-route="@RouteNames.TrainingProvider_Select_Post">
             <div class="form-group">
                 <label asp-for="Ukprn" class="form-label-bold">Enter the training provider UK Provider Reference Number (UKPRN)</label>
