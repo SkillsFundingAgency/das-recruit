@@ -54,17 +54,17 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             var isAvailableForReview =
                 _vacancyClient.VacancyReviewCanBeAssigned(qaVacancySummary.Status, qaVacancySummary.ReviewStartedOn);
 
-            return new VacancyReviewSearchResultViewModel()
+            return new VacancyReviewSearchResultViewModel
             {
-                AssignedTo = isAvailableForReview && vacancyUser.UserId == qaVacancySummary.ReviewAssignedToUserId ? null : qaVacancySummary.ReviewAssignedToUserName,
-                AssignedTimeElapsed = isAvailableForReview ? null : qaVacancySummary.ReviewStartedOn.GetShortTimeElapsed(_timeProvider.Now),
+                IsAssignedToLoggedInUser = vacancyUser.UserId == qaVacancySummary.ReviewAssignedToUserId,
+                AssignedTo = isAvailableForReview ? null : qaVacancySummary.ReviewAssignedToUserName,
                 ClosingDate = qaVacancySummary.ClosingDate.ToLocalTime(),
                 EmployerName = qaVacancySummary.EmployerName,
                 VacancyReference = qaVacancySummary.VacancyReference.ToString(),
                 VacancyTitle = qaVacancySummary.Title,
                 ReviewId = qaVacancySummary.Id,
                 SubmittedDate = qaVacancySummary.SubmittedDate.ToLocalTime(),
-                IsAvailableForReview = qaVacancySummary.ReviewAssignedToUserId == vacancyUser.UserId || isAvailableForReview
+                IsAvailableForReview = isAvailableForReview
             };
         }
 
