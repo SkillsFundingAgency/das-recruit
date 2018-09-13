@@ -12,6 +12,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public string ApplicationUrl { get; internal set; }
 
         public bool HasEmptyApplicationMethod => !ApplicationMethod.HasValue;
+        public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
 
         public IList<string> OrderedFieldNames => new List<string>
         {

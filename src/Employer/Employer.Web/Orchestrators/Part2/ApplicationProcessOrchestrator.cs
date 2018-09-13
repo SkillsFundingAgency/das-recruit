@@ -7,9 +7,8 @@ using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Configuration;
+using Esfa.Recruit.Employer.Web.Mappings;
 using Microsoft.Extensions.Options;
-using Esfa.Recruit.Shared;
-using Esfa.Recruit.Shared.Web;
 using Esfa.Recruit.Shared.Web.FeatureToggle;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
@@ -40,6 +39,13 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                 ApplicationInstructions = vacancy.ApplicationInstructions,
                 ApplicationUrl = vacancy.ApplicationUrl
             };
+
+            if (vacancy.Status == VacancyStatus.Referred)
+            {
+                vm.Review = await Utility.GetReviewSummaryViewModel(_client,
+                    vacancy.VacancyReference.Value,
+                    ReviewFieldIndicatorMapper.ApplicationProcessFieldIndicators);
+            }
 
             return vm;
         }

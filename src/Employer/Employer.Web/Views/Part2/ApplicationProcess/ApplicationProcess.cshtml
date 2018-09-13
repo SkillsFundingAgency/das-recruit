@@ -10,11 +10,14 @@
         <h1 class="heading-xlarge small-bottom-margin">@Model.Title</h1>
         <hr>
         @Html.Partial("_ValidationSummary", new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames })
+        
+        @Html.Partial("_ReviewSummary", Model.Review)
+
         <form asp-route="@RouteNames.ApplicationProcess_Post" novalidate>
             <esfaFeature name="@FeatureNames.AllowThroughFaaApplicationMethod">
                 <div esfa-validation-marker-for="ApplicationMethod" class="form-group">
                     <fieldset>
-                        <label class="form-label-bold sfa-small-bottom-margin">
+                        <label class="form-label-bold sfa-small-bottom-margin" id="@Anchors.ApplicationMethodHeading">
                             Application process?
                             <span class="form-hint">How will candidates apply for this vacancy</span>
                         </label>
