@@ -16,9 +16,13 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
 
         public DateTime ClosingDate { get; internal set; }
 
+        public bool IsAssignedToLoggedInUser { get; internal set; }
+
         public bool IsAvailableForReview { get; internal set; }
 
         public bool IsNotAvailableForReview => !IsAvailableForReview;
+        public bool CanShowReviewLink => IsAvailableForReview || IsAssignedToLoggedInUser;
+
 
         internal string AssignedTo { get; set; }
 
@@ -26,7 +30,7 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
 
         private string AssignedToCaption => 
             IsNotAvailableForReview 
-            ? AssignedTo ?? "you"
+            ? IsAssignedToLoggedInUser ? "you" : AssignedTo
             : null;
             
         private string AssignedTimeElapsedCaption => string.IsNullOrEmpty(AssignedTimeElapsed) 
