@@ -9,7 +9,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public string EmployerContactName { get; internal set; }
         public string EmployerContactEmail { get; internal set; }
         public string EmployerContactPhone { get; internal set; }
-
+        public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
         public IList<string> OrderedFieldNames => new List<string>
         {
             nameof(EmployerContactDetailsEditModel.EmployerContactName),
