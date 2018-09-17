@@ -4,7 +4,7 @@ using SFA.DAS.EAS.Account.Api.Types;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
 {
-    public interface IEmployerAccountService
+    public interface IEmployerAccountProvider
     {
         Task<IEnumerable<string>> GetEmployerIdentifiersAsync(string userId);
         Task<IEnumerable<LegalEntityViewModel>> GetEmployerLegalEntitiesAsync(string accountId);

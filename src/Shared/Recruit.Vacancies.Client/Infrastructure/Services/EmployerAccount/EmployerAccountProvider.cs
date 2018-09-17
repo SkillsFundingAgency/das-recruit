@@ -8,12 +8,12 @@ using SFA.DAS.EAS.Account.Api.Types;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
 {
-    internal class EmployerAccountService : IEmployerAccountService
+    internal class EmployerAccountProvider : IEmployerAccountProvider
     {
-        private readonly ILogger<EmployerAccountService> _logger;
+        private readonly ILogger<EmployerAccountProvider> _logger;
         private readonly IAccountApiClient _accountApiClient;
 
-        public EmployerAccountService(ILogger<EmployerAccountService> logger, IAccountApiClient accountApiClient)
+        public EmployerAccountProvider(ILogger<EmployerAccountProvider> logger, IAccountApiClient accountApiClient)
         {
             _logger = logger;
             _accountApiClient = accountApiClient;
