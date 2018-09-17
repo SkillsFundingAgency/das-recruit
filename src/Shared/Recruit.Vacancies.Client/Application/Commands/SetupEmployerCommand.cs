@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Commands
 {
-    public class SetupEmployerCommand : CommandBase, ICommand, IRequest
+    public class SetupEmployerCommand : ICommand, IRequest
     {
         public string EmployerAccountId { get; set; }
     }
