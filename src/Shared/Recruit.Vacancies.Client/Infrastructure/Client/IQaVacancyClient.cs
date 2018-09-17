@@ -27,5 +27,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<List<VacancyReview>> GetAssignedVacancyReviewsForUserAsync(string userId);
         bool VacancyReviewCanBeAssigned(VacancyReview review);
         bool VacancyReviewCanBeAssigned(ReviewStatus status, DateTime? reviewedDate);
+        Task UnassignVacancyReview(Guid reviewId);
     }
 }

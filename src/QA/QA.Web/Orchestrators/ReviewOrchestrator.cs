@@ -7,7 +7,6 @@ using Esfa.Recruit.Qa.Web.Mappings;
 using Esfa.Recruit.Qa.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
-using Esfa.Recruit.Vacancies.Client.Domain.Services;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using UnassignedVacancyReviewException = Esfa.Recruit.Qa.Web.Exceptions.UnassignedVacancyReviewException;
 
@@ -171,6 +170,23 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             var userVacancyReviews = await _vacancyClient.GetAssignedVacancyReviewsForUserAsync(user.UserId);
 
             return userVacancyReviews.FirstOrDefault()?.Id;
+        }
+
+        public async Task<UnassignReviewViewModel> GetUnassignReviewViewModelAsync(Guid reviewId)
+        {
+            var review = await _vacancyClient.GetVacancyReviewAsync(reviewId);
+
+            return new UnassignReviewViewModel()
+            {
+                ReviewId = reviewId,
+                AdvisorName = review.ReviewedByUser.Name,
+                Title = review.Title
+            };
+        }
+
+        public async Task UnassignVacancyReview(Guid reviewId)
+        {
+            await _vacancyClient.UnassignVacancyReview(reviewId);
         }
     }
 }

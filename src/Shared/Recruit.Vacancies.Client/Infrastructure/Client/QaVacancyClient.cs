@@ -10,7 +10,6 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.QA;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Qualifications;
@@ -180,5 +179,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _nextVacancyReviewService.VacancyReviewCanBeAssigned(status, reviewedDate);
         }
 
+        public Task UnassignVacancyReview(Guid reviewId)
+        {
+            return _messaging.SendCommandAsync(new UnassignVacancyReviewCommand() { ReviewId = reviewId });
+        }
     }
 }
