@@ -27,7 +27,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly IVacancyRepository _repository;
         private readonly IEntityValidator<Vacancy, VacancyRuleSet> _validator;
         private readonly IApprenticeshipProgrammeProvider _apprenticeshipProgrammesProvider;
-        private readonly IEmployerAccountService _employerAccountService;
+        private readonly IEmployerAccountProvider _employerAccountProvider;
         private readonly IReferenceDataReader _referenceDataReader;
         private readonly IApplicationReviewRepository _applicationReviewRepository;
         private readonly IVacancyReviewRepository _vacancyReviewRepository;
@@ -38,7 +38,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             IMessaging messaging,
             IEntityValidator<Vacancy, VacancyRuleSet> validator,
             IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider,
-            IEmployerAccountService employerAccountService,
+            IEmployerAccountProvider employerAccountProvider,
             IReferenceDataReader referenceDataReader,
             IApplicationReviewRepository applicationReviewRepository,
             IVacancyReviewRepository vacancyReviewRepository)
@@ -48,7 +48,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _messaging = messaging;
             _validator = validator;
             _apprenticeshipProgrammesProvider = apprenticeshipProgrammesProvider;
-            _employerAccountService = employerAccountService;
+            _employerAccountProvider = employerAccountProvider;
             _referenceDataReader = referenceDataReader;
             _applicationReviewRepository = applicationReviewRepository;
             _vacancyReviewRepository = vacancyReviewRepository;
@@ -169,7 +169,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public Task<IEnumerable<string>> GetEmployerIdentifiersAsync(string userId)
         {
-            return _employerAccountService.GetEmployerIdentifiersAsync(userId);
+            return _employerAccountProvider.GetEmployerIdentifiersAsync(userId);
         }
 
         public Task<CandidateSkills> GetCandidateSkillsAsync()
@@ -301,7 +301,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public async Task<IEnumerable<LegalEntity>> GetEmployerLegalEntitiesAsync(string employerAccountId)
         {
-            var results = await _employerAccountService.GetEmployerLegalEntitiesAsync(employerAccountId);
+            var results = await _employerAccountProvider.GetEmployerLegalEntitiesAsync(employerAccountId);
 
             return results.Select(LegalEntityMapper.MapFromAccountApiLegalEntity);
         }
