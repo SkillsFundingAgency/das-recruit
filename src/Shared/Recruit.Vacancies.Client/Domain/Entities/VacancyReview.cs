@@ -56,6 +56,11 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         /// </summary>
         public bool CanRefer => Status == ReviewStatus.UnderReview;
 
+        /// <summary>
+        /// A review can be unassigned only if it is assigned
+        /// </summary>
+        public bool CanUnassign => Status == ReviewStatus.UnderReview && ReviewedByUser != null;
+
         public static class FieldIdentifiers
         {
             public const string ApplicationInstructions = "ApplicationInstructions";
