@@ -4,7 +4,9 @@ using Esfa.Recruit.Qa.Web.Configuration;
 using Esfa.Recruit.Qa.Web.Configuration.Routing;
 using Esfa.Recruit.Qa.Web.Extensions;
 using Esfa.Recruit.Qa.Web.Orchestrators;
+using Esfa.Recruit.Qa.Web.Security;
 using Esfa.Recruit.Qa.Web.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Qa.Web.Controllers
@@ -57,6 +59,26 @@ namespace Esfa.Recruit.Qa.Web.Controllers
         {
             await _orchestrator.ApproveReferredReviewAsync(reviewId, reviewChanges);
 
+            return RedirectToRoute(RouteNames.Dashboard_Index_Get);
+        }
+
+        [Authorize(Policy = AuthorizationPolicyNames.TeamLeadUserPolicyName)]
+        [HttpGet("unassign", Name = RouteNames.Vacancy_Review_Unassign_Get)]
+        public async Task<IActionResult> UnassignReview([FromRoute] Guid reviewId)
+        {
+            var unassignReviewVM = await _orchestrator.GetUnassignReviewViewModelAsync(reviewId);
+            return View(unassignReviewVM);
+        }
+
+        [Authorize(Policy = AuthorizationPolicyNames.TeamLeadUserPolicyName)]
+        [HttpPost("unassign", Name = RouteNames.Vacancy_Review_Unassign_Post)]
+        public async Task<IActionResult> UnassignReview(UnassignReviewViewModel model)
+        {
+            var unassignReviewVM = await _orchestrator.GetUnassignReviewViewModelAsync(model.ReviewId);
+            if (!ModelState.IsValid)
+                return View(unassignReviewVM);
+            if (model.ConfirmUnassign.GetValueOrDefault())
+                await _orchestrator.UnassignVacancyReview(model.ReviewId);
             return RedirectToRoute(RouteNames.Dashboard_Index_Get);
         }
     }

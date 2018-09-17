@@ -179,5 +179,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _nextVacancyReviewService.VacancyReviewCanBeAssigned(status, reviewedDate);
         }
 
+        public Task UnassignVacancyReview(Guid reviewId)
+        {
+            return _messaging.SendCommandAsync(new UnassignVacancyReviewCommand() { ReviewId = reviewId });
+        }
     }
 }

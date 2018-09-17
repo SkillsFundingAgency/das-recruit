@@ -171,5 +171,22 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
 
             return userVacancyReviews.FirstOrDefault()?.Id;
         }
+
+        public async Task<UnassignReviewViewModel> GetUnassignReviewViewModelAsync(Guid reviewId)
+        {
+            var review = await _vacancyClient.GetVacancyReviewAsync(reviewId);
+
+            return new UnassignReviewViewModel()
+            {
+                ReviewId = reviewId,
+                AdvisorName = review.ReviewedByUser.Name,
+                Title = review.Title
+            };
+        }
+
+        public async Task UnassignVacancyReview(Guid reviewId)
+        {
+            await _vacancyClient.UnassignVacancyReview(reviewId);
+        }
     }
 }
