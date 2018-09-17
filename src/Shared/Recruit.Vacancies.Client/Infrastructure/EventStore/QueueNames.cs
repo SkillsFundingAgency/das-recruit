@@ -1,4 +1,4 @@
-namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Events
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventStore
 {
     public static class QueueNames
     {
