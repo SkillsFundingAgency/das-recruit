@@ -20,10 +20,10 @@ characterCount = function (n) {
     o > r ? (f.parent().addClass("has-error"),
         t.text(" characters over the limit"),
         s.text("Character limit has been reached, you must type fewer than " + r + " characters"),
-        u == 1 ? t.text(" character over the limit") : t.text(" characters over the limit")) : (f.parent().removeClass("has-error"),
+        u === 1 ? t.text(" character over the limit") : t.text(" characters over the limit")) : (f.parent().removeClass("has-error"),
             t.text(" characters remaining"),
             s.text(""),
-            u == 1 ? t.text(" character remaining") : t.text(" characters remaining"))
+            u === 1 ? t.text(" character remaining") : t.text(" characters remaining"))
 }
 
 $("textarea").on("keyup", function () {

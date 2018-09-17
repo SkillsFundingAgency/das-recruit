@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Commands
 {
-    public class UpdateVacancyReviewCommand : CommandBase, ICommand, IRequest
+    public class UpdateVacancyReviewCommand : ICommand, IRequest
     {
         public VacancyReview Review { get; internal set; }
     }
