@@ -87,7 +87,7 @@ window.EsfaRecruit.PcaConfig = {
 {
 <script asp-condition="@Model.HasMoreThanOneOrganisation">
 $(document).ready(function() {
-    var orgInputName = @nameof(EmployerViewModel.SelectedOrganisationName);
+    var orgInputName = "@nameof(EmployerViewModel.SelectedOrganisationName)";
 	var addresses = @Json.Serialize(Model.Organisations);
 
 	var setAddressById = function(id) {
