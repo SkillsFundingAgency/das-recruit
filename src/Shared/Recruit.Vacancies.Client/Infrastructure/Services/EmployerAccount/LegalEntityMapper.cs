@@ -1,10 +1,10 @@
-﻿using Esfa.Recruit.Vacancies.Client.Application.Validation;
+﻿using System;
+using System.Linq;
+using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using SFA.DAS.EAS.Account.Api.Types;
-using System;
-using System.Linq;
 
-namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mappings
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
 {
     public static class LegalEntityMapper
     {

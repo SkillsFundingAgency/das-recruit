@@ -1,4 +1,4 @@
-﻿using Esfa.Recruit.Vacancies.Client.Infrastructure.Mappings;
+﻿using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
 using FluentAssertions;
 using Xunit;
 
