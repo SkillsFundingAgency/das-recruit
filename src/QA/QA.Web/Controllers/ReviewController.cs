@@ -78,7 +78,7 @@ namespace Esfa.Recruit.Qa.Web.Controllers
             if (!ModelState.IsValid)
                 return View(unassignReviewVM);
             if (model.ConfirmUnassign.GetValueOrDefault())
-                await _orchestrator.UnassignVacancyReview(model.ReviewId);
+                await _orchestrator.UnassignVacancyReviewAsync(model.ReviewId);
             return RedirectToRoute(RouteNames.Dashboard_Index_Get);
         }
     }
