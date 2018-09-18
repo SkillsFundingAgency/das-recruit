@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
-using Esfa.Recruit.Vacancies.Client.Domain.Services;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.QA;
 using Microsoft.Extensions.Logging;
@@ -16,16 +15,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 {
     internal sealed class MongoDbVacancyReviewRepository : MongoDbCollectionBase, IVacancyReviewRepository
     {
-        private readonly ITimeProvider _timeProvider;
         private const string Database = "recruit";
         private const string Collection = "vacancyReviews";
 
         public MongoDbVacancyReviewRepository(
-            ILogger<MongoDbVacancyReviewRepository> logger, IOptions<MongoDbConnectionDetails> details, 
-            ITimeProvider timeProvider) 
+            ILogger<MongoDbVacancyReviewRepository> logger, IOptions<MongoDbConnectionDetails> details) 
             : base(logger, Database, Collection, details)
         {
-            _timeProvider = timeProvider;
         }
 
         public Task<List<QaVacancySummary>> SearchAsync(long vacancyReference)
