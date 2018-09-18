@@ -299,11 +299,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             });
         }
 
-        public async Task<IEnumerable<LegalEntity>> GetEmployerLegalEntitiesAsync(string employerAccountId)
+        public Task<IEnumerable<LegalEntity>> GetEmployerLegalEntitiesAsync(string employerAccountId)
         {
-            var results = await _employerAccountProvider.GetEmployerLegalEntitiesAsync(employerAccountId);
-
-            return results.Select(LegalEntityMapper.MapFromAccountApiLegalEntity);
+            return _employerAccountProvider.GetEmployerLegalEntitiesAsync(employerAccountId);
         }
 
         public async Task CreateApplicationReviewAsync(Domain.Entities.Application application)

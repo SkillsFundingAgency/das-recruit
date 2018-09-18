@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.EAS.Account.Api.Client;
-using SFA.DAS.EAS.Account.Api.Types;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
 {
@@ -34,7 +34,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
             }
         }
 
-        public async Task<IEnumerable<LegalEntityViewModel>> GetEmployerLegalEntitiesAsync(string accountId)
+        public async Task<IEnumerable<LegalEntity>> GetEmployerLegalEntitiesAsync(string accountId)
         {
             try
             {
@@ -44,7 +44,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
 
                 await Task.WhenAll(legalEntitiesTasks.ToArray());
 
-                var entities = legalEntitiesTasks.Select(t => t.Result);
+                var entities = legalEntitiesTasks.Select(t => t.Result).Select(LegalEntityMapper.MapFromAccountApiLegalEntity);
 
                 return entities;
             }
