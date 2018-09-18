@@ -45,7 +45,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             await _repository.UpdateAsync(vacancy);
             await _messaging.PublishEvent(new DraftVacancyUpdatedEvent
             {
-                SourceCommandId = message.CommandId.ToString(),
                 EmployerAccountId = vacancy.EmployerAccountId,
                 VacancyId = vacancy.Id
             });

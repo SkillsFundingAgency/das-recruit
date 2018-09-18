@@ -24,8 +24,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventStore
             var item = new EventItem
             {
                 EventType = @event.GetType().Name,
-                Data = json,
-                SourceCommandId = @event.SourceCommandId
+                Data = json
             };
 
             var storageAccount = CloudStorageAccount.Parse(_connectionString);

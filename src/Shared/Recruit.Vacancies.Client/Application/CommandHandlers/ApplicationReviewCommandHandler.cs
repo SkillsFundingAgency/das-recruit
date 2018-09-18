@@ -46,16 +46,16 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         public Task Handle(ApplicationReviewSuccessfulCommand message, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Setting application review:{applicationReviewId} to successful", message.ApplicationReviewId);
-            return Handle(message.ApplicationReviewId, message.User, message.CommandId, ApplicationReviewStatus.Successful);
+            return Handle(message.ApplicationReviewId, message.User, ApplicationReviewStatus.Successful);
         }
 
         public Task Handle(ApplicationReviewUnsuccessfulCommand message, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Setting application review:{applicationReviewId} to unsuccessful", message.ApplicationReviewId);
-            return Handle(message.ApplicationReviewId, message.User, message.CommandId, ApplicationReviewStatus.Unsuccessful, message.CandidateFeedback);
+            return Handle(message.ApplicationReviewId, message.User, ApplicationReviewStatus.Unsuccessful, message.CandidateFeedback);
         }
 
-        private async Task Handle(Guid applicationReviewId, VacancyUser user, Guid commandId, ApplicationReviewStatus status, string candidateFeedback = null)
+        private async Task Handle(Guid applicationReviewId, VacancyUser user, ApplicationReviewStatus status, string candidateFeedback = null)
         {
             var applicationReview = await _applicationReviewRepository.GetAsync(applicationReviewId);
             var vacancy = await _vacancyRepository.GetVacancyAsync(applicationReview.VacancyReference);
@@ -71,7 +71,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             await _messaging.PublishEvent(new ApplicationReviewedEvent
             {
-                SourceCommandId = commandId.ToString(),
                 EmployerAccountId = applicationReview.EmployerAccountId,
                 VacancyId = vacancy.Id,
                 Status = applicationReview.Status,
