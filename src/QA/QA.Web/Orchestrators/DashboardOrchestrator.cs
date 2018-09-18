@@ -49,22 +49,22 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             return vm;
         }
 
-        private VacancyReviewSearchResultViewModel MapToViewModel(QaVacancySummary qaVacancySummary, VacancyUser vacancyUser)
+        private VacancyReviewSearchResultViewModel MapToViewModel(VacancyReview vacancyReview, VacancyUser vacancyUser)
         {
             var isAvailableForReview =
-                _vacancyClient.VacancyReviewCanBeAssigned(qaVacancySummary.Status, qaVacancySummary.ReviewStartedOn);
+                _vacancyClient.VacancyReviewCanBeAssigned(vacancyReview.Status, vacancyReview.ReviewedDate);
 
             return new VacancyReviewSearchResultViewModel
             {
-                IsAssignedToLoggedInUser = vacancyUser.UserId == qaVacancySummary.ReviewAssignedToUserId,
-                AssignedTo = isAvailableForReview ? null : qaVacancySummary.ReviewAssignedToUserName,
-                AssignedTimeElapsed = qaVacancySummary.ReviewStartedOn.GetShortTimeElapsed(_timeProvider.Now),
-                ClosingDate = qaVacancySummary.ClosingDate.ToLocalTime(),
-                EmployerName = qaVacancySummary.EmployerName,
-                VacancyReference = qaVacancySummary.VacancyReference.ToString(),
-                VacancyTitle = qaVacancySummary.Title,
-                ReviewId = qaVacancySummary.Id,
-                SubmittedDate = qaVacancySummary.SubmittedDate.ToLocalTime(),
+                IsAssignedToLoggedInUser = vacancyUser.UserId == vacancyReview.ReviewedByUser.UserId,
+                AssignedTo = isAvailableForReview ? null : vacancyReview.ReviewedByUser.Name,
+                AssignedTimeElapsed = vacancyReview.ReviewedDate.GetShortTimeElapsed(_timeProvider.Now),
+                ClosingDate = vacancyReview.VacancySnapshot.ClosingDate.GetValueOrDefault().ToLocalTime(),
+                EmployerName = vacancyReview.VacancySnapshot.EmployerName,
+                VacancyReference = vacancyReview.VacancyReference.ToString(),
+                VacancyTitle = vacancyReview.Title,
+                ReviewId = vacancyReview.Id,
+                SubmittedDate = vacancyReview.VacancySnapshot.SubmittedDate.GetValueOrDefault().ToLocalTime(),
                 IsAvailableForReview = isAvailableForReview
             };
         }

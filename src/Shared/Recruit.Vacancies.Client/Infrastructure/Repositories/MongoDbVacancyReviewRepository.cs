@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.QA;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
@@ -24,25 +23,25 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         {
         }
 
-        public Task<List<QaVacancySummary>> SearchAsync(long vacancyReference)
+        public Task<List<VacancyReview>> SearchAsync(long vacancyReference)
         {
             var filterBuilder = Builders<VacancyReview>.Filter;
 
             var filter = (filterBuilder.Eq(r => r.Status, ReviewStatus.PendingReview)
                          | filterBuilder.Eq(r => r.Status, ReviewStatus.UnderReview)) 
                          & filterBuilder.Eq(r => r.VacancyReference, vacancyReference);
-            return GetQaVacancySummaries(filter);
+            return GetVacancyReviews(filter);
         }
 
-        public Task<List<QaVacancySummary>> GetVacancyReviewsInProgressAsync(DateTime reviewExpiration)
+        public Task<List<VacancyReview>> GetVacancyReviewsInProgressAsync(DateTime reviewExpiration)
         {
             var filterBuilder = Builders<VacancyReview>.Filter;
             var filter = filterBuilder.Eq(r => r.Status, ReviewStatus.UnderReview)
                 & filterBuilder.Gt(r => r.ReviewedDate, reviewExpiration);
-            return GetQaVacancySummaries(filter);
+            return GetVacancyReviews(filter);
         }
 
-        private async Task<List<QaVacancySummary>> GetQaVacancySummaries(FilterDefinition<VacancyReview> filter)
+        private async Task<List<VacancyReview>> GetVacancyReviews(FilterDefinition<VacancyReview> filter)
         {
             var collection = GetCollection<VacancyReview>();
 
@@ -50,31 +49,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
                 .ExecuteAsync(
                     context => collection
                         .Find(filter)
-                        .Project(GetQaVacancySummaryProjection())
                         .ToListAsync(),
                     new Context(nameof(SearchAsync)))
                 .ConfigureAwait(false);
 
             return result;
-        }
-
-        private ProjectionDefinition<VacancyReview, QaVacancySummary> GetQaVacancySummaryProjection()
-        {
-            return Builders<VacancyReview>.Projection.Expression(r =>
-                new QaVacancySummary()
-                {
-                    Id = r.Id,
-                    Title = r.Title,
-                    VacancyReference = r.VacancyReference,
-                    ReviewAssignedToUserName = r.ReviewedByUser.Name,
-                    ReviewAssignedToUserId = r.ReviewedByUser.UserId,
-                    ReviewStartedOn = r.ReviewedDate,
-                    EmployerName = r.VacancySnapshot != null ? r.VacancySnapshot.EmployerName : null,
-                    ClosingDate = r.VacancySnapshot != null ? r.VacancySnapshot.ClosingDate.GetValueOrDefault() : DateTime.MinValue,
-                    Status = r.Status,
-                    SubmittedDate = r.VacancySnapshot != null ? r.VacancySnapshot.SubmittedDate.GetValueOrDefault() : DateTime.MinValue
-                });
-
         }
 
         public Task CreateAsync(VacancyReview vacancy)
