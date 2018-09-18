@@ -22,7 +22,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
         public async Task Handle(UnassignVacancyReviewCommand message, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Starting vacancy review {reviewId}.", message.ReviewId);
+            _logger.LogInformation("Attempting to unassign review {reviewId}.", message.ReviewId);
 
             var review = await _repository.GetAsync(message.ReviewId);
 

@@ -184,9 +184,9 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             };
         }
 
-        public async Task UnassignVacancyReview(Guid reviewId)
+        public Task UnassignVacancyReviewAsync(Guid reviewId)
         {
-            await _vacancyClient.UnassignVacancyReview(reviewId);
+            return _vacancyClient.UnassignVacancyReviewAsync(reviewId);
         }
     }
 }
