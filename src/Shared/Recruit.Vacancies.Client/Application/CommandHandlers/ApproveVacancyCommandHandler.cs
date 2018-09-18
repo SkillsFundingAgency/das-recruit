@@ -49,7 +49,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             
             await _messaging.PublishEvent(new VacancyApprovedEvent
             {
-                SourceCommandId = message.CommandId.ToString(),
+
                 EmployerAccountId = vacancy.EmployerAccountId,
                 VacancyReference = vacancy.VacancyReference.Value,
                 VacancyId = vacancy.Id

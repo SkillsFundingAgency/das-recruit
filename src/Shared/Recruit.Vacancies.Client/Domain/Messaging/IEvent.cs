@@ -2,6 +2,5 @@
 {
     public interface IEvent
     {
-        string SourceCommandId { get; }
     }
 }

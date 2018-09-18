@@ -57,7 +57,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             await _messaging.PublishEvent(new VacancyReviewCreatedEvent
             {
-                SourceCommandId = message.CommandId.ToString(),
                 VacancyReference = message.VacancyReference,
                 ReviewId =  review.Id
             });

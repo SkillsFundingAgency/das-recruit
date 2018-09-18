@@ -24,7 +24,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
             _messaging = messaging;
         }
 
-        public async Task CloseVacancy(Guid vacancyId, Guid commandId)
+        public async Task CloseVacancy(Guid vacancyId)
         {
             _logger.LogInformation("Closing vacancy {vacancyId}.", vacancyId);
 
@@ -37,7 +37,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
 
             await _messaging.PublishEvent(new VacancyClosedEvent
             {
-                SourceCommandId = commandId.ToString(),
                 EmployerAccountId = vacancy.EmployerAccountId,
                 VacancyReference = vacancy.VacancyReference.Value,
                 VacancyId = vacancy.Id

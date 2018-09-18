@@ -54,7 +54,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             await _messaging.PublishEvent(new VacancySubmittedEvent
             {
-                SourceCommandId = message.CommandId.ToString(),
                 EmployerAccountId = vacancy.EmployerAccountId,
                 VacancyId = vacancy.Id,
                 VacancyReference = vacancy.VacancyReference.Value
