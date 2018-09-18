@@ -14,6 +14,8 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Training
         };
 
         public PartOnePageInfoViewModel PageInfo { get; set; }
+
+        public int CurrentYear { get; set; }
     }
 
     public class ApprenticeshipProgrammeViewModel

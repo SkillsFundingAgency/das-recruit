@@ -8,6 +8,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Employer.Web.RouteModel;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
@@ -15,10 +16,12 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
     {
         private const VacancyRuleSet ValdationRules = VacancyRuleSet.ClosingDate | VacancyRuleSet.StartDate | VacancyRuleSet.TrainingProgramme | VacancyRuleSet.StartDateEndDate | VacancyRuleSet.TrainingExpiryDate;
         private readonly IEmployerVacancyClient _client;
+        private readonly ITimeProvider _timeProvider;
 
-        public TrainingOrchestrator(IEmployerVacancyClient client, ILogger<TrainingOrchestrator> logger) : base(logger)
+        public TrainingOrchestrator(IEmployerVacancyClient client, ILogger<TrainingOrchestrator> logger, ITimeProvider timeProvider) : base(logger)
         {
             _client = client;
+            _timeProvider = timeProvider;
         }
         
         public async Task<TrainingViewModel> GetTrainingViewModelAsync(VacancyRouteModel vrm)
@@ -37,7 +40,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 SelectedProgrammeId = vacancy.ProgrammeId,
                 Programmes = programmes.ToViewModel(),
                 IsDisabilityConfident = vacancy.IsDisabilityConfident,
-                PageInfo = Utility.GetPartOnePageInfo(vacancy)
+                PageInfo = Utility.GetPartOnePageInfo(vacancy),
+                CurrentYear = _timeProvider.Now.Year
             };
 
             if (vacancy.ClosingDate.HasValue)

@@ -47,5 +47,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.EditVacancyDates
             nameof(EditVacancyDatesEditModel.ClosingDate),
             nameof(EditVacancyDatesEditModel.StartDate)
         };
+
+        public int CurrentYear { get; set; }
     }
 }

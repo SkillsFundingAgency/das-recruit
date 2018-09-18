@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Employer.Web.Extensions;
 using static Esfa.Recruit.Employer.Web.ViewModels.ValidationMessages;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
@@ -17,6 +18,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
     {
         private const VacancyRuleSet ValdationRules = VacancyRuleSet.ClosingDate | VacancyRuleSet.StartDate | VacancyRuleSet.TrainingProgramme | VacancyRuleSet.StartDateEndDate | VacancyRuleSet.TrainingExpiryDate | VacancyRuleSet.Wage;
         private readonly IEmployerVacancyClient _client;
+        private readonly ITimeProvider _timeProvider;
 
         private readonly EntityValidationResult _proposedClosingDateMustBeNewerError = new EntityValidationResult
         {
@@ -26,9 +28,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             }
         };
 
-        public EditVacancyDatesOrchestrator(IEmployerVacancyClient client, ILogger<EditVacancyDatesOrchestrator> logger) : base(logger)
+        public EditVacancyDatesOrchestrator(IEmployerVacancyClient client, ILogger<EditVacancyDatesOrchestrator> logger, ITimeProvider timeProvider) : base(logger)
         {
             _client = client;
+            _timeProvider = timeProvider;
         }
 
         public async Task<Vacancy> GetVacancyAsync(VacancyRouteModel vrm)
@@ -59,6 +62,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 StartDay = $"{vacancy.StartDate.Value.Day:00}",
                 StartMonth = $"{vacancy.StartDate.Value.Month:00}",
                 StartYear = $"{vacancy.StartDate.Value.Year}",
+
+                CurrentYear = _timeProvider.Now.Year,
 
                 ProgammeName = programmes.First(p => p.Id == vacancy.ProgrammeId).Title
             };
@@ -114,6 +119,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             resp.Data.StartDay = m.StartDay;
             resp.Data.StartMonth = m.StartMonth;
             resp.Data.StartYear = m.StartYear;
+            resp.Data.CurrentYear = _timeProvider.Now.Year;
 
             return resp.Data;
         }

@@ -1,7 +1,6 @@
 ﻿@using Esfa.Recruit.Vacancies.Client.Application.Services
-@inject ITimeProvider timeProvider
 @{
-    var exampleClosingDate = timeProvider.Now.AddMonths(2);
+    var exampleClosingDate = DateTime.Now.AddMonths(2);
     var exampleStartingDate = exampleClosingDate.AddDays(14);
 }
 <div class="example-advert-before">EXAMPLE VACANCY</div>
