@@ -1,5 +1,4 @@
-﻿using Esfa.Recruit.Employer.Web.ViewModels;
-using Esfa.Recruit.Employer.Web.ViewModels.Preview;
+﻿using Esfa.Recruit.Employer.Web.ViewModels.Preview;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using System.Collections.Generic;
@@ -35,8 +34,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             var vm = new VacancyPreviewViewModel();
             await _vacancyDisplayMapper.MapFromVacancyAsync(vm, vacancy);
             
-            vm.Programme = vacancy.ProgrammeId != null;
-            vm.Wage = vacancy.Wage != null;
+            vm.HasProgramme = vacancy.ProgrammeId != null;
+            vm.HasWage = vacancy.Wage != null;
             vm.CanShowReference = vacancy.Status != VacancyStatus.Draft;
             vm.DisplayDraftHeader = vacancy.Status == VacancyStatus.Draft;
             vm.DisplayReferredHeader = vacancy.Status == VacancyStatus.Referred;
@@ -94,14 +93,14 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             mappings.Add(e => e.ShortDescription, vm => vm.ShortDescription);
             mappings.Add(e => e.ClosingDate, vm => vm.ClosingDate);
-            mappings.Add(e => e.Wage, vm => vm.Wage);
+            mappings.Add(e => e.Wage, vm => vm.HasWage);
             mappings.Add(e => e.Wage.WeeklyHours, vm => vm.HoursPerWeek);
             mappings.Add(e => e.Wage.WorkingWeekDescription, vm => vm.WorkingWeekDescription);
             mappings.Add(e => e.Wage.WageType, vm => vm.WageText);
             mappings.Add(e => e.Wage.Duration, vm => vm.ExpectedDuration);
             mappings.Add(e => e.Wage.DurationUnit, vm => vm.ExpectedDuration);
             mappings.Add(e => e.StartDate, vm => vm.PossibleStartDate);
-            mappings.Add(e => e.ProgrammeId, vm => vm.Programme);
+            mappings.Add(e => e.ProgrammeId, vm => vm.HasProgramme);
             mappings.Add(e => e.NumberOfPositions, vm => vm.NumberOfPositions);
             mappings.Add(e => e.Description, vm => vm.VacancyDescription);
             mappings.Add(e => e.TrainingDescription, vm => vm.TrainingDescription);

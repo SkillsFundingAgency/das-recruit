@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using Esfa.Recruit.Employer.Web.Mappings;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
 {
@@ -31,8 +29,8 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
         public VacancyPreviewSectionState DescriptionsSectionState { get; internal set; }
         public VacancyPreviewSectionState WorkingWeekSectionState { get; internal set; }
         
-        public bool Wage { get; internal set; }
-        public bool Programme { get; internal set; }
+        public bool HasWage { get; internal set; }
+        public bool HasProgramme { get; internal set; }
 
         public bool CanShowReference { get; set; }
 
@@ -50,14 +48,14 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
             nameof(ShortDescription),
             nameof(ClosingDate),
             nameof(WorkingWeekDescription),
-            nameof(Wage),
+            nameof(HasWage),
             nameof(WorkingWeekDescription),
             nameof(HoursPerWeek),
             nameof(WageText),
             nameof(WageInfo),
             nameof(ExpectedDuration),
             nameof(PossibleStartDate),
-            nameof(Programme),
+            nameof(HasProgramme),
             nameof(TrainingLevel),
             nameof(NumberOfPositions),
             nameof(VacancyDescription),
