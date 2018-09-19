@@ -10,6 +10,7 @@
         public const string TrainingProviderSection = "trainingProvider";
         public const string TitleSection = "title";
         public const string ShortDescriptionSection = "shortDescription";
+        public const string VacancyDescriptionSection = "vacancyDescription";
 
         //Fields
         public const string Title = "Title";

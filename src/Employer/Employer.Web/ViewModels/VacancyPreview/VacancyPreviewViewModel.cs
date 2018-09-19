@@ -35,10 +35,33 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
         public bool CanShowReference { get; set; }
 
         public bool HasIncompleteVacancyDescription => !HasVacancyDescription;
-        public bool DisplayDraftHeader { get; internal set; }
+        public bool CanShowDraftHeader { get; internal set; }
         public string SubmitButtonText { get; internal set; }
 
-        //Referred
+
+
+        public bool HasIncompleteSkillsSection => SkillsSectionState == VacancyPreviewSectionState.Incomplete;
+        public bool HasIncompleteQualificationsSection => QualificationsSectionState == VacancyPreviewSectionState.Incomplete;
+        public bool HasIncompleteEmployerDescriptionSection => EmployerDescriptionSectionState == VacancyPreviewSectionState.Incomplete;
+        public bool HasIncompleteApplicationProcessSection => ApplicationMethodSectionState == VacancyPreviewSectionState.Incomplete;
+
+        public bool HasIncompleteThingsToConsiderSection => ThingsToConsiderSectionState == VacancyPreviewSectionState.Incomplete;
+        public bool HasIncompleteEmployerWebsiteUrlSection => EmployerWebsiteUrlSectionState == VacancyPreviewSectionState.Incomplete;
+        public bool HasIncompleteContactSection => ContactSectionState == VacancyPreviewSectionState.Incomplete;
+
+
+        public bool HasIncompleteMandatorySections => HasIncompleteVacancyDescription
+                                                        || SkillsSectionState == VacancyPreviewSectionState.Incomplete
+                                                        || QualificationsSectionState == VacancyPreviewSectionState.Incomplete
+                                                        || EmployerDescriptionSectionState == VacancyPreviewSectionState.Incomplete
+                                                        || ApplicationMethodSectionState == VacancyPreviewSectionState.Incomplete;
+
+        public bool HasIncompleteOptionalSections => ThingsToConsiderSectionState == VacancyPreviewSectionState.Incomplete 
+                                                    || EmployerWebsiteUrlSectionState == VacancyPreviewSectionState.Incomplete 
+                                                    || ContactSectionState == VacancyPreviewSectionState.Incomplete;
+
+        public bool HasIncompleteSections => HasIncompleteMandatorySections || HasIncompleteOptionalSections;
+
         public bool DisplayReferredHeader { get; internal set; }
         public string ReviewerComments { get; internal set; }
         public IEnumerable<ReviewFieldIndicatorViewModel> ReviewFieldIndicators { get; internal set; } = new List<ReviewFieldIndicatorViewModel>();
