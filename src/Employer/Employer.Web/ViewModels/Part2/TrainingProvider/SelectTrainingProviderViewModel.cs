@@ -8,6 +8,5 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public string Title { get; set; }
         [Display(Name = "UKPRN")]
         public long? Ukprn { get; set; }
-        public static string PreviewSectionAnchor => PreviewAnchors.TrainingProviderSection;
     }
 }
