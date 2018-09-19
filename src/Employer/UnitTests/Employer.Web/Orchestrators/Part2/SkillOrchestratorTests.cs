@@ -196,30 +196,27 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
             };
         }
 
-        private static CandidateSkills GetBaseSkills()
+        private static List<string> GetBaseSkills()
         {
-            return new CandidateSkills
+            return new List<string>
             {
-                Skills = new List<string>
-                {
-                    "Communication skills",
-                    "IT skills",
-                    "Attention to detail",
-                    "Organisation skills",
-                    "Customer care skills",
-                    "Problem solving skills",
-                    "Presentation skills",
-                    "Administrative skills",
-                    "Number skills",
-                    "Analytical skills",
-                    "Logical",
-                    "Team working",
-                    "Creative",
-                    "Initiative",
-                    "Non judgemental",
-                    "Patience",
-                    "Physical fitness"
-                }
+                "Communication skills",
+                "IT skills",
+                "Attention to detail",
+                "Organisation skills",
+                "Customer care skills",
+                "Problem solving skills",
+                "Presentation skills",
+                "Administrative skills",
+                "Number skills",
+                "Analytical skills",
+                "Logical",
+                "Team working",
+                "Creative",
+                "Initiative",
+                "Non judgemental",
+                "Patience",
+                "Physical fitness"
             };
         }
     }
