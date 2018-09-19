@@ -2,9 +2,6 @@
 @using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
 @using Esfa.Recruit.Vacancies.Client.Domain.Entities
 @model Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview.VacancyPreviewViewModel
-@{
-    var _canShowIncompleteSectionsBox = ViewData.ModelState.IsValid || Model.HasIncompleteSections;
-}
 @functions
 {
 const string EmptySectionClass = "preview-empty";
@@ -39,7 +36,7 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
     <div class="column-full">
         <h1 asp-condition="@Model.CanShowDraftHeader" class="heading-xlarge small-bottom-margin">Complete your vacancy</h1>
         @Html.Partial("_ValidationSummary", new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames })
-        <div asp-condition="@_canShowIncompleteSectionsBox" class="info-summary no-top-margin" role="alert">
+        <div asp-condition="@Model.HasIncompleteSections" class="info-summary no-top-margin" role="alert">
             <div asp-condition="@Model.HasIncompleteMandatorySections">
                 <p>The following sections need to be completed:</p>
                 <ul class="list">
@@ -47,7 +44,8 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
                     <li asp-condition="@Model.HasIncompleteSkillsSection"><a asp-fragment="@PreviewAnchors.RequirementsAndProspectsSection">Desired skills and personal qualities</a></li>
                     <li asp-condition="@Model.HasIncompleteQualificationsSection"><a asp-fragment="@PreviewAnchors.Qualifications">Qualifications</a></li>
                     <li asp-condition="@Model.HasIncompleteEmployerDescriptionSection"><a asp-fragment="@PreviewAnchors.EmployerDescription">Employer description</a></li>
-                    <li asp-condition="@Model.HasIncompleteApplicationProcessSection"><a asp-fragment="@PreviewAnchors.ApplicationProcessSection">Where will the candidates apply for this vacancy</a></li>
+                    <li asp-condition="@Model.HasIncompleteTrainingProviderSection"><a asp-fragment="@PreviewAnchors.TrainingProviderSection">Training provider</a></li>
+                    <li asp-condition="@Model.HasIncompleteApplicationProcessSection"><a asp-fragment="@PreviewAnchors.ApplicationProcessSection">Application process</a></li>
                 </ul>
             </div>
             <div asp-condition="@Model.HasIncompleteOptionalSections">

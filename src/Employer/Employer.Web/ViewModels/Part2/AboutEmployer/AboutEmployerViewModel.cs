@@ -9,8 +9,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public string EmployerDescription { get; internal set; }
         public string EmployerWebsiteUrl { get; internal set; }
 
-        public static string PreviewSectionAnchor => PreviewAnchors.AboutEmployerSection;
-
         public IList<string> OrderedFieldNames => new List<string>
         {
             nameof(AboutEmployerEditModel.EmployerDescription),

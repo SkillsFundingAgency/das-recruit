@@ -43,6 +43,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
         public bool HasIncompleteSkillsSection => SkillsSectionState == VacancyPreviewSectionState.Incomplete;
         public bool HasIncompleteQualificationsSection => QualificationsSectionState == VacancyPreviewSectionState.Incomplete;
         public bool HasIncompleteEmployerDescriptionSection => EmployerDescriptionSectionState == VacancyPreviewSectionState.Incomplete;
+        public bool HasIncompleteTrainingProviderSection => ProviderSectionState == VacancyPreviewSectionState.Incomplete;
         public bool HasIncompleteApplicationProcessSection => ApplicationMethodSectionState == VacancyPreviewSectionState.Incomplete;
 
         public bool HasIncompleteThingsToConsiderSection => ThingsToConsiderSectionState == VacancyPreviewSectionState.Incomplete;
@@ -51,14 +52,15 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
 
 
         public bool HasIncompleteMandatorySections => HasIncompleteVacancyDescription
-                                                        || SkillsSectionState == VacancyPreviewSectionState.Incomplete
-                                                        || QualificationsSectionState == VacancyPreviewSectionState.Incomplete
-                                                        || EmployerDescriptionSectionState == VacancyPreviewSectionState.Incomplete
-                                                        || ApplicationMethodSectionState == VacancyPreviewSectionState.Incomplete;
+                                                        || HasIncompleteSkillsSection
+                                                        || HasIncompleteQualificationsSection
+                                                        || HasIncompleteEmployerDescriptionSection
+                                                        || HasIncompleteTrainingProviderSection
+                                                        || HasIncompleteApplicationProcessSection;
 
-        public bool HasIncompleteOptionalSections => ThingsToConsiderSectionState == VacancyPreviewSectionState.Incomplete 
-                                                    || EmployerWebsiteUrlSectionState == VacancyPreviewSectionState.Incomplete 
-                                                    || ContactSectionState == VacancyPreviewSectionState.Incomplete;
+        public bool HasIncompleteOptionalSections => HasIncompleteThingsToConsiderSection
+                                                    || HasIncompleteEmployerWebsiteUrlSection
+                                                    || HasIncompleteContactSection;
 
         public bool HasIncompleteSections => HasIncompleteMandatorySections || HasIncompleteOptionalSections;
 

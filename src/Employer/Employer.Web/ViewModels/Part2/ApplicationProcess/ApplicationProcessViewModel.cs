@@ -13,8 +13,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
 
         public bool HasEmptyApplicationMethod => !ApplicationMethod.HasValue;
 
-        public static string PreviewSectionAnchor => PreviewAnchors.ApplicationProcessSection;
-
         public IList<string> OrderedFieldNames => new List<string>
         {
             nameof(ApplicationProcessEditModel.ApplicationMethod),

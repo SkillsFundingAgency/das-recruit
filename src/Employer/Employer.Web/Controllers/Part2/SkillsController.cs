@@ -52,7 +52,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
                 return RedirectToRoute(RouteNames.Skills_Get);
             }
 
-            return RedirectToRoute(RouteNames.Vacancy_Preview_Get, SkillsViewModel.PreviewSectionAnchor);
+            return RedirectToRoute(RouteNames.Vacancy_Preview_Get);
         }
     }
 }
