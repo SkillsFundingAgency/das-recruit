@@ -18,6 +18,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BankHolidays;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Qualifications;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Skills;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Wages;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.SequenceStore;
@@ -99,6 +100,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient<IMinimumWageProvider, NationalMinimumWageProvider>();
             services.AddTransient<IApprenticeshipProgrammeProvider, ApprenticeshipProgrammeProvider>();
             services.AddTransient<IQualificationsProvider, QualificationsProvider>();
+            services.AddTransient<ICandidateSkillsProvider, CandidateSkillsProvider>();
 
             // Reference Data update services
             services.AddTransient<IApprenticeshipProgrammeUpdateService, ApprenticeshipProgrammeUpdateService>();

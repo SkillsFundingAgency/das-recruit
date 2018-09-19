@@ -20,16 +20,16 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         private const int ColumnOneCutOffIndex = 9;
         private const char SortPrefixSeparator = '-';
         private readonly IEmployerVacancyClient _client;
-        private readonly Lazy<CandidateSkills> _lazyCandidateSkills;
+        private readonly Lazy<List<string>> _lazyCandidateSkills;
 
-        private CandidateSkills CandidateSkills => _lazyCandidateSkills.Value;
-        private IEnumerable<string> Column1BuiltInSkills => CandidateSkills.Skills.Take(ColumnOneCutOffIndex);
-        private IEnumerable<string> Column2BuiltInSkills => CandidateSkills.Skills.Skip(ColumnOneCutOffIndex);
+        private List<string> CandidateSkills => _lazyCandidateSkills.Value;
+        private IEnumerable<string> Column1BuiltInSkills => CandidateSkills.Take(ColumnOneCutOffIndex);
+        private IEnumerable<string> Column2BuiltInSkills => CandidateSkills.Skip(ColumnOneCutOffIndex);
 
         public SkillsOrchestrator(IEmployerVacancyClient client, ILogger<SkillsOrchestrator> logger) : base(logger)
         {
             _client = client;
-            _lazyCandidateSkills = new Lazy<CandidateSkills>(() => _client.GetCandidateSkillsAsync().Result);
+            _lazyCandidateSkills = new Lazy<List<string>>(() => _client.GetCandidateSkillsAsync().Result);
         }
         
         public async Task<SkillsViewModel> GetSkillsViewModelAsync(VacancyRouteModel vrm, string[] draftSkills = null)
@@ -189,12 +189,12 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         
         private IEnumerable<string> GetCustomSkills(IEnumerable<string> selected)
         {
-            return selected == null ? new List<string>() : selected.Except(CandidateSkills.Skills);
+            return selected == null ? new List<string>() : selected.Except(CandidateSkills);
         }
 
         private IEnumerable<string> GetBaseSkills(IEnumerable<string> selected)
         {
-            return selected == null ? new List<string>() : selected.Intersect(CandidateSkills.Skills);
+            return selected == null ? new List<string>() : selected.Intersect(CandidateSkills);
         }
 
         private void SyncErrorsAndModel(ICollection<EntityValidationError> errors, SkillsEditModel m, Vacancy vacancy)
@@ -230,11 +230,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             if (m.IsAddingCustomSkill)
             {
                 // If the user has tried to add a custom skill that exists in the default skills list.
-                if (CandidateSkills.Skills.Contains(m.AddCustomSkillName) && !baseSkillList.Contains(m.AddCustomSkillName))
+                if (CandidateSkills.Contains(m.AddCustomSkillName) && !baseSkillList.Contains(m.AddCustomSkillName))
                 {
                     baseSkillList.Add(m.AddCustomSkillName);
                 }
-                else if (!CandidateSkills.Skills.Contains(m.AddCustomSkillName) && !customSkillList.Contains(m.AddCustomSkillName))
+                else if (!CandidateSkills.Contains(m.AddCustomSkillName) && !customSkillList.Contains(m.AddCustomSkillName))
                 {
                     customSkillList.Add(m.AddCustomSkillName);
                 }
