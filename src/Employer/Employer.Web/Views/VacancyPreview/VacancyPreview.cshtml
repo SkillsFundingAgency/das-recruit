@@ -2,56 +2,71 @@
 @using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
 @using Esfa.Recruit.Vacancies.Client.Domain.Entities
 @model Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview.VacancyPreviewViewModel
-
+@{
+    var _canShowIncompleteSectionsBox = ViewData.ModelState.IsValid || Model.HasIncompleteSections;
+}
 @functions
 {
-    const string EmptySectionClass = "preview-empty";
-    const string ErrorSectionClass = "preview-error";
-    const string ReviewSectionClass = "preview-review";
+const string EmptySectionClass = "preview-empty";
+const string ErrorSectionClass = "preview-error";
+const string ReviewSectionClass = "preview-review";
 
-    public string GetSectionClass(VacancyPreviewSectionState state)
+public string GetSectionClass(VacancyPreviewSectionState state)
+{
+    switch (state)
     {
-        switch (state)
-        {
-            case VacancyPreviewSectionState.Valid:
-                return string.Empty;
-            case VacancyPreviewSectionState.Incomplete:
-                return EmptySectionClass;
-            case VacancyPreviewSectionState.Review:
-                return ReviewSectionClass;
-            default:
-                return ErrorSectionClass;
-        }
-    }
-
-    public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state, string id, object routeValues = null)
-    {
-        if(state == VacancyPreviewSectionState.Incomplete)
-        {
-            return Html.RouteLink("Add", routeName, routeValues, new { @class = "button-secondary", data_automation=id });
-        }
-        return Html.RouteLink("Edit", routeName, routeValues, new { data_automation=id });
+        case VacancyPreviewSectionState.Valid:
+            return string.Empty;
+        case VacancyPreviewSectionState.Incomplete:
+            return EmptySectionClass;
+        case VacancyPreviewSectionState.Review:
+            return ReviewSectionClass;
+        default:
+            return ErrorSectionClass;
     }
 }
 
-<div asp-condition="@Model.DisplayDraftHeader" class="grid-row">
+public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state, string id, object routeValues = null)
+{
+    if (state == VacancyPreviewSectionState.Incomplete)
+    {
+        return Html.RouteLink("Add", routeName, routeValues, new { @class = "button-secondary", data_automation = id });
+    }
+    return Html.RouteLink("Edit", routeName, routeValues, new { data_automation = id });
+}
+}
+<div class="grid-row">
     <div class="column-full">
-        <h1 class="heading-xlarge small-bottom-margin">Complete your vacancy</h1>
+        <h1 asp-condition="@Model.CanShowDraftHeader" class="heading-xlarge small-bottom-margin">Complete your vacancy</h1>
         @Html.Partial("_ValidationSummary", new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames })
-        <div asp-condition="@ViewData.ModelState.IsValid" class="info-summary no-top-margin" role="alert">
-            <p>Fill in the sections highlighted by a blue bar using the <a class="button-secondary">Add</a> button</p>
+        <div asp-condition="@_canShowIncompleteSectionsBox" class="info-summary no-top-margin" role="alert">
+            <div asp-condition="@Model.HasIncompleteMandatorySections">
+                <p>The following sections need to be completed:</p>
+                <ul class="list">
+                    <li asp-condition="@Model.HasIncompleteVacancyDescription"><a asp-fragment="@PreviewAnchors.VacancyDescriptionSection">Vacancy description</a></li>
+                    <li asp-condition="@Model.HasIncompleteSkillsSection"><a asp-fragment="@PreviewAnchors.RequirementsAndProspectsSection">Desired skills and personal qualities</a></li>
+                    <li asp-condition="@Model.HasIncompleteQualificationsSection"><a asp-fragment="@PreviewAnchors.Qualifications">Qualifications</a></li>
+                    <li asp-condition="@Model.HasIncompleteEmployerDescriptionSection"><a asp-fragment="@PreviewAnchors.EmployerDescription">Employer description</a></li>
+                    <li asp-condition="@Model.HasIncompleteApplicationProcessSection"><a asp-fragment="@PreviewAnchors.ApplicationProcessSection">Where will the candidates apply for this vacancy</a></li>
+                </ul>
+            </div>
+            <div asp-condition="@Model.HasIncompleteOptionalSections">
+                <p class="small-top-margin">You may wish to complete these optional sections:</p>
+                <ul class="list">
+                    <li asp-condition="@Model.HasIncompleteThingsToConsiderSection"><a asp-fragment="@PreviewAnchors.ThingsToConsider">Things to consider</a></li>
+                    <li asp-condition="@Model.HasIncompleteEmployerWebsiteUrlSection"><a asp-fragment="@PreviewAnchors.EmployerWebsiteUrl">Employer website</a></li>
+                    <li asp-condition="@Model.HasIncompleteContactSection"><a asp-fragment="@PreviewAnchors.EmployerContact">Contact details</a></li>
+                </ul>
+            </div>
         </div>
     </div>
 </div>
-
 <div asp-condition="@Model.DisplayReferredHeader" class="grid-row">
     <div class="column-two-thirds">
         <div class="error-summary no-top-margin review-summary" role="alert" aria-labelledby="error-summary-heading-example-2" tabindex="-1">
-
             <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-2">
                 <img src="~/img/red-cross.png" class="red-cross-logo" alt="red cross"> Edits needed
             </h2>
-
             <p>@Model.ReviewerComments</p>
             <ul class="list">
                 @foreach (var fieldIndicator in Model.ReviewFieldIndicators)
@@ -59,14 +74,10 @@
                     <li><a href="#@fieldIndicator.Anchor">@fieldIndicator.Text</a></li>
                 }
             </ul>
-            <ul class="error-summary-list">
-
-            </ul>
+            <ul class="error-summary-list"></ul>
         </div>
-
     </div>
 </div>
-
 <div class="grid-row" id="@PreviewAnchors.TitleSection">
     <div class="column-two-thirds">
         <div class="@GetSectionClass(Model.TitleSectionState)">
@@ -79,14 +90,13 @@
         </div>
     </div>
 </div>
-
 <div class="grid-row" id="@PreviewAnchors.ShortDescriptionSection">
     <div class="column-two-thirds">
         <div class="@GetSectionClass(Model.ShortDescriptionSectionState)">
             <h3 class="heading-small no-top-margin" id="@PreviewAnchors.ShortDescription">
                 <esfa-review-marker asp-for="ReviewFieldIndicators" value="@VacancyReview.FieldIdentifiers.ShortDescription" />
                 Brief overview of the role
-            </h3>            
+            </h3>
             <span esfa-validation-message-for="ShortDescription" class="error-message"></span>
             <p asp-condition="@Model.HasShortDescription">@Model.ShortDescription</p>
             @EditLink(RouteNames.ShortDescription_Get, Model.ShortDescriptionSectionState, "link-overview", new { wizard = false })
@@ -104,13 +114,11 @@
         </div>
     </div>
 </div>
-
 <div class="grid-row" id="@PreviewAnchors.ApprenticeshipSummarySection">
     <div class="column-full">
         <h2 class="heading-large">Apprenticeship summary</h2>
     </div>
 </div>
-
 <div class="grid-row">
     <div class="column-one-third">
         <ul class="list">
@@ -151,7 +159,7 @@
                 <span esfa-validation-message-for="ExpectedDuration" class="error-message"></span>
                 <p asp-condition="@Model.HasExpectedDuration">@Model.ExpectedDuration</p>
                 @EditLink(RouteNames.Wage_Get, Model.ExpectedDurationSectionState, "link-duration", new { wizard = false })
-                
+
             </li>
             <li class="@GetSectionClass(Model.PossibleStartDateSectionState)">
                 <h3 class="heading-small" id="@PreviewAnchors.PossibleStartDate">
@@ -187,7 +195,7 @@
             </li>
         </ul>
     </div>
-    <div class="column-two-thirds">
+    <div class="column-two-thirds" id="@PreviewAnchors.VacancyDescriptionSection">
         <div class="@GetSectionClass(Model.DescriptionsSectionState)">
             <h3 asp-condition="@Model.HasIncompleteVacancyDescription" class="heading-small">Vacancy description</h3>
             <h3 asp-condition="@Model.HasVacancyDescription" class="heading-small" id="@PreviewAnchors.VacancyDescription">
@@ -212,20 +220,17 @@
         </div>
     </div>
 </div>
-
 <div class="grid-row" id="@PreviewAnchors.RequirementsAndProspectsSection">
     <div class="column-full">
         <hr class="no-bottom-margin">
     </div>
 </div>
 
-
 <div class="grid-row">
     <div class="column-full">
         <h2 class="heading-large">Requirements and prospects</h2>
     </div>
 </div>
-
 <div class="grid-row">
     <div class="column-half">
         <div class="@GetSectionClass(Model.SkillsSectionState)">
@@ -234,7 +239,7 @@
                 Desired skills and personal qualities
             </h3>
             <span esfa-validation-message-for="Skills" class="error-message"></span>
-            <p asp-condition="@Model.HasSkills" >@string.Join(", ", Model.Skills)</p>
+            <p asp-condition="@Model.HasSkills">@string.Join(", ", Model.Skills)</p>
             @EditLink(RouteNames.Skills_Get, Model.SkillsSectionState, "link-skills")
         </div>
         <div class="@GetSectionClass(Model.QualificationsSectionState)">
@@ -264,19 +269,16 @@
         </div>
     </div>
 </div>
-
 <div class="grid-row" id="@PreviewAnchors.AboutEmployerSection">
     <div class="column-full">
         <hr class="no-bottom-margin">
     </div>
 </div>
-
 <div class="grid-row">
     <div class="column-full">
         <h2 class="heading-large">About the employer</h2>
     </div>
 </div>
-
 <div class="grid-row">
     <div class="column-two-thirds">
         <div class="@GetSectionClass(Model.EmployerDescriptionSectionState)">
@@ -292,7 +294,7 @@
             <h3 class="heading-small">Employer</h3>
             <span esfa-validation-message-for="EmployerName" class="error-message"></span>
             <p asp-condition="@Model.HasEmployerName">@Model.EmployerName</p>
-            @EditLink(RouteNames.Employer_Get, Model.EmployerNameSectionState, "link-employer", new{ wizard = false})
+            @EditLink(RouteNames.Employer_Get, Model.EmployerNameSectionState, "link-employer", new { wizard = false })
         </div>
         <div class="@GetSectionClass(Model.DisabilityConfidentSectionState)">
             <h3 class="heading-small" id="@PreviewAnchors.DisabilityConfident">
@@ -302,7 +304,7 @@
             <img asp-condition="@Model.IsDisabilityConfident" src="~/img/disability-confident_545x172.png" class="disability-confident-logo" alt="A logo confirming that the employer is registered as disability confident" />
             @Html.Partial(PartialNames.DisabilityConfident, Model.IsDisabilityConfident)
             <p asp-condition="@Model.IsNotDisabilityConfident" class="form-hint">This vacancy is not Disability Confident<br />This will not appear on the vacancy when it goes live</p>
-            @EditLink(RouteNames.Training_Get, Model.TrainingSectionState, "link-standard", new {wizard = false})
+            @EditLink(RouteNames.Training_Get, Model.TrainingSectionState, "link-standard", new { wizard = false })
         </div>
         <div class="@GetSectionClass(Model.EmployerWebsiteUrlSectionState)">
             <h3 class="heading-small" id="@PreviewAnchors.EmployerWebsiteUrl">
@@ -330,7 +332,6 @@
         </div>
     </div>
 </div>
-
 <div class="grid-row">
     <div class="column-half">
         <div class="@GetSectionClass(Model.EmployerAddressSectionState)">
@@ -352,19 +353,16 @@
         <img asp-condition="@Model.HasMapUrl" id="static-map" src="@Model.MapUrl" alt="Location map" />
     </div>
 </div>
-
 <div class="grid-row" id="@PreviewAnchors.TrainingProviderSection">
     <div class="column-full">
         <hr class="no-bottom-margin">
     </div>
 </div>
-
 <div class="grid-row">
     <div class="column-full">
         <h2 class="heading-large">Training provider</h2>
     </div>
 </div>
-
 <div class="grid-row">
     <div class="column-full">
         <div class="@GetSectionClass(Model.ProviderSectionState)">
@@ -382,17 +380,15 @@
                 Apprenticeship @Model.TrainingType
             </h3>
             <p asp-condition="@Model.HasTrainingTitle">@Model.TrainingTitle</p>
-            @EditLink(RouteNames.Training_Get, Model.TrainingSectionState, "link-standard", new {wizard = false})
+            @EditLink(RouteNames.Training_Get, Model.TrainingSectionState, "link-standard", new { wizard = false })
         </div>
     </div>
 </div>
-
 <div class="grid-row" id="@PreviewAnchors.ApplicationProcessSection">
     <div class="column-full">
         <hr class="no-bottom-margin">
     </div>
 </div>
-
 <div class="grid-row">
     <div class="column-full">
         <h2 asp-condition="@Model.ShowGeneralApplicationProcessSectionTitle" class="heading-large">Application process</h2>
@@ -434,13 +430,11 @@
         </div>
     </div>
 </div>
-
 <div class="grid-row">
     <div class="column-full">
         <hr class="no-bottom-margin">
     </div>
 </div>
-
 <div class="grid-row">
     <div class="column-full">
         <div class="form-group inline">

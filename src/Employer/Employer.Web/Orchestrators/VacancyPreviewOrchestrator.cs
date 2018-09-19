@@ -37,7 +37,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             vm.HasProgramme = vacancy.ProgrammeId != null;
             vm.HasWage = vacancy.Wage != null;
             vm.CanShowReference = vacancy.Status != VacancyStatus.Draft;
-            vm.DisplayDraftHeader = vacancy.Status == VacancyStatus.Draft;
+            vm.CanShowDraftHeader = vacancy.Status == VacancyStatus.Draft;
             vm.DisplayReferredHeader = vacancy.Status == VacancyStatus.Referred;
             vm.SubmitButtonText = "Submit vacancy";
 
