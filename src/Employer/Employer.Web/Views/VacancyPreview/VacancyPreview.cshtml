@@ -59,7 +59,8 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
         </div>
     </div>
 </div>
-<div asp-condition="@Model.Review.DisplayReviewHeader" class="grid-row">
+
+<div asp-condition="@Model.Review.CanDisplayReviewHeader" class="grid-row">
     <div class="column-two-thirds">
         @Html.Partial("_ReviewSummary", Model.Review)
     </div>
@@ -69,7 +70,7 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
     <div class="column-two-thirds">
         <div class="@GetSectionClass(Model.TitleSectionState)">
             <h2 class="heading-xlarge small-bottom-margin" id="@Anchors.Title">
-                <esfa-review-marker asp-for="Review.FieldIndicators" value="@VacancyReview.FieldIdentifiers.Title" />
+                <img asp-condition="@Model.TitleRequiresEdit" src="/img/red-cross.png" />
                 @Model.Title
                 <span class="heading-secondary">@Model.EmployerName</span>
             </h2>
@@ -81,7 +82,7 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
     <div class="column-two-thirds">
         <div class="@GetSectionClass(Model.ShortDescriptionSectionState)">
             <h3 class="heading-small no-top-margin" id="@Anchors.ShortDescription">
-                <esfa-review-marker asp-for="Review.FieldIndicators" value="@VacancyReview.FieldIdentifiers.ShortDescription" />
+                <img asp-condition="@Model.ShortDescriptionRequiresEdit" src="/img/red-cross.png"/>
                 Brief overview of the role
             </h3>
             <span esfa-validation-message-for="ShortDescription" class="error-message"></span>
@@ -92,7 +93,7 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
     <div class="column-one-third">
         <div class="@GetSectionClass(Model.ClosingDateSectionState)">
             <h3 class="heading-small no-top-margin" id="@Anchors.ClosingDate">
-                <esfa-review-marker asp-for="Review.FieldIndicators" value="@VacancyReview.FieldIdentifiers.ClosingDate" />
+                <img asp-condition="@Model.ClosingDateRequiresEdit" src="/img/red-cross.png"/>
                 Closing Date
             </h3>
             <span esfa-validation-message-for="ClosingDate" class="error-message"></span>
@@ -111,7 +112,7 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
         <ul class="list">
             <li class="@GetSectionClass(Model.WorkingWeekSectionState)">
                 <h3 class="heading-small" id="@Anchors.WorkingWeek">
-                    <esfa-review-marker asp-for="Review.FieldIndicators" value="@VacancyReview.FieldIdentifiers.WorkingWeek" />
+                    <img asp-condition="@Model.WorkingWeekRequiresEdit" src="/img/red-cross.png"/>
                     Working week
                 </h3>
                 <span esfa-validation-message-for="HasWage" class="error-message"></span>
@@ -129,7 +130,7 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
             </li>
             <li class="@GetSectionClass(Model.WageTextSectionState)">
                 <h3 class="heading-small" id="@Anchors.YearlyWage">
-                    <esfa-review-marker asp-for="Review.FieldIndicators" value="@VacancyReview.FieldIdentifiers.Wage" />
+                    <img asp-condition="@Model.WageRequiresEdit" src="/img/red-cross.png"/>
                     Yearly wage
                 </h3>
                 <span esfa-validation-message-for="WageText" class="error-message"></span>
@@ -140,7 +141,7 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
             </li>
             <li class="@GetSectionClass(Model.ExpectedDurationSectionState)">
                 <h3 class="heading-small" id="@Anchors.ExpectedDuration">
-                    <esfa-review-marker asp-for="Review.FieldIndicators" value="@VacancyReview.FieldIdentifiers.ExpectedDuration" />
+                    <img asp-condition="@Model.ExpectedDurationRequiresEdit" src="/img/red-cross.png"/>
                     Expected apprenticeship duration
                 </h3>
                 <span esfa-validation-message-for="ExpectedDuration" class="error-message"></span>
@@ -150,7 +151,7 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
             </li>
             <li class="@GetSectionClass(Model.PossibleStartDateSectionState)">
                 <h3 class="heading-small" id="@Anchors.PossibleStartDate">
-                    <esfa-review-marker asp-for="Review.FieldIndicators" value="@VacancyReview.FieldIdentifiers.PossibleStartDate" />
+                    <img asp-condition="@Model.PossibleStartDateRequiresEdit" src="/img/red-cross.png"/>
                     Possible start date
                 </h3>
                 <span esfa-validation-message-for="PossibleStartDate" class="error-message"></span>
@@ -159,7 +160,7 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
             </li>
             <li class="@GetSectionClass(Model.TrainingLevelSectionState)">
                 <h3 class="heading-small" id="@Anchors.TrainingLevel">
-                    <esfa-review-marker asp-for="Review.FieldIndicators" value="@VacancyReview.FieldIdentifiers.TrainingLevel" />
+                    <img asp-condition="@Model.TrainingLevelRequiresEdit" src="/img/red-cross.png"/>
                     Apprenticeship level
                 </h3>
                 <span esfa-validation-message-for="HasProgramme" class="error-message"></span>
@@ -173,7 +174,7 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
             </li>
             <li class="@GetSectionClass(Model.NumberOfPositionsSectionState)">
                 <h3 class="heading-small" id="@Anchors.NumberOfPositions">
-                    <esfa-review-marker asp-for="Review.FieldIndicators" value="@VacancyReview.FieldIdentifiers.NumberOfPositions" />
+                    <img asp-condition="@Model.NumberOfPositionsRequiresEdit" src="/img/red-cross.png"/>
                     Positions
                 </h3>
                 <span esfa-validation-message-for="NumberOfPositions" class="error-message"></span>
@@ -186,19 +187,19 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
         <div class="@GetSectionClass(Model.DescriptionsSectionState)">
             <h3 asp-condition="@Model.HasIncompleteVacancyDescription" class="heading-small">Vacancy description</h3>
             <h3 asp-condition="@Model.HasVacancyDescription" class="heading-small" id="@Anchors.VacancyDescription">
-                <esfa-review-marker asp-for="Review.FieldIndicators" value="@VacancyReview.FieldIdentifiers.VacancyDescription" />
+                <img asp-condition="@Model.VacancyDescriptionRequiresEdit" src="/img/red-cross.png"/>
                 Typical working day
             </h3>
             <span esfa-validation-message-for="VacancyDescription" class="error-message"></span>
             <p asp-condition="@Model.HasVacancyDescription">@Model.VacancyDescription</p>
             <h3 asp-condition="@Model.HasTrainingDescription" class="heading-small" id="@Anchors.TrainingDescription">
-                <esfa-review-marker asp-for="Review.FieldIndicators" value="@VacancyReview.FieldIdentifiers.TrainingDescription" />
+                <img asp-condition="@Model.TrainingDescriptionRequiresEdit" src="/img/red-cross.png"/>
                 Training to be provided
             </h3>
             <span esfa-validation-message-for="TrainingDescription" class="error-message"></span>
             <p asp-condition="@Model.HasTrainingDescription">@Model.TrainingDescription</p>
             <h3 asp-condition="@Model.HasOutcomeDescription" class="heading-small" id="@Anchors.OutcomeDescription">
-                <esfa-review-marker asp-for="Review.FieldIndicators" value="@VacancyReview.FieldIdentifiers.OutcomeDescription" />
+                <img asp-condition="@Model.OutcomeDescriptionRequiresEdit" src="/img/red-cross.png"/>
                 Future prospects
             </h3>
             <span esfa-validation-message-for="OutcomeDescription" class="error-message"></span>
@@ -222,7 +223,7 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
     <div class="column-half">
         <div class="@GetSectionClass(Model.SkillsSectionState)">
             <h3 class="heading-small" id="@Anchors.Skills">
-                <esfa-review-marker asp-for="Review.FieldIndicators" value="@VacancyReview.FieldIdentifiers.Skills" />
+                <img asp-condition="@Model.SkillsRequiresEdit" src="/img/red-cross.png"/>
                 Desired skills and personal qualities
             </h3>
             <span esfa-validation-message-for="Skills" class="error-message"></span>
@@ -231,7 +232,7 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
         </div>
         <div class="@GetSectionClass(Model.QualificationsSectionState)">
             <h3 class="heading-small" id="@Anchors.Qualifications">
-                <esfa-review-marker asp-for="Review.FieldIndicators" value="@VacancyReview.FieldIdentifiers.Qualifications" />
+                <img asp-condition="@Model.QualificationsRequiresEdit" src="/img/red-cross.png"/>
                 Qualifications
             </h3>
             <span esfa-validation-message-for="Qualifications" class="error-message"></span>
@@ -247,7 +248,7 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
     <div class="column-half">
         <div class="@GetSectionClass(Model.ThingsToConsiderSectionState)">
             <h3 class="heading-small" id="@Anchors.ThingsToConsider">
-                <esfa-review-marker asp-for="Review.FieldIndicators" value="@VacancyReview.FieldIdentifiers.ThingsToConsider" />
+                <img asp-condition="@Model.ThingsToConsiderRequiresEdit" src="/img/red-cross.png"/>
                 Things to consider (optional)
             </h3>
             <span esfa-validation-message-for="ThingsToConsider" class="error-message"></span>
@@ -270,7 +271,7 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
     <div class="column-two-thirds">
         <div class="@GetSectionClass(Model.EmployerDescriptionSectionState)">
             <h3 class="heading-small" id="@Anchors.EmployerDescription">
-                <esfa-review-marker asp-for="Review.FieldIndicators" value="@VacancyReview.FieldIdentifiers.EmployerDescription" />
+                <img asp-condition="@Model.EmployerDescriptionRequiresEdit" src="/img/red-cross.png"/>
                 Description
             </h3>
             <span esfa-validation-message-for="EmployerDescription" class="error-message"></span>
@@ -285,7 +286,7 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
         </div>
         <div class="@GetSectionClass(Model.DisabilityConfidentSectionState)">
             <h3 class="heading-small" id="@Anchors.DisabilityConfident">
-                <esfa-review-marker asp-for="Review.FieldIndicators" value="@VacancyReview.FieldIdentifiers.DisabilityConfident" />
+                <img asp-condition="@Model.DisabilityConfidentRequiresEdit" src="/img/red-cross.png"/>
                 Disability Confident (optional)
             </h3>
             <img asp-condition="@Model.IsDisabilityConfident" src="~/img/disability-confident_545x172.png" class="disability-confident-logo" alt="A logo confirming that the employer is registered as disability confident" />
@@ -295,7 +296,7 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
         </div>
         <div class="@GetSectionClass(Model.EmployerWebsiteUrlSectionState)">
             <h3 class="heading-small" id="@Anchors.EmployerWebsiteUrl">
-                <esfa-review-marker asp-for="Review.FieldIndicators" value="@VacancyReview.FieldIdentifiers.EmployerWebsiteUrl" />
+                <img asp-condition="@Model.EmployerWebsiteUrlRequiresEdit" src="/img/red-cross.png"/>
                 Website (optional)
             </h3>
             <span esfa-validation-message-for="EmployerWebsiteUrl" class="error-message"></span>
@@ -306,7 +307,7 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
     <div class="column-one-third">
         <div class="@GetSectionClass(Model.ContactSectionState)">
             <h3 class="heading-small" id="@Anchors.EmployerContact">
-                <esfa-review-marker asp-for="Review.FieldIndicators" value="@VacancyReview.FieldIdentifiers.EmployerContact" />
+                <img asp-condition="@Model.EmployerContactRequiresEdit" src="/img/red-cross.png"/>
                 Contact details (optional)
             </h3>
             <span esfa-validation-message-for="ContactName" class="error-message"></span>
@@ -323,7 +324,7 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
     <div class="column-half">
         <div class="@GetSectionClass(Model.EmployerAddressSectionState)">
             <h3 class="heading-small" id="@Anchors.EmployerAddress">
-                <esfa-review-marker asp-for="Review.FieldIndicators" value="@VacancyReview.FieldIdentifiers.EmployerAddress" />
+                <img asp-condition="@Model.EmployerAddressRequiresEdit" src="/img/red-cross.png"/>
                 Location
             </h3>
             <span esfa-validation-message-for="EmployerAddressElements" class="error-message"></span>
@@ -354,7 +355,7 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
     <div class="column-full">
         <div class="@GetSectionClass(Model.ProviderSectionState)">
             <h3 class="heading-small" id="@Anchors.Provider">
-                <esfa-review-marker asp-for="Review.FieldIndicators" value="@VacancyReview.FieldIdentifiers.Provider" />
+                <img asp-condition="@Model.ProviderRequiresEdit" src="/img/red-cross.png"/>
                 Training provider
             </h3>
             <span esfa-validation-message-for="ProviderName" class="error-message"></span>
@@ -363,7 +364,7 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
         </div>
         <div class="@GetSectionClass(Model.TrainingSectionState)">
             <h3 class="heading-small" id="@Anchors.Training">
-                <esfa-review-marker asp-for="Review.FieldIndicators" value="@VacancyReview.FieldIdentifiers.Training" />
+                <img asp-condition="@Model.TrainingRequiresEdit" src="/img/red-cross.png"/>
                 Apprenticeship @Model.TrainingType
             </h3>
             <p asp-condition="@Model.HasTrainingTitle">@Model.TrainingTitle</p>
@@ -387,7 +388,7 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
         </div>
         <div asp-condition="@Model.HasSpecifiedThroughFaaApplicationMethod" class="@GetSectionClass(Model.ApplicationMethodSectionState)">
             <p id="@Anchors.ApplicationMethod">
-                <esfa-review-marker asp-for="Review.FieldIndicators" value="@VacancyReview.FieldIdentifiers.ApplicationMethod" />
+                <img asp-condition="@Model.ApplicationMethodRequiresEdit" src="/img/red-cross.png"/>
                 Candidates will apply through the <a href="@Model.FindAnApprenticeshipUrl" target="_blank">find an apprenticeship service</a>
             </p>
             @EditLink(RouteNames.ApplicationProcess_Get, Model.ApplicationMethodSectionState, "link-application-method")
@@ -397,7 +398,7 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
                 <p>This apprenticeship requires you to apply through the employer's website.</p>
                 <div class="@GetSectionClass(Model.ApplicationUrlSectionState)">
                     <h2 class="heading-small" id="@Anchors.ApplicationUrl">
-                        <esfa-review-marker asp-for="Review.FieldIndicators" value="@VacancyReview.FieldIdentifiers.ApplicationUrl" />
+                        <img asp-condition="@Model.ApplicationUrlRequiresEdit" src="/img/red-cross.png"/>
                         Apply now web address
                     </h2>
                     <span esfa-validation-message-for="ApplicationUrl" class="error-message"></span>
@@ -407,7 +408,7 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
             </div>
             <div class="@GetSectionClass(Model.ApplicationInstructionsSectionState)">
                 <h2 class="heading-small" id="@Anchors.ApplicationInstructions">
-                    <esfa-review-marker asp-for="Review.FieldIndicators" value="@VacancyReview.FieldIdentifiers.ApplicationUrl" />
+                    <img asp-condition="@Model.ApplicationInstructionsRequiresEdit" src="/img/red-cross.png"/>
                     Explain the application process (optional)
                 </h2>
                 <span esfa-validation-message-for="ApplicationInstructions" class="error-message"></span>
