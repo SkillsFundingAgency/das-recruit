@@ -178,7 +178,6 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
 
             return new UnassignReviewViewModel()
             {
-                ReviewId = reviewId,
                 AdvisorName = review.ReviewedByUser.Name,
                 Title = review.Title
             };
