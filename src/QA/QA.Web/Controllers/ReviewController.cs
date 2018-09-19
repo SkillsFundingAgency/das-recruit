@@ -72,7 +72,7 @@ namespace Esfa.Recruit.Qa.Web.Controllers
 
         [Authorize(Policy = AuthorizationPolicyNames.TeamLeadUserPolicyName)]
         [HttpPost("unassign", Name = RouteNames.Vacancy_Review_Unassign_Post)]
-        public async Task<IActionResult> UnassignReview(UnassignReviewViewModel model)
+        public async Task<IActionResult> UnassignReview(UnassignReviewEditModel model)
         {
             var unassignReviewVM = await _orchestrator.GetUnassignReviewViewModelAsync(model.ReviewId);
             if (!ModelState.IsValid)
