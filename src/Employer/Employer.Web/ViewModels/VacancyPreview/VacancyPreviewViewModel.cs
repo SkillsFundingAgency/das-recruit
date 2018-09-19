@@ -1,4 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using Esfa.Recruit.Employer.Web.Mappings;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
 {
@@ -65,8 +68,41 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
         public bool HasIncompleteSections => HasIncompleteMandatorySections || HasIncompleteOptionalSections;
 
         public bool DisplayReferredHeader { get; internal set; }
+
         public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
-        
+
+        public bool ApplicationInstructionsRequiresEdit => IsEditRequired(VacancyReview.FieldIdentifiers.ApplicationInstructions);
+        public bool ApplicationMethodRequiresEdit => IsEditRequired(VacancyReview.FieldIdentifiers.ApplicationMethod);
+        public bool ApplicationUrlRequiresEdit => IsEditRequired(VacancyReview.FieldIdentifiers.ApplicationUrl);
+        public bool ClosingDateRequiresEdit => IsEditRequired(VacancyReview.FieldIdentifiers.ClosingDate);
+        public bool EmployerContactRequiresEdit => IsEditRequired(VacancyReview.FieldIdentifiers.EmployerContact);
+        public bool DisabilityConfidentRequiresEdit => IsEditRequired(VacancyReview.FieldIdentifiers.DisabilityConfident);
+        public bool EmployerAddressRequiresEdit => IsEditRequired(VacancyReview.FieldIdentifiers.EmployerAddress);
+        public bool EmployerDescriptionRequiresEdit => IsEditRequired(VacancyReview.FieldIdentifiers.EmployerDescription);
+        public bool EmployerWebsiteUrlRequiresEdit => IsEditRequired(VacancyReview.FieldIdentifiers.EmployerWebsiteUrl);
+        public bool ExpectedDurationRequiresEdit => IsEditRequired(VacancyReview.FieldIdentifiers.ExpectedDuration);
+        public bool NumberOfPositionsRequiresEdit => IsEditRequired(VacancyReview.FieldIdentifiers.NumberOfPositions);
+        public bool OutcomeDescriptionRequiresEdit => IsEditRequired(VacancyReview.FieldIdentifiers.OutcomeDescription);
+        public bool PossibleStartDateRequiresEdit => IsEditRequired(VacancyReview.FieldIdentifiers.PossibleStartDate);
+        public bool ProviderRequiresEdit => IsEditRequired(VacancyReview.FieldIdentifiers.Provider);
+        public bool QualificationsRequiresEdit => IsEditRequired(VacancyReview.FieldIdentifiers.Qualifications);
+        public bool ShortDescriptionRequiresEdit => IsEditRequired(VacancyReview.FieldIdentifiers.ShortDescription);
+        public bool SkillsRequiresEdit => IsEditRequired(VacancyReview.FieldIdentifiers.Skills);
+        public bool ThingsToConsiderRequiresEdit => IsEditRequired(VacancyReview.FieldIdentifiers.ThingsToConsider);
+        public bool TitleRequiresEdit => IsEditRequired(VacancyReview.FieldIdentifiers.Title);
+        public bool TrainingRequiresEdit => IsEditRequired(VacancyReview.FieldIdentifiers.Training);
+        public bool TrainingDescriptionRequiresEdit => IsEditRequired(VacancyReview.FieldIdentifiers.TrainingDescription);
+        public bool TrainingLevelRequiresEdit => IsEditRequired(VacancyReview.FieldIdentifiers.TrainingLevel);
+        public bool VacancyDescriptionRequiresEdit => IsEditRequired(VacancyReview.FieldIdentifiers.VacancyDescription);
+        public bool WageRequiresEdit => IsEditRequired(VacancyReview.FieldIdentifiers.Wage);
+        public bool WorkingWeekRequiresEdit => IsEditRequired(VacancyReview.FieldIdentifiers.WorkingWeek);
+
+        private bool IsEditRequired(string fieldIdentifier)
+        {
+            return Review.FieldIndicators.Any(f => f.ReviewFieldIdentifier == fieldIdentifier);
+        }
+
+
         public IList<string> OrderedFieldNames => new List<string>
         {
             nameof(ShortDescription),
