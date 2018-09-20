@@ -127,7 +127,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 
             var collection = GetCollection<VacancyReview>();
             var count = await RetryPolicy.ExecuteAsync(context => collection
-                .CountAsync(filter), 
+                .CountDocumentsAsync(filter), 
                 new Context(nameof(GetApprovedFirstTimeCountAsync)));
 
             return (int) count;
@@ -142,7 +142,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 
             var collection = GetCollection<VacancyReview>();
             var count = await RetryPolicy.ExecuteAsync(context => collection
-                    .CountAsync(filter),
+                    .CountDocumentsAsync(filter),
                 new Context(nameof(GetApprovedCountAsync)));
 
             return (int)count;
