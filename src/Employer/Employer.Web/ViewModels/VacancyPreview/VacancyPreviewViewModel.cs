@@ -39,7 +39,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
 
         public bool HasIncompleteVacancyDescription => !HasVacancyDescription;
         public bool CanShowDraftHeader { get; internal set; }
-        public string SubmitButtonText { get; internal set; }
 
 
 
@@ -67,9 +66,9 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
 
         public bool HasIncompleteSections => HasIncompleteMandatorySections || HasIncompleteOptionalSections;
 
-        public bool DisplayReferredHeader { get; internal set; }
-
         public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
+
+        public string SubmitButtonText => Review.CanDisplayReviewHeader ? "Resubmit vacancy" : "Submit vacancy";
 
         public bool ApplicationInstructionsRequiresEdit => IsEditRequired(VacancyReview.FieldIdentifiers.ApplicationInstructions);
         public bool ApplicationMethodRequiresEdit => IsEditRequired(VacancyReview.FieldIdentifiers.ApplicationMethod);

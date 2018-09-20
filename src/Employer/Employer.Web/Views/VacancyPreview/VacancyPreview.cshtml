@@ -35,7 +35,7 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
 <div class="grid-row">
     <div class="column-full">
         <h1 asp-condition="@Model.CanShowDraftHeader" class="heading-xlarge small-bottom-margin">Complete your vacancy</h1>
-        @Html.Partial("_ValidationSummary", new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames })
+        @Html.Partial(PartialNames.ValidationSummary, new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames })
         <div asp-condition="@Model.HasIncompleteSections" class="info-summary no-top-margin" role="alert">
             <div asp-condition="@Model.HasIncompleteMandatorySections">
                 <p>You need to complete these sections:</p>
@@ -62,7 +62,7 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
 
 <div asp-condition="@Model.Review.CanDisplayReviewHeader" class="grid-row">
     <div class="column-two-thirds">
-        @Html.Partial("_ReviewSummary", Model.Review)
+        @Html.Partial(PartialNames.ReviewSummary, Model.Review)
     </div>
 </div>
 

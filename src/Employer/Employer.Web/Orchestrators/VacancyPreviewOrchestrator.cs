@@ -38,12 +38,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             vm.HasWage = vacancy.Wage != null;
             vm.CanShowReference = vacancy.Status != VacancyStatus.Draft;
             vm.CanShowDraftHeader = vacancy.Status == VacancyStatus.Draft;
-            vm.DisplayReferredHeader = vacancy.Status == VacancyStatus.Referred;
-            vm.SubmitButtonText = "Submit vacancy";
 
             if (vacancy.Status == VacancyStatus.Referred)
             {
-                vm.SubmitButtonText = "Resubmit vacancy";
                 vm.Review = await Utility.GetReviewSummaryViewModel(_client, vacancy.VacancyReference.Value, ReviewFieldIndicatorMapper.PreviewReviewFieldIndicators);
             }
             
