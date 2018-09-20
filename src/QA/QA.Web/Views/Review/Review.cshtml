@@ -9,7 +9,7 @@
 
         <div class="grid-row">
             <div class="column-full">
-                <div asp-validation-summary="All" class="error-summary" style="display:@(ViewData.ModelState.IsValid ? "none" : "block")"></div>
+                <div asp-validation-summary="All" class="error-summary" asp-condition="@ViewData.ModelState.IsValid == false"></div>
             </div>
         </div>
 
