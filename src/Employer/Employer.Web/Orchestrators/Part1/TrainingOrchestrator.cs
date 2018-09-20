@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
+using Esfa.Recruit.Employer.Web.Services;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
@@ -17,12 +18,12 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
     {
         private const VacancyRuleSet ValdationRules = VacancyRuleSet.ClosingDate | VacancyRuleSet.StartDate | VacancyRuleSet.TrainingProgramme | VacancyRuleSet.StartDateEndDate | VacancyRuleSet.TrainingExpiryDate;
         private readonly IEmployerVacancyClient _client;
-        private readonly ITimeProvider _timeProvider;
 
-        public TrainingOrchestrator(IEmployerVacancyClient client, ILogger<TrainingOrchestrator> logger, ITimeProvider timeProvider) : base(logger)
+        public TrainingOrchestrator(IEmployerVacancyClient client, ILogger<TrainingOrchestrator> logger, ITimeProvider timeProvider, IReviewSummaryService reviewSummaryService) : base(logger)
         {
             _client = client;
             _timeProvider = timeProvider;
+            _reviewSummaryService = reviewSummaryService;
         }
         
         public async Task<TrainingViewModel> GetTrainingViewModelAsync(VacancyRouteModel vrm)
@@ -61,8 +62,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
             if (vacancy.Status == VacancyStatus.Referred)
             {
-                vm.Review = await Utility.GetReviewSummaryViewModel(_client,
-                    vacancy.VacancyReference.Value,
+                vm.Review = await _reviewSummaryService.GetReviewSummaryViewModel(vacancy.VacancyReference.Value,
                     ReviewFieldIndicatorMapper.TrainingReviewFieldIndicators);
             }
 

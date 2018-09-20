@@ -6,6 +6,7 @@ using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.RouteModel;
+using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.ViewModels.Part2.Skills;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -22,15 +23,17 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         private const char SortPrefixSeparator = '-';
         private readonly IEmployerVacancyClient _client;
         private readonly Lazy<List<string>> _lazyCandidateSkills;
+        private readonly IReviewSummaryService _reviewSummaryService;
 
         private List<string> CandidateSkills => _lazyCandidateSkills.Value;
         private IEnumerable<string> Column1BuiltInSkills => CandidateSkills.Take(ColumnOneCutOffIndex);
         private IEnumerable<string> Column2BuiltInSkills => CandidateSkills.Skip(ColumnOneCutOffIndex);
 
-        public SkillsOrchestrator(IEmployerVacancyClient client, ILogger<SkillsOrchestrator> logger) : base(logger)
+        public SkillsOrchestrator(IEmployerVacancyClient client, ILogger<SkillsOrchestrator> logger, IReviewSummaryService reviewSummaryService) : base(logger)
         {
             _client = client;
             _lazyCandidateSkills = new Lazy<List<string>>(() => _client.GetCandidateSkillsAsync().Result);
+            _reviewSummaryService = reviewSummaryService;
         }
         
         public async Task<SkillsViewModel> GetSkillsViewModelAsync(VacancyRouteModel vrm, string[] draftSkills = null)
@@ -53,8 +56,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
             if (vacancy.Status == VacancyStatus.Referred)
             {
-                vm.Review = await Utility.GetReviewSummaryViewModel(_client,
-                    vacancy.VacancyReference.Value,
+                vm.Review = await _reviewSummaryService.GetReviewSummaryViewModel(vacancy.VacancyReference.Value,
                     ReviewFieldIndicatorMapper.SkillsFieldIndicators);
             }
 

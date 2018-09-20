@@ -5,7 +5,7 @@ using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.RouteModel;
-using Esfa.Recruit.Employer.Web.ViewModels.Part1;
+using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -19,10 +19,12 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.EmployerName | VacancyRuleSet.EmployerAddress;
         private readonly IEmployerVacancyClient _client;
+        private readonly IReviewSummaryService _reviewSummaryService;
 
-        public EmployerOrchestrator(IEmployerVacancyClient client, ILogger<EmployerOrchestrator> logger) : base(logger)
+        public EmployerOrchestrator(IEmployerVacancyClient client, ILogger<EmployerOrchestrator> logger, IReviewSummaryService reviewSummaryService) : base(logger)
         {
             _client = client;
+            _reviewSummaryService = reviewSummaryService;
         }
 
         public async Task<EmployerViewModel> GetEmployerViewModelAsync(VacancyRouteModel vrm)
@@ -62,8 +64,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
             if (vacancy.Status == VacancyStatus.Referred)
             {
-                vm.Review = await Utility.GetReviewSummaryViewModel(_client,
-                    vacancy.VacancyReference.Value,
+                vm.Review = await _reviewSummaryService.GetReviewSummaryViewModel(vacancy.VacancyReference.Value,
                     ReviewFieldIndicatorMapper.EmployerFieldIndicators);
             }
 

@@ -17,11 +17,13 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.TrainingProvider;
         private readonly IEmployerVacancyClient _client;
         private readonly ITrainingProviderService _providerService;
+        private readonly IReviewSummaryService _reviewSummaryService;
 
-        public TrainingProviderOrchestrator(IEmployerVacancyClient client, ITrainingProviderService providerService, ILogger<TrainingProviderOrchestrator> logger) : base(logger)
+        public TrainingProviderOrchestrator(IEmployerVacancyClient client, ITrainingProviderService providerService, ILogger<TrainingProviderOrchestrator> logger, IReviewSummaryService reviewSummaryService) : base(logger)
         {
             _client = client;
             _providerService = providerService;
+            _reviewSummaryService = reviewSummaryService;
         }
 
         public async Task<SelectTrainingProviderViewModel> GetSelectTrainingProviderViewModel(VacancyRouteModel vrm)
@@ -36,8 +38,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
             if (vacancy.Status == VacancyStatus.Referred)
             {
-                vm.Review = await Utility.GetReviewSummaryViewModel(_client,
-                    vacancy.VacancyReference.Value,
+                vm.Review = await _reviewSummaryService.GetReviewSummaryViewModel(vacancy.VacancyReference.Value,
                     ReviewFieldIndicatorMapper.TrainingProviderFieldIndicators);
             }
 
