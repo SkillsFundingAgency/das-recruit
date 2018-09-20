@@ -40,20 +40,20 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
             <div asp-condition="@Model.HasIncompleteMandatorySections">
                 <p>You need to complete these sections:</p>
                 <ul class="list">
-                    <li asp-condition="@Model.HasIncompleteVacancyDescription"><a asp-fragment="@PreviewAnchors.VacancyDescriptionSection">Vacancy description</a></li>
-                    <li asp-condition="@Model.HasIncompleteSkillsSection"><a asp-fragment="@PreviewAnchors.RequirementsAndProspectsSection">Desired skills and personal qualities</a></li>
-                    <li asp-condition="@Model.HasIncompleteQualificationsSection"><a asp-fragment="@PreviewAnchors.Qualifications">Qualifications</a></li>
-                    <li asp-condition="@Model.HasIncompleteEmployerDescriptionSection"><a asp-fragment="@PreviewAnchors.EmployerDescription">Employer description</a></li>
-                    <li asp-condition="@Model.HasIncompleteTrainingProviderSection"><a asp-fragment="@PreviewAnchors.TrainingProviderSection">Training provider</a></li>
-                    <li asp-condition="@Model.HasIncompleteApplicationProcessSection"><a asp-fragment="@PreviewAnchors.ApplicationProcessSection">Application process</a></li>
+                    <li asp-condition="@Model.HasIncompleteVacancyDescription"><a asp-fragment="@Anchors.VacancyDescriptionSection">Vacancy description</a></li>
+                    <li asp-condition="@Model.HasIncompleteSkillsSection"><a asp-fragment="@Anchors.RequirementsAndProspectsSection">Desired skills and personal qualities</a></li>
+                    <li asp-condition="@Model.HasIncompleteQualificationsSection"><a asp-fragment="@Anchors.Qualifications">Qualifications</a></li>
+                    <li asp-condition="@Model.HasIncompleteEmployerDescriptionSection"><a asp-fragment="@Anchors.EmployerDescription">Employer description</a></li>
+                    <li asp-condition="@Model.HasIncompleteTrainingProviderSection"><a asp-fragment="@Anchors.TrainingProviderSection">Training provider</a></li>
+                    <li asp-condition="@Model.HasIncompleteApplicationProcessSection"><a asp-fragment="@Anchors.ApplicationProcessSection">Application process</a></li>
                 </ul>
             </div>
             <div asp-condition="@Model.HasIncompleteOptionalSections">
                 <p class="small-top-margin">You may wish to complete these optional sections:</p>
                 <ul class="list">
-                    <li asp-condition="@Model.HasIncompleteThingsToConsiderSection"><a asp-fragment="@PreviewAnchors.ThingsToConsider">Things to consider</a></li>
-                    <li asp-condition="@Model.HasIncompleteEmployerWebsiteUrlSection"><a asp-fragment="@PreviewAnchors.EmployerWebsiteUrl">Employer website</a></li>
-                    <li asp-condition="@Model.HasIncompleteContactSection"><a asp-fragment="@PreviewAnchors.EmployerContact">Contact details</a></li>
+                    <li asp-condition="@Model.HasIncompleteThingsToConsiderSection"><a asp-fragment="@Anchors.ThingsToConsider">Things to consider</a></li>
+                    <li asp-condition="@Model.HasIncompleteEmployerWebsiteUrlSection"><a asp-fragment="@Anchors.EmployerWebsiteUrl">Employer website</a></li>
+                    <li asp-condition="@Model.HasIncompleteContactSection"><a asp-fragment="@Anchors.EmployerContact">Contact details</a></li>
                 </ul>
             </div>
         </div>
@@ -183,7 +183,7 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
             </li>
         </ul>
     </div>
-    <div class="column-two-thirds" id="@PreviewAnchors.VacancyDescriptionSection">
+    <div class="column-two-thirds" id="@Anchors.VacancyDescriptionSection">
         <div class="@GetSectionClass(Model.DescriptionsSectionState)">
             <h3 asp-condition="@Model.HasIncompleteVacancyDescription" class="heading-small">Vacancy description</h3>
             <h3 asp-condition="@Model.HasVacancyDescription" class="heading-small" id="@Anchors.VacancyDescription">
