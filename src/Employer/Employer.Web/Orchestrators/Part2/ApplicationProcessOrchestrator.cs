@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Mappings;
+using Esfa.Recruit.Employer.Web.Services;
 using Microsoft.Extensions.Options;
 using Esfa.Recruit.Shared.Web.FeatureToggle;
 
@@ -19,12 +20,14 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         private readonly IEmployerVacancyClient _client;
         private readonly ExternalLinksConfiguration _externalLinks;
         private readonly IFeature _featureToggler;
+        private readonly IReviewSummaryService _reviewSummaryService;
 
-        public ApplicationProcessOrchestrator(IEmployerVacancyClient client, IOptions<ExternalLinksConfiguration> externalLinks, ILogger<ApplicationProcessOrchestrator> logger, IFeature featureToggler) : base(logger)
+        public ApplicationProcessOrchestrator(IEmployerVacancyClient client, IOptions<ExternalLinksConfiguration> externalLinks, ILogger<ApplicationProcessOrchestrator> logger, IFeature featureToggler, IReviewSummaryService reviewSummaryService) : base(logger)
         {
             _client = client;
             _externalLinks = externalLinks.Value;
             _featureToggler = featureToggler;
+            _reviewSummaryService = reviewSummaryService;
         }
 
         public async Task<ApplicationProcessViewModel> GetApplicationProcessViewModelAsync(VacancyRouteModel vrm)
@@ -42,8 +45,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
             if (vacancy.Status == VacancyStatus.Referred)
             {
-                vm.Review = await Utility.GetReviewSummaryViewModel(_client,
-                    vacancy.VacancyReference.Value,
+                vm.Review = await _reviewSummaryService.GetReviewSummaryViewModel(vacancy.VacancyReference.Value,
                     ReviewFieldIndicatorMapper.ApplicationProcessFieldIndicators);
             }
 

@@ -132,28 +132,5 @@ namespace Esfa.Recruit.Employer.Web
 
             throw new AuthorisationException(string.Format(ExceptionMessages.ApplicationReviewUnauthorisedAccess, rm.EmployerAccountId, applicationReview.EmployerAccountId, applicationReview.Id, applicationReview.VacancyReference));
         }
-
-        public static async Task<ReviewSummaryViewModel> GetReviewSummaryViewModel(IEmployerVacancyClient client, long vacancyReference, IEnumerable<ReviewFieldIndicatorViewModel> reviewFieldIndicatorsForPage)
-        {
-            ReviewSummaryViewModel vm;
-            var review = await client.GetVacancyReviewAsync(vacancyReference);
-            if (review != null)
-            {
-                var fieldIndicators = ReviewFieldIndicatorMapper.MapFromFieldIndicators(reviewFieldIndicatorsForPage, review.ManualQaFieldIndicators).ToList();
-                
-                vm = new ReviewSummaryViewModel
-                {
-                    CanDisplayReviewHeader = true,
-                    ReviewerComments = review.ManualQaComment,
-                    FieldIndicators = fieldIndicators
-                };
-            }
-            else
-            {
-                vm = new ReviewSummaryViewModel {CanDisplayReviewHeader = false};
-            }
-
-            return vm;
-        }
     }
 }

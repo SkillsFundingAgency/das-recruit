@@ -7,6 +7,7 @@ using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.Mappings.Extensions;
 using Esfa.Recruit.Employer.Web.RouteModel;
+using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.ViewModels.Part2.Qualifications;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
@@ -21,13 +22,14 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.Qualifications;
         private readonly IEmployerVacancyClient _client;
         private readonly Lazy<List<string>> _lazyQualifications;
-
-
-        public QualificationsOrchestrator(IEmployerVacancyClient client, ILogger<QualificationsOrchestrator> logger)
+        private readonly IReviewSummaryService _reviewSummaryService;
+        
+        public QualificationsOrchestrator(IEmployerVacancyClient client, ILogger<QualificationsOrchestrator> logger, IReviewSummaryService reviewSummaryService)
             : base(logger)
         {
             _client = client;
             _lazyQualifications = new Lazy<List<string>>(() => _client.GetCandidateQualificationsAsync().Result.QualificationTypes);
+            _reviewSummaryService = reviewSummaryService;
         }
 
         public async Task<QualificationsViewModel> GetQualificationsViewModelAsync(VacancyRouteModel vrm)
@@ -43,8 +45,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
             if (vacancy.Status == VacancyStatus.Referred)
             {
-                vm.Review = await Utility.GetReviewSummaryViewModel(_client,
-                    vacancy.VacancyReference.Value,
+                vm.Review = await _reviewSummaryService.GetReviewSummaryViewModel(vacancy.VacancyReference.Value,
                     ReviewFieldIndicatorMapper.QualificationsFieldIndicators);
             }
 

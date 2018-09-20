@@ -8,6 +8,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Employer.Web.RouteModel;
+using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
@@ -16,10 +17,12 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.Title | VacancyRuleSet.NumberOfPositions;
         private readonly IEmployerVacancyClient _client;
+        private readonly IReviewSummaryService _reviewSummaryService;
 
-        public TitleOrchestrator(IEmployerVacancyClient client, ILogger<TitleOrchestrator> logger) : base(logger)
+        public TitleOrchestrator(IEmployerVacancyClient client, ILogger<TitleOrchestrator> logger, IReviewSummaryService reviewSummaryService) : base(logger)
         {
             _client = client;
+            _reviewSummaryService = reviewSummaryService;
         }
 
         public TitleViewModel GetTitleViewModel()
@@ -45,8 +48,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             if (vacancy.Status == VacancyStatus.Referred)
             {
-                vm.Review = await Utility.GetReviewSummaryViewModel(_client,
-                    vacancy.VacancyReference.Value,
+                vm.Review = await _reviewSummaryService.GetReviewSummaryViewModel(vacancy.VacancyReference.Value,
                     ReviewFieldIndicatorMapper.TitleFieldIndicators);
             }
 
