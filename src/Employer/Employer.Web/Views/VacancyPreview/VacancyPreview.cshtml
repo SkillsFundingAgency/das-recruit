@@ -38,7 +38,7 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
         @Html.Partial("_ValidationSummary", new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames })
         <div asp-condition="@Model.HasIncompleteSections" class="info-summary no-top-margin" role="alert">
             <div asp-condition="@Model.HasIncompleteMandatorySections">
-                <p>The following sections need to be completed:</p>
+                <p>You need to complete these sections:</p>
                 <ul class="list">
                     <li asp-condition="@Model.HasIncompleteVacancyDescription"><a asp-fragment="@PreviewAnchors.VacancyDescriptionSection">Vacancy description</a></li>
                     <li asp-condition="@Model.HasIncompleteSkillsSection"><a asp-fragment="@PreviewAnchors.RequirementsAndProspectsSection">Desired skills and personal qualities</a></li>
