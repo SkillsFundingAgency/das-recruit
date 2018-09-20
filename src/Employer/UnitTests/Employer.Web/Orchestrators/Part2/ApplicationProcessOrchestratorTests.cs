@@ -1,6 +1,7 @@
 ﻿using Esfa.Recruit.Employer.UnitTests.Employer.Web.HardMocks;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
+using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Shared;
 using Esfa.Recruit.Shared.Web;
@@ -40,7 +41,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
                         .Returns(new EntityValidationResult());
             _mockClient.Setup(x => x.UpdateDraftVacancyAsync(It.IsAny<Vacancy>(), user));
 
-            var sut = new ApplicationProcessOrchestrator(_mockClient.Object, Options.Create(new ExternalLinksConfiguration()), Mock.Of<ILogger<ApplicationProcessOrchestrator>>(), _mockFeatureToggler.Object);
+            var sut = new ApplicationProcessOrchestrator(_mockClient.Object, Options.Create(new ExternalLinksConfiguration()), Mock.Of<ILogger<ApplicationProcessOrchestrator>>(), _mockFeatureToggler.Object, Mock.Of<IReviewSummaryService>());
 
             var applicationProcessEditModel = new ApplicationProcessEditModel
             {
@@ -70,7 +71,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
                         .Returns(new EntityValidationResult());
             _mockClient.Setup(x => x.UpdateDraftVacancyAsync(It.IsAny<Vacancy>(), user));
 
-            var sut = new ApplicationProcessOrchestrator(_mockClient.Object, Options.Create(new ExternalLinksConfiguration()), Mock.Of<ILogger<ApplicationProcessOrchestrator>>(), _mockFeatureToggler.Object);
+            var sut = new ApplicationProcessOrchestrator(_mockClient.Object, Options.Create(new ExternalLinksConfiguration()), Mock.Of<ILogger<ApplicationProcessOrchestrator>>(), _mockFeatureToggler.Object, Mock.Of<IReviewSummaryService>());
 
             var applicationProcessEditModel = new ApplicationProcessEditModel
             {
