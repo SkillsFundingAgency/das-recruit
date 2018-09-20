@@ -47,6 +47,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
         {
             return Policy
                     .Handle<MongoCommandException>()
+                    .Or<MongoConnectionException>()
                     .WaitAndRetryAsync(new[]
                     {
                         TimeSpan.FromSeconds(1),
