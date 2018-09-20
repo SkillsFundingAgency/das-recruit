@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
 using Esfa.Recruit.Employer.Web.RouteModel;
+using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Skills;
@@ -27,7 +28,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
             var mockLogger = new Mock<ILogger<SkillsOrchestrator>>();
             var candidateSkills = GetBaseSkills();
             _mockClient = new Mock<IEmployerVacancyClient>();
-            _orchestrator = new SkillsOrchestrator(_mockClient.Object, mockLogger.Object);
+            _orchestrator = new SkillsOrchestrator(_mockClient.Object, mockLogger.Object, Mock.Of<IReviewSummaryService>());
             _testVacancy = GetTestVacancy();
 
             _mockClient.Setup(x => x.GetCandidateSkillsAsync()).ReturnsAsync(candidateSkills);

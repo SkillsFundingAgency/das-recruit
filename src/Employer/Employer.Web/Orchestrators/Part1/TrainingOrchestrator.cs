@@ -18,6 +18,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
     {
         private const VacancyRuleSet ValdationRules = VacancyRuleSet.ClosingDate | VacancyRuleSet.StartDate | VacancyRuleSet.TrainingProgramme | VacancyRuleSet.StartDateEndDate | VacancyRuleSet.TrainingExpiryDate;
         private readonly IEmployerVacancyClient _client;
+        private readonly ITimeProvider _timeProvider;
+        private readonly IReviewSummaryService _reviewSummaryService;
 
         public TrainingOrchestrator(IEmployerVacancyClient client, ILogger<TrainingOrchestrator> logger, ITimeProvider timeProvider, IReviewSummaryService reviewSummaryService) : base(logger)
         {
