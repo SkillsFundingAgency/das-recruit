@@ -10,5 +10,7 @@
         public const string Part1Header = "_Part1HeaderPartial";
         public const string VacancyApplicationsTable = "_VacancyApplicationsTablePartial";
         public const string VacancySummaryDisplay = "_VacancySummaryDisplayPartial";
+        public const string ValidationSummary = "_ValidationSummary";
+        public const string ReviewSummary = "_ReviewSummary";
     }
 }

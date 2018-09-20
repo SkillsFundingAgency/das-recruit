@@ -9,9 +9,9 @@
         </p>
         @Html.Partial(PartialNames.Part1Header)
 
-        @Html.Partial("_ValidationSummary", new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames })
+        @Html.Partial(PartialNames.ValidationSummary, new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames })
         
-        @Html.Partial("_ReviewSummary", Model.Review)
+        @Html.Partial(PartialNames.ReviewSummary, Model.Review)
 
         <div class="todo">
             <h3 asp-condition="@Model.PageInfo.IsWizard" class="heading-medium no-top-margin">Step 2 of 6</h3>
