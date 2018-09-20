@@ -1,23 +1,29 @@
 ﻿@model UnassignReviewViewModel
 <input type="hidden" asp-for="@Model.AdvisorName" />
 <input type="hidden" asp-for="@Model.Title" />
-<h1>Are you sure you want to unassign @Model.AdvisorName from this vacancy?</h1>
-<div class="heading-secondary">@Model.Title</div>
-<form asp-route=@RouteNames.Vacancy_Review_Unassign_Post class="form-inline">
-    <div>
-        <fieldset>
-            <span asp-validation-for="ConfirmUnassign" class="error-message"></span>
-            <div class="multiple-choice">
-                <input asp-for="@Model.ConfirmUnassign" type="radio" value="true" id="delete-yes" />
-                <label class="block-label selection-button-radio" for="delete-yes">Yes, unassign now</label>
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <h1 class="heading-large">Are you sure you want to unassign @Model.AdvisorName from this vacancy?≈
+        <span class="heading-secondary">@Model.Title</span>
+        </h1>
+        <form asp-route=@RouteNames.Vacancy_Review_Unassign_Post class="form-inline">
+            <div class="form-group">
+                <fieldset>
+                    <span asp-validation-for="ConfirmUnassign" class="error-message"></span>
+                    <div class="multiple-choice">
+                        <input asp-for="@Model.ConfirmUnassign" type="radio" value="true" id="delete-yes" />
+                        <label class="block-label selection-button-radio" for="delete-yes">Yes, unassign now</label>
+                    </div>
+                    <div class="multiple-choice">
+                        <input asp-for="@Model.ConfirmUnassign" type="radio" value="false" id="delete-no" />
+                        <label class="block-label selection-button-radio" for="delete-no">No, don't unassign</label>
+                    </div>
+                </fieldset>
             </div>
-            <div class="multiple-choice">
-                <input asp-for="@Model.ConfirmUnassign" type="radio" value="false" id="delete-no" />
-                <label class="block-label selection-button-radio" for="delete-no">No, don't unassign</label>
+            <div class="form-group">
+                <input type="submit" value="Continue" class="button" />
             </div>
-        </fieldset>
+        </form>
     </div>
-    <div class="form-group">
-        <input type="submit" value="Continue" class="button" />
-    </div>
-</form>
+</div>
