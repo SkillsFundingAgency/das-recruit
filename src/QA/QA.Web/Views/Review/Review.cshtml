@@ -51,11 +51,14 @@
 
         <div class="grid-row">
             <div class="column-two-thirds">
-                <h1 class="heading-xlarge small-bottom-margin">
+                <h1 class="heading-xlarge no-bottom-margin">
                     @Model.Title
-                    <esfa-review-checkbox asp-for="SelectedFieldIdentifiers" value="@VacancyReview.FieldIdentifiers.Title"></esfa-review-checkbox>
-                    <span class="heading-secondary">@Model.EmployerName</span>
+                    
                 </h1>
+                <esfa-review-checkbox asp-for="SelectedFieldIdentifiers" value="@VacancyReview.FieldIdentifiers.Title"></esfa-review-checkbox>   
+                <h2 class="heading-xlarge small-bottom-margin">
+                    <span class="heading-secondary">@Model.EmployerName</span>
+                </h2>
             </div>
         </div>
         <div class="grid-row">
