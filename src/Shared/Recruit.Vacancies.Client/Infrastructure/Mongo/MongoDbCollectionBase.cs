@@ -46,8 +46,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
         private Polly.Retry.RetryPolicy GetRetryPolicy()
         {
             return Policy
-                    .Handle<MongoCommandException>()
-                    .Or<MongoConnectionException>()
+                    .Handle<MongoException>()
                     .WaitAndRetryAsync(new[]
                     {
                         TimeSpan.FromSeconds(1),
