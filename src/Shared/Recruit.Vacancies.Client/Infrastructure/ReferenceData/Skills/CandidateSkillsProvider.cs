@@ -17,10 +17,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Skills
         }
         public async Task<List<string>> GetCandidateSkillsAsync()
         {
+            _logger.LogInformation("Attempting to retrieve candidate skills from reference data.");
             var result = await _referenceDataReader.GetReferenceData<CandidateSkills>();
             if (result != null)
                 return result.Skills;
-            _logger.LogWarning("Unable to retrieve reference data for qualifications");
+            _logger.LogWarning("Unable to retrieve reference data for candidate skills.");
             return new List<string>();
         }
     }
