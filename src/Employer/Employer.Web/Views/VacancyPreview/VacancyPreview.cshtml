@@ -25,7 +25,7 @@ public string GetSectionClass(VacancyPreviewSectionState state)
 
 public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state, string id, object routeValues = null)
 {
-    if (state == VacancyPreviewSectionState.Incomplete)
+    if (state == VacancyPreviewSectionState.Incomplete || state == VacancyPreviewSectionState.InvalidIncomplete)
     {
         return Html.RouteLink("Add", routeName, routeValues, new { @class = "button-secondary", data_automation = id });
     }
