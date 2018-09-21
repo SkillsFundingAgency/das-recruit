@@ -122,36 +122,3 @@
         </tbody>
     </table>
 </div>
-
-<br /><br />
-<div class="grid-row">
-    <div class="column-full">
-        <table>
-            <thead>
-                <tr>
-                    <th class="bold">Vacancy title</th>
-                    <th class="bold">Status</th>
-                </tr>
-            </thead>
-            <tbody>
-            @foreach (var item in Model.AllReviews)
-            {
-                <tr>
-                    <td>
-                        <a asp-route="@GetRoute(item)" asp-route-reviewId="@item.ReviewId">@item.Title</a>
-                    </td>
-                    <td>
-                        @item.Status
-                    </td>
-                </tr>
-            }
-            </tbody>
-        </table>
-    </div>
-</div>
-@functions{
-    public string GetRoute(ReviewDashboardItem item)
-    {
-        return item.IsReferred ? RouteNames.Vacancy_Review_Referral_Get : RouteNames.Vacancy_Review_Get;
-    }
-}

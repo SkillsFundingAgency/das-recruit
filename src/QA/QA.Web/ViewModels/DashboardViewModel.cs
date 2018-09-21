@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.QA;
 
 namespace Esfa.Recruit.Qa.Web.ViewModels
 {
@@ -10,7 +8,7 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public int TotalVacanciesForReview { get; set; }
         public int TotalVacanciesBrokenSla { get; set; }
         public int TotalVacanciesResubmitted { get; set; }
-        public List<ReviewDashboardItem> AllReviews { get; set; }
+        
         public string DashboardMessage { get; set; }
 
         public string SearchTerm { get; set; }

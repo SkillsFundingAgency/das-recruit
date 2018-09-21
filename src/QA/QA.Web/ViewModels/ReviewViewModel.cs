@@ -10,8 +10,7 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         ReviewViewModel : ReviewEditModel
     {
         private const string CssFieldChanged = "field-changed";
-
-        public bool IsEditable { get; internal set; }
+        
         public string Title { get; internal set; }
         public string EmployerName { get; internal set; }
         public string ShortDescription { get; internal set; }
