@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.ShortDescription;
@@ -122,14 +123,54 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             new ReviewFieldIndicatorViewModel(FieldIdentifiers.ApplicationInstructions, nameof(ApplicationProcessEditModel.ApplicationInstructions), "Explain the application process requires edit")
         };
 
-        public static IEnumerable<ReviewFieldIndicatorViewModel> MapFromFieldIndicators(IEnumerable<ReviewFieldIndicatorViewModel> reviewFieldIndicatorsForPage, List<ManualQaFieldIndicator> reviewFieldIndicators)
+        public static IEnumerable<ReviewFieldIndicatorViewModel> MapFromFieldIndicators(IEnumerable<ReviewFieldIndicatorViewModel> reviewFieldIndicatorsForPage, List<ManualQaFieldIndicator> reviewFieldIndicators, RuleSetOutcome automatedResult)
         {
             var selectedFieldIdentifiers = reviewFieldIndicators
                 .Where(r => r.IsChangeRequested)
                 .Select(r => r.FieldIdentifier)
                 .ToList();
 
-            return reviewFieldIndicatorsForPage.Where(r => selectedFieldIdentifiers.Contains(r.ReviewFieldIdentifier));
+            var allLeafOutcomes = new List<RuleOutcome>();
+
+            GetFailureLeafOutcomes(automatedResult.RuleOutcomes, allLeafOutcomes);
+
+            var manualIndicatorsLookup = reviewFieldIndicatorsForPage.Where(r => selectedFieldIdentifiers.Contains(r.ReviewFieldIdentifier)).ToDictionary(x => x.ReviewFieldIdentifier, y => y);
+
+            foreach(var outcome in allLeafOutcomes)
+            {
+                if (manualIndicatorsLookup.ContainsKey(outcome.Target))
+                {
+                    manualIndicatorsLookup[outcome.Target].Texts.Add(outcome.Narrative);
+                }
+                else
+                {
+                    var matchingField = reviewFieldIndicatorsForPage.SingleOrDefault(x => x.ReviewFieldIdentifier == outcome.Target);
+
+                    if (matchingField != null) // The field might not be on the current page.
+                    {
+                        matchingField.Texts[0] = outcome.Narrative; // Override default text as manual message not needed.
+                        manualIndicatorsLookup.Add(outcome.Target, reviewFieldIndicatorsForPage.Single(x => x.ReviewFieldIdentifier == outcome.Target));
+                    }
+                }
+            }
+
+            return manualIndicatorsLookup.Values;
+        }
+
+        public static void GetFailureLeafOutcomes(IEnumerable<RuleOutcome> ruleSetOutcome, IList<RuleOutcome> leafOutcomes)
+        {
+            foreach(var outcome in ruleSetOutcome)
+            {
+                if (outcome.Details == null || outcome.Details.Count() == 0)
+                {
+                    if (outcome.Score > 0)
+                        leafOutcomes.Add(outcome);
+                }
+                else
+                {
+                    GetFailureLeafOutcomes(outcome.Details, leafOutcomes);
+                }
+            }
         }
     }
 }

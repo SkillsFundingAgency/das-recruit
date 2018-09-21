@@ -10,7 +10,10 @@
     <ul class="list">
         @foreach (var fieldIndicator in Model.FieldIndicators)
         {
-            <li><a asp-fragment="@fieldIndicator.Anchor" class="summary-link">@fieldIndicator.Text</a></li>
+            foreach (var errorText in fieldIndicator.Texts)
+            {
+                <li><a asp-fragment="@fieldIndicator.Anchor" class="summary-link">@errorText</a></li>
+            }
         }
     </ul>
 </div>
