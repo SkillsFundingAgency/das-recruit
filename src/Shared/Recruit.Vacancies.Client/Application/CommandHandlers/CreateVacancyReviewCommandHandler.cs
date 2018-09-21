@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
@@ -8,6 +10,7 @@ using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Services.VacancyComparer;
 using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
@@ -20,6 +23,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         private readonly IMessaging _messaging;
         private readonly ITimeProvider _time;
         private readonly ISlaService _slaService;
+        private readonly IVacancyComparerService _vacancyComparerService;
 
         public CreateVacancyReviewCommandHandler(
             ILogger<CreateVacancyReviewCommandHandler> logger,
@@ -27,7 +31,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             IVacancyReviewRepository vacancyReviewRepository, 
             IMessaging messaging, 
             ITimeProvider time,
-            ISlaService slaService)
+            ISlaService slaService,
+            IVacancyComparerService vacancyComparerService)
         {
             _logger = logger;
             _vacancyRepository = vacancyRepository;
@@ -35,6 +40,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _messaging = messaging;
             _time = time;
             _slaService = slaService;
+            _vacancyComparerService = vacancyComparerService;
         }
 
         public async Task Handle(CreateVacancyReviewCommand message, CancellationToken cancellationToken)
@@ -50,8 +56,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             var previousReviews = previousReviewsTask.Result;
 
             var slaDeadline = await _slaService.GetSlaDeadlineAsync(vacancy.SubmittedDate.Value);
-            
-            var review = BuildNewReview(vacancy, previousReviews.Count, slaDeadline);
+
+            var updatedFields = GetUpdatedFields(vacancy, previousReviews);
+
+            var review = BuildNewReview(vacancy, previousReviews.Count, slaDeadline, updatedFields);
 
             await _vacancyReviewRepository.CreateAsync(review);
 
@@ -62,7 +70,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             });
         }
 
-        private VacancyReview BuildNewReview(Vacancy vacancy, int previousReviewCount, DateTime slaDeadline)
+        private VacancyReview BuildNewReview(Vacancy vacancy, int previousReviewCount, DateTime slaDeadline, List<string> updatedFieldIdentifiers)
         {
             var review = new VacancyReview
             {
@@ -74,10 +82,33 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 SubmittedByUser = vacancy.SubmittedByUser,
                 SubmissionCount = previousReviewCount + 1,
                 SlaDeadline = slaDeadline,
-                VacancySnapshot = vacancy
+                VacancySnapshot = vacancy,
+                UpdatedFieldIdentifiers = updatedFieldIdentifiers
             };
 
             return review;
+        }
+
+        private List<string> GetUpdatedFields(Vacancy vacancy, IEnumerable<VacancyReview> allReviewsForVacancy)
+        {
+            var previousReview = GetPreviousReferredVacancyReviewAsync(allReviewsForVacancy);
+            if(previousReview == null)
+                return new List<string>();
+
+            var comparison = _vacancyComparerService.Compare(vacancy, previousReview.VacancySnapshot);
+
+            return comparison.Fields
+                .Where(f => f.AreEqual == false)
+                .Select(f => f.FieldName)
+                .ToList();
+        }
+
+        private VacancyReview GetPreviousReferredVacancyReviewAsync(IEnumerable<VacancyReview> allReviewsForVacancy)
+        {
+            return allReviewsForVacancy.Where(r => r.Status == ReviewStatus.Closed &&
+                                         r.ManualOutcome == ManualQaOutcome.Referred)
+                .OrderByDescending(r => r.ClosedDate)
+                .FirstOrDefault();
         }
     }
 }
