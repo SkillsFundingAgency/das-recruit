@@ -4,6 +4,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Services.NextVacancyReview;
 using Esfa.Recruit.Vacancies.Client.Application.Services.ReferenceData;
+using Esfa.Recruit.Vacancies.Client.Application.Services.VacancyComparer;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -84,6 +85,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient<INotifyVacancyReviewUpdates, SlackNotifyVacancyReviewUpdates>();
             services.AddTransient<IVacancyService, VacancyService>();
             services.AddTransient<INextVacancyReviewService, NextVacancyReviewService>();
+            services.AddTransient<IVacancyComparerService, VacancyComparerService>();
 
             // Infrastructure Services
             services.AddTransient<IEmployerAccountProvider, EmployerAccountProvider>();
