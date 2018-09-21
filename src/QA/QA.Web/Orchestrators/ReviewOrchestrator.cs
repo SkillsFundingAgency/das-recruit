@@ -17,35 +17,6 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
         private readonly IQaVacancyClient _vacancyClient;
         private readonly ReviewMapper _mapper;
 
-        private static readonly List<string> FieldIndicators = new List<string>
-        {
-            VacancyReview.FieldIdentifiers.ApplicationInstructions,
-            VacancyReview.FieldIdentifiers.ApplicationMethod,
-            VacancyReview.FieldIdentifiers.ApplicationUrl,
-            VacancyReview.FieldIdentifiers.ClosingDate,
-            VacancyReview.FieldIdentifiers.EmployerContact,
-            VacancyReview.FieldIdentifiers.DisabilityConfident,
-            VacancyReview.FieldIdentifiers.EmployerAddress,
-            VacancyReview.FieldIdentifiers.EmployerDescription,
-            VacancyReview.FieldIdentifiers.EmployerWebsiteUrl,
-            VacancyReview.FieldIdentifiers.ExpectedDuration,
-            VacancyReview.FieldIdentifiers.NumberOfPositions,
-            VacancyReview.FieldIdentifiers.OutcomeDescription,
-            VacancyReview.FieldIdentifiers.PossibleStartDate,
-            VacancyReview.FieldIdentifiers.Provider,
-            VacancyReview.FieldIdentifiers.Qualifications,
-            VacancyReview.FieldIdentifiers.Skills,
-            VacancyReview.FieldIdentifiers.ShortDescription,
-            VacancyReview.FieldIdentifiers.ThingsToConsider,
-            VacancyReview.FieldIdentifiers.Title,
-            VacancyReview.FieldIdentifiers.Training,
-            VacancyReview.FieldIdentifiers.TrainingDescription,
-            VacancyReview.FieldIdentifiers.TrainingLevel,
-            VacancyReview.FieldIdentifiers.VacancyDescription,
-            VacancyReview.FieldIdentifiers.Wage,
-            VacancyReview.FieldIdentifiers.WorkingWeek,
-        };
-
         public ReviewOrchestrator(IQaVacancyClient vacancyClient, ReviewMapper mapper)
         {
             _vacancyClient = vacancyClient;
@@ -57,11 +28,7 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             var review = await _vacancyClient.GetVacancyReviewAsync(m.ReviewId);
             await EnsureUserIsAssignedAsync(review, user.UserId);
 
-            var manualQaFieldIndicators = FieldIndicators.Select(f => new ManualQaFieldIndicator
-            {
-                FieldIdentifier = f,
-                IsChangeRequested = m.SelectedFieldIdentifiers.Contains(f)
-            }).ToList();
+            var manualQaFieldIndicators = _mapper.GetManualQaFieldIndicators(m);
 
             if (m.IsRefer)
             {
@@ -93,6 +60,9 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
         {
             var review = await _vacancyClient.GetVacancyReviewAsync(reviewId);
 
+            if (review == null)
+                throw new NotFoundException($"Unable to find review with id: {reviewId}");
+
             ValidateReviewStateForViewing(review);
 
             if (_vacancyClient.VacancyReviewCanBeAssigned(review))
@@ -103,7 +73,19 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
 
             await EnsureUserIsAssignedAsync(review, user.UserId);
 
-            var vm = await _mapper.MapFromVacancy(review.VacancySnapshot);
+            var vm = await _mapper.Map(review);
+
+            return vm;
+        }
+
+        public async Task<ReviewViewModel> GetReadonlyReviewViewModelAsync(Guid reviewId, VacancyUser user)
+        {
+            var review = await _vacancyClient.GetVacancyReviewAsync(reviewId);
+
+            if (review == null)
+                throw new NotFoundException($"Unable to find review with id: {reviewId}");
+
+            var vm = await _mapper.Map(review);
 
             return vm;
         }
@@ -112,7 +94,10 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
         {
             var vm = await GetReviewViewModelAsync(model.ReviewId, user);
 
-            vm.SelectedFieldIdentifiers = model.SelectedFieldIdentifiers;
+            foreach (var field in vm.FieldIdentifiers)
+            {
+                field.Checked = model.SelectedFieldIdentifiers.Contains(field.FieldIdentifier);
+            }
 
             vm.ReviewerComment = model.ReviewerComment;
 
@@ -126,7 +111,7 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             ValidateReviewStateForReferral(review);
             await EnsureUserIsAssignedAsync(review, user.UserId);
 
-            var vm = await _mapper.MapFromVacancy(review.VacancySnapshot);
+            var vm = await _mapper.Map(review);
             vm.IsEditable = true;
 
             return vm;
@@ -146,9 +131,6 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
 
         private static void ValidateReviewStateForViewing(VacancyReview review)
         {
-            if (review == null)
-                throw new NotFoundException($"Unable to find review with id: {review.Id}");
-
             if (review.Status != ReviewStatus.PendingReview && review.Status != ReviewStatus.UnderReview)
                 throw new InvalidStateException($"Review is not in a correct state for viewing. State: {review.Status}");
 

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.QA;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Qualifications;
 
@@ -28,5 +27,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         bool VacancyReviewCanBeAssigned(VacancyReview review);
         bool VacancyReviewCanBeAssigned(ReviewStatus status, DateTime? reviewedDate);
         Task UnassignVacancyReviewAsync(Guid reviewId);
+        Task<VacancyReview> GetCurrentReferredVacancyReviewAsync(long vacancyReference);
+        Task<List<VacancyReview>> GetVacancyReviewHistoryAsync(long vacancyReference);
     }
 }

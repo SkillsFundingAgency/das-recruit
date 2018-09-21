@@ -183,5 +183,19 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         {
             return _messaging.SendCommandAsync(new UnassignVacancyReviewCommand { ReviewId = reviewId });
         }
+
+        public Task<VacancyReview> GetCurrentReferredVacancyReviewAsync(long vacancyReference)
+        {
+            return _reviewRepository.GetCurrentReferredVacancyReviewAsync(vacancyReference);
+        }
+
+        public async Task<List<VacancyReview>> GetVacancyReviewHistoryAsync(long vacancyReference)
+        {
+            var allVacancyReviews = await _reviewRepository.GetForVacancyAsync(vacancyReference);
+
+            return allVacancyReviews.Where(r => r.Status == ReviewStatus.Closed)
+                .OrderByDescending(r => r.ReviewedDate)
+                .ToList();
+        }
     }
 }

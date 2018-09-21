@@ -5,8 +5,8 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Extensions
     public static class DateTimeExtensions
     {
         private const string DisplayDateFormat = "dd MMM yyyy";
-
-        private const string DateTimeDisplayFormat = "dd MMM yyyy h.mm";
+        private const string TimeDisplayFormat = "h.mm";
+        private const string DateTimeDisplayFormat = DisplayDateFormat + " " + TimeDisplayFormat;
 
         public static string AsGdsDate(this DateTime date)
         {
@@ -16,7 +16,11 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Extensions
         public static string AsGdsDateTime(this DateTime date)
         {
             return $"{date.ToString(DateTimeDisplayFormat)}{date.ToString("tt").ToLower()}";
+        }
 
+        public static string AsGdsTime(this DateTime date)
+        {
+            return $"{date.ToString(TimeDisplayFormat)}{date.ToString("tt").ToLower()}";
         }
 
         public static string ToMonthYearString(this DateTime date)

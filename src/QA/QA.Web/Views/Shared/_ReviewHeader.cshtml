@@ -1,0 +1,38 @@
+﻿@model ReviewViewModel
+
+<div class="grid-row small-top-margin">
+    <div class="column-one-quarter">
+        <h2 class="heading-small no-top-margin">Submitted by</h2>
+    </div>
+    <div class="column-three-quarters">
+        <span>@Model.SubmittedByName</span>
+    </div>
+</div>
+<div class="grid-row">
+    <div class="column-one-quarter">
+        <h2 class="heading-small no-top-margin">Email</h2>
+    </div>
+    <div class="column-three-quarters">
+        <a href="@Model.SubmittedByEmail">@Model.SubmittedByEmail</a>
+    </div>
+</div>
+<div class="grid-row">
+    <div class="column-one-quarter">
+        <h2 class="heading-small no-top-margin">User history</h2>
+    </div>
+    <div class="column-three-quarters">
+        <span asp-condition="@Model.HasPreviouslySubmitted">
+            @Model.VacancyReviewsApprovedCount vacancies previously reviewed. @Model.VacancyReviewsApprovedFirstTimeCount passed QA first time.
+        </span>
+        <span asp-condition="@Model.HasNotPreviouslySubmitted">This is the first vacancy posted by this user.</span>
+    </div>
+</div>
+<div class="grid-row">
+    <div class="column-one-quarter">
+        <h2 asp-condition="@Model.IsResubmission" class="heading-small no-top-margin">Re-submitted date</h2>
+        <h2 asp-condition="@Model.IsFirstSubmission" class="heading-small no-top-margin">Submitted date</h2>
+    </div>
+    <div class="column-three-quarters">
+        <span>@Model.SubmittedDateTime</span>
+    </div>
+</div>
