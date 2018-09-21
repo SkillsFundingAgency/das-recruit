@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Qa.Web.Exceptions;
@@ -42,18 +41,6 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             var nextVacancyReviewId = await AssignNextVacancyReviewAsync(user);
 
             return nextVacancyReviewId;
-        }
-
-        public async Task ApproveReferredReviewAsync(Guid reviewId, ReferralViewModel reviewChanges)
-        {
-            await _vacancyClient.ApproveReferredReviewAsync(
-                reviewId, 
-                reviewChanges.ShortDescription,
-                reviewChanges.VacancyDescription,
-                reviewChanges.TrainingDescription,
-                reviewChanges.OutcomeDescription,
-                reviewChanges.ThingsToConsider,
-                reviewChanges.EmployerDescription);
         }
 
         public async Task<ReviewViewModel> GetReviewViewModelAsync(Guid reviewId, VacancyUser user)
@@ -102,31 +89,6 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             vm.ReviewerComment = model.ReviewerComment;
 
             return vm;
-        }
-
-        public async Task<ReviewViewModel> GetReferralViewModelAsync(Guid reviewId, VacancyUser user)
-        {
-            var review = await _vacancyClient.GetVacancyReviewAsync(reviewId);
-
-            ValidateReviewStateForReferral(review);
-            await EnsureUserIsAssignedAsync(review, user.UserId);
-
-            var vm = await _mapper.Map(review);
-            vm.IsEditable = true;
-
-            return vm;
-        }
-
-        private static void ValidateReviewStateForReferral(VacancyReview review)
-        {
-            if (review == null)
-                throw new NotFoundException($"Unable to find review with id: {review.Id}");
-
-            if (review.Status != ReviewStatus.UnderReview)
-                throw new InvalidStateException($"Review is not in a correct state for referring. State: {review.Status}");
-
-            if (review.VacancySnapshot == null)
-                throw new NotFoundException($"Vacancy snapshot is null for review with id: {review.Id}");
         }
 
         private static void ValidateReviewStateForViewing(VacancyReview review)

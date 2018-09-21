@@ -46,22 +46,6 @@ namespace Esfa.Recruit.Qa.Web.Controllers
             return RedirectToRoute(RouteNames.Vacancy_Review_Get, new { reviewId = nextVacancyReviewId });
         }
 
-        [HttpGet("referral", Name = RouteNames.Vacancy_Review_Referral_Get)]
-        public async Task<IActionResult> Referral([FromRoute] Guid reviewId) 
-        {
-            var vm = await _orchestrator.GetReferralViewModelAsync(reviewId, User.GetVacancyUser());
-
-            return View(ViewNames.Review, vm);
-        }
-
-        [HttpPost("referral", Name = RouteNames.Vacancy_Review_Referral_Post)]
-        public async Task<IActionResult> ReferralApprove([FromRoute] Guid reviewId, ReferralViewModel reviewChanges) 
-        {
-            await _orchestrator.ApproveReferredReviewAsync(reviewId, reviewChanges);
-
-            return RedirectToRoute(RouteNames.Dashboard_Index_Get);
-        }
-
         [Authorize(Policy = AuthorizationPolicyNames.TeamLeadUserPolicyName)]
         [HttpGet("unassign", Name = RouteNames.Vacancy_Review_Unassign_Get)]
         public async Task<IActionResult> UnassignReview([FromRoute] Guid reviewId)

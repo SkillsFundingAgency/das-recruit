@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Qa.Web.Extensions;
 using Esfa.Recruit.Qa.Web.Security;
 using Esfa.Recruit.Qa.Web.ViewModels;
-using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -84,30 +83,10 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             {
                 TotalVacanciesForReview = dashboard.TotalVacanciesForReview,
                 TotalVacanciesBrokenSla = dashboard.TotalVacanciesBrokenSla,
-                TotalVacanciesResubmitted = dashboard.TotalVacanciesResubmitted,
-                
-                //todo: this will be deleted
-                AllReviews = dashboard.AllReviews.Select(r => new ReviewDashboardItem
-                {
-                    ReviewId = r.Id,
-                    VacancyReference = r.VacancyReference,
-                    Title = r.Title,
-                    Status = CalculateStatus(r),
-                    IsReferred = r.ManualOutcome == ManualQaOutcome.Referred
-                }).ToList()
+                TotalVacanciesResubmitted = dashboard.TotalVacanciesResubmitted
             };
 
             return vm;
-        }
-
-        private static string CalculateStatus(VacancyReview review)
-        {
-            if (review.Status == ReviewStatus.UnderReview && review.ManualOutcome == ManualQaOutcome.Referred)
-            {
-                return review.Status.GetDisplayName();
-            }
-            
-            return VacancyStatus.Submitted.GetDisplayName();
         }
     }
 }
