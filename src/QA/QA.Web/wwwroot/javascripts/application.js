@@ -34,3 +34,16 @@ $("textarea").on("keyup", function () {
 $("textarea").each(function () {
     characterCount(this);
 });
+
+hookupHistory = function() {
+    $("#history_link").click(function () {
+        if ($("#history").is(":visible")) {
+            $("#history_link")[0].innerText = "Show reviewers history";
+        } else {
+            $("#history_link")[0].innerText = "Hide reviewers history";
+        }
+        $("#history").slideToggle();
+    });
+
+    $("#history").hide();
+}

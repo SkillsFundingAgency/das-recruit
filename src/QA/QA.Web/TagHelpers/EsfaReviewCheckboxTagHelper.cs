@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using Esfa.Recruit.Qa.Web.ViewModels;
 
 namespace Esfa.Recruit.Qa.Web.TagHelpers
 {
@@ -15,7 +17,10 @@ namespace Esfa.Recruit.Qa.Web.TagHelpers
         [HtmlAttributeName("asp-for")]
         public ModelExpression For { get; set; }
 
-        [HtmlAttributeName("value")]
+        [HtmlAttributeName("asp-items")]
+        public IEnumerable<FieldIdentifierViewModel> Items { get;set; }
+
+        [HtmlAttributeName("asp-value")]
         public string Value { get; set; }
 
         public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
@@ -29,7 +34,6 @@ namespace Esfa.Recruit.Qa.Web.TagHelpers
             </div> 
             */
 
-            var model = (List<string>) For.Model;
             var id = $"{For.Name}-{Value}";
 
             var input = new TagBuilder("input");
@@ -39,7 +43,7 @@ namespace Esfa.Recruit.Qa.Web.TagHelpers
             input.Attributes.Add("value", Value);
             input.AddCssClass("field-identifer-checkbox");
 
-            if(model.Contains(Value))
+            if(Items.Any(i => i.FieldIdentifier == Value && i.Checked))
                 input.Attributes.Add("checked", "checked");
 
             var label = new TagBuilder("label");

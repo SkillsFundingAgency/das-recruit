@@ -81,5 +81,13 @@ namespace Esfa.Recruit.Qa.Web.Controllers
                 await _orchestrator.UnassignVacancyReviewAsync(model.ReviewId);
             return RedirectToRoute(RouteNames.Dashboard_Index_Get);
         }
+
+        [HttpGet("readonly", Name = RouteNames.Vacancy_Readonly_Review_Get)]
+        public async Task<IActionResult> ReadonlyReview([FromRoute] Guid reviewId)
+        {
+            var vm = await _orchestrator.GetReadonlyReviewViewModelAsync(reviewId, User.GetVacancyUser());
+
+            return View(vm);
+        }
     }
 }

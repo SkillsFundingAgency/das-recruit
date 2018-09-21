@@ -104,6 +104,9 @@
 }
 
 /***Review***/
+.review-summary {
+    border: 5px solid #f47738;
+}
 
 .review-container .multiple-choice [type=checkbox] + label::before {
     width: 24px;
@@ -190,4 +193,11 @@
   background-repeat: no-repeat;
   background-position: 5px 5px;
   border: 1px solid #6f777b;
+}
+
+.field-changed {
+    border-left: 5px solid #f47738;
+    min-height: 80px;
+    padding-left: 15px;
+    overflow: auto;
 }
