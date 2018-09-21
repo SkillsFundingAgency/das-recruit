@@ -19,7 +19,7 @@ namespace Esfa.Recruit.Employer.Web.Services
         public async Task<ReviewSummaryViewModel> GetReviewSummaryViewModel(long vacancyReference, IEnumerable<ReviewFieldIndicatorViewModel> reviewFieldIndicatorsForPage)
         {
             ReviewSummaryViewModel vm;
-            var review = await _client.GetVacancyReviewAsync(vacancyReference);
+            var review = await _client.GetCurrentReferredVacancyReviewAsync(vacancyReference);
             if (review != null)
             {
                 var fieldIndicators = ReviewFieldIndicatorMapper.MapFromFieldIndicators(reviewFieldIndicatorsForPage, review.ManualQaFieldIndicators).ToList();
