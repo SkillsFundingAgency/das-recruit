@@ -28,7 +28,7 @@ namespace Esfa.Recruit.Qa.Web.TagHelpers
             /*
             <div class="form-group">
                 <div class="multiple-choice">
-                    <input type="checkbox" name="[For.Name]" id="[For.Name]-[Value]" value="Value" class="field-identifer-checkbox">
+                    <input type="checkbox" name="[For.Name]" id="[For.Name]-[Value]" value="Value" class="field-identifier-checkbox">
                     <label for="[For.Name]-[Value]"></label>
                 </div>
             </div> 
@@ -41,7 +41,7 @@ namespace Esfa.Recruit.Qa.Web.TagHelpers
             input.Attributes.Add("id", id);
             input.Attributes.Add("name", For.Name);
             input.Attributes.Add("value", Value);
-            input.AddCssClass("field-identifer-checkbox");
+            input.AddCssClass("field-identifier-checkbox");
 
             if(Items.Any(i => i.FieldIdentifier == Value && i.Checked))
                 input.Attributes.Add("checked", "checked");

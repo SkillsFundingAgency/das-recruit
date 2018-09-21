@@ -392,14 +392,14 @@
     $(function () {
         hookupHistory();
 
-        $(".field-identifer-checkbox").change(function () {
+        $(".field-identifier-checkbox").change(function () {
             toggleSubmitButton();
         });
 
         toggleSubmitButton();
 
         function toggleSubmitButton() {
-            var isRefer = $(".field-identifer-checkbox:checked").length > 0;
+            var isRefer = $(".field-identifier-checkbox:checked").length > 0;
             var submitButtonText = isRefer ? "Refer" : "Approve";
             $("#submit-button").text(submitButtonText);
         }
