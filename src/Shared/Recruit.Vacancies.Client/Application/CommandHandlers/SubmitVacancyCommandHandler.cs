@@ -1,4 +1,5 @@
-﻿using Esfa.Recruit.Vacancies.Client.Application.Commands;
+﻿using System;
+using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
@@ -49,6 +50,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             vacancy.SubmittedByUser = message.User;
             vacancy.LastUpdatedDate = now;
             vacancy.LastUpdatedByUser = message.User;
+
+            if (vacancy.VacancyReference.HasValue == false)
+                throw new Exception("Cannot submit vacancy without a vacancy reference");
 
             await _repository.UpdateAsync(vacancy);
 
