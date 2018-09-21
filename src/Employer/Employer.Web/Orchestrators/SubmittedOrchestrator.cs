@@ -28,7 +28,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             var isResubmit = false;
             if (vacancy.VacancyReference.HasValue)
             {
-                var review = await _client.GetVacancyReviewAsync(vacancy.VacancyReference.Value);
+                var review = await _client.GetCurrentReferredVacancyReviewAsync(vacancy.VacancyReference.Value);
                 isResubmit = review != null;
             }
 

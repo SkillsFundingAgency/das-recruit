@@ -163,5 +163,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 
             return result.OrderByDescending(x => x.ReviewedDate).ToList();
         }
+
+        public async Task<VacancyReview> GetCurrentReferredVacancyReviewAsync(long vacancyReference)
+        {
+            var vacancyReviews = await GetForVacancyAsync(vacancyReference);
+
+            var vacancyReview = vacancyReviews.Where(r => r.Status == ReviewStatus.Closed &&
+                                                          r.ManualOutcome == ManualQaOutcome.Referred)
+                .OrderByDescending(r => r.ClosedDate)
+                .FirstOrDefault();
+
+            return vacancyReview;
+        }
     }
 }
