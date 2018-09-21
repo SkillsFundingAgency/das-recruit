@@ -31,7 +31,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         {
             var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(vrm);
 
-            SetViewSectionStates(viewModel);
+            SetSectionStates(viewModel);
 
             return View(viewModel);
         }
@@ -53,140 +53,122 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(m);
 
-            SetSubmitSectionStates(viewModel);
+            SetSectionStates(viewModel);
 
             return View(ViewNames.VacancyPreview, viewModel);
         }
 
-        private void SetViewSectionStates(VacancyPreviewViewModel viewModel)
+        private void SetSectionStates(VacancyPreviewViewModel viewModel)
         {
-            viewModel.TitleSectionState = GetViewSectionState(viewModel, new [] {VacancyReview.FieldIdentifiers.Title}, true, vm => vm.Title);
-            viewModel.ShortDescriptionSectionState = GetViewSectionState(viewModel, new[] { VacancyReview.FieldIdentifiers.ShortDescription }, true, vm => vm.ShortDescription);
-            viewModel.ClosingDateSectionState = GetViewSectionState(viewModel, new[] { VacancyReview.FieldIdentifiers.ClosingDate }, true, vm => vm.ClosingDate);
-            viewModel.WorkingWeekSectionState = GetViewSectionState(viewModel, new[] { VacancyReview.FieldIdentifiers.WorkingWeek }, true, vm => vm.HoursPerWeek, vm => vm.WorkingWeekDescription);
-            viewModel.WageTextSectionState = GetViewSectionState(viewModel, new[] { VacancyReview.FieldIdentifiers.Wage }, true, vm => vm.HasWage, vm => vm.PossibleStartDate);
-            viewModel.ExpectedDurationSectionState = GetViewSectionState(viewModel, new[] { VacancyReview.FieldIdentifiers.ExpectedDuration }, true, vm => vm.HasWage, vm => vm.ExpectedDuration);
-            viewModel.PossibleStartDateSectionState = GetViewSectionState(viewModel, new[] { VacancyReview.FieldIdentifiers.PossibleStartDate }, true, vm => vm.PossibleStartDate);
-            viewModel.TrainingLevelSectionState = GetViewSectionState(viewModel, new[] { VacancyReview.FieldIdentifiers.TrainingLevel }, true, vm => vm.HasProgramme, vm => vm.TrainingLevel);
-            viewModel.NumberOfPositionsSectionState = GetViewSectionState(viewModel, new[] { VacancyReview.FieldIdentifiers.NumberOfPositions }, true, vm => vm.NumberOfPositions);
-            viewModel.DescriptionsSectionState = GetViewSectionState(viewModel, new []{ VacancyReview.FieldIdentifiers.VacancyDescription, VacancyReview.FieldIdentifiers.TrainingDescription, VacancyReview.FieldIdentifiers.OutcomeDescription }, true, vm => vm.VacancyDescription, vm => vm.TrainingDescription, vm => vm.OutcomeDescription);
-            viewModel.SkillsSectionState = GetViewSectionState(viewModel, new[] { VacancyReview.FieldIdentifiers.Skills }, true, vm => vm.Skills);
-            viewModel.QualificationsSectionState = GetViewSectionState(viewModel, new[] { VacancyReview.FieldIdentifiers.Qualifications }, true, vm => vm.Qualifications);
-            viewModel.ThingsToConsiderSectionState = GetViewSectionState(viewModel, new[] { VacancyReview.FieldIdentifiers.ThingsToConsider }, true, vm => vm.ThingsToConsider);
-            viewModel.EmployerNameSectionState = GetViewSectionState(viewModel, null, true, vm => vm.EmployerName);
-            viewModel.EmployerDescriptionSectionState = GetViewSectionState(viewModel, new[] { VacancyReview.FieldIdentifiers.EmployerDescription }, true, vm => vm.EmployerDescription);
-            viewModel.EmployerWebsiteUrlSectionState = GetViewSectionState(viewModel, new[] { VacancyReview.FieldIdentifiers.EmployerWebsiteUrl }, true, vm => vm.EmployerWebsiteUrl);
-            viewModel.ContactSectionState = GetViewSectionState(viewModel, new[] { VacancyReview.FieldIdentifiers.EmployerContact }, false, vm => vm.ContactName, vm => vm.ContactEmail, vm => vm.ContactTelephone);
-            viewModel.EmployerAddressSectionState = GetViewSectionState(viewModel, new[] { VacancyReview.FieldIdentifiers.EmployerAddress }, true, vm => vm.EmployerAddressElements);
-            viewModel.ApplicationInstructionsSectionState = GetViewSectionState(viewModel, new[] { VacancyReview.FieldIdentifiers.ApplicationInstructions }, true, vm => vm.ApplicationInstructions);
-            viewModel.ApplicationMethodSectionState = GetViewSectionState(viewModel, new[] { VacancyReview.FieldIdentifiers.ApplicationMethod }, true, vm => vm.ApplicationMethod);
-            viewModel.ApplicationUrlSectionState = GetViewSectionState(viewModel, new[] { VacancyReview.FieldIdentifiers.ApplicationUrl }, true, vm => vm.ApplicationUrl);
-            viewModel.ProviderSectionState = GetViewSectionState(viewModel, new[] { VacancyReview.FieldIdentifiers.Provider }, true, vm => vm.ProviderName);
-            viewModel.TrainingSectionState = GetViewSectionState(viewModel, new[] { VacancyReview.FieldIdentifiers.Training}, true, vm => vm.TrainingType, vm => vm.TrainingTitle);
-            viewModel.DisabilityConfidentSectionState = GetViewSectionState(viewModel, VacancyReview.FieldIdentifiers.DisabilityConfident);
+            viewModel.TitleSectionState = GetSectionState(viewModel, new[] { VacancyReview.FieldIdentifiers.Title }, true, vm => vm.Title);
+            viewModel.ShortDescriptionSectionState = GetSectionState(viewModel, new[] { VacancyReview.FieldIdentifiers.ShortDescription }, true, vm => vm.ShortDescription);
+            viewModel.ClosingDateSectionState = GetSectionState(viewModel, new[] { VacancyReview.FieldIdentifiers.ClosingDate }, true, vm => vm.ClosingDate);
+            viewModel.WorkingWeekSectionState = GetSectionState(viewModel, new[] { VacancyReview.FieldIdentifiers.WorkingWeek }, true, vm => vm.HoursPerWeek, vm => vm.WorkingWeekDescription);
+            viewModel.WageTextSectionState = GetSectionState(viewModel, new[] { VacancyReview.FieldIdentifiers.Wage }, true, vm => vm.HasWage, vm => vm.PossibleStartDate);
+            viewModel.ExpectedDurationSectionState = GetSectionState(viewModel, new[] { VacancyReview.FieldIdentifiers.ExpectedDuration }, true, vm => vm.HasWage, vm => vm.ExpectedDuration);
+            viewModel.PossibleStartDateSectionState = GetSectionState(viewModel, new[] { VacancyReview.FieldIdentifiers.PossibleStartDate }, true, vm => vm.PossibleStartDate);
+            viewModel.TrainingLevelSectionState = GetSectionState(viewModel, new[] { VacancyReview.FieldIdentifiers.TrainingLevel }, true, vm => vm.HasProgramme, vm => vm.TrainingLevel);
+            viewModel.NumberOfPositionsSectionState = GetSectionState(viewModel, new[] { VacancyReview.FieldIdentifiers.NumberOfPositions }, true, vm => vm.NumberOfPositions);
+            viewModel.DescriptionsSectionState = GetSectionState(viewModel, new[] { VacancyReview.FieldIdentifiers.VacancyDescription, VacancyReview.FieldIdentifiers.TrainingDescription, VacancyReview.FieldIdentifiers.OutcomeDescription }, true, vm => vm.VacancyDescription, vm => vm.TrainingDescription, vm => vm.OutcomeDescription);
+            viewModel.SkillsSectionState = GetSectionState(viewModel, new[] { VacancyReview.FieldIdentifiers.Skills }, true, vm => vm.Skills);
+            viewModel.QualificationsSectionState = GetSectionState(viewModel, new[] { VacancyReview.FieldIdentifiers.Qualifications }, true, vm => vm.Qualifications);
+            viewModel.ThingsToConsiderSectionState = GetSectionState(viewModel, new[] { VacancyReview.FieldIdentifiers.ThingsToConsider }, true, vm => vm.ThingsToConsider);
+            viewModel.EmployerNameSectionState = GetSectionState(viewModel, null, true, vm => vm.EmployerName);
+            viewModel.EmployerDescriptionSectionState = GetSectionState(viewModel, new[] { VacancyReview.FieldIdentifiers.EmployerDescription }, true, vm => vm.EmployerDescription);
+            viewModel.EmployerWebsiteUrlSectionState = GetSectionState(viewModel, new[] { VacancyReview.FieldIdentifiers.EmployerWebsiteUrl }, true, vm => vm.EmployerWebsiteUrl);
+            viewModel.ContactSectionState = GetSectionState(viewModel, new[] { VacancyReview.FieldIdentifiers.EmployerContact }, false, vm => vm.ContactName, vm => vm.ContactEmail, vm => vm.ContactTelephone);
+            viewModel.EmployerAddressSectionState = GetSectionState(viewModel, new[] { VacancyReview.FieldIdentifiers.EmployerAddress }, true, vm => vm.EmployerAddressElements);
+            viewModel.ApplicationInstructionsSectionState = GetSectionState(viewModel, new[] { VacancyReview.FieldIdentifiers.ApplicationInstructions }, true, vm => vm.ApplicationInstructions);
+            viewModel.ApplicationMethodSectionState = GetSectionState(viewModel, new[] { VacancyReview.FieldIdentifiers.ApplicationMethod }, true, vm => vm.ApplicationMethod);
+            viewModel.ApplicationUrlSectionState = GetSectionState(viewModel, new[] { VacancyReview.FieldIdentifiers.ApplicationUrl }, true, vm => vm.ApplicationUrl);
+            viewModel.ProviderSectionState = GetSectionState(viewModel, new[] { VacancyReview.FieldIdentifiers.Provider }, true, vm => vm.ProviderName);
+            viewModel.TrainingSectionState = GetSectionState(viewModel, new[] { VacancyReview.FieldIdentifiers.Training }, true, vm => vm.TrainingType, vm => vm.TrainingTitle);
+            viewModel.DisabilityConfidentSectionState = GetSectionState(viewModel, new[]{ VacancyReview.FieldIdentifiers.DisabilityConfident}, true, vm => vm.IsDisabilityConfident);
         }
-
-        private VacancyPreviewSectionState GetViewSectionState(VacancyPreviewViewModel vm, string reviewFieldIndicator)
+        
+        private VacancyPreviewSectionState GetSectionState(VacancyPreviewViewModel vm, IEnumerable<string> reviewFieldIndicators, bool requiresAll, params Expression<Func<VacancyPreviewViewModel, object>>[] sectionProperties)
         {
-            if (vm.Review.FieldIndicators.Select(r => r.ReviewFieldIdentifier).Contains(reviewFieldIndicator))
-                return VacancyPreviewSectionState.Review;
-
-            return VacancyPreviewSectionState.Valid;
-        }
-
-        /// <summary>
-        /// Returns the state of the section for viewing. Incomplete, Valid or Review
-        /// </summary>
-        /// <param name="vm">The View Model to inspect</param>
-        /// <param name="reviewFieldIndicators">If any of these indicators exist in vm.ReviewFieldIndicators then immediately returns 'Review'</param>
-        /// <param name="requiresAll">If 'true' requires all of the requiredProperties to be incomplete to return 'Incomplete'. If false will return 'Incomplete' if any requiredProperties are incomplete</param>
-        /// <param name="requiredProperties">The list of properties to inspect to determine if the state is 'Valid' or 'Incomplete'</param>
-        /// <returns>Incomplete, Valid or Review</returns>
-        private VacancyPreviewSectionState GetViewSectionState(VacancyPreviewViewModel vm, IEnumerable<string> reviewFieldIndicators, bool requiresAll, params Func<VacancyPreviewViewModel, object>[] requiredProperties)
-        {
-            if (reviewFieldIndicators != null && reviewFieldIndicators.Any(reviewFieldIndicator => 
-                vm.Review.FieldIndicators.Select(r => r.ReviewFieldIdentifier)
-                    .Contains(reviewFieldIndicator)))
+            if (IsSectionModelStateValid(sectionProperties) == false)
             {
-                return VacancyPreviewSectionState.Review;
+                return IsSectionComplete(vm, requiresAll, sectionProperties) ? 
+                    VacancyPreviewSectionState.Invalid : 
+                    VacancyPreviewSectionState.InvalidIncomplete;
             }
-            
-            foreach (var requiredPropertyFunc in requiredProperties)
+
+            if (IsSectionForReview(vm, reviewFieldIndicators))
+                return VacancyPreviewSectionState.Review;
+
+            return IsSectionComplete(vm, requiresAll, sectionProperties) ?
+                VacancyPreviewSectionState.Valid :
+                VacancyPreviewSectionState.Incomplete;
+        }
+
+        private bool IsSectionModelStateValid(params Expression<Func<VacancyPreviewViewModel, object>>[] sectionProperties)
+        {
+            if (ModelState.IsValid)
+                return true;
+
+            foreach (var property in sectionProperties)
             {
-                VacancyPreviewSectionState result = VacancyPreviewSectionState.Valid;
+                var propertyName = property.GetPropertyName();
+                if (ModelState.Keys.Any(k => k == propertyName && ModelState[k].Errors.Any()))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private bool IsSectionComplete(VacancyPreviewViewModel vm, bool requiresAll, params Expression<Func<VacancyPreviewViewModel, object>>[] sectionProperties)
+        {
+            foreach (var requiredPropertyExpression in sectionProperties)
+            {
+                var requiredPropertyFunc = requiredPropertyExpression.Compile();
                 var propertyValue = requiredPropertyFunc(vm);
 
+                var result = true;
                 switch (propertyValue)
                 {
                     case null:
-                        result = VacancyPreviewSectionState.Incomplete;
+                        result = false;
                         break;
                     case string stringProperty:
                         if (string.IsNullOrWhiteSpace(stringProperty))
                         {
-                            result = VacancyPreviewSectionState.Incomplete;
+                            result = false;
                         }
                         break;
                     case IEnumerable listProperty:
                         if (listProperty.Cast<object>().Any() == false)
                         {
-                            result = VacancyPreviewSectionState.Incomplete;
+                            result = false;
                         }
+                        break;
+                    case bool _:
+                        //No way to tell if a bool has been 'completed' so just skip
                         break;
                 }
 
-                if (requiresAll && result == VacancyPreviewSectionState.Incomplete)
+                if (requiresAll && result == false)
                 {
-                    return result;
+                    return false;
                 }
 
-                if (!requiresAll && result == VacancyPreviewSectionState.Valid)
+                if (!requiresAll && result)
                 {
-                    return result;
-                }
-            }
-
-            return requiresAll ? VacancyPreviewSectionState.Valid : VacancyPreviewSectionState.Incomplete;
-        }
-
-        private void SetSubmitSectionStates(VacancyPreviewViewModel viewModel)
-        {
-            viewModel.ShortDescriptionSectionState = GetSubmitSectionState(vm => vm.ShortDescription);
-            viewModel.ClosingDateSectionState = GetSubmitSectionState(vm => vm.ClosingDate);
-            viewModel.WorkingWeekSectionState = GetSubmitSectionState(vm => vm.HasWage, vm => vm.HoursPerWeek, vm => vm.WorkingWeekDescription);
-            viewModel.WageTextSectionState = GetSubmitSectionState(vm => vm.HasWage, vm => vm.PossibleStartDate);
-            viewModel.ExpectedDurationSectionState = GetSubmitSectionState(vm => vm.HasWage, vm => vm.ExpectedDuration);
-            viewModel.PossibleStartDateSectionState = GetSubmitSectionState(vm => vm.PossibleStartDate);
-            viewModel.TrainingLevelSectionState = GetSubmitSectionState(vm => vm.HasProgramme, vm => vm.TrainingLevel);
-            viewModel.NumberOfPositionsSectionState = GetSubmitSectionState(vm => vm.NumberOfPositions);
-            viewModel.DescriptionsSectionState = GetSubmitSectionState(vm => vm.VacancyDescription, vm => vm.TrainingDescription, vm => vm.OutcomeDescription);
-            viewModel.SkillsSectionState = GetSubmitSectionState(vm => vm.Skills);
-            viewModel.QualificationsSectionState = GetSubmitSectionState(vm => vm.Qualifications);
-            viewModel.ThingsToConsiderSectionState = GetSubmitSectionState(vm => vm.ThingsToConsider);
-            viewModel.EmployerNameSectionState = GetSubmitSectionState(vm => vm.EmployerName);
-            viewModel.EmployerDescriptionSectionState = GetSubmitSectionState(vm => vm.EmployerDescription);
-            viewModel.EmployerWebsiteUrlSectionState = GetSubmitSectionState(vm => vm.EmployerWebsiteUrl);
-            viewModel.ContactSectionState = GetSubmitSectionState(vm => vm.ContactName, vm => vm.ContactEmail, vm => vm.ContactTelephone);
-            viewModel.EmployerAddressSectionState = GetSubmitSectionState(vm => vm.EmployerAddressElements);
-            viewModel.ApplicationInstructionsSectionState = GetSubmitSectionState(vm => vm.ApplicationInstructions);
-            viewModel.ApplicationMethodSectionState = GetSubmitSectionState(vm => vm.ApplicationMethod);
-            viewModel.ApplicationUrlSectionState = GetSubmitSectionState(vm => vm.ApplicationUrl);
-            viewModel.ProviderSectionState = GetSubmitSectionState(vm => vm.ProviderName);
-            viewModel.TrainingSectionState = GetSubmitSectionState(vm => vm.HasProgramme, vm => vm.TrainingType, vm => vm.TrainingTitle);
-        }
-
-        private VacancyPreviewSectionState GetSubmitSectionState(params Expression<Func<VacancyPreviewViewModel, object>>[] validProperties)
-        {
-            foreach (var property in validProperties)
-            {
-                var propertyName = property.GetPropertyName();
-                if (ModelState.Keys.Any(k => k == propertyName && ModelState[k].Errors.Any()))
-                {
-                    return VacancyPreviewSectionState.Invalid;
+                    return true;
                 }
             }
-            
-            return VacancyPreviewSectionState.Valid;
+
+            return requiresAll;
+        }
+
+        private bool IsSectionForReview(VacancyPreviewViewModel vm, IEnumerable<string> reviewFieldIndicators)
+        {
+            return reviewFieldIndicators != null && reviewFieldIndicators.Any(reviewFieldIndicator =>
+                       vm.Review.FieldIndicators.Select(r => r.ReviewFieldIdentifier)
+                           .Contains(reviewFieldIndicator));
         }
     }
 }

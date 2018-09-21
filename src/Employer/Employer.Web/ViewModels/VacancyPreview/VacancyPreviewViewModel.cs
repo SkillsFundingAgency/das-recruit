@@ -144,6 +144,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
         Incomplete,
         Valid,
         Invalid,
+        InvalidIncomplete,
         Review
     }
 }
