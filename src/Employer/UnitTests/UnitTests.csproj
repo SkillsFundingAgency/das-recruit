@@ -15,9 +15,6 @@
     <PackageReference Include="FluentAssertions" Version="5.1.0" />
   </ItemGroup>
   <ItemGroup>
-    <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Employer.Web\Employer.Web.csproj" />
     <ProjectReference Include="..\..\Shared\Recruit.Vacancies.Client\Recruit.Vacancies.Client.csproj" />
   </ItemGroup>

@@ -12,9 +12,6 @@
     <PackageReference Include="Moq" Version="4.8.2" />
   </ItemGroup>
   <ItemGroup>
-    <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Recruit.Vacancies.Client\Recruit.Vacancies.Client.csproj" />
     <ProjectReference Include="..\Recruit.Shared.Web\Recruit.Shared.Web.csproj" />
   </ItemGroup>
