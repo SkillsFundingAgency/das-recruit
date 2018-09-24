@@ -3,9 +3,9 @@
     <div class="column-two-thirds">
         <h1 class="heading-xlarge small-bottom-margin">@Model.Title</h1>
         <hr>
-        @Html.Partial(PartialNames.ValidationSummary, new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames })
+        @await Html.PartialAsync(PartialNames.ValidationSummary, new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames })
 
-        @Html.Partial(PartialNames.ReviewSummary, Model.Review)
+        @await Html.PartialAsync(PartialNames.ReviewSummary, Model.Review)
 
         <form asp-route="@RouteNames.EmployerContactDetails_Post" novalidate>
             <div esfa-validation-marker-for="EmployerContactName" class="form-group">

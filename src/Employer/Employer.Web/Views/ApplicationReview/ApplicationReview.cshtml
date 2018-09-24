@@ -16,7 +16,7 @@
         <section>
             <h1 class="heading-xlarge">@Model.Name</h1>
 
-            @Html.Partial(PartialNames.ValidationSummary, new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames })
+            @await Html.PartialAsync(PartialNames.ValidationSummary, new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames })
 
             <div class="panel panel-border-narrow">
                 <p>

@@ -1,9 +1,9 @@
 ﻿@model ClosedVacancyViewModel
 <div class="column-full">
     <main id="content" role="main">
-        @Html.Partial(PartialNames.VacancySummaryDisplay, Model)
+        @await Html.PartialAsync(PartialNames.VacancySummaryDisplay, Model)
 
-        @Html.Partial(PartialNames.VacancyApplicationsTable, Model.Applications)
+        @await Html.PartialAsync(PartialNames.VacancyApplicationsTable, Model.Applications)
 
         <div class="form-group inline">
             <div class="form-group small-top-margin">

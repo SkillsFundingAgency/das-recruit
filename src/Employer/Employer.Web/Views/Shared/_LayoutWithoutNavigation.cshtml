@@ -51,7 +51,7 @@ public string GetTitle()
 	<link asp-append-version="true" rel="stylesheet" media="screen" href="/css/application.css" />
 	<script src="/lib/jquery/dist/jquery.js"></script>
 	<environment exclude="@EnvironmentNames.GetNonProdEnvironmentNamesCommaDelimited()">
-		@Html.Partial(PartialNames.GoogleAnalyticsSnippet)
+		@await Html.PartialAsync(PartialNames.GoogleAnalyticsSnippet)
 	</environment>
 	@Html.Raw(JavaScriptSnippet.FullScript) <!-- AppInsights script -->
 	<script>

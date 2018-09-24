@@ -3,7 +3,7 @@
 
 <div class="grid-row">
     <div class="column-full">
-        @Html.Partial(PartialNames.ValidationSummary, new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames })
+        @await Html.PartialAsync(PartialNames.ValidationSummary, new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames })
         <div class="todo">
             <form asp-route="@RouteNames.VacancyEditDates_Post" novalidate>
                 <div esfa-validation-marker-for="ClosingDate" class="form-group">
