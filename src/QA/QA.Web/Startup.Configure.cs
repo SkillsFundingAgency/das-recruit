@@ -27,15 +27,13 @@ namespace Esfa.Recruit.Qa.Web
             }
             else
             {
-                var rewriteOptions = new RewriteOptions()
-                    .AddRedirectToHttps();
-
-                app.UseRewriter(rewriteOptions);
-
                 app.UseExceptionHandler("/error/handle");
+                app.UseHsts(hsts => hsts.MaxAge(365));
             }
 
-             app.UseCsp(options => options
+            app.UseHttpsRedirection();
+
+            app.UseCsp(options => options
                 .DefaultSources(s => s.Self())
                 .StyleSources(s => 
                     s.Self()
@@ -60,7 +58,6 @@ namespace Esfa.Recruit.Qa.Web
                 .ReportUris(r => r.Uris("/ContentPolicyReport/Report")));
 
             //Registered before static files to always set header
-            app.UseHsts(hsts => hsts.MaxAge(365));
             app.UseXContentTypeOptions();
             app.UseReferrerPolicy(opts => opts.NoReferrer());
             app.UseXXssProtection(opts => opts.EnabledWithBlockMode());

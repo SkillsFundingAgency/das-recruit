@@ -97,7 +97,8 @@ namespace Esfa.Recruit.Qa.Web.Configuration
                         .Add(MediaTypeHeaderValue.Parse("application/csp-report"));
                 }
             })
-            .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>());
+            .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>())
+            .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
     }
 }

@@ -1,6 +1,8 @@
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

@@ -78,7 +78,8 @@ namespace Esfa.Recruit.Employer.Web.Configuration
 
                 opts.AddTrimModelBinderProvider();
             })
-            .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>());
+            .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>())
+            .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
         public static void AddAuthenticationService(this IServiceCollection services, AuthenticationConfiguration authConfig, IEmployerVacancyClient vacancyClient, IHostingEnvironment hostingEnvironment)
