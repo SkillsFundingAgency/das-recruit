@@ -14,7 +14,7 @@
                 </div>
             </div>
 
-            @await Html.PartialAsync(PartialNames.NonEditableVacancyDisplay, Model)
+            <partial name=@PartialNames.NonEditableVacancyDisplay model="Model" />
 
             <div class="form-group inline">
                 <div class="form-group small-top-margin">

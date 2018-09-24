@@ -21,7 +21,7 @@
                     </h1>
                 </div>
             </div>
-            @await Html.PartialAsync(PartialNames.ManageVacancyEditPartial, Model)
+            <partial name=@PartialNames.ManageVacancyEditPartial model="Model" />
 
             <div class="form-group inline">
                 <div class="form-group small-top-margin">
