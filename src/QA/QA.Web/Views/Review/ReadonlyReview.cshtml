@@ -2,7 +2,7 @@
 @model ReviewViewModel
 <div class="review-container">
 
-    @Html.Partial("_ReviewHeader")
+    @await Html.PartialAsync("_ReviewHeader")
 
     <div class="grid-row">
         <div class="column-two-thirds">
@@ -243,7 +243,7 @@
     </div>
     <hr>
 
-    @Html.Partial("_ReviewHistories", Model.ReviewHistories)
+    @await Html.PartialAsync("_ReviewHistories", Model.ReviewHistories)
 
     <div class="grid-row">
         <div class="column-full">
