@@ -14,8 +14,7 @@ namespace Esfa.Recruit.Employer.Web
             try
             {
                 logger.Info("Starting up host");
-                var host = BuildWebHost(args);
-                host.Run();
+                CreateWebHostBuilder(args).Build().Run();
             }
             catch (Exception ex)
             {
@@ -25,12 +24,11 @@ namespace Esfa.Recruit.Employer.Web
             }
         }
 
-        private static IWebHost BuildWebHost(string[] args) =>
+        private static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseKestrel(c => c.AddServerHeader = false)
                 .UseStartup<Startup>()
                 .UseUrls("http://localhost:5020")
-                .UseNLog()
-                .Build();
+                .UseNLog();
     }
 }

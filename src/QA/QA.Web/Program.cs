@@ -24,9 +24,7 @@ namespace Esfa.Recruit.Qa.Web
                 logger.Info("Starting up host");
                 
                 var certificate = BuildCertificate();
-                var host = BuildWebHost(args, certificate);
-                
-                host.Run();
+                CreateWebHostBuilder(args, certificate).Build().Run();
             }
             catch (Exception ex)
             {
@@ -58,7 +56,7 @@ namespace Esfa.Recruit.Qa.Web
             return certificate;
         }
 
-        private static IWebHost BuildWebHost(string[] args, X509Certificate2 certificate) =>
+        private static IWebHostBuilder CreateWebHostBuilder(string[] args, X509Certificate2 certificate) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseKestrel(c =>
                 {
@@ -70,7 +68,6 @@ namespace Esfa.Recruit.Qa.Web
                 })
                 .UseStartup<Startup>()
                 .UseUrls("https://localhost:5025")
-                .UseNLog()
-                .Build();
+                .UseNLog();
     }
 }
