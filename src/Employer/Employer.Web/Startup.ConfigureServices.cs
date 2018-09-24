@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Employer.Web
 {
@@ -15,12 +16,15 @@ namespace Esfa.Recruit.Employer.Web
         private IConfiguration _configuration { get; }
         private IHostingEnvironment _hostingEnvironment { get; }
         private AuthenticationConfiguration _authConfig { get; }
-        
-        public Startup(IConfiguration config, IHostingEnvironment env)
+
+        private readonly ILoggerFactory _loggerFactory;
+
+        public Startup(IConfiguration config, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             _configuration = config;
             _hostingEnvironment = env;
             _authConfig = _configuration.GetSection("Authentication").Get<AuthenticationConfiguration>();
+            _loggerFactory = loggerFactory;
 
             if (env.IsDevelopment() && _authConfig.IsEnabledForDev == false)
             {
@@ -45,7 +49,7 @@ namespace Esfa.Recruit.Employer.Web
                 o.ViewLocationFormats.Add("/Views/Part2/{1}/{0}" + RazorViewEngine.ViewExtension);
             });
 
-            services.AddMvcService(_hostingEnvironment, _isAuthEnabled);
+            services.AddMvcService(_hostingEnvironment, _isAuthEnabled, _loggerFactory);
 
             services.AddApplicationInsightsTelemetry(_configuration);
 

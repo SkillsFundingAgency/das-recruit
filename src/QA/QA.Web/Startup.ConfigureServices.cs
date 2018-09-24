@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Qa.Web
 {
@@ -17,14 +18,16 @@ namespace Esfa.Recruit.Qa.Web
         private readonly AuthorizationConfiguration _legacyAuthorizationConfig;
         private readonly AuthorizationConfiguration _authorizationConfig;
         private readonly ExternalLinksConfiguration _externalLinks;
+        private readonly ILoggerFactory _loggerFactory;
 
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, ILoggerFactory loggerFactory)
         {
             _configuration = configuration;
             _authenticationConfig = _configuration.GetSection("Authentication").Get<AuthenticationConfiguration>();
             _legacyAuthorizationConfig = _configuration.GetSection("LegacyAuthorization").Get<AuthorizationConfiguration>();
             _authorizationConfig = _configuration.GetSection("Authorization").Get<AuthorizationConfiguration>();
             _externalLinks = _configuration.GetSection("ExternalLinks").Get<ExternalLinksConfiguration>();
+            _loggerFactory = loggerFactory;
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -39,7 +42,7 @@ namespace Esfa.Recruit.Qa.Web
                 opt.AppendTrailingSlash = true;
             });
 
-            services.AddMvcService();
+            services.AddMvcService(_loggerFactory);
 
             services.AddAntiforgery(
                 options =>

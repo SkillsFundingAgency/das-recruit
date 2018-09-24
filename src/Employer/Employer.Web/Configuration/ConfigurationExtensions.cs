@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Employer.Web.Configuration
 {
@@ -39,7 +40,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddTransient<IAuthorizationHandler, EmployerAccountHandler>();
         }
 
-        public static void AddMvcService(this IServiceCollection services, IHostingEnvironment hostingEnvironment, bool isAuthEnabled)
+        public static void AddMvcService(this IServiceCollection services, IHostingEnvironment hostingEnvironment, bool isAuthEnabled, ILoggerFactory loggerFactory)
         {
             services.AddAntiforgery(options =>
             {
@@ -76,7 +77,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
 
                 opts.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
 
-                opts.AddTrimModelBinderProvider();
+                opts.AddTrimModelBinderProvider(loggerFactory);
             })
             .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>())
             .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
