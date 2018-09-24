@@ -65,7 +65,7 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             return vm;
         }
 
-        public async Task<ReviewViewModel> GetReadonlyReviewViewModelAsync(Guid reviewId, VacancyUser user)
+        public async Task<ReviewViewModel> GetReadonlyReviewViewModelAsync(Guid reviewId)
         {
             var review = await _vacancyClient.GetVacancyReviewAsync(reviewId);
 

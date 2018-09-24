@@ -91,7 +91,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
         private List<string> GetUpdatedFields(Vacancy vacancy, IEnumerable<VacancyReview> allReviewsForVacancy)
         {
-            var previousReview = GetPreviousReferredVacancyReviewAsync(allReviewsForVacancy);
+            var previousReview = GetPreviousReferredVacancyReview(allReviewsForVacancy);
             if(previousReview == null)
                 return new List<string>();
 
@@ -103,7 +103,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 .ToList();
         }
 
-        private VacancyReview GetPreviousReferredVacancyReviewAsync(IEnumerable<VacancyReview> allReviewsForVacancy)
+        private VacancyReview GetPreviousReferredVacancyReview(IEnumerable<VacancyReview> allReviewsForVacancy)
         {
             return allReviewsForVacancy.Where(r => r.Status == ReviewStatus.Closed &&
                                          r.ManualOutcome == ManualQaOutcome.Referred)
