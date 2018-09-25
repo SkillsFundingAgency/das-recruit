@@ -31,7 +31,6 @@ namespace Esfa.Recruit.Qa.Web
                 app.UseHsts(hsts => hsts.MaxAge(365));
             }
 
-
             app.UseCsp(options => options
                 .DefaultSources(s => s.Self())
                 .StyleSources(s => 
@@ -61,12 +60,12 @@ namespace Esfa.Recruit.Qa.Web
             app.UseReferrerPolicy(opts => opts.NoReferrer());
             app.UseXXssProtection(opts => opts.EnabledWithBlockMode());
 
-            app.UseHttpsRedirection();
-
             app.UseRedirectValidation(opts => {
                 opts.AllowSameHostRedirectsToHttps();
                 opts.AllowedDestinations(GetAllowableDestinations(_authenticationConfig, _externalLinks));
             }); //Register this earlier if there's middleware that might redirect.
+
+            app.UseHttpsRedirection();
 
             app.UseAuthentication();
 
