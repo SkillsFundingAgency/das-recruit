@@ -7,7 +7,6 @@ namespace Esfa.Recruit.Employer.Web.Configuration
         public const string RecruitTempData = "recruit-temp-data";
         public const string AntiForgeryCookie = "recruit-x-csrf";
         public const string SetupEmployer = "setup-employer-{0}";
-        public const string VacancyStatusFilter = "vacancyStatusFilter";
         public const string VacancyProposedClosingDate = "vacancy-closingDate-{0}";
         public const string VacancyProposedStartDate = "vacancy-startDate-{0}";
     }
