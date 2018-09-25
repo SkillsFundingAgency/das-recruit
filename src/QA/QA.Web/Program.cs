@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
+using Esfa.Recruit.Qa.Web.Configuration;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -15,7 +16,9 @@ namespace Esfa.Recruit.Qa.Web
 {
     public class Program
     {
-       public static void Main(string[] args)
+        public const int HostSslPort = 5025;
+
+        public static void Main(string[] args)
         {
             // NLog: setup the logger first to catch all errors
             var logger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
@@ -45,7 +48,7 @@ namespace Esfa.Recruit.Qa.Web
                     c.AddServerHeader = false;
                 })
                 .UseStartup<Startup>()
-                .UseUrls("https://localhost:5025")
+                .UseUrls($"https://localhost:{HostSettings.KestrelSslPort}")
                 .UseNLog();
     }
 }
