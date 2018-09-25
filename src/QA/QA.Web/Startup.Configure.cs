@@ -61,7 +61,7 @@ namespace Esfa.Recruit.Qa.Web
             app.UseXXssProtection(opts => opts.EnabledWithBlockMode());
 
             app.UseRedirectValidation(opts => {
-                opts.AllowSameHostRedirectsToHttps();
+                opts.AllowSameHostRedirectsToHttps(5025);
                 opts.AllowedDestinations(GetAllowableDestinations(_authenticationConfig, _externalLinks));
             }); //Register this earlier if there's middleware that might redirect.
 
