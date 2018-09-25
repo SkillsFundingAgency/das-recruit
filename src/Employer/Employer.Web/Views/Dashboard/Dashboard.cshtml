@@ -16,15 +16,63 @@
         <p asp-condition="@Model.ShowNoVacanciesMessage">
             Your dashboard is empty, start by creating your first apprenticeship vacancy.
         </p>
-        <p asp-condition="@Model.HasVacancies">
-            You can use filters to show only vacancies that match your criteria.
-        </p>
         <a asp-route="@RouteNames.CreateVacancy_Get" class="button small-bottom-margin">Create vacancy</a>
     </div>
     <br>
 </div>
 
 <div asp-condition="@Model.HasVacancies">
+    
+    <div class="grid-row">
+        <div class="column-full">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="bold">Status</th>
+                        <th class="bold">Vacancy title</th>
+                        <th class="bold">Vacancy ref</th>
+                        <th class="bold" style="min-width:6em">Closing Date</th>
+                        <th class="bold" style="min-width:8em">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var vacancy in Model.DisplayVacancies)
+                {
+                    <tr>
+                        <td>@vacancy.Status.GetDisplayName()</td>
+                        <td>
+                            <div>@vacancy.Title</div>
+                            <div asp-condition="@vacancy.IsApplicationsVacancy">
+                                <span asp-condition="@vacancy.HasApplications">
+                                    <a asp-route="@RouteNames.DisplayVacancy_Get" asp-route-vacancyId="@vacancy.Id">
+                                        @vacancy.AllApplicationsCount applications
+                                    </a>&nbsp;(@vacancy.NewApplicationsCount new)
+                                </span>
+                                <span asp-condition="@vacancy.HasNoApplications">@vacancy.AllApplicationsCount applications (@vacancy.NewApplicationsCount new)</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span asp-condition="@vacancy.HasVacancyReference"><span>VAC</span>@vacancy.VacancyReference</span>
+                            <span asp-condition="@vacancy.HasNoVacancyReference">Not available</span>
+                        </td>
+                        <td>@vacancy.ClosingDate?.AsGdsDate()</td>
+                        <td>
+                            <a asp-route="@vacancy.GetLinkRoute()" asp-route-vacancyId="@vacancy.Id">@vacancy.GetLinkText()</a>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    
+    
+    
+    
+    
+    
+
     <div id="selection-active" class="lottery-tickets">
         <div class="grid-row">
             <div class="column-one-quarter">
@@ -83,17 +131,17 @@
         <div class="column-full">
             <table>
                 <thead>
-                    <tr>
-                        <th class="bold">Vacancy title</th>
-                        <th class="bold">Reference number</th>
-                        <th class="bold">Status</th>
-                        <th asp-condition="@Model.HasDisplayVacanciesContainingLiveVacancies">&nbsp;</th>
-                    </tr>
+                <tr>
+                    <th class="bold">Vacancy title</th>
+                    <th class="bold">Reference number</th>
+                    <th class="bold">Status</th>
+                    <th asp-condition="@Model.HasDisplayVacanciesContainingLiveVacancies">&nbsp;</th>
+                </tr>
                 </thead>
                 <tbody>
-@foreach (var vacancy in Model.DisplayVacancies)
-{
-    var isMissingVacancyReferenceNo = !vacancy.HasVacancyReference;
+                @foreach (var vacancy in Model.DisplayVacancies)
+                {
+                    var isMissingVacancyReferenceNo = !vacancy.HasVacancyReference;
                     <tr>
                         <td><a asp-route="@RouteNames.DisplayVacancy_Get" asp-route-vacancyId="@vacancy.Id">@vacancy.Title</a></td>
                         <td>
@@ -105,10 +153,10 @@
                             <a asp-condition="@vacancy.IsLive" asp-route="@RouteNames.VacancyManage_Get" asp-route-vacancyId="@vacancy.Id">Edit</a>
                         </td>
                     </tr>
-}
-                    <tr asp-condition="@Model.HasNoFilteredVacanciesToShow">
-                        <td colspan="3">You do not have any @Model.FilterDisplayText vacancies. Please select all.</td>
-                    </tr>
+                }
+                <tr asp-condition="@Model.HasNoFilteredVacanciesToShow">
+                    <td colspan="3">You do not have any @Model.FilterDisplayText vacancies. Please select all.</td>
+                </tr>
                 </tbody>
             </table>
         </div>

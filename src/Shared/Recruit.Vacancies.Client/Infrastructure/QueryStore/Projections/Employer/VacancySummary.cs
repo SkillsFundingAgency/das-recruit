@@ -15,7 +15,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Em
         public DateTime? SubmittedDate { get; set; }
         public int AllApplicationsCount { get; set; }
         public int NewApplicationsCount { get; set; }
+        public DateTime? ClosingDate { get; set; }
+        public ApplicationMethod? ApplicationMethod { get; set; }
 
         public bool HasVacancyReference => VacancyReference.HasValue;
+        public bool HasNoVacancyReference => !HasVacancyReference;
+        public bool IsApplicationsVacancy => (Status== VacancyStatus.Live || Status ==VacancyStatus.Closed) 
+                                             && ApplicationMethod == Domain.Entities.ApplicationMethod.ThroughFindAnApprenticeship;
+
+        public bool HasApplications => AllApplicationsCount > 0;
+        public bool HasNoApplications => !HasApplications;
     }
 }
