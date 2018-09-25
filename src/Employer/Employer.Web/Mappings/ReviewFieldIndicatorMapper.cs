@@ -130,17 +130,20 @@ namespace Esfa.Recruit.Employer.Web.Mappings
                 .Select(r => r.FieldIdentifier)
                 .ToList();
 
-            var allLeafOutcomes = new List<RuleOutcome>();
 
-            GetFailureLeafOutcomes(automatedResult.RuleOutcomes, allLeafOutcomes);
+            var qaFailureOutcomeIndicators = automatedResult.RuleOutcomes
+                                                        ?.SelectMany(d => d.Details)
+                                                        .Where(x => x.Score > 0) ?? Enumerable.Empty<RuleOutcome>();
 
-            var manualIndicatorsLookup = reviewFieldIndicatorsForPage.Where(r => selectedFieldIdentifiers.Contains(r.ReviewFieldIdentifier)).ToDictionary(x => x.ReviewFieldIdentifier, y => y);
+            // Add manual qa indicators
+            var indicators = reviewFieldIndicatorsForPage.Where(r => selectedFieldIdentifiers.Contains(r.ReviewFieldIdentifier)).ToDictionary(x => x.ReviewFieldIdentifier, y => y);
 
-            foreach(var outcome in allLeafOutcomes)
+            // Add automated qa indicators
+            foreach(var outcome in qaFailureOutcomeIndicators)
             {
-                if (manualIndicatorsLookup.ContainsKey(outcome.Target))
+                if (indicators.ContainsKey(outcome.Target))
                 {
-                    manualIndicatorsLookup[outcome.Target].Texts.Add(outcome.Narrative);
+                    indicators[outcome.Target].Texts.Add(outcome.Narrative);
                 }
                 else
                 {
@@ -149,28 +152,12 @@ namespace Esfa.Recruit.Employer.Web.Mappings
                     if (matchingField != null) // The field might not be on the current page.
                     {
                         matchingField.Texts[0] = outcome.Narrative; // Override default text as manual message not needed.
-                        manualIndicatorsLookup.Add(outcome.Target, reviewFieldIndicatorsForPage.Single(x => x.ReviewFieldIdentifier == outcome.Target));
+                        indicators.Add(outcome.Target, reviewFieldIndicatorsForPage.Single(x => x.ReviewFieldIdentifier == outcome.Target));
                     }
                 }
             }
 
-            return manualIndicatorsLookup.Values;
-        }
-
-        public static void GetFailureLeafOutcomes(IEnumerable<RuleOutcome> ruleSetOutcome, IList<RuleOutcome> leafOutcomes)
-        {
-            foreach(var outcome in ruleSetOutcome)
-            {
-                if (outcome.Details == null || outcome.Details.Count() == 0)
-                {
-                    if (outcome.Score > 0)
-                        leafOutcomes.Add(outcome);
-                }
-                else
-                {
-                    GetFailureLeafOutcomes(outcome.Details, leafOutcomes);
-                }
-            }
+            return indicators.Values;
         }
     }
 }
