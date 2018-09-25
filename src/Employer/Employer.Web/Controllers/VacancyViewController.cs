@@ -20,7 +20,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         }
 
         [HttpGet("", Name = RouteNames.DisplayVacancy_Get)]
-        public async Task<IActionResult> DisplayVacancy(VacancyRouteModel vrm)
+        public async Task<IActionResult> DisplayVacancy(VacancyRouteModel vrm, [FromQuery] string showApplications)
         {
             var vacancy = await _orchestrator.GetVacancy(vrm);
 
@@ -29,7 +29,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 return HandleRedirectOfEditableVacancy(vacancy);
             }
 
-            var m = await _orchestrator.GetVacancyDisplayViewModelAsync(vacancy);
+            bool.TryParse(showApplications, out var showVacancyApplications);
+            var m = await _orchestrator.GetVacancyDisplayViewModelAsync(vacancy, showVacancyApplications);
             return View(m.ViewName, m.ViewModel);
         }
 
