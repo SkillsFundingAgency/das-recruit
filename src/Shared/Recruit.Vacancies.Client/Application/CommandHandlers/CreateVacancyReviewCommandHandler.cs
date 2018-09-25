@@ -76,8 +76,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             {
                 VacancyReference = vacancy.VacancyReference.Value,
                 Title = vacancy.Title,
-                Status = ReviewStatus.PendingReview,    // NOTE: This is temporary for private beta.
-                CreatedDate = _time.Now,                // NOTE: This is temporary for private beta.
+                Status = ReviewStatus.New,    
+                CreatedDate = _time.Now,                
                 EmployerAccountId = vacancy.EmployerAccountId,
                 SubmittedByUser = vacancy.SubmittedByUser,
                 SubmissionCount = previousReviewCount + 1,

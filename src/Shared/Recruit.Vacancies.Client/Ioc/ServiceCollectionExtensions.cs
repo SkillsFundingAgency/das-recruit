@@ -1,6 +1,7 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Application.CommandHandlers;
 using Esfa.Recruit.Vacancies.Client.Application.Events;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
+using Esfa.Recruit.Vacancies.Client.Application.Rules.Engine;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Services.NextVacancyReview;
 using Esfa.Recruit.Vacancies.Client.Application.Services.ReferenceData;
@@ -18,6 +19,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BankHolidays;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Profanities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Qualifications;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Skills;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Wages;
@@ -35,6 +37,7 @@ using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using SFA.DAS.EAS.Account.Api.Client;
+using VacancyRuleSet = Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules.VacancyRuleSet;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -59,6 +62,8 @@ namespace Microsoft.Extensions.DependencyInjection
             services.RegisterStorageProviderDeps(configuration);
 
             services.AddValidation();
+
+            services.AddRules();
         }
 
         private static void RegisterAccountApiClientDeps(this IServiceCollection services)
@@ -103,6 +108,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient<IApprenticeshipProgrammeProvider, ApprenticeshipProgrammeProvider>();
             services.AddTransient<IQualificationsProvider, QualificationsProvider>();
             services.AddTransient<ICandidateSkillsProvider, CandidateSkillsProvider>();
+            services.AddTransient<IProfanityListProvider, ProfanityListProvider>();
 
             // Reference Data update services
             services.AddTransient<IApprenticeshipProgrammeUpdateService, ApprenticeshipProgrammeUpdateService>();
@@ -158,6 +164,11 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.AddSingleton<AbstractValidator<ApplicationReview>, ApplicationReviewValidator>();
             services.AddSingleton<AbstractValidator<VacancyReview>, VacancyReviewValidator>();
+        }
+
+        private static void AddRules(this IServiceCollection services)
+        {
+            services.AddTransient<RuleSet<Vacancy>, VacancyRuleSet>();
         }
     }
 }
