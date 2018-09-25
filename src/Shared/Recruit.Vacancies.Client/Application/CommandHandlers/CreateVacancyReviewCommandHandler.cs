@@ -55,6 +55,14 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             var vacancy = vacancyTask.Result;
             var previousReviews = previousReviewsTask.Result;
 
+            //Defensive code, just in case the message is republished due to an error after creating the review. 
+            var activePreviousReview = previousReviews.FirstOrDefault(r => r.Status != ReviewStatus.Closed);
+            if (activePreviousReview != null)
+            {
+                _logger.LogWarning($"Cannot create review for vacancy {message.VacancyReference} as an active review {activePreviousReview.Id} already exists.");
+                return;
+            }
+
             var slaDeadline = await _slaService.GetSlaDeadlineAsync(vacancy.SubmittedDate.Value);
 
             var updatedFields = GetUpdatedFields(vacancy, previousReviews);
