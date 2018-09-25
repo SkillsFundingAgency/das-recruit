@@ -34,11 +34,6 @@ namespace Esfa.Recruit.Employer.Web
                 app.UseExceptionHandler("/error/handle");
                 app.UseHsts(hsts => hsts.MaxAge(365));
             }
-
-            app.UseHttpsRedirection();
-
-            // Redirect requests to root to the MA site.
-            app.UseRootRedirect(externalLinks.Value.ManageApprenticeshipSiteUrl);
             
             // Add Content Security Policy
             app.UseCsp(options => options
@@ -89,6 +84,10 @@ namespace Esfa.Recruit.Employer.Web
                 opts.AllowedDestinations(GetAllowableDestinations(_authConfig, externalLinks.Value));
             }); //Register this earlier if there's middleware that might redirect.
             
+            // Redirect requests to root to the MA site.
+            app.UseRootRedirect(externalLinks.Value.ManageApprenticeshipSiteUrl);
+            app.UseHttpsRedirection();
+
             app.UseXDownloadOptions();
             app.UseXRobotsTag(options => options.NoIndex().NoFollow());
 
