@@ -53,10 +53,12 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.BaseRules
 
         private async Task<Dictionary<string, int>> FindOccurrencesAsync(Expression<Func<string>> property)
         {
+            var foundProfanities = new Dictionary<string, int>();
             var value = property.Compile()();
             var checkValue = value.FormatForParsing();
+            if (string.IsNullOrWhiteSpace(checkValue)) return foundProfanities;
+
             var profanities = await _profanityListProvider.GetProfanityListAsync();
-            var foundProfanities = new Dictionary<string, int>();
 
             foreach (var profanity in profanities)
             {
