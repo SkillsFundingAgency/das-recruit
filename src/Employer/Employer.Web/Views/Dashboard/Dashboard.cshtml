@@ -42,7 +42,7 @@
                             <div>@vacancy.Title</div>
                             <div asp-condition="@vacancy.IsApplicationsVacancy">
                                 <span asp-condition="@vacancy.HasApplications">
-                                    <a asp-route="@RouteNames.DisplayVacancy_Get" asp-route-vacancyId="@vacancy.Id">
+                                    <a asp-route="@RouteNames.DisplayVacancy_Get" asp-route-vacancyId="@vacancy.Id" asp-route-showApplications="true">
                                         @vacancy.AllApplicationsCount applications
                                     </a>&nbsp;(@vacancy.NewApplicationsCount new)
                                 </span>

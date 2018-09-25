@@ -22,13 +22,10 @@ namespace Esfa.Recruit.Employer.Web.Extensions
 
         public static string GetLinkRoute(this VacancySummary vacancySummary)
         {
-            if (vacancySummary.Status != VacancyStatus.Live && vacancySummary.Status != VacancyStatus.Closed)
-                return RouteNames.DisplayVacancy_Get;
+            if (vacancySummary.Status == VacancyStatus.Live || vacancySummary.Status == VacancyStatus.Closed)
+                return RouteNames.VacancyManage_Get;
 
-            if (vacancySummary.IsApplicationsVacancy && vacancySummary.HasApplications)
-                return RouteNames.DisplayFullVacancy_Get;
-
-            return RouteNames.VacancyManage_Get;
+            return RouteNames.DisplayVacancy_Get;
         }
     }
 }

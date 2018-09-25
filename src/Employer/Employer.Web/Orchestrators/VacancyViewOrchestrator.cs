@@ -61,7 +61,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         /// </summary>
         /// <param name="vacancy"></param>
         /// <returns></returns>
-        public async Task<ViewVacancy> GetVacancyDisplayViewModelAsync(Vacancy vacancy)
+        public async Task<ViewVacancy> GetVacancyDisplayViewModelAsync(Vacancy vacancy, bool showApplications)
         {
             switch (vacancy.Status)
             {
@@ -72,9 +72,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 case VacancyStatus.Approved:
                     return await GetDisplayViewModelForApprovedVacancy(vacancy);
                 case VacancyStatus.Live:
-                    return GetDisplayViewModelForLiveVacancy(vacancy);
+                    return GetDisplayViewModelForLiveVacancy(vacancy, showApplications);
                 case VacancyStatus.Closed:
-                    return GetDisplayViewModelForClosedVacancy(vacancy);
+                    return GetDisplayViewModelForClosedVacancy(vacancy, showApplications);
                 case VacancyStatus.Referred:
                     return await GetDisplayViewModelForReferredVacancy(vacancy);
                 default:
@@ -106,18 +106,18 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             };
         }
 
-        private ViewVacancy GetDisplayViewModelForLiveVacancy(Vacancy vacancy)
+        private ViewVacancy GetDisplayViewModelForLiveVacancy(Vacancy vacancy, bool showApplications)
         {
             var liveViewModel = new LiveVacancyViewModel();
             PopulateViewModelWithApplications(vacancy, liveViewModel);
             return new ViewVacancy
             {
                 ViewModel = liveViewModel,
-                ViewName = liveViewModel.HasApplications ? ViewNames.ManageLiveVacancyWithApplicationsView : ViewNames.ManageLiveVacancyView
+                ViewName = liveViewModel.HasApplications && showApplications ? ViewNames.ManageLiveVacancyWithApplicationsView : ViewNames.ManageLiveVacancyView
             };
         }
 
-        private ViewVacancy GetDisplayViewModelForClosedVacancy(Vacancy vacancy)
+        private ViewVacancy GetDisplayViewModelForClosedVacancy(Vacancy vacancy, bool showApplications)
         {
             var closedViewModel = new ClosedVacancyViewModel();
             PopulateViewModelWithApplications(vacancy, closedViewModel);
@@ -125,7 +125,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return new ViewVacancy
             {
                 ViewModel = closedViewModel,
-                ViewName = closedViewModel.HasApplications ? ViewNames.ManageClosedVacancyWithApplicationsView : ViewNames.ManageClosedVacancyView
+                ViewName = closedViewModel.HasApplications && showApplications ? ViewNames.ManageClosedVacancyWithApplicationsView : ViewNames.ManageClosedVacancyView
             };
         }
 
