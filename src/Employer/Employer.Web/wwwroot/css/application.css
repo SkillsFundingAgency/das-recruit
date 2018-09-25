@@ -1544,3 +1544,17 @@ table th.th-20 {
     opacity: .5;
     pointer-events: none
   }
+
+ /*** Dashboard ***/
+ #dashboard-table td {
+    height: 3em;
+ }
+
+ #dashboard-table .dashboard-closingdate {
+    min-width: 6em;
+ }
+
+ #dashboard-table .dashboard-action {
+    min-width: 8em;
+ }
+

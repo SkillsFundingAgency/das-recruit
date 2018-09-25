@@ -23,14 +23,14 @@
 <div asp-condition="@Model.HasVacancies">
     <div class="grid-row">
         <div class="column-full">
-            <table>
+            <table id="dashboard-table">
                 <thead>
                     <tr>
                         <th class="bold">Status</th>
                         <th class="bold">Vacancy title</th>
                         <th class="bold">Vacancy ref</th>
-                        <th class="bold" style="min-width:6em">Closing Date</th>
-                        <th class="bold" style="min-width:8em">Action</th>
+                        <th class="bold">Closing Date</th>
+                        <th class="bold">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -53,8 +53,8 @@
                             <span asp-condition="@vacancy.HasVacancyReference"><span>VAC</span>@vacancy.VacancyReference</span>
                             <span asp-condition="@vacancy.HasNoVacancyReference">Not available</span>
                         </td>
-                        <td>@vacancy.ClosingDate?.AsGdsDate()</td>
-                        <td>
+                        <td class="dashboard-closingdate">@vacancy.ClosingDate?.AsGdsDate()</td>
+                        <td class="dashboard-action">
                             <a asp-route="@vacancy.GetLinkRoute()" asp-route-vacancyId="@vacancy.Id">@vacancy.GetLinkText()</a>
                         </td>
                     </tr>
