@@ -16,8 +16,6 @@ namespace Esfa.Recruit.Qa.Web
 {
     public class Program
     {
-        public const int HostSslPort = 5025;
-
         public static void Main(string[] args)
         {
             // NLog: setup the logger first to catch all errors
