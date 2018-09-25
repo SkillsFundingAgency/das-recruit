@@ -1,5 +1,4 @@
-﻿@using Esfa.Recruit.Vacancies.Client.Domain.Entities
-@model DashboardViewModel
+﻿@model DashboardViewModel
 <div class="grid-row dashboard-header">
     <div class="column-two-thirds">
         <h1 class="heading-large small-bottom-margin">Your vacancies</h1>
@@ -22,7 +21,6 @@
 </div>
 
 <div asp-condition="@Model.HasVacancies">
-    
     <div class="grid-row">
         <div class="column-full">
             <table>
@@ -36,7 +34,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                @foreach (var vacancy in Model.DisplayVacancies)
+                @foreach (var vacancy in Model.Vacancies)
                 {
                     <tr>
                         <td>@vacancy.Status.GetDisplayName()</td>
@@ -61,102 +59,6 @@
                         </td>
                     </tr>
                 }
-                </tbody>
-            </table>
-        </div>
-    </div>
-    
-    
-    
-    
-    
-    
-    
-
-    <div id="selection-active" class="lottery-tickets">
-        <div class="grid-row">
-            <div class="column-one-quarter">
-                <div class="data lottery-ticket">
-                    <esfa-dashboard-badge asp-route="@RouteNames.Dashboard_Index_Get" asp-route-statusFilter="all" asp-for="Filter" class="prototype-link">
-                        <h2 class="bold-xlarge">@Model.NoOfVacancies</h2>
-                        <p class="bold-xsmall">All</p>
-                    </esfa-dashboard-badge>
-                </div>
-            </div>
-            <div class="column-one-quarter">
-                <div class="data lottery-ticket">
-                    <esfa-dashboard-badge asp-route="@RouteNames.Dashboard_Index_Get" asp-route-statusFilter="@VacancyStatus.Draft.ToString()" asp-for="Filter" class="prototype-link">
-                        <h2 class="bold-xlarge">@Model.NoOfDraftVacancies</h2>
-                        <p class="bold-xsmall">@VacancyStatus.Draft.GetDisplayName()</p>
-                    </esfa-dashboard-badge>
-                </div>
-            </div>
-            <div class="column-one-quarter">
-                <div class="data lottery-ticket">
-                    <esfa-dashboard-badge asp-route="@RouteNames.Dashboard_Index_Get" asp-route-statusFilter="@VacancyStatus.Submitted.ToString()" asp-for="Filter" class="prototype-link">
-                        <h2 class="bold-xlarge">@Model.NoOfSubmittedVacancies</h2>
-                        <p class="bold-xsmall">@VacancyStatus.Submitted.GetDisplayName()</p>
-                    </esfa-dashboard-badge>
-                </div>
-            </div>
-            <div class="column-one-quarter">
-                <div class="data lottery-ticket">
-                    <esfa-dashboard-badge asp-route="@RouteNames.Dashboard_Index_Get" asp-route-statusFilter="@VacancyStatus.Referred.ToString()" asp-for="Filter" class="prototype-link">
-                        <h2 class="bold-xlarge">@Model.NoOfReferredVacancies</h2>
-                        <p class="bold-xsmall">@VacancyStatus.Referred.GetDisplayName()</p>
-                    </esfa-dashboard-badge>
-                </div>
-            </div>
-        </div>
-        <div class="grid-row">
-            <div class="column-one-quarter">
-                <div class="data lottery-ticket">
-                    <esfa-dashboard-badge asp-route="@RouteNames.Dashboard_Index_Get" asp-route-statusFilter="@VacancyStatus.Live.ToString()" asp-for="Filter" class="prototype-link">
-                        <h2 class="bold-xlarge">@Model.NoOfLiveVacancies</h2>
-                        <p class="bold-xsmall">@VacancyStatus.Live.GetDisplayName()</p>
-                    </esfa-dashboard-badge>
-                </div>
-            </div>
-            <div class="column-one-quarter">
-                <div class="data lottery-ticket">
-                    <esfa-dashboard-badge asp-route="@RouteNames.Dashboard_Index_Get" asp-route-statusFilter="@VacancyStatus.Closed.ToString()" asp-for="Filter" class="prototype-link">
-                        <h2 class="bold-xlarge">@Model.NoOfClosedVacancies</h2>
-                        <p class="bold-xsmall">@VacancyStatus.Closed.GetDisplayName()</p>
-                    </esfa-dashboard-badge>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="grid-row">
-        <div class="column-full">
-            <table>
-                <thead>
-                <tr>
-                    <th class="bold">Vacancy title</th>
-                    <th class="bold">Reference number</th>
-                    <th class="bold">Status</th>
-                    <th asp-condition="@Model.HasDisplayVacanciesContainingLiveVacancies">&nbsp;</th>
-                </tr>
-                </thead>
-                <tbody>
-                @foreach (var vacancy in Model.DisplayVacancies)
-                {
-                    var isMissingVacancyReferenceNo = !vacancy.HasVacancyReference;
-                    <tr>
-                        <td><a asp-route="@RouteNames.DisplayVacancy_Get" asp-route-vacancyId="@vacancy.Id">@vacancy.Title</a></td>
-                        <td>
-                            <span asp-condition="@vacancy.HasVacancyReference"><span>VAC</span>@vacancy.VacancyReference</span>
-                            <span asp-condition="@isMissingVacancyReferenceNo">Not available</span>
-                        </td>
-                        <td>@vacancy.Status.GetDisplayName()</td>
-                        <td asp-condition="@Model.HasDisplayVacanciesContainingLiveVacancies">
-                            <a asp-condition="@vacancy.IsLive" asp-route="@RouteNames.VacancyManage_Get" asp-route-vacancyId="@vacancy.Id">Edit</a>
-                        </td>
-                    </tr>
-                }
-                <tr asp-condition="@Model.HasNoFilteredVacanciesToShow">
-                    <td colspan="3">You do not have any @Model.FilterDisplayText vacancies. Please select all.</td>
-                </tr>
                 </tbody>
             </table>
         </div>
