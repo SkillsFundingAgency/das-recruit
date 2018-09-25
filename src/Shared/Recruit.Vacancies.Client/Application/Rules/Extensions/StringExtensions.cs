@@ -10,6 +10,8 @@ namespace Esfa.QA.Core.Extensions
     {
         public static string FormatForParsing(this string value)
         {
+            if (string.IsNullOrWhiteSpace(value)) return string.Empty;
+
             // strip delimiters
             var delimeters = new[] {'"', '.', '?', '!', '_', ';', ':', ',', '-', '\'', '(', ')', '*'};
 
@@ -22,6 +24,8 @@ namespace Esfa.QA.Core.Extensions
 
         public static string FormatForComparison(this string value, string[] stopWords = null)
         {
+            if (string.IsNullOrWhiteSpace(value)) return string.Empty;
+
             var formatted = $" {value}"
                 .ToLower()
                 .Replace("\r", " ")
@@ -47,6 +51,8 @@ namespace Esfa.QA.Core.Extensions
 
         private static string Replace(this string value, char[] separators, string replacement)
         {
+            if (string.IsNullOrWhiteSpace(value)) return string.Empty;
+
             var temp = value.Split(separators, StringSplitOptions.RemoveEmptyEntries);
 
             return string.Join(replacement, temp);
@@ -61,6 +67,9 @@ namespace Esfa.QA.Core.Extensions
         {
             var count = 0;
             var offset = 0;
+
+            if (string.IsNullOrWhiteSpace(body) || string.IsNullOrWhiteSpace(term)) return count;
+
             var paddedTerm = $" {term} ";
             var checkBody = $" {body} ";
 
