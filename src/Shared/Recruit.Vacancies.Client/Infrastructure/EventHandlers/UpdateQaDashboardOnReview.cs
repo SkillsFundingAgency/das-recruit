@@ -8,8 +8,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
 {
-    public class UpdateQaDashboardOnReview : INotificationHandler<VacancyReviewCreatedEvent>,
-                                             INotificationHandler<VacancyReviewApprovedEvent>,
+    public class UpdateQaDashboardOnReview : INotificationHandler<VacancyReviewApprovedEvent>,
                                              INotificationHandler<VacancyReviewReferredEvent>
     {
         private readonly ILogger<UpdateQaDashboardOnReview> _logger;
