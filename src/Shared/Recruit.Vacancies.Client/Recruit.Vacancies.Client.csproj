@@ -22,10 +22,10 @@
     <PackageReference Include="MediatR" Version="4.0.1" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="4.0.0" />
     <PackageReference Include="Microsoft.Azure.ServiceBus" Version="3.0.2" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="2.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.1.1" />
     <PackageReference Include="MongoDB.Driver" Version="2.7.0" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="RestSharp" Version="106.2.2" />
@@ -35,18 +35,5 @@
     <PackageReference Include="Polly" Version="6.0.1" />
     <PackageReference Include="SFA.DAS.Apprenticeships.Api.Client" Version="0.10.138" />
     <PackageReference Include="SFA.DAS.Apprenticeships.Api.Types" Version="0.10.139" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Application\Validation\Fluent\CustomValidators\VacancyValidators\" />
-    <Folder Include="Domain\Services\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="Application\QueryStore\**" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Remove="Application\QueryStore\**" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Remove="Application\QueryStore\**" />
   </ItemGroup>
 </Project>

@@ -8,9 +8,9 @@
         <h1 class="heading-xlarge small-bottom-margin">@Model.Title</h1>
         <hr>
 
-        @Html.Partial(PartialNames.ValidationSummary, new ValidationSummaryViewModel { ModelState = ViewData.ModelState})
+        <partial name=@PartialNames.ValidationSummary model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState}' />
 
-        @Html.Partial(PartialNames.ReviewSummary, Model.Review)
+        <partial name=@PartialNames.ReviewSummary for="Review" />
 
         <form asp-route="@RouteNames.Skills_Post" id="skillsForm">
             <fieldset>

@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Net.Http.Headers;
+using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Qa.Web.Configuration
 {
@@ -71,7 +72,7 @@ namespace Esfa.Recruit.Qa.Web.Configuration
             });
         }
 
-        public static void AddMvcService(this IServiceCollection services)
+        public static void AddMvcService(this IServiceCollection services, ILoggerFactory loggerFactory)
         {
             services.AddAntiforgery(options =>
             {
@@ -88,7 +89,7 @@ namespace Esfa.Recruit.Qa.Web.Configuration
                 options.Filters.Add(new RequireHttpsAttribute());
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
                 options.Filters.Add(new AuthorizeFilter(AuthorizationPolicyNames.QaUserPolicyName));
-                options.AddTrimModelBinderProvider();
+                options.AddTrimModelBinderProvider(loggerFactory);
 
                 var jsonInputFormatters = options.InputFormatters.OfType<JsonInputFormatter>();
                 foreach (var formatter in jsonInputFormatters)
@@ -97,7 +98,8 @@ namespace Esfa.Recruit.Qa.Web.Configuration
                         .Add(MediaTypeHeaderValue.Parse("application/csp-report"));
                 }
             })
-            .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>());
+            .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>())
+            .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
     }
 }

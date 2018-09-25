@@ -35,7 +35,7 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
 <div class="grid-row">
     <div class="column-full">
         <h1 asp-condition="@Model.CanShowDraftHeader" class="heading-xlarge small-bottom-margin">Complete your vacancy</h1>
-        @Html.Partial(PartialNames.ValidationSummary, new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames })
+        <partial name=@PartialNames.ValidationSummary model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
         <div asp-condition="@Model.HasIncompleteSections" class="info-summary no-top-margin" role="alert">
             <div asp-condition="@Model.HasIncompleteMandatorySections">
                 <p>You need to complete these sections:</p>
@@ -62,7 +62,7 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
 
 <div asp-condition="@Model.Review.CanDisplayReviewHeader" class="grid-row">
     <div class="column-two-thirds">
-        @Html.Partial(PartialNames.ReviewSummary, Model.Review)
+        <partial name=@PartialNames.ReviewSummary for="Review" />
     </div>
 </div>
 
@@ -290,7 +290,7 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
                 Disability Confident (optional)
             </h3>
             <img asp-condition="@Model.IsDisabilityConfident" src="~/img/disability-confident_545x172.png" class="disability-confident-logo" alt="A logo confirming that the employer is registered as disability confident" />
-            @Html.Partial(PartialNames.DisabilityConfident, Model.IsDisabilityConfident)
+            <partial name=@PartialNames.DisabilityConfident for="IsDisabilityConfident" />
             <p asp-condition="@Model.IsNotDisabilityConfident" class="form-hint">This vacancy is not Disability Confident<br />This will not appear on the vacancy when it goes live</p>
             @EditLink(RouteNames.Training_Get, Model.TrainingSectionState, "link-standard", new { wizard = false })
         </div>

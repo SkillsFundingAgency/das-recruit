@@ -31,16 +31,9 @@ namespace Esfa.Recruit.Employer.Web
             }
             else
             {
-                var rewriteOptions = new RewriteOptions()
-                    .AddRedirectToHttps();
-
-                app.UseRewriter(rewriteOptions);
-
                 app.UseExceptionHandler("/error/handle");
+                app.UseHsts(hsts => hsts.MaxAge(365));
             }
-
-            // Redirect requests to root to the MA site.
-            app.UseRootRedirect(externalLinks.Value.ManageApprenticeshipSiteUrl);
             
             // Add Content Security Policy
             app.UseCsp(options => options
@@ -73,7 +66,6 @@ namespace Esfa.Recruit.Employer.Web
                 .ReportUris(r => r.Uris("/ContentPolicyReport/Report")));
 
             //Registered before static files to always set header
-            app.UseHsts(hsts => hsts.MaxAge(365));
             app.UseXContentTypeOptions();
             app.UseReferrerPolicy(opts => opts.NoReferrer());
             app.UseXXssProtection(opts => opts.EnabledWithBlockMode());
@@ -92,6 +84,10 @@ namespace Esfa.Recruit.Employer.Web
                 opts.AllowedDestinations(GetAllowableDestinations(_authConfig, externalLinks.Value));
             }); //Register this earlier if there's middleware that might redirect.
             
+            // Redirect requests to root to the MA site.
+            app.UseRootRedirect(externalLinks.Value.ManageApprenticeshipSiteUrl);
+            app.UseHttpsRedirection();
+
             app.UseXDownloadOptions();
             app.UseXRobotsTag(options => options.NoIndex().NoFollow());
 

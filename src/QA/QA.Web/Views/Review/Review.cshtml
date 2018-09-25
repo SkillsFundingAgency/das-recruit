@@ -9,7 +9,7 @@
                 <div asp-validation-summary="All" class="error-summary" asp-condition="@ViewData.ModelState.IsValid == false"></div>
             </div>
         </div>
-        @Html.Partial("_ReviewHeader")
+        <partial name="_ReviewHeader" />
         <div class="grid-row" asp-condition="@Model.IsResubmission">
             <div class="column-full">
                 <div class="error-summary review-summary" tabindex="-1">
@@ -357,7 +357,7 @@
             </div>
         </div>
         <hr>
-        @Html.Partial("_ReviewHistories", Model.ReviewHistories)
+        <partial name="_ReviewHistories" for="ReviewHistories" />
         <div class="grid-row">
             <div class="column-full">
                 <h2 class="heading-medium">Reviewer's Comments</h2>

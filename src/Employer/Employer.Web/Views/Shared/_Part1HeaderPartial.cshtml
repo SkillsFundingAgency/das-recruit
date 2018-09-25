@@ -9,12 +9,12 @@
     <a href="#example-vacancy-js-container" id="example_link">@exampleLinkText</a>
 
     <div id="example_vacancy" class="example-advert @exampleVacancyVisibilityClass">
-        @Html.Partial(PartialNames.ExampleVacancy)
+        <partial name=@PartialNames.ExampleVacancy />
     </div>
 </div>
 <noscript>
     <div class="example-advert">
-        @Html.Partial(PartialNames.ExampleVacancy)
+        <partial name=@PartialNames.ExampleVacancy />
     </div>
 </noscript>
 <br><br>
