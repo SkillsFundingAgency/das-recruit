@@ -61,6 +61,8 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         /// </summary>
         public bool CanUnassign => Status == ReviewStatus.UnderReview && ReviewedByUser != null;
 
+        public RuleSetOutcome AutomatedQaOutcome { get; set; }
+
         public static class FieldIdentifiers
         {
             public const string ApplicationInstructions = "ApplicationInstructions";
