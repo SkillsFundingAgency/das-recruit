@@ -1,4 +1,21 @@
-﻿@model DashboardViewModel
+﻿@using Esfa.Recruit.Vacancies.Client.Domain.Entities
+@using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer
+@model DashboardViewModel
+
+@{
+    string GetLinkText(VacancySummary vacancySummary)
+    {
+        switch (vacancySummary.Status)
+        {
+            case VacancyStatus.Referred:
+                return "Edit and resubmit";
+            case VacancyStatus.Draft:
+                return "Edit and submit";
+        }
+
+        return "View";
+    }
+}
 <div class="grid-row dashboard-header">
     <div class="column-two-thirds">
         <h1 class="heading-large small-bottom-margin">Your vacancies</h1>
@@ -42,7 +59,7 @@
                             <div>@vacancy.Title</div>
                             <div asp-condition="@vacancy.IsApplicationsVacancy">
                                 <span asp-condition="@vacancy.HasApplications">
-                                    <a asp-route="@RouteNames.DisplayVacancy_Get" asp-route-vacancyId="@vacancy.Id" asp-route-showApplications="true">
+                                    <a asp-route="@RouteNames.DisplayVacancy_Get" asp-route-vacancyId="@vacancy.Id">
                                         @vacancy.AllApplicationsCount applications
                                     </a>&nbsp;(@vacancy.NewApplicationsCount new)
                                 </span>
@@ -55,7 +72,8 @@
                         </td>
                         <td class="dashboard-closingdate">@vacancy.ClosingDate?.AsGdsDate()</td>
                         <td class="dashboard-action">
-                            <a asp-route="@vacancy.GetLinkRoute()" asp-route-vacancyId="@vacancy.Id">@vacancy.GetLinkText()</a>
+                            <a asp-condition="@vacancy.IsLive" asp-route="@RouteNames.VacancyManage_Get" asp-route-vacancyId="@vacancy.Id">@GetLinkText(vacancy)</a>
+                            <a asp-condition="@vacancy.IsNotLive" asp-route="@RouteNames.DisplayVacancy_Get" asp-route-vacancyId="@vacancy.Id" asp-route-showApplications="false">@GetLinkText(vacancy)</a>
                         </td>
                     </tr>
                 }
