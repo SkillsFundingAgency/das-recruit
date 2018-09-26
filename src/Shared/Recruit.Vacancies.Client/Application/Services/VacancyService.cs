@@ -51,8 +51,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
             });
         }
 
-        public async Task PerformRulesCheckAsync(VacancyReview review)
+        public async Task PerformRulesCheckAsync(Guid reviewId)
         {
+            var review = await _vacancyReviewRepository.GetAsync(reviewId);
             var outcome = await _vacancyRuleSet.EvaluateAsync(review.VacancySnapshot);
             review.AutomatedQaOutcome = outcome;
             review.Status = ReviewStatus.PendingReview;

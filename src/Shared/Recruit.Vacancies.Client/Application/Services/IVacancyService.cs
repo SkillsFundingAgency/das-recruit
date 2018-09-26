@@ -8,6 +8,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
     {
         Task CloseVacancy(Guid vacancyId);
 
-        Task PerformRulesCheckAsync(VacancyReview vacancy);
+        Task PerformRulesCheckAsync(Guid reviewId);
     }
 }
