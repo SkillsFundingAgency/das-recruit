@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.QA.Core.Extensions;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Rules.BaseRules;
 using Esfa.Recruit.Vacancies.Client.Application.Rules.Engine;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
