@@ -137,7 +137,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.R
         }
     }
 
-    public class TestProfanityListProvider : IProfanityListProvider
+    internal class TestProfanityListProvider : IProfanityListProvider
     {
         public Task<IEnumerable<string>> GetProfanityListAsync()
         {
