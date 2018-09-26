@@ -57,7 +57,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
             var outcome = await _vacancyRuleSet.EvaluateAsync(review.VacancySnapshot);
             review.AutomatedQaOutcome = outcome;
             review.Status = ReviewStatus.PendingReview;
-            _vacancyReviewRepository.UpdateAsync(review);
+            await _vacancyReviewRepository.UpdateAsync(review);
         }
     }
 }
