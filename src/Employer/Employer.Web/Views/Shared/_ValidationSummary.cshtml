@@ -16,7 +16,7 @@
         <li>
             @if (!string.IsNullOrEmpty(stateItem.Key))
             {
-            <a href="#error-message-@elementName" data-focuses="error-message-@elementName">@firstErrorPerField</a>
+            <a href="#error-message-@elementName" data-focuses="error-message-@elementName" class="summary-link">@firstErrorPerField</a>
             }
             else
             {

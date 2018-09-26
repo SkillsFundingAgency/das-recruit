@@ -10,7 +10,7 @@
     <ul class="list">
         @foreach (var fieldIndicator in Model.FieldIndicators)
         {
-            <li><a asp-fragment="@fieldIndicator.Anchor" class="review-anchor-link">@fieldIndicator.Text</a></li>
+            <li><a asp-fragment="@fieldIndicator.Anchor" class="summary-link">@fieldIndicator.Text</a></li>
         }
     </ul>
 </div>

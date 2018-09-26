@@ -40,20 +40,20 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
             <div asp-condition="@Model.HasIncompleteMandatorySections">
                 <p>You need to complete these sections:</p>
                 <ul class="list">
-                    <li asp-condition="@Model.HasIncompleteVacancyDescription"><a asp-fragment="@Anchors.VacancyDescriptionSection">Vacancy description</a></li>
-                    <li asp-condition="@Model.HasIncompleteSkillsSection"><a asp-fragment="@Anchors.RequirementsAndProspectsSection">Desired skills and personal qualities</a></li>
-                    <li asp-condition="@Model.HasIncompleteQualificationsSection"><a asp-fragment="@Anchors.Qualifications">Qualifications</a></li>
-                    <li asp-condition="@Model.HasIncompleteEmployerDescriptionSection"><a asp-fragment="@Anchors.EmployerDescription">Employer description</a></li>
-                    <li asp-condition="@Model.HasIncompleteTrainingProviderSection"><a asp-fragment="@Anchors.TrainingProviderSection">Training provider</a></li>
-                    <li asp-condition="@Model.HasIncompleteApplicationProcessSection"><a asp-fragment="@Anchors.ApplicationProcessSection">Application process</a></li>
+                    <li asp-condition="@Model.HasIncompleteVacancyDescription"><a asp-fragment="@Anchors.VacancyDescriptionSection" class="summary-link">Vacancy description</a></li>
+                    <li asp-condition="@Model.HasIncompleteSkillsSection"><a asp-fragment="@Anchors.Skills" class="summary-link">Desired skills and personal qualities</a></li>
+                    <li asp-condition="@Model.HasIncompleteQualificationsSection"><a asp-fragment="@Anchors.Qualifications" class="summary-link">Qualifications</a></li>
+                    <li asp-condition="@Model.HasIncompleteEmployerDescriptionSection"><a asp-fragment="@Anchors.EmployerDescription" class="summary-link">Employer description</a></li>
+                    <li asp-condition="@Model.HasIncompleteTrainingProviderSection"><a asp-fragment="@Anchors.TrainingProviderSection" class="summary-link">Training provider</a></li>
+                    <li asp-condition="@Model.HasIncompleteApplicationProcessSection"><a asp-fragment="@Anchors.ApplicationProcessSection" class="summary-link">Application process</a></li>
                 </ul>
             </div>
             <div asp-condition="@Model.HasIncompleteOptionalSections">
                 <p class="small-top-margin">You may wish to complete these optional sections:</p>
                 <ul class="list">
-                    <li asp-condition="@Model.HasIncompleteThingsToConsiderSection"><a asp-fragment="@Anchors.ThingsToConsider">Things to consider</a></li>
-                    <li asp-condition="@Model.HasIncompleteEmployerWebsiteUrlSection"><a asp-fragment="@Anchors.EmployerWebsiteUrl">Employer website</a></li>
-                    <li asp-condition="@Model.HasIncompleteContactSection"><a asp-fragment="@Anchors.EmployerContact">Contact details</a></li>
+                    <li asp-condition="@Model.HasIncompleteThingsToConsiderSection"><a asp-fragment="@Anchors.ThingsToConsider" class="summary-link">Things to consider</a></li>
+                    <li asp-condition="@Model.HasIncompleteEmployerWebsiteUrlSection"><a asp-fragment="@Anchors.EmployerWebsiteUrl" class="summary-link">Employer website</a></li>
+                    <li asp-condition="@Model.HasIncompleteContactSection"><a asp-fragment="@Anchors.EmployerContact" class="summary-link">Contact details</a></li>
                 </ul>
             </div>
         </div>
