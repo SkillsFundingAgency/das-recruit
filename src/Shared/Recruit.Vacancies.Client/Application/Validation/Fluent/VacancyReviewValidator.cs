@@ -5,7 +5,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 {
     public class VacancyReviewValidator : AbstractValidator<VacancyReview>
     {
-        public const int ManualQaCommentMaxLength = 5000;
+        public const int ManualQaCommentMaxLength = 2500;
 
         public const string ManualQaCommentLengthMessage = "Your comment must be less than {0} characters";
         public const string ManualQaCommentFreeTextCharactersMessage = "You have entered invalid characters";
