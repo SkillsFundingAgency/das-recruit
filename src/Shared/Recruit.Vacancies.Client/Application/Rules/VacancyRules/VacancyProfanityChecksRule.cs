@@ -8,7 +8,6 @@ using Esfa.Recruit.Vacancies.Client.Application.Rules.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules
-
 {
     public sealed class VacancyProfanityChecksRule : BaseProfanityChecksRule, IRule<Vacancy>
     {

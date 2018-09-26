@@ -19,7 +19,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.VacancyReview
         }
 
         public async Task HandleAsync(string eventPayload)
-        {            
+        {
             var @event = DeserializeEvent<VacancyReviewCreatedEvent>(eventPayload);
 
             try
@@ -34,8 +34,6 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.VacancyReview
                 Console.WriteLine(e);
                 throw;
             }
-
-            
         }
     }
 }

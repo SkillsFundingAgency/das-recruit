@@ -19,6 +19,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
 
             BsonClassMap.RegisterClassMap<ProfanityData>();
             BsonClassMap.RegisterClassMap<BannedPhrasesData>();
+            BsonClassMap.RegisterClassMap<TitlePopularityData>();
         }
     }
 }

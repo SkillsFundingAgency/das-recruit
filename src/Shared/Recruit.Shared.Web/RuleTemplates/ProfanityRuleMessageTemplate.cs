@@ -2,13 +2,11 @@
 
 namespace Esfa.Recruit.Shared.Web.RuleTemplates
 {
-    public class ProfanityRuleMessageTemplate : IRuleMessageTemplate
+    public static class ProfanityRuleMessageTemplate
     {
-        public string ToText(object data, string fieldName)
+        public static string ToText(ProfanityData msgData, string fieldName)
         {
-            return (data is ProfanityData profanityData) ? 
-                $"{fieldName} contains the phrase {profanityData.Profanity}" : 
-                string.Empty;
+            return $"{fieldName} contains the phrase {msgData.Profanity}";
         }
     }
 }

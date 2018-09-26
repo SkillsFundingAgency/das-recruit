@@ -2,13 +2,11 @@
 
 namespace Esfa.Recruit.Shared.Web.RuleTemplates
 {
-    public class BannedPhraseMessageTemplate : IRuleMessageTemplate
+    public static class BannedPhraseMessageTemplate
     {
-        public string ToText(object data, string fieldName)
+        public static string ToText(BannedPhrasesData msgData, string fieldName)
         {
-            return (data is BannedPhrasesData bannedPhrasesData) ?
-                $"{fieldName} contains the phrase {bannedPhrasesData.BannedPhrase}" :
-                string.Empty;
+            return $"{fieldName} contains the phrase {msgData.BannedPhrase}";
         }
     }
 }
