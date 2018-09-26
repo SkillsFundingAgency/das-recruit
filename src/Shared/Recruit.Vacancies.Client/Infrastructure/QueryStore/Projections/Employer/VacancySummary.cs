@@ -23,5 +23,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Em
 
         public bool HasApplications => AllApplicationsCount > 0;
         public bool HasNoApplications => !HasApplications;
+        public bool IsLive => Status == VacancyStatus.Live;
+        public bool IsNotLive => !IsLive;
     }
 }
