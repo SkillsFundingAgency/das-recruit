@@ -37,4 +37,15 @@
     <PackageReference Include="SFA.DAS.Apprenticeships.Api.Client" Version="0.10.138" />
     <PackageReference Include="SFA.DAS.Apprenticeships.Api.Types" Version="0.10.139" />
   </ItemGroup>
+<<<<<<< b588e04c1dbbc46ba6c7f9ecaa97717a13bdd511
+    <Folder Include="Application\Rules\BaseRules\" />
+    <Folder Include="Application\Rules\Engine\" />
+    <Compile Remove="Application\Rules\Services\**" />
+    <EmbeddedResource Remove="Application\Rules\Services\**" />
+    <None Remove="Application\Rules\Services\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Application\Rules\Extensions\ScoreExtensions.cs" />
+=======
+>>>>>>> ER-700 Removed includes for code files from project
 </Project>
