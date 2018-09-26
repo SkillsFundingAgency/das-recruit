@@ -2,7 +2,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-    <UserSecretsId>0d60e5b4-1f4d-47b0-b24c-7bfa4d874849</UserSecretsId>
+    <UserSecretsId>recruit-webjob</UserSecretsId>
     <RootNamespace>Esfa.Recruit.Vacancies.Jobs</RootNamespace>
   </PropertyGroup>
   <PropertyGroup>

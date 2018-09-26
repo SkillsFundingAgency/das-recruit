@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-    <UserSecretsId>e4d3aa1c-4b1e-4f85-a1c1-60c4fdf85b5f</UserSecretsId>
+    <UserSecretsId>recruit-qa-web</UserSecretsId>
     <RootNamespace>Esfa.Recruit.Qa.Web</RootNamespace>
   </PropertyGroup>
   <PropertyGroup>
