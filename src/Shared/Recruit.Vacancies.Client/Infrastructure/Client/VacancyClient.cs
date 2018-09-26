@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
@@ -32,6 +33,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly IApplicationReviewRepository _applicationReviewRepository;
         private readonly IVacancyReviewRepository _vacancyReviewRepository;
         private readonly ICandidateSkillsProvider _candidateSkillsProvider;
+        private readonly IVacancyService _vacancyService;
 
         public VacancyClient(
             IVacancyRepository repository,
@@ -43,7 +45,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             IReferenceDataReader referenceDataReader,
             IApplicationReviewRepository applicationReviewRepository,
             IVacancyReviewRepository vacancyReviewRepository,
-            ICandidateSkillsProvider candidateSkillsProvider)
+            ICandidateSkillsProvider candidateSkillsProvider,
+            IVacancyService vacancyService)
         {
             _repository = repository;
             _reader = reader;
@@ -55,6 +58,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _applicationReviewRepository = applicationReviewRepository;
             _vacancyReviewRepository = vacancyReviewRepository;
             _candidateSkillsProvider = candidateSkillsProvider;
+            _vacancyService = vacancyService;
         }
 
         public Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user)
@@ -311,6 +315,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         {
             await _messaging.SendCommandAsync(new CreateApplicationReviewCommand { Application = application });
 
+        }
+
+        public Task PerformRulesCheckAsync(Guid reviewId)
+        {
+            return _vacancyService.PerformRulesCheckAsync(reviewId);
         }
 
         public Task<VacancyReview> GetCurrentReferredVacancyReviewAsync(long vacancyReference)

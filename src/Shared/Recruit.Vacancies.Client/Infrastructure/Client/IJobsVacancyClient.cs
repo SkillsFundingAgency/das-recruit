@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.LiveVacancy;
 
@@ -19,5 +20,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task UpdateBankHolidaysAsync();
         Task ReferVacancy(long vacancyReference);
         Task CreateApplicationReviewAsync(Domain.Entities.Application application);
+        Task PerformRulesCheckAsync(Guid reviewId);
     }
 }
