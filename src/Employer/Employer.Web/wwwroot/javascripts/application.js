@@ -164,7 +164,7 @@ function handleAnchorClicks() {
 
         var $menu = $("#floating-menu-holder .account-information");
 
-        $(".review-anchor-link").on("click", function (e) {
+        $(".summary-link").on("click", function (e) {
             
             var hash = $(this)[0].hash;
             var $element = $(hash);
