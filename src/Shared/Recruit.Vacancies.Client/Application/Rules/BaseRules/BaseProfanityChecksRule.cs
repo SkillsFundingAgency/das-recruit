@@ -55,8 +55,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.BaseRules
         {
             var foundProfanities = new Dictionary<string, int>();
             var value = property.Compile()();
+            if (string.IsNullOrWhiteSpace(value)) return foundProfanities;
             var checkValue = value.FormatForParsing();
-            if (string.IsNullOrWhiteSpace(checkValue)) return foundProfanities;
+            
 
             var profanities = await _profanityListProvider.GetProfanityListAsync();
 

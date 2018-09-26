@@ -53,8 +53,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Recruit.Vacancies.Client.Application.R
             var outcome = await rule.EvaluateAsync(entity);
 
             Assert.Contains("Profanity 'bother' found 3 times in 'Title'", outcome.Narrative);
-            Assert.Contains("Profanity 'dang' found in 'Description'", outcome.Narrative);
-            Assert.Contains("Profanity 'balderdash' found in 'Description'", outcome.Narrative);
+            Assert.Contains("Profanity 'dang' found in 'VacancyDescription'", outcome.Narrative);
+            Assert.Contains("Profanity 'balderdash' found in 'VacancyDescription'", outcome.Narrative);
             Assert.Contains("Profanity 'dang' found in 'Skills'", outcome.Narrative);
         }
 
@@ -72,7 +72,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Recruit.Vacancies.Client.Application.R
             var outcome = await rule.EvaluateAsync(entity);
 
             Assert.Contains("3 profanities 'bother' found in 'Title'", outcome.Narrative);
-            Assert.Contains("2 profanities 'dang,balderdash' found in 'Description'", outcome.Narrative);
+            Assert.Contains("2 profanities 'dang,balderdash' found in 'VacancyDescription'", outcome.Narrative);
             Assert.Contains("1 profanities 'dang' found in 'Skills'", outcome.Narrative);
         }
 
@@ -90,7 +90,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Recruit.Vacancies.Client.Application.R
             var outcome = await rule.EvaluateAsync(entity);
 
             Assert.True(outcome.HasDetails);
-            Assert.Equal(4, outcome.Details.Count());
+            Assert.Equal(18, outcome.Details.Count());
 
             Assert.All(outcome.Details, a =>
             {
@@ -105,7 +105,13 @@ namespace Esfa.Recruit.Employer.UnitTests.Recruit.Vacancies.Client.Application.R
     {
         internal static Vacancy Create()
         {
-            return new Vacancy();
+            return new Vacancy()
+            {
+                EmployerLocation = new Address(),
+                Skills = new List<string>(),
+                Qualifications = new List<Qualification>(),
+                Wage = new Wage()
+            };
         }
 
         internal static Vacancy SetVacancyReference(this Vacancy entity, long vacancyReference)
