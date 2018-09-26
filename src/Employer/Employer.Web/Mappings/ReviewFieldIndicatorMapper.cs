@@ -16,7 +16,7 @@ namespace Esfa.Recruit.Employer.Web.Mappings
 {
     public static class ReviewFieldIndicatorMapper
     {
-        public static readonly IReadOnlyList<ReviewFieldIndicatorViewModel> PreviewReviewFieldIndicators = new List<ReviewFieldIndicatorViewModel>
+        public static IReadOnlyList<ReviewFieldIndicatorViewModel> GetPreviewReviewFieldIndicators => new List<ReviewFieldIndicatorViewModel>
         {
             //These need to be added in display order
             new ReviewFieldIndicatorViewModel(FieldIdentifiers.Title, Anchors.Title, "Title requires edit"),
@@ -46,12 +46,12 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             new ReviewFieldIndicatorViewModel(FieldIdentifiers.ApplicationInstructions, Anchors.ApplicationInstructions, "Application process requires edit")
         };
 
-        public static readonly IReadOnlyList<ReviewFieldIndicatorViewModel> ShortDescriptionReviewFieldIndicators = new List<ReviewFieldIndicatorViewModel>
+        public static IReadOnlyList<ReviewFieldIndicatorViewModel> GetShortDescriptionReviewFieldIndicators => new List<ReviewFieldIndicatorViewModel>
         {
             new ReviewFieldIndicatorViewModel(FieldIdentifiers.ShortDescription, nameof(ShortDescriptionEditModel.ShortDescription), "Brief overview of the role requires edit"),
         };
 
-        public static readonly IReadOnlyList<ReviewFieldIndicatorViewModel> TrainingReviewFieldIndicators = new List<ReviewFieldIndicatorViewModel>
+        public static IReadOnlyList<ReviewFieldIndicatorViewModel> GetTrainingReviewFieldIndicators => new List<ReviewFieldIndicatorViewModel>
         {
             new ReviewFieldIndicatorViewModel(FieldIdentifiers.ClosingDate, nameof(TrainingEditModel.ClosingDay), "Closing date requires edit"),
             new ReviewFieldIndicatorViewModel(FieldIdentifiers.PossibleStartDate, nameof(TrainingEditModel.StartDay), "Possible start date requires edit"),
@@ -60,63 +60,63 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             new ReviewFieldIndicatorViewModel(FieldIdentifiers.DisabilityConfident, nameof(TrainingEditModel.IsDisabilityConfident), "Disability confident requires edit"),
         };
 
-        public static readonly IReadOnlyList<ReviewFieldIndicatorViewModel> WageReviewFieldIndicators = new List<ReviewFieldIndicatorViewModel>
+        public static IReadOnlyList<ReviewFieldIndicatorViewModel> GetWageReviewFieldIndicators => new List<ReviewFieldIndicatorViewModel>
         {
             new ReviewFieldIndicatorViewModel(FieldIdentifiers.ExpectedDuration, nameof(WageEditModel.Duration), "How long is the apprenticeship expected to last requires edit"),
             new ReviewFieldIndicatorViewModel(FieldIdentifiers.WorkingWeek, nameof(WageEditModel.WorkingWeekDescription), "Working week requires edit"),
             new ReviewFieldIndicatorViewModel(FieldIdentifiers.Wage, Anchors.WageTypeHeading, "What is the salary requires edit")
         };
 
-        public static readonly IReadOnlyList<ReviewFieldIndicatorViewModel> TitleFieldIndicators = new List<ReviewFieldIndicatorViewModel>
+        public static IReadOnlyList<ReviewFieldIndicatorViewModel> GetTitleFieldIndicators => new List<ReviewFieldIndicatorViewModel>
         {
             new ReviewFieldIndicatorViewModel(FieldIdentifiers.Title, nameof(TitleEditModel.Title), "What do you want to call this vacancy requires edit"),
             new ReviewFieldIndicatorViewModel(FieldIdentifiers.NumberOfPositions, nameof(TitleEditModel.NumberOfPositions), "Number of positions for this apprenticeship requires edit")
         };
 
-        public static readonly IReadOnlyList<ReviewFieldIndicatorViewModel> EmployerFieldIndicators = new List<ReviewFieldIndicatorViewModel>
+        public static IReadOnlyList<ReviewFieldIndicatorViewModel> EmployerFieldIndicators => new List<ReviewFieldIndicatorViewModel>
         {
             new ReviewFieldIndicatorViewModel(FieldIdentifiers.EmployerAddress, nameof(EmployerEditModel.AddressLine1), "Employer address requires edit"),
         };
 
-        public static readonly IReadOnlyList<ReviewFieldIndicatorViewModel> VacancyDescriptionFieldIndicators = new List<ReviewFieldIndicatorViewModel>
+        public static IReadOnlyList<ReviewFieldIndicatorViewModel> GetVacancyDescriptionFieldIndicators => new List<ReviewFieldIndicatorViewModel>
         {
             new ReviewFieldIndicatorViewModel(FieldIdentifiers.VacancyDescription, nameof(VacancyDescriptionEditModel.VacancyDescription), "What does the apprenticeship involve requires edit"),
             new ReviewFieldIndicatorViewModel(FieldIdentifiers.TrainingDescription, nameof(VacancyDescriptionEditModel.TrainingDescription), "What training will your apprentice get requires edit"),
             new ReviewFieldIndicatorViewModel(FieldIdentifiers.OutcomeDescription, nameof(VacancyDescriptionEditModel.OutcomeDescription), "What can the apprentice expect at the end of the apprenticeship requires edit"),
         };
 
-        public static readonly IReadOnlyList<ReviewFieldIndicatorViewModel> SkillsFieldIndicators = new List<ReviewFieldIndicatorViewModel>
+        public static IReadOnlyList<ReviewFieldIndicatorViewModel> GetSkillsFieldIndicators => new List<ReviewFieldIndicatorViewModel>
         {
             new ReviewFieldIndicatorViewModel(FieldIdentifiers.Skills, Anchors.SkillsHeading, "Desired skills or personal qualities requires edit"),
         };
 
-        public static readonly IReadOnlyList<ReviewFieldIndicatorViewModel> QualificationsFieldIndicators = new List<ReviewFieldIndicatorViewModel>
+        public static IReadOnlyList<ReviewFieldIndicatorViewModel> GetQualificationsFieldIndicators => new List<ReviewFieldIndicatorViewModel>
         {
             new ReviewFieldIndicatorViewModel(FieldIdentifiers.Qualifications, Anchors.QualificationsHeading, "Qualifications requires edit"),
         };
 
-        public static readonly IReadOnlyList<ReviewFieldIndicatorViewModel> ConsiderationsFieldIndicators = new List<ReviewFieldIndicatorViewModel>
+        public static IReadOnlyList<ReviewFieldIndicatorViewModel> GetConsiderationsFieldIndicators => new List<ReviewFieldIndicatorViewModel>
         {
             new ReviewFieldIndicatorViewModel(FieldIdentifiers.ThingsToConsider, nameof(ConsiderationsEditModel.ThingsToConsider), "Things to consider requires edit"),
         };
 
-        public static readonly IReadOnlyList<ReviewFieldIndicatorViewModel> AboutEmployerFieldIndicators = new List<ReviewFieldIndicatorViewModel>
+        public static IReadOnlyList<ReviewFieldIndicatorViewModel> GetAboutEmployerFieldIndicators => new List<ReviewFieldIndicatorViewModel>
         {
             new ReviewFieldIndicatorViewModel(FieldIdentifiers.EmployerDescription, nameof(AboutEmployerEditModel.EmployerDescription), "Tell us about your organisation requires edit"),
             new ReviewFieldIndicatorViewModel(FieldIdentifiers.EmployerWebsiteUrl, nameof(AboutEmployerEditModel.EmployerWebsiteUrl), "Your organisation's website requires edit")
         };
 
-        public static readonly IReadOnlyList<ReviewFieldIndicatorViewModel> EmployerContactDetailsFieldIndicators = new List<ReviewFieldIndicatorViewModel>
+        public static IReadOnlyList<ReviewFieldIndicatorViewModel> GetEmployerContactDetailsFieldIndicators => new List<ReviewFieldIndicatorViewModel>
         {
             new ReviewFieldIndicatorViewModel(FieldIdentifiers.EmployerContact, nameof(EmployerContactDetailsEditModel.EmployerContactName), "Contact details requires edit"),
         };
 
-        public static readonly IReadOnlyList<ReviewFieldIndicatorViewModel> TrainingProviderFieldIndicators = new List<ReviewFieldIndicatorViewModel>
+        public static IReadOnlyList<ReviewFieldIndicatorViewModel> GetTrainingProviderFieldIndicators => new List<ReviewFieldIndicatorViewModel>
         {
             new ReviewFieldIndicatorViewModel(FieldIdentifiers.Provider, nameof(SelectTrainingProviderEditModel.Ukprn), "Training provider requires edit"),
         };
 
-        public static readonly IReadOnlyList<ReviewFieldIndicatorViewModel> ApplicationProcessFieldIndicators = new List<ReviewFieldIndicatorViewModel>
+        public static IReadOnlyList<ReviewFieldIndicatorViewModel> GetApplicationProcessFieldIndicators => new List<ReviewFieldIndicatorViewModel>
         {
             new ReviewFieldIndicatorViewModel(FieldIdentifiers.ApplicationMethod, Anchors.ApplicationMethodHeading, "Application process requires edit"),
             new ReviewFieldIndicatorViewModel(FieldIdentifiers.ApplicationUrl, nameof(ApplicationProcessEditModel.ApplicationUrl), "Enter the web address candidates should use to apply for this vacancy requires edit"),
