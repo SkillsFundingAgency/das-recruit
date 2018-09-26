@@ -148,6 +148,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                     case bool _:
                         //No way to tell if a bool has been 'completed' so just skip
                         break;
+                    default:
+                        //Skipping other types for now
+                        break;
                 }
 
                 if (requiresAll && result == false)
