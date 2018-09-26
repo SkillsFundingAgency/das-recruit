@@ -3,6 +3,7 @@
     public enum RuleId
     {
         ProfanityChecks,
-        BannedPhraseChecks
+        BannedPhraseChecks,
+        TitlePopularity
     }
 }

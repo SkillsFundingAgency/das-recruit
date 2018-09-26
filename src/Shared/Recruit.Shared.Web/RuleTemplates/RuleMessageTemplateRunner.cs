@@ -1,4 +1,5 @@
 ﻿using System;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Application.Rules;
 
 namespace Esfa.Recruit.Shared.Web.RuleTemplates
@@ -7,20 +8,17 @@ namespace Esfa.Recruit.Shared.Web.RuleTemplates
     {
         public string ToText(RuleId ruleId, object data, string fieldName)
         {
-            IRuleMessageTemplate template;
             switch (ruleId)
             {
                 case RuleId.ProfanityChecks:
-                    template = new ProfanityRuleMessageTemplate();
-                    break;
+                    return ProfanityRuleMessageTemplate.ToText(data as ProfanityData, fieldName);
                 case RuleId.BannedPhraseChecks:
-                    template = new BannedPhraseMessageTemplate();
-                    break;
+                    return BannedPhraseMessageTemplate.ToText(data as BannedPhrasesData, fieldName);
+                case RuleId.TitlePopularity:
+                    return VacancyTitlePopularityRuleMessageTemplate.ToText(data as TitlePopularityData, fieldName);
                 default:
-                    throw new Exception($"Cannot resolve ruleId:{ruleId} to a rule message template");
+                    throw new Exception($"Cannot resolve ruleId: {ruleId} to a rule message template formatter.");
             }
-
-            return template.ToText(data, fieldName);
         }
     }
 }

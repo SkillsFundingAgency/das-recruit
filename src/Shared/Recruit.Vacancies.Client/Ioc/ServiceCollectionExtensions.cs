@@ -1,4 +1,5 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Application.CommandHandlers;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Events;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Rules.Engine;
@@ -37,6 +38,8 @@ using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+using Recruit.Vacancies.Client.Infrastructure.Configuration;
+using Recruit.Vacancies.Client.Infrastructure.Services.VacancyTitle;
 using SFA.DAS.EAS.Account.Api.Client;
 using VacancyRuleSet = Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules.VacancyRuleSet;
 
@@ -60,6 +63,13 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.RegisterRepositories(configuration);
 
+            services.AddTransient<IConfigurationReader, ConfigurationReader>();
+            services.AddTransient<QaRulesConfiguration>(x => 
+                                                            {
+                                                                var svc = x.GetService<IConfigurationReader>();
+                                                                return svc.GetAsync<QaRulesConfiguration>("QaRules").Result;
+                                                            });
+
             services.RegisterStorageProviderDeps(configuration);
 
             services.AddValidation();
@@ -79,6 +89,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.Configure<GeocodeConfiguration>(configuration.GetSection("Geocode"));
             services.Configure<BankHolidayConfiguration>(configuration.GetSection("BankHoliday"));
             services.Configure<FaaConfiguration>(configuration.GetSection("FaaConfiguration"));
+            services.Configure<VacancyApiConfiguration>(configuration.GetSection("VacancyApiConfiguration"));
             services.Configure<SlackConfiguration>(configuration.GetSection("Slack"));
             services.Configure<NextVacancyReviewServiceConfiguration>(o => o.VacancyReviewAssignationTimeoutMinutes = configuration.GetValue<int>("VacancyReviewAssignationTimeoutMinutes"));
 
@@ -92,11 +103,13 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient<IVacancyService, VacancyService>();
             services.AddTransient<INextVacancyReviewService, NextVacancyReviewService>();
             services.AddTransient<IVacancyComparerService, VacancyComparerService>();
+            services.AddTransient<IGetTitlePopularity, TitlePopularityService>();
 
             // Infrastructure Services
             services.AddTransient<IEmployerAccountProvider, EmployerAccountProvider>();
             services.AddTransient<ISlackClient, SlackClient>();
             services.AddTransient<IGeocodeServiceFactory, GeocodeServiceFactory>();
+            services.AddTransient<IGetVacancyTitlesProvider, VacancyApiTitlesProvider>();
 
             // Projection services
             services.AddTransient<IEmployerDashboardProjectionService, EmployerDashboardProjectionService>();
