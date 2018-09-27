@@ -73,7 +73,7 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             new ReviewFieldIndicatorViewModel(FieldIdentifiers.NumberOfPositions, nameof(TitleEditModel.NumberOfPositions), "Number of positions for this apprenticeship requires edit")
         };
 
-        public static IReadOnlyList<ReviewFieldIndicatorViewModel> EmployerFieldIndicators => new List<ReviewFieldIndicatorViewModel>
+        public static IReadOnlyList<ReviewFieldIndicatorViewModel> GetEmployerFieldIndicators => new List<ReviewFieldIndicatorViewModel>
         {
             new ReviewFieldIndicatorViewModel(FieldIdentifiers.EmployerAddress, nameof(EmployerEditModel.AddressLine1), "Employer address requires edit"),
         };
