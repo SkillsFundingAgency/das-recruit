@@ -7,6 +7,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using Polly;
 
@@ -16,6 +17,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
     {
         private const string Database = "recruit";
         private const string Collection = "vacancyReviews";
+
+        static MongoDbVacancyReviewRepository()
+        {
+            if (!BsonClassMap.IsClassMapRegistered(typeof(ProfanityData)))
+            {
+                BsonClassMap.RegisterClassMap<ProfanityData>();
+            }
+        }
 
         public MongoDbVacancyReviewRepository(
             ILogger<MongoDbVacancyReviewRepository> logger, IOptions<MongoDbConnectionDetails> details) 

@@ -1,4 +1,5 @@
 ﻿using System;
+using Esfa.Recruit.Vacancies.Client.Application.Rules.BaseRules;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Rules.Engine
@@ -18,9 +19,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.Engine
 
         public string RuleId { get; }
 
-        protected RuleOutcome CreateOutcome(int score, string narrative, string target = RuleOutcome.NoSpecificTarget)
+        protected RuleOutcome CreateOutcome(int score, string narrative, ProfanityData data, string target = RuleOutcome.NoSpecificTarget)
         {
-            return new RuleOutcome(RuleId, (int) (score * _weighting), narrative, target);
+            return new RuleOutcome(RuleId, (int) (score * _weighting), narrative, target, null, data);
         }
     }
 }

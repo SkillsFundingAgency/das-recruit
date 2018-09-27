@@ -48,7 +48,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.BaseRules
                 }
             }
 
-            return new[] {CreateOutcome(0, $"No profanities found in '{fieldId}'", fieldId)};
+            return new[] {CreateOutcome(0, $"No profanities found in '{fieldId}'", null, fieldId)};
         }
 
         private async Task<Dictionary<string, int>> FindOccurrencesAsync(Expression<Func<string>> property)
@@ -84,8 +84,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.BaseRules
                     var count = foundProfanity.Value;
                     var term = foundProfanity.Key;
                     var foundMessage = count > 1 ? $"found {count} times" : "found";
+                    var narrative = $"Profanity '{term}' {foundMessage} in '{fieldId}'";
+                    var data = new ProfanityData { Profanity = term };
 
-                    return CreateOutcome(count, $"Profanity '{term}' {foundMessage} in '{fieldId}'", fieldId);
+                    return CreateOutcome(count, narrative, data, fieldId);
                 });
         }
 
@@ -93,10 +95,12 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.BaseRules
         {
             var count = foundProfanities.Values.Sum();
             var terms = string.Join(",", foundProfanities.Keys);
+            var narrative = $"{count} profanities '{terms}' found in '{fieldId}'";
+            var data = new ProfanityData { Profanity = terms };
 
             return new[]
             {
-                CreateOutcome(count, $"{count} profanities '{terms}' found in '{fieldId}'", fieldId)
+                CreateOutcome(count, narrative, data, fieldId)
             };
         }
     }
