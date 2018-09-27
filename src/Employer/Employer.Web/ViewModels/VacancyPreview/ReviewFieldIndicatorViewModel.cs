@@ -4,11 +4,11 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
 {
     public class ReviewFieldIndicatorViewModel
     {
-        public ReviewFieldIndicatorViewModel(string reviewFieldIdentifier, string anchor, string text)
+        public ReviewFieldIndicatorViewModel(string reviewFieldIdentifier, string anchor, string manualQaText)
         {
             ReviewFieldIdentifier = reviewFieldIdentifier;
             Anchor = anchor;
-            Texts = new List<string> { text };
+            Texts = new List<string> { manualQaText };
         }
 
         public string ReviewFieldIdentifier { get; set; }
