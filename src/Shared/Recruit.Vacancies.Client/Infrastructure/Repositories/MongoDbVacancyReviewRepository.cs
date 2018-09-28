@@ -18,14 +18,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         private const string Database = "recruit";
         private const string Collection = "vacancyReviews";
 
-        static MongoDbVacancyReviewRepository()
-        {
-            if (!BsonClassMap.IsClassMapRegistered(typeof(ProfanityData)))
-            {
-                BsonClassMap.RegisterClassMap<ProfanityData>();
-            }
-        }
-
         public MongoDbVacancyReviewRepository(
             ILogger<MongoDbVacancyReviewRepository> logger, IOptions<MongoDbConnectionDetails> details) 
             : base(logger, Database, Collection, details)
