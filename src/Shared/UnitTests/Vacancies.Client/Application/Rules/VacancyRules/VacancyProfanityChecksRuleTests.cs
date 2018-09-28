@@ -54,8 +54,8 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.R
             var outcome = await rule.EvaluateAsync(entity);
 
             Assert.Contains("Profanity 'bother' found 3 times in 'Title'", outcome.Narrative);
-            Assert.Contains("Profanity 'dang' found in 'VacancyDescription'", outcome.Narrative);
-            Assert.Contains("Profanity 'balderdash' found in 'VacancyDescription'", outcome.Narrative);
+            Assert.Contains("Profanity 'dang' found in 'Description'", outcome.Narrative);
+            Assert.Contains("Profanity 'balderdash' found in 'Description'", outcome.Narrative);
             Assert.Contains("Profanity 'dang' found in 'Skills'", outcome.Narrative);
         }
 
@@ -73,7 +73,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.R
             var outcome = await rule.EvaluateAsync(entity);
 
             Assert.Contains("3 profanities 'bother' found in 'Title'", outcome.Narrative);
-            Assert.Contains("2 profanities 'dang,balderdash' found in 'VacancyDescription'", outcome.Narrative);
+            Assert.Contains("2 profanities 'dang,balderdash' found in 'Description'", outcome.Narrative);
             Assert.Contains("1 profanities 'dang' found in 'Skills'", outcome.Narrative);
         }
 
