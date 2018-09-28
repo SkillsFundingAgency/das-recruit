@@ -4,12 +4,12 @@
 
 <div class="review-container">
     <form asp-route="@RouteNames.Vacancy_Review_Post">
+        <partial name="_ReviewHeader" />
         <div class="grid-row">
             <div class="column-full">
                 <div asp-validation-summary="All" class="error-summary" asp-condition="@ViewData.ModelState.IsValid == false"></div>
             </div>
         </div>
-        <partial name="_ReviewHeader" />
         <div class="grid-row" asp-condition="@Model.IsResubmission">
             <div class="column-full">
                 <div class="error-summary review-summary" tabindex="-1">

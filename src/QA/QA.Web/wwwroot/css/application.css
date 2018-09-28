@@ -201,3 +201,7 @@
     padding-left: 15px;
     overflow: auto;
 }
+
+.break-word {
+  word-wrap:break-word;
+}
