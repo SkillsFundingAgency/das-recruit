@@ -35,7 +35,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules
                 ProfanityCheckAsync(() => subject.OutcomeDescription),
                 ProfanityCheckAsync(() => subject.ThingsToConsider),
                 ProfanityCheckAsync(() => subject.Skills.ToDelimitedString(","), "Skills"),
-                ProfanityCheckAsync(() => subject.Qualifications.SelectMany(q => $"{q.Grade}, {q.Subject}").ToDelimitedString(","), "Qualifications"),
+                ProfanityCheckAsync(() => subject.Qualifications.SelectMany(q => new[]{q.Grade, q.Subject}).ToDelimitedString(","), "Qualifications"),
                 ProfanityCheckAsync(() => subject.EmployerDescription),
                 ProfanityCheckAsync(() => subject.EmployerContactName),
                 ProfanityCheckAsync(() => subject.ApplicationInstructions)
