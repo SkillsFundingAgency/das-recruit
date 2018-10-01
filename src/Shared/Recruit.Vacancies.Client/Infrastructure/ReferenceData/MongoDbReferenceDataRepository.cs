@@ -78,7 +78,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData
                     { typeof(Holidays.BankHolidays), "BankHolidays" },
                     { typeof(Quals.Qualifications), "QualificationTypes" },
                     { typeof(Programmes.ApprenticeshipProgrammes), "ApprenticeshipProgrammes" },
-                    { typeof(Profanities.ProfanityList), "Profanities" }
+                    { typeof(Profanities.ProfanityList), "Profanities" },
+                    { typeof(BannedPhrases.BannedPhraseList), "BannedPhrases" }
                 };
         }
     }

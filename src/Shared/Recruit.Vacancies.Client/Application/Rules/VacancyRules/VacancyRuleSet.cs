@@ -7,9 +7,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules
 {
     public class VacancyRuleSet: RuleSet<Vacancy>
     {        
-        public VacancyRuleSet(IProfanityListProvider profanityListProvider) : base(nameof(VacancyRuleSet))
+        public VacancyRuleSet(
+            IProfanityListProvider profanityListProvider,
+            IBannedPhrasesProvider bannedPhrasesProvider) 
+            : base(nameof(VacancyRuleSet))
         {
             AddRule(new VacancyProfanityChecksRule(profanityListProvider));
+            AddRule(new VacancyBannedPhraseChecksRule(bannedPhrasesProvider));
         }
     }
 }
