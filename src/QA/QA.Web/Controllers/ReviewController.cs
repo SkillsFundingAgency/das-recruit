@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Esfa.Recruit.Qa.Web.Configuration;
 using Esfa.Recruit.Qa.Web.Configuration.Routing;
 using Esfa.Recruit.Qa.Web.Extensions;
 using Esfa.Recruit.Qa.Web.Orchestrators;

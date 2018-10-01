@@ -29,6 +29,12 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
 
             var manualQaFieldIndicators = _mapper.GetManualQaFieldIndicators(m);
 
+            foreach (var automatedQaOutcomeIndicator in review.AutomatedQaOutcomeIndicators)
+            {
+                automatedQaOutcomeIndicator.IsReferred = m.SelectedAutomatedQaResults
+                    .Contains(automatedQaOutcomeIndicator.RuleOutcomeId.ToString());
+            }
+
             if (m.IsRefer)
             {
                 await _vacancyClient.ReferVacancyReviewAsync(m.ReviewId, m.ReviewerComment, manualQaFieldIndicators);
@@ -84,6 +90,11 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             foreach (var field in vm.FieldIdentifiers)
             {
                 field.Checked = model.SelectedFieldIdentifiers.Contains(field.FieldIdentifier);
+            }
+
+            foreach (var automatedQaResult in vm.AutomatedQaResults)
+            {
+                automatedQaResult.Checked = model.SelectedAutomatedQaResults.Contains(automatedQaResult.OutcomeId);
             }
 
             vm.ReviewerComment = model.ReviewerComment;
