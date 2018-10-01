@@ -4,26 +4,19 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Esfa.QA.Core.Extensions;
-using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Rules.Engine;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Rules.BaseRules
 {
-    public abstract class BaseProfanityChecksRule : Rule
+    public abstract partial class BaseProfanityChecksRule : Rule
     {
-        public enum ConsolidationOption
-        {
-            NoConsolidation,
-            ConsolidateByField
-        }
+        public IEnumerable<string> ProfanityList { get; set; } = new List<string>();
 
-        private readonly IProfanityListProvider _profanityListProvider;
         private readonly ConsolidationOption _consolidationOption;
 
-        protected BaseProfanityChecksRule(RuleId ruleId, IProfanityListProvider profanityListProvider, ConsolidationOption consolidationOption, decimal weighting = 1.0m) : base(ruleId, weighting)
+        protected BaseProfanityChecksRule(RuleId ruleId, ConsolidationOption consolidationOption, decimal weighting = 1.0m) : base(ruleId, weighting)
         {
-            _profanityListProvider = profanityListProvider;
             _consolidationOption = consolidationOption;
         }
 
@@ -59,9 +52,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.BaseRules
             var checkValue = value.FormatForParsing();
             
 
-            var profanities = await _profanityListProvider.GetProfanityListAsync();
-
-            foreach (var profanity in profanities)
+            foreach (var profanity in ProfanityList)
             {
                 var occurrences = checkValue.CountOccurrences(profanity);
 

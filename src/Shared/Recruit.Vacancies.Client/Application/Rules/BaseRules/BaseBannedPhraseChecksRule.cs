@@ -4,7 +4,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Esfa.QA.Core.Extensions;
-using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Rules.Engine;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
@@ -12,13 +11,14 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.BaseRules
 {
     public class BaseBannedPhraseChecksRule : Rule
     {
-        private readonly IBannedPhrasesProvider _bannedPhrasesProvider;
-        private readonly BaseProfanityChecksRule.ConsolidationOption _consolidationOption;
+        private readonly ConsolidationOption _consolidationOption;
 
-        public BaseBannedPhraseChecksRule(string ruleId, IBannedPhrasesProvider bannedPhrasesProvider, BaseProfanityChecksRule.ConsolidationOption consolidationOption, decimal weighting = 1.0m) 
+        public IEnumerable<string> BannedPhrases { get; set; } = new List<string>();
+
+        public BaseBannedPhraseChecksRule(
+            string ruleId, ConsolidationOption consolidationOption, decimal weighting = 1.0m) 
             : base(ruleId, weighting)
         {
-            _bannedPhrasesProvider = bannedPhrasesProvider;
             _consolidationOption = consolidationOption;
         }
 
@@ -31,10 +31,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.BaseRules
             if (foundBannedPhrases.Values.Sum() > 0)
                 switch (_consolidationOption)
                 {
-                    case BaseProfanityChecksRule.ConsolidationOption.NoConsolidation:
+                    case ConsolidationOption.NoConsolidation:
                         return CreateUnconsolidatedOutcomes(foundBannedPhrases, fieldId);
 
-                    case BaseProfanityChecksRule.ConsolidationOption.ConsolidateByField:
+                    case ConsolidationOption.ConsolidateByField:
                         return CreateConsolidatedOutcomes(foundBannedPhrases, fieldId);
 
                     default:
@@ -50,9 +50,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.BaseRules
             var checkValue = value.FormatForParsing();
 
             var foundBannedPhrases = new Dictionary<string, int>();
-            var phrases = await _bannedPhrasesProvider.GetBannedPhrasesAsync();
 
-            foreach (var bannedPhrase in phrases)
+            foreach (var bannedPhrase in BannedPhrases)
             {
                 var occurrences = checkValue.CountOccurrences(bannedPhrase);
 

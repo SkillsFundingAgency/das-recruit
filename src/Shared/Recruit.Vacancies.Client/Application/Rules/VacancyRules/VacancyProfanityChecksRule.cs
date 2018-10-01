@@ -12,12 +12,20 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules
 {
     public sealed class VacancyProfanityChecksRule : BaseProfanityChecksRule, IRule<Vacancy>
     {
-        public VacancyProfanityChecksRule(IProfanityListProvider profanityListProvider, ConsolidationOption consolidationOption = ConsolidationOption.NoConsolidation, decimal weighting = 100.0m)
-            : base(RuleId.ProfanityChecks, profanityListProvider, consolidationOption, weighting) { }
+        private readonly IProfanityListProvider _profanityListProvider;
+        public VacancyProfanityChecksRule(IProfanityListProvider profanityListProvider,
+            ConsolidationOption consolidationOption = ConsolidationOption.NoConsolidation, 
+            decimal weighting = 100.0m)
+            : base(RuleId.ProfanityChecks, consolidationOption, weighting)
+        {
+            _profanityListProvider = profanityListProvider;
+        }
 
         public async Task<RuleOutcome> EvaluateAsync(Vacancy subject)
         {
             var outcomeBuilder = RuleOutcomeDetailsBuilder.Create(RuleId);
+
+            ProfanityList = await _profanityListProvider.GetProfanityListAsync();
 
             var tasks = new List<Task<IEnumerable<RuleOutcome>>>
             {
