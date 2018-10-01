@@ -11,9 +11,10 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public Guid ReviewId {get;set;}
 
         public List<string> SelectedFieldIdentifiers { get; set; } = new List<string>();
+        public List<string> SelectedAutomatedQaResults { get; set; } = new List<string>();
 
         public string ReviewerComment { get; set; }
 
-        public bool IsRefer => SelectedFieldIdentifiers.Any();
+        public bool IsRefer => SelectedFieldIdentifiers.Any() || SelectedAutomatedQaResults.Any();
     }
 }

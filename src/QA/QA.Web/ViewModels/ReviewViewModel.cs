@@ -51,6 +51,7 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public DateTime SubmittedDate { get; internal set; }
         public ReviewHistoriesViewModel ReviewHistories { get; internal set; }
         public IEnumerable<FieldIdentifierViewModel> FieldIdentifiers { get; set; }
+        public IEnumerable<AutomatedQaResultViewModel> AutomatedQaResults { get; set; }
         public bool IsResubmission { get; set; }
 
         public bool IsFirstSubmission => IsResubmission == false;
@@ -89,6 +90,8 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public string VacancyDescriptionClass => GetFieldIdentifierCssClass(VacancyReview.FieldIdentifiers.VacancyDescription);
         public string WageClass => GetFieldIdentifierCssClass(VacancyReview.FieldIdentifiers.Wage);
         public string WorkingWeekClass => GetFieldIdentifierCssClass(VacancyReview.FieldIdentifiers.WorkingWeek);
+
+        public bool HasAutomatedQaResults => AutomatedQaResults.Any();
 
         private string GetFieldIdentifierCssClass(string fieldIdentifer)
         {
