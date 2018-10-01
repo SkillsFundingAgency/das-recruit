@@ -15,7 +15,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.Engine
 
         public RuleId RuleId { get; }
 
-        protected RuleOutcome CreateOutcome(int score, string narrative, ProfanityData data, string target = RuleOutcome.NoSpecificTarget)
+        protected RuleOutcome CreateOutcome(int score, string narrative, object data, string target = RuleOutcome.NoSpecificTarget)
         {
             return new RuleOutcome(RuleId, (int) (score * _weighting), narrative, target, null, data);
         }

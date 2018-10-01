@@ -32,7 +32,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.R
         [InlineData("bother dang", 100, 100)]
         public async Task WhenInvoked_ItShouldReturnTheExpectedScore(string phrase, int expectedScore, decimal weighting = 1.0m)
         {
-            var rule = new VacancyProfanityChecksRule(new TestProfanityListProvider(), BaseProfanityChecksRule.ConsolidationOption.ConsolidateByField, weighting);
+            var rule = new VacancyProfanityChecksRule(new TestProfanityListProvider(), ConsolidationOption.ConsolidateByField, weighting);
 
             var entity = TestVacancyBuilder.Create().SetDetails(phrase, string.Empty);
 
@@ -63,7 +63,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.R
         [Fact]
         public async Task WhenInvoked_ItShouldReturnAnOverallConsolidatedNarrative()
         {
-            var rule = new VacancyProfanityChecksRule(new TestProfanityListProvider(), BaseProfanityChecksRule.ConsolidationOption.ConsolidateByField);
+            var rule = new VacancyProfanityChecksRule(new TestProfanityListProvider(), ConsolidationOption.ConsolidateByField);
 
             var skills = new[] { "Juggling", "Running", "dang" };
 
