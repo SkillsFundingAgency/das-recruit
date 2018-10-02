@@ -10,9 +10,9 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Rules.BaseRules
 {
-    public abstract partial class BaseProfanityChecksRule : Rule
+    public abstract class BaseProfanityChecksRule : Rule
     {
-        public IEnumerable<string> ProfanityList { get; set; } = new List<string>();
+        protected IEnumerable<string> ProfanityList { get; set; } = new List<string>();
 
         private readonly ConsolidationOption _consolidationOption;
 
