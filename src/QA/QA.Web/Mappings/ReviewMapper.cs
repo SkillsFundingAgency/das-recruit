@@ -13,7 +13,6 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Humanizer;
-using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Qa.Web.Mappings
@@ -294,7 +293,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 }).ToList() ?? new List<AutomatedQaResultViewModel>();
 
             //sort by the order of the fields on the review page
-            return vm.OrderBy(v => ReviewFields.Keys.IndexOf(v.FieldId)).ToList();
+            return vm.OrderBy(v => ReviewFields.Keys.ToList().FindIndex(k => k == v.FieldId)).ToList();
         }
     }
 }
