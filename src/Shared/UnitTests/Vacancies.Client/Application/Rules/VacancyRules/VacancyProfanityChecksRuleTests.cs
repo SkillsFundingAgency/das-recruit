@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
+using Esfa.Recruit.Vacancies.Client.Application.Rules;
 using Esfa.Recruit.Vacancies.Client.Application.Rules.BaseRules;
 using Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
@@ -17,7 +18,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.R
         {
             var rule = new VacancyProfanityChecksRule(new TestProfanityListProvider());
 
-            Assert.Equal("ProfanityChecks", rule.RuleId);
+            Assert.Equal(RuleId.ProfanityChecks, rule.RuleId);
         }
 
         [Theory]
@@ -97,7 +98,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.R
             {
                 Assert.NotEmpty(a.Target);
                 Assert.NotEmpty(a.Narrative);
-                Assert.Equal("ProfanityChecks", a.RuleId);
+                Assert.Equal(RuleId.ProfanityChecks, a.RuleId);
             });
         }
     }

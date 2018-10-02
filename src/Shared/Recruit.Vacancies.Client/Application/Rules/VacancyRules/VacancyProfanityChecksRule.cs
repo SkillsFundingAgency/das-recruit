@@ -5,7 +5,6 @@ using Esfa.QA.Core.Extensions;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Rules.BaseRules;
 using Esfa.Recruit.Vacancies.Client.Application.Rules.Engine;
-using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules
@@ -14,7 +13,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules
     public sealed class VacancyProfanityChecksRule : BaseProfanityChecksRule, IRule<Vacancy>
     {
         public VacancyProfanityChecksRule(IProfanityListProvider profanityListProvider, ConsolidationOption consolidationOption = ConsolidationOption.NoConsolidation, decimal weighting = 100.0m)
-            : base("ProfanityChecks", profanityListProvider, consolidationOption, weighting) { }
+            : base(RuleId.ProfanityChecks, profanityListProvider, consolidationOption, weighting) { }
 
         public async Task<RuleOutcome> EvaluateAsync(Vacancy subject)
         {

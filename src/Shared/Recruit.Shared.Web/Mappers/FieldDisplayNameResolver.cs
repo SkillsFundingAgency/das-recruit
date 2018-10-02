@@ -9,7 +9,7 @@ namespace Esfa.Recruit.Shared.Web.Mappers
         {
             {FieldIdResolver.ToFieldId(v => v.VacancyReference), "Reference number"},
             {FieldIdResolver.ToFieldId(v => v.EmployerAccountId), "Employer Account Id"},
-            {FieldIdResolver.ToFieldId(v => v.ApplicationInstructions), "application process instructions"},
+            {FieldIdResolver.ToFieldId(v => v.ApplicationInstructions), "Application process instructions"},
             {FieldIdResolver.ToFieldId(v => v.ApplicationMethod), "Application process" },
             {FieldIdResolver.ToFieldId(v => v.ApplicationUrl), "Application web address" },
             {FieldIdResolver.ToFieldId(v => v.ClosingDate), "Closing date" },
@@ -25,7 +25,7 @@ namespace Esfa.Recruit.Shared.Web.Mappers
             {FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine4), "Employer location address line 4"},
             {FieldIdResolver.ToFieldId(v => v.EmployerLocation.Postcode), "Employer location postcode"},
             {FieldIdResolver.ToFieldId(v => v.EmployerName), "Employer name"},
-            {FieldIdResolver.ToFieldId(v => v.EmployerWebsiteUrl), "Employer's website"},
+            {FieldIdResolver.ToFieldId(v => v.EmployerWebsiteUrl), "Employer website"},
             {FieldIdResolver.ToFieldId(v => v.NumberOfPositions), "Number of positions"},
             {FieldIdResolver.ToFieldId(v => v.OutcomeDescription), "Future prospects"},
             {FieldIdResolver.ToFieldId(v => v.ProgrammeId), "Training"},
