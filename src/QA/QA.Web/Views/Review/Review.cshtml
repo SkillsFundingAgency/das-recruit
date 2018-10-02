@@ -437,8 +437,8 @@
             var $comments = $("#automatedqarules-selected-comments");
             $comments.empty();
             
-            $(".automatedqaresults-checkbox:checked").each(function () {
-                var $automatedQaText = $("<li></li>").text($(this).data("text"));
+            $(".automatedqaresults-checkbox:checked").each(function (_, el) {
+                var $automatedQaText = $("<li></li>").text($(el).data("text"));
                 $comments.append($automatedQaText);
             });
         }
