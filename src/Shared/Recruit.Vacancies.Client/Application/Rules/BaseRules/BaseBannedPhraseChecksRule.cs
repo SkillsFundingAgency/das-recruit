@@ -58,9 +58,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.BaseRules
 
                 if (occurrences > 0)
                 {
-                    if (!foundBannedPhrases.ContainsKey(bannedPhrase)) foundBannedPhrases.Add(bannedPhrase, 0);
-
-                    foundBannedPhrases[bannedPhrase] += occurrences;
+                    foundBannedPhrases.Add(bannedPhrase, occurrences);
                 }
             }
 
