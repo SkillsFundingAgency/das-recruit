@@ -39,6 +39,11 @@
                     "CollectionName": "applicationReviews",
                     "OfferThroughput": 1000,
                     "StoredProcedures": []
+                },
+                {
+                    "CollectionName": "configuration",
+                    "OfferThroughput": 1000,
+                    "StoredProcedures": []
                 }
             ]
         }
