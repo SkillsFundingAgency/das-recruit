@@ -290,7 +290,9 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                     FieldId = r.Target,
                     Checked = true,
                     Text = _ruleTemplateRunner.ToText(r.Data, FieldDisplayNameResolver.Resolve(r.Target))
-                }).ToList() ?? new List<AutomatedQaResultViewModel>();
+                })
+                .Where(r => string.IsNullOrWhiteSpace(r.Text) == false)         
+                .ToList() ?? new List<AutomatedQaResultViewModel>();
 
             //sort by the order of the fields on the review page
             return vm.OrderBy(v => ReviewFields.Keys.ToList().FindIndex(k => k == v.FieldId)).ToList();
