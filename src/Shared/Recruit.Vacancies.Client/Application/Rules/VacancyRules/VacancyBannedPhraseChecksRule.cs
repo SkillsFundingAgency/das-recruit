@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Esfa.QA.Core.Extensions;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Rules.BaseRules;
 using Esfa.Recruit.Vacancies.Client.Application.Rules.Engine;
+using Esfa.Recruit.Vacancies.Client.Application.Rules.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules
@@ -43,7 +43,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules
                 BannedPhraseCheckAsync(() => subject.OutcomeDescription),
                 BannedPhraseCheckAsync(() => subject.ThingsToConsider),
                 BannedPhraseCheckAsync(() => subject.Skills.ToDelimitedString(","), "Skills"),
-                BannedPhraseCheckAsync(() => subject.Qualifications.SelectMany(q => $"{q.Grade}, {q.Subject}").ToDelimitedString(","), "Qualifications"),
+                BannedPhraseCheckAsync(() => 
+                    subject.Qualifications.SelectMany(q => new [] {q.Grade, q.Subject}).ToDelimitedString(",")
+                    , "Qualifications"),
                 BannedPhraseCheckAsync(() => subject.EmployerDescription),
                 BannedPhraseCheckAsync(() => subject.EmployerContactName),
                 BannedPhraseCheckAsync(() => subject.ApplicationInstructions)
