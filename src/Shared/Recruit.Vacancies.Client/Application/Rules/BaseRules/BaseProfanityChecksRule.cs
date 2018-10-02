@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Esfa.QA.Core.Extensions;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Rules.Engine;
-using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Rules.BaseRules
@@ -22,7 +21,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.BaseRules
         private readonly IProfanityListProvider _profanityListProvider;
         private readonly ConsolidationOption _consolidationOption;
 
-        protected BaseProfanityChecksRule(string ruleId, IProfanityListProvider profanityListProvider, ConsolidationOption consolidationOption, decimal weighting = 1.0m) : base(ruleId, weighting)
+        protected BaseProfanityChecksRule(RuleId ruleId, IProfanityListProvider profanityListProvider, ConsolidationOption consolidationOption, decimal weighting = 1.0m) : base(ruleId, weighting)
         {
             _profanityListProvider = profanityListProvider;
             _consolidationOption = consolidationOption;

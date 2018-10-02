@@ -27,13 +27,13 @@ namespace Esfa.Recruit.Qa.Web.Mappings
         private readonly IGeocodeImageService _mapService;
         private readonly IMinimumWageProvider _wageProvider;
         private readonly Lazy<IList<string>> _qualifications;
-        private readonly IRuleTemplateRunner _ruleTemplateRunner;
+        private readonly IRuleMessageTemplateRunner _ruleTemplateRunner;
 
         public ReviewMapper(ILogger<ReviewMapper> logger,
                     IQaVacancyClient vacancyClient,
                     IGeocodeImageService mapService,
                     IMinimumWageProvider wageProvider,
-                    IRuleTemplateRunner ruleTemplateRunner)
+                    IRuleMessageTemplateRunner ruleTemplateRunner)
         {
             _logger = logger;
             _vacancyClient = vacancyClient;
@@ -276,23 +276,29 @@ namespace Esfa.Recruit.Qa.Web.Mappings
 
         private List<AutomatedQaResultViewModel> GetAutomatedQaResultViewModel(VacancyReview review)
         {
+            var vm = new List<AutomatedQaResultViewModel>();
+
+            if (review.AutomatedQaOutcomeIndicators == null || review.AutomatedQaOutcome == null)
+                return vm;
+
             var referredOutcomes = review.AutomatedQaOutcomeIndicators
                 .Where(i => i.IsReferred)
                 .Select(i => i.RuleOutcomeId)
                 .ToList();
 
-            var vm = review.AutomatedQaOutcome?.RuleOutcomes
-                .SelectMany(o => o.Details)
-                .Where(r => referredOutcomes.Contains(r.Id))
-                .Select(r => new AutomatedQaResultViewModel
+            foreach (var ruleOutcome in review.AutomatedQaOutcome.RuleOutcomes)
+            {
+                vm.AddRange(
+                ruleOutcome.Details
+                    .Where(d => referredOutcomes.Contains(d.Id))
+                    .Select(d => new AutomatedQaResultViewModel
                 {
-                    OutcomeId = r.Id.ToString(),
-                    FieldId = r.Target,
+                    OutcomeId = d.Id.ToString(),
+                    FieldId = d.Target,
                     Checked = true,
-                    Text = _ruleTemplateRunner.ToText(r.Data, FieldDisplayNameResolver.Resolve(r.Target))
-                })
-                .Where(r => string.IsNullOrWhiteSpace(r.Text) == false)         
-                .ToList() ?? new List<AutomatedQaResultViewModel>();
+                    Text = _ruleTemplateRunner.ToText(ruleOutcome.RuleId, d.Data, FieldDisplayNameResolver.Resolve(d.Target))
+                }));
+            }
 
             //sort by the order of the fields on the review page
             return vm.OrderBy(v => ReviewFields.Keys.ToList().FindIndex(k => k == v.FieldId)).ToList();

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Esfa.Recruit.Vacancies.Client.Application.Rules;
 
 namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
 {
@@ -8,7 +9,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
     {
         public const string NoSpecificTarget = "";
 
-        public RuleOutcome(string ruleId, int score, string narrative, string target = NoSpecificTarget, IEnumerable<RuleOutcome> details = null, object data = null)
+        public RuleOutcome(RuleId ruleId, int score, string narrative, string target = NoSpecificTarget, IEnumerable<RuleOutcome> details = null, object data = null)
         {
             Id = Guid.NewGuid();
             RuleId = ruleId;
@@ -24,7 +25,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public Guid Id { get; set; }
         public IEnumerable<RuleOutcome> Details { get; set; }
         public bool HasDetails => Details.Any();
-        public string RuleId { get; set; }
+        public RuleId RuleId { get; set; }
         public int Score { get; set;  }
         public string Narrative { get; set;  }
         public object Data { get; set; }

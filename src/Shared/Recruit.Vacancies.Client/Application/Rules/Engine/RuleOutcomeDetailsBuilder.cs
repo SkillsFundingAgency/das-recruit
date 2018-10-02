@@ -13,7 +13,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.Engine
     /// </summary>
     public class RuleOutcomeDetailsBuilder
     {
-        private readonly string _ruleId;
+        private readonly RuleId _ruleId;
         private int _totalScore;
         private int _outcomeCount;
         private readonly StringBuilder _narrative;
@@ -22,12 +22,12 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.Engine
 
         public int Count => _details.Count;
 
-        public static RuleOutcomeDetailsBuilder Create(string ruleId, string target = RuleOutcome.NoSpecificTarget)
+        public static RuleOutcomeDetailsBuilder Create(RuleId ruleId, string target = RuleOutcome.NoSpecificTarget)
         {
             return new RuleOutcomeDetailsBuilder(ruleId, target);
         }
 
-        private RuleOutcomeDetailsBuilder(string ruleId, string target)
+        private RuleOutcomeDetailsBuilder(RuleId ruleId, string target)
         {
             _ruleId = ruleId;
             _totalScore = 0;
