@@ -34,7 +34,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.R
         {
             var rule = new VacancyProfanityChecksRule(new TestProfanityListProvider(), ConsolidationOption.ConsolidateByField, weighting);
 
-            var entity = TestVacancyBuilder.Create().SetDetails(phrase, string.Empty);
+            var entity = TestVacancyBuilder.Create().SetTitle(phrase);
 
             var outcome = await rule.EvaluateAsync(entity);
 
@@ -49,7 +49,8 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.R
             var skills = new[] { "Juggling", "Running", "dang" };
 
             var entity = TestVacancyBuilder.Create()
-                .SetDetails("bother-bother, bother!", "dang it and balderdash!!")
+                .SetTitle("bother-bother, bother!")
+                .SetDescription("dang it and balderdash!!")
                 .SetSkills(skills);
 
             var outcome = await rule.EvaluateAsync(entity);
@@ -68,7 +69,8 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.R
             var skills = new[] { "Juggling", "Running", "dang" };
 
             var entity = TestVacancyBuilder.Create()
-                .SetDetails("bother-bother, bother!", "dang it and balderdash!!")
+                .SetTitle("bother-bother, bother!")
+                .SetDescription("dang it and balderdash!!")
                 .SetSkills(skills);
 
             var outcome = await rule.EvaluateAsync(entity);
@@ -86,7 +88,8 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.R
             var skills = new[] { "Juggling", "Running", "dang" };
 
             var entity = TestVacancyBuilder.Create()
-                .SetDetails("bother-bother, bother!", "dang it and balderdash!!")
+                .SetTitle("bother-bother, bother!")
+                .SetDescription("dang it and balderdash!!")
                 .SetSkills(skills);
 
             var outcome = await rule.EvaluateAsync(entity);
@@ -100,42 +103,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.R
                 Assert.NotEmpty(a.Narrative);
                 Assert.Equal(RuleId.ProfanityChecks, a.RuleId);
             });
-        }
-    }
-
-    internal static class TestVacancyBuilder
-    {
-        internal static Vacancy Create()
-        {
-            return new Vacancy()
-            {
-                EmployerLocation = new Address(),
-                Skills = new List<string>(),
-                Qualifications = new List<Qualification>(),
-                Wage = new Wage()
-            };
-        }
-
-        internal static Vacancy SetVacancyReference(this Vacancy entity, long vacancyReference)
-        {
-            entity.VacancyReference = vacancyReference;
-
-            return entity;
-        }
-
-        internal static Vacancy SetDetails(this Vacancy entity, string title, string description)
-        {
-            entity.Title = title;
-            entity.Description = description;
-
-            return entity;
-        }
-
-        internal static Vacancy SetSkills(this Vacancy entity, IEnumerable<string> skills)
-        {
-            entity.Skills = skills.ToList();
-
-            return entity;
         }
     }
 
