@@ -44,6 +44,11 @@
                     "CollectionName": "configuration",
                     "OfferThroughput": 1000,
                     "StoredProcedures": []
+                },
+                {
+                    "CollectionName": "reviews",
+                    "OfferThroughput": 1000,
+                    "StoredProcedures": []
                 }
             ]
         }
