@@ -17,7 +17,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules
             IBannedPhrasesProvider bannedPhrasesProvider, 
             ConsolidationOption consolidationOption = ConsolidationOption.NoConsolidation, 
             decimal weighting = 100.0m) 
-            : base("BannedPhraseChecks", consolidationOption, weighting)
+            : base(RuleId.BannedPhraseChecks, consolidationOption, weighting)
         {
             _bannedPhrasesProvider = bannedPhrasesProvider;
         }

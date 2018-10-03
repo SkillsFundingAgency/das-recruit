@@ -17,7 +17,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.BaseRules
         protected IEnumerable<string> BannedPhrases { get; set; } = new List<string>();
 
         public BaseBannedPhraseChecksRule(
-            string ruleId, ConsolidationOption consolidationOption, decimal weighting = 1.0m) 
+            RuleId ruleId, ConsolidationOption consolidationOption, decimal weighting = 1.0m) 
             : base(ruleId, weighting)
         {
             _consolidationOption = consolidationOption;
