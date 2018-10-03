@@ -2,6 +2,7 @@
 {
     public enum RuleId
     {
-        ProfanityChecks
+        ProfanityChecks,
+        BannedPhraseChecks
     }
 }

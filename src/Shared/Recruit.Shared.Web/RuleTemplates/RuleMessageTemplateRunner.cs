@@ -13,6 +13,9 @@ namespace Esfa.Recruit.Shared.Web.RuleTemplates
                 case RuleId.ProfanityChecks:
                     template = new ProfanityRuleMessageTemplate();
                     break;
+                case RuleId.BannedPhraseChecks:
+                    template = new BannedPhraseMessageTemplate();
+                    break;
                 default:
                     throw new Exception($"Cannot resolve ruleId:{ruleId} to a rule message template");
             }
