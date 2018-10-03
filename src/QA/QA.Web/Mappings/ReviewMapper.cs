@@ -127,10 +127,9 @@ namespace Esfa.Recruit.Qa.Web.Mappings
             var reviewHistoryTask = _vacancyClient.GetVacancyReviewHistoryAsync(review.VacancyReference);
             
             // Temporarily disabling counts until we remove the shard key from vacancyReviews collection
-            //var approvedCountTask = _vacancyClient.GetApprovedCountAsync(vacancy.SubmittedByUser.UserId);
-            //var approvedFirstTimeCountTask = _vacancyClient.GetApprovedFirstTimeCountAsync(vacancy.SubmittedByUser.UserId);
-            //await Task.WhenAll(programmeTask, approvedCountTask, approvedFirstTimeCountTask);
-            await Task.WhenAll(programmeTask, reviewHistoryTask);
+            var approvedCountTask = _vacancyClient.GetApprovedCountAsync(vacancy.SubmittedByUser.UserId);
+            var approvedFirstTimeCountTask = _vacancyClient.GetApprovedFirstTimeCountAsync(vacancy.SubmittedByUser.UserId);
+            await Task.WhenAll(programmeTask, approvedCountTask, approvedFirstTimeCountTask, reviewHistoryTask);
 
             var programme = programmeTask.Result;
 
@@ -181,8 +180,8 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                     : null;
                 vm.WorkingWeekDescription = vacancy.Wage.WorkingWeekDescription;
                 vm.SubmittedDate = vacancy.SubmittedDate.Value;
-                //vm.VacancyReviewsApprovedCount = approvedCountTask.Result;
-                //vm.VacancyReviewsApprovedFirstTimeCount = approvedFirstTimeCountTask.Result;
+                vm.VacancyReviewsApprovedCount = approvedCountTask.Result;
+                vm.VacancyReviewsApprovedFirstTimeCount = approvedFirstTimeCountTask.Result;
 
                 vm.FieldIdentifiers = await GetFieldIdentifiersViewModel(review);
                 vm.ReviewerComment = review.ManualQaComment;
