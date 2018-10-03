@@ -11,13 +11,14 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules
 {
-    public sealed class VacancyTitlePopularityCheckRule : IRule<Vacancy>
+    public sealed class VacancyTitlePopularityCheckRule : Rule, IRule<Vacancy>
     {
         private readonly IApprenticeshipProgrammeProvider _apprenticeshipProgrammeProvider;
         private readonly IGetTitlePopularity _popularityService;
         private readonly QaRulesConfiguration _qaRulesConfig;
 
         public VacancyTitlePopularityCheckRule(IApprenticeshipProgrammeProvider apprenticeshipProgrammeProvider, IGetTitlePopularity popularityService, QaRulesConfiguration qaRulesConfig)
+                : base(RuleId.TitlePopularity)
         {
             _apprenticeshipProgrammeProvider = apprenticeshipProgrammeProvider;
             _popularityService = popularityService;
