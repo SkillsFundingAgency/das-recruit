@@ -94,6 +94,9 @@
       "value": {
         "StorageConnectionString": ""
       }
-    }
+    },
+    "VacancyReviewAssignationTimeoutMinutes": {
+      "value": ""
+    }    
   }
 }
