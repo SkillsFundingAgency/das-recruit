@@ -119,6 +119,13 @@
         "description" : "StorageConnectionString requires at least the Send claim for the relevant Service Bus endpoint"
       }
     },
+    "VacancyApiConfiguration": {
+      "type": "object",
+      "defaultValue": {
+        "ApiReadSubscriptionKey": "",
+        "ApiSearchBaseUrl": "https://apis.apprenticeships.sfa.bis.gov.uk/vacancies/v1/apprenticeships/search"
+      }
+    },
     "VacancyReviewAssignationTimeoutMinutes": {
       "type": "int",
       "defaultValue": 180
@@ -462,6 +469,14 @@
             {
               "name": "AccountApiConfiguration:Tenant",
               "value": "[parameters('AccountApiConfiguration').Tenant]"
+            },
+            {
+              "name": "VacancyApiConfiguration:ApiSearchBaseUrl",
+              "value": "[parameters('VacancyApiConfiguration').ApiSearchBaseUrl]"
+            },
+            {
+              "name": "VacancyApiConfiguration:ApiReadSubscriptionKey",
+              "value": "[parameters('VacancyApiConfiguration').ApiReadSubscriptionKey]"
             },
             {
               "name": "Slack:WebhookUrl",

@@ -95,6 +95,12 @@
         "StorageConnectionString": ""
       }
     },
+    "VacancyApiConfiguration": {
+      "value": {
+        "ApiReadSubscriptionKey": "",
+        "ApiSearchBaseUrl": ""
+      }
+    },
     "VacancyReviewAssignationTimeoutMinutes": {
       "value": ""
     }    
