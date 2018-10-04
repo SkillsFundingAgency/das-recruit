@@ -56,37 +56,6 @@ sfa.navigation = {
     }
 };
 
-sfa.hookupExampleVacancyToggle = function (showExampleText, hideExampleText, showExampleVacancyCookieName) {
-    var $exampleLink = $("#example_link"),
-        $exampleVacancy = $("#example_vacancy"),
-        $exampleVacancyContainer = $("#example-vacancy-js-container");
-
-    $exampleVacancyContainer.show();
-
-    var showExampleVacancyCookie = Cookies.get(showExampleVacancyCookieName);
-
-    if (typeof (showExampleVacancyCookie) === "undefined") {
-        $exampleVacancy.hide();
-    }
-    else {
-        $exampleLink[0].innerText = hideExampleText;
-    }
-
-    $exampleLink.click(function () {
-        if ($exampleVacancy.is(":visible")) {
-            Cookies.remove(showExampleVacancyCookieName);
-            $exampleLink[0].innerText = showExampleText;
-        }
-        else {
-            Cookies.set(showExampleVacancyCookieName, "1");
-            $exampleLink[0].innerText = hideExampleText;
-        }
-        $exampleVacancy.slideToggle(0);
-        return false;
-    });
-};
-
-
 //Legacy floating header script
 $(window).scroll(function () {
     if ($(window).scrollTop() >= 110) {

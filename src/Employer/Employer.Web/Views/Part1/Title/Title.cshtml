@@ -6,8 +6,7 @@
             Apprentice candidates will see your vacancy in a search along with vacancies from other employers. This is your
             opportunity to make your vacancy attract the best candidates
         </p>
-        <partial name=@PartialNames.Part1Header />
-
+        
         <partial name=@PartialNames.ValidationSummary model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames}' />
 
         <partial name=@PartialNames.ReviewSummary for="Review" />
