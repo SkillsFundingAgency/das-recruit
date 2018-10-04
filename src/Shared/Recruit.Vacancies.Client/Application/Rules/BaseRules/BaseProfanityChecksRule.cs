@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 using Esfa.QA.Core.Extensions;
 using Esfa.Recruit.Vacancies.Client.Application.Rules.Engine;
 using Esfa.Recruit.Vacancies.Client.Application.Rules.Extensions;
@@ -21,11 +20,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.BaseRules
             _consolidationOption = consolidationOption;
         }
 
-        protected async Task<IEnumerable<RuleOutcome>> ProfanityCheckAsync(Expression<Func<string>> property, string relatedFieldId = null)
+        protected IEnumerable<RuleOutcome> ProfanityCheckAsync(Expression<Func<string>> property, string relatedFieldId = null)
         {
             var fieldId = relatedFieldId ?? property.GetQualifiedFieldId();
 
-            var foundProfanities = await FindOccurrencesAsync(property);
+            var foundProfanities = FindOccurrences(property);
 
             if (foundProfanities.Values.Sum() > 0)
             {
@@ -45,7 +44,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.BaseRules
             return new[] {CreateOutcome(0, $"No profanities found in '{fieldId}'", null, fieldId)};
         }
 
-        private async Task<Dictionary<string, int>> FindOccurrencesAsync(Expression<Func<string>> property)
+        private Dictionary<string, int> FindOccurrences(Expression<Func<string>> property)
         {
             var foundProfanities = new Dictionary<string, int>();
             var value = property.Compile()();
@@ -77,7 +76,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.BaseRules
                     var term = foundProfanity.Key;
                     var foundMessage = count > 1 ? $"found {count} times" : "found";
                     var narrative = $"Profanity '{term}' {foundMessage} in '{fieldId}'";
-                    var data = new ProfanityData { Profanity = term };
+                    var data = new ProfanityData {Profanity = term, Occurrences = count};
 
                     return CreateOutcome(count, narrative, data, fieldId);
                 });
@@ -88,7 +87,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.BaseRules
             var count = foundProfanities.Values.Sum();
             var terms = string.Join(",", foundProfanities.Keys);
             var narrative = $"{count} profanities '{terms}' found in '{fieldId}'";
-            var data = new ProfanityData { Profanity = terms };
+            var data = new ProfanityData {Profanity = terms, Occurrences = count};
 
             return new[]
             {
