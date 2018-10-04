@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Services
 {
