@@ -3,5 +3,6 @@
     public class ProfanityData
     {
         public string Profanity { get; set; }
+        public int Occurrences { get; set; }
     }
 }

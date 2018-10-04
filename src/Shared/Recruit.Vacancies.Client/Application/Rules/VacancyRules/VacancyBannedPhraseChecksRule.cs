@@ -28,33 +28,26 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules
 
             BannedPhrases = await _bannedPhrasesProvider.GetBannedPhrasesAsync();
 
-            var tasks = new List<Task<IEnumerable<RuleOutcome>>>
-            {
-                BannedPhraseCheckAsync(() => subject.Title),
-                BannedPhraseCheckAsync(() => subject.ShortDescription),
-                BannedPhraseCheckAsync(() => subject.EmployerLocation.AddressLine1),
-                BannedPhraseCheckAsync(() => subject.EmployerLocation.AddressLine2),
-                BannedPhraseCheckAsync(() => subject.EmployerLocation.AddressLine3),
-                BannedPhraseCheckAsync(() => subject.EmployerLocation.AddressLine4),
-                BannedPhraseCheckAsync(() => subject.Wage.WorkingWeekDescription),
-                BannedPhraseCheckAsync(() => subject.Wage.WageAdditionalInformation),
-                BannedPhraseCheckAsync(() => subject.Description),
-                BannedPhraseCheckAsync(() => subject.TrainingDescription),
-                BannedPhraseCheckAsync(() => subject.OutcomeDescription),
-                BannedPhraseCheckAsync(() => subject.ThingsToConsider),
-                BannedPhraseCheckAsync(() => subject.Skills.ToDelimitedString(","), "Skills"),
-                BannedPhraseCheckAsync(() => 
-                    subject.Qualifications.SelectMany(q => new [] {q.Grade, q.Subject}).ToDelimitedString(",")
-                    , "Qualifications"),
-                BannedPhraseCheckAsync(() => subject.EmployerDescription),
-                BannedPhraseCheckAsync(() => subject.EmployerContactName),
-                BannedPhraseCheckAsync(() => subject.ApplicationInstructions)
-            };
-
-
-            await Task.WhenAll(tasks);
-
-            var outcomes = tasks.SelectMany(t => t.Result);
+            var outcomes = new List<RuleOutcome>();
+            outcomes.AddRange(BannedPhraseCheck(() => subject.Title));
+            outcomes.AddRange(BannedPhraseCheck(() => subject.ShortDescription));
+            outcomes.AddRange(BannedPhraseCheck(() => subject.EmployerLocation.AddressLine1));
+            outcomes.AddRange(BannedPhraseCheck(() => subject.EmployerLocation.AddressLine2));
+            outcomes.AddRange(BannedPhraseCheck(() => subject.EmployerLocation.AddressLine3));
+            outcomes.AddRange(BannedPhraseCheck(() => subject.EmployerLocation.AddressLine4));
+            outcomes.AddRange(BannedPhraseCheck(() => subject.Wage.WorkingWeekDescription));
+            outcomes.AddRange(BannedPhraseCheck(() => subject.Wage.WageAdditionalInformation));
+            outcomes.AddRange(BannedPhraseCheck(() => subject.Description));
+            outcomes.AddRange(BannedPhraseCheck(() => subject.TrainingDescription));
+            outcomes.AddRange(BannedPhraseCheck(() => subject.OutcomeDescription));
+            outcomes.AddRange(BannedPhraseCheck(() => subject.ThingsToConsider));
+            outcomes.AddRange(BannedPhraseCheck(() => subject.Skills.ToDelimitedString(","), "Skills"));
+            outcomes.AddRange(BannedPhraseCheck(() => 
+                subject.Qualifications.SelectMany(q => new [] {q.Grade, q.Subject}).ToDelimitedString(",")
+                , "Qualifications"));
+            outcomes.AddRange(BannedPhraseCheck(() => subject.EmployerDescription));
+            outcomes.AddRange(BannedPhraseCheck(() => subject.EmployerContactName));
+            outcomes.AddRange(BannedPhraseCheck(() => subject.ApplicationInstructions));
 
             var outcome = outcomeBuilder.Add(outcomes)
                 .ComputeSum();

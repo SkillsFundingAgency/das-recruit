@@ -26,30 +26,25 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules
 
             ProfanityList = await _profanityListProvider.GetProfanityListAsync();
 
-            var tasks = new List<Task<IEnumerable<RuleOutcome>>>
-            {
-                ProfanityCheckAsync(() => subject.Title),
-                ProfanityCheckAsync(() => subject.ShortDescription),
-                ProfanityCheckAsync(() => subject.EmployerLocation.AddressLine1),
-                ProfanityCheckAsync(() => subject.EmployerLocation.AddressLine2),
-                ProfanityCheckAsync(() => subject.EmployerLocation.AddressLine3),
-                ProfanityCheckAsync(() => subject.EmployerLocation.AddressLine4),
-                ProfanityCheckAsync(() => subject.Wage.WorkingWeekDescription),
-                ProfanityCheckAsync(() => subject.Wage.WageAdditionalInformation),
-                ProfanityCheckAsync(() => subject.Description),
-                ProfanityCheckAsync(() => subject.TrainingDescription),
-                ProfanityCheckAsync(() => subject.OutcomeDescription),
-                ProfanityCheckAsync(() => subject.ThingsToConsider),
-                ProfanityCheckAsync(() => subject.Skills.ToDelimitedString(","), "Skills"),
-                ProfanityCheckAsync(() => subject.Qualifications.SelectMany(q => new[]{q.Grade, q.Subject}).ToDelimitedString(","), "Qualifications"),
-                ProfanityCheckAsync(() => subject.EmployerDescription),
-                ProfanityCheckAsync(() => subject.EmployerContactName),
-                ProfanityCheckAsync(() => subject.ApplicationInstructions)
-            };
+            var outcomes = new List<RuleOutcome>();
 
-            await Task.WhenAll(tasks);
-
-            var outcomes = tasks.SelectMany(t => t.Result);
+            outcomes.AddRange(ProfanityCheckAsync(() => subject.Title));
+            outcomes.AddRange(ProfanityCheckAsync(() => subject.ShortDescription));
+            outcomes.AddRange(ProfanityCheckAsync(() => subject.EmployerLocation.AddressLine1));
+            outcomes.AddRange(ProfanityCheckAsync(() => subject.EmployerLocation.AddressLine2));
+            outcomes.AddRange(ProfanityCheckAsync(() => subject.EmployerLocation.AddressLine3));
+            outcomes.AddRange(ProfanityCheckAsync(() => subject.EmployerLocation.AddressLine4));
+            outcomes.AddRange(ProfanityCheckAsync(() => subject.Wage.WorkingWeekDescription));
+            outcomes.AddRange(ProfanityCheckAsync(() => subject.Wage.WageAdditionalInformation));
+            outcomes.AddRange(ProfanityCheckAsync(() => subject.Description));
+            outcomes.AddRange(ProfanityCheckAsync(() => subject.TrainingDescription));
+            outcomes.AddRange(ProfanityCheckAsync(() => subject.OutcomeDescription));
+            outcomes.AddRange(ProfanityCheckAsync(() => subject.ThingsToConsider));
+            outcomes.AddRange(ProfanityCheckAsync(() => subject.Skills.ToDelimitedString(","), "Skills"));
+            outcomes.AddRange(ProfanityCheckAsync(() => subject.Qualifications.SelectMany(q => new[]{q.Grade, q.Subject}).ToDelimitedString(","), "Qualifications"));
+            outcomes.AddRange(ProfanityCheckAsync(() => subject.EmployerDescription));
+            outcomes.AddRange(ProfanityCheckAsync(() => subject.EmployerContactName));
+            outcomes.AddRange(ProfanityCheckAsync(() => subject.ApplicationInstructions));
 
             var outcome = outcomeBuilder.Add(outcomes)
                 .ComputeSum();

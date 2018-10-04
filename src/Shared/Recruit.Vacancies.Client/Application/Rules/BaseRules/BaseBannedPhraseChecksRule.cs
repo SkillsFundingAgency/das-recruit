@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 using Esfa.QA.Core.Extensions;
 using Esfa.Recruit.Vacancies.Client.Application.Rules.Engine;
 using Esfa.Recruit.Vacancies.Client.Application.Rules.Extensions;
@@ -23,11 +22,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.BaseRules
             _consolidationOption = consolidationOption;
         }
 
-        protected async Task<IEnumerable<RuleOutcome>> BannedPhraseCheckAsync(Expression<Func<string>> property, string relatedFieldId = null)
+        protected IEnumerable<RuleOutcome> BannedPhraseCheck(Expression<Func<string>> property, string relatedFieldId = null)
         {
             var fieldId = relatedFieldId ?? property.GetQualifiedFieldId();
 
-            var foundBannedPhrases = await FindOccurrencesAsync(property);
+            var foundBannedPhrases = FindOccurrences(property);
 
             if (foundBannedPhrases.Values.Sum() > 0)
                 switch (_consolidationOption)
@@ -45,7 +44,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.BaseRules
             return new[] { CreateOutcome(0, $"No banned phrases found in '{fieldId}'", null, fieldId) };
         }
 
-        private async Task<Dictionary<string, int>> FindOccurrencesAsync(Expression<Func<string>> property)
+        private Dictionary<string, int> FindOccurrences(Expression<Func<string>> property)
         {
             var value = property.Compile()();
             var checkValue = value.FormatForParsing();
@@ -75,7 +74,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.BaseRules
                     var foundMessage = count > 1 ? $"found {count} times" : "found";
                     var narrative = $"Banned phrase '{term}' {foundMessage} in '{fieldId}'";
 
-                    var data = new BannedPhrasesData {BannedPhrase = term};
+                    var data = new BannedPhrasesData {BannedPhrase = term, Occurrences = count};
                     return CreateOutcome(count, narrative, data, fieldId);
                 });
         }
@@ -85,7 +84,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.BaseRules
             var count = foundBannedPhrases.Values.Sum();
             var terms = string.Join(",", foundBannedPhrases.Keys);
             var narrative = $"{count} profanities '{terms}' found in '{fieldId}'";
-            var data = new BannedPhrasesData { BannedPhrase = terms };
+            var data = new BannedPhrasesData { BannedPhrase = terms, Occurrences = count };
 
             return new[]
             {
