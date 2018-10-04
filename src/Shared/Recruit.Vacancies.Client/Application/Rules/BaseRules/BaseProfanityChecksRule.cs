@@ -6,6 +6,7 @@ using Esfa.QA.Core.Extensions;
 using Esfa.Recruit.Vacancies.Client.Application.Rules.Engine;
 using Esfa.Recruit.Vacancies.Client.Application.Rules.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Newtonsoft.Json;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Rules.BaseRules
 {
@@ -76,7 +77,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.BaseRules
                     var term = foundProfanity.Key;
                     var foundMessage = count > 1 ? $"found {count} times" : "found";
                     var narrative = $"Profanity '{term}' {foundMessage} in '{fieldId}'";
-                    var data = new ProfanityData {Profanity = term, Occurrences = count};
+                    var data = JsonConvert.SerializeObject(new ProfanityData { Profanity = term, Occurrences = count });
 
                     return CreateOutcome(count, narrative, data, fieldId);
                 });
@@ -87,7 +88,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.BaseRules
             var count = foundProfanities.Values.Sum();
             var terms = string.Join(",", foundProfanities.Keys);
             var narrative = $"{count} profanities '{terms}' found in '{fieldId}'";
-            var data = new ProfanityData {Profanity = terms, Occurrences = count};
+            var data = JsonConvert.SerializeObject(new ProfanityData { Profanity = terms, Occurrences = count });
 
             return new[]
             {

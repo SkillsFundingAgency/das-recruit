@@ -9,7 +9,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
     {
         public const string NoSpecificTarget = "";
 
-        public RuleOutcome(RuleId ruleId, int score, string narrative, string target = NoSpecificTarget, IEnumerable<RuleOutcome> details = null, object data = null)
+        public RuleOutcome(RuleId ruleId, int score, string narrative, string target = NoSpecificTarget, IEnumerable<RuleOutcome> details = null, string data = null)
         {
             Id = Guid.NewGuid();
             RuleId = ruleId;
@@ -28,7 +28,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public RuleId RuleId { get; set; }
         public int Score { get; set;  }
         public string Narrative { get; set;  }
-        public object Data { get; set; }
+        public string Data { get; set; }
 
         /// <summary>
         /// Field or reference that this outcome relates to
