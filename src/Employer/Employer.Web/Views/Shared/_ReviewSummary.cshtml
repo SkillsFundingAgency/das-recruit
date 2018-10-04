@@ -10,7 +10,12 @@
     <ul class="list">
         @foreach (var fieldIndicator in Model.FieldIndicators)
         {
-            foreach (var errorText in fieldIndicator.Texts)
+            if (!string.IsNullOrWhiteSpace(fieldIndicator.ManualQaText))
+            {
+                <li><a asp-fragment="@fieldIndicator.Anchor" class="summary-link">@fieldIndicator.ManualQaText</a></li>
+            }
+
+            foreach (var errorText in fieldIndicator.AutoQaTexts)
             {
                 <li><a asp-fragment="@fieldIndicator.Anchor" class="summary-link">@errorText</a></li>
             }

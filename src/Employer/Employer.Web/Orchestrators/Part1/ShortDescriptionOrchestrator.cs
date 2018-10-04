@@ -37,7 +37,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             if (vacancy.Status == VacancyStatus.Referred)
             {
                 vm.Review = await _reviewSummaryService.GetReviewSummaryViewModel( vacancy.VacancyReference.Value, 
-                    ReviewFieldIndicatorMapper.GetShortDescriptionReviewFieldIndicators);
+                    ReviewFieldMappingLookups.GetShortDescriptionReviewFieldIndicators());
             }
 
             return vm;

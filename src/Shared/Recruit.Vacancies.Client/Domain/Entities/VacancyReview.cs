@@ -73,6 +73,10 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
             public const string EmployerContact = "EmployerContact";
             public const string DisabilityConfident = "DisabilityConfident";
             public const string EmployerAddress = "EmployerAddress";
+            public const string EmployerAddress1 = "EmployerAddress1";
+            public const string EmployerAddress2 = "EmployerAddress2";
+            public const string EmployerAddress3 = "EmployerAddress3";
+            public const string EmployerAddress4 = "EmployerAddress4";
             public const string EmployerDescription = "EmployerDescription";
             public const string EmployerWebsiteUrl = "EmployerWebsiteUrl";
             public const string ExpectedDuration = "ExpectedDuration";
@@ -91,6 +95,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
             public const string VacancyDescription = "VacancyDescription";
             public const string Wage = "Wage";
             public const string WorkingWeek = "WorkingWeek";
+            public const string WageAdditionalInfo = "WageAdditionalInfo";
         }
     }
 }

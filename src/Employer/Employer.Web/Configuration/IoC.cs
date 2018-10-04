@@ -5,6 +5,7 @@ using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
 using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Shared.Web.Configuration;
+using Esfa.Recruit.Shared.Web.RuleTemplates;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.FAA;
 using Microsoft.AspNetCore.Http;
@@ -86,6 +87,8 @@ namespace Esfa.Recruit.Employer.Web.Configuration
         private static void RegisterMapperDeps(IServiceCollection services)
         {
             services.AddTransient<DisplayVacancyViewModelMapper>();
+            services.AddTransient<ReviewFieldIndicatorMapper>();
+            services.AddScoped<IRuleMessageTemplateRunner, RuleTemplateMessageRunner>();
         }
     }
 }
