@@ -14,6 +14,7 @@ namespace Recruit.Vacancies.Client.Infrastructure.Services.VacancyTitle
     public class VacancyApiTitlesProvider : IGetVacancyTitlesProvider
     {
         private readonly string _vacancyApiReadSubscriptionKey;
+        private readonly HttpClient _httpClient;
         private readonly ILogger<VacancyApiTitlesProvider> _logger;
         private readonly string _baseSearchEndpoint;
         private const string SubscriptionKeyHeaderKey = "Ocp-Apim-Subscription-Key";
@@ -25,6 +26,7 @@ namespace Recruit.Vacancies.Client.Infrastructure.Services.VacancyTitle
             _logger = logger;
             _baseSearchEndpoint = vacancyApiConfig.Value.ApiSearchBaseUrl;
             _vacancyApiReadSubscriptionKey = vacancyApiConfig.Value.ApiReadSubscriptionKey;
+            _httpClient = new HttpClient();
         }
 
         public async Task<IList<string>> GetVacancyTitlesAsync(string larsCode)
@@ -39,34 +41,32 @@ namespace Recruit.Vacancies.Client.Infrastructure.Services.VacancyTitle
 
             var titles = new List<string>();
 
-            using (var httpClient = new HttpClient())
+
+            _httpClient.DefaultRequestHeaders.Add(SubscriptionKeyHeaderKey, _vacancyApiReadSubscriptionKey);
+
+            for (var reqPageNo = 1; reqPageNo <= NoOfPagesToSearch; reqPageNo++)
             {
-                httpClient.DefaultRequestHeaders.Add(SubscriptionKeyHeaderKey, _vacancyApiReadSubscriptionKey);
-
-                for (var reqPageNo = 1; reqPageNo <= NoOfPagesToSearch; reqPageNo++)
+                try
                 {
-                    try
-                    {
-                        var url = string.Format(vacancyApiSearchUrlFormat, larsCode, MaxSearchResultsPerPageLimit, reqPageNo);
-                        var respContent = await httpClient.GetStringAsync(url);
+                    var url = string.Format(vacancyApiSearchUrlFormat, larsCode, MaxSearchResultsPerPageLimit, reqPageNo);
+                    var respContent = await _httpClient.GetStringAsync(url);
 
-                        var resp = JsonConvert.DeserializeObject<VacancyApiSearchResponse>(respContent);
+                    var resp = JsonConvert.DeserializeObject<VacancyApiSearchResponse>(respContent);
 
-                        titles.AddRange(resp.Results.Select(r => r.Title));
+                    titles.AddRange(resp.Results.Select(r => r.Title));
 
-                        if (resp.TotalReturned < MaxSearchResultsPerPageLimit)
-                        {
-                            break;
-                        }
-                    }
-                    catch (HttpRequestException ex)
+                    if (resp.TotalReturned < MaxSearchResultsPerPageLimit)
                     {
-                        _logger.LogError(ex, "Error trying to retrieve titles.", null);
+                        break;
                     }
-                    catch (JsonReaderException ex)
-                    {
-                        _logger.LogError(ex, $"Couldn't deserialise {nameof(VacancyApiSearchResponse)}.", null);
-                    }
+                }
+                catch (HttpRequestException ex)
+                {
+                    _logger.LogError(ex, "Error trying to retrieve titles.", null);
+                }
+                catch (JsonReaderException ex)
+                {
+                    _logger.LogError(ex, $"Couldn't deserialise {nameof(VacancyApiSearchResponse)}.", null);
                 }
             }
 
