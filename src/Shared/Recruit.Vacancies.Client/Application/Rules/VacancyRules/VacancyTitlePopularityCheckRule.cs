@@ -35,16 +35,15 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules
             var trainingProgramme = await _apprenticeshipProgrammeProvider.GetApprenticeshipProgrammeAsync(subject.ProgrammeId);
             var data = new TitlePopularityData
             {
-                VacancyTitle = subject.Title,
                 TrainingCode = trainingProgramme.Id,
                 TrainingTitle = trainingProgramme.Title,
                 TrainingType = trainingProgramme.ApprenticeshipType.ToString().ToLower()
             };
             
             if (popularityScore < _qaRulesConfig.TitlePopularityPercentageThreshold)
-                outcomeResult = new RuleOutcome(RuleId.TitlePopularity, 100, $"Title '{subject.Title}' is not common for the training specified.", nameof(Vacancy.Title), null, data);
+                outcomeResult = new RuleOutcome(RuleId.TitlePopularity, 100, $"Title is not common for the training specified.", nameof(Vacancy.Title), null, data);
             else
-                outcomeResult =  new RuleOutcome(RuleId.TitlePopularity, 0, $"Title '{subject.Title}' is common for the training specified.", nameof(Vacancy.Title), null, data);
+                outcomeResult =  new RuleOutcome(RuleId.TitlePopularity, 0, $"Title is common for the training specified.", nameof(Vacancy.Title), null, data);
 
             var outcome = outcomeBuilder.Add(new RuleOutcome[]{outcomeResult})
                 .ComputeSum();
