@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.ViewModels;
-using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 
 namespace Esfa.Recruit.Employer.Web.Services
@@ -11,18 +9,22 @@ namespace Esfa.Recruit.Employer.Web.Services
     public class ReviewSummaryService : IReviewSummaryService
     {
         private readonly IEmployerVacancyClient _client;
-        public ReviewSummaryService(IEmployerVacancyClient client)
+        private readonly ReviewFieldIndicatorMapper _fieldMappingsLookup;
+
+        public ReviewSummaryService(IEmployerVacancyClient client, ReviewFieldIndicatorMapper fieldMappingsLookup)
         {
             _client = client;
+            _fieldMappingsLookup = fieldMappingsLookup;
         }
 
-        public async Task<ReviewSummaryViewModel> GetReviewSummaryViewModel(long vacancyReference, IEnumerable<ReviewFieldIndicatorViewModel> reviewFieldIndicatorsForPage)
+        public async Task<ReviewSummaryViewModel> GetReviewSummaryViewModel(long vacancyReference, ReviewFieldMappingLookupsForPage reviewFieldIndicatorsForPage)
         {
             ReviewSummaryViewModel vm;
             var review = await _client.GetCurrentReferredVacancyReviewAsync(vacancyReference);
+
             if (review != null)
             {
-                var fieldIndicators = ReviewFieldIndicatorMapper.MapFromFieldIndicators(reviewFieldIndicatorsForPage, review.ManualQaFieldIndicators).ToList();
+                var fieldIndicators = _fieldMappingsLookup.MapFromFieldIndicators(reviewFieldIndicatorsForPage, review).ToList();
 
                 vm = new ReviewSummaryViewModel
                 {

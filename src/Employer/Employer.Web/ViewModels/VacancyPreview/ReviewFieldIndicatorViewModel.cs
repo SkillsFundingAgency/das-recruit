@@ -1,16 +1,19 @@
-﻿namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
+﻿using System.Collections.Generic;
+
+namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
 {
     public class ReviewFieldIndicatorViewModel
     {
-        public ReviewFieldIndicatorViewModel(string reviewFieldIdentifier, string anchor, string text)
+        public ReviewFieldIndicatorViewModel(string reviewFieldIdentifier, string anchor)
         {
             ReviewFieldIdentifier = reviewFieldIdentifier;
             Anchor = anchor;
-            Text = text;
+            AutoQaTexts = new List<string>();
         }
 
-        public string ReviewFieldIdentifier { get; set; }
-        public string Anchor { get; set; }
-        public string Text { get; set; }
+        public string ReviewFieldIdentifier { get; }
+        public string Anchor { get; }
+        public string ManualQaText { get; set; }
+        public List<string> AutoQaTexts { get; }
     }
 }
