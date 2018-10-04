@@ -8,6 +8,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Rules.BaseRules;
 using Esfa.Recruit.Vacancies.Client.Application.Rules.Engine;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Newtonsoft.Json;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules
 {
@@ -33,12 +34,12 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules
             var popularityScore = await _popularityService.GetTitlePopularityAsync(subject.ProgrammeId, subject.Title);
 
             var trainingProgramme = await _apprenticeshipProgrammeProvider.GetApprenticeshipProgrammeAsync(subject.ProgrammeId);
-            var data = new TitlePopularityData
+            var data = JsonConvert.SerializeObject(new TitlePopularityData
             {
                 TrainingCode = trainingProgramme.Id,
                 TrainingTitle = trainingProgramme.Title,
                 TrainingType = trainingProgramme.ApprenticeshipType.ToString().ToLower()
-            };
+            });
             
             if (popularityScore < _qaRulesConfig.TitlePopularityPercentageThreshold)
                 outcomeResult = new RuleOutcome(RuleId.TitlePopularity, 100, $"Title is not common for the training specified.", nameof(Vacancy.Title), null, data);
