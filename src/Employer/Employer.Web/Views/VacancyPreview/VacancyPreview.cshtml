@@ -382,12 +382,12 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
         <h2 asp-condition="@Model.ShowGeneralApplicationProcessSectionTitle" class="heading-large">Application process</h2>
         <h2 asp-condition="@Model.HasSpecifiedThroughExternalApplicationMethod" class="heading-large">Employer's application instructions</h2>
         <div asp-condition="@Model.HasNotSpecifiedApplicationMethod" class="@GetSectionClass(Model.ApplicationMethodSectionState)">
-            <h2 class="heading-small">How will the candidates apply for this vacancy?</h2>
+            <h2 id="@Anchors.ApplicationMethod" class="heading-small">How will the candidates apply for this vacancy?</h2>
             <span esfa-validation-message-for="ApplicationMethod" class="error-message"></span>
             @EditLink(RouteNames.ApplicationProcess_Get, Model.ApplicationMethodSectionState, "link-application-method")
         </div>
         <div asp-condition="@Model.HasSpecifiedThroughFaaApplicationMethod" class="@GetSectionClass(Model.ApplicationMethodSectionState)">
-            <p id="@Anchors.ApplicationMethod">
+            <p>
                 <img asp-condition="@Model.ApplicationMethodRequiresEdit" src="/img/red-cross.png"/>
                 Candidates will apply through the <a href="@Model.FindAnApprenticeshipUrl" target="_blank">find an apprenticeship service</a>
             </p>
