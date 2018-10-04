@@ -59,10 +59,10 @@ namespace Esfa.Recruit.Employer.Web.Mappings
                 .Select(i => i.RuleOutcomeId)
                 .ToList() ?? new List<Guid>();
 
-            var autoQaReferredOutcomes = review.AutomatedQaOutcome.RuleOutcomes
+            var autoQaReferredOutcomes = review.AutomatedQaOutcome?.RuleOutcomes
                 .SelectMany(d => d.Details)
                 .Where(x => autoQaReferredOutcomeIds.Contains(x.Id))
-                .ToList();
+                .ToList() ?? new List<RuleOutcome>();
 
             var uniqueFieldIdentifierNames =
                 manualQaFieldIdentifierNames.Union(
