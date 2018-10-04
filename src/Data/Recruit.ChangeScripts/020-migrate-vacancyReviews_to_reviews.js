@@ -14,12 +14,15 @@
     //This script is idempotent
     print("Migrating documents from 'vacancyReviews' to 'reviews'");
 
+    print(`vacancyReview collection document count=${db.vacancyReviews.count().toNumber()}`);
+    print(`review collection document count=${db.reviews.count().toNumber()}`);
+
     let matchedDocs = db.vacancyReviews.find();
 
     while (matchedDocs.hasNext()) {
         let doc = matchedDocs.next();
         
-        if(db.reviews.findOne({"_id" : doc._id}) == null){
+        if(db.reviews.findOne({"_id" : doc._id}) === null){
             print(`Inserting '${toGUID(doc._id.hex())}'`);
             
             let writeResult = db.reviews.insert(doc);
@@ -33,6 +36,9 @@
             print(`Skipping '${toGUID(doc._id.hex())}'`);
         }
     }
+
+    print(`vacancyReview collection document count=${db.vacancyReviews.count().toNumber()}`);
+    print(`review collection document count=${db.reviews.count().toNumber()}`);
 
     print("Finished migrating documents from 'vacancyReviews' to 'reviews'");
 }
