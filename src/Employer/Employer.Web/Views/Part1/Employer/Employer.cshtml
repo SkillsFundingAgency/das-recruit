@@ -4,18 +4,13 @@
 @inject IOptions<PostcodeAnywhereConfiguration> PcaConfig
 <div class="grid-row">
     <div class="column-full">
-        <h1 class="heading-xlarge small-bottom-margin">Make your vacancy stand out in a search</h1>
-        <p>
-            Apprentice candidates will see your vacancy in a search along with vacancies from other employers. This is your
-            opportunity to make your vacancy attract the best candidates
-        </p>
+        <h1 class="heading-xlarge small-bottom-margin">Location</h1>
 
         <partial name=@PartialNames.ValidationSummary model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
 
         <partial name=@PartialNames.ReviewSummary for="Review" />
 
         <div class="todo">
-            <h3 asp-condition="@Model.PageInfo.IsWizard" class="heading-medium no-top-margin">Step 3 of 6</h3>
             <div asp-condition="@Model.HasOnlyOneOrganisation"><p>@Model.Organisations.First().Name</p></div>
             <form asp-route="@RouteNames.Employer_Post" asp-route-wizard="@Model.PageInfo.IsWizard">
                 <div esfa-validation-marker-for="SelectedOrganisationName" class="form-group">
@@ -40,9 +35,9 @@
                 </div>
 
                 <div id="address-details" class="address-manual-input">
-                    <label class="form-label-bold">Enter the address where the apprenticeship will take place.</label>
+                    <label class="form-label-bold">Enter the address where the apprenticeship will take place</label>
                     <div esfa-validation-marker-for="AddressLine1" class="form-group-compound address-item form-group">
-                        <label asp-for="AddressLine1" class="form-label">Address</label>
+                        <label asp-for="AddressLine1" class="visuallyhidden">Address line 1</label>
                         <span esfa-validation-message-for="AddressLine1" class="error-message"></span>
                         <input asp-for="AddressLine1" class="form-control-large form-control postcode-lookup" maxlength="100" />
                     </div>
@@ -64,7 +59,7 @@
                     <div esfa-validation-marker-for="Postcode" class="form-group address-item form-group">
                         <label asp-for="Postcode" class="form-label">Postcode</label>
                         <span esfa-validation-message-for="Postcode" class="error-message"></span>
-                        <input asp-for="Postcode" class="form-control-large form-control postcode-lookup" maxlength="8" />
+                        <input asp-for="Postcode" class="form-control-large form-control postcode-lookup" style="width:6em" maxlength="8" />
                     </div>
                 </div>
 
