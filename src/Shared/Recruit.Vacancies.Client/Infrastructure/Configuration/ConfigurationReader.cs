@@ -11,11 +11,8 @@ namespace Recruit.Vacancies.Client.Infrastructure.Configuration
 {
     internal sealed class ConfigurationReader : MongoDbCollectionBase, IConfigurationReader
     {
-        private const string Database = "recruit";
-        private const string Collection = "configuration";
-
         public ConfigurationReader(ILogger<ConfigurationReader> logger, IOptions<MongoDbConnectionDetails> details)
-            : base(logger, Database, Collection, details)
+            : base(logger, MongoDbNames.RecruitDb, MongoDbCollectionNames.Configuration, details)
         {
         }
 

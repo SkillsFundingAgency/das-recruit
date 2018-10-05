@@ -12,11 +12,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 {
     internal sealed class MongoQueryStore : MongoDbCollectionBase, IQueryStore
     {
-        private const string Database = "recruit";
-        private const string Collection = "queryStore";
-
         public MongoQueryStore(ILogger<MongoQueryStore> logger, IOptions<MongoDbConnectionDetails> details)
-            : base(logger, Database, Collection, details)
+            : base(logger, MongoDbNames.RecruitDb, MongoDbCollectionNames.QueryStore, details)
         {
         }
 

@@ -11,12 +11,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.SequenceStore
 {
     internal sealed class MongoSequenceStore : MongoDbCollectionBase, IGenerateVacancyNumbers
     {
-        private const string Database = "recruit";
-        private const string Collection = "sequences";
         private const string VacancyNumberSequenceName = "Sequence_Vacancy";
 
         public MongoSequenceStore(ILogger<MongoSequenceStore> logger, IOptions<MongoDbConnectionDetails> details)
-            : base(logger, Database, Collection, details)
+            : base(logger, MongoDbNames.RecruitDb, MongoDbCollectionNames.Sequences, details)
         {
         }
 

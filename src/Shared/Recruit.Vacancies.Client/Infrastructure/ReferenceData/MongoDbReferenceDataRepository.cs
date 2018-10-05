@@ -18,14 +18,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData
 {
     internal sealed class MongoDbReferenceDataRepository : MongoDbCollectionBase, IReferenceDataReader, IReferenceDataWriter
     {
-        private const string Database = "recruit";
-        private const string Collection = "referenceData";
         private const string Id = "_id";
         private readonly IDictionary<Type, string> _itemIdLookup;
         private readonly ITimeProvider _timeProvider;
 
         public MongoDbReferenceDataRepository(ILogger<MongoDbReferenceDataRepository> logger, IOptions<MongoDbConnectionDetails> details, ITimeProvider timeProvider)
-            : base(logger, Database, Collection, details)
+            : base(logger, MongoDbNames.RecruitDb, MongoDbCollectionNames.ReferenceData, details)
         {
             _timeProvider = timeProvider;
             _itemIdLookup = BuildLookup();
@@ -72,15 +70,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData
         private IDictionary<Type, string> BuildLookup()
         {
             return new Dictionary<Type, string> 
-                {
-                    { typeof(CandidateSkills), "CandidateSkills" },
-                    { typeof(MinimumWages), "MinimumWageRanges" },
-                    { typeof(Holidays.BankHolidays), "BankHolidays" },
-                    { typeof(Quals.Qualifications), "QualificationTypes" },
-                    { typeof(Programmes.ApprenticeshipProgrammes), "ApprenticeshipProgrammes" },
-                    { typeof(Profanities.ProfanityList), "Profanities" },
-                    { typeof(BannedPhrases.BannedPhraseList), "BannedPhrases" }
-                };
+            {
+                { typeof(CandidateSkills), "CandidateSkills" },
+                { typeof(MinimumWages), "MinimumWageRanges" },
+                { typeof(Holidays.BankHolidays), "BankHolidays" },
+                { typeof(Quals.Qualifications), "QualificationTypes" },
+                { typeof(Programmes.ApprenticeshipProgrammes), "ApprenticeshipProgrammes" },
+                { typeof(Profanities.ProfanityList), "Profanities" },
+                { typeof(BannedPhrases.BannedPhraseList), "BannedPhrases" }
+            };
         }
     }
 }

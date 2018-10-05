@@ -15,15 +15,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 {
     internal sealed class MongoDbApplicationReviewRepository : MongoDbCollectionBase, IApplicationReviewRepository
     {
-        private const string Database = "recruit";
-        private const string Collection = "applicationReviews";
         private const string EmployerAccountId = "employerAccountId";
         private const string VacancyReference = "vacancyReference";
         private const string Id = "_id";
-        
 
         public MongoDbApplicationReviewRepository(ILogger<MongoDbApplicationReviewRepository> logger, IOptions<MongoDbConnectionDetails> details)
-            : base(logger, Database, Collection, details)
+            : base(logger, MongoDbNames.RecruitDb, MongoDbCollectionNames.ApplicationReviews, details)
         {
         }
 

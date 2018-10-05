@@ -18,12 +18,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 {
     internal sealed class MongoDbVacancyRepository : MongoDbCollectionBase, IVacancyRepository
     {
-        private const string Database = "recruit";
-        private const string Collection = "vacancies";
         private const string EmployerAccountId = "employerAccountId";
 
         public MongoDbVacancyRepository(ILogger<MongoDbVacancyRepository> logger, IOptions<MongoDbConnectionDetails> details) 
-            : base(logger, Database, Collection, details)
+            : base(logger, MongoDbNames.RecruitDb, MongoDbCollectionNames.Vacancies, details)
         {
         }
 
