@@ -46,7 +46,7 @@ namespace Esfa.Recruit.Qa.Web
                     c.AddServerHeader = false;
                 })
                 .UseStartup<Startup>()
-                .UseUrls($"https://localhost:{HostSettings.KestrelSslPort}")
+                .UseUrls($"https://localhost:5025")
                 .UseNLog();
     }
 }
