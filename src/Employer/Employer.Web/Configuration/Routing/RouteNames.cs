@@ -37,6 +37,12 @@
         public const string Employer_Get = "Employer_Get";
         public const string Employer_Post = "Employer_Post";
 
+        public const string CreateVacancyOptions_Get = "CreateVacancyOptions_Get";
+        public const string CreateVacancyOptions_Post = "CreateVacancyOptions_Post";
+
+        public const string CreateVacancyOptionConfirm_Get = "CreateVacancyOptionsConfirm_Get";
+        public const string CreateVacancyOptionConfirm_Post = "CreateVacancyOptionsConfirm_Post";
+
         public const string CreateVacancy_Get = "CreateVacancy_Get";
         public const string CreateVacancy_Post = "CreateVacancy_Post";
 

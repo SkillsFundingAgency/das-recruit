@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer
 {
@@ -9,5 +11,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Em
         }
 
         public IEnumerable<VacancySummary> Vacancies { get; set; }
+
+        public bool CanCloneVacancies => Vacancies.Any(x => x.Status == VacancyStatus.Live ||
+                                                            x.Status == VacancyStatus.Closed ||
+                                                            x.Status == VacancyStatus.PendingReview);
     }
 }
