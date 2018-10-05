@@ -1,34 +1,39 @@
 ﻿@model Esfa.Recruit.Employer.Web.ViewModels.Part1.Title.TitleViewModel
+
 <div class="grid-row">
     <div class="column-full">
-        <h1 class="heading-xlarge small-bottom-margin">Make your vacancy stand out in a search</h1>
-        <p>
+        <div class="info-summary highlight-summary">
+            <h3 class="heading-medium no-top-margin">Short vacancy summary</h3>
             Apprentice candidates will see your vacancy in a search along with vacancies from other employers. This is your
             opportunity to make your vacancy attract the best candidates
-        </p>
-        
-        <partial name=@PartialNames.ValidationSummary model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames}' />
+        </div>
+    </div>
+</div>
 
-        <partial name=@PartialNames.ReviewSummary for="Review" />
+
+<div class="grid-row">
+    <div class="column-full">
+        <partial name=@PartialNames.ValidationSummary model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames}'/>
+
+        <partial name=@PartialNames.ReviewSummary for="Review"/>
 
         <div class="todo">
-            <h3 asp-condition="@Model.PageInfo.IsWizard" class="heading-medium no-top-margin">Step 1 of 6</h3>
             <form asp-route="@Model.FormPostRouteName" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
                 <div esfa-validation-marker-for="Title" class="form-group">
                     <label asp-for="Title" class="form-label-bold">
                         What do you want to call this vacancy?
-                        <span class="form-hint">For example, Software developer apprenticeship</span>
+                        <span class="form-hint">For example, Software developer apprenticeship. The vacancy title must include the word apprentice or apprenticeship.</span>
                     </label>
                     <span esfa-validation-message-for="Title" class="error-message"></span>
-                    <input asp-for="Title" class="form-control-3-4 form-control character-count" type="text" data-val-length-max="100" />
+                    <input asp-for="Title" class="form-control-3-4 form-control character-count" type="text" data-val-length-max="100"/>
                     <br>
                     <span class="maxchar-count">100</span>
                     <span class="maxchar-text"> characters remaining</span>
                 </div>
                 <div esfa-validation-marker-for="NumberOfPositions" class="form-group">
-                    <label asp-for="NumberOfPositions" class="form-label-bold">Number of positions for this apprenticeship</label>
+                    <label asp-for="NumberOfPositions" class="form-label-bold">How many positions do you have for this apprenticeship?</label>
                     <span esfa-validation-message-for="NumberOfPositions" class="error-message"></span>
-                    <input asp-for="NumberOfPositions" class="form-control form-control-1-8" type="number" min="1" />
+                    <input asp-for="NumberOfPositions" class="form-control form-control-1-8" type="number" min="1"/>
                 </div>
                 <button type="submit" class="button save-button">@Model.PageInfo.SubmitButtonText</button>
 

@@ -1,25 +1,21 @@
-﻿@using Esfa.Recruit.Vacancies.Client.Application.Services
-@model Esfa.Recruit.Employer.Web.ViewModels.Part1.Training.TrainingViewModel
+﻿@model Esfa.Recruit.Employer.Web.ViewModels.Part1.Training.TrainingViewModel
 
 <div class="grid-row">
     <div class="column-full">
-        <h1 class="heading-xlarge small-bottom-margin">Make your vacancy stand out in a search</h1>
-        <p>
-            Apprentice candidates will see your vacancy in a search along with vacancies from other employers. This is your
-            opportunity to make your vacancy attract the best candidates
-        </p>
-
+        <h1 class="heading-xlarge small-bottom-margin">Important dates</h1>
+      
         <partial name=@PartialNames.ValidationSummary model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
 
         <partial name=@PartialNames.ReviewSummary for="Review" />
 
         <div class="todo">
-            <h3 asp-condition="@Model.PageInfo.IsWizard" class="heading-medium no-top-margin">Step 4 of 6</h3>
             <form asp-route="@RouteNames.Training_Post" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
 
                 <div esfa-validation-marker-for="ClosingDate" class="form-group">
                     <fieldset>
-                        <legend class="form-label-bold">Closing date for applications<span class="visuallyhidden"> (in numeric format DD MM YYYY)</span></legend>
+                        <legend class="form-label-bold">Application closing date<span class="visuallyhidden"> (in numeric format DD MM YYYY)</span></legend>
+                        <span class="form-hint">For example, 31 1 2019</span>
+
                         <span esfa-validation-message-for="ClosingDate" class="error-message"></span>
 
                         <div class="form-date">
@@ -41,7 +37,8 @@
 
                 <div esfa-validation-marker-for="StartDate" class="form-group">
                     <fieldset>
-                        <legend class="form-label-bold">Possible start date<span class="visuallyhidden"> (in numeric format DD MM YYYY)</span></legend>
+                        <legend class="form-label-bold">When do you expect the apprenticeship to start?<span class="visuallyhidden"> (in numeric format DD MM YYYY)</span></legend>
+                        <span class="form-hint">For example, 30 3 2019</span>
 
                         <span esfa-validation-message-for="StartDate" class="error-message"></span>
 
@@ -64,14 +61,14 @@
 
                 <div esfa-validation-marker-for="SelectedProgrammeId" class="form-group">
                     <label asp-for="SelectedProgrammeId" class="form-label-bold">Search for apprenticeship training (standard or framework)<span class="visuallyhidden"> Press Enter key to activate list of apprenticeship standards and frameworks</span></label>
-
+                    <span class="form-hint">Start typing the name of the course or choose an option from the list</span>
                     <span esfa-validation-message-for="SelectedProgrammeId" class="error-message"></span>
 
                     <select asp-for="SelectedProgrammeId" class="form-control form-control-3-4">
                         <option value="">Please select</option>
                         @foreach (var programme in Model.Programmes)
                         {
-                        <option value="@programme.Id">@programme.Name</option>
+                            <option value="@programme.Id">@programme.Name</option>
                         }
                     </select>
                 </div>

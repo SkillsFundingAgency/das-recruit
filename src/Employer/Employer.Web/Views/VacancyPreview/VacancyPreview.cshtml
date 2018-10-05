@@ -142,7 +142,7 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
             <li class="@GetSectionClass(Model.ExpectedDurationSectionState)">
                 <h3 class="heading-small" id="@Anchors.ExpectedDuration">
                     <img asp-condition="@Model.ExpectedDurationRequiresEdit" src="/img/red-cross.png"/>
-                    Expected apprenticeship duration
+                    Expected duration
                 </h3>
                 <span esfa-validation-message-for="ExpectedDuration" class="error-message"></span>
                 <p asp-condition="@Model.HasExpectedDuration">@Model.ExpectedDuration</p>

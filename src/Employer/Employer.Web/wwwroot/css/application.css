@@ -110,11 +110,15 @@
     border: 4px solid #f47738;
   }
 
+ .highlight-summary {
+   border: 4px solid #28a197;
+ }
+
   @media (min-width: 641px) {
-    .info-summary , .warning-summary {
-      margin-top: 30px;
-      margin-bottom: 30px;
-      padding: 20px 15px 15px;
+    .info-summary, .warning-summary, .highlight-summary {
+        margin-top: 30px;
+        margin-bottom: 30px;
+        padding: 20px 15px 15px;
     }
 
     .info-summary {
@@ -125,6 +129,9 @@
         border: 5px solid #f47738;
     }
 
+    .highlight-summary {
+        border: 4px solid #28a197;
+    }
   }
   
   .info-summaryfocus {
