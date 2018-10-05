@@ -72,7 +72,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.R
 
             var outcome = await rule.EvaluateAsync(entity);
 
-            outcome.Details.First().Data.Should().BeOfType(typeof(TitlePopularityData));
+            outcome.Details.First().Data.Should().BeOfType(typeof(string));
         }
 
         [Theory]
