@@ -70,6 +70,9 @@ Any scripts that are no longer required to be run during release should be moved
 - A target document database created in MongoDB :leaves: or Azure CosmosDB :rocket:.
 - Mongo shell (Pointing at your target database server.)
 
+> If you need to connect to the Cosmos DB Emulator using Mongo Shell use this command
+`mongo recruit --port 10255 --ssl --authenticationDatabase admin -u localhost -p C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==`
+
 ## Instructions
 
 1. From the Mongo shell you can navigate to the directory that holds the **_documentMigration.js_** and child scripts using `cd("../../../dev/das-recruit/src/Data/Recruit.ChangeScipts")` assuming you have cloned the repository into the dev folder of your root dir. You can use `pwd()` to print your working directory to help you navigate.
