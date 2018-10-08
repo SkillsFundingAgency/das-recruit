@@ -15,7 +15,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
                                             INotificationHandler<VacancyDeletedEvent>,
                                             INotificationHandler<VacancyPublishedEvent>,
                                             INotificationHandler<VacancyClosedEvent>,
-                                            INotificationHandler<ApplicationReviewCreatedEvent>,
+                                            INotificationHandler<ApplicationReviewUpdatedEvent>,
                                             INotificationHandler<ApplicationReviewedEvent>,
                                             INotificationHandler<SetupEmployerEvent>,
                                             INotificationHandler<VacancyReferredEvent>
@@ -61,7 +61,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
             return Handle(notification);
         }
 
-        public Task Handle(ApplicationReviewCreatedEvent notification, CancellationToken cancellationToken)
+        public Task Handle(ApplicationReviewUpdatedEvent notification, CancellationToken cancellationToken)
         {
             return Handle(notification);
         }
@@ -95,7 +95,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
             if (notification == null)
                 throw new ArgumentNullException(nameof(notification), "Should not be null");
             
-            _logger.LogInformation("Handling {eventType} for accountId: {employerAccountId} and vacancyId: {vacancyId}", notification.GetType().Name, notification.EmployerAccountId, notification.VacancyId);
+            _logger.LogInformation("Handling {eventType} for accountId: {employerAccountId} and vacancyReference: {vacancyReference}", notification.GetType().Name, notification.EmployerAccountId, notification.VacancyReference);
             return _dashboardService.ReBuildDashboardAsync(notification.EmployerAccountId);
         }
 
