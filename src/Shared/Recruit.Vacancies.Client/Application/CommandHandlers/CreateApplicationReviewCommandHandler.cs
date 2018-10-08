@@ -49,10 +49,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             await _applicationReviewRepository.CreateAsync(review);
 
-            await _messaging.PublishEvent(new ApplicationReviewCreatedEvent
+            await _messaging.PublishEvent(new ApplicationReviewUpdatedEvent
             {
                 EmployerAccountId = vacancy.EmployerAccountId,
-                VacancyId = vacancy.Id
+                VacancyReference = vacancy.VacancyReference.Value
             });
         }
     }
