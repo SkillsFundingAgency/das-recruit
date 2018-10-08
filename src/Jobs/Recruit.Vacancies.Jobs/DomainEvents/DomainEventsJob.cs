@@ -27,6 +27,11 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents
             await ExecuteHandler(nameof(ApplicationSubmittedEvent), message);
         }
 
+        public async Task HandleApplicationWithdrawnEvent([QueueTrigger(QueueNames.ApplicationWithdrawnQueueName, Connection = "EventQueueConnectionString")] string message, TextWriter log)
+        {
+            await ExecuteHandler(nameof(ApplicationWithdrawnEvent), message);
+        }
+
         public async Task HandleVacancyEvent([QueueTrigger(QueueNames.DomainEventsQueueName, Connection = "EventQueueConnectionString")] string message, TextWriter log)
         {
             try
