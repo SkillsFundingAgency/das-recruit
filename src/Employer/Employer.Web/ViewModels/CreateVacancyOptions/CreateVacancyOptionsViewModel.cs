@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace Esfa.Recruit.Employer.Web.ViewModels.CreateVacancy
+namespace Esfa.Recruit.Employer.Web.ViewModels.CreateVacancyOptions
 {
-    public class CreateOptionsViewModel 
+    public class CreateVacancyOptionsViewModel 
     {
         [Required(ErrorMessage = ValidationMessages.CreateVacancyOptionsConfirmationMessages.SelectionRequired)]
         public Guid? VacancyId { get; set; }

@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer;
-using Esfa.Recruit.Employer.Web.ViewModels.CreateVacancy;
+using Esfa.Recruit.Employer.Web.ViewModels.CreateVacancyOptions;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Shared.Web.Extensions;
 using System.Linq;
@@ -10,16 +10,16 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
-    public class CreateVacancyOrchestrator
+    public class CreateVacancyOptionsOrchestrator
     {
         private readonly IEmployerVacancyClient _vacancyClient;
 
-        public CreateVacancyOrchestrator(IEmployerVacancyClient vacancyClient)
+        public CreateVacancyOptionsOrchestrator(IEmployerVacancyClient vacancyClient)
         {
             _vacancyClient = vacancyClient;
         }
 
-        public async Task<CreateOptionsViewModel> GetCreateOptionsViewModelAsync(string employerAccountId)
+        public async Task<CreateVacancyOptionsViewModel> GetCreateOptionsViewModelAsync(string employerAccountId)
         {
             var dashboard = await _vacancyClient.GetDashboardAsync(employerAccountId);
             var vm = MapFromDashboard(dashboard);
@@ -38,7 +38,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return clonedVacancyId;
         }
 
-        private static CreateOptionsViewModel MapFromDashboard(EmployerDashboard dashboard)
+        private static CreateVacancyOptionsViewModel MapFromDashboard(EmployerDashboard dashboard)
         {
             var summaries = dashboard.CloneableVacancies.Select(x => new ClonableVacancy 
                 {
@@ -47,7 +47,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                     Summary = BuildSummaryText(x)
                 });
 
-            return new CreateOptionsViewModel
+            return new CreateVacancyOptionsViewModel
             {
                 Vacancies = summaries
             };

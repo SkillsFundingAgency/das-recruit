@@ -3,19 +3,17 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators;
-using Esfa.Recruit.Employer.Web.RouteModel;
-using Esfa.Recruit.Employer.Web.ViewModels.CreateVacancy;
-using Esfa.Recruit.Employer.Web.ViewModels.DeleteVacancy;
+using Esfa.Recruit.Employer.Web.ViewModels.CreateVacancyOptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
     [Route(RoutePrefixPaths.AccountRoutePath)]
-    public class CreateVacancyController : Controller
+    public class CreateVacancyOptionsController : Controller
     {
-        private readonly CreateVacancyOrchestrator _orchestrator;
+        private readonly CreateVacancyOptionsOrchestrator _orchestrator;
 
-        public CreateVacancyController(CreateVacancyOrchestrator orchestrator)
+        public CreateVacancyOptionsController(CreateVacancyOptionsOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
         }
@@ -29,7 +27,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         }
 
         [HttpPost("create-options", Name = RouteNames.CreateVacancyOptions_Post)]
-        public async Task<IActionResult> Options([FromRoute]string employerAccountId, CreateOptionsEditModel model)
+        public async Task<IActionResult> Options([FromRoute]string employerAccountId, CreateVacancyOptionsEditModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -37,11 +35,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 return View(vm);
             }
 
-            // If 'Create New' selected then normal flow
             if (model.VacancyId == Guid.Empty)
                 return RedirectToRoute(RouteNames.CreateVacancy_Get);
 
-            // else clone vacancy and redirect to part2 preview
             var newVacancyId = await _orchestrator.CloneVacancy(employerAccountId, model.VacancyId.Value, User.ToVacancyUser());
 
             return RedirectToRoute(RouteNames.Vacancy_Preview_Get, new { VacancyId = newVacancyId });

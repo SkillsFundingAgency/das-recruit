@@ -39,7 +39,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             if (vacancy.Status != VacancyStatus.Submitted && vacancy.Status != VacancyStatus.Live && vacancy.Status != VacancyStatus.Closed)
             {
-                _logger.LogWarning($"Unable to clone vacancy {{vacancyId}} due to it having a status of {vacancy?.Status}.", message.IdOfVacancyToClone);
+                _logger.LogWarning($"Unable to clone vacancy {{vacancyId}} due to it having a status of {vacancy.Status}.", message.IdOfVacancyToClone);
                 return;
             }
 
