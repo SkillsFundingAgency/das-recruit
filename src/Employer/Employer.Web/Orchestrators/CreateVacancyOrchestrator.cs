@@ -1,13 +1,10 @@
-﻿using Esfa.Recruit.Employer.Web.ViewModels.DeleteVacancy;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer;
 using Esfa.Recruit.Employer.Web.ViewModels.CreateVacancy;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Shared.Web.Extensions;
 using System.Linq;
-using System;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
@@ -30,20 +27,22 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         private static CreateOptionsViewModel MapFromDashboard(EmployerDashboard dashboard)
         {
-            return new CreateOptionsViewModel
-            {
-                Vacancies = dashboard.CloneableVacancies.Select(x => new ClonableVacancy 
+            var summaries = dashboard.CloneableVacancies.Select(x => new ClonableVacancy 
                 {
                     Id = x.Id,
                     VacancyReference = x.VacancyReference.Value,
                     Summary = BuildSummary(x)
-                })
+                });
+
+            return new CreateOptionsViewModel
+            {
+                Vacancies = summaries
             };
         }
 
         private static string BuildSummary(VacancySummary x)
         {
-            return $"{x.Title}, {x.ClosingDate.Value.AsGdsDate()}, status: {x.Status.GetDisplayName()},";
+            return $"{x.Title}, {x.ClosingDate.Value.AsGdsDate()}, status: {x.Status.GetDisplayName()}, {x.TrainingTitle}, Level: {x.TrainingLevel.GetDisplayName()} ({x.TrainingType.GetDisplayName()})";
         }
     }
 }

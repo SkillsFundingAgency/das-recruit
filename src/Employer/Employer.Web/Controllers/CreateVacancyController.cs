@@ -1,4 +1,5 @@
-﻿using Esfa.Recruit.Employer.Web.Configuration.Routing;
+﻿using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.CreateVacancy;
@@ -18,9 +19,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         }
 
         [HttpGet("create-options", Name = RouteNames.CreateVacancyOptions_Get)]
-        public IActionResult Options([FromRoute]string employerAccountId)
+        public async Task<IActionResult> Options([FromRoute]string employerAccountId)
         {
-            var vm = new CreateOptionsViewModel();
+            var vm = await _orchestrator.GetCreateOptionsViewModelAsync(employerAccountId);
 
             return View(vm);
         }
