@@ -15,6 +15,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Em
         public IEnumerable<VacancySummary> CloneableVacancies => Vacancies.Where(
             x => x.Status == VacancyStatus.Live ||
                  x.Status == VacancyStatus.Closed ||
-                 x.Status == VacancyStatus.PendingReview);
+                 x.Status == VacancyStatus.Submitted);
     }
 }

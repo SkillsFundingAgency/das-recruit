@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.CreateVacancy
 {
     public class CreateOptionsViewModel 
     {
-        public string VacancyId { get; set; }
+        [Required(ErrorMessage = ValidationMessages.CreateVacancyOptionsConfirmationMessages.SelectionRequired)]
+        public Guid? VacancyId { get; set; }
 
         public IEnumerable<ClonableVacancy> Vacancies { get; set; }
     }

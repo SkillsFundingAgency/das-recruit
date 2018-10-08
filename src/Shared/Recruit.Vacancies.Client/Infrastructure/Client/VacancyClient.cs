@@ -88,7 +88,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public async Task<Guid> CreateVacancyAsync(SourceOrigin origin, string title, int numberOfPositions, string employerAccountId, VacancyUser user)
         {
-            var vacancyId = Guid.NewGuid();
+            var vacancyId = GenerateVacancyId();
 
             var command = new CreateVacancyCommand
             {
@@ -103,6 +103,27 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             await _messaging.SendCommandAsync(command);
 
             return vacancyId;
+        }
+
+        public async Task<Guid> CloneVacancyAsync(Guid vacancyId, VacancyUser user)
+        {
+            var newVacancyId = GenerateVacancyId();
+
+            var command = new CloneVacancyCommand
+            {
+                IdOfVacancyToClone = vacancyId,
+                NewVacancyId = newVacancyId,
+                User = user
+            };
+
+            await _messaging.SendCommandAsync(command);
+
+            return newVacancyId;
+        }
+        
+        private Guid GenerateVacancyId()
+        {
+            return Guid.NewGuid();
         }
 
         public Task SubmitVacancyAsync(Guid vacancyId, VacancyUser user)
