@@ -14,10 +14,19 @@
             <div class="form-group">
                 <fieldset>
                     <form asp-action="Index" asp-controller="Home">
+                            <div>
+                                <input asp-for="VacancyId" type="radio" value="New" /> Create New
+                            </div>
+                            <div>
+                                Or clone:
+                            </div>
                             @foreach (var item in Model.Vacancies)
                             {
                                 <div>
                                     <input asp-for="VacancyId" type="radio" value="@item.Id" /> @item.Name
+                                </div>
+                                <div>
+                                    @item.Summary
                                 </div>
                             }
                 

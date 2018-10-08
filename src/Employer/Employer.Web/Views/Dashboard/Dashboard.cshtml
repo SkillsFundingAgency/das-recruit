@@ -38,7 +38,7 @@
             </p>
         </div>
         <a asp-condition="!@Model.CanCloneVacancies" asp-route="@RouteNames.CreateVacancy_Get" class="button small-bottom-margin">Create vacancy</a>
-        <a asp-condition="@Model.CanCloneVacancies" asp-route="@RouteNames.CreateVacancy_Get" class="button small-bottom-margin">Create vacancy</a>
+        <a asp-condition="@Model.CanCloneVacancies" asp-route="@RouteNames.CreateVacancyOptions_Get" class="button small-bottom-margin">Create vacancy</a>
     </div>
     <br>
 </div>
