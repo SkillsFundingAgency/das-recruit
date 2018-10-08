@@ -12,8 +12,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Em
 
         public IEnumerable<VacancySummary> Vacancies { get; set; }
 
-        public bool CanCloneVacancies => Vacancies.Any(x => x.Status == VacancyStatus.Live ||
-                                                            x.Status == VacancyStatus.Closed ||
-                                                            x.Status == VacancyStatus.PendingReview);
+        public IEnumerable<VacancySummary> CloneableVacancies => Vacancies.Where(
+            x => x.Status == VacancyStatus.Live ||
+                 x.Status == VacancyStatus.Closed ||
+                 x.Status == VacancyStatus.PendingReview);
     }
 }

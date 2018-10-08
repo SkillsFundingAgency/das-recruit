@@ -2,6 +2,5 @@
 {
     public class CreateOptionsEditModel : CreateOptionsViewModel
     {
-        public bool CreateNew { get; set; }
     }
 }

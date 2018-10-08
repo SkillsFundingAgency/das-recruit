@@ -15,6 +15,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Em
         public int NewApplicationsCount { get; set; }
         public DateTime? ClosingDate { get; set; }
         public ApplicationMethod? ApplicationMethod { get; set; }
+        public TrainingType TrainingType { get; set; }
 
         public bool HasVacancyReference => VacancyReference.HasValue;
         public bool HasNoVacancyReference => !HasVacancyReference;

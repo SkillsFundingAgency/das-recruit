@@ -1,49 +1,49 @@
 ﻿using Esfa.Recruit.Employer.Web.ViewModels.DeleteVacancy;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
-using Esfa.Recruit.Employer.Web.ViewModels;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Employer.Web.RouteModel;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer;
+using Esfa.Recruit.Employer.Web.ViewModels.CreateVacancy;
+using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
+using Esfa.Recruit.Shared.Web.Extensions;
+using System.Linq;
+using System;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
     public class CreateVacancyOrchestrator
     {
-        private readonly IEmployerVacancyClient _client;
+        private readonly IEmployerVacancyClient _vacancyClient;
 
-        public CreateVacancyOrchestrator(IEmployerVacancyClient client)
+        public CreateVacancyOrchestrator(IEmployerVacancyClient vacancyClient)
         {
-            _client = client;
+            _vacancyClient = vacancyClient;
         }
 
-        public async Task<DeleteViewModel> GetDeleteViewModelAsync(VacancyRouteModel vrm)
+        public async Task<CreateOptionsViewModel> GetCreateOptionsViewModelAsync(string employerAccountId)
         {
-            var vacancy = await _client.GetVacancyAsync(vrm.VacancyId);
-
-            Utility.CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
-
-            if (!vacancy.CanDelete)
-                throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
-
-            var vm = new DeleteViewModel
-            {
-                Title = vacancy.Title
-            };
-
+            var dashboard = await _vacancyClient.GetDashboardAsync(employerAccountId);
+            var vm = MapFromDashboard(dashboard);
+            
             return vm;
         }
 
-        public async Task DeleteVacancyAsync(DeleteEditModel m, VacancyUser user)
+        private static CreateOptionsViewModel MapFromDashboard(EmployerDashboard dashboard)
         {
-            var vacancy = await _client.GetVacancyAsync(m.VacancyId);
+            return new CreateOptionsViewModel
+            {
+                Vacancies = dashboard.CloneableVacancies.Select(x => new ClonableVacancy 
+                {
+                    Id = x.Id,
+                    VacancyReference = x.VacancyReference.Value,
+                    Summary = BuildSummary(x)
+                })
+            };
+        }
 
-            Utility.CheckAuthorisedAccess(vacancy, m.EmployerAccountId);
-
-            if (!vacancy.CanDelete)
-                throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
-
-            await _client.DeleteVacancyAsync(vacancy.Id, user);
+        private static string BuildSummary(VacancySummary x)
+        {
+            return $"{x.Title}, {x.ClosingDate.Value.AsGdsDate()}, status: {x.Status.GetDisplayName()},";
         }
     }
 }

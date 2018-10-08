@@ -15,7 +15,7 @@ namespace Esfa.Recruit.Employer.Web.Mappings
                                         .OrderByDescending(v => v.CreatedDate)
                                         .ToList() ?? new List<VacancySummary>(),
 
-                CanCloneVacancies = dashboard.CanCloneVacancies
+                CanCloneVacancies = dashboard.CloneableVacancies.Any()
             };
         }
     }
