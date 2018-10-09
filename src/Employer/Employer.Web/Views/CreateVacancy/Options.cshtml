@@ -5,34 +5,34 @@
         <partial name=@PartialNames.ValidationSummary model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
         <p>
             You can clone or copy vacancies once they've been submitted.
-        </p> 
-        <p>
             Vacancies will be approved or rejected within 24 hours.
         </p>
         <h1 class="heading-medium">Do you want to create a new vacancy or clone an existing vacancy?</h1>
         <form asp-route="@RouteNames.CreateVacancyOptions_Post">
             <div class="form-group">
                 <fieldset>
-                    <form asp-action="Index" asp-controller="Home">
-                            <div>
-                                <input asp-for="VacancyId" type="radio" value="New" /> Create New
-                            </div>
-                            <div>
-                                Or clone:
-                            </div>
-                            @foreach (var item in Model.Vacancies)
-                            {
-                                <div>
-                                    <input asp-for="VacancyId" type="radio" value="@item.Id" /> @item.Name
-                                </div>
-                                <div>
+                    <div class="multiple-choice">
+                        <input asp-for="VacancyId" type="radio" value="New" id="create-new"/>
+                        <label for="create-new">Create New</label> 
+                    </div>
+                    <p class="form-block">
+                        Or clone:
+                    </p>
+                    @foreach (var item in Model.Vacancies)
+                    {
+                        <div class="multiple-choice">
+                            <input asp-for="VacancyId" type="radio" value="@item.Id" id="@item.Id"/> 
+                            <label for="@item.Id">@item.Name
+                                <div class="form-block form-hint">
                                     @item.Summary
                                 </div>
-                            }
-                
-                        <input type="submit" value="Continue" class="button" />
-                    </form>
+                            </label>
+                        </div>    
+                    }      
                 </fieldset>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Continue" class="button" />
             </div>
         </form>
     </div>

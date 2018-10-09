@@ -29,14 +29,13 @@
 </div>
 <div class="grid-row">
     <div class="column-full">
-        <div asp-condition="@Model.ShowNoVacanciesMessage">
-            <p>
-                You can clone or copy vacancies once they've been submitted.
-            </p> 
-            <p>
-                Vacancies will be approved or rejected within 24 hours.
-            </p>
-        </div>
+        <p>
+            You must be a levy-paying employer to post a vacancy.
+        </p>
+        <p>
+            You can clone or copy vacancies once they've been submitted.
+            Vacancies will be approved or rejected within 24 hours.
+        </p>
         <a asp-condition="!@Model.CanCloneVacancies" asp-route="@RouteNames.CreateVacancy_Get" class="button small-bottom-margin">Create vacancy</a>
         <a asp-condition="@Model.CanCloneVacancies" asp-route="@RouteNames.CreateVacancyOptions_Get" class="button small-bottom-margin">Create vacancy</a>
     </div>
