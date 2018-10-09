@@ -76,7 +76,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
             {
                 if (summary.VacancyReference.HasValue)
                 {
-                    var vacancyApplicationReviews = applicationReviews.Where(r => r.VacancyReference == summary.VacancyReference.Value).ToList();
+                    var vacancyApplicationReviews = applicationReviews.Where(r => 
+                        r.VacancyReference == summary.VacancyReference.Value && 
+                        r.IsWithdrawn == false).ToList();
+
                     summary.AllApplicationsCount = vacancyApplicationReviews.Count;
                     summary.NewApplicationsCount = vacancyApplicationReviews.Count(r => r.Status == ApplicationReviewStatus.New);
                 }
