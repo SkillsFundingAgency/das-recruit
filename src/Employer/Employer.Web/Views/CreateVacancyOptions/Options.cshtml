@@ -12,7 +12,7 @@
             <div class="form-group">
                 <fieldset>
                     <div class="multiple-choice">
-                        <input asp-for="VacancyId" type="radio" value="New" id="create-new"/>
+                        <input asp-for="VacancyId" type="radio" value="@Guid.Empty" id="create-new"/>
                         <label for="create-new">Create New</label> 
                     </div>
                     <p class="form-block">
@@ -22,7 +22,7 @@
                     {
                         <div class="multiple-choice">
                             <input asp-for="VacancyId" type="radio" value="@item.Id" id="@item.Id"/> 
-                            <label for="@item.Id">@item.Name
+                            <label for="@item.Id">@item.VacancyReference
                                 <div class="form-block form-hint">
                                     @item.Summary
                                 </div>
