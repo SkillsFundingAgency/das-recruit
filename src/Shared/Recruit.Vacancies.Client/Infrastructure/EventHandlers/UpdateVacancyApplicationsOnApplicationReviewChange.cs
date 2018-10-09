@@ -64,7 +64,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
                 ApplicationReviewId = review.Id,
                 IsWithdrawn = review.IsWithdrawn,
                 CandidateName = null,
-                DisabilityStatus = ApplicationReviewDisabilityStatus.Unknown,
+                DisabilityStatus = ApplicationReviewDisabilityStatus.Unknown
             };
 
             if (review.IsWithdrawn == false)
