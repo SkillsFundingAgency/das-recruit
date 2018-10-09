@@ -9,6 +9,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
@@ -39,8 +40,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             if (vacancy.Status != VacancyStatus.Submitted && vacancy.Status != VacancyStatus.Live && vacancy.Status != VacancyStatus.Closed)
             {
-                _logger.LogWarning($"Unable to clone vacancy {{vacancyId}} due to it having a status of {vacancy.Status}.", message.IdOfVacancyToClone);
-                return;
+                _logger.LogError($"Unable to clone vacancy {{vacancyId}} due to it having a status of {vacancy.Status}.", message.IdOfVacancyToClone);
+                
+                throw new InvalidStateException($"Vacancy is not in correct state to be cloned. Current State: {vacancy.Status}");
             }
 
             var clone = CreateClone(message, vacancy);
