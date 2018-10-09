@@ -82,7 +82,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             Response.Cookies.Append(string.Format(CookieNames.VacancyProposedClosingDate, m.VacancyId), DateTime.Parse(m.ClosingDate).ToShortDateString(), EsfaCookieOptions.GetSessionLifetimeHttpCookieOption(_hostingEnvironment));
             Response.Cookies.Append(string.Format(CookieNames.VacancyProposedStartDate, m.VacancyId), DateTime.Parse(m.StartDate).ToShortDateString(), EsfaCookieOptions.GetSessionLifetimeHttpCookieOption(_hostingEnvironment));
 
-            return RedirectToRoute(RouteNames.VacancyManage_Get);
+            return RedirectToRoute(RouteNames.VacancyEdit_Get);
         }
 
         [HttpGet("cancel-edit-dates", Name = RouteNames.VacancyEditDatesCancel_Get)]
@@ -90,7 +90,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         {
             ClearEditDatesCookies(vrm.VacancyId);
 
-            return RedirectToRoute(RouteNames.VacancyManage_Get);
+            return RedirectToRoute(RouteNames.VacancyEdit_Get);
         }
 
         private void ClearEditDatesCookies(Guid vacancyId)

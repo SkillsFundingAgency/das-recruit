@@ -29,6 +29,21 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         [HttpGet("manage", Name = RouteNames.VacancyManage_Get)]
         public async Task<IActionResult> ManageVacancy(VacancyRouteModel vrm)
         {
+            var vacancy = await _orchestrator.GetVacancy(vrm);
+
+            if (vacancy.CanEdit)
+            {
+                return HandleRedirectOfEditableVacancy(vacancy);
+            }
+
+            var viewModel = await _orchestrator.GetManageVacancyViewModel(vrm);
+
+            return View(viewModel);
+        }
+
+        [HttpGet("edit", Name = RouteNames.VacancyEdit_Get)]
+        public async Task<IActionResult> EditVacancy(VacancyRouteModel vrm)
+        {
             var proposedClosingDate = Request.Cookies[string.Format(CookieNames.VacancyProposedClosingDate, vrm.VacancyId)]?.Trim();
             var proposedStartDate = Request.Cookies[string.Format(CookieNames.VacancyProposedStartDate, vrm.VacancyId)]?.Trim();
             var vacancy = await _orchestrator.GetVacancy(vrm);
@@ -51,7 +66,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             if (proposedStartDate?.Length > 0 && DateTime.TryParse(proposedStartDate, out parsedStartDate) == false)
                 return RedirectToRoute(RouteNames.VacancyEditDates_Get);
 
-            var viewModel = await _orchestrator.GetViewModelForManageVacancy(vrm, parsedClosingDate, parsedStartDate);
+            var viewModel = await _orchestrator.GetEditVacancyViewModel(vrm, parsedClosingDate, parsedStartDate);
 
             return View(viewModel);
         }

@@ -1,0 +1,39 @@
+﻿@model Esfa.Recruit.Employer.Web.ViewModels.VacancyManage.EditVacancyViewModel
+<div class="grid-row">
+    <div class="column-full">
+        <main id="content" role="main">
+            <div class="grid-row">
+                <div class="column-full">
+                    <div class="info-summary small-top-margin" role="alert" aria-labelledby="info-summary-heading-example-2" tabindex="-1">
+                        <h3 class="heading-medium no-top-margin">You can edit the following information:</h3>
+                        <ul class="info-summary-list">
+                            <li><a href="#closingDateSection" class="summary-link">Closing date</a></li>
+                            <li><a href="#possibleStartDateSection" class="summary-link">Possible start date</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="grid-row">
+                <div class="column-full">
+                    <h1 class="heading-xlarge" id="vacancy-header">
+                        @Model.Title
+                        <span class="heading-secondary">@Model.EmployerName</span>
+                    </h1>
+                </div>
+            </div>
+            <partial name=@PartialNames.EditVacancyPartial model="Model" />
+
+            <div class="form-group inline">
+                <div class="form-group small-top-margin">
+                    <form class="form-inline" asp-condition="@Model.HasChanges" asp-route="@RouteNames.SubmitVacancyChanges_Post" novalidate>
+                        <input type="hidden" name="ProposedClosingDate" value="@Model.ProposedClosingDateFormValue" />
+                        <input type="hidden" name="ProposedStartDate" value="@Model.ProposedStartDateFormValue" />
+                        <button type="submit" class="button save-button">Publish</button>
+                    </form>
+                    <a asp-condition="@Model.HasChanges" asp-route="@RouteNames.CancelVacancyChanges_Get" class="button-link">Cancel</a>
+                    <a asp-condition="@Model.IsUnchanged" asp-route="@RouteNames.Dashboard_Index_Get" class="button">Return to dashboard</a>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
