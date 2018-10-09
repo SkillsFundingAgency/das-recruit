@@ -10,5 +10,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
         public string CandidateName { get; set; }
         public Guid ApplicationReviewId { get; set; }
         public ApplicationReviewDisabilityStatus DisabilityStatus { get; set; }
+        public bool IsWithdrawn { get; set; }
+    
+        public bool IsNotWithdrawn => !IsWithdrawn;
     }
 }

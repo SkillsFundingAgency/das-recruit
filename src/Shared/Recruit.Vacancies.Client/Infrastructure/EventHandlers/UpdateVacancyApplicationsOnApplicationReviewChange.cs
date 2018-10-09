@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -50,17 +49,31 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
             var vacancyApplications = new VacancyApplications
             {
                 VacancyReference = vacancy.VacancyReference.Value,
-                Applications = vacancyApplicationReviews.Select(r => new VacancyApplication
-                {
-                    Status = r.Status,
-                    SubmittedDate = r.SubmittedDate,
-                    ApplicationReviewId = r.Id,
-                    CandidateName = r.Application.FullName,
-                    DisabilityStatus = r.Application.DisabilityStatus ?? ApplicationReviewDisabilityStatus.Unknown
-                }).ToList()
+                Applications = vacancyApplicationReviews.Select(MapToVacancyApplication).ToList()
             };
 
             await _writer.UpdateVacancyApplicationsAsync(vacancyApplications);
+        }
+
+        private VacancyApplication MapToVacancyApplication(ApplicationReview review)
+        {
+            var projection = new VacancyApplication
+            {
+                Status = review.Status,
+                SubmittedDate = review.SubmittedDate,
+                ApplicationReviewId = review.Id,
+                IsWithdrawn = review.IsWithdrawn,
+                CandidateName = null,
+                DisabilityStatus = ApplicationReviewDisabilityStatus.Unknown,
+            };
+
+            if (review.IsWithdrawn == false)
+            {
+                projection.CandidateName = review.Application.FullName;
+                projection.DisabilityStatus = review.Application.DisabilityStatus ?? ApplicationReviewDisabilityStatus.Unknown;
+            }
+
+            return projection;
         }
     }
 }

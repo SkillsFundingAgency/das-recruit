@@ -58,6 +58,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         private async Task Handle(Guid applicationReviewId, VacancyUser user, ApplicationReviewStatus status, string candidateFeedback = null)
         {
             var applicationReview = await _applicationReviewRepository.GetAsync(applicationReviewId);
+
+            if(applicationReview.CanReview == false)
+            {
+                _logger.LogWarning("Cannot review ApplicationReviewId:{applicationReviewId} as not in correct state", applicationReview.Id);
+                return;
+            }
+
             var vacancy = await _vacancyRepository.GetVacancyAsync(applicationReview.VacancyReference);
 
             applicationReview.Status = status;

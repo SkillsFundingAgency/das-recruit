@@ -14,11 +14,18 @@
         {
             foreach (var application in applicationStatusGroup)
             {
-                <tr>
+                <tr asp-condition="@application.IsNotWithdrawn">
                     <td><a asp-route="@RouteNames.ApplicationReview_Get" asp-route-applicationReviewId="@application.ApplicationReviewId">@application.CandidateName</a></td>
                     <td>@application.Status.GetDisplayName()</td>
                     <td>@application.SubmittedDate.AsGdsDate()</td>
                     <td asp-condition="@Model.ShowDisability">@application.DisabilityStatus.GetDisplayName()</td>
+                </tr>
+
+                <tr asp-condition="@application.IsWithdrawn">
+                    <td>Application withdrawn by candidate</td>
+                    <td>Withdrawn</td>
+                    <td>@application.SubmittedDate.AsGdsDate()</td>
+                    <td asp-condition="@Model.ShowDisability">No longer applies</td>
                 </tr>
             }
         }
