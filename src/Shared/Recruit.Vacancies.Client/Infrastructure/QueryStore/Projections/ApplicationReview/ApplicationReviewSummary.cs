@@ -6,5 +6,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Ap
     {
         public long VacancyReference { get; set; }
         public ApplicationReviewStatus Status { get; set; }
+        public bool IsWithdrawn { get; set; }
     }
 }
