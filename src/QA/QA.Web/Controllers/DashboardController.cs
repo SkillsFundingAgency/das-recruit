@@ -36,5 +36,12 @@ namespace Esfa.Recruit.Qa.Web.Controllers
 
             return RedirectToRoute(RouteNames.Vacancy_Review_Get, new {reviewId = vacancyReviewId});
         }
+
+        [HttpGet("next-vacancy", Name = RouteNames.Dashboard_Next_Vacancy_Post)]
+        public IActionResult NextVacancyCallback()
+        {
+            //This GET handles the authentication callback when NextVacancy is POSTed after a session timeout
+            return RedirectToRoute(RouteNames.Dashboard_Index_Get);
+        }
     }
 }
