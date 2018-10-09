@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Orchestrators;
+using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
-using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Employer.Web.Mappings.Extensions
@@ -34,6 +31,7 @@ namespace Esfa.Recruit.Employer.Web.Mappings.Extensions
                 EducationFromYear = r.Application.EducationFromYear,
                 EducationInstitution = r.Application.EducationInstitution,
                 EducationToYear = r.Application.EducationToYear,
+                FriendlyId = r.GetFriendlyId(),
                 HobbiesAndInterests = r.Application.HobbiesAndInterests,
                 Improvements = r.Application.Improvements,
                 Phone = r.Application.Phone,

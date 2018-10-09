@@ -4,6 +4,7 @@
     <thead>
         <tr>
             <th class="bold">Name</th>
+            <th class="bold">Application ID</th>
             <th class="bold">Status</th>
             <th class="bold">Date applied</th>
             <th asp-condition="@Model.ShowDisability" class="bold">Disability</th>
@@ -16,13 +17,14 @@
             {
                 <tr asp-condition="@application.IsNotWithdrawn">
                     <td><a asp-route="@RouteNames.ApplicationReview_Get" asp-route-applicationReviewId="@application.ApplicationReviewId">@application.CandidateName</a></td>
+                    <td>@application.GetFriendlyId()</td>
                     <td>@application.Status.GetDisplayName()</td>
                     <td>@application.SubmittedDate.AsGdsDate()</td>
                     <td asp-condition="@Model.ShowDisability">@application.DisabilityStatus.GetDisplayName()</td>
                 </tr>
-
                 <tr asp-condition="@application.IsWithdrawn">
                     <td>Application withdrawn by candidate</td>
+                    <td>@application.GetFriendlyId()</td>
                     <td>Withdrawn</td>
                     <td>@application.SubmittedDate.AsGdsDate()</td>
                     <td asp-condition="@Model.ShowDisability">No longer applies</td>

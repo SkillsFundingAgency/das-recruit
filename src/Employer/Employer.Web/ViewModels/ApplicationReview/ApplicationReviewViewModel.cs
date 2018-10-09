@@ -15,6 +15,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview
         public string EducationInstitution { get; set; }
         public int EducationToYear { get; set; }
         public string Email { get; set; }
+        public string FriendlyId { get; set; }
         public string Improvements { get; set; }
         public string HobbiesAndInterests { get; set; }
         public string Name { get; set; }
