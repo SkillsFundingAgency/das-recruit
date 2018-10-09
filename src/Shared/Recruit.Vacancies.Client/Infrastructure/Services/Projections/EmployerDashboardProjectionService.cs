@@ -40,18 +40,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
 
             foreach (var summary in activeVacancySummaries)
             {
-                // PendingReview shows as Submitted in Dashboard.
-                if (summary.Status == VacancyStatus.PendingReview)
-                {
-                    summary.Status = VacancyStatus.Submitted;
-                }
-
                 if (summary.VacancyReference.HasValue)
                 {
                     var vacancyApplicationReviews = applicationReviews.Where(r => r.VacancyReference == summary.VacancyReference.Value).ToList();
                     summary.AllApplicationsCount = vacancyApplicationReviews.Count;
                     summary.NewApplicationsCount = vacancyApplicationReviews.Count(r => r.Status == ApplicationReviewStatus.New);
-                }                
+                }
             }
 
             await _queryStoreWriter.UpdateEmployerDashboardAsync(employerAccountId, activeVacancySummaries.OrderBy(v => v.CreatedDate));
