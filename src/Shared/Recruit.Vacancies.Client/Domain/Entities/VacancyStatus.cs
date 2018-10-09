@@ -7,8 +7,6 @@
         Referred,
         Live,
         Closed,
-        Approved,
-        PendingReview,
-        UnderReview
+        Approved
     }
 }

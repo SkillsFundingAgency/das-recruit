@@ -66,8 +66,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             switch (vacancy.Status)
             {
                 case VacancyStatus.Submitted:
-                case VacancyStatus.PendingReview:
-                case VacancyStatus.UnderReview:
                     return await GetDisplayViewModelForSubmittedVacancy(vacancy);
                 case VacancyStatus.Approved:
                     return await GetDisplayViewModelForApprovedVacancy(vacancy);
