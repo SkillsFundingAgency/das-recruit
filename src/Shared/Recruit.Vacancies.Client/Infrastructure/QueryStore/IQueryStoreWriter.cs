@@ -5,6 +5,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVa
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.QA;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
+using System;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 {
@@ -18,5 +19,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         Task UpdateVacancyApplicationsAsync(VacancyApplications vacancyApplications);
         Task UpdateQaDashboardAsync(QaDashboard qaDashboard);
         Task UpdateClosedVacancyAsync(ClosedVacancy closedVacancy);
+        Task<long> RemoveOldEmployerDashboards(DateTime oldestLastUpdatedDate);
     }
 }
