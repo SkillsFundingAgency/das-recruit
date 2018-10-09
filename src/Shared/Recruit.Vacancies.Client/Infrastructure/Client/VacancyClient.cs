@@ -330,10 +330,18 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _employerAccountProvider.GetEmployerLegalEntitiesAsync(employerAccountId);
         }
 
-        public async Task CreateApplicationReviewAsync(Domain.Entities.Application application)
+        public Task CreateApplicationReviewAsync(Domain.Entities.Application application)
         {
-            await _messaging.SendCommandAsync(new CreateApplicationReviewCommand { Application = application });
+            return _messaging.SendCommandAsync(new CreateApplicationReviewCommand { Application = application });
+        }
 
+        public Task WithdrawApplicationAsync(long vacancyReference, Guid candidateId)
+        {
+            return _messaging.SendCommandAsync(new WithdrawApplicationCommand
+            {
+                VacancyReference = vacancyReference,
+                CandidateId = candidateId
+            });
         }
 
         public Task PerformRulesCheckAsync(Guid reviewId)

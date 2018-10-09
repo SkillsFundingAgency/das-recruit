@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
@@ -33,6 +32,20 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         public async Task<ApplicationReview> GetAsync(Guid applicationReviewId)
         {
             var filter = Builders<ApplicationReview>.Filter.Eq(r => r.Id, applicationReviewId);
+            var collection = GetCollection<ApplicationReview>();
+
+            var result = await RetryPolicy.ExecuteAsync(context => collection.FindAsync(filter),
+                new Context(nameof(GetAsync)));
+
+            return result.SingleOrDefault();
+        }
+
+        public async Task<ApplicationReview> GetAsync(long vacancyReference, Guid candidateId)
+        {
+            var builder = Builders<ApplicationReview>.Filter;
+            var filter = builder.Eq(r => r.VacancyReference, vacancyReference) &
+                         builder.Eq(r => r.CandidateId, candidateId);
+            
             var collection = GetCollection<ApplicationReview>();
 
             var result = await RetryPolicy.ExecuteAsync(context => collection.FindAsync(filter),

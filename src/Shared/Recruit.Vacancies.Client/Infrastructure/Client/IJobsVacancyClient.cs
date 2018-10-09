@@ -20,5 +20,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task ReferVacancy(long vacancyReference);
         Task CreateApplicationReviewAsync(Domain.Entities.Application application);
         Task PerformRulesCheckAsync(Guid reviewId);
+        Task WithdrawApplicationAsync(long vacancyReference, Guid candidateId);
     }
 }

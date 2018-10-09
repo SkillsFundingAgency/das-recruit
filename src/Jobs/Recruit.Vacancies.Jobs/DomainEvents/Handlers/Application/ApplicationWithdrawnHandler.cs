@@ -27,7 +27,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Application
             {
                 _logger.LogInformation($"Processing {nameof(ApplicationWithdrawnEvent)} for vacancy: {{VacancyReference}} and candidate: {{CandidateId}}", @event.VacancyReference, @event.CandidateId);
 
-                
+                await _client.WithdrawApplicationAsync(@event.VacancyReference, @event.CandidateId);
 
                 _logger.LogInformation($"Finished Processing {nameof(ApplicationWithdrawnEvent)} for vacancy: {{VacancyReference}} and candidate: {{CandidateId}}", @event.VacancyReference, @event.CandidateId);
             }
