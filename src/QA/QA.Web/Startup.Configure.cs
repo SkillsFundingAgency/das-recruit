@@ -27,6 +27,11 @@ namespace Esfa.Recruit.Qa.Web
             }
             else
             {
+                var rewriteOptions = new RewriteOptions()
+                    .AddRedirectToHttps();
+
+                app.UseRewriter(rewriteOptions);
+
                 app.UseExceptionHandler("/error/handle");
                 app.UseHsts(hsts => hsts.MaxAge(365));
             }
@@ -61,11 +66,9 @@ namespace Esfa.Recruit.Qa.Web
             app.UseXXssProtection(opts => opts.EnabledWithBlockMode());
 
             app.UseRedirectValidation(opts => {
-                opts.AllowSameHostRedirectsToHttps(HostSettings.KestrelSslPort);
+                opts.AllowSameHostRedirectsToHttps();
                 opts.AllowedDestinations(GetAllowableDestinations(_authenticationConfig, _externalLinks));
             }); //Register this earlier if there's middleware that might redirect.
-
-            app.UseHttpsRedirection();
 
             app.UseAuthentication();
 
