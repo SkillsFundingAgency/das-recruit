@@ -13,7 +13,7 @@
                 return "Edit and submit";
         }
 
-        return "View";
+        return "Manage";
     }
 }
 <div class="grid-row dashboard-header">
@@ -58,12 +58,7 @@
                         <td>
                             <div>@vacancy.Title</div>
                             <div asp-condition="@vacancy.IsApplicationsVacancy">
-                                <span asp-condition="@vacancy.HasApplications">
-                                    <a asp-route="@RouteNames.DisplayVacancy_Get" asp-route-vacancyId="@vacancy.Id">
-                                        @vacancy.AllApplicationsCount applications
-                                    </a>&nbsp;(@vacancy.NewApplicationsCount new)
-                                </span>
-                                <span asp-condition="@vacancy.HasNoApplications">@vacancy.AllApplicationsCount applications (@vacancy.NewApplicationsCount new)</span>
+                                <span>@vacancy.AllApplicationsCount applications (@vacancy.NewApplicationsCount new)</span>
                             </div>
                         </td>
                         <td>
@@ -72,8 +67,11 @@
                         </td>
                         <td class="dashboard-closingdate">@vacancy.ClosingDate?.AsGdsDate()</td>
                         <td class="dashboard-action">
-                            <a asp-condition="@vacancy.IsLive" asp-route="@RouteNames.VacancyManage_Get" asp-route-vacancyId="@vacancy.Id">@GetLinkText(vacancy)</a>
-                            <a asp-condition="@vacancy.IsNotLive" asp-route="@RouteNames.DisplayVacancy_Get" asp-route-vacancyId="@vacancy.Id" asp-route-showApplications="false">@GetLinkText(vacancy)</a>
+                            <ul>
+                                <li asp-condition="@vacancy.IsNotSubmittable"><a asp-route="@RouteNames.VacancyManage_Get" asp-route-vacancyId="@vacancy.Id">Manage</a></li>
+                                <li asp-condition="@vacancy.IsClonable"><a asp-route="@RouteNames.VacancyManage_Get" asp-route-vacancyId="@vacancy.Id">Clone</a></li>
+                                <li asp-condition="@vacancy.IsSubmittable"><a asp-route="@RouteNames.DisplayVacancy_Get" asp-route-vacancyId="@vacancy.Id">@GetLinkText(vacancy)</a></li>
+                            </ul>
                         </td>
                     </tr>
                 }

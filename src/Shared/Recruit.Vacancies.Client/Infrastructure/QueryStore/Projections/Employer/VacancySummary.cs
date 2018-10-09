@@ -25,5 +25,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Em
         public bool HasNoApplications => !HasApplications;
         public bool IsLive => Status == VacancyStatus.Live;
         public bool IsNotLive => !IsLive;
+
+        public bool IsSubmittable => Status == VacancyStatus.Draft || Status == VacancyStatus.Referred;
+        public bool IsNotSubmittable => !IsSubmittable;
+
+        public bool IsClonable => Status == VacancyStatus.Live; // to be extended
     }
 }

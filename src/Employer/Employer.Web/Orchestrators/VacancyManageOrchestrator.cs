@@ -8,6 +8,9 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
+using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
@@ -32,11 +35,39 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return vacancy;
         }
 
-        public async Task<ManageVacancyViewModel> GetViewModelForManageVacancy(VacancyRouteModel vrm, DateTime proposedClosingDate, DateTime proposedStartDate)
+        public async Task<ManageVacancyViewModel> GetManageVacancyViewModel(VacancyRouteModel vrm)
         {
             var vacancy = await GetVacancy(vrm);
 
             var viewModel = new ManageVacancyViewModel();
+
+            viewModel.Title = vacancy.Title;
+            viewModel.Status = vacancy.Status;
+            viewModel.VacancyReference = vacancy.VacancyReference.Value.ToString();
+            viewModel.ClosingDate = vacancy.ClosingDate?.AsGdsDate();
+            viewModel.PossibleStartDate = vacancy.StartDate?.AsGdsDate();
+            viewModel.IsDisabilityConfident = vacancy.IsDisabilityConfident;
+            viewModel.IsApplyThroughFaaVacancy = vacancy.ApplicationMethod == ApplicationMethod.ThroughFindAnApprenticeship;
+            viewModel.CanShowEditVacancyLink = vacancy.CanEdit;
+
+            var vacancyApplicationsTask =  await _client.GetVacancyApplicationsAsync(vacancy.VacancyReference.Value.ToString());
+
+            var applications = vacancyApplicationsTask?.Applications ?? new List<VacancyApplication>();
+
+            viewModel.Applications = new VacancyApplicationsViewModel
+            {
+                Applications = applications,
+                ShowDisability = vacancy.IsDisabilityConfident
+            };
+
+            return viewModel;
+        }
+
+        public async Task<EditVacancyViewModel> GetEditVacancyViewModel(VacancyRouteModel vrm, DateTime proposedClosingDate, DateTime proposedStartDate)
+        {
+            var vacancy = await GetVacancy(vrm);
+
+            var viewModel = new EditVacancyViewModel();
             await _vacancyDisplayMapper.MapFromVacancyAsync(viewModel, vacancy);
 
             if (proposedClosingDate != DateTime.MinValue)

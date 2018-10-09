@@ -7,13 +7,13 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
 {
     public class VacancyApplicationsViewModel
     {
-        public List<VacancyApplication> Applications { get; set; }
+        public List<VacancyApplication> Applications { get; internal set; }
 
         public IList<IGrouping<ApplicationReviewStatus, VacancyApplication>> OrderedApplications => Applications.OrderByDescending(app => app.SubmittedDate)
             .GroupBy(app => app.Status)
             .OrderBy(g => g.Key)
             .ToList();
 
-        public bool ShowDisability { get; set; }
+        public bool ShowDisability { get; internal set; }
     }
 }

@@ -1,24 +1,23 @@
-﻿using System;
-using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
+using System.Linq;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
 {
-    public class ManageVacancyViewModel : LiveVacancyViewModel
+    public class ManageVacancyViewModel
     {
-        public string DisplayableClosingDate => ProposedClosingDate.HasValue ? ProposedClosingDate.Value.AsGdsDate() : ClosingDate;
+        public string Title { get; internal set; }
+        public VacancyStatus Status { get; internal set; }
+        public string VacancyReference { get; internal set; }
+        public string ClosingDate { get; internal set; }
+        public string PossibleStartDate { get; internal set; }
+        public bool IsDisabilityConfident { get; internal set; }
+        public bool IsNotDisabilityConfident => !IsDisabilityConfident;
+        public bool IsApplyThroughFaaVacancy { get; internal set; }
+        public VacancyApplicationsViewModel Applications { get; internal set; }
+        public bool HasApplications => Applications.Applications.Any();
+        public bool HasNoApplications => Applications.Applications == null || Applications.Applications?.Any() == false;
 
-        public string DisplayableStartDate => ProposedStartDate.HasValue ? ProposedStartDate.Value.AsGdsDate() : PossibleStartDate;
-
-        public string ProposedClosingDateFormValue => ProposedClosingDate?.ToString("dd/MM/yyyy");
-        public string ProposedStartDateFormValue => ProposedStartDate?.ToString("dd/MM/yyyy");
-
-        public DateTime? ProposedClosingDate { get; internal set; }
-        public DateTime? ProposedStartDate { get; internal set; }
-
-        public bool ClosingDateChanged => ProposedClosingDate.HasValue;
-        public bool StartDateChanged => ProposedStartDate.HasValue;
-
-        public bool HasChanges => ClosingDateChanged || StartDateChanged;
-        public bool IsUnchanged => !HasChanges;
+        public bool CanShowEditVacancyLink { get; internal set; }
+        public bool CanShowCloseVacancyLink => Status == VacancyStatus.Live;
     }
 }

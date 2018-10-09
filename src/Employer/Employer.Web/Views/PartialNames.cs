@@ -4,7 +4,7 @@
     {
         public const string DisabilityConfident = "_DisabilityConfidentPartial";
         public const string GoogleAnalyticsSnippet = "_GoogleAnalyticsPartial";
-        public const string ManageVacancyEditPartial = "_ManageVacancyEditPartial";
+        public const string EditVacancyPartial = "_EditVacancyPartial";
         public const string NonEditableVacancyDisplay = "_NonEditableVacancyDisplayPartial";
         public const string VacancyApplicationsTable = "_VacancyApplicationsTablePartial";
         public const string VacancySummaryDisplay = "_VacancySummaryDisplayPartial";

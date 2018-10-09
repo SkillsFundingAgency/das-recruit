@@ -80,6 +80,7 @@
         public const string ApplicationReview_Post = "ApplicationReview_Post";
 
         public const string VacancyManage_Get = "VacancyManage_Get";
+        public const string VacancyEdit_Get = "VacancyEdit_Get";
         public const string VacancyEditDates_Get = "VacancyEditDates_Get";
         public const string VacancyEditDates_Post = "VacancyEditDates_Post";
         public const string VacancyEditDatesCancel_Get = "VacancyEditDatesCancel_Get";
