@@ -7,6 +7,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
 using MediatR;
@@ -53,7 +54,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
             var vacancy = vacancyTask.Result;
             var programme = programmeTask.Result.Data.Single(p => p.Id == vacancy.ProgrammeId);
 
-            await _queryStoreWriter.UpdateLiveVacancyAsync(vacancy.ToLiveVacancyProjection(programme));
+            var liveVacancy = vacancy.ToVacancyProjectionBase<LiveVacancy>(programme, () => QueryViewType.LiveVacancy.GetIdValue(vacancy.VacancyReference.ToString()));
+            await _queryStoreWriter.UpdateLiveVacancyAsync(liveVacancy);
         }
     }
 }

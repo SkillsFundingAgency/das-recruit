@@ -2,7 +2,7 @@
 {
     internal struct QueryViewType
     {
-        public string TypeName { get; private set; }
+        public string TypeName { get; }
         private readonly string _idFormatString;
 
         private QueryViewType(string name, string formatString)
@@ -31,5 +31,6 @@
         public static QueryViewType LiveVacancy => new QueryViewType("LiveVacancy", "LiveVacancy_{0}");
         public static QueryViewType VacancyApplications => new QueryViewType("VacancyApplications", "VacancyApplications_{0}");
         public static QueryViewType QaDashboard => new QueryViewType("QaDashboard", "QaDashboard");
+        public static QueryViewType ClosedVacancy => new QueryViewType("ClosedVacancy", "ClosedVacancy_{0}");
     }
 }

@@ -4,6 +4,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
 using Microsoft.Extensions.Logging;
@@ -44,7 +45,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
             var liveVacancies = vacancies.Select(v =>
             {
                 var programme = programmesData.Data.Single(p => p.Id == v.ProgrammeId);
-                return v.ToLiveVacancyProjection(programme);
+                return v.ToVacancyProjectionBase<LiveVacancy>(programme, () => QueryViewType.LiveVacancy.GetIdValue(v.VacancyReference.ToString()));
             });
 
             await _queryStoreWriter.RecreateLiveVacancies(liveVacancies);

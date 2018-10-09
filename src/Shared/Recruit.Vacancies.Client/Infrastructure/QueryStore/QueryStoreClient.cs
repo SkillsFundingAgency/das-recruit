@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.LiveVacancy;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.QA;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
@@ -108,6 +108,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             qaDashboard.LastUpdated = _timeProvider.Now;
 
             return _queryStore.UpsertAsync(qaDashboard);
+        }
+
+        public Task UpdateClosedVacancyAsync(ClosedVacancy closedVacancy)
+        {
+            return _queryStore.UpsertAsync(closedVacancy);
         }
 
         private string GetLiveVacancyId(long vacancyReference)

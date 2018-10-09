@@ -42,8 +42,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             }
             
             _logger.LogInformation("Closed {closedCount} from {liveVacancyCount} live vacancies", numberClosed, vacancies.Count);
-
-            await Task.CompletedTask;
         }
     }
 }
