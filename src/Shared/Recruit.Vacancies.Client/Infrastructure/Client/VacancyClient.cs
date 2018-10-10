@@ -16,6 +16,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacanc
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Qualifications;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
@@ -32,6 +33,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly IVacancyReviewRepository _vacancyReviewRepository;
         private readonly ICandidateSkillsProvider _candidateSkillsProvider;
         private readonly IVacancyService _vacancyService;
+        private readonly IEmployerDashboardProjectionService _dashboardService;
 
         public VacancyClient(
             IVacancyRepository repository,
@@ -44,7 +46,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             IApplicationReviewRepository applicationReviewRepository,
             IVacancyReviewRepository vacancyReviewRepository,
             ICandidateSkillsProvider candidateSkillsProvider,
-            IVacancyService vacancyService)
+            IVacancyService vacancyService,
+            IEmployerDashboardProjectionService dashboardService)
         {
             _repository = repository;
             _reader = reader;
@@ -57,6 +60,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _vacancyReviewRepository = vacancyReviewRepository;
             _candidateSkillsProvider = candidateSkillsProvider;
             _vacancyService = vacancyService;
+            _dashboardService = dashboardService;
         }
 
         public Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user)
@@ -151,6 +155,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         public Task<EmployerDashboard> GetDashboardAsync(string employerAccountId)
         {
             return _reader.GetEmployerDashboardAsync(employerAccountId);
+        }
+
+        public Task GenerateDashboard(string employerAccountId)
+        {
+            return _dashboardService.ReBuildDashboardAsync(employerAccountId);
         }
 
         public Task UserSignedInAsync(VacancyUser user)
