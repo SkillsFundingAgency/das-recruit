@@ -13,8 +13,8 @@
         }
     );
 
-    if (writeResult.hasWriteConcernError()) {
-        printjson(writeResult.writeConcernError);
+    if (writeResult.matchedCount !== writeResult.modifiedCount) {
+        printjson("Error occurred updating vacancy documents status field.");
         quit(14);
     }
 
