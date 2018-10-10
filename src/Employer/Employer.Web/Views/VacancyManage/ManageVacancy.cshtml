@@ -1,89 +1,81 @@
 ﻿@model Esfa.Recruit.Employer.Web.ViewModels.VacancyManage.ManageVacancyViewModel
+
 <div class="grid-row">
-    <div class="column-full">
-        <main id="content" role="main">
-
-            <div class="small-top-margin">
-                <div class="grid-row">
-                    <div class="column-two-thirds">
-                        <h3 class="heading-xlarge small-bottom-margin" id="vacancy-header">
-                            Manage vacancy
-                        </h3>
-                    </div>
-                </div>
-
-                <div class="grid-row">
-                    <div class="column-one-third">
-                        <h3 class="heading-small no-top-margin small-bottom-margin">Status</h3>
-                    </div>
-                    <div class="column-two-thirds">
-                        @Model.Status.GetDisplayName()
-                    </div>
-                </div>
-
-                <div class="grid-row">
-                    <div class="column-one-third">
-                        <h3 class="heading-small no-top-margin small-bottom-margin">Vacancy title</h3>
-                    </div>
-                    <div class="column-two-thirds">
-                        @Model.Title
-                    </div>
-                </div>
-
-                <div class="grid-row">
-                    <div class="column-one-third">
-                        <h3 class="heading-small no-top-margin small-bottom-margin">Vacancy ref</h3>
-                    </div>
-                    <div class="column-two-thirds">
-                        <span>VAC</span>@Model.VacancyReference
-                    </div>
-                </div>
-
-                <div class="grid-row">
-                    <div class="column-one-third">
-                        <h3 class="heading-small no-top-margin small-bottom-margin">Closing date</h3>
-                    </div>
-                    <div class="column-two-thirds">
-                        @Model.ClosingDate
-                    </div>
-                </div>
-                <div class="grid-row">
-                    <div class="column-one-third">
-                        <h3 class="heading-small no-top-margin small-bottom-margin">Possible start date</h3>
-                    </div>
-                    <div class="column-two-thirds">
-                        @Model.PossibleStartDate
-                    </div>
-                </div>
-                <div class="grid-row">
-                    <div class="column-one-third">
-                        <h3 class="heading-small no-top-margin small-bottom-margin">Disability confident</h3>
-                    </div>
-                    <div class="column-two-thirds">
-                        <span asp-condition="@Model.IsDisabilityConfident">Yes</span>
-                        <span asp-condition="@Model.IsNotDisabilityConfident">No</span>
-                    </div>
-                </div>
-
-                <div class="grid-row">
-                    <div class="column-full">
-                        <ul class="action-links">
-                            <li asp-condition="@Model.CanShowEditVacancyLink"><a asp-route="@RouteNames.VacancyEdit_Get">Edit vacancy</a></li>
-                            <li asp-condition="@Model.CanShowCloseVacancyLink"><a asp-route="@RouteNames.VacancyEdit_Get">Close vacancy</a></li>
-                            <li><a asp-route="@RouteNames.DisplayVacancy_Get">View vacancy</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <div asp-condition="@Model.IsApplyThroughFaaVacancy" class="grid-row">
-                <div class="column-full">
-                    <h2 class="heading-large">Manage applications</h2>
-                    <partial asp-condition="@Model.HasApplications" name=@PartialNames.VacancyApplicationsTable for="Applications" />
-                    <p asp-condition="@Model.HasNoApplications">Candidate applications for this apprenticeship will appear here.</p>
-                </div>
-            </div>
-            <a asp-route="@RouteNames.Dashboard_Index_Get" class="button">Return to dashboard</a>
-        </main>
+    <div class="column-two-thirds">
+        <h3 class="heading-xlarge small-top-margin small-bottom-margin" id="vacancy-header">
+            Manage vacancy
+        </h3>
     </div>
 </div>
+
+<div class="grid-row">
+    <div class="column-one-third">
+        <h3 class="heading-small no-top-margin small-bottom-margin">Status</h3>
+    </div>
+    <div class="column-two-thirds">
+        @Model.Status.GetDisplayName()
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-one-third">
+        <h3 class="heading-small no-top-margin small-bottom-margin">Vacancy title</h3>
+    </div>
+    <div class="column-two-thirds">
+        @Model.Title
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-one-third">
+        <h3 class="heading-small no-top-margin small-bottom-margin">Vacancy ref</h3>
+    </div>
+    <div class="column-two-thirds">
+        <span>VAC</span>@Model.VacancyReference
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-one-third">
+        <h3 class="heading-small no-top-margin small-bottom-margin">Closing date</h3>
+    </div>
+    <div class="column-two-thirds">
+        @Model.ClosingDate
+    </div>
+</div>
+<div class="grid-row">
+    <div class="column-one-third">
+        <h3 class="heading-small no-top-margin small-bottom-margin">Possible start date</h3>
+    </div>
+    <div class="column-two-thirds">
+        @Model.PossibleStartDate
+    </div>
+</div>
+<div class="grid-row">
+    <div class="column-one-third">
+        <h3 class="heading-small no-top-margin small-bottom-margin">Disability confident</h3>
+    </div>
+    <div class="column-two-thirds">
+        <span asp-condition="@Model.IsDisabilityConfident">Yes</span>
+        <span asp-condition="@Model.IsNotDisabilityConfident">No</span>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-full">
+        <ul class="action-links">
+            <li asp-condition="@Model.CanShowEditVacancyLink"><a asp-route="@RouteNames.VacancyEdit_Get">Edit vacancy</a></li>
+            <li asp-condition="@Model.CanShowCloseVacancyLink"><a asp-route="@RouteNames.VacancyEdit_Get">Close vacancy</a></li>
+            <li><a asp-route="@RouteNames.DisplayVacancy_Get">View vacancy</a></li>
+        </ul>
+    </div>
+</div>
+
+<div asp-condition="@Model.IsApplyThroughFaaVacancy" class="grid-row">
+    <div class="column-full">
+        <h2 class="heading-large">Manage applications</h2>
+        <partial asp-condition="@Model.HasApplications" name=@PartialNames.VacancyApplicationsTable for="Applications" />
+        <p asp-condition="@Model.HasNoApplications">Candidate applications for this apprenticeship will appear here.</p>
+    </div>
+</div>
+<a asp-route="@RouteNames.Dashboard_Index_Get" class="button">Return to dashboard</a>

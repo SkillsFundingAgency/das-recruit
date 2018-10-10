@@ -1,23 +1,18 @@
 ﻿@model ReferredVacancyViewModel
+
 <div class="grid-row">
     <div class="column-full">
-        <main id="content" role="main">
-            <div class="grid-row">
-                <div class="column-full">
-                    <h1 class="heading-xlarge" id="vacancy-header">
-                        @Model.Title
-                        <span class="heading-secondary">@Model.EmployerName</span>
-                    </h1>
-                </div>
-            </div>
-            
-            <partial name=@PartialNames.NonEditableVacancyDisplay model="Model" />
+        <h1 class="heading-xlarge" id="vacancy-header">
+            @Model.Title
+            <span class="heading-secondary">@Model.EmployerName</span>
+        </h1>
+    </div>
+</div>
 
-            <div class="form-group inline">
-                <div class="form-group small-top-margin">
-                    <a asp-route="@RouteNames.Dashboard_Index_Get" class="button">Return to dashboard</a>
-                </div>
-            </div>
-        </main>
+<partial name=@PartialNames.NonEditableVacancyDisplay model="Model" />
+
+<div class="form-group inline">
+    <div class="form-group small-top-margin">
+        <a asp-route="@RouteNames.Dashboard_Index_Get" class="button">Return to dashboard</a>
     </div>
 </div>
