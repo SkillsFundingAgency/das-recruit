@@ -126,7 +126,6 @@ namespace Esfa.Recruit.Qa.Web.Mappings
 
             var reviewHistoryTask = _vacancyClient.GetVacancyReviewHistoryAsync(review.VacancyReference);
             
-            // Temporarily disabling counts until we remove the shard key from vacancyReviews collection
             var approvedCountTask = _vacancyClient.GetApprovedCountAsync(vacancy.SubmittedByUser.UserId);
             var approvedFirstTimeCountTask = _vacancyClient.GetApprovedFirstTimeCountAsync(vacancy.SubmittedByUser.UserId);
             await Task.WhenAll(programmeTask, approvedCountTask, approvedFirstTimeCountTask, reviewHistoryTask);
