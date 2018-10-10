@@ -74,7 +74,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             clone.Status = VacancyStatus.Draft;
             clone.IsDeleted = false;
 
-            // Propertis to remove
+            // Properties to remove
             clone.VacancyReference = null;
             clone.ApprovedDate = null;
             clone.ClosedDate = null;
