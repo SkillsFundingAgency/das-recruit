@@ -57,7 +57,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             await _applicationReviewRepository.CreateAsync(review);
 
-            await _messaging.PublishEvent(new ApplicationReviewUpdatedEvent
+            await _messaging.PublishEvent(new ApplicationReviewCreatedEvent
             {
                 EmployerAccountId = vacancy.EmployerAccountId,
                 VacancyReference = vacancy.VacancyReference.Value
