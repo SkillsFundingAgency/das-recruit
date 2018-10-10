@@ -55,7 +55,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         private static string BuildSummaryText(VacancySummary x)
         {
-            return $"{x.Title}, {x.ClosingDate.Value.AsGdsDate()}, status: {x.Status.GetDisplayName()}, {x.TrainingTitle}, Level: {x.TrainingLevel.GetDisplayName()} ({x.TrainingType.GetDisplayName()})";
+            return $"{x.Title},closing {x.ClosingDate.Value.AsGdsDate()}, status: {x.Status.GetDisplayName()}, {x.TrainingTitle}, Level: {x.TrainingLevel.GetDisplayName()} ({x.TrainingType.GetDisplayName()})";
         }
     }
 }
