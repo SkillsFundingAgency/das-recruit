@@ -1,8 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
@@ -27,6 +30,20 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
                         & filterBuilder.Eq(d => d.Id, key);
 
             return RetryPolicy.ExecuteAsync(context => collection.DeleteOneAsync(filter), new Context(nameof(IQueryStore.DeleteAsync)));
+        }
+
+        public async Task<long> DeleteManyAsync<T, T1>(string typeName, Expression<Func<T, T1>> property, T1 value) where T : QueryProjectionBase
+        {
+            var filterBuilder = Builders<T>.Filter;
+
+            var filter = filterBuilder.Eq(d => d.ViewType, typeName)
+                        & filterBuilder.Lt(property, value);
+
+            var collection = GetCollection<T>();
+            
+            var result = await RetryPolicy.ExecuteAsync(context => collection.DeleteManyAsync(filter), new Context(nameof(IQueryStore.DeleteManyAsync)));
+
+            return result.DeletedCount;
         }
 
         async Task<IEnumerable<T>> IQueryStore.GetAllByTypeAsync<T>(string typeName)

@@ -1,0 +1,36 @@
+﻿@model Esfa.Recruit.Employer.Web.ViewModels.CreateVacancyOptions.CreateVacancyOptionsViewModel
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <h1 class="heading-xlarge small-bottom-margin">Create vacancy</h1>
+        <partial name=@PartialNames.ValidationSummary model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
+        <p>
+            You can clone vacancies once they've been submitted.
+            Vacancies will be approved or rejected within 24 hours.
+        </p>
+        <h1 class="heading-medium">Do you want to create a new vacancy or clone an existing vacancy?</h1>
+        <form asp-route="@RouteNames.CreateVacancyOptions_Post">
+            <div class="form-group">
+                <fieldset>
+                    <div class="multiple-choice">
+                        <input asp-for="VacancyId" type="radio" value="@Guid.Empty" id="create-new"/>
+                        <label class="form-block" for="create-new">Create new</label> 
+                    </div>
+                    @foreach (var item in Model.Vacancies)
+                    {
+                        <div class="multiple-choice">
+                            <input asp-for="VacancyId" type="radio" value="@item.Id" id="@item.Id"/> 
+                            <label for="@item.Id">@item.VacancyReference
+                                <div class="form-block form-hint">
+                                    @item.Summary
+                                </div>
+                            </label>
+                        </div>    
+                    }      
+                </fieldset>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Continue" class="button" />
+            </div>
+        </form>
+    </div>
+</div> 

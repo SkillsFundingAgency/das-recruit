@@ -21,7 +21,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.EmployerDashboardGenerator
             _projectionService = projectionService;
         }
 
-        public async Task GenerateEmployerVacancyData([QueueTrigger(QueueNames.EmployerDashboardQueueName, Connection = "EventQueueConnectionString")] string message, TextWriter log)
+        public async Task ReGenerateSingleEmployerDashboard([QueueTrigger(QueueNames.GenerateSingleEmployerDashboardQueueName, Connection = "EventQueueConnectionString")] string message, TextWriter log)
         {
             try
             {
@@ -31,6 +31,28 @@ namespace Esfa.Recruit.Vacancies.Jobs.EmployerDashboardGenerator
                 await _projectionService.ReBuildDashboardAsync(data.EmployerAccountId);
 
                 _logger.LogInformation($"Finished {JobName} For Employer Account: {data.EmployerAccountId}");
+            }
+            catch (JsonException ex)
+            {
+                _logger.LogError(ex, "Unable to deserialise event: {eventBody}", message);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Unable to run {JobName}.");
+                throw;
+            }
+        }
+
+        public async Task ReGenerateAllEmployerDashboards([QueueTrigger(QueueNames.GenerateAllEmployerDashboardQueueName, Connection = "EventQueueConnectionString")] string message, TextWriter log)
+        {
+            try
+            {
+                _logger.LogInformation($"Start {JobName}");
+
+                await _projectionService.ReBuildAllDashboardsAsync();
+
+                _logger.LogInformation($"Finished {JobName}");
             }
             catch (JsonException ex)
             {

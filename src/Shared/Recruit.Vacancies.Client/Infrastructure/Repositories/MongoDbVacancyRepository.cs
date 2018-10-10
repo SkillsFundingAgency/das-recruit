@@ -104,5 +104,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var collection = GetCollection<Vacancy>();
             await RetryPolicy.ExecuteAsync(context => collection.ReplaceOneAsync(filter, vacancy), new Context(nameof(UpdateAsync)));
         }
+
+        public async Task<IEnumerable<string>> GetDistinctEmployerAccounts()
+        {
+            var filter = Builders<Vacancy>.Filter.Empty;
+            var collection = GetCollection<Vacancy>();
+            var ids = collection.Distinct(x => x.EmployerAccountId, filter);
+            
+            return await ids.ToListAsync();
+        }
     }
 }
