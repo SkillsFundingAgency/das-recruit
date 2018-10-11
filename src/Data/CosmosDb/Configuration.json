@@ -5,7 +5,7 @@
             "Collections": [
                 {
                     "CollectionName": "vacancies",
-                    "OfferThroughput": 1000,
+                    "OfferThroughput": 400,
                     "StoredProcedures": []
                 },
                 {
@@ -16,12 +16,12 @@
                 },
                 {
                     "CollectionName": "referenceData",
-                    "OfferThroughput": 1000,
+                    "OfferThroughput": 400,
                     "StoredProcedures": []
                 },
                 {
                     "CollectionName": "sequences",
-                    "OfferThroughput": 1000,
+                    "OfferThroughput": 400,
                     "StoredProcedures": []
                 },
                 {
@@ -32,22 +32,22 @@
                 },
                 {
                     "CollectionName": "users",
-                    "OfferThroughput": 1000,
+                    "OfferThroughput": 400,
                     "StoredProcedures": []
                 },
                 {
                     "CollectionName": "applicationReviews",
-                    "OfferThroughput": 1000,
+                    "OfferThroughput": 400,
                     "StoredProcedures": []
                 },
                 {
                     "CollectionName": "configuration",
-                    "OfferThroughput": 1000,
+                    "OfferThroughput": 400,
                     "StoredProcedures": []
                 },
                 {
                     "CollectionName": "reviews",
-                    "OfferThroughput": 1000,
+                    "OfferThroughput": 400,
                     "StoredProcedures": []
                 }
             ]
