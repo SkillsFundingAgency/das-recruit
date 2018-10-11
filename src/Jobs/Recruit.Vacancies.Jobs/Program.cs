@@ -6,6 +6,7 @@ using Esfa.Recruit.Vacancies.Jobs.ApprenticeshipProgrammes;
 using Esfa.Recruit.Vacancies.Jobs.BankHoliday;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Application;
+using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Candidate;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.VacancyReview;
 using Esfa.Recruit.Vacancies.Jobs.EmployerDashboardGenerator;
@@ -170,7 +171,10 @@ namespace Esfa.Recruit.Vacancies.Jobs
 
             // Employer
             services.AddScoped<IDomainEventHandler<IEvent>, DomainEvents.Handlers.Employer.SetupEmployerHandler>();
-            
+
+            //Candidate
+            services.AddScoped<IDomainEventHandler<IEvent>, DeleteCandidateHandler>();
+
 
             return services;
         }
