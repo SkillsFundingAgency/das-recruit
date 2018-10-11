@@ -1,15 +1,33 @@
 ﻿{
   "_id": "BannedPhrases",
-  "lastUpdatedDate": "2018-09-19T00:00:00.000Z",
+  "lastUpdatedDate": "2018-10-11T00:00:00.000Z",
   "bannedPhrases": [
     "driving licence",
-    "permanant",
+    "permanent",
     "under 16",
     "under sixteen",
     "car",
     "drive",
     "unpaid",
     "young people",
-    "young person"
+    "young person",
+    "Male",
+    "Female",
+    "Man",
+    "woman",
+    "Lady",
+    "Hand",
+    "Eye",
+    "Foot",
+    "Kick",
+    "Run",
+    "Stand",
+    "Physically strong",
+    "Physically active",
+    "Young",
+    "Mature",
+    "Fingers",
+    "Head",
+    "Jump"
   ]
 }
