@@ -12,6 +12,8 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Repositories
         Task<ApplicationReview> GetAsync(long vacancyReference, Guid candidateId);
         Task UpdateAsync(ApplicationReview applicationReview);
         Task<List<T>> GetForEmployerAsync<T>(string employerAccountId);
-        Task<List<T>> GetForVacancyAsync<T>(long vacancyReference);
+        Task<List<ApplicationReview>> GetForVacancyAsync(long vacancyReference);
+        Task<List<ApplicationReview>> GetForCandidateAsync(Guid candidateId);
+        Task HardDelete(Guid applicationReviewId);
     }
 }

@@ -364,6 +364,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             });
         }
 
+        public Task HardDeleteApplicationReviewsForCandidate(Guid candidateId)
+        {
+            return _messaging.SendCommandAsync(new DeleteApplicationReviewsCommand
+            {
+                CandidateId = candidateId
+            });
+        }
+
         public Task PerformRulesCheckAsync(Guid reviewId)
         {
             return _vacancyService.PerformRulesCheckAsync(reviewId);

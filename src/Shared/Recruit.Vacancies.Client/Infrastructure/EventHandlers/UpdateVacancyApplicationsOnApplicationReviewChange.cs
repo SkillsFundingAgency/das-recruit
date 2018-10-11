@@ -15,6 +15,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
     public class UpdateVacancyApplicationsOnApplicationReviewChange :
         INotificationHandler<ApplicationReviewCreatedEvent>,
         INotificationHandler<ApplicationReviewWithdrawnEvent>,
+        INotificationHandler<ApplicationReviewDeletedEvent>,
         INotificationHandler<ApplicationReviewedEvent>
     {
         private readonly IVacancyRepository _vacancyRepository;
@@ -45,12 +46,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
             return Handle(notification);
         }
 
+        public Task Handle(ApplicationReviewDeletedEvent notification, CancellationToken cancellationToken)
+        {
+            return Handle(notification);
+        }
+
         private async Task Handle(IApplicationReviewEvent notification)
         {
             _logger.LogInformation("Handling {notificationType} for vacancyReference: {vacancyReference}", notification.GetType().Name, notification?.VacancyReference);
 
             var vacancy = await _vacancyRepository.GetVacancyAsync(notification.VacancyReference);
-            var vacancyApplicationReviews = await _applicationReviewRepository.GetForVacancyAsync<ApplicationReview>(vacancy.VacancyReference.Value);
+            var vacancyApplicationReviews = await _applicationReviewRepository.GetForVacancyAsync(vacancy.VacancyReference.Value);
 
             var vacancyApplications = new VacancyApplications
             {
