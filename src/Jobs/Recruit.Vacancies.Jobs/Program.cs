@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using Esfa.Recruit.Vacancies.Client.Application.CommandHandlers;
+using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Jobs.ApprenticeshipProgrammes;
 using Esfa.Recruit.Vacancies.Jobs.BankHoliday;
+using Esfa.Recruit.Vacancies.Jobs.DomainEvents;
+using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Application;
+using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy;
+using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.VacancyReview;
 using Esfa.Recruit.Vacancies.Jobs.EmployerDashboardGenerator;
+using Esfa.Recruit.Vacancies.Jobs.PublishedVacanciesGenerator;
 using Esfa.Recruit.Vacancies.Jobs.QaDashboard;
-using Esfa.Recruit.Vacancies.Jobs.LiveVacanciesGenerator;
 using Esfa.Recruit.Vacancies.Jobs.VacancyStatus;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Configuration;
@@ -14,12 +18,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 using SFA.DAS.Apprenticeships.Api.Client;
-using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
-using Esfa.Recruit.Vacancies.Jobs.DomainEvents;
-using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy;
-using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.VacancyReview;
-using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Application;
-using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Employer;
 
 namespace Esfa.Recruit.Vacancies.Jobs
 {
@@ -150,7 +148,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddScoped<ApprenticeshipProgrammesJob>();
             services.AddScoped<VacancyStatusJob>();
             services.AddScoped<EmployerDashboardGeneratorJob>();
-            services.AddScoped<LiveVacanciesGeneratorJob>();
+            services.AddScoped<PublishedVacanciesGeneratorJob>();
             services.AddScoped<BankHolidayJob>();
             services.AddScoped<QaDashboardJob>();
 

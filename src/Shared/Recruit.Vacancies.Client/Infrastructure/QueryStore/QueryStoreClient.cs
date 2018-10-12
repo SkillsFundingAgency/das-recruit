@@ -88,6 +88,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             return _queryStore.RecreateAsync(liveVacancies.ToList());
         }
 
+        public Task RecreateClosedVacancies(IEnumerable<ClosedVacancy> closedVacancies)
+        {
+            return _queryStore.RecreateAsync(closedVacancies.ToList());
+        }
+        
         public Task UpdateVacancyApplicationsAsync(VacancyApplications vacancyApplications)
         {
             vacancyApplications.Id = QueryViewType.VacancyApplications.GetIdValue(vacancyApplications.VacancyReference.ToString());

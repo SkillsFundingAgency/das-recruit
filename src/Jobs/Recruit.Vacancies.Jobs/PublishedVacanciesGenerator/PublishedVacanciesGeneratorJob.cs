@@ -6,21 +6,21 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 
-namespace Esfa.Recruit.Vacancies.Jobs.LiveVacanciesGenerator
+namespace Esfa.Recruit.Vacancies.Jobs.PublishedVacanciesGenerator
 {
-    public class LiveVacanciesGeneratorJob
+    public class PublishedVacanciesGeneratorJob
     {
-        private readonly ILogger<LiveVacanciesGeneratorJob> _logger;
-        private readonly ILiveVacancyProjectionService _projectionService;
+        private readonly ILogger<PublishedVacanciesGeneratorJob> _logger;
+        private readonly IPublishedVacancyProjectionService _projectionService;
         private string JobName => GetType().Name;
 
-        public LiveVacanciesGeneratorJob(ILogger<LiveVacanciesGeneratorJob> logger, ILiveVacancyProjectionService projectionService)
+        public PublishedVacanciesGeneratorJob(ILogger<PublishedVacanciesGeneratorJob> logger, IPublishedVacancyProjectionService projectionService)
         {
             _logger = logger;
             _projectionService = projectionService;
         }
 
-        public async Task GenerateLiveVacanciesProjectionsAsync([QueueTrigger(QueueNames.GenerateLiveVacanciesQueueName, Connection = "EventQueueConnectionString")] string message, TextWriter log)
+        public async Task GeneratePublishedVacanciesProjectionsAsync([QueueTrigger(QueueNames.GeneratePublishedVacanciesQueueName, Connection = "EventQueueConnectionString")] string message, TextWriter log)
         {
             try
             {
@@ -28,7 +28,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.LiveVacanciesGenerator
                 {
                     _logger.LogInformation($"Start {JobName}");
 
-                    await _projectionService.ReGenerateLiveVacanciesAsync();
+                    await _projectionService.ReGeneratePublishedVacanciesAsync();
                     
                     _logger.LogInformation($"Finished {JobName}");
                 }
