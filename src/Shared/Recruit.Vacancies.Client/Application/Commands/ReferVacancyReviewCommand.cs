@@ -11,5 +11,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Commands
         public Guid ReviewId { get; set; }
         public string ManualQaComment { get; internal set; }
         public List<ManualQaFieldIndicator> ManualQaFieldIndicators { get; internal set; }
+        public List<Guid> SelectedAutomatedQaRuleOutcomeIds { get; internal set; }
     }
 }

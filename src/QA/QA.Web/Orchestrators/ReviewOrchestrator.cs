@@ -28,20 +28,15 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             await EnsureUserIsAssignedAsync(review, user.UserId);
 
             var manualQaFieldIndicators = _mapper.GetManualQaFieldIndicators(m);
-
-            foreach (var automatedQaOutcomeIndicator in review.AutomatedQaOutcomeIndicators)
-            {
-                automatedQaOutcomeIndicator.IsReferred = m.SelectedAutomatedQaResults
-                    .Contains(automatedQaOutcomeIndicator.RuleOutcomeId.ToString());
-            }
+            var selectedAutomatedQaRuleOutcomeIds = m.SelectedAutomatedQaResults.Select(Guid.Parse).ToList();
 
             if (m.IsRefer)
             {
-                await _vacancyClient.ReferVacancyReviewAsync(m.ReviewId, m.ReviewerComment, manualQaFieldIndicators);
+                await _vacancyClient.ReferVacancyReviewAsync(m.ReviewId, m.ReviewerComment, manualQaFieldIndicators, selectedAutomatedQaRuleOutcomeIds);
             }
             else
             {
-                await _vacancyClient.ApproveVacancyReviewAsync(m.ReviewId, m.ReviewerComment, manualQaFieldIndicators);
+                await _vacancyClient.ApproveVacancyReviewAsync(m.ReviewId, m.ReviewerComment, manualQaFieldIndicators, selectedAutomatedQaRuleOutcomeIds);
             }
 
             var nextVacancyReviewId = await AssignNextVacancyReviewAsync(user);

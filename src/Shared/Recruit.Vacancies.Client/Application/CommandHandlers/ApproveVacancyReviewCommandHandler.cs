@@ -44,11 +44,18 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 _logger.LogWarning($"Unable to approve review {{reviewId}} due to review having a status of {review.Status}.", message.ReviewId);
                 return;
             }
+            
             review.ManualOutcome = ManualQaOutcome.Approved;
             review.Status = ReviewStatus.Closed;
             review.ClosedDate = _timeProvider.Now;
             review.ManualQaComment = message.ManualQaComment;
             review.ManualQaFieldIndicators = message.ManualQaFieldIndicators;
+
+            foreach (var automatedQaOutcomeIndicator in review.AutomatedQaOutcomeIndicators)
+            {
+                automatedQaOutcomeIndicator.IsReferred = message.SelectedAutomatedQaRuleOutcomeIds
+                    .Contains(automatedQaOutcomeIndicator.RuleOutcomeId);
+            }
 
             Validate(review);
 
