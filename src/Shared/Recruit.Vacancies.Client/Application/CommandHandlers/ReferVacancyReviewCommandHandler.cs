@@ -52,6 +52,12 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             review.ManualQaComment = message.ManualQaComment;
             review.ManualQaFieldIndicators = message.ManualQaFieldIndicators;
 
+            foreach (var automatedQaOutcomeIndicator in review.AutomatedQaOutcomeIndicators)
+            {
+                automatedQaOutcomeIndicator.IsReferred = message.SelectedAutomatedQaRuleOutcomeIds
+                    .Contains(automatedQaOutcomeIndicator.RuleOutcomeId);
+            }
+
             Validate(review);
 
             await _reviewRepository.UpdateAsync(review);
