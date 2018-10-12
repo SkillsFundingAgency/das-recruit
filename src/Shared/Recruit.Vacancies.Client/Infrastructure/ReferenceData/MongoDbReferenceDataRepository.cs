@@ -35,10 +35,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData
             {
                 var id = _itemIdLookup[typeof(T)];
 
-                var filter = Builders<BsonDocument>.Filter.Eq(Id, id);
-                var options = new FindOptions<BsonDocument, T> { Limit = 1 };
+                var filter = Builders<T>.Filter.Eq(Id, id);
+                var options = new FindOptions<T> { Limit = 1 };
 
-                var collection = GetCollection<BsonDocument>();
+                var collection = GetCollection<T>();
                 var result = await collection.FindAsync(filter, options);
                 
                 return result?.SingleOrDefault();
