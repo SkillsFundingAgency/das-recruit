@@ -16,6 +16,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         Task UpdateLiveVacancyAsync(LiveVacancy vacancy);
         Task DeleteLiveVacancyAsync(long vacancyReference);
         Task RecreateLiveVacancies(IEnumerable<LiveVacancy> liveVacancies);
+        Task RecreateClosedVacancies(IEnumerable<ClosedVacancy> closedVacancies);
         Task UpdateVacancyApplicationsAsync(VacancyApplications vacancyApplications);
         Task UpdateQaDashboardAsync(QaDashboard qaDashboard);
         Task UpdateClosedVacancyAsync(ClosedVacancy closedVacancy);

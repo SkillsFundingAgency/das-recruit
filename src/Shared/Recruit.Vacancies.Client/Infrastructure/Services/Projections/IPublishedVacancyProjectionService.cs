@@ -2,8 +2,8 @@
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
 {
-    public interface ILiveVacancyProjectionService
+    public interface IPublishedVacancyProjectionService
     {
-        Task ReGenerateLiveVacanciesAsync();
+        Task ReGeneratePublishedVacanciesAsync();
     }
 }

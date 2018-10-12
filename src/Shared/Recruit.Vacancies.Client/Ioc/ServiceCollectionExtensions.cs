@@ -115,7 +115,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient<IEmployerDashboardProjectionService, EmployerDashboardProjectionService>();
             services.AddTransient<IQaDashboardProjectionService, QaDashboardProjectionService>();
             services.AddTransient<IEditVacancyInfoProjectionService, EditVacancyInfoProjectionService>();
-            services.AddTransient<ILiveVacancyProjectionService, LiveVacancyProjectionService>();
+            services.AddTransient<IPublishedVacancyProjectionService, PublishedVacancyProjectionService>();
 
             // Reference Data Providers
             services.AddTransient<IMinimumWageProvider, NationalMinimumWageProvider>();
