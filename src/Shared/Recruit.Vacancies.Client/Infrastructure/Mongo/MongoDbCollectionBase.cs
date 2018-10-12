@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Security.Authentication;
-using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -41,6 +40,19 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
                 throw new InfrastructureException($"Expected that collection: '{_collectionName}' would already be created.");
 
             return collection;
+        }
+
+        protected ProjectionDefinition<T> GetProjection<T>()
+        {
+            ProjectionDefinition<T> projection = null;
+
+            foreach (var propertyInfo in typeof(T).GetProperties())
+            {
+                projection = projection == null ?
+                    Builders<T>.Projection.Include(propertyInfo.Name) :
+                    projection.Include(propertyInfo.Name);
+            }
+            return projection;
         }
 
         private Polly.Retry.RetryPolicy GetRetryPolicy()

@@ -63,11 +63,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 
         public async Task<IEnumerable<T>> GetVacanciesByEmployerAccountAsync<T>(string employerAccountId)
         {
-            var filter = Builders<BsonDocument>.Filter.Eq(EmployerAccountId, employerAccountId);
+            var filter = Builders<T>.Filter.Eq(EmployerAccountId, employerAccountId);
 
-            var collection = GetCollection<BsonDocument>();
+            var collection = GetCollection<T>();
 
-            var result = await RetryPolicy.ExecuteAsync(context => collection.FindAsync<T>(filter), new Context(nameof(GetVacanciesByEmployerAccountAsync)));
+            var options = new FindOptions<T> { Projection = GetProjection<T>() };
+
+            var result = await RetryPolicy.ExecuteAsync(context => collection.FindAsync<T>(filter, options), 
+                new Context(nameof(GetVacanciesByEmployerAccountAsync)));
     
             return await result.ToListAsync();
         }
