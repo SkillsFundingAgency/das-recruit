@@ -74,7 +74,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             return await result.ToListAsync();
         }
 
-        public async Task<Vacancy> GetSingleVacancyForPostcode(string postcode)
+        public async Task<Vacancy> GetSingleVacancyForPostcodeAsync(string postcode)
         {
             var builder = Builders<Vacancy>.Filter;
             var filter = builder.Eq(v => v.EmployerLocation.Postcode, postcode) &
@@ -82,7 +82,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
                          builder.Ne(v => v.EmployerLocation.Longitude, null);
 
             var collection = GetCollection<Vacancy>();
-            var result = await RetryPolicy.ExecuteAsync(context => collection.FindAsync(filter), new Context(nameof(GetSingleVacancyForPostcode)));
+            var result = await RetryPolicy.ExecuteAsync(context => collection.FindAsync(filter), new Context(nameof(GetSingleVacancyForPostcodeAsync)));
             
             return result
                         .ToList()
@@ -107,7 +107,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             await RetryPolicy.ExecuteAsync(context => collection.ReplaceOneAsync(filter, vacancy), new Context(nameof(UpdateAsync)));
         }
 
-        public async Task<IEnumerable<string>> GetDistinctEmployerAccounts()
+        public async Task<IEnumerable<string>> GetDistinctEmployerAccountsAsync()
         {
             var filter = Builders<Vacancy>.Filter.Empty;
             var collection = GetCollection<Vacancy>();

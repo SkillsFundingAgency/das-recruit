@@ -39,7 +39,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
 
         public async Task ReBuildAllDashboardsAsync()
         {
-            var employerAccountIds = (await _vacancyQuery.GetDistinctEmployerAccounts()).ToList();
+            var employerAccountIds = (await _vacancyQuery.GetDistinctEmployerAccountsAsync()).ToList();
 
             _logger.LogInformation($"Rebuilding {employerAccountIds.Count} dashboards");
 
