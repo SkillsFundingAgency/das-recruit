@@ -3,7 +3,7 @@
     <div class="column-two-thirds">
         <h1 class="heading-xlarge small-bottom-margin">@Model.Title</h1>
         <hr>
-        <partial name=@PartialNames.ValidationSummary model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
         <h1 class="heading-large">Are you sure you want to remove the vacancy?</h1>
         <form asp-route="@RouteNames.DeleteVacancy_Delete_Post">
             <div esfa-validation-marker-for="ConfirmDeletion" class="form-group">

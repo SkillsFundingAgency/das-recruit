@@ -4,9 +4,9 @@
     <div class="column-full">
         <h1 class="heading-xlarge small-bottom-margin">Short vacancy description</h1>
         
-        <partial name=@PartialNames.ValidationSummary model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
         
-        <partial name=@PartialNames.ReviewSummary for="Review" />
+        <partial name="@PartialNames.ReviewSummary" for="Review" />
 
         <div class="todo">
             <form asp-route="@RouteNames.ShortDescription_Post" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>

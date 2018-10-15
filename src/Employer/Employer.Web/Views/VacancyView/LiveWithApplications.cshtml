@@ -1,10 +1,10 @@
 ﻿@model LiveVacancyViewModel
-<partial name=@PartialNames.VacancySummaryDisplay model="Model" />
+<partial name="@PartialNames.VacancySummaryDisplay" model="Model" />
 
 <div class="grid-row">
     <div class="column-full">
         <h2 class="heading-large">Applications</h2>
-        <partial name=@PartialNames.VacancyApplicationsTable for="Applications" />
+        <partial name="@PartialNames.VacancyApplicationsTable" for="Applications" />
     </div>
 </div>
 <div class="form-group inline">

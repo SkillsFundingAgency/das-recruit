@@ -2,7 +2,7 @@
 <div class="grid-row">
     <div class="column-two-thirds">
         <h1 class="heading-xlarge small-bottom-margin">Create vacancy</h1>
-        <partial name=@PartialNames.ValidationSummary model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
         <p>
             You can clone vacancies once they've been submitted.
             Vacancies will be approved or rejected within 24 hours.
