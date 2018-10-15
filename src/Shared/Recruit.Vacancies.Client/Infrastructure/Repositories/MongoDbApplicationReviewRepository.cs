@@ -12,7 +12,7 @@ using MongoDB.Bson;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 {
-    internal sealed class MongoDbApplicationReviewRepository : MongoDbCollectionBase, IApplicationReviewRepository
+    internal sealed class MongoDbApplicationReviewRepository : MongoDbCollectionBase, IApplicationReviewRepository, IApplicationReviewQuery
     {
         private const string EmployerAccountId = "employerAccountId";
         private const string VacancyReference = "vacancyReference";

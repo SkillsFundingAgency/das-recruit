@@ -10,13 +10,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode
     public class GeocodeServiceFactory : IGeocodeServiceFactory
     {
         private readonly GeocodeConfiguration _config;
-        private readonly IVacancyRepository _repository;
+        private readonly IVacancyQuery _vacancyQuery;
         private readonly ILogger<GeocodeService> _logger;
 
-        public GeocodeServiceFactory(IOptions<GeocodeConfiguration> config, ILogger<GeocodeService> logger, IVacancyRepository repository)
+        public GeocodeServiceFactory(IOptions<GeocodeConfiguration> config, ILogger<GeocodeService> logger, IVacancyQuery vacancyQuery)
         {
             _config = config.Value;
-            _repository = repository;
+            _vacancyQuery = vacancyQuery;
             _logger = logger;
         }
 
@@ -24,7 +24,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode
         {
             var services = new List<IGeocodeService>
             {
-                new ExistingVacancyGeocodeService(_logger, _repository)
+                new ExistingVacancyGeocodeService(_logger, _vacancyQuery)
             };
 
             if (!string.IsNullOrEmpty(_config.PostcodesIoUrl))

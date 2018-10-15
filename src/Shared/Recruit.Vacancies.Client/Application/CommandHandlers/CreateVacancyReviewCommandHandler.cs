@@ -20,6 +20,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         private readonly ILogger<CreateVacancyReviewCommandHandler> _logger;
         private readonly IVacancyRepository _vacancyRepository;
         private readonly IVacancyReviewRepository _vacancyReviewRepository;
+        private readonly IVacancyReviewQuery _vacancyReviewQuery;
         private readonly IMessaging _messaging;
         private readonly ITimeProvider _time;
         private readonly ISlaService _slaService;
@@ -27,8 +28,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
         public CreateVacancyReviewCommandHandler(
             ILogger<CreateVacancyReviewCommandHandler> logger,
-            IVacancyRepository vacancyRepository, 
-            IVacancyReviewRepository vacancyReviewRepository, 
+            IVacancyRepository vacancyRepository,
+            IVacancyReviewRepository vacancyReviewRepository,
+            IVacancyReviewQuery vacancyReviewQuery, 
             IMessaging messaging, 
             ITimeProvider time,
             ISlaService slaService,
@@ -37,6 +39,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _logger = logger;
             _vacancyRepository = vacancyRepository;
             _vacancyReviewRepository = vacancyReviewRepository;
+            _vacancyReviewQuery = vacancyReviewQuery;
             _messaging = messaging;
             _time = time;
             _slaService = slaService;
@@ -48,7 +51,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _logger.LogInformation("Creating vacancy review for vacancy {vacancyReference}.", message.VacancyReference);
 
             var vacancyTask = _vacancyRepository.GetVacancyAsync(message.VacancyReference);
-            var previousReviewsTask = _vacancyReviewRepository.GetForVacancyAsync(message.VacancyReference);
+            var previousReviewsTask = _vacancyReviewQuery.GetForVacancyAsync(message.VacancyReference);
 
             await Task.WhenAll(vacancyTask, previousReviewsTask);
 

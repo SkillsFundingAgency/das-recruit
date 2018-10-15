@@ -1,6 +1,5 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Vacancies.Client.Domain.Repositories
@@ -11,9 +10,5 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Repositories
         Task UpdateAsync(Vacancy vacancy);
         Task<Vacancy> GetVacancyAsync(Guid id);
         Task<Vacancy> GetVacancyAsync(long vacancyReference);
-        Task<IEnumerable<T>> GetVacanciesByEmployerAccountAsync<T>(string employerAccountId);
-        Task<Vacancy> GetSingleVacancyForPostcode(string postcode);
-        Task<IEnumerable<Vacancy>> GetVacanciesByStatusAsync(VacancyStatus status);
-        Task<IEnumerable<string>> GetDistinctEmployerAccounts();
     }
 }

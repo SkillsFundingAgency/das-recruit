@@ -19,14 +19,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
         INotificationHandler<ApplicationReviewedEvent>
     {
         private readonly IVacancyRepository _vacancyRepository;
-        private readonly IApplicationReviewRepository _applicationReviewRepository;
+        private readonly IApplicationReviewQuery _applicationReviewQuery;
         private readonly IQueryStoreWriter _writer;
         private readonly ILogger<UpdateVacancyApplicationsOnApplicationReviewChange> _logger;
 
-        public UpdateVacancyApplicationsOnApplicationReviewChange(IVacancyRepository vacancyRepository, IApplicationReviewRepository applicationReviewRepository, IQueryStoreWriter writer, ILogger<UpdateVacancyApplicationsOnApplicationReviewChange> logger)
+        public UpdateVacancyApplicationsOnApplicationReviewChange(IVacancyRepository vacancyRepository, IApplicationReviewQuery applicationReviewQuery, IQueryStoreWriter writer, ILogger<UpdateVacancyApplicationsOnApplicationReviewChange> logger)
         {
             _vacancyRepository = vacancyRepository;
-            _applicationReviewRepository = applicationReviewRepository;
+            _applicationReviewQuery = applicationReviewQuery;
             _writer = writer;
             _logger = logger;
         }
@@ -56,7 +56,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
             _logger.LogInformation("Handling {notificationType} for vacancyReference: {vacancyReference}", notification.GetType().Name, notification?.VacancyReference);
 
             var vacancy = await _vacancyRepository.GetVacancyAsync(notification.VacancyReference);
-            var vacancyApplicationReviews = await _applicationReviewRepository.GetForVacancyAsync(vacancy.VacancyReference.Value);
+            var vacancyApplicationReviews = await _applicationReviewQuery.GetForVacancyAsync<ApplicationReview>(vacancy.VacancyReference.Value);
 
             var vacancyApplications = new VacancyApplications
             {

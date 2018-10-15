@@ -9,17 +9,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode
     public class ExistingVacancyGeocodeService : IGeocodeService
     {
         private readonly ILogger<GeocodeService> _logger;
-        private readonly IVacancyRepository _repository;
+        private readonly IVacancyQuery _vacancyQuery;
 
-        public ExistingVacancyGeocodeService(ILogger<GeocodeService> logger, IVacancyRepository repository)
+        public ExistingVacancyGeocodeService(ILogger<GeocodeService> logger, IVacancyQuery vacancyQuery)
         {
             _logger = logger;
-            _repository = repository;
+            _vacancyQuery = vacancyQuery;
         }
 
         public async Task<Geocode> Geocode(string postcode)
         {
-            var vacancy = await _repository.GetSingleVacancyForPostcode(postcode);
+            var vacancy = await _vacancyQuery.GetSingleVacancyForPostcode(postcode);
 
             if (vacancy?.EmployerLocation?.Latitude == null || vacancy?.EmployerLocation?.Longitude == null)
             {

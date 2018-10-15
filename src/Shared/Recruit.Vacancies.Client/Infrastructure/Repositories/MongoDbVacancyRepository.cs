@@ -5,7 +5,6 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Microsoft.Extensions.Options;
-using MongoDB.Bson;
 using MongoDB.Driver;
 using System.Linq.Expressions;
 using Esfa.Recruit.Vacancies.Client.Application.Exceptions;
@@ -16,7 +15,7 @@ using System.Linq;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 {
-    internal sealed class MongoDbVacancyRepository : MongoDbCollectionBase, IVacancyRepository
+    internal sealed class MongoDbVacancyRepository : MongoDbCollectionBase, IVacancyRepository, IVacancyQuery
     {
         private const string EmployerAccountId = "employerAccountId";
 
