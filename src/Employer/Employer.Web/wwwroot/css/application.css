@@ -1529,3 +1529,8 @@ table th.th-20 {
     float: left;
     margin-right: 40px;
  }
+
+ .close-vacancy-info {
+    border-color: #005ea5;
+    background-color:#eaebf4;
+}

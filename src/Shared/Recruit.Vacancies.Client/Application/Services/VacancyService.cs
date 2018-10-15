@@ -19,7 +19,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
         private readonly RuleSet<Vacancy> _vacancyRuleSet;
         private readonly IVacancyReviewRepository _vacancyReviewRepository;
 
-
         public VacancyService(
             ILogger<VacancyService> logger, IVacancyRepository vacancyRepository, 
             ITimeProvider timeProvider, IMessaging messaging,
@@ -33,12 +32,17 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
             _vacancyReviewRepository = vacancyReviewRepository;
         }
 
-        public async Task CloseVacancy(Guid vacancyId)
+        public async Task CloseExpiredVacancy(Guid vacancyId)
         {
             _logger.LogInformation("Closing vacancy {vacancyId}.", vacancyId);
 
             var vacancy = await _vacancyRepository.GetVacancyAsync(vacancyId);
 
+            await CloseVacancyAsync(vacancy);
+        }
+
+        private async Task CloseVacancyAsync(Vacancy vacancy)
+        {
             vacancy.ClosedDate = _timeProvider.Now;
             vacancy.Status = VacancyStatus.Closed;
 
@@ -50,6 +54,17 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
                 VacancyReference = vacancy.VacancyReference.Value,
                 VacancyId = vacancy.Id
             });
+        }
+
+        public async Task CloseVacancyImmediately(Guid vacancyId, VacancyUser user)
+        {
+            _logger.LogInformation("Closing vacancy {vacancyId} by user {userEmail}.", vacancyId, user.Email);
+
+            var vacancy = await _vacancyRepository.GetVacancyAsync(vacancyId);
+
+            vacancy.ClosedByUser = user;
+
+            await CloseVacancyAsync(vacancy);
         }
 
         public async Task PerformRulesCheckAsync(Guid reviewId)

@@ -14,6 +14,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public long? SourceVacancyReference { get; set; }
 
         public DateTime? ClosedDate { get; set; }
+        public VacancyUser ClosedByUser { get; set; }
 
         public DateTime? CreatedDate { get; set; }
         public VacancyUser CreatedByUser { get; set; }
@@ -58,6 +59,8 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public string TrainingDescription { get; set; }
         public TrainingProvider TrainingProvider { get; set; }
         public Wage Wage { get; set; }
+
+        public bool CanClose => Status == VacancyStatus.Live;
 
         /// <summary>
         /// We can only delete draft vacancies that have not been deleted
