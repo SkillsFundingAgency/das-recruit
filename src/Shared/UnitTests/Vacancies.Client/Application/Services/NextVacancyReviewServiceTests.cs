@@ -22,8 +22,8 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.S
         {
             var timeProvider = new Mock<ITimeProvider>();
             timeProvider.Setup(t => t.Now).Returns(DateTime.Parse(utcTimeNow));
-            var vacancyReviewRepository = new Mock<IVacancyReviewRepository>();
-            vacancyReviewRepository.Setup(r => r.GetByStatusAsync(ReviewStatus.UnderReview)).Returns(
+            var vacancyReviewQuery = new Mock<IVacancyReviewQuery>();
+            vacancyReviewQuery.Setup(r => r.GetByStatusAsync(ReviewStatus.UnderReview)).Returns(
                 Task.FromResult(new List<VacancyReview>
                 {
                     CreateVacancyReview("cd87db96-fe65-4d1b-9070-e50fb74a647a", "user A", ReviewStatus.UnderReview, "2018-08-20T13:59:59Z", "2018-08-19T18:00:00Z"),
@@ -34,7 +34,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.S
                     CreateVacancyReview("46cf4c11-6129-4570-805a-b18e939f7175", "user B", ReviewStatus.UnderReview, "2018-08-20T13:59:59Z", "2018-08-18T12:00:01Z")
                 }));
 
-            vacancyReviewRepository.Setup(r => r.GetByStatusAsync(ReviewStatus.PendingReview)).Returns(
+            vacancyReviewQuery.Setup(r => r.GetByStatusAsync(ReviewStatus.PendingReview)).Returns(
                 Task.FromResult(new List<VacancyReview>
                 {
                     CreateVacancyReview("956a5556-0703-4aa2-bee9-9035a7e07516", null, ReviewStatus.PendingReview, null, "2018-08-20T18:00:01Z"),
@@ -46,7 +46,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.S
                 VacancyReviewAssignationTimeoutMinutes = 180
             });
             
-            var sut = new NextVacancyReviewService(config, timeProvider.Object, vacancyReviewRepository.Object);
+            var sut = new NextVacancyReviewService(config, timeProvider.Object, vacancyReviewQuery.Object);
 
             var nextVacancyReview = sut.GetNextVacancyReviewAsync(userId).Result;
 

@@ -145,10 +145,17 @@ namespace Microsoft.Extensions.DependencyInjection
             });
 
             MongoDbConventions.RegisterMongoConventions();
+
+            //Repositories
             services.AddTransient<IVacancyRepository, MongoDbVacancyRepository>();
             services.AddTransient<IVacancyReviewRepository, MongoDbVacancyReviewRepository>();
             services.AddTransient<IUserRepository, MongoDbUserRepository>();
             services.AddTransient<IApplicationReviewRepository, MongoDbApplicationReviewRepository>();
+
+            //Queries
+            services.AddTransient<IVacancyQuery, MongoDbVacancyRepository>();
+            services.AddTransient<IVacancyReviewQuery, MongoDbVacancyReviewRepository>();
+            services.AddTransient<IApplicationReviewQuery, MongoDbApplicationReviewRepository>();
 
             services.AddTransient<IQueryStore, MongoQueryStore>();
             services.AddTransient<IQueryStoreReader, QueryStoreClient>();

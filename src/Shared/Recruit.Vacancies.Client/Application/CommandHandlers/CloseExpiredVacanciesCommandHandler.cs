@@ -13,25 +13,25 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
     public class CloseExpiredVacanciesCommandHandler : IRequestHandler<CloseExpiredVacanciesCommand>
     {
         private readonly ILogger<CloseExpiredVacanciesCommandHandler> _logger;
-        private readonly IVacancyRepository _repository;
+        private readonly IVacancyQuery _query;
         private readonly ITimeProvider _timeProvider;
         private readonly IVacancyService _vacancyService;
 
         public CloseExpiredVacanciesCommandHandler(
-            ILogger<CloseExpiredVacanciesCommandHandler> logger, 
-            IVacancyRepository repository, 
+            ILogger<CloseExpiredVacanciesCommandHandler> logger,
+            IVacancyQuery query,
             ITimeProvider timeProvider,
             IVacancyService vacancyService)
         {
             _logger = logger;
-            _repository = repository;
+            _query = query;
             _timeProvider = timeProvider;
             _vacancyService = vacancyService;
         }
 
         public async Task Handle(CloseExpiredVacanciesCommand message, CancellationToken cancellationToken)
         {
-            var vacancies = (await _repository.GetVacanciesByStatusAsync(VacancyStatus.Live)).ToList();
+            var vacancies = (await _query.GetVacanciesByStatusAsync(VacancyStatus.Live)).ToList();
             var numberClosed = 0;
             
             foreach (var vacancy in vacancies.Where(x => x.ClosingDate <= _timeProvider.Now))

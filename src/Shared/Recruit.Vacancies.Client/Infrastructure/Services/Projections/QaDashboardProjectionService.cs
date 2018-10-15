@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -13,20 +11,20 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
 {
     public class QaDashboardProjectionService : IQaDashboardProjectionService
     {
-        private readonly IVacancyReviewRepository _reviewRepository;
+        private readonly IVacancyReviewQuery _reviewQuery;
         private readonly IQueryStoreWriter _queryStoreWriter;
         private readonly ITimeProvider _timeProvider;
 
-        public QaDashboardProjectionService(IVacancyReviewRepository reviewRepository, IQueryStoreWriter queryStoreWriter, ITimeProvider timeProvider)
+        public QaDashboardProjectionService(IVacancyReviewQuery reviewQuery, IQueryStoreWriter queryStoreWriter, ITimeProvider timeProvider)
         {
-            _reviewRepository = reviewRepository;
+            _reviewQuery = reviewQuery;
             _queryStoreWriter = queryStoreWriter;
             _timeProvider = timeProvider;
         }
 
         public async Task RebuildQaDashboardAsync()
         {
-            var activeReviews = await _reviewRepository.GetActiveAsync();
+            var activeReviews = await _reviewQuery.GetActiveAsync();
 
             var qaDashboard = new QaDashboard
             {

@@ -16,25 +16,25 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
     {
         private readonly ILogger<PublishedVacancyProjectionService> _logger;
         private readonly IQueryStoreWriter _queryStoreWriter;
-        private readonly IVacancyRepository _repository;
+        private readonly IVacancyQuery _vacancyQuery;
         private readonly IReferenceDataReader _referenceDataReader;
 
         public PublishedVacancyProjectionService(
                                     ILogger<PublishedVacancyProjectionService> logger, 
                                     IQueryStoreWriter queryStoreWriter, 
-                                    IVacancyRepository repository,
+                                    IVacancyQuery vacancyQuery,
                                     IReferenceDataReader referenceDataReader)
         {
             _logger = logger;
             _queryStoreWriter = queryStoreWriter;
-            _repository = repository;
+            _vacancyQuery = vacancyQuery;
             _referenceDataReader = referenceDataReader;
         }
 
         public async Task ReGeneratePublishedVacanciesAsync()
         {            
-            var liveVacanciesTask = _repository.GetVacanciesByStatusAsync(VacancyStatus.Live);
-            var closedVacanciesTask = _repository.GetVacanciesByStatusAsync(VacancyStatus.Closed);
+            var liveVacanciesTask = _vacancyQuery.GetVacanciesByStatusAsync(VacancyStatus.Live);
+            var closedVacanciesTask = _vacancyQuery.GetVacanciesByStatusAsync(VacancyStatus.Closed);
             var programmesTask = _referenceDataReader.GetReferenceData<ApprenticeshipProgrammes>();
 
             await Task.WhenAll(liveVacanciesTask, programmesTask, closedVacanciesTask);

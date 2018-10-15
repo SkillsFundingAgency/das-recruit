@@ -31,6 +31,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly IReferenceDataReader _referenceDataReader;
         private readonly IApplicationReviewRepository _applicationReviewRepository;
         private readonly IVacancyReviewRepository _vacancyReviewRepository;
+        private readonly IVacancyReviewQuery _vacancyReviewQuery;
         private readonly ICandidateSkillsProvider _candidateSkillsProvider;
         private readonly IVacancyService _vacancyService;
         private readonly IEmployerDashboardProjectionService _dashboardService;
@@ -44,6 +45,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             IEmployerAccountProvider employerAccountProvider,
             IReferenceDataReader referenceDataReader,
             IApplicationReviewRepository applicationReviewRepository,
+            IVacancyReviewQuery vacancyReviewQuery,
             IVacancyReviewRepository vacancyReviewRepository,
             ICandidateSkillsProvider candidateSkillsProvider,
             IVacancyService vacancyService,
@@ -58,6 +60,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _referenceDataReader = referenceDataReader;
             _applicationReviewRepository = applicationReviewRepository;
             _vacancyReviewRepository = vacancyReviewRepository;
+            _vacancyReviewQuery = vacancyReviewQuery;
             _candidateSkillsProvider = candidateSkillsProvider;
             _vacancyService = vacancyService;
             _dashboardService = dashboardService;
@@ -379,7 +382,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public Task<VacancyReview> GetCurrentReferredVacancyReviewAsync(long vacancyReference)
         {
-            return _vacancyReviewRepository.GetCurrentReferredVacancyReviewAsync(vacancyReference);
+            return _vacancyReviewQuery.GetCurrentReferredVacancyReviewAsync(vacancyReference);
         }
     }
 }

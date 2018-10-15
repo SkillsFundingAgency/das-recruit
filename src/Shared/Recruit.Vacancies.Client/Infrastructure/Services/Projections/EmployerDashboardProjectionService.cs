@@ -15,31 +15,31 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
     internal class EmployerDashboardProjectionService : IEmployerDashboardProjectionService
     {
         private readonly ILogger<EmployerDashboardProjectionService> _logger;
-        private readonly IVacancyRepository _repository;
+        private readonly IVacancyQuery _vacancyQuery;
         private readonly IQueryStoreWriter _queryStoreWriter;
-        private readonly IApplicationReviewRepository _applicationReviewRepository;
+        private readonly IApplicationReviewQuery _applicationReviewQuery;
         private readonly IApprenticeshipProgrammeProvider _apprenticeshipProgrammeProvider;
         private readonly ITimeProvider _timeProvider;
 
         public EmployerDashboardProjectionService(
-            IVacancyRepository repository, 
-            IApplicationReviewRepository applicationReviewRepository, 
+            IVacancyQuery vacancyQuery, 
+            IApplicationReviewQuery applicationReviewQuery, 
             IQueryStoreWriter queryStoreWriter, 
             ILogger<EmployerDashboardProjectionService> logger,
             IApprenticeshipProgrammeProvider apprenticeshipProgrammeProvider,
             ITimeProvider timeProvider)
         {
             _logger = logger;
-            _repository = repository;
+            _vacancyQuery = vacancyQuery;
             _queryStoreWriter = queryStoreWriter;
-            _applicationReviewRepository = applicationReviewRepository;
+            _applicationReviewQuery = applicationReviewQuery;
             _apprenticeshipProgrammeProvider = apprenticeshipProgrammeProvider;
             _timeProvider = timeProvider;
         }
 
         public async Task ReBuildAllDashboardsAsync()
         {
-            var employerAccountIds = (await _repository.GetDistinctEmployerAccounts()).ToList();
+            var employerAccountIds = (await _vacancyQuery.GetDistinctEmployerAccounts()).ToList();
 
             _logger.LogInformation($"Rebuilding {employerAccountIds.Count} dashboards");
 
@@ -60,9 +60,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
 
         public async Task ReBuildDashboardAsync(string employerAccountId)
         {
-            var vacancySummariesTask = _repository.GetVacanciesByEmployerAccountAsync<VacancySummary>(employerAccountId);
+            var vacancySummariesTask = _vacancyQuery.GetVacanciesByEmployerAccountAsync<VacancySummary>(employerAccountId);
 
-            var applicationReviewsTask = _applicationReviewRepository.GetForEmployerAsync<ApplicationReviewSummary>(
+            var applicationReviewsTask = _applicationReviewQuery.GetForEmployerAsync<ApplicationReviewSummary>(
                     employerAccountId);
 
             await Task.WhenAll(vacancySummariesTask, applicationReviewsTask);

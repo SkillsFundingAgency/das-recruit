@@ -10,13 +10,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services.NextVacancyReview
     public class NextVacancyReviewService : INextVacancyReviewService
     {
         private readonly ITimeProvider _timeProvider;
-        private readonly IVacancyReviewRepository _vacancyReviewRepository;
+        private readonly IVacancyReviewQuery _vacancyReviewQuery;
         private readonly NextVacancyReviewServiceConfiguration _config;
 
-        public NextVacancyReviewService(IOptions<NextVacancyReviewServiceConfiguration> config, ITimeProvider timeProvider, IVacancyReviewRepository vacancyReviewRepository)
+        public NextVacancyReviewService(IOptions<NextVacancyReviewServiceConfiguration> config, ITimeProvider timeProvider, IVacancyReviewQuery vacancyReviewQuery)
         {
             _timeProvider = timeProvider;   
-            _vacancyReviewRepository = vacancyReviewRepository;
+            _vacancyReviewQuery = vacancyReviewQuery;
             _config = config.Value;
         }
 
@@ -24,7 +24,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services.NextVacancyReview
         {
             var assignationExpiryTime = _timeProvider.Now.AddMinutes(_config.VacancyReviewAssignationTimeoutMinutes * -1);
 
-            var assignedReviews = await _vacancyReviewRepository.GetByStatusAsync(ReviewStatus.UnderReview);
+            var assignedReviews = await _vacancyReviewQuery.GetByStatusAsync(ReviewStatus.UnderReview);
 
             //Get the oldest unexpired review assigned to the user
             var nextVacancyReview = assignedReviews.Where(r => 
@@ -46,7 +46,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services.NextVacancyReview
                 return nextVacancyReview;
 
             //Get the oldest unassigned review
-            var prendingReviews = await _vacancyReviewRepository.GetByStatusAsync(ReviewStatus.PendingReview);
+            var prendingReviews = await _vacancyReviewQuery.GetByStatusAsync(ReviewStatus.PendingReview);
             nextVacancyReview = prendingReviews
                 .OrderBy(r => r.CreatedDate)
                 .FirstOrDefault();
