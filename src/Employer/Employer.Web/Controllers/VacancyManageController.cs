@@ -38,6 +38,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             var viewModel = await _orchestrator.GetManageVacancyViewModel(vrm);
 
+            if (TempData.ContainsKey(TempDataKeys.VacancyClosedMessage))
+                viewModel.VacancyClosedInfoMessage = TempData[TempDataKeys.VacancyClosedMessage].ToString();
+
             return View(viewModel);
         }
 

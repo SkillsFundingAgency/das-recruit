@@ -18,6 +18,8 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
         public bool HasNoApplications => Applications.Applications == null || Applications.Applications?.Any() == false;
 
         public bool CanShowEditVacancyLink { get; internal set; }
-        public bool CanShowCloseVacancyLink => Status == VacancyStatus.Live;
+        public bool CanShowCloseVacancyLink { get; internal set; }
+        public string VacancyClosedInfoMessage { get; internal set; }
+        public bool HasVacancyClosedInfoMessage => !string.IsNullOrEmpty(VacancyClosedInfoMessage);
     }
 }

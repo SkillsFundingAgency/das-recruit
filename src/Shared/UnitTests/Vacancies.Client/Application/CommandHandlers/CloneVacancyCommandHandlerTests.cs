@@ -106,6 +106,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.CommandHandlers
                                             .Excluding(v => v.LiveDate)
                                             .Excluding(v => v.SubmittedByUser)
                                             .Excluding(v => v.SubmittedDate)
+                                            .Excluding(v => v.CanClose)
                                             .Excluding(v => v.CanDelete)
                                             .Excluding(v => v.CanEdit)
                                             .Excluding(v => v.CanSubmit)

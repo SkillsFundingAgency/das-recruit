@@ -2,6 +2,7 @@
 {
     public class ViewNames
     {
+        public const string CloseVacancyView = "Close";
         public const string ErrorView = "Error";
         public const string ManageSubmittedVacancyView = "Submitted";
         public const string ManageApprovedVacancyView = "Approved";
