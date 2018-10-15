@@ -19,7 +19,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode
 
         public async Task<Geocode> Geocode(string postcode)
         {
-            var vacancy = await _vacancyQuery.GetSingleVacancyForPostcode(postcode);
+            var vacancy = await _vacancyQuery.GetSingleVacancyForPostcodeAsync(postcode);
 
             if (vacancy?.EmployerLocation?.Latitude == null || vacancy?.EmployerLocation?.Longitude == null)
             {
