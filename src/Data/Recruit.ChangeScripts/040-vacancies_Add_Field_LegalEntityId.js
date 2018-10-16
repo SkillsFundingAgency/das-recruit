@@ -31,7 +31,7 @@
     var targetVacancyCount = allVacancies.count();
     print(`There are ${targetVacancyCount} vacancies with missing a LegalEntityId field.`);
 
-    if(allVacancies.count() > 0) {
+    if (allVacancies.count() > 0) {
 
         let editUserInfos = db.queryStore.find({ "viewType": "EditVacancyInfo" });
 
