@@ -61,7 +61,7 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
 </div>
 
 <div asp-condition="@Model.Review.CanDisplayReviewHeader" class="grid-row">
-    <div class="column-two-thirds">
+    <div class="column-full">
         <partial name="@PartialNames.ReviewSummary" for="Review" />
     </div>
 </div>
