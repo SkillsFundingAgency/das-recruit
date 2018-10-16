@@ -1,4 +1,5 @@
-﻿using Esfa.Recruit.Employer.Web.RouteModel;
+﻿using System;
+using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -70,8 +71,32 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             return await ValidateAndExecute(
                 vacancy,
                 v => _client.Validate(v, ValidationRules),
-                v => _client.UpdateDraftVacancyAsync(vacancy, user)
+                async v =>    
+                {
+                    // TODO: LWA - should this be done in the command handler?
+                    vacancy.EmployerDescription = null; // We don't want to save the description until submission.
+                    await _client.UpdateDraftVacancyAsync(vacancy, user);
+                    await UpdateEmployerProfileAsync(vacancy, m.EmployerDescription);
+                }
             );
+        }
+
+        private async Task UpdateEmployerProfileAsync(Vacancy vacancy, string employerDescription)
+        {
+            var employerProfile =
+                await _client.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.LegalEntityId);
+
+            if (employerProfile == null)
+            {
+                // TODO: LWA - Throw exception stating that profile should have been generated.
+                throw new Exception();
+            }
+
+            if (employerProfile.AboutOrganisation != employerDescription)
+            {
+                employerProfile.AboutOrganisation = employerDescription;
+                await _client.UpdateEmployerProfileAsync(employerProfile);
+            }
         }
 
         protected override EntityToViewModelPropertyMappings<Vacancy, AboutEmployerEditModel> DefineMappings()

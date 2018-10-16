@@ -261,6 +261,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _employerProfileRepository.GetAsync(employerAccountId, legalEntityId);
         }
 
+        public Task UpdateEmployerProfileAsync(EmployerProfile employerProfile)
+        {
+            var command = new UpdateEmployerProfileCommand
+            {
+                Profile = employerProfile
+            };
+
+            return _messaging.SendCommandAsync(command);
+        }
+
         // Jobs
         public Task AssignVacancyNumber(Guid vacancyId)
         {

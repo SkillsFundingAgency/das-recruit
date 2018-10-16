@@ -47,5 +47,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
     
             return await result.ToListAsync();
         }
+
+        public Task UpdateAsync(EmployerProfile profile)
+        {
+            var builder = Builders<EmployerProfile>.Filter;
+            var filter = builder.Eq(x => x.EmployerAccountId, profile.EmployerAccountId) &
+                         builder.Eq(x => x.LegalEntityId, profile.LegalEntityId);
+
+            var collection = GetCollection<EmployerProfile>();
+
+            return RetryPolicy.ExecuteAsync(context => collection.ReplaceOneAsync(filter, profile), new Context(nameof(UpdateAsync)));
+        }
     }
 }

@@ -9,5 +9,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Repositories
         Task CreateAsync(EmployerProfile profile);
         Task<IList<EmployerProfile>> GetEmployerProfilesForEmployerAsync(string employerAccountId);
         Task<EmployerProfile> GetAsync(string employerAccountId, long legalEntityId);
+        Task UpdateAsync(EmployerProfile profile);
     }
 }
