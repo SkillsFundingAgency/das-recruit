@@ -98,7 +98,7 @@
                     employerProfile.aboutOrganisation = latestAbout;
                 
                 if (latestWebsiteUrl)
-                    employerProfile.organisationWebsite = latestWebsiteUrl;
+                    employerProfile.organisationWebsiteUrl = latestWebsiteUrl;
 
                 profilesToInsert.push(employerProfile);
             }

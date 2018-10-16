@@ -151,6 +151,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient<IVacancyReviewRepository, MongoDbVacancyReviewRepository>();
             services.AddTransient<IUserRepository, MongoDbUserRepository>();
             services.AddTransient<IApplicationReviewRepository, MongoDbApplicationReviewRepository>();
+            services.AddTransient<IEmployerProfileRepository, MongoDbEmployerProfileRepository>();
 
             //Queries
             services.AddTransient<IVacancyQuery, MongoDbVacancyRepository>();

@@ -384,5 +384,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         {
             return _vacancyReviewQuery.GetCurrentReferredVacancyReviewAsync(vacancyReference);
         }
+
+        public Task RefreshEmployerProfiles(string employerAccountId, IEnumerable<long> legalEntityIds)
+        {
+            return _messaging.SendCommandAsync(new RefreshEmployerProfilesCommand
+            {
+                EmployerAccountId = employerAccountId,
+                LegalEntityIds = legalEntityIds
+            });
+        }
     }
 }
