@@ -81,14 +81,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             return RetryPolicy.ExecuteAsync(context => collection.ReplaceOneAsync(filter, item, new UpdateOptions { IsUpsert = true }), new Context(nameof(IQueryStore.UpsertAsync)));
         }
 
-        async Task IQueryStore.RecreateAsync<T>(IList<T> items)
+        async Task IQueryStore.RecreateAsync<T>(string typeName, IList<T> items)
         {
             var collection = GetCollection<T>();
 
-            var filter = Builders<T>.Filter.Eq(d => d.ViewType, items.First().ViewType);
+            var filter = Builders<T>.Filter.Eq(d => d.ViewType, typeName);
 
             await RetryPolicy.ExecuteAsync(context => collection.DeleteManyAsync(filter), new Context(nameof(IQueryStore.RecreateAsync)));
 
+            if (items.Count == 0) return;
+            
             await RetryPolicy.ExecuteAsync(context => collection.InsertManyAsync(items), new Context(nameof(IQueryStore.RecreateAsync)));
         }
     }

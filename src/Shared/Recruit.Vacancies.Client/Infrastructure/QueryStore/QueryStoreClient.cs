@@ -85,12 +85,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 
         public Task RecreateLiveVacancies(IEnumerable<LiveVacancy> liveVacancies)
         {
-            return _queryStore.RecreateAsync(liveVacancies.ToList());
+            return _queryStore.RecreateAsync(QueryViewType.LiveVacancy.TypeName, liveVacancies.ToList());
         }
 
         public Task RecreateClosedVacancies(IEnumerable<ClosedVacancy> closedVacancies)
         {
-            return _queryStore.RecreateAsync(closedVacancies.ToList());
+            return _queryStore.RecreateAsync(QueryViewType.ClosedVacancy.TypeName, closedVacancies.ToList());
         }
         
         public Task UpdateVacancyApplicationsAsync(VacancyApplications vacancyApplications)

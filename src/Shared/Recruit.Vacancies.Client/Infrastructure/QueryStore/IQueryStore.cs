@@ -14,7 +14,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 
         Task UpsertAsync<T>(T item) where T : QueryProjectionBase;
 
-        Task RecreateAsync<T>(IList<T> items) where T : QueryProjectionBase;
+        Task RecreateAsync<T>(string typeName, IList<T> items) where T : QueryProjectionBase;
 
         Task DeleteAsync<T>(string typeName, string key) where T : QueryProjectionBase;
 
