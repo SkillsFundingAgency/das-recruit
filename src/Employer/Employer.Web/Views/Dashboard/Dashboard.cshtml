@@ -74,7 +74,6 @@
                         <td class="dashboard-action">
                             <ul>
                                 <li asp-condition="@vacancy.IsNotSubmittable"><a asp-route="@RouteNames.VacancyManage_Get" asp-route-vacancyId="@vacancy.Id">Manage</a></li>
-                                <li asp-condition="@vacancy.IsClonable"><a asp-route="@RouteNames.VacancyManage_Get" asp-route-vacancyId="@vacancy.Id">Clone</a></li>
                                 <li asp-condition="@vacancy.IsSubmittable"><a asp-route="@RouteNames.DisplayVacancy_Get" asp-route-vacancyId="@vacancy.Id">@GetLinkText(vacancy)</a></li>
                             </ul>
                         </td>
