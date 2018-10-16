@@ -10,7 +10,7 @@
     }
 
     let changeScriptFileRegex = /^\.\/\d{3}.*js$/,
-        changeScripts = ls().filter(scr => changeScriptFileRegex.test(scr)).sort(function(a, b){return a - b;});
+        changeScripts = ls().filter(scr => changeScriptFileRegex.test(scr)).sort();
 
     print(`Found ${changeScripts.length} change scripts to run:`);
     changeScripts.forEach(scr => print(scr));
