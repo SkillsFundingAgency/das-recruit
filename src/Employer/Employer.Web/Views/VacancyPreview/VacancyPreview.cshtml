@@ -118,13 +118,9 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
                 <span esfa-validation-message-for="HasWage" class="error-message"></span>
                 <div asp-condition="@Model.HasWage">
                     <span esfa-validation-message-for="WorkingWeekDescription" class="error-message"></span>
-                    <div asp-condition="@Model.HasWorkingWeekDescription">
-                        @Model.WorkingWeekDescription
-                    </div>
+                    <p asp-condition="@Model.HasWorkingWeekDescription">@Model.WorkingWeekDescription</p>
                     <span esfa-validation-message-for="HoursPerWeek" class="error-message"></span>
-                    <div asp-condition="@Model.HasHoursPerWeek">
-                        Total hours per week: @Model.HoursPerWeek
-                    </div>
+                    <p asp-condition="@Model.HasHoursPerWeek">Total hours per week: @Model.HoursPerWeek</p>
                 </div>
                 @EditLink(RouteNames.Wage_Get, Model.WorkingWeekSectionState, "link-working-week", new { wizard = false })
             </li>
