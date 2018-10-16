@@ -41,6 +41,7 @@ namespace Esfa.Recruit.Employer.Web.Mappings
         public async Task MapFromVacancyAsync(DisplayVacancyViewModel vm, Vacancy vacancy)
         {
             var programme = await _client.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
+            var employerProfile = await _client.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.LegalEntityId);
 
             vm.ApplicationMethod = vacancy.ApplicationMethod;
             vm.ApplicationInstructions = vacancy.ApplicationInstructions;
@@ -51,7 +52,8 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             vm.ContactEmail = vacancy.EmployerContactEmail;
             vm.ContactTelephone = vacancy.EmployerContactPhone;
             vm.ClosingDate = vacancy.ClosingDate?.AsGdsDate();
-            vm.EmployerDescription = vacancy.EmployerDescription;
+            // TODO: LWA - Move this into somewhere shared that the Employer Orchestrator can use?
+            vm.EmployerDescription = employerProfile?.AboutOrganisation ?? string.Empty;
             vm.EmployerName = vacancy.EmployerName;
             vm.EmployerWebsiteUrl = vacancy.EmployerWebsiteUrl;
             vm.EmployerAddressElements = Enumerable.Empty<string>();

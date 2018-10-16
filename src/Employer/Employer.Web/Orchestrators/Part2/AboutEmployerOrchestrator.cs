@@ -30,7 +30,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             var vm = new AboutEmployerViewModel
             {
                 Title = vacancy.Title,
-                EmployerDescription = vacancy.EmployerDescription,
+                EmployerDescription = await GetEmployerDescriptionAsync(vacancy),
                 EmployerWebsiteUrl = vacancy.EmployerWebsiteUrl
             };
 
@@ -41,6 +41,13 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             }
 
             return vm;
+        }
+
+        private async Task<string> GetEmployerDescriptionAsync(Vacancy vacancy)
+        {
+            var profile = await _client.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.LegalEntityId);
+            
+            return profile?.AboutOrganisation ?? string.Empty;
         }
 
         public async Task<AboutEmployerViewModel> GetAboutEmployerViewModelAsync(AboutEmployerEditModel m)

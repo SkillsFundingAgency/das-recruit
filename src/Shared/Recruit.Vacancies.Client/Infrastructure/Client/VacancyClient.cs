@@ -35,6 +35,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly ICandidateSkillsProvider _candidateSkillsProvider;
         private readonly IVacancyService _vacancyService;
         private readonly IEmployerDashboardProjectionService _dashboardService;
+        private readonly IEmployerProfileRepository _employerProfileRepository;
 
         public VacancyClient(
             IVacancyRepository repository,
@@ -49,7 +50,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             IVacancyReviewRepository vacancyReviewRepository,
             ICandidateSkillsProvider candidateSkillsProvider,
             IVacancyService vacancyService,
-            IEmployerDashboardProjectionService dashboardService)
+            IEmployerDashboardProjectionService dashboardService,
+            IEmployerProfileRepository employerProfileRepository)
         {
             _repository = repository;
             _reader = reader;
@@ -64,6 +66,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _candidateSkillsProvider = candidateSkillsProvider;
             _vacancyService = vacancyService;
             _dashboardService = dashboardService;
+            _employerProfileRepository = employerProfileRepository;
         }
 
         public Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user)
@@ -251,6 +254,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             };
 
             return _messaging.SendCommandAsync(command);
+        }
+
+        public Task<EmployerProfile> GetEmployerProfileAsync(string employerAccountId, long legalEntityId)
+        {
+            return _employerProfileRepository.GetAsync(employerAccountId, legalEntityId);
         }
 
         // Jobs
