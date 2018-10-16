@@ -10,6 +10,27 @@
             </div>
         </div>
 
+        <div class="grid-row" asp-condition="@Model.IsResubmission">
+            <div class="column-full">
+                <div class="error-summary review-summary" tabindex="-1">
+                    <h2 class="heading-medium error-summary-heading">
+                        This is a re-submitted vacancy
+                    </h2>
+                    <div asp-condition="@Model.HasChangedFields">
+                        <p>Fields updated by the employer</p>
+                        <ul class="error-summary-list">
+                            @foreach (var field in Model.FieldIdentifiers.Where(f => f.FieldValueHasChanged))
+                            {
+                                <li>
+                                    <a asp-fragment="@field.FieldIdentifier">@field.Text</a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="grid-row" asp-condition="@Model.HasAutomatedQaResults">
             <div class="column-full">
                 <div class="error-summary review-summary">
@@ -36,26 +57,6 @@
             </div>
         </div>
 
-        <div class="grid-row" asp-condition="@Model.IsResubmission">
-            <div class="column-full">
-                <div class="error-summary review-summary" tabindex="-1">
-                    <h2 class="heading-medium error-summary-heading">
-                        This is a re-submitted vacancy
-                    </h2>
-                    <div asp-condition="@Model.HasChangedFields">
-                        <p>Fields updated by the employer</p>
-                        <ul class="error-summary-list">
-                            @foreach (var field in Model.FieldIdentifiers.Where(f => f.FieldValueHasChanged))
-                            {
-                                <li>
-                                    <a asp-fragment="@field.FieldIdentifier">@field.Text</a>
-                                </li>
-                            }
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
         <div class="grid-row">
             <div class="column-two-thirds">
                 <div class=" @Model.TitleClass" id="@VacancyReview.FieldIdentifiers.Title">
