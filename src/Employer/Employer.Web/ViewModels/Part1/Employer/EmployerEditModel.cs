@@ -4,8 +4,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer
 {
     public class EmployerEditModel : VacancyRouteModel
     {
-
-        public string SelectedOrganisationName { get; set; }
+        public long SelectedOrganisationId { get; set; }
 
         public string AddressLine1 { get; set; }
 

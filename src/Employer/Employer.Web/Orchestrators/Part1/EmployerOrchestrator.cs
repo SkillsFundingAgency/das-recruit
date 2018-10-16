@@ -40,7 +40,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var vm = new EmployerViewModel
             {
                 Organisations = BuildLegalEntityViewModels(employerData, vrm.EmployerAccountId),
-                SelectedOrganisationName = vacancy.EmployerName,
+                SelectedOrganisationId = vacancy.LegalEntityId,
                 PageInfo = Utility.GetPartOnePageInfo(vacancy)
             };
 
@@ -75,7 +75,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         {
             var vm = await GetEmployerViewModelAsync((VacancyRouteModel)m);
 
-            vm.SelectedOrganisationName = m.SelectedOrganisationName;
+            vm.SelectedOrganisationId = m.SelectedOrganisationId;
             vm.AddressLine1 = m.AddressLine1;
             vm.AddressLine2 = m.AddressLine2;
             vm.AddressLine3 = m.AddressLine3;
@@ -88,8 +88,13 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         public async Task<OrchestratorResponse> PostEmployerEditModelAsync(EmployerEditModel m, VacancyUser user)
         {
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, m, RouteNames.Employer_Post);
+            var employerVacancyInfo = await _client.GetEditVacancyInfo(m.EmployerAccountId);
 
-            vacancy.EmployerName = m.SelectedOrganisationName?.Trim();
+            var selectedOrganisation = employerVacancyInfo.LegalEntities.SingleOrDefault(x => x.LegalEntityId == m.SelectedOrganisationId);
+
+            vacancy.LegalEntityId = m.SelectedOrganisationId;
+            vacancy.EmployerName = selectedOrganisation?.Name;
+
             vacancy.EmployerLocation = new Vacancies.Client.Domain.Entities.Address
             {
                 AddressLine1 = m.AddressLine1,
@@ -112,7 +117,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         {
             var mappings = new EntityToViewModelPropertyMappings<Vacancy, EmployerEditModel>();
 
-            mappings.Add(e => e.EmployerName, vm => vm.SelectedOrganisationName);
+            mappings.Add(e => e.EmployerName, vm => vm.SelectedOrganisationId);
             mappings.Add(e => e.EmployerLocation.AddressLine1, vm => vm.AddressLine1);
             mappings.Add(e => e.EmployerLocation.AddressLine2, vm => vm.AddressLine2);
             mappings.Add(e => e.EmployerLocation.AddressLine3, vm => vm.AddressLine3);
