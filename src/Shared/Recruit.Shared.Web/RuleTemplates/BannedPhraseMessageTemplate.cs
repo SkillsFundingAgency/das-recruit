@@ -6,7 +6,9 @@ namespace Esfa.Recruit.Shared.Web.RuleTemplates
     {
         public static string ToText(BannedPhrasesData msgData, string fieldName)
         {
-            return $"{fieldName} contains the phrase {msgData.BannedPhrase}";
+            return msgData.Occurrences > 1 
+                ? $"{fieldName} contains the phrase {msgData.BannedPhrase} {msgData.Occurrences} times"
+                : $"{fieldName} contains the phrase {msgData.BannedPhrase}";
         }
     }
 }
