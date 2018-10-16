@@ -1,4 +1,4 @@
-﻿@model Esfa.Recruit.Employer.Web.ViewModels.Part1.Training.TrainingViewModel
+﻿﻿@model Esfa.Recruit.Employer.Web.ViewModels.Part1.Training.TrainingViewModel
 @{
     var exampleClosingDate = DateTime.Now.AddMonths(2);
     var exampleStartingDate = exampleClosingDate.AddDays(14);
@@ -41,7 +41,7 @@
 
                 <div esfa-validation-marker-for="StartDate" class="form-group">
                     <fieldset>
-                        <legend class="form-label-bold">When do you expect the apprenticeship to start?<span class="visuallyhidden"> (in numeric format DD MM YYYY)</span></legend>
+                        <legend class="form-label-bold">When do you expect the apprentice to start?<span class="visuallyhidden"> (in numeric format DD MM YYYY)</span></legend>
                         <span class="form-hint">For example, @exampleStartingDate.Day @exampleStartingDate.Month @exampleStartingDate.Year</span>
 
                         <span esfa-validation-message-for="StartDate" class="error-message"></span>
@@ -79,7 +79,7 @@
 
                 <div class="form-group">
                     <fieldset>
-                        <legend class="form-label-bold">Disability Confident</legend>
+                        <legend class="form-label-bold">Disability Confident (optional)</legend>
                         <div class="multiple-choice">
                             <input asp-for="IsDisabilityConfident" type="checkbox" value="true">
                             <label asp-for="IsDisabilityConfident">This vacancy is <a href="https://www.gov.uk/government/collections/disability-confident-campaign" target="_blank" title="Disability Confident employer scheme and guidance (opens in a new window)">Disability Confident</a>.</label>
