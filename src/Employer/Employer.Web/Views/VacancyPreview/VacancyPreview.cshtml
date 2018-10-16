@@ -69,7 +69,7 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
 <div class="grid-row" id="@Anchors.TitleSection">
     <div class="column-two-thirds">
         <div class="@GetSectionClass(Model.TitleSectionState) small-bottom-margin">
-            <h2 class="heading-xlarge no-bottom-margin" id="@Anchors.Title">
+            <h2 class="heading-xlarge small-bottom-margin" id="@Anchors.Title">
                 <img asp-condition="@Model.TitleRequiresEdit" src="/img/red-cross.png" />
                 @Model.Title
                 <span class="heading-secondary">@Model.EmployerName</span>
