@@ -28,10 +28,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         [HttpPost("close", Name = RouteNames.CloseVacancy_Post)]
         public async Task<IActionResult> Close(CloseEditModel m)
         {
-            var vrm = new VacancyRouteModel { VacancyId = m.VacancyId, EmployerAccountId = m.EmployerAccountId };
-
             if (!ModelState.IsValid)
             {
+                var vrm = new VacancyRouteModel { VacancyId = m.VacancyId, EmployerAccountId = m.EmployerAccountId };
                 return await GetCloseVacancyConfirmationView(vrm);
             }
 
