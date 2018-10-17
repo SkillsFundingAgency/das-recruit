@@ -77,11 +77,11 @@
     </div>
 </div>
 
-<div asp-condition="@Model.IsApplyThroughFaaVacancy" class="grid-row small-bottom-margin">
+<div asp-condition="@Model.IsApplyThroughFaaVacancy" class="grid-row">
     <div class="column-full">
         <h2 class="heading-large">Manage applications</h2>
         <partial asp-condition="@Model.HasApplications" name="@PartialNames.VacancyApplicationsTable" for="Applications" />
-        <p asp-condition="@Model.HasNoApplications">Candidate applications for this apprenticeship will appear here.</p>
+        <p asp-condition="@Model.HasNoApplications" class="no_bottom_margin">Candidate applications for this apprenticeship will appear here.</p>
     </div>
 </div>
 <div class="grid-row">
