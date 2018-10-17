@@ -83,13 +83,14 @@
             const element = accountIds[index];
 
             for (let entityIndex = 0; entityIndex < element.legalEntities.length; entityIndex++) {
-                const entity = element.legalEntities[entityIndex];
+                const entity = element.legalEntities[entityIndex]; 
 
                 var employerProfile = {};
 
                 employerProfile._id = NUUID(uuid());
                 employerProfile.employerAccountId = element.employerAccountId;
                 employerProfile.legalEntityId = entity.legalEntityId;
+                employerProfile.createdDate = new Date();
 
                 const latestAbout = getLatestAbout(entity.legalEntityId);
                 const latestWebsiteUrl = getLatestEmployerWebsiteUrl(entity.legalEntityId);
