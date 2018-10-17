@@ -40,8 +40,10 @@ namespace Esfa.Recruit.Employer.Web.Mappings
 
         public async Task MapFromVacancyAsync(DisplayVacancyViewModel vm, Vacancy vacancy)
         {
-            var programme = await _client.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
-            var employerProfile = await _client.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.LegalEntityId);
+            var programmeTask = _client.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
+            var employerProfileTask = _client.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.LegalEntityId);
+
+            await Task.WhenAll(programmeTask, employerProfileTask);
 
             vm.ApplicationMethod = vacancy.ApplicationMethod;
             vm.ApplicationInstructions = vacancy.ApplicationInstructions;
@@ -52,8 +54,7 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             vm.ContactEmail = vacancy.EmployerContactEmail;
             vm.ContactTelephone = vacancy.EmployerContactPhone;
             vm.ClosingDate = vacancy.ClosingDate?.AsGdsDate();
-            // TODO: LWA - Move this into somewhere shared that the Employer Orchestrator can use?
-            vm.EmployerDescription = employerProfile?.AboutOrganisation ?? string.Empty;
+            vm.EmployerDescription = employerProfileTask.Result?.AboutOrganisation ?? string.Empty;
             vm.EmployerName = vacancy.EmployerName;
             vm.EmployerWebsiteUrl = vacancy.EmployerWebsiteUrl;
             vm.EmployerAddressElements = Enumerable.Empty<string>();
@@ -95,9 +96,9 @@ namespace Esfa.Recruit.Employer.Web.Mappings
 
             if (vacancy.ProgrammeId != null)
             {
-                vm.TrainingTitle = programme?.Title;
-                vm.TrainingType = programme?.ApprenticeshipType.GetDisplayName();
-                vm.TrainingLevel = programme?.Level.GetDisplayName();
+                vm.TrainingTitle = programmeTask.Result?.Title;
+                vm.TrainingType = programmeTask.Result?.ApprenticeshipType.GetDisplayName();
+                vm.TrainingLevel = programmeTask.Result?.Level.GetDisplayName();
             }
 
             if (vacancy.Wage != null)

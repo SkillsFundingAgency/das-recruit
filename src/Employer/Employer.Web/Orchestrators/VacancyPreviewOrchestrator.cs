@@ -54,9 +54,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         public async Task<OrchestratorResponse> SubmitVacancyAsync(SubmitEditModel m, VacancyUser user)
         {
             var vacancy = await Utility.GetAuthorisedVacancyAsync(_client, m, RouteNames.Preview_Submit_Post);
-
-            // TODO: LWA - Move this to somewhere shared
             var employerProfile = await _client.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.LegalEntityId);
+            
+            // Update the vacancy with the current employer description text from Profile.
             vacancy.EmployerDescription = employerProfile?.AboutOrganisation ?? string.Empty;
 
             if (!vacancy.CanSubmit)

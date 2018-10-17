@@ -73,7 +73,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                 v => _client.Validate(v, ValidationRules),
                 async v =>    
                 {
-                    // TODO: LWA - should this be done in the command handler?
                     vacancy.EmployerDescription = null; // We don't want to save the description until submission.
                     await _client.UpdateDraftVacancyAsync(vacancy, user);
                     await UpdateEmployerProfileAsync(vacancy, m.EmployerDescription);
@@ -88,8 +87,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
             if (employerProfile == null)
             {
-                // TODO: LWA - Throw exception stating that profile should have been generated.
-                throw new Exception();
+                throw new NullReferenceException($"No Employer Profile was found for employerAccount: {vacancy.EmployerAccountId}, legalEntity: {vacancy.LegalEntityId}");
             }
 
             if (employerProfile.AboutOrganisation != employerDescription)
