@@ -43,6 +43,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         {
             switch (vacancy.Status)
             {
+                case VacancyStatus.Approved:
+                    var approvedViewModel = new ApprovedVacancyViewModel();
+                    await _vacancyDisplayMapper.MapFromVacancyAsync(approvedViewModel, vacancy);
+                    approvedViewModel.ApprovedDate = vacancy.ApprovedDate.Value.AsGdsDate();
+                    return approvedViewModel;
                 case VacancyStatus.Live:
                     var liveViewModel = new LiveVacancyViewModel();
                     await _vacancyDisplayMapper.MapFromVacancyAsync(liveViewModel, vacancy);
@@ -51,6 +56,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                     var closedViewModel = new ClosedVacancyViewModel();
                     await _vacancyDisplayMapper.MapFromVacancyAsync(closedViewModel, vacancy);
                     return closedViewModel;
+                case VacancyStatus.Submitted:
+                    var submittedViewModel = new SubmittedVacancyViewModel();
+                    await _vacancyDisplayMapper.MapFromVacancyAsync(submittedViewModel, vacancy);
+                    submittedViewModel.SubmittedDate = vacancy.SubmittedDate.Value.AsGdsDate();
+                    return submittedViewModel;
                 default:
                     throw new InvalidStateException(string.Format(ErrorMessages.VacancyCannotBeViewed, vacancy.Title));
             }

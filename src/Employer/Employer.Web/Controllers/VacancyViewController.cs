@@ -43,11 +43,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 return HandleRedirectOfEditableVacancy(vacancy);
             }
 
-            if (vacancy.ApplicationMethod == ApplicationMethod.ThroughExternalApplicationSite || (vacancy.Status != VacancyStatus.Live && vacancy.Status != VacancyStatus.Closed))
-            {
-                return RedirectToRoute(RouteNames.DisplayVacancy_Get);
-            }
-
             var vm = await _orchestrator.GetFullVacancyDisplayViewModelAsync(vacancy);
             return View(ViewNames.FullVacancyView, vm);
         }

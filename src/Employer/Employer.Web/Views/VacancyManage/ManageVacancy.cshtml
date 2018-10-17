@@ -57,13 +57,12 @@
         @Model.PossibleStartDate
     </div>
 </div>
-<div class="grid-row">
+<div asp-condition="@Model.IsDisabilityConfident" class="grid-row">
     <div class="column-one-third">
         <h3 class="heading-small no-top-margin small-bottom-margin">Disability confident</h3>
     </div>
     <div class="column-two-thirds">
-        <span asp-show="@Model.IsDisabilityConfident">Yes</span>
-        <span asp-show="@Model.IsNotDisabilityConfident">No</span>
+        <span>Yes</span>
     </div>
 </div>
 
