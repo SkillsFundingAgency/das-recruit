@@ -11,7 +11,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
         public string ClosingDate { get; internal set; }
         public string PossibleStartDate { get; internal set; }
         public bool IsDisabilityConfident { get; internal set; }
-        public bool IsNotDisabilityConfident => !IsDisabilityConfident;
         public bool IsApplyThroughFaaVacancy { get; internal set; }
         public VacancyApplicationsViewModel Applications { get; internal set; }
         public bool HasApplications => Applications.Applications.Any();
