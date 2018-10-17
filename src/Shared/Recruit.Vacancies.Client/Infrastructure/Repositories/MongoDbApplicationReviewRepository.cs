@@ -77,7 +77,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             return await result.ToListAsync();
         }
 
-        public async Task<List<ApplicationReview>> GetForVacancyAsync(long vacancyReference)
+        public async Task<List<T>> GetForVacancyAsync<T>(long vacancyReference)
         {
             var filter = Builders<T>.Filter.Eq(VacancyReference, vacancyReference);
             var collection = GetCollection<T>();
@@ -101,12 +101,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             return await result.ToListAsync();
         }
 
-        public async Task HardDelete(Guid applicationReviewId)
+        public Task HardDelete(Guid applicationReviewId)
         {
             var filter = Builders<ApplicationReview>.Filter.Eq(Id, applicationReviewId);
             var collection = GetCollection<ApplicationReview>();
 
-            var result = await RetryPolicy.ExecuteAsync(context => collection.DeleteOneAsync(filter),
+            return RetryPolicy.ExecuteAsync(context => collection.DeleteOneAsync(filter),
                 new Context(nameof(HardDelete)));
         }
     }
