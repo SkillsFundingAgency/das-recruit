@@ -9,5 +9,8 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public long LegalEntityId { get; set; }
         public string AboutOrganisation { get; set; }
         public string OrganistationWebsiteUrl { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime? LastUpdatedDate { get; set; }
+        public VacancyUser LastUpdatedBy { get; set; }
     }
 }

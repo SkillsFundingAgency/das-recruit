@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using MediatR;
@@ -15,13 +16,16 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
     {
         private readonly ILogger<RefreshEmployerProfilesCommandHandler> _logger;
         private readonly IEmployerProfileRepository _employerProfileRepository;
+        private readonly ITimeProvider _time;
 
         public RefreshEmployerProfilesCommandHandler(
             ILogger<RefreshEmployerProfilesCommandHandler> logger,
-            IEmployerProfileRepository employerProfileRepository)
+            IEmployerProfileRepository employerProfileRepository,
+            ITimeProvider time)
         {
             _logger = logger;
             _employerProfileRepository = employerProfileRepository;
+            _time = time;
         }
 
         public async Task Handle(RefreshEmployerProfilesCommand message, CancellationToken cancellationToken)
@@ -37,12 +41,15 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             {
                 if (!profiles.Any(x => x.LegalEntityId == legalEntity))
                 {
+                    var currentTime = _time.Now;
+
                     // Create new profile
                     var newProfile = new EmployerProfile
                     {
                         Id = Guid.NewGuid(),
                         EmployerAccountId = message.EmployerAccountId,
-                        LegalEntityId = legalEntity
+                        LegalEntityId = legalEntity,
+                        CreatedDate = currentTime
                     };
 
                     _logger.LogInformation("Adding new profile for employer account: {employerAccountId} and legal entity id: {legalEntityId}", message.EmployerAccountId, legalEntity);

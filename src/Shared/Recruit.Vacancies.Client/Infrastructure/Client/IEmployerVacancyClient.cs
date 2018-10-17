@@ -33,7 +33,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<List<string>> GetCandidateSkillsAsync();
         Task<Quals.Qualifications> GetCandidateQualificationsAsync();
         Task<EmployerProfile> GetEmployerProfileAsync(string employerAccountId, long legalEntityId);
-        Task UpdateEmployerProfileAsync(EmployerProfile employerProfile);
+        Task UpdateEmployerProfileAsync(EmployerProfile employerProfile, VacancyUser user);
         Task<ApplicationReview> GetApplicationReviewAsync(Guid applicationReviewId);
         Task<VacancyApplications> GetVacancyApplicationsAsync(string vacancyReference);
         Task SetApplicationReviewSuccessful(Guid applicationReviewId, VacancyUser user);

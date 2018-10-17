@@ -7,5 +7,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Commands
     public class UpdateEmployerProfileCommand : ICommand, IRequest
     {
         public EmployerProfile Profile { get; set; }
+        public VacancyUser User { get; set; }
     }
 }

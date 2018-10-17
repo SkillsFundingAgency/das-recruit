@@ -75,12 +75,12 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                 {
                     vacancy.EmployerDescription = null; // We don't want to save the description until submission.
                     await _client.UpdateDraftVacancyAsync(vacancy, user);
-                    await UpdateEmployerProfileAsync(vacancy, m.EmployerDescription);
+                    await UpdateEmployerProfileAsync(vacancy, m.EmployerDescription, user);
                 }
             );
         }
 
-        private async Task UpdateEmployerProfileAsync(Vacancy vacancy, string employerDescription)
+        private async Task UpdateEmployerProfileAsync(Vacancy vacancy, string employerDescription, VacancyUser user)
         {
             var employerProfile =
                 await _client.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.LegalEntityId);
@@ -93,7 +93,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             if (employerProfile.AboutOrganisation != employerDescription)
             {
                 employerProfile.AboutOrganisation = employerDescription;
-                await _client.UpdateEmployerProfileAsync(employerProfile);
+                await _client.UpdateEmployerProfileAsync(employerProfile, user);
             }
         }
 
