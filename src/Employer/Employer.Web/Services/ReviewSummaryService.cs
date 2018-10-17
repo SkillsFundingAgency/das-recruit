@@ -28,14 +28,14 @@ namespace Esfa.Recruit.Employer.Web.Services
 
                 vm = new ReviewSummaryViewModel
                 {
-                    CanDisplayReviewHeader = true,
+                    HasBeenReviewed = true,
                     ReviewerComments = review.ManualQaComment,
                     FieldIndicators = fieldIndicators
                 };
             }
             else
             {
-                vm = new ReviewSummaryViewModel { CanDisplayReviewHeader = false };
+                vm = new ReviewSummaryViewModel { HasBeenReviewed = false };
             }
 
             return vm;

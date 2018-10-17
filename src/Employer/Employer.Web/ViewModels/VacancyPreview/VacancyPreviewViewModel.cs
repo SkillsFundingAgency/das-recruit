@@ -64,11 +64,11 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
                                                     || HasIncompleteEmployerWebsiteUrlSection
                                                     || HasIncompleteContactSection;
 
-        public bool HasIncompleteSections => HasIncompleteMandatorySections || HasIncompleteOptionalSections;
+        public bool ShowIncompleteSections => (HasIncompleteMandatorySections || HasIncompleteOptionalSections) && !Review.HasBeenReviewed;
 
         public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
 
-        public string SubmitButtonText => Review.CanDisplayReviewHeader ? "Resubmit vacancy" : "Submit vacancy";
+        public string SubmitButtonText => Review.HasBeenReviewed ? "Resubmit vacancy" : "Submit vacancy";
 
         public bool ApplicationInstructionsRequiresEdit => IsEditRequired(VacancyReview.FieldIdentifiers.ApplicationInstructions);
         public bool ApplicationMethodRequiresEdit => IsEditRequired(VacancyReview.FieldIdentifiers.ApplicationMethod);
