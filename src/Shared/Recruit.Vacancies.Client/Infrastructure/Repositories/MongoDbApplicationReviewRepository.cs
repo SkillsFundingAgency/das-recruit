@@ -102,7 +102,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var filter = Builders<ApplicationReview>.Filter.Eq(Id, applicationReviewId);
             var collection = GetCollection<ApplicationReview>();
 
-            var result = await RetryPolicy.ExecuteAsync(context => collection.DeleteManyAsync(filter),
+            var result = await RetryPolicy.ExecuteAsync(context => collection.DeleteOneAsync(filter),
                 new Context(nameof(GetForVacancyAsync)));
         }
     }
