@@ -6,7 +6,10 @@ namespace Esfa.Recruit.Shared.Web.RuleTemplates
     {
         public static string ToText(ProfanityData msgData, string fieldName)
         {
-            return $"{fieldName} contains the phrase {msgData.Profanity}";
+            var baseMessage = $"{fieldName} contains the phrase '{msgData.Profanity}'";
+            return msgData.Occurrences > 1 
+                ? $"{baseMessage} {msgData.Occurrences} times"
+                : $"{baseMessage}";
         }
     }
 }

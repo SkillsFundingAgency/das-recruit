@@ -50,6 +50,11 @@
             public const string SelectionRequired = "You must select one option.";
         }
 
+        public static class CloseVacancyConfirmationMessages
+        {
+            public const string SelectionRequired = "You must select one option.";
+        }
+
         public static class CreateVacancyOptionsConfirmationMessages
         {
             public const string SelectionRequired = "You must select either 'Create new vacancy' or one of your existing vacancies.";

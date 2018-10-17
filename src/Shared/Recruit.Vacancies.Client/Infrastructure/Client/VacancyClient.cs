@@ -290,6 +290,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _reader.GetLiveVacancies();
         }
 
+        public async Task CloseVacancyAsync(Guid vacancyId, VacancyUser user)
+        {
+            var command = new CloseVacancyCommand
+            {
+                VacancyId = vacancyId,
+                User = user
+            };
+
+            await _messaging.SendCommandAsync(command);
+        }
+
         public async Task CloseExpiredVacancies()
         {
             var command = new CloseExpiredVacanciesCommand();
@@ -349,6 +360,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _messaging.SendCommandAsync(new WithdrawApplicationCommand
             {
                 VacancyReference = vacancyReference,
+                CandidateId = candidateId
+            });
+        }
+
+        public Task HardDeleteApplicationReviewsForCandidate(Guid candidateId)
+        {
+            return _messaging.SendCommandAsync(new DeleteApplicationReviewsCommand
+            {
                 CandidateId = candidateId
             });
         }

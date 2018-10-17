@@ -36,7 +36,7 @@
             You can clone vacancies once they've been submitted.
             Vacancies will be approved or rejected within 24 hours.
         </p>
-        <a asp-condition="!@Model.CanCloneVacancies" asp-route="@RouteNames.CreateVacancy_Get" class="button small-bottom-margin">Create vacancy</a>
+        <a asp-condition="@Model.CannotCloneVacancies" asp-route="@RouteNames.CreateVacancy_Get" class="button small-bottom-margin">Create vacancy</a>
         <a asp-condition="@Model.CanCloneVacancies" asp-route="@RouteNames.CreateVacancyOptions_Get" class="button small-bottom-margin">Create vacancy</a>
     </div>
     <br>
@@ -72,10 +72,8 @@
                         </td>
                         <td class="dashboard-closingdate">@vacancy.ClosingDate?.AsGdsDate()</td>
                         <td class="dashboard-action">
-                            <ul>
-                                <li asp-condition="@vacancy.IsNotSubmittable"><a asp-route="@RouteNames.VacancyManage_Get" asp-route-vacancyId="@vacancy.Id">Manage</a></li>
-                                <li asp-condition="@vacancy.IsSubmittable"><a asp-route="@RouteNames.DisplayVacancy_Get" asp-route-vacancyId="@vacancy.Id">@GetLinkText(vacancy)</a></li>
-                            </ul>
+                            <a asp-condition="@vacancy.IsNotSubmittable" asp-route="@RouteNames.VacancyManage_Get" asp-route-vacancyId="@vacancy.Id">Manage</a>
+                            <a asp-condition="@vacancy.IsSubmittable" asp-route="@RouteNames.DisplayVacancy_Get" asp-route-vacancyId="@vacancy.Id">@GetLinkText(vacancy)</a>
                         </td>
                     </tr>
                 }

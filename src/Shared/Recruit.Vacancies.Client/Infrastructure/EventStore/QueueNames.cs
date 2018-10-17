@@ -8,5 +8,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventStore
         public const string GeneratePublishedVacanciesQueueName = "generate-published-vacancies-queue";
         public const string ApplicationSubmittedQueueName = "application-submitted-queue";
         public const string ApplicationWithdrawnQueueName = "application-withdrawn-queue";
+        public const string CandidateDeleteQueueName = "candidate-delete-queue";
     }
 }

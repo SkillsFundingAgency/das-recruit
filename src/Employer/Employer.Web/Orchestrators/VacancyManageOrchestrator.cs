@@ -44,11 +44,12 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             viewModel.Title = vacancy.Title;
             viewModel.Status = vacancy.Status;
             viewModel.VacancyReference = vacancy.VacancyReference.Value.ToString();
-            viewModel.ClosingDate = vacancy.ClosingDate?.AsGdsDate();
+            viewModel.ClosingDate = viewModel.Status == VacancyStatus.Closed ? vacancy.ClosedDate?.AsGdsDate() : vacancy.ClosingDate?.AsGdsDate();
             viewModel.PossibleStartDate = vacancy.StartDate?.AsGdsDate();
             viewModel.IsDisabilityConfident = vacancy.IsDisabilityConfident;
             viewModel.IsApplyThroughFaaVacancy = vacancy.ApplicationMethod == ApplicationMethod.ThroughFindAnApprenticeship;
-            viewModel.CanShowEditVacancyLink = vacancy.CanEdit;
+            viewModel.CanShowEditVacancyLink = vacancy.Status == VacancyStatus.Live;
+            viewModel.CanShowCloseVacancyLink = vacancy.CanClose;
 
             var vacancyApplicationsTask =  await _client.GetVacancyApplicationsAsync(vacancy.VacancyReference.Value.ToString());
 

@@ -16,6 +16,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
     {
         private const string EmployerAccountId = "employerAccountId";
         private const string VacancyReference = "vacancyReference";
+        private const string CandidateId = "candidateId";
         private const string Id = "_id";
 
         public MongoDbApplicationReviewRepository(ILogger<MongoDbApplicationReviewRepository> logger, IOptions<MongoDbConnectionDetails> details)
@@ -74,15 +75,35 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             return await result.ToListAsync();
         }
 
-        public async Task<List<T>> GetForVacancyAsync<T>(long vacancyReference)
+        public async Task<List<ApplicationReview>> GetForVacancyAsync(long vacancyReference)
         {
-            var filter = Builders<BsonDocument>.Filter.Eq(VacancyReference, vacancyReference);
-            var collection = GetCollection<BsonDocument>();
+            var filter = Builders<ApplicationReview>.Filter.Eq(VacancyReference, vacancyReference);
+            var collection = GetCollection<ApplicationReview>();
 
-            var result = await RetryPolicy.ExecuteAsync(context => collection.FindAsync<T>(filter),
+            var result = await RetryPolicy.ExecuteAsync(context => collection.FindAsync<ApplicationReview>(filter),
                 new Context(nameof(GetForVacancyAsync)));
 
             return await result.ToListAsync();
+        }
+
+        public async Task<List<ApplicationReview>> GetForCandidateAsync(Guid candidateId)
+        {
+            var filter = Builders<ApplicationReview>.Filter.Eq(CandidateId, candidateId);
+            var collection = GetCollection<ApplicationReview>();
+
+            var result = await RetryPolicy.ExecuteAsync(context => collection.FindAsync<ApplicationReview>(filter),
+                new Context(nameof(GetForVacancyAsync)));
+
+            return await result.ToListAsync();
+        }
+
+        public async Task HardDelete(Guid applicationReviewId)
+        {
+            var filter = Builders<ApplicationReview>.Filter.Eq(Id, applicationReviewId);
+            var collection = GetCollection<ApplicationReview>();
+
+            var result = await RetryPolicy.ExecuteAsync(context => collection.DeleteOneAsync(filter),
+                new Context(nameof(GetForVacancyAsync)));
         }
     }
 }

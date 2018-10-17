@@ -1,0 +1,36 @@
+﻿@model Esfa.Recruit.Employer.Web.ViewModels.CloseViewModel
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <h1 class="heading-xlarge small-bottom-margin">
+            @Model.Title
+            <span class="heading-secondary">VAC<span>@Model.VacancyReference</span>
+        </h1>
+        <partial name=@PartialNames.ValidationSummary model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
+
+        <div class="panel panel-border-wide small-bottom-margin close-vacancy-info">
+            <h2 class="bold heading-medium no-top-margin">Closing a vacancy</h2>
+            <p>By continuing with this action you will be closing this vacancy to further applications on Find an apprenticeship.</p>
+            <p>It may take up to an hour to take effect on Find an apprenticeship.</p>
+            <p><span class="bold">This action cannot be undone</span>.</p>
+        </div>
+        <form asp-route="@RouteNames.CloseVacancy_Post">
+            <legend class="form-label small-top-margin small-bottom-margin">Do you want to close this vacancy?</legend>
+            <div esfa-validation-marker-for="ConfirmClose" class="form-group">
+                <fieldset>
+                    <span esfa-validation-message-for="ConfirmClose" class="error-message"></span>
+                    <div class="multiple-choice">
+                        <input asp-for="@Model.ConfirmClose" type="radio" value="true" id="close-yes" />
+                        <label class="block-label selection-button-radio" for="close-yes">Yes, close this vacancy now</label>
+                    </div>
+                    <div class="multiple-choice">
+                        <input asp-for="@Model.ConfirmClose" type="radio" value="false" id="close-no" />
+                        <label class="block-label selection-button-radio" for="close-no">No, take me back to manage vacancy</label>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Continue" class="button" />
+            </div>
+        </form>
+    </div>
+</div>
