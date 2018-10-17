@@ -14,15 +14,18 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
     {
         private readonly ILogger<DeleteApplicationReviewsCommandHandler> _logger;
         private readonly IApplicationReviewRepository _applicationReviewRepository;
+        private readonly IApplicationReviewQuery _applicationReviewQuery;
         private readonly IMessaging _messaging;
 
         public DeleteApplicationReviewsCommandHandler(
             ILogger<DeleteApplicationReviewsCommandHandler> logger,
             IApplicationReviewRepository applicationReviewRepository,
+            IApplicationReviewQuery applicationReviewQuery,
             IMessaging messaging)
         {
             _logger = logger;
             _applicationReviewRepository = applicationReviewRepository;
+            _applicationReviewQuery = applicationReviewQuery;
             _messaging = messaging;
         }
 
@@ -30,7 +33,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         {
             _logger.LogInformation("Deleting all application reviews for candidateId:{candidateId}",message.CandidateId);
 
-            var candidateApplicationReviews = await _applicationReviewRepository.GetForCandidateAsync(message.CandidateId);
+            var candidateApplicationReviews = await _applicationReviewQuery.GetForCandidateAsync(message.CandidateId);
 
             foreach (var applicationReview in candidateApplicationReviews)
             {
