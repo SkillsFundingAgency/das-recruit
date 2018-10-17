@@ -19,7 +19,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<Guid> CloneVacancyAsync(Guid vacancyId, VacancyUser user);
         Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user);
         Task UpdatePublishedVacancyAsync(Vacancy vacancy, VacancyUser user);
-        Task SubmitVacancyAsync(Guid vacancyId, VacancyUser user);
+        Task SubmitVacancyAsync(Vacancy vacancy, VacancyUser user);
         Task DeleteVacancyAsync(Guid vacancyId, VacancyUser user);
         Task<EmployerDashboard> GetDashboardAsync(string employerAccountId);
         Task UserSignedInAsync(VacancyUser user);
