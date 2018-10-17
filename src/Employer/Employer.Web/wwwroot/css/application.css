@@ -1529,3 +1529,36 @@ table th.th-20 {
     float: left;
     margin-right: 40px;
  }
+
+ .tag {
+    background-color: #808080;
+    color: white;
+    padding: 0.3em 0.4em 0.2em 0.4em;
+    font-weight: bold;
+    font-size: 16px;
+    border-radius: 4px;
+  }
+
+  .tag-draft {
+    background-color: #6F777B;
+  }
+  
+  .tag-submitted {
+    background-color: #F47738;
+  }
+
+  .tag-referred {
+    background-color: #B10E1E;
+  }
+
+  .tag-approved {
+    background-color: #006435;
+  }
+
+  .tag-live {
+    background-color: #006435;
+  }
+  
+  .tag-closed {
+    background-color: #0B0C0C;
+  }
