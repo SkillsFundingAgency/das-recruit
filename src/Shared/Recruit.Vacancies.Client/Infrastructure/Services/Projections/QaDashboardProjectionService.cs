@@ -32,8 +32,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
             {
                 TotalVacanciesForReview = activeReviews.Count,
                 TotalVacanciesResubmitted = GetTotalVacanciesResubmittedCount(activeReviews),
-                TotalVacanciesBrokenSla = GetTotalVacanciesBrokenSla(activeReviews),
-                AllReviews = activeReviews.ToList()
+                TotalVacanciesBrokenSla = GetTotalVacanciesBrokenSla(activeReviews)
             };
 
             await _queryStoreWriter.UpdateQaDashboardAsync(qaDashboard);

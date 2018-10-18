@@ -93,11 +93,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         public async Task<QaDashboard> GetDashboardAsync()
         {
             var dashboard = await _queryStoreReader.GetQaDashboardAsync().ConfigureAwait(true);
-
-            //todo - will be deleted
-            var allReviews = await _reviewRepository.GetActiveAsync();
-            dashboard.AllReviews = allReviews.ToList();
-
             return dashboard;
         }
 

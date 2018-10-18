@@ -12,10 +12,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.QA
         public int TotalVacanciesForReview { get; set; }
         public int TotalVacanciesBrokenSla { get; set; }
         public int TotalVacanciesResubmitted { get; set; }
-
-        //todo - will be deleted
-        public List<VacancyReview> AllReviews { get; set; }
-
         public List<VacancyReview> SearchResults { get; set; }
     }
 }
