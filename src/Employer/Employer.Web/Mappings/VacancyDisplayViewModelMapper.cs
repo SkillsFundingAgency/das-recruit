@@ -40,10 +40,7 @@ namespace Esfa.Recruit.Employer.Web.Mappings
 
         public async Task MapFromVacancyAsync(DisplayVacancyViewModel vm, Vacancy vacancy)
         {
-            var programmeTask = _client.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
-            var employerProfileTask = _client.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.LegalEntityId);
-
-            await Task.WhenAll(programmeTask, employerProfileTask);
+            var programme = await _client.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
 
             vm.ApplicationMethod = vacancy.ApplicationMethod;
             vm.ApplicationInstructions = vacancy.ApplicationInstructions;
@@ -54,7 +51,7 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             vm.ContactEmail = vacancy.EmployerContactEmail;
             vm.ContactTelephone = vacancy.EmployerContactPhone;
             vm.ClosingDate = vacancy.ClosingDate?.AsGdsDate();
-            vm.EmployerDescription = employerProfileTask.Result?.AboutOrganisation ?? string.Empty;
+            vm.EmployerDescription = await GetEmployerDescriptionAsync(vacancy);
             vm.EmployerName = vacancy.EmployerName;
             vm.EmployerWebsiteUrl = vacancy.EmployerWebsiteUrl;
             vm.EmployerAddressElements = Enumerable.Empty<string>();
@@ -73,8 +70,8 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             vm.Title = vacancy.Title;
             vm.TrainingDescription = vacancy.TrainingDescription;
             vm.VacancyDescription = vacancy.Description;
-            vm.VacancyReferenceNumber = vacancy.VacancyReference.HasValue 
-                                        ? $"VAC{vacancy.VacancyReference.ToString()}" 
+            vm.VacancyReferenceNumber = vacancy.VacancyReference.HasValue
+                                        ? $"VAC{vacancy.VacancyReference.ToString()}"
                                         : string.Empty;
             vm.IsDisabilityConfident = vacancy.IsDisabilityConfident;
             if (vacancy.EmployerLocation != null)
@@ -96,9 +93,9 @@ namespace Esfa.Recruit.Employer.Web.Mappings
 
             if (vacancy.ProgrammeId != null)
             {
-                vm.TrainingTitle = programmeTask.Result?.Title;
-                vm.TrainingType = programmeTask.Result?.ApprenticeshipType.GetDisplayName();
-                vm.TrainingLevel = programmeTask.Result?.Level.GetDisplayName();
+                vm.TrainingTitle = programme?.Title;
+                vm.TrainingType = programme?.ApprenticeshipType.GetDisplayName();
+                vm.TrainingLevel = programme?.Level.GetDisplayName();
             }
 
             if (vacancy.Wage != null)
@@ -115,6 +112,18 @@ namespace Esfa.Recruit.Employer.Web.Mappings
                     : null;
                 vm.WorkingWeekDescription = vacancy.Wage.WorkingWeekDescription;
             }
+        }
+
+        private async Task<string> GetEmployerDescriptionAsync(Vacancy vacancy)
+        {
+            if (vacancy.CanEdit)
+            {
+                var employerProfileTask = await _client.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.LegalEntityId);
+                
+                return employerProfileTask?.AboutOrganisation ?? string.Empty;
+            }
+
+            return vacancy.EmployerDescription;
         }
     }
 }
