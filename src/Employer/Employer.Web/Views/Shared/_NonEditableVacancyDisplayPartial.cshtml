@@ -96,7 +96,7 @@
         <p>@Model.EmployerDescription</p>
         <h3 class="heading-small">Employer</h3>
         <p>@Model.EmployerName</p>
-        <img asp-condition="@Model.IsDisabilityConfident" src="~/img/disability-confident_545x172.png" class="disability-confident-logo" alt="A logo confirming that the employer is registered as disability confident" />
+        <img asp-show="@Model.IsDisabilityConfident" src="~/img/disability-confident_545x172.png" class="disability-confident-logo" alt="A logo confirming that the employer is registered as disability confident" />
         <span class="visuallyhidden">This vacancy meets disability confident requirements</span>
         <h3 class="heading-small">Website</h3>
         <p>@Model.EmployerWebsiteUrl</p>
@@ -119,7 +119,7 @@
         </ul>
     </div>
     <div class="column-half">
-        <img asp-condition="@Model.HasMapUrl" id="static-map" src="@Model.MapUrl" />
+        <img asp-show="@Model.HasMapUrl" id="static-map" src="@Model.MapUrl" />
     </div>
 </div>
 <div class="grid-row">
@@ -147,16 +147,16 @@
 <div id="offline-vacancy">
     <div class="grid-row">
         <div class="column-full">
-            <h2 asp-condition="@Model.ShowGeneralApplicationProcessSectionTitle" class="heading-large">Application process</h2>
-            <h2 asp-condition="@Model.HasSpecifiedThroughExternalApplicationMethod" class="heading-large">Employer's application instructions</h2>
-            <div asp-condition="@Model.HasSpecifiedThroughFaaApplicationMethod">
+            <h2 asp-show="@Model.ShowGeneralApplicationProcessSectionTitle" class="heading-large">Application process</h2>
+            <h2 asp-show="@Model.HasSpecifiedThroughExternalApplicationMethod" class="heading-large">Employer's application instructions</h2>
+            <div asp-show="@Model.HasSpecifiedThroughFaaApplicationMethod">
                 <p>Candidates will apply through the <a href="@Model.FindAnApprenticeshipUrl" target="_blank">Find an apprenticeship service</a></p>
             </div>
-            <div asp-condition="@Model.HasSpecifiedThroughExternalApplicationMethod">
+            <div asp-show="@Model.HasSpecifiedThroughExternalApplicationMethod">
                 <p>This apprenticeship requires you to apply through the employer's website.</p>
                 <p>@Model.ApplicationUrl</p>
             </div>
-            <div asp-condition="@Model.HasApplicationInstructions">
+            <div asp-show="@Model.HasApplicationInstructions">
                 <p class="application-instructions">
                     @Model.ApplicationInstructions
                 </p>

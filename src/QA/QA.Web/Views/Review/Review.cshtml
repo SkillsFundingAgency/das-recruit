@@ -6,17 +6,17 @@
         <partial name="_ReviewHeader" />
         <div class="grid-row">
             <div class="column-full">
-                <div asp-validation-summary="All" class="error-summary" asp-condition="@ViewData.ModelState.IsValid == false"></div>
+                <div asp-validation-summary="All" class="error-summary" asp-show="@ViewData.ModelState.IsValid == false"></div>
             </div>
         </div>
 
-        <div class="grid-row" asp-condition="@Model.IsResubmission">
+        <div class="grid-row" asp-show="@Model.IsResubmission">
             <div class="column-full">
                 <div class="error-summary review-summary" tabindex="-1">
                     <h2 class="heading-medium error-summary-heading">
                         This is a re-submitted vacancy
                     </h2>
-                    <div asp-condition="@Model.HasChangedFields">
+                    <div asp-show="@Model.HasChangedFields">
                         <p>Fields updated by the employer</p>
                         <ul class="error-summary-list">
                             @foreach (var field in Model.FieldIdentifiers.Where(f => f.FieldValueHasChanged))
@@ -31,7 +31,7 @@
             </div>
         </div>
 
-        <div class="grid-row" asp-condition="@Model.HasAutomatedQaResults">
+        <div class="grid-row" asp-show="@Model.HasAutomatedQaResults">
             <div class="column-full">
                 <div class="error-summary review-summary">
                     <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-2">
@@ -265,8 +265,8 @@
                 </div>
                 <div class="@Model.DisabilityConfidentClass" id="@VacancyReview.FieldIdentifiers.DisabilityConfident">
                     <h3 class="heading-small">Disability Confident (optional)</h3>
-                    <img asp-condition="@Model.IsDisabilityConfident" src="~/img/disability-confident_545x172.png" class="disability-confident-logo" alt="A logo confirming that the employer is registered as disability confident" />
-                    <p asp-condition="@Model.IsNotDisabilityConfident">This vacancy is not Disability Confident</p>
+                    <img asp-show="@Model.IsDisabilityConfident" src="~/img/disability-confident_545x172.png" class="disability-confident-logo" alt="A logo confirming that the employer is registered as disability confident" />
+                    <p asp-show="@Model.IsNotDisabilityConfident">This vacancy is not Disability Confident</p>
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
                                           asp-value="@VacancyReview.FieldIdentifiers.DisabilityConfident"
                                           asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
@@ -351,24 +351,24 @@
         <div class="grid-row">
             <div class="column-full">
                 <div class="@Model.ApplicationMethodClass" id="@VacancyReview.FieldIdentifiers.ApplicationMethod">
-                    <p asp-condition="@Model.HasSpecifiedThroughFaaApplicationMethod">
+                    <p asp-show="@Model.HasSpecifiedThroughFaaApplicationMethod">
                         Candidates will apply through the Find an apprenticeship service
                     </p>
-                    <p asp-condition="@Model.HasSpecifiedThroughExternalApplicationSiteMethod">
+                    <p asp-show="@Model.HasSpecifiedThroughExternalApplicationSiteMethod">
                         Candidates will apply through the employer's website
                     </p>
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
                                           asp-value="@VacancyReview.FieldIdentifiers.ApplicationMethod"
                                           asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                 </div>
-                <div asp-condition="@Model.HasApplicationUrl" class="@Model.ApplicationUrlClass" id="@VacancyReview.FieldIdentifiers.ApplicationUrl">
+                <div asp-show="@Model.HasApplicationUrl" class="@Model.ApplicationUrlClass" id="@VacancyReview.FieldIdentifiers.ApplicationUrl">
                     <h2 class="heading-small">Employer's application website</h2>
                     <p>@Model.ApplicationUrl</p>
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
                                           asp-value="@VacancyReview.FieldIdentifiers.ApplicationUrl"
                                           asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                 </div>
-                <div asp-condition="@Model.HasApplicationInstructions" class="@Model.ApplicationInstructionsClass" id="@VacancyReview.FieldIdentifiers.ApplicationInstructions">
+                <div asp-show="@Model.HasApplicationInstructions" class="@Model.ApplicationInstructionsClass" id="@VacancyReview.FieldIdentifiers.ApplicationInstructions">
                     <h2 class="heading-small">Employer's application instructions (optional)</h2>
                     <p>@Model.ApplicationInstructions</p>
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"

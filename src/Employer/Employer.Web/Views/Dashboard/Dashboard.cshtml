@@ -19,10 +19,10 @@
 <div class="grid-row dashboard-header">
     <div class="column-two-thirds">
         <h1 class="heading-large small-bottom-margin">Your vacancies</h1>
-        <div asp-condition="Model.HasWarning" class="warning-summary no-bottom-margin">
+        <div asp-show="Model.HasWarning" class="warning-summary no-bottom-margin">
             <p>@Model.WarningMessage</p>
         </div>
-        <div asp-condition="Model.HasInfo" class="info-summary no-bottom-margin">
+        <div asp-show="Model.HasInfo" class="info-summary no-bottom-margin">
             <p>@Model.InfoMessage</p>
         </div>
     </div>
@@ -36,13 +36,13 @@
             You can clone vacancies once they've been submitted.
             Vacancies will be approved or rejected within 24 hours.
         </p>
-        <a asp-condition="@Model.CannotCloneVacancies" asp-route="@RouteNames.CreateVacancy_Get" class="button small-bottom-margin">Create vacancy</a>
-        <a asp-condition="@Model.CanCloneVacancies" asp-route="@RouteNames.CreateVacancyOptions_Get" class="button small-bottom-margin">Create vacancy</a>
+        <a asp-show="@Model.CannotCloneVacancies" asp-route="@RouteNames.CreateVacancy_Get" class="button small-bottom-margin">Create vacancy</a>
+        <a asp-show="@Model.CanCloneVacancies" asp-route="@RouteNames.CreateVacancyOptions_Get" class="button small-bottom-margin">Create vacancy</a>
     </div>
     <br>
 </div>
 
-<div asp-condition="@Model.HasVacancies">
+<div asp-show="@Model.HasVacancies">
     <div class="grid-row">
         <div class="column-full">
             <table id="dashboard-table">
@@ -62,20 +62,20 @@
                         <td><span class="tag tag-@vacancy.Status.GetDisplayName().ToLower()">@vacancy.Status.GetDisplayName()</span></td>
                         <td>
                             <div>@vacancy.Title</div>
-                            <div asp-condition="@vacancy.IsApplicationsVacancy">
+                            <div asp-show="@vacancy.IsApplicationsVacancy">
                                 <span asp-condition="@vacancy.HasNoApplications" class="bold">@vacancy.AllApplicationsCount applications</span>
                                 <span asp-condition="@vacancy.HasApplications">@vacancy.AllApplicationsCount applications</span>
                                 <span asp-condition="@vacancy.HasNewApplications" class="bold"> (@vacancy.NewApplicationsCount new)</span>
                             </div>
                         </td>
                         <td>
-                            <span asp-condition="@vacancy.HasVacancyReference"><span>VAC</span>@vacancy.VacancyReference</span>
-                            <span asp-condition="@vacancy.HasNoVacancyReference">Not available</span>
+                            <span asp-show="@vacancy.HasVacancyReference"><span>VAC</span>@vacancy.VacancyReference</span>
+                            <span asp-show="@vacancy.HasNoVacancyReference">Not available</span>
                         </td>
                         <td class="dashboard-closingdate">@vacancy.ClosingDate?.AsGdsDate()</td>
                         <td class="dashboard-action">
-                            <a asp-condition="@vacancy.IsNotSubmittable" asp-route="@RouteNames.VacancyManage_Get" asp-route-vacancyId="@vacancy.Id">Manage</a>
-                            <a asp-condition="@vacancy.IsSubmittable" asp-route="@RouteNames.DisplayVacancy_Get" asp-route-vacancyId="@vacancy.Id">@GetLinkText(vacancy)</a>
+                            <a asp-show="@vacancy.IsNotSubmittable" asp-route="@RouteNames.VacancyManage_Get" asp-route-vacancyId="@vacancy.Id">Manage</a>
+                            <a asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.DisplayVacancy_Get" asp-route-vacancyId="@vacancy.Id">@GetLinkText(vacancy)</a>
                         </td>
                     </tr>
                 }

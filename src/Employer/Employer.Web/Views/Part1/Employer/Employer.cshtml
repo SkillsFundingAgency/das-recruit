@@ -11,13 +11,13 @@
         <partial name="@PartialNames.ReviewSummary" for="Review" />
 
         <div class="todo">
-            <div asp-condition="@Model.HasOnlyOneOrganisation"><p>@Model.Organisations.First().Name</p></div>
+            <div asp-show="@Model.HasOnlyOneOrganisation"><p>@Model.Organisations.First().Name</p></div>
             <form asp-route="@RouteNames.Employer_Post" asp-route-wizard="@Model.PageInfo.IsWizard">
                 <div esfa-validation-marker-for="SelectedOrganisationName" class="form-group">
 
-                    <input asp-condition="@Model.HasOnlyOneOrganisation" asp-for="SelectedOrganisationName" value="@Model.Organisations.First().Name" type="hidden" />
+                    <input asp-show="@Model.HasOnlyOneOrganisation" asp-for="SelectedOrganisationName" value="@Model.Organisations.First().Name" type="hidden" />
 
-                    <fieldset asp-condition="@Model.HasMoreThanOneOrganisation">
+                    <fieldset asp-show="@Model.HasMoreThanOneOrganisation">
                         <legend>
                             <span class="form-label-bold">Which organisation is the vacancy for?</span>
                         </legend>
@@ -65,8 +65,8 @@
 
                 <button type="submit" class="button save-button">@Model.PageInfo.SubmitButtonText</button>
 
-                <a asp-condition="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Index_Get" class="button-link">Cancel</a>
-                <a asp-condition="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.AboutEmployerSection" class="button-link">Cancel</a>
+                <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Index_Get" class="button-link">Cancel</a>
+                <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.AboutEmployerSection" class="button-link">Cancel</a>
             </form>
         </div>
     </div>
@@ -83,7 +83,7 @@ window.EsfaRecruit.PcaConfig = {
 }
 @section FooterJS
 {
-<script asp-condition="@Model.HasMoreThanOneOrganisation">
+<script asp-show="@Model.HasMoreThanOneOrganisation">
 $(document).ready(function() {
     var orgInputName = "@nameof(EmployerViewModel.SelectedOrganisationName)";
 	var addresses = @Json.Serialize(Model.Organisations);

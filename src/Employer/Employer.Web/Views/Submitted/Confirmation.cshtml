@@ -7,16 +7,16 @@
 
 <div class="grid-row">
     <div class="column-two-thirds">
-        <div asp-condition="@Model.IsNotResubmit" class="govuk-box-highlight">
+        <div asp-show="@Model.IsNotResubmit" class="govuk-box-highlight">
             <h1 class="heading-xlarge">
                 Vacancy submitted for approval
             </h1>
-            <p asp-condition="@Model.HasVacancyReference" class="font-large">
+            <p asp-show="@Model.HasVacancyReference" class="font-large">
                 The vacancy reference number is <br>
                 <strong class="bold">VAC@(Model.VacancyReference)</strong>
             </p>
         </div>
-        <div asp-condition="@Model.IsResubmit" class="govuk-box-highlight">
+        <div asp-show="@Model.IsResubmit" class="govuk-box-highlight">
             <h1 class="heading-xlarge">
                 Vacancy resubmitted for approval
             </h1>
