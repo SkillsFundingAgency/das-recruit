@@ -36,11 +36,11 @@
                         </li>
                         <li>
                             <span class="bold-small">Wage:</span>
-                            <span>@Model.Wage</span><span asp-condition="@Model.HasYearlyWage"> yearly</span>
+                            <span>@Model.Wage</span><span asp-show="@Model.HasYearlyWage"> yearly</span>
                         </li>
                     </ul>
 
-                    <img asp-condition="@Model.IsDisabilityConfident" src="~/img/disability-confident_545x172.png" alt="A logo confirming that the employer is registered as disability confident" class="disability-confident-logo-big" />
+                    <img asp-show="@Model.IsDisabilityConfident" src="~/img/disability-confident_545x172.png" alt="A logo confirming that the employer is registered as disability confident" class="disability-confident-logo-big" />
                     <partial name="@PartialNames.DisabilityConfident" for="IsDisabilityConfident" />
 
                 </div>

@@ -13,14 +13,14 @@
     </div>
     <div class="column-one-quarter">
         <h2 class="heading-small">User history</h2>
-        <div asp-condition="@Model.HasPreviouslySubmitted">
+        <div asp-show="@Model.HasPreviouslySubmitted">
             @Model.VacancyReviewsApprovedCount vacancies previously reviewed. @Model.VacancyReviewsApprovedFirstTimeCount passed QA first time.
         </div>
-        <div asp-condition="@Model.HasNotPreviouslySubmitted">This is the first vacancy posted by this user.</div>
+        <div asp-show="@Model.HasNotPreviouslySubmitted">This is the first vacancy posted by this user.</div>
     </div>
     <div class="column-one-quarter">
-        <h2 asp-condition="@Model.IsResubmission" class="heading-small">Re-submitted date</h2>
-        <h2 asp-condition="@Model.IsFirstSubmission" class="heading-small">Submitted date</h2>
+        <h2 asp-show="@Model.IsResubmission" class="heading-small">Re-submitted date</h2>
+        <h2 asp-show="@Model.IsFirstSubmission" class="heading-small">Submitted date</h2>
         <div>@Model.SubmittedDateTime</div>
     </div>
 </div>

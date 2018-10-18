@@ -151,8 +151,8 @@
             </div>
             <div>
                 <h3 class="heading-small">Disability Confident (optional)</h3>
-                <img asp-condition="@Model.IsDisabilityConfident" src="~/img/disability-confident_545x172.png" class="disability-confident-logo" alt="A logo confirming that the employer is registered as disability confident" />
-                <p asp-condition="@Model.IsNotDisabilityConfident">This vacancy is not Disability Confident</p>
+                <img asp-show="@Model.IsDisabilityConfident" src="~/img/disability-confident_545x172.png" class="disability-confident-logo" alt="A logo confirming that the employer is registered as disability confident" />
+                <p asp-show="@Model.IsNotDisabilityConfident">This vacancy is not Disability Confident</p>
             </div>
             <div>
                 <h3 class="heading-small">Website (optional)</h3>
@@ -218,18 +218,18 @@
     </div>
     <div class="grid-row">
         <div class="column-full">
-            <p asp-condition="@Model.HasSpecifiedThroughFaaApplicationMethod">
+            <p asp-show="@Model.HasSpecifiedThroughFaaApplicationMethod">
                 Candidates will apply through the Find an apprenticeship service
             </p>
-            <p asp-condition="@Model.HasSpecifiedThroughExternalApplicationSiteMethod">
+            <p asp-show="@Model.HasSpecifiedThroughExternalApplicationSiteMethod">
                 Candidates will apply through the employer's website
             </p>
 
-            <div asp-condition="@Model.HasApplicationUrl">
+            <div asp-show="@Model.HasApplicationUrl">
                 <h2 class="heading-small">Employer's application website</h2>
                 <p>@Model.ApplicationUrl</p>
             </div>
-            <div asp-condition="@Model.HasApplicationInstructions">
+            <div asp-show="@Model.HasApplicationInstructions">
                 <h2 class="heading-small">Employer's application instructions (optional)</h2>
                 <p>@Model.ApplicationInstructions</p>
             </div>

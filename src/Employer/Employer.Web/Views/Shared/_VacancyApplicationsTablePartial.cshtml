@@ -7,7 +7,7 @@
             <th class="bold">Application ID</th>
             <th class="bold">Status</th>
             <th class="bold">Date applied</th>
-            <th asp-condition="@Model.ShowDisability" class="bold">Disability</th>
+            <th asp-show="@Model.ShowDisability" class="bold">Disability</th>
         </tr>
     </thead>
     <tbody>
@@ -15,19 +15,19 @@
         {
             foreach (var application in applicationStatusGroup)
             {
-                <tr asp-condition="@application.IsNotWithdrawn">
+                <tr asp-show="@application.IsNotWithdrawn">
                     <td><a asp-route="@RouteNames.ApplicationReview_Get" asp-route-applicationReviewId="@application.ApplicationReviewId">@application.CandidateName</a></td>
                     <td>@application.GetFriendlyId()</td>
                     <td>@application.Status.GetDisplayName()</td>
                     <td>@application.SubmittedDate.AsGdsDate()</td>
-                    <td asp-condition="@Model.ShowDisability">@application.DisabilityStatus.GetDisplayName()</td>
+                    <td asp-show="@Model.ShowDisability">@application.DisabilityStatus.GetDisplayName()</td>
                 </tr>
-                <tr asp-condition="@application.IsWithdrawn">
+                <tr asp-show="@application.IsWithdrawn">
                     <td>Application withdrawn by candidate</td>
                     <td>@application.GetFriendlyId()</td>
                     <td>Withdrawn</td>
                     <td>@application.SubmittedDate.AsGdsDate()</td>
-                    <td asp-condition="@Model.ShowDisability">No longer applies</td>
+                    <td asp-show="@Model.ShowDisability">No longer applies</td>
                 </tr>
             }
         }

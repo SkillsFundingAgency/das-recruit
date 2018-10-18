@@ -23,12 +23,12 @@
 
 <div class="form-group inline">
     <div class="form-group small-top-margin">
-        <form class="form-inline" asp-condition="@Model.HasChanges" asp-route="@RouteNames.SubmitVacancyChanges_Post" novalidate>
+        <form class="form-inline" asp-show="@Model.HasChanges" asp-route="@RouteNames.SubmitVacancyChanges_Post" novalidate>
             <input type="hidden" name="ProposedClosingDate" value="@Model.ProposedClosingDateFormValue" />
             <input type="hidden" name="ProposedStartDate" value="@Model.ProposedStartDateFormValue" />
             <button type="submit" class="button save-button">Publish</button>
         </form>
-        <a asp-condition="@Model.HasChanges" asp-route="@RouteNames.CancelVacancyChanges_Get" class="button-link">Cancel</a>
-        <a asp-condition="@Model.IsUnchanged" asp-route="@RouteNames.VacancyManage_Get" class="button">Return to manage vacancy</a>
+        <a asp-show="@Model.HasChanges" asp-route="@RouteNames.CancelVacancyChanges_Get" class="button-link">Cancel</a>
+        <a asp-show="@Model.IsUnchanged" asp-route="@RouteNames.VacancyManage_Get" class="button">Return to manage vacancy</a>
     </div>
 </div>    

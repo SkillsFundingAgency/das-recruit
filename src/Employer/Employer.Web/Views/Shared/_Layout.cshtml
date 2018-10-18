@@ -143,7 +143,7 @@ public string GetTitle()
 
     @if (Context.User.Identity.IsAuthenticated)
     {
-        <div asp-condition="ParseHideNavFromViewBag()" class="header-organisation" role="navigation">
+        <div asp-show="ParseHideNavFromViewBag()" class="header-organisation" role="navigation">
             <nav class="header-inner">
                 <ul role="menubar" id="global-nav-links">
                     <li><a asp-route="@RouteNames.Dashboard_Account_Home" role="menuitem">Home</a></li>
@@ -159,10 +159,10 @@ public string GetTitle()
     }
 
     <main id="content" role="main">
-        <p asp-condition="@_showRegularSubmitFeedbackBanner" class="no-bottom-margin small-top-margin float-right">
+        <p asp-show="@_showRegularSubmitFeedbackBanner" class="no-bottom-margin small-top-margin float-right">
             <span>Complete our feedback survey to <a target="_blank" rel="noopener noreferrer" href="https://www.surveymonkey.co.uk/r/NGLCBCJ">help us improve this service</a>.</span>
         </p>
-        <p asp-condition="@_showVacancySubmittedFeedbackBanner" class="no-bottom-margin small-top-margin float-right">
+        <p asp-show="@_showVacancySubmittedFeedbackBanner" class="no-bottom-margin small-top-margin float-right">
             <span>We value your feedback! Tell us what you think by <a target="_blank" rel="noopener noreferrer" href="https://www.surveymonkey.co.uk/r/XZT3MZW">taking our survey</a>.</span>
         </p>
         @RenderBody()

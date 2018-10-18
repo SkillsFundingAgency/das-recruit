@@ -2,7 +2,7 @@
 @using Esfa.Recruit.Vacancies.Client.Domain.Entities
 @model Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview.ApplicationReviewViewModel
 
-<div asp-condition="@Model.ShowDisabilityStatusAlert" class="grid-row">
+<div asp-show="@Model.ShowDisabilityStatusAlert" class="grid-row">
     <div class="column-full">
         <div class="info-summary small-top-margin" role="alert" tabindex="-1">
             <h3 class="heading-medium no-top-margin">Disability Confident - Alert</h3>
@@ -90,7 +90,7 @@
         <section>
             <h2 class="heading-large">Qualifications</h2>
 
-            <p asp-condition="@Model.HasNoQualifications">I don't have any qualifications</p>
+            <p asp-show="@Model.HasNoQualifications">I don't have any qualifications</p>
 
             @foreach (var group in Model.Qualifications.GroupBy(item => item.QualificationType))
             {
@@ -111,7 +111,7 @@
                             {
                                 <tr>
                                     <td>@item.Subject</td>
-                                    <td>@item.Grade <span asp-condition="@item.IsPredicted">(Predicted)</span></td>
+                                    <td>@item.Grade <span asp-show="@item.IsPredicted">(Predicted)</span></td>
                                     <td>@item.Year</td>
                                 </tr>
                             }
@@ -124,7 +124,7 @@
         <section>
             <h2 class="heading-large">Work experience</h2>
 
-            <p asp-condition="@Model.HasNoWorkExperience">I don't have any work experience</p>
+            <p asp-show="@Model.HasNoWorkExperience">I don't have any work experience</p>
 
             @foreach (var experience in Model.WorkExperiences)
             {
@@ -184,7 +184,7 @@
         <section>
             <h2 class="heading-large">Training courses</h2>
 
-            <p asp-condition="@Model.HasNoTrainingCourses">I have not been on any training courses</p>
+            <p asp-show="@Model.HasNoTrainingCourses">I have not been on any training courses</p>
 
             @foreach (var trainingCourse in Model.TrainingCourses)
             {
@@ -241,9 +241,9 @@
         <section>
             <h2 class="heading-large">Skills the Employer wants</h2>
 
-            <p asp-condition="@Model.HasNoSkills">I don't have the skills the employer wants</p>
+            <p asp-show="@Model.HasNoSkills">I don't have the skills the employer wants</p>
 
-            <p asp-condition="@Model.HasSkills">
+            <p asp-show="@Model.HasSkills">
                 @Html.Raw(string.Join(", ", Model.Skills.Select(s => Html.Encode(s))))
             </p>
         </section>
@@ -256,14 +256,14 @@
 
             <h3 class="heading-small">Is there anything we can do to support your interview?</h3>
             <p>
-                <span asp-condition="@Model.HasNoSupportRequirements">I don't have any interview support requirements</span>
+                <span asp-show="@Model.HasNoSupportRequirements">I don't have any interview support requirements</span>
                 @Model.Support
             </p>
             <br>
             <hr>
         </section>
 
-        <section asp-condition="@Model.CanNotChangeOutcome">
+        <section asp-show="@Model.CanNotChangeOutcome">
             <h3 class="heading-large">Outcome</h3>
             <p>@Model.Status.Value.GetDisplayName()</p>
             <p>@Model.CandidateFeedback</p>
@@ -271,7 +271,7 @@
             <p><a asp-route="@RouteNames.DisplayVacancy_Get" class="button">Return to vacancy</a></p>
         </section>
 
-        <form asp-condition="@Model.CanChangeOutcome" asp-route="@RouteNames.ApplicationReview_Post">
+        <form asp-show="@Model.CanChangeOutcome" asp-route="@RouteNames.ApplicationReview_Post">
             <section>
                 <h3 class="heading-large">Outcome</h3>
 
