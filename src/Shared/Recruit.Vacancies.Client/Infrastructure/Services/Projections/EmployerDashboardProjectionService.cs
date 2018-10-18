@@ -3,7 +3,6 @@ using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.ApplicationReview;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
@@ -62,34 +61,33 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
         {
             var vacancySummariesTask = _vacancyQuery.GetVacanciesByEmployerAccountAsync<VacancySummary>(employerAccountId);
 
-            var applicationReviewsTask = _applicationReviewQuery.GetForEmployerAsync<ApplicationReviewSummary>(
-                    employerAccountId);
+            var applicationReviewStatusCountsTask = _applicationReviewQuery.GetStatusCountsForEmployerAsync(employerAccountId);
 
-            await Task.WhenAll(vacancySummariesTask, applicationReviewsTask);
+            await Task.WhenAll(vacancySummariesTask, applicationReviewStatusCountsTask);
 
-            var vacancySummaries = vacancySummariesTask.Result;
-            var applicationReviews = applicationReviewsTask.Result;
+            var vacancySummaries = vacancySummariesTask.Result.ToList();
+            var applicationReviewStatusCounts = applicationReviewStatusCountsTask.Result;
 
-            var activeVacancySummaries = vacancySummaries.Where(v => v.IsDeleted == false).ToList();
-
-            foreach (var summary in activeVacancySummaries)
+            foreach (var summary in vacancySummaries)
             {
                 if (summary.VacancyReference.HasValue)
                 {
-                    var vacancyApplicationReviews = applicationReviews.Where(r => 
-                        r.VacancyReference == summary.VacancyReference.Value && 
-                        r.IsWithdrawn == false).ToList();
+                    summary.AllApplicationsCount = applicationReviewStatusCounts
+                        .Where(r => r.Id.VacancyReference == summary.VacancyReference.Value)
+                        .Sum(r => r.Count);
 
-                    summary.AllApplicationsCount = vacancyApplicationReviews.Count;
-                    summary.NewApplicationsCount = vacancyApplicationReviews.Count(r => r.Status == ApplicationReviewStatus.New);
+                    summary.NewApplicationsCount = applicationReviewStatusCounts
+                        .Where(r => r.Id.VacancyReference == summary.VacancyReference.Value &&
+                                    r.Id.Status == ApplicationReviewStatus.New)
+                        .Sum(r => r.Count);
                 }
 
                 await UpdateWithTrainingProgrammeInfo(summary);
             }
 
-            await _queryStoreWriter.UpdateEmployerDashboardAsync(employerAccountId, activeVacancySummaries.OrderBy(v => v.CreatedDate));
+            await _queryStoreWriter.UpdateEmployerDashboardAsync(employerAccountId, vacancySummaries.OrderBy(v => v.CreatedDate));
 
-            _logger.LogDebug("Update dashboard with {count} summary records for account: {employerAccountId}", activeVacancySummaries.Count, employerAccountId);
+            _logger.LogDebug("Update dashboard with {count} summary records for account: {employerAccountId}", vacancySummaries.Count, employerAccountId);
         }
 
         private async Task UpdateWithTrainingProgrammeInfo(VacancySummary summary)
