@@ -72,9 +72,9 @@
 
     let allEmployerProfilesCount = db.employerProfiles.find({}).count();
 
-    if (allEmployerProfilesCount === 0) {
+    if (allEmployerProfilesCount == 0) {
         let editUserInfos = db.queryStore.find({ "viewType": "EditVacancyInfo" });
-        print(`Found ${editUserInfos.count()} EditInfo record/s`);
+        print(`Found ${editUserInfos.count()/1} EditInfo record/s`);
 
         var accountIds = getEmployerAccountIds(editUserInfos);
 

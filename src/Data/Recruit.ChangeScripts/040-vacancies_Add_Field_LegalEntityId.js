@@ -5,7 +5,6 @@
         for (let index = 0; index < userInfos.count(); index++) {
             const element = userInfos[index];
             const employerAccountId = element._id.split("_")[1];
-            print(`Adding EmployerAccountId ${employerAccountId} to lookup`);
             lookup[employerAccountId] = element.legalEntities;
         }
 
@@ -29,13 +28,13 @@
 
     let allVacancies = db.vacancies.find({ "legalEntityId": { $exists: false }, "employerName": { $exists: true } });
     var targetVacancyCount = allVacancies.count();
-    print(`There are ${targetVacancyCount} vacancies with missing a LegalEntityId field.`);
+    print(`There are ${targetVacancyCount/1} vacancies with missing a LegalEntityId field.`);
 
     if (allVacancies.count() > 0) {
 
         let editUserInfos = db.queryStore.find({ "viewType": "EditVacancyInfo" });
 
-        print(`Found ${editUserInfos.count()} EditInfo record/s`);
+        print(`Found ${editUserInfos.count()/1} EditInfo record/s`);
 
         var lookup = buildLookup(editUserInfos);
 
@@ -66,7 +65,7 @@
         let postUpdateVacancies = db.vacancies.find({ "legalEntityId": { $exists: false }, "employerName": { $exists: true } });
 
         if (postUpdateVacancies.count() > 0)
-            print(`WARNING: There is/are still ${allVacancies.count()} vacancie/s with missing a LegalEntityId field.`);        
+            print(`WARNING: There is/are still ${allVacancies.count()/1} vacancies with missing a LegalEntityId field.`);        
     }
 
     print();
