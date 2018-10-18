@@ -18,6 +18,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
     internal sealed class MongoDbVacancyRepository : MongoDbCollectionBase, IVacancyRepository, IVacancyQuery
     {
         private const string EmployerAccountId = "employerAccountId";
+        private const string IsDeleted = "isDeleted";
 
         public MongoDbVacancyRepository(ILogger<MongoDbVacancyRepository> logger, IOptions<MongoDbConnectionDetails> details) 
             : base(logger, MongoDbNames.RecruitDb, MongoDbCollectionNames.Vacancies, details)
@@ -62,7 +63,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 
         public async Task<IEnumerable<T>> GetVacanciesByEmployerAccountAsync<T>(string employerAccountId)
         {
-            var filter = Builders<T>.Filter.Eq(EmployerAccountId, employerAccountId);
+            var builder = Builders<T>.Filter;
+            var filter = builder.Eq(EmployerAccountId, employerAccountId) &
+                         builder.Ne(IsDeleted, true);
 
             var collection = GetCollection<T>();
 

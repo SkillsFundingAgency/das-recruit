@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
@@ -8,13 +9,11 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Polly;
-using MongoDB.Bson;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 {
     internal sealed class MongoDbApplicationReviewRepository : MongoDbCollectionBase, IApplicationReviewRepository, IApplicationReviewQuery
     {
-        private const string EmployerAccountId = "employerAccountId";
         private const string VacancyReference = "vacancyReference";
         private const string CandidateId = "candidateId";
         private const string Id = "_id";
@@ -64,17 +63,32 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
                 new Context(nameof(UpdateAsync)));
         }
 
-        public async Task<List<T>> GetForEmployerAsync<T>(string employerAccountId)
+        public Task<List<ApplicationReviewCount>> GetStatusCountsForEmployerAsync(string employerAccountId)
         {
-            var filter = Builders<T>.Filter.Eq(EmployerAccountId, employerAccountId);
-            var collection = GetCollection<T>();
+            var collection = GetCollection<ApplicationReview>();
 
-            var options = new FindOptions<T> {Projection = GetProjection<T>() };
+            var builder = Builders<ApplicationReview>.Filter;
+            var filter = builder.Eq(r => r.EmployerAccountId, employerAccountId) &
+                         builder.Ne(r => r.IsWithdrawn, true);
 
-            var result = await RetryPolicy.ExecuteAsync(context => collection.FindAsync<T>(filter, options),
-                new Context(nameof(GetForEmployerAsync)));
+            var aggregate = collection.Aggregate()
 
-            return await result.ToListAsync();
+                .Match(filter)
+
+                .Group(groupBy => new ApplicationReviewCount.ApplicationReviewsCountGroupKey
+                    {
+                        VacancyReference = groupBy.VacancyReference,
+                        Status = groupBy.Status
+                    },
+                    g =>
+                        new ApplicationReviewCount
+                        {
+                            Id = g.Key,
+                            Count = g.Count()
+                        })
+                .ToListAsync();
+
+            return aggregate;
         }
 
         public async Task<List<T>> GetForVacancyAsync<T>(long vacancyReference)
