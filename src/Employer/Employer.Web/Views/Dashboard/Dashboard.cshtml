@@ -63,7 +63,9 @@
                         <td>
                             <div>@vacancy.Title</div>
                             <div asp-condition="@vacancy.IsApplicationsVacancy">
-                                <span>@vacancy.AllApplicationsCount applications (@vacancy.NewApplicationsCount new)</span>
+                                <span asp-condition="@vacancy.HasNoApplications" class="bold">@vacancy.AllApplicationsCount applications</span>
+                                <span asp-condition="@vacancy.HasApplications">@vacancy.AllApplicationsCount applications</span>
+                                <span asp-condition="@vacancy.HasNewApplications" class="bold"> (@vacancy.NewApplicationsCount new)</span>
                             </div>
                         </td>
                         <td>
