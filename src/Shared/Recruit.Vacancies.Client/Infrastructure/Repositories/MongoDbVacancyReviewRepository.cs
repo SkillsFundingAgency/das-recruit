@@ -47,8 +47,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
                     context => collection
                         .Find(filter)
                         .ToListAsync(),
-                    new Context(nameof(SearchAsync)))
-                .ConfigureAwait(false);
+                    new Context(nameof(SearchAsync)));
 
             return result;
         }
