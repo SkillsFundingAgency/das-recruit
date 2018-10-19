@@ -2,9 +2,9 @@
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.Extensions;
 using Microsoft.AspNetCore.Hosting;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
@@ -24,9 +24,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         [HttpGet, Route("logout", Name = RouteNames.Logout_Get)]
         public async Task<IActionResult> Logout()
         {
-            await HttpContext.SignOutAsync("Cookies");
-            await HttpContext.SignOutAsync("oidc");
-
+            await HttpContext.SignOutEmployerWebAsync();
+            
             return Redirect(_externalLinks.ManageApprenticeshipSiteUrl);
         }
     }
