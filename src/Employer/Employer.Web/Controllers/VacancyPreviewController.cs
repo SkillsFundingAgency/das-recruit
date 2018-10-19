@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.Attributes;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Employer.Web.RouteModel;
@@ -35,7 +36,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             return View(viewModel);
         }
-        
+
+        [CheckEmployerBlocked]
         [HttpPost("preview", Name = RouteNames.Preview_Submit_Post)]
         public async Task<IActionResult> Submit(SubmitEditModel m)
         {

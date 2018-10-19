@@ -3,6 +3,7 @@ using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.Attributes;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
@@ -16,6 +17,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             _orchestrator = orchestrator;
         }
 
+        [CheckEmployerBlocked]
         [HttpGet("", Name = RouteNames.Dashboard_Index_Get)]
         public async Task<IActionResult> Dashboard([FromRoute]string employerAccountId)
         {

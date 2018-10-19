@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.Attributes;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators;
@@ -18,6 +19,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             _orchestrator = orchestrator;
         }
 
+        [CheckEmployerBlocked]
         [HttpGet("", Name = RouteNames.ApplicationReview_Get)]
         public async Task<IActionResult> ApplicationReview(ApplicationReviewRouteModel rm)
         {
@@ -25,6 +27,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             return View(vm);
         }
 
+        [CheckEmployerBlocked]
         [HttpPost("", Name = RouteNames.ApplicationReview_Post)]
         public async Task<IActionResult> ApplicationReview(ApplicationReviewEditModel m)
         {
