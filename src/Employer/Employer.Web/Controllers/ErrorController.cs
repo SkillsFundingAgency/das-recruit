@@ -6,9 +6,12 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Diagnostics;
 using Esfa.Recruit.Employer.Web.Configuration;
 using System.Net;
+using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Exceptions;
+using Esfa.Recruit.Employer.Web.Extensions;
+using Esfa.Recruit.Employer.Web.Filters;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
@@ -40,7 +43,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         }
 
         [Route("error/handle")]
-        public IActionResult ErrorHandler()
+        public async Task<IActionResult> ErrorHandler()
         {
             if (HttpContext.Items.TryGetValue(ContextItemKeys.EmployerIdentifier, out var accountId))
             {
@@ -75,6 +78,12 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 {   
                     return AccessDenied();
                 }
+
+                if (exception is BlockedEmployerException)
+                {
+                    _logger.LogInformation($"{exception.Message}. Path: {routeWhereExceptionOccurred}");
+                    return await BlockedEmployerAsync();
+                }
             }
 
             return View(ViewNames.ErrorView, new ErrorViewModel { StatusCode = (int)HttpStatusCode.InternalServerError, RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
@@ -90,6 +99,14 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         {
             Response.StatusCode = (int)HttpStatusCode.NotFound;
             return View(ViewNames.PageNotFound);
+        }
+
+        private async Task<IActionResult> BlockedEmployerAsync()
+        {
+            await HttpContext.SignOutEmployerWebAsync();
+
+            Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+            return View(ViewNames.BlockedEmployer);
         }
     }
 }
