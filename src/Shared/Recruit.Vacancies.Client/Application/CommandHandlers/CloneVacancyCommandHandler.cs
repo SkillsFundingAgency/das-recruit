@@ -45,46 +45,43 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 throw new InvalidStateException($"Vacancy is not in correct state to be cloned. Current State: {vacancy.Status}");
             }
 
-            var clone = CreateClone(message, vacancy);
+            SetClone(message, vacancy);
 
-            await _repository.CreateAsync(clone);
+            await _repository.CreateAsync(vacancy);
 
             await _messaging.PublishEvent(new VacancyCreatedEvent
             {
-                EmployerAccountId = clone.EmployerAccountId,
-                VacancyId = clone.Id
+                EmployerAccountId = vacancy.EmployerAccountId,
+                VacancyId = vacancy.Id
             });
         }
 
-        private Vacancy CreateClone(CloneVacancyCommand message, Vacancy vacancy)
+        private void SetClone(CloneVacancyCommand message, Vacancy vacancy)
         {
             var now = _timeProvider.Now;
 
-            var clone = JsonConvert.DeserializeObject<Vacancy>(JsonConvert.SerializeObject(vacancy));
-
             // Properties to replace
-            clone.Id = message.NewVacancyId;
-            clone.CreatedByUser = message.User;
-            clone.CreatedDate = now;
-            clone.LastUpdatedByUser = message.User;
-            clone.LastUpdatedDate = now;
-            clone.SourceOrigin = SourceOrigin.EmployerWeb;
-            clone.SourceType = SourceType.Clone;
-            clone.SourceVacancyReference = vacancy.VacancyReference;
-            clone.Status = VacancyStatus.Draft;
-            clone.IsDeleted = false;
+            vacancy.Id = message.NewVacancyId;
+            vacancy.CreatedByUser = message.User;
+            vacancy.CreatedDate = now;
+            vacancy.LastUpdatedByUser = message.User;
+            vacancy.LastUpdatedDate = now;
+            vacancy.SourceOrigin = SourceOrigin.EmployerWeb;
+            vacancy.SourceType = SourceType.Clone;
+            vacancy.SourceVacancyReference = vacancy.VacancyReference;
+            vacancy.Status = VacancyStatus.Draft;
+            vacancy.IsDeleted = false;
 
             // Properties to remove
-            clone.VacancyReference = null;
-            clone.ApprovedDate = null;
-            clone.ClosedDate = null;
-            clone.DeletedByUser = null;
-            clone.DeletedDate = null;
-            clone.LiveDate = null;
-            clone.SubmittedByUser = null;
-            clone.SubmittedDate = null;
-
-            return clone;
+            vacancy.VacancyReference = null;
+            vacancy.ApprovedDate = null;
+            vacancy.ClosedDate = null;
+            vacancy.ClosedByUser = null;
+            vacancy.DeletedByUser = null;
+            vacancy.DeletedDate = null;
+            vacancy.LiveDate = null;
+            vacancy.SubmittedByUser = null;
+            vacancy.SubmittedDate = null;
         }
     }
 }
