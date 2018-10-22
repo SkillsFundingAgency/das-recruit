@@ -2,11 +2,7 @@
 @using Esfa.Recruit.Employer.Web.Configuration.Routing;
 @using Esfa.Recruit.Shared.Web.Configuration
 @inject ManageApprenticeshipsLinkHelper ExternalLinks
-@{
-    var _isErrorPage = ViewContext.View.Path.Contains("Error");
-    var _showRegularSubmitFeedbackBanner = (ViewBag.ShowSubmitFeedbackLink == null || ViewBag.ShowSubmitFeedbackLink == false) && _isErrorPage == false;
-    var _showVacancySubmittedFeedbackBanner = (ViewBag.ShowSubmitFeedbackLink == true) && _isErrorPage == false;
-}
+
 @functions
 {
 public bool ParseHideNavFromViewBag()
@@ -159,12 +155,6 @@ public string GetTitle()
     }
 
     <main id="content" role="main">
-        <p asp-show="@_showRegularSubmitFeedbackBanner" class="no-bottom-margin small-top-margin float-right">
-            <span>Complete our feedback survey to <a target="_blank" rel="noopener noreferrer" href="https://www.surveymonkey.co.uk/r/NGLCBCJ">help us improve this service</a>.</span>
-        </p>
-        <p asp-show="@_showVacancySubmittedFeedbackBanner" class="no-bottom-margin small-top-margin float-right">
-            <span>We value your feedback! Tell us what you think by <a target="_blank" rel="noopener noreferrer" href="https://www.surveymonkey.co.uk/r/XZT3MZW">taking our survey</a>.</span>
-        </p>
         @RenderBody()
     </main>
 
