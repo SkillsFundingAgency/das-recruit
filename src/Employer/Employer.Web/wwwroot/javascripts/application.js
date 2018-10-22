@@ -177,6 +177,7 @@ function inViewport($el) {
 $(function () {
     //Legacy menu script
     sfa.navigation.init();
+    $('ul#global-nav-links').collapsableNav();
     // Dirty forms handling
     $('form').areYouSure();
     //handle anchor clicks to account for floating menu
