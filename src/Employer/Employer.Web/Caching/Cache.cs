@@ -15,7 +15,7 @@ namespace Esfa.Recruit.Employer.Web.Caching
 
         public Task<T> CacheAsideAsync<T>(string key, DateTime absoluteExpiration, Func<Task<T>> objectToCache)
         {
-            return _memoryCache.GetOrCreate(key, entry =>
+            return _memoryCache.GetOrCreateAsync(key, entry =>
             {
                 entry.AbsoluteExpiration = absoluteExpiration;
 
