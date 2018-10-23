@@ -6,7 +6,7 @@ namespace Esfa.Recruit.Employer.Web.Extensions
 {
     public static class HttpContextExtensions
     {
-        public static async Task SignOutEmployerWebAsync(this HttpContext httpContext, bool signOutOidc = true)
+        public static async Task SignOutEmployerWebAsync(this HttpContext httpContext)
         {
             await httpContext.SignOutAsync("Cookies");
             await httpContext.SignOutAsync("oidc");

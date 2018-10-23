@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Caching;
+using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
@@ -10,8 +11,6 @@ namespace Esfa.Recruit.Employer.Web.Filters
 {
     public class CheckEmployerBlockedFilter : IAsyncActionFilter
     {
-        private const string BlockedEmployersCacheKey = "blockedEmployers";
-
         private readonly IBlockedEmployersProvider _blockedEmployersProvider;
         private readonly ICache _cache;
 
@@ -28,7 +27,7 @@ namespace Esfa.Recruit.Employer.Web.Filters
             ActionExecutionDelegate next)
         {
             var blockedEmployerAccountIds = await _cache.CacheAsideAsync(
-                BlockedEmployersCacheKey, 
+                CacheKeys.BlockedEmployersCacheKey, 
                 CacheAbsoluteExpiryTime, 
                 () =>  _blockedEmployersProvider.GetBlockedEmployerAccountIdsAsync());
 
