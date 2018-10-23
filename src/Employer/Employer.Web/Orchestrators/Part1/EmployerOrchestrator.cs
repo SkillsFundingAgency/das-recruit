@@ -87,8 +87,12 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         public async Task<OrchestratorResponse> PostEmployerEditModelAsync(EmployerEditModel m, VacancyUser user)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, m, RouteNames.Employer_Post);
-            var employerVacancyInfo = await _client.GetEditVacancyInfo(m.EmployerAccountId);
+            var vacancyTask = Utility.GetAuthorisedVacancyForEditAsync(_client, m, RouteNames.Employer_Post);
+            var employerVacancyInfoTask = _client.GetEditVacancyInfo(m.EmployerAccountId);
+
+            await Task.WhenAll(vacancyTask, employerVacancyInfoTask);
+            var vacancy = vacancyTask.Result;
+            var employerVacancyInfo = employerVacancyInfoTask.Result;
 
             var selectedOrganisation = employerVacancyInfo.LegalEntities.SingleOrDefault(x => x.LegalEntityId == m.SelectedOrganisationId);
 

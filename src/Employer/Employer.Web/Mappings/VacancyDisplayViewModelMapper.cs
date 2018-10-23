@@ -118,9 +118,9 @@ namespace Esfa.Recruit.Employer.Web.Mappings
         {
             if (vacancy.CanEdit)
             {
-                var employerProfileTask = await _client.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.LegalEntityId);
+                var employerProfile = await _client.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.LegalEntityId);
                 
-                return employerProfileTask?.AboutOrganisation ?? string.Empty;
+                return employerProfile?.AboutOrganisation ?? string.Empty;
             }
 
             return vacancy.EmployerDescription;

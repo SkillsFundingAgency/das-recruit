@@ -9,6 +9,5 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Commands
     {
         public string EmployerAccountId { get; set; }
         public IEnumerable<long> LegalEntityIds { get; set; }
-        public VacancyUser User { get; set; }
     }
 }

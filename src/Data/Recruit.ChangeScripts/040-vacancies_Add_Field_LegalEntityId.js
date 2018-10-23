@@ -2,7 +2,7 @@
     function buildLookup(userInfos) {
         var lookup = {};
         print("Building lookup");
-        for (let index = 0; index < userInfos.count(); index++) {
+        for (let index = 0; index < userInfos.length; index++) {
             const element = userInfos[index];
             const employerAccountId = element._id.split("_")[1];
             lookup[employerAccountId] = element.legalEntities;
@@ -26,15 +26,15 @@
     print("Start updating Vacancies with LegalEntityId if missing and has an EmployerName");
     print();
 
-    let allVacancies = db.vacancies.find({ "legalEntityId": { $exists: false }, "employerName": { $exists: true } });
-    var targetVacancyCount = allVacancies.count();
-    print(`There are ${targetVacancyCount/1} vacancies with missing a LegalEntityId field.`);
+    let allVacancies = db.vacancies.find({ "legalEntityId": { $exists: false }, "employerName": { $exists: true } }).toArray();
+    var targetVacancyCount = allVacancies.length;
+    print(`There are ${targetVacancyCount} vacancies with missing a LegalEntityId field.`);
 
-    if (allVacancies.count() > 0) {
+    if (allVacancies.length > 0) {
 
-        let editUserInfos = db.queryStore.find({ "viewType": "EditVacancyInfo" });
+        let editUserInfos = db.queryStore.find({ "viewType": "EditVacancyInfo" }).toArray();
 
-        print(`Found ${editUserInfos.count()/1} EditInfo record/s`);
+        print(`Found ${editUserInfos.length} EditInfo record/s`);
 
         var lookup = buildLookup(editUserInfos);
 
@@ -47,7 +47,7 @@
             
             var legalEntityId = matchLegalEntityName(element.employerName, lookup[element.employerAccountId]);
             
-            let writeResult = db.vacancies.update(
+            let writeResult = db.vacancies.updateOne(
                 { "_id": element._id },
                 { $set: { "legalEntityId": legalEntityId }}
             );
@@ -62,10 +62,10 @@
 
         print(`Updated ${updateCount} vacancies with LegalEntityId`);
 
-        let postUpdateVacancies = db.vacancies.find({ "legalEntityId": { $exists: false }, "employerName": { $exists: true } });
+        let postUpdateVacancies = db.vacancies.find({ "legalEntityId": { $exists: false }, "employerName": { $exists: true } }).toArray();
 
-        if (postUpdateVacancies.count() > 0)
-            print(`WARNING: There is/are still ${allVacancies.count()/1} vacancies with missing a LegalEntityId field.`);        
+        if (postUpdateVacancies.length > 0)
+            print(`WARNING: There is/are still ${allVacancies.length} vacancies with missing a LegalEntityId field.`);        
     }
 
     print();

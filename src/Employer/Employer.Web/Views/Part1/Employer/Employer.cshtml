@@ -15,7 +15,7 @@
             <form asp-route="@RouteNames.Employer_Post" asp-route-wizard="@Model.PageInfo.IsWizard">
                 <div esfa-validation-marker-for="SelectedOrganisationId" class="form-group">
 
-                    <input asp-show="@Model.HasOnlyOneOrganisation" asp-for="SelectedOrganisationId" value="@Model.Organisations.First().Name" type="hidden" />
+                    <input asp-show="@Model.HasOnlyOneOrganisation" asp-for="SelectedOrganisationId" value="@Model.Organisations.First().Id" type="hidden" />
 
                     <fieldset asp-show="@Model.HasMoreThanOneOrganisation">
                         <legend>

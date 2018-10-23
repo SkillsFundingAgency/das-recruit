@@ -46,7 +46,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                     // Create new profile
                     var newProfile = new EmployerProfile
                     {
-                        Id = Guid.NewGuid(),
                         EmployerAccountId = message.EmployerAccountId,
                         LegalEntityId = legalEntity,
                         CreatedDate = currentTime

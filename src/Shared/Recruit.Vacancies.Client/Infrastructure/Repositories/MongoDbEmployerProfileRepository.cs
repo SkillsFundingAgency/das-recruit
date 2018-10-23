@@ -26,8 +26,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         public async Task<EmployerProfile> GetAsync(string employerAccountId, long legalEntityId)
         {
             var builder = Builders<EmployerProfile>.Filter;
-            var filter = builder.Eq(x => x.EmployerAccountId, employerAccountId) &
-                         builder.Eq(x => x.LegalEntityId, legalEntityId);
+            var filter = builder.Eq(x => x.Id, EmployerProfile.GetId(employerAccountId, legalEntityId));
 
             var collection = GetCollection<EmployerProfile>();
 
@@ -38,7 +37,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 
         public async Task<IList<EmployerProfile>> GetEmployerProfilesForEmployerAsync(string employerAccountId)
         {
-            // TODO: LWA - Refactor when Chris's PR is merged
             var filter = Builders<EmployerProfile>.Filter.Eq(x => x.EmployerAccountId, employerAccountId);
 
             var collection = GetCollection<EmployerProfile>();
