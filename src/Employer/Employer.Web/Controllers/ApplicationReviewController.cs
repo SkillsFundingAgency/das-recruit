@@ -36,8 +36,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             await _orchestrator.PostApplicationReviewEditModelAsync(m, User.ToVacancyUser());
 
-            return RedirectToRoute(RouteNames.DisplayVacancy_Get);
+            return RedirectToRoute(RouteNames.VacancyManage_Get);
         }
-        
     }
 }
