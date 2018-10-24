@@ -30,7 +30,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly IEmployerAccountProvider _employerAccountProvider;
         private readonly IReferenceDataReader _referenceDataReader;
         private readonly IApplicationReviewRepository _applicationReviewRepository;
-        private readonly IVacancyReviewRepository _vacancyReviewRepository;
         private readonly IVacancyReviewQuery _vacancyReviewQuery;
         private readonly ICandidateSkillsProvider _candidateSkillsProvider;
         private readonly IVacancyService _vacancyService;
@@ -47,7 +46,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             IReferenceDataReader referenceDataReader,
             IApplicationReviewRepository applicationReviewRepository,
             IVacancyReviewQuery vacancyReviewQuery,
-            IVacancyReviewRepository vacancyReviewRepository,
             ICandidateSkillsProvider candidateSkillsProvider,
             IVacancyService vacancyService,
             IEmployerDashboardProjectionService dashboardService,
@@ -61,7 +59,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _employerAccountProvider = employerAccountProvider;
             _referenceDataReader = referenceDataReader;
             _applicationReviewRepository = applicationReviewRepository;
-            _vacancyReviewRepository = vacancyReviewRepository;
             _vacancyReviewQuery = vacancyReviewQuery;
             _candidateSkillsProvider = candidateSkillsProvider;
             _vacancyService = vacancyService;
@@ -136,11 +133,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return Guid.NewGuid();
         }
 
-        public Task SubmitVacancyAsync(Vacancy vacancy, VacancyUser user)
+        public Task SubmitVacancyAsync(Guid vacancyId, string employerDescription, VacancyUser user)
         {
             var command = new SubmitVacancyCommand
             {
-                Vacancy = vacancy,
+                VacancyId = vacancyId,
+                EmployerDescription = employerDescription,
                 User = user
             };
 

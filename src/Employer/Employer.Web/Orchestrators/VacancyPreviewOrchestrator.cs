@@ -70,7 +70,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                     SyncErrorsAndModel(result.Errors);
                     return result;
                 },
-                v => _client.SubmitVacancyAsync(v, user)
+                v => _client.SubmitVacancyAsync(v.Id, vacancy.EmployerDescription, user)
             );
         }
 
