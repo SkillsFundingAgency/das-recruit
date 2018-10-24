@@ -1570,3 +1570,141 @@ table th.th-20 {
   .tag-closed {
     background-color: #0B0C0C;
   }
+
+  /*** Responsive tables ***/
+table.responsive thead {
+    display: none;
+  }
+  
+  table.responsive tr {
+    margin-bottom: 10px;
+    display: block;
+    float: left;
+    width: 100%;
+    box-sizing: border-box;
+    border: 2px solid #bfc1c3;
+  }
+  
+  table.responsive tr td {
+    display: block;
+    text-align: right;
+    clear: left;
+    float: left;
+    width: 100%;
+    padding: 10px 10px 8px;
+    box-sizing: border-box;
+    border-bottom: 1px dotted #bfc1c3;
+  }
+  
+  table.responsive tr td:before {
+    content: attr(data-label);
+    float: left;
+    font-weight: bold;
+    padding-right: 10px;
+  }
+  
+  table.responsive tr td:last-child {
+    border-bottom: none;
+  }
+  
+  table.responsive tr td:empty {
+    display: none;
+  }
+  
+  table.responsive tr.total {
+    border: 2px solid #000;
+  }
+  
+  @media (min-width: 641px) {
+    table.responsive thead {
+      display: table-header-group;
+    }
+    table.responsive tr {
+      display: table-row;
+      border: none;
+      float: none;
+      margin: 0;
+    }
+    table.responsive tr th, table.responsive tr td {
+      display: table-cell;
+      text-align: left;
+      float: none;
+      clear: none;
+      padding: 0.6em 1em 0.5em;
+      border-bottom-style: solid;
+      width: auto;
+    }
+    table.responsive tr th:first-child, table.responsive tr td:first-child {
+      padding-left: 0;
+    }
+    table.responsive tr th:last-child, table.responsive tr td:last-child {
+      padding-right: 0;
+    }
+    table.responsive tr th:before, table.responsive tr td:before {
+      display: none;
+    }
+    table.responsive tr th.numeric, table.responsive tr td.numeric {
+      text-align: right;
+    }
+    table.responsive tr th.colgroup, table.responsive tr td.colgroup {
+      text-align: center;
+    }
+    table.responsive tr th:last-child, table.responsive tr td:last-child {
+      border-bottom: 1px solid #bfc1c3;
+    }
+    table.responsive tr.total {
+      border: none;
+    }
+    table.responsive tr.total td {
+      border-bottom: none;
+    }
+    table.responsive tr.total td.total {
+      border-bottom: 2px solid #000;
+    }
+    table.responsive tr.total td:last-child {
+      padding-left: 0;
+    }
+    table.responsive tr th.tw-5 {
+      width: 5%;
+    }
+    table.responsive tr th.tw-10 {
+      width: 10%;
+    }
+    table.responsive tr th.tw-15 {
+      width: 15%;
+    }
+    table.responsive tr th.tw-20 {
+      width: 20%;
+    }
+    table.responsive tr th.tw-25 {
+      width: 25%;
+    }
+    table.responsive tr th.tw-30 {
+      width: 30%;
+    }
+    table.responsive tr th.tw-35 {
+      width: 35%;
+    }
+    table.responsive tr th.tw-40 {
+      width: 40%;
+    }
+    table.responsive tr th.tw-45 {
+      width: 45%;
+    }
+    table.responsive tr th.tw-50 {
+      width: 50%;
+    }
+    table.responsive tr th.tw-55 {
+      width: 55%;
+    }
+    table.responsive tr th.tw-60 {
+      width: 60%;
+    }
+    table.responsive tr th.tw-65 {
+      width: 65%;
+    }
+    table.responsive tr th.tw-70 {
+      width: 70%;
+    }
+  }
+  

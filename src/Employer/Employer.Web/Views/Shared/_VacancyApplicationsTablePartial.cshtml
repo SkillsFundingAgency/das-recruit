@@ -1,6 +1,6 @@
 ﻿@using Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
 @model VacancyApplicationsViewModel
-<table>
+<table class="responsive">
     <thead>
         <tr>
             <th class="bold">Name</th>
@@ -16,18 +16,18 @@
             foreach (var application in applicationStatusGroup)
             {
                 <tr asp-show="@application.IsNotWithdrawn">
-                    <td><a asp-route="@RouteNames.ApplicationReview_Get" asp-route-applicationReviewId="@application.ApplicationReviewId">@application.CandidateName</a></td>
-                    <td>@application.GetFriendlyId()</td>
-                    <td>@application.Status.GetDisplayName()</td>
-                    <td>@application.SubmittedDate.AsGdsDate()</td>
-                    <td asp-show="@Model.ShowDisability">@application.DisabilityStatus.GetDisplayName()</td>
+                    <td data-label="Name"><a asp-route="@RouteNames.ApplicationReview_Get" asp-route-applicationReviewId="@application.ApplicationReviewId">@application.CandidateName</a></td>
+                    <td data-label="Application ID">@application.GetFriendlyId()</td>
+                    <td data-label="Status">@application.Status.GetDisplayName()</td>
+                    <td data-label="Date applied">@application.SubmittedDate.AsGdsDate()</td>
+                    <td data-label="Disability" asp-show="@Model.ShowDisability">@application.DisabilityStatus.GetDisplayName()</td>
                 </tr>
                 <tr asp-show="@application.IsWithdrawn">
-                    <td>Application withdrawn by candidate</td>
-                    <td>@application.GetFriendlyId()</td>
-                    <td>Withdrawn</td>
-                    <td>@application.SubmittedDate.AsGdsDate()</td>
-                    <td asp-show="@Model.ShowDisability">No longer applies</td>
+                    <td data-label="Name">Application withdrawn by candidate</td>
+                    <td data-label="Application ID">@application.GetFriendlyId()</td>
+                    <td data-label="Status">Withdrawn</td>
+                    <td data-label="Date applied">@application.SubmittedDate.AsGdsDate()</td>
+                    <td data-label="Disability" asp-show="@Model.ShowDisability">No longer applies</td>
                 </tr>
             }
         }
