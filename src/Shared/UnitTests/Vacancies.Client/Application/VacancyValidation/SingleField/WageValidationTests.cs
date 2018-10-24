@@ -132,14 +132,14 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         }
 
         [Fact]
-        public void WageAdditionalInfoMustBeLessThan241Characters()
+        public void WageAdditionalInfoMustBeLessThan251Characters()
         {
             var vacancy = new Vacancy
             {
                 Wage = new Wage
                 {
                     WageType = WageType.NationalMinimumWage,
-                    WageAdditionalInformation = new string('a', 242)
+                    WageAdditionalInformation = new string('a', 252)
                 }
             };
 

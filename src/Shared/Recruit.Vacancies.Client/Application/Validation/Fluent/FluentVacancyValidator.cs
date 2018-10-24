@@ -284,8 +284,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithRuleId(VacancyRuleSet.Wage);
 
                 RuleFor(x => x.Wage.WageAdditionalInformation)
-                    .MaximumLength(241)
-                        .WithMessage("Additional salary information must not be more than {MaxLength} characters")
+                    .MaximumLength(250)
+                        .WithMessage("Additional salary information must not exceed {MaxLength} characters")
                         .WithErrorCode("44")
                     .ValidFreeTextCharacters()
                         .WithMessage("Additional salary information contains some invalid characters")
