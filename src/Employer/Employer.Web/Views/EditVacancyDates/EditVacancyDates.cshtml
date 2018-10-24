@@ -4,7 +4,7 @@
 <div class="grid-row">
     <div class="column-full">
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
-        <div class="todo">
+        <div class="todo small-top-margin">
             <form asp-route="@RouteNames.VacancyEditDates_Post" novalidate>
                 <div esfa-validation-marker-for="ClosingDate" class="form-group">
                     <fieldset>
