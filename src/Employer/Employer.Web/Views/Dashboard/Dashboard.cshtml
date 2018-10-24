@@ -45,7 +45,7 @@
 <div asp-show="@Model.HasVacancies">
     <div class="grid-row">
         <div class="column-full">
-            <table id="dashboard-table">
+            <table id="dashboard-table" class="responsive">
                 <thead>
                     <tr>
                         <th class="bold">Status</th>
@@ -59,8 +59,8 @@
                 @foreach (var vacancy in Model.Vacancies)
                 {
                     <tr>
-                        <td><span class="tag tag-@vacancy.Status.ToString().ToLower()">@vacancy.Status.GetDisplayName()</span></td>
-                        <td>
+                        <td data-label="Status"><span class="tag tag-@vacancy.Status.ToString().ToLower()">@vacancy.Status.GetDisplayName()</span></td>
+                        <td data-label="Vacancy title">
                             <div>@vacancy.Title</div>
                             <div asp-show="@vacancy.IsApplicationsVacancy">
                                 <span asp-show="@vacancy.HasNoApplications" class="bold">@vacancy.AllApplicationsCount applications</span>
@@ -68,12 +68,12 @@
                                 <span asp-show="@vacancy.HasNewApplications" class="bold"> (@vacancy.NewApplicationsCount new)</span>
                             </div>
                         </td>
-                        <td>
+                        <td data-label="Vacancy ref">
                             <span asp-show="@vacancy.HasVacancyReference"><span>VAC</span>@vacancy.VacancyReference</span>
                             <span asp-show="@vacancy.HasNoVacancyReference">Not available</span>
                         </td>
-                        <td class="dashboard-closingdate">@vacancy.ClosingDate?.AsGdsDate()</td>
-                        <td class="dashboard-action">
+                        <td class="dashboard-closingdate" data-label="Closing date">@vacancy.ClosingDate?.AsGdsDate()</td>
+                        <td class="dashboard-action" data-label="Action">
                             <a asp-show="@vacancy.IsNotSubmittable" asp-route="@RouteNames.VacancyManage_Get" asp-route-vacancyId="@vacancy.Id">Manage</a>
                             <a asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.DisplayVacancy_Get" asp-route-vacancyId="@vacancy.Id">@GetLinkText(vacancy)</a>
                         </td>
