@@ -787,6 +787,10 @@ input.form-control, textarea.form-control {
     border-radius: 0;
 }
 
+.red-cross-logo {
+    margin-right: 5px;
+  }
+
 /** Qualifications table **/
 table th.th-50 {
     width: 50%;
