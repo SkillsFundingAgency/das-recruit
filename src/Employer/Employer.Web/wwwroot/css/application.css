@@ -1537,7 +1537,7 @@ table th.th-20 {
   }
 
  .tag {
-    display: block;
+    display: inline-block;
     text-align: center;
     background-color: #808080;
     color: white;
