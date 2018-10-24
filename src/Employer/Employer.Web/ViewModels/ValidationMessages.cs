@@ -6,7 +6,7 @@
         {
             public static class TypeOfInteger
             {
-                public const string NumberOfPositions = "Enter the number of positions for this vacancy";
+                public const string NumberOfPositions = "You must state the number of positions for this vacancy";
             }
         }
 
@@ -14,8 +14,8 @@
         {
             public static class TypeOfDate
             {
-                public const string ClosingDate = "The closing date format should be dd/mm/yyyy";
-                public const string StartDate = "The start date format should be dd/mm/yyyy";
+                public const string ClosingDate = "Application closing date format should be dd/mm/yyyy";
+                public const string StartDate = "Possible start date format should be dd/mm/yyyy";
             }
         }
 
@@ -23,7 +23,7 @@
         {
             public static class TypeOfUkprn
             {
-                public const string UkprnFormat = "The UKPRN you have entered is not recognised";
+                public const string UkprnFormat = "UKPRN is not recognised";
             }
         }
 
@@ -31,28 +31,28 @@
         {
             public static class TypeOfInteger
             {
-                public const string Duration = "The field expected duration must be a number";
+                public const string Duration = "Expected duration must be a number";
             }
 
             public static class TypeOfDecimal
             {
-                public const string WeeklyHours = "The field paid hours per week must be a number";
+                public const string WeeklyHours = "Hours per week must be a number";
             }
 
             public static class TypeOfMoney
             {
-                public const string FixedWageYearlyAmount = "The field wage must be a number";
+                public const string FixedWageYearlyAmount = "Fixed wage must be a number";
             }
         }
 
         public static class DeleteVacancyConfirmationMessages
         {
-            public const string SelectionRequired = "You must select one option.";
+            public const string SelectionRequired = "You must select one option";
         }
 
         public static class CloseVacancyConfirmationMessages
         {
-            public const string SelectionRequired = "You must select one option.";
+            public const string SelectionRequired = "You must select one option";
         }
 
         public static class CreateVacancyOptionsConfirmationMessages
