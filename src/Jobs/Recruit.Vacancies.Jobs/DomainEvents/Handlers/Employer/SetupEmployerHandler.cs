@@ -31,9 +31,11 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Employer
 
                 var legalEntities = (await _client.GetEmployerLegalEntitiesAsync(@event.EmployerAccountId)).ToList();
 
-                await _projectionService.UpdateEmployerVacancyDataAsync(@event.EmployerAccountId, legalEntities);
+                var vacancyDataTask =  _projectionService.UpdateEmployerVacancyDataAsync(@event.EmployerAccountId, legalEntities);
 
-                _logger.LogDebug("Legal Entities inserted: {count} for Employer: {EmployerAccountId}", legalEntities.Count, @event.EmployerAccountId);
+                var employerProfilesTask = _client.RefreshEmployerProfiles(@event.EmployerAccountId, legalEntities.Select(x => x.LegalEntityId));
+
+                await Task.WhenAll(vacancyDataTask, employerProfilesTask);
 
                 _logger.LogInformation($"Finished Processing {nameof(SetupEmployerEvent)} for Account: {{AccountId}}", @event.EmployerAccountId);
             }

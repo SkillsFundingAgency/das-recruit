@@ -30,11 +30,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly IEmployerAccountProvider _employerAccountProvider;
         private readonly IReferenceDataReader _referenceDataReader;
         private readonly IApplicationReviewRepository _applicationReviewRepository;
-        private readonly IVacancyReviewRepository _vacancyReviewRepository;
         private readonly IVacancyReviewQuery _vacancyReviewQuery;
         private readonly ICandidateSkillsProvider _candidateSkillsProvider;
         private readonly IVacancyService _vacancyService;
         private readonly IEmployerDashboardProjectionService _dashboardService;
+        private readonly IEmployerProfileRepository _employerProfileRepository;
 
         public VacancyClient(
             IVacancyRepository repository,
@@ -46,10 +46,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             IReferenceDataReader referenceDataReader,
             IApplicationReviewRepository applicationReviewRepository,
             IVacancyReviewQuery vacancyReviewQuery,
-            IVacancyReviewRepository vacancyReviewRepository,
             ICandidateSkillsProvider candidateSkillsProvider,
             IVacancyService vacancyService,
-            IEmployerDashboardProjectionService dashboardService)
+            IEmployerDashboardProjectionService dashboardService,
+            IEmployerProfileRepository employerProfileRepository)
         {
             _repository = repository;
             _reader = reader;
@@ -59,11 +59,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _employerAccountProvider = employerAccountProvider;
             _referenceDataReader = referenceDataReader;
             _applicationReviewRepository = applicationReviewRepository;
-            _vacancyReviewRepository = vacancyReviewRepository;
             _vacancyReviewQuery = vacancyReviewQuery;
             _candidateSkillsProvider = candidateSkillsProvider;
             _vacancyService = vacancyService;
             _dashboardService = dashboardService;
+            _employerProfileRepository = employerProfileRepository;
         }
 
         public Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user)
@@ -133,11 +133,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return Guid.NewGuid();
         }
 
-        public Task SubmitVacancyAsync(Guid vacancyId, VacancyUser user)
+        public Task SubmitVacancyAsync(Guid vacancyId, string employerDescription, VacancyUser user)
         {
             var command = new SubmitVacancyCommand
             {
                 VacancyId = vacancyId,
+                EmployerDescription = employerDescription,
                 User = user
             };
 
@@ -247,6 +248,22 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             {
                 ApplicationReviewId = applicationReviewId,
                 CandidateFeedback = candidateFeedback,
+                User = user
+            };
+
+            return _messaging.SendCommandAsync(command);
+        }
+
+        public Task<EmployerProfile> GetEmployerProfileAsync(string employerAccountId, long legalEntityId)
+        {
+            return _employerProfileRepository.GetAsync(employerAccountId, legalEntityId);
+        }
+
+        public Task UpdateEmployerProfileAsync(EmployerProfile employerProfile, VacancyUser user)
+        {
+            var command = new UpdateEmployerProfileCommand
+            {
+                Profile = employerProfile,
                 User = user
             };
 
@@ -383,6 +400,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         public Task<VacancyReview> GetCurrentReferredVacancyReviewAsync(long vacancyReference)
         {
             return _vacancyReviewQuery.GetCurrentReferredVacancyReviewAsync(vacancyReference);
+        }
+
+        public Task RefreshEmployerProfiles(string employerAccountId, IEnumerable<long> legalEntityIds)
+        {
+            return _messaging.SendCommandAsync(new RefreshEmployerProfilesCommand
+            {
+                EmployerAccountId = employerAccountId,
+                LegalEntityIds = legalEntityIds
+            });
         }
     }
 }

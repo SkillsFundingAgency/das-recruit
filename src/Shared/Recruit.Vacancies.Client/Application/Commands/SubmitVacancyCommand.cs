@@ -9,5 +9,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Commands
     {
         public Guid VacancyId { get;set; }
         public VacancyUser User { get; set; }
+        public string EmployerDescription { get; set; }
     }
 }

@@ -54,6 +54,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         public async Task<OrchestratorResponse> SubmitVacancyAsync(SubmitEditModel m, VacancyUser user)
         {
             var vacancy = await Utility.GetAuthorisedVacancyAsync(_client, m, RouteNames.Preview_Submit_Post);
+            var employerProfile = await _client.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.LegalEntityId);
+            
+            // Update the vacancy with the current employer description text from Profile.
+            vacancy.EmployerDescription = employerProfile?.AboutOrganisation ?? string.Empty;
 
             if (!vacancy.CanSubmit)
                 throw new InvalidStateException(string.Format(ViewModels.ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
@@ -66,7 +70,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                     SyncErrorsAndModel(result.Errors);
                     return result;
                 },
-                v => _client.SubmitVacancyAsync(v.Id, user)
+                v => _client.SubmitVacancyAsync(v.Id, vacancy.EmployerDescription, user)
             );
         }
 

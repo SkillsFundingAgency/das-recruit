@@ -19,7 +19,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<Guid> CloneVacancyAsync(Guid vacancyId, VacancyUser user);
         Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user);
         Task UpdatePublishedVacancyAsync(Vacancy vacancy, VacancyUser user);
-        Task SubmitVacancyAsync(Guid vacancyId, VacancyUser user);
+        Task SubmitVacancyAsync(Guid vacancyId, string employerDescription, VacancyUser user);
         Task DeleteVacancyAsync(Guid vacancyId, VacancyUser user);
         Task<EmployerDashboard> GetDashboardAsync(string employerAccountId);
         Task UserSignedInAsync(VacancyUser user);
@@ -32,6 +32,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task SetupEmployerAsync(string employerAccountId);
         Task<List<string>> GetCandidateSkillsAsync();
         Task<Quals.Qualifications> GetCandidateQualificationsAsync();
+        Task<EmployerProfile> GetEmployerProfileAsync(string employerAccountId, long legalEntityId);
+        Task UpdateEmployerProfileAsync(EmployerProfile employerProfile, VacancyUser user);
         Task<ApplicationReview> GetApplicationReviewAsync(Guid applicationReviewId);
         Task<VacancyApplications> GetVacancyApplicationsAsync(string vacancyReference);
         Task SetApplicationReviewSuccessful(Guid applicationReviewId, VacancyUser user);

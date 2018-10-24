@@ -51,7 +51,7 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             vm.ContactEmail = vacancy.EmployerContactEmail;
             vm.ContactTelephone = vacancy.EmployerContactPhone;
             vm.ClosingDate = vacancy.ClosingDate?.AsGdsDate();
-            vm.EmployerDescription = vacancy.EmployerDescription;
+            vm.EmployerDescription = await GetEmployerDescriptionAsync(vacancy);
             vm.EmployerName = vacancy.EmployerName;
             vm.EmployerWebsiteUrl = vacancy.EmployerWebsiteUrl;
             vm.EmployerAddressElements = Enumerable.Empty<string>();
@@ -70,8 +70,8 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             vm.Title = vacancy.Title;
             vm.TrainingDescription = vacancy.TrainingDescription;
             vm.VacancyDescription = vacancy.Description;
-            vm.VacancyReferenceNumber = vacancy.VacancyReference.HasValue 
-                                        ? $"VAC{vacancy.VacancyReference.ToString()}" 
+            vm.VacancyReferenceNumber = vacancy.VacancyReference.HasValue
+                                        ? $"VAC{vacancy.VacancyReference.ToString()}"
                                         : string.Empty;
             vm.IsDisabilityConfident = vacancy.IsDisabilityConfident;
             if (vacancy.EmployerLocation != null)
@@ -112,6 +112,18 @@ namespace Esfa.Recruit.Employer.Web.Mappings
                     : null;
                 vm.WorkingWeekDescription = vacancy.Wage.WorkingWeekDescription;
             }
+        }
+
+        private async Task<string> GetEmployerDescriptionAsync(Vacancy vacancy)
+        {
+            if (vacancy.CanEdit)
+            {
+                var employerProfile = await _client.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.LegalEntityId);
+                
+                return employerProfile?.AboutOrganisation ?? string.Empty;
+            }
+
+            return vacancy.EmployerDescription;
         }
     }
 }

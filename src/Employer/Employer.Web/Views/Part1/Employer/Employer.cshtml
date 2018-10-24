@@ -1,4 +1,4 @@
-﻿@using Microsoft.Extensions.Options;
+@using Microsoft.Extensions.Options;
 @using Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer;
 @model EmployerViewModel
 @inject IOptions<PostcodeAnywhereConfiguration> PcaConfig
@@ -13,20 +13,20 @@
         <div class="todo">
             <div asp-show="@Model.HasOnlyOneOrganisation"><p>@Model.Organisations.First().Name</p></div>
             <form asp-route="@RouteNames.Employer_Post" asp-route-wizard="@Model.PageInfo.IsWizard">
-                <div esfa-validation-marker-for="SelectedOrganisationName" class="form-group">
+                <div esfa-validation-marker-for="SelectedOrganisationId" class="form-group">
 
-                    <input asp-show="@Model.HasOnlyOneOrganisation" asp-for="SelectedOrganisationName" value="@Model.Organisations.First().Name" type="hidden" />
+                    <input asp-show="@Model.HasOnlyOneOrganisation" asp-for="SelectedOrganisationId" value="@Model.Organisations.First().Id" type="hidden" />
 
                     <fieldset asp-show="@Model.HasMoreThanOneOrganisation">
                         <legend>
                             <span class="form-label-bold">Which organisation is the vacancy for?</span>
                         </legend>
-                        <span esfa-validation-message-for="SelectedOrganisationName" class="error-message"></span>
+                        <span esfa-validation-message-for="SelectedOrganisationId" class="error-message"></span>
 
                         @foreach (var organisation in Model.Organisations)
                     {
                         <div class="multiple-choice">
-                            <input asp-for="SelectedOrganisationName" type="radio" value="@organisation.Name" id="org-@organisation.Id">
+                            <input asp-for="SelectedOrganisationId" type="radio" value="@organisation.Id" id="org-@organisation.Id">
                             <label for="org-@organisation.Id">@organisation.Name</label>
                         </div>
                 }
@@ -85,7 +85,7 @@ window.EsfaRecruit.PcaConfig = {
 {
 <script asp-show="@Model.HasMoreThanOneOrganisation">
 $(document).ready(function() {
-    var orgInputName = "@nameof(EmployerViewModel.SelectedOrganisationName)";
+    var orgInputName = "@nameof(EmployerViewModel.SelectedOrganisationId)";
 	var addresses = @Json.Serialize(Model.Organisations);
 
 	var setAddressById = function(id) {

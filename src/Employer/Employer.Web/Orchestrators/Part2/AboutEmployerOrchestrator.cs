@@ -1,4 +1,5 @@
-﻿using Esfa.Recruit.Employer.Web.RouteModel;
+﻿using System;
+using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -30,7 +31,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             var vm = new AboutEmployerViewModel
             {
                 Title = vacancy.Title,
-                EmployerDescription = vacancy.EmployerDescription,
+                EmployerDescription = await GetEmployerDescriptionAsync(vacancy),
                 EmployerWebsiteUrl = vacancy.EmployerWebsiteUrl
             };
 
@@ -41,6 +42,13 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             }
 
             return vm;
+        }
+
+        private async Task<string> GetEmployerDescriptionAsync(Vacancy vacancy)
+        {
+            var profile = await _client.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.LegalEntityId);
+            
+            return profile?.AboutOrganisation ?? string.Empty;
         }
 
         public async Task<AboutEmployerViewModel> GetAboutEmployerViewModelAsync(AboutEmployerEditModel m)
@@ -63,8 +71,30 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             return await ValidateAndExecute(
                 vacancy,
                 v => _client.Validate(v, ValidationRules),
-                v => _client.UpdateDraftVacancyAsync(vacancy, user)
+                async v =>    
+                {
+                    vacancy.EmployerDescription = null; // We don't want to save the description until submission.
+                    await _client.UpdateDraftVacancyAsync(vacancy, user);
+                    await UpdateEmployerProfileAsync(vacancy, m.EmployerDescription, user);
+                }
             );
+        }
+
+        private async Task UpdateEmployerProfileAsync(Vacancy vacancy, string employerDescription, VacancyUser user)
+        {
+            var employerProfile =
+                await _client.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.LegalEntityId);
+
+            if (employerProfile == null)
+            {
+                throw new NullReferenceException($"No Employer Profile was found for employerAccount: {vacancy.EmployerAccountId}, legalEntity: {vacancy.LegalEntityId}");
+            }
+
+            if (employerProfile.AboutOrganisation != employerDescription)
+            {
+                employerProfile.AboutOrganisation = employerDescription;
+                await _client.UpdateEmployerProfileAsync(employerProfile, user);
+            }
         }
 
         protected override EntityToViewModelPropertyMappings<Vacancy, AboutEmployerEditModel> DefineMappings()
