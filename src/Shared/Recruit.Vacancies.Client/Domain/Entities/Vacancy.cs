@@ -44,10 +44,10 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public string EmployerContactPhone { get; set; }
         public string EmployerDescription { get; set; }
         public Address EmployerLocation { get; set; }
-        public long LegalEntityId { get; set; }
         public string EmployerName { get; set; }
-        public GeoCodeMethod? GeoCodeMethod { get; set; }
         public string EmployerWebsiteUrl { get; set; }
+        public GeoCodeMethod? GeoCodeMethod { get; set; }
+        public long LegalEntityId { get; set; }
         public int? NumberOfPositions { get; set; }
         public string OutcomeDescription { get; set; }
         public string ProgrammeId { get; set; }

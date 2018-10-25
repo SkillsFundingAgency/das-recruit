@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Mappings;
+using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -21,13 +22,19 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         private readonly IEmployerVacancyClient _client;
         private readonly DisplayVacancyViewModelMapper _vacancyDisplayMapper;
         private readonly IReviewSummaryService _reviewSummaryService;
+        private readonly ILegalEntityAgreementService _legalEntityAgreementService;
 
-        public VacancyPreviewOrchestrator(IEmployerVacancyClient client, ILogger<VacancyPreviewOrchestrator> logger,
-            DisplayVacancyViewModelMapper vacancyDisplayMapper, IReviewSummaryService reviewSummaryService) : base(logger)
+        public VacancyPreviewOrchestrator(
+            IEmployerVacancyClient client, 
+            ILogger<VacancyPreviewOrchestrator> logger,
+            DisplayVacancyViewModelMapper vacancyDisplayMapper, 
+            IReviewSummaryService reviewSummaryService, 
+            ILegalEntityAgreementService legalEntityAgreementService) : base(logger)
         {
             _client = client;
             _vacancyDisplayMapper = vacancyDisplayMapper;
             _reviewSummaryService = reviewSummaryService;
+            _legalEntityAgreementService = legalEntityAgreementService;
         }
 
         public async Task<VacancyPreviewViewModel> GetVacancyPreviewViewModelAsync(VacancyRouteModel vrm)
@@ -51,7 +58,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return vm;
         }
         
-        public async Task<OrchestratorResponse> SubmitVacancyAsync(SubmitEditModel m, VacancyUser user)
+        public async Task<OrchestratorResponse<SubmitVacancyResponse>> SubmitVacancyAsync(SubmitEditModel m, VacancyUser user)
         {
             var vacancy = await Utility.GetAuthorisedVacancyAsync(_client, m, RouteNames.Preview_Submit_Post);
             var employerProfile = await _client.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.LegalEntityId);
@@ -70,8 +77,26 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                     SyncErrorsAndModel(result.Errors);
                     return result;
                 },
-                v => _client.SubmitVacancyAsync(v.Id, vacancy.EmployerDescription, user)
-            );
+                v => SubmitActionAsync(v, user)
+                );
+        }
+
+        private async Task<SubmitVacancyResponse> SubmitActionAsync(Vacancy vacancy, VacancyUser user)
+        {
+            var response = new SubmitVacancyResponse
+            {
+                HasLegalEntityAgreement = await _legalEntityAgreementService.HasLegalEntityAgreementAsync(vacancy.EmployerAccountId, vacancy.LegalEntityId),
+                IsSubmitted = false
+            };
+
+            if (response.HasLegalEntityAgreement == false)
+                return response;
+
+            await _client.SubmitVacancyAsync(vacancy.Id, vacancy.EmployerDescription, user);
+
+            response.IsSubmitted = true;
+
+            return response;
         }
 
         private void SyncErrorsAndModel(IList<EntityValidationError> errors)
@@ -82,7 +107,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 error.PropertyName = nameof(VacancyPreviewViewModel.Qualifications);
             }
         }
-        
+
         protected override EntityToViewModelPropertyMappings<Vacancy, VacancyPreviewViewModel> DefineMappings()
         {
             var mappings = new EntityToViewModelPropertyMappings<Vacancy, VacancyPreviewViewModel>();

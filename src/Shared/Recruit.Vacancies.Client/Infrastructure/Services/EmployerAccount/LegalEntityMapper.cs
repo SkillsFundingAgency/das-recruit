@@ -14,7 +14,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
             {
                 LegalEntityId = data.LegalEntityId,
                 Name = data.Name,
-                Address = MapFromAddressLine(data.Address)
+                Address = MapFromAddressLine(data.Address),
+                HasLegalEntityAgreement = data.Agreements.Any(a =>
+                    a.Status == EmployerAgreementStatus.Signed)
             };
         }
 

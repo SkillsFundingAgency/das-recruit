@@ -45,6 +45,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                 return View(vm);
             }
 
+            if (response.Data.HasLegalEntityAgreement == false)
+                return RedirectToRoute(RouteNames.LegalEntityAgreement_SoftStop_Get);
+
             return wizard
                 ? RedirectToRoute(RouteNames.Training_Get)
                 : RedirectToRoute(RouteNames.Vacancy_Preview_Get, null, Anchors.AboutEmployerSection);

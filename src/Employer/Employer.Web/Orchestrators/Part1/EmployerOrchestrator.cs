@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Mappings;
+using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer;
@@ -20,11 +21,17 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.EmployerName | VacancyRuleSet.EmployerAddress;
         private readonly IEmployerVacancyClient _client;
         private readonly IReviewSummaryService _reviewSummaryService;
+        private readonly ILegalEntityAgreementService _legalEntityAgreementService;
 
-        public EmployerOrchestrator(IEmployerVacancyClient client, ILogger<EmployerOrchestrator> logger, IReviewSummaryService reviewSummaryService) : base(logger)
+        public EmployerOrchestrator(
+            IEmployerVacancyClient client, 
+            ILogger<EmployerOrchestrator> logger, 
+            IReviewSummaryService reviewSummaryService, 
+            ILegalEntityAgreementService legalEntityAgreementService) : base(logger)
         {
             _client = client;
             _reviewSummaryService = reviewSummaryService;
+            _legalEntityAgreementService = legalEntityAgreementService;
         }
 
         public async Task<EmployerViewModel> GetEmployerViewModelAsync(VacancyRouteModel vrm)
@@ -85,7 +92,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             return vm;
         }
 
-        public async Task<OrchestratorResponse> PostEmployerEditModelAsync(EmployerEditModel m, VacancyUser user)
+        public async Task<OrchestratorResponse<PostEmployerEditModelResponse>> PostEmployerEditModelAsync(EmployerEditModel m, VacancyUser user)
         {
             var vacancyTask = Utility.GetAuthorisedVacancyForEditAsync(_client, m, RouteNames.Employer_Post);
             var employerVacancyInfoTask = _client.GetEditVacancyInfoAsync(m.EmployerAccountId);
@@ -113,8 +120,15 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             return await ValidateAndExecute(
                 vacancy, 
                 v => _client.Validate(v, ValidationRules),
-                v => _client.UpdateDraftVacancyAsync(vacancy, user)
-            );
+                async v => 
+                {
+                    await _client.UpdateDraftVacancyAsync(vacancy, user);
+
+                    return new PostEmployerEditModelResponse
+                    {
+                        HasLegalEntityAgreement = await _legalEntityAgreementService.HasLegalEntityAgreementAsync(vacancy.EmployerAccountId, vacancy.LegalEntityId)
+                    };
+                });
         }
 
         protected override EntityToViewModelPropertyMappings<Vacancy, EmployerEditModel> DefineMappings()

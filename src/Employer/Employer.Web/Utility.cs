@@ -7,11 +7,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Exceptions;
-using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1;
-using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 
 namespace Esfa.Recruit.Employer.Web
@@ -82,7 +80,7 @@ namespace Esfa.Recruit.Employer.Web
             if (string.IsNullOrWhiteSpace(vacancy.EmployerLocation?.Postcode))
                 return validRoutes;
             
-            validRoutes.AddRange(new[] { RouteNames.Training_Post, RouteNames.Training_Get});
+            validRoutes.AddRange(new[] {RouteNames.LegalEntityAgreement_SoftStop_Get, RouteNames.Training_Post, RouteNames.Training_Get});
             if (string.IsNullOrWhiteSpace(vacancy.ProgrammeId))
                 return validRoutes;
 

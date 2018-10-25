@@ -70,6 +70,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddTransient<ConsiderationsOrchestrator>();
             services.AddTransient<DashboardOrchestrator>();
             services.AddTransient<EmployerOrchestrator>();
+            services.AddTransient<LegalEntityAgreementOrchestrator>();
             services.AddTransient<EmployerContactDetailsOrchestrator>();
             services.AddTransient<TitleOrchestrator>();
             services.AddTransient<VacancyPreviewOrchestrator>();

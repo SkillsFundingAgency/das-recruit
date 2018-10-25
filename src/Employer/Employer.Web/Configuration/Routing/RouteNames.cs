@@ -23,9 +23,6 @@
         public const string Dashboard_AccountsSchemes = "Dashboard_AccountsSchemes";
         public const string Dashboard_Account_Home = "Dashboard_Account_Home";
 
-        public const string EmployerDetails_Index_Get = "EmployerDetails_Index_Get";
-        public const string EmployerDetails_Index_Post = "EmployerDetails_Index_Post";
-
         public const string EmployerContactDetails_Get = "EmployerContactDetails_Get";
         public const string EmployerContactDetails_Post = "EmployerContactDetails_Post";
 
@@ -60,6 +57,9 @@
         
         public const string CloseVacancy_Get = "CloseVacancy_Get";
         public const string CloseVacancy_Post = "CloseVacancy_Post";
+
+        public const string LegalEntityAgreement_SoftStop_Get = "LegalEntityAgreement_SoftStop_Get";
+        public const string LegalEntityAgreement_HardStop_Get = "LegalEntityAgreement_HardStop_Get";
 
         public const string DeleteVacancy_Delete_Get = "DeleteVacancy_Delete_Get";
         public const string DeleteVacancy_Delete_Post = "DeleteVacancy_Delete_Post";
