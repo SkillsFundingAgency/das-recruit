@@ -63,6 +63,10 @@
   margin-bottom:30px;
 }
 
+.medium-bottom-margin {
+  margin-bottom: 50px;
+}
+
 .small-top-margin {
   margin-top:30px;
 }
@@ -1712,3 +1716,6 @@ table.responsive thead {
     }
   }
   
+  .employer-agreement-container .notice .icon {
+    top:20px;
+  }
