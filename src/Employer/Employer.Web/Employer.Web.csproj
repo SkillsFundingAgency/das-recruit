@@ -9,22 +9,28 @@
     <AssemblyName>Esfa.Recruit.Employer.Web</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="FluentValidation.AspNetCore" Version="7.5.2"/>
-    <PackageReference Include="Humanizer.Core.uk" Version="2.2.0"/>
-    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.4"/>
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.4"/>
-    <PackageReference Include="NWebsec.AspNetCore.Middleware" Version="1.1.0"/>
-    <PackageReference Include="NLog.Web.AspNetCore" Version="4.5.4"/>
-    <PackageReference Include="NLog" Version="4.5.4"/>
-    <PackageReference Include="SFA.DAS.Account.Api.Client" Version="1.2.0.62882"/>
-    <PackageReference Include="SFA.DAS.NLog.Targets.Redis" Version="1.1.5"/>
-    <PackageReference Include="SFA.DAS.Providers.Api.Client" Version="0.10.138"/>
-    <PackageReference Include="SFA.DAS.Apprenticeships.Api.Types" Version="0.10.139"/>
-    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.4.1"/>
+    <Compile Remove="QueryStringModels\**" />
+    <Content Remove="QueryStringModels\**" />
+    <EmbeddedResource Remove="QueryStringModels\**" />
+    <None Remove="QueryStringModels\**" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Shared\Recruit.Vacancies.Client\Recruit.Vacancies.Client.csproj"/>
-    <ProjectReference Include="..\..\Shared\Recruit.Shared.Web\Recruit.Shared.Web.csproj"/>
+    <PackageReference Include="FluentValidation.AspNetCore" Version="7.5.2" />
+    <PackageReference Include="Humanizer.Core.uk" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.4" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.4" />
+    <PackageReference Include="NWebsec.AspNetCore.Middleware" Version="1.1.0" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="4.5.4" />
+    <PackageReference Include="NLog" Version="4.5.4" />
+    <PackageReference Include="SFA.DAS.Account.Api.Client" Version="1.3.1331" />
+    <PackageReference Include="SFA.DAS.NLog.Targets.Redis" Version="1.1.5" />
+    <PackageReference Include="SFA.DAS.Providers.Api.Client" Version="0.10.138" />
+    <PackageReference Include="SFA.DAS.Apprenticeships.Api.Types" Version="0.10.139" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.4.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shared\Recruit.Vacancies.Client\Recruit.Vacancies.Client.csproj" />
+    <ProjectReference Include="..\..\Shared\Recruit.Shared.Web\Recruit.Shared.Web.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Content Update="nlog.config">
@@ -32,8 +38,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="ViewModels\EditVacancyDates\"/>
-    <Folder Include="Views\EditVacancyDates\"/>
-    <Folder Include="QueryStringModels\"/>
+    <Folder Include="ViewModels\EditVacancyDates\" />
+    <Folder Include="Views\EditVacancyDates\" />
   </ItemGroup>
 </Project>
