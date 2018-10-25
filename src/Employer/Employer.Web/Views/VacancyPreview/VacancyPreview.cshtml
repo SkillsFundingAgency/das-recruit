@@ -83,7 +83,7 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
         <div class="@GetSectionClass(Model.ShortDescriptionSectionState)">
             <h3 class="heading-small no-top-margin" id="@Anchors.ShortDescription">
                 <img asp-show="@Model.ShortDescriptionRequiresEdit" src="/img/red-cross.png"/>
-                Brief overview of the role
+                Brief overview
             </h3>
             <span esfa-validation-message-for="ShortDescription" class="error-message"></span>
             <p asp-show="@Model.HasShortDescription">@Model.ShortDescription</p>
