@@ -1579,6 +1579,7 @@ table th.th-20 {
     background-color: #0B0C0C;
   }
 
+
   /*** Responsive tables ***/
 table.responsive thead {
     display: none;
@@ -1719,3 +1720,31 @@ table.responsive thead {
   .employer-agreement-container .notice .icon {
     top:20px;
   }
+
+a[rel="external"]:after {
+    background-image: url(../img/external-link.png);
+    background-repeat: no-repeat;
+}
+    
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min--moz-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 20 / 10), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx) {
+      a[rel="external"]:after {
+        background-image: url(../img/external-link-24x24.png);
+        background-size: 12px 400px; }
+}
+  
+a[rel="external"]:after {
+    content: "\A0\A0\A0\A0\A0";
+    background-position: right 3px; 
+}
+
+a[rel="external"]:hover:after {
+    background-position: right -385px; 
+}
+  
+@media (min-width: 641px) {
+    a[rel="external"]:after {
+      content: "\A0\A0\A0\A0";
+      background-position: right 6px; }
+    a[rel="external"]:hover:after {
+      background-position: right -382px; } 
+}
