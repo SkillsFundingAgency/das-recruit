@@ -23,7 +23,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task DeleteVacancyAsync(Guid vacancyId, VacancyUser user);
         Task<EmployerDashboard> GetDashboardAsync(string employerAccountId);
         Task UserSignedInAsync(VacancyUser user);
-        Task<EditVacancyInfo> GetEditVacancyInfo(string employerAccountId);
+        Task<EditVacancyInfo> GetEditVacancyInfoAsync(string employerAccountId);
         EntityValidationResult Validate(Vacancy vacancy, VacancyRuleSet rules);
         Task<IEnumerable<IApprenticeshipProgramme>> GetActiveApprenticeshipProgrammesAsync();
         Task<IApprenticeshipProgramme> GetApprenticeshipProgrammeAsync(string programmeId);
