@@ -11,5 +11,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public string Email { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime LastSignedInDate { get; set; }
+        public bool DeclaredAsLevyPayer { get; set; }
     }
 }
