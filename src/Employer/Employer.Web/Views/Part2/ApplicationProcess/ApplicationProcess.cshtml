@@ -18,21 +18,21 @@
                 <div esfa-validation-marker-for="ApplicationMethod" class="form-group">
                     <fieldset>
                         <label class="form-label-bold sfa-small-bottom-margin" id="@Anchors.ApplicationMethodHeading">
-                            Application process?
-                            <span class="form-hint">How will candidates apply for this vacancy</span>
+                            How will candidates apply for this vacancy?
+                            <span class="form-hint">All vacancies will be published on Find an Apprenticeship</span>
                         </label>
                         <span esfa-validation-message-for="ApplicationMethod" class="error-message"></span>
                         <br />
                         <div class="multiple-choice">
                             <input asp-for="ApplicationMethod" value="@ApplicationMethod.ThroughFindAnApprenticeship" id="application-method-faa" type="radio">
                             <label for="application-method-faa" class="block-label selection-button-radio">
-                                Candidates will apply through the <a href="@Model.FindAnApprenticeshipUrl" target="_blank">Find an apprenticeship service</a>
+                                Through the <a href="@Model.FindAnApprenticeshipUrl" target="_blank">Find an apprenticeship service</a>
                             </label>
                         </div>
                         <div class="multiple-choice" data-target="application-method-external-panel">
                             <input asp-for="ApplicationMethod" value="@ApplicationMethod.ThroughExternalApplicationSite" id="application-method-external" type="radio">
                             <label for="application-method-external" class="block-label selection-button-radio">
-                                Candidates will apply through an external website
+                                Through an external website
                             </label>
                         </div>
                     </fieldset>

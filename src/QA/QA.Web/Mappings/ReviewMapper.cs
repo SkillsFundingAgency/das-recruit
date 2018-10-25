@@ -91,7 +91,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
             {
                 //These need to be in display order
                 new FieldIdentifierViewModel {FieldIdentifier = VacancyReview.FieldIdentifiers.Title, Text = "Title"},
-                new FieldIdentifierViewModel {FieldIdentifier = VacancyReview.FieldIdentifiers.ShortDescription, Text = "Brief overview of the role"},
+                new FieldIdentifierViewModel {FieldIdentifier = VacancyReview.FieldIdentifiers.ShortDescription, Text = "Brief overview"},
                 new FieldIdentifierViewModel {FieldIdentifier = VacancyReview.FieldIdentifiers.ClosingDate, Text = "Closing date"},
                 new FieldIdentifierViewModel {FieldIdentifier = VacancyReview.FieldIdentifiers.WorkingWeek, Text = "Working week"},
                 new FieldIdentifierViewModel {FieldIdentifier = VacancyReview.FieldIdentifiers.Wage, Text = "Yearly wage"},

@@ -30,7 +30,7 @@ namespace Esfa.Recruit.Shared.Web.Mappers
             { FieldIdResolver.ToFieldId(v => v.OutcomeDescription), "Future prospects" },
             { FieldIdResolver.ToFieldId(v => v.ProgrammeId), "Training" },
             { FieldIdResolver.ToFieldId(v => v.Qualifications), "Qualifications" },
-            { FieldIdResolver.ToFieldId(v => v.ShortDescription), "Overview of the role" },
+            { FieldIdResolver.ToFieldId(v => v.ShortDescription), "Brief overview" },
             { FieldIdResolver.ToFieldId(v => v.Skills), "Skills" },
             { FieldIdResolver.ToFieldId(v => v.StartDate), "Start date" },
             { FieldIdResolver.ToFieldId(v => v.ThingsToConsider), "Things to consider" },
@@ -40,7 +40,7 @@ namespace Esfa.Recruit.Shared.Web.Mappers
             { FieldIdResolver.ToFieldId(v => v.Wage.WeeklyHours), "Weekly hours" },
             { FieldIdResolver.ToFieldId(v => v.Wage.WorkingWeekDescription), "Working week" },
             { FieldIdResolver.ToFieldId(v => v.Wage.WageAdditionalInformation), "Additional information about the salary" },
-            { FieldIdResolver.ToFieldId(v => v.Wage.WageType), "What is the salary" },
+            { FieldIdResolver.ToFieldId(v => v.Wage.WageType), "What are you going to pay your apprentice" },
             { FieldIdResolver.ToFieldId(v => v.Wage.FixedWageYearlyAmount),"Fixed wage amount" },
             { FieldIdResolver.ToFieldId(v => v.Wage.Duration), "Duration" },
             { FieldIdResolver.ToFieldId(v => v.Wage.DurationUnit), "Duration unit" }

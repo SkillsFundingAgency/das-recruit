@@ -21,7 +21,7 @@ namespace Esfa.Recruit.Employer.Web.Mappings
         private IDictionary<string, string> ManualQaMessages => new Dictionary<string, string> 
         {
             { FieldIdentifiers.Title, "Title requires edit" },
-            { FieldIdentifiers.ShortDescription, "Brief overview of the role requires edit" },
+            { FieldIdentifiers.ShortDescription, "Brief overview requires edit" },
             { FieldIdentifiers.ClosingDate, "Closing date requires edit" },
             { FieldIdentifiers.WorkingWeek, "Working week requires edit" },
             { FieldIdentifiers.Wage, "Yearly wage requires edit" },
