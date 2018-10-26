@@ -103,6 +103,12 @@
     },
     "VacancyReviewAssignationTimeoutMinutes": {
       "value": ""
-    }    
+    },
+    "EmployerAccountsSqlDbConnectionString": {
+        "value": ""
+    },
+    "EmployerFinanceSqlDbConnectionString": {
+      "value": ""
+    }
   }
 }

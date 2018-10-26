@@ -129,6 +129,14 @@
     "VacancyReviewAssignationTimeoutMinutes": {
       "type": "int",
       "defaultValue": 180
+    },
+    "EmployerAccountsSqlDbConnectionString": {
+      "type": "securestring",
+      "defaultValue": ""
+    },
+    "EmployerFinanceSqlDbConnectionString": {
+      "type": "securestring",
+      "defaultValue": ""
     }
   },
   "variables": {
@@ -372,7 +380,7 @@
               {
                 "name": "VacancyReviewAssignationTimeoutMinutes",
                 "value": "[parameters('VacancyReviewAssignationTimeoutMinutes')]"
-              }              
+              }
             ]
           },
           "ConnectionStrings": {
@@ -516,6 +524,16 @@
             {
               "name": "WebJobsStorage",
               "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('StorageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]",
+              "type": "Custom"
+            },
+            {
+              "name": "EmployerAccountsSqlDbConnectionString",
+              "connectionString": "[parameters('EmployerAccountsSqlDbConnectionString')]",
+              "type": "Custom"
+            },
+            {
+              "name": "EmployerFinanceSqlDbConnectionString",
+              "connectionString": "[parameters('EmployerFinanceSqlDbConnectionString')]",
               "type": "Custom"
             }
           ],
