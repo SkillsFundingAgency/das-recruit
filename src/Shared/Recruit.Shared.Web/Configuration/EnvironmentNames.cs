@@ -9,6 +9,8 @@
         public const string PREPROD = "PREPROD";
         public const string PROD = "PROD";
 
+        public static string GetTestEnvironmentNamesCommaDelimited() => string.Join(",", Development, AT, TEST, DEMO);
+
         public static string GetNonProdEnvironmentNamesCommaDelimited() => string.Join(",", Development, AT, TEST, DEMO, PREPROD);
     }
 }
