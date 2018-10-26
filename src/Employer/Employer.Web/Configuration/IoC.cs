@@ -55,6 +55,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddTransient<IFaaService, FaaService>();
             services.AddTransient<IReviewSummaryService, ReviewSummaryService>();
             services.AddTransient<ILegalEntityAgreementService, LegalEntityAgreementService>();
+            services.AddTransient<LevyDeclarationCookieWriter>();
         }
 
         private static void RegisterProviderApiClientDep(IServiceCollection services, IConfiguration configuration)

@@ -21,11 +21,17 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
         public async Task Handle(SaveUserLevyDeclarationCommand message, CancellationToken cancellationToken)
         {
-            _logger.LogInformation($"Updating user with id: {{userId}} with Legacy declaration of {message.DeclaringAsLevyEmployer}", message.UserId);
+            _logger.LogInformation("Updating user with id: {userId} with Legacy declaration for account {employerAccountId}", message.UserId, message.EmployerAccountId);
             
             var user = await _repository.GetAsync(message.UserId);
 
-            user.DeclaredAsLevyPayer = message.DeclaringAsLevyEmployer;
+            if (user.AccountsDeclaredAsLevyPayers.Contains(message.EmployerAccountId))
+            {
+                _logger.LogWarning($"The account {message.EmployerAccountId} was already in the list of declared levy payers for user: {message.UserId}");
+                return;
+            }
+
+            user.AccountsDeclaredAsLevyPayers .Add(message.EmployerAccountId);
 
             await _repository.UpsertUserAsync(user);
         }

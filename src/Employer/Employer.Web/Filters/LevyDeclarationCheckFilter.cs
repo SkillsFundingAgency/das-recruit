@@ -1,12 +1,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Controllers;
 using Esfa.Recruit.Employer.Web.Extensions;
+using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
@@ -15,59 +13,72 @@ namespace Esfa.Recruit.Employer.Web.Filters
 {
     public class LevyDeclarationCheckFilter : IAsyncActionFilter, IOrderedFilter
     {
-         private readonly IEmployerVacancyClient _vacancyClient;
-        private readonly IDataProtector _dataProtector;
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IEmployerVacancyClient _vacancyClient;
         private readonly ILogger<LevyDeclarationCheckFilter> _logger;
+        private readonly LevyDeclarationCookieWriter _levyCookieWriter;
 
         public LevyDeclarationCheckFilter(IEmployerVacancyClient vacancyClient,
-            IDataProtectionProvider dataProtectionProvider,
-            IHostingEnvironment hostingEnvironment,
-            ILogger<LevyDeclarationCheckFilter> logger)
+            ILogger<LevyDeclarationCheckFilter> logger,
+            LevyDeclarationCookieWriter levyCookieWriter)
         {
             _vacancyClient = vacancyClient;
-            _dataProtector = dataProtectionProvider.CreateProtector(DataProtectionPurposes.LevyDeclarationCookie);
-            _hostingEnvironment = hostingEnvironment;
             _logger = logger;
+            _levyCookieWriter = levyCookieWriter;
         }
 
         public int Order { get; } = 50;
 
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            if (HasValidLevyCookie(context))
+            var employerAccountId = context.RouteData.Values[RouteValues.EmployerAccountId]?.ToString().ToUpper();
+            var userId = context.HttpContext.User.GetUserId();
+            
+            var haveValidCookie = HasValidLevyCookie(context, employerAccountId);
+            var levyControllerRequested = RequestIsForALevyPage(context);
+            var whiteListedControllerRequested = RequestIsForWhiteListedPage(context);
+
+            if (haveValidCookie)
             {
-                if (RequestIsForALevyPage(context))
+                if (levyControllerRequested)
                 {
-                    // Redirect to dashboard as they've already chosen a levy option
-                    var employerAccountId = context.RouteData.Values[RouteValues.EmployerAccountId].ToString().ToUpper();
                     context.Result = new RedirectToRouteResult(RouteNames.Dashboard_Index_Get, new { employerAccountId });
-                    
                     return;
                 }
+
+                await next(); 
             }
-            else if (!RequestIsForWhiteListedPage(context))
+            else if (await HasStoredDeclaration(employerAccountId, userId))
             {
-                var userId = context.HttpContext.User.GetUserId();
-                var details = await _vacancyClient.GetUsersDetailsAsync(userId);
+                if (levyControllerRequested || !whiteListedControllerRequested)
+                {
+                    _levyCookieWriter.WriteCookie(context.HttpContext.Response, userId, employerAccountId);
 
-                if (details.DeclaredAsLevyPayer)
-                {
-                    var protectedUserId = _dataProtector.Protect(userId);
-                    context.HttpContext.Response.Cookies.Append(CookieNames.LevyEmployerIndicator, protectedUserId, EsfaCookieOptions.GetDefaultHttpCookieOption(_hostingEnvironment));
+                    if (levyControllerRequested)
+                    {
+                        context.Result = new RedirectToRouteResult(RouteNames.Dashboard_Index_Get, new { employerAccountId });
+                        return;
+                    }
                 }
-                else
+
+                await next(); 
+            }
+            else
+            {
+                if (!levyControllerRequested && !whiteListedControllerRequested)
                 {
-                    var employerAccountId = context.RouteData.Values[RouteValues.EmployerAccountId].ToString().ToUpper();
-                    
-                    // Redirect to Levy page
                     context.Result = new RedirectToRouteResult(RouteNames.LevyDeclaration_Get, new { employerAccountId });
-                    
                     return;
                 }
-            }
 
-            await next(); 
+                await next(); 
+            }
+        }
+
+        private async Task<bool> HasStoredDeclaration(string employerAccountId, string userId)
+        {
+            var details = await _vacancyClient.GetUsersDetailsAsync(userId);
+
+            return details.AccountsDeclaredAsLevyPayers.Contains(employerAccountId);
         }
 
         private bool RequestIsForWhiteListedPage(ActionExecutingContext context)
@@ -86,24 +97,24 @@ namespace Esfa.Recruit.Employer.Web.Filters
             return controllerName ==  nameof(LevyDeclarationController);
         }
 
-        private bool HasValidLevyCookie(ActionExecutingContext context)
+        private bool HasValidLevyCookie(ActionExecutingContext context, string employerAccountId)
         {
-            var cookie = context.HttpContext.Request.Cookies[CookieNames.LevyEmployerIndicator];
+            var cookieUserAccountValue = _levyCookieWriter.GetCookieFromRequest(context.HttpContext.Request);
 
-            if (!string.IsNullOrWhiteSpace(cookie))
+            if (!string.IsNullOrWhiteSpace(cookieUserAccountValue))
             {
-                var userId = _dataProtector.Unprotect(cookie);
+                var currentUserAccountValue = $"{context.HttpContext.User.GetUserId()}-{employerAccountId}";
+                var valuesMatch = cookieUserAccountValue == currentUserAccountValue ;
 
-                var userIdMatches = userId == context.HttpContext.User.GetUserId();
-
-                if (!userIdMatches)
+                if (!valuesMatch)
                 {
-                    _logger.LogWarning($"Current user doesn't match user in Levy Cookie: Current: {userId}, Cookie: {context.HttpContext.User.GetUserId()}");
+                    _logger.LogWarning($"Current user doesn't match user in Levy Cookie: Current: {currentUserAccountValue}, Cookie: {cookieUserAccountValue}");
+                    
                     // Delete cookie if it's not for current user.
-                    context.HttpContext.Response.Cookies.Delete(CookieNames.LevyEmployerIndicator);
+                    _levyCookieWriter.DeleteCookie(context.HttpContext.Response);
                 }
 
-                return userIdMatches;
+                return valuesMatch;
             }
                 
             return false;

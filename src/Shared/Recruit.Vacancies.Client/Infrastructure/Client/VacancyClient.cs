@@ -418,12 +418,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _userRepository.GetAsync(userId);
         }
 
-        public Task SaveLevyDeclarationAsync(bool declaringAsLevyEmployer, string userId)
+        public Task SaveLevyDeclarationAsync(string userId, string employerAccountId)
         {
             return _messaging.SendCommandAsync(new SaveUserLevyDeclarationCommand
             {
                 UserId = userId,
-                DeclaringAsLevyEmployer = declaringAsLevyEmployer
+                EmployerAccountId = employerAccountId
             });
         }
     }

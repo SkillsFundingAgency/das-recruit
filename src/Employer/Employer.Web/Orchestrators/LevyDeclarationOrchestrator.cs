@@ -18,7 +18,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public async Task<LevySelectionOrchestratorResponse> SaveSelectionAsync(LevyDeclarationModel viewModel, ClaimsPrincipal user)
         {
-            await _client.SaveLevyDeclarationAsync(viewModel.ConfirmAsLevyPayer.Value, user.GetUserId());
+            if (viewModel.ConfirmAsLevyPayer.Value)
+                await _client.SaveLevyDeclarationAsync(user.GetUserId(), viewModel.EmployerAccountId);
 
             return new LevySelectionOrchestratorResponse 
             {
@@ -31,7 +32,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
     public class LevySelectionOrchestratorResponse
     {
         public string RedirectRouteName { get; set; }
-
         public bool CreateLevyCookie { get; set; }
     }
 
