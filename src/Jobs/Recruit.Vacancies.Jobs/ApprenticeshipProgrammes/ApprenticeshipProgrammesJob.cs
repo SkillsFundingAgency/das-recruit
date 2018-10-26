@@ -20,12 +20,12 @@ namespace Esfa.Recruit.Vacancies.Jobs.ApprenticeshipProgrammes
 
         public async Task UpdateStandardsAndFrameworks([TimerTrigger(Schedules.FourAmDaily, RunOnStartup = true)] TimerInfo timerInfo, TextWriter log)
         {
-            _logger.LogInformation("Starting populating standards and frameworks into Query Store");
+            _logger.LogInformation("Starting populating standards and frameworks into reference data store.");
 
             try
             {
                 await _client.UpdateApprenticeshipProgrammesAsync();
-                _logger.LogInformation("Finished populating standards and frameworks into Query Store");
+                _logger.LogInformation("Finished populating standards and frameworks into refernce data store.");
             }
             catch (Exception ex)
             {
