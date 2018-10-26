@@ -23,19 +23,19 @@ namespace Esfa.Recruit.Vacancies.Jobs.NonLevyAccountBlocker
         }
 
 #if DEBUG
-        public async Task RefreshBlockedEmployerAccounts([QueueTrigger(QueueNames.GenerateBlockedEmployersQueueName, Connection = "EventQueueConnectionString")] string message, TextWriter log)
+        public async Task RefreshBlockedEmployerAccountsAsync([QueueTrigger(QueueNames.GenerateBlockedEmployersQueueName, Connection = "EventQueueConnectionString")] string message, TextWriter log)
 #else
-        public async Task RefreshBlockedEmployerAccounts([TimerTrigger(Schedules.Hourly, RunOnStartup = true)] TimerInfo timerInfo, TextWriter log)
+        public async Task RefreshBlockedEmployerAccountsAsync([TimerTrigger(Schedules.Hourly, RunOnStartup = true)] TimerInfo timerInfo, TextWriter log)
 #endif
         {
             _logger.LogInformation("Starting rebuilding blocked employers reference data.");
 
-            var accTask = _accountsReader.GetEmployerAccountsAsync();
+            var accountsTask = _accountsReader.GetEmployerAccountsAsync();
             var levyPayersTask = _accountsReader.GetLevyPayerAccountIdsAsync();
 
-            await Task.WhenAll(accTask, levyPayersTask);
+            await Task.WhenAll(accountsTask, levyPayersTask);
 
-            var accounts = accTask.Result;
+            var accounts = accountsTask.Result;
             var levyPayers = levyPayersTask.Result;
 
             var nonLevyPayers = accounts.Where(x => levyPayers.Contains(x.AccountId) == false)
