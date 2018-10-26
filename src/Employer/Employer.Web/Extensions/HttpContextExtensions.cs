@@ -6,10 +6,21 @@ namespace Esfa.Recruit.Employer.Web.Extensions
 {
     public static class HttpContextExtensions
     {
-        public static async Task SignOutEmployerWebAsync(this HttpContext httpContext)
+        public static async Task SignOutEmployerWebAsync(this HttpContext httpContext, string redirectUrl = null)
         {
+            AuthenticationProperties properties = null;
+
             await httpContext.SignOutAsync("Cookies");
-            await httpContext.SignOutAsync("oidc");
+
+            if (redirectUrl != null)
+            {
+                properties = new AuthenticationProperties
+                {
+                    RedirectUri = redirectUrl
+                };
+            }
+
+            await httpContext.SignOutAsync("oidc", properties);
         }
     }
 }
