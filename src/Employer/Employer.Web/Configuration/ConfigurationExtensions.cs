@@ -18,6 +18,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Http;
 
 namespace Esfa.Recruit.Employer.Web.Configuration
 {
@@ -121,6 +122,10 @@ namespace Esfa.Recruit.Employer.Web.Configuration
                 {
                     await PopulateAccountsClaim(ctx, vacancyClient);
                     await HandleUserSignedIn(ctx, vacancyClient);
+                };
+                options.Events.OnRedirectToIdentityProviderForSignOut = async (ctx) =>
+                {
+                    await ctx.HttpContext.SignOutEmployerWebAsync();
                 };
             });
         }
