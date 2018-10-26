@@ -50,9 +50,9 @@ public string GetTitle()
 	<meta property="og:image" content="/lib/esfa-govuk/assets/images/opengraph-image.png">
 	<link asp-append-version="true" rel="stylesheet" media="screen" href="/css/application.css" />
 	<script src="/lib/jquery/dist/jquery.js"></script>
-	<environment exclude="@EnvironmentNames.GetNonProdEnvironmentNamesCommaDelimited()">
-		<partial name="@PartialNames.GoogleAnalyticsSnippet" />
-	</environment>
+	<environment exclude="@EnvironmentNames.GetTestEnvironmentNamesCommaDelimited()">
+    <partial name="@PartialNames.GoogleTagManagerHeadPartial" />
+    </environment>
 	@Html.Raw(JavaScriptSnippet.FullScript) <!-- AppInsights script -->
 	<script>
 		window.EsfaRecruit = {};
@@ -61,6 +61,9 @@ public string GetTitle()
 </head>
 
 <body>
+    <environment exclude="@EnvironmentNames.GetTestEnvironmentNamesCommaDelimited()">
+    <partial name="@PartialNames.GoogleTagManagerBodyPartial" />
+    </environment>
     <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
     <div id="skiplink-container">
         <div>
