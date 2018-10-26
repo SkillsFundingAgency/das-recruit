@@ -13,7 +13,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using Polly;
 using Programmes = Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
-using Recruit.Vacancies.Client.Infrastructure.ReferenceData.BlockedEmployers;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BlockedEmployers;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData
 {
@@ -79,7 +79,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData
                 { typeof(Programmes.ApprenticeshipProgrammes), "ApprenticeshipProgrammes" },
                 { typeof(Profanities.ProfanityList), "Profanities" },
                 { typeof(BannedPhrases.BannedPhraseList), "BannedPhrases" },
-                { typeof(BlockedEmployers), "BlockedEmployers" }
+                { typeof(BlockedEmployers.BlockedEmployers), "BlockedEmployers" }
             };
         }
     }
