@@ -1,6 +1,6 @@
-﻿using System;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.ViewModels.LevyDeclaration;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -16,9 +16,23 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             _client = client;
         }
 
-        public Task SaveSelection(LevyDeclarationModel viewModel, string userId)
+        public async Task<LevySelectionOrchestratorResponse> SaveSelectionAsync(LevyDeclarationModel viewModel, ClaimsPrincipal user)
         {
-            return _client.SaveLevyDeclarationAsync(viewModel.ConfirmAsLevyPayer.Value, userId);
+            await _client.SaveLevyDeclarationAsync(viewModel.ConfirmAsLevyPayer.Value, user.GetUserId());
+
+            return new LevySelectionOrchestratorResponse 
+            {
+                RedirectRouteName = viewModel.ConfirmAsLevyPayer.Value ? RouteNames.Dashboard_Index_Get : RouteNames.NonLevyInfo_Get,
+                CreateLevyCookie = viewModel.ConfirmAsLevyPayer.Value
+            };
         }
     }
+
+    public class LevySelectionOrchestratorResponse
+    {
+        public string RedirectRouteName { get; set; }
+
+        public bool CreateLevyCookie { get; set; }
+    }
+
 }
