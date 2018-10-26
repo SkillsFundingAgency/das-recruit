@@ -10,6 +10,7 @@ using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Candidate;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.VacancyReview;
 using Esfa.Recruit.Vacancies.Jobs.EmployerDashboardGenerator;
+using Esfa.Recruit.Vacancies.Jobs.NonLevyAccountBlocker;
 using Esfa.Recruit.Vacancies.Jobs.PublishedVacanciesGenerator;
 using Esfa.Recruit.Vacancies.Jobs.QaDashboard;
 using Esfa.Recruit.Vacancies.Jobs.VacancyStatus;
@@ -175,6 +176,8 @@ namespace Esfa.Recruit.Vacancies.Jobs
             //Candidate
             services.AddScoped<IDomainEventHandler<IEvent>, DeleteCandidateHandler>();
 
+            services.AddScoped<AccountsReader>(x => new AccountsReader(x.GetService<ILogger<AccountsReader>>(), configuration.GetConnectionString("FinanceSqlDbConnectionString"), configuration.GetConnectionString("EmployerAccountsSqlDbConnectionString")));
+            services.AddScoped<NonLevyAccountBlockerJob>();
 
             return services;
         }
