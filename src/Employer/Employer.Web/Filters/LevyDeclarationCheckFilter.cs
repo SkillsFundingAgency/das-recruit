@@ -35,7 +35,18 @@ namespace Esfa.Recruit.Employer.Web.Filters
 
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            if (RequestNotForWhiteListedPage(context) && DoesNotHaveValidLevyCookie(context))
+            if (HasValidLevyCookie(context))
+            {
+                if (RequestIsForALevyPage(context))
+                {
+                    // Redirect to dashboard as they've already chosen a levy option
+                    var employerAccountId = context.RouteData.Values[RouteValues.EmployerAccountId].ToString().ToUpper();
+                    context.Result = new RedirectToRouteResult(RouteNames.Dashboard_Index_Get, new { employerAccountId });
+                    
+                    return;
+                }
+            }
+            else if (!RequestIsForWhiteListedPage(context))
             {
                 var userId = context.HttpContext.User.GetUserId();
                 var details = await _vacancyClient.GetUsersDetailsAsync(userId);
@@ -56,19 +67,26 @@ namespace Esfa.Recruit.Employer.Web.Filters
                 }
             }
 
-            await next();
+            await next(); 
         }
 
-        private bool RequestNotForWhiteListedPage(ActionExecutingContext context)
+        private bool RequestIsForWhiteListedPage(ActionExecutingContext context)
         {
             var controllerName = (((Microsoft.AspNetCore.Mvc.Controllers.ControllerActionDescriptor)context.ActionDescriptor).ControllerTypeInfo).Name;
 
             var whitelistControllers = new List<string>{ nameof(LevyDeclarationController), nameof(ErrorController) };
             
-            return !whitelistControllers.Contains(controllerName);
+            return whitelistControllers.Contains(controllerName);
         }
 
-        private bool DoesNotHaveValidLevyCookie(ActionExecutingContext context)
+        private bool RequestIsForALevyPage(ActionExecutingContext context)
+        {
+            var controllerName = (((Microsoft.AspNetCore.Mvc.Controllers.ControllerActionDescriptor)context.ActionDescriptor).ControllerTypeInfo).Name;
+
+            return controllerName ==  nameof(LevyDeclarationController);
+        }
+
+        private bool HasValidLevyCookie(ActionExecutingContext context)
         {
             var cookie = context.HttpContext.Request.Cookies[CookieNames.LevyEmployerIndicator];
 
@@ -76,19 +94,19 @@ namespace Esfa.Recruit.Employer.Web.Filters
             {
                 var userId = _dataProtector.Unprotect(cookie);
 
-                var userIdDoesNotMatch = userId != context.HttpContext.User.GetUserId();
+                var userIdMatches = userId == context.HttpContext.User.GetUserId();
 
-                if (userIdDoesNotMatch)
+                if (!userIdMatches)
                 {
                     _logger.LogWarning($"Current user doesn't match user in Levy Cookie: Current: {userId}, Cookie: {context.HttpContext.User.GetUserId()}");
                     // Delete cookie if it's not for current user.
                     context.HttpContext.Response.Cookies.Delete(CookieNames.LevyEmployerIndicator);
                 }
 
-                return userIdDoesNotMatch;
+                return userIdMatches;
             }
                 
-            return true;
+            return false;
         }
     }
 }
