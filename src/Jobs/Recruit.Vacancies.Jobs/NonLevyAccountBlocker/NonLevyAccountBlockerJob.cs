@@ -30,8 +30,8 @@ namespace Esfa.Recruit.Vacancies.Jobs.NonLevyAccountBlocker
         {
             _logger.LogInformation("Starting rebuilding blocked employers reference data.");
 
-            var accTask = _accountsReader.GetEmployerAccounts();
-            var levyPayersTask = _accountsReader.GetLevyPayerAccountIds();
+            var accTask = _accountsReader.GetEmployerAccountsAsync();
+            var levyPayersTask = _accountsReader.GetLevyPayerAccountIdsAsync();
 
             await Task.WhenAll(accTask, levyPayersTask);
 

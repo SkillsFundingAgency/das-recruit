@@ -28,7 +28,7 @@ AND       Amount > 0";
             _accountsDbConnString = accountsDbConnString;
         }
 
-        public async Task<IList<string>> GetLevyPayerAccountIds()
+        public async Task<IList<string>> GetLevyPayerAccountIdsAsync()
         {
             var accountIdentifiers = new List<string>();
 
@@ -44,7 +44,6 @@ AND       Amount > 0";
 
                     while (await reader.ReadAsync())
                     {
-                        //var x = reader[""].ToString();
                         accountIdentifiers.Add(reader.GetInt64(0).ToString());
                     }
 
@@ -60,7 +59,7 @@ AND       Amount > 0";
             return accountIdentifiers;
         }
 
-        public async Task<IList<EmployerAccountIdentifier>> GetEmployerAccounts()
+        public async Task<IList<EmployerAccountIdentifier>> GetEmployerAccountsAsync()
         {
             var hashedAccountIdentifiers = new List<EmployerAccountIdentifier>();
 
