@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
 
-namespace Recruit.Vacancies.Client.Infrastructure.ReferenceData.BlockedEmployers
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BlockedEmployers
 {
     public class BlockedEmployers : IReferenceDataItem
     {
