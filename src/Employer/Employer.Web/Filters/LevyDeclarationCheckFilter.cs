@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
 
-namespace Employer.Web.Filters
+namespace Esfa.Recruit.Employer.Web.Filters
 {
     public class LevyDeclarationCheckFilter : IAsyncActionFilter, IOrderedFilter
     {
@@ -31,7 +31,7 @@ namespace Employer.Web.Filters
             _logger = logger;
         }
 
-        public int Order { get; set; } = 50;
+        public int Order { get; } = 50;
 
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
@@ -50,7 +50,8 @@ namespace Employer.Web.Filters
                     var employerAccountId = context.RouteData.Values[RouteValues.EmployerAccountId].ToString().ToUpper();
                     
                     // Redirect to Levy page
-                    context.Result = new RedirectToRouteResult(RouteNames.LevyDeclaration_Get, new { employerAccountId = employerAccountId });
+                    context.Result = new RedirectToRouteResult(RouteNames.LevyDeclaration_Get, new { employerAccountId });
+                    
                     return;
                 }
             }
