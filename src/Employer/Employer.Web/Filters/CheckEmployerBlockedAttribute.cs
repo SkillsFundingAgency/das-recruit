@@ -4,7 +4,7 @@ using Esfa.Recruit.Employer.Web.Filters;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace Esfa.Recruit.Employer.Web.Attributes
+namespace Esfa.Recruit.Employer.Web.Filters
 {
     public class CheckEmployerBlockedAttribute : Attribute, IFilterFactory
     {

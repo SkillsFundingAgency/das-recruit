@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Attributes;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.RouteModel;
@@ -27,7 +26,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             _hostingEnvironment = hostingEnvironment;
         }
 
-        [CheckEmployerBlocked]
         [HttpGet("manage", Name = RouteNames.VacancyManage_Get)]
         public async Task<IActionResult> ManageVacancy(VacancyRouteModel vrm)
         {
@@ -46,7 +44,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             return View(viewModel);
         }
 
-        [CheckEmployerBlocked]
         [HttpGet("edit", Name = RouteNames.VacancyEdit_Get)]
         public async Task<IActionResult> EditVacancy(VacancyRouteModel vrm)
         {

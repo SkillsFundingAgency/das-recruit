@@ -18,6 +18,8 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Logging;
+using Esfa.Recruit.Shared.Web.Configuration;
+using Esfa.Recruit.Employer.Web.Filters;
 
 namespace Esfa.Recruit.Employer.Web.Configuration
 {
@@ -76,6 +78,11 @@ namespace Esfa.Recruit.Employer.Web.Configuration
                 }
 
                 opts.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+
+                if (EnvironmentNames.GetTestEnvironmentNames().Contains(hostingEnvironment.EnvironmentName) == false)
+                {
+                    opts.Filters.AddService<CheckEmployerBlockedAttribute>();
+                }
 
                 opts.AddTrimModelBinderProvider(loggerFactory);
             })

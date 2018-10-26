@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Attributes;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators;
@@ -19,7 +18,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             _orchestrator = orchestrator;
         }
 
-        [CheckEmployerBlocked]
         [HttpGet("create-options", Name = RouteNames.CreateVacancyOptions_Get)]
         public async Task<IActionResult> Options([FromRoute]string employerAccountId)
         {
