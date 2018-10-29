@@ -1,5 +1,4 @@
-﻿using Esfa.Recruit.Employer.Web.Attributes;
-using Esfa.Recruit.Employer.Web.Configuration;
+﻿using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators;
@@ -29,14 +28,12 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             _levyCookieWriter = levyCookieWriter;
         }
 
-        [CheckEmployerBlocked]
         [HttpGet("levy-declaration", Name = RouteNames.LevyDeclaration_Get)]
         public IActionResult Options()
         {
             return View(new LevyDeclarationModel());
         }
 
-        [CheckEmployerBlocked]
         [HttpPost("levy-declaration", Name = RouteNames.LevyDeclaration_Post)]
         public async Task<IActionResult> Options(string employerAccountId, LevyDeclarationModel viewModel)
         {
@@ -51,7 +48,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             return RedirectToRoute(response.RedirectRouteName);
         }
 
-        [CheckEmployerBlocked]
         [HttpGet("non-levy-info", Name = RouteNames.NonLevyInfo_Get)]
         public IActionResult NonLevyInfo()
         {
