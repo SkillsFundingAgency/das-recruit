@@ -40,7 +40,7 @@ namespace Esfa.Recruit.Qa.Web
                 .DefaultSources(s => s.Self())
                 .StyleSources(s => 
                     s.Self()
-                    .UnsafeInline()) // TODO: Should see if there's another option that having inline script - currently only need this for the built-in validation-summary which we are going to substitute with our own at some point.
+                )
                 .ScriptSources(s => 
                     s.Self()
                     .CustomSources("https://az416426.vo.msecnd.net")
