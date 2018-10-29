@@ -43,7 +43,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         }
 
         [Route("error/handle")]
-        public async Task<IActionResult> ErrorHandler()
+        public IActionResult ErrorHandler()
         {
             if (HttpContext.Items.TryGetValue(ContextItemKeys.EmployerIdentifier, out var accountId))
             {
