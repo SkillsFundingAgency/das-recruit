@@ -808,6 +808,11 @@ table th.th-20 {
   width: 20%;
 }
 
+/*** Embeded map ***/
+#static-map {
+    max-width:100%;
+}
+
 /*** Select2 Styles **/
 .select2-container {
     box-sizing: border-box;
