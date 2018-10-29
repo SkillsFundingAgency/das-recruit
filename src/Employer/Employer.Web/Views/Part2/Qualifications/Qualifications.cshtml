@@ -1,7 +1,6 @@
 ﻿@using Esfa.Recruit.Employer.Web.ViewModels.Part2.Qualifications
 @using Esfa.Recruit.Vacancies.Client.Domain.Entities
 @model QualificationsViewModel
-
 <div class="grid-row">
     <div class="column-full">
 
@@ -60,7 +59,7 @@
                 <button type="submit" name="AddQualificationAction" id="add-qualification" value="AddQualification" class="button button-secondary save-button">+ Add this qualification</button>
             </div>
 
-            <table id="qualifications-container" style="@(Model.Qualifications.Any() == false ? "display:none" : null)" class="responsive">
+            <table asp-show="@Model.HasQualifications" id="qualifications-container" class="responsive">
                 <thead>
                 <tr>
                     <th>
