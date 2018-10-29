@@ -82,7 +82,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 if (exception is BlockedEmployerException)
                 {
                     _logger.LogInformation($"{exception.Message}. Path: {routeWhereExceptionOccurred}");
-                    return await BlockedEmployerAsync();
+                    return BlockedEmployerAsync();
                 }
             }
 
@@ -101,11 +101,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             return View(ViewNames.PageNotFound);
         }
 
-        private async Task<IActionResult> BlockedEmployerAsync()
+        private IActionResult BlockedEmployerAsync()
         {
-            await HttpContext.SignOutEmployerWebAsync();
-
             Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+
             return View(ViewNames.BlockedEmployer);
         }
 

@@ -24,7 +24,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         [HttpGet, Route("logout", Name = RouteNames.Logout_Get)]
         public async Task Logout()
         {
-            await HttpContext.SignOutEmployerWebAsync(_externalLinks.ManageApprenticeshipSiteUrl);
+            await HttpContext.SignOutEmployerWebAsync();
         }
             
     }
