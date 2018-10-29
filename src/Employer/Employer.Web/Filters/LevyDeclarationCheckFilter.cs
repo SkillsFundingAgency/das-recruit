@@ -33,11 +33,11 @@ namespace Esfa.Recruit.Employer.Web.Filters
             var employerAccountId = context.RouteData.Values[RouteValues.EmployerAccountId]?.ToString().ToUpper();
             var userId = context.HttpContext.User.GetUserId();
             
-            var haveValidCookie = HasValidLevyCookie(context, employerAccountId);
+            var hasValidCookie = HasValidLevyCookie(context, employerAccountId);
             var levyControllerRequested = RequestIsForALevyPage(context);
             var whiteListedControllerRequested = RequestIsForWhiteListedPage(context);
 
-            if (haveValidCookie)
+            if (hasValidCookie)
             {
                 if (levyControllerRequested)
                 {

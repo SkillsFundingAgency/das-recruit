@@ -31,7 +31,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 return;
             }
 
-            user.AccountsDeclaredAsLevyPayers .Add(message.EmployerAccountId);
+            user.AccountsDeclaredAsLevyPayers.Add(message.EmployerAccountId);
 
             await _repository.UpsertUserAsync(user);
         }
