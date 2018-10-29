@@ -60,7 +60,7 @@
                 <button type="submit" name="AddQualificationAction" id="add-qualification" value="AddQualification" class="button button-secondary save-button">+ Add this qualification</button>
             </div>
 
-            <table id="qualifications-container" style="@(Model.Qualifications.Any() == false ? "display:none" : null)">
+            <table id="qualifications-container" style="@(Model.Qualifications.Any() == false ? "display:none" : null)" class="responsive">
                 <thead>
                 <tr>
                     <th>
@@ -83,11 +83,11 @@
                 {
                     var qualification = Model.Qualifications[i];
                     <tr>
-                        <td>@qualification.QualificationType</td>
-                        <td>@qualification.Subject</td>
-                        <td>@qualification.Grade</td>
-                        <td>@qualification.Weighting.GetDisplayName()</td>
-                        <td>
+                        <td data-label="Qualification">@qualification.QualificationType</td>
+                        <td data-label="Subject">@qualification.Subject</td>
+                        <td data-label="Grade">@qualification.Grade</td>
+                        <td data-label="Essential or desired">@qualification.Weighting.GetDisplayName()</td>
+                        <td data-label="Action">
                             <input name="Qualifications[@i].QualificationType" type="hidden" value="@qualification.QualificationType" />
                             <input name="Qualifications[@i].Subject" type="hidden" value="@qualification.Subject" />
                             <input name="Qualifications[@i].Grade" type="hidden" value="@qualification.Grade" />
