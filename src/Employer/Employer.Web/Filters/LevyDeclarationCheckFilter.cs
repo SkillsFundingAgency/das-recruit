@@ -85,7 +85,7 @@ namespace Esfa.Recruit.Employer.Web.Filters
         {
             var controllerName = (((Microsoft.AspNetCore.Mvc.Controllers.ControllerActionDescriptor)context.ActionDescriptor).ControllerTypeInfo).Name;
 
-            var whitelistControllers = new List<string>{ nameof(LevyDeclarationController), nameof(ErrorController) };
+            var whitelistControllers = new List<string>{ nameof(LevyDeclarationController), nameof(ErrorController), nameof(LogoutController), nameof(ExternalLinksController) };
             
             return whitelistControllers.Contains(controllerName);
         }
