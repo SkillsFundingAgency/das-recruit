@@ -53,6 +53,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
                 if (response.Data.HasLegalEntityAgreement == false)
                     return RedirectToRoute(RouteNames.LegalEntityAgreement_HardStop_Get);
+
+                throw new Exception("Unknown submit state");
             }
 
             var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(m);

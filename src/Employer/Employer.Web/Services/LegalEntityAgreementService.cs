@@ -29,7 +29,6 @@ namespace Esfa.Recruit.Employer.Web.Services
 
             if (hasLegalEntityAgreement)
             {
-                //update the projection
                 await _client.SetupEmployerAsync(employerAccountId);
             }
 
