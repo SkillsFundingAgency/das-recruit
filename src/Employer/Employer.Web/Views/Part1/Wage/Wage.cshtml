@@ -16,7 +16,7 @@
                         <span class="form-hint">This must be a minimum of 12 months</span>
                         <span esfa-validation-message-for="Duration" class="error-message"></span>
                         <input asp-for="Duration" class="form-control form-control-1-8" type="number" min="1">
-                        <select asp-for="DurationUnit" class="form-control" style="width: auto">
+                        <select asp-for="DurationUnit" class="form-control duration-unit-select">
                             <option value="@DurationUnit.Month">Month(s)</option>
                             <option value="@DurationUnit.Year">Year(s)</option>
                         </select>
@@ -56,7 +56,7 @@
                                 </p>
                                 <div esfa-validation-marker-for="FixedWageYearlyAmount" class="form-group">
                                     <span esfa-validation-message-for="FixedWageYearlyAmount" class="error-message"></span>
-                                    <p style="display: inline;">£</p>
+                                    <span>£</span>
                                     <label asp-for="FixedWageYearlyAmount" class="visuallyhidden">Minimum yearly wage amount</label>
                                     <input asp-for="FixedWageYearlyAmount" class="form-control form-control-1-4" type="text">
                                     <span>yearly</span>

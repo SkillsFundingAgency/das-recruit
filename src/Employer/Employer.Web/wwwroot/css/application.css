@@ -1753,3 +1753,8 @@ a[rel="external"]:hover:after {
     a[rel="external"]:hover:after {
       background-position: right -382px; } 
 }
+
+
+.duration-unit-select {
+    width: auto;
+}
