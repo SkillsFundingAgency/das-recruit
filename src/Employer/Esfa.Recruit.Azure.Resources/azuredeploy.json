@@ -1,219 +1,524 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    "TemplateBaseUrl": {
-      "type": "string",
-      "defaultValue": "https://raw.githubusercontent.com/SkillsFundingAgency/das-recruit/master/src/Employer/Esfa.Recruit.Azure.Resources"
-    },
-    "EnvironmentName": {
-      "type": "string"
-    },
-    "EnvironmentFullName": {
-      "type": "string"
-    },
-    "Authentication": {
-      "type": "object",
-      "defaultValue": {
-        "Authority": "",
-        "MetaDataAddress": "",
-        "ClientId": "",
-        "ClientSecret": ""
-      }
-    },
-    "AccountApiConfiguration": {
-      "type": "object",
-      "defaultValue": {
-        "ApiBaseUrl": "",
-        "ClientId": "",
-        "ClientSecret": "",
-        "IdentifierUri": "",
-        "Tenant": ""
-      }
-    },
-    "ExternalLinks": {
-      "type": "object",
-      "defaultValue": {
-        "ManageApprenticeshipSiteUrl": "",
-        "EmployerIdamsSiteUrl": "",
-        "StaffIdamsUrl": ""
-      }
-    },
-    "Features": {
-      "type": "object",
-      "defaultValue": {
-        "AllowThroughFaaApplicationMethod": false
-      }
-    },
-    "LoggingRedisConnectionString": {
-      "type": "securestring",
-      "defaultValue": ""
-    },
-    "ApprenticeshipProgrammesApiBaseUrl": {
-      "type": "string",
-      "defaultValue": ""
-    },
-    "GoogleMapsPrivateKey": {
-      "type": "string",
-      "defaultValue": ""
-    },
-    "SharedAppServicePlanName": {
-      "type": "string"
-    },
-    "SharedAppServicePlanResourceGroup": {
-      "type": "string"
-    },
-    "EmployerCustomHostname": {
-      "type": "string"
-    },
-    "EmployerKeyvaultCertificateName": {
-      "type": "string"
-    },
-    "QAAppCustomHostname": {
-      "type": "string"
-    },
-    "QAAppKeyvaultCertificateName": {
-      "type": "string"
-    },
-    "QAAuthentication": {
-      "type": "object",
-      "defaultValue": {
-        "Wtrealm": "",
-        "MetaDataAddress": ""
-      }
-    },
-    "QALegacyAuthorization": {
-      "type": "object",
-      "defaultValue": {
-        "ClaimType": "",
-        "UserClaimValue": "",
-        "TeamLeadClaimValue": ""
-      }
-    },
-    "QAAuthorization": {
-      "type": "object",
-      "defaultValue": {
-        "ClaimType": "",
-        "UserClaimValue": "",
-        "TeamLeadClaimValue": ""
-      }
-    },
-    "SlackWebhook": {
-      "type": "string",
-      "defaultValue": ""
-    },
-    "GeocodePostcodeAnywhereKey": {
-      "type": "string",
-      "defaultValue": ""
-    },
-    "PostcodeAnywhereKey": {
-      "type": "string",
-      "defaultValue": ""
-    },
-    "FaaConfiguration": {
-      "type": "object",
-      "defaultValue": {
-        "StorageConnectionString": ""
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "TemplateBaseUrl": {
+        "type": "string",
+        "defaultValue": "https://raw.githubusercontent.com/SkillsFundingAgency/das-recruit/master/src/Employer/Esfa.Recruit.Azure.Resources"
       },
-      "metadata": {
-        "description" : "StorageConnectionString requires at least the Send claim for the relevant Service Bus endpoint"
-      }
-    },
-    "VacancyApiConfiguration": {
-      "type": "object",
-      "defaultValue": {
-        "ApiReadSubscriptionKey": "",
-        "ApiSearchBaseUrl": "https://apis.apprenticeships.sfa.bis.gov.uk/vacancies/v1/apprenticeships/search"
-      }
-    },
-    "VacancyReviewAssignationTimeoutMinutes": {
-      "type": "int",
-      "defaultValue": 180
-    },
-    "EmployerAccountsSqlDbConnectionString": {
-      "type": "securestring",
-      "defaultValue": ""
-    },
-    "EmployerFinanceSqlDbConnectionString": {
-      "type": "securestring",
-      "defaultValue": ""
-    }
-  },
-  "variables": {
-    "EmployerRecruitAppServiceName": "[concat('das-', toLower(parameters('EnvironmentName')), '-rcrt-as')]",
-    "QAAppServiceName": "[concat('das-', toLower(parameters('EnvironmentName')), '-rcrt-qa-as')]",
-    "CosmosDbName": "[concat('das-', toLower(parameters('EnvironmentName')),'-rcrt-cdb')]",
-    "WebJobAppServiceName": "[concat('das-', toLower(parameters('EnvironmentName')), '-rcrt-webjob-as')]",
-    "StorageAccountName": "[concat('das', toLower(parameters('EnvironmentName')), 'rcrtstr')]",
-    "AppServiceTemplateUri": "[concat(parameters('TemplateBaseUrl'), '/deployments/app-service-resources.json')]",
-    "SharedAppServicePlanId": "[resourceId(parameters('SharedAppServicePlanResourceGroup'), 'Microsoft.Web/serverfarms', parameters('SharedAppServicePlanName'))]"
-  },
-  "resources": [
-    {
-      "apiVersion": "2015-05-01",
-      "name": "[variables('EmployerRecruitAppServiceName')]",
-      "type": "Microsoft.Insights/components",
-      "location": "[resourceGroup().location]",
-      "kind": "web",
-      "properties": {
-        "Application_Type": "web"
-      }
-    },
-    {
-      "apiVersion": "2015-05-01",
-      "name": "[variables('QAAppServiceName')]",
-      "type": "Microsoft.Insights/components",
-      "location": "[resourceGroup().location]",
-      "kind": "web",
-      "properties": {
-        "Application_Type": "web"
-      }
-    },
-    {
-      "name": "[variables('CosmosDbName')]",
-      "type": "Microsoft.DocumentDB/databaseAccounts",
-      "apiVersion": "2015-04-08",
-      "location": "[resourceGroup().location]",
-      "tags": {},
-      "kind": "MongoDB",
-      "properties": {
-        "consistencyPolicy": {
-          "defaultConsistencyLevel": "Strong"
+      "EnvironmentName": {
+        "type": "string"
+      },
+      "webJobAspLocation": {
+        "type": "string",
+        "allowedValues": [
+          "North Europe",
+          "West Europe"
+        ],
+        "defaultValue": "West Europe"
+      },
+      "aseHostingEnvironmentName": {
+        "type": "string",
+        "defaultValue": ""
+      },
+      "aseResourceGroup": {
+        "type": "string",
+        "defaultValue": ""
+      },
+      "webJobAspSize": {
+        "type": "string",
+        "allowedValues": [
+          "1",
+          "2",
+          "3"
+        ]
+      },
+      "webJobAspInstances": {
+        "type": "int"
+      },
+      "EnvironmentFullName": {
+        "type": "string"
+      },
+      "Authentication": {
+        "type": "object",
+        "defaultValue": {
+          "Authority": "",
+          "MetaDataAddress": "",
+          "ClientId": "",
+          "ClientSecret": ""
+        }
+      },
+      "AccountApiConfiguration": {
+        "type": "object",
+        "defaultValue": {
+          "ApiBaseUrl": "",
+          "ClientId": "",
+          "ClientSecret": "",
+          "IdentifierUri": "",
+          "Tenant": ""
+        }
+      },
+      "ExternalLinks": {
+        "type": "object",
+        "defaultValue": {
+          "ManageApprenticeshipSiteUrl": "",
+          "EmployerIdamsSiteUrl": "",
+          "StaffIdamsUrl": ""
+        }
+      },
+      "Features": {
+        "type": "object",
+        "defaultValue": {
+          "AllowThroughFaaApplicationMethod": false
+        }
+      },
+      "LoggingRedisConnectionString": {
+        "type": "securestring",
+        "defaultValue": ""
+      },
+      "ApprenticeshipProgrammesApiBaseUrl": {
+        "type": "string",
+        "defaultValue": ""
+      },
+      "GoogleMapsPrivateKey": {
+        "type": "string",
+        "defaultValue": ""
+      },
+      "SharedAppServicePlanName": {
+        "type": "string"
+      },
+      "SharedAppServicePlanResourceGroup": {
+        "type": "string"
+      },
+      "EmployerCustomHostname": {
+        "type": "string"
+      },
+      "EmployerKeyvaultCertificateName": {
+        "type": "string"
+      },
+      "QAAppCustomHostname": {
+        "type": "string"
+      },
+      "QAAppKeyvaultCertificateName": {
+        "type": "string"
+      },
+      "QAAuthentication": {
+        "type": "object",
+        "defaultValue": {
+          "Wtrealm": "",
+          "MetaDataAddress": ""
+        }
+      },
+      "QALegacyAuthorization": {
+        "type": "object",
+        "defaultValue": {
+          "ClaimType": "",
+          "UserClaimValue": "",
+          "TeamLeadClaimValue": ""
+        }
+      },
+      "QAAuthorization": {
+        "type": "object",
+        "defaultValue": {
+          "ClaimType": "",
+          "UserClaimValue": "",
+          "TeamLeadClaimValue": ""
+        }
+      },
+      "SlackWebhook": {
+        "type": "string",
+        "defaultValue": ""
+      },
+      "GeocodePostcodeAnywhereKey": {
+        "type": "string",
+        "defaultValue": ""
+      },
+      "PostcodeAnywhereKey": {
+        "type": "string",
+        "defaultValue": ""
+      },
+      "FaaConfiguration": {
+        "type": "object",
+        "defaultValue": {
+          "StorageConnectionString": ""
         },
-        "databaseAccountOfferType": "Standard"
+        "metadata": {
+          "description" : "StorageConnectionString requires at least the Send claim for the relevant Service Bus endpoint"
+        }
+      },
+      "VacancyApiConfiguration": {
+        "type": "object",
+        "defaultValue": {
+          "ApiReadSubscriptionKey": "",
+          "ApiSearchBaseUrl": "https://apis.apprenticeships.sfa.bis.gov.uk/vacancies/v1/apprenticeships/search"
+        }
+      },
+      "VacancyReviewAssignationTimeoutMinutes": {
+        "type": "int",
+        "defaultValue": 180
+      },
+      "EmployerAccountsSqlDbConnectionString": {
+        "type": "securestring",
+        "defaultValue": ""
+      },
+      "EmployerFinanceSqlDbConnectionString": {
+        "type": "securestring",
+        "defaultValue": ""
       }
     },
-    {
-      "name": "Employer-Recruit-AppService",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2017-05-10",
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[variables('AppServiceTemplateUri')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "AppServiceName": {
-            "value": "[variables('EmployerRecruitAppServiceName')]"
+    "variables": {
+      "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/",
+      "webJobAppServicePlanName": "[concat('das-', toLower(parameters('environmentName')),'-raa-webjob-asp')]",
+      "EmployerRecruitAppServiceName": "[concat('das-', toLower(parameters('EnvironmentName')), '-rcrt-as')]",
+      "QAAppServiceName": "[concat('das-', toLower(parameters('EnvironmentName')), '-rcrt-qa-as')]",
+      "CosmosDbName": "[concat('das-', toLower(parameters('EnvironmentName')),'-rcrt-cdb')]",
+      "WebJobAppServiceName": "[concat('das-', toLower(parameters('EnvironmentName')), '-rcrt-webjob-as')]",
+      "StorageAccountName": "[concat('das', toLower(parameters('EnvironmentName')), 'rcrtstr')]",
+      "AppServiceTemplateUri": "[concat(parameters('TemplateBaseUrl'), '/deployments/app-service-resources.json')]",
+      "webJobAppServicePlanId": "[resourceId(resourceGroup().name, 'Microsoft.Web/serverfarms', variables('webJobAppServicePlanName'))]"
+    },
+    "resources": [
+      {
+        "apiVersion": "2015-05-01",
+        "name": "[variables('EmployerRecruitAppServiceName')]",
+        "type": "Microsoft.Insights/components",
+        "location": "[resourceGroup().location]",
+        "kind": "web",
+        "properties": {
+          "Application_Type": "web"
+        }
+      },
+      {
+        "apiVersion": "2015-05-01",
+        "name": "[variables('QAAppServiceName')]",
+        "type": "Microsoft.Insights/components",
+        "location": "[resourceGroup().location]",
+        "kind": "web",
+        "properties": {
+          "Application_Type": "web"
+        }
+      },
+      {
+        "name": "[variables('CosmosDbName')]",
+        "type": "Microsoft.DocumentDB/databaseAccounts",
+        "apiVersion": "2015-04-08",
+        "location": "[resourceGroup().location]",
+        "tags": {},
+        "kind": "MongoDB",
+        "properties": {
+          "consistencyPolicy": {
+            "defaultConsistencyLevel": "Strong"
           },
-          "AppSettings": {
-            "value": [
+          "databaseAccountOfferType": "Standard"
+        }
+      },
+      {
+        "name": "Employer-Recruit-AppService",
+        "type": "Microsoft.Resources/deployments",
+        "apiVersion": "2017-05-10",
+        "properties": {
+          "mode": "Incremental",
+          "templateLink": {
+            "uri": "[variables('AppServiceTemplateUri')]",
+            "contentVersion": "1.0.0.0"
+          },
+          "parameters": {
+            "AppServiceName": {
+              "value": "[variables('EmployerRecruitAppServiceName')]"
+            },
+            "AppSettings": {
+              "value": [
+                {
+                  "name": "Authentication:Authority",
+                  "value": "[parameters('Authentication').Authority]"
+                },
+                {
+                  "name": "Authentication:MetaDataAddress",
+                  "value": "[parameters('Authentication').MetaDataAddress]"
+                },
+                {
+                  "name": "Authentication:ClientId",
+                  "value": "[parameters('Authentication').ClientId]"
+                },
+                {
+                  "name": "Authentication:ClientSecret",
+                  "value": "[parameters('Authentication').ClientSecret]"
+                },
+                {
+                  "name": "AccountApiConfiguration:ApiBaseUrl",
+                  "value": "[parameters('AccountApiConfiguration').ApiBaseUrl]"
+                },
+                {
+                  "name": "AccountApiConfiguration:ClientId",
+                  "value": "[parameters('AccountApiConfiguration').ClientId]"
+                },
+                {
+                  "name": "AccountApiConfiguration:ClientSecret",
+                  "value": "[parameters('AccountApiConfiguration').ClientSecret]"
+                },
+                {
+                  "name": "AccountApiConfiguration:IdentifierUri",
+                  "value": "[parameters('AccountApiConfiguration').IdentifierUri]"
+                },
+                {
+                  "name": "AccountApiConfiguration:Tenant",
+                  "value": "[parameters('AccountApiConfiguration').Tenant]"
+                },
+                {
+                  "name": "ApplicationInsights:InstrumentationKey",
+                  "value": "[reference(concat('microsoft.insights/components/', variables('EmployerRecruitAppServiceName'))).InstrumentationKey]"
+                },
+                {
+                  "name": "ExternalLinks:ManageApprenticeshipSiteUrl",
+                  "value": "[parameters('ExternalLinks').ManageApprenticeshipSiteUrl]"
+                },
+                {
+                  "name": "ExternalLinks:EmployerIdamsSiteUrl",
+                  "value": "[parameters('ExternalLinks').EmployerIdamsSiteUrl]"
+                },
+                {
+                  "name": "Features:AllowThroughFaaApplicationMethod",
+                  "value": "[parameters('Features').AllowThroughFaaApplicationMethod]"
+                },
+                {
+                  "name": "ASPNETCORE_ENVIRONMENT",
+                  "value": "[toUpper(parameters('EnvironmentFullName'))]"
+                },
+                {
+                  "name": "GoogleMapsPrivateKey",
+                  "value": "[parameters('GoogleMapsPrivateKey')]"
+                },
+                {
+                  "name": "PostcodeAnywhere:Key",
+                  "value": "[parameters('PostcodeAnywhereKey')]"
+                },
+                {
+                  "name": "FaaConfiguration:StorageConnectionString",
+                  "value": "[parameters('FaaConfiguration').StorageConnectionString]"
+                }
+              ]
+            },
+            "ConnectionStrings": {
+              "value": [
+                {
+                  "name": "Redis",
+                  "connectionString": "[parameters('LoggingRedisConnectionString')]",
+                  "type": "Custom"
+                },
+                {
+                  "name": "MongoDb",
+                  "connectionString": "[concat('mongodb://', variables('CosmosDbName'), ':', listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', variables('CosmosDbName')), '2015-11-06').primaryMasterKey,'@', variables('CosmosDbName'), '.documents.azure.com:10255/?ssl=true&replicaSet=globaldb')]",
+                  "type": "Custom"
+                },
+                {
+                  "name": "Storage",
+                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('StorageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]",
+                  "type": "Custom"
+                }
+              ]
+            },
+            "CustomHostname": {
+              "value": "[parameters('EmployerCustomHostname')]"
+            },
+            "SharedAppServicePlanResourceGroup": {
+              "value": "[parameters('SharedAppServicePlanResourceGroup')]"
+            },
+            "SharedAppServicePlanName": {
+              "value": "[parameters('SharedAppServicePlanName')]"
+            },
+            "KeyvaultCertificateName": {
+              "value": "[parameters('EmployerKeyvaultCertificateName')]"
+            }
+          }
+        },
+        "dependsOn": [
+          "[resourceId('microsoft.insights/components', variables('EmployerRecruitAppServiceName'))]",
+          "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('CosmosDbName'))]"
+        ]
+      },
+      {
+        "name": "QA-App-AppService",
+        "type": "Microsoft.Resources/deployments",
+        "apiVersion": "2017-05-10",
+        "properties": {
+          "mode": "Incremental",
+          "templateLink": {
+            "uri": "[variables('AppServiceTemplateUri')]",
+            "contentVersion": "1.0.0.0"
+          },
+          "parameters": {
+            "AppServiceName": {
+              "value": "[variables('QAAppServiceName')]"
+            },
+            "SharedAppServicePlanName": {
+              "value": "[parameters('SharedAppServicePlanName')]"
+            },
+            "SharedAppServicePlanResourceGroup": {
+              "value": "[parameters('SharedAppServicePlanResourceGroup')]"
+            },
+            "AppSettings": {
+              "value": [
+                {
+                  "name": "Authentication:Wtrealm",
+                  "value": "[parameters('QAAuthentication').WtRealm]"
+                },
+                {
+                  "name": "Authentication:MetaDataAddress",
+                  "value": "[parameters('QAAuthentication').MetaDataAddress]"
+                },
+                {
+                  "name": "ApplicationInsights:InstrumentationKey",
+                  "value": "[reference(concat('microsoft.insights/components/', variables('QAAppServiceName'))).InstrumentationKey]"
+                },
+                {
+                  "name": "ASPNETCORE_ENVIRONMENT",
+                  "value": "[toUpper(parameters('EnvironmentFullName'))]"
+                },
+                {
+                  "name": "GoogleMapsPrivateKey",
+                  "value": "[parameters('GoogleMapsPrivateKey')]"
+                },
+                {
+                  "name": "LegacyAuthorization:ClaimType",
+                  "value": "[parameters('QALegacyAuthorization').ClaimType]"
+                },
+                {
+                  "name": "LegacyAuthorization:UserClaimValue",
+                  "value": "[parameters('QALegacyAuthorization').UserClaimValue]"
+                },
+                {
+                  "name": "LegacyAuthorization:TeamLeadClaimValue",
+                  "value": "[parameters('QALegacyAuthorization').TeamLeadClaimValue]"
+                },
+                {
+                  "name": "Authorization:ClaimType",
+                  "value": "[parameters('QAAuthorization').ClaimType]"
+                },
+                {
+                  "name": "Authorization:UserClaimValue",
+                  "value": "[parameters('QAAuthorization').UserClaimValue]"
+                },
+                {
+                  "name": "Authorization:TeamLeadClaimValue",
+                  "value": "[parameters('QAAuthorization').TeamLeadClaimValue]"
+                },
+                {
+                  "name": "ExternalLinks:StaffIdamsUrl",
+                  "value": "[parameters('ExternalLinks').StaffIdamsUrl]"
+                },
+                {
+                  "name": "VacancyReviewAssignationTimeoutMinutes",
+                  "value": "[parameters('VacancyReviewAssignationTimeoutMinutes')]"
+                }
+              ]
+            },
+            "ConnectionStrings": {
+              "value": [
+                {
+                  "name": "Redis",
+                  "connectionString": "[parameters('LoggingRedisConnectionString')]",
+                  "type": "Custom"
+                },
+                {
+                  "name": "MongoDb",
+                  "connectionString": "[concat('mongodb://', variables('CosmosDbName'), ':', listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', variables('CosmosDbName')), '2015-11-06').primaryMasterKey,'@', variables('CosmosDbName'), '.documents.azure.com:10255/?ssl=true&replicaSet=globaldb')]",
+                  "type": "Custom"
+                },
+                {
+                  "name": "Storage",
+                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('StorageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]",
+                  "type": "Custom"
+                }
+              ]
+            },
+            "CustomHostname": {
+              "value": "[parameters('QAAppCustomHostname')]"
+            },
+            "KeyvaultCertificateName": {
+              "value": "[parameters('QAAppKeyvaultCertificateName')]"
+            }
+          }
+        },
+        "dependsOn": [
+          "[resourceId('microsoft.insights/components', variables('QAAppServiceName'))]"
+        ]
+      },
+      {
+        "apiVersion": "2017-06-01",
+        "name": "[variables('StorageAccountName')]",
+        "location": "[resourceGroup().location]",
+        "type": "Microsoft.Storage/storageAccounts",
+        "sku": {
+          "name": "Standard_LRS"
+        },
+        "kind": "Storage",
+        "properties": {
+          "encryption": {
+            "services": {
+              "blob": {
+                "enabled": true
+              },
+              "file": {
+                "enabled": true
+              }
+            },
+            "keySource": "Microsoft.Storage"
+          }
+        },
+        "dependsOn": []
+      },
+      {
+        "apiVersion": "2017-08-01",
+        "name": "[variables('webJobAppServicePlanName')]",
+        "type": "Microsoft.Resources/deployments",
+        "properties": {
+          "mode": "Incremental",
+          "templateLink": {
+            "uri": "[concat(variables('deploymentUrlBase'),'app-service-plan.json')]",
+            "contentVersion": "1.0.0.0"
+          },
+          "parameters": {
+            "appServicePlanName": {
+              "value": "[variables('webJobAppServicePlanName')]"
+            },
+            "aspLocation": {
+              "value": "[parameters('webJobAspLocation')]"
+            },
+            "aseHostingEnvironmentName": {
+              "value": "[parameters('aseHostingEnvironmentName')]"
+            },
+            "aseResourceGroup": {
+              "value": "[parameters('aseResourceGroup')]"
+            },
+            "aspSize": {
+              "value": "[parameters('webJobAspSize')]"
+            },
+            "aspInstances": {
+              "value": "[parameters('webJobAspInstances')]"
+            }
+          }
+        },
+        "dependsOn": []
+      },
+      {
+        "name": "[variables('WebJobAppServiceName')]",
+        "type": "Microsoft.Web/sites",
+        "apiVersion": "2016-08-01",
+        "comments": "This will become a Function App when Core is GA",
+        "location": "[resourceGroup().location]",
+        "properties": {
+          "phpVersion": "Off",
+          "clientAffinityEnabled": false,
+          "serverFarmId": "[variables('webJobAppServicePlanId')]",
+          "siteConfig": {
+            "appSettings": [
               {
-                "name": "Authentication:Authority",
-                "value": "[parameters('Authentication').Authority]"
+                "name": "ASPNETCORE_ENVIRONMENT",
+                "value": "[toUpper(parameters('EnvironmentFullName'))]"
               },
               {
-                "name": "Authentication:MetaDataAddress",
-                "value": "[parameters('Authentication').MetaDataAddress]"
-              },
-              {
-                "name": "Authentication:ClientId",
-                "value": "[parameters('Authentication').ClientId]"
-              },
-              {
-                "name": "Authentication:ClientSecret",
-                "value": "[parameters('Authentication').ClientSecret]"
+                "name": "ApprenticeshipProgrammesApiBaseUrl",
+                "value": "[parameters('ApprenticeshipProgrammesApiBaseUrl')]"
               },
               {
                 "name": "AccountApiConfiguration:ApiBaseUrl",
@@ -236,41 +541,23 @@
                 "value": "[parameters('AccountApiConfiguration').Tenant]"
               },
               {
-                "name": "ApplicationInsights:InstrumentationKey",
-                "value": "[reference(concat('microsoft.insights/components/', variables('EmployerRecruitAppServiceName'))).InstrumentationKey]"
+                "name": "VacancyApiConfiguration:ApiSearchBaseUrl",
+                "value": "[parameters('VacancyApiConfiguration').ApiSearchBaseUrl]"
               },
               {
-                "name": "ExternalLinks:ManageApprenticeshipSiteUrl",
-                "value": "[parameters('ExternalLinks').ManageApprenticeshipSiteUrl]"
+                "name": "VacancyApiConfiguration:ApiReadSubscriptionKey",
+                "value": "[parameters('VacancyApiConfiguration').ApiReadSubscriptionKey]"
               },
               {
-                "name": "ExternalLinks:EmployerIdamsSiteUrl",
-                "value": "[parameters('ExternalLinks').EmployerIdamsSiteUrl]"
+                "name": "Slack:WebhookUrl",
+                "value": "[parameters('SlackWebhook')]"
               },
               {
-                "name": "Features:AllowThroughFaaApplicationMethod",
-                "value": "[parameters('Features').AllowThroughFaaApplicationMethod]"
-              },
-              {
-                "name": "ASPNETCORE_ENVIRONMENT",
-                "value": "[toUpper(parameters('EnvironmentFullName'))]"
-              },
-              {
-                "name": "GoogleMapsPrivateKey",
-                "value": "[parameters('GoogleMapsPrivateKey')]"
-              },
-              {
-                "name": "PostcodeAnywhere:Key",
-                "value": "[parameters('PostcodeAnywhereKey')]"
-              },
-              {
-                "name": "FaaConfiguration:StorageConnectionString",
-                "value": "[parameters('FaaConfiguration').StorageConnectionString]"
+                "name": "Geocode:PostcodeAnywhereKey",
+                "value": "[parameters('GeocodePostcodeAnywhereKey')]"
               }
-            ]
-          },
-          "ConnectionStrings": {
-            "value": [
+            ],
+            "connectionStrings": [
               {
                 "name": "Redis",
                 "connectionString": "[parameters('LoggingRedisConnectionString')]",
@@ -285,277 +572,52 @@
                 "name": "Storage",
                 "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('StorageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]",
                 "type": "Custom"
-              }
-            ]
-          },
-          "CustomHostname": {
-            "value": "[parameters('EmployerCustomHostname')]"
-          },
-          "SharedAppServicePlanResourceGroup": {
-            "value": "[parameters('SharedAppServicePlanResourceGroup')]"
-          },
-          "SharedAppServicePlanName": {
-            "value": "[parameters('SharedAppServicePlanName')]"
-          },
-          "KeyvaultCertificateName": {
-            "value": "[parameters('EmployerKeyvaultCertificateName')]"
-          }
-        }
-      },
-      "dependsOn": [
-        "[resourceId('microsoft.insights/components', variables('EmployerRecruitAppServiceName'))]",
-        "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('CosmosDbName'))]"
-      ]
-    },
-    {
-      "name": "QA-App-AppService",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2017-05-10",
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[variables('AppServiceTemplateUri')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "AppServiceName": {
-            "value": "[variables('QAAppServiceName')]"
-          },
-          "SharedAppServicePlanName": {
-            "value": "[parameters('SharedAppServicePlanName')]"
-          },
-          "SharedAppServicePlanResourceGroup": {
-            "value": "[parameters('SharedAppServicePlanResourceGroup')]"
-          },
-          "AppSettings": {
-            "value": [
-              {
-                "name": "Authentication:Wtrealm",
-                "value": "[parameters('QAAuthentication').WtRealm]"
               },
               {
-                "name": "Authentication:MetaDataAddress",
-                "value": "[parameters('QAAuthentication').MetaDataAddress]"
-              },
-              {
-                "name": "ApplicationInsights:InstrumentationKey",
-                "value": "[reference(concat('microsoft.insights/components/', variables('QAAppServiceName'))).InstrumentationKey]"
-              },
-              {
-                "name": "ASPNETCORE_ENVIRONMENT",
-                "value": "[toUpper(parameters('EnvironmentFullName'))]"
-              },
-              {
-                "name": "GoogleMapsPrivateKey",
-                "value": "[parameters('GoogleMapsPrivateKey')]"
-              },
-              {
-                "name": "LegacyAuthorization:ClaimType",
-                "value": "[parameters('QALegacyAuthorization').ClaimType]"
-              },
-              {
-                "name": "LegacyAuthorization:UserClaimValue",
-                "value": "[parameters('QALegacyAuthorization').UserClaimValue]"
-              },
-              {
-                "name": "LegacyAuthorization:TeamLeadClaimValue",
-                "value": "[parameters('QALegacyAuthorization').TeamLeadClaimValue]"
-              },
-              {
-                "name": "Authorization:ClaimType",
-                "value": "[parameters('QAAuthorization').ClaimType]"
-              },
-              {
-                "name": "Authorization:UserClaimValue",
-                "value": "[parameters('QAAuthorization').UserClaimValue]"
-              },
-              {
-                "name": "Authorization:TeamLeadClaimValue",
-                "value": "[parameters('QAAuthorization').TeamLeadClaimValue]"
-              },
-              {
-                "name": "ExternalLinks:StaffIdamsUrl",
-                "value": "[parameters('ExternalLinks').StaffIdamsUrl]"
-              },
-              {
-                "name": "VacancyReviewAssignationTimeoutMinutes",
-                "value": "[parameters('VacancyReviewAssignationTimeoutMinutes')]"
-              }
-            ]
-          },
-          "ConnectionStrings": {
-            "value": [
-              {
-                "name": "Redis",
-                "connectionString": "[parameters('LoggingRedisConnectionString')]",
-                "type": "Custom"
-              },
-              {
-                "name": "MongoDb",
-                "connectionString": "[concat('mongodb://', variables('CosmosDbName'), ':', listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', variables('CosmosDbName')), '2015-11-06').primaryMasterKey,'@', variables('CosmosDbName'), '.documents.azure.com:10255/?ssl=true&replicaSet=globaldb')]",
-                "type": "Custom"
-              },
-              {
-                "name": "Storage",
+                "name": "WebJobsDashboard",
                 "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('StorageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]",
                 "type": "Custom"
+              },
+              {
+                "name": "AzureWebJobsDashboard",
+                "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('StorageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]",
+                "type": "Custom"
+              },
+              {
+                "name": "WebJobsStorage",
+                "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('StorageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]",
+                "type": "Custom"
+              },
+              {
+                "name": "EmployerAccountsSqlDbConnectionString",
+                "connectionString": "[parameters('EmployerAccountsSqlDbConnectionString')]",
+                "type": "Custom"
+              },
+              {
+                "name": "EmployerFinanceSqlDbConnectionString",
+                "connectionString": "[parameters('EmployerFinanceSqlDbConnectionString')]",
+                "type": "Custom"
+              }
+            ],
+            "alwaysOn": true,
+            "virtualApplications": [
+              {
+                "virtualPath": "/",
+                "physicalPath": "site\\wwwroot"
+              },
+              {
+                "virtualPath": "/Recruit.Vacancies.Jobs",
+                "physicalPath": "site\\wwwroot\\app_data\\jobs\\continuous\\Recruit.Vacancies.Jobs"
               }
             ]
           },
-          "CustomHostname": {
-            "value": "[parameters('QAAppCustomHostname')]"
-          },
-          "KeyvaultCertificateName": {
-            "value": "[parameters('QAAppKeyvaultCertificateName')]"
-          }
-        }
-      },
-      "dependsOn": [
-        "[resourceId('microsoft.insights/components', variables('QAAppServiceName'))]"
-      ]
-    },
-    {
-      "apiVersion": "2017-06-01",
-      "name": "[variables('StorageAccountName')]",
-      "location": "[resourceGroup().location]",
-      "type": "Microsoft.Storage/storageAccounts",
-      "sku": {
-        "name": "Standard_LRS"
-      },
-      "kind": "Storage",
-      "properties": {
-        "encryption": {
-          "services": {
-            "blob": {
-              "enabled": true
-            },
-            "file": {
-              "enabled": true
-            }
-          },
-          "keySource": "Microsoft.Storage"
-        }
-      },
-      "dependsOn": []
-    },
-    {
-      "name": "[variables('WebJobAppServiceName')]",
-      "type": "Microsoft.Web/sites",
-      "apiVersion": "2016-08-01",
-      "comments": "This will become a Function App when Core is GA",
-      "location": "[resourceGroup().location]",
-      "properties": {
-        "phpVersion": "Off",
-        "clientAffinityEnabled": false,
-        "serverFarmId": "[variables('SharedAppServicePlanId')]",
-        "siteConfig": {
-          "appSettings": [
-            {
-              "name": "ASPNETCORE_ENVIRONMENT",
-              "value": "[toUpper(parameters('EnvironmentFullName'))]"
-            },
-            {
-              "name": "ApprenticeshipProgrammesApiBaseUrl",
-              "value": "[parameters('ApprenticeshipProgrammesApiBaseUrl')]"
-            },
-            {
-              "name": "AccountApiConfiguration:ApiBaseUrl",
-              "value": "[parameters('AccountApiConfiguration').ApiBaseUrl]"
-            },
-            {
-              "name": "AccountApiConfiguration:ClientId",
-              "value": "[parameters('AccountApiConfiguration').ClientId]"
-            },
-            {
-              "name": "AccountApiConfiguration:ClientSecret",
-              "value": "[parameters('AccountApiConfiguration').ClientSecret]"
-            },
-            {
-              "name": "AccountApiConfiguration:IdentifierUri",
-              "value": "[parameters('AccountApiConfiguration').IdentifierUri]"
-            },
-            {
-              "name": "AccountApiConfiguration:Tenant",
-              "value": "[parameters('AccountApiConfiguration').Tenant]"
-            },
-            {
-              "name": "VacancyApiConfiguration:ApiSearchBaseUrl",
-              "value": "[parameters('VacancyApiConfiguration').ApiSearchBaseUrl]"
-            },
-            {
-              "name": "VacancyApiConfiguration:ApiReadSubscriptionKey",
-              "value": "[parameters('VacancyApiConfiguration').ApiReadSubscriptionKey]"
-            },
-            {
-              "name": "Slack:WebhookUrl",
-              "value": "[parameters('SlackWebhook')]"
-            },
-            {
-              "name": "Geocode:PostcodeAnywhereKey",
-              "value": "[parameters('GeocodePostcodeAnywhereKey')]"
-            }
-          ],
-          "connectionStrings": [
-            {
-              "name": "Redis",
-              "connectionString": "[parameters('LoggingRedisConnectionString')]",
-              "type": "Custom"
-            },
-            {
-              "name": "MongoDb",
-              "connectionString": "[concat('mongodb://', variables('CosmosDbName'), ':', listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', variables('CosmosDbName')), '2015-11-06').primaryMasterKey,'@', variables('CosmosDbName'), '.documents.azure.com:10255/?ssl=true&replicaSet=globaldb')]",
-              "type": "Custom"
-            },
-            {
-              "name": "Storage",
-              "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('StorageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]",
-              "type": "Custom"
-            },
-            {
-              "name": "WebJobsDashboard",
-              "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('StorageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]",
-              "type": "Custom"
-            },
-            {
-              "name": "AzureWebJobsDashboard",
-              "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('StorageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]",
-              "type": "Custom"
-            },
-            {
-              "name": "WebJobsStorage",
-              "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('StorageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]",
-              "type": "Custom"
-            },
-            {
-              "name": "EmployerAccountsSqlDbConnectionString",
-              "connectionString": "[parameters('EmployerAccountsSqlDbConnectionString')]",
-              "type": "Custom"
-            },
-            {
-              "name": "EmployerFinanceSqlDbConnectionString",
-              "connectionString": "[parameters('EmployerFinanceSqlDbConnectionString')]",
-              "type": "Custom"
-            }
-          ],
-          "alwaysOn": true,
-          "virtualApplications": [
-            {
-              "virtualPath": "/",
-              "physicalPath": "site\\wwwroot"
-            },
-            {
-              "virtualPath": "/Recruit.Vacancies.Jobs",
-              "physicalPath": "site\\wwwroot\\app_data\\jobs\\continuous\\Recruit.Vacancies.Jobs"
-            }
-          ]
+          "httpsOnly": true
         },
-        "httpsOnly": true
-      },
-      "dependsOn": [
-        "[variables('StorageAccountName')]",
-        "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('CosmosDbName'))]"
-      ]
-    }
-  ],
-  "outputs": {}
-}
+        "dependsOn": [
+          "[variables('StorageAccountName')]",
+          "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('CosmosDbName'))]"
+        ]
+      }
+    ],
+    "outputs": {}
+  }
