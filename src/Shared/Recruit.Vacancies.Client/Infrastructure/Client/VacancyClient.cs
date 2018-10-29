@@ -35,6 +35,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly IVacancyService _vacancyService;
         private readonly IEmployerDashboardProjectionService _dashboardService;
         private readonly IEmployerProfileRepository _employerProfileRepository;
+        private readonly IUserRepository _userRepository;
 
         public VacancyClient(
             IVacancyRepository repository,
@@ -49,7 +50,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             ICandidateSkillsProvider candidateSkillsProvider,
             IVacancyService vacancyService,
             IEmployerDashboardProjectionService dashboardService,
-            IEmployerProfileRepository employerProfileRepository)
+            IEmployerProfileRepository employerProfileRepository,
+            IUserRepository userRepository)
         {
             _repository = repository;
             _reader = reader;
@@ -64,6 +66,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _vacancyService = vacancyService;
             _dashboardService = dashboardService;
             _employerProfileRepository = employerProfileRepository;
+            _userRepository = userRepository;
         }
 
         public Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user)
@@ -408,6 +411,19 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             {
                 EmployerAccountId = employerAccountId,
                 LegalEntityIds = legalEntityIds
+            });
+        }
+        public Task<User> GetUsersDetailsAsync(string userId)
+        {
+            return _userRepository.GetAsync(userId);
+        }
+
+        public Task SaveLevyDeclarationAsync(string userId, string employerAccountId)
+        {
+            return _messaging.SendCommandAsync(new SaveUserLevyDeclarationCommand
+            {
+                UserId = userId,
+                EmployerAccountId = employerAccountId
             });
         }
     }

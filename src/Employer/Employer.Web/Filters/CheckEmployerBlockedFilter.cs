@@ -41,5 +41,4 @@ namespace Esfa.Recruit.Employer.Web.Filters
             await next();
         }
     }
-
 }

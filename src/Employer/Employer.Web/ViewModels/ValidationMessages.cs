@@ -1,4 +1,4 @@
-﻿namespace Esfa.Recruit.Employer.Web.ViewModels
+namespace Esfa.Recruit.Employer.Web.ViewModels
 {
     public static class ValidationMessages
     {
@@ -58,6 +58,11 @@
         public static class CreateVacancyOptionsConfirmationMessages
         {
             public const string SelectionRequired = "You must select either 'Create new vacancy' or one of your existing vacancies.";
+        }
+
+        public static class LevyDeclarationConfirmationMessages
+        {
+            public const string SelectionRequired = "You must select one option.";
         }
     }
 }
