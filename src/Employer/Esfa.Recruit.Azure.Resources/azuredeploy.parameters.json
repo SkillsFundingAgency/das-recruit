@@ -23,6 +23,9 @@
     "webJobAspInstances": {
       "value": ""
     },
+    "webJobNonASETier": {
+      "value": ""
+    },
     "EnvironmentFullName": {
       "value": "dev"
     },
