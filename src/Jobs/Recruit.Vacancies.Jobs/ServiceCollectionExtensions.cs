@@ -1,6 +1,8 @@
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Jobs.ApprenticeshipProgrammes;
 using Esfa.Recruit.Vacancies.Jobs.BankHoliday;
+using Esfa.Recruit.Vacancies.Jobs.Configuration;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Application;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Candidate;
@@ -26,6 +28,12 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddScoped(x => new AccountsReader(x.GetService<ILogger<AccountsReader>>(), configuration.GetConnectionString("EmployerFinanceSqlDbConnectionString"), configuration.GetConnectionString("EmployerAccountsSqlDbConnectionString")));
 
             services.AddRecruitStorageClient(configuration);
+
+            services.AddSingleton<RecruitWebJobsSystemConfiguration>(x => 
+                                                            {
+                                                                var svc = x.GetService<IConfigurationReader>();
+                                                                return svc.GetAsync<RecruitWebJobsSystemConfiguration>("RecruitWebJobsSystem").Result;
+                                                            });
 
             // Add Jobs
             services.AddScoped<DomainEventsJob>();
