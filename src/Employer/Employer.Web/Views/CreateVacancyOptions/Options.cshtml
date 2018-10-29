@@ -13,7 +13,7 @@
                 <fieldset>
                     <div class="multiple-choice">
                         <input asp-for="VacancyId" type="radio" value="@Guid.Empty" id="create-new"/>
-                        <label for="create-new">Create new</label> 
+                        <label for="create-new">Create new vacancy</label> 
                     </div>
                     @foreach (var item in Model.Vacancies)
                     {
