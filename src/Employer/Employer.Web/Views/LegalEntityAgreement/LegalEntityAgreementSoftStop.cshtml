@@ -8,13 +8,19 @@
             <i class="icon icon-important">
                 <span class="visually-hidden">Warning</span>
             </i>
-            <strong class="bold-small">
-                @Model.LegalEntityName doesn’t have a signed agreement with the Education and Skills Funding Agency (ESFA).
-                Without a signed agreement you can create a draft vacancy, but won’t be able to submit for posting on Find an apprenticeship.
-                <br><br>
-                Only account owners can sign ESFA agreements. If you’re not sure who the owner is, you can
+            
+            <p>
+                <strong class="bold-small">
+                    @Model.LegalEntityName doesn’t have a signed agreement with the Education and Skills Funding Agency (ESFA).
+                    Without a signed agreement you can create a draft vacancy, but won’t be able to submit for posting on Find an apprenticeship.
+                </strong>
+            </p>
+            <p>
+                <strong class="bold-small">
+                    Only account owners can sign ESFA agreements. If you’re not sure who the owner is, you can
                     <a asp-route="@RouteNames.Dashboard_AccountsAgreements">check your team details.</a>
-            </strong>
+                </strong>
+                </p>
         </div>
         <a asp-route="@RouteNames.Dashboard_AccountsAgreements" class="button">Review agreement</a>
         

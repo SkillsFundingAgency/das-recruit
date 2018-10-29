@@ -60,7 +60,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 if (exception is InvalidStateException)
                 {
                     _logger.LogError(exception, "Exception on path: {route}", routeWhereExceptionOccurred);
-                    TempData[TempDataKeys.DashboardErrorMessage] = exception.Message;
+                    AddDashboardMessage(exception.Message);
                     return RedirectToRoute(RouteNames.Dashboard_Index_Get, new { EmployerAccountId = accountId });
                 }
 
@@ -107,6 +107,14 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             Response.StatusCode = (int)HttpStatusCode.Unauthorized;
             return View(ViewNames.BlockedEmployer);
+        }
+
+        private void AddDashboardMessage(string message)
+        {
+            if(TempData.ContainsKey(TempDataKeys.DashboardErrorMessage))
+                _logger.LogError($"Dashboard message already set in {nameof(ErrorController)}. Existing message:{TempData[TempDataKeys.DashboardErrorMessage]}. New message:{message}");
+
+            TempData[TempDataKeys.DashboardErrorMessage] = message;
         }
     }
 }
