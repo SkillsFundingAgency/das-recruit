@@ -176,7 +176,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
             //Candidate
             services.AddScoped<IDomainEventHandler<IEvent>, DeleteCandidateHandler>();
 
-            services.AddScoped<AccountsReader>(x => new AccountsReader(x.GetService<ILogger<AccountsReader>>(), configuration.GetConnectionString("FinanceSqlDbConnectionString"), configuration.GetConnectionString("EmployerAccountsSqlDbConnectionString")));
+            services.AddScoped<AccountsReader>(x => new AccountsReader(x.GetService<ILogger<AccountsReader>>(), configuration.GetConnectionString("EmployerFinanceSqlDbConnectionString"), configuration.GetConnectionString("EmployerAccountsSqlDbConnectionString")));
             services.AddScoped<NonLevyAccountBlockerJob>();
 
             return services;
