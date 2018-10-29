@@ -25,10 +25,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithMessage("Select a qualification subject")
                     .WithErrorCode("54")
                 .MaximumLength(50)
-                    .WithMessage("The qualification must be  less than {MaxLength} characters")
+                    .WithMessage("The qualification must not exceed {MaxLength} characters")
                     .WithErrorCode("7")
                 .ValidFreeTextCharacters()
-                    .WithMessage("You have entered invalid characters")
+                    .WithMessage("Subject contains some invalid characters")
                     .WithErrorCode("6")
                 .WithRuleId(ruleId);
 
@@ -37,10 +37,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithMessage("Select a qualification grade")
                     .WithErrorCode("55")
                 .MaximumLength(30)
-                    .WithMessage("The grade must be less than {MaxLength} characters")
+                    .WithMessage("The grade must not exceed {MaxLength} characters")
                     .WithErrorCode("7")
                 .ValidFreeTextCharacters()
-                    .WithMessage("You have entered invalid characters")
+                    .WithMessage("Grade contains some invalid characters")
                     .WithErrorCode("6")
                 .WithRuleId(ruleId);
 

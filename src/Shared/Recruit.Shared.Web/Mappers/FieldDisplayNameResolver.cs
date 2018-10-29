@@ -39,7 +39,7 @@ namespace Esfa.Recruit.Shared.Web.Mappers
             { FieldIdResolver.ToFieldId(v => v.TrainingProvider.Ukprn) , "Training provider" },
             { FieldIdResolver.ToFieldId(v => v.Wage.WeeklyHours), "Weekly hours" },
             { FieldIdResolver.ToFieldId(v => v.Wage.WorkingWeekDescription), "Working week" },
-            { FieldIdResolver.ToFieldId(v => v.Wage.WageAdditionalInformation), "Additional information about the salary" },
+            { FieldIdResolver.ToFieldId(v => v.Wage.WageAdditionalInformation), "Additional information about pay" },
             { FieldIdResolver.ToFieldId(v => v.Wage.WageType), "What are you going to pay your apprentice" },
             { FieldIdResolver.ToFieldId(v => v.Wage.FixedWageYearlyAmount),"Fixed wage amount" },
             { FieldIdResolver.ToFieldId(v => v.Wage.Duration), "Duration" },

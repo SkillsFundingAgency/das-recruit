@@ -9,50 +9,50 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.AddressLine1)
                 .NotEmpty()
-                    .WithMessage("You must enter an address")
+                    .WithMessage("You must provide an address")
                     .WithErrorCode("5")
                 .ValidFreeTextCharacters()
-                    .WithMessage("You have entered invalid characters")
+                    .WithMessage("Address line 1 contains some invalid characters")
                     .WithErrorCode("6")
                 .MaximumLength(100)
-                    .WithMessage("The address must not be more than {MaxLength} characters")
+                    .WithMessage("Address line 1 must not be more than {MaxLength} characters")
                     .WithErrorCode("7")
                 .WithRuleId(ruleId);
 
             RuleFor(x => x.AddressLine2)
                 .ValidFreeTextCharacters()
-                    .WithMessage("You have entered invalid characters")
+                    .WithMessage("Address line 2 contains some invalid characters")
                     .WithErrorCode("6")
                 .MaximumLength(100)
-                    .WithMessage("The address must not be more than {MaxLength} characters")
+                    .WithMessage("Address line 2 must not be more than {MaxLength} characters")
                     .WithErrorCode("7")
                 .WithRuleId(ruleId);
             
             RuleFor(x => x.AddressLine3)
                 .ValidFreeTextCharacters()
-                    .WithMessage("You have entered invalid characters")
+                    .WithMessage("Address line 3 contains some characters")
                     .WithErrorCode("6")
                 .MaximumLength(100)
-                    .WithMessage("The address must not be more than {MaxLength} characters")
+                    .WithMessage("Address line 3 must not be more than {MaxLength} characters")
                     .WithErrorCode("7")
                 .WithRuleId(ruleId);
             
             RuleFor(x => x.AddressLine4)
                 .ValidFreeTextCharacters()
-                    .WithMessage("You have entered invalid characters")
+                    .WithMessage("Address line 4 contains some invalid characters")
                     .WithErrorCode("6")
                 .MaximumLength(100)
-                    .WithMessage("The address must not be more than {MaxLength} characters")
+                    .WithMessage("Address line 4 must not be more than {MaxLength} characters")
                     .WithErrorCode("7")
                 .WithRuleId(ruleId);
 
             RuleFor(x => x.Postcode)
                 .NotEmpty()
-                    .WithMessage("Enter the postcode")
+                    .WithMessage("You must provide a postcode")
                     .WithErrorCode("8")
                 .PostCode()
                     .When(x => !string.IsNullOrEmpty(x.Postcode), ApplyConditionTo.CurrentValidator)
-                    .WithMessage("'{PropertyName}' is not a valid format")
+                    .WithMessage("'{PropertyName}' is not in a valid format")
                     .WithErrorCode("9")
                 .WithRuleId(ruleId);
 		}
