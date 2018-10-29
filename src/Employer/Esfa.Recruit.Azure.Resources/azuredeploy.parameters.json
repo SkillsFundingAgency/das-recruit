@@ -8,6 +8,27 @@
     "EnvironmentName": {
       "value": "dev"
     },
+    "webJobAspLocation": {
+      "value": ""
+    },
+    "aseHostingEnvironmentName": {
+      "value": ""
+    },
+    "aseResourceGroup": {
+      "value": ""
+    },
+    "webJobAspSize": {
+      "value": ""
+    },
+    "webJobAspInstances": {
+      "value": ""
+    },
+    "webJobNonASETier": {
+      "value": ""
+    },
+    "EnvironmentFullName": {
+      "value": "dev"
+    },
     "Authentication": {
       "value": {
         "Authority": "",

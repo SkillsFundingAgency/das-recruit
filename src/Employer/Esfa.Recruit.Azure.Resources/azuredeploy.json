@@ -9,6 +9,42 @@
     "EnvironmentName": {
       "type": "string"
     },
+    "webJobAspLocation": {
+      "type": "string",
+      "allowedValues": [
+        "North Europe",
+        "West Europe"
+      ],
+      "defaultValue": "West Europe"
+    },
+    "aseHostingEnvironmentName": {
+      "type": "string",
+      "defaultValue": ""
+    },
+    "aseResourceGroup": {
+      "type": "string",
+      "defaultValue": ""
+    },
+    "webJobAspSize": {
+      "type": "string",
+      "allowedValues": [
+        "1",
+        "2",
+        "3"
+      ]
+    },
+    "webJobAspInstances": {
+      "type": "int"
+    },
+    "webJobNonASETier": {
+      "type": "string",
+      "allowedValues": [
+          "Basic",
+          "Standard",
+          "Premium"
+      ],
+      "defaultValue": "Standard"
+    },
     "EnvironmentFullName": {
       "type": "string"
     },
@@ -116,7 +152,7 @@
         "StorageConnectionString": ""
       },
       "metadata": {
-        "description" : "StorageConnectionString requires at least the Send claim for the relevant Service Bus endpoint"
+        "description": "StorageConnectionString requires at least the Send claim for the relevant Service Bus endpoint"
       }
     },
     "VacancyApiConfiguration": {
@@ -140,13 +176,15 @@
     }
   },
   "variables": {
+    "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/",
+    "webJobAppServicePlanName": "[concat('das-', toLower(parameters('environmentName')),'-raa-webjob-asp')]",
     "EmployerRecruitAppServiceName": "[concat('das-', toLower(parameters('EnvironmentName')), '-rcrt-as')]",
     "QAAppServiceName": "[concat('das-', toLower(parameters('EnvironmentName')), '-rcrt-qa-as')]",
     "CosmosDbName": "[concat('das-', toLower(parameters('EnvironmentName')),'-rcrt-cdb')]",
     "WebJobAppServiceName": "[concat('das-', toLower(parameters('EnvironmentName')), '-rcrt-webjob-as')]",
     "StorageAccountName": "[concat('das', toLower(parameters('EnvironmentName')), 'rcrtstr')]",
     "AppServiceTemplateUri": "[concat(parameters('TemplateBaseUrl'), '/deployments/app-service-resources.json')]",
-    "SharedAppServicePlanId": "[resourceId(parameters('SharedAppServicePlanResourceGroup'), 'Microsoft.Web/serverfarms', parameters('SharedAppServicePlanName'))]"
+    "webJobAppServicePlanId": "[resourceId(resourceGroup().name, 'Microsoft.Web/serverfarms', variables('webJobAppServicePlanName'))]"
   },
   "resources": [
     {
@@ -439,6 +477,42 @@
       "dependsOn": []
     },
     {
+      "apiVersion": "2017-08-01",
+      "name": "[variables('webJobAppServicePlanName')]",
+      "type": "Microsoft.Resources/deployments",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('deploymentUrlBase'),'app-service-plan.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "appServicePlanName": {
+            "value": "[variables('webJobAppServicePlanName')]"
+          },
+          "aspLocation": {
+            "value": "[parameters('webJobAspLocation')]"
+          },
+          "aseHostingEnvironmentName": {
+            "value": "[parameters('aseHostingEnvironmentName')]"
+          },
+          "aseResourceGroup": {
+            "value": "[parameters('aseResourceGroup')]"
+          },
+          "aspSize": {
+            "value": "[parameters('webJobAspSize')]"
+          },
+          "aspInstances": {
+            "value": "[parameters('webJobAspInstances')]"
+          },
+          "nonASETier": {
+            "value": "[parameters('webJobNonASETier')]"
+          }
+        }
+      },
+      "dependsOn": []
+    },
+    {
       "name": "[variables('WebJobAppServiceName')]",
       "type": "Microsoft.Web/sites",
       "apiVersion": "2016-08-01",
@@ -447,7 +521,7 @@
       "properties": {
         "phpVersion": "Off",
         "clientAffinityEnabled": false,
-        "serverFarmId": "[variables('SharedAppServicePlanId')]",
+        "serverFarmId": "[variables('webJobAppServicePlanId')]",
         "siteConfig": {
           "appSettings": [
             {
@@ -553,6 +627,7 @@
       },
       "dependsOn": [
         "[variables('StorageAccountName')]",
+        "[variables('webJobAppServicePlanName')]",
         "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('CosmosDbName'))]"
       ]
     }
