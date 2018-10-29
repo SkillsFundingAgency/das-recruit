@@ -46,6 +46,8 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             RegisterOrchestratorDeps(services);
 
             RegisterMapperDeps(services);
+
+            RegisterFilterDeps(services);
         }
 
         private static void RegisterServiceDeps(IServiceCollection services, IConfiguration configuration)
