@@ -36,6 +36,15 @@
     "webJobAspInstances": {
       "type": "int"
     },
+    "webJobNonASETier": {
+      "type": "string",
+      "allowedValues": [
+          "Basic",
+          "Standard",
+          "Premium"
+      ],
+      "defaultValue": "Standard"
+    },
     "EnvironmentFullName": {
       "type": "string"
     },
@@ -495,6 +504,9 @@
           },
           "aspInstances": {
             "value": "[parameters('webJobAspInstances')]"
+          },
+          "nonASETier": {
+            "value": "[parameters('webJobNonASETier')]"
           }
         }
       },
