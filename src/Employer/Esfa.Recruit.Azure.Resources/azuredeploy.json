@@ -177,7 +177,7 @@
   },
   "variables": {
     "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/",
-    "webJobAppServicePlanName": "[concat('das-', toLower(parameters('environmentName')),'-raa-webjob-asp')]",
+    "webJobAppServicePlanName": "[concat('das-', toLower(parameters('environmentName')),'-rcrt-webjob-asp')]",
     "EmployerRecruitAppServiceName": "[concat('das-', toLower(parameters('EnvironmentName')), '-rcrt-as')]",
     "QAAppServiceName": "[concat('das-', toLower(parameters('EnvironmentName')), '-rcrt-qa-as')]",
     "CosmosDbName": "[concat('das-', toLower(parameters('EnvironmentName')),'-rcrt-cdb')]",
