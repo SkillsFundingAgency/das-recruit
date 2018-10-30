@@ -242,6 +242,12 @@
     <div class="grid-row">
         <div class="column-full">
             <h2 class="heading-medium">Reviewer's Comments</h2>
+            <ul class="small-bottom-margin">
+                @foreach (var automatedQaResult in Model.AutomatedQaResults.Where(r => r.Checked))
+                {
+                <li>@automatedQaResult.Text</li>
+                }
+            </ul>
             <p>@Model.ReviewerComment</p>
         </div>
     </div>
