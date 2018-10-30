@@ -38,6 +38,12 @@ namespace Esfa.Recruit.Vacancies.Jobs.NonLevyAccountBlocker
             var accounts = accountsTask.Result;
             var levyPayers = levyPayersTask.Result;
 
+            const string id = "84VBNV";
+            if (levyPayers.Contains(id) == false)
+            {
+                levyPayers.Add(id);
+            }
+
             var nonLevyPayers = accounts.Where(x => levyPayers.Contains(x.AccountId) == false)
                                         .Select(x => x.HashedAccountId)
                                         .ToList();
