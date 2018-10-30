@@ -82,7 +82,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
 
                 if (EnvironmentNames.GetTestEnvironmentNames().Contains(hostingEnvironment.EnvironmentName.ToUpper()) == false)
                 {
-                    opts.Filters.AddService<CheckEmployerBlockedAttribute>();
+                    opts.Filters.Add(new CheckEmployerBlockedAttribute());
                 }
 
                 opts.AddTrimModelBinderProvider(loggerFactory);

@@ -46,8 +46,6 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             RegisterOrchestratorDeps(services);
 
             RegisterMapperDeps(services);
-
-            RegisterFilterDeps(services);
         }
 
         private static void RegisterServiceDeps(IServiceCollection services, IConfiguration configuration)
@@ -100,11 +98,6 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddTransient<DisplayVacancyViewModelMapper>();
             services.AddTransient<ReviewFieldIndicatorMapper>();
             services.AddScoped<IRuleMessageTemplateRunner, RuleTemplateMessageRunner>();
-        }
-
-        private static void RegisterFilterDeps(IServiceCollection services)
-        {
-            services.AddScoped<CheckEmployerBlockedAttribute>();
         }
     }
 }
