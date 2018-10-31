@@ -97,5 +97,7 @@
         public const string LevyDeclaration_Get = "LevyDeclaration_Get";
         public const string LevyDeclaration_Post = "LevyDeclaration_Post";
         public const string NonLevyInfo_Get = "NonLevyInfo_Get";
+
+        public const string BlockedEmployer_Get = "BlockedEmployer_Get";
     }
 }
