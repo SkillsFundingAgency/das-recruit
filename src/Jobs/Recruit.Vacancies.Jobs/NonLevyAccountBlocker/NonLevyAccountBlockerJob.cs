@@ -38,7 +38,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.NonLevyAccountBlocker
             var accounts = accountsTask.Result;
             var levyPayers = levyPayersTask.Result;
 
-            const string id = "84VBNV";
+            const string id = "2";
             if (levyPayers.Contains(id) == false)
             {
                 levyPayers.Add(id);
