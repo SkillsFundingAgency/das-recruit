@@ -99,7 +99,7 @@ namespace Esfa.Recruit.Employer.Web.Filters
 
         private bool HasValidLevyCookie(ActionExecutingContext context, string employerAccountId)
         {
-            var cookieUserAccountValue = _levyCookieWriter.GetCookieFromRequest(context.HttpContext.Request);
+            var cookieUserAccountValue = _levyCookieWriter.GetCookieFromRequest(context.HttpContext);
 
             if (!string.IsNullOrWhiteSpace(cookieUserAccountValue))
             {
