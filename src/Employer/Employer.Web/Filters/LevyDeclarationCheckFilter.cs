@@ -30,12 +30,17 @@ namespace Esfa.Recruit.Employer.Web.Filters
 
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
+            if (RequestIsForWhiteListedPage(context))
+            {
+                await next();
+                return;
+            }
+
             var employerAccountId = context.RouteData.Values[RouteValues.EmployerAccountId]?.ToString().ToUpper();
             var userId = context.HttpContext.User.GetUserId();
             
             var hasValidCookie = HasValidLevyCookie(context, employerAccountId);
             var levyControllerRequested = RequestIsForALevyPage(context);
-            var whiteListedControllerRequested = RequestIsForWhiteListedPage(context);
 
             if (hasValidCookie)
             {
@@ -49,22 +54,21 @@ namespace Esfa.Recruit.Employer.Web.Filters
             }
             else if (await HasStoredDeclaration(employerAccountId, userId))
             {
-                if (levyControllerRequested || !whiteListedControllerRequested)
+                if (levyControllerRequested)
                 {
                     _levyCookieWriter.WriteCookie(context.HttpContext.Response, userId, employerAccountId);
 
-                    if (levyControllerRequested)
-                    {
-                        context.Result = new RedirectToRouteResult(RouteNames.Dashboard_Index_Get, new { employerAccountId });
-                        return;
-                    }
+                    context.Result = new RedirectToRouteResult(RouteNames.Dashboard_Index_Get, new { employerAccountId });
+                    return;
                 }
+
+                _levyCookieWriter.WriteCookie(context.HttpContext.Response, userId, employerAccountId);
 
                 await next(); 
             }
             else
             {
-                if (!levyControllerRequested && !whiteListedControllerRequested)
+                if (!levyControllerRequested)
                 {
                     context.Result = new RedirectToRouteResult(RouteNames.LevyDeclaration_Get, new { employerAccountId });
                     return;
@@ -85,7 +89,7 @@ namespace Esfa.Recruit.Employer.Web.Filters
         {
             var controllerName = (((Microsoft.AspNetCore.Mvc.Controllers.ControllerActionDescriptor)context.ActionDescriptor).ControllerTypeInfo).Name;
 
-            var whitelistControllers = new List<string>{ nameof(LevyDeclarationController), nameof(ErrorController), nameof(LogoutController), nameof(ExternalLinksController) };
+            var whitelistControllers = new List<string>{ nameof(ErrorController), nameof(LogoutController), nameof(ExternalLinksController) };
             
             return whitelistControllers.Contains(controllerName);
         }
