@@ -29,6 +29,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         [Route("error/{id?}")]
         public IActionResult Error(int id)
         {
+            ViewBag.IsErrorPage = true; // Used by layout to show/hide elements.
+
             switch (id)
             {
                 case 403:
@@ -45,9 +47,12 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         [Route("error/handle")]
         public IActionResult ErrorHandler()
         {
-            if (HttpContext.Items.TryGetValue(ContextItemKeys.EmployerIdentifier, out var accountId))
+            if (HttpContext.Items.TryGetValue(ContextItemKeys.EmployerIdentifier, out var employerAccountId))
             {
-                ViewBag.EmployerAccountId = accountId;
+                ViewBag.EmployerAccountId = employerAccountId;
+                
+                if (!RouteData.Values.ContainsKey(ContextItemKeys.EmployerIdentifier))
+                    RouteData.Values.Add(ContextItemKeys.EmployerIdentifier, employerAccountId);
             }
 
             var exceptionFeature = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
@@ -61,7 +66,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 {
                     _logger.LogError(exception, "Exception on path: {route}", routeWhereExceptionOccurred);
                     AddDashboardMessage(exception.Message);
-                    return RedirectToRoute(RouteNames.Dashboard_Index_Get, new { EmployerAccountId = accountId });
+                    return RedirectToRoute(RouteNames.Dashboard_Index_Get, new { EmployerAccountId = employerAccountId });
                 }
 
                 if (exception is InvalidRouteForVacancyException invalidRouteException)
@@ -82,7 +87,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 if (exception is BlockedEmployerException)
                 {
                     _logger.LogInformation($"{exception.Message}. Path: {routeWhereExceptionOccurred}");
-                    return RedirectToRoute(RouteNames.BlockedEmployer_Get, new { EmployerAccountId = accountId });
+                    return RedirectToRoute(RouteNames.BlockedEmployer_Get, new { EmployerAccountId = employerAccountId });
                 }
             }
 
