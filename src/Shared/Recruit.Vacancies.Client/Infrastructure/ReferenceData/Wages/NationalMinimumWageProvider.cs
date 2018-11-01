@@ -16,7 +16,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Wages
         public NationalMinimumWageProvider(IReferenceDataReader referenceDataReader, ILogger<NationalMinimumWageProvider> logger)
         {
             _logger = logger;
-            _wagePeriods = new Lazy<IList<MinWageEntity>>(() => referenceDataReader.GetReferenceData<MinimumWages>().Result.Ranges);
+            _wagePeriods = new Lazy<IList<MinWageEntity>>(() => referenceDataReader.GetReferenceData<MinimumWages>().Result.Ranges
+                .OrderBy(w => w.ValidFrom).ToList());
         }   
 
         public decimal GetApprenticeNationalMinimumWage(DateTime date)
@@ -37,7 +38,21 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Wages
         {
             try
             {
-                return _wagePeriods.Value.Single(x => date.Date >= x.ValidFrom && date.Date <= x.ValidTo);
+                var wagePeriods = _wagePeriods.Value;
+
+                MinWageEntity currentWagePeriod = null;
+                foreach (var wagePeriod in wagePeriods)
+                {
+                    if (date.Date < wagePeriod.ValidFrom)
+                        break;
+
+                    currentWagePeriod = wagePeriod;
+                }
+
+                if (currentWagePeriod == null)
+                    throw new InvalidOperationException("Wage period is missing");
+
+                return currentWagePeriod;
             }
             catch(InvalidOperationException ex)
             {
