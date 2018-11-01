@@ -97,7 +97,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
         {
             services.AddTransient<DisplayVacancyViewModelMapper>();
             services.AddTransient<ReviewFieldIndicatorMapper>();
-            services.AddScoped<IRuleMessageTemplateRunner, RuleTemplateMessageRunner>();
+            services.AddScoped<IRuleMessageTemplateRunner, RuleMessageTemplateRunner>();
         }
     }
 }
