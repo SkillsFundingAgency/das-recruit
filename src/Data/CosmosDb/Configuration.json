@@ -25,12 +25,6 @@
                     "StoredProcedures": []
                 },
                 {
-                    "CollectionName": "vacancyReviews",
-                    "OfferThroughput": 1000,
-                    "PartitionKey": "vacancyReference",
-                    "StoredProcedures": []
-                },
-                {
                     "CollectionName": "users",
                     "OfferThroughput": 400,
                     "StoredProcedures": []
