@@ -28,56 +28,52 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         public void ShouldPickCorrectWageRangeBasedOnDate()
         {
             var testDate = new DateTime(2017, 5, 22);
-            var apprenticeshipMinimumWage = _provider.GetApprenticeNationalMinimumWage(testDate);
-            var nationMinimumWage = _provider.GetNationalMinimumWageRange(testDate);
+            var wagePeriod = _provider.GetWagePeriod(testDate);
 
-            apprenticeshipMinimumWage.Should().Be(1.65m);
-            nationMinimumWage.MinimumWage.Should().Be(1.9m);            
-            nationMinimumWage.MaximumWage.Should().Be(6.9m);
+            wagePeriod.ApprenticeshipMinimumWage.Should().Be(1.65m);
+            wagePeriod.NationalMinimumWageLowerBound.Should().Be(1.9m);
+            wagePeriod.NationalMinimumWageUpperBound.Should().Be(6.9m);
         }
         
         [Fact]
         public void StartDateShouldBeInclusive()
         {
             var testDate = new DateTime(2018, 4, 1);
-            var apprenticeshipMinimumWage = _provider.GetApprenticeNationalMinimumWage(testDate);
-            var nationMinimumWage = _provider.GetNationalMinimumWageRange(testDate);
+            var wagePeriod = _provider.GetWagePeriod(testDate);
 
-            apprenticeshipMinimumWage.Should().Be(2.5m);
-            nationMinimumWage.MinimumWage.Should().Be(2.9m);            
-            nationMinimumWage.MaximumWage.Should().Be(7.4m);
+            wagePeriod.ApprenticeshipMinimumWage.Should().Be(2.5m);
+            wagePeriod.NationalMinimumWageLowerBound.Should().Be(2.9m);
+            wagePeriod.NationalMinimumWageUpperBound.Should().Be(7.4m);
         }
         
         [Fact]
         public void EndDateShouldBeInclusive()
         {
             var testDate = new DateTime(2018, 3, 31);
-            var apprenticeshipMinimumWage = _provider.GetApprenticeNationalMinimumWage(testDate);
-            var nationMinimumWage = _provider.GetNationalMinimumWageRange(testDate);
+            var wagePeriod = _provider.GetWagePeriod(testDate);
 
-            apprenticeshipMinimumWage.Should().Be(1.65m);
-            nationMinimumWage.MinimumWage.Should().Be(1.9m);            
-            nationMinimumWage.MaximumWage.Should().Be(6.9m);
+            wagePeriod.ApprenticeshipMinimumWage.Should().Be(1.65m);
+            wagePeriod.NationalMinimumWageLowerBound.Should().Be(1.9m);
+            wagePeriod.NationalMinimumWageUpperBound.Should().Be(6.9m);
         }
         
         [Fact]
         public void ShouldIgnoreTimePartOfDateTime()
         {
             var testDate = new DateTime(2019, 3, 31, 13, 22, 11);
-            var apprenticeshipMinimumWage = _provider.GetApprenticeNationalMinimumWage(testDate);
-            var nationMinimumWage = _provider.GetNationalMinimumWageRange(testDate);
+            var wagePeriod = _provider.GetWagePeriod(testDate);
 
-            apprenticeshipMinimumWage.Should().Be(2.5m);
-            nationMinimumWage.MinimumWage.Should().Be(2.9m);            
-            nationMinimumWage.MaximumWage.Should().Be(7.4m);
+            wagePeriod.ApprenticeshipMinimumWage.Should().Be(2.5m);
+            wagePeriod.NationalMinimumWageLowerBound.Should().Be(2.9m);
+            wagePeriod.NationalMinimumWageUpperBound.Should().Be(7.4m);
         }
-        
+
         [Fact]
-        public void IfMultipelMatchesThrowInvalidOperationException()
+        public void IfMultipleMatchesThrowInvalidOperationException()
         {
             var testDate = new DateTime(2022, 6, 24);
-            _provider.Invoking(x => x.GetNationalMinimumWageRange(testDate)).Should().Throw<InvalidOperationException>();
-            
+            _provider.Invoking(x => x.GetWagePeriod(testDate)).Should().Throw<InvalidOperationException>();
+
             _mockLogger.Verify(
                 m => m.Log(
                     LogLevel.Error,
@@ -88,12 +84,12 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
                 )
             );
         }
-        
+
         [Fact]
         public void IfNoMatchesThrowInvalidOperationException()
         {
-            var testDate = new DateTime(2022, 6, 24);
-            _provider.Invoking(x => x.GetNationalMinimumWageRange(testDate)).Should().Throw<InvalidOperationException>();
+            var testDate = new DateTime(2015, 1, 1);
+            _provider.Invoking(x => x.GetWagePeriod(testDate)).Should().Throw<InvalidOperationException>();
             
             _mockLogger.Verify(
                 m => m.Log(
@@ -115,7 +111,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
                     new MinimumWage
                     {
                         ValidFrom = new DateTime(2016, 4, 1),
-                        ValidTo = new DateTime(2017, 3, 31),
                         ApprenticeshipMinimumWage = 1.34m,
                         NationalMinimumWageLowerBound = 1.7m,
                         NationalMinimumWageUpperBound = 6.4m
@@ -123,7 +118,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
                     new MinimumWage
                     {
                         ValidFrom = new DateTime(2017, 4, 1),
-                        ValidTo = new DateTime(2018, 3, 31),
                         ApprenticeshipMinimumWage = 1.65m,
                         NationalMinimumWageLowerBound = 1.9m,
                         NationalMinimumWageUpperBound = 6.9m
@@ -131,7 +125,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
                     new MinimumWage
                     {
                         ValidFrom = new DateTime(2018, 4, 1),
-                        ValidTo = new DateTime(2019, 3, 31),
                         ApprenticeshipMinimumWage = 2.5m,
                         NationalMinimumWageLowerBound = 2.9m,
                         NationalMinimumWageUpperBound = 7.4m
@@ -139,18 +132,16 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
                     new MinimumWage
                     {
                         ValidFrom = new DateTime(2019, 4, 1),
-                        ValidTo = new DateTime(2020, 3, 31),
-                        ApprenticeshipMinimumWage = 3.34m,
-                        NationalMinimumWageLowerBound = 3.7m,
-                        NationalMinimumWageUpperBound = 8.2m
+                        ApprenticeshipMinimumWage = 3.90m,
+                        NationalMinimumWageLowerBound = 4.35m,
+                        NationalMinimumWageUpperBound = 8.21m
                     },
                     new MinimumWage // Duplicate entry
                     {
                         ValidFrom = new DateTime(2019, 4, 1),
-                        ValidTo = new DateTime(2020, 3, 31),
-                        ApprenticeshipMinimumWage = 3.34m,
-                        NationalMinimumWageLowerBound = 3.7m,
-                        NationalMinimumWageUpperBound = 8.2m
+                        ApprenticeshipMinimumWage = 3.90m,
+                        NationalMinimumWageLowerBound = 4.35m,
+                        NationalMinimumWageUpperBound = 8.21m
                     }
                 }
             };

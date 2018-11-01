@@ -20,21 +20,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Wages
                 .OrderBy(w => w.ValidFrom).ToList());
         }   
 
-        public decimal GetApprenticeNationalMinimumWage(DateTime date)
-        {
-            var matchingPeriod = GetWagePeriod(date); 
-            
-            return matchingPeriod.ApprenticeshipMinimumWage;
-        }
-
-        public WageRange GetNationalMinimumWageRange(DateTime date)
-        {
-            var matchingPeriod = GetWagePeriod(date); 
-
-            return new WageRange { MinimumWage = matchingPeriod.NationalMinimumWageLowerBound, MaximumWage = matchingPeriod.NationalMinimumWageUpperBound };
-        }
-
-        private MinWageEntity GetWagePeriod(DateTime date)
+        public IMinimumWage GetWagePeriod(DateTime date)
         {
             try
             {
@@ -45,6 +31,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Wages
                 {
                     if (date.Date < wagePeriod.ValidFrom)
                         break;
+
+                    if (currentWagePeriod != null && currentWagePeriod.ValidFrom == wagePeriod.ValidFrom)
+                        throw new InvalidOperationException($"Duplicate wage period: {currentWagePeriod.ValidFrom}");
 
                     currentWagePeriod = wagePeriod;
                 }
