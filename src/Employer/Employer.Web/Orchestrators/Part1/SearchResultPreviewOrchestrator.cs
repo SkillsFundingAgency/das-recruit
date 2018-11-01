@@ -30,6 +30,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         {
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, vrm, RouteNames.SearchResultPreview_Get);
 
+            var wagePeriod = _wageProvider.GetWagePeriod(vacancy.StartDate.Value);
+
             var vm = new SearchResultPreviewViewModel
             {
                 EmployerName = vacancy.EmployerName,
@@ -39,9 +41,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 StartDate = vacancy.StartDate?.AsGdsDate(),
                 LevelName = await GetLevelName(vacancy.ProgrammeId),
                 Title = vacancy.Title,
-                Wage = vacancy.Wage?.ToText(
-                    () => _wageProvider.GetNationalMinimumWageRange(vacancy.StartDate.Value),
-                    () => _wageProvider.GetApprenticeNationalMinimumWage(vacancy.StartDate.Value)),
+                Wage = vacancy.Wage?.ToText(wagePeriod),
                 HasYearlyWage = (vacancy.Wage != null && vacancy.Wage.WageType != WageType.Unspecified),
                 IsDisabilityConfident = vacancy.IsDisabilityConfident
             };

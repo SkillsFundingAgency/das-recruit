@@ -8,7 +8,7 @@ namespace Esfa.Recruit.Shared.Web.Extensions
     {
         private const int WeeksPerYear = 52;
 
-        public static string ToText(this Wage wage, Func<WageRange> getNationalMinimumWageRange, Func<decimal> getApprenticeNationalMinimumWage)
+        public static string ToText(this Wage wage, IMinimumWage wagePeriod)
         {
             string wageText;
 
@@ -18,15 +18,14 @@ namespace Esfa.Recruit.Shared.Web.Extensions
                     wageText = $"£{wage.FixedWageYearlyAmount?.AsMoney()}";
                     break;
                 case WageType.NationalMinimumWage:
-                    var hourlyRange = getNationalMinimumWageRange();
 
-                    var minYearly = GetYearlyRateFromHourlyRate(hourlyRange.MinimumWage, wage.WeeklyHours.Value);
-                    var maxYearly = GetYearlyRateFromHourlyRate(hourlyRange.MaximumWage, wage.WeeklyHours.Value);
+                    var minYearly = GetYearlyRateFromHourlyRate(wagePeriod.NationalMinimumWageLowerBound, wage.WeeklyHours.Value);
+                    var maxYearly = GetYearlyRateFromHourlyRate(wagePeriod.NationalMinimumWageUpperBound, wage.WeeklyHours.Value);
 
                     wageText = $"£{minYearly.AsMoney()} - £{maxYearly.AsMoney()}";
                     break;
                 case WageType.NationalMinimumWageForApprentices:
-                    var hourlyRate = getApprenticeNationalMinimumWage();
+                    var hourlyRate = wagePeriod.ApprenticeshipMinimumWage;
 
                     var yearly = GetYearlyRateFromHourlyRate(hourlyRate, wage.WeeklyHours.Value);
 

@@ -134,6 +134,8 @@ namespace Esfa.Recruit.Qa.Web.Mappings
 
             var historiesVm = GetReviewHistoriesViewModel(reviewHistoryTask.Result);
 
+            var wagePeriod = _wageProvider.GetWagePeriod(vacancy.StartDate.Value);
+
             var vm = new ReviewViewModel();
 
             try
@@ -173,9 +175,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 vm.HoursPerWeek = $"{vacancy.Wage.WeeklyHours:0.##}";
                 vm.WageInfo = vacancy.Wage.WageAdditionalInformation;
                 vm.WageText = vacancy.StartDate.HasValue
-                    ? vacancy.Wage.ToText(
-                        () => _wageProvider.GetNationalMinimumWageRange(vacancy.StartDate.Value),
-                        () => _wageProvider.GetApprenticeNationalMinimumWage(vacancy.StartDate.Value))
+                    ? vacancy.Wage.ToText(wagePeriod)
                     : null;
                 vm.WorkingWeekDescription = vacancy.Wage.WorkingWeekDescription;
                 vm.SubmittedDate = vacancy.SubmittedDate.Value;
