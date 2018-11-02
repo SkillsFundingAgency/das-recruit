@@ -7,12 +7,6 @@
       "apprenticeshipMinimumWage": NumberDecimal("3.70"),
       "nationalMinimumWageLowerBound": NumberDecimal("4.20"),
       "nationalMinimumWageUpperBound": NumberDecimal("7.83")
-    },
-    {
-      "validFrom": ISODate("2019-04-01T00:00:00.000Z"),
-      "apprenticeshipMinimumWage": NumberDecimal("3.90"),
-      "nationalMinimumWageLowerBound": NumberDecimal("4.35"),
-      "nationalMinimumWageUpperBound": NumberDecimal("8.21")
     }
   ]
 }
