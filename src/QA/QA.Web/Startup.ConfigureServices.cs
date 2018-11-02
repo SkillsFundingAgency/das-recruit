@@ -67,7 +67,7 @@ namespace Esfa.Recruit.Qa.Web
             services.AddTransient<IGeocodeImageService>(_ => new GoogleMapsGeocodeImageService(_configuration.GetValue<string>("GoogleMapsPrivateKey")));
             services.AddScoped<ReviewMapper>();
 
-            services.AddScoped<IRuleMessageTemplateRunner, RuleTemplateMessageRunner>();
+            services.AddScoped<IRuleMessageTemplateRunner, RuleMessageTemplateRunner>();
         }
     }
 }
