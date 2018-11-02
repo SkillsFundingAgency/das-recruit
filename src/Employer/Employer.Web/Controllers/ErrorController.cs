@@ -86,6 +86,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 }
             }
 
+            Response.StatusCode = (int)HttpStatusCode.InternalServerError;
             return View(ViewNames.ErrorView, new ErrorViewModel { StatusCode = (int)HttpStatusCode.InternalServerError, RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
