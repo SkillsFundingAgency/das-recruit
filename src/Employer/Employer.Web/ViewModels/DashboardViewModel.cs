@@ -13,7 +13,5 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public bool HasVacancies => Vacancies.Any();
         public bool HasWarning => !string.IsNullOrEmpty(WarningMessage);
         public bool HasInfo => !string.IsNullOrEmpty(InfoMessage);
-        public bool CanCloneVacancies { get; internal set; }
-        public bool CannotCloneVacancies => !CanCloneVacancies;
     }
 }
