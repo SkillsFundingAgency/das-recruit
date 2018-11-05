@@ -40,7 +40,9 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
             <div asp-show="@Model.HasIncompleteMandatorySections">
                 <p>You need to complete these sections:</p>
                 <ul class="list">
-                    <li asp-show="@Model.HasIncompleteVacancyDescription"><a asp-fragment="@Anchors.VacancyDescriptionSection" class="summary-link">Vacancy description</a></li>
+                    <li asp-hide="@Model.HasVacancyDescription"><a asp-fragment="@Anchors.VacancyDescriptionSection" class="summary-link">What you will do in your working day</a></li>
+                    <li asp-hide="@Model.HasTrainingDescription"><a asp-fragment="@Anchors.VacancyDescriptionSection" class="summary-link">The training you will be getting</a></li>
+                    <li asp-hide="@Model.HasOutcomeDescription"><a asp-fragment="@Anchors.VacancyDescriptionSection" class="summary-link">What to expect at the end of your apprenticeship</a></li>
                     <li asp-show="@Model.HasIncompleteSkillsSection"><a asp-fragment="@Anchors.Skills" class="summary-link">Desired skills and personal qualities</a></li>
                     <li asp-show="@Model.HasIncompleteQualificationsSection"><a asp-fragment="@Anchors.Qualifications" class="summary-link">Qualifications</a></li>
                     <li asp-show="@Model.HasIncompleteEmployerDescriptionSection"><a asp-fragment="@Anchors.EmployerDescription" class="summary-link">Employer description</a></li>
@@ -181,22 +183,24 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
     </div>
     <div class="column-two-thirds" id="@Anchors.VacancyDescriptionSection">
         <div class="@GetSectionClass(Model.DescriptionsSectionState)">
-            <h3 asp-show="@Model.HasIncompleteVacancyDescription" class="heading-small">Vacancy description</h3>
+            <h3 asp-hide="@Model.HasVacancyDescription" class="heading-small">What you will do in your working day</h3>
             <h3 asp-show="@Model.HasVacancyDescription" class="heading-small" id="@Anchors.VacancyDescription">
                 <img asp-show="@Model.VacancyDescriptionRequiresEdit" src="/img/red-cross.png"/>
-                Typical working day
+                What will you do in your working day
             </h3>
             <span esfa-validation-message-for="VacancyDescription" class="error-message"></span>
             <p asp-show="@Model.HasVacancyDescription">@Model.VacancyDescription</p>
+            <h3 asp-hide="@Model.HasTrainingDescription" class="heading-small">The training you will be getting</h3>
             <h3 asp-show="@Model.HasTrainingDescription" class="heading-small" id="@Anchors.TrainingDescription">
                 <img asp-show="@Model.TrainingDescriptionRequiresEdit" src="/img/red-cross.png"/>
-                Training to be provided
+                The training you will be getting
             </h3>
             <span esfa-validation-message-for="TrainingDescription" class="error-message"></span>
             <p asp-show="@Model.HasTrainingDescription">@Model.TrainingDescription</p>
+            <h3 asp-hide="@Model.HasOutcomeDescription" class="heading-small">What to expect at the end of your apprenticeship</h3>
             <h3 asp-show="@Model.HasOutcomeDescription" class="heading-small" id="@Anchors.OutcomeDescription">
                 <img asp-show="@Model.OutcomeDescriptionRequiresEdit" src="/img/red-cross.png"/>
-                Future prospects
+                What to expect at the end of your apprenticeship
             </h3>
             <span esfa-validation-message-for="OutcomeDescription" class="error-message"></span>
             <p asp-show="@Model.HasOutcomeDescription">@Model.OutcomeDescription</p>
