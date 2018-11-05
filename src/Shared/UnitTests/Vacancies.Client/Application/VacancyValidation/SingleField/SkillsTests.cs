@@ -15,7 +15,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
             {
                 Skills = new List<string>
                 {
-                    new string('a', 100)
+                    new string('a', 30)
                 }
             };
 
@@ -102,7 +102,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
             {
                 Skills = new List<string>
                 {
-                    new string('a', 101)
+                    new string('a', 31)
                 }
             };
 
