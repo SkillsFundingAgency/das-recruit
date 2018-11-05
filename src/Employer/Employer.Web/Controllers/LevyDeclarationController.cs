@@ -4,7 +4,6 @@ using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.ViewModels.LevyDeclaration;
-using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -15,16 +14,13 @@ namespace Esfa.Recruit.Employer.Web.Controllers
     public class LevyDeclarationController : Controller
     {
         private readonly LevyDeclarationOrchestrator _orchestrator;
-        private readonly IDataProtector _dataProtector;
         private readonly LevyDeclarationCookieWriter _levyCookieWriter;
 
         public LevyDeclarationController(
             LevyDeclarationOrchestrator orchestrator,
-            IDataProtectionProvider dataProtectionProvider,
             LevyDeclarationCookieWriter levyCookieWriter)
         {
             _orchestrator = orchestrator;
-            _dataProtector = dataProtectionProvider.CreateProtector(DataProtectionPurposes.LevyDeclarationCookie);
             _levyCookieWriter = levyCookieWriter;
         }
 
