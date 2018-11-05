@@ -22,7 +22,7 @@ namespace Esfa.Recruit.Employer.Web.Filters
                 if (string.IsNullOrEmpty(_systemConfig.PlannedOutageMessage) == false)
                 {
                     var ctrlr = (Controller)context.Controller;
-                    ctrlr.ViewData.Add(ViewDataKeys.ShowOutageMessage, true);
+                    ctrlr.ViewData.Add(ViewDataKeys.CanShowOutageMessage, true);
                     ctrlr.ViewData.Add(ViewDataKeys.PlannedOutageMessage, _systemConfig.PlannedOutageMessage);
                 }
             }

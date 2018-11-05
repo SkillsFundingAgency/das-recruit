@@ -23,6 +23,11 @@
         public const string Dashboard_AccountsSchemes = "Dashboard_AccountsSchemes";
         public const string Dashboard_Account_Home = "Dashboard_Account_Home";
 
+        public const string DismissOutageMessage_Get = "DismissOutageMessage_Get";
+
+        public const string EmployerDetails_Index_Get = "EmployerDetails_Index_Get";
+        public const string EmployerDetails_Index_Post = "EmployerDetails_Index_Post";
+
         public const string EmployerContactDetails_Get = "EmployerContactDetails_Get";
         public const string EmployerContactDetails_Post = "EmployerContactDetails_Post";
 
