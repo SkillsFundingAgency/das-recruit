@@ -78,12 +78,15 @@ namespace Esfa.Recruit.Employer.Web.Configuration
                 }
 
                 opts.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+
                 opts.Filters.Add(typeof(LevyDeclarationCheckFilter), 50);
 
                 if (EnvironmentNames.GetTestEnvironmentNames().Contains(hostingEnvironment.EnvironmentName.ToUpper()) == false)
                 {
                     opts.Filters.Add(new CheckEmployerBlockedAttribute());
                 }
+
+                opts.Filters.AddService<PlannedOutageResultFilter>();
 
                 opts.AddTrimModelBinderProvider(loggerFactory);
             })

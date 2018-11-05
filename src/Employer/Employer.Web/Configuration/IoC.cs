@@ -1,4 +1,6 @@
-﻿using Esfa.Recruit.Employer.Web.Caching;
+﻿using System;
+using Employer.Web.Configuration;
+using Esfa.Recruit.Employer.Web.Caching;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Filters;
 using Esfa.Recruit.Employer.Web.Mappings;
@@ -9,6 +11,7 @@ using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Shared.Web.Configuration;
 using Esfa.Recruit.Shared.Web.RuleTemplates;
 using Esfa.Recruit.Shared.Web.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.FAA;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -46,6 +49,10 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             RegisterOrchestratorDeps(services);
 
             RegisterMapperDeps(services);
+
+            RegisterFilterDeps(services);
+
+            RegisterDynamicConfigurationDeps(services);
         }
 
         private static void RegisterServiceDeps(IServiceCollection services, IConfiguration configuration)
@@ -97,7 +104,22 @@ namespace Esfa.Recruit.Employer.Web.Configuration
         {
             services.AddTransient<DisplayVacancyViewModelMapper>();
             services.AddTransient<ReviewFieldIndicatorMapper>();
+
             services.AddScoped<IRuleMessageTemplateRunner, RuleMessageTemplateRunner>();
+        }
+
+        private static void RegisterFilterDeps(IServiceCollection services)
+        {
+            services.AddScoped<PlannedOutageResultFilter>();
+        }
+
+        private static void RegisterDynamicConfigurationDeps(IServiceCollection services)
+        {
+            services.AddSingleton<EmployerRecruitSystemConfiguration>(x => 
+                                                            {
+                                                                var svc = x.GetService<IConfigurationReader>();
+                                                                return svc.GetAsync<EmployerRecruitSystemConfiguration>("EmployerRecruitSystem").Result;
+                                                            });
         }
     }
 }
