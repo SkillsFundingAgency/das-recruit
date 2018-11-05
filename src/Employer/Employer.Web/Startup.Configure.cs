@@ -27,8 +27,7 @@ namespace Esfa.Recruit.Employer.Web
             
             if (env.IsDevelopment())
             {
-                app.UseExceptionHandler("/error/handle");
-                //app.UseDeveloperExceptionPage();
+                app.UseDeveloperExceptionPage();
             }
             else
             {
