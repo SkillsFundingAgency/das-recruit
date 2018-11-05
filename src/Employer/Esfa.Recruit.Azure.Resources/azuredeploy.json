@@ -182,9 +182,7 @@
     "QAAppServiceName": "[concat('das-', toLower(parameters('EnvironmentName')), '-rcrt-qa-as')]",
     "CosmosDbName": "[concat('das-', toLower(parameters('EnvironmentName')),'-rcrt-cdb')]",
     "WebJobAppServiceName": "[concat('das-', toLower(parameters('EnvironmentName')), '-rcrt-webjob-as')]",
-    "StorageAccountName": "[concat('das', toLower(parameters('EnvironmentName')), 'rcrtstr')]",
-    "AppServiceTemplateUri": "[concat(parameters('TemplateBaseUrl'), '/deployments/app-service-resources.json')]",
-    "webJobAppServicePlanId": "[resourceId(resourceGroup().name, 'Microsoft.Web/serverfarms', variables('webJobAppServicePlanName'))]"
+    "StorageAccountName": "[concat('das', toLower(parameters('EnvironmentName')), 'rcrtstr')]"
   },
   "resources": [
     {
@@ -661,6 +659,9 @@
                 "physicalPath": "site\\wwwroot\\app_data\\jobs\\continuous\\Recruit.Vacancies.Jobs"
               }
             ]
+          },
+          "deployStagingSlot": {
+            "value": false
           }
         }
       },
