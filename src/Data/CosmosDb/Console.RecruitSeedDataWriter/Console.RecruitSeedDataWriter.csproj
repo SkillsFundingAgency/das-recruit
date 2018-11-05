@@ -32,6 +32,9 @@
     <None Update="Data\QaRules.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Data\EmployerRecruitSystem.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="SeedScript.ps1">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
