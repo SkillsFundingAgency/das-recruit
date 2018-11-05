@@ -41,7 +41,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
                 return View(vm);
             }
 
-            var providerExists = await _orchestrator.ConfirmProviderExists(long.Parse(m.Ukprn));
+            if (long.TryParse(m.Ukprn, out var ukprnAsLong) == false)
+                return await ProviderNotFound(m);
+
+            var providerExists = await _orchestrator.ConfirmProviderExists(ukprnAsLong);
             
             if (providerExists == false)
                 return await ProviderNotFound(m);

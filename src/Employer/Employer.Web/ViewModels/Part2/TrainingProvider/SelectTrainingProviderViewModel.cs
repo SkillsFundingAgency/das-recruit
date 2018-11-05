@@ -7,7 +7,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
     {
         public string Title { get; set; }
         [Display(Name = "UKPRN")]
-        public long? Ukprn { get; set; }
+        public string Ukprn { get; set; }
         public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
     }
 }
