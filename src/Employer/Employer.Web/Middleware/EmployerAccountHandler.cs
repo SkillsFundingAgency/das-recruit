@@ -42,6 +42,10 @@ namespace Esfa.Recruit.Employer.Web.Middleware
                     }
                 }
             }
+            else
+            {
+                context.Succeed(requirement);
+            }
         }
 
         private async Task EnsureEmployerIsSetup(HttpContext context, string employerAccountId)
