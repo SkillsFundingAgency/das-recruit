@@ -56,9 +56,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
         private void SetLevyDeclarationCookie(ClaimsPrincipal user, string employerAccountId)
         {
-            var protectedUserId = _dataProtector.Protect(user.GetUserId());
-
-            _levyCookieWriter.WriteCookie(Response, protectedUserId, employerAccountId);
+            _levyCookieWriter.WriteCookie(Response, user.GetUserId(), employerAccountId);
         }
     }
 }
