@@ -100,16 +100,14 @@ namespace Esfa.Recruit.Employer.Web.Mappings
 
             if (vacancy.Wage != null)
             {
+                var wagePeriod = _wageProvider.GetWagePeriod(vacancy.StartDate.Value);
+
                 vm.ExpectedDuration = (vacancy.Wage.DurationUnit.HasValue && vacancy.Wage.Duration.HasValue)
                     ? vacancy.Wage.DurationUnit.Value.GetDisplayName().ToQuantity(vacancy.Wage.Duration.Value)
                     : null;
                 vm.HoursPerWeek = $"{vacancy.Wage.WeeklyHours:0.##}";
                 vm.WageInfo = vacancy.Wage.WageAdditionalInformation;
-                vm.WageText = vacancy.StartDate.HasValue
-                    ? vacancy.Wage.ToText(
-                        () => _wageProvider.GetNationalMinimumWageRange(vacancy.StartDate.Value),
-                        () => _wageProvider.GetApprenticeNationalMinimumWage(vacancy.StartDate.Value))
-                    : null;
+                vm.WageText = vacancy.StartDate.HasValue ? vacancy.Wage.ToText(wagePeriod) : null;
                 vm.WorkingWeekDescription = vacancy.Wage.WorkingWeekDescription;
             }
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using FluentValidation;
 using FluentValidation.Internal;
 using FluentValidation.Results;
@@ -31,12 +32,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
         {
             return ruleBuilder.Custom((vacancy, context) =>
             {
+                var wagePeriod = minimumWageService.GetWagePeriod(vacancy.StartDate.Value);
 
-                var apprenticeshipMinWage = minimumWageService.GetApprenticeNationalMinimumWage(vacancy.StartDate.Value);
-
-                if (vacancy.Wage.FixedWageYearlyAmount == null || vacancy.Wage.FixedWageYearlyAmount / 52 / vacancy.Wage.WeeklyHours < apprenticeshipMinWage)
+                if (vacancy.Wage.FixedWageYearlyAmount == null || vacancy.Wage.FixedWageYearlyAmount / 52 / vacancy.Wage.WeeklyHours < wagePeriod.ApprenticeshipMinimumWage)
                 {
-                    var failure = new ValidationFailure(string.Empty, "The wage should not be less than the new National Minimum Wage for apprentices effective from 1 April 2018")
+                    var failure = new ValidationFailure(string.Empty, $"The wage should not be less than the new National Minimum Wage for apprentices effective from {wagePeriod.ValidFrom:d MMM yyyy}")
                     {
                         ErrorCode = "49",
                         CustomState = VacancyRuleSet.MinimumWage

@@ -99,9 +99,9 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 new FieldIdentifierViewModel {FieldIdentifier = VacancyReview.FieldIdentifiers.PossibleStartDate, Text = "Possible start"},
                 new FieldIdentifierViewModel {FieldIdentifier = VacancyReview.FieldIdentifiers.TrainingLevel, Text = "Apprenticeship level"},
                 new FieldIdentifierViewModel {FieldIdentifier = VacancyReview.FieldIdentifiers.NumberOfPositions, Text = "Positions"},
-                new FieldIdentifierViewModel {FieldIdentifier = VacancyReview.FieldIdentifiers.VacancyDescription, Text = "Typical working day"},
-                new FieldIdentifierViewModel {FieldIdentifier = VacancyReview.FieldIdentifiers.TrainingDescription, Text = "Training description"},
-                new FieldIdentifierViewModel {FieldIdentifier = VacancyReview.FieldIdentifiers.OutcomeDescription, Text = "Future prospects"},
+                new FieldIdentifierViewModel {FieldIdentifier = VacancyReview.FieldIdentifiers.VacancyDescription, Text = "What will you do in your working day"},
+                new FieldIdentifierViewModel {FieldIdentifier = VacancyReview.FieldIdentifiers.TrainingDescription, Text = "The training you will be getting"},
+                new FieldIdentifierViewModel {FieldIdentifier = VacancyReview.FieldIdentifiers.OutcomeDescription, Text = "What to expect at the end of your apprenticeship"},
                 new FieldIdentifierViewModel {FieldIdentifier = VacancyReview.FieldIdentifiers.Skills, Text = "Skills"},
                 new FieldIdentifierViewModel {FieldIdentifier = VacancyReview.FieldIdentifiers.Qualifications, Text = "Qualifications"},
                 new FieldIdentifierViewModel {FieldIdentifier = VacancyReview.FieldIdentifiers.ThingsToConsider, Text = "Things to consider"},
@@ -133,6 +133,8 @@ namespace Esfa.Recruit.Qa.Web.Mappings
             var programme = programmeTask.Result;
 
             var historiesVm = GetReviewHistoriesViewModel(reviewHistoryTask.Result);
+
+            var wagePeriod = _wageProvider.GetWagePeriod(vacancy.StartDate.Value);
 
             var vm = new ReviewViewModel();
 
@@ -173,9 +175,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 vm.HoursPerWeek = $"{vacancy.Wage.WeeklyHours:0.##}";
                 vm.WageInfo = vacancy.Wage.WageAdditionalInformation;
                 vm.WageText = vacancy.StartDate.HasValue
-                    ? vacancy.Wage.ToText(
-                        () => _wageProvider.GetNationalMinimumWageRange(vacancy.StartDate.Value),
-                        () => _wageProvider.GetApprenticeNationalMinimumWage(vacancy.StartDate.Value))
+                    ? vacancy.Wage.ToText(wagePeriod)
                     : null;
                 vm.WorkingWeekDescription = vacancy.Wage.WorkingWeekDescription;
                 vm.SubmittedDate = vacancy.SubmittedDate.Value;

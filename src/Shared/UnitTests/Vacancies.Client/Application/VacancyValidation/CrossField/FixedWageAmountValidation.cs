@@ -1,6 +1,7 @@
 using System;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Wages;
 using FluentAssertions;
 using Moq;
 using Xunit;
@@ -28,7 +29,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
             };
 
             MockMinimumWageService.Setup(x => 
-                     x.GetApprenticeNationalMinimumWage(It.IsAny<DateTime>())).Returns(minimumWageAmount);
+                     x.GetWagePeriod(It.IsAny<DateTime>())).Returns(new MinimumWage{ApprenticeshipMinimumWage = minimumWageAmount});
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.MinimumWage);
 
@@ -56,7 +57,8 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
             };
 
             MockMinimumWageService.Setup(x =>
-                     x.GetApprenticeNationalMinimumWage(It.IsAny<DateTime>())).Returns(minimumWageAmount);
+                x.GetWagePeriod(It.IsAny<DateTime>())).Returns(new MinimumWage { ApprenticeshipMinimumWage = minimumWageAmount });
+
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.MinimumWage);
 

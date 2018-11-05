@@ -16,28 +16,32 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Wages
         public NationalMinimumWageProvider(IReferenceDataReader referenceDataReader, ILogger<NationalMinimumWageProvider> logger)
         {
             _logger = logger;
-            _wagePeriods = new Lazy<IList<MinWageEntity>>(() => referenceDataReader.GetReferenceData<MinimumWages>().Result.Ranges);
+            _wagePeriods = new Lazy<IList<MinWageEntity>>(() => referenceDataReader.GetReferenceData<MinimumWages>().Result.Ranges
+                .OrderBy(w => w.ValidFrom).ToList());
         }   
 
-        public decimal GetApprenticeNationalMinimumWage(DateTime date)
-        {
-            var matchingPeriod = GetWagePeriod(date); 
-            
-            return matchingPeriod.ApprenticeshipMinimumWage;
-        }
-
-        public WageRange GetNationalMinimumWageRange(DateTime date)
-        {
-            var matchingPeriod = GetWagePeriod(date); 
-
-            return new WageRange { MinimumWage = matchingPeriod.NationalMinimumWageLowerBound, MaximumWage = matchingPeriod.NationalMinimumWageUpperBound };
-        }
-
-        private MinWageEntity GetWagePeriod(DateTime date)
+        public IMinimumWage GetWagePeriod(DateTime date)
         {
             try
             {
-                return _wagePeriods.Value.Single(x => date.Date >= x.ValidFrom && date.Date <= x.ValidTo);
+                var wagePeriods = _wagePeriods.Value;
+
+                MinWageEntity currentWagePeriod = null;
+                foreach (var wagePeriod in wagePeriods)
+                {
+                    if (date.Date < wagePeriod.ValidFrom)
+                        break;
+
+                    if (currentWagePeriod != null && currentWagePeriod.ValidFrom == wagePeriod.ValidFrom)
+                        throw new InvalidOperationException($"Duplicate wage period: {currentWagePeriod.ValidFrom}");
+
+                    currentWagePeriod = wagePeriod;
+                }
+
+                if (currentWagePeriod == null)
+                    throw new InvalidOperationException("Wage period is missing");
+
+                return currentWagePeriod;
             }
             catch(InvalidOperationException ex)
             {

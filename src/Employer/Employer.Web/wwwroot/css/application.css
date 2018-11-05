@@ -1721,6 +1721,7 @@ table.responsive thead {
       width: 70%;
     }
   }
+
   
   .employer-agreement-container .notice .icon {
     top:20px;
@@ -1753,3 +1754,35 @@ a[rel="external"]:hover:after {
     a[rel="external"]:hover:after {
       background-position: right -382px; } 
 }
+
+.duration-unit-select {
+    width: auto;
+}
+
+  #global-outage-message p {
+    max-width: 960px;
+    margin: 0 15px; }
+    @media (min-width: 641px) {
+      #global-outage-message p {
+        margin: 0 30px; } }
+    @media (min-width: 1020px) {
+      #global-outage-message p {
+        margin: 0 auto; } }
+
+  #global-outage-message {
+    width: 100%;
+    background-color: #fdf0c9;
+    padding-top: 10px;
+    padding-bottom: 10px; }
+    #global-outage-message p {
+      font-family: "nta", Arial, sans-serif;
+      font-weight: 400;
+      text-transform: none;
+      font-size: 14px;
+      line-height: 1.14286;
+      margin-top: 0;
+      margin-bottom: 0; }
+      @media (min-width: 641px) {
+        #global-outage-message p {
+          font-size: 16px;
+          line-height: 1.25; } }

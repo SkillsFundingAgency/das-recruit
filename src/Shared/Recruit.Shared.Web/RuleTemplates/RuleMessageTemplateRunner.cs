@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace Esfa.Recruit.Shared.Web.RuleTemplates
 {
-    public class RuleTemplateMessageRunner : IRuleMessageTemplateRunner
+    public class RuleMessageTemplateRunner : IRuleMessageTemplateRunner
     {
         public string ToText(RuleId ruleId, string data, string fieldName)
         {

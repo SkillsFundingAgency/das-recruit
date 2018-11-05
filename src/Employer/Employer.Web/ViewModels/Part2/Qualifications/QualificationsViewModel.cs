@@ -1,5 +1,6 @@
 ﻿using Esfa.Recruit.Employer.Web.Views;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.Part2.Qualifications
 {
@@ -8,6 +9,9 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part2.Qualifications
         public string Title { get; internal set; }
 
         public List<string> QualificationTypes { get; set; }
+
+        public bool HasQualifications => Qualifications.Any();
+
         public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
 
         public IList<string> OrderedFieldNames => new List<string>
@@ -18,5 +22,4 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part2.Qualifications
             nameof(Weighting)
         };
     }
-    
 }

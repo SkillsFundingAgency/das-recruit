@@ -89,9 +89,16 @@ public bool IsErrorPage()
             <a href="#content" class="skiplink">Skip to main content</a>
         </div>
     </div>
+
+    <div asp-show="@ViewContext.ViewData[ViewDataKeys.CanShowOutageMessage] as bool?" id="global-outage-message" class="global-message">
+        <p>@ViewContext.ViewData[ViewDataKeys.PlannedOutageMessage]</p>
+        <p><a asp-route="@RouteNames.DismissOutageMessage_Get">Dismiss</a></p>
+    </div>
+
     <div id="global-cookie-message">
         <p>GOV.UK uses cookies to make the site simpler. <a href="https://www.gov.uk/help/cookies">Find out more about cookies</a></p>
     </div>
+
     <header role="banner" id="global-header" class="with-proposition">
         <div class="header-wrapper">
             <div class="header-global">
@@ -155,6 +162,12 @@ public bool IsErrorPage()
         </div>
     }
     <main id="content" role="main">
+        <div class="phase-banner">
+            <p>
+                <strong class="phase-tag">BETA</strong>
+                <span>This is a new service – your <a href="https://www.surveymonkey.co.uk/r/NGLCBCJ" rel="noopener" target="_blank">feedback</a> will help us to improve it.</span>
+            </p>
+        </div>
         @RenderBody()
     </main>
     <footer class="group js-footer" id="footer" role="contentinfo">
@@ -163,9 +176,9 @@ public bool IsErrorPage()
                 <div class="footer-meta-inner">
                     <ul class="platform-help-links">
                         <li><a href="@ExternalLinks.Help">Help</a></li>
-                        <li><a href="https://www.surveymonkey.co.uk/r/2JPLQ9T" target="_blank">Feedback</a></li>
+                        <li><a href="https://www.surveymonkey.co.uk/r/2JPLQ9T" rel="noopener" target="_blank">Feedback</a></li>
                         <li><a href="@ExternalLinks.Privacy">Privacy and cookies</a></li>
-                        <li>Built by the <a href="http://gov.uk/sfa" target="_blank">Education and Skills Funding Agency</a></li>
+                        <li>Built by the <a href="http://gov.uk/sfa" rel="noopener" target="_blank">Education and Skills Funding Agency</a></li>
                     </ul>
                     <div class="open-government-licence">
                         <p class="logo"><a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license">Open Government Licence</a></p>

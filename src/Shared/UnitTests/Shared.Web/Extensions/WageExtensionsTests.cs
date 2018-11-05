@@ -1,6 +1,7 @@
 ﻿using System;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Wages;
 using FluentAssertions;
 using Xunit;
 
@@ -8,10 +9,13 @@ namespace Esfa.Recruit.Shared.Web.UnitTests.Extensions
 {
     public class WageExtensionsTests
     {
-
-        private readonly Func<WageRange> _getNationalMinimumWage = () => new WageRange{MinimumWage = 4.05m, MaximumWage = 7.83m};
-        private readonly Func<decimal> _getApprenticeNationalMinimumWage = () => 3.70m;
-
+        private readonly IMinimumWage _wagePeriod = new MinimumWage
+        {
+            ApprenticeshipMinimumWage = 3.70m,
+            NationalMinimumWageLowerBound = 4.05m,
+            NationalMinimumWageUpperBound = 7.83m
+        };
+        
         [Fact]
         public void ShouldFormatFixedWageCorrectly()
         {
@@ -21,7 +25,7 @@ namespace Esfa.Recruit.Shared.Web.UnitTests.Extensions
                 FixedWageYearlyAmount = 12345678.91m
             };
 
-            var actual = wage.ToText(null, null);
+            var actual = wage.ToText(_wagePeriod);
 
             actual.Should().Be("£12,345,678.91");
         }
@@ -35,7 +39,7 @@ namespace Esfa.Recruit.Shared.Web.UnitTests.Extensions
                 WeeklyHours = 37.555m
             };
 
-            var actual = wage.ToText(_getNationalMinimumWage, null);
+            var actual = wage.ToText(_wagePeriod);
 
             actual.Should().Be("£7,909.08 - £15,290.89");
         }
@@ -49,7 +53,7 @@ namespace Esfa.Recruit.Shared.Web.UnitTests.Extensions
                 WeeklyHours = 37.555m
             };
 
-            var actual = wage.ToText(null, _getApprenticeNationalMinimumWage);
+            var actual = wage.ToText(_wagePeriod);
 
             actual.Should().Be("£7,225.58");
         }
@@ -62,7 +66,7 @@ namespace Esfa.Recruit.Shared.Web.UnitTests.Extensions
                 WageType = WageType.Unspecified
             };
 
-            var actual = wage.ToText(null, null);
+            var actual = wage.ToText(_wagePeriod);
 
             actual.Should().Be("Unspecified");
         }

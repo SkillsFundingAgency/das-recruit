@@ -374,13 +374,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.OutcomeDescription)
                 .NotEmpty()
-                    .WithMessage("You must provide information on what the candidate can expect")
+                    .WithMessage("You must provide information on what to expect at the end of your apprenticeship")
                     .WithErrorCode("55")
                 .MaximumLength(500)
-                    .WithMessage("What the candidate can expect description must not exceed {MaxLength} characters")
+                    .WithMessage("What to expect at the end of your apprenticeship description must not exceed {MaxLength} characters")
                     .WithErrorCode("7")
                 .ValidFreeTextCharacters()
-                    .WithMessage("What the candidate can expect description contains some invalid characters")
+                    .WithMessage("What to expect at the end of your apprenticeship description contains some invalid characters")
                     .WithErrorCode("6")
                 .RunCondition(VacancyRuleSet.OutcomeDescription)
                 .WithRuleId(VacancyRuleSet.OutcomeDescription);

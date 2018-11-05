@@ -112,7 +112,7 @@ namespace Esfa.Recruit.Employer.Web.Filters
 
                 if (!valuesMatch)
                 {
-                    _logger.LogWarning($"Current user doesn't match user in Levy Cookie: Current: {currentUserAccountValue}, Cookie: {cookieUserAccountValue}");
+                    _logger.LogTrace($"Current user doesn't match user in Levy Cookie: Current: {currentUserAccountValue}, Cookie: {cookieUserAccountValue}");
                     
                     // Delete cookie if it's not for current user.
                     _levyCookieWriter.DeleteCookie(context.HttpContext.Response);
@@ -120,7 +120,7 @@ namespace Esfa.Recruit.Employer.Web.Filters
 
                 return valuesMatch;
             }
-                
+
             return false;
         }
     }

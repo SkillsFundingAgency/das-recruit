@@ -50,11 +50,11 @@
         </ul>
     </div>
     <div class="column-two-thirds">
-        <h3 class="heading-small">Typical working day</h3>
+        <h3 class="heading-small">What you will do in your working day</h3>
         <p class="preserve-format">@Model.VacancyDescription</p>
-        <h3 class="heading-small">Training to be provided</h3>
+        <h3 class="heading-small">The training you will be getting</h3>
         <p class="preserve-format">@Model.TrainingDescription</p>
-        <h3 class="heading-small">Future prospects</h3>
+        <h3 class="heading-small">What to expect at the end of your apprenticeship</h3>
         <p class="preserve-format">@Model.OutcomeDescription</p>
     </div>
 </div>
@@ -150,7 +150,7 @@
             <h2 asp-show="@Model.ShowGeneralApplicationProcessSectionTitle" class="heading-large">Application process</h2>
             <h2 asp-show="@Model.HasSpecifiedThroughExternalApplicationMethod" class="heading-large">Employer's application instructions</h2>
             <div asp-show="@Model.HasSpecifiedThroughFaaApplicationMethod">
-                <p>Candidates will apply through the <a href="@Model.FindAnApprenticeshipUrl" target="_blank">Find an apprenticeship service</a></p>
+                <p>Candidates will apply through the <a href="@Model.FindAnApprenticeshipUrl" rel="noopener" target="_blank">Find an apprenticeship service</a></p>
             </div>
             <div asp-show="@Model.HasSpecifiedThroughExternalApplicationMethod">
                 <p>This apprenticeship requires you to apply through the employer's website.</p>
