@@ -33,7 +33,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             var vm = new SelectTrainingProviderViewModel
             {
                 Title = vacancy.Title,
-                Ukprn = vacancy.TrainingProvider?.Ukprn
+                Ukprn = vacancy.TrainingProvider?.Ukprn?.ToString()
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
@@ -48,7 +48,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         public async Task<SelectTrainingProviderViewModel> GetSelectTrainingProviderViewModel(SelectTrainingProviderEditModel m)
         {
             var vm = await GetSelectTrainingProviderViewModel((VacancyRouteModel)m);
-            vm.Ukprn = long.TryParse(m.Ukprn, out var submittedUkprn) ? submittedUkprn : default(long);
+            vm.Ukprn = m.Ukprn;
             return vm;
         }
 
