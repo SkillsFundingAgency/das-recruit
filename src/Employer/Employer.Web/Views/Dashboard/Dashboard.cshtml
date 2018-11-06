@@ -58,7 +58,7 @@
                 @foreach (var vacancy in Model.Vacancies)
                 {
                     <tr>
-                        <td data-label="Status"><span class="tag tag-@vacancy.Status.ToString().ToLower()">@vacancy.Status.GetDisplayName()</span></td>
+                        <td class="dashboard-status" data-label="Status"><span class="tag tag-@vacancy.Status.ToString().ToLower()">@vacancy.Status.GetDisplayName()</span></td>
                         <td data-label="Vacancy title">
                             <div>@vacancy.Title</div>
                             <div asp-show="@vacancy.IsApplicationsVacancy">

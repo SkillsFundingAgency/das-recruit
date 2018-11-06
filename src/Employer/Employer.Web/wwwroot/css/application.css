@@ -1530,8 +1530,12 @@ table th.th-20 {
     min-height: 3em;
  }
 
+ #dashboard-table .dashboard-status {
+    min-width: 8em;
+ }
+
  #dashboard-table .dashboard-closingdate {
-    min-width: 6em;
+    min-width: 8em;
  }
 
  #dashboard-table .dashboard-action {
