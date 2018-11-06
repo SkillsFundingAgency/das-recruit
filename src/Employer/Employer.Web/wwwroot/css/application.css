@@ -1769,6 +1769,16 @@ a[rel="external"]:hover:after {
       #global-outage-message p {
         margin: 0 auto; } }
 
+  #global-outage-message form {
+    max-width: 960px;
+    margin: 0 15px; }
+    @media (min-width: 641px) {
+      #global-outage-message form {
+        margin: 0 30px; } }
+    @media (min-width: 1020px) {
+      #global-outage-message form {
+        margin: 0 auto; } }
+
   #global-outage-message {
     width: 100%;
     background-color: #fdf0c9;
