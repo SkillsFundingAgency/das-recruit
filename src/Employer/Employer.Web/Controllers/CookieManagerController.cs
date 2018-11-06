@@ -16,8 +16,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             _hostingEnvironment = hostingEnvironment;
         }
 
-        [HttpGet("dismiss-outage-message", Name = RouteNames.DismissOutageMessage_Get)]
-        public IActionResult DismissOutageMessage([FromQuery]string returnUrl)
+        [HttpPost("dismiss-outage-message", Name = RouteNames.DismissOutageMessage_Post)]
+        public IActionResult DismissOutageMessage([FromForm]string returnUrl)
         {
             const string SeenCookieValue = "1";
 

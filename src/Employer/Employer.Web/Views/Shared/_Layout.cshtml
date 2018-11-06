@@ -90,7 +90,10 @@ public string GetTitle()
 
     <div asp-show="@ViewContext.ViewData[ViewDataKeys.CanShowOutageMessage] as bool?" id="global-outage-message" class="global-message">
         <p>@ViewContext.ViewData[ViewDataKeys.PlannedOutageMessage]</p>
-        <p><a asp-route="@RouteNames.DismissOutageMessage_Get" asp-route-returnUrl="@ViewContext.HttpContext.Request.Path">Dismiss</a></p>
+        <form asp-route="@RouteNames.DismissOutageMessage_Post" novalidate>
+            <input type="hidden" id="returnUrl" name="returnUrl" value="@ViewContext.HttpContext.Request.Path" />
+            <button type="submit" class="button-fake-link">Dismiss</button>
+        </form>
     </div>
 
     <div id="global-cookie-message">
