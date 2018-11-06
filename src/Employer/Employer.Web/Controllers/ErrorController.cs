@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Linq;
 using Esfa.Recruit.Employer.Web.ViewModels.Error;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Diagnostics;
@@ -13,6 +15,7 @@ using Esfa.Recruit.Employer.Web.Exceptions;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Filters;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
+using StackExchange.Redis;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
@@ -56,6 +59,14 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             {
                 string routeWhereExceptionOccurred = exceptionFeature.Path;
                 var exception = exceptionFeature.Error;
+
+                if (exception is AggregateException aggregateException)
+                {
+                    var flattenedExceptions = aggregateException.Flatten();
+                    _logger.LogError(flattenedExceptions, "Aggregate exception on path: {route}", routeWhereExceptionOccurred);
+
+                    exception = flattenedExceptions.InnerExceptions.FirstOrDefault();
+                }
 
                 if (exception is InvalidStateException)
                 {
