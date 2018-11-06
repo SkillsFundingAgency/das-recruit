@@ -90,7 +90,7 @@ public string GetTitle()
 
     <div asp-show="@ViewContext.ViewData[ViewDataKeys.CanShowOutageMessage] as bool?" id="global-outage-message" class="global-message">
         <p>@ViewContext.ViewData[ViewDataKeys.PlannedOutageMessage]</p>
-        <p><a asp-route="@RouteNames.DismissOutageMessage_Get">Dismiss</a></p>
+        <p><a asp-route="@RouteNames.DismissOutageMessage_Get" asp-route-returnUrl="@ViewContext.HttpContext.Request.Path">Dismiss</a></p>
     </div>
 
     <div id="global-cookie-message">

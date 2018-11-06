@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Microsoft.AspNetCore.Hosting;
@@ -16,18 +17,22 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         }
 
         [HttpGet("dismiss-outage-message", Name = RouteNames.DismissOutageMessage_Get)]
-        public IActionResult DismissOutageMessage()
+        public IActionResult DismissOutageMessage([FromQuery]string returnUrl)
         {
             const string SeenCookieValue = "1";
-            var redirectUrl = Request.Headers["Referer"];
 
             if (!Request.Cookies.ContainsKey(CookieNames.SeenOutageMessage))
                 Response.Cookies.Append(CookieNames.SeenOutageMessage, SeenCookieValue, EsfaCookieOptions.GetSingleDayLifetimeHttpCookieOption(_hostingEnvironment));
 
-            if (!string.IsNullOrEmpty(redirectUrl))
-                return Redirect(redirectUrl);
+            if (IsValidReturnUrl(returnUrl))
+                return Redirect(returnUrl);
 
             return RedirectToRoute(RouteNames.Dashboard_Index_Get);
+        }
+
+        private bool IsValidReturnUrl(string returnUrl)
+        {
+            return Regex.IsMatch(returnUrl, @"^/accounts/[A-Z0-9]{6}/.*");
         }
     }
 }
