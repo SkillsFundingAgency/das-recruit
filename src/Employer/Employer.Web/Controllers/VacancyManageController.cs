@@ -29,6 +29,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         [HttpGet("manage", Name = RouteNames.VacancyManage_Get)]
         public async Task<IActionResult> ManageVacancy(VacancyRouteModel vrm)
         {
+            EnsureProposedChangesCookiesAreCleared(vrm.VacancyId);
+
             var vacancy = await _orchestrator.GetVacancy(vrm);
 
             if (vacancy.CanEdit)
@@ -36,7 +38,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 return HandleRedirectOfEditableVacancy(vacancy);
             }
 
-            var viewModel = await _orchestrator.GetManageVacancyViewModel(vrm);
+            var viewModel = await _orchestrator.GetManageVacancyViewModel(vacancy);
 
             if (TempData.ContainsKey(TempDataKeys.VacancyClosedMessage))
                 viewModel.VacancyClosedInfoMessage = TempData[TempDataKeys.VacancyClosedMessage].ToString();
@@ -47,8 +49,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         [HttpGet("edit", Name = RouteNames.VacancyEdit_Get)]
         public async Task<IActionResult> EditVacancy(VacancyRouteModel vrm)
         {
-            var proposedClosingDate = Request.Cookies[string.Format(CookieNames.VacancyProposedClosingDate, vrm.VacancyId)]?.Trim();
-            var proposedStartDate = Request.Cookies[string.Format(CookieNames.VacancyProposedStartDate, vrm.VacancyId)]?.Trim();
             var vacancy = await _orchestrator.GetVacancy(vrm);
 
             if (vacancy.CanEdit)
@@ -61,13 +61,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 return RedirectToRoute(RouteNames.DisplayVacancy_Get);
             }
 
-            DateTime parsedClosingDate = DateTime.MinValue;
-            if (proposedClosingDate?.Length > 0 && DateTime.TryParse(proposedClosingDate, out parsedClosingDate) == false)
-                return RedirectToRoute(RouteNames.VacancyEditDates_Get);
-
-            DateTime parsedStartDate = DateTime.MinValue;
-            if (proposedStartDate?.Length > 0 && DateTime.TryParse(proposedStartDate, out parsedStartDate) == false)
-                return RedirectToRoute(RouteNames.VacancyEditDates_Get);
+            var parsedClosingDate = Request.Cookies.GetProposedClosingDate(vacancy.Id);
+            var parsedStartDate = Request.Cookies.GetProposedStartDate(vacancy.Id);
 
             var viewModel = await _orchestrator.GetEditVacancyViewModel(vrm, parsedClosingDate, parsedStartDate);
 
@@ -86,7 +81,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             var vacancy = await _orchestrator.GetVacancy(m);
             TempData.Add(TempDataKeys.DashboardInfoMessage, string.Format(InfoMessages.VacancyUpdated, vacancy.Title));
-            ClearEditDatesCookies(m.VacancyId);
+
+            EnsureProposedChangesCookiesAreCleared(m.VacancyId);
 
             return RedirectToRoute(RouteNames.Dashboard_Index_Get);
         }
@@ -94,15 +90,15 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         [HttpGet("cancel-vacancy-changes", Name = RouteNames.CancelVacancyChanges_Get)]
         public IActionResult CancelChanges(VacancyRouteModel vrm)
         {
-            ClearEditDatesCookies(vrm.VacancyId);
-
+            EnsureProposedChangesCookiesAreCleared(vrm.VacancyId);
+            
             return RedirectToRoute(RouteNames.Dashboard_Index_Get);
         }
 
-        private void ClearEditDatesCookies(Guid vacancyId)
+        private void EnsureProposedChangesCookiesAreCleared(Guid vacancyId)
         {
-            Response.Cookies.Delete(string.Format(CookieNames.VacancyProposedClosingDate, vacancyId), EsfaCookieOptions.GetSessionLifetimeHttpCookieOption(_hostingEnvironment));
-            Response.Cookies.Delete(string.Format(CookieNames.VacancyProposedStartDate, vacancyId), EsfaCookieOptions.GetSessionLifetimeHttpCookieOption(_hostingEnvironment));
+            Response.Cookies.ClearProposedClosingDate(_hostingEnvironment, vacancyId);
+            Response.Cookies.ClearProposedStartDate(_hostingEnvironment, vacancyId);
         }
 
         private IActionResult HandleRedirectOfEditableVacancy(Vacancy vacancy)

@@ -35,10 +35,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return vacancy;
         }
 
-        public async Task<ManageVacancyViewModel> GetManageVacancyViewModel(VacancyRouteModel vrm)
+        public async Task<ManageVacancyViewModel> GetManageVacancyViewModel(Vacancy vacancy)
         {
-            var vacancy = await GetVacancy(vrm);
-
             var viewModel = new ManageVacancyViewModel();
 
             viewModel.Title = vacancy.Title;
@@ -48,7 +46,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             viewModel.PossibleStartDate = vacancy.StartDate?.AsGdsDate();
             viewModel.IsDisabilityConfident = vacancy.IsDisabilityConfident;
             viewModel.IsApplyThroughFaaVacancy = vacancy.ApplicationMethod == ApplicationMethod.ThroughFindAnApprenticeship;
-            viewModel.CanShowEditVacancyLink = vacancy.Status == VacancyStatus.Live;
+            viewModel.CanShowEditVacancyLink = vacancy.CanExtendStartAndClosingDates;
             viewModel.CanShowCloseVacancyLink = vacancy.CanClose;
 
             var vacancyApplicationsTask =  await _client.GetVacancyApplicationsAsync(vacancy.VacancyReference.Value.ToString());
@@ -64,17 +62,17 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return viewModel;
         }
 
-        public async Task<EditVacancyViewModel> GetEditVacancyViewModel(VacancyRouteModel vrm, DateTime proposedClosingDate, DateTime proposedStartDate)
+        public async Task<EditVacancyViewModel> GetEditVacancyViewModel(VacancyRouteModel vrm, DateTime? proposedClosingDate, DateTime? proposedStartDate)
         {
             var vacancy = await GetVacancy(vrm);
 
             var viewModel = new EditVacancyViewModel();
             await _vacancyDisplayMapper.MapFromVacancyAsync(viewModel, vacancy);
 
-            if (proposedClosingDate != DateTime.MinValue)
+            if (proposedClosingDate.HasValue)
                 viewModel.ProposedClosingDate = proposedClosingDate;
 
-            if (proposedStartDate != DateTime.MinValue)
+            if (proposedStartDate.HasValue)
                 viewModel.ProposedStartDate = proposedStartDate;
 
             return viewModel;

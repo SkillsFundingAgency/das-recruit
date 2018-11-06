@@ -101,5 +101,10 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public bool CanSendForReview => Status == VacancyStatus.Submitted && IsDeleted == false;
 
         public bool IsDisabilityConfident => DisabilityConfident == DisabilityConfident.Yes;
+
+        /// <summary>
+        /// We can extend the ClosingDate and StartDate for Live vacancies that have not been deleted
+        /// </summary>
+        public bool CanExtendStartAndClosingDates => Status == VacancyStatus.Live && IsDeleted == false;
     }
 }
