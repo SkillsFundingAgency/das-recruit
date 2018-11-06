@@ -342,7 +342,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.Description)
                 .NotEmpty()
-                    .WithMessage("You must provide information on what the apprenticeship will involve")
+                    .WithMessage("You must give information on what the apprenticeship will involve")
                     .WithErrorCode("53")
                 .MaximumLength(500)
                     .WithMessage("What the apprenticeship involves must not exceed {MaxLength} characters")
@@ -358,7 +358,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.TrainingDescription)
                 .NotEmpty()
-                    .WithMessage("You must provide information on the training to be provided")
+                    .WithMessage("You must give information on the training to be provided")
                     .WithErrorCode("54")
                 .MaximumLength(500)
                     .WithMessage("Training to be provided description must not exceed {MaxLength} characters")
@@ -374,7 +374,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.OutcomeDescription)
                 .NotEmpty()
-                    .WithMessage("You must provide information on what to expect at the end of your apprenticeship")
+                    .WithMessage("You must give information on what to expect at the end of your apprenticeship")
                     .WithErrorCode("55")
                 .MaximumLength(500)
                     .WithMessage("What to expect at the end of your apprenticeship description must not exceed {MaxLength} characters")
