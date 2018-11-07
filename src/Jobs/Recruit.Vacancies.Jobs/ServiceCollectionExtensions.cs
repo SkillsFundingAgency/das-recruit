@@ -23,7 +23,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
         public static void ConfigureJobServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddSingleton<IApprenticeshipProgrammeApiClient, ApprenticeshipProgrammeApiClient>();
-            services.AddScoped<AccountsReader>(x => new AccountsReader(x.GetService<ILogger<AccountsReader>>(), configuration.GetConnectionString("EmployerFinanceSqlDbConnectionString"), configuration.GetConnectionString("EmployerAccountsSqlDbConnectionString")));
+            services.AddScoped(x => new AccountsReader(x.GetService<ILogger<AccountsReader>>(), configuration.GetConnectionString("EmployerFinanceSqlDbConnectionString"), configuration.GetConnectionString("EmployerAccountsSqlDbConnectionString")));
 
             services.AddRecruitStorageClient(configuration);
 

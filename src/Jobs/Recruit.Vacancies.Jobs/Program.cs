@@ -66,7 +66,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
                         //Maximum number of retries before a queue message is sent to a poison queue (default is 5)
                         options.MaxDequeueCount = 5;
                         //maximum wait time before polling again when a queue is empty (default is 1 minute).
-                        options.MaxPollingInterval = System.TimeSpan.FromSeconds(10);
+                        options.MaxPollingInterval = TimeSpan.FromSeconds(10);
                     });
 
                     services.ConfigureJobServices(context.Configuration);
