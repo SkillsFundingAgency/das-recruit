@@ -148,6 +148,8 @@ namespace Microsoft.Extensions.DependencyInjection
 
             MongoDbConventions.RegisterMongoConventions();
 
+            services.AddTransient<MongoDbCollectionChecker>();
+
             //Repositories
             services.AddTransient<IVacancyRepository, MongoDbVacancyRepository>();
             services.AddTransient<IVacancyReviewRepository, MongoDbVacancyReviewRepository>();

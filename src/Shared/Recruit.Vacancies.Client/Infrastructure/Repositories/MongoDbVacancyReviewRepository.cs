@@ -87,8 +87,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         {
             var filterBuilder = Builders<T>.Filter;
 
-            var filter = filterBuilder.Eq(Status, ReviewStatus.PendingReview)
-                         | filterBuilder.Eq(Status, ReviewStatus.UnderReview);
+            var filter = filterBuilder.Eq(Status, ReviewStatus.PendingReview.ToString())
+                         | filterBuilder.Eq(Status, ReviewStatus.UnderReview.ToString());
 
             var collection = GetCollection<T>();
 
