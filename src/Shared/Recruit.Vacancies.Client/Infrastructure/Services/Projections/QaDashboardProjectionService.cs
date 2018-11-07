@@ -24,7 +24,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
 
         public async Task RebuildQaDashboardAsync()
         {
-            var activeReviews = await _reviewQuery.GetActiveAsync();
+            var activeReviews = await _reviewQuery.GetActiveAsync<VacancyReviewSummary>();
+
+            activeReviews = activeReviews.OrderByDescending(x => x.CreatedDate).ToList();
 
             var qaDashboard = new QaDashboard
             {
@@ -36,7 +38,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
             await _queryStoreWriter.UpdateQaDashboardAsync(qaDashboard);
         }
 
-        private int GetTotalVacanciesResubmittedCount(IEnumerable<VacancyReview> activeReviews)
+        private int GetTotalVacanciesResubmittedCount(IEnumerable<VacancyReviewSummary> activeReviews)
         {
             return activeReviews
                 .Where(r => r.SubmissionCount > 1)
@@ -45,7 +47,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
                 .Count();
         }
 
-        private int GetTotalVacanciesBrokenSla(IEnumerable<VacancyReview> activeReviews)
+        private int GetTotalVacanciesBrokenSla(IEnumerable<VacancyReviewSummary> activeReviews)
         {
             return activeReviews.Count(r => r.SlaDeadline.HasValue && r.SlaDeadline.Value < _timeProvider.Now);
         }

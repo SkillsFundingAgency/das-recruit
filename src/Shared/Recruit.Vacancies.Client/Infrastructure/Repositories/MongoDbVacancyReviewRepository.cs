@@ -14,6 +14,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 {
     internal sealed class MongoDbVacancyReviewRepository : MongoDbCollectionBase, IVacancyReviewRepository, IVacancyReviewQuery
     {
+
+        private const string Status = "status";
+
+
         public MongoDbVacancyReviewRepository(
             ILogger<MongoDbVacancyReviewRepository> logger, IOptions<MongoDbConnectionDetails> details) 
             : base(logger, MongoDbNames.RecruitDb, MongoDbCollectionNames.VacancyReviews, details)
@@ -79,19 +83,21 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             return result;
         }
 
-        public async Task<List<VacancyReview>> GetActiveAsync()
+        public async Task<List<T>> GetActiveAsync<T>()
         {
-            var filterBuilder = Builders<VacancyReview>.Filter;
+            var filterBuilder = Builders<T>.Filter;
 
-            var filter = filterBuilder.Eq(r => r.Status, ReviewStatus.PendingReview)
-                         | filterBuilder.Eq(r => r.Status, ReviewStatus.UnderReview);
+            var filter = filterBuilder.Eq(Status, ReviewStatus.PendingReview)
+                         | filterBuilder.Eq(Status, ReviewStatus.UnderReview);
 
-            var collection = GetCollection<VacancyReview>();
-            var result = await RetryPolicy.ExecuteAsync(context => collection
-                                    .Find(filter)
-                                    .ToListAsync(), new Context(nameof(GetActiveAsync)));
+            var collection = GetCollection<T>();
 
-            return result.OrderByDescending(x => x.CreatedDate).ToList();
+            var result = await RetryPolicy.ExecuteAsync(context => collection.Find(filter)
+                    .Project<T>(GetProjection<T>())
+                    .ToListAsync()
+            , new Context(nameof(GetActiveAsync)));
+
+            return result;
         }
 
         public Task UpdateAsync(VacancyReview review)
