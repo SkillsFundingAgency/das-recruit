@@ -2,7 +2,6 @@
 @using Esfa.Recruit.Employer.Web.Configuration.Routing;
 @using Esfa.Recruit.Shared.Web.Configuration
 @inject ManageApprenticeshipsLinkHelper ExternalLinks
-
 @functions
 {
 public bool ParseHideNavFromViewBag()
@@ -23,6 +22,16 @@ public string GetTitle()
 
     return defaultTitle;
 }
+
+public bool IsErrorPage()
+{
+    if (ViewBag.IsErrorPage is bool)
+    {
+        return ViewBag.IsErrorPage;
+    }
+
+    return false;
+}
 }
 <!DOCTYPE html>
 <!--[if lt IE 9]><html class="lte-ie8" lang="en"><![endif]-->
@@ -32,7 +41,6 @@ public string GetTitle()
 <head>
     <meta charset="utf-8" />
     <title>@GetTitle()</title>
-
     <!-- TEMPLATE STYLES - START -->
     <!--[if gt IE 8]><!-->
     <link rel="stylesheet" media="screen" href="/lib/esfa-govuk/assets/stylesheets/govuk-template.min.css?0.23.0" /><!--<![endif]-->
@@ -52,34 +60,28 @@ public string GetTitle()
     <!--[if IE 8]><link rel="stylesheet" media="screen" href="/lib/esfa-govuk/assets/stylesheets/esfa-govuk-ie8.min.css?3.1.2" /><![endif]-->
     <!-- ELEMENTS AND TOOLKIT STYLES - END -->
     <!--[if lt IE 9]><script src="/lib/esfa-govuk/assets/javascripts/ie.js?0.23.0"></script><![endif]-->
-
     <link rel="shortcut icon" href="/lib/esfa-govuk/assets/images/favicon.ico" type="image/x-icon" />
-
     <link rel="mask-icon" href="/lib/esfa-govuk/assets/images/gov.uk_logotype_crown.svg" color="#0b0c0c">
     <link rel="apple-touch-icon" sizes="180x180" href="/lib/esfa-govuk/assets/images/apple-touch-icon-180x180.png">
     <link rel="apple-touch-icon" sizes="167x167" href="/lib/esfa-govuk/assets/images/apple-touch-icon-167x167.png">
     <link rel="apple-touch-icon" sizes="152x152" href="/lib/esfa-govuk/assets/images/apple-touch-icon-152x152.png">
     <link rel="apple-touch-icon" href="/lib/esfa-govuk/assets/images/apple-touch-icon.png">
-
     <meta name="theme-color" content="#0b0c0c" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta property="og:image" content="/lib/esfa-govuk/assets/images/opengraph-image.png">
-
     <link asp-append-version="true" rel="stylesheet" media="screen" href="/css/application.css" />
     <script src="@Url.Content("/lib/jquery/dist/jquery.js")"></script>
     <script src="@Url.Content("/lib/jquery-are-you-sure/jquery.are-you-sure.js")"></script>
     <environment exclude="@EnvironmentNames.GetTestEnvironmentNamesCommaDelimited()">
-    <partial name="@PartialNames.GoogleTagManagerHeadPartial" />
+        <partial name="@PartialNames.GoogleTagManagerHeadPartial" />
     </environment>
     @Html.Raw(JavaScriptSnippet.FullScript) <!-- AppInsights script -->
-    <script>
-        window.EsfaRecruit = {};
-    </script>
+    <script>window.EsfaRecruit = {};</script>
     @RenderSection(RazorSections.HeadJS, required: false)
 </head>
 <body>
     <environment exclude="@EnvironmentNames.GetTestEnvironmentNamesCommaDelimited()">
-    <partial name="@PartialNames.GoogleTagManagerBodyPartial" />
+        <partial name="@PartialNames.GoogleTagManagerBodyPartial" />
     </environment>
     <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
     <div id="skiplink-container">
@@ -99,7 +101,7 @@ public string GetTitle()
     <div id="global-cookie-message">
         <p>GOV.UK uses cookies to make the site simpler. <a href="https://www.gov.uk/help/cookies">Find out more about cookies</a></p>
     </div>
-    
+
     <header role="banner" id="global-header" class="with-proposition">
         <div class="header-wrapper">
             <div class="header-global">
@@ -116,7 +118,6 @@ public string GetTitle()
             </div>
         </div>
     </header>
-
     <div id="floating-menu-holder">
         <div class="account-information floating-menu" role="navigation">
             <div class="js-float">
@@ -130,10 +131,10 @@ public string GetTitle()
                                 <a href="/" role="menuitem" class="menu-main">Settings</a>
                                 <ul role="menu" id="settings-menu" class="js-hidden">
                                     <li><a href="@ExternalLinks.Accounts" role="menuitem" class="sub-menu-item">Your accounts</a></li>
-                                    <li><a asp-route="@RouteNames.Dashboard_AccountsRename" class="sub-menu-item">Rename account</a></li>
+                                    <li asp-hide="@IsErrorPage()"><a asp-route="@RouteNames.Dashboard_AccountsRename" class="sub-menu-item">Rename account</a></li>
                                     <li><a asp-route="@RouteNames.Dashboard_ChangePassword" asp-route-returnUrl="@Context.Request.Path" class="sub-menu-item">Change your password</a></li>
                                     <li><a asp-route="@RouteNames.Dashboard_ChangeEmail" asp-route-returnUrl="@Context.Request.Path" class="sub-menu-item">Change your email address</a></li>
-                                    <li><a href="@ExternalLinks.Notifications" class="sub-menu-item">Notifications settings</a></li>
+                                    <li asp-hide="@IsErrorPage()"><a href="@ExternalLinks.Notifications" class="sub-menu-item">Notifications settings</a></li>
                                 </ul>
                             </li>
                             <li><a asp-route="@RouteNames.Logout_Get" role="menuitem" class="menu-main">Sign out</a></li>
@@ -147,7 +148,6 @@ public string GetTitle()
             </div>
         </div>
     </div> <!--/floating-menu-holder-->
-
     @if (Context.User.Identity.IsAuthenticated)
     {
         <div asp-show="ParseHideNavFromViewBag()" class="header-organisation" role="navigation">
@@ -164,7 +164,6 @@ public string GetTitle()
             </nav>
         </div>
     }
-
     <main id="content" role="main">
         <div class="phase-banner">
             <p>
@@ -174,7 +173,6 @@ public string GetTitle()
         </div>
         @RenderBody()
     </main>
-
     <footer class="group js-footer" id="footer" role="contentinfo">
         <div class="footer-wrapper">
             <div class="footer-meta">
@@ -196,9 +194,7 @@ public string GetTitle()
             </div>
         </div>
     </footer>
-
     <div id="global-app-error" class="app-error hidden"></div>
-
     <script src="/lib/esfa-govuk/assets/javascripts/govuk-template.js"></script>
     <script src="/lib/esfa-govuk/assets/javascripts/govuk/show-hide-content.js"></script>
     <script src="/lib/esfa-stacker/stacker.js"></script>
