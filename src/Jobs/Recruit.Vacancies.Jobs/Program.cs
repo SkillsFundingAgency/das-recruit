@@ -24,7 +24,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
         public static async Task Main(string[] args)
         {
             var builder = new HostBuilder()
-                .UseEnvironment("Development")
+                .UseEnvironment(EnvironmentName)
                 .ConfigureWebJobs(b =>
                 {
                     b.AddAzureStorageCoreServices()
