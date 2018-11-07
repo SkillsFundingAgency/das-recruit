@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Linq;
 using System.Security.Authentication;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using MongoDB.Bson;
 using MongoDB.Driver;
+using MongoDB.Driver.Core.Events;
 using Polly;
 using Polly.Retry;
 
@@ -32,6 +35,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
             var settings = MongoClientSettings.FromUrl(new MongoUrl(_config.ConnectionString));
             settings.SslSettings = new SslSettings { EnabledSslProtocols = SslProtocols.Tls12 };
 
+#if DEBUG
+            //LogMongoCommands(settings);
+#endif
+
             var client = new MongoClient(settings);
             var database = client.GetDatabase(_dbName);
             var collection = database.GetCollection<T>(_collectionName);
@@ -55,7 +62,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
             return projection;
         }
 
-        private Polly.Retry.RetryPolicy GetRetryPolicy()
+        private RetryPolicy GetRetryPolicy()
         {
             return Policy
                     .Handle<MongoException>()
@@ -67,6 +74,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
                     }, (exception, timeSpan, retryCount, context) => {
                         _logger.LogWarning($"Error executing Mongo Command for method {context.OperationKey} Reason: {exception.Message}. Retrying in {timeSpan.Seconds} secs...attempt: {retryCount}");    
                     });
+        }
+
+        private void LogMongoCommands(MongoClientSettings settings)
+        {
+            settings.ClusterConfigurator = cc => cc.Subscribe<CommandStartedEvent>(e =>
+            {
+                if (new[] { "isMaster", "buildInfo", "saslStart", "saslContinue", "getLastError" }.Contains(e.CommandName))
+                    return;
+
+                _logger.LogDebug($"{e.CommandName} = {e.Command.ToJson()}");
+            });
         }
     }
 }
