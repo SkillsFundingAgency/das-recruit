@@ -22,22 +22,22 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents
             _handlerLookup = BuildHandlerLookup(handlers);
         }
 
-        public async Task HandleApplicationSubmittedEvent([QueueTrigger(QueueNames.ApplicationSubmittedQueueName, Connection = "EventQueueConnectionString")] string message, TextWriter log)
+        public async Task HandleApplicationSubmittedEvent([QueueTrigger(QueueNames.ApplicationSubmittedQueueName, Connection = "QueueStorage")] string message, TextWriter log)
         {
             await ExecuteHandler(nameof(ApplicationSubmittedEvent), message);
         }
 
-        public async Task HandleApplicationWithdrawnEvent([QueueTrigger(QueueNames.ApplicationWithdrawnQueueName, Connection = "EventQueueConnectionString")] string message, TextWriter log)
+        public async Task HandleApplicationWithdrawnEvent([QueueTrigger(QueueNames.ApplicationWithdrawnQueueName, Connection = "QueueStorage")] string message, TextWriter log)
         {
             await ExecuteHandler(nameof(ApplicationWithdrawnEvent), message);
         }
 
-        public async Task HandleCandidateDeleteEvent([QueueTrigger(QueueNames.CandidateDeleteQueueName, Connection = "EventQueueConnectionString")] string message, TextWriter log)
+        public async Task HandleCandidateDeleteEvent([QueueTrigger(QueueNames.CandidateDeleteQueueName, Connection = "QueueStorage")] string message, TextWriter log)
         {
             await ExecuteHandler(nameof(CandidateDeleteEvent), message);
         }
 
-        public async Task HandleVacancyEvent([QueueTrigger(QueueNames.DomainEventsQueueName, Connection = "EventQueueConnectionString")] string message, TextWriter log)
+        public async Task HandleVacancyEvent([QueueTrigger(QueueNames.DomainEventsQueueName, Connection = "QueueStorage")] string message, TextWriter log)
         {
             try
             {
