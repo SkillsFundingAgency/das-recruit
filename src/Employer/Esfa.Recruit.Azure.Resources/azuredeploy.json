@@ -613,12 +613,7 @@
                 "type": "Custom"
               },
               {
-                "name": "Storage",
-                "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
-                "type": "Custom"
-              },
-              {
-                "name": "WebJobsDashboard",
+                "name": "QueueStorage",
                 "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
                 "type": "Custom"
               },
@@ -628,7 +623,7 @@
                 "type": "Custom"
               },
               {
-                "name": "WebJobsStorage",
+                "name": "AzureWebJobsStorage",
                 "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
                 "type": "Custom"
               },
