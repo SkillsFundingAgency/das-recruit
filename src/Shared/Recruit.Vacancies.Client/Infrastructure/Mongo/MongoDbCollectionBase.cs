@@ -27,7 +27,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
             _dbName = dbName;
             _collectionName = collectionName;
             _config = config.Value;
-            RetryPolicy = GetRetryPolicy();
+            RetryPolicy = MongoDbRetryPolicy.GetRetryPolicy(_logger);
         }
 
         protected IMongoCollection<T> GetCollection<T>()
@@ -61,21 +61,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
             }
             return projection;
         }
-
-        private RetryPolicy GetRetryPolicy()
-        {
-            return Policy
-                    .Handle<MongoException>()
-                    .WaitAndRetryAsync(new[]
-                    {
-                        TimeSpan.FromSeconds(1),
-                        TimeSpan.FromSeconds(2),
-                        TimeSpan.FromSeconds(4)
-                    }, (exception, timeSpan, retryCount, context) => {
-                        _logger.LogWarning($"Error executing Mongo Command for method {context.OperationKey} Reason: {exception.Message}. Retrying in {timeSpan.Seconds} secs...attempt: {retryCount}");    
-                    });
-        }
-
+        
         private void LogMongoCommands(MongoClientSettings settings)
         {
             settings.ClusterConfigurator = cc => cc.Subscribe<CommandStartedEvent>(e =>

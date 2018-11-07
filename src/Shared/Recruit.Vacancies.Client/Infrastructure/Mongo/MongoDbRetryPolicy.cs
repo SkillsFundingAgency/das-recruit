@@ -1,0 +1,25 @@
+﻿using Microsoft.Extensions.Logging;
+using MongoDB.Driver;
+using Polly;
+using Polly.Retry;
+using System;
+
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
+{
+    public static class MongoDbRetryPolicy
+    {
+        public static RetryPolicy GetRetryPolicy(ILogger logger)
+        {
+            return Policy
+                .Handle<MongoException>()
+                .WaitAndRetryAsync(new[]
+                {
+                    TimeSpan.FromSeconds(1),
+                    TimeSpan.FromSeconds(2),
+                    TimeSpan.FromSeconds(4)
+                }, (exception, timeSpan, retryCount, context) => {
+                    logger.LogWarning($"Error executing Mongo Command for method {context.OperationKey} Reason: {exception.Message}. Retrying in {timeSpan.Seconds} secs...attempt: {retryCount}");
+                });
+        }
+    }
+}
