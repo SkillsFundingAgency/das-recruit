@@ -40,7 +40,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             Utility.CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
 
             if (vacancy.CanExtendStartAndClosingDates == false)
-                throw new InvalidStateException(string.Format(ViewModels.ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
+                throw new InvalidStateException(string.Format(ViewModels.ErrorMessages.VacancyDatesCannotBeEdited, vacancy.Title));
 
             return vacancy;
         }

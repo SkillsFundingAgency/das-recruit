@@ -1,21 +1,17 @@
-﻿using System;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
-using System.Linq;
-using Esfa.Recruit.Employer.Web.ViewModels.Error;
-using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Diagnostics;
-using Esfa.Recruit.Employer.Web.Configuration;
-using System.Net;
-using System.Threading.Tasks;
-using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
+﻿using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Exceptions;
-using Esfa.Recruit.Employer.Web.Extensions;
-using Esfa.Recruit.Employer.Web.Filters;
+using Esfa.Recruit.Employer.Web.ViewModels.Error;
+using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
-using StackExchange.Redis;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Diagnostics;
+using System.Linq;
+using System.Net;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
