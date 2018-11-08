@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace Esfa.Recruit.Employer.Web.Caching
+namespace Esfa.Recruit.Vacancies.Client.Application.Cache
 {
     public interface ICache
     {

@@ -1,4 +1,5 @@
-﻿using Esfa.Recruit.Vacancies.Client.Application.CommandHandlers;
+﻿using Esfa.Recruit.Vacancies.Client.Application.Cache;
+using Esfa.Recruit.Vacancies.Client.Application.CommandHandlers;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Events;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
@@ -52,6 +53,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             services.Configure<AccountApiConfiguration>(configuration.GetSection("AccountApiConfiguration"));
 
+            services.AddMemoryCache();
             services.AddMediatR(typeof(CreateVacancyCommandHandler).Assembly);
             services.AddTransient<IMessaging, MediatrMessaging>();
             
@@ -105,6 +107,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient<INextVacancyReviewService, NextVacancyReviewService>();
             services.AddTransient<IVacancyComparerService, VacancyComparerService>();
             services.AddTransient<IGetTitlePopularity, TitlePopularityService>();
+            services.AddTransient<ICache, Cache>();
 
             // Infrastructure Services
             services.AddTransient<IEmployerAccountProvider, EmployerAccountProvider>();

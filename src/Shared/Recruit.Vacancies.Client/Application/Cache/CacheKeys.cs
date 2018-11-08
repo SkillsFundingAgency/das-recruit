@@ -1,4 +1,4 @@
-﻿namespace Esfa.Recruit.Employer.Web.Configuration
+﻿namespace Esfa.Recruit.Vacancies.Client.Application.Cache
 {
     public static class CacheKeys
     {

@@ -1,6 +1,5 @@
 ﻿using System;
-using Esfa.Recruit.Employer.Web.Caching;
-using Esfa.Recruit.Employer.Web.Filters;
+using Esfa.Recruit.Vacancies.Client.Application.Cache;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Microsoft.AspNetCore.Mvc.Filters;
 
