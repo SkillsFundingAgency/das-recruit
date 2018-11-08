@@ -29,6 +29,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services
             var request = new RestRequest();
             var response = await client.ExecuteTaskAsync<BankHolidays.BankHolidaysData>(request);
 
+            if(!response.IsSuccessful)
+                throw new Exception($"Error getting list of bank holidays from url:{_config.Url}. Error:{response.ErrorMessage}");
+
             if (!response.Data.EnglandAndWales.Events.Any())
                 throw new Exception($"Expected a list of bank holidays from url:{_config.Url}");
 
