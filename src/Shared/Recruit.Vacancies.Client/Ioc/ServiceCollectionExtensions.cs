@@ -65,7 +65,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.RegisterRepositories(configuration);
 
             services.AddTransient<IConfigurationReader, ConfigurationReader>();
-            services.AddTransient<QaRulesConfiguration>(x => 
+            services.AddSingleton<QaRulesConfiguration>(x => 
                                                             {
                                                                 var svc = x.GetService<IConfigurationReader>();
                                                                 return svc.GetAsync<QaRulesConfiguration>("QaRules").Result;
@@ -186,8 +186,8 @@ namespace Microsoft.Extensions.DependencyInjection
 
         private static void AddValidation(this IServiceCollection services)
         {
-            services.AddTransient<AbstractValidator<Vacancy>, FluentVacancyValidator>();
-            services.AddTransient(typeof(IEntityValidator<,>), typeof(EntityValidator<,>));
+            services.AddSingleton<AbstractValidator<Vacancy>, FluentVacancyValidator>();
+            services.AddSingleton(typeof(IEntityValidator<,>), typeof(EntityValidator<,>));
 
             services.AddSingleton<AbstractValidator<ApplicationReview>, ApplicationReviewValidator>();
             services.AddSingleton<AbstractValidator<VacancyReview>, VacancyReviewValidator>();
