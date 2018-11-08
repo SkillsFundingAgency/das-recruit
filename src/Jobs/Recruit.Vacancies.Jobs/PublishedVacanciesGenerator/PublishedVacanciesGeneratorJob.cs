@@ -20,7 +20,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.PublishedVacanciesGenerator
             _projectionService = projectionService;
         }
 
-        public async Task GeneratePublishedVacanciesProjectionsAsync([QueueTrigger(QueueNames.GeneratePublishedVacanciesQueueName, Connection = "EventQueueConnectionString")] string message, TextWriter log)
+        public async Task GeneratePublishedVacanciesProjectionsAsync([QueueTrigger(QueueNames.GeneratePublishedVacanciesQueueName, Connection = "QueueStorage")] string message, TextWriter log)
         {
             try
             {

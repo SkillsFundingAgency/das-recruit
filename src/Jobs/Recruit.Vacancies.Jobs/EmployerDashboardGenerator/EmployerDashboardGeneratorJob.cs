@@ -21,7 +21,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.EmployerDashboardGenerator
             _projectionService = projectionService;
         }
 
-        public async Task ReGenerateSingleEmployerDashboard([QueueTrigger(QueueNames.GenerateSingleEmployerDashboardQueueName, Connection = "EventQueueConnectionString")] string message, TextWriter log)
+        public async Task ReGenerateSingleEmployerDashboard([QueueTrigger(QueueNames.GenerateSingleEmployerDashboardQueueName, Connection = "QueueStorage")] string message, TextWriter log)
         {
             try
             {
@@ -44,7 +44,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.EmployerDashboardGenerator
             }
         }
 
-        public async Task ReGenerateAllEmployerDashboards([QueueTrigger(QueueNames.GenerateAllEmployerDashboardQueueName, Connection = "EventQueueConnectionString")] string message, TextWriter log)
+        public async Task ReGenerateAllEmployerDashboards([QueueTrigger(QueueNames.GenerateAllEmployerDashboardQueueName, Connection = "QueueStorage")] string message, TextWriter log)
         {
             try
             {

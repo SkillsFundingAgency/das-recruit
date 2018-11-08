@@ -23,7 +23,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.NonLevyAccountBlocker
         }
 
 #if DEBUG
-        public async Task RefreshBlockedEmployerAccountsAsync([QueueTrigger(QueueNames.GenerateBlockedEmployersQueueName, Connection = "EventQueueConnectionString")] string message, TextWriter log)
+        public async Task RefreshBlockedEmployerAccountsAsync([QueueTrigger(QueueNames.GenerateBlockedEmployersQueueName, Connection = "QueueStorage")] string message, TextWriter log)
 #else
         public async Task RefreshBlockedEmployerAccountsAsync([TimerTrigger(Schedules.Hourly, RunOnStartup = true)] TimerInfo timerInfo, TextWriter log)
 #endif
