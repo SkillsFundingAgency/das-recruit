@@ -4,5 +4,6 @@
     {
         public const string BlockedEmployersCacheKey = "blockedEmployers";
         public const string ApprenticeshipProgrammes = "apprenticeshipProgrammes";
+        public const string MinimumWages = "minimumWages";
     }
 }
