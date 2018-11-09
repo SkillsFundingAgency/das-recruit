@@ -170,7 +170,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
         private static void RegisterStorageProviderDeps(this IServiceCollection services, IConfiguration configuration)
         {
-            var storageConnectionString = configuration.GetConnectionString("Storage");
+            var storageConnectionString = configuration.GetConnectionString("QueueStorage");
 
             services.Configure<StorageQueueConnectionDetails>(options =>
             {
