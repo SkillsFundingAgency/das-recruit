@@ -27,7 +27,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.VacancyReview
                 
                 await _client.ApproveVacancy(@event.VacancyReference);
 
-                _logger.LogInformation($"Finished Processing {nameof(VacancyCreatedEvent)} for review: {{ReviewId}} vacancy: {{VacancyReference}}", @event.ReviewId, @event.VacancyReference);
+                _logger.LogInformation($"Finished Processing {nameof(VacancyReviewApprovedEvent)} for review: {{ReviewId}} vacancy: {{VacancyReference}}", @event.ReviewId, @event.VacancyReference);
             }
             catch (Exception ex)
             {

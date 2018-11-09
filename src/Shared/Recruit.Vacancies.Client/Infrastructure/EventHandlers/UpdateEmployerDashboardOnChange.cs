@@ -9,7 +9,8 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
 {
-    public class UpdateEmployerDashboardOnChange :  INotificationHandler<VacancyCreatedEvent>,
+    public class UpdateEmployerDashboardOnChange : INotificationHandler<VacancyCreatedEvent>,
+                                            INotificationHandler<VacancyClonedEvent>,
                                             INotificationHandler<DraftVacancyUpdatedEvent>,
                                             INotificationHandler<VacancySubmittedEvent>,
                                             INotificationHandler<VacancyDeletedEvent>,
@@ -22,10 +23,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
                                             INotificationHandler<SetupEmployerEvent>,
                                             INotificationHandler<VacancyReferredEvent>
     {
-        
         private readonly IEmployerDashboardProjectionService _dashboardService;
         private readonly ILogger<UpdateEmployerDashboardOnChange> _logger;
-        
 
         public UpdateEmployerDashboardOnChange(IEmployerDashboardProjectionService dashboardService, ILogger<UpdateEmployerDashboardOnChange> logger)
         {
@@ -89,6 +88,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
         }
 
         public Task Handle(VacancyReferredEvent notification, CancellationToken cancellationToken)
+        {
+            return Handle(notification);
+        }
+
+        public Task Handle(VacancyClonedEvent notification, CancellationToken cancellationToken)
         {
             return Handle(notification);
         }

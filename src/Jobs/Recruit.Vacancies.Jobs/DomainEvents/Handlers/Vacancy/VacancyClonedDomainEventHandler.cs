@@ -6,12 +6,12 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy
 {
-    public class VacancyCreatedHandler : DomainEventHandler, IDomainEventHandler<VacancyCreatedEvent>
+    public class VacancyClonedDomainEventHandler : DomainEventHandler, IDomainEventHandler<VacancyClonedEvent>
     {
-        private readonly ILogger<VacancyCreatedHandler> _logger;
+        private readonly ILogger<VacancyClonedDomainEventHandler> _logger;
         private readonly IJobsVacancyClient _client;
 
-        public VacancyCreatedHandler(ILogger<VacancyCreatedHandler> logger, IJobsVacancyClient client) : base(logger)
+        public VacancyClonedDomainEventHandler(ILogger<VacancyClonedDomainEventHandler> logger, IJobsVacancyClient client) : base(logger)
         {
             _logger = logger;
             _client = client;
@@ -23,10 +23,11 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy
 
             try
             {
-                _logger.LogInformation($"Processing {nameof(VacancyCreatedEvent)} for vacancy: {{VacancyId}}", @event.VacancyId);
+                _logger.LogInformation($"Processing {nameof(VacancyClonedEvent)} for vacancy: {{VacancyId}}", @event.VacancyId);
+                
                 await _client.AssignVacancyNumber(@event.VacancyId);
                 
-                _logger.LogInformation($"Finished Processing {nameof(VacancyCreatedEvent)} for vacancy: {{VacancyId}}", @event.VacancyId);
+                _logger.LogInformation($"Finished Processing {nameof(VacancyClonedEvent)} for vacancy: {{VacancyId}}", @event.VacancyId);
             }
             catch (Exception ex)
             {

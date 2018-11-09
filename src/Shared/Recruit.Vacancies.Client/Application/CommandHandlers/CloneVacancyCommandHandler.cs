@@ -49,7 +49,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             await _repository.CreateAsync(clone);
 
-            await _messaging.PublishEvent(new VacancyCreatedEvent
+            await _messaging.PublishEvent(new VacancyClonedEvent
             {
                 EmployerAccountId = clone.EmployerAccountId,
                 VacancyId = clone.Id

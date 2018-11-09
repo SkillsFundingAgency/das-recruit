@@ -24,9 +24,11 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy
             try
             {
                 _logger.LogInformation($"Processing {nameof(DraftVacancyUpdatedEvent)} for vacancy: {{VacancyId}}", @event.VacancyId);
-               
+
+                await _client.EnsureVacancyHasReferenceNumberAsync(@event.VacancyId);
+
                 await _client.EnsureVacancyIsGeocodedAsync(@event.VacancyId);
-               
+
                 _logger.LogInformation($"Finished Processing {nameof(DraftVacancyUpdatedEvent)} for vacancy: {{VacancyId}}", @event.VacancyId);
             }
             catch (Exception ex)
@@ -37,4 +39,3 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy
         }
     }
 }
-
