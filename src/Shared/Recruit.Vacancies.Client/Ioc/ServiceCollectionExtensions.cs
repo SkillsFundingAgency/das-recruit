@@ -43,6 +43,7 @@ using Recruit.Vacancies.Client.Infrastructure.Configuration;
 using Recruit.Vacancies.Client.Infrastructure.Services.VacancyTitle;
 using SFA.DAS.EAS.Account.Api.Client;
 using VacancyRuleSet = Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules.VacancyRuleSet;
+using System;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -50,6 +51,7 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static void AddRecruitStorageClient(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddHttpClient();
             services.Configure<AccountApiConfiguration>(configuration.GetSection("AccountApiConfiguration"));
 
             services.AddMediatR(typeof(CreateVacancyCommandHandler).Assembly);
@@ -109,6 +111,7 @@ namespace Microsoft.Extensions.DependencyInjection
             // Infrastructure Services
             services.AddTransient<IEmployerAccountProvider, EmployerAccountProvider>();
             services.AddTransient<ISlackClient, SlackClient>();
+
             services.AddTransient<IGeocodeServiceFactory, GeocodeServiceFactory>();
             services.AddTransient<IGetVacancyTitlesProvider, VacancyApiTitlesProvider>();
 
