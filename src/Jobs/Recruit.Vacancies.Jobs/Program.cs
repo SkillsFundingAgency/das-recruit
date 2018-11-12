@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Azure.WebJobs.Host.Queues;
 using Microsoft.Extensions.Configuration;
@@ -76,8 +77,16 @@ namespace Esfa.Recruit.Vacancies.Jobs
             var host = builder.Build();
             using (host)
             {
+                CheckInfrastructure(host.Services);
+
                 await host.RunAsync();
             }
+        }
+
+        private static void CheckInfrastructure(IServiceProvider serviceProvider)
+        {
+            var collectionChecker = (MongoDbCollectionChecker)serviceProvider.GetService(typeof(MongoDbCollectionChecker));
+            collectionChecker.EnsureCollectionsExist();
         }
     }
 }

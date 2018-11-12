@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Security.Authentication;
-using System.Text;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
 using Microsoft.Extensions.Logging;
@@ -16,20 +14,24 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
 {
     public class MongoDbCollectionChecker
     {
+        private readonly ILogger<MongoDbCollectionChecker> _logger;
         private readonly MongoDbConnectionDetails _config;
 
-        public MongoDbCollectionChecker(IOptions<MongoDbConnectionDetails> config)
+        public MongoDbCollectionChecker(ILogger<MongoDbCollectionChecker> logger, IOptions<MongoDbConnectionDetails> config)
         {
+            _logger = logger;
             _config = config.Value;
         }
 
-        public void EnsureCollectionsExist(ILogger logger)
+        public void EnsureCollectionsExist()
         {
+            _logger.LogInformation("Ensuring collections have been created");
+
             var expectedCollections = GetExpectedCollectionNames();
             if(expectedCollections.Any() == false)
                 throw new InfrastructureException("There are no expected collections.");
 
-            var actualCollections = GetMongoCollectionsAsync(logger).Result;
+            var actualCollections = GetMongoCollectionsAsync(_logger).Result;
 
             var missingCollections = expectedCollections.Except(actualCollections).ToList();
 
