@@ -1,0 +1,5 @@
+mode: Mainline
+commit-message-incrementing: MergeMessageOnly
+branches: {}
+ignore:
+  sha: []
