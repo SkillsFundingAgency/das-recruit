@@ -387,16 +387,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             });
         }
 
-        public async Task EnsureVacancyHasReferenceNumberAsync(Guid vacancyId)
-        {
-            var vacancy = await _repository.GetVacancyAsync(vacancyId);
-
-            if (vacancy?.VacancyReference.HasValue == false)
-            {
-                await AssignVacancyNumber(vacancyId);
-            }
-        }
-
         public Task HardDeleteApplicationReviewsForCandidate(Guid candidateId)
         {
             return _messaging.SendCommandAsync(new DeleteApplicationReviewsCommand

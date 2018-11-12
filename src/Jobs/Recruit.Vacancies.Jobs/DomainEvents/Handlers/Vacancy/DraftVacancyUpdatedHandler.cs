@@ -25,7 +25,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy
             {
                 _logger.LogInformation($"Processing {nameof(DraftVacancyUpdatedEvent)} for vacancy: {{VacancyId}}", @event.VacancyId);
 
-                await _client.EnsureVacancyHasReferenceNumberAsync(@event.VacancyId);
+                await _client.AssignVacancyNumber(@event.VacancyId);
 
                 await _client.EnsureVacancyIsGeocodedAsync(@event.VacancyId);
 
