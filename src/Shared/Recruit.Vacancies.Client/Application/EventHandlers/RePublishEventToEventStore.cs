@@ -9,7 +9,6 @@ using Microsoft.Extensions.Logging;
 namespace Esfa.Recruit.Vacancies.Client.Application.EventHandlers
 {
     public class RePublishEventToEventStore : 
-                                            INotificationHandler<VacancyCreatedEvent>,
                                             INotificationHandler<VacancyClonedEvent>,
                                             INotificationHandler<DraftVacancyUpdatedEvent>,
                                             INotificationHandler<VacancySubmittedEvent>,
