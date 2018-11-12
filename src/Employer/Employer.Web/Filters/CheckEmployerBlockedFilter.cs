@@ -30,7 +30,7 @@ namespace Esfa.Recruit.Employer.Web.Filters
             if (RequestIsForWhiteListedPage(context) == false)
             {
                 var blockedEmployerAccountIds = await _cache.CacheAsideAsync(
-                    CacheKeys.BlockedEmployersCacheKey,
+                    CacheKeys.BlockedEmployers,
                     CacheAbsoluteExpiryTime,
                     () => _blockedEmployersProvider.GetBlockedEmployerAccountIdsAsync());
 
