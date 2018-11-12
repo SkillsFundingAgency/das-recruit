@@ -6,5 +6,6 @@
         public const string ApprenticeshipProgrammes = "apprenticeshipProgrammes";
         public const string MinimumWages = "minimumWages";
         public const string Qualifications = "qualifications";
+        public const string Skills = "skills";
     }
 }
