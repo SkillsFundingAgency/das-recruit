@@ -21,12 +21,12 @@ namespace Recruit.Vacancies.Client.Infrastructure.Services.VacancyTitle
         private const int MaxSearchResultsPerPageLimit = 250;
         private const int NoOfPagesToSearch = 4;
 
-        public VacancyApiTitlesProvider(ILogger<VacancyApiTitlesProvider> logger, IOptions<VacancyApiConfiguration> vacancyApiConfig)
+        public VacancyApiTitlesProvider(IHttpClientFactory clientFactory, ILogger<VacancyApiTitlesProvider> logger, IOptions<VacancyApiConfiguration> vacancyApiConfig)
         {
             _logger = logger;
             _baseSearchEndpoint = vacancyApiConfig.Value.ApiSearchBaseUrl;
             _vacancyApiReadSubscriptionKey = vacancyApiConfig.Value.ApiReadSubscriptionKey;
-            _httpClient = new HttpClient();
+            _httpClient = clientFactory.CreateClient();
         }
 
         public async Task<IList<string>> GetVacancyTitlesAsync(string larsCode)
