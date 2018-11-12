@@ -111,7 +111,6 @@ namespace Microsoft.Extensions.DependencyInjection
             // Infrastructure Services
             services.AddTransient<IEmployerAccountProvider, EmployerAccountProvider>();
             services.AddTransient<ISlackClient, SlackClient>();
-
             services.AddTransient<IGeocodeServiceFactory, GeocodeServiceFactory>();
             services.AddTransient<IGetVacancyTitlesProvider, VacancyApiTitlesProvider>();
 
