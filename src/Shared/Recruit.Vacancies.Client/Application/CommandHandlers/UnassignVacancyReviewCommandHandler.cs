@@ -37,7 +37,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             review.ReviewedByUser = null;
 
             await _repository.UpdateAsync(review);
-
         }
     }
 }
