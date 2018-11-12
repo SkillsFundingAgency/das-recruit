@@ -36,6 +36,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly IEmployerDashboardProjectionService _dashboardService;
         private readonly IEmployerProfileRepository _employerProfileRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IQualificationsProvider _qualificationsProvider;
 
         public VacancyClient(
             IVacancyRepository repository,
@@ -51,7 +52,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             IVacancyService vacancyService,
             IEmployerDashboardProjectionService dashboardService,
             IEmployerProfileRepository employerProfileRepository,
-            IUserRepository userRepository)
+            IUserRepository userRepository,
+            IQualificationsProvider qualificationsProvider)
         {
             _repository = repository;
             _reader = reader;
@@ -67,6 +69,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _dashboardService = dashboardService;
             _employerProfileRepository = employerProfileRepository;
             _userRepository = userRepository;
+            _qualificationsProvider = qualificationsProvider;
         }
 
         public Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user)
@@ -219,9 +222,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _candidateSkillsProvider.GetCandidateSkillsAsync();
         }
 
-        public Task<Qualifications> GetCandidateQualificationsAsync()
+        public Task<IList<string>> GetCandidateQualificationsAsync()
         {
-            return _referenceDataReader.GetReferenceData<Qualifications>();
+            return _qualificationsProvider.GetQualificationsAsync();
         }
 
         public Task<ApplicationReview> GetApplicationReviewAsync(Guid applicationReviewId)

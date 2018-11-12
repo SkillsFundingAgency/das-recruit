@@ -8,7 +8,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part2.Qualifications
     {
         public string Title { get; internal set; }
 
-        public List<string> QualificationTypes { get; set; }
+        public IList<string> QualificationTypes { get; set; }
 
         public bool HasQualifications => Qualifications.Any();
 

@@ -13,7 +13,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
         private readonly IReferenceDataReader _referenceDataReader;
         private readonly ICache _cache;
 
-        private DateTime CacheAbsoluteExpiryTime => DateTime.UtcNow.Date.AddDays(1);
+        private DateTime CacheAbsoluteExpiryTime => DateTime.UtcNow.Date.AddDays(1).AddHours(4).AddMinutes(15);
 
         public ApprenticeshipProgrammeProvider(IReferenceDataReader queryStoreReader, ICache cache)
         {
