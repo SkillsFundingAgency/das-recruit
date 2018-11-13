@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Configuration;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Azure.WebJobs.Host.Queues;
@@ -13,19 +14,10 @@ namespace Esfa.Recruit.Vacancies.Jobs
 {
     class Program
     {
-        private static readonly string EnvironmentName;
-        private static readonly bool IsDevelopment;
-
-        static Program()
-        {
-            EnvironmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-            IsDevelopment = EnvironmentName?.Equals("Development", StringComparison.CurrentCultureIgnoreCase) ?? false;
-        }
-
         public static async Task Main(string[] args)
         {
             var builder = new HostBuilder()
-                .UseEnvironment(EnvironmentName)
+                .UseEnvironment(RecruitEnvironment.EnvironmentName)
                 .ConfigureWebJobs(b =>
                 {
                     b.AddAzureStorageCoreServices()
@@ -35,10 +27,10 @@ namespace Esfa.Recruit.Vacancies.Jobs
                 .ConfigureAppConfiguration(b =>
                 {
                     b.AddJsonFile("appSettings.json", optional: false)
-                    .AddJsonFile($"appSettings.{EnvironmentName}.json", true)
+                    .AddJsonFile($"appSettings.{RecruitEnvironment.EnvironmentName}.json", true)
                     .AddEnvironmentVariables();
 
-                    if (IsDevelopment)
+                    if (RecruitEnvironment.IsDevelopment)
                     {
                         b.AddUserSecrets<Program>();
                     }
