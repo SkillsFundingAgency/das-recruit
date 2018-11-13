@@ -20,8 +20,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         private const string EmployerAccountId = "employerAccountId";
         private const string IsDeleted = "isDeleted";
 
-        public MongoDbVacancyRepository(ILogger<MongoDbVacancyRepository> logger, IOptions<MongoDbConnectionDetails> details) 
-            : base(logger, MongoDbNames.RecruitDb, MongoDbCollectionNames.Vacancies, details)
+        public MongoDbVacancyRepository(ILoggerFactory loggerFactory, IOptions<MongoDbConnectionDetails> details) 
+            : base(loggerFactory, MongoDbNames.RecruitDb, MongoDbCollectionNames.Vacancies, details)
         {
         }
 

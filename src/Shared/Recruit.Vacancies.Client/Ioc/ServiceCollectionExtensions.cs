@@ -67,7 +67,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.RegisterRepositories(configuration);
 
             services.AddTransient<IConfigurationReader, ConfigurationReader>();
-            services.AddSingleton<QaRulesConfiguration>(x => 
+            services.AddTransient<QaRulesConfiguration>(x => 
                                                             {
                                                                 var svc = x.GetService<IConfigurationReader>();
                                                                 return svc.GetAsync<QaRulesConfiguration>("QaRules").Result;

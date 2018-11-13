@@ -48,6 +48,8 @@ namespace Esfa.Recruit.Vacancies.Jobs
                     {
                         b.AddApplicationInsights(o => o.InstrumentationKey = appInsightsKey);
                     }
+
+                    b.AddFilter("Mongo command", LogLevel.None);
                 })
                 .ConfigureServices((context, services) =>
                 {

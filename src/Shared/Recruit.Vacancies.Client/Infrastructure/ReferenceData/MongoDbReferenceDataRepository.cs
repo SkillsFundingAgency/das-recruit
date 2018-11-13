@@ -9,11 +9,9 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Skills;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Wages;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using MongoDB.Bson;
 using MongoDB.Driver;
 using Polly;
 using Programmes = Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BlockedEmployers;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData
 {
@@ -23,8 +21,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData
         private readonly IDictionary<Type, string> _itemIdLookup;
         private readonly ITimeProvider _timeProvider;
 
-        public MongoDbReferenceDataRepository(ILogger<MongoDbReferenceDataRepository> logger, IOptions<MongoDbConnectionDetails> details, ITimeProvider timeProvider)
-            : base(logger, MongoDbNames.RecruitDb, MongoDbCollectionNames.ReferenceData, details)
+        public MongoDbReferenceDataRepository(ILoggerFactory loggerFactory, IOptions<MongoDbConnectionDetails> details, ITimeProvider timeProvider)
+            : base(loggerFactory, MongoDbNames.RecruitDb, MongoDbCollectionNames.ReferenceData, details)
         {
             _timeProvider = timeProvider;
             _itemIdLookup = BuildLookup();

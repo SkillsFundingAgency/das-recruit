@@ -18,9 +18,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         private const string Status = "status";
 
 
-        public MongoDbVacancyReviewRepository(
-            ILogger<MongoDbVacancyReviewRepository> logger, IOptions<MongoDbConnectionDetails> details) 
-            : base(logger, MongoDbNames.RecruitDb, MongoDbCollectionNames.VacancyReviews, details)
+        public MongoDbVacancyReviewRepository(ILoggerFactory loggerFactory, IOptions<MongoDbConnectionDetails> details) 
+            : base(loggerFactory, MongoDbNames.RecruitDb, MongoDbCollectionNames.VacancyReviews, details)
         {
         }
 
