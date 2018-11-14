@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using NLog.Web;
 using System;
+using Esfa.Recruit.Vacancies.Client.Ioc;
+using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Employer.Web
 {
@@ -29,6 +31,7 @@ namespace Esfa.Recruit.Employer.Web
                 .UseKestrel(c => c.AddServerHeader = false)
                 .UseStartup<Startup>()
                 .UseUrls("http://localhost:5020")
-                .UseNLog();
+                .UseNLog()
+                .ConfigureLogging(b => b.ConfigureRecruitLogging());
     }
 }

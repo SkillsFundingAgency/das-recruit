@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Configuration;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
+using Esfa.Recruit.Vacancies.Client.Ioc;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Azure.WebJobs.Host.Queues;
 using Microsoft.Extensions.Configuration;
@@ -49,7 +50,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
                         b.AddApplicationInsights(o => o.InstrumentationKey = appInsightsKey);
                     }
 
-                    b.AddFilter("Mongo command", LogLevel.None);
+                    b.ConfigureRecruitLogging();
                 })
                 .ConfigureServices((context, services) =>
                 {

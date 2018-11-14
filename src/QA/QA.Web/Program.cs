@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using NLog.Web;
+using Esfa.Recruit.Vacancies.Client.Ioc;
 
 namespace Esfa.Recruit.Qa.Web
 {
@@ -47,6 +48,7 @@ namespace Esfa.Recruit.Qa.Web
                 })
                 .UseStartup<Startup>()
                 .UseUrls($"https://localhost:5025")
-                .UseNLog();
+                .UseNLog()
+                .ConfigureLogging(b => b.ConfigureRecruitLogging());
     }
 }
