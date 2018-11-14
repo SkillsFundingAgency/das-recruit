@@ -23,6 +23,11 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Extensions
             return $"{date.ToString(TimeDisplayFormat)}{date.ToString("tt").ToLower()}";
         }
 
+        public static string AsInputHintDisplayDate(this DateTime date)
+        {
+            return date.ToString("dd MM yyyy");
+        }
+
         public static string ToMonthYearString(this DateTime date)
         {
             return date.Year == DateTime.MinValue.Year ? "Current" : date.ToString("MMM yyyy");
