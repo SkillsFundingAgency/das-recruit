@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using NLog.Web;
 using System;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Esfa.Recruit.Vacancies.Client.Ioc;
 using Microsoft.Extensions.Logging;
 
@@ -16,13 +17,21 @@ namespace Esfa.Recruit.Employer.Web
             try
             {
                 logger.Info("Starting up host");
-                CreateWebHostBuilder(args).Build().Run();
+                var host = CreateWebHostBuilder(args).Build();
+
+                CheckInfrastructure(host.Services);
+
+                host.Run();
             }
             catch (Exception ex)
             {
                 //NLog: catch setup errors
-                logger.Error(ex, "Stopped program because of exception");
+                logger.Fatal(ex, "Stopped program because of exception");
                 throw;
+            }
+            finally
+            {
+                NLog.LogManager.Shutdown();
             }
         }
 
@@ -33,5 +42,11 @@ namespace Esfa.Recruit.Employer.Web
                 .UseUrls("http://localhost:5020")
                 .UseNLog()
                 .ConfigureLogging(b => b.ConfigureRecruitLogging());
+
+        private static void CheckInfrastructure(IServiceProvider serviceProvider)
+        {
+            var collectionChecker = (MongoDbCollectionChecker)serviceProvider.GetService(typeof(MongoDbCollectionChecker));
+            collectionChecker.EnsureCollectionsExist();
+        }
     }
 }

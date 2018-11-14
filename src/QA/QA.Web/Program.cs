@@ -6,6 +6,7 @@ using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Esfa.Recruit.Qa.Web.Configuration;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -24,13 +25,17 @@ namespace Esfa.Recruit.Qa.Web
             try
             {
                 logger.Info("Starting up host");
+
+                var host = CreateWebHostBuilder(args).Build();
                 
-                CreateWebHostBuilder(args).Build().Run();
+                CheckInfrastructure(host.Services);
+
+                host.Run();
             }
             catch (Exception ex)
             {
                 //NLog: catch setup errors
-                logger.Error(ex, "Stopped program because of exception");
+                logger.Fatal(ex, "Stopped program because of exception");
                 throw;
             }
             finally
@@ -50,5 +55,11 @@ namespace Esfa.Recruit.Qa.Web
                 .UseUrls($"https://localhost:5025")
                 .UseNLog()
                 .ConfigureLogging(b => b.ConfigureRecruitLogging());
+
+        private static void CheckInfrastructure(IServiceProvider serviceProvider)
+        {
+            var collectionChecker = (MongoDbCollectionChecker)serviceProvider.GetService(typeof(MongoDbCollectionChecker));
+            collectionChecker.EnsureCollectionsExist();
+        }
     }
 }
