@@ -14,13 +14,13 @@ namespace Esfa.Recruit.Employer.Web.Filters
     {
         private readonly IBlockedEmployersProvider _blockedEmployersProvider;
         private readonly ICache _cache;
+        private readonly ITimeProvider _timeProvider;
 
-        private DateTime CacheAbsoluteExpiryTime => DateTime.UtcNow.AddHours(1);
-
-        public CheckEmployerBlockedFilter(IBlockedEmployersProvider blockedEmployersProvider, ICache cache)
+        public CheckEmployerBlockedFilter(IBlockedEmployersProvider blockedEmployersProvider, ICache cache, ITimeProvider timeProvider)
         {
             _blockedEmployersProvider = blockedEmployersProvider;
             _cache = cache;
+            _timeProvider = timeProvider;
         }
 
         public async Task OnActionExecutionAsync(
@@ -31,7 +31,7 @@ namespace Esfa.Recruit.Employer.Web.Filters
             {
                 var blockedEmployerAccountIds = await _cache.CacheAsideAsync(
                     CacheKeys.BlockedEmployers,
-                    CacheAbsoluteExpiryTime,
+                    _timeProvider.OneHour,
                     () => _blockedEmployersProvider.GetBlockedEmployerAccountIdsAsync());
 
                 var accountIdFromUrl = context.RouteData.Values[RouteValues.EmployerAccountId].ToString().ToUpper();

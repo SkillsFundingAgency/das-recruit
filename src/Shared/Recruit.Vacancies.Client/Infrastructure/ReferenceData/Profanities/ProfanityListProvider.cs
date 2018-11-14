@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Cache;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
@@ -12,20 +11,20 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Profanities
         private readonly IReferenceDataReader _referenceDataReader;
         private readonly ILogger<ProfanityListProvider> _logger;
         private readonly ICache _cache;
+        private readonly ITimeProvider _timeProvider;
 
-        private DateTime CacheAbsoluteExpiryTime => DateTime.UtcNow.Date.AddDays(1);
-
-        public ProfanityListProvider(IReferenceDataReader referenceDataReader, ILogger<ProfanityListProvider> logger, ICache cache)
+        public ProfanityListProvider(IReferenceDataReader referenceDataReader, ILogger<ProfanityListProvider> logger, ICache cache, ITimeProvider timeProvider)
         {
             _referenceDataReader = referenceDataReader;
             _logger = logger;
             _cache = cache;
+            _timeProvider = timeProvider;
         }
 
         public async Task<IEnumerable<string>> GetProfanityListAsync()
         {
             return await _cache.CacheAsideAsync(CacheKeys.Profanities,
-                CacheAbsoluteExpiryTime,
+                _timeProvider.NextDay,
                 async () =>
                 {
                     _logger.LogInformation("Attempting to retrieve profanity list from reference data.");

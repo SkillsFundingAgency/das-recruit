@@ -1,5 +1,5 @@
 ﻿using System;
-using Employer.Web.Configuration;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 
@@ -22,12 +22,12 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             Expires = DateTimeOffset.UtcNow.AddMinutes(AuthenticationConfiguration.SessionTimeoutMinutes)
         };
 
-        public static CookieOptions GetSingleDayLifetimeHttpCookieOption(IHostingEnvironment env) => new CookieOptions
+        public static CookieOptions GetSingleDayLifetimeHttpCookieOption(IHostingEnvironment env, ITimeProvider timeProvider) => new CookieOptions
         {
             Secure = !env.IsDevelopment(),
             SameSite = SameSiteMode.Strict,
             HttpOnly = true,
-            Expires = Times.NextDay
+            Expires = timeProvider.NextDay
         };
     }
 }

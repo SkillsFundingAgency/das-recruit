@@ -12,19 +12,19 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BannedPhras
         private readonly ILogger<BannedPhrasesProvider> _logger;
         private readonly IReferenceDataReader _referenceDataReader;
         private readonly ICache _cache;
+        private readonly ITimeProvider _timeProvider;
 
-        private DateTime CacheAbsoluteExpiryTime => DateTime.UtcNow.Date.AddDays(1);
-
-        public BannedPhrasesProvider(ILogger<BannedPhrasesProvider> logger, IReferenceDataReader referenceDataReader, ICache cache)
+        public BannedPhrasesProvider(ILogger<BannedPhrasesProvider> logger, IReferenceDataReader referenceDataReader, ICache cache, ITimeProvider timeProvider)
         {
             _logger = logger;
             _referenceDataReader = referenceDataReader;
             _cache = cache;
+            _timeProvider = timeProvider;
         }
         public async Task<IEnumerable<string>> GetBannedPhrasesAsync()
         {
             return await _cache.CacheAsideAsync(CacheKeys.BannedPhrases,
-                CacheAbsoluteExpiryTime,
+                _timeProvider.NextDay,
                 async () =>
                 {
                     _logger.LogInformation("Attempting to retrieve banned phrases list from reference data.");

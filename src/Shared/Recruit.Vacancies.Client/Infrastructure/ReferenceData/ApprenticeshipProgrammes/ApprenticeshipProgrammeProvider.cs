@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Cache;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes
 {
@@ -12,13 +13,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
     {
         private readonly IReferenceDataReader _referenceDataReader;
         private readonly ICache _cache;
+        private readonly ITimeProvider _timeProvider;
 
-        private DateTime CacheAbsoluteExpiryTime => DateTime.UtcNow.Date.AddDays(1).AddHours(4).AddMinutes(15);
-
-        public ApprenticeshipProgrammeProvider(IReferenceDataReader queryStoreReader, ICache cache)
+        public ApprenticeshipProgrammeProvider(IReferenceDataReader queryStoreReader, ICache cache, ITimeProvider timeProvider)
         {
             _referenceDataReader = queryStoreReader;
             _cache = cache;
+            _timeProvider = timeProvider;
         }
 
         public async Task<IApprenticeshipProgramme> GetApprenticeshipProgrammeAsync(string programmeId)
@@ -40,7 +41,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
         private Task<ApprenticeshipProgrammes> GetApprenticeshipProgrammesAsync()
         {
             return _cache.CacheAsideAsync(CacheKeys.ApprenticeshipProgrammes,
-                CacheAbsoluteExpiryTime,
+                _timeProvider.NextDay6am,
                 () => _referenceDataReader.GetReferenceData<ApprenticeshipProgrammes>());
         }
     }

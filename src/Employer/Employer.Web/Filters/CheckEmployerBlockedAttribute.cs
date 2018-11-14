@@ -11,8 +11,9 @@ namespace Esfa.Recruit.Employer.Web.Filters
         {
             var blockedEmployersProvider = (IBlockedEmployersProvider)serviceProvider.GetService(typeof(IBlockedEmployersProvider));
             var cache = (ICache)serviceProvider.GetService(typeof(ICache));
+            var timeProvider = (ITimeProvider) serviceProvider.GetService(typeof(ITimeProvider));
 
-            return new CheckEmployerBlockedFilter(blockedEmployersProvider, cache);
+            return new CheckEmployerBlockedFilter(blockedEmployersProvider, cache, timeProvider);
         }
 
         public bool IsReusable => false;

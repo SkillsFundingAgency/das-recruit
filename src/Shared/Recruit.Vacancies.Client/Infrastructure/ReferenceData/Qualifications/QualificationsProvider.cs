@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Cache;
@@ -10,19 +9,19 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Qualificati
     {
         private readonly IReferenceDataReader _referenceDataReader;
         private readonly ICache _cache;
+        private readonly ITimeProvider _timeProvider;
 
-        private DateTime CacheAbsoluteExpiryTime => DateTime.UtcNow.Date.AddDays(1);
-
-        public QualificationsProvider(IReferenceDataReader referenceDataReader, ICache cache)
+        public QualificationsProvider(IReferenceDataReader referenceDataReader, ICache cache, ITimeProvider timeProvider)
         {
             _referenceDataReader = referenceDataReader;
             _cache = cache;
+            _timeProvider = timeProvider;
         }
 
         public async Task<IList<string>> GetQualificationsAsync()
         {
             return await _cache.CacheAsideAsync(CacheKeys.Qualifications,
-                CacheAbsoluteExpiryTime,
+                _timeProvider.NextDay,
                 async () =>
                 {
                     var data = await _referenceDataReader.GetReferenceData<Qualifications>();

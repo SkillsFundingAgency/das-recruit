@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Cache;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BankHolidays;
@@ -13,19 +14,19 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services
     {
         private readonly IReferenceDataReader _referenceDataReader;
         private readonly ICache _cache;
+        private readonly ITimeProvider _timeProvider;
 
-        private DateTime CacheAbsoluteExpiryTime => DateTime.UtcNow.Date.AddDays(1);
-
-        public BankHolidayProvider(IReferenceDataReader referenceDataReader, ICache cache)
+        public BankHolidayProvider(IReferenceDataReader referenceDataReader, ICache cache, ITimeProvider timeProvider)
         {
             _referenceDataReader = referenceDataReader;
             _cache = cache;
+            _timeProvider = timeProvider;
         }
 
         public async Task<List<DateTime>> GetBankHolidaysAsync()
         {
             return await _cache.CacheAsideAsync(CacheKeys.BankHolidays,
-                CacheAbsoluteExpiryTime,
+                _timeProvider.NextDay,
                 async () =>
                 {
                     var bankHolidayReferenceData = await _referenceDataReader.GetReferenceData<BankHolidays>();

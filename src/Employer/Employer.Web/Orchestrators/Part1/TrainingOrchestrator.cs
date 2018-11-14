@@ -9,7 +9,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Employer.Web.RouteModel;
-using Esfa.Recruit.Vacancies.Client.Application.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Employer.Web.Services;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1

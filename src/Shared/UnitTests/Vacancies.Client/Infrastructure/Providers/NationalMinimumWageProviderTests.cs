@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Wages;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services;
 using Esfa.Recruit.Vacancies.Client.UnitTests.TestHelpers;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
@@ -22,7 +23,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             var mockReferenceDataReader = new Mock<IReferenceDataReader>();
             mockReferenceDataReader.Setup(x => x.GetReferenceData<MinimumWages>()).ReturnsAsync(GetTestData());
 
-            _provider = new NationalMinimumWageProvider(mockReferenceDataReader.Object, _mockLogger.Object, new TestCache());
+            _provider = new NationalMinimumWageProvider(mockReferenceDataReader.Object, _mockLogger.Object, new TestCache(), new CurrentUtcTimeProvider());
         }
 
         [Fact]

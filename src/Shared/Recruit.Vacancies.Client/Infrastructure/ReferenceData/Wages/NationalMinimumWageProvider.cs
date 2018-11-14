@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Cache;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.Extensions.Logging;
@@ -14,14 +15,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Wages
         private readonly IReferenceDataReader _referenceDataReader;
         private readonly ILogger<NationalMinimumWageProvider> _logger;
         private readonly ICache _cache;
+        private readonly ITimeProvider _timeProvider;
 
-        private DateTime CacheAbsoluteExpiryTime => DateTime.UtcNow.Date.AddDays(1);
-
-        public NationalMinimumWageProvider(IReferenceDataReader referenceDataReader, ILogger<NationalMinimumWageProvider> logger, ICache cache)
+        public NationalMinimumWageProvider(IReferenceDataReader referenceDataReader, ILogger<NationalMinimumWageProvider> logger, ICache cache, ITimeProvider timeProvider)
         {
             _referenceDataReader = referenceDataReader;
             _logger = logger;
             _cache = cache;
+            _timeProvider = timeProvider;
         }   
 
         public IMinimumWage GetWagePeriod(DateTime date)
@@ -60,7 +61,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Wages
         private Task<MinimumWages> GetMinimumWagesAsync()
         {
             return _cache.CacheAsideAsync(CacheKeys.MinimumWages,
-                CacheAbsoluteExpiryTime,
+                _timeProvider.NextDay,
                 () => _referenceDataReader.GetReferenceData<MinimumWages>());
         }
     }
