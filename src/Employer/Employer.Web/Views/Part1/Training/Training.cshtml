@@ -7,7 +7,7 @@
 <div class="grid-row">
     <div class="column-full">
         <h1 class="heading-xlarge small-bottom-margin">Important dates</h1>
-      
+
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
 
         <partial name="@PartialNames.ReviewSummary" for="Review" />
@@ -18,7 +18,7 @@
                 <div esfa-validation-marker-for="ClosingDate" class="form-group">
                     <fieldset>
                         <legend class="form-label-bold">Application closing date<span class="visuallyhidden"> (in numeric format DD MM YYYY)</span></legend>
-                        <span class="form-hint">For example, @exampleClosingDate.Day @exampleClosingDate.Month @exampleClosingDate.Year</span>
+                        <span class="form-hint">For example, @exampleClosingDate.AsInputHintDisplayDate()</span>
 
                         <span esfa-validation-message-for="ClosingDate" class="error-message"></span>
 
@@ -42,7 +42,7 @@
                 <div esfa-validation-marker-for="StartDate" class="form-group">
                     <fieldset>
                         <legend class="form-label-bold">When do you expect the apprentice to start?<span class="visuallyhidden"> (in numeric format DD MM YYYY)</span></legend>
-                        <span class="form-hint">For example, @exampleStartingDate.Day @exampleStartingDate.Month @exampleStartingDate.Year</span>
+                        <span class="form-hint">For example, @exampleStartingDate.AsInputHintDisplayDate()</span>
 
                         <span esfa-validation-message-for="StartDate" class="error-message"></span>
 

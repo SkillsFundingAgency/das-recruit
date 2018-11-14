@@ -156,7 +156,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithMessage("You must provide the closing date for applications")
                     .WithErrorCode("16")
                 .GreaterThan(_timeProvider.Now.Date.AddDays(1).AddTicks(-1))
-                    .WithMessage("Application closing date can't be today or earlier. We advise using a date more than two weeks from now.")
+                    .WithMessage("Closing date for applications cannot be today or earlier")
                     .WithErrorCode("18")
                 .RunCondition(VacancyRuleSet.ClosingDate)
                 .WithRuleId(VacancyRuleSet.ClosingDate);
