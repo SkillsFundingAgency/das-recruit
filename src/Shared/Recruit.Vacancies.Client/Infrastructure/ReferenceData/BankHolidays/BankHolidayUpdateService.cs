@@ -33,7 +33,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services
                 throw new Exception($"Error getting list of bank holidays from url:{_config.Url}. Error:{response.ErrorMessage}");
 
             if (!response.Data.EnglandAndWales.Events.Any())
-                throw new Exception($"Expected a list of bank holidays from url:{_config.Url}");
+                throw new Exception($"Expected a non-empty list of bank holidays from url:{_config.Url}");
 
             var bankHolidays = new BankHolidays
             {
