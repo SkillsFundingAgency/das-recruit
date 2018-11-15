@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using NLog.Web;
 using System;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Esfa.Recruit.Vacancies.Client.Ioc;
-using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Employer.Web
 {
@@ -19,7 +17,7 @@ namespace Esfa.Recruit.Employer.Web
                 logger.Info("Starting up host");
                 var host = CreateWebHostBuilder(args).Build();
 
-                CheckInfrastructure(host.Services);
+                CheckInfrastructure(host.Services, logger);
 
                 host.Run();
             }
@@ -43,10 +41,17 @@ namespace Esfa.Recruit.Employer.Web
                 .UseNLog()
                 .ConfigureLogging(b => b.ConfigureRecruitLogging());
 
-        private static void CheckInfrastructure(IServiceProvider serviceProvider)
+        private static void CheckInfrastructure(IServiceProvider serviceProvider, NLog.ILogger logger)
         {
-            var collectionChecker = (MongoDbCollectionChecker)serviceProvider.GetService(typeof(MongoDbCollectionChecker));
-            collectionChecker.EnsureCollectionsExist();
+            try
+            {
+                var collectionChecker = (MongoDbCollectionChecker) serviceProvider.GetService(typeof(MongoDbCollectionChecker));
+                collectionChecker.EnsureCollectionsExist();
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Error checking infrastructure");
+            }
         }
     }
 }

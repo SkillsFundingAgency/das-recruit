@@ -27,7 +27,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
                     logger = ((ILoggerFactory)host.Services.GetService(typeof(ILoggerFactory)))
                         .CreateLogger(nameof(Program));
 
-                    CheckInfrastructure(host.Services);
+                    CheckInfrastructure(host.Services, logger);
 
                     await host.RunAsync();
                 }
@@ -98,10 +98,17 @@ namespace Esfa.Recruit.Vacancies.Jobs
                     .UseConsoleLifetime();
         }
 
-        private static void CheckInfrastructure(IServiceProvider serviceProvider)
+        private static void CheckInfrastructure(IServiceProvider serviceProvider, ILogger logger)
         {
-            var collectionChecker = (MongoDbCollectionChecker)serviceProvider.GetService(typeof(MongoDbCollectionChecker));
-            collectionChecker.EnsureCollectionsExist();
+            try
+            {
+                var collectionChecker = (MongoDbCollectionChecker) serviceProvider.GetService(typeof(MongoDbCollectionChecker));
+                collectionChecker.EnsureCollectionsExist();
+            }
+            catch (Exception ex)
+            {
+                logger?.LogError(ex, "Error checking infrastructure");
+            }
         }
     }
 }
