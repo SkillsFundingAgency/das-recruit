@@ -17,9 +17,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Aspects
 
         public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
         {
-            var timer = new Stopwatch();
-
-            timer.Start();
+            var timer = Stopwatch.StartNew();
 
             var response = await next();
 
