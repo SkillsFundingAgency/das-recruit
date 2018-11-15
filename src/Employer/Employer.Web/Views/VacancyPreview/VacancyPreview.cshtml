@@ -1,6 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Html
 @using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
-@using Esfa.Recruit.Vacancies.Client.Domain.Entities
 @model Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview.VacancyPreviewViewModel
 @functions
 {
@@ -35,6 +34,7 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
 <div class="grid-row">
     <div class="column-full">
         <h1 asp-show="@Model.CanShowDraftHeader" class="heading-xlarge small-bottom-margin">Complete your vacancy</h1>
+        <p class="small-top-margin">This is how your vacancy will appear to candidates on <a href="@Model.FindAnApprenticeshipUrl" rel="noopener" target="_blank">Find an apprenticeship</a></p>
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
         <div asp-show="@Model.ShowIncompleteSections" class="info-summary no-top-margin" role="alert">
             <div asp-show="@Model.HasIncompleteMandatorySections">
