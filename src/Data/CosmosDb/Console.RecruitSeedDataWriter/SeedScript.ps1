@@ -13,6 +13,7 @@ try {
 
     & dotnet "$PSScriptRoot/Esfa.Recruit.Console.RecruitSeedDataWriter.dll" $($dbConnectionString) -c configuration -f "$PSScriptRoot/Data/QaRules.json"
     & dotnet "$PSScriptRoot/Esfa.Recruit.Console.RecruitSeedDataWriter.dll" $($dbConnectionString) -c configuration -f "$PSScriptRoot/Data/EmployerRecruitSystem.json"
+    & dotnet "$PSScriptRoot/Esfa.Recruit.Console.RecruitSeedDataWriter.dll" $($dbConnectionString) -c configuration -f "$PSScriptRoot/Data/RecruitWebJobsSystem.json"
 }
 catch {
     throw $_
