@@ -1,4 +1,5 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Application.Cache;
+using Esfa.Recruit.Vacancies.Client.Application.Aspects;
 using Esfa.Recruit.Vacancies.Client.Application.CommandHandlers;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Events;
@@ -22,9 +23,9 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BankHolidays;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BannedPhrases;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BlockedEmployers;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Profanities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Qualifications;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BlockedEmployers;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Skills;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Wages;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories;
@@ -44,9 +45,6 @@ using Recruit.Vacancies.Client.Infrastructure.Configuration;
 using Recruit.Vacancies.Client.Infrastructure.Services.VacancyTitle;
 using SFA.DAS.EAS.Account.Api.Client;
 using VacancyRuleSet = Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules.VacancyRuleSet;
-using System;
-using Esfa.Recruit.Vacancies.Client.Application.Aspects;
-using MediatR.Pipeline;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -58,28 +56,29 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddHttpClient()
                 .Configure<AccountApiConfiguration>(configuration.GetSection("AccountApiConfiguration"))
             services.AddMemoryCache();
-                .RegisterClients()
                 .AddTransient<IConfigurationReader, ConfigurationReader>()
-                .AddTransient<QaRulesConfiguration>(x =>
+                .AddTransient(x =>
                 {
                     var svc = x.GetService<IConfigurationReader>();
                     return svc.GetAsync<QaRulesConfiguration>("QaRules").Result;
-                })
-                .RegisterServiceDeps(configuration)
-                .RegisterRepositories(configuration)
-                .RegisterStorageProviderDeps(configuration)
-                .AddValidation()            
-                .AddRules()
-                .RegisterMediatR();            
+                });
+            RegisterClients(services);
+            RegisterServiceDeps(services, configuration);
+            RegisterAccountApiClientDeps(services);
+            RegisterRepositories(services, configuration);
+            RegisterStorageProviderDeps(services, configuration);
+            AddValidation(services);
+            AddRules(services);
+            RegisterMediatR(services);            
         }
 
-        private static void RegisterAccountApiClientDeps(this IServiceCollection services)
+        private static void RegisterAccountApiClientDeps(IServiceCollection services)
         {
             services.AddSingleton<IAccountApiConfiguration>(kernal => kernal.GetService<IOptions<AccountApiConfiguration>>().Value);
             services.AddTransient<IAccountApiClient, AccountApiClient>();
         }
 
-        private static IServiceCollection RegisterServiceDeps(this IServiceCollection services, IConfiguration configuration)
+        private static void RegisterServiceDeps(IServiceCollection services, IConfiguration configuration)
         {
             // Configuration
             services.Configure<GeocodeConfiguration>(configuration.GetSection("Geocode"));
@@ -130,12 +129,9 @@ namespace Microsoft.Extensions.DependencyInjection
             
             // External client dependencies
             services.AddApprenticeshipsApi(configuration);
-            services.RegisterAccountApiClientDeps();
-
-            return services;
         }
 
-        private static IServiceCollection RegisterRepositories(this IServiceCollection services, IConfiguration configuration)
+        private static void RegisterRepositories(IServiceCollection services, IConfiguration configuration)
         {
             var mongoConnectionString = configuration.GetConnectionString("MongoDb");
             
@@ -166,11 +162,9 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.AddTransient<IReferenceDataReader, MongoDbReferenceDataRepository>();
             services.AddTransient<IReferenceDataWriter, MongoDbReferenceDataRepository>();
-
-            return services;
         }
 
-        private static IServiceCollection RegisterStorageProviderDeps(this IServiceCollection services, IConfiguration configuration)
+        private static void RegisterStorageProviderDeps(IServiceCollection services, IConfiguration configuration)
         {
             var storageConnectionString = configuration.GetConnectionString("QueueStorage");
 
@@ -182,43 +176,36 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton(kernal => kernal.GetService<IOptions<StorageQueueConnectionDetails>>().Value);
 
             services.AddTransient<IEventStore, StorageQueueEventStore>();
-
-            return services;
         }
 
-        private static IServiceCollection AddValidation(this IServiceCollection services)
+        private static void AddValidation(IServiceCollection services)
         {
             services.AddSingleton<AbstractValidator<Vacancy>, FluentVacancyValidator>();
             services.AddSingleton(typeof(IEntityValidator<,>), typeof(EntityValidator<,>));
 
             services.AddSingleton<AbstractValidator<ApplicationReview>, ApplicationReviewValidator>();
             services.AddSingleton<AbstractValidator<VacancyReview>, VacancyReviewValidator>();
-
-            return services;
         }
 
-        private static IServiceCollection AddRules(this IServiceCollection services)
+        private static void AddRules(IServiceCollection services)
         {
             services.AddTransient<RuleSet<Vacancy>, VacancyRuleSet>();
-            return services;
         }
 
-        private static IServiceCollection RegisterClients(this IServiceCollection services)
+        private static void RegisterClients(IServiceCollection services)
         {
             services
                 .AddTransient<IEmployerVacancyClient, VacancyClient>()
                 .AddTransient<IJobsVacancyClient, VacancyClient>()
                 .AddTransient<IQaVacancyClient, QaVacancyClient>();
-            return services;
         }
 
-        private static IServiceCollection RegisterMediatR(this IServiceCollection services)
+        private static void RegisterMediatR(IServiceCollection services)
         {
             services.AddMediatR(typeof(CreateVacancyCommandHandler).Assembly);
             services
                 .AddTransient<IMessaging, MediatrMessaging>()
                 .AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestPerformanceBehaviour<,>));                           
-            return services;
         }
     }
 }
