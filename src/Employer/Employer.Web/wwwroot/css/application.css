@@ -808,6 +808,15 @@ table th.th-20 {
   width: 20%;
 }
 
+/*** Short Description ***/
+.short-description-hint-left {
+    float: left;
+}
+
+.short-description-hint-right {
+    float: right;
+}
+
 /*** Embeded map ***/
 #static-map {
     max-width:100%;

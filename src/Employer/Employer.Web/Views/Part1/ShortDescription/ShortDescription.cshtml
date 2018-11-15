@@ -17,9 +17,15 @@
                     </label>
                     <span esfa-validation-message-for="ShortDescription" class="error-message"></span>
                     <textarea asp-for="ShortDescription" class="form-control form-control-3-4 character-count" rows="5" data-val-length-max="350"></textarea>
-                    <span class="sfa-form-control-after"></span>
-                    <span class="maxchar-count">350</span>
-                    <span class="maxchar-text"> characters remaining</span>
+                    
+                    <div class="form-control-3-4">
+                        <div class="short-description-hint-left">Minimum 50 characters</div>
+                        <div class="short-description-hint-right">
+                            <span class="maxchar-count">350</span>
+                            <span class="maxchar-text"> characters remaining</span>
+                        </div>
+                    </div>
+                
                 </div>
                 <button type="submit" class="button save-button">@Model.PageInfo.SubmitButtonText</button>
 
