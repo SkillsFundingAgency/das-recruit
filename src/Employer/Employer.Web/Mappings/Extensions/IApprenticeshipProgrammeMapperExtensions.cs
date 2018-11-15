@@ -19,7 +19,7 @@ namespace Esfa.Recruit.Employer.Web.Mappings.Extensions
                 new ApprenticeshipProgrammeViewModel
                 {
                     Id = p.Id,
-                    Name = $"{p.Title}, Level: {p.Level} ({p.ApprenticeshipType.ToString()})"
+                    Name = $"{p.Title}, Level: {p.Level}, level {(int)p.Level} ({p.ApprenticeshipType.ToString()})"
                 }).OrderBy(p => p.Name);
         }
     }
