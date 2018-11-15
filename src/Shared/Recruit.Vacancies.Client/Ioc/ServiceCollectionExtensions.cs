@@ -1,5 +1,5 @@
-﻿using Esfa.Recruit.Vacancies.Client.Application.Cache;
-using Esfa.Recruit.Vacancies.Client.Application.Aspects;
+﻿using Esfa.Recruit.Vacancies.Client.Application.Aspects;
+using Esfa.Recruit.Vacancies.Client.Application.Cache;
 using Esfa.Recruit.Vacancies.Client.Application.CommandHandlers;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Events;
@@ -55,7 +55,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services
                 .AddHttpClient()
                 .Configure<AccountApiConfiguration>(configuration.GetSection("AccountApiConfiguration"))
-            services.AddMemoryCache();
+                .AddMemoryCache()
                 .AddTransient<IConfigurationReader, ConfigurationReader>()
                 .AddTransient(x =>
                 {
