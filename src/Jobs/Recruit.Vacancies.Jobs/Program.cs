@@ -25,7 +25,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
                 using (host)
                 {
                     logger = ((ILoggerFactory)host.Services.GetService(typeof(ILoggerFactory)))
-                        .CreateLogger("Program");
+                        .CreateLogger(nameof(Program));
 
                     CheckInfrastructure(host.Services);
 
