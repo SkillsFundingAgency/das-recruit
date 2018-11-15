@@ -28,7 +28,7 @@ namespace Esfa.Recruit.Qa.Web
 
                 var host = CreateWebHostBuilder(args).Build();
                 
-                CheckInfrastructure(host.Services);
+                CheckInfrastructure(host.Services, logger);
 
                 host.Run();
             }
@@ -56,10 +56,17 @@ namespace Esfa.Recruit.Qa.Web
                 .UseNLog()
                 .ConfigureLogging(b => b.ConfigureRecruitLogging());
 
-        private static void CheckInfrastructure(IServiceProvider serviceProvider)
+        private static void CheckInfrastructure(IServiceProvider serviceProvider, NLog.ILogger logger)
         {
-            var collectionChecker = (MongoDbCollectionChecker)serviceProvider.GetService(typeof(MongoDbCollectionChecker));
-            collectionChecker.EnsureCollectionsExist();
+            try
+            {
+                var collectionChecker = (MongoDbCollectionChecker) serviceProvider.GetService(typeof(MongoDbCollectionChecker));
+                collectionChecker.EnsureCollectionsExist();
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Error checking infrastructure");
+            }
         }
     }
 }
