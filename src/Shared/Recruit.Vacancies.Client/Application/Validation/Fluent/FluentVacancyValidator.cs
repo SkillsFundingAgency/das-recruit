@@ -138,7 +138,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithMessage("Overview of the vacancy must not exceed {MaxLength} characters")
                     .WithErrorCode("13")
                 .MinimumLength(50)
-                    .WithMessage("Overview of the vacancy must be more than {MinLength} characters")
+                    .WithMessage("Overview of the vacancy must be at least {MinLength} characters")
                     .WithErrorCode("14")
                 .ValidFreeTextCharacters()
                     .WithMessage("Overview of the vacancy contains some invalid characters")
