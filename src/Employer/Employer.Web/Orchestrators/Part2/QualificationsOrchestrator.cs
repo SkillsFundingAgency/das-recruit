@@ -21,26 +21,26 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.Qualifications;
         private readonly IEmployerVacancyClient _client;
-        private readonly Lazy<List<string>> _lazyQualifications;
         private readonly IReviewSummaryService _reviewSummaryService;
         
         public QualificationsOrchestrator(IEmployerVacancyClient client, ILogger<QualificationsOrchestrator> logger, IReviewSummaryService reviewSummaryService)
             : base(logger)
         {
             _client = client;
-            _lazyQualifications = new Lazy<List<string>>(() => _client.GetCandidateQualificationsAsync().Result.QualificationTypes);
             _reviewSummaryService = reviewSummaryService;
         }
 
         public async Task<QualificationsViewModel> GetQualificationsViewModelAsync(VacancyRouteModel vrm)
         {
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, vrm, RouteNames.Qualifications_Get);
-            
+
+            var allQualifications = await _client.GetCandidateQualificationsAsync();
+
             var vm = new QualificationsViewModel
             {
                 Title = vacancy.Title,
-                QualificationTypes = _lazyQualifications.Value,
-                Qualifications = vacancy.Qualifications.SortQualifications(_lazyQualifications.Value).ToViewModel().ToList()
+                QualificationTypes = allQualifications,
+                Qualifications = vacancy.Qualifications.SortQualifications(allQualifications).ToViewModel().ToList()
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
@@ -78,7 +78,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             HandleQualificationChange(m);
 
             var qualifications = m.Qualifications.ToEntity();
-            vacancy.Qualifications = qualifications.SortQualifications(_lazyQualifications.Value).ToList();
+
+            var allQualifications = await _client.GetCandidateQualificationsAsync();
+            vacancy.Qualifications = qualifications.SortQualifications(allQualifications).ToList();
             m.Qualifications = vacancy.Qualifications.ToViewModel().ToList();
 
             //if we are adding/removing a qualification then just validate and don't persist

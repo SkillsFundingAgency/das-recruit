@@ -1,4 +1,3 @@
-
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
@@ -11,8 +10,8 @@ namespace Recruit.Vacancies.Client.Infrastructure.Configuration
 {
     internal sealed class ConfigurationReader : MongoDbCollectionBase, IConfigurationReader
     {
-        public ConfigurationReader(ILogger<ConfigurationReader> logger, IOptions<MongoDbConnectionDetails> details)
-            : base(logger, MongoDbNames.RecruitDb, MongoDbCollectionNames.Configuration, details)
+        public ConfigurationReader(ILoggerFactory loggerFactory, IOptions<MongoDbConnectionDetails> details)
+            : base(loggerFactory, MongoDbNames.RecruitDb, MongoDbCollectionNames.Configuration, details)
         {
         }
 

@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators.VacancyValidators;
@@ -12,15 +10,15 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
     {
         private readonly ITimeProvider _timeProvider;
         private readonly IMinimumWageProvider _minimumWageService;
-        private readonly Lazy<IEnumerable<IApprenticeshipProgramme>> _trainingProgrammes;
-        private readonly IList<string> _qualifications;
+        private readonly IApprenticeshipProgrammeProvider _apprenticeshipProgrammesProvider;
+        private readonly IQualificationsProvider _qualificationsProvider;
 
         public FluentVacancyValidator(ITimeProvider timeProvider, IMinimumWageProvider minimumWageService, IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider, IQualificationsProvider qualificationsProvider)
         {
             _timeProvider = timeProvider;
             _minimumWageService = minimumWageService;
-            _trainingProgrammes = new Lazy<IEnumerable<IApprenticeshipProgramme>>(() => apprenticeshipProgrammesProvider.GetApprenticeshipProgrammesAsync().Result);
-            _qualifications = qualificationsProvider.GetQualificationsAsync().Result;
+            _apprenticeshipProgrammesProvider = apprenticeshipProgrammesProvider;
+            _qualificationsProvider = qualificationsProvider;
 
             SingleFieldValidations();
 
@@ -333,7 +331,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .Must(q => q != null && q.Count > 0)
                     .WithMessage("You must have at least one qualification")
                     .WithErrorCode("52")
-                .SetCollectionValidator(new QualificationValidator((long)VacancyRuleSet.Qualifications, _qualifications))
+                .SetCollectionValidator(new QualificationValidator((long)VacancyRuleSet.Qualifications, _qualificationsProvider.GetQualificationsAsync().Result))
                 .RunCondition(VacancyRuleSet.Qualifications)
                 .WithRuleId(VacancyRuleSet.Qualifications);
         }
@@ -570,7 +568,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             When(x => x.ProgrammeId != null && !string.IsNullOrWhiteSpace(x.ProgrammeId) && x.StartDate.HasValue, () =>
             {
                 RuleFor(x => x)
-                    .TrainingMustBeActiveForStartDate(_trainingProgrammes)
+                    .TrainingMustBeActiveForStartDate(_apprenticeshipProgrammesProvider.GetApprenticeshipProgrammesAsync().Result)
                 .RunCondition(VacancyRuleSet.TrainingExpiryDate)
                 .WithRuleId(VacancyRuleSet.TrainingExpiryDate);
             });

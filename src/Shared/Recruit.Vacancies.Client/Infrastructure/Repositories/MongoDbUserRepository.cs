@@ -11,8 +11,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 {
     internal sealed class MongoDbUserRepository : MongoDbCollectionBase, IUserRepository
     {
-        public MongoDbUserRepository(ILogger<MongoDbUserRepository> logger,  IOptions<MongoDbConnectionDetails> details)
-            : base(logger, MongoDbNames.RecruitDb, MongoDbCollectionNames.Users, details)
+        public MongoDbUserRepository(ILoggerFactory loggerFactory, IOptions<MongoDbConnectionDetails> details)
+            : base(loggerFactory, MongoDbNames.RecruitDb, MongoDbCollectionNames.Users, details)
         {
         }
 

@@ -1,6 +1,4 @@
-﻿using System;
-using Employer.Web.Configuration;
-using Esfa.Recruit.Employer.Web.Caching;
+﻿using Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Filters;
 using Esfa.Recruit.Employer.Web.Mappings;
@@ -35,8 +33,6 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.Configure<GoogleAnalyticsConfiguration>(configuration.GetSection("GoogleAnalytics"));
             services.Configure<PostcodeAnywhereConfiguration>(configuration.GetSection("PostcodeAnywhere"));
             services.Configure<FaaConfiguration>(configuration.GetSection("FaaConfiguration"));
-
-            services.AddTransient<ICache, Cache>();
 
             services.AddFeatureToggle();
 

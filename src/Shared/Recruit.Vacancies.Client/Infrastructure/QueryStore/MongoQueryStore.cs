@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using Microsoft.Extensions.Logging;
@@ -15,8 +13,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 {
     internal sealed class MongoQueryStore : MongoDbCollectionBase, IQueryStore
     {
-        public MongoQueryStore(ILogger<MongoQueryStore> logger, IOptions<MongoDbConnectionDetails> details)
-            : base(logger, MongoDbNames.RecruitDb, MongoDbCollectionNames.QueryStore, details)
+        public MongoQueryStore(ILoggerFactory loggerFactory, IOptions<MongoDbConnectionDetails> details)
+            : base(loggerFactory, MongoDbNames.RecruitDb, MongoDbCollectionNames.QueryStore, details)
         {
         }
 

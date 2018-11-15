@@ -7,7 +7,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Repositories
 {
     public interface IVacancyReviewQuery
     {
-        Task<List<VacancyReview>> GetActiveAsync();
+        Task<List<T>> GetActiveAsync<T>();
         Task<List<VacancyReview>> GetForVacancyAsync(long vacancyReference);
         Task<List<VacancyReview>> SearchAsync(long vacancyReference);
         Task<List<VacancyReview>> GetByStatusAsync(ReviewStatus status);

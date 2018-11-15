@@ -25,7 +25,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.ApprenticeshipProgrammes
             try
             {
                 await _client.UpdateApprenticeshipProgrammesAsync();
-                _logger.LogInformation("Finished populating standards and frameworks into refernce data store.");
+                _logger.LogInformation("Finished populating standards and frameworks into reference data store.");
             }
             catch (Exception ex)
             {

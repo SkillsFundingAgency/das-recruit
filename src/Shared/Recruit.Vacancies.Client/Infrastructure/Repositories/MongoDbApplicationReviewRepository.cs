@@ -18,8 +18,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         private const string CandidateId = "candidateId";
         private const string Id = "_id";
 
-        public MongoDbApplicationReviewRepository(ILogger<MongoDbApplicationReviewRepository> logger, IOptions<MongoDbConnectionDetails> details)
-            : base(logger, MongoDbNames.RecruitDb, MongoDbCollectionNames.ApplicationReviews, details)
+        public MongoDbApplicationReviewRepository(ILoggerFactory loggerFactory, IOptions<MongoDbConnectionDetails> details)
+            : base(loggerFactory, MongoDbNames.RecruitDb, MongoDbCollectionNames.ApplicationReviews, details)
         {
         }
 

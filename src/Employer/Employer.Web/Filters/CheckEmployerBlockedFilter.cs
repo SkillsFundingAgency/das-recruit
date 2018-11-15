@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Caching;
-using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Controllers;
 using Esfa.Recruit.Employer.Web.Exceptions;
+using Esfa.Recruit.Vacancies.Client.Application.Cache;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Microsoft.AspNetCore.Mvc.Filters;
 
@@ -15,13 +14,13 @@ namespace Esfa.Recruit.Employer.Web.Filters
     {
         private readonly IBlockedEmployersProvider _blockedEmployersProvider;
         private readonly ICache _cache;
+        private readonly ITimeProvider _timeProvider;
 
-        private DateTime CacheAbsoluteExpiryTime => DateTime.UtcNow.AddHours(1);
-
-        public CheckEmployerBlockedFilter(IBlockedEmployersProvider blockedEmployersProvider, ICache cache)
+        public CheckEmployerBlockedFilter(IBlockedEmployersProvider blockedEmployersProvider, ICache cache, ITimeProvider timeProvider)
         {
             _blockedEmployersProvider = blockedEmployersProvider;
             _cache = cache;
+            _timeProvider = timeProvider;
         }
 
         public async Task OnActionExecutionAsync(
@@ -31,8 +30,8 @@ namespace Esfa.Recruit.Employer.Web.Filters
             if (RequestIsForWhiteListedPage(context) == false)
             {
                 var blockedEmployerAccountIds = await _cache.CacheAsideAsync(
-                    CacheKeys.BlockedEmployersCacheKey,
-                    CacheAbsoluteExpiryTime,
+                    CacheKeys.BlockedEmployers,
+                    _timeProvider.OneHour,
                     () => _blockedEmployersProvider.GetBlockedEmployerAccountIdsAsync());
 
                 var accountIdFromUrl = context.RouteData.Values[RouteValues.EmployerAccountId].ToString().ToUpper();

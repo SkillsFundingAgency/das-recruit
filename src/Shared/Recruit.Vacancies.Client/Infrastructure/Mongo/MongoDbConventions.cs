@@ -1,6 +1,4 @@
-﻿using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using MongoDB.Bson.Serialization;
-using MongoDB.Bson.Serialization.Conventions;
+﻿using MongoDB.Bson.Serialization.Conventions;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
 {

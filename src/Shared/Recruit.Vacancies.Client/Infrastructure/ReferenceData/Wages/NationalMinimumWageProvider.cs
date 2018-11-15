@@ -1,6 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Application.Cache;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.Extensions.Logging;
@@ -10,21 +12,26 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Wages
 {
     public class NationalMinimumWageProvider : IMinimumWageProvider
     {
+        private readonly IReferenceDataReader _referenceDataReader;
         private readonly ILogger<NationalMinimumWageProvider> _logger;
-        private readonly Lazy<IList<MinWageEntity>> _wagePeriods;
-        
-        public NationalMinimumWageProvider(IReferenceDataReader referenceDataReader, ILogger<NationalMinimumWageProvider> logger)
+        private readonly ICache _cache;
+        private readonly ITimeProvider _timeProvider;
+
+        public NationalMinimumWageProvider(IReferenceDataReader referenceDataReader, ILogger<NationalMinimumWageProvider> logger, ICache cache, ITimeProvider timeProvider)
         {
+            _referenceDataReader = referenceDataReader;
             _logger = logger;
-            _wagePeriods = new Lazy<IList<MinWageEntity>>(() => referenceDataReader.GetReferenceData<MinimumWages>().Result.Ranges
-                .OrderBy(w => w.ValidFrom).ToList());
+            _cache = cache;
+            _timeProvider = timeProvider;
         }   
 
         public IMinimumWage GetWagePeriod(DateTime date)
         {
             try
             {
-                var wagePeriods = _wagePeriods.Value;
+                var minimumWages = GetMinimumWagesAsync().Result;
+
+                var wagePeriods = minimumWages.Ranges.OrderBy(w => w.ValidFrom).ToList();
 
                 MinWageEntity currentWagePeriod = null;
                 foreach (var wagePeriod in wagePeriods)
@@ -49,6 +56,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Wages
                 
                 throw;
             }
+        }
+
+        private Task<MinimumWages> GetMinimumWagesAsync()
+        {
+            return _cache.CacheAsideAsync(CacheKeys.MinimumWages,
+                _timeProvider.NextDay,
+                () => _referenceDataReader.GetReferenceData<MinimumWages>());
         }
     }
 }

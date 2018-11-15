@@ -6,7 +6,6 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
-using Quals = Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Qualifications;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
@@ -31,7 +30,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<IEnumerable<string>> GetEmployerIdentifiersAsync(string userId);
         Task SetupEmployerAsync(string employerAccountId);
         Task<List<string>> GetCandidateSkillsAsync();
-        Task<Quals.Qualifications> GetCandidateQualificationsAsync();
+        Task<IList<string>> GetCandidateQualificationsAsync();
         Task<EmployerProfile> GetEmployerProfileAsync(string employerAccountId, long legalEntityId);
         Task UpdateEmployerProfileAsync(EmployerProfile employerProfile, VacancyUser user);
         Task<ApplicationReview> GetApplicationReviewAsync(Guid applicationReviewId);

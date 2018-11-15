@@ -1,6 +1,5 @@
 ﻿using System;
-using Esfa.Recruit.Employer.Web.Caching;
-using Esfa.Recruit.Employer.Web.Filters;
+using Esfa.Recruit.Vacancies.Client.Application.Cache;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Microsoft.AspNetCore.Mvc.Filters;
 
@@ -12,8 +11,9 @@ namespace Esfa.Recruit.Employer.Web.Filters
         {
             var blockedEmployersProvider = (IBlockedEmployersProvider)serviceProvider.GetService(typeof(IBlockedEmployersProvider));
             var cache = (ICache)serviceProvider.GetService(typeof(ICache));
+            var timeProvider = (ITimeProvider) serviceProvider.GetService(typeof(ITimeProvider));
 
-            return new CheckEmployerBlockedFilter(blockedEmployersProvider, cache);
+            return new CheckEmployerBlockedFilter(blockedEmployersProvider, cache, timeProvider);
         }
 
         public bool IsReusable => false;
