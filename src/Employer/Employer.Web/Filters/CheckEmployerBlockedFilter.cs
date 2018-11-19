@@ -6,6 +6,7 @@ using Esfa.Recruit.Employer.Web.Controllers;
 using Esfa.Recruit.Employer.Web.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Application.Cache;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Esfa.Recruit.Employer.Web.Filters
@@ -38,19 +39,26 @@ namespace Esfa.Recruit.Employer.Web.Filters
 
                 if (blockedEmployerAccountIds.Contains(accountIdFromUrl))
                 {
-                    throw new BlockedEmployerException($"Employer account '{accountIdFromUrl}' is blocked");
+                    var ctrlr = context.Controller as Controller;
+                    context.Result = ctrlr.RedirectToRoute(RouteNames.BlockedEmployer_Get);
+                }
+                else
+                {
+                    await next();
                 }
             }
-
-            await next();
+            else
+            {
+                await next();
+            }
         }
 
         private bool RequestIsForWhiteListedPage(ActionExecutingContext context)
         {
             var controllerName = (((Microsoft.AspNetCore.Mvc.Controllers.ControllerActionDescriptor)context.ActionDescriptor).ControllerTypeInfo).Name;
 
-            var whitelistControllers = new List<string>{ nameof(ErrorController), nameof(LogoutController), nameof(ExternalLinksController) };
-            
+            var whitelistControllers = new List<string> { nameof(ErrorController), nameof(LogoutController), nameof(ExternalLinksController) };
+
             return whitelistControllers.Contains(controllerName);
         }
     }
