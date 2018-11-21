@@ -1,5 +1,4 @@
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
-using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators.VacancyValidators;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using FluentValidation;
@@ -153,7 +152,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .NotNull()
                     .WithMessage("You must provide the closing date for applications")
                     .WithErrorCode("16")
-                .GreaterThan(_timeProvider.Now.Date.AddDays(1).AddTicks(-1))
+                .GreaterThan(v => _timeProvider.Now.Date.AddDays(1).AddTicks(-1))
                     .WithMessage("Closing date for applications cannot be today or earlier")
                     .WithErrorCode("18")
                 .RunCondition(VacancyRuleSet.ClosingDate)
@@ -166,7 +165,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .NotNull()
                 .WithMessage("You must provide a possible apprenticeship start date")
                     .WithErrorCode("20")
-                .GreaterThan(_timeProvider.Now.Date.AddDays(1).AddTicks(-1))
+                .GreaterThan(v => _timeProvider.Now.Date.AddDays(1).AddTicks(-1))
                 .WithMessage("Possible apprenticeship start date can't be today or earlier. We advise using a date more than two weeks from now.")
                     .WithErrorCode("22")
                 .RunCondition(VacancyRuleSet.StartDate)
