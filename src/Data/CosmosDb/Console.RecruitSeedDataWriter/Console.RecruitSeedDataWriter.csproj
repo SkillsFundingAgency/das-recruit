@@ -35,6 +35,9 @@
     <None Update="Data\EmployerRecruitSystem.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Data\ProviderRecruitSystem.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Data\RecruitWebJobsSystem.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
