@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
@@ -10,6 +10,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.QA;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 using System;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyAnalytics;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 {
@@ -166,9 +167,22 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             return _queryStore.DeleteManyAsync<EmployerDashboard, DateTime>(QueryViewType.EmployerDashboard.TypeName, x => x.LastUpdated, oldestLastUpdatedDate);
         }
 
+
         public Task<long> RemoveOldProviderDashboards(DateTime oldestLastUpdatedDate)
         {
             return _queryStore.DeleteManyAsync<ProviderDashboard, DateTime>(QueryViewType.ProviderDashboard.TypeName, x => x.LastUpdated, oldestLastUpdatedDate);
+		}
+
+        public Task UpsertVacancyAnalyticSummaries(List<VacancyAnalyticsSummary> summaries)
+        {
+            var ts = _timeProvider.Now;
+            summaries.ForEach(x => 
+            {
+                x.Id = QueryViewType.VacancyAnalyticsSummary.GetIdValue(x.VacancyReference.ToString());
+                x.LastUpdated = ts;
+            });
+
+            return _queryStore.ReplaceManyAsync<VacancyAnalyticsSummary>(QueryViewType.VacancyAnalyticsSummary.TypeName, summaries);
         }
 
         private string GetLiveVacancyId(long vacancyReference)
