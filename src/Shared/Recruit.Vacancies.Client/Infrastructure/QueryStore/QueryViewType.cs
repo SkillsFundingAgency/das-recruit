@@ -38,5 +38,6 @@
         public static QueryViewType VacancyApplications => new QueryViewType("VacancyApplications", "VacancyApplications_{0}");
         public static QueryViewType QaDashboard => new QueryViewType("QaDashboard", "QaDashboard");
         public static QueryViewType ClosedVacancy => new QueryViewType("ClosedVacancy", "ClosedVacancy_{0}");
+        public static QueryViewType VacancyAnalyticsSummary => new QueryViewType("VacancyAnalyticsSummary", "VacancyAnalyticsSummary_{0}");
     }
 }
