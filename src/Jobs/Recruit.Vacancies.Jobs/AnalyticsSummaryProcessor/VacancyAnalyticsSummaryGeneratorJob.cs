@@ -27,7 +27,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.AnalyticsSummaryProcessor
             _qsWriter = qsWriter;
         }
 
-        public async Task ProcessEvents([TimerTrigger(Schedules.EveryFifteenMinutes, RunOnStartup = true)] TimerInfo timerInfo, TextWriter log)
+        public async Task ProcessEvents([TimerTrigger(Schedules.EveryFifteenMinutes, RunOnStartup = Program.CanRunJobOnStartup)] TimerInfo timerInfo, TextWriter log)
         {
             if (_jobsConfig.DisabledJobs.Contains(this.GetType().Name))
             {
