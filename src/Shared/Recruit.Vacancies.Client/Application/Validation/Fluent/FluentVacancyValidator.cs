@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators.VacancyValidators;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -9,15 +11,15 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
     {
         private readonly ITimeProvider _timeProvider;
         private readonly IMinimumWageProvider _minimumWageService;
-        private readonly IApprenticeshipProgrammeProvider _apprenticeshipProgrammesProvider;
         private readonly IQualificationsProvider _qualificationsProvider;
+        private readonly Lazy<IEnumerable<IApprenticeshipProgramme>> _apprenticeshipProgrammes;
 
         public FluentVacancyValidator(ITimeProvider timeProvider, IMinimumWageProvider minimumWageService, IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider, IQualificationsProvider qualificationsProvider)
         {
             _timeProvider = timeProvider;
             _minimumWageService = minimumWageService;
-            _apprenticeshipProgrammesProvider = apprenticeshipProgrammesProvider;
             _qualificationsProvider = qualificationsProvider;
+            _apprenticeshipProgrammes = new Lazy<IEnumerable<IApprenticeshipProgramme>>(() => apprenticeshipProgrammesProvider.GetApprenticeshipProgrammesAsync().Result);
 
             SingleFieldValidations();
 
@@ -567,7 +569,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             When(x => x.ProgrammeId != null && !string.IsNullOrWhiteSpace(x.ProgrammeId) && x.StartDate.HasValue, () =>
             {
                 RuleFor(x => x)
-                    .TrainingMustBeActiveForStartDate(_apprenticeshipProgrammesProvider.GetApprenticeshipProgrammesAsync().Result)
+                    .TrainingMustBeActiveForStartDate(_apprenticeshipProgrammes)
                 .RunCondition(VacancyRuleSet.TrainingExpiryDate)
                 .WithRuleId(VacancyRuleSet.TrainingExpiryDate);
             });
