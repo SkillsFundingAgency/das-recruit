@@ -41,6 +41,8 @@ namespace Esfa.Recruit.Employer.Web
                 .DefaultSources(s => s.Self())
                 .StyleSources(s => 
                     s.Self()
+                    .CustomSources("https://www.googletagmanager.com/",
+                                    "https://www.tagmanager.google.com/")
                 )
                 .ScriptSources(s => 
                     s.Self()
@@ -50,10 +52,12 @@ namespace Esfa.Recruit.Employer.Web
                                     "https://www.tagmanager.google.com/", 
                                     "https://services.postcodeanywhere.co.uk/")
                     .UnsafeInline()
+                    .UnsafeEval()
                 ) // TODO: Look at moving AppInsights inline js code.
                 .FontSources(s => 
                     s.Self()
-                    .CustomSources("data:")
+                    .CustomSources("data:",
+                                    "https://fonts.googleapis.com/")
                 )
                 .ConnectSources(s => 
                     s.Self()
@@ -63,6 +67,7 @@ namespace Esfa.Recruit.Employer.Web
                     s.Self()
                     .CustomSources("https://maps.googleapis.com", 
                                     "https://www.google-analytics.com", 
+                                    "https://ssl.gstatic.com",
                                     "data:")
                  )
                 .ReportUris(r => r.Uris("/ContentPolicyReport/Report")));
