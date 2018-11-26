@@ -1,4 +1,4 @@
-﻿namespace Esfa.Recruit.Provider.Web.Configuration
+﻿namespace Esfa.Recruit.Shared.Web.Configuration
 {
     public sealed class GoogleAnalyticsConfiguration
     {
