@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Razor.TagHelpers;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Esfa.Recruit.Shared.Web.Configuration;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 
-namespace Esfa.Recruit.Employer.Web.TagHelpers
+namespace Esfa.Recruit.Shared.Web.TagHelpers
 {
     [HtmlTargetElement(Attributes = TagAttributeName)]
     public class EsfaAutomationTestElementTagHelper : TagHelper

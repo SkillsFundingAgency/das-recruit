@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
-namespace Esfa.Recruit.Provider.Web.TagHelpers
+namespace Esfa.Recruit.Shared.Web.TagHelpers
 {
     [HtmlTargetElement("span", Attributes = ValidationForAttributeName)]
     public class EsfaValidationMessageForTagHelper : ValidationMessageTagHelper

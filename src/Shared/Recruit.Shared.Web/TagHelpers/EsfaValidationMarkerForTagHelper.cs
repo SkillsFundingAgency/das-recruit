@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
-namespace Esfa.Recruit.Provider.Web.TagHelpers
+namespace Esfa.Recruit.Shared.Web.TagHelpers
 {
     [HtmlTargetElement("div", Attributes = ValidationForAttributeName)]
     public class EsfaValidationMarkerForTagHelper : TagHelper
