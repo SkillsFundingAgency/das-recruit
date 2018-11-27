@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace Esfa.Recruit.Employer.Web.Extensions
+namespace Esfa.Recruit.Shared.Web.Extensions
 {
     public static class RequestExtensions
     {

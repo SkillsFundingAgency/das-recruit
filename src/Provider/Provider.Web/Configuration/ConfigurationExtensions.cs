@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
-using Esfa.Recruit.Provider.Web.Extensions;
+using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Provider.Web.Filters;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using FluentValidation.AspNetCore;

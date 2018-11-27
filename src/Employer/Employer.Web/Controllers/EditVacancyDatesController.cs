@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Hosting;
 using System;
 using Esfa.Recruit.Employer.Web.Extensions;
+using Esfa.Recruit.Shared.Web.Extensions;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {

@@ -1,6 +1,6 @@
 ﻿using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
-using Esfa.Recruit.Employer.Web.Extensions;
+using Esfa.Recruit.Shared.Web.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Net;

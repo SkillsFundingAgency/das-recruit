@@ -1,8 +1,7 @@
-﻿using Esfa.Recruit.Employer.Web.Extensions;
+﻿using Esfa.Recruit.Shared.Web.Extensions;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.Validations
 {
-    using System;
     using System.ComponentModel.DataAnnotations;
 
     public class TypeOfDecimalAttribute : ValidationAttribute

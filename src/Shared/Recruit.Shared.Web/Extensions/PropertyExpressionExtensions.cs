@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
-namespace Esfa.Recruit.Provider.Web.Extensions
+namespace Esfa.Recruit.Shared.Web.Extensions
 {
     public static class PropertyExpressionExtensions
     {

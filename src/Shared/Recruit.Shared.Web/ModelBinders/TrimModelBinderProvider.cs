@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.Extensions.Logging;
 
-namespace Esfa.Recruit.Provider.Web.ModelBinders
+namespace Esfa.Recruit.Shared.Web.ModelBinders
 {
     public class TrimModelBinderProvider : IModelBinderProvider
     {

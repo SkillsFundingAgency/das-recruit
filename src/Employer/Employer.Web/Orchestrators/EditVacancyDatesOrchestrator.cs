@@ -10,6 +10,8 @@ using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
+using Esfa.Recruit.Shared.Web.Orchestrators;
+using Esfa.Recruit.Shared.Web.Extensions;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {

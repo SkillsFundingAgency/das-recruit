@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace Esfa.Recruit.Provider.Web.ModelBinders
+namespace Esfa.Recruit.Shared.Web.ModelBinders
 {
     public class TrimModelBinder : IModelBinder
     {

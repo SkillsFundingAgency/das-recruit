@@ -1,6 +1,6 @@
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 
-namespace Esfa.Recruit.Provider.Web.Orchestrators
+namespace Esfa.Recruit.Shared.Web.Orchestrators
 {
     public class OrchestratorResponse
     {

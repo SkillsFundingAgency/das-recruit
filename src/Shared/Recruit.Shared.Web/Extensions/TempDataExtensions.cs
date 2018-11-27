@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Newtonsoft.Json;
 
-namespace Esfa.Recruit.Provider.Web.Extensions
+namespace Esfa.Recruit.Shared.Web.Extensions
 {
     public static class TempDataExtensions
     {

@@ -1,10 +1,10 @@
 ﻿using System.Linq;
-using Esfa.Recruit.Provider.Web.ModelBinders;
+using Esfa.Recruit.Shared.Web.ModelBinders;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.Extensions.Logging;
 
-namespace Esfa.Recruit.Provider.Web.Extensions
+namespace Esfa.Recruit.Shared.Web.Extensions
 {
     public static class MvcOptionsExtensions
     {

@@ -13,6 +13,7 @@ using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Employer.Web.Configuration;
+using Esfa.Recruit.Shared.Web.Extensions;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {

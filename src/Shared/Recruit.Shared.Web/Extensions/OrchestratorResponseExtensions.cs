@@ -1,7 +1,7 @@
-using Esfa.Recruit.Provider.Web.Orchestrators;
+using Esfa.Recruit.Shared.Web.Orchestrators;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace Esfa.Recruit.Provider.Web.Extensions
+namespace Esfa.Recruit.Shared.Web.Extensions
 {
     public static class OrchestratorResponseExtensions
     {

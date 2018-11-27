@@ -2,7 +2,6 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Training;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.Mappings.Extensions;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
@@ -11,6 +10,8 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Employer.Web.Services;
+using Esfa.Recruit.Shared.Web.Orchestrators;
+using Esfa.Recruit.Shared.Web.Extensions;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {

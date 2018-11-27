@@ -1,11 +1,11 @@
-﻿using Esfa.Recruit.Employer.Web.ViewModels.DeleteVacancy;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.Models;
+using Esfa.Recruit.Shared.Web.Orchestrators;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {

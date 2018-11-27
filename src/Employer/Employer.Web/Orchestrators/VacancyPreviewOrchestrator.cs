@@ -13,6 +13,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.Services;
+using Esfa.Recruit.Shared.Web.Orchestrators;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
