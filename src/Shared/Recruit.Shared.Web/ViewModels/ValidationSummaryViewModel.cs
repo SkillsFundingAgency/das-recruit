@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.Collections.Generic;
 
-namespace Esfa.Recruit.Provider.Web.ViewModels
+namespace Esfa.Recruit.Shared.Web.ViewModels
 {
     public class ValidationSummaryViewModel
     {
