@@ -45,11 +45,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
             });
         }
 
-        internal static IRuleBuilderInitial<Vacancy, Vacancy> TrainingMustBeActiveForStartDate(this IRuleBuilder<Vacancy, Vacancy> ruleBuilder, IEnumerable<IApprenticeshipProgramme> programmes)
+        internal static IRuleBuilderInitial<Vacancy, Vacancy> TrainingMustBeActiveForStartDate(this IRuleBuilder<Vacancy, Vacancy> ruleBuilder, Lazy<IEnumerable<IApprenticeshipProgramme>> programmes)
         {
             return ruleBuilder.Custom((vacancy, context) =>
             {
-                var matchingProgramme = programmes.SingleOrDefault(x => x.Id.Equals(vacancy.ProgrammeId, StringComparison.InvariantCultureIgnoreCase));
+                var matchingProgramme = programmes.Value.SingleOrDefault(x => x.Id.Equals(vacancy.ProgrammeId, StringComparison.InvariantCultureIgnoreCase));
 
                 if (matchingProgramme.EffectiveTo != null && matchingProgramme.EffectiveTo < vacancy.StartDate)
                 {
