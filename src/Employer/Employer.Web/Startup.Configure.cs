@@ -1,4 +1,5 @@
 ﻿using Esfa.Recruit.Employer.Web.Configuration;
+using Esfa.Recruit.Shared.Web.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Rewrite;

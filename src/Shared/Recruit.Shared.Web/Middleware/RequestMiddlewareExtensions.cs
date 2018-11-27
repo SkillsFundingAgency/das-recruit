@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
 
-namespace Microsoft.AspNetCore.Builder
+namespace Esfa.Recruit.Shared.Web.Middleware
 {
     public static class RequestMiddlewareExtensions
     {

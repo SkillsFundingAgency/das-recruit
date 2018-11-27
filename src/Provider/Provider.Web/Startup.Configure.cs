@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using Esfa.Recruit.Provider.Web.Configuration;
-using Esfa.Recruit.Provider.Web.Middleware;
+using Esfa.Recruit.Shared.Web.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
