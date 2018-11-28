@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
-using Holidays = Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BankHolidays;
-using Quals = Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Qualifications;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Skills;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Wages;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Polly;
+using Holidays = Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BankHolidays;
 using Programmes = Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
+using Quals = Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Qualifications;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData
 {
@@ -71,7 +70,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData
             return new Dictionary<Type, string> 
             {
                 { typeof(CandidateSkills), "CandidateSkills" },
-                { typeof(MinimumWages), "MinimumWageRanges" },
                 { typeof(Holidays.BankHolidays), "BankHolidays" },
                 { typeof(Quals.Qualifications), "QualificationTypes" },
                 { typeof(Programmes.ApprenticeshipProgrammes), "ApprenticeshipProgrammes" },

@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Cache;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.Extensions.Logging;
@@ -10,16 +9,17 @@ using MinWageEntity = Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Wages
 {
+    using System.Collections.Immutable;
+    using SFA.DAS.VacancyServices.NationalMinimumWage;
+
     public class NationalMinimumWageProvider : IMinimumWageProvider
     {
-        private readonly IReferenceDataReader _referenceDataReader;
         private readonly ILogger<NationalMinimumWageProvider> _logger;
         private readonly ICache _cache;
         private readonly ITimeProvider _timeProvider;
 
-        public NationalMinimumWageProvider(IReferenceDataReader referenceDataReader, ILogger<NationalMinimumWageProvider> logger, ICache cache, ITimeProvider timeProvider)
+        public NationalMinimumWageProvider(ILogger<NationalMinimumWageProvider> logger, ICache cache, ITimeProvider timeProvider)
         {
-            _referenceDataReader = referenceDataReader;
             _logger = logger;
             _cache = cache;
             _timeProvider = timeProvider;
@@ -31,7 +31,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Wages
             {
                 var minimumWages = GetMinimumWagesAsync().Result;
 
-                var wagePeriods = minimumWages.Ranges.OrderBy(w => w.ValidFrom).ToList();
+                var wagePeriods = minimumWages.OrderBy(w => w.ValidFrom);
 
                 MinWageEntity currentWagePeriod = null;
                 foreach (var wagePeriod in wagePeriods)
@@ -42,7 +42,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Wages
                     if (currentWagePeriod != null && currentWagePeriod.ValidFrom == wagePeriod.ValidFrom)
                         throw new InvalidOperationException($"Duplicate wage period: {currentWagePeriod.ValidFrom}");
 
-                    currentWagePeriod = wagePeriod;
+                    currentWagePeriod = new MinWageEntity
+                    {
+                        ValidFrom = wagePeriod.ValidFrom,
+                        ApprenticeshipMinimumWage = wagePeriod.ApprenticeMinimumWage,
+                        NationalMinimumWageLowerBound = wagePeriod.Under18NationalMinimumWage,
+                        NationalMinimumWageUpperBound = wagePeriod.Over24NationalMinimumWage
+                    };
                 }
 
                 if (currentWagePeriod == null)
@@ -58,11 +64,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Wages
             }
         }
 
-        private Task<MinimumWages> GetMinimumWagesAsync()
+        private Task<ImmutableArray<NMWRates>> GetMinimumWagesAsync()
         {
             return _cache.CacheAsideAsync(CacheKeys.MinimumWages,
                 _timeProvider.NextDay,
-                () => _referenceDataReader.GetReferenceData<MinimumWages>());
+                NationalMinimumWages.GetRatesAsync);
         }
     }
 }
