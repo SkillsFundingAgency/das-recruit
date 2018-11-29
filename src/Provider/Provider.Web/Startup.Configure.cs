@@ -91,12 +91,7 @@ namespace Esfa.Recruit.Provider.Web
 
             app.UseNoCacheHttpHeaders(); // Effectively forces the browser to always request dynamic pages
 
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{ukprn}/recruit/{controller=Dashboard}/{action=Index}/{id?}");
-            });
+            app.UseMvc();
         }
 
         private static string[] GetAllowableDestinations(AuthenticationConfiguration authConfig, ExternalLinksConfiguration linksConfig)
