@@ -35,7 +35,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
         private bool IsValidReturnUrl(string returnUrl)
         {
-            return Regex.IsMatch(returnUrl, @"^/accounts/[A-Z0-9]{6}/.*");
+            return Regex.IsMatch(returnUrl, @"^/[0-9]{8}/recruit/.*");
         }
     }
 }
