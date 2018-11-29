@@ -133,6 +133,20 @@ namespace Esfa.Recruit.Employer.Web.Configuration
                     await PopulateAccountsClaim(ctx, vacancyClient);
                     await HandleUserSignedIn(ctx, vacancyClient);
                 };
+
+                options.Events.OnRemoteFailure = ctx =>
+                {
+                    if (ctx.Failure.Message.Contains("Correlation failed"))
+                    {
+                        var logger = services.BuildServiceProvider().GetRequiredService<ILoggerFactory>().CreateLogger<Startup>();
+                        logger.LogDebug("Correlation Cookie was invalid - probably timed-out");
+
+                        ctx.Response.Redirect("/");
+                        ctx.HandleResponse();
+                    }
+
+                    return Task.CompletedTask;
+                };
             });
         }
         
