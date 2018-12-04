@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Net.Http.Headers;
 using Microsoft.Extensions.Logging;
+using Esfa.Recruit.Shared.Web.Extensions;
 
 namespace Esfa.Recruit.Qa.Web.Configuration
 {

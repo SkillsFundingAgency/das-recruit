@@ -11,8 +11,8 @@ using Esfa.Recruit.Employer.Web.ViewModels.Part2.Skills;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Skills;
 using Microsoft.Extensions.Logging;
+using Esfa.Recruit.Shared.Web.Orchestrators;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 {

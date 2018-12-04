@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Shared.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Filters;
+using Esfa.Recruit.Shared.Web.Extensions;
 
 namespace Esfa.Recruit.Employer.Web.Configuration
 {
