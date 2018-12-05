@@ -100,19 +100,5 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 
             Logger.LogInformation($"Recreated {items.Count} {typeof(T).Name} items in {watch.ElapsedMilliseconds}ms");
         }
-
-        async Task IQueryStore.ReplaceManyAsync<T>(string typeName, IList<T> items)
-        {
-            var collection = GetCollection<T>();
-
-            var filterBuilder = Builders<T>.Filter;
-
-            var filter = filterBuilder.Eq(d => d.ViewType, typeName)
-                        & filterBuilder.In(d => d.Id, items.Select(x => x.Id));
-
-            await RetryPolicy.ExecuteAsync(context => collection.DeleteManyAsync(filter), new Context(nameof(IQueryStore.ReplaceManyAsync)));
-
-            await RetryPolicy.ExecuteAsync(context => collection.InsertManyAsync(items), new Context(nameof(IQueryStore.ReplaceManyAsync)));
-        }
     }
 }

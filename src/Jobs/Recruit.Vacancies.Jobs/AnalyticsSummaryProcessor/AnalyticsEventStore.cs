@@ -13,9 +13,14 @@ namespace Esfa.Recruit.Vacancies.Jobs.AnalyticsSummaryProcessor
 {
     public class AnalyticsEventStore
     {
-        private const string GetVacancyAnalyticEventsSqlSproc = "[VACANCY].[Event_GET_EventsForConsumer]";
-        private const string UpdateLastProcessedVacancyEventIdsqlSproc = "[EVENT_SYSTEM].[EventConsumer_UPDATE_LastProcessedVacancyEventId]";
-        private const string ConsumerId = "DAS-RECRUIT";
+        private const string GetVacancyAnalyticEventsSqlSproc = "[VACANCY].[Event_GET_EventsSummaryForVacancy]";
+        private const int VacancyReferenceColumnIndex = 0;
+        private const int NoOfApprenticeshipSearchesColumnIndex = 1;
+        private const int NoOfApprenticeshipSavedSearchAlertsColumnIndex = 2;
+        private const int NoOfApprenticeshipSavedColumnIndex = 3;
+        private const int NoOfApprenticeshipDetailsViewsColumnIndex = 4;
+        private const int NoOfApprenticeshipApplicationsCreatedColumnIndex = 5;
+        private const int NoOfApprenticeshipApplicationsSubmittedColumnIndex = 6;
 
         private readonly ILogger<AnalyticsEventStore> _logger;
         private readonly string _vacancyAnalyticEventsDbConnString;
@@ -28,95 +33,51 @@ namespace Esfa.Recruit.Vacancies.Jobs.AnalyticsSummaryProcessor
             RetryPolicy = GetRetryPolicy();
         }
 
-        public async Task<(List<VacancyAnalyticsSummary>, Guid)> GetVacancyAnalyticEventSummariesAsync()
+        public async Task<VacancyAnalyticsSummary> GetVacancyAnalyticEventSummaryAsync(long vacancyReference)
         {
-            Guid lastRetrievedEventId;
-            var summaries = new List<VacancyAnalyticsSummary>();
-
             try
             {
                 using (var conn = new SqlConnection(_vacancyAnalyticEventsDbConnString))
                 {
-                    var command = new SqlCommand(GetVacancyAnalyticEventsSqlSproc, conn);
-                    command.CommandType = CommandType.StoredProcedure;
-
-                    var outputParam = command.CreateParameter();
-                    outputParam.ParameterName = "@LastVacancyEventToProcessId";
-                    outputParam.DbType = DbType.Guid;
-                    outputParam.Direction = ParameterDirection.Output;
-
-                    var inputParam = command.CreateParameter();
-                    inputParam.ParameterName = "@ConsumerId";
-                    inputParam.DbType = DbType.String;
-                    inputParam.Value = ConsumerId;
-                    inputParam.Direction = ParameterDirection.Input;
-
-                    command.Parameters.Add(inputParam);
-                    command.Parameters.Add(outputParam);
-
-                    var reader = await RetryPolicy.ExecuteAsync(async context => 
+                    using (var command = new SqlCommand(GetVacancyAnalyticEventsSqlSproc, conn))
                     {
-                        await conn.OpenAsync();
-                        return await command.ExecuteReaderAsync();
-                    }, new Context(nameof(GetVacancyAnalyticEventSummariesAsync)));
+                        command.CommandType = CommandType.StoredProcedure;
 
-                    while (await reader.ReadAsync())
-                    {
-                        var summary = new VacancyAnalyticsSummary
+                        var inputParam = command.CreateParameter();
+                        inputParam.ParameterName = "@VacancyReference";
+                        inputParam.DbType = DbType.Int64;
+                        inputParam.Value = vacancyReference;
+                        inputParam.Direction = ParameterDirection.Input;
+
+                        command.Parameters.Add(inputParam);
+
+                        using (var reader = await RetryPolicy.ExecuteAsync(async context =>
+                                            {
+                                                await conn.OpenAsync();
+                                                return await command.ExecuteReaderAsync();
+                                            }, new Context(nameof(GetVacancyAnalyticEventSummaryAsync))))
                         {
-                            VacancyReference = reader.GetInt64(0),
-                            NoOfApprenticeshipSearches = reader.GetInt32(1),
-                            NoOfApprenticeshipSavedSearchAlerts = reader.GetInt32(2),
-                            NoOfApprenticeshipSaved = reader.GetInt32(3),
-                            NoOfApprenticeshipDetailsViews = reader.GetInt32(4),
-                            NoOfApprenticeshipApplicationsCreated = reader.GetInt32(5),
-                            NoOfApprenticeshipApplicationsSubmitted = reader.GetInt32(6)
-                        };
-                        
-                        summaries.Add(summary);
-                    }
+                            await reader.ReadAsync();
 
-                    reader.Close();
-                    lastRetrievedEventId = (Guid)command.Parameters["@LastVacancyEventToProcessId"].Value;
+                            var summary = new VacancyAnalyticsSummary
+                            {
+                                VacancyReference = reader.GetInt64(VacancyReferenceColumnIndex),
+                                NoOfApprenticeshipSearches = reader.GetInt32(NoOfApprenticeshipSearchesColumnIndex),
+                                NoOfApprenticeshipSavedSearchAlerts = reader.GetInt32(NoOfApprenticeshipSavedSearchAlertsColumnIndex),
+                                NoOfApprenticeshipSaved = reader.GetInt32(NoOfApprenticeshipSavedColumnIndex),
+                                NoOfApprenticeshipDetailsViews = reader.GetInt32(NoOfApprenticeshipDetailsViewsColumnIndex),
+                                NoOfApprenticeshipApplicationsCreated = reader.GetInt32(NoOfApprenticeshipApplicationsCreatedColumnIndex),
+                                NoOfApprenticeshipApplicationsSubmitted = reader.GetInt32(NoOfApprenticeshipApplicationsSubmittedColumnIndex)
+                            };
+
+                            return summary;
+                        }
+                    }
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error retrieving vacancy events from the Vacancy Analytic Events DB.");
-                throw;
-            }
-
-            return (summaries, lastRetrievedEventId);
-        }
-
-        public async Task UpdateLastProcessedVacancyEventIdAsync(Guid id)
-        {
-            try
-            {
-                using (var conn = new SqlConnection(_vacancyAnalyticEventsDbConnString))
-                {
-                    var command = new SqlCommand(UpdateLastProcessedVacancyEventIdsqlSproc, conn);
-                    command.CommandType = CommandType.StoredProcedure;
-
-                    var inputParam = command.CreateParameter();
-                    inputParam.ParameterName = "@ConsumerId";
-                    inputParam.DbType = DbType.String;
-                    inputParam.Value = ConsumerId;
-                    inputParam.Direction = ParameterDirection.Input;
-
-                    command.Parameters.AddWithValue("@ConsumerId", ConsumerId);
-                    command.Parameters.AddWithValue("@LastProcessedVacancyEventId", id);
-
-                    await RetryPolicy.ExecuteAsync(async context => 
-                    {
-                        await conn.OpenAsync();
-                        await command.ExecuteNonQueryAsync();
-                    }, new Context(nameof(UpdateLastProcessedVacancyEventIdAsync)));
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Error updating last processed vacancy event id {id.ToString()} for consumer {ConsumerId}.");
                 throw;
             }
         }
@@ -131,8 +92,9 @@ namespace Esfa.Recruit.Vacancies.Jobs.AnalyticsSummaryProcessor
                         TimeSpan.FromSeconds(1),
                         TimeSpan.FromSeconds(2),
                         TimeSpan.FromSeconds(4)
-                    }, (exception, timeSpan, retryCount, context) => {
-                        _logger.LogWarning($"Error executing SQL Command for method {context.OperationKey} Reason: {exception.Message}. Retrying in {timeSpan.Seconds} secs...attempt: {retryCount}");    
+                    }, (exception, timeSpan, retryCount, context) =>
+                    {
+                        _logger.LogWarning($"Error executing SQL Command for method {context.OperationKey} Reason: {exception.Message}. Retrying in {timeSpan.Seconds} secs...attempt: {retryCount}");
                     });
         }
     }

@@ -19,6 +19,5 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         Task DeleteAsync<T>(string typeName, string key) where T : QueryProjectionBase;
 
         Task<long> DeleteManyAsync<T, T1>(string typeName, Expression<Func<T, T1>> property, T1 value) where T : QueryProjectionBase;
-        Task ReplaceManyAsync<T>(string typeName, IList<T> items) where T : QueryProjectionBase;
     }
 }

@@ -16,11 +16,6 @@ namespace Esfa.Recruit.Vacancies.Jobs
 {
     class Program
     {
-#if DEBUG
-        internal const bool CanRunJobOnStartup = true;
-#else
-        internal const bool CanRunJobOnStartup = false;
-#endif
         public static async Task Main(string[] args)
         {
             ILogger logger = null;

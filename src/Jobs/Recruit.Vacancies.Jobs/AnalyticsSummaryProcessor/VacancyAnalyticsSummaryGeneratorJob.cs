@@ -8,11 +8,13 @@ using Esfa.Recruit.Vacancies.Jobs;
 using Esfa.Recruit.Vacancies.Jobs.Configuration;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace Esfa.Recruit.Vacancies.Jobs.AnalyticsSummaryProcessor
 {
     public class VacancyAnalyticsSummaryGeneratorJob
     {
+        private const string GenerateVacancyAnalyticsQueueName = "generate-vacancy-analytics-summary";
         private readonly ILogger<VacancyAnalyticsSummaryGeneratorJob> _logger;
         private readonly RecruitWebJobsSystemConfiguration _jobsConfig;
         private readonly AnalyticsEventStore _analyticsStore;
@@ -27,7 +29,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.AnalyticsSummaryProcessor
             _qsWriter = qsWriter;
         }
 
-        public async Task ProcessEvents([TimerTrigger(Schedules.EveryFifteenMinutes, RunOnStartup = Program.CanRunJobOnStartup)] TimerInfo timerInfo, TextWriter log)
+        public async Task ProcessEvents([QueueTrigger(GenerateVacancyAnalyticsQueueName, Connection = "QueueStorage")] string message, TextWriter log)
         {
             if (_jobsConfig.DisabledJobs.Contains(this.GetType().Name))
             {
@@ -35,38 +37,23 @@ namespace Esfa.Recruit.Vacancies.Jobs.AnalyticsSummaryProcessor
                 return;
             }
 
-            _logger.LogInformation("Starting populating new vacancy analytics summaries into query store.");
+            var eventItem = JsonConvert.DeserializeObject<VacancyReferenceQueueMessage>(message);
+
+            _logger.LogInformation($"Starting populating new vacancy analytics summary for vacancy reference {eventItem.VacancyReference} into query store.");
 
             try
             {
-                var timer = Stopwatch.StartNew();
+                var vacancyAnalyticSummary = await _analyticsStore.GetVacancyAnalyticEventSummaryAsync(eventItem.VacancyReference);
 
-                var eventSummariesAndLastEventId = await _analyticsStore.GetVacancyAnalyticEventSummariesAsync();
-                var eventSummaries = eventSummariesAndLastEventId.Item1;
-                var lastProcessedVacancyEventId = eventSummariesAndLastEventId.Item2;
+                await _qsWriter.UpsertVacancyAnalyticSummaryAsync(vacancyAnalyticSummary);
 
-                _logger.LogInformation($"Found {eventSummaries.Count} summaries to populate into the queryStore. Took {timer.Elapsed:c}.");
-
-                if (eventSummaries.Count > 0)
-                {
-                    var tsUpsertStart = timer.Elapsed;
-                    await _qsWriter.UpsertVacancyAnalyticSummaries(eventSummaries);
-
-                    _logger.LogInformation($"Upserting {eventSummaries.Count} vacancy analytic summaries took {timer.Elapsed.Subtract(tsUpsertStart):c}");
-
-                    await _analyticsStore.UpdateLastProcessedVacancyEventIdAsync(lastProcessedVacancyEventId);
-                    _logger.LogInformation("Successfully finished populating new vacancy analytics summaries into query store.");
-                }
-
-                timer.Stop();
+                _logger.LogInformation("Successfully finished populating new vacancy analytics summary for vacancy reference {eventItem.VacancyReference} into query store.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unable to populate new vacancy analytics summaries.");
                 throw;
             }
-            
-            _logger.LogInformation($"Time to next run is {timerInfo.ScheduleStatus.Next.Subtract(DateTime.Now).Duration():c} away/overdue.");
         }
     }
 }
