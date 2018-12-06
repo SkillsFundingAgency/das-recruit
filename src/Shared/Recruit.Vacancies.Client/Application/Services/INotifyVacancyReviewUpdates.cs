@@ -1,11 +1,12 @@
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Services
 {
     public interface INotifyVacancyReviewUpdates
     {
-        Task VacancyReviewCreated(long vacancyReference);
-        Task VacancyReviewReferred(long vacancyReference);
-        Task VacancyReviewApproved(long vacancyReference);
+        Task VacancyReviewCreated(VacancyReview vacancyReview);
+        Task VacancyReviewReferred(VacancyReview vacancyReview);
+        Task VacancyReviewApproved(VacancyReview vacancyReview);
     }
 }
