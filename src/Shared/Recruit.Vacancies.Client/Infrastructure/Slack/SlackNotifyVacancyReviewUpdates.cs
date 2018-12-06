@@ -54,6 +54,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Slack
 
         private static string GetNumericSuffix(int count)
         {
+            if (count > 10 && count < 14)
+                return $"{count}th";
+
             var lastDigit = count.ToString().ToCharArray().Last();
 
             switch (lastDigit)
