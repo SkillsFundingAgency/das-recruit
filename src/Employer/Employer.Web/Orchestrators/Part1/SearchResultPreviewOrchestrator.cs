@@ -41,7 +41,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 StartDate = vacancy.StartDate?.AsGdsDate(),
                 LevelName = await GetLevelName(vacancy.ProgrammeId),
                 Title = vacancy.Title,
-                Wage = vacancy.Wage?.ToText(wagePeriod),
+                Wage = vacancy.Wage?.ToText(vacancy.StartDate),
                 HasYearlyWage = (vacancy.Wage != null && vacancy.Wage.WageType != WageType.Unspecified),
                 IsDisabilityConfident = vacancy.IsDisabilityConfident
             };

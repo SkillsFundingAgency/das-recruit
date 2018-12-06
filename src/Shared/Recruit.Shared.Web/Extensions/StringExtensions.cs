@@ -13,6 +13,11 @@ namespace Esfa.Recruit.Shared.Web.Extensions
         {
             return value.Replace("/", string.Empty);
         }
+        public static string AsMoney(this string value)
+        {
+            return value.Replace(".00", "");
+        }
+
 
         public static string AsPostcode(this string postcode)
         {
