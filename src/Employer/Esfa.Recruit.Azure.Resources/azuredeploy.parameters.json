@@ -138,6 +138,9 @@
     "EmployerFinanceSqlDbConnectionString": {
       "value": ""
     },
+    "VacancyAnalyticEventsSqlDbConnectionString": {
+      "value": ""
+    },
     "ProviderAuthentication": {
       "value": {
         "Wtrealm": "",
