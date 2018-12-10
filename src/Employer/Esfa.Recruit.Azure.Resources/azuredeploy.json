@@ -444,6 +444,10 @@
               {
                 "name": "VacancyReviewAssignationTimeoutMinutes",
                 "value": "[parameters('VacancyReviewAssignationTimeoutMinutes')]"
+              },
+              {
+                "name": "Slack:WebhookUrl",
+                "value": "[parameters('SlackWebhook')]"
               }
             ]
           },
