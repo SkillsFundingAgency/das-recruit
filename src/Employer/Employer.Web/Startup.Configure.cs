@@ -52,8 +52,7 @@ namespace Esfa.Recruit.Employer.Web
                                         "https://www.googletagmanager.com/",
                                         "https://www.tagmanager.google.com/", 
                                         "https://services.postcodeanywhere.co.uk/")
-                        .UnsafeInline()
-                        .UnsafeEval();
+                        .UnsafeInline();
 
                         if (!env.IsProduction())
                         {
