@@ -45,14 +45,21 @@ namespace Esfa.Recruit.Employer.Web
                                     "https://www.tagmanager.google.com/")
                 )
                 .ScriptSources(s => 
-                    s.Self()
-                    .CustomSources("https://az416426.vo.msecnd.net", 
-                                    "https://www.google-analytics.com/analytics.js", 
-                                    "https://www.googletagmanager.com/",
-                                    "https://www.tagmanager.google.com/", 
-                                    "https://services.postcodeanywhere.co.uk/")
-                    .UnsafeInline()
-                    .UnsafeEval()
+                    {
+                        s.Self()
+                        .CustomSources("https://az416426.vo.msecnd.net", 
+                                        "https://www.google-analytics.com/analytics.js", 
+                                        "https://www.googletagmanager.com/",
+                                        "https://www.tagmanager.google.com/", 
+                                        "https://services.postcodeanywhere.co.uk/")
+                        .UnsafeInline()
+                        .UnsafeEval();
+
+                        if (!env.IsProduction())
+                        {
+                            s.UnsafeEval();
+                        }
+                    }
                 ) // TODO: Look at moving AppInsights inline js code.
                 .FontSources(s => 
                     s.Self()
