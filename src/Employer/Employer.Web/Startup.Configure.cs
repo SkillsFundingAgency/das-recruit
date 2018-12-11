@@ -51,6 +51,7 @@ namespace Esfa.Recruit.Employer.Web
                                         "https://www.google-analytics.com/analytics.js", 
                                         "https://www.googletagmanager.com/",
                                         "https://www.tagmanager.google.com/", 
+                                        "https://tagmanager.google.com/", 
                                         "https://services.postcodeanywhere.co.uk/")
                         .UnsafeInline();
 
