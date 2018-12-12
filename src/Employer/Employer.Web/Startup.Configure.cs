@@ -1,4 +1,5 @@
 ﻿using Esfa.Recruit.Employer.Web.Configuration;
+using Esfa.Recruit.Shared.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -47,7 +48,7 @@ namespace Esfa.Recruit.Employer.Web
                                         "https://tagmanager.google.com/",
                                         "https://fonts.googleapis.com/");
 
-                        if (!env.IsProduction())
+                        if (env.IsEnvironment(EnvironmentNames.PREPROD))
                         {
                             s.UnsafeInline();
                         }
@@ -64,7 +65,7 @@ namespace Esfa.Recruit.Employer.Web
                                         "https://services.postcodeanywhere.co.uk/")
                         .UnsafeInline();
 
-                        if (!env.IsProduction())
+                        if (env.IsEnvironment(EnvironmentNames.PREPROD))
                         {
                             s.UnsafeEval();
                         }
