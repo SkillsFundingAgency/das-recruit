@@ -40,9 +40,18 @@ namespace Esfa.Recruit.Employer.Web
             app.UseCsp(options => options
                 .DefaultSources(s => s.Self())
                 .StyleSources(s => 
-                    s.Self()
-                    .CustomSources("https://www.googletagmanager.com/",
-                                    "https://www.tagmanager.google.com/")
+                    {
+                        s.Self()
+                        .CustomSources("https://www.googletagmanager.com/",
+                                        "https://www.tagmanager.google.com/",
+                                        "https://tagmanager.google.com/",
+                                        "https://fonts.googleapis.com/");
+
+                        if (!env.IsProduction())
+                        {
+                            s.UnsafeInline();
+                        }
+                    }
                 )
                 .ScriptSources(s => 
                     {
@@ -75,6 +84,7 @@ namespace Esfa.Recruit.Employer.Web
                     .CustomSources("https://maps.googleapis.com", 
                                     "https://www.google-analytics.com", 
                                     "https://ssl.gstatic.com",
+                                    "https://www.gstatic.com/",
                                     "data:")
                  )
                 .ReportUris(r => r.Uris("/ContentPolicyReport/Report")));
