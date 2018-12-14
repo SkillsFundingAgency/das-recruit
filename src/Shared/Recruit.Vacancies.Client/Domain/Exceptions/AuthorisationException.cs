@@ -3,7 +3,7 @@
 namespace Esfa.Recruit.Vacancies.Client.Domain.Exceptions
 {
     [Serializable]
-    public class AuthorisationException : Exception
+    public class AuthorisationException : RecruitException
     {
         public AuthorisationException(string message) : base(message) { }
     }

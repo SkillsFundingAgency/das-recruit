@@ -9,7 +9,7 @@ using Esfa.Recruit.Shared.Web.Extensions;
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 {
-    [Route(RoutePrefixPaths.AccountRoutePath)]
+    [Route(RoutePaths.AccountRoutePath)]
     public class TitleController : Controller
     {
         private const string VacancyTitleRoute = "vacancies/{vacancyId:guid}/title";

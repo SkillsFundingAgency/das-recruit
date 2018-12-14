@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
-    [Route(RoutePrefixPaths.AccountRoutePath)]
+    [Route(RoutePaths.AccountRoutePath)]
     public class CreateVacancyOptionsController : Controller
     {
         private readonly CreateVacancyOptionsOrchestrator _orchestrator;

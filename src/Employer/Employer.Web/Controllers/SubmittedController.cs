@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
-    [Route(RoutePrefixPaths.AccountVacancyRoutePath)]
+    [Route(RoutePaths.AccountVacancyRoutePath)]
     public class SubmittedController : Controller
     {
         private readonly SubmittedOrchestrator _orchestrator;

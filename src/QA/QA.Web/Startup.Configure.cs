@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using Esfa.Recruit.Qa.Web.Configuration;
+using Esfa.Recruit.Qa.Web.Configuration.Routing;
 using Esfa.Recruit.Qa.Web.Security;
+using Esfa.Recruit.Shared.Web.Middleware;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.WsFederation;
@@ -32,7 +34,9 @@ namespace Esfa.Recruit.Qa.Web
 
                 app.UseRewriter(rewriteOptions);
 
-                app.UseExceptionHandler("/error/handle");
+                app.UseExceptionHandler(RoutePaths.ExceptionHandlingPath);
+                app.UseMiddleware<RecruitExceptionHandlerMiddleware>(RoutePaths.ExceptionHandlingPath);
+
                 app.UseHsts(hsts => hsts.MaxAge(365));
             }
 

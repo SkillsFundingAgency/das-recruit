@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 {
-    [Route(RoutePrefixPaths.AccountVacancyRoutePath)]
+    [Route(RoutePaths.AccountVacancyRoutePath)]
     public class SearchResultPreviewController : Controller
     {
         private readonly SearchResultPreviewOrchestrator _orchestrator;

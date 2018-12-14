@@ -43,7 +43,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             return View(new ErrorViewModel { StatusCode = id, RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        [Route("error/handle")]
+        [Route(RoutePaths.ExceptionHandlingPath)]
         public IActionResult ErrorHandler()
         {
             if (HttpContext.Items.TryGetValue(ContextItemKeys.EmployerIdentifier, out var employerAccountId))
@@ -90,6 +90,13 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 {   
                     return AccessDenied();
                 }
+
+                if (exception is BlockedEmployerException)
+                {
+                    return RedirectToRoute(RouteNames.BlockedEmployer_Get, new { EmployerAccountId = employerAccountId });
+                }
+
+                _logger.LogError(exception, "Unhandled exception on path: {route}", routeWhereExceptionOccurred);
             }
 
             Response.StatusCode = (int)HttpStatusCode.InternalServerError;
@@ -108,6 +115,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             return View(ViewNames.PageNotFound);
         }
 
+        // Blocked employer url required for analytics reasons
         [HttpGet("error/blocked-employer/{employerAccountId}", Name = RouteNames.BlockedEmployer_Get)]
         public IActionResult BlockedEmployer(string employerAccountId)
         {

@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Hosting;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
-    [Route(RoutePrefixPaths.Services)]
+    [Route(RoutePaths.Services)]
     public class LogoutController : Controller
     {
         private readonly IHostingEnvironment _hostingEnvironment;

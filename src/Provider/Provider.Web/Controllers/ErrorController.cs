@@ -43,7 +43,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             return View(new ErrorViewModel { StatusCode = id, RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        [Route("error/handle")]
+        [Route(RoutePaths.ExceptionHandlingPath)]
         public IActionResult ErrorHandler()
         {
             // TODO: LWA - Need to store the ProviderIdentifier somewhere!!!
@@ -91,6 +91,8 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 {   
                     return AccessDenied();
                 }
+
+                _logger.LogError(exception, "Unhandled exception on path: {route}", routeWhereExceptionOccurred);
             }
 
             Response.StatusCode = (int)HttpStatusCode.InternalServerError;

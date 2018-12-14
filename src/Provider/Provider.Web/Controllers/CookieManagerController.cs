@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Provider.Web.Controllers
 {
-    [Route(RoutePrefixPaths.AccountRoutePath)]
+    [Route(RoutePaths.AccountRoutePath)]
     public class CookieManagerController : Controller
     {
         private readonly IHostingEnvironment _hostingEnvironment;
