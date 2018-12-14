@@ -47,8 +47,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services.NextVacancyReview
                 return nextVacancyReview;
 
             //Get the oldest unassigned review
-            var prendingReviews = await _vacancyReviewQuery.GetByStatusAsync(ReviewStatus.PendingReview);
-            nextVacancyReview = prendingReviews
+            var pendingReviews = await _vacancyReviewQuery.GetByStatusAsync(ReviewStatus.PendingReview);
+            nextVacancyReview = pendingReviews
                 .OrderBy(r => r.CreatedDate)
                 .FirstOrDefault();
 
