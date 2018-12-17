@@ -39,18 +39,11 @@ namespace Esfa.Recruit.Employer.Web.Filters
 
                 if (blockedEmployerAccountIds.Contains(accountIdFromUrl))
                 {
-                    var ctrlr = context.Controller as Controller;
-                    context.Result = ctrlr.RedirectToRoute(RouteNames.BlockedEmployer_Get);
-                }
-                else
-                {
-                    await next();
+                    throw new BlockedEmployerException($"Employer account '{accountIdFromUrl}' is blocked");
                 }
             }
-            else
-            {
-                await next();
-            }
+            
+            await next();
         }
 
         private bool RequestIsForWhiteListedPage(ActionExecutingContext context)

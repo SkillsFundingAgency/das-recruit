@@ -11,7 +11,7 @@ using Esfa.Recruit.Shared.Web.Extensions;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
-    [Route(RoutePrefixPaths.AccountVacancyRoutePath)]
+    [Route(RoutePaths.AccountVacancyRoutePath)]
     public class EditVacancyDatesController : Controller
     {
         private readonly EditVacancyDatesOrchestrator _orchestrator;

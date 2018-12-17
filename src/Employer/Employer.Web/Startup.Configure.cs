@@ -8,6 +8,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using System.Globalization;
+using Esfa.Recruit.Employer.Web.Configuration.Routing;
+using Esfa.Recruit.Employer.Web.Middleware;
 
 namespace Esfa.Recruit.Employer.Web
 {
@@ -33,7 +35,9 @@ namespace Esfa.Recruit.Employer.Web
             }
             else
             {
-                app.UseExceptionHandler("/error/handle");
+                app.UseExceptionHandler(RoutePaths.ExceptionHandlingPath);
+                app.UseMiddleware<RecruitExceptionHandlerMiddleware>(RoutePaths.ExceptionHandlingPath);
+
                 app.UseHsts(hsts => hsts.MaxAge(365));
             }
             

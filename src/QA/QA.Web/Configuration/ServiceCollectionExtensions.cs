@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using Esfa.Recruit.Qa.Web.Configuration.Routing;
-using Esfa.Recruit.Qa.Web.Extensions;
 using FluentValidation.AspNetCore;
 using Esfa.Recruit.Qa.Web.Security;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -42,7 +41,7 @@ namespace Esfa.Recruit.Qa.Web.Configuration
             {
                 options.Cookie.Name = CookieNames.QaData;
                 options.Cookie.SecurePolicy = Microsoft.AspNetCore.Http.CookieSecurePolicy.Always;
-                options.AccessDeniedPath = RoutePrefixPaths.AccessDeniedPath;
+                options.AccessDeniedPath = RoutePaths.AccessDeniedPath;
                 options.SlidingExpiration = true;
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(SessionTimeoutMinutes);
             });

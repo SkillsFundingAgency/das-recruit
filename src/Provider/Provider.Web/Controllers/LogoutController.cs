@@ -10,7 +10,7 @@ using Microsoft.Extensions.Options;
 
 namespace Esfa.Recruit.Provider.Web.Controllers
 {
-    [Route(RoutePrefixPaths.Services)]
+    [Route(RoutePaths.Services)]
     public class LogoutController : Controller
     {
         private readonly IHostingEnvironment _hostingEnvironment;

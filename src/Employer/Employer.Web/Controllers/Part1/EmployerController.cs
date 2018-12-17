@@ -10,7 +10,7 @@ using Esfa.Recruit.Shared.Web.Extensions;
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 {
-    [Route(RoutePrefixPaths.AccountVacancyRoutePath)]
+    [Route(RoutePaths.AccountVacancyRoutePath)]
     public class EmployerController : Controller
     {
         private readonly EmployerOrchestrator _orchestrator;

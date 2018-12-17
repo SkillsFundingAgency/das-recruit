@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
-    [Route(RoutePrefixPaths.AccountApplicationReviewRoutePath)]
+    [Route(RoutePaths.AccountApplicationReviewRoutePath)]
     public class ApplicationReviewController : Controller
     {
         private readonly ApplicationReviewOrchestrator _orchestrator;

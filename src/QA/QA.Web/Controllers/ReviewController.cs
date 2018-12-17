@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Qa.Web.Controllers
 {
-    [Route(RoutePrefixPaths.VacancyReviewsRoutePath)]
+    [Route(RoutePaths.VacancyReviewsRoutePath)]
     public class ReviewController : Controller
     {
         private readonly ReviewOrchestrator _orchestrator;

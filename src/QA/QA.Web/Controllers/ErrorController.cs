@@ -34,7 +34,7 @@ namespace Esfa.Recruit.Qa.Web.Controllers
             return View(new ErrorViewModel { StatusCode = id, RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        [Route("error/handle")]
+        [Route(RoutePaths.ExceptionHandlingPath)]
         public IActionResult ErrorHandler()
         {
             var exceptionFeature = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
@@ -57,6 +57,8 @@ namespace Esfa.Recruit.Qa.Web.Controllers
                     default:
                         break;
                 }
+
+                _logger.LogError(exception, "Unhandled exception on path: {route}", exceptionFeature.Path);
             }
 
             return View(ViewNames.ErrorView, GetViewModel(HttpStatusCode.InternalServerError));

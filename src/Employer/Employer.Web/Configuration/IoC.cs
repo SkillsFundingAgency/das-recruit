@@ -107,6 +107,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
         private static void RegisterFilterDeps(IServiceCollection services)
         {
             services.AddScoped<PlannedOutageResultFilter>();
+            services.AddScoped<CheckEmployerBlockedFilter>();
         }
 
         private static void RegisterDynamicConfigurationDeps(IServiceCollection services)

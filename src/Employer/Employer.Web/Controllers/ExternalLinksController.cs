@@ -18,14 +18,14 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             _linkHelper = linkHelper;
         }
 
-        [HttpGet(RoutePrefixPaths.AccountLevelServices + "/account-home", Name = RouteNames.Dashboard_Account_Home)]
+        [HttpGet(RoutePaths.AccountLevelServices + "/account-home", Name = RouteNames.Dashboard_Account_Home)]
         public IActionResult AccountHome(string employerAccountId)
         {
             var url = string.Format(_linkHelper.AccountHome, employerAccountId);
             return Redirect(url);
         }
 
-        [HttpGet(RoutePrefixPaths.Services + "/change-email", Name = RouteNames.Dashboard_ChangeEmail)]
+        [HttpGet(RoutePaths.Services + "/change-email", Name = RouteNames.Dashboard_ChangeEmail)]
         public IActionResult ChangeEmailAddress(string returnUrl)
         {
             var encodedReturnUrl = WebUtility.UrlEncode($"{Request.GetRequestUrlRoot()}{returnUrl}");
@@ -33,7 +33,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             return Redirect(url);
         }
 
-        [HttpGet(RoutePrefixPaths.Services + "/change-password", Name = RouteNames.Dashboard_ChangePassword)]
+        [HttpGet(RoutePaths.Services + "/change-password", Name = RouteNames.Dashboard_ChangePassword)]
         public IActionResult ChangePassword(string returnUrl)
         {
             var encodedReturnUrl = WebUtility.UrlEncode($"{Request.GetRequestUrlRoot()}{returnUrl}");            
@@ -41,42 +41,42 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             return Redirect(url);
         }
 
-        [HttpGet(RoutePrefixPaths.AccountLevelServices + "/rename-account", Name = RouteNames.Dashboard_AccountsRename)]
+        [HttpGet(RoutePaths.AccountLevelServices + "/rename-account", Name = RouteNames.Dashboard_AccountsRename)]
         public IActionResult RenameAccount(string employerAccountId)
         {
             var url = string.Format(_linkHelper.RenameAccount, employerAccountId);
             return Redirect(url);
         }
 
-        [HttpGet(RoutePrefixPaths.AccountLevelServices + "/finance", Name = RouteNames.Dashboard_AccountsFinance)]
+        [HttpGet(RoutePaths.AccountLevelServices + "/finance", Name = RouteNames.Dashboard_AccountsFinance)]
         public IActionResult AccountsFinance(string employerAccountId)
         {
             var url = string.Format(_linkHelper.Finance, employerAccountId);
             return Redirect(url);
         }
 
-        [HttpGet(RoutePrefixPaths.AccountLevelServices + "/apprentices", Name = RouteNames.Dashboard_AccountsApprentices)]
+        [HttpGet(RoutePaths.AccountLevelServices + "/apprentices", Name = RouteNames.Dashboard_AccountsApprentices)]
         public IActionResult AccountsApprentices(string employerAccountId)
         {
             var url = string.Format(_linkHelper.Apprentices, employerAccountId);
             return Redirect(url);
         }
 
-        [HttpGet(RoutePrefixPaths.AccountLevelServices + "/teams", Name = RouteNames.Dashboard_AccountsTeams)]
+        [HttpGet(RoutePaths.AccountLevelServices + "/teams", Name = RouteNames.Dashboard_AccountsTeams)]
         public IActionResult AccountsTeams(string employerAccountId)
         {
             var url = string.Format(_linkHelper.Teams, employerAccountId);
             return Redirect(url);
         }
 
-        [HttpGet(RoutePrefixPaths.AccountLevelServices + "/agreements", Name = RouteNames.Dashboard_AccountsAgreements)]
+        [HttpGet(RoutePaths.AccountLevelServices + "/agreements", Name = RouteNames.Dashboard_AccountsAgreements)]
         public IActionResult AccountsAgreements(string employerAccountId)
         {
             var url = string.Format(_linkHelper.Agreements, employerAccountId);
             return Redirect(url);
         }
 
-        [HttpGet(RoutePrefixPaths.AccountLevelServices + "/schemes", Name = RouteNames.Dashboard_AccountsSchemes)]
+        [HttpGet(RoutePaths.AccountLevelServices + "/schemes", Name = RouteNames.Dashboard_AccountsSchemes)]
         public IActionResult AccountsSchemes(string employerAccountId)
         {
             var url = string.Format(_linkHelper.Schemes, employerAccountId);

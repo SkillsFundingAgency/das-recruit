@@ -1,6 +1,6 @@
 ﻿namespace Esfa.Recruit.Employer.Web.Configuration.Routing
 {
-    public static class RoutePrefixPaths
+    public static class RoutePaths
     {
         public const string Services = "services";
         public const string AccountLevelServices = "services/{employerAccountId:minlength(6)}";
@@ -11,5 +11,7 @@
 
         public const string ApplicationReviewPath = "applications/{applicationReviewId:guid}";
         public const string AccountApplicationReviewRoutePath = AccountVacancyRoutePath + "/" + ApplicationReviewPath;
+
+        public const string ExceptionHandlingPath = "/error/handle";
     }
 }

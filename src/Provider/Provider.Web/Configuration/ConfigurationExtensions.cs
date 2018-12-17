@@ -90,7 +90,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             {
                 options.Cookie.Name = CookieNames.RecruitData;
                 options.Cookie.SecurePolicy = Microsoft.AspNetCore.Http.CookieSecurePolicy.Always;
-                options.AccessDeniedPath = RoutePrefixPaths.AccessDeniedPath;
+                options.AccessDeniedPath = RoutePaths.AccessDeniedPath;
                 options.SlidingExpiration = true;
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(SessionTimeoutMinutes);
             });

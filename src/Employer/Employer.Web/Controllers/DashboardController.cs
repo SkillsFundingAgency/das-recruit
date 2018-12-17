@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
-    [Route(RoutePrefixPaths.AccountRoutePath)]
+    [Route(RoutePaths.AccountRoutePath)]
     public class DashboardController : Controller
     {
         private readonly DashboardOrchestrator _orchestrator;

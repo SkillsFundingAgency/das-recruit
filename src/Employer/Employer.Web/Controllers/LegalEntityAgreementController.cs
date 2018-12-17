@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
-    [Route(RoutePrefixPaths.AccountVacancyRoutePath)]
+    [Route(RoutePaths.AccountVacancyRoutePath)]
     public class LegalEntityAgreementController : Controller
     {
         private readonly LegalEntityAgreementOrchestrator _orchestrator;

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
-    [Route(RoutePrefixPaths.AccountRoutePath)]
+    [Route(RoutePaths.AccountRoutePath)]
     public class LevyDeclarationController : Controller
     {
         private readonly LevyDeclarationOrchestrator _orchestrator;

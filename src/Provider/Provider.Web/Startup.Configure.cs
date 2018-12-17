@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using Esfa.Recruit.Provider.Web.Configuration;
+using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Shared.Web.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -25,14 +26,16 @@ namespace Esfa.Recruit.Provider.Web
             applicationLifetime.ApplicationStopped.Register(() => logger.LogInformation("Host fully stopped. All requests processed."));
 
             app.UseStatusCodePagesWithReExecute("/error/{0}");
-            
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
             else
             {
-                app.UseExceptionHandler("/error/handle");
+                app.UseExceptionHandler(RoutePaths.ExceptionHandlingPath);
+                app.UseMiddleware<RecruitExceptionHandlerMiddleware>(RoutePaths.ExceptionHandlingPath);
+
                 app.UseHsts(hsts => hsts.MaxAge(365));
             }
             

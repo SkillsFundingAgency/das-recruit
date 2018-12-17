@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Hosting;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
-    [Route(RoutePrefixPaths.AccountVacancyRoutePath)]
+    [Route(RoutePaths.AccountVacancyRoutePath)]
     public class VacancyManageController : Controller
     {
         private readonly VacancyManageOrchestrator _orchestrator;
