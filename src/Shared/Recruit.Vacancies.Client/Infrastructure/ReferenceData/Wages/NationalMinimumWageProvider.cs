@@ -10,7 +10,7 @@ using MinWageEntity = Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Wages
 {
     using System.Collections.Immutable;
-    using SFA.DAS.VacancyServices.NationalMinimumWage;
+    using SFA.DAS.VacancyServices.Wage;
 
     public class NationalMinimumWageProvider : IMinimumWageProvider
     {
@@ -47,7 +47,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Wages
                         ValidFrom = wagePeriod.ValidFrom,
                         ApprenticeshipMinimumWage = wagePeriod.ApprenticeMinimumWage,
                         NationalMinimumWageLowerBound = wagePeriod.Under18NationalMinimumWage,
-                        NationalMinimumWageUpperBound = wagePeriod.Over24NationalMinimumWage
+                        NationalMinimumWageUpperBound = wagePeriod.Over25NationalMinimumWage
                     };
                 }
 
@@ -64,11 +64,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Wages
             }
         }
 
-        private Task<ImmutableArray<NMWRates>> GetMinimumWagesAsync()
+        private Task<ImmutableArray<NationalMinimumWageRates>> GetMinimumWagesAsync()
         {
             return _cache.CacheAsideAsync(CacheKeys.MinimumWages,
                 _timeProvider.NextDay,
-                NationalMinimumWages.GetRatesAsync);
+                NationalMinimumWageService.GetRatesAsync);
         }
     }
 }

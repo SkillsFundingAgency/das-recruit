@@ -1,6 +1,6 @@
 ﻿using System;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using SFA.DAS.VacancyServices.NationalMinimumWage;
+using SFA.DAS.VacancyServices.Wage;
 using WageType = Esfa.Recruit.Vacancies.Client.Domain.Entities.WageType;
 
 namespace Esfa.Recruit.Shared.Web.Extensions
@@ -9,18 +9,30 @@ namespace Esfa.Recruit.Shared.Web.Extensions
     {
         public static string ToText(this Wage wage, DateTime? expectedStartDate)
         {
+            var wageDetails = new WageDetails
+            {
+                Amount = wage.FixedWageYearlyAmount,
+                HoursPerWeek = wage.WeeklyHours,
+                StartDate = expectedStartDate.GetValueOrDefault()
+            };
             string wageText;
 
             switch (wage.WageType)
             {
                 case WageType.FixedWage:
-                    wageText = WagePresenter.GetCustomWageDisplayAmount(wage.FixedWageYearlyAmount).AsMoney();
+                    wageText = WagePresenter
+                               .GetDisplayText(SFA.DAS.VacancyServices.Wage.WageType.Custom, WageUnit.Annually, wageDetails)
+                               .AsMoney();
                     break;
                 case WageType.NationalMinimumWage:
-                    wageText = WagePresenter.GetNationalMinimumDisplayAmount(WageUnit.Annually, wage.WeeklyHours, expectedStartDate).AsMoney();
+                    wageText = WagePresenter
+                               .GetDisplayText(SFA.DAS.VacancyServices.Wage.WageType.NationalMinimum, WageUnit.Annually, wageDetails)
+                               .AsMoney();
                     break;
                 case WageType.NationalMinimumWageForApprentices:
-                    wageText = WagePresenter.GetApprenticeshipMinimumDisplayAmount(WageUnit.Annually, wage.WeeklyHours, expectedStartDate).AsMoney();
+                    wageText = WagePresenter
+                               .GetDisplayText(SFA.DAS.VacancyServices.Wage.WageType.ApprenticeshipMinimum, WageUnit.Annually, wageDetails)
+                               .AsMoney();
                     break;
                 default:
                     wageText = wage.WageType?.GetDisplayName();
