@@ -27,7 +27,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BlockedEmployer
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Profanities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Qualifications;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Skills;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Wages;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.SequenceStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services;
