@@ -175,7 +175,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 vm.HoursPerWeek = $"{vacancy.Wage.WeeklyHours:0.##}";
                 vm.WageInfo = vacancy.Wage.WageAdditionalInformation;
                 vm.WageText = vacancy.StartDate.HasValue
-                    ? vacancy.Wage.ToText(wagePeriod)
+                    ? vacancy.Wage.ToText(vacancy.StartDate)
                     : null;
                 vm.WorkingWeekDescription = vacancy.Wage.WorkingWeekDescription;
                 vm.SubmittedDate = vacancy.SubmittedDate.Value;

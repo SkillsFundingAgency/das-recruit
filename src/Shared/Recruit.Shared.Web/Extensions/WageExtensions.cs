@@ -1,35 +1,38 @@
 ﻿using System;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
+using SFA.DAS.VacancyServices.Wage;
+using WageType = Esfa.Recruit.Vacancies.Client.Domain.Entities.WageType;
 
 namespace Esfa.Recruit.Shared.Web.Extensions
 {
     public static class WageExtensions
     {
-        private const int WeeksPerYear = 52;
-
-        public static string ToText(this Wage wage, IMinimumWage wagePeriod)
+        public static string ToText(this Wage wage, DateTime? expectedStartDate)
         {
+            var wageDetails = new WageDetails
+            {
+                Amount = wage.FixedWageYearlyAmount,
+                HoursPerWeek = wage.WeeklyHours,
+                StartDate = expectedStartDate.GetValueOrDefault()
+            };
             string wageText;
 
             switch (wage.WageType)
             {
                 case WageType.FixedWage:
-                    wageText = $"£{wage.FixedWageYearlyAmount?.AsMoney()}";
+                    wageText = WagePresenter
+                               .GetDisplayText(SFA.DAS.VacancyServices.Wage.WageType.Custom, WageUnit.Annually, wageDetails)
+                               .AsWholeMoneyAmount();
                     break;
                 case WageType.NationalMinimumWage:
-
-                    var minYearly = GetYearlyRateFromHourlyRate(wagePeriod.NationalMinimumWageLowerBound, wage.WeeklyHours.Value);
-                    var maxYearly = GetYearlyRateFromHourlyRate(wagePeriod.NationalMinimumWageUpperBound, wage.WeeklyHours.Value);
-
-                    wageText = $"£{minYearly.AsMoney()} - £{maxYearly.AsMoney()}";
+                    wageText = WagePresenter
+                               .GetDisplayText(SFA.DAS.VacancyServices.Wage.WageType.NationalMinimum, WageUnit.Annually, wageDetails)
+                               .AsWholeMoneyAmount();
                     break;
                 case WageType.NationalMinimumWageForApprentices:
-                    var hourlyRate = wagePeriod.ApprenticeshipMinimumWage;
-
-                    var yearly = GetYearlyRateFromHourlyRate(hourlyRate, wage.WeeklyHours.Value);
-
-                    wageText = $"£{yearly.AsMoney()}";
+                    wageText = WagePresenter
+                               .GetDisplayText(SFA.DAS.VacancyServices.Wage.WageType.ApprenticeshipMinimum, WageUnit.Annually, wageDetails)
+                               .AsWholeMoneyAmount();
                     break;
                 default:
                     wageText = wage.WageType?.GetDisplayName();
@@ -37,12 +40,6 @@ namespace Esfa.Recruit.Shared.Web.Extensions
             }
 
             return wageText;
-        }
-
-        private static decimal GetYearlyRateFromHourlyRate(decimal hourlyRate, decimal weeklyHours)
-        {
-            var yearlyRate = hourlyRate * weeklyHours * WeeksPerYear;
-            return decimal.Round(yearlyRate, 2, MidpointRounding.AwayFromZero);
         }
     }
 }
