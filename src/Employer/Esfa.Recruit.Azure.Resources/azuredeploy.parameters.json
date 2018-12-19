@@ -47,7 +47,8 @@
       "value": {
         "ManageApprenticeshipSiteUrl": "",
         "EmployerIdamsSiteUrl": "",
-        "StaffIdamsUrl": ""
+        "StaffIdamsUrl": "",
+        "ProviderApprenticeshipSiteUrl": ""
       }
     },
     "Features": {
@@ -127,6 +128,12 @@
     },
     "EmployerFinanceSqlDbConnectionString": {
       "value": ""
+    },
+    "ProviderAuthentication": {
+      "value": {
+        "Wtrealm": "",
+        "MetaDataAddress": ""
+      }
     }
   }
 }

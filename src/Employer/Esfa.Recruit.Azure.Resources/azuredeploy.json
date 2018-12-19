@@ -68,7 +68,8 @@
       "defaultValue": {
         "ManageApprenticeshipSiteUrl": "",
         "EmployerIdamsSiteUrl": "",
-        "StaffIdamsUrl": ""
+        "StaffIdamsUrl": "",
+        "ProviderApprenticeshipSiteUrl": ""
       }
     },
     "Features": {
@@ -130,6 +131,13 @@
         "TeamLeadClaimValue": ""
       }
     },
+    "ProviderAuthentication": {
+      "type": "object",
+      "defaultValue": {
+        "Wtrealm": "",
+        "MetaDataAddress": ""
+      }
+    },
     "SlackWebhook": {
       "type": "string",
       "defaultValue": ""
@@ -169,12 +177,19 @@
     "EmployerFinanceSqlDbConnectionString": {
       "type": "securestring",
       "defaultValue": ""
+    },
+    "ProviderCustomHostname": {
+      "type": "string"
+    },
+    "ProviderKeyvaultCertificateName": {
+      "type": "string"
     }
   },
   "variables": {
     "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/",
     "webJobAppServicePlanName": "[concat('das-', toLower(parameters('environmentName')),'-rcrt-webjob-asp')]",
     "EmployerRecruitAppServiceName": "[concat('das-', toLower(parameters('EnvironmentName')), '-rcrt-as')]",
+    "ProviderRecruitAppServiceName" :  "[concat('das-', toLower(parameters('EnvironmentName')), '-rcrt-pr-as')]",
     "QAAppServiceName": "[concat('das-', toLower(parameters('EnvironmentName')), '-rcrt-qa-as')]",
     "CosmosDbName": "[concat('das-', toLower(parameters('EnvironmentName')),'-rcrt-cdb')]",
     "WebJobAppServiceName": "[concat('das-', toLower(parameters('EnvironmentName')), '-rcrt-webjob-as')]",
@@ -480,6 +495,82 @@
       },
       "dependsOn": [
         "[variables('QAAppServiceName')]"
+      ]
+    },
+    {
+      "apiVersion": "2017-05-10",
+      "name": "Provider-Recruit-AppService",
+      "type": "Microsoft.Resources/deployments",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('deploymentUrlBase'),'app-service.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "appServiceName": {
+            "value": "[variables('ProviderRecruitAppServiceName')]"
+          },
+          "appServicePlanName": {
+            "value": "[parameters('SharedAppServicePlanName')]"
+          },
+          "appServicePlanResourceGroup": {
+            "value": "[parameters('SharedAppServicePlanResourceGroup')]"
+          },
+          "appServiceAppSettings": {
+            "value": [
+              {
+                "name": "ProviderAuthentication:WtRealm",
+                "value": "[parameters('ProviderAuthentication').WtRealm]"
+              },
+              {
+                "name": "ProviderAuthentication:MetaDataAddress",
+                "value": "[parameters('ProviderAuthentication').MetaDataAddress]"
+              },
+              {
+                "name": "ExternalLinks:ProviderApprenticeshipSiteUrl",
+                "value": "[parameters('ExternalLinks').ProviderApprenticeshipSiteUrl]"
+              },
+              {
+                "name": "ASPNETCORE_ENVIRONMENT",
+                "value": "[toUpper(parameters('EnvironmentFullName'))]"
+              },
+              {
+                "name": "PostcodeAnywhere:Key",
+                "value": "[parameters('PostcodeAnywhereKey')]"
+              }
+            ]
+          },
+          "appServiceConnectionStrings": {
+            "value": [
+              {
+                "name": "Redis",
+                "connectionString": "[parameters('LoggingRedisConnectionString')]",
+                "type": "Custom"
+              },
+              {
+                "name": "MongoDb",
+                "connectionString": "[concat('mongodb://', variables('CosmosDbName'), ':', reference(variables('CosmosDbName')).outputs.PrimaryMasterKey.value,'@', variables('CosmosDbName'), '.documents.azure.com:10255/?ssl=true&replicaSet=globaldb')]",
+                "type": "Custom"
+              },
+              {
+                "name": "QueueStorage",
+                "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
+                "type": "Custom"
+              }
+            ]
+          },
+          "customHostName": {
+            "value": "[parameters('ProviderCustomHostname')]"
+          },
+          "certificateThumbprint": {
+            "value": "[reference(resourceId(parameters('sharedAppServicePlanResourceGroup'), 'Microsoft.Web/certificates', parameters('ProviderKeyvaultCertificateName')), '2016-03-01').Thumbprint]"
+          }
+        }
+      },
+      "dependsOn": [
+        "[variables('ProviderRecruitAppServiceName')]",
+        "[variables('CosmosDbName')]"        
       ]
     },
     {
