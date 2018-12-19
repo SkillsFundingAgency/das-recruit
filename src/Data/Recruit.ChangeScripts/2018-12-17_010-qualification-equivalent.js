@@ -13,97 +13,80 @@
     print("Start updating Vacancies appending 'or equivalent' to qualifications.");
 
     const query = {
-            "qualifications": { $exists: true }
+        "qualifications": { $exists: true }
+    };
+
+    let matchedDocs = db.vacancies.aggregate([
+        {
+            $match: query
         },
-        batchUpdateLimit = 500;
-    let passThrough = 1,
-        maxLoops = Math.ceil(db.vacancies.find().count(query) / batchUpdateLimit);
+        {
+            $sort: { "dateCreated": 1 }
+        }]);
 
-    if (maxLoops === 0) {
-        maxLoops = 1;
-    }
+    while (matchedDocs.hasNext()) {
+        let doc = matchedDocs.next();
+        let changed = false;
+        
+        for(var i = 0; i < doc.qualifications.length; i++)
+        {
+            let currentQualificationType = doc.qualifications[i].qualificationType;
+            let updatedQualificationType = doc.qualifications[i].qualificationType;
 
-    do {
-        let matchedDocs = db.vacancies.aggregate([
+            switch(currentQualificationType)
             {
-                $match: query
-            },
-            {
-                $sort: { "dateCreated": 1 }
-            },
-            {
-                $limit: batchUpdateLimit
-            }
-        ]);
-
-        print(`Found ${matchedDocs._batch.length} document(s) to operate on in pass-through ${passThrough} of ${maxLoops}.`);
-
-        while (matchedDocs.hasNext()) {
-            let doc = matchedDocs.next();
-            let changed = false;
-
-            for(var i = 0; i < doc.qualifications.length; i++)
-            {
-                let currentQualificationType = doc.qualifications[i].qualificationType;
-                let updatedQualificationType = doc.qualifications[i].qualificationType;
-
-                switch(currentQualificationType)
-                {
-                case "GCSE":
-                    updatedQualificationType = "GCSE or equivalent";
-                    break;
-                case "AS Level":
-                    updatedQualificationType = "AS Level or equivalent";
-                    break;
-                case "A Level":
-                    updatedQualificationType = "A Level or equivalent";
-                    break;
-                case "BTEC":
-                    updatedQualificationType = "BTEC or equivalent";
-                    break;
-                case "NVQ or SVQ Level 1":
-                    updatedQualificationType = "NVQ or SVQ Level 1 or equivalent";
-                    break;
-                case "NVQ or SVQ Level 2":
-                    updatedQualificationType = "NVQ or SVQ Level 2 or equivalent";
-                    break;
-                case "NVQ or SVQ Level 3":
-                    updatedQualificationType = "NVQ or SVQ Level 3 or equivalent";
-                    break; 
-                }
-
-                if(currentQualificationType != updatedQualificationType)
-                {
-                    doc.qualifications[i].qualificationType = updatedQualificationType;
-                    changed = true;
-
-                    print(`Changing qualificationType:'${currentQualificationType}' to '${doc.qualifications[i].qualificationType}'`);
-                }
+            case "GCSE":
+                updatedQualificationType = "GCSE or equivalent";
+                break;
+            case "AS Level":
+                updatedQualificationType = "AS Level or equivalent";
+                break;
+            case "A Level":
+                updatedQualificationType = "A Level or equivalent";
+                break;
+            case "BTEC":
+                updatedQualificationType = "BTEC or equivalent";
+                break;
+            case "NVQ or SVQ Level 1":
+                updatedQualificationType = "NVQ or SVQ Level 1 or equivalent";
+                break;
+            case "NVQ or SVQ Level 2":
+                updatedQualificationType = "NVQ or SVQ Level 2 or equivalent";
+                break;
+            case "NVQ or SVQ Level 3":
+                updatedQualificationType = "NVQ or SVQ Level 3 or equivalent";
+                break; 
             }
 
-            if(changed){
-                let writeResult = db.vacancies.update({
-                    "_id": doc._id
-                }, {
-                    $set: { "qualifications": doc.qualifications }
-                }, {
-                    upsert: false
-                });
-    
-                if (writeResult.hasWriteConcernError()) {
-                    printjson(writeResult.writeConcernError);
-                    quit(14);
-                }
-    
-                print(`Updated document '${toGUID(doc._id.hex())}'`);
-            }
-            else{
-                print(`Skipping document '${toGUID(doc._id.hex())}'. Qualficiations already updated`);
+            if(currentQualificationType != updatedQualificationType)
+            {
+                doc.qualifications[i].qualificationType = updatedQualificationType;
+                changed = true;
+
+                print(`Changing qualificationType:'${currentQualificationType}' to '${doc.qualifications[i].qualificationType}'`);
             }
         }
 
-        passThrough++;
-    } while (passThrough <= maxLoops && db.vacancies.find().count(query) > 0);
+        if(changed){
+            let writeResult = db.vacancies.update({
+                "_id": doc._id
+            }, {
+                $set: { "qualifications": doc.qualifications }
+            }, {
+                upsert: false
+            });
+
+            if (writeResult.hasWriteConcernError()) {
+                printjson(writeResult.writeConcernError);
+                quit(14);
+            }
+
+            print(`Updated document '${toGUID(doc._id.hex())}'`);
+        }
+        else{
+            print(`Skipping document '${toGUID(doc._id.hex())}'. Qualficiations already updated`);
+        }
+    }
 
     print("Finished updating Vacancies appending 'or equivalent' to qualifications.");
 }
