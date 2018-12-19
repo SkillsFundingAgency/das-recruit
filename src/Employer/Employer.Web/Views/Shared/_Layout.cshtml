@@ -1,7 +1,6 @@
-﻿@using Esfa.Recruit.Employer.Web.Configuration;
-@using Esfa.Recruit.Employer.Web.Configuration.Routing;
-@using Esfa.Recruit.Shared.Web.Configuration
+﻿@using Esfa.Recruit.Shared.Web.Configuration
 @inject ManageApprenticeshipsLinkHelper ExternalLinks
+
 @functions
 {
 public bool ParseHideNavFromViewBag()
@@ -70,26 +69,28 @@ public bool IsErrorPage()
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta property="og:image" content="/lib/esfa-govuk/assets/images/opengraph-image.png">
     <link asp-append-version="true" rel="stylesheet" media="screen" href="/css/application.css" />
+    <partial name="@PartialNames.ApplicationInsightsPartial" />
     <script src="@Url.Content("/lib/jquery/dist/jquery.js")"></script>
     <script src="@Url.Content("/lib/jquery-are-you-sure/jquery.are-you-sure.js")"></script>
     <environment exclude="@EnvironmentNames.GetTestEnvironmentNamesCommaDelimited()">
         <partial name="@PartialNames.GoogleTagManagerHeadPartial" />
     </environment>
-    @Html.Raw(JavaScriptSnippet.FullScript) <!-- AppInsights script -->
-    <script>window.EsfaRecruit = {};</script>
+    <script nws-csp-add-nonce="true">
+        window.EsfaRecruit = {};
+    </script>
     @RenderSection(RazorSections.HeadJS, required: false)
+
 </head>
 <body>
     <environment exclude="@EnvironmentNames.GetTestEnvironmentNamesCommaDelimited()">
         <partial name="@PartialNames.GoogleTagManagerBodyPartial" />
     </environment>
-    <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
+    <script nws-csp-add-nonce="true">document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
     <div id="skiplink-container">
         <div>
             <a href="#content" class="skiplink">Skip to main content</a>
         </div>
     </div>
-
     <div asp-show="@ViewContext.ViewData[ViewDataKeys.CanShowOutageMessage] as bool?" id="global-outage-message" class="global-message">
         <p>@ViewContext.ViewData[ViewDataKeys.PlannedOutageMessage]</p>
         <form asp-route="@RouteNames.DismissOutageMessage_Post" novalidate>
@@ -97,11 +98,9 @@ public bool IsErrorPage()
             <button type="submit" class="button-fake-link">Dismiss</button>
         </form>
     </div>
-
     <div id="global-cookie-message">
         <p>GOV.UK uses cookies to make the site simpler. <a href="https://www.gov.uk/help/cookies">Find out more about cookies</a></p>
     </div>
-
     <header role="banner" id="global-header" class="with-proposition">
         <div class="header-wrapper">
             <div class="header-global">
