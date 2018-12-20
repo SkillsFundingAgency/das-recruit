@@ -569,7 +569,6 @@
         }
       },
       "dependsOn": [
-        "[variables('ProviderRecruitAppServiceName')]",
         "[variables('CosmosDbName')]"        
       ]
     },
