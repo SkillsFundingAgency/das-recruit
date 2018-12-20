@@ -70,6 +70,9 @@
     },
     "EmployerCustomHostname": {
       "value": ""
+    },  
+    "ProviderCustomHostname": {
+      "value": ""
     },
     "EmployerKeyvaultCertificateName": {
       "value": ""
@@ -78,6 +81,9 @@
       "value": ""
     },
     "QAAppKeyvaultCertificateName": {
+      "value": ""
+    },
+    "ProviderKeyvaultCertificateName": {
       "value": ""
     },
     "QAAuthentication": {
