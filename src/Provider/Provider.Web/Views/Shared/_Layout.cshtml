@@ -73,7 +73,7 @@ public bool IsErrorPage()
     <script src="@Url.Content("/lib/jquery/dist/jquery.js")"></script>
     <script src="@Url.Content("/lib/jquery-are-you-sure/jquery.are-you-sure.js")"></script>
     <environment exclude="@EnvironmentNames.GetTestEnvironmentNamesCommaDelimited()">
-        <partial name="@PartialNames.GoogleTagManagerHeadPartial" />
+        <partial name="@PartialNames.GoogleTagManagerHead" />
     </environment>
     @Html.Raw(JavaScriptSnippet.FullScript) <!-- AppInsights script -->
     <script>window.EsfaRecruit = {};</script>
@@ -81,7 +81,7 @@ public bool IsErrorPage()
 </head>
 <body>
     <environment exclude="@EnvironmentNames.GetTestEnvironmentNamesCommaDelimited()">
-        <partial name="@PartialNames.GoogleTagManagerBodyPartial" />
+        <partial name="@PartialNames.GoogleTagManagerBody" />
     </environment>
     <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
     <div id="skiplink-container">
@@ -164,6 +164,7 @@ public bool IsErrorPage()
             </p>
         </div>
         @RenderBody()
+        <partial name="@PartialNames.GetHelpContactDetails" />
     </main>
     <footer class="group js-footer" id="footer" role="contentinfo">
         <div class="footer-wrapper">
