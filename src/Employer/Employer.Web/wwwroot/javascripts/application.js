@@ -174,6 +174,18 @@ function inViewport($el) {
     return Math.max(0, t > 0 ? Math.min(elH, wH - t) : Math.min(b, wH));
 }
 
+function initializeEditor(id) {
+    tinymce.init({
+        element_format: 'html',
+        apply_source_formatting: true,
+        menubar: false,
+        plugins: 'lists',
+        selector: id,
+        statusbar: false,
+        toolbar: 'bullist',
+    });
+}
+
 $(function () {
     //Legacy menu script
     sfa.navigation.init();
