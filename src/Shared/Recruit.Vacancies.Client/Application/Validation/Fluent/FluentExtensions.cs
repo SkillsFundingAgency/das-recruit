@@ -2,6 +2,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidato
 using FluentValidation;
 using FluentValidation.Internal;
 using System;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 {
@@ -10,6 +11,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         public static IRuleBuilderOptions<T, string> ValidFreeTextCharacters<T>(this IRuleBuilder<T, string> ruleBuilder) {
 			return ruleBuilder.SetValidator(new FreeTextValidator());
 		}
+
+        public static IRuleBuilderOptions<T, string> ValidHtmlCharacters<T>(this IRuleBuilder<T, string> ruleBuilder, IHtmlSanitizerService sanitizer)
+        {
+            return ruleBuilder.SetValidator(new HtmlValidator(sanitizer));
+        }
 
         internal static IRuleBuilderOptions<T, string> PostCode<T>(this IRuleBuilder<T, string> ruleBuilder)
         {
