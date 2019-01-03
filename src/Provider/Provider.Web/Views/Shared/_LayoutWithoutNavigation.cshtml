@@ -52,7 +52,7 @@ public string GetTitle()
 	<link asp-append-version="true" rel="stylesheet" media="screen" href="/css/application.css" />
 	<script src="/lib/jquery/dist/jquery.js"></script>
 	<environment exclude="@EnvironmentNames.GetTestEnvironmentNamesCommaDelimited()">
-    <partial name="@PartialNames.GoogleTagManagerHeadPartial" />
+    <partial name="@PartialNames.GoogleTagManagerHead" />
     </environment>
 	@Html.Raw(JavaScriptSnippet.FullScript) <!-- AppInsights script -->
 	<script>
@@ -63,7 +63,7 @@ public string GetTitle()
 
 <body>
     <environment exclude="@EnvironmentNames.GetTestEnvironmentNamesCommaDelimited()">
-    <partial name="@PartialNames.GoogleTagManagerBodyPartial" />
+    <partial name="@PartialNames.GoogleTagManagerBody" />
     </environment>
     <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
     <div id="skiplink-container">
@@ -104,6 +104,7 @@ public string GetTitle()
             </p>
         </div>
         @RenderBody()
+        <partial name="@PartialNames.GetHelpContactDetails" />
     </main>
 
     <footer class="group js-footer" id="footer" role="contentinfo">

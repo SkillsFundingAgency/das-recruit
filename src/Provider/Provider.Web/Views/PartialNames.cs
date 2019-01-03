@@ -1,9 +1,12 @@
-﻿namespace Esfa.Recruit.Provider.Web.Views
+﻿using Esfa.Recruit.Shared.Web.Views;
+
+namespace Esfa.Recruit.Provider.Web.Views
 {
     public static class PartialNames
     {
-        public const string GoogleTagManagerHeadPartial = "_GoogleTagManagerHeadPartial";
-        public const string GoogleTagManagerBodyPartial = "_GoogleTagManagerBodyPartial";
-        public const string ValidationSummary = "_ValidationSummary";
+        public const string GetHelpContactDetails = RecruitPartialNames.GetHelpContactDetails;
+        public const string GoogleTagManagerHead = RecruitPartialNames.GoogleTagManagerHead;
+        public const string GoogleTagManagerBody = RecruitPartialNames.GoogleTagManagerBody;
+        public const string ValidationSummary = RecruitPartialNames.ValidationSummary;
     }
 }

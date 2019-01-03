@@ -49,10 +49,10 @@ public string GetTitle()
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta property="og:image" content="/lib/esfa-govuk/assets/images/opengraph-image.png">
     <link asp-append-version="true" rel="stylesheet" media="screen" href="/css/application.css" />
-    <partial name="@PartialNames.ApplicationInsightsPartial" />
+    <partial name="@PartialNames.ApplicationInsights" />
     <script src="/lib/jquery/dist/jquery.js"></script>
     <environment exclude="@EnvironmentNames.GetTestEnvironmentNamesCommaDelimited()">
-        <partial name="@PartialNames.GoogleTagManagerHeadPartial" />
+    <partial name="@PartialNames.GoogleTagManagerHead" />
     </environment>
     <script nws-csp-add-nonce="true">
         window.EsfaRecruit = {};
@@ -62,7 +62,7 @@ public string GetTitle()
 
 <body>
     <environment exclude="@EnvironmentNames.GetTestEnvironmentNamesCommaDelimited()">
-    <partial name="@PartialNames.GoogleTagManagerBodyPartial" />
+    <partial name="@PartialNames.GoogleTagManagerBody" />
     </environment>
     <script nws-csp-add-nonce="true">document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
     <div id="skiplink-container">
@@ -103,8 +103,8 @@ public string GetTitle()
             </p>
         </div>
         @RenderBody()
+        <partial name="@PartialNames.GetHelpContactDetails" />
     </main>
-
     <footer class="group js-footer" id="footer" role="contentinfo">
         <div class="footer-wrapper">
             <div class="footer-meta">

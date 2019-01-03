@@ -1,16 +1,19 @@
-﻿namespace Esfa.Recruit.Employer.Web.Views
+﻿using Esfa.Recruit.Shared.Web.Views;
+
+namespace Esfa.Recruit.Employer.Web.Views
 {
     public static class PartialNames
     {
-        public const string ApplicationInsightsPartial = "_ApplicationInsightsPartial";
+        public const string ApplicationInsights = "_ApplicationInsightsPartial";
         public const string DisabilityConfident = "_DisabilityConfidentPartial";
-        public const string GoogleTagManagerHeadPartial = "_GoogleTagManagerHeadPartial";
-        public const string GoogleTagManagerBodyPartial = "_GoogleTagManagerBodyPartial";
+        public const string GetHelpContactDetails = RecruitPartialNames.GetHelpContactDetails;
+        public const string GoogleTagManagerHead = RecruitPartialNames.GoogleTagManagerHead;
+        public const string GoogleTagManagerBody = RecruitPartialNames.GoogleTagManagerBody;
         public const string EditVacancyPartial = "_EditVacancyPartial";
         public const string NonEditableVacancyDisplay = "_NonEditableVacancyDisplayPartial";
         public const string VacancyApplicationsTable = "_VacancyApplicationsTablePartial";
         public const string VacancySummaryDisplay = "_VacancySummaryDisplayPartial";
-        public const string ValidationSummary = "_ValidationSummary";
-        public const string ReviewSummary = "_ReviewSummary";
+        public const string ValidationSummary = RecruitPartialNames.ValidationSummary;
+        public const string ReviewSummary = "_ReviewSummaryPartial";
     }
 }
