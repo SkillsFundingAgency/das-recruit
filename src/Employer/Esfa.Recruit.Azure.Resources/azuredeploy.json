@@ -240,6 +240,27 @@
     },
     {
       "apiVersion": "2017-05-10",
+      "name": "[variables('ProviderRecruitAppServiceName')]",
+      "type": "Microsoft.Resources/deployments",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('deploymentUrlBase'),'application-insights.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "appInsightsName": {
+            "value": "[variables('ProviderRecruitAppServiceName')]"
+          },
+          "attachedService": {
+            "value": "[variables('ProviderRecruitAppServiceName')]"
+          }
+        }
+      },
+      "dependsOn": []
+    },
+    {
+      "apiVersion": "2017-05-10",
       "name": "[variables('CosmosDbName')]",
       "type": "Microsoft.Resources/deployments",
       "properties": {
