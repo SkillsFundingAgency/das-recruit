@@ -80,19 +80,19 @@
                 </li>
             </ul>
         </div>
-        <div class="column-two-thirds">
+        <div class="column-two-thirds vacancy-descriptions">
             <div>
 
                 <h3 class="heading-small">Typical working day</h3>
-                <p class="preserve-format">@Model.VacancyDescription</p>
+                <div class="preserve-format">@Html.Raw(Model.VacancyDescription)</div>
             </div>
             <div>
                 <h3 class="heading-small">Training to be provided</h3>
-                <p class="preserve-format">@Model.TrainingDescription</p>
+                <div class="preserve-format">@Html.Raw(Model.TrainingDescription)</div>
             </div>
             <div>
                 <h3 class="heading-small">Future prospects</h3>
-                <p class="preserve-format">@Model.OutcomeDescription</p>
+                <div class="preserve-format">@Html.Raw(Model.OutcomeDescription)</div>
             </div>
         </div>
     </div>

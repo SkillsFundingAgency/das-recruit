@@ -762,6 +762,20 @@
     padding-left: 15px;
 }
 
+.vacancy-descriptions ul {
+    margin-top: .3125em;
+    margin-bottom: 1.25em;
+    padding-left: 40px;
+    list-style-type: disc;
+}
+
+@media (min-width: 641px) {
+    .vacancy-descriptions ul {
+        margin-top: .26316em;
+        margin-bottom: 1.05263em;
+    }
+}
+
 /*** Skills ***/
 @media(min-width: 769px) {
     .two-column-checkbox-container{

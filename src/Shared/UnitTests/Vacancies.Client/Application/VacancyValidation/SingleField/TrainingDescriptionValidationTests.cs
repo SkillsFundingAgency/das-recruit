@@ -58,21 +58,31 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.TrainingDescription);
         }
 
-        [Fact]
-        public void TrainingDescriptionMustContainVaildCharacters()
+        [Theory]
+        [InlineData("<p><br></p><ul><li>item1</li><li>item2</li></ul>", true)]
+        [InlineData("<script>alert('not allowed')</script>", false)]
+        [InlineData("<p>`</p>", false)]
+        public void TrainingDescriptionMustContainValidHtml(string actual, bool expectedResult)
         {
-            var vacancy = new Vacancy 
+            var vacancy = new Vacancy
             {
-                TrainingDescription = "<"
+                TrainingDescription = actual
             };
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingDescription);
 
-            result.HasErrors.Should().BeTrue();
-            result.Errors.Should().HaveCount(1);
-            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.TrainingDescription));
-            result.Errors[0].ErrorCode.Should().Be("6");
-            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.TrainingDescription);
+            if (expectedResult)
+            {
+                result.HasErrors.Should().BeFalse();
+            }
+            else
+            {
+                result.HasErrors.Should().BeTrue();
+                result.Errors.Should().HaveCount(1);
+                result.Errors[0].PropertyName.Should().Be(nameof(vacancy.TrainingDescription));
+                result.Errors[0].ErrorCode.Should().Be("6");
+                result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.TrainingDescription);
+            }
         }
     }
 }

@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Shared.Web.Orchestrators;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 {
@@ -17,11 +18,17 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         private const VacancyRuleSet ValdationRules = VacancyRuleSet.Description | VacancyRuleSet.TrainingDescription | VacancyRuleSet.OutcomeDescription;
         private readonly IEmployerVacancyClient _client;
         private readonly IReviewSummaryService _reviewSummaryService;
+        private readonly IHtmlSanitizerService _htmlSanitizerService;
 
-        public VacancyDescriptionOrchestrator(IEmployerVacancyClient client, ILogger<VacancyDescriptionOrchestrator> logger, IReviewSummaryService reviewSummaryService) : base(logger)
+        public VacancyDescriptionOrchestrator(
+            IEmployerVacancyClient client, 
+            ILogger<VacancyDescriptionOrchestrator> logger, 
+            IReviewSummaryService reviewSummaryService,
+            IHtmlSanitizerService htmlSanitizerService) : base(logger)
         {
             _client = client;
             _reviewSummaryService = reviewSummaryService;
+            _htmlSanitizerService = htmlSanitizerService;
         }
 
         public async Task<VacancyDescriptionViewModel> GetVacancyDescriptionViewModelAsync(VacancyRouteModel vrm)
@@ -60,9 +67,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         {
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, m, RouteNames.VacancyDescription_Index_Post);
             
-            vacancy.Description = m.VacancyDescription;
-            vacancy.TrainingDescription = m.TrainingDescription;
-            vacancy.OutcomeDescription = m.OutcomeDescription;
+            vacancy.Description = _htmlSanitizerService.Sanitize(m.VacancyDescription);
+            vacancy.TrainingDescription = _htmlSanitizerService.Sanitize(m.TrainingDescription);
+            vacancy.OutcomeDescription = _htmlSanitizerService.Sanitize(m.OutcomeDescription);
             
             return await ValidateAndExecute(
                 vacancy,

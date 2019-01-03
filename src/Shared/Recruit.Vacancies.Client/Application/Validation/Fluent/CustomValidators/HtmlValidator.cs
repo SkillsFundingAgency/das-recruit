@@ -2,7 +2,6 @@
 using System.Text.RegularExpressions;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using FluentValidation.Validators;
-using Ganss.XSS;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators
 {
@@ -20,10 +19,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
 
         protected override bool IsValid(PropertyValidatorContext context)
         {
-            if (context.PropertyValue == null)
-                return true;
-
             var unsanitized = (string) context.PropertyValue;
+
+            if (string.IsNullOrWhiteSpace(unsanitized))
+                return true;
 
             //Property value should have already been through HtmlSanitizerService.Sanitize prior to its setting so sanitized and unsanitized values should be the same.
             var sanitized = _sanitizer.Sanitize(unsanitized);

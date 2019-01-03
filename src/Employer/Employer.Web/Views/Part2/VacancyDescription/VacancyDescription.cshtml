@@ -39,3 +39,11 @@
         </form>
     </div>
 </div>
+
+<script nws-csp-add-nonce="true">
+    $(document).ready(function () {
+        initializeEditor('#@Html.IdFor(m => m.VacancyDescription)');
+        initializeEditor('#@Html.IdFor(m => m.TrainingDescription)');
+        initializeEditor('#@Html.IdFor(m => m.OutcomeDescription)');
+    });
+</script>

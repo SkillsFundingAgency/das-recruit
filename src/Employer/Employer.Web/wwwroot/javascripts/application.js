@@ -174,13 +174,13 @@ function inViewport($el) {
     return Math.max(0, t > 0 ? Math.min(elH, wH - t) : Math.min(b, wH));
 }
 
-function initializeEditor(id) {
+function initializeEditor(selector) {
     tinymce.init({
         element_format: 'html',
         apply_source_formatting: true,
         menubar: false,
         plugins: 'lists',
-        selector: id,
+        selector: selector,
         statusbar: false,
         toolbar: 'bullist',
     });
