@@ -52,29 +52,31 @@ namespace Esfa.Recruit.Employer.Web
                                         "https://tagmanager.google.com/",
                                         "https://fonts.googleapis.com/");
 
+                        //Google tag manager uses inline styles when administering tags. This is done on PREPROD only
                         if (env.IsEnvironment(EnvironmentNames.PREPROD))
                         {
                             s.UnsafeInline();
                         }
                     }
                 )
-                .ScriptSources(s => 
+                .ScriptSources(s =>
                     {
                         s.Self()
-                        .CustomSources("https://az416426.vo.msecnd.net", 
-                                        "https://www.google-analytics.com/analytics.js", 
-                                        "https://www.googletagmanager.com/",
-                                        "https://www.tagmanager.google.com/", 
-                                        "https://tagmanager.google.com/", 
-                                        "https://services.postcodeanywhere.co.uk/")
-                        .UnsafeInline();
+                            .CustomSources("https://az416426.vo.msecnd.net",
+                                "https://www.google-analytics.com/analytics.js",
+                                "https://www.googletagmanager.com/",
+                                "https://www.tagmanager.google.com/",
+                                "https://tagmanager.google.com/",
+                                "https://services.postcodeanywhere.co.uk/");
 
+                        //Google tag manager uses inline scripts when administering tags. This is done on PREPROD only
                         if (env.IsEnvironment(EnvironmentNames.PREPROD))
                         {
+                            s.UnsafeInline();
                             s.UnsafeEval();
                         }
                     }
-                ) // TODO: Look at moving AppInsights inline js code.
+                )
                 .FontSources(s => 
                     s.Self()
                     .CustomSources("data:",

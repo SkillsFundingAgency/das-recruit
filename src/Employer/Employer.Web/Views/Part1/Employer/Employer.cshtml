@@ -74,7 +74,7 @@
 </div>
 @section HeadJS
 {
-<script>
+<script nws-csp-add-nonce="true">
 window.EsfaRecruit.PcaConfig = {
     key: '@PcaConfig.Value.Key',
     findEndpoint: '@PcaConfig.Value.FindEndpoint',
@@ -84,7 +84,7 @@ window.EsfaRecruit.PcaConfig = {
 }
 @section FooterJS
 {
-<script asp-show="@Model.HasMoreThanOneOrganisation">
+<script nws-csp-add-nonce="true" asp-show="@Model.HasMoreThanOneOrganisation">
 $(document).ready(function() {
     var orgInputName = "@nameof(EmployerViewModel.SelectedOrganisationId)";
 	var addresses = @Json.Serialize(Model.Organisations);

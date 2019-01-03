@@ -2,6 +2,7 @@
 {
     public static class PartialNames
     {
+        public const string ApplicationInsightsPartial = "_ApplicationInsightsPartial";
         public const string DisabilityConfident = "_DisabilityConfidentPartial";
         public const string GoogleTagManagerHeadPartial = "_GoogleTagManagerHeadPartial";
         public const string GoogleTagManagerBodyPartial = "_GoogleTagManagerBodyPartial";
