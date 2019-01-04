@@ -52,7 +52,7 @@ namespace Esfa.Recruit.Qa.Web
                     c.AddServerHeader = false;
                 })
                 .UseStartup<Startup>()
-                .UseUrls($"https://localhost:5025")
+                .UseUrls("https://localhost:5025")
                 .UseNLog()
                 .ConfigureLogging(b => b.ConfigureRecruitLogging());
 

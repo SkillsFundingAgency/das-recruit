@@ -38,7 +38,7 @@ namespace Esfa.Recruit.Provider.Web
             WebHost.CreateDefaultBuilder(args)
                 .UseKestrel(c => c.AddServerHeader = false)
                 .UseStartup<Startup>()
-                .UseUrls("http://localhost:5031", "https://localhost:5030")
+                .UseUrls("https://localhost:5030")
                 .UseNLog()
                 .ConfigureLogging(b => b.ConfigureRecruitLogging());
 
