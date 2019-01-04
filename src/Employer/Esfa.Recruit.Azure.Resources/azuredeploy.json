@@ -541,11 +541,11 @@
           "appServiceAppSettings": {
             "value": [
               {
-                "name": "ProviderAuthentication:WtRealm",
+                "name": "Authentication:WtRealm",
                 "value": "[parameters('ProviderAuthentication').WtRealm]"
               },
               {
-                "name": "ProviderAuthentication:MetaDataAddress",
+                "name": "Authentication:MetaDataAddress",
                 "value": "[parameters('ProviderAuthentication').MetaDataAddress]"
               },
               {
