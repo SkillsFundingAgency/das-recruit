@@ -47,7 +47,7 @@ namespace Esfa.Recruit.Qa.Web
 
         private static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseKestrel(c =>
+                .ConfigureKestrel(c =>
                 {
                     c.AddServerHeader = false;
                 })

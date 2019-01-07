@@ -66,7 +66,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
                 opts.AddTrimModelBinderProvider(loggerFactory);
             })
             .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>())
-            .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
         public static void AddAuthenticationService(this IServiceCollection services, AuthenticationConfiguration authConfig, IEmployerVacancyClient vacancyClient, IHostingEnvironment hostingEnvironment)

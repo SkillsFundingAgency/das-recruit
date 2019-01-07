@@ -38,7 +38,7 @@ namespace Esfa.Recruit.Employer.Web.Filters
 
             var employerAccountId = context.RouteData.Values[RouteValues.EmployerAccountId]?.ToString().ToUpper();
             var userId = context.HttpContext.User.GetUserId();
-            
+
             var hasValidCookie = HasValidLevyCookie(context, employerAccountId);
             var levyControllerRequested = RequestIsForALevyPage(context);
 
