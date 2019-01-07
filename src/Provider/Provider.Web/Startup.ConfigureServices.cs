@@ -12,9 +12,9 @@ namespace Esfa.Recruit.Provider.Web
 {
     public partial class Startup
     {
-        private IConfiguration _configuration { get; }
-        private IHostingEnvironment _hostingEnvironment { get; }
-        private AuthenticationConfiguration _authConfig { get; }
+        private readonly IConfiguration _configuration;
+        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly AuthenticationConfiguration _authConfig;
         private readonly ILoggerFactory _loggerFactory;
 
         public Startup(IConfiguration config, IHostingEnvironment env, ILoggerFactory loggerFactory)
@@ -36,6 +36,7 @@ namespace Esfa.Recruit.Provider.Web
             // Routing has to come before adding Mvc
             services.AddRouting(opt =>
             {
+                opt.LowercaseUrls = true;
                 opt.AppendTrailingSlash = true;
             });
 
