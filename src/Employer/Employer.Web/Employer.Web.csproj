@@ -3,9 +3,9 @@
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <UserSecretsId>recruit-employer-web</UserSecretsId>
     <RootNamespace>Esfa.Recruit.Employer.Web</RootNamespace>
+    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
   </PropertyGroup>
   <PropertyGroup>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <AssemblyName>Esfa.Recruit.Employer.Web</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
