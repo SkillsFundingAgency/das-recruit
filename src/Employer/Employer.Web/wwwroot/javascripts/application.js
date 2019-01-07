@@ -191,11 +191,23 @@ function initializeEditor(selector) {
         selector: selector,
         statusbar: false,
         toolbar: 'bullist',
+        content_style: ".mce-content-body {font-size:19px;font-family:nta,Arial,sans-serif;}",
         setup: function (tinyMceEditor) {
             var element = tinyMceEditor.getElement();
+            
             tinyMceEditor.on('keyup',
                 function (e) {
                     setEditorMaxLength(element, tinyMceEditor);
+                });
+            tinyMceEditor.on('focus',
+                function (e) {
+                    tinyMceEditor.editorContainer.classList.add("editor-focus");
+                    console.log("focus");
+                });
+            tinyMceEditor.on('blur',
+                function (e) {
+                    tinyMceEditor.editorContainer.classList.remove("editor-focus");
+                    console.log("blur");
                 });
         },
         init_instance_callback: function (tinyMceEditor) {
