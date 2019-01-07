@@ -11,65 +11,63 @@
 
         <partial name="@PartialNames.ReviewSummary" for="Review" />
 
-        <div class="todo">
-            <div asp-show="@Model.HasOnlyOneOrganisation"><p>@Model.Organisations.First().Name</p></div>
-            <form asp-route="@RouteNames.Employer_Post" asp-route-wizard="@Model.PageInfo.IsWizard">
-                <div esfa-validation-marker-for="SelectedOrganisationId" class="form-group">
+        <div asp-show="@Model.HasOnlyOneOrganisation"><p>@Model.Organisations.First().Name</p></div>
+        <form asp-route="@RouteNames.Employer_Post" asp-route-wizard="@Model.PageInfo.IsWizard">
+            <div esfa-validation-marker-for="SelectedOrganisationId" class="form-group">
 
-                    <input asp-show="@Model.HasOnlyOneOrganisation" asp-for="SelectedOrganisationId" value="@Model.Organisations.First().Id" type="hidden" />
+                <input asp-show="@Model.HasOnlyOneOrganisation" asp-for="SelectedOrganisationId" value="@Model.Organisations.First().Id" type="hidden" />
 
-                    <fieldset asp-show="@Model.HasMoreThanOneOrganisation">
-                        <legend>
-                            <span class="form-label-bold">Which organisation is the vacancy for?</span>
-                        </legend>
-                        <span esfa-validation-message-for="SelectedOrganisationId" class="error-message"></span>
+                <fieldset asp-show="@Model.HasMoreThanOneOrganisation">
+                    <legend>
+                        <span class="form-label-bold">Which organisation is the vacancy for?</span>
+                    </legend>
+                    <span esfa-validation-message-for="SelectedOrganisationId" class="error-message"></span>
 
-                        @foreach (var organisation in Model.Organisations)
+                    @foreach (var organisation in Model.Organisations)
                     {
                         <div class="multiple-choice">
                             <input asp-for="SelectedOrganisationId" type="radio" value="@organisation.Id" id="org-@organisation.Id">
                             <label for="org-@organisation.Id">@organisation.Name</label>
                         </div>
-                }
-                    </fieldset>
+                    }
+                </fieldset>
 
+            </div>
+
+            <div id="address-details" class="address-manual-input">
+                <label class="form-label-bold">Enter the address where the apprentice will work</label>
+                <div esfa-validation-marker-for="AddressLine1" class="form-group-compound address-item form-group">
+                    <label asp-for="AddressLine1" class="visuallyhidden">Address line 1</label>
+                    <span esfa-validation-message-for="AddressLine1" class="error-message"></span>
+                    <input asp-for="AddressLine1" class="form-control-large form-control postcode-lookup" maxlength="100" />
                 </div>
-
-                <div id="address-details" class="address-manual-input">
-                    <label class="form-label-bold">Enter the address where the apprentice will work</label>
-                    <div esfa-validation-marker-for="AddressLine1" class="form-group-compound address-item form-group">
-                        <label asp-for="AddressLine1" class="visuallyhidden">Address line 1</label>
-                        <span esfa-validation-message-for="AddressLine1" class="error-message"></span>
-                        <input asp-for="AddressLine1" class="form-control-large form-control postcode-lookup" maxlength="100" />
-                    </div>
-                    <div esfa-validation-marker-for="AddressLine2" class="form-group-compound address-item form-group">
-                        <label asp-for="AddressLine2" class="visuallyhidden">Address line 2</label>
-                        <span esfa-validation-message-for="AddressLine2" class="error-message"></span>
-                        <input asp-for="AddressLine2" class="form-control-large form-control" maxlength="100" />
-                    </div>
-                    <div esfa-validation-marker-for="AddressLine3" class="form-group-compound address-item form-group">
-                        <label asp-for="AddressLine3" class="visuallyhidden">Address line 3</label>
-                        <span esfa-validation-message-for="AddressLine3" class="error-message"></span>
-                        <input asp-for="AddressLine3" class="form-control-large form-control" maxlength="100" />
-                    </div>
-                    <div esfa-validation-marker-for="AddressLine4" class="form-group-compound address-item form-group">
-                        <label asp-for="AddressLine4" class="visuallyhidden">Address line 4</label>
-                        <span esfa-validation-message-for="AddressLine4" class="error-message"></span>
-                        <input asp-for="AddressLine4" class="form-control-large form-control" maxlength="100" />
-                    </div>
-                    <div esfa-validation-marker-for="Postcode" class="form-group address-item form-group">
-                        <label asp-for="Postcode" class="form-label">Postcode</label>
-                        <span esfa-validation-message-for="Postcode" class="error-message"></span>
-                        <input asp-for="Postcode" class="form-control-large form-control postcode-lookup form-control-1-8" maxlength="8" />
-                    </div>
+                <div esfa-validation-marker-for="AddressLine2" class="form-group-compound address-item form-group">
+                    <label asp-for="AddressLine2" class="visuallyhidden">Address line 2</label>
+                    <span esfa-validation-message-for="AddressLine2" class="error-message"></span>
+                    <input asp-for="AddressLine2" class="form-control-large form-control" maxlength="100" />
                 </div>
+                <div esfa-validation-marker-for="AddressLine3" class="form-group-compound address-item form-group">
+                    <label asp-for="AddressLine3" class="visuallyhidden">Address line 3</label>
+                    <span esfa-validation-message-for="AddressLine3" class="error-message"></span>
+                    <input asp-for="AddressLine3" class="form-control-large form-control" maxlength="100" />
+                </div>
+                <div esfa-validation-marker-for="AddressLine4" class="form-group-compound address-item form-group">
+                    <label asp-for="AddressLine4" class="visuallyhidden">Address line 4</label>
+                    <span esfa-validation-message-for="AddressLine4" class="error-message"></span>
+                    <input asp-for="AddressLine4" class="form-control-large form-control" maxlength="100" />
+                </div>
+                <div esfa-validation-marker-for="Postcode" class="form-group address-item form-group">
+                    <label asp-for="Postcode" class="form-label">Postcode</label>
+                    <span esfa-validation-message-for="Postcode" class="error-message"></span>
+                    <input asp-for="Postcode" class="form-control-large form-control postcode-lookup form-control-1-8" maxlength="8" />
+                </div>
+            </div>
 
-                <button type="submit" class="button save-button">@Model.PageInfo.SubmitButtonText</button>
+            <button type="submit" class="button save-button">@Model.PageInfo.SubmitButtonText</button>
 
-                <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Index_Get" class="button-link">Cancel</a>
-                <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.AboutEmployerSection" class="button-link">Cancel</a>
-            </form>
-        </div>
+            <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Index_Get" class="button-link">Cancel</a>
+            <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.AboutEmployerSection" class="button-link">Cancel</a>
+        </form>
     </div>
 </div>
 @section HeadJS
