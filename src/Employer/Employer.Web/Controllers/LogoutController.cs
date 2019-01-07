@@ -26,6 +26,5 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         {
             await HttpContext.SignOutEmployerWebAsync();
         }
-            
     }
 }
