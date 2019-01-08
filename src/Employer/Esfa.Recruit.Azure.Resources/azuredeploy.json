@@ -82,6 +82,10 @@
       "type": "securestring",
       "defaultValue": ""
     },
+    "StorageRedisConnectionString": {
+      "type": "securestring",
+      "defaultValue": ""
+    },
     "ApprenticeshipProgrammesApiBaseUrl": {
       "type": "string",
       "defaultValue": ""
@@ -383,6 +387,11 @@
                 "type": "Custom"
               },
               {
+                "name": "StorageRedis",
+                "connectionString": "[parameters('StorageRedisConnectionString')]",
+                "type": "Custom"
+              },
+              {
                 "name": "MongoDb",
                 "connectionString": "[concat('mongodb://', variables('CosmosDbName'), ':', reference(variables('CosmosDbName')).outputs.PrimaryMasterKey.value,'@', variables('CosmosDbName'), '.documents.azure.com:10255/?ssl=true&replicaSet=globaldb')]",
                 "type": "Custom"
@@ -495,6 +504,11 @@
                 "type": "Custom"
               },
               {
+                "name": "StorageRedis",
+                "connectionString": "[parameters('StorageRedisConnectionString')]",
+                "type": "Custom"
+              },
+              {
                 "name": "MongoDb",
                 "connectionString": "[concat('mongodb://', variables('CosmosDbName'), ':', reference(variables('CosmosDbName')).outputs.PrimaryMasterKey.value,'@', variables('CosmosDbName'), '.documents.azure.com:10255/?ssl=true&replicaSet=globaldb')]",
                 "type": "Custom"
@@ -567,6 +581,11 @@
               {
                 "name": "Redis",
                 "connectionString": "[parameters('LoggingRedisConnectionString')]",
+                "type": "Custom"
+              },
+              {
+                "name": "StorageRedis",
+                "connectionString": "[parameters('StorageRedisConnectionString')]",
                 "type": "Custom"
               },
               {
