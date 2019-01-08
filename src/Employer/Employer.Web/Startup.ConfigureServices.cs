@@ -27,11 +27,6 @@ namespace Esfa.Recruit.Employer.Web
             _hostingEnvironment = env;
             _authConfig = _configuration.GetSection("Authentication").Get<AuthenticationConfiguration>();
             _loggerFactory = loggerFactory;
-
-            if (env.IsDevelopment() && _authConfig.IsEnabledForDev == false)
-            {
-                _isAuthEnabled = false;
-            }
         }
         
         // This method gets called by the runtime. Use this method to add services to the container.
