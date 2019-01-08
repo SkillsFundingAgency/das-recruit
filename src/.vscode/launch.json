@@ -123,5 +123,11 @@
             "request": "attach",
             "processId": "${command:pickProcess}"
         }
+    ],
+    "compounds": [
+        {
+            "name": "Employer Recruit",
+            "configurations": ["Launch WebJobs", "Launch Emp Website", "Launch QA Website"]
+        }
     ]
 }
