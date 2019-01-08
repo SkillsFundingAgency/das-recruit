@@ -59,6 +59,9 @@
     "LoggingRedisConnectionString": {
       "value": ""
     },
+    "StorageRedisConnectionString": {
+      "value": ""
+    },
     "ApprenticeshipProgrammesApiBaseUrl": {
       "value": ""
     },
