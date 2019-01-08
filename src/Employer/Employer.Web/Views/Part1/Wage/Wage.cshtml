@@ -2,11 +2,14 @@
 @model Esfa.Recruit.Employer.Web.ViewModels.Part1.Wage.WageViewModel
 <div class="grid-row">
     <div class="column-full">
-        <h1 class="heading-xlarge small-bottom-margin">Duration, working hours and pay</h1>
         
-        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
+        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Training_Get" esfa-automation="link-back" class="button-link">Back</a>
 
-        <partial name="@PartialNames.ReviewSummary" for="Review" />
+        <h1 class="heading-xlarge small-bottom-margin">Duration, working hours and pay</h1>
+
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }'/>
+
+        <partial name="@PartialNames.ReviewSummary" for="Review"/>
 
         <form asp-route="@RouteNames.Wage_Post" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
             <div esfa-validation-marker-for="Duration" class="form-group">

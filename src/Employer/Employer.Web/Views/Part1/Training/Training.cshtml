@@ -6,11 +6,13 @@
 
 <div class="grid-row">
     <div class="column-full">
+        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Employer_Get" esfa-automation="link-back" class="button-link">Back</a>
+
         <h1 class="heading-xlarge small-bottom-margin">Important dates</h1>
 
-        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }'/>
 
-        <partial name="@PartialNames.ReviewSummary" for="Review" />
+        <partial name="@PartialNames.ReviewSummary" for="Review"/>
 
         <form asp-route="@RouteNames.Training_Post" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
 
