@@ -84,7 +84,7 @@
             print(`Updated document '${toGUID(doc._id.hex())}'`);
         }
         else{
-            print(`Skipping document '${toGUID(doc._id.hex())}'. Qualficiations already updated`);
+            print(`Skipping document '${toGUID(doc._id.hex())}'. Qualifications already updated`);
         }
     }
 
