@@ -39,7 +39,7 @@ namespace Esfa.Recruit.Qa.Web
             //A service provider for resolving services configured in IoC
             var sp = services.BuildServiceProvider();
 
-            var redis = ConnectionMultiplexer.Connect(_configuration.GetConnectionString("Redis"));
+            var redis = ConnectionMultiplexer.Connect(_configuration.GetConnectionString("StorageRedis"));
             services.AddDataProtection().PersistKeysToStackExchangeRedis(redis, "DataProtection-Keys");
 
             // Routing has to come before adding Mvc

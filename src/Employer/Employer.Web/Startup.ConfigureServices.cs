@@ -34,7 +34,7 @@ namespace Esfa.Recruit.Employer.Web
         {
             services.AddIoC(_configuration);
 
-            var redis = ConnectionMultiplexer.Connect(_configuration.GetConnectionString("Redis"));
+            var redis = ConnectionMultiplexer.Connect(_configuration.GetConnectionString("StorageRedis"));
             services.AddDataProtection().PersistKeysToStackExchangeRedis(redis, "DataProtection-Keys");
 
             // Routing has to come before adding Mvc
