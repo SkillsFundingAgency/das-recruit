@@ -16,7 +16,7 @@
             "startDate": { $gte: ISODate("2019-04-01T00:00:00.000Z") },
             "wage.wageType" : "FixedWage",
             "isDeleted" : false,
-            "status" : "Live"
+            "status" : { $nin : ["Draft", "Closed", "Referred"]} 
         },
         apprenticeshipNationalMinimumWage2019 = 3.9;
 
