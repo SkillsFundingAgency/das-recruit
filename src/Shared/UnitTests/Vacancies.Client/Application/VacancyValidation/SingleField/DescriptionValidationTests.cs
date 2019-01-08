@@ -46,7 +46,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         {
             var vacancy = new Vacancy 
             {
-                Description = new String('a', 501)
+                Description = new String('a', 1001)
             };
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.Description);
