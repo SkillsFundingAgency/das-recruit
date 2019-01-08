@@ -14,62 +14,48 @@
 
     const query = {
             "startDate": { $gte: ISODate("2019-04-01T00:00:00.000Z") },
-            "wage.wageType" : "FixedWage"
+            "wage.wageType" : "FixedWage",
+            "isDeleted" : false,
+            "status" : "Live"
         },
-        batchUpdateLimit = 500,
         apprenticeshipNationalMinimumWage2019 = 3.9;
-    let passThrough = 1,
-        maxLoops = Math.ceil(db.vacancies.find().count(query) / batchUpdateLimit);
 
-    if (maxLoops === 0) {
-        maxLoops = 1;
-    }
+    let matchedDocs = db.vacancies.aggregate([
+        {
+            $match: query
+        },
+        {
+            $sort: { "dateCreated": 1 }
+        }]);
 
-    do {
-        let matchedDocs = db.vacancies.aggregate([
-            {
-                $match: query
-            },
-            {
-                $sort: { "dateCreated": 1 }
-            },
-            {
-                $limit: batchUpdateLimit
+    while (matchedDocs.hasNext()) {
+        let doc = matchedDocs.next();
+
+        var perHourWage = doc.wage.fixedWageYearlyAmount / 52 / doc.wage.weeklyHours;
+        
+        if(perHourWage < apprenticeshipNationalMinimumWage2019){
+            print(`Found illegal 2019 wage. '${perHourWage}' per hour in document '${toGUID(doc._id.hex())}'`);
+
+            let writeResult = db.vacancies.update({
+                "_id": doc._id
+            }, {
+                $set: { "wage.wageType": "NationalMinimumWageForApprentices" },
+                $unset : {"wage.fixedWageYearlyAmount" : "" }
+            }, {
+                upsert: false
+            });
+
+            if (writeResult.hasWriteConcernError()) {
+                printjson(writeResult.writeConcernError);
+                quit(14);
             }
-        ]);
 
-        print(`Found ${matchedDocs._batch.length} document(s) to operate on in pass-through ${passThrough} of ${maxLoops}.`);
-
-        while (matchedDocs.hasNext()) {
-            let doc = matchedDocs.next();
-
-            var perHourWage = doc.wage.fixedWageYearlyAmount / 52 / doc.wage.weeklyHours;
-            
-            if(perHourWage < apprenticeshipNationalMinimumWage2019){
-                print(`Found illegal 2019 wage. '${perHourWage}' per hour in document '${toGUID(doc._id.hex())}'`);
-
-                let writeResult = db.vacancies.update({
-                    "_id": doc._id
-                }, {
-                    $set: { 
-                        "wage.wageType": "NationalMinimumWageForApprentices",
-                        "wage.fixedWageYearlyAmount" : null
-                    }
-                }, {
-                    upsert: false
-                });
-
-                if (writeResult.hasWriteConcernError()) {
-                    printjson(writeResult.writeConcernError);
-                    quit(14);
-                }
-
-                print(`Updated document '${toGUID(doc._id.hex())}' with wageType: NationalMinimumWageForApprentices.`);
-            }
+            print(`Updated document '${toGUID(doc._id.hex())}' with wageType: NationalMinimumWageForApprentices.`);
         }
-
-        passThrough++;
-    } while (passThrough <= maxLoops && db.vacancies.find().count(query) > 0);
+        else{
+            print(`2019 wage OK. '${perHourWage}' per hour in document '${toGUID(doc._id.hex())}'. Not updating`);
+        }
+    }
 
     print("Finished updating Vacancies with illegal 2019 wages.");
 }
