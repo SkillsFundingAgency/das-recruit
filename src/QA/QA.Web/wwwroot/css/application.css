@@ -103,6 +103,15 @@
     margin-top: 10px;
 }
 
+mce-tinymce {
+    border: 2px solid #0b0c0c !important;
+}
+
+.mce-tinymce.editor-focus {
+    outline:3px solid #ffbf47;
+    outline-offset: 0;
+}
+
 /***Review***/
 .review-summary {
     border: 5px solid #f47738;
