@@ -54,8 +54,7 @@ namespace Esfa.Recruit.Provider.Web
                                     "https://www.googletagmanager.com/",
                                     "https://www.tagmanager.google.com/", 
                                     "https://services.postcodeanywhere.co.uk/")
-                    .UnsafeInline()
-                ) // TODO: Look at moving AppInsights inline js code.
+                )
                 .FontSources(s => 
                     s.Self()
                     .CustomSources("data:")

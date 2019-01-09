@@ -1,6 +1,9 @@
-﻿@using Microsoft.Extensions.Options
+﻿@using Esfa.Recruit.Shared.Web.Configuration
+@using Microsoft.Extensions.Options
 @inject IOptions<ApplicationInsightsConfiguration> ApplicationInsights
 
+@if(!string.IsNullOrEmpty(ApplicationInsights.Value.InstrumentationKey))
+{ 
 <!-- AppInsights script -->
 <script type="text/javascript" nws-csp-add-nonce="true">
     var appInsights=window.appInsights||function(a){
@@ -11,3 +14,4 @@
 
     window.appInsights=appInsights,appInsights.queue&&0===appInsights.queue.length&&appInsights.trackPageView();
 </script>
+}
