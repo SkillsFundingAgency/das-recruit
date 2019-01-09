@@ -202,12 +202,10 @@ function initializeEditor(selector) {
             tinyMceEditor.on('focus',
                 function (e) {
                     tinyMceEditor.editorContainer.classList.add("editor-focus");
-                    console.log("focus");
                 });
             tinyMceEditor.on('blur',
                 function (e) {
                     tinyMceEditor.editorContainer.classList.remove("editor-focus");
-                    console.log("blur");
                 });
         },
         init_instance_callback: function (tinyMceEditor) {
