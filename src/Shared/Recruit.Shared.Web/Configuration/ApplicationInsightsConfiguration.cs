@@ -1,4 +1,4 @@
-﻿namespace Esfa.Recruit.Employer.Web.Configuration
+﻿namespace Esfa.Recruit.Shared.Web.Configuration
 {
     public class ApplicationInsightsConfiguration
     {
