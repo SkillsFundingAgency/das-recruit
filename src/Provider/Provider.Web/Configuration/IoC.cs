@@ -17,8 +17,8 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddRecruitStorageClient(configuration);
 
             //Configuration
+            services.Configure<ApplicationInsightsConfiguration>(configuration.GetSection("ApplicationInsights"));
             services.Configure<ExternalLinksConfiguration>(configuration.GetSection("ExternalLinks"));
-
             services.Configure<AuthenticationConfiguration>(configuration.GetSection("Authentication"));
             services.Configure<GoogleAnalyticsConfiguration>(configuration.GetSection("GoogleAnalytics"));
             services.Configure<PostcodeAnywhereConfiguration>(configuration.GetSection("PostcodeAnywhere"));
