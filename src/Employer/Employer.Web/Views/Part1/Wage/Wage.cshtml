@@ -2,94 +2,95 @@
 @model Esfa.Recruit.Employer.Web.ViewModels.Part1.Wage.WageViewModel
 <div class="grid-row">
     <div class="column-full">
-        <h1 class="heading-xlarge small-bottom-margin">Duration, working hours and pay</h1>
         
-        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
+        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Training_Get" esfa-automation="link-back" class="button-link">Back</a>
 
-        <partial name="@PartialNames.ReviewSummary" for="Review" />
+        <h1 class="heading-xlarge small-bottom-margin">Duration, working hours and pay</h1>
 
-        <div class="todo">
-            <form asp-route="@RouteNames.Wage_Post" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
-                <div esfa-validation-marker-for="Duration" class="form-group">
-                    <fieldset>
-                        <label asp-for="Duration" class="form-label-bold">How long is the apprenticeship expected to last?<span class="visuallyhidden"> (enter a numeric value and then select Month(s) or Year(s) in the next field)</span></label>
-                        <span class="form-hint">This must be a minimum of 12 months</span>
-                        <span esfa-validation-message-for="Duration" class="error-message"></span>
-                        <input asp-for="Duration" class="form-control form-control-1-8" type="number" min="1">
-                        <select asp-for="DurationUnit" class="form-control duration-unit-select">
-                            <option value="@DurationUnit.Month">Month(s)</option>
-                            <option value="@DurationUnit.Year">Year(s)</option>
-                        </select>
-                    </fieldset>
-                </div>
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }'/>
 
-                <div esfa-validation-marker-for="WorkingWeekDescription" class="form-group">
-                    <label asp-for="WorkingWeekDescription" class="form-label-bold">Details of working week</label>
-                    <span class="form-hint">For example, Monday to Friday 9am to 5pm, shifts, may work evenings and weekends</span>
-                    <span esfa-validation-message-for="WorkingWeekDescription" class="error-message"></span>
-                    <textarea asp-for="WorkingWeekDescription" class="form-control-3-4 form-control character-count" rows="5" type="text" data-val-length-max="250"></textarea>
-                    <span class="maxchar-count">250</span>
-                    <span class="maxchar-text"> characters remaining</span>
-                </div>
+        <partial name="@PartialNames.ReviewSummary" for="Review"/>
 
-                <div esfa-validation-marker-for="WeeklyHours" class="form-group">
-                    <label asp-for="WeeklyHours" class="form-label-bold">How many hours will the apprentice work each week, including training?</label>
-                    <span esfa-validation-message-for="WeeklyHours" class="error-message"></span>
-                    <input asp-for="WeeklyHours" class="form-control form-control-1-8" type="number" step=".25" min="16" max="48">
-                    <span>hours</span>
-                </div>
-                <div esfa-validation-marker-for="WageType" class="form-group">
-                    <fieldset>
-                        <legend asp-for="WageType" class="heading-small" id="@Anchors.WageTypeHeading">What are you going to pay your apprentice?</legend>
-                        <span class="form-hint">The pay will only show as a yearly figure on your vacancy advertisement</span>
-                        <span esfa-validation-message-for="WageType" class="error-message"></span>
-                        <div class="multiple-choice" data-target="custom-wage-fixed-panel">
-                            <input asp-for="WageType" value="@WageType.FixedWage" type="radio" id="wage-type-fixed">
-                            <label for="wage-type-fixed">Fixed wage</label>
-                        </div>
+        <form asp-route="@RouteNames.Wage_Post" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
+            <div esfa-validation-marker-for="Duration" class="form-group">
+                <fieldset>
+                    <label asp-for="Duration" class="form-label-bold">How long is the apprenticeship expected to last?<span class="visuallyhidden"> (enter a numeric value and then select Month(s) or Year(s) in the next field)</span></label>
+                    <span class="form-hint">This must be a minimum of 12 months</span>
+                    <span esfa-validation-message-for="Duration" class="error-message"></span>
+                    <input asp-for="Duration" class="form-control form-control-1-8" type="number" min="1">
+                    <select asp-for="DurationUnit" class="form-control duration-unit-select">
+                        <option value="@DurationUnit.Month">Month(s)</option>
+                        <option value="@DurationUnit.Year">Year(s)</option>
+                    </select>
+                </fieldset>
+            </div>
 
-                        <div id="custom-wage-fixed-panel" class="panel-border-narrow panel js-hidden">
-                            <fieldset>
-                                <p class="form-hint">
-                                    The wage should not be less then the
-                                    <a href="https://www.gov.uk/national-minimum-wage-rates" rel="noopener" target="_blank">National Minimum Wage</a> for apprentices
-                                </p>
-                                <div esfa-validation-marker-for="FixedWageYearlyAmount" class="form-group">
-                                    <span esfa-validation-message-for="FixedWageYearlyAmount" class="error-message"></span>
-                                    <span>£</span>
-                                    <label asp-for="FixedWageYearlyAmount" class="visuallyhidden">Minimum yearly wage amount</label>
-                                    <input asp-for="FixedWageYearlyAmount" class="form-control form-control-1-4" type="text">
-                                    <span>yearly</span>
-                                </div>
-                            </fieldset>
-                        </div>
+            <div esfa-validation-marker-for="WorkingWeekDescription" class="form-group">
+                <label asp-for="WorkingWeekDescription" class="form-label-bold">Details of working week</label>
+                <span class="form-hint">For example, Monday to Friday 9am to 5pm, shifts, may work evenings and weekends</span>
+                <span esfa-validation-message-for="WorkingWeekDescription" class="error-message"></span>
+                <textarea asp-for="WorkingWeekDescription" class="form-control-3-4 form-control character-count" rows="5" type="text" data-val-length-max="250"></textarea>
+                <span class="maxchar-count">250</span>
+                <span class="maxchar-text"> characters remaining</span>
+            </div>
 
-                        <div class="multiple-choice">
-                            <input asp-for="WageType" value="@WageType.NationalMinimumWage" type="radio" id="wage-type-national-minimum-wage">
-                            <label for="wage-type-national-minimum-wage">National Minimum Wage</label>
-                        </div>
-                        <div class="multiple-choice">
-                            <input asp-for="WageType" value="@WageType.NationalMinimumWageForApprentices" type="radio" id="wage-type-national-minimum-wage-for-apprentices">
-                            <label for="wage-type-national-minimum-wage-for-apprentices">National Minimum Wage for apprentices</label>
-                        </div>
-                    </fieldset>
-                </div>
+            <div esfa-validation-marker-for="WeeklyHours" class="form-group">
+                <label asp-for="WeeklyHours" class="form-label-bold">How many hours will the apprentice work each week, including training?</label>
+                <span esfa-validation-message-for="WeeklyHours" class="error-message"></span>
+                <input asp-for="WeeklyHours" class="form-control form-control-1-8" type="number" step=".25" min="16" max="48">
+                <span>hours</span>
+            </div>
+            <div esfa-validation-marker-for="WageType" class="form-group">
+                <fieldset>
+                    <legend asp-for="WageType" class="heading-small" id="@Anchors.WageTypeHeading">What are you going to pay your apprentice?</legend>
+                    <span class="form-hint">The pay will only show as a yearly figure on your vacancy advertisement</span>
+                    <span esfa-validation-message-for="WageType" class="error-message"></span>
+                    <div class="multiple-choice" data-target="custom-wage-fixed-panel">
+                        <input asp-for="WageType" value="@WageType.FixedWage" type="radio" id="wage-type-fixed">
+                        <label for="wage-type-fixed">Fixed wage</label>
+                    </div>
 
-                <div esfa-validation-marker-for="WageAdditionalInformation" class="form-group">
-                    <label asp-for="WageAdditionalInformation" class="form-label-bold">Additional information about pay (optional)</label>
-                    <span class="form-hint">For example, subject to experience, bonus scheme, performance increases or non contractual benefits</span>
-                    <span esfa-validation-message-for="WageAdditionalInformation" class="error-message"></span>
-                    <textarea asp-for="WageAdditionalInformation" class="form-control-3-4 form-control character-count" rows="5" type="text" data-val-length-max="250"></textarea>
-                    <span class="maxchar-count">250</span>
-                    <span class="maxchar-text"> characters remaining</span>
-                </div>
+                    <div id="custom-wage-fixed-panel" class="panel-border-narrow panel js-hidden">
+                        <fieldset>
+                            <p class="form-hint">
+                                The wage should not be less then the
+                                <a href="https://www.gov.uk/national-minimum-wage-rates" rel="noopener" target="_blank">National Minimum Wage</a> for apprentices
+                            </p>
+                            <div esfa-validation-marker-for="FixedWageYearlyAmount" class="form-group">
+                                <span esfa-validation-message-for="FixedWageYearlyAmount" class="error-message"></span>
+                                <span>£</span>
+                                <label asp-for="FixedWageYearlyAmount" class="visuallyhidden">Minimum yearly wage amount</label>
+                                <input asp-for="FixedWageYearlyAmount" class="form-control form-control-1-4" type="text">
+                                <span>yearly</span>
+                            </div>
+                        </fieldset>
+                    </div>
 
-                <button type="submit" class="button save-button">@Model.PageInfo.SubmitButtonText</button>
+                    <div class="multiple-choice">
+                        <input asp-for="WageType" value="@WageType.NationalMinimumWage" type="radio" id="wage-type-national-minimum-wage">
+                        <label for="wage-type-national-minimum-wage">National Minimum Wage</label>
+                    </div>
+                    <div class="multiple-choice">
+                        <input asp-for="WageType" value="@WageType.NationalMinimumWageForApprentices" type="radio" id="wage-type-national-minimum-wage-for-apprentices">
+                        <label for="wage-type-national-minimum-wage-for-apprentices">National Minimum Wage for apprentices</label>
+                    </div>
+                </fieldset>
+            </div>
 
-                <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Index_Get" class="button-link">Cancel</a>
-                <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.ApprenticeshipSummarySection" class="button-link">Cancel</a>
-            </form>
-        </div>
+            <div esfa-validation-marker-for="WageAdditionalInformation" class="form-group">
+                <label asp-for="WageAdditionalInformation" class="form-label-bold">Additional information about pay (optional)</label>
+                <span class="form-hint">For example, subject to experience, bonus scheme, performance increases or non contractual benefits</span>
+                <span esfa-validation-message-for="WageAdditionalInformation" class="error-message"></span>
+                <textarea asp-for="WageAdditionalInformation" class="form-control-3-4 form-control character-count" rows="5" type="text" data-val-length-max="250"></textarea>
+                <span class="maxchar-count">250</span>
+                <span class="maxchar-text"> characters remaining</span>
+            </div>
+
+            <button type="submit" class="button save-button">@Model.PageInfo.SubmitButtonText</button>
+
+            <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Index_Get" class="button-link">Cancel</a>
+            <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.ApprenticeshipSummarySection" class="button-link">Cancel</a>
+        </form>
     </div>
 </div>
 

@@ -1,37 +1,42 @@
 ﻿@model Esfa.Recruit.Employer.Web.ViewModels.Part1.ShortDescription.ShortDescriptionViewModel
 
 <div class="grid-row">
-    <div class="column-full">
+    <div class="column-two-thirds">
+        
+        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Title_Get" esfa-automation="link-back" class="button-link">Back</a>
+
         <h1 class="heading-xlarge small-bottom-margin">Brief overview</h1>
-        
-        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
-        
-        <partial name="@PartialNames.ReviewSummary" for="Review" />
 
-        <div class="todo">
-            <form asp-route="@RouteNames.ShortDescription_Post" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
-                <div esfa-validation-marker-for="ShortDescription" class="form-group">
-                    <label asp-for="ShortDescription" class="form-label-bold">
-                        Write a few sentences to describe your vacancy
-                        <span class="form-hint">Brief overview needs to be engaging to make the candidate want to view the full vacancy.</span>
-                    </label>
-                    <span esfa-validation-message-for="ShortDescription" class="error-message"></span>
-                    <textarea asp-for="ShortDescription" class="form-control form-control-3-4 character-count" rows="5" data-val-length-max="350"></textarea>
-                    
-                    <div class="form-control-3-4">
-                        <div class="short-description-hint-left">Minimum 50 characters</div>
-                        <div class="short-description-hint-right">
-                            <span class="maxchar-count">350</span>
-                            <span class="maxchar-text"> characters remaining</span>
-                        </div>
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }'/>
+
+        <partial name="@PartialNames.ReviewSummary" for="Review"/>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-full">
+        <form asp-route="@RouteNames.ShortDescription_Post" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
+            <div esfa-validation-marker-for="ShortDescription" class="form-group">
+                <label asp-for="ShortDescription" class="form-label-bold">
+                    Write a few sentences to describe your vacancy
+                </label>
+                <span class="form-hint">Brief overview needs to be engaging to make the candidate want to view the full vacancy.</span>
+                <span esfa-validation-message-for="ShortDescription" class="error-message"></span>
+                <textarea asp-for="ShortDescription" class="form-control form-control-3-4 character-count" rows="5" data-val-length-max="350"></textarea>
+
+                <div class="form-control-3-4">
+                    <div class="short-description-hint-left">Minimum 50 characters</div>
+                    <div class="short-description-hint-right">
+                        <span class="maxchar-count">350</span>
+                        <span class="maxchar-text"> characters remaining</span>
                     </div>
-                
                 </div>
-                <button type="submit" class="button save-button">@Model.PageInfo.SubmitButtonText</button>
 
-                <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Index_Get" class="button-link">Cancel</a>
-                <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.ShortDescriptionSection" class="button-link">Cancel</a>
-            </form>
-        </div>
+            </div>
+            <button type="submit" class="button save-button">@Model.PageInfo.SubmitButtonText</button>
+
+            <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Index_Get" class="button-link">Cancel</a>
+            <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.ShortDescriptionSection" class="button-link">Cancel</a>
+        </form>
     </div>
 </div>

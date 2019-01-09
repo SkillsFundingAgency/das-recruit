@@ -6,93 +6,93 @@
 
 <div class="grid-row">
     <div class="column-full">
+        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Employer_Get" esfa-automation="link-back" class="button-link">Back</a>
+
         <h1 class="heading-xlarge small-bottom-margin">Important dates</h1>
 
-        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }'/>
 
-        <partial name="@PartialNames.ReviewSummary" for="Review" />
+        <partial name="@PartialNames.ReviewSummary" for="Review"/>
 
-        <div class="todo">
-            <form asp-route="@RouteNames.Training_Post" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
+        <form asp-route="@RouteNames.Training_Post" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
 
-                <div esfa-validation-marker-for="ClosingDate" class="form-group">
-                    <fieldset>
-                        <legend class="form-label-bold">Application closing date<span class="visuallyhidden"> (in numeric format DD MM YYYY)</span></legend>
-                        <span class="form-hint">For example, @exampleClosingDate.AsInputHintDisplayDate()</span>
+            <div esfa-validation-marker-for="ClosingDate" class="form-group">
+                <fieldset>
+                    <legend class="form-label-bold">Application closing date<span class="visuallyhidden"> (in numeric format DD MM YYYY)</span></legend>
+                    <span class="form-hint">For example, @exampleClosingDate.AsInputHintDisplayDate()</span>
 
-                        <span esfa-validation-message-for="ClosingDate" class="error-message"></span>
+                    <span esfa-validation-message-for="ClosingDate" class="error-message"></span>
 
-                        <div class="form-date">
-                            <div class="form-group form-group-day">
-                                <label asp-for="ClosingDay" class="form-label">Day</label>
-                                <input asp-for="ClosingDay" class="form-control" type="number" min="1" max="31">
-                            </div>
-                            <div class="form-group form-group-month">
-                                <label asp-for="ClosingMonth" class="form-label">Month</label>
-                                <input asp-for="ClosingMonth" class="form-control" type="number" min="1" max="12">
-                            </div>
-                            <div class="form-group form-group-year">
-                                <label asp-for="ClosingYear" class="form-label">Year</label>
-                                <input asp-for="ClosingYear" class="form-control" type="number" min="@Model.CurrentYear">
-                            </div>
+                    <div class="form-date">
+                        <div class="form-group form-group-day">
+                            <label asp-for="ClosingDay" class="form-label">Day</label>
+                            <input asp-for="ClosingDay" class="form-control" type="number" min="1" max="31">
                         </div>
-                    </fieldset>
-                </div>
-
-                <div esfa-validation-marker-for="StartDate" class="form-group">
-                    <fieldset>
-                        <legend class="form-label-bold">When do you expect the apprentice to start?<span class="visuallyhidden"> (in numeric format DD MM YYYY)</span></legend>
-                        <span class="form-hint">For example, @exampleStartingDate.AsInputHintDisplayDate()</span>
-
-                        <span esfa-validation-message-for="StartDate" class="error-message"></span>
-
-                        <div class="form-date">
-                            <div class="form-group form-group-day">
-                                <label asp-for="StartDay" class="form-label">Day</label>
-                                <input asp-for="StartDay" class="form-control" type="number" min="1" max="31">
-                            </div>
-                            <div class="form-group form-group-month">
-                                <label asp-for="StartMonth" class="form-label">Month</label>
-                                <input asp-for="StartMonth" class="form-control" type="number" min="1" max="12">
-                            </div>
-                            <div class="form-group form-group-year">
-                                <label asp-for="StartYear" class="form-label">Year</label>
-                                <input asp-for="StartYear" class="form-control" type="number" min="@Model.CurrentYear">
-                            </div>
+                        <div class="form-group form-group-month">
+                            <label asp-for="ClosingMonth" class="form-label">Month</label>
+                            <input asp-for="ClosingMonth" class="form-control" type="number" min="1" max="12">
                         </div>
-                    </fieldset>
-                </div>
-
-                <div esfa-validation-marker-for="SelectedProgrammeId" class="form-group">
-                    <label asp-for="SelectedProgrammeId" class="form-label-bold">Search for apprenticeship training<span class="visuallyhidden"> Press Enter key to activate list of apprenticeship standards and frameworks</span></label>
-                    <span class="form-hint">Start typing the name of the course or choose an option from the list</span>
-                    <span esfa-validation-message-for="SelectedProgrammeId" class="error-message"></span>
-
-                    <select asp-for="SelectedProgrammeId" class="form-control form-control-3-4">
-                        <option value="">Please select</option>
-                        @foreach (var programme in Model.Programmes)
-                        {
-                            <option value="@programme.Id">@programme.Name</option>
-                        }
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <fieldset>
-                        <legend class="form-label-bold">Disability Confident (optional)</legend>
-                        <div class="multiple-choice">
-                            <input asp-for="IsDisabilityConfident" type="checkbox" value="true">
-                            <label asp-for="IsDisabilityConfident">This vacancy is <a href="https://www.gov.uk/government/collections/disability-confident-campaign" rel="noopener" target="_blank" title="Disability Confident employer scheme and guidance (opens in a new window)">Disability Confident</a>.</label>
+                        <div class="form-group form-group-year">
+                            <label asp-for="ClosingYear" class="form-label">Year</label>
+                            <input asp-for="ClosingYear" class="form-control" type="number" min="@Model.CurrentYear">
                         </div>
-                    </fieldset>
-                </div>
+                    </div>
+                </fieldset>
+            </div>
 
-                <button type="submit" class="button save-button">@Model.PageInfo.SubmitButtonText</button>
+            <div esfa-validation-marker-for="StartDate" class="form-group">
+                <fieldset>
+                    <legend class="form-label-bold">When do you expect the apprentice to start?<span class="visuallyhidden"> (in numeric format DD MM YYYY)</span></legend>
+                    <span class="form-hint">For example, @exampleStartingDate.AsInputHintDisplayDate()</span>
 
-                <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Index_Get" class="button-link">Cancel</a>
-                <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.ApprenticeshipSummarySection" class="button-link">Cancel</a>
-            </form>
-        </div>
+                    <span esfa-validation-message-for="StartDate" class="error-message"></span>
+
+                    <div class="form-date">
+                        <div class="form-group form-group-day">
+                            <label asp-for="StartDay" class="form-label">Day</label>
+                            <input asp-for="StartDay" class="form-control" type="number" min="1" max="31">
+                        </div>
+                        <div class="form-group form-group-month">
+                            <label asp-for="StartMonth" class="form-label">Month</label>
+                            <input asp-for="StartMonth" class="form-control" type="number" min="1" max="12">
+                        </div>
+                        <div class="form-group form-group-year">
+                            <label asp-for="StartYear" class="form-label">Year</label>
+                            <input asp-for="StartYear" class="form-control" type="number" min="@Model.CurrentYear">
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+
+            <div esfa-validation-marker-for="SelectedProgrammeId" class="form-group">
+                <label asp-for="SelectedProgrammeId" class="form-label-bold">Search for apprenticeship training<span class="visuallyhidden"> Press Enter key to activate list of apprenticeship standards and frameworks</span></label>
+                <span class="form-hint">Start typing the name of the course or choose an option from the list</span>
+                <span esfa-validation-message-for="SelectedProgrammeId" class="error-message"></span>
+
+                <select asp-for="SelectedProgrammeId" class="form-control form-control-3-4">
+                    <option value="">Please select</option>
+                    @foreach (var programme in Model.Programmes)
+                    {
+                        <option value="@programme.Id">@programme.Name</option>
+                    }
+                </select>
+            </div>
+
+            <div class="form-group">
+                <fieldset>
+                    <legend class="form-label-bold">Disability Confident (optional)</legend>
+                    <div class="multiple-choice">
+                        <input asp-for="IsDisabilityConfident" type="checkbox" value="true">
+                        <label asp-for="IsDisabilityConfident">This vacancy is <a href="https://www.gov.uk/government/collections/disability-confident-campaign" rel="noopener" target="_blank" title="Disability Confident employer scheme and guidance (opens in a new window)">Disability Confident</a>.</label>
+                    </div>
+                </fieldset>
+            </div>
+
+            <button type="submit" class="button save-button">@Model.PageInfo.SubmitButtonText</button>
+
+            <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Index_Get" class="button-link">Cancel</a>
+            <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.ApprenticeshipSummarySection" class="button-link">Cancel</a>
+        </form>
     </div>
 </div>
 

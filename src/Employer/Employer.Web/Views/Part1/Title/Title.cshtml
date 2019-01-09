@@ -1,9 +1,9 @@
 ﻿@model Esfa.Recruit.Employer.Web.ViewModels.Part1.Title.TitleViewModel
 
 <div class="grid-row">
-    <div class="column-full">
-        <div class="info-summary highlight-summary">
-            <h3 class="heading-medium no-top-margin">Vacancy summary</h3>
+    <div class="column-two-thirds">
+        <h1 class="heading-xlarge small-bottom-margin">Vacancy summary</h1>
+        <div class="info-summary">
             Apprentice candidates will see your vacancy in a search along with vacancies from other employers. This is your
             opportunity to make your vacancy attract the best candidates
         </div>
@@ -12,12 +12,12 @@
 
 
 <div class="grid-row">
-    <div class="column-full">
+    <div class="column-two-thirds">
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames}'/>
 
         <partial name="@PartialNames.ReviewSummary" for="Review"/>
 
-        <div class="todo">
+        <div>
             <form asp-route="@Model.FormPostRouteName" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
                 <div esfa-validation-marker-for="Title" class="form-group">
                     <label asp-for="Title" class="form-label-bold">
