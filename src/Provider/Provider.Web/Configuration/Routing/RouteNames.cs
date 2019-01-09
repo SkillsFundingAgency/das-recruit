@@ -9,5 +9,8 @@
         public const string DismissOutageMessage_Post = "DismissOutageMessage_Post";
 
         public const string Logout_Get = "Logout_Get";
+
+
+        public const string CreateVacancyOptions_Get = "CreateVacancyOptions_Get";
     }
 }
