@@ -71,30 +71,38 @@ $(window).scroll(function () {
 /* -----------------------
 Character count behaviour
 -------------------------- */
-characterCount = function(n) {
-  var i = $(n)
-    , r = i.attr("data-val-length-max")
-    , e = i.val()
-    , h = (e.match(/\n/g) || []).length
-    , o = e.length + h
-    , u = Math.abs(r - o)
-    , f = i.closest(".form-group").find(".maxchar-count")
-    , t = i.closest(".form-group").find(".maxchar-text")
-    , s = i.closest(".form-group").find(".aria-limit");
-  if (r)
-      f.text(u);
-  else {
-      t.hide();
-      return
-  }
-  o > r ? (f.parent().addClass("has-error"),
-  t.text(" characters over the limit"),
-  s.text("Character limit has been reached, you must type fewer than " + r + " characters"),
-  u == 1 ? t.text(" character over the limit") : t.text(" characters over the limit")) : (f.parent().removeClass("has-error"),
-  t.text(" characters remaining"),
-  s.text(""),
-  u == 1 ? t.text(" character remaining") : t.text(" characters remaining"))
-}
+characterCount = function (element, count) {
+    var $element = $(element);
+
+    if (typeof count === "undefined") {
+        var text = $element.val();
+        count = text.length;
+        count += (text.match(/\n/g) || []).length;
+    }
+    
+    var maxLength = $element.attr("data-val-length-max"),
+    absRemainder = Math.abs(maxLength - count),
+    $maxLengthCountElement = $element.closest(".form-group").find(".maxchar-count"),
+    $maxLengthTextElement = $element.closest(".form-group").find(".maxchar-text");
+
+    if (maxLength) {
+        $maxLengthCountElement.text(absRemainder);
+    }
+    else {
+        $maxLengthCountElement.hide();
+        return;
+    }
+        
+    if (count > maxLength) {
+        $maxLengthCountElement.parent().addClass("has-error");
+        $maxLengthTextElement.text(absRemainder === 1 ? " character over the limit" : " characters over the limit");
+    }
+    else
+    {
+        $maxLengthCountElement.parent().removeClass("has-error");
+        $maxLengthTextElement.text(absRemainder === 1 ? " character remaining" : " characters remaining");
+    }
+};
 
 $(".character-count").on("keyup", function() {
   characterCount(this);
@@ -172,6 +180,46 @@ function inViewport($el) {
         wH = $(window).height(),
         r = $el[0].getBoundingClientRect(), t = r.top, b = r.bottom;
     return Math.max(0, t > 0 ? Math.min(elH, wH - t) : Math.min(b, wH));
+}
+
+function initializeHtmlEditors() {
+    tinymce.init({
+        element_format: 'html',
+        apply_source_formatting: true,
+        menubar: false,
+        plugins: 'lists',
+        selector: ".html-editor",
+        statusbar: false,
+        toolbar: 'bullist',
+        content_style: ".mce-content-body {font-size:19px;font-family:nta,Arial,sans-serif;}",
+        setup: function (tinyMceEditor) {
+            var element = tinyMceEditor.getElement();
+            
+            tinyMceEditor.on('keyup',
+                function (e) {
+                    setEditorMaxLength(element, tinyMceEditor);
+                });
+            tinyMceEditor.on('focus',
+                function (e) {
+                    tinyMceEditor.editorContainer.classList.add("editor-focus");
+                });
+            tinyMceEditor.on('blur',
+                function (e) {
+                    tinyMceEditor.editorContainer.classList.remove("editor-focus");
+                });
+        },
+        init_instance_callback: function (tinyMceEditor) {
+            var element = tinyMceEditor.getElement();
+            setEditorMaxLength(element, tinyMceEditor);
+        }
+    });
+}
+
+function setEditorMaxLength(element, tinyMceEditor) {
+    var innerText = tinyMceEditor.contentDocument.body.innerText;
+    innerText = innerText.replace(/\n\n/g, "|");
+    var innerTextLength = innerText.charAt(innerText.length - 1) === String.fromCharCode(10) ? innerText.length - 1 : innerText.length;
+    characterCount(element, innerTextLength);
 }
 
 $(function () {

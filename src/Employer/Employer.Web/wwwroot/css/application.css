@@ -762,6 +762,20 @@
     padding-left: 15px;
 }
 
+.vacancy-descriptions ul {
+    margin-top: .3125em;
+    margin-bottom: 1.25em;
+    padding-left: 40px;
+    list-style-type: disc;
+}
+
+@media (min-width: 641px) {
+    .vacancy-descriptions ul {
+        margin-top: .26316em;
+        margin-bottom: 1.05263em;
+    }
+}
+
 /*** Skills ***/
 @media(min-width: 769px) {
     .two-column-checkbox-container{
@@ -1122,8 +1136,8 @@ table th.th-20 {
     border: solid black 1px;
 }
 
-.select2-selection:focus{
-    outline:3px solid #ffbf47;
+.select2-selection:focus, .mce-tinymce.editor-focus {
+    outline: 3px solid #ffbf47;
     outline-offset: 0;
 }
 
@@ -1438,6 +1452,10 @@ table th.th-20 {
 
 .select2-container--classic.select2-container--open .select2-dropdown {
     border-color: #5897fb
+}
+
+.mce-tinymce {
+    border: 2px solid #0b0c0c !important;
 }
 
 .ui-autocomplete {

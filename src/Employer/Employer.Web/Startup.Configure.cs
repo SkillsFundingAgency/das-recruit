@@ -53,10 +53,8 @@ namespace Esfa.Recruit.Employer.Web
                                         "https://fonts.googleapis.com/");
 
                         //Google tag manager uses inline styles when administering tags. This is done on PREPROD only
-                        if (env.IsEnvironment(EnvironmentNames.PREPROD))
-                        {
-                            s.UnsafeInline();
-                        }
+                        //TinyMCE uses inline styles
+                        s.UnsafeInline();
                     }
                 )
                 .ScriptSources(s =>

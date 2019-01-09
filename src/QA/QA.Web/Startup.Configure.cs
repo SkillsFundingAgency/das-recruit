@@ -44,6 +44,8 @@ namespace Esfa.Recruit.Qa.Web
                 .DefaultSources(s => s.Self())
                 .StyleSources(s => 
                     s.Self()
+                    //TinyMCE uses inline styles
+                    .UnsafeInline()
                 )
                 .ScriptSources(s => 
                     s.Self()

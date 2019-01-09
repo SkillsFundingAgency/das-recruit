@@ -103,6 +103,15 @@
     margin-top: 10px;
 }
 
+mce-tinymce {
+    border: 2px solid #0b0c0c !important;
+}
+
+.mce-tinymce.editor-focus {
+    outline:3px solid #ffbf47;
+    outline-offset: 0;
+}
+
 /***Review***/
 .review-summary {
     border: 5px solid #f47738;
@@ -137,6 +146,20 @@
 .review-container .error-summary .form-group {
     display: block;
     margin-bottom: 20px;
+}
+
+.vacancy-descriptions ul {
+    margin-top: .3125em;
+    margin-bottom: 1.25em;
+    padding-left: 40px;
+    list-style-type: disc;
+}
+
+@media (min-width: 641px) {
+    .vacancy-descriptions ul {
+        margin-top: .26316em;
+        margin-bottom: 1.05263em;
+    }
 }
 
 /** Dashboard styles **/

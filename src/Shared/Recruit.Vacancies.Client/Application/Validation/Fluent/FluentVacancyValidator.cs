@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators.VacancyValidators;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using FluentValidation;
@@ -13,13 +14,15 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         private readonly IMinimumWageProvider _minimumWageService;
         private readonly IQualificationsProvider _qualificationsProvider;
         private readonly Lazy<IEnumerable<IApprenticeshipProgramme>> _apprenticeshipProgrammes;
+        private readonly IHtmlSanitizerService _htmlSanitizerService;
 
-        public FluentVacancyValidator(ITimeProvider timeProvider, IMinimumWageProvider minimumWageService, IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider, IQualificationsProvider qualificationsProvider)
+        public FluentVacancyValidator(ITimeProvider timeProvider, IMinimumWageProvider minimumWageService, IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider, IQualificationsProvider qualificationsProvider, IHtmlSanitizerService htmlSanitizerService)
         {
             _timeProvider = timeProvider;
             _minimumWageService = minimumWageService;
             _qualificationsProvider = qualificationsProvider;
             _apprenticeshipProgrammes = new Lazy<IEnumerable<IApprenticeshipProgramme>>(() => apprenticeshipProgrammesProvider.GetApprenticeshipProgrammesAsync().Result);
+            _htmlSanitizerService = htmlSanitizerService;
 
             SingleFieldValidations();
 
@@ -343,10 +346,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .NotEmpty()
                     .WithMessage("You must provide information on what the apprenticeship will involve")
                     .WithErrorCode("53")
-                .MaximumLength(500)
+                .MaximumLength(1000)
                     .WithMessage("What the apprenticeship involves must not exceed {MaxLength} characters")
                     .WithErrorCode("7")
-                .ValidFreeTextCharacters()
+                .ValidHtmlCharacters(_htmlSanitizerService)
                     .WithMessage("What the apprenticeship involves contains some invalid characters")
                     .WithErrorCode("6")
                 .RunCondition(VacancyRuleSet.Description)
@@ -359,10 +362,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .NotEmpty()
                     .WithMessage("You must provide information on the training to be provided")
                     .WithErrorCode("54")
-                .MaximumLength(500)
+                .MaximumLength(1000)
                     .WithMessage("Training to be provided description must not exceed {MaxLength} characters")
                     .WithErrorCode("7")
-                .ValidFreeTextCharacters()
+                .ValidHtmlCharacters(_htmlSanitizerService)
                     .WithMessage("Training to be provided description contains some invalid characters")
                     .WithErrorCode("6")
                 .RunCondition(VacancyRuleSet.TrainingDescription)
@@ -375,10 +378,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .NotEmpty()
                     .WithMessage("You must provide information on what to expect at the end of your apprenticeship")
                     .WithErrorCode("55")
-                .MaximumLength(500)
+                .MaximumLength(1000)
                     .WithMessage("What to expect at the end of your apprenticeship description must not exceed {MaxLength} characters")
                     .WithErrorCode("7")
-                .ValidFreeTextCharacters()
+                .ValidHtmlCharacters(_htmlSanitizerService)
                     .WithMessage("What to expect at the end of your apprenticeship description contains some invalid characters")
                     .WithErrorCode("6")
                 .RunCondition(VacancyRuleSet.OutcomeDescription)

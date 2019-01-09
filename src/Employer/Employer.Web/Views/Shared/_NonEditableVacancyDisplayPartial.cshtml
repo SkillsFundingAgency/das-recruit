@@ -49,13 +49,13 @@
             </li>
         </ul>
     </div>
-    <div class="column-two-thirds">
+    <div class="column-two-thirds vacancy-descriptions" id="vacancyDescription">
         <h3 class="heading-small">What you will do in your working day</h3>
-        <p class="preserve-format">@Model.VacancyDescription</p>
+        <div class="preserve-format">@Html.Raw(Model.VacancyDescription)</div>
         <h3 class="heading-small">The training you will be getting</h3>
-        <p class="preserve-format">@Model.TrainingDescription</p>
+        <div class="preserve-format">@Html.Raw(Model.TrainingDescription)</div>
         <h3 class="heading-small">What to expect at the end of your apprenticeship</h3>
-        <p class="preserve-format">@Model.OutcomeDescription</p>
+        <div class="preserve-format">@Html.Raw(Model.OutcomeDescription)</div>
     </div>
 </div>
 <div class="grid-row">

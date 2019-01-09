@@ -181,7 +181,7 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
             </li>
         </ul>
     </div>
-    <div class="column-two-thirds" id="@Anchors.VacancyDescriptionSection">
+    <div class="column-two-thirds vacancy-descriptions" id="@Anchors.VacancyDescriptionSection">
         <div class="@GetSectionClass(Model.DescriptionsSectionState)">
             <h3 asp-hide="@Model.HasVacancyDescription" class="heading-small">What you will do in your working day</h3>
             <h3 asp-show="@Model.HasVacancyDescription" class="heading-small" id="@Anchors.VacancyDescription">
@@ -189,21 +189,22 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
                 What will you do in your working day
             </h3>
             <span esfa-validation-message-for="VacancyDescription" class="error-message"></span>
-            <p asp-show="@Model.HasVacancyDescription">@Model.VacancyDescription</p>
+            <div asp-show="@Model.HasVacancyDescription">@Html.Raw(Model.VacancyDescription)</div>
             <h3 asp-hide="@Model.HasTrainingDescription" class="heading-small">The training you will be getting</h3>
             <h3 asp-show="@Model.HasTrainingDescription" class="heading-small" id="@Anchors.TrainingDescription">
                 <img asp-show="@Model.TrainingDescriptionRequiresEdit" src="/img/red-cross.png"/>
                 The training you will be getting
             </h3>
             <span esfa-validation-message-for="TrainingDescription" class="error-message"></span>
-            <p asp-show="@Model.HasTrainingDescription">@Model.TrainingDescription</p>
+            <div asp-show="@Model.HasTrainingDescription">@Html.Raw(Model.TrainingDescription)</div>
             <h3 asp-hide="@Model.HasOutcomeDescription" class="heading-small">What to expect at the end of your apprenticeship</h3>
             <h3 asp-show="@Model.HasOutcomeDescription" class="heading-small" id="@Anchors.OutcomeDescription">
                 <img asp-show="@Model.OutcomeDescriptionRequiresEdit" src="/img/red-cross.png"/>
                 What to expect at the end of your apprenticeship
             </h3>
             <span esfa-validation-message-for="OutcomeDescription" class="error-message"></span>
-            <p asp-show="@Model.HasOutcomeDescription">@Model.OutcomeDescription</p>
+            <div asp-show="@Model.HasOutcomeDescription">@Html.Raw(Model.OutcomeDescription)</div>
+            
             @EditLink(RouteNames.VacancyDescription_Index_Get, Model.DescriptionsSectionState, "link-vacancy-description")
         </div>
     </div>

@@ -46,7 +46,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         {
             var vacancy = new Vacancy 
             {
-                OutcomeDescription = new String('a', 501)
+                OutcomeDescription = new String('a', 1001)
             };
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.OutcomeDescription);
@@ -58,21 +58,31 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OutcomeDescription);
         }
 
-        [Fact]
-        public void OutcomeDescriptionMustContainVaildCharacters()
+        [Theory]
+        [InlineData("<p><br></p><ul><li>item1</li><li>item2</li></ul>", true)]
+        [InlineData("<script>alert('not allowed')</script>", false)]
+        [InlineData("<p>`</p>", false)]
+        public void OutcomeDescriptionMustContainValidHtml(string actual, bool expectedResult)
         {
-            var vacancy = new Vacancy 
+            var vacancy = new Vacancy
             {
-                OutcomeDescription = "<"
+                OutcomeDescription = actual
             };
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.OutcomeDescription);
 
-            result.HasErrors.Should().BeTrue();
-            result.Errors.Should().HaveCount(1);
-            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.OutcomeDescription));
-            result.Errors[0].ErrorCode.Should().Be("6");
-            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OutcomeDescription);
+            if (expectedResult)
+            {
+                result.HasErrors.Should().BeFalse();
+            }
+            else
+            {
+                result.HasErrors.Should().BeTrue();
+                result.Errors.Should().HaveCount(1);
+                result.Errors[0].PropertyName.Should().Be(nameof(vacancy.OutcomeDescription));
+                result.Errors[0].ErrorCode.Should().Be("6");
+                result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OutcomeDescription);
+            }
         }
     }
 }

@@ -99,6 +99,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient<IVacancyComparerService, VacancyComparerService>();
             services.AddTransient<IGetTitlePopularity, TitlePopularityService>();
             services.AddTransient<ICache, Cache>();
+            services.AddTransient<IHtmlSanitizerService, HtmlSanitizerService>();
 
             // Infrastructure Services
             services.AddTransient<IEmployerAccountProvider, EmployerAccountProvider>();

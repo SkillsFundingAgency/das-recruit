@@ -164,11 +164,11 @@
                     </li>
                 </ul>
             </div>
-            <div class="column-two-thirds">
+            <div class="column-two-thirds vacancy-descriptions">
                 <div class="@Model.VacancyDescriptionClass" id="@VacancyReview.FieldIdentifiers.VacancyDescription">
 
                     <h3 class="heading-small">What will you do in your working day</h3>
-                    <p class="preserve-format">@Model.VacancyDescription</p>
+                    <div class="preserve-format">@Html.Raw(Model.VacancyDescription)</div>
 
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
                                           asp-value="@VacancyReview.FieldIdentifiers.VacancyDescription"
@@ -177,7 +177,7 @@
                 <div class="@Model.TrainingDescriptionClass" id="@VacancyReview.FieldIdentifiers.TrainingDescription">
 
                     <h3 class="heading-small">The training you will be getting</h3>
-                    <p class="preserve-format">@Model.TrainingDescription</p>
+                    <div class="preserve-format">@Html.Raw(Model.TrainingDescription)</div>
 
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
                                           asp-value="@VacancyReview.FieldIdentifiers.TrainingDescription"
@@ -186,7 +186,7 @@
                 <div class="@Model.OutcomeDescriptionClass" id="@VacancyReview.FieldIdentifiers.OutcomeDescription">
 
                     <h3 class="heading-small">What to expect at the end of your apprenticeship</h3>
-                    <p class="preserve-format">@Model.OutcomeDescription</p>
+                    <div class="preserve-format">@Html.Raw(Model.OutcomeDescription)</div>
 
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
                                           asp-value="@VacancyReview.FieldIdentifiers.OutcomeDescription"
