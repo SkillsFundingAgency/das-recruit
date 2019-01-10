@@ -129,7 +129,7 @@ $('a').on("click", function() {
 });
 
 /* Validation accessibility fix */
-$(window).load(function() {
+$(window).on("load", function(e) {
     // If there is an error summary, set focus to the summary
     if ($('.error-summary').length) {
       $('.error-summary').focus();
