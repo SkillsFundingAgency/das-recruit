@@ -12,22 +12,17 @@
 
     print("Start updating Reviews appending 'or equivalent' to snapshot qualifications.");
 
-    const query = {
-        "vacancySnapshot.qualifications": { $exists: true }
-    };
+    let ids = db.reviews.find({"vacancySnapshot.qualifications": { $exists: true }}, {_id : 1} ).toArray();
+    
+    print(`Found '${ids.length}' documents`);
+    
+    for(var iId = 0; iId < ids.length; iId++){
 
-    let matchedDocs = db.reviews.aggregate([
-        {
-            $match: query
-        },
-        {
-            $sort: { "dateCreated": 1 }
-        }]);
-
-    while (matchedDocs.hasNext()) {
-        let doc = matchedDocs.next();
-        let changed = false;
+        let doc = db.reviews.findOne({_id : ids[iId]._id});
+        print(`Processing document '${iId + 1}' of '${ids.length}' '${toGUID(doc._id.hex())}'`);
         
+        let changed = false;
+            
         for(var i = 0; i < doc.vacancySnapshot.qualifications.length; i++)
         {
             let currentQualificationType = doc.vacancySnapshot.qualifications[i].qualificationType;
