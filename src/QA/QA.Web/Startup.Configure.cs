@@ -50,8 +50,7 @@ namespace Esfa.Recruit.Qa.Web
                 .ScriptSources(s => 
                     s.Self()
                     .CustomSources("https://az416426.vo.msecnd.net")
-                    .UnsafeInline()
-                ) // TODO: Look at moving AppInsights inline js code.
+                )
                 .FontSources(s => 
                     s.Self()
                     .CustomSources("data:")

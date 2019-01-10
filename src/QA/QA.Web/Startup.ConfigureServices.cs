@@ -2,6 +2,7 @@
 using Esfa.Recruit.Qa.Web.Mappings;
 using Esfa.Recruit.Qa.Web.Orchestrators;
 using Esfa.Recruit.Qa.Web.Security;
+using Esfa.Recruit.Shared.Web.Configuration;
 using Esfa.Recruit.Shared.Web.RuleTemplates;
 using Esfa.Recruit.Shared.Web.Services;
 using Microsoft.AspNetCore.Hosting;
@@ -34,6 +35,8 @@ namespace Esfa.Recruit.Qa.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<ApplicationInsightsConfiguration>(_configuration.GetSection("ApplicationInsights"));
+
             //A service provider for resolving services configured in IoC
             var sp = services.BuildServiceProvider();
 
