@@ -17,7 +17,7 @@
     <PackageReference Include="NLog" Version="4.5.4" />
     <PackageReference Include="NWebsec.AspNetCore.Mvc.TagHelpers" Version="2.0.0" />
     <PackageReference Include="SFA.DAS.NLog.Targets.Redis" Version="1.1.5" />
-    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.4.1" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.5.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.WsFederation" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="2.2.0" />
   </ItemGroup>
