@@ -12,20 +12,14 @@
 
     print("Start updating Vacancies appending 'or equivalent' to qualifications.");
 
-    const query = {
-        "qualifications": { $exists: true }
-    };
+    let ids = db.vacancies.find({"qualifications": { $exists: true }}, {_id : 1} ).toArray();
+    print(`Found '${ids.length}' documents`);
+    
+    for(var iId = 0; iId < ids.length; iId++){
 
-    let matchedDocs = db.vacancies.aggregate([
-        {
-            $match: query
-        },
-        {
-            $sort: { "dateCreated": 1 }
-        }]);
-
-    while (matchedDocs.hasNext()) {
-        let doc = matchedDocs.next();
+        let doc = db.vacancies.findOne({_id : ids[iId]._id});
+        print(`Processing document '${iId + 1}' of '${ids.length}' '${toGUID(doc._id.hex())}'`);
+        
         let changed = false;
         
         for(var i = 0; i < doc.qualifications.length; i++)
