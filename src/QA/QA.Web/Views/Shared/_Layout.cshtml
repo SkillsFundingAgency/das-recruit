@@ -52,11 +52,12 @@
     <meta property="og:image" content="/lib/esfa-govuk/assets/images/opengraph-image.png">
 
     <link asp-append-version="true" rel="stylesheet" media="screen" href="/css/application.css" />
+    <partial name="@PartialNames.ApplicationInsights" />
     <script src="/lib/jquery/dist/jquery-3.3.1.min.js"></script>
 </head>
 
 <body>
-    <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
+    <script nws-csp-add-nonce="true">document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
     <div id="skiplink-container">
         <div>
             <a href="#content" class="skiplink">Skip to main content</a>
