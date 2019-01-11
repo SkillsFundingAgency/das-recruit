@@ -47,5 +47,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.R
             entity.Skills = skills.ToList();
             return entity;
         }
+
+        internal static Vacancy SetDetails(this Vacancy entity, string title, string description)
+        {
+            entity.Title = title;
+            entity.Description = description;
+
+            return entity;
+        }
     }
 }
