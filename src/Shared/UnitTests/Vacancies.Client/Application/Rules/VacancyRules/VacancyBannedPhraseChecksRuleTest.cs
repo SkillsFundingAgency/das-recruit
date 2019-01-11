@@ -35,28 +35,8 @@ namespace UnitTests.Vacancies.Client.Application.Rules.VacancyRules
             var vacancy = new Fixture()
                 .Build<Vacancy>()
                 .With(v => v.Title,
-                    @"Dolore school leavers “school"" leaver 5pm, shifts, may work evenings and weekends school") 
+                    @"Dolore school leavers ï¿½school"" leaver 5pm, shifts, may work evenings and weekends school") 
                 .Create();
-
-
-            var result = sut.EvaluateAsync(vacancy).Result;
-
-            result.Details.First(d => d.Target == "Title");
-
-            result.Score.Should().Be(100);
-        }
-
-        [Fact]
-        public void ShouldWorkWithTheOnly()
-        {
-            var sut = new VacancyBannedPhraseChecksRule(_bannedPhrasesProvider);
-
-            var vacancy = new Fixture()
-                .Build<Vacancy>()
-                .With(v => v.Title,
-                    @"school")
-                .Create();
-
 
             var result = sut.EvaluateAsync(vacancy).Result;
 
