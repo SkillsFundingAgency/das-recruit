@@ -88,8 +88,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             await RetryPolicy.ExecuteAsync(context => collection.DeleteManyAsync(filter), new Context(nameof(IQueryStore.RecreateAsync)));
 
             if (items.Count == 0) return;
-            
-            await RetryPolicy.ExecuteAsync(context => collection.InsertManyAsync(items), new Context(nameof(IQueryStore.RecreateAsync)));
+
+            foreach (var item in items)
+            {
+                await RetryPolicy.ExecuteAsync(context => collection.InsertOneAsync(item), new Context(nameof(IQueryStore.RecreateAsync)));
+            }
         }
     }
 }
