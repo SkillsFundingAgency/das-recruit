@@ -43,12 +43,9 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.CommandHandlers
                 mockTimeProvider.Object
             );
 
-            var command = new CloneVacancyCommand 
-            { 
-                IdOfVacancyToClone = existingVacancy.Id, 
-                NewVacancyId = newVacancyId, 
-                User = new VacancyUser { Name = "Test", Email = "test@test.com", UserId = "123" }
-            };
+            var user = new VacancyUser { Name = "Test", Email = "test@test.com", UserId = "123" };
+            
+            var command = new CloneVacancyCommand(cloneVacancyId: existingVacancy.Id, newVacancyId: newVacancyId, user: user, sourceOrigin: SourceOrigin.EmployerWeb);
 
             await handler.Handle(command, new CancellationToken());
 

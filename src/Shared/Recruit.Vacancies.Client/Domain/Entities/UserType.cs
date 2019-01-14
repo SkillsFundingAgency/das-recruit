@@ -2,6 +2,7 @@
 {
     public enum UserType
     {
-        Employer
+        Employer,
+        Provider
     }
 }

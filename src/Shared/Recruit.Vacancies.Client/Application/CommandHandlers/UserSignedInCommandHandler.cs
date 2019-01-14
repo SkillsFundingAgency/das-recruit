@@ -22,10 +22,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
         public async Task Handle(UserSignedInCommand message, CancellationToken cancellationToken)
         {
-            await UpsertUserAsync(message.User);
+            await UpsertUserAsync(message.User, message.UserType);
         }
 
-        private async Task UpsertUserAsync(VacancyUser user)
+        private async Task UpsertUserAsync(VacancyUser user, UserType userType)
         {
             var now = _timeProvider.Now;
 
@@ -33,15 +33,24 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             {
                 Id = Guid.NewGuid(),
                 IdamsUserId = user.UserId,
-                UserType = UserType.Employer,
+                UserType = userType,
                 CreatedDate = now
             };
 
+            PatchUserEmail(user, userEntity);
+
             userEntity.Name = user.Name;
-            userEntity.Email = user.Email;
             userEntity.LastSignedInDate = now;
 
             await _userRepository.UpsertUserAsync(userEntity);
+        }
+
+        private static void PatchUserEmail(VacancyUser user, User userEntity)
+        {
+            if (userEntity.UserType == UserType.Employer)
+            {
+                userEntity.Email = user.Email;
+            }
         }
     }
 }

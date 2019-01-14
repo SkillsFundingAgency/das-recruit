@@ -19,7 +19,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
-    public class VacancyClient : IEmployerVacancyClient, IJobsVacancyClient
+    public class VacancyClient : IRecruitVacancyClient, IEmployerVacancyClient, IProviderVacancyClient, IJobsVacancyClient
     {
         private readonly IMessaging _messaging;
         private readonly IQueryStoreReader _reader;
@@ -98,7 +98,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _repository.GetVacancyAsync(vacancyId);
         }
 
-        public async Task<Guid> CreateVacancyAsync(SourceOrigin origin, string title, int numberOfPositions, string employerAccountId, VacancyUser user)
+        public async Task<Guid> CreateVacancyAsync(SourceOrigin origin, string title, int numberOfPositions, string employerAccountId, VacancyUser user, UserType userType)
         {
             var vacancyId = GenerateVacancyId();
 
@@ -106,6 +106,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             {
                 VacancyId = vacancyId,
                 User = user,
+                UserType = userType,
                 Title = title,
                 NumberOfPositions = numberOfPositions,
                 EmployerAccountId = employerAccountId,
@@ -117,16 +118,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return vacancyId;
         }
 
-        public async Task<Guid> CloneVacancyAsync(Guid vacancyId, VacancyUser user)
+        public async Task<Guid> CloneVacancyAsync(Guid vacancyId, VacancyUser user, SourceOrigin sourceOrigin)
         {
             var newVacancyId = GenerateVacancyId();
 
-            var command = new CloneVacancyCommand
-            {
-                IdOfVacancyToClone = vacancyId,
-                NewVacancyId = newVacancyId,
-                User = user
-            };
+            var command = new CloneVacancyCommand(cloneVacancyId: vacancyId, newVacancyId: newVacancyId, user: user, sourceOrigin: sourceOrigin);
 
             await _messaging.SendCommandAsync(command);
 
@@ -171,12 +167,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _dashboardService.ReBuildDashboardAsync(employerAccountId);
         }
 
-        public Task UserSignedInAsync(VacancyUser user)
+        public Task UserSignedInAsync(VacancyUser user, UserType userType)
         {
-            var command = new UserSignedInCommand
-            {
-                User = user
-            };
+            var command = new UserSignedInCommand(user, userType);
 
             return _messaging.SendCommandAsync(command);
         }

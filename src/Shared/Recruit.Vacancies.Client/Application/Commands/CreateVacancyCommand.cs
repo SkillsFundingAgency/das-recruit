@@ -13,5 +13,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Commands
         public int NumberOfPositions { get; set; }
         public string EmployerAccountId { get; set; }
         public VacancyUser User { get; set; }
+        public UserType UserType { get; set; }
     }
 }
