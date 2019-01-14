@@ -33,11 +33,14 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.S
         [InlineData("<p>paragraphs are not removed</p>", true)]
         [InlineData("br elements are <br> not removed", true)]
         [InlineData("Windows style carriage\r\nreturns are ok", true)]
+        [InlineData("", true)]
+        [InlineData(null, true)]
         [InlineData("<div>any other elements are not allowed</div>", false)]
         [InlineData("<ul><li onclick=\"alert('not allowed')\">item1</li><li>item2</li></ul>", false)]
         [InlineData("<ul><li style=\"display: none\">item1</li><li>item2</li></ul>", false)]
         [InlineData("<script>alert('not allowed')</script>", false)]
         [InlineData("<style>body { display:none}</style>", false)]
+        [InlineData("<p>\r\n&nbsp;<br>&nbsp;<p><p></p>", false)]
         public void IsValid_ShouldValidateHtml(string value, bool isValid)
         {
             var htmlSanitizer = new HtmlSanitizerService(new Mock<ILogger<HtmlSanitizerService>>().Object);
