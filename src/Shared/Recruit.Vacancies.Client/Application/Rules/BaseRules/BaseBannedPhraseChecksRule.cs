@@ -84,7 +84,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.BaseRules
         {
             var count = foundBannedPhrases.Values.Sum();
             var terms = string.Join(",", foundBannedPhrases.Keys);
-            var narrative = $"{count} profanities '{terms}' found in '{fieldId}'";
+            var narrative = $"{count} banned phrases '{terms}' found in '{fieldId}'";
             var data = JsonConvert.SerializeObject(new BannedPhrasesData { BannedPhrase = terms, Occurrences = count });
 
             return new[]

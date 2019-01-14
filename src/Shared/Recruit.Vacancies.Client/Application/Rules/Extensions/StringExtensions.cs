@@ -12,14 +12,12 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.Extensions
         {
             if (string.IsNullOrWhiteSpace(value)) return string.Empty;
 
-            // strip delimiters
-            var delimeters = new[] {'"', '.', '?', '!', '_', ';', ':', ',', '-', '\'', '(', ')', '*'};
+            var rgx = new Regex("[^a-zA-Z0-9]");
+            var sanitized = rgx.Replace(value, " ");
 
-            var formatted = value.Replace(delimeters, " ");
+            sanitized = RemoveContiguousWhitespace(sanitized);
 
-            formatted = RemoveContiguousWhitespace(formatted);
-
-            return $" {formatted} ".ToLower();
+            return $" {sanitized} ";
         }
 
         public static string FormatForComparison(this string value, string[] stopWords = null)
@@ -48,16 +46,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.Extensions
         {
             return items == null ? string.Empty : string.Join(delimiter, items);
         }
-
-        private static string Replace(this string value, char[] separators, string replacement)
-        {
-            if (string.IsNullOrWhiteSpace(value)) return string.Empty;
-
-            var temp = value.Split(separators, StringSplitOptions.RemoveEmptyEntries);
-
-            return string.Join(replacement, temp);
-        }
-
+        
         private static string RemoveContiguousWhitespace(string value)
         {
             return Regex.Replace(value, @"\s+", " ");
