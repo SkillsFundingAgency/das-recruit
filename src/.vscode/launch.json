@@ -27,7 +27,7 @@
             "request": "launch",
             "preLaunchTask": "build-emp-web",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/Employer/Employer.Web/bin/Debug/netcoreapp2.2/Esfa.Recruit.Employer.Web.dll",
+            "program": "${workspaceFolder}/Employer/Employer.Web/bin/Debug/netcoreapp2.1/Esfa.Recruit.Employer.Web.dll",
             "args": [],
             "cwd": "${workspaceFolder}/Employer/Employer.Web",
             "stopAtEntry": false,
@@ -59,7 +59,7 @@
             "request": "launch",
             "preLaunchTask": "build-prov-web",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/Provider/Provider.Web/bin/Debug/netcoreapp2.2/Esfa.Recruit.Provider.Web.dll",
+            "program": "${workspaceFolder}/Provider/Provider.Web/bin/Debug/netcoreapp2.1/Esfa.Recruit.Provider.Web.dll",
             "args": [],
             "cwd": "${workspaceFolder}/Provider/Provider.Web",
             "stopAtEntry": false,
@@ -91,7 +91,7 @@
             "request": "launch",
             "preLaunchTask": "build-qa-web",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/QA/QA.Web/bin/Debug/netcoreapp2.2/Esfa.Recruit.Qa.Web.dll",
+            "program": "${workspaceFolder}/QA/QA.Web/bin/Debug/netcoreapp2.1/Esfa.Recruit.Qa.Web.dll",
             "args": [],
             "cwd": "${workspaceFolder}/QA/QA.Web",
             "stopAtEntry": false,

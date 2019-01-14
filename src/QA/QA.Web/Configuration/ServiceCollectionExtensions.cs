@@ -99,7 +99,7 @@ namespace Esfa.Recruit.Qa.Web.Configuration
                 }
             })
             .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>())
-            .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
     }
 }
