@@ -1,14 +1,12 @@
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using StackExchange.Redis;
 
 namespace Esfa.Recruit.Employer.Web
 {
@@ -33,9 +31,6 @@ namespace Esfa.Recruit.Employer.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddIoC(_configuration);
-
-            var redis = ConnectionMultiplexer.Connect(_configuration.GetConnectionString("StorageRedis"));
-            services.AddDataProtection().PersistKeysToStackExchangeRedis(redis, "DataProtection-Keys");
 
             // Routing has to come before adding Mvc
             services.AddRouting(opt =>

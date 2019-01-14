@@ -4,13 +4,11 @@ using Esfa.Recruit.Qa.Web.Orchestrators;
 using Esfa.Recruit.Qa.Web.Security;
 using Esfa.Recruit.Shared.Web.RuleTemplates;
 using Esfa.Recruit.Shared.Web.Services;
-using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using StackExchange.Redis;
 
 namespace Esfa.Recruit.Qa.Web
 {
@@ -38,9 +36,6 @@ namespace Esfa.Recruit.Qa.Web
         {
             //A service provider for resolving services configured in IoC
             var sp = services.BuildServiceProvider();
-
-            var redis = ConnectionMultiplexer.Connect(_configuration.GetConnectionString("StorageRedis"));
-            services.AddDataProtection().PersistKeysToStackExchangeRedis(redis, "DataProtection-Keys");
 
             // Routing has to come before adding Mvc
             services.AddRouting(opt =>

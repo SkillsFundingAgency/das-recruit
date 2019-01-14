@@ -20,7 +20,6 @@
     <PackageReference Include="SFA.DAS.Providers.Api.Client" Version="0.10.138" />
     <PackageReference Include="SFA.DAS.Apprenticeships.Api.Types" Version="0.10.139" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.5.1" />
-    <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="2.2.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\Recruit.Vacancies.Client\Recruit.Vacancies.Client.csproj" />
