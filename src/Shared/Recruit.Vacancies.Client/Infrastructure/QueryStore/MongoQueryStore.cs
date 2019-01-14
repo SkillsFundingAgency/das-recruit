@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
@@ -88,11 +89,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             await RetryPolicy.ExecuteAsync(context => collection.DeleteManyAsync(filter), new Context(nameof(IQueryStore.RecreateAsync)));
 
             if (items.Count == 0) return;
+            
+            var watch = Stopwatch.StartNew();
 
             foreach (var item in items)
             {
                 await RetryPolicy.ExecuteAsync(context => collection.InsertOneAsync(item), new Context(nameof(IQueryStore.RecreateAsync)));
             }
+
+            Logger.LogInformation($"Recreated {items.Count} {typeof(T).Name} items in {watch.ElapsedMilliseconds}ms");
         }
     }
 }
