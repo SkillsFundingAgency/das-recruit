@@ -14,8 +14,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
         internal HtmlValidator(IHtmlSanitizerService sanitizer) : base("{PropertyName} must contain allowed HTML")
         {
             _regex = CreateRegEx();
-
-
             _sanitizer = sanitizer;
         }
 
@@ -23,15 +21,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
         {
             var value = (string) context.PropertyValue;
 
-            if (string.IsNullOrWhiteSpace(value))
-                return true;
-
             var isHtmlValid = _sanitizer.IsValid(value);
 
             if (isHtmlValid == false)
                 return false;
 
-            if (!_regex.IsMatch(value))
+            if (string.IsNullOrWhiteSpace(value) == false && 
+                _regex.IsMatch(value) == false)
             {
                 return false;
             }

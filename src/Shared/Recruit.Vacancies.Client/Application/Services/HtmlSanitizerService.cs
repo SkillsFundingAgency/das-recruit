@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using AngleSharp.Extensions;
 using Ganss.XSS;
 using Microsoft.Extensions.Logging;
 
@@ -16,37 +17,41 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
 
         public string Sanitize(string html)
         {
-            return Sanitize(html, null);
+            return string.IsNullOrWhiteSpace(html) ? 
+                html : 
+                Sanitize(html, null);
         }
 
         public bool IsValid(string html)
         {
+            if (string.IsNullOrWhiteSpace(html))
+                return true;
+
             var isValid = true;
 
-            Sanitize(html, () => isValid = false);
+            var sanitized = Sanitize(html, () => isValid = false);
+
+            if (string.IsNullOrWhiteSpace(sanitized))
+                return false;
 
             return isValid;
         }
 
         private string Sanitize(string html, Action removingHtmlCallback)
         {
-            if (html == null)
-                return null;
-
-            var sanitizer = GetSanitizer(removingHtmlCallback);
-
             var watch = Stopwatch.StartNew();
-            var sanitized = sanitizer.Sanitize(html);
+
+            string sanitized;
+            var sanitizer = GetSanitizer(removingHtmlCallback);
+            using (var dom = sanitizer.SanitizeDom(html))
+            {
+                sanitized = string.IsNullOrWhiteSpace(dom.Body.InnerText) ? 
+                    string.Empty :
+                    dom.Body.ChildNodes.ToHtml(HtmlSanitizer.DefaultOutputFormatter);
+            }
             watch.Stop();
 
-            if (sanitized == html)
-            {
-                _logger.LogInformation("Sanitized html input with no changes in {timer}ms", watch.ElapsedMilliseconds);
-            }
-            else
-            {
-                _logger.LogInformation("Sanitized html input from: \"{unsanitized}\" to: \"{sanitized}\" in {timer}ms", html, sanitized, watch.ElapsedMilliseconds);                
-            }
+            _logger.LogInformation("Sanitized html input in {timer}ms", watch.ElapsedMilliseconds);
 
             return sanitized;
         }
