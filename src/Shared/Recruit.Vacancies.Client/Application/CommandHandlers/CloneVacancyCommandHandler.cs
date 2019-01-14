@@ -67,7 +67,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             clone.CreatedDate = now;
             clone.LastUpdatedByUser = message.User;
             clone.LastUpdatedDate = now;
-            clone.SourceOrigin = message.User.IsProvider ? SourceOrigin.ProviderWeb : SourceOrigin.EmployerWeb;
+            clone.SourceOrigin = message.SourceOrigin;
             clone.SourceType = SourceType.Clone;
             clone.SourceVacancyReference = vacancy.VacancyReference;
             clone.Status = VacancyStatus.Draft;

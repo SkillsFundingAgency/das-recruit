@@ -42,7 +42,7 @@ namespace Esfa.Recruit.Provider.Web
             //A service provider for resolving services configured in IoC
             var sp = services.BuildServiceProvider();
 
-            services.AddAuthenticationService(_authConfig, sp.GetService<IEmployerVacancyClient>(), sp.GetService<IHostingEnvironment>());
+            services.AddAuthenticationService(_authConfig, sp.GetService<IRecruitVacancyClient>(), sp.GetService<IHostingEnvironment>());
             services.AddAuthorizationService();
         }
     }

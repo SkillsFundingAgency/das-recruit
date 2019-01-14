@@ -21,6 +21,7 @@ using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Shared.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Filters;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Employer.Web.Configuration
 {
@@ -95,7 +96,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
-        public static void AddAuthenticationService(this IServiceCollection services, AuthenticationConfiguration authConfig, IEmployerVacancyClient vacancyClient, IHostingEnvironment hostingEnvironment)
+        public static void AddAuthenticationService(this IServiceCollection services, AuthenticationConfiguration authConfig, IEmployerVacancyClient vacancyClient, IRecruitVacancyClient recruitClient, IHostingEnvironment hostingEnvironment)
         {
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
@@ -132,7 +133,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
                 options.Events.OnTokenValidated = async (ctx) =>
                 {
                     await PopulateAccountsClaim(ctx, vacancyClient);
-                    await HandleUserSignedIn(ctx, vacancyClient);
+                    await HandleUserSignedIn(ctx, recruitClient);
                 };
 
                 options.Events.OnRemoteFailure = ctx =>
@@ -150,7 +151,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
                 };
             });
         }
-        
+
         private static async Task PopulateAccountsClaim(Microsoft.AspNetCore.Authentication.OpenIdConnect.TokenValidatedContext ctx, IEmployerVacancyClient vacancyClient)
         {
             var userId = ctx.Principal.GetUserId();
@@ -161,10 +162,10 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             ctx.Principal.Identities.First().AddClaim(associatedAccountsClaim);
         }
 
-        private static Task HandleUserSignedIn(Microsoft.AspNetCore.Authentication.OpenIdConnect.TokenValidatedContext ctx, IEmployerVacancyClient vacancyClient)
+        private static Task HandleUserSignedIn(Microsoft.AspNetCore.Authentication.OpenIdConnect.TokenValidatedContext ctx, IRecruitVacancyClient vacancyClient)
         {
             var user = ctx.Principal.ToVacancyUser();
-            return vacancyClient.UserSignedInAsync(user);
+            return vacancyClient.UserSignedInAsync(user, UserType.Employer);
         }
     }
 }

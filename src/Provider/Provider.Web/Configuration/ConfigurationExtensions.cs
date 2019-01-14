@@ -16,6 +16,12 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
+using Microsoft.AspNetCore.Authorization;
+using Esfa.Recruit.Provider.Web.Middleware;
+using System.Threading.Tasks;
+using Esfa.Recruit.Provider.Web.Extensions;
+using System.Security.Claims;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Provider.Web.Configuration
 {
@@ -34,6 +40,8 @@ namespace Esfa.Recruit.Provider.Web.Configuration
                     policy.RequireAuthenticatedUser();
                 });
             });
+
+            services.AddTransient<IAuthorizationHandler, ProviderAccountHandler>();
         }
 
         public static void AddMvcService(this IServiceCollection services, IHostingEnvironment hostingEnvironment, ILoggerFactory loggerFactory)
@@ -46,7 +54,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             });
             services.Configure<CookieTempDataProviderOptions>(options => options.Cookie.Name = CookieNames.RecruitTempData);
             services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
-            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            //services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
             services.AddMvc(opts =>
             {
@@ -69,7 +77,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
-        public static void AddAuthenticationService(this IServiceCollection services, AuthenticationConfiguration authConfig, IEmployerVacancyClient vacancyClient, IHostingEnvironment hostingEnvironment)
+        public static void AddAuthenticationService(this IServiceCollection services, AuthenticationConfiguration authConfig, IRecruitVacancyClient vacancyClient, IHostingEnvironment hostingEnvironment)
         {
             services.AddAuthentication(sharedOptions =>
             {
@@ -85,6 +93,12 @@ namespace Esfa.Recruit.Provider.Web.Configuration
                 options.UseTokenLifetime = false;
                 //options.CallbackPath = "/";
                 //options.SkipUnrecognizedRequests = true;
+
+                options.Events.OnSecurityTokenValidated = async (ctx) =>
+                {
+                    await HandleUserSignedIn(ctx, vacancyClient);
+                };
+
             })
             .AddCookie(options =>
             {
@@ -94,6 +108,12 @@ namespace Esfa.Recruit.Provider.Web.Configuration
                 options.SlidingExpiration = true;
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(SessionTimeoutMinutes);
             });
+        }
+
+        private static async Task HandleUserSignedIn(Microsoft.AspNetCore.Authentication.WsFederation.SecurityTokenValidatedContext ctx, IRecruitVacancyClient vacancyClient)
+        {
+            var user = ctx.Principal.ToVacancyUser();
+            await vacancyClient.UserSignedInAsync(user, UserType.Provider);
         }
     }
 }

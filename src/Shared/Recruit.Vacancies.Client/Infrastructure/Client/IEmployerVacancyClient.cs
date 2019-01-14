@@ -12,16 +12,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
     public interface IEmployerVacancyClient
     {
         Task<Vacancy> GetVacancyAsync(Guid vacancyId);
-        Task<Guid> CreateVacancyAsync(SourceOrigin origin, string title, int numberOfPositions, string employerAccountId, VacancyUser user);
+        Task<Guid> CreateVacancyAsync(SourceOrigin origin, string title, int numberOfPositions, string employerAccountId, VacancyUser user, UserType userType);
         Task GenerateDashboard(string employerAccountId);
         Task CloseVacancyAsync(Guid vacancyId, VacancyUser user);
-        Task<Guid> CloneVacancyAsync(Guid vacancyId, VacancyUser user);
+        Task<Guid> CloneVacancyAsync(Guid vacancyId, VacancyUser user, SourceOrigin sourceOrigin);
         Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user);
         Task UpdatePublishedVacancyAsync(Vacancy vacancy, VacancyUser user);
         Task SubmitVacancyAsync(Guid vacancyId, string employerDescription, VacancyUser user);
         Task DeleteVacancyAsync(Guid vacancyId, VacancyUser user);
         Task<EmployerDashboard> GetDashboardAsync(string employerAccountId);
-        Task UserSignedInAsync(VacancyUser user);
         Task<EditVacancyInfo> GetEditVacancyInfoAsync(string employerAccountId);
         EntityValidationResult Validate(Vacancy vacancy, VacancyRuleSet rules);
         Task<IEnumerable<IApprenticeshipProgramme>> GetActiveApprenticeshipProgrammesAsync();

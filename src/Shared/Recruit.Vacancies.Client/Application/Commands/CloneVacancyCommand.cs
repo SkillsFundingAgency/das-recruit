@@ -7,8 +7,17 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Commands
 {
     public class CloneVacancyCommand : ICommand, IRequest
     {
-        public Guid IdOfVacancyToClone { get; set; }
-        public Guid NewVacancyId { get; set; }
-        public VacancyUser User { get; set; }
+        public Guid IdOfVacancyToClone { get; private set; }
+        public Guid NewVacancyId { get; private set; }
+        public VacancyUser User { get; private set; }
+        public SourceOrigin SourceOrigin { get; private set; }
+
+        public CloneVacancyCommand(Guid cloneVacancyId, Guid newVacancyId, VacancyUser user, SourceOrigin sourceOrigin)
+        {
+            IdOfVacancyToClone = cloneVacancyId;
+            NewVacancyId = newVacancyId;
+            User = user;
+            SourceOrigin = sourceOrigin;
+        }
     }
 }

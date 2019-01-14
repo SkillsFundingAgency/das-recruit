@@ -195,9 +195,11 @@ namespace Microsoft.Extensions.DependencyInjection
         private static void RegisterClients(IServiceCollection services)
         {
             services
+                .AddTransient<IRecruitVacancyClient, VacancyClient>()
                 .AddTransient<IEmployerVacancyClient, VacancyClient>()
-                .AddTransient<IJobsVacancyClient, VacancyClient>()
-                .AddTransient<IQaVacancyClient, QaVacancyClient>();
+                .AddTransient<IProviderVacancyClient, VacancyClient>()
+                .AddTransient<IQaVacancyClient, QaVacancyClient>()
+                .AddTransient<IJobsVacancyClient, VacancyClient>();
         }
 
         private static void RegisterMediatR(IServiceCollection services)

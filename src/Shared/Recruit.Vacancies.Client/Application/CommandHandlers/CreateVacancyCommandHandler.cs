@@ -39,7 +39,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             var vacancy = new Vacancy
             {
                 Id = message.VacancyId,
-                OwnerType = message.User.IsProvider ? OwnerType.Provider : OwnerType.Employer,
+                OwnerType = message.UserType == UserType.Provider ? OwnerType.Provider : OwnerType.Employer,
                 SourceOrigin = message.Origin,
                 SourceType = SourceType.New,
                 Title = message.Title,
