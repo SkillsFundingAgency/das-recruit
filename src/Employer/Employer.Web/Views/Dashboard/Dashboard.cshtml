@@ -18,10 +18,10 @@
 }
 <div class="grid-row dashboard-header">
     <div class="column-two-thirds">
-        <h1 class="heading-large small-bottom-margin">Your vacancies</h1>
         <div asp-show="Model.HasWarning" class="warning-summary no-bottom-margin">
             <p>@Model.WarningMessage</p>
         </div>
+        <h1 class="heading-large small-bottom-margin">Your vacancies</h1>
         <div asp-show="Model.HasInfo" class="info-summary no-bottom-margin">
             <p>@Model.InfoMessage</p>
         </div>
