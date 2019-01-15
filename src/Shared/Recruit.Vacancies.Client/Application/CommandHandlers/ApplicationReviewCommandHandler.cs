@@ -75,7 +75,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             await _messaging.PublishEvent(new ApplicationReviewedEvent
             {
-                EmployerAccountId = applicationReview.EmployerAccountId,
                 Status = applicationReview.Status,
                 VacancyReference = applicationReview.VacancyReference,
                 CandidateFeedback = applicationReview.CandidateFeedback,

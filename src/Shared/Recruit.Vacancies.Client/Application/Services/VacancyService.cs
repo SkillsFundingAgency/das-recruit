@@ -51,7 +51,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
 
             await _messaging.PublishEvent(new VacancyClosedEvent
             {
-                EmployerAccountId = vacancy.EmployerAccountId,
                 VacancyReference = vacancy.VacancyReference.Value,
                 VacancyId = vacancy.Id
             });

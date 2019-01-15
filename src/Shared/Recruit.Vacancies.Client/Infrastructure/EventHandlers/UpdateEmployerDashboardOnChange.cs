@@ -6,6 +6,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Events.Interfaces;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
 {
@@ -24,11 +26,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
                                             INotificationHandler<VacancyReferredEvent>
     {
         private readonly IEmployerDashboardProjectionService _dashboardService;
+        private readonly IVacancyRepository _vacancyRepository;
         private readonly ILogger<UpdateEmployerDashboardOnChange> _logger;
 
-        public UpdateEmployerDashboardOnChange(IEmployerDashboardProjectionService dashboardService, ILogger<UpdateEmployerDashboardOnChange> logger)
+        public UpdateEmployerDashboardOnChange(IEmployerDashboardProjectionService dashboardService, IVacancyRepository vacancyRepository, ILogger<UpdateEmployerDashboardOnChange> logger)
         {
             _dashboardService = dashboardService;
+            _vacancyRepository = vacancyRepository;
             _logger = logger;
         }
 
@@ -101,27 +105,37 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
         {
             if (notification == null)
                 throw new ArgumentNullException(nameof(notification), "Should not be null");
-            
+
             _logger.LogInformation("Handling {eventType} for accountId: {employerAccountId}", notification.GetType().Name, notification.EmployerAccountId);
             return _dashboardService.ReBuildDashboardAsync(notification.EmployerAccountId);
         }
 
-        private Task Handle(IApplicationReviewEvent notification)
+        private async Task Handle(IApplicationReviewEvent notification)
         {
             if (notification == null)
                 throw new ArgumentNullException(nameof(notification), "Should not be null");
-            
-            _logger.LogInformation("Handling {eventType} for accountId: {employerAccountId} and vacancyReference: {vacancyReference}", notification.GetType().Name, notification.EmployerAccountId, notification.VacancyReference);
-            return _dashboardService.ReBuildDashboardAsync(notification.EmployerAccountId);
+
+            var vacancy = await _vacancyRepository.GetVacancyAsync(notification.VacancyReference);
+
+            if (vacancy.OwnerType != OwnerType.Provider)
+            {
+                _logger.LogInformation("Handling {eventType} for accountId: {employerAccountId} and vacancyReference: {vacancyReference}", notification.GetType().Name, vacancy.EmployerAccountId, notification.VacancyReference);
+                await _dashboardService.ReBuildDashboardAsync(vacancy.EmployerAccountId);
+            }
         }
 
-        private Task Handle(IVacancyEvent notification)
+        private async Task Handle(IVacancyEvent notification)
         {
             if (notification == null)
                 throw new ArgumentNullException(nameof(notification), "Should not be null");
-            
-            _logger.LogInformation("Handling {eventType} for accountId: {employerAccountId} and vacancyId: {vacancyId}", notification.GetType().Name, notification.EmployerAccountId, notification.VacancyId);
-            return _dashboardService.ReBuildDashboardAsync(notification.EmployerAccountId);
+
+            var vacancy = await _vacancyRepository.GetVacancyAsync(notification.VacancyId);
+
+            if (vacancy.OwnerType != OwnerType.Provider)
+            {
+                _logger.LogInformation("Handling {eventType} for accountId: {employerAccountId} and vacancyId: {vacancyId}", notification.GetType().Name, vacancy.EmployerAccountId, notification.VacancyId);
+                await _dashboardService.ReBuildDashboardAsync(vacancy.EmployerAccountId);
+            }
         }
     }
 }

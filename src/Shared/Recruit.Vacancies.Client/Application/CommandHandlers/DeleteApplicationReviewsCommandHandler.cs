@@ -41,7 +41,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
                 await _messaging.PublishEvent(new ApplicationReviewDeletedEvent
                 {
-                    EmployerAccountId = applicationReview.EmployerAccountId,
                     VacancyReference = applicationReview.VacancyReference
                 });
 

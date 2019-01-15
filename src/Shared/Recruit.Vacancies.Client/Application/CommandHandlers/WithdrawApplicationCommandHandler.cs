@@ -56,7 +56,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             await _messaging.PublishEvent(new ApplicationReviewWithdrawnEvent
             {
-                EmployerAccountId = applicationReview.EmployerAccountId,
                 VacancyReference = applicationReview.VacancyReference
             });
 

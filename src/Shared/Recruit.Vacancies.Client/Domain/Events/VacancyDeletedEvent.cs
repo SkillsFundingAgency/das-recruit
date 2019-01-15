@@ -7,7 +7,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Events
 {
     public class VacancyDeletedEvent : EventBase, INotification, IVacancyEvent
     {
-        public string EmployerAccountId { get; set; }
         public Guid VacancyId { get; set; }
     }
 }
