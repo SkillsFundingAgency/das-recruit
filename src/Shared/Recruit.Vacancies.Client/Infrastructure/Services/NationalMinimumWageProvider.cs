@@ -7,32 +7,27 @@ using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.VacancyServices.Wage;
-using MinWageEntity = Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Wages.MinimumWage;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services
 {
     public class NationalMinimumWageProvider : IMinimumWageProvider
     {
         private readonly ILogger<NationalMinimumWageProvider> _logger;
-        private readonly ICache _cache;
-        private readonly ITimeProvider _timeProvider;
 
-        public NationalMinimumWageProvider(ILogger<NationalMinimumWageProvider> logger, ICache cache, ITimeProvider timeProvider)
+        public NationalMinimumWageProvider(ILogger<NationalMinimumWageProvider> logger)
         {
             _logger = logger;
-            _cache = cache;
-            _timeProvider = timeProvider;
         }   
 
-        public IMinimumWage GetWagePeriod(DateTime date)
+        public MinimumWage GetWagePeriod(DateTime date)
         {
             try
             {
-                var minimumWages = GetMinimumWagesAsync().Result;
+                var minimumWages = NationalMinimumWageService.GetRatesAsync().Result;
 
                 var wagePeriods = minimumWages.OrderBy(w => w.ValidFrom);
 
-                MinWageEntity currentWagePeriod = null;
+                MinimumWage currentWagePeriod = null;
                 foreach (var wagePeriod in wagePeriods)
                 {
                     if (date.Date < wagePeriod.ValidFrom)
@@ -41,7 +36,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services
                     if (currentWagePeriod != null && currentWagePeriod.ValidFrom == wagePeriod.ValidFrom)
                         throw new InvalidOperationException($"Duplicate wage period: {currentWagePeriod.ValidFrom}");
 
-                    currentWagePeriod = new MinWageEntity
+                    currentWagePeriod = new MinimumWage
                     {
                         ValidFrom = wagePeriod.ValidFrom,
                         ApprenticeshipMinimumWage = wagePeriod.ApprenticeMinimumWage,
@@ -61,13 +56,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services
                 
                 throw;
             }
-        }
-
-        private Task<ImmutableArray<NationalMinimumWageRates>> GetMinimumWagesAsync()
-        {
-            return _cache.CacheAsideAsync(CacheKeys.MinimumWages,
-                _timeProvider.NextDay,
-                NationalMinimumWageService.GetRatesAsync);
         }
     }
 }
