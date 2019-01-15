@@ -59,7 +59,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             await _messaging.PublishEvent(new ApplicationReviewCreatedEvent
             {
-                EmployerAccountId = vacancy.EmployerAccountId,
                 VacancyReference = vacancy.VacancyReference.Value
             });
         }

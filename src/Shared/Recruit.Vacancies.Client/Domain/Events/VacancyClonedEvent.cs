@@ -8,7 +8,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Events
 {
     public class VacancyClonedEvent : EventBase, INotification, IVacancyEvent
     {
-        public string EmployerAccountId { get; set; }
         public Guid VacancyId { get; set; }
     }
 }

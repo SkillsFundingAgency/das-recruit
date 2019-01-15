@@ -34,7 +34,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             {
                 CandidateFeedback = "candidate feedback",
                 CandidateId = Guid.NewGuid(),
-                EmployerAccountId = "employer account id",
                 Status = status,
                 VacancyReference = 1234567890
             };

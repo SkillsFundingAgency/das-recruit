@@ -51,7 +51,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             await _messaging.PublishEvent(new VacancyClonedEvent
             {
-                EmployerAccountId = clone.EmployerAccountId,
                 VacancyId = clone.Id
             });
         }
@@ -68,7 +67,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             clone.CreatedDate = now;
             clone.LastUpdatedByUser = message.User;
             clone.LastUpdatedDate = now;
-            clone.SourceOrigin = SourceOrigin.EmployerWeb;
+            clone.SourceOrigin = message.User.IsProvider ? SourceOrigin.ProviderWeb : SourceOrigin.EmployerWeb;
             clone.SourceType = SourceType.Clone;
             clone.SourceVacancyReference = vacancy.VacancyReference;
             clone.Status = VacancyStatus.Draft;

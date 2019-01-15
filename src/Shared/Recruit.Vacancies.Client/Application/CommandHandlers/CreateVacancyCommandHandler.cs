@@ -39,6 +39,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             var vacancy = new Vacancy
             {
                 Id = message.VacancyId,
+                OwnerType = message.User.IsProvider ? OwnerType.Provider : OwnerType.Employer,
                 SourceOrigin = message.Origin,
                 SourceType = SourceType.New,
                 Title = message.Title,
@@ -56,7 +57,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             await _messaging.PublishEvent(new VacancyCreatedEvent
             {
-                EmployerAccountId = vacancy.EmployerAccountId,
                 VacancyId = vacancy.Id
             });
         }
