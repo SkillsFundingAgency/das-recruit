@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 
 namespace Esfa.Recruit.Qa.Web.ViewModels
@@ -8,6 +8,8 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
     public class ReviewHistoriesViewModel
     {
         public IEnumerable<ReviewHistoryViewModel> Items { get; set; }
+
+        public bool HasHistories => Items.Any();
     }
 
     public class ReviewHistoryViewModel

@@ -1,6 +1,6 @@
 ﻿@model ReviewHistoriesViewModel
 
-<div class="grid-row">
+<div asp-show="@Model.HasHistories" class="grid-row">
     <div class="column-full">
         <a href="#history" id="history_link">Show reviewers history</a>
         <div id="history">
