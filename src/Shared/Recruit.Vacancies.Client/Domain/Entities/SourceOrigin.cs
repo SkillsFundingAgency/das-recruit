@@ -4,6 +4,7 @@
     {
         Api,
         EmployerWeb,
+        ProviderWeb,
         WebComplaint
     }
 }
