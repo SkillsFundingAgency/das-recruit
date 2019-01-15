@@ -1,26 +1,26 @@
 ﻿@model Esfa.Recruit.Employer.Web.ViewModels.SelectTrainingProviderViewModel
-<div class="grid-row">
-    <div class="column-two-thirds">
-        <h1 class="heading-xlarge small-bottom-margin">@Model.Title</h1>
-        <hr>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">@Model.Title</h1>
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
 
         <partial name="@PartialNames.ReviewSummary" for="Review" />
 
         <form asp-route="@RouteNames.TrainingProvider_Select_Post">
-            <div class="form-group">
-                <label asp-for="Ukprn" class="form-label-bold">Enter the training provider UK Provider Reference Number (UKPRN)</label>
-                <span class="form-hint">
+            <div class="govuk-form-group">
+                <label asp-for="Ukprn" class="govuk-label govuk-!-font-weight-bold">Enter the training provider UK Provider Reference Number (UKPRN)</label>
+                <span class="govuk-hint">
                     You will be able to get this from your training provider<br>
                     Your provider must also have a recruit an apprentice account<br>
                     The UKPRN must only be 8 digits (For example, 12345678)
                 </span>
-                <span esfa-validation-message-for="Ukprn" class="error-message"></span>
-                <input asp-for="Ukprn" type="text" maxlength="8" class="form-control" />
+                <span esfa-validation-message-for="Ukprn" class="govuk-error-message"></span>
+                <input asp-for="Ukprn" type="text" maxlength="8" class="govuk-input govuk-input--width-10" />
             </div>
-            <div class="form-group">
-                <input type="submit" value="Select provider" esfa-automation="btn-continue" class="button" />
-                <a asp-route="@RouteNames.Vacancy_Preview_Get" esfa-automation="link-cancel" class="button-link">Cancel</a>
+            <div class="govuk-form-group">
+                <input type="submit" value="Select provider" esfa-automation="btn-continue" class="govuk-button" />
+                <a asp-route="@RouteNames.Vacancy_Preview_Get" esfa-automation="link-cancel" class="govuk-link das-button-link">Cancel</a>
             </div>
         </form>
     </div>

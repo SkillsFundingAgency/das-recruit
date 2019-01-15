@@ -1,13 +1,13 @@
 ﻿@using Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
 @model VacancyApplicationsViewModel
-<table class="responsive">
-    <thead>
-        <tr>
-            <th class="bold">Name</th>
-            <th class="bold">Application ID</th>
-            <th class="bold">Status</th>
-            <th class="bold">Date applied</th>
-            <th asp-show="@Model.ShowDisability" class="bold">Disability</th>
+<table class="govuk-table responsive">
+    <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+            <th class="govuk-table__header">Name</th>
+            <th class="govuk-table__header">Application ID</th>
+            <th class="govuk-table__header">Status</th>
+            <th class="govuk-table__header">Date applied</th>
+            <th asp-show="@Model.ShowDisability" class="govuk-table__header">Disability</th>
         </tr>
     </thead>
     <tbody>
@@ -15,19 +15,19 @@
         {
             foreach (var application in applicationStatusGroup)
             {
-                <tr asp-show="@application.IsNotWithdrawn">
-                    <td data-label="Name"><a asp-route="@RouteNames.ApplicationReview_Get" asp-route-applicationReviewId="@application.ApplicationReviewId">@application.CandidateName</a></td>
-                    <td data-label="Application ID">@application.GetFriendlyId()</td>
-                    <td data-label="Status">@application.Status.GetDisplayName()</td>
-                    <td data-label="Date applied">@application.SubmittedDate.AsGdsDate()</td>
-                    <td data-label="Disability" asp-show="@Model.ShowDisability">@application.DisabilityStatus.GetDisplayName()</td>
+                <tr class="govuk-table__row" asp-show="@application.IsNotWithdrawn">
+                    <td class="govuk-table__cell" data-label="Name"><a asp-route="@RouteNames.ApplicationReview_Get" asp-route-applicationReviewId="@application.ApplicationReviewId">@application.CandidateName</a></td>
+                    <td class="govuk-table__cell" data-label="Application ID">@application.GetFriendlyId()</td>
+                    <td class="govuk-table__cell" data-label="Status">@application.Status.GetDisplayName()</td>
+                    <td class="govuk-table__cell" data-label="Date applied">@application.SubmittedDate.AsGdsDate()</td>
+                    <td class="govuk-table__cell" data-label="Disability" asp-show="@Model.ShowDisability">@application.DisabilityStatus.GetDisplayName()</td>
                 </tr>
-                <tr asp-show="@application.IsWithdrawn">
-                    <td data-label="Name">Application withdrawn by candidate</td>
-                    <td data-label="Application ID">@application.GetFriendlyId()</td>
-                    <td data-label="Status">Withdrawn</td>
-                    <td data-label="Date applied">@application.SubmittedDate.AsGdsDate()</td>
-                    <td data-label="Disability" asp-show="@Model.ShowDisability">No longer applies</td>
+                <tr  class="govuk-table__row" asp-show="@application.IsWithdrawn">
+                    <td class="govuk-table__cell" data-label="Name">Application withdrawn by candidate</td>
+                    <td class="govuk-table__cell" data-label="Application ID">@application.GetFriendlyId()</td>
+                    <td class="govuk-table__cell" data-label="Status">Withdrawn</td>
+                    <td class="govuk-table__cell" data-label="Date applied">@application.SubmittedDate.AsGdsDate()</td>
+                    <td class="govuk-table__cell" data-label="Disability" asp-show="@Model.ShowDisability">No longer applies</td>
                 </tr>
             }
         }

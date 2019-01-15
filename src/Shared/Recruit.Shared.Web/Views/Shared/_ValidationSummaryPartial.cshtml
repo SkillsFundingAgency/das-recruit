@@ -3,26 +3,28 @@
 @{ 
     var validationSummaryClass = Model.ModelState.IsValid ? "validation-summary-valid" : "validation-summary-errors";
 }
-<div class="@validationSummaryClass error-summary" role="alert" data-valmsg-summary="true" tabindex="-1">
-    <h2 id="error-summary" class="heading-medium error-summary-heading">
+<div class="@validationSummaryClass govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="error-summary">
+    <h2 id="error-summary-title" class="govuk-error-summary__title">
         Please fix these errors
     </h2>
-    <ul class="error-summary-list">
-        @foreach (var stateItem in Model.ModelState.Where(msi => msi.Value.ValidationState == ModelValidationState.Invalid)
-                                                    .OrderBy(x => Model.OrderedFieldNames.IndexOf(x.Key)))
-        {
-            var elementName = ViewData.TemplateInfo.GetFullHtmlFieldName(stateItem.Key) ?? stateItem.Key;
-            var firstErrorPerField = stateItem.Value.Errors.FirstOrDefault()?.ErrorMessage;
-        <li>
-            @if (!string.IsNullOrEmpty(stateItem.Key))
+    <div class="govuk-error-summary__body">
+        <ul class="govuk-list govuk-error-summary__list">
+            @foreach (var stateItem in Model.ModelState.Where(msi => msi.Value.ValidationState == ModelValidationState.Invalid)
+                                                        .OrderBy(x => Model.OrderedFieldNames.IndexOf(x.Key)))
             {
-            <a href="#error-message-@elementName" data-focuses="error-message-@elementName" class="summary-link">@firstErrorPerField</a>
+                var elementName = ViewData.TemplateInfo.GetFullHtmlFieldName(stateItem.Key) ?? stateItem.Key;
+                var firstErrorPerField = stateItem.Value.Errors.FirstOrDefault()?.ErrorMessage;
+            <li>
+                @if (!string.IsNullOrEmpty(stateItem.Key))
+                {
+                <a href="#error-message-@elementName" data-focuses="error-message-@elementName" class="summary-link">@firstErrorPerField</a>
+                }
+                else
+                {
+                <span>@firstErrorPerField</span>
+                }
+            </li>
             }
-            else
-            {
-            <span>@firstErrorPerField</span>
-            }
-        </li>
-        }
-    </ul>
+        </ul>
+    </div>
 </div>

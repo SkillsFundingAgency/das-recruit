@@ -11,7 +11,7 @@ namespace Esfa.Recruit.Shared.Web.TagHelpers
     {
         private const string ValidationForAttributeName = "esfa-validation-marker-for";
         private const string ClassAttributeIdentifier = "class";
-        private const string ErrorClassSpecifier = "form-group-error";
+        private const string ErrorClassSpecifier = "govuk-form-group--error";
         
         [HtmlAttributeNotBound]
         [ViewContext]

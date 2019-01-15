@@ -1,31 +1,28 @@
 ﻿@using Esfa.Recruit.Shared.Web.Mappers
 @model Esfa.Recruit.Employer.Web.ViewModels.LegalEntityAgreement.LegalEntityAgreementSoftStopViewModel
 
-<div class="grid-row employer-agreement-container">
-    <div class="column-two-thirds">
-        <h1 class="heading-large medium-bottom-margin">Agreement not signed</h1>
+<div class="govuk-grid-row employer-agreement-container">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-l govuk-!-margin-bottom-8">Agreement not signed</h1>
 
-        <div class="notice medium-bottom-margin">
-            <i class="icon icon-important">
-                <span class="visually-hidden">Warning</span>
-            </i>
-            
-            <p>
-                <strong class="bold-small">
+        <div class="notice govuk-!-margin-bottom-8 govuk-warning-text">
+            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+            <strong class="govuk-warning-text__text">
+                <span class="govuk-warning-text__assistive">Warning</span>
+                <p class="govuk-body">
                     @Model.LegalEntityName doesn’t have a signed agreement with the Education and Skills Funding Agency (ESFA).
                     Without a signed agreement you can create a draft vacancy, but won’t be able to submit for posting on Find an apprenticeship.
-                </strong>
-            </p>
-            <p>
-                <strong class="bold-small">
+                </p>
+                <p class="govuk-body">
                     Only account owners can sign ESFA agreements. If you’re not sure who the owner is, you can
                     <a asp-route="@RouteNames.Dashboard_AccountsAgreements">check your team details.</a>
-                </strong>
                 </p>
+            </strong>
         </div>
-        <a asp-route="@RouteNames.Dashboard_AccountsAgreements" class="button">Review agreement</a>
         
-        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Training_Get" class="button-link">Continue anyway</a>
-        <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.AboutEmployerSection" class="button-link">Continue anyway</a>
+        <a asp-route="@RouteNames.Dashboard_AccountsAgreements" class="govuk-button">Review agreement</a>
+        
+        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Training_Get" class="govuk-link das-button-link">Continue anyway</a>
+        <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.AboutEmployerSection" class="govuk-link das-button-link">Continue anyway</a>
     </div>
 </div>

@@ -1,14 +1,14 @@
 ﻿@model LiveVacancyViewModel
 <partial name="@PartialNames.VacancySummaryDisplay" model="Model" />
 
-<div class="grid-row">
-    <div class="column-full">
-        <h2 class="heading-large">Applications</h2>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <h2 class="govuk-heading-l">Applications</h2>
         <partial name="@PartialNames.VacancyApplicationsTable" for="Applications" />
     </div>
 </div>
-<div class="form-group inline">
-    <div class="form-group small-top-margin">
-        <a asp-route="@RouteNames.Dashboard_Index_Get" class="button">Return to dashboard</a>
+<div class="govuk-form-group inline">
+    <div class="govuk-form-group govuk-!-margin-top-6">
+        <a asp-route="@RouteNames.Dashboard_Index_Get" class="govuk-button">Return to dashboard</a>
     </div>
 </div>

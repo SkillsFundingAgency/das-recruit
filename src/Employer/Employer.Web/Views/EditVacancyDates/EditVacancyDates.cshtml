@@ -1,25 +1,25 @@
 ﻿@using Esfa.Recruit.Vacancies.Client.Application.Services
 @model Esfa.Recruit.Employer.Web.ViewModels.EditVacancyDates.EditVacancyDatesViewModel
 
-<div class="grid-row">
-    <div class="column-full">
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
-        <div class="todo small-top-margin">
+        <div class="grey-border govuk-!-margin-top-6">
             <form asp-route="@RouteNames.VacancyEditDates_Post" novalidate>
-                <div esfa-validation-marker-for="ClosingDate" class="form-group">
-                    <fieldset>
-                        <legend class="form-label-bold">Closing date for applications</legend>
-                        <span esfa-validation-message-for="ClosingDate" class="error-message"></span>
+                <div esfa-validation-marker-for="ClosingDate" class="govuk-form-group">
+                    <fieldset class="govuk-fieldset">
+                        <legend class="govuk-label govuk-!-font-weight-bold">Closing date for applications</legend>
+                        <span esfa-validation-message-for="ClosingDate" class="govuk-error-message"></span>
                         <div class="form-date">
-                            <div class="form-group form-group-day">
+                            <div class="govuk-form-group govuk-form-group-day">
                                 <label asp-for="ClosingDay" class="form-label">Day</label>
                                 <input asp-for="ClosingDay" class="form-control" type="number" min="1" max="31">
                             </div>
-                            <div class="form-group form-group-month">
+                            <div class="govuk-form-group govuk-form-group-month">
                                 <label asp-for="ClosingMonth" class="form-label">Month</label>
                                 <input asp-for="ClosingMonth" class="form-control" type="number" min="1" max="12">
                             </div>
-                            <div class="form-group form-group-year">
+                            <div class="govuk-form-group govuk-form-group-year">
                                 <label asp-for="ClosingYear" class="form-label">Year</label>
                                 <input asp-for="ClosingYear" class="form-control" type="number" min="@Model.CurrentYear">
                             </div>
@@ -27,7 +27,7 @@
                     </fieldset>
                 </div>
 
-                <div class="form-group">
+                <div class="govuk-form-group">
                     <details role="group">
                         <summary role="button" aria-controls="details-content-0" aria-expanded="true">
                             <span class="summary">Information about extending closing dates</span>
@@ -45,20 +45,20 @@
                 </div>
 
 
-                <div esfa-validation-marker-for="StartDate" class="form-group">
-                    <fieldset>
-                        <legend class="form-label-bold">Possible start date</legend>
-                        <span esfa-validation-message-for="StartDate" class="error-message"></span>
+                <div esfa-validation-marker-for="StartDate" class="govuk-form-group">
+                    <fieldset class="govuk-fieldset">
+                        <legend class="govuk-label govuk-!-font-weight-bold">Possible start date</legend>
+                        <span esfa-validation-message-for="StartDate" class="govuk-error-message"></span>
                         <div class="form-date">
-                            <div class="form-group form-group-day">
+                            <div class="govuk-form-group govuk-form-group-day">
                                 <label asp-for="StartDay" class="form-label">Day</label>
                                 <input asp-for="StartDay" class="form-control" type="number" min="1" max="31">
                             </div>
-                            <div class="form-group form-group-month">
+                            <div class="govuk-form-group govuk-form-group-month">
                                 <label asp-for="StartMonth" class="form-label">Month</label>
                                 <input asp-for="StartMonth" class="form-control" type="number" min="1" max="12">
                             </div>
-                            <div class="form-group form-group-year">
+                            <div class="govuk-form-group govuk-form-group-year">
                                 <label asp-for="StartYear" class="form-label">Year</label>
                                 <input asp-for="StartYear" class="form-control" type="number" min="@Model.CurrentYear">
                             </div>
@@ -66,12 +66,12 @@
                     </fieldset>
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label-bold" for="apprenticeship-type">Apprenticeship training</label>
+                <div class="govuk-form-group">
+                    <label class="govuk-label govuk-!-font-weight-bold" for="apprenticeship-type">Apprenticeship training</label>
                     <p>@Model.ProgammeName</p>
                 </div>
-                <button type="submit" class="button save-button">Preview changes</button>
-                <a asp-route="@RouteNames.VacancyEdit_Get" class="button-link">Cancel</a>
+                <button type="submit" class="govuk-button save-button">Preview changes</button>
+                <a asp-route="@RouteNames.VacancyEdit_Get" class="govuk-link das-button-link">Cancel</a>
             </form>
         </div>
     </div>

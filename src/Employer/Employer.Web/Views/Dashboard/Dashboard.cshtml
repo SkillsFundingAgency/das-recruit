@@ -17,63 +17,63 @@
         return "Manage";
     }
 }
-<div class="grid-row dashboard-header">
-    <div class="column-two-thirds">
-        <div asp-show="Model.HasWarning" class="warning-summary no-bottom-margin">
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <div asp-show="Model.HasWarning" class="warning-summary govuk-!-margin-bottom-0">
             <p>@Model.WarningMessage</p>
         </div>
-        <h1 class="heading-large small-bottom-margin">Your vacancies</h1>
-        <div asp-show="Model.HasInfo" class="info-summary no-bottom-margin">
+        <h1 class="govuk-heading-l govuk-!-margin-bottom-6">Your vacancies</h1>
+        <div asp-show="Model.HasInfo" class="info-summary govuk-!-margin-bottom-0">
             <p>@Model.InfoMessage</p>
         </div>
     </div>
 </div>
-<div class="grid-row">
-    <div class="column-full">
-        <p>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <p class="govuk-body">
             You must be a levy-paying employer to post a vacancy.
         </p>
-        <p>
+        <p class="govuk-body">
             You can clone vacancies once they've been submitted.
             Vacancies will be approved or rejected within 24 hours.
         </p>
-        <a asp-route="@RouteNames.CreateVacancyOptions_Get" class="button small-bottom-margin">Create vacancy</a>
+        <a asp-route="@RouteNames.CreateVacancyOptions_Get" class="govuk-button govuk-!-margin-bottom-6">Create vacancy</a>
     </div>
     <br>
 </div>
 
 <div asp-show="@Model.HasVacancies">
-    <div class="grid-row">
-        <div class="column-full">
-            <table id="dashboard-table" class="responsive">
-                <thead>
-                    <tr>
-                        <th class="bold">Status</th>
-                        <th class="bold">Vacancy title</th>
-                        <th class="bold">Vacancy ref</th>
-                        <th class="bold">Closing Date</th>
-                        <th class="bold">Action</th>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <table class="govuk-table responsive">
+                <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th class="govuk-table__header">Status</th>
+                        <th class="govuk-table__header">Vacancy title</th>
+                        <th class="govuk-table__header">Vacancy ref</th>
+                        <th class="govuk-table__header">Closing Date</th>
+                        <th class="govuk-table__header">Action</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="govuk-table__body">
                 @foreach (var vacancy in Model.Vacancies)
                 {
-                    <tr>
-                        <td class="dashboard-status" data-label="Status"><span class="tag tag-@vacancy.Status.ToString().ToLower()">@vacancy.Status.GetDisplayName()</span></td>
-                        <td data-label="Vacancy title">
+                    <tr class="govuk-table__row">
+                        <td class="govuk-table__cell dashboard-status" data-label="Status"><span class="tag tag-@vacancy.Status.ToString().ToLower()">@vacancy.Status.GetDisplayName()</span></td>
+                        <td class="govuk-table__cell" data-label="Vacancy title">
                             <div>@vacancy.Title</div>
                             <div asp-show="@vacancy.IsApplicationsVacancy">
-                                <span asp-show="@vacancy.HasNoApplications" class="bold">0 applications</span>
+                                <span asp-show="@vacancy.HasNoApplications" class="govuk-!-font-weight-bold">0 applications</span>
                                 <span asp-show="@vacancy.HasApplications">@("application".ToQuantity(vacancy.AllApplicationsCount))</span>
-                                <span asp-show="@vacancy.HasNewApplications" class="bold"> (@vacancy.NewApplicationsCount new)</span>
+                                <span asp-show="@vacancy.HasNewApplications" class="govuk-!-font-weight-bold"> (@vacancy.NewApplicationsCount new)</span>
                             </div>
                         </td>
-                        <td data-label="Vacancy ref">
+                        <td class="govuk-table__cell" data-label="Vacancy ref">
                             <span asp-show="@vacancy.HasVacancyReference"><span>VAC</span>@vacancy.VacancyReference</span>
                             <span asp-show="@vacancy.HasNoVacancyReference">Not available</span>
                         </td>
-                        <td class="dashboard-closingdate" data-label="Closing date"><span>@vacancy.ClosingDate?.AsGdsDate()</span></td>
-                        <td class="dashboard-action" data-label="Action">
+                        <td class="govuk-table__cell dashboard-closingdate" data-label="Closing date"><span>@vacancy.ClosingDate?.AsGdsDate()</span></td>
+                        <td class="govuk-table__cell dashboard-action" data-label="Action">
                             <a asp-show="@vacancy.IsNotSubmittable" asp-route="@RouteNames.VacancyManage_Get" asp-route-vacancyId="@vacancy.Id">Manage</a>
                             <a asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.DisplayVacancy_Get" asp-route-vacancyId="@vacancy.Id">@GetLinkText(vacancy)</a>
                         </td>

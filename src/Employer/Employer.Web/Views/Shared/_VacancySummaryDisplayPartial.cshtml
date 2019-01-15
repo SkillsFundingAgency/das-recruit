@@ -1,34 +1,34 @@
 ﻿@model DisplayVacancyViewModel
-<div class="todo small-top-margin">
-    <div class="grid-row">
-        <div class="column-two-thirds">
-            <h1 class="heading-xlarge small-bottom-margin">
+<div class="grey-border govuk-!-margin-top-6">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
                 @Model.Title
-                <span class="heading-secondary">@Model.VacancyReferenceNumber</span>
+                <span class="govuk-caption-m">@Model.VacancyReferenceNumber</span>
             </h1>
         </div>
     </div>
-    <div class="grid-row">
-        <div class="column-two-thirds">
-            <h3 class="heading-small no-top-margin">Closing date</h3>
-            <p id="vacancy-closing-date">@Model.ClosingDate</p>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h3 class="govuk-heading-s govuk-!-margin-top-0">Closing date</h3>
+            <p class="govuk-body" id="vacancy-closing-date">@Model.ClosingDate</p>
         </div>
     </div>
-    <div class="grid-row">
-        <div class="column-two-thirds">
-            <h3 class="heading-small no-top-margin">Possible start date</h3>
-            <p id="vacancy-closing-date">@Model.PossibleStartDate</p>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h3 class="govuk-heading-s govuk-!-margin-top-0">Possible start date</h3>
+            <p class="govuk-body" id="vacancy-closing-date">@Model.PossibleStartDate</p>
         </div>
     </div>
-    <div asp-show="Model.IsDisabilityConfident" class="grid-row" >
-        <div class="column-two-thirds small-bottom-margin">
+    <div asp-show="Model.IsDisabilityConfident" class="govuk-grid-row" >
+        <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
             <img src="/img/disability-confident_545x172.png" class="disability-confident-logo" alt="A logo confirming that the employer is registered as disability confident">
-            <span class="visuallyhidden">This vacancy meets disability confident requirements</span>
+            <span class="govuk-visually-hidden">This vacancy meets disability confident requirements</span>
         </div>
     </div>
-    <div class="grid-row">
-        <div class="column-two-thirds">
-            <a asp-route="@RouteNames.DisplayFullVacancy_Get" title="View full vacancy" target="_blank">View full vacancy</a>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <a asp-route="@RouteNames.DisplayFullVacancy_Get" title="View full vacancy" target="_blank" class="govuk-link">View full vacancy</a>
         </div>
     </div>
 </div>

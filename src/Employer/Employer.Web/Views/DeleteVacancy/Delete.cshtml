@@ -1,26 +1,28 @@
 ﻿@model Esfa.Recruit.Employer.Web.ViewModels.DeleteVacancy.DeleteViewModel
-<div class="grid-row">
-    <div class="column-two-thirds">
-        <h1 class="heading-xlarge small-bottom-margin">@Model.Title</h1>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">@Model.Title</h1>
         <hr>
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
-        <h1 class="heading-large">Are you sure you want to remove the vacancy?</h1>
+        <h1 class="govuk-heading-l">Are you sure you want to remove the vacancy?</h1>
         <form asp-route="@RouteNames.DeleteVacancy_Delete_Post">
-            <div esfa-validation-marker-for="ConfirmDeletion" class="form-group">
-                <fieldset>
-                    <span esfa-validation-message-for="ConfirmDeletion" class="error-message"></span>
-                    <div class="multiple-choice">
-                        <input asp-for="@Model.ConfirmDeletion" type="radio" value="true" id="delete-yes" />
-                        <label class="block-label selection-button-radio" for="delete-yes">Yes, delete this vacancy now</label>
-                    </div>
-                    <div class="multiple-choice">
-                        <input asp-for="@Model.ConfirmDeletion" type="radio" value="false" id="delete-no" />
-                        <label class="block-label selection-button-radio" for="delete-no">No, don't delete this vacancy</label>
+            <div esfa-validation-marker-for="ConfirmDeletion" class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
+                    <span esfa-validation-message-for="ConfirmDeletion" class="govuk-error-message"></span>
+                    <div class="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input asp-for="@Model.ConfirmDeletion" type="radio" value="true" class="govuk-radios__input" id="delete-yes" />
+                            <label class="govuk-label govuk-radios__label" for="delete-yes">Yes, delete this vacancy now</label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input asp-for="@Model.ConfirmDeletion" type="radio" value="false" class="govuk-radios__input" id="delete-no" />
+                            <label class="govuk-label govuk-radios__label" for="delete-no">No, don't delete this vacancy</label>
+                        </div>
                     </div>
                 </fieldset>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Continue" class="button" />
+            <div class="govuk-form-group">
+                <input type="submit" value="Continue" class="govuk-button" />
             </div>
         </form>
     </div>

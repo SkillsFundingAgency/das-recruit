@@ -82,8 +82,8 @@ characterCount = function (element, count) {
     
     var maxLength = $element.attr("data-val-length-max"),
     absRemainder = Math.abs(maxLength - count),
-    $maxLengthCountElement = $element.closest(".form-group").find(".maxchar-count"),
-    $maxLengthTextElement = $element.closest(".form-group").find(".maxchar-text");
+    $maxLengthCountElement = $element.closest(".govuk-form-group").find(".maxchar-count"),
+    $maxLengthTextElement = $element.closest(".govuk-form-group").find(".maxchar-text");
 
     if (maxLength) {
         $maxLengthCountElement.text(absRemainder);
@@ -118,7 +118,7 @@ $('button, input[type="submit"], a.button').on("click", function() {
       , label = button.text();
       button.is(".save-button") ? button.text("Saving").addClass("disabled") : button.text("Loading").addClass("disabled");
     setTimeout(function() {
-        $(".form-group.error").length > 0 ? button.text(label).removeClass("disabled") : $(".block-label.error").length > 0 && button.text(label).removeClass("disabled");
+        $(".govuk-form-group.error").length > 0 ? button.text(label).removeClass("disabled") : $(".block-label.error").length > 0 && button.text(label).removeClass("disabled");
         button.attr("disabled")
     }, 50)
 });
@@ -231,4 +231,5 @@ $(function () {
     $('form').areYouSure();
     //handle anchor clicks to account for floating menu
     handleAnchorClicks();
+    window.GOVUKFrontend.initAll()
 });

@@ -1,19 +1,19 @@
 ﻿@model Esfa.Recruit.Employer.Web.ViewModels.LegalEntityAgreement.LegalEntityAgreementHardStopViewModel
-<div class="grid-row">
-    <div class="column-two-thirds">
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
 
         <div class="info-summary">
-            <h1 class="heading-medium no-top-margin">You can’t submit this vacancy until:</h1>
-            <ul class="list list-bullet">
+            <h1 class="govuk-heading-m govuk-!-margin-top-0">You can’t submit this vacancy until:</h1>
+            <ul class="govuk-list govuk-list--bullet">
                 <li>You’ve signed an
                     <a asp-route="@RouteNames.Dashboard_AccountsAgreements">apprenticeship agreement</a>
                     with the Education and Skills Funding Agency</li>
             </ul>
-            <p>Your vacancy has been saved as a draft. Once the agreement has been signed, you will be able to
+            <p class="govuk-body">Your vacancy has been saved as a draft. Once the agreement has been signed, you will be able to
                 submit your vacancy for review.</p>
         </div>
             
-        <a asp-route="@RouteNames.Dashboard_Index_Get" class="button">Return to dashboard</a>
+        <a asp-route="@RouteNames.Dashboard_Index_Get" class="govuk-button">Return to dashboard</a>
     </div>
 
 </div>
