@@ -1,5 +1,4 @@
 using System;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Wages;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services;
 using Esfa.Recruit.Vacancies.Client.UnitTests.TestHelpers;
 using FluentAssertions;
@@ -17,7 +16,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         public NationalMinimumWageProviderTests()
         {
             _mockLogger = new Mock<ILogger<NationalMinimumWageProvider>>();
-            _provider = new NationalMinimumWageProvider(_mockLogger.Object, new TestCache(), new CurrentUtcTimeProvider());
+            _provider = new NationalMinimumWageProvider(_mockLogger.Object);
         }
 
         [Fact]

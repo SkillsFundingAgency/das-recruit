@@ -5,7 +5,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Providers
 {
     public interface IMinimumWageProvider
     {
-        IMinimumWage GetWagePeriod(DateTime date);
+        MinimumWage GetWagePeriod(DateTime date);
     }
 
 }

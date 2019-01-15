@@ -4,7 +4,6 @@
     {
         public const string BlockedEmployers = "blockedEmployers";
         public const string ApprenticeshipProgrammes = "apprenticeshipProgrammes";
-        public const string MinimumWages = "minimumWages";
         public const string Qualifications = "qualifications";
         public const string Skills = "skills";
         public const string BankHolidays = "bankHolidays";
