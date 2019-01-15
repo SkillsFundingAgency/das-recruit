@@ -60,10 +60,11 @@ initializeHtmlEditors = function() {
         element_format: 'html',
         apply_source_formatting: true,
         menubar: false,
-        plugins: 'lists',
+        plugins: 'lists paste',
         selector: ".html-editor",
         statusbar: false,
         toolbar: 'bullist',
+        paste_as_text: true,
         content_style: ".mce-content-body {font-size:19px;font-family:nta,Arial,sans-serif;}",
         setup: function(tinyMceEditor) {
             var element = tinyMceEditor.getElement();
