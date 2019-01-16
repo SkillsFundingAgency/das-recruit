@@ -18,7 +18,7 @@
 
                 <div class="body-text form-hint">Select all that apply or add your own</div>
 
-                <span asp-validation-for="Skills" class="error-message"></span>
+                <span esfa-validation-message-for="Skills" class="error-message"></span>
 
                 <div class="two-column-checkbox-container">
                     <fieldset class="two-column-checkbox">
@@ -47,7 +47,7 @@
             <p class="no-bottom-margin">or</p>
             <div class="form-group form-group-compound">
                 <label asp-for="AddCustomSkillName" class="form-label-bold">Add a new desired skill or personal quality</label>
-                <span asp-validation-for="AddCustomSkillName" class="error-message"></span>
+                <span esfa-validation-message-for="AddCustomSkillName" class="error-message"></span>
                 <input asp-for="AddCustomSkillName" value="@Model.AddCustomSkillName" type="text" class="form-control" maxlength="30">
                 <button name="AddCustomSkillAction" id="add-custom-skill" value="AddCustomSkill" type="submit" class="button button-secondary save-button">+ Add this skill</button>
             </div>

@@ -13,6 +13,8 @@
 
         <form asp-route="@RouteNames.Qualifications_Post">
 
+            <span esfa-validation-message-for="Qualifications" class="error-message"></span>
+
             <div esfa-validation-marker-for="QualificationType" class="form-group form-group-compound">
                 <label asp-for="QualificationType" class="form-label-bold" id="@Anchors.QualificationsHeading">Add qualifications applicants should have</label>
                 <span esfa-validation-message-for="QualificationType" class="error-message"></span>
@@ -38,7 +40,7 @@
                 <input asp-for="Grade" value="@Model.Grade" type="text" class="form-control form-control-1-3" maxlength="30">
             </div>
 
-            <div  esfa-validation-marker-for="Weighting" class="form-group">
+            <div esfa-validation-marker-for="Weighting" class="form-group">
                 <fieldset class="inline">
                     <legend>
                         <h1 class="form-label-bold">Is this qualification essential?</h1>
