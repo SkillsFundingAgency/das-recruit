@@ -1,9 +1,17 @@
 @using Esfa.Recruit.Vacancies.Client.Domain.Entities
+@using Esfa.Recruit.Vacancies.Client.Domain.Extensions
 @model ReviewViewModel
 <div class="review-container">
 
     <partial name="_ReviewHeader" />
 
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            <h1 class="heading-xlarge small-bottom-margin">Vacancy preview (read only)</h1>
+            <div>Reviewed by @Model.ReviewerName</div>
+            <div>Returned to employer on @Model.ReviewedDate.AsGdsDate() at @Model.ReviewedDate.ToShortTimeString()</div>
+        </div>
+    </div>
     <div class="grid-row">
         <div class="column-two-thirds">
             <div>

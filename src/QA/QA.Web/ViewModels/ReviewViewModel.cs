@@ -53,6 +53,8 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public IEnumerable<FieldIdentifierViewModel> FieldIdentifiers { get; set; }
         public IEnumerable<AutomatedQaResultViewModel> AutomatedQaResults { get; set; }
         public bool IsResubmission { get; set; }
+        public string ReviewerName { get; set; }
+        public DateTime ReviewedDate { get; set; }
 
         public bool IsFirstSubmission => IsResubmission == false;
         public bool HasChangedFields => FieldIdentifiers.Any(f => f.FieldValueHasChanged);
