@@ -134,9 +134,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             mappings.Add(e => e.EmployerName, vm => vm.EmployerName);
             mappings.Add(e => e.EmployerDescription, vm => vm.EmployerDescription);
             mappings.Add(e => e.EmployerWebsiteUrl, vm => vm.EmployerWebsiteUrl);
-            mappings.Add(e => e.EmployerContact.ContactName, vm => vm.ContactName);
-            mappings.Add(e => e.EmployerContact.ContactEmail, vm => vm.ContactEmail);
-            mappings.Add(e => e.EmployerContact.ContactPhone, vm => vm.ContactTelephone);
+            mappings.Add(e => e.EmployerContact.Name, vm => vm.ContactName);
+            mappings.Add(e => e.EmployerContact.Email, vm => vm.ContactEmail);
+            mappings.Add(e => e.EmployerContact.Phone, vm => vm.ContactTelephone);
             mappings.Add(e => e.EmployerLocation, vm => vm.EmployerAddressElements);
             mappings.Add(e => e.EmployerLocation.AddressLine1, vm => vm.EmployerAddressElements);
             mappings.Add(e => e.EmployerLocation.AddressLine2, vm => vm.EmployerAddressElements);

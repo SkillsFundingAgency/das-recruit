@@ -31,9 +31,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             var vm = new EmployerContactDetailsViewModel
             {
                 Title = vacancy.Title,
-                EmployerContactName = vacancy.EmployerContact?.ContactName,
-                EmployerContactEmail = vacancy.EmployerContact?.ContactEmail,
-                EmployerContactPhone = vacancy.EmployerContact?.ContactPhone
+                EmployerContactName = vacancy.EmployerContact?.Name,
+                EmployerContactEmail = vacancy.EmployerContact?.Email,
+                EmployerContactPhone = vacancy.EmployerContact?.Phone
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
@@ -62,9 +62,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
             vacancy.EmployerContact = new ContactDetail
             {
-                ContactName = m.EmployerContactName,
-                ContactEmail = m.EmployerContactEmail,
-                ContactPhone = m.EmployerContactPhone
+                Name = m.EmployerContactName,
+                Email = m.EmployerContactEmail,
+                Phone = m.EmployerContactPhone
             };
 
             return await ValidateAndExecute(
@@ -78,9 +78,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         {
             var mappings = new EntityToViewModelPropertyMappings<Vacancy, EmployerContactDetailsEditModel>();
 
-            mappings.Add(e => e.EmployerContact.ContactName, vm => vm.EmployerContactName);
-            mappings.Add(e => e.EmployerContact.ContactEmail, vm => vm.EmployerContactEmail);
-            mappings.Add(e => e.EmployerContact.ContactPhone, vm => vm.EmployerContactPhone);
+            mappings.Add(e => e.EmployerContact.Name, vm => vm.EmployerContactName);
+            mappings.Add(e => e.EmployerContact.Email, vm => vm.EmployerContactEmail);
+            mappings.Add(e => e.EmployerContact.Phone, vm => vm.EmployerContactPhone);
 
             return mappings;
         }
