@@ -7,7 +7,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
     {
         internal ContactDetailValidator(long ruleId)
         {
-            RuleFor(x => x.ContactName)
+            RuleFor(x => x.Name)
                 .MaximumLength(100)
                     .WithMessage("Contact name must not exceed {MaxLength} characters")
                     .WithErrorCode("90")
@@ -16,7 +16,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithErrorCode("91")
                 .WithRuleId(ruleId);
 
-            RuleFor(x => x.ContactEmail)
+            RuleFor(x => x.Email)
                 .MaximumLength(100)
                     .WithMessage("Email address must not exceed {MaxLength} characters")
                     .WithErrorCode("92")
@@ -26,10 +26,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .Matches(ValidationConstants.EmailAddressRegex)
                     .WithMessage("Email address must be in a valid format")
                     .WithErrorCode("94")
-                    .When(v => !string.IsNullOrEmpty(v.ContactEmail))
+                    .When(v => !string.IsNullOrEmpty(v.Email))
                 .WithRuleId(ruleId);
 
-            RuleFor(x => x.ContactPhone)
+            RuleFor(x => x.Phone)
                 .MaximumLength(16)
                     .WithMessage("Contact number must not exceed {MaxLength} digits")
                     .WithErrorCode("95")
@@ -39,7 +39,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .Matches(ValidationConstants.PhoneNumberRegex)
                     .WithMessage("Contact number contains some invalid characters")
                     .WithErrorCode("97")
-                    .When(v => !string.IsNullOrEmpty(v.ContactPhone))
+                    .When(v => !string.IsNullOrEmpty(v.Phone))
                 .WithRuleId(ruleId);
         }
     }

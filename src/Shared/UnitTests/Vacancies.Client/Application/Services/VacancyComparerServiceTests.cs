@@ -9,7 +9,6 @@ using Xunit;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.Services
 {
-
     public class VacancyComparerServiceTests
     {
         public static class ComparisonDataSource
@@ -39,9 +38,9 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.S
             result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.ClosingDate)).AreEqual.Should().Be(expectedAreEqual);
             result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.Description)).AreEqual.Should().Be(expectedAreEqual);
             result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.DisabilityConfident)).AreEqual.Should().Be(expectedAreEqual);
-            result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.EmployerContact.ContactEmail)).AreEqual.Should().Be(expectedAreEqual);
-            result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.EmployerContact.ContactName)).AreEqual.Should().Be(expectedAreEqual);
-            result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.EmployerContact.ContactPhone)).AreEqual.Should().Be(expectedAreEqual);
+            result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.EmployerContact.Email)).AreEqual.Should().Be(expectedAreEqual);
+            result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.EmployerContact.Name)).AreEqual.Should().Be(expectedAreEqual);
+            result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.EmployerContact.Phone)).AreEqual.Should().Be(expectedAreEqual);
             result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.EmployerDescription)).AreEqual.Should().Be(expectedAreEqual);
             result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine1)).AreEqual.Should().Be(expectedAreEqual);
             result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine2)).AreEqual.Should().Be(expectedAreEqual);
@@ -81,9 +80,9 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.S
                 DisabilityConfident = DisabilityConfident.No,
                 EmployerContact = new ContactDetail
                 {
-                    ContactEmail = "employer contact email",
-                    ContactName = "employer contact name",
-                    ContactPhone = "employer contact phone",
+                    Email = "employer contact email",
+                    Name = "employer contact name",
+                    Phone = "employer contact phone",
                 },
                 EmployerDescription = "employer description",
                 EmployerLocation = new Address
@@ -138,9 +137,9 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.S
                 DisabilityConfident = DisabilityConfident.Yes,
                 EmployerContact = new ContactDetail
                 {
-                    ContactEmail = "employer contact email CHANGED",
-                    ContactName = "employer contact name CHANGED",
-                    ContactPhone = "employer contact phone CHANGED",
+                    Email = "employer contact email CHANGED",
+                    Name = "employer contact name CHANGED",
+                    Phone = "employer contact phone CHANGED",
                 },
                 EmployerDescription = "employer description CHANGED",
                 EmployerLocation = new Address

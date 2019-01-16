@@ -2,8 +2,8 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
 {
     public class ContactDetail
     {
-        public string ContactName { get; set; }
-        public string ContactEmail { get; set; }
-        public string ContactPhone { get; set; }
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public string Phone { get; set; }
     }
 }

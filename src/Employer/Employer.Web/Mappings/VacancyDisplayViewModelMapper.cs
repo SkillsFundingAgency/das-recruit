@@ -47,9 +47,9 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             vm.ApplicationUrl = vacancy.ApplicationUrl;
             vm.CanDelete = vacancy.CanDelete;
             vm.CanSubmit = vacancy.CanSubmit;
-            vm.ContactName = vacancy.EmployerContact?.ContactName;
-            vm.ContactEmail = vacancy.EmployerContact?.ContactEmail;
-            vm.ContactTelephone = vacancy.EmployerContact?.ContactPhone;
+            vm.ContactName = vacancy.EmployerContact?.Name;
+            vm.ContactEmail = vacancy.EmployerContact?.Email;
+            vm.ContactTelephone = vacancy.EmployerContact?.Phone;
             vm.ClosingDate = vacancy.ClosingDate?.AsGdsDate();
             vm.EmployerDescription = await GetEmployerDescriptionAsync(vacancy);
             vm.EmployerName = vacancy.EmployerName;
