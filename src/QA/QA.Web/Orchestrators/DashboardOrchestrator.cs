@@ -63,6 +63,7 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
                 VacancyReference = vacancyReview.VacancyReference.ToString(),
                 VacancyTitle = vacancyReview.Title,
                 ReviewId = vacancyReview.Id,
+                IsClosed =  vacancyReview.Status == ReviewStatus.Closed,
                 SubmittedDate = vacancyReview.VacancySnapshot.SubmittedDate.GetValueOrDefault().ToLocalTime(),
                 IsAvailableForReview = isAvailableForReview
             };

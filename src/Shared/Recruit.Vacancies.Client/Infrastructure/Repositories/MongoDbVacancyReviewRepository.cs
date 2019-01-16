@@ -23,14 +23,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         {
         }
 
-        public Task<List<VacancyReview>> SearchAsync(long vacancyReference)
+        public async Task<VacancyReview> SearchByReferenceAsync(long vacancyReference)
         {
             var filterBuilder = Builders<VacancyReview>.Filter;
 
-            var filter = (filterBuilder.Eq(r => r.Status, ReviewStatus.PendingReview)
-                         | filterBuilder.Eq(r => r.Status, ReviewStatus.UnderReview)) 
+            var filter = !filterBuilder.Eq(r => r.Status, ReviewStatus.New)
                          & filterBuilder.Eq(r => r.VacancyReference, vacancyReference);
-            return GetVacancyReviews(filter);
+            var results = await GetVacancyReviewsAsync(filter);
+            return results.OrderByDescending(r => r.CreatedDate).FirstOrDefault();
         }
 
         public Task<List<VacancyReview>> GetVacancyReviewsInProgressAsync(DateTime reviewExpiration)
@@ -38,10 +38,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var filterBuilder = Builders<VacancyReview>.Filter;
             var filter = filterBuilder.Eq(r => r.Status, ReviewStatus.UnderReview)
                 & filterBuilder.Gt(r => r.ReviewedDate, reviewExpiration);
-            return GetVacancyReviews(filter);
+            return GetVacancyReviewsAsync(filter);
         }
 
-        private async Task<List<VacancyReview>> GetVacancyReviews(FilterDefinition<VacancyReview> filter)
+        private async Task<List<VacancyReview>> GetVacancyReviewsAsync(FilterDefinition<VacancyReview> filter)
         {
             var collection = GetCollection<VacancyReview>();
 
@@ -50,7 +50,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
                     context => collection
                         .Find(filter)
                         .ToListAsync(),
-                    new Context(nameof(SearchAsync)));
+                    new Context(nameof(SearchByReferenceAsync)));
 
             return result;
         }
