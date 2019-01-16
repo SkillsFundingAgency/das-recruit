@@ -41,9 +41,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public DateTime? ClosingDate { get; set; }
         public string Description { get; set; }
         public DisabilityConfident DisabilityConfident { get; set; }
-        public string EmployerContactEmail { get; set; }
-        public string EmployerContactName { get; set; }
-        public string EmployerContactPhone { get; set; }
+        public ContactDetail EmployerContact { get; set; }
         public string EmployerDescription { get; set; }
         public Address EmployerLocation { get; set; }
         public string EmployerName { get; set; }
@@ -52,6 +50,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public long LegalEntityId { get; set; }
         public int? NumberOfPositions { get; set; }
         public string OutcomeDescription { get; set; }
+        public ContactDetail ProviderContact { get; set; }
         public string ProgrammeId { get; set; }
         public List<Qualification> Qualifications { get; set; }
         public string ShortDescription { get; set; }

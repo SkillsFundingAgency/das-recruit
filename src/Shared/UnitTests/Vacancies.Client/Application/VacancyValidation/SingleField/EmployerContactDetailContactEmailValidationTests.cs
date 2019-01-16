@@ -15,7 +15,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         {
             var vacancy = new Vacancy
             {
-                EmployerContactEmail = emailAddress
+                EmployerContact = new ContactDetail { ContactEmail = emailAddress} 
             };
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.EmployerContactDetails);
@@ -29,30 +29,30 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         {
             var vacancy = new Vacancy
             {
-                EmployerContactEmail = "name@".PadRight(101, 'w')
+                EmployerContact = new ContactDetail { ContactEmail = "name@".PadRight(101, 'w') }
             };
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.EmployerContactDetails);
 
             result.HasErrors.Should().BeTrue();
-            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.EmployerContactEmail));
+            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.EmployerContact)}.{nameof(vacancy.EmployerContact.ContactEmail)}");
             result.Errors[0].ErrorCode.Should().Be("92");
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.EmployerContactDetails);
         }
 
         [Theory]
         [MemberData(nameof(TestData.BlacklistedCharacters), MemberType = typeof(TestData))]
-        public void EmployerContactEmailMustNotContainsInvalidCharacters(string invalidChar)
+        public void EmployerContactEmailMustNotContainInvalidCharacters(string invalidChar)
         {
             var vacancy = new Vacancy
             {
-                EmployerContactEmail = invalidChar
+                EmployerContact = new ContactDetail { ContactEmail = invalidChar }
             };
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.EmployerContactDetails);
 
             result.HasErrors.Should().BeTrue();
-            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.EmployerContactEmail));
+            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.EmployerContact)}.{nameof(vacancy.EmployerContact.ContactEmail)}");
             result.Errors[0].ErrorCode.Should().Be("93");
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.EmployerContactDetails);
         }
@@ -62,13 +62,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         {
             var vacancy = new Vacancy
             {
-                EmployerContactEmail = "joe"
+                EmployerContact = new ContactDetail { ContactEmail = "joe" }
             };
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.EmployerContactDetails);
 
             result.HasErrors.Should().BeTrue();
-            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.EmployerContactEmail));
+            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.EmployerContact)}.{nameof(vacancy.EmployerContact.ContactEmail)}");
             result.Errors[0].ErrorCode.Should().Be("94");
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.EmployerContactDetails);
         }

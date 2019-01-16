@@ -101,9 +101,7 @@ namespace Esfa.Recruit.Employer.Web
             return !string.IsNullOrWhiteSpace(vacancy.EmployerDescription) ||
                    vacancy.ApplicationMethod != null ||
                    !string.IsNullOrWhiteSpace(vacancy.ThingsToConsider) ||
-                   !string.IsNullOrWhiteSpace(vacancy.EmployerContactName) ||
-                   !string.IsNullOrWhiteSpace(vacancy.EmployerContactEmail) ||
-                   !string.IsNullOrWhiteSpace(vacancy.EmployerContactPhone) ||
+                   vacancy.EmployerContact != null ||
                    vacancy.Qualifications != null ||
                    vacancy.Skills != null ||
                    vacancy.TrainingProvider != null ||

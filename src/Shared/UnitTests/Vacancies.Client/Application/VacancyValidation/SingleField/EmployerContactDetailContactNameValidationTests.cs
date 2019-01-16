@@ -15,7 +15,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         {
             var vacancy = new Vacancy
             {
-                EmployerContactName = contactName
+                EmployerContact = new ContactDetail { ContactName = contactName }
             };
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.EmployerContactDetails);
@@ -29,30 +29,30 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         {
             var vacancy = new Vacancy
             {
-                EmployerContactName = "name".PadRight(101, 'w')
+                EmployerContact = new ContactDetail { ContactName = "name".PadRight(101, 'w') }
             };
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.EmployerContactDetails);
 
             result.HasErrors.Should().BeTrue();
-            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.EmployerContactName));
+            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.EmployerContact)}.{nameof(vacancy.EmployerContact.ContactName)}");
             result.Errors[0].ErrorCode.Should().Be("90");
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.EmployerContactDetails);
         }
 
         [Theory]
         [MemberData(nameof(TestData.BlacklistedCharacters), MemberType = typeof(TestData))]
-        public void EmployerContactNameMustNotContainsInvalidCharacters(string invalidChar)
+        public void EmployerContactNameMustNotContainInvalidCharacters(string invalidChar)
         {
             var vacancy = new Vacancy
             {
-                EmployerContactName = invalidChar
+                EmployerContact = new ContactDetail { ContactName = invalidChar }
             };
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.EmployerContactDetails);
 
             result.HasErrors.Should().BeTrue();
-            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.EmployerContactName));
+            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.EmployerContact)}.{nameof(vacancy.EmployerContact.ContactName)}");
             result.Errors[0].ErrorCode.Should().Be("91");
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.EmployerContactDetails);
         }

@@ -9,7 +9,7 @@ using Xunit;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.Services
 {
-    
+
     public class VacancyComparerServiceTests
     {
         public static class ComparisonDataSource
@@ -26,7 +26,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.S
         [MemberData(nameof(ComparisonDataSource.TestData), MemberType = typeof(ComparisonDataSource))]
         public void ShouldCompare(Vacancy a, Vacancy b, bool expectedAreEqual)
         {
-            
+
             var sut = new VacancyComparerService();
 
             var result = sut.Compare(a, b);
@@ -39,9 +39,9 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.S
             result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.ClosingDate)).AreEqual.Should().Be(expectedAreEqual);
             result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.Description)).AreEqual.Should().Be(expectedAreEqual);
             result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.DisabilityConfident)).AreEqual.Should().Be(expectedAreEqual);
-            result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.EmployerContactEmail)).AreEqual.Should().Be(expectedAreEqual);
-            result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.EmployerContactName)).AreEqual.Should().Be(expectedAreEqual);
-            result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.EmployerContactPhone)).AreEqual.Should().Be(expectedAreEqual);
+            result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.EmployerContact.ContactEmail)).AreEqual.Should().Be(expectedAreEqual);
+            result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.EmployerContact.ContactName)).AreEqual.Should().Be(expectedAreEqual);
+            result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.EmployerContact.ContactPhone)).AreEqual.Should().Be(expectedAreEqual);
             result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.EmployerDescription)).AreEqual.Should().Be(expectedAreEqual);
             result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine1)).AreEqual.Should().Be(expectedAreEqual);
             result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine2)).AreEqual.Should().Be(expectedAreEqual);
@@ -66,7 +66,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.S
             result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.Wage.FixedWageYearlyAmount)).AreEqual.Should().Be(expectedAreEqual);
             result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.Wage.Duration)).AreEqual.Should().Be(expectedAreEqual);
         }
-        
+
         private static Vacancy CreateVacancy()
         {
             return new Vacancy
@@ -79,9 +79,12 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.S
                 ClosingDate = new DateTime(),
                 Description = "description",
                 DisabilityConfident = DisabilityConfident.No,
-                EmployerContactEmail = "employer contact email",
-                EmployerContactName = "employer contact name",
-                EmployerContactPhone = "employer contact phone",
+                EmployerContact = new ContactDetail
+                {
+                    ContactEmail = "employer contact email",
+                    ContactName = "employer contact name",
+                    ContactPhone = "employer contact phone",
+                },
                 EmployerDescription = "employer description",
                 EmployerLocation = new Address
                 {
@@ -107,7 +110,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.S
                 ThingsToConsider = "things to consider",
                 Title = "title",
                 TrainingDescription = "training description",
-                TrainingProvider = new TrainingProvider { Ukprn = 1234},
+                TrainingProvider = new TrainingProvider { Ukprn = 1234 },
                 Wage = new Wage
                 {
                     WeeklyHours = 35.5m,
@@ -133,9 +136,12 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.S
                 ClosingDate = DateTime.MaxValue,
                 Description = "description CHANGED",
                 DisabilityConfident = DisabilityConfident.Yes,
-                EmployerContactEmail = "employer contact email CHANGED",
-                EmployerContactName = "employer contact name CHANGED",
-                EmployerContactPhone = "employer contact phone CHANGED",
+                EmployerContact = new ContactDetail
+                {
+                    ContactEmail = "employer contact email CHANGED",
+                    ContactName = "employer contact name CHANGED",
+                    ContactPhone = "employer contact phone CHANGED",
+                },
                 EmployerDescription = "employer description CHANGED",
                 EmployerLocation = new Address
                 {
@@ -156,7 +162,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.S
                     new Qualification{QualificationType = "qualification type 2", Subject = "subject 2", Grade = "grade 2 CHANGED", Weighting = QualificationWeighting.Essential},
                 },
                 ShortDescription = "short description CHANGED",
-                Skills = new List<string> { "skill 1", "skill 2 CHANGED"},
+                Skills = new List<string> { "skill 1", "skill 2 CHANGED" },
                 StartDate = DateTime.MaxValue,
                 ThingsToConsider = "things to consider CHANGED",
                 Title = "title CHANGED",
@@ -181,15 +187,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.S
             {
                 VacancyReference = null,
                 EmployerAccountId = null,
-                ApplicationInstructions =null,
+                ApplicationInstructions = null,
                 ApplicationMethod = null,
                 ApplicationUrl = null,
                 ClosingDate = null,
                 Description = null,
                 DisabilityConfident = DisabilityConfident.Yes,
-                EmployerContactEmail = null,
-                EmployerContactName = null,
-                EmployerContactPhone = null,
+                EmployerContact = null,
                 EmployerDescription = null,
                 EmployerLocation = null,
                 EmployerName = null,

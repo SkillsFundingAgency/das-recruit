@@ -6,8 +6,7 @@ using Xunit;
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.SingleField
 {
     public class ExternalApplicationInstructionsValidationTests : VacancyValidationTestsBase
-    {       
-
+    {
         [Theory]
         [InlineData(null)]
         [InlineData("")]
@@ -47,7 +46,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
 
         [Theory]
         [MemberData(nameof(TestData.BlacklistedCharacters), MemberType = typeof(TestData))]
-        public void ExternalApplicationInstructionsMustNotContainsInvalidCharacters(string invalidChar)
+        public void ExternalApplicationInstructionsMustNotContainInvalidCharacters(string invalidChar)
         {
             var vacancy = new Vacancy
             {
