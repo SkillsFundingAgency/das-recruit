@@ -16,7 +16,7 @@
         intendedOwnerTypeUpdateValue = "Employer",
         batchUpdateLimit = 500;
     let passThrough = 1,
-        maxLoops = Math.ceil(db.vacancies.count(query) / batchUpdateLimit);
+        maxLoops = Math.ceil(db.reviews.count(query) / batchUpdateLimit);
 
     if (maxLoops === 0) {
         maxLoops = 1;
@@ -61,7 +61,7 @@
         }
 
         passThrough++;
-    } while (passThrough <= maxLoops && db.vacancies.count(query) > 0);
+    } while (passThrough <= maxLoops && db.reviews.count(query) > 0);
 
     print("Finished adding/updating vacancyReviews with default vacancySnapshot.ownerType of Employer.");
 }
