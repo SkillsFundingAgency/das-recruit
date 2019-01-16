@@ -13,12 +13,12 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
         [Fact]
         public void ShouldReturnTrueIfAnyPartTwoFieldsAreCompleted()
         {
-            Utility.VacancyHasStartedPartTwo(new Vacancy {EmployerDescription = "some value"}).Should().BeTrue();
+            Utility.VacancyHasStartedPartTwo(new Vacancy { EmployerDescription = "some value" }).Should().BeTrue();
             Utility.VacancyHasStartedPartTwo(new Vacancy { ApplicationMethod = ApplicationMethod.ThroughExternalApplicationSite }).Should().BeTrue();
             Utility.VacancyHasStartedPartTwo(new Vacancy { ThingsToConsider = "some value" }).Should().BeTrue();
-            Utility.VacancyHasStartedPartTwo(new Vacancy { EmployerContactName = "some value" }).Should().BeTrue();
-            Utility.VacancyHasStartedPartTwo(new Vacancy { EmployerContactEmail = "some value" }).Should().BeTrue();
-            Utility.VacancyHasStartedPartTwo(new Vacancy { EmployerContactPhone = "some value" }).Should().BeTrue();
+            Utility.VacancyHasStartedPartTwo(new Vacancy { EmployerContact = new ContactDetail { ContactName = "some value" }}).Should().BeTrue();
+            Utility.VacancyHasStartedPartTwo(new Vacancy { EmployerContact = new ContactDetail { ContactEmail = "some value"} }).Should().BeTrue();
+            Utility.VacancyHasStartedPartTwo(new Vacancy { EmployerContact = new ContactDetail { ContactPhone = "some value"} }).Should().BeTrue();
             Utility.VacancyHasStartedPartTwo(new Vacancy { Qualifications = new List<Qualification>() }).Should().BeTrue();
             Utility.VacancyHasStartedPartTwo(new Vacancy { Skills = new List<string>() }).Should().BeTrue();
             Utility.VacancyHasStartedPartTwo(new Vacancy { TrainingProvider = new TrainingProvider() }).Should().BeTrue();

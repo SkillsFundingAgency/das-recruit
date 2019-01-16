@@ -15,7 +15,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         {
             var vacancy = new Vacancy
             {
-                EmployerContactPhone = phoneNo
+                EmployerContact = new ContactDetail { ContactPhone = phoneNo }
             };
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.EmployerContactDetails);
@@ -29,13 +29,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         {
             var vacancy = new Vacancy
             {
-                EmployerContactPhone = "+4402086695847".PadRight(17, 'w')
+                EmployerContact = new ContactDetail { ContactPhone = "+4402086695847".PadRight(17, 'w') }
             };
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.EmployerContactDetails);
 
             result.HasErrors.Should().BeTrue();
-            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.EmployerContactPhone));
+            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.EmployerContact)}.{nameof(vacancy.EmployerContact.ContactPhone)}");
             result.Errors[0].ErrorCode.Should().Be("95");
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.EmployerContactDetails);
         }
@@ -45,13 +45,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         {
             var vacancy = new Vacancy
             {
-                EmployerContactPhone = "0208"
+                EmployerContact = new ContactDetail { ContactPhone = "0208" }
             };
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.EmployerContactDetails);
 
             result.HasErrors.Should().BeTrue();
-            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.EmployerContactPhone));
+            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.EmployerContact)}.{nameof(vacancy.EmployerContact.ContactPhone)}");
             result.Errors[0].ErrorCode.Should().Be("96");
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.EmployerContactDetails);
         }
@@ -61,13 +61,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.
         {
             var vacancy = new Vacancy
             {
-                EmployerContactPhone = "543121***"
+                EmployerContact = new ContactDetail { ContactPhone = "543121***" }
             };
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.EmployerContactDetails);
 
             result.HasErrors.Should().BeTrue();
-            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.EmployerContactPhone));
+            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.EmployerContact)}.{nameof(vacancy.EmployerContact.ContactPhone)}");
             result.Errors[0].ErrorCode.Should().Be("97");
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.EmployerContactDetails);
         }

@@ -31,9 +31,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             var vm = new EmployerContactDetailsViewModel
             {
                 Title = vacancy.Title,
-                EmployerContactName = vacancy.EmployerContactName,
-                EmployerContactEmail = vacancy.EmployerContactEmail,
-                EmployerContactPhone = vacancy.EmployerContactPhone
+                EmployerContactName = vacancy.EmployerContact?.ContactName,
+                EmployerContactEmail = vacancy.EmployerContact?.ContactEmail,
+                EmployerContactPhone = vacancy.EmployerContact?.ContactPhone
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
@@ -60,9 +60,12 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         {
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, m, RouteNames.EmployerContactDetails_Post);
 
-            vacancy.EmployerContactName = m.EmployerContactName;
-            vacancy.EmployerContactEmail = m.EmployerContactEmail;
-            vacancy.EmployerContactPhone = m.EmployerContactPhone;
+            vacancy.EmployerContact = new ContactDetail
+            {
+                ContactName = m.EmployerContactName,
+                ContactEmail = m.EmployerContactEmail,
+                ContactPhone = m.EmployerContactPhone
+            };
 
             return await ValidateAndExecute(
                 vacancy,
@@ -75,9 +78,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         {
             var mappings = new EntityToViewModelPropertyMappings<Vacancy, EmployerContactDetailsEditModel>();
 
-            mappings.Add(e => e.EmployerContactName, vm => vm.EmployerContactName);
-            mappings.Add(e => e.EmployerContactEmail, vm => vm.EmployerContactEmail);
-            mappings.Add(e => e.EmployerContactPhone, vm => vm.EmployerContactPhone);
+            mappings.Add(e => e.EmployerContact.ContactName, vm => vm.EmployerContactName);
+            mappings.Add(e => e.EmployerContact.ContactEmail, vm => vm.EmployerContactEmail);
+            mappings.Add(e => e.EmployerContact.ContactPhone, vm => vm.EmployerContactPhone);
 
             return mappings;
         }

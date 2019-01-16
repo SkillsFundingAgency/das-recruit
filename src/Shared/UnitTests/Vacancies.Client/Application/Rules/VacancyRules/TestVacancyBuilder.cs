@@ -11,6 +11,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.R
             return new Vacancy()
             {
                 EmployerLocation = new Address(),
+                EmployerContact = new ContactDetail(),
                 Skills = new List<string>(),
                 Qualifications = new List<Qualification>(),
                 Wage = new Wage()

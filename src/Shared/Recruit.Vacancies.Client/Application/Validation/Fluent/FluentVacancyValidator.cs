@@ -72,7 +72,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             ValidateEmployerInformation();
 
             ValidateTrainingProvider();
-        }        
+        }
 
         private void CrossFieldValidations()
         {
@@ -455,43 +455,12 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
         private void ValidateEmployerContactDetails()
         {
-            RuleFor(x => x.EmployerContactName)
-                .MaximumLength(100)
-                    .WithMessage("Contact name must not exceed {MaxLength} characters")
-                    .WithErrorCode("90")
-                .ValidFreeTextCharacters()
-                    .WithMessage("Contact name contains some invalid characters")
-                    .WithErrorCode("91")
-                .RunCondition(VacancyRuleSet.EmployerContactDetails)
-                .WithRuleId(VacancyRuleSet.EmployerContactDetails);
-
-            RuleFor(x => x.EmployerContactEmail)
-                .MaximumLength(100)
-                    .WithMessage("Email address must not exceed {MaxLength} characters")
-                    .WithErrorCode("92")
-                .ValidFreeTextCharacters()
-                    .WithMessage("Email address contains some invalid characters")
-                    .WithErrorCode("93")
-                .Matches(ValidationConstants.EmailAddressRegex)
-                    .WithMessage("Email address must be in a valid format")
-                    .WithErrorCode("94")
-                    .When(v => !string.IsNullOrEmpty(v.EmployerContactEmail))
-                .RunCondition(VacancyRuleSet.EmployerContactDetails)
-                .WithRuleId(VacancyRuleSet.EmployerContactDetails);
-
-            RuleFor(x => x.EmployerContactPhone)
-                .MaximumLength(16)
-                    .WithMessage("Contact number must not exceed {MaxLength} digits")
-                    .WithErrorCode("95")
-                .MinimumLength(8)
-                    .WithMessage("Contact number must be more than {MinLength} digits")
-                    .WithErrorCode("96")
-                .Matches(ValidationConstants.PhoneNumberRegex)
-                    .WithMessage("Contact number contains some invalid characters")
-                    .WithErrorCode("97")
-                    .When(v => !string.IsNullOrEmpty(v.EmployerContactPhone))
-                .RunCondition(VacancyRuleSet.EmployerContactDetails)
-                .WithRuleId(VacancyRuleSet.EmployerContactDetails);
+            When(x => x.EmployerContact != null, () =>
+            {
+                RuleFor(x => x.EmployerContact)
+                 .SetValidator(new ContactDetailValidator((long)VacancyRuleSet.EmployerContactDetails))
+                 .RunCondition(VacancyRuleSet.EmployerContactDetails);
+            });
         }
 
         private void ValidateThingsToConsider()

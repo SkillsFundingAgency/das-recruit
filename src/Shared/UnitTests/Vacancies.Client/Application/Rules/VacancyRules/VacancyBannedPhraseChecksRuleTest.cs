@@ -126,8 +126,5 @@ namespace UnitTests.Vacancies.Client.Application.Rules.VacancyRules
                 a.Narrative.Should().NotBeEmpty();
             });
         }
-
     }
-
-    
 }

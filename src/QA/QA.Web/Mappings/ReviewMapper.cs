@@ -21,7 +21,6 @@ namespace Esfa.Recruit.Qa.Web.Mappings
     {
         private const int MapImageWidth = 465;
         private const int MapImageHeight = 256;
-        
         private readonly ILogger<ReviewMapper> _logger;
         private readonly IQaVacancyClient _vacancyClient;
         private readonly IGeocodeImageService _mapService;
@@ -64,28 +63,28 @@ namespace Esfa.Recruit.Qa.Web.Mappings
             {FieldIdResolver.ToFieldId(v => v.StartDate), new []{ FieldIdentifiers.PossibleStartDate} },
             {FieldIdResolver.ToFieldId(v => v.ProgrammeId), new []{FieldIdentifiers.TrainingLevel, FieldIdentifiers.Training} },
             {FieldIdResolver.ToFieldId(v => v.VacancyReference), new string[0] },
-            {FieldIdResolver.ToFieldId(v => v.NumberOfPositions), new []{FieldIdentifiers.NumberOfPositions} },
-            {FieldIdResolver.ToFieldId(v => v.Description), new []{FieldIdentifiers.VacancyDescription} },
-            {FieldIdResolver.ToFieldId(v => v.TrainingDescription), new []{FieldIdentifiers.TrainingDescription} },
-            {FieldIdResolver.ToFieldId(v => v.OutcomeDescription), new []{FieldIdentifiers.OutcomeDescription} },
-            {FieldIdResolver.ToFieldId(v => v.Skills), new []{FieldIdentifiers.Skills} },
-            {FieldIdResolver.ToFieldId(v => v.Qualifications), new []{FieldIdentifiers.Qualifications} },
-            {FieldIdResolver.ToFieldId(v => v.ThingsToConsider), new []{FieldIdentifiers.ThingsToConsider} },
-            {FieldIdResolver.ToFieldId(v => v.EmployerDescription), new [] {FieldIdentifiers.EmployerDescription }},
-            {FieldIdResolver.ToFieldId(v => v.DisabilityConfident), new []{FieldIdentifiers.DisabilityConfident} },
-            {FieldIdResolver.ToFieldId(v => v.EmployerWebsiteUrl), new []{FieldIdentifiers.EmployerWebsiteUrl} },
-            {FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine1), new []{FieldIdentifiers.EmployerAddress} },
-            {FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine2), new []{FieldIdentifiers.EmployerAddress} },
-            {FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine3), new []{FieldIdentifiers.EmployerAddress} },
-            {FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine4), new []{ FieldIdentifiers.EmployerAddress} },
-            {FieldIdResolver.ToFieldId(v => v.EmployerLocation.Postcode), new[]{FieldIdentifiers.EmployerAddress}},
-            {FieldIdResolver.ToFieldId(v => v.EmployerContactEmail), new []{FieldIdentifiers.EmployerContact} },
-            {FieldIdResolver.ToFieldId(v => v.EmployerContactName), new []{ FieldIdentifiers.EmployerContact }},
-            {FieldIdResolver.ToFieldId(v => v.EmployerContactPhone), new []{FieldIdentifiers.EmployerContact }},
-            {FieldIdResolver.ToFieldId(v => v.TrainingProvider.Ukprn) , new []{FieldIdentifiers.Provider} },
-            {FieldIdResolver.ToFieldId(v => v.ApplicationInstructions), new [] {FieldIdentifiers.ApplicationInstructions }},
-            {FieldIdResolver.ToFieldId(v => v.ApplicationMethod), new [] {FieldIdentifiers.ApplicationMethod} },
-            {FieldIdResolver.ToFieldId(v => v.ApplicationUrl), new []{FieldIdentifiers.ApplicationUrl} }
+            {FieldIdResolver.ToFieldId(v => v.NumberOfPositions), new []{VacancyReview.FieldIdentifiers.NumberOfPositions} },
+            {FieldIdResolver.ToFieldId(v => v.Description), new []{VacancyReview.FieldIdentifiers.VacancyDescription} },
+            {FieldIdResolver.ToFieldId(v => v.TrainingDescription), new []{VacancyReview.FieldIdentifiers.TrainingDescription} },
+            {FieldIdResolver.ToFieldId(v => v.OutcomeDescription), new []{VacancyReview.FieldIdentifiers.OutcomeDescription} },
+            {FieldIdResolver.ToFieldId(v => v.Skills), new []{VacancyReview.FieldIdentifiers.Skills} },
+            {FieldIdResolver.ToFieldId(v => v.Qualifications), new []{VacancyReview.FieldIdentifiers.Qualifications} },
+            {FieldIdResolver.ToFieldId(v => v.ThingsToConsider), new []{VacancyReview.FieldIdentifiers.ThingsToConsider} },
+            {FieldIdResolver.ToFieldId(v => v.EmployerDescription), new [] {VacancyReview.FieldIdentifiers.EmployerDescription }},
+            {FieldIdResolver.ToFieldId(v => v.DisabilityConfident), new []{VacancyReview.FieldIdentifiers.DisabilityConfident} },
+            {FieldIdResolver.ToFieldId(v => v.EmployerWebsiteUrl), new []{VacancyReview.FieldIdentifiers.EmployerWebsiteUrl} },
+            {FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine1), new []{VacancyReview.FieldIdentifiers.EmployerAddress} },
+            {FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine2), new []{VacancyReview.FieldIdentifiers.EmployerAddress} },
+            {FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine3), new []{VacancyReview.FieldIdentifiers.EmployerAddress} },
+            {FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine4), new []{ VacancyReview.FieldIdentifiers.EmployerAddress} },
+            {FieldIdResolver.ToFieldId(v => v.EmployerLocation.Postcode), new[]{VacancyReview.FieldIdentifiers.EmployerAddress}},
+            {FieldIdResolver.ToFieldId(v => v.EmployerContact.ContactEmail), new []{VacancyReview.FieldIdentifiers.EmployerContact} },
+            {FieldIdResolver.ToFieldId(v => v.EmployerContact.ContactName), new []{ VacancyReview.FieldIdentifiers.EmployerContact }},
+            {FieldIdResolver.ToFieldId(v => v.EmployerContact.ContactPhone), new []{VacancyReview.FieldIdentifiers.EmployerContact }},
+            {FieldIdResolver.ToFieldId(v => v.TrainingProvider.Ukprn) , new []{VacancyReview.FieldIdentifiers.Provider} },
+            {FieldIdResolver.ToFieldId(v => v.ApplicationInstructions), new [] {VacancyReview.FieldIdentifiers.ApplicationInstructions }},
+            {FieldIdResolver.ToFieldId(v => v.ApplicationMethod), new [] {VacancyReview.FieldIdentifiers.ApplicationMethod} },
+            {FieldIdResolver.ToFieldId(v => v.ApplicationUrl), new []{VacancyReview.FieldIdentifiers.ApplicationUrl} }
         };
 
         private static List<FieldIdentifierViewModel> GetFieldIndicators()
@@ -153,9 +152,9 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 vm.ApplicationInstructions = vacancy.ApplicationInstructions;
                 vm.ApplicationMethod = vacancy.ApplicationMethod.Value;
                 vm.ApplicationUrl = vacancy.ApplicationUrl;
-                vm.ContactName = vacancy.EmployerContactName;
-                vm.ContactEmail = vacancy.EmployerContactEmail;
-                vm.ContactTelephone = vacancy.EmployerContactPhone;
+                vm.ContactName = vacancy.EmployerContact.ContactName;
+                vm.ContactEmail = vacancy.EmployerContact.ContactEmail;
+                vm.ContactTelephone = vacancy.EmployerContact.ContactPhone;
                 vm.ClosingDate = vacancy.ClosingDate?.AsGdsDate();
                 vm.EmployerDescription = vacancy.EmployerDescription;
                 vm.EmployerName = vacancy.EmployerName;

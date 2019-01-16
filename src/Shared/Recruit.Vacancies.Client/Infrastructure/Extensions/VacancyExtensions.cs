@@ -5,6 +5,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
 using Address = Esfa.Recruit.Vacancies.Client.Domain.Entities.Address;
+using ContactDetail = Esfa.Recruit.Vacancies.Client.Domain.Entities.ContactDetail;
 using ProjectionAddress = Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy.Address;
 using ProjectionQualification = Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy.Qualification;
 using ProjectionTrainingProvider = Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy.TrainingProvider;
@@ -30,9 +31,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
             projectedVacancy.ClosingDate = vacancy.ClosingDate.GetValueOrDefault();
             projectedVacancy.Description = vacancy.Description;
             projectedVacancy.DisabilityConfident = vacancy.DisabilityConfident;
-            projectedVacancy.EmployerContactEmail = vacancy.EmployerContactEmail;
-            projectedVacancy.EmployerContactName = vacancy.EmployerContactName;
-            projectedVacancy.EmployerContactPhone = vacancy.EmployerContactPhone;
+            projectedVacancy.EmployerContactEmail = vacancy.OwnerType == OwnerType.Employer ? vacancy.EmployerContact?.ContactEmail : vacancy.ProviderContact?.ContactEmail;
+            projectedVacancy.EmployerContactName = vacancy.OwnerType == OwnerType.Employer ? vacancy.EmployerContact?.ContactName : vacancy.ProviderContact?.ContactName;
+            projectedVacancy.EmployerContactPhone = vacancy.OwnerType == OwnerType.Employer ? vacancy.EmployerContact?.ContactPhone : vacancy.ProviderContact?.ContactPhone;
             projectedVacancy.EmployerDescription = vacancy.EmployerDescription;
             projectedVacancy.EmployerLocation = vacancy.EmployerLocation.ToProjection();
             projectedVacancy.EmployerName = vacancy.EmployerName;
@@ -81,7 +82,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
                 Weighting = q.Weighting.Value.ToString()
             });
         }
-
 
         public static ProjectionTrainingProvider ToProjection(this TrainingProvider trainingProvider)
         {

@@ -78,9 +78,9 @@ namespace Esfa.Recruit.Employer.Web.Mappings
                 { FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine3), new []{ FieldIdentifiers.EmployerAddress }},
                 { FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine4), new []{ FieldIdentifiers.EmployerAddress }},
                 { FieldIdResolver.ToFieldId(v => v.EmployerLocation.Postcode), new[] { FieldIdentifiers.EmployerAddress}},
-                { FieldIdResolver.ToFieldId(v => v.EmployerContactEmail), new []{ FieldIdentifiers.EmployerContact} },
-                { FieldIdResolver.ToFieldId(v => v.EmployerContactName), new [] { FieldIdentifiers.EmployerContact }},
-                { FieldIdResolver.ToFieldId(v => v.EmployerContactPhone), new []{ FieldIdentifiers.EmployerContact }},
+                { FieldIdResolver.ToFieldId(v => v.EmployerContact.ContactEmail), new []{ FieldIdentifiers.EmployerContact} },
+                { FieldIdResolver.ToFieldId(v => v.EmployerContact.ContactName), new [] { FieldIdentifiers.EmployerContact }},
+                { FieldIdResolver.ToFieldId(v => v.EmployerContact.ContactPhone), new []{ FieldIdentifiers.EmployerContact }},
                 { FieldIdResolver.ToFieldId(v => v.TrainingProvider.Ukprn) , new []{ FieldIdentifiers.Provider} },
                 { FieldIdResolver.ToFieldId(v => v.ApplicationInstructions), new [] { FieldIdentifiers.ApplicationInstructions }},
                 { FieldIdResolver.ToFieldId(v => v.ApplicationMethod), new [] { FieldIdentifiers.ApplicationMethod} },
@@ -282,9 +282,9 @@ namespace Esfa.Recruit.Employer.Web.Mappings
 
             var mappings =  new Dictionary<string, IEnumerable<string>>
             {
-                { FieldIdResolver.ToFieldId(v => v.EmployerContactEmail), new []{ FieldIdentifiers.EmployerContact }},
-                { FieldIdResolver.ToFieldId(v => v.EmployerContactName), new []{ FieldIdentifiers.EmployerContact }},
-                { FieldIdResolver.ToFieldId(v => v.EmployerContactPhone), new []{ FieldIdentifiers.EmployerContact }}
+                { FieldIdResolver.ToFieldId(v => v.EmployerContact.ContactEmail), new []{ FieldIdentifiers.EmployerContact }},
+                { FieldIdResolver.ToFieldId(v => v.EmployerContact.ContactName), new []{ FieldIdentifiers.EmployerContact }},
+                { FieldIdResolver.ToFieldId(v => v.EmployerContact.ContactPhone), new []{ FieldIdentifiers.EmployerContact }}
             };
 
             return new ReviewFieldMappingLookupsForPage(vms, mappings);
