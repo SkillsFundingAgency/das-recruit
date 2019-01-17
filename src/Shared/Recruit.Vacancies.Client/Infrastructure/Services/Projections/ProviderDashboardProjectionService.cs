@@ -12,20 +12,20 @@ using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
 {
-    internal class EmployerDashboardProjectionService : IEmployerDashboardProjectionService
+    internal class ProviderDashboardProjectionService : IProviderDashboardProjectionService
     {
-        private readonly ILogger<EmployerDashboardProjectionService> _logger;
+        private readonly ILogger<ProviderDashboardProjectionService> _logger;
         private readonly IVacancyQuery _vacancyQuery;
         private readonly IQueryStoreWriter _queryStoreWriter;
         private readonly IApplicationReviewQuery _applicationReviewQuery;
         private readonly IApprenticeshipProgrammeProvider _apprenticeshipProgrammeProvider;
         private readonly ITimeProvider _timeProvider;
 
-        public EmployerDashboardProjectionService(
+        public ProviderDashboardProjectionService(
             IVacancyQuery vacancyQuery, 
             IApplicationReviewQuery applicationReviewQuery, 
             IQueryStoreWriter queryStoreWriter, 
-            ILogger<EmployerDashboardProjectionService> logger,
+            ILogger<ProviderDashboardProjectionService> logger,
             IApprenticeshipProgrammeProvider apprenticeshipProgrammeProvider,
             ITimeProvider timeProvider)
         {
@@ -39,30 +39,30 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
 
         public async Task ReBuildAllDashboardsAsync()
         {
-            var employerAccountIds = (await _vacancyQuery.GetDistinctVacancyOwningEmployerAccountsAsync()).ToList();
+            var ukprns = (await _vacancyQuery.GetDistinctVacancyOwningProviderAccountsAsync()).ToList();
 
-            _logger.LogInformation($"Rebuilding {employerAccountIds.Count} employer dashboards");
+            _logger.LogInformation($"Rebuilding {ukprns.Count} provider dashboards");
 
             var startDateTime = _timeProvider.Now;
             var stopwatch = Stopwatch.StartNew();
 
-            foreach (var id in employerAccountIds)
+            foreach (var ukprn in ukprns)
             {
-                await ReBuildDashboardAsync(id);
+                await ReBuildDashboardAsync(ukprn);
             }
 
-            _logger.LogInformation($"Rebuilding {employerAccountIds.Count} employer dashboards took {stopwatch.ElapsedMilliseconds} milliseconds");
+            _logger.LogInformation($"Rebuilding {ukprns.Count} provider dashboards took {stopwatch.ElapsedMilliseconds} milliseconds");
 
-            var count = await _queryStoreWriter.RemoveOldEmployerDashboards(startDateTime);
+            var count = await _queryStoreWriter.RemoveOldProviderDashboards(startDateTime);
 
-            _logger.LogInformation($"Removed {count} redundant/old employer dashboards from query store");
+            _logger.LogInformation($"Removed {count} redundant/old provider dashboards from query store");
         }
 
-        public async Task ReBuildDashboardAsync(string employerAccountId)
+        public async Task ReBuildDashboardAsync(long ukprn)
         {
-            var vacancySummariesTask = _vacancyQuery.GetVacanciesByEmployerAccountAsync<VacancySummary>(employerAccountId);
+            var vacancySummariesTask = _vacancyQuery.GetVacanciesByProviderAccountAsync<VacancySummary>(ukprn);
 
-            var applicationReviewStatusCountsTask = _applicationReviewQuery.GetStatusCountsForEmployerAsync(employerAccountId);
+            var applicationReviewStatusCountsTask = _applicationReviewQuery.GetStatusCountsForProviderAsync(ukprn);
 
             await Task.WhenAll(vacancySummariesTask, applicationReviewStatusCountsTask);
 
@@ -86,9 +86,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
                 await UpdateWithTrainingProgrammeInfo(summary);
             }
 
-            await _queryStoreWriter.UpdateEmployerDashboardAsync(employerAccountId, vacancySummaries.OrderBy(v => v.CreatedDate));
+            await _queryStoreWriter.UpdateProviderDashboardAsync(ukprn, vacancySummaries.OrderBy(v => v.CreatedDate));
 
-            _logger.LogDebug("Update employer dashboard with {count} summary records for account: {employerAccountId}", vacancySummaries.Count, employerAccountId);
+            _logger.LogDebug("Update provider dashboard with {count} summary records for account: {ukprn}", vacancySummaries.Count, ukprn);
         }
 
         private async Task UpdateWithTrainingProgrammeInfo(VacancySummary summary)

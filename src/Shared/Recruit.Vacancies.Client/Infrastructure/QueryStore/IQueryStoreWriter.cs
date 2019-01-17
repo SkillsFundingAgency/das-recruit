@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.QA;
@@ -12,6 +13,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
     public interface IQueryStoreWriter
     {
         Task UpdateEmployerDashboardAsync(string employerAccountId, IEnumerable<VacancySummary> vacancySummaries);
+        Task UpdateProviderDashboardAsync(long ukprn, IEnumerable<VacancySummary> vacancySummaries);
         Task UpdateEmployerVacancyDataAsync(string employerAccountId, IEnumerable<LegalEntity> legalEntities);
         Task UpdateLiveVacancyAsync(LiveVacancy vacancy);
         Task DeleteLiveVacancyAsync(long vacancyReference);
@@ -21,5 +23,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         Task UpdateQaDashboardAsync(QaDashboard qaDashboard);
         Task UpdateClosedVacancyAsync(ClosedVacancy closedVacancy);
         Task<long> RemoveOldEmployerDashboards(DateTime oldestLastUpdatedDate);
+        Task<long> RemoveOldProviderDashboards(DateTime oldestLastUpdatedDate);
     }
 }
