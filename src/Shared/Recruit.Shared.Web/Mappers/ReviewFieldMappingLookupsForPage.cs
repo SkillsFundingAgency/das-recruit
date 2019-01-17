@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
+using Esfa.Recruit.Shared.Web.ViewModels;
 
-namespace Esfa.Recruit.Employer.Web.Mappings
+namespace Esfa.Recruit.Shared.Web.Mappers
 {
     public class ReviewFieldMappingLookupsForPage
     {

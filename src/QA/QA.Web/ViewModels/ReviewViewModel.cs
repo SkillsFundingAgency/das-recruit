@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
+using FieldIdentifier = Esfa.Recruit.Shared.Web.Mappers.FieldIdentifiers;
 
 namespace Esfa.Recruit.Qa.Web.ViewModels
 {
@@ -55,6 +57,9 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public bool IsResubmission { get; set; }
         public string ReviewerName { get; set; }
         public DateTime ReviewedDate { get; set; }
+        public ReviewSummaryViewModel Review { get; set; }
+        public string ReviewedDateDay => ReviewedDate.ToLocalTime().AsGdsDate();
+        public string ReviewedDateTime => ReviewedDate.ToLocalTime().AsGdsTime();
 
         public bool IsFirstSubmission => IsResubmission == false;
         public bool HasChangedFields => FieldIdentifiers.Any(f => f.FieldValueHasChanged);
@@ -64,34 +69,34 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public bool HasApplicationUrl => string.IsNullOrEmpty(ApplicationUrl) == false;
         public bool HasPreviouslySubmitted => VacancyReviewsApprovedCount > 0;
         public bool HasNotPreviouslySubmitted => HasPreviouslySubmitted == false;
-        public string SubmittedDateTime => SubmittedDate.ToLocalTime().AsGdsDateTime();
+        public string SubmittedDateTime => SubmittedDate.AsGdsDateTime();
         public bool IsNotDisabilityConfident => IsDisabilityConfident == false;
 
-        public string ApplicationInstructionsClass => GetFieldIdentifierCssClass(VacancyReview.FieldIdentifiers.ApplicationInstructions);
-        public string ApplicationMethodClass => GetFieldIdentifierCssClass(VacancyReview.FieldIdentifiers.ApplicationMethod);
-        public string ApplicationUrlClass => GetFieldIdentifierCssClass(VacancyReview.FieldIdentifiers.ApplicationUrl);
-        public string ClosingDateClass => GetFieldIdentifierCssClass(VacancyReview.FieldIdentifiers.ClosingDate);
-        public string EmployerContactClass => GetFieldIdentifierCssClass(VacancyReview.FieldIdentifiers.EmployerContact);
-        public string DisabilityConfidentClass => GetFieldIdentifierCssClass(VacancyReview.FieldIdentifiers.DisabilityConfident);
-        public string EmployerAddressClass => GetFieldIdentifierCssClass(VacancyReview.FieldIdentifiers.EmployerAddress);
-        public string EmployerDescriptionClass => GetFieldIdentifierCssClass(VacancyReview.FieldIdentifiers.EmployerDescription);
-        public string EmployerWebsiteUrlClass => GetFieldIdentifierCssClass(VacancyReview.FieldIdentifiers.EmployerWebsiteUrl);
-        public string ExpectedDurationClass => GetFieldIdentifierCssClass(VacancyReview.FieldIdentifiers.ExpectedDuration);
-        public string NumberOfPositionsClass => GetFieldIdentifierCssClass(VacancyReview.FieldIdentifiers.NumberOfPositions);
-        public string OutcomeDescriptionClass => GetFieldIdentifierCssClass(VacancyReview.FieldIdentifiers.OutcomeDescription);
-        public string PossibleStartDateClass => GetFieldIdentifierCssClass(VacancyReview.FieldIdentifiers.PossibleStartDate);
-        public string ProviderClass => GetFieldIdentifierCssClass(VacancyReview.FieldIdentifiers.Provider);
-        public string QualificationsClass => GetFieldIdentifierCssClass(VacancyReview.FieldIdentifiers.Qualifications);
-        public string SkillsClass => GetFieldIdentifierCssClass(VacancyReview.FieldIdentifiers.Skills);
-        public string ShortDescriptionClass => GetFieldIdentifierCssClass(VacancyReview.FieldIdentifiers.ShortDescription);
-        public string ThingsToConsiderClass => GetFieldIdentifierCssClass(VacancyReview.FieldIdentifiers.ThingsToConsider);
-        public string TitleClass => GetFieldIdentifierCssClass(VacancyReview.FieldIdentifiers.Title);
-        public string TrainingClass => GetFieldIdentifierCssClass(VacancyReview.FieldIdentifiers.Training);
-        public string TrainingDescriptionClass => GetFieldIdentifierCssClass(VacancyReview.FieldIdentifiers.TrainingDescription);
-        public string TrainingLevelClass => GetFieldIdentifierCssClass(VacancyReview.FieldIdentifiers.TrainingLevel);
-        public string VacancyDescriptionClass => GetFieldIdentifierCssClass(VacancyReview.FieldIdentifiers.VacancyDescription);
-        public string WageClass => GetFieldIdentifierCssClass(VacancyReview.FieldIdentifiers.Wage);
-        public string WorkingWeekClass => GetFieldIdentifierCssClass(VacancyReview.FieldIdentifiers.WorkingWeek);
+        public string ApplicationInstructionsClass => GetFieldIdentifierCssClass(FieldIdentifier.ApplicationInstructions);
+        public string ApplicationMethodClass => GetFieldIdentifierCssClass(FieldIdentifier.ApplicationMethod);
+        public string ApplicationUrlClass => GetFieldIdentifierCssClass(FieldIdentifier.ApplicationUrl);
+        public string ClosingDateClass => GetFieldIdentifierCssClass(FieldIdentifier.ClosingDate);
+        public string EmployerContactClass => GetFieldIdentifierCssClass(FieldIdentifier.EmployerContact);
+        public string DisabilityConfidentClass => GetFieldIdentifierCssClass(FieldIdentifier.DisabilityConfident);
+        public string EmployerAddressClass => GetFieldIdentifierCssClass(FieldIdentifier.EmployerAddress);
+        public string EmployerDescriptionClass => GetFieldIdentifierCssClass(FieldIdentifier.EmployerDescription);
+        public string EmployerWebsiteUrlClass => GetFieldIdentifierCssClass(FieldIdentifier.EmployerWebsiteUrl);
+        public string ExpectedDurationClass => GetFieldIdentifierCssClass(FieldIdentifier.ExpectedDuration);
+        public string NumberOfPositionsClass => GetFieldIdentifierCssClass(FieldIdentifier.NumberOfPositions);
+        public string OutcomeDescriptionClass => GetFieldIdentifierCssClass(FieldIdentifier.OutcomeDescription);
+        public string PossibleStartDateClass => GetFieldIdentifierCssClass(FieldIdentifier.PossibleStartDate);
+        public string ProviderClass => GetFieldIdentifierCssClass(FieldIdentifier.Provider);
+        public string QualificationsClass => GetFieldIdentifierCssClass(FieldIdentifier.Qualifications);
+        public string SkillsClass => GetFieldIdentifierCssClass(FieldIdentifier.Skills);
+        public string ShortDescriptionClass => GetFieldIdentifierCssClass(FieldIdentifier.ShortDescription);
+        public string ThingsToConsiderClass => GetFieldIdentifierCssClass(FieldIdentifier.ThingsToConsider);
+        public string TitleClass => GetFieldIdentifierCssClass(FieldIdentifier.Title);
+        public string TrainingClass => GetFieldIdentifierCssClass(FieldIdentifier.Training);
+        public string TrainingDescriptionClass => GetFieldIdentifierCssClass(FieldIdentifier.TrainingDescription);
+        public string TrainingLevelClass => GetFieldIdentifierCssClass(FieldIdentifier.TrainingLevel);
+        public string VacancyDescriptionClass => GetFieldIdentifierCssClass(FieldIdentifier.VacancyDescription);
+        public string WageClass => GetFieldIdentifierCssClass(FieldIdentifier.Wage);
+        public string WorkingWeekClass => GetFieldIdentifierCssClass(FieldIdentifier.WorkingWeek);
 
         public bool HasAutomatedQaResults => AutomatedQaResults.Any();
 

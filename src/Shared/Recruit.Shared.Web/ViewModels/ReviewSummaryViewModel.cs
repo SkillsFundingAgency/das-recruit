@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
 
-namespace Esfa.Recruit.Employer.Web.ViewModels
+namespace Esfa.Recruit.Shared.Web.ViewModels
 {
     public class ReviewSummaryViewModel
     {

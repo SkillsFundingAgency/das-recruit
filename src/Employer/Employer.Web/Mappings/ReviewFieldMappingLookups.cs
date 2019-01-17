@@ -5,8 +5,9 @@ using Esfa.Recruit.Employer.Web.ViewModels.Part1.ShortDescription;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Title;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Training;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Wage;
-using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Employer.Web.Views;
+using Esfa.Recruit.Shared.Web.Mappers;
+using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using static Esfa.Recruit.Vacancies.Client.Domain.Entities.VacancyReview;
 

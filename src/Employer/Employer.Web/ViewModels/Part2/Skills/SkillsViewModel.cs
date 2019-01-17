@@ -1,5 +1,5 @@
-﻿using Esfa.Recruit.Employer.Web.Views;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Esfa.Recruit.Shared.Web.ViewModels;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.Part2.Skills
 {

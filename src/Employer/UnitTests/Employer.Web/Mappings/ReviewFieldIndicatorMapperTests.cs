@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Employer.Web.Mappings;
+using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.RuleTemplates;
 using Esfa.Recruit.Vacancies.Client.Application.Rules;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -49,12 +50,12 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Mappings
                     new ManualQaFieldIndicator
                     {
                         IsChangeRequested = false,
-                        FieldIdentifier = VacancyReview.FieldIdentifiers.Title
+                        FieldIdentifier = FieldIdentifiers.Title
                     },
                     new ManualQaFieldIndicator
                     {
                         IsChangeRequested = true,
-                        FieldIdentifier = VacancyReview.FieldIdentifiers.ShortDescription
+                        FieldIdentifier = FieldIdentifiers.ShortDescription
                     }
                 },
                 AutomatedQaOutcomeIndicators = new List<RuleOutcomeIndicator>
@@ -77,7 +78,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Mappings
 
             vm.Count.Should().Be(1);
 
-            var shortDescription = vm.Single(v => v.ReviewFieldIdentifier == VacancyReview.FieldIdentifiers.ShortDescription);
+            var shortDescription = vm.Single(v => v.ReviewFieldIdentifier == FieldIdentifiers.ShortDescription);
 
             shortDescription.ManualQaText.Should().NotBeNullOrEmpty();
 
