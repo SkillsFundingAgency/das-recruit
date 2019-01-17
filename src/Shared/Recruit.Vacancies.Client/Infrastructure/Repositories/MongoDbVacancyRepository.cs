@@ -17,8 +17,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 {
     internal sealed class MongoDbVacancyRepository : MongoDbCollectionBase, IVacancyRepository, IVacancyQuery
     {
-        private const string EmployerAccountId = "employerAccountId";
-        private const string IsDeleted = "isDeleted";
+        private const string EmployerAccountIdFieldName = "employerAccountId";
+        private const string OwnerTypeFieldName = "ownerType";
+        private const string IsDeletedFieldName = "isDeleted";
 
         public MongoDbVacancyRepository(ILoggerFactory loggerFactory, IOptions<MongoDbConnectionDetails> details) 
             : base(loggerFactory, MongoDbNames.RecruitDb, MongoDbCollectionNames.Vacancies, details)
@@ -64,8 +65,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         public async Task<IEnumerable<T>> GetVacanciesByEmployerAccountAsync<T>(string employerAccountId)
         {
             var builder = Builders<T>.Filter;
-            var filter = builder.Eq(EmployerAccountId, employerAccountId) &
-                         builder.Ne(IsDeleted, true);
+            var filter = builder.Eq(EmployerAccountIdFieldName, employerAccountId) &
+                        builder.Eq(OwnerTypeFieldName, OwnerType.Employer) &
+                        builder.Ne(IsDeletedFieldName, true);
 
             var collection = GetCollection<T>();
 
@@ -73,7 +75,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 
             var result = await RetryPolicy.ExecuteAsync(context => collection.FindAsync<T>(filter, options), 
                 new Context(nameof(GetVacanciesByEmployerAccountAsync)));
-    
+
             return await result.ToListAsync();
         }
 

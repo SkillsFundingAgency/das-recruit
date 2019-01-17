@@ -45,7 +45,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.ApplicationRev
 
         [Theory]
         [ClassData(typeof(ShouldRequireCandidateFeedbackIfUnsuccessfulTestData))]
-        public void ShouldRequireCandiateFeedbackIfUnsuccessful(string candidateFeedback, string expectedErrorMessage)
+        public void ShouldRequireCandidateFeedbackIfUnsuccessful(string candidateFeedback, string expectedErrorMessage)
         {
             var m = new ApplicationReviewEditModel
             {
