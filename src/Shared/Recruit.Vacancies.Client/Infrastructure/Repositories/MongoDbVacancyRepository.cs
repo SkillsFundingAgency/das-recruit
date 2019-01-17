@@ -1,23 +1,24 @@
 ﻿using System;
 using System.Threading.Tasks;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Collections.Generic;
+using Esfa.Recruit.Vacancies.Client.Application.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
-using System.Linq.Expressions;
-using Esfa.Recruit.Vacancies.Client.Application.Exceptions;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
-using Microsoft.Extensions.Logging;
 using Polly;
-using System.Linq;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 {
     internal sealed class MongoDbVacancyRepository : MongoDbCollectionBase, IVacancyRepository, IVacancyQuery
     {
         private const string EmployerAccountIdFieldName = "employerAccountId";
+        private const string ProviderUkprnFieldName = "trainingProvider.ukprn";
         private const string OwnerTypeFieldName = "ownerType";
         private const string IsDeletedFieldName = "isDeleted";
 
@@ -75,6 +76,23 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 
             var result = await RetryPolicy.ExecuteAsync(context => collection.FindAsync<T>(filter, options), 
                 new Context(nameof(GetVacanciesByEmployerAccountAsync)));
+
+            return await result.ToListAsync();
+        }
+
+        public async Task<IEnumerable<T>> GetVacanciesByProviderAccountAsync<T>(long ukprn)
+        {
+            var builder = Builders<T>.Filter;
+            var filter = builder.Eq(ProviderUkprnFieldName, ukprn) &
+                        builder.Eq(OwnerTypeFieldName, OwnerType.Provider) &
+                        builder.Ne(IsDeletedFieldName, true);
+
+            var collection = GetCollection<T>();
+
+            var options = new FindOptions<T> { Projection = GetProjection<T>() };
+
+            var result = await RetryPolicy.ExecuteAsync(context => collection.FindAsync<T>(filter, options), 
+                new Context(nameof(GetVacanciesByProviderAccountAsync)));
 
             return await result.ToListAsync();
         }
