@@ -3,11 +3,11 @@ using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 
-namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Provider
 {
-    public class EmployerDashboard : QueryProjectionBase
+    public class ProviderDashboard : QueryProjectionBase
     {
-        public EmployerDashboard() : base(QueryViewType.EmployerDashboard.TypeName)
+        public ProviderDashboard() : base(QueryViewType.ProviderDashboard.TypeName)
         {
         }
 

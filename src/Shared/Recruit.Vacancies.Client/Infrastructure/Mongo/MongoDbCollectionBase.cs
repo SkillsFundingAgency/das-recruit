@@ -71,6 +71,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
                     return;
 
                 _mongoCommandLogger.Value.LogTrace($"{e.CommandName} = {e.Command.ToJson()}");
+                Console.WriteLine($"{e.CommandName} - {e.Command.ToJson()}");
             });
         }
     }

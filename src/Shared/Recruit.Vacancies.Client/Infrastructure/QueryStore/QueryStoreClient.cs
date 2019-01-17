@@ -2,7 +2,9 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Provider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.QA;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;
@@ -34,6 +36,18 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             var dashboardItem = new EmployerDashboard
             {
                 Id = QueryViewType.EmployerDashboard.GetIdValue(employerAccountId),
+                Vacancies = vacancySummaries,
+                LastUpdated = _timeProvider.Now
+            };
+
+            return _queryStore.UpsertAsync(dashboardItem);
+        }
+
+        public Task UpdateProviderDashboardAsync(long ukprn, IEnumerable<VacancySummary> vacancySummaries)
+        {
+            var dashboardItem = new ProviderDashboard
+            {
+                Id = QueryViewType.ProviderDashboard.GetIdValue(ukprn),
                 Vacancies = vacancySummaries,
                 LastUpdated = _timeProvider.Now
             };
@@ -124,6 +138,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         public Task<long> RemoveOldEmployerDashboards(DateTime oldestLastUpdatedDate)
         {
             return _queryStore.DeleteManyAsync<EmployerDashboard, DateTime>(QueryViewType.EmployerDashboard.TypeName, x => x.LastUpdated, oldestLastUpdatedDate);
+        }
+
+        public Task<long> RemoveOldProviderDashboards(DateTime oldestLastUpdatedDate)
+        {
+            return _queryStore.DeleteManyAsync<ProviderDashboard, DateTime>(QueryViewType.ProviderDashboard.TypeName, x => x.LastUpdated, oldestLastUpdatedDate);
         }
 
         private string GetLiveVacancyId(long vacancyReference)

@@ -21,12 +21,18 @@
             return string.Format(_idFormatString, value);
         }
 
+        public string GetIdValue(long value)
+        {
+            return string.Format(_idFormatString, value);
+        }
+
         public string GetIdValue()
         {
             return _idFormatString;
         }
 
         public static QueryViewType EmployerDashboard => new QueryViewType("EmployerDashboard", "EmployerDashboard_{0}");
+        public static QueryViewType ProviderDashboard => new QueryViewType("ProviderDashboard", "ProviderDashboard_{0}");
         public static QueryViewType EditVacancyInfo => new QueryViewType("EditVacancyInfo", "EditVacancyInfo_{0}");
         public static QueryViewType LiveVacancy => new QueryViewType("LiveVacancy", "LiveVacancy_{0}");
         public static QueryViewType VacancyApplications => new QueryViewType("VacancyApplications", "VacancyApplications_{0}");

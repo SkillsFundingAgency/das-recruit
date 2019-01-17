@@ -91,6 +91,36 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             return aggregate;
         }
 
+        public Task<List<ApplicationReviewCount>> GetStatusCountsForProviderAsync(long ukprn)
+        {
+            // var collection = GetCollection<ApplicationReview>();
+
+            // var builder = Builders<ApplicationReview>.Filter;
+            // var filter = builder.Eq(r => r.Ukprn, ukprn) &
+            //              builder.Ne(r => r.IsWithdrawn, true);
+
+            // var aggregate = collection.Aggregate()
+
+            //     .Match(filter)
+
+            //     .Group(groupBy => new ApplicationReviewCount.ApplicationReviewsCountGroupKey
+            //         {
+            //             VacancyReference = groupBy.VacancyReference,
+            //             Status = groupBy.Status
+            //         },
+            //         g =>
+            //             new ApplicationReviewCount
+            //             {
+            //                 Id = g.Key,
+            //                 Count = g.Count()
+            //             })
+            //     .ToListAsync();
+
+            // return aggregate;
+
+            return Task.FromResult(new List<ApplicationReviewCount>());
+        }
+
         public async Task<List<T>> GetForVacancyAsync<T>(long vacancyReference)
         {
             var filter = Builders<T>.Filter.Eq(VacancyReference, vacancyReference);

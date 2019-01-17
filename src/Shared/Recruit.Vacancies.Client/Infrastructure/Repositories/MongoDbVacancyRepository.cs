@@ -67,7 +67,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         {
             var builder = Builders<T>.Filter;
             var filter = builder.Eq(EmployerAccountIdFieldName, employerAccountId) &
-                        builder.Eq(OwnerTypeFieldName, OwnerType.Employer) &
+                        builder.Eq(OwnerTypeFieldName, OwnerType.Employer.ToString()) &
                         builder.Ne(IsDeletedFieldName, true);
 
             var collection = GetCollection<T>();
@@ -84,7 +84,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         {
             var builder = Builders<T>.Filter;
             var filter = builder.Eq(ProviderUkprnFieldName, ukprn) &
-                        builder.Eq(OwnerTypeFieldName, OwnerType.Provider) &
+                        builder.Eq(OwnerTypeFieldName, OwnerType.Provider.ToString()) &
                         builder.Ne(IsDeletedFieldName, true);
 
             var collection = GetCollection<T>();
@@ -130,13 +130,23 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             await RetryPolicy.ExecuteAsync(context => collection.ReplaceOneAsync(filter, vacancy), new Context(nameof(UpdateAsync)));
         }
 
-        public async Task<IEnumerable<string>> GetDistinctEmployerAccountsAsync()
+        public async Task<IEnumerable<string>> GetDistinctVacancyOwningEmployerAccountsAsync()
         {
-            var filter = Builders<Vacancy>.Filter.Empty;
+            var filter = Builders<Vacancy>.Filter.Eq(v => v.OwnerType, OwnerType.Employer);
             var collection = GetCollection<Vacancy>();
             var ids = collection.Distinct(x => x.EmployerAccountId, filter);
             
             return await ids.ToListAsync();
+        }
+
+        public async Task<IEnumerable<long>> GetDistinctVacancyOwningProviderAccountsAsync()
+        {
+            var filter = Builders<Vacancy>.Filter.Eq(v => v.OwnerType, OwnerType.Provider);
+            var collection = GetCollection<Vacancy>();
+            var ids = collection.Distinct(x => x.TrainingProvider.Ukprn, filter);
+            
+            var ukprnList = await ids.ToListAsync();
+            return ukprnList.Where(x => x != null).Cast<long>().ToList();
         }
     }
 }
