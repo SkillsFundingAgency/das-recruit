@@ -23,7 +23,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         {
         }
 
-        public async Task<VacancyReview> SearchByReferenceAsync(long vacancyReference)
+        public async Task<VacancyReview> GetLatestReviewByReferenceAsync(long vacancyReference)
         {
             var filterBuilder = Builders<VacancyReview>.Filter;
 
@@ -50,7 +50,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
                     context => collection
                         .Find(filter)
                         .ToListAsync(),
-                    new Context(nameof(SearchByReferenceAsync)));
+                    new Context(nameof(GetLatestReviewByReferenceAsync)));
 
             return result;
         }
