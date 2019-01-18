@@ -111,7 +111,7 @@
                 <td>@vacancy.EmployerName</td>
                 <td>@vacancy.VacancyTitle</td>
                 <td><span>VAC</span>@vacancy.VacancyReference</td>
-                <td><span asp-show="vacancy.IsClosed" class="tag">With Employer</span><span asp-hide="vacancy.IsClosed">@vacancy.SubmittedDate.ToLocalTime().AsGdsDateTime()</span></td>                
+                <td>@vacancy.SubmittedDate.ToLocalTime().AsGdsDateTime()</td>
                 <td>@vacancy.ClosingDate.AsGdsDate()</td>
                 <td>
                     <span asp-show="@vacancy.IsNotAvailableForReview">@assignmentInfoCaption<br /></span>
