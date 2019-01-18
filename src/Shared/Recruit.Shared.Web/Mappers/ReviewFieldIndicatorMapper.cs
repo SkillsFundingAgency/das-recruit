@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
-using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.RuleTemplates;
+using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using FieldIdentifiers = Esfa.Recruit.Vacancies.Client.Domain.Entities.VacancyReview.FieldIdentifiers;
 
-namespace Esfa.Recruit.Employer.Web.Mappings
+namespace Esfa.Recruit.Shared.Web.Mappers
 {
     public sealed class ReviewFieldIndicatorMapper
     {

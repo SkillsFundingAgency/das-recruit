@@ -1,4 +1,5 @@
 ﻿using System;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Qa.Web.ViewModels
 {
@@ -20,9 +21,11 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
 
         public bool IsAvailableForReview { get; internal set; }
 
-        public bool IsNotAvailableForReview => !IsAvailableForReview;
-        public bool CanShowReviewLink => IsAvailableForReview || IsAssignedToLoggedInUser;
+        public bool IsClosed { get; set; }
 
+        public bool IsNotAvailableForReview => !IsAvailableForReview;
+
+        public bool CanShowReviewLink => (IsAvailableForReview || IsAssignedToLoggedInUser) && !IsClosed;
 
         internal string AssignedTo { get; set; }
 

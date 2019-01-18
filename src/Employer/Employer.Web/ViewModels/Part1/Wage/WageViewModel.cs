@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Esfa.Recruit.Shared.Web.ViewModels;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Wage
 {

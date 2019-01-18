@@ -228,3 +228,15 @@ mce-tinymce {
 .break-word {
   word-wrap:break-word;
 }
+
+.tag {
+  display: inline-block;
+  text-align: center;
+  background-color: #808080;
+  color: white;
+  padding: 0.3em 0.4em 0.2em 0.4em;
+  font-weight: bold;
+  font-size: 16px;
+  border-radius: 4px;
+  white-space: nowrap;
+}

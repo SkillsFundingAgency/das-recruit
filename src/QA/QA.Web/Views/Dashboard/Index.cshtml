@@ -74,7 +74,7 @@
                 <td>@vacancy.EmployerName</td>
                 <td>@vacancy.VacancyTitle</td>
                 <td><span>VAC</span>@vacancy.VacancyReference</td>
-                <td>@vacancy.SubmittedDate.AsGdsDateTime()</td>
+                <td>@vacancy.SubmittedDate.ToLocalTime().AsGdsDateTime()</td>
                 <td>@vacancy.ClosingDate.AsGdsDate()</td>
                 <td>
                     @assignmentInfoCaption <br />
@@ -111,11 +111,12 @@
                 <td>@vacancy.EmployerName</td>
                 <td>@vacancy.VacancyTitle</td>
                 <td><span>VAC</span>@vacancy.VacancyReference</td>
-                <td>@vacancy.SubmittedDate.AsGdsDateTime()</td>
+                <td>@vacancy.SubmittedDate.ToLocalTime().AsGdsDateTime()</td>
                 <td>@vacancy.ClosingDate.AsGdsDate()</td>
                 <td>
                     <span asp-show="@vacancy.IsNotAvailableForReview">@assignmentInfoCaption<br /></span>
                     <a asp-show="@vacancy.CanShowReviewLink" asp-route="@RouteNames.Vacancy_Review_Get" asp-route-reviewId="@vacancy.ReviewId">Review</a>
+                    <a asp-show="@vacancy.IsClosed" asp-route="@RouteNames.Vacancy_Readonly_Review_Get" asp-route-reviewId="@vacancy.ReviewId">View (read only)</a>
                 </td>
             </tr>
         }

@@ -58,12 +58,13 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
                 IsAssignedToLoggedInUser = vacancyUser.UserId == vacancyReview.ReviewedByUser?.UserId,
                 AssignedTo = isAvailableForReview ? null : vacancyReview.ReviewedByUser.Name,
                 AssignedTimeElapsed = vacancyReview.ReviewedDate.GetShortTimeElapsed(_timeProvider.Now),
-                ClosingDate = vacancyReview.VacancySnapshot.ClosingDate.GetValueOrDefault().ToLocalTime(),
+                ClosingDate = vacancyReview.VacancySnapshot.ClosingDate.GetValueOrDefault(),
                 EmployerName = vacancyReview.VacancySnapshot.EmployerName,
                 VacancyReference = vacancyReview.VacancyReference.ToString(),
                 VacancyTitle = vacancyReview.Title,
                 ReviewId = vacancyReview.Id,
-                SubmittedDate = vacancyReview.VacancySnapshot.SubmittedDate.GetValueOrDefault().ToLocalTime(),
+                IsClosed =  vacancyReview.Status == ReviewStatus.Closed,
+                SubmittedDate = vacancyReview.VacancySnapshot.SubmittedDate.GetValueOrDefault(),
                 IsAvailableForReview = isAvailableForReview
             };
         }

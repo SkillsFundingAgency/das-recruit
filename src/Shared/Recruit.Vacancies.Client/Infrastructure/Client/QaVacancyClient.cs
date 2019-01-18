@@ -101,11 +101,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public async Task<List<VacancyReview>> GetSearchResultsAsync(string searchTerm)
         {
-            if (TryGetVacancyReference(searchTerm, out var vacancyReference))
-            {
-                return await _vacancyReviewQuery.SearchAsync(vacancyReference);
-            }
-            return new List<VacancyReview>();
+            //The return type is a list to allow adding results from other searches to be implemented in future
+            var result = new List<VacancyReview>();
+
+            if (!TryGetVacancyReference(searchTerm, out var vacancyReference)) return result;
+
+            var review = await _vacancyReviewQuery.GetLatestReviewByReferenceAsync(vacancyReference);
+            if (review != null) result.Add(review);
+            
+            return result;
         }
 
         private static bool TryGetVacancyReference(string value, out long vacancyReference)

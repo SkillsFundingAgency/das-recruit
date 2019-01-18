@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
+namespace Esfa.Recruit.Shared.Web.ViewModels
 {
     public class ReviewFieldIndicatorViewModel
     {

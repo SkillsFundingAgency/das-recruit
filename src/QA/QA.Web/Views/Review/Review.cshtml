@@ -1,3 +1,4 @@
+@using Esfa.Recruit.Shared.Web.Mappers
 @using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 @using Esfa.Recruit.Vacancies.Client.Domain.Entities
 @model ReviewViewModel
@@ -59,12 +60,12 @@
 
         <div class="grid-row">
             <div class="column-two-thirds">
-                <div class=" @Model.TitleClass" id="@VacancyReview.FieldIdentifiers.Title">
+                <div class=" @Model.TitleClass" id="@FieldIdentifiers.Title">
                     <h1 class="heading-xlarge no-bottom-margin">
                         @Model.Title
                     </h1>
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
-                                          asp-value="@VacancyReview.FieldIdentifiers.Title"
+                                          asp-value="@FieldIdentifiers.Title"
                                           asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                 </div>
                 <h2 class="heading-xlarge small-bottom-margin">
@@ -74,22 +75,22 @@
         </div>
         <div class="grid-row">
             <div class="column-two-thirds">
-                <div class="@Model.ShortDescriptionClass" id="@VacancyReview.FieldIdentifiers.ShortDescription">
+                <div class="@Model.ShortDescriptionClass" id="@FieldIdentifiers.ShortDescription">
                     <h3 class="heading-small sfa-no-top-margin">Brief overview</h3>
 
                     <p>@Model.ShortDescription</p>
 
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
-                                          asp-value="@VacancyReview.FieldIdentifiers.ShortDescription"
+                                          asp-value="@FieldIdentifiers.ShortDescription"
                                           asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                 </div>
             </div>
             <div class="column-one-third">
-                <div class="@Model.ClosingDateClass" id="@VacancyReview.FieldIdentifiers.ClosingDate">
+                <div class="@Model.ClosingDateClass" id="@FieldIdentifiers.ClosingDate">
                     <h3 class="heading-small sfa-no-top-margin">Closing Date</h3>
                     <p>@Model.ClosingDate</p>
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
-                                          asp-value="@VacancyReview.FieldIdentifiers.ClosingDate"
+                                          asp-value="@FieldIdentifiers.ClosingDate"
                                           asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                 </div>
             </div>
@@ -103,49 +104,49 @@
             <div class="column-one-third">
                 <ul class="list">
                     <li>
-                        <div class="@Model.WorkingWeekClass" id="@VacancyReview.FieldIdentifiers.WorkingWeek">
+                        <div class="@Model.WorkingWeekClass" id="@FieldIdentifiers.WorkingWeek">
                             <h3 class="heading-small">Working week</h3>
                             <p>@Model.WorkingWeekDescription</p>
                             <p>Total hours per week: @Model.HoursPerWeek</p>
                             <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
-                                                  asp-value="@VacancyReview.FieldIdentifiers.WorkingWeek"
+                                                  asp-value="@FieldIdentifiers.WorkingWeek"
                                                   asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                         </div>
                     </li>
                     <li>
-                        <div class="@Model.WageClass" id="@VacancyReview.FieldIdentifiers.Wage">
+                        <div class="@Model.WageClass" id="@FieldIdentifiers.Wage">
                             <h3 class="heading-small">Yearly wage</h3>
                             <p>@Model.WageText</p>
                             <p>@Model.WageInfo</p>
                             <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
-                                                  asp-value="@VacancyReview.FieldIdentifiers.Wage"
+                                                  asp-value="@FieldIdentifiers.Wage"
                                                   asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                         </div>
                     </li>
                     <li>
-                        <div class="@Model.ExpectedDurationClass" id="@VacancyReview.FieldIdentifiers.ExpectedDuration">
+                        <div class="@Model.ExpectedDurationClass" id="@FieldIdentifiers.ExpectedDuration">
                             <h3 class="heading-small">Expected duration</h3>
                             <p>@Model.ExpectedDuration</p>
                             <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
-                                                  asp-value="@VacancyReview.FieldIdentifiers.ExpectedDuration"
+                                                  asp-value="@FieldIdentifiers.ExpectedDuration"
                                                   asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                         </div>
                     </li>
                     <li>
-                        <div class="@Model.PossibleStartDateClass" id="@VacancyReview.FieldIdentifiers.PossibleStartDate">
+                        <div class="@Model.PossibleStartDateClass" id="@FieldIdentifiers.PossibleStartDate">
                             <h3 class="heading-small">Possible start date</h3>
                             <p>@Model.PossibleStartDate</p>
                             <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
-                                                  asp-value="@VacancyReview.FieldIdentifiers.PossibleStartDate"
+                                                  asp-value="@FieldIdentifiers.PossibleStartDate"
                                                   asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                         </div>
                     </li>
                     <li>
-                        <div class="@Model.TrainingLevelClass" id="@VacancyReview.FieldIdentifiers.TrainingLevel">
+                        <div class="@Model.TrainingLevelClass" id="@FieldIdentifiers.TrainingLevel">
                             <h3 class="heading-small">Apprenticeship level</h3>
                             <p>@Model.TrainingLevel Level Apprenticeship</p>
                             <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
-                                                  asp-value="@VacancyReview.FieldIdentifiers.TrainingLevel"
+                                                  asp-value="@FieldIdentifiers.TrainingLevel"
                                                   asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                         </div>
                     </li>
@@ -154,42 +155,42 @@
                         <p>@Model.VacancyReferenceNumber</p>
                     </li>
                     <li>
-                        <div class="@Model.NumberOfPositionsClass" id="@VacancyReview.FieldIdentifiers.NumberOfPositions">
+                        <div class="@Model.NumberOfPositionsClass" id="@FieldIdentifiers.NumberOfPositions">
                             <h3 class="heading-small">Positions</h3>
                             <p>@Model.NumberOfPositionsCaption</p>
                             <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
-                                                  asp-value="@VacancyReview.FieldIdentifiers.NumberOfPositions"
+                                                  asp-value="@FieldIdentifiers.NumberOfPositions"
                                                   asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                         </div>
                     </li>
                 </ul>
             </div>
             <div class="column-two-thirds vacancy-descriptions">
-                <div class="@Model.VacancyDescriptionClass" id="@VacancyReview.FieldIdentifiers.VacancyDescription">
+                <div class="@Model.VacancyDescriptionClass" id="@FieldIdentifiers.VacancyDescription">
 
                     <h3 class="heading-small">What will you do in your working day</h3>
                     <div class="preserve-format">@Html.Raw(Model.VacancyDescription)</div>
 
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
-                                          asp-value="@VacancyReview.FieldIdentifiers.VacancyDescription"
+                                          asp-value="@FieldIdentifiers.VacancyDescription"
                                           asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                 </div>
-                <div class="@Model.TrainingDescriptionClass" id="@VacancyReview.FieldIdentifiers.TrainingDescription">
+                <div class="@Model.TrainingDescriptionClass" id="@FieldIdentifiers.TrainingDescription">
 
                     <h3 class="heading-small">The training you will be getting</h3>
                     <div class="preserve-format">@Html.Raw(Model.TrainingDescription)</div>
 
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
-                                          asp-value="@VacancyReview.FieldIdentifiers.TrainingDescription"
+                                          asp-value="@FieldIdentifiers.TrainingDescription"
                                           asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                 </div>
-                <div class="@Model.OutcomeDescriptionClass" id="@VacancyReview.FieldIdentifiers.OutcomeDescription">
+                <div class="@Model.OutcomeDescriptionClass" id="@FieldIdentifiers.OutcomeDescription">
 
                     <h3 class="heading-small">What to expect at the end of your apprenticeship</h3>
                     <div class="preserve-format">@Html.Raw(Model.OutcomeDescription)</div>
 
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
-                                          asp-value="@VacancyReview.FieldIdentifiers.OutcomeDescription"
+                                          asp-value="@FieldIdentifiers.OutcomeDescription"
                                           asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                 </div>
             </div>
@@ -206,14 +207,14 @@
         </div>
         <div class="grid-row">
             <div class="column-half">
-                <div class="@Model.SkillsClass" id="@VacancyReview.FieldIdentifiers.Skills">
+                <div class="@Model.SkillsClass" id="@FieldIdentifiers.Skills">
                     <h3 class="heading-small">Desired skills and personal qualities</h3>
                     <p>@string.Join(", ", Model.Skills)</p>
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
-                                          asp-value="@VacancyReview.FieldIdentifiers.Skills"
+                                          asp-value="@FieldIdentifiers.Skills"
                                           asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                 </div>
-                <div class="@Model.QualificationsClass" id="@VacancyReview.FieldIdentifiers.Qualifications">
+                <div class="@Model.QualificationsClass" id="@FieldIdentifiers.Qualifications">
                     <h3 class="heading-small">Qualifications</h3>
                     <p>
                         @foreach (var qualification in Model.Qualifications)
@@ -222,18 +223,18 @@
                         }
                     </p>
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
-                                          asp-value="@VacancyReview.FieldIdentifiers.Qualifications"
+                                          asp-value="@FieldIdentifiers.Qualifications"
                                           asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                 </div>
             </div>
             <div class="column-half">
-                <div class="@Model.ThingsToConsiderClass" id="@VacancyReview.FieldIdentifiers.ThingsToConsider">
+                <div class="@Model.ThingsToConsiderClass" id="@FieldIdentifiers.ThingsToConsider">
                     <h3 class="heading-small">Things to consider (optional)</h3>
 
                     <p>@Model.ThingsToConsider</p>
 
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
-                                          asp-value="@VacancyReview.FieldIdentifiers.ThingsToConsider"
+                                          asp-value="@FieldIdentifiers.ThingsToConsider"
                                           asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                 </div>
             </div>
@@ -250,50 +251,50 @@
         </div>
         <div class="grid-row">
             <div class="column-two-thirds">
-                <div class="@Model.EmployerDescriptionClass" id="@VacancyReview.FieldIdentifiers.EmployerDescription">
+                <div class="@Model.EmployerDescriptionClass" id="@FieldIdentifiers.EmployerDescription">
                     <h3 class="heading-small">Description</h3>
 
                     <p>@Model.EmployerDescription</p>
 
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
-                                          asp-value="@VacancyReview.FieldIdentifiers.EmployerDescription"
+                                          asp-value="@FieldIdentifiers.EmployerDescription"
                                           asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                 </div>
                 <div>
                     <h3 class="heading-small">Employer</h3>
                     <p>@Model.EmployerName</p>
                 </div>
-                <div class="@Model.DisabilityConfidentClass" id="@VacancyReview.FieldIdentifiers.DisabilityConfident">
+                <div class="@Model.DisabilityConfidentClass" id="@FieldIdentifiers.DisabilityConfident">
                     <h3 class="heading-small">Disability Confident (optional)</h3>
                     <img asp-show="@Model.IsDisabilityConfident" src="~/img/disability-confident_545x172.png" class="disability-confident-logo" alt="A logo confirming that the employer is registered as disability confident" />
                     <p asp-show="@Model.IsNotDisabilityConfident">This vacancy is not Disability Confident</p>
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
-                                          asp-value="@VacancyReview.FieldIdentifiers.DisabilityConfident"
+                                          asp-value="@FieldIdentifiers.DisabilityConfident"
                                           asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                 </div>
-                <div class="@Model.EmployerWebsiteUrlClass" id="@VacancyReview.FieldIdentifiers.EmployerWebsiteUrl">
+                <div class="@Model.EmployerWebsiteUrlClass" id="@FieldIdentifiers.EmployerWebsiteUrl">
                     <h3 class="heading-small">Website (optional)</h3>
                     <p>@Model.EmployerWebsiteUrl</p>
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
-                                          asp-value="@VacancyReview.FieldIdentifiers.EmployerWebsiteUrl"
+                                          asp-value="@FieldIdentifiers.EmployerWebsiteUrl"
                                           asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                 </div>
             </div>
             <div class="column-one-third">
-                <div class="@Model.EmployerContactClass" id="@VacancyReview.FieldIdentifiers.EmployerContact">
+                <div class="@Model.EmployerContactClass" id="@FieldIdentifiers.EmployerContact">
                     <h3 class="heading-small">Contact details (optional)</h3>
                     <p>@Model.ContactName</p>
                     <p>@Model.ContactEmail</p>
                     <p>@Model.ContactTelephone</p>
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
-                                          asp-value="@VacancyReview.FieldIdentifiers.EmployerContact"
+                                          asp-value="@FieldIdentifiers.EmployerContact"
                                           asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                 </div>
             </div>
         </div>
         <div class="grid-row">
             <div class="column-half">
-                <div class="@Model.EmployerAddressClass" id="@VacancyReview.FieldIdentifiers.EmployerAddress">
+                <div class="@Model.EmployerAddressClass" id="@FieldIdentifiers.EmployerAddress">
                     <h3 class="heading-small">Location</h3>
                     <ul class="list">
                         @foreach (var addrLine in Model.EmployerAddressElements)
@@ -302,7 +303,7 @@
                         }
                     </ul>
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
-                                          asp-value="@VacancyReview.FieldIdentifiers.EmployerAddress"
+                                          asp-value="@FieldIdentifiers.EmployerAddress"
                                           asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                 </div>
             </div>
@@ -322,18 +323,18 @@
         </div>
         <div class="grid-row">
             <div class="column-full">
-                <div class="@Model.ProviderClass" id="@VacancyReview.FieldIdentifiers.Provider">
+                <div class="@Model.ProviderClass" id="@FieldIdentifiers.Provider">
                     <h3 class="heading-small">Training provider</h3>
                     <p>@Model.ProviderName</p>
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
-                                          asp-value="@VacancyReview.FieldIdentifiers.Provider"
+                                          asp-value="@FieldIdentifiers.Provider"
                                           asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                 </div>
-                <div class="@Model.TrainingClass" id="@VacancyReview.FieldIdentifiers.Training">
+                <div class="@Model.TrainingClass" id="@FieldIdentifiers.Training">
                     <h3 class="heading-small">Apprenticeship @Model.TrainingType</h3>
                     <p>@Model.TrainingTitle</p>
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
-                                          asp-value="@VacancyReview.FieldIdentifiers.Training"
+                                          asp-value="@FieldIdentifiers.Training"
                                           asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                 </div>
             </div>
@@ -345,12 +346,12 @@
         </div>
         <div class="grid-row">
             <div class="column-full">
-                <h2 class="heading-large" id="@VacancyReview.FieldIdentifiers.ApplicationMethod">Application process</h2>
+                <h2 class="heading-large" id="@FieldIdentifiers.ApplicationMethod">Application process</h2>
             </div>
         </div>
         <div class="grid-row">
             <div class="column-full">
-                <div class="@Model.ApplicationMethodClass" id="@VacancyReview.FieldIdentifiers.ApplicationMethod">
+                <div class="@Model.ApplicationMethodClass" id="@FieldIdentifiers.ApplicationMethod">
                     <p asp-show="@Model.HasSpecifiedThroughFaaApplicationMethod">
                         Candidates will apply through the Find an apprenticeship service
                     </p>
@@ -358,21 +359,21 @@
                         Candidates will apply through the employer's website
                     </p>
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
-                                          asp-value="@VacancyReview.FieldIdentifiers.ApplicationMethod"
+                                          asp-value="@FieldIdentifiers.ApplicationMethod"
                                           asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                 </div>
-                <div asp-show="@Model.HasApplicationUrl" class="@Model.ApplicationUrlClass" id="@VacancyReview.FieldIdentifiers.ApplicationUrl">
+                <div asp-show="@Model.HasApplicationUrl" class="@Model.ApplicationUrlClass" id="@FieldIdentifiers.ApplicationUrl">
                     <h2 class="heading-small">Employer's application website</h2>
                     <p>@Model.ApplicationUrl</p>
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
-                                          asp-value="@VacancyReview.FieldIdentifiers.ApplicationUrl"
+                                          asp-value="@FieldIdentifiers.ApplicationUrl"
                                           asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                 </div>
-                <div asp-show="@Model.HasApplicationInstructions" class="@Model.ApplicationInstructionsClass" id="@VacancyReview.FieldIdentifiers.ApplicationInstructions">
+                <div asp-show="@Model.HasApplicationInstructions" class="@Model.ApplicationInstructionsClass" id="@FieldIdentifiers.ApplicationInstructions">
                     <h2 class="heading-small">Employer's application instructions (optional)</h2>
                     <p>@Model.ApplicationInstructions</p>
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
-                                          asp-value="@VacancyReview.FieldIdentifiers.ApplicationInstructions"
+                                          asp-value="@FieldIdentifiers.ApplicationInstructions"
                                           asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                 </div>
             </div>

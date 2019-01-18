@@ -9,7 +9,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Repositories
     {
         Task<List<T>> GetActiveAsync<T>();
         Task<List<VacancyReview>> GetForVacancyAsync(long vacancyReference);
-        Task<List<VacancyReview>> SearchAsync(long vacancyReference);
+        Task<VacancyReview> GetLatestReviewByReferenceAsync(long vacancyReference);
         Task<List<VacancyReview>> GetByStatusAsync(ReviewStatus status);
         Task<List<VacancyReview>> GetVacancyReviewsInProgressAsync(DateTime getExpiredAssignationDateTime);
         Task<int> GetApprovedCountAsync(string submittedByUserId);

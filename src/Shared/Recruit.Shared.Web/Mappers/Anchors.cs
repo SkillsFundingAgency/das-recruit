@@ -1,4 +1,4 @@
-﻿namespace Esfa.Recruit.Employer.Web.Views
+﻿namespace Esfa.Recruit.Shared.Web.Mappers
 {
     public static class Anchors
     {
