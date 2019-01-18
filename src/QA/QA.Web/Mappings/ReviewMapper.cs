@@ -198,6 +198,8 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 vm.ReviewerName = review.ReviewedByUser.Name;
                 vm.ReviewedDate = review.ReviewedDate.GetValueOrDefault();
 
+                vm.ManualOutcome = review.ManualOutcome;
+
                 vm.AutomatedQaResults = GetAutomatedQaResultViewModel(review);
             }
             catch (NullReferenceException ex)

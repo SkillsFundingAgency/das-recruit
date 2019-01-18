@@ -14,7 +14,7 @@
         </div>
     </div>
     
-    <div class="grid-row">
+    <div asp-hide="@Model.IsApproved" class="grid-row">
         <div class="column-full">
             <partial name="_ReviewSummaryPartial" for="Review" />
         </div>

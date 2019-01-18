@@ -58,9 +58,10 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public string ReviewerName { get; set; }
         public DateTime ReviewedDate { get; set; }
         public ReviewSummaryViewModel Review { get; set; }
+        public ManualQaOutcome? ManualOutcome { get; set; }
+        public bool IsApproved => ManualOutcome.GetValueOrDefault() == ManualQaOutcome.Approved;
         public string ReviewedDateDay => ReviewedDate.ToLocalTime().AsGdsDate();
         public string ReviewedDateTime => ReviewedDate.ToLocalTime().AsGdsTime();
-
         public bool IsFirstSubmission => IsResubmission == false;
         public bool HasChangedFields => FieldIdentifiers.Any(f => f.FieldValueHasChanged);
         public bool HasSpecifiedThroughFaaApplicationMethod => ApplicationMethod == ApplicationMethod.ThroughFindAnApprenticeship;
@@ -98,7 +99,7 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public string WageClass => GetFieldIdentifierCssClass(FieldIdentifier.Wage);
         public string WorkingWeekClass => GetFieldIdentifierCssClass(FieldIdentifier.WorkingWeek);
 
-        public bool HasAutomatedQaResults => AutomatedQaResults.Any();
+        public bool HasAutomatedQaResults => AutomatedQaResults.Any();        
 
         private string GetFieldIdentifierCssClass(string fieldIdentifer)
         {
