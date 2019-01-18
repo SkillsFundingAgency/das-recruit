@@ -200,6 +200,8 @@ namespace Esfa.Recruit.Qa.Web.Mappings
 
                 vm.ManualOutcome = review.ManualOutcome;
 
+                vm.PageTitle = GetPageTitle(historiesVm, review.Id, review.ManualOutcome);
+
                 vm.AutomatedQaResults = GetAutomatedQaResultViewModel(review);
             }
             catch (NullReferenceException ex)
@@ -209,6 +211,15 @@ namespace Esfa.Recruit.Qa.Web.Mappings
             }
 
             return vm;
+        }
+
+        private string GetPageTitle(ReviewHistoriesViewModel historiesVm, Guid reviewId, ManualQaOutcome? reviewManualOutcome)
+        {
+            var timeFrame = historiesVm.Items.First().ReviewId == reviewId ? "Latest" : "Historical";
+            var outcome = reviewManualOutcome.GetValueOrDefault().ToString().ToLower();
+
+            return $"{timeFrame} review -  {outcome} (read only)";
+
         }
 
         private void SetEmployerAddressElements(ReviewViewModel vm, Vacancy vacancy)

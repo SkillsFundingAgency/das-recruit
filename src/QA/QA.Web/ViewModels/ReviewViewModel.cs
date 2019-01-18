@@ -99,7 +99,8 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public string WageClass => GetFieldIdentifierCssClass(FieldIdentifier.Wage);
         public string WorkingWeekClass => GetFieldIdentifierCssClass(FieldIdentifier.WorkingWeek);
 
-        public bool HasAutomatedQaResults => AutomatedQaResults.Any();        
+        public bool HasAutomatedQaResults => AutomatedQaResults.Any();
+        public string PageTitle { get; set; }
 
         private string GetFieldIdentifierCssClass(string fieldIdentifer)
         {
