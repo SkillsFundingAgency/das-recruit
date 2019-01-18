@@ -45,6 +45,11 @@
                     "StoredProcedures": []
                 },
                 {
+                    "CollectionName": "vacancyReviews",
+                    "OfferThroughput": 400,
+                    "StoredProcedures": []
+                },
+                {
                     "CollectionName": "employerProfiles",
                     "OfferThroughput": 400,
                     "StoredProcedures": []
