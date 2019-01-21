@@ -54,7 +54,6 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             });
             services.Configure<CookieTempDataProviderOptions>(options => options.Cookie.Name = CookieNames.RecruitTempData);
             services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
-            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
             services.AddMvc(opts =>
             {
