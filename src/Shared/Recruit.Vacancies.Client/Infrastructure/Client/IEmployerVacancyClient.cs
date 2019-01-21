@@ -37,5 +37,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task SetApplicationReviewUnsuccessful(Guid applicationReviewId, string candidateFeedback, VacancyUser user);
         Task<User> GetUsersDetailsAsync(string userId);
         Task SaveLevyDeclarationAsync(string userId, string employerAccountId);
+
+        Task<bool> GetTrainingProviderExistsAsync(long ukprn);
+
+        Task<TrainingProvider> GetTrainingProviderAsync(long ukprn);
     }
 }

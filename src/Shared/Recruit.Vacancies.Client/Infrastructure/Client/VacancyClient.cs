@@ -17,6 +17,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacanc
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
@@ -40,6 +41,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly IUserRepository _userRepository;
         private readonly IQualificationsProvider _qualificationsProvider;
 
+        private readonly ITrainingProviderService _trainingProviderService;
+
         public VacancyClient(
             IVacancyRepository repository,
             IQueryStoreReader reader,
@@ -56,7 +59,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             IProviderDashboardProjectionService providerDashboardService,
             IEmployerProfileRepository employerProfileRepository,
             IUserRepository userRepository,
-            IQualificationsProvider qualificationsProvider)
+            IQualificationsProvider qualificationsProvider,
+            ITrainingProviderService trainingProviderService)
         {
             _repository = repository;
             _reader = reader;
@@ -74,6 +78,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _employerProfileRepository = employerProfileRepository;
             _userRepository = userRepository;
             _qualificationsProvider = qualificationsProvider;
+            _trainingProviderService = trainingProviderService;
         }
 
         public Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user)
@@ -455,6 +460,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 UserId = userId,
                 EmployerAccountId = employerAccountId
             });
+        }
+
+        public Task<bool> GetTrainingProviderExistsAsync(long ukprn)
+        {
+            return _trainingProviderService.ExistsAsync(ukprn);
+        }
+
+        public Task<Esfa.Recruit.Vacancies.Client.Domain.Entities.TrainingProvider> GetTrainingProviderAsync(long ukprn)
+        {
+            return _trainingProviderService.GetProviderAsync(ukprn);
         }
     }
 }
