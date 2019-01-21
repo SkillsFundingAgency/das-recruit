@@ -8,26 +8,24 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.EventHandlers
 {
-    public class RePublishEventToEventStore : 
+    public class RePublishEventToEventStoreEventHandler :
                                             INotificationHandler<VacancyClonedEvent>,
                                             INotificationHandler<DraftVacancyUpdatedEvent>,
                                             INotificationHandler<VacancySubmittedEvent>,
                                             INotificationHandler<VacancyReviewApprovedEvent>,
                                             INotificationHandler<VacancyReviewReferredEvent>,
                                             INotificationHandler<SetupEmployerEvent>,
-                                            INotificationHandler<VacancyReviewCreatedEvent>
+                                            INotificationHandler<VacancyReviewCreatedEvent>,
+                                            INotificationHandler<ProviderOwnedVacancyCreatedEvent>
     {
-        private readonly ILogger<RePublishEventToEventStore> _logger;
+        private readonly ILogger<RePublishEventToEventStoreEventHandler> _logger;
         private readonly IEventStore _eventStore;
 
-        public RePublishEventToEventStore(ILogger<RePublishEventToEventStore> logger, IEventStore eventStore)
+        public RePublishEventToEventStoreEventHandler(ILogger<RePublishEventToEventStoreEventHandler> logger, IEventStore eventStore)
         {
             _logger = logger;
             _eventStore = eventStore;
         }
-
-        public Task Handle(VacancyCreatedEvent notification, CancellationToken cancellationToken) 
-            => HandleUsingEventStore(notification);
 
         public Task Handle(VacancySubmittedEvent notification, CancellationToken cancellationToken) 
             => HandleUsingEventStore(notification);
@@ -48,6 +46,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.EventHandlers
             => HandleUsingEventStore(notification);
 
         public Task Handle(VacancyClonedEvent notification, CancellationToken cancellationToken)
+            => HandleUsingEventStore(notification);
+
+        public Task Handle(ProviderOwnedVacancyCreatedEvent notification, CancellationToken cancellationToken)
             => HandleUsingEventStore(notification);
 
         private async Task HandleUsingEventStore(IEvent @event)

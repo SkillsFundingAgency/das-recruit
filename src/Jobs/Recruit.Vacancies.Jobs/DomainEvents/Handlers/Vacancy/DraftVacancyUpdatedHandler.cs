@@ -20,7 +20,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy
         public async Task HandleAsync(string eventPayload)
         {
             var @event = DeserializeEvent<DraftVacancyUpdatedEvent>(eventPayload);
-            
+
             try
             {
                 _logger.LogInformation($"Processing {nameof(DraftVacancyUpdatedEvent)} for vacancy: {{VacancyId}}", @event.VacancyId);

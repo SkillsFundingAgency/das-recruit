@@ -19,7 +19,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy
 
         public async Task HandleAsync(string eventPayload)
         {
-            var @event = DeserializeEvent<VacancyCreatedEvent>(eventPayload);
+            var @event = DeserializeEvent<VacancyClonedEvent>(eventPayload);
 
             try
             {
