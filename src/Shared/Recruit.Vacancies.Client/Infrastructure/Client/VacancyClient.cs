@@ -139,7 +139,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 UserType = userType,
                 Title = title,
                 NumberOfPositions = numberOfPositions,
-                //EmployerAccountId = employerAccountId, // need training provider
+                Ukprn = ukprn,
                 Origin = origin
             };
 
@@ -315,6 +315,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             {
                 VacancyId = vacancyId
             };
+
+            return _messaging.SendCommandAsync(command);
+        }
+
+        public Task PatchTrainingProvider(Guid vacancyId)
+        {
+            var command = new PatchVacancyTrainingProviderCommand(vacancyId);
 
             return _messaging.SendCommandAsync(command);
         }

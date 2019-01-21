@@ -55,10 +55,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             await _repository.CreateAsync(vacancy);
 
-            await _messaging.PublishEvent(new VacancyCreatedEvent
-            {
-                VacancyId = vacancy.Id
-            });
+            await Task.WhenAll(
+                _messaging.PublishEvent(new VacancyCreatedEvent { VacancyId = vacancy.Id }),
+                _messaging.PublishEvent(new ProviderOwnedVacancyCreatedEvent { VacancyId = vacancy.Id })
+            );
         }
     }
 }
