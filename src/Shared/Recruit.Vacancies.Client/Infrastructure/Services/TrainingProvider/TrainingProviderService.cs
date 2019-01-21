@@ -1,12 +1,11 @@
-﻿using Esfa.Recruit.Employer.Web.Mappings;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+﻿using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Apprenticeships.Api.Types.Providers;
 using SFA.DAS.Providers.Api.Client;
 using System;
 using System.Threading.Tasks;
 
-namespace Esfa.Recruit.Employer.Web.Services
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
 {
     public class TrainingProviderService : ITrainingProviderService
     {
@@ -19,7 +18,7 @@ namespace Esfa.Recruit.Employer.Web.Services
             _providerClient = providerClient;
         }
 
-        public async Task<TrainingProvider> GetProviderAsync(long ukprn)
+        public async Task<Domain.Entities.TrainingProvider> GetProviderAsync(long ukprn)
         {
             Provider provider;
 

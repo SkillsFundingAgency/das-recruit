@@ -2,13 +2,13 @@
 using SFA.DAS.Apprenticeships.Api.Types.Providers;
 using System.Linq;
 
-namespace Esfa.Recruit.Employer.Web.Mappings
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
 {
     public static class TrainingProviderMapper
     {
-        public static TrainingProvider MapFromApiProvider(Provider provider)
+        public static Domain.Entities.TrainingProvider MapFromApiProvider(Provider provider)
         {
-            return new TrainingProvider
+            return new Domain.Entities.TrainingProvider
             {
                 Ukprn = provider.Ukprn,
                 Name = provider.ProviderName,

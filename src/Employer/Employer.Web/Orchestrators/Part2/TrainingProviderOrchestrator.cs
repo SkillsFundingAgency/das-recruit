@@ -19,14 +19,12 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.TrainingProvider;
         private readonly IEmployerVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
-        private readonly ITrainingProviderService _providerService;
         private readonly IReviewSummaryService _reviewSummaryService;
 
-        public TrainingProviderOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, ITrainingProviderService providerService, ILogger<TrainingProviderOrchestrator> logger, IReviewSummaryService reviewSummaryService) : base(logger)
+        public TrainingProviderOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<TrainingProviderOrchestrator> logger, IReviewSummaryService reviewSummaryService) : base(logger)
         {
             _client = client;
             _vacancyClient = vacancyClient;
-            _providerService = providerService;
             _reviewSummaryService = reviewSummaryService;
         }
 
@@ -62,7 +60,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             
             if (long.TryParse(m.Ukprn, out var ukprn) && ukprn != vacancy.TrainingProvider?.Ukprn)
             {
-                var provider = await _providerService.GetProviderAsync(ukprn);
+                var provider = await _client.GetTrainingProviderAsync(ukprn);
 
                 return new ConfirmTrainingProviderViewModel
                 {
@@ -89,7 +87,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         public Task<OrchestratorResponse> PostConfirmEditModelAsync(ConfirmTrainingProviderEditModel m, VacancyUser user)
         {
             var vacancyTask = Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, m, RouteNames.TrainingProvider_Confirm_Post);
-            var providerTask = _providerService.GetProviderAsync(long.Parse(m.Ukprn));
+            var providerTask = _client.GetTrainingProviderAsync(long.Parse(m.Ukprn));
 
             Task.WaitAll(vacancyTask, providerTask);
 
@@ -107,7 +105,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public Task<bool> ConfirmProviderExists(long ukprn)
         {
-            return _providerService.ExistsAsync(ukprn);
+            return _client.GetTrainingProviderExistsAsync(ukprn);
         }
 
         protected override EntityToViewModelPropertyMappings<Vacancy, ConfirmTrainingProviderEditModel> DefineMappings()
