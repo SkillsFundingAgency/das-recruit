@@ -5,21 +5,24 @@ using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Employer.Web.RouteModel;
+using Esfa.Recruit.Shared.Web.ViewModels;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
     public class DeleteVacancyOrchestrator
     {
         private readonly IEmployerVacancyClient _client;
+        private readonly IRecruitVacancyClient _vacancyClient;
 
-        public DeleteVacancyOrchestrator(IEmployerVacancyClient client)
+        public DeleteVacancyOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient)
         {
             _client = client;
+            _vacancyClient = vacancyClient;
         }
 
         public async Task<DeleteViewModel> GetDeleteViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await _client.GetVacancyAsync(vrm.VacancyId);
+            var vacancy = await _vacancyClient.GetVacancyAsync(vrm.VacancyId);
 
             Utility.CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
 
@@ -36,7 +39,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public async Task DeleteVacancyAsync(DeleteEditModel m, VacancyUser user)
         {
-            var vacancy = await _client.GetVacancyAsync(m.VacancyId);
+            var vacancy = await _vacancyClient.GetVacancyAsync(m.VacancyId);
 
             Utility.CheckAuthorisedAccess(vacancy, m.EmployerAccountId);
 

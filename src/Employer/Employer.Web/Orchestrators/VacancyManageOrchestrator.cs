@@ -20,16 +20,18 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         private const VacancyRuleSet ValdationRules = VacancyRuleSet.ClosingDate | VacancyRuleSet.StartDate | VacancyRuleSet.TrainingProgramme | VacancyRuleSet.StartDateEndDate | VacancyRuleSet.TrainingExpiryDate | VacancyRuleSet.Wage;
         private readonly DisplayVacancyViewModelMapper _vacancyDisplayMapper;
         private readonly IEmployerVacancyClient _client;
+        private readonly IRecruitVacancyClient _vacancyClient;
 
-        public VacancyManageOrchestrator(ILogger<VacancyManageOrchestrator> logger, DisplayVacancyViewModelMapper vacancyDisplayMapper, IEmployerVacancyClient client) : base(logger)
+        public VacancyManageOrchestrator(ILogger<VacancyManageOrchestrator> logger, DisplayVacancyViewModelMapper vacancyDisplayMapper, IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient) : base(logger)
         {
             _vacancyDisplayMapper = vacancyDisplayMapper;
             _client = client;
+            _vacancyClient = vacancyClient;
         }
 
         public async Task<Vacancy> GetVacancy(VacancyRouteModel vrm)
         {
-            var vacancy = await _client.GetVacancyAsync(vrm.VacancyId);
+            var vacancy = await _vacancyClient.GetVacancyAsync(vrm.VacancyId);
 
             Utility.CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
 
@@ -88,7 +90,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             
             return await ValidateAndExecute(
                 vacancy, 
-                v => _client.Validate(v, ValdationRules),
+                v => _vacancyClient.Validate(v, ValdationRules),
                 v => _client.UpdatePublishedVacancyAsync(vacancy, user)
             );
         }

@@ -6,11 +6,10 @@ using Esfa.Recruit.Employer.Web.ViewModels.Part1.Wage;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using FluentAssertions;
 using Xunit;
+using ErrMsg = Esfa.Recruit.Shared.Web.ViewModels.ValidationMessages.WageValidationMessages;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.Part1.Wage
 {
-    using ErrMsg = Esfa.Recruit.Employer.Web.ViewModels.ValidationMessages.WageValidationMessages;
-
     public class WageEditModelTests
     {
         public static IEnumerable<object[]> InvalidWageData =>

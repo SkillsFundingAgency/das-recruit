@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Esfa.Recruit.Employer.Web.Extensions;
-using Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview;
 
 namespace Esfa.Recruit.Employer.Web.Mappings.Extensions
 {
-    public static class ApplicationReviewMapperExtensions
+	public static class ApplicationReviewMapperExtensions
     {
         public static ApplicationReviewViewModel ToViewModel(this ApplicationReview r)
         {

@@ -11,6 +11,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Provider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
@@ -32,7 +33,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly IVacancyReviewQuery _vacancyReviewQuery;
         private readonly ICandidateSkillsProvider _candidateSkillsProvider;
         private readonly IVacancyService _vacancyService;
-        private readonly IEmployerDashboardProjectionService _dashboardService;
+        private readonly IEmployerDashboardProjectionService _employerDashboardService;
+        private readonly IProviderDashboardProjectionService _providerDashboardService;
+
         private readonly IEmployerProfileRepository _employerProfileRepository;
         private readonly IUserRepository _userRepository;
         private readonly IQualificationsProvider _qualificationsProvider;
@@ -49,7 +52,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             IVacancyReviewQuery vacancyReviewQuery,
             ICandidateSkillsProvider candidateSkillsProvider,
             IVacancyService vacancyService,
-            IEmployerDashboardProjectionService dashboardService,
+            IEmployerDashboardProjectionService employerDashboardService,
+            IProviderDashboardProjectionService providerDashboardService,
             IEmployerProfileRepository employerProfileRepository,
             IUserRepository userRepository,
             IQualificationsProvider qualificationsProvider)
@@ -65,7 +69,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _vacancyReviewQuery = vacancyReviewQuery;
             _candidateSkillsProvider = candidateSkillsProvider;
             _vacancyService = vacancyService;
-            _dashboardService = dashboardService;
+            _employerDashboardService = employerDashboardService;
+            _providerDashboardService = providerDashboardService;
             _employerProfileRepository = employerProfileRepository;
             _userRepository = userRepository;
             _qualificationsProvider = qualificationsProvider;
@@ -102,7 +107,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         {
             var vacancyId = GenerateVacancyId();
 
-            var command = new CreateVacancyCommand
+            var command = new CreateEmployerOwnedVacancyCommand
             {
                 VacancyId = vacancyId,
                 User = user,
@@ -110,6 +115,26 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 Title = title,
                 NumberOfPositions = numberOfPositions,
                 EmployerAccountId = employerAccountId,
+                Origin = origin
+            };
+
+            await _messaging.SendCommandAsync(command);
+
+            return vacancyId;
+        }
+
+        public async Task<Guid> CreateVacancyAsync(SourceOrigin origin, string title, int numberOfPositions, long ukprn, VacancyUser user, UserType userType)
+        {
+            var vacancyId = GenerateVacancyId();
+
+            var command = new CreateProviderOwnedVacancyCommand
+            {
+                VacancyId = vacancyId,
+                User = user,
+                UserType = userType,
+                Title = title,
+                NumberOfPositions = numberOfPositions,
+                //EmployerAccountId = employerAccountId, // need training provider
                 Origin = origin
             };
 
@@ -164,7 +189,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public Task GenerateDashboard(string employerAccountId)
         {
-            return _dashboardService.ReBuildDashboardAsync(employerAccountId);
+            return _employerDashboardService.ReBuildDashboardAsync(employerAccountId);
+        }
+
+        public Task<ProviderDashboard> GetDashboardAsync(long ukprn)
+        {
+            return _reader.GetProviderDashboardAsync(ukprn);
+        }
+
+        public Task GenerateDashboard(long ukprn)
+        {
+            return _providerDashboardService.ReBuildDashboardAsync(ukprn);
         }
 
         public Task UserSignedInAsync(VacancyUser user, UserType userType)

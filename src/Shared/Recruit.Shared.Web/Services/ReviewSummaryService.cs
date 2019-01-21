@@ -10,14 +10,14 @@ namespace Esfa.Recruit.Shared.Web.Services
 {
     public class ReviewSummaryService : IReviewSummaryService
     {
-        private readonly IEmployerVacancyClient _employerVacancyClient;
+        private readonly IRecruitVacancyClient _vacancyClient;
         private readonly ReviewFieldIndicatorMapper _fieldMappingsLookup;
         private readonly IQaVacancyClient _qaVacancyClient;
 
-        public ReviewSummaryService(IEmployerVacancyClient employerVacancyClient, 
+        public ReviewSummaryService(IRecruitVacancyClient vacancyClient, 
             ReviewFieldIndicatorMapper fieldMappingsLookup, IQaVacancyClient qaVacancyClient)
         {
-            _employerVacancyClient = employerVacancyClient;
+            _vacancyClient = vacancyClient;
             _fieldMappingsLookup = fieldMappingsLookup;
             _qaVacancyClient = qaVacancyClient;
         }
@@ -25,7 +25,7 @@ namespace Esfa.Recruit.Shared.Web.Services
         public async Task<ReviewSummaryViewModel> GetReviewSummaryViewModelAsync(long vacancyReference, 
             ReviewFieldMappingLookupsForPage reviewFieldIndicatorsForPage)
         {
-            var review = await _employerVacancyClient.GetCurrentReferredVacancyReviewAsync(vacancyReference);
+            var review = await _vacancyClient.GetCurrentReferredVacancyReviewAsync(vacancyReference);
 
             return ConvertToReviewSummaryViewModel(reviewFieldIndicatorsForPage, review);
         }

@@ -1,4 +1,4 @@
-﻿namespace Esfa.Recruit.Employer.Web.ViewModels.Part1
+﻿namespace Esfa.Recruit.Shared.Web.ViewModels
 {
     public class PartOnePageInfoViewModel
     {

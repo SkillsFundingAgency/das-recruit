@@ -35,7 +35,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             vm.PageInfo.SetWizard(wizard);
             return View(vm);
         }
-        
+
         [HttpPost("create-vacancy", Name = RouteNames.CreateVacancy_Post)]
         [HttpPost(VacancyTitleRoute, Name = RouteNames.Title_Post)]
         public async Task<IActionResult> Title(TitleEditModel m, [FromQuery] bool wizard)
@@ -46,7 +46,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             {
                 response.AddErrorsToModelState(ModelState);
             }
-            
+
             if(!ModelState.IsValid)
             {
                 var vm = await _orchestrator.GetTitleViewModelAsync(m);

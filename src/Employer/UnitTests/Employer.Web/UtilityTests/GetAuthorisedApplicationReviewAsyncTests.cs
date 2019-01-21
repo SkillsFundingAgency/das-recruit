@@ -21,7 +21,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
         {
             var applicationReviewId = Guid.NewGuid();
 
-            var client = new Mock<IEmployerVacancyClient>();
+            var client = new Mock<IRecruitVacancyClient>();
             client.Setup(c => c.GetApplicationReviewAsync(applicationReviewId)).Returns(Task.FromResult(
                 new ApplicationReview
                 {

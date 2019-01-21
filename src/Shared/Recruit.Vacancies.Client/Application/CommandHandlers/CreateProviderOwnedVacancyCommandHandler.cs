@@ -11,15 +11,15 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class CreateVacancyCommandHandler: IRequestHandler<CreateVacancyCommand>
+    public class CreateProviderOwnedVacancyCommandHandler: IRequestHandler<CreateProviderOwnedVacancyCommand>
     {
-        private readonly ILogger<CreateVacancyCommandHandler> _logger;
+        private readonly ILogger<CreateProviderOwnedVacancyCommandHandler> _logger;
         private readonly IVacancyRepository _repository;
         private readonly IMessaging _messaging;
         private readonly ITimeProvider _timeProvider;
 
-        public CreateVacancyCommandHandler(
-            ILogger<CreateVacancyCommandHandler> logger,
+        public CreateProviderOwnedVacancyCommandHandler(
+            ILogger<CreateProviderOwnedVacancyCommandHandler> logger,
             IVacancyRepository repository, 
             IMessaging messaging, 
             ITimeProvider timeProvider)
@@ -30,7 +30,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _timeProvider = timeProvider;
         }
 
-        public async Task Handle(CreateVacancyCommand message, CancellationToken cancellationToken)
+        public async Task Handle(CreateProviderOwnedVacancyCommand message, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Creating vacancy with id {vacancyId}.", message.VacancyId);
 
@@ -44,7 +44,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 SourceType = SourceType.New,
                 Title = message.Title,
                 NumberOfPositions = message.NumberOfPositions,
-                EmployerAccountId = message.EmployerAccountId,
+                TrainingProvider = new TrainingProvider { Ukprn = message.Ukprn },
                 Status = VacancyStatus.Draft,
                 CreatedDate = now,
                 CreatedByUser = message.User,

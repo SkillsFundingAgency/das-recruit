@@ -11,18 +11,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
     public interface IEmployerVacancyClient
     {
-        Task<Vacancy> GetVacancyAsync(Guid vacancyId);
         Task<Guid> CreateVacancyAsync(SourceOrigin origin, string title, int numberOfPositions, string employerAccountId, VacancyUser user, UserType userType);
         Task GenerateDashboard(string employerAccountId);
         Task CloseVacancyAsync(Guid vacancyId, VacancyUser user);
         Task<Guid> CloneVacancyAsync(Guid vacancyId, VacancyUser user, SourceOrigin sourceOrigin);
-        Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user);
+        
         Task UpdatePublishedVacancyAsync(Vacancy vacancy, VacancyUser user);
         Task SubmitVacancyAsync(Guid vacancyId, string employerDescription, VacancyUser user);
         Task DeleteVacancyAsync(Guid vacancyId, VacancyUser user);
         Task<EmployerDashboard> GetDashboardAsync(string employerAccountId);
         Task<EditVacancyInfo> GetEditVacancyInfoAsync(string employerAccountId);
-        EntityValidationResult Validate(Vacancy vacancy, VacancyRuleSet rules);
+        
         Task<IEnumerable<IApprenticeshipProgramme>> GetActiveApprenticeshipProgrammesAsync();
         Task<IApprenticeshipProgramme> GetApprenticeshipProgrammeAsync(string programmeId);
         Task<IEnumerable<LegalEntity>> GetEmployerLegalEntitiesAsync(string employerAccountId);
@@ -32,11 +31,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<IList<string>> GetCandidateQualificationsAsync();
         Task<EmployerProfile> GetEmployerProfileAsync(string employerAccountId, long legalEntityId);
         Task UpdateEmployerProfileAsync(EmployerProfile employerProfile, VacancyUser user);
-        Task<ApplicationReview> GetApplicationReviewAsync(Guid applicationReviewId);
+        
         Task<VacancyApplications> GetVacancyApplicationsAsync(string vacancyReference);
         Task SetApplicationReviewSuccessful(Guid applicationReviewId, VacancyUser user);
         Task SetApplicationReviewUnsuccessful(Guid applicationReviewId, string candidateFeedback, VacancyUser user);
-        Task<VacancyReview> GetCurrentReferredVacancyReviewAsync(long vacancyReference);
         Task<User> GetUsersDetailsAsync(string userId);
         Task SaveLevyDeclarationAsync(string userId, string employerAccountId);
     }

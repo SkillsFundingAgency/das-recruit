@@ -67,6 +67,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
             ValidateEmployerContactDetails();
 
+            ValidateProviderContactDetails();
+
             ValidateThingsToConsider();
 
             ValidateEmployerInformation();
@@ -458,8 +460,18 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             When(x => x.EmployerContact != null, () =>
             {
                 RuleFor(x => x.EmployerContact)
-                 .SetValidator(new ContactDetailValidator((long)VacancyRuleSet.EmployerContactDetails))
-                 .RunCondition(VacancyRuleSet.EmployerContactDetails);
+                .SetValidator(new ContactDetailValidator((long)VacancyRuleSet.EmployerContactDetails))
+                .RunCondition(VacancyRuleSet.EmployerContactDetails);
+            });
+        }
+
+        private void ValidateProviderContactDetails()
+        {
+            When(x => x.ProviderContact != null, () =>
+            {
+                RuleFor(x => x.ProviderContact)
+                .SetValidator(new ContactDetailValidator((long)VacancyRuleSet.ProviderContactDetails))
+                .RunCondition(VacancyRuleSet.ProviderContactDetails);
             });
         }
 

@@ -20,6 +20,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
     {
         private const string TestEmployerAccountId = "ABC";
         private readonly Mock<IEmployerVacancyClient> _mockClient;
+        private readonly Mock<IRecruitVacancyClient> _mockVacancyClient;
+
         private readonly SkillsOrchestrator _orchestrator;
         private readonly Vacancy _testVacancy;
         private readonly VacancyRouteModel _testRouteModel = new VacancyRouteModel { EmployerAccountId = TestEmployerAccountId, VacancyId = Guid.NewGuid() };
@@ -29,7 +31,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
             var mockLogger = new Mock<ILogger<SkillsOrchestrator>>();
             var candidateSkills = GetBaseSkills();
             _mockClient = new Mock<IEmployerVacancyClient>();
-            _orchestrator = new SkillsOrchestrator(_mockClient.Object, mockLogger.Object, Mock.Of<IReviewSummaryService>());
+            _mockVacancyClient = new Mock<IRecruitVacancyClient>();
+            _orchestrator = new SkillsOrchestrator(_mockClient.Object, _mockVacancyClient.Object, mockLogger.Object, Mock.Of<IReviewSummaryService>());
             _testVacancy = GetTestVacancy();
 
             _mockClient.Setup(x => x.GetCandidateSkillsAsync()).ReturnsAsync(candidateSkills);
@@ -38,7 +41,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
         [Fact]
         public async Task WhenNoSkillsSaved_ShouldReturnListOfAllBasicSkillsUnchecked()
         {
-            _mockClient.Setup(x => x.GetVacancyAsync(It.IsAny<Guid>())).ReturnsAsync(_testVacancy);
+            _mockVacancyClient.Setup(x => x.GetVacancyAsync(It.IsAny<Guid>())).ReturnsAsync(_testVacancy);
 
             var result = await _orchestrator.GetSkillsViewModelAsync(_testRouteModel);
 
@@ -52,7 +55,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
         {
             _testVacancy.Skills = new List<string> { "Logical" }; // Set the saved skill
 
-            _mockClient.Setup(x => x.GetVacancyAsync(It.IsAny<Guid>())).ReturnsAsync(_testVacancy);
+            _mockVacancyClient.Setup(x => x.GetVacancyAsync(It.IsAny<Guid>())).ReturnsAsync(_testVacancy);
 
             var result = await _orchestrator.GetSkillsViewModelAsync(_testRouteModel);
 
@@ -65,7 +68,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
         {
             _testVacancy.Skills = new List<string> { "Logical", "Patience" }; // Set the saved skill
 
-            _mockClient.Setup(x => x.GetVacancyAsync(It.IsAny<Guid>())).ReturnsAsync(_testVacancy);
+            _mockVacancyClient.Setup(x => x.GetVacancyAsync(It.IsAny<Guid>())).ReturnsAsync(_testVacancy);
 
             var result = await _orchestrator.GetSkillsViewModelAsync(_testRouteModel);
 
@@ -78,7 +81,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
         {
             _testVacancy.Skills = new List<string> { "Custom1" }; // Set the saved skill
 
-            _mockClient.Setup(x => x.GetVacancyAsync(It.IsAny<Guid>())).ReturnsAsync(_testVacancy);
+            _mockVacancyClient.Setup(x => x.GetVacancyAsync(It.IsAny<Guid>())).ReturnsAsync(_testVacancy);
 
             var result = await _orchestrator.GetSkillsViewModelAsync(_testRouteModel);
 
@@ -92,7 +95,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
         {
             _testVacancy.Skills = new List<string> { "Custom1", "Custom2", "Custom3" }; // Set the saved skill
 
-            _mockClient.Setup(x => x.GetVacancyAsync(It.IsAny<Guid>())).ReturnsAsync(_testVacancy);
+            _mockVacancyClient.Setup(x => x.GetVacancyAsync(It.IsAny<Guid>())).ReturnsAsync(_testVacancy);
 
             var result = await _orchestrator.GetSkillsViewModelAsync(_testRouteModel);
 
@@ -108,7 +111,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
 
             var draftSkills = new [] { "1-Draft1" };
 
-            _mockClient.Setup(x => x.GetVacancyAsync(It.IsAny<Guid>())).ReturnsAsync(_testVacancy);
+            _mockVacancyClient.Setup(x => x.GetVacancyAsync(It.IsAny<Guid>())).ReturnsAsync(_testVacancy);
 
             var result = await _orchestrator.GetSkillsViewModelAsync(_testRouteModel, draftSkills);
 
@@ -122,7 +125,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
 
             var draftSkills = new [] { "1-Draft1", "2-Draft2", "3-Draft3" };
 
-            _mockClient.Setup(x => x.GetVacancyAsync(It.IsAny<Guid>())).ReturnsAsync(_testVacancy);
+            _mockVacancyClient.Setup(x => x.GetVacancyAsync(It.IsAny<Guid>())).ReturnsAsync(_testVacancy);
 
             var result = await _orchestrator.GetSkillsViewModelAsync(_testRouteModel, draftSkills);
 
@@ -138,7 +141,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
 
             var draftSkills = new [] { "1-Draft1", "Patience", "2-Draft2", "3-Draft3" };
 
-            _mockClient.Setup(x => x.GetVacancyAsync(It.IsAny<Guid>())).ReturnsAsync(_testVacancy);
+            _mockVacancyClient.Setup(x => x.GetVacancyAsync(It.IsAny<Guid>())).ReturnsAsync(_testVacancy);
 
             var result = await _orchestrator.GetSkillsViewModelAsync(_testRouteModel, draftSkills);
 
@@ -154,7 +157,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
 
             var draftSkills = new [] { "2-Draft2", "3-Draft3", "1-Draft1" };
 
-            _mockClient.Setup(x => x.GetVacancyAsync(It.IsAny<Guid>())).ReturnsAsync(_testVacancy);
+            _mockVacancyClient.Setup(x => x.GetVacancyAsync(It.IsAny<Guid>())).ReturnsAsync(_testVacancy);
 
             var result = await _orchestrator.GetSkillsViewModelAsync(_testRouteModel, draftSkills);
 
@@ -170,7 +173,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
 
             var draftSkills = new [] { "2-Draft2", "3-Draft3", "1-Draft1" };
 
-            _mockClient.Setup(x => x.GetVacancyAsync(It.IsAny<Guid>())).ReturnsAsync(_testVacancy);
+            _mockVacancyClient.Setup(x => x.GetVacancyAsync(It.IsAny<Guid>())).ReturnsAsync(_testVacancy);
 
             var result = await _orchestrator.GetSkillsViewModelAsync(_testRouteModel, draftSkills);
 

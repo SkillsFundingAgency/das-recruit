@@ -22,6 +22,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         private const int ColumnOneCutOffIndex = 9;
         private const char SortPrefixSeparator = '-';
         private readonly IEmployerVacancyClient _client;
+        private readonly IRecruitVacancyClient _vacancyClient;
         private readonly Lazy<List<string>> _lazyCandidateSkills;
         private readonly IReviewSummaryService _reviewSummaryService;
 
@@ -29,16 +30,17 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         private IEnumerable<string> Column1BuiltInSkills => CandidateSkills.Take(ColumnOneCutOffIndex);
         private IEnumerable<string> Column2BuiltInSkills => CandidateSkills.Skip(ColumnOneCutOffIndex);
 
-        public SkillsOrchestrator(IEmployerVacancyClient client, ILogger<SkillsOrchestrator> logger, IReviewSummaryService reviewSummaryService) : base(logger)
+        public SkillsOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<SkillsOrchestrator> logger, IReviewSummaryService reviewSummaryService) : base(logger)
         {
             _client = client;
+            _vacancyClient = vacancyClient;
             _lazyCandidateSkills = new Lazy<List<string>>(() => _client.GetCandidateSkillsAsync().Result);
             _reviewSummaryService = reviewSummaryService;
         }
         
         public async Task<SkillsViewModel> GetSkillsViewModelAsync(VacancyRouteModel vrm, string[] draftSkills = null)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, vrm, RouteNames.Skills_Get);
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Skills_Get);
 
             var vm = new SkillsViewModel
             {
@@ -131,7 +133,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public async Task<OrchestratorResponse> PostSkillsEditModelAsync(SkillsEditModel m, VacancyUser user)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, m, RouteNames.Skills_Post);
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, m, RouteNames.Skills_Post);
 
             if (m.Skills == null)
             {
@@ -155,11 +157,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             return await ValidateAndExecute(vacancy,
                 v =>
                 {
-                    var result = _client.Validate(v, ValidationRules);
+                    var result = _vacancyClient.Validate(v, ValidationRules);
                     SyncErrorsAndModel(result.Errors, m, vacancy);
                     return result;
                 },
-                v => validateOnly ? Task.CompletedTask : _client.UpdateDraftVacancyAsync(v, user));
+                v => validateOnly ? Task.CompletedTask : _vacancyClient.UpdateDraftVacancyAsync(v, user));
         }
 
         private IEnumerable<string> AddOrdering(List<string> extractedCustomSkills)

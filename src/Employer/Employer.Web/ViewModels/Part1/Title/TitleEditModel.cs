@@ -1,7 +1,7 @@
 ﻿using System;
-using Esfa.Recruit.Employer.Web.ViewModels.Validations;
+using Esfa.Recruit.Shared.Web.ViewModels.Validations;
 using Microsoft.AspNetCore.Mvc;
-using ErrMsg = Esfa.Recruit.Employer.Web.ViewModels.ValidationMessages.TitleValidationMessages;
+using ErrMsg = Esfa.Recruit.Shared.Web.ViewModels.ValidationMessages.TitleValidationMessages;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Title
 {

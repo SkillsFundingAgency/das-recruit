@@ -1,7 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer;
 using Esfa.Recruit.Employer.Web.ViewModels.CreateVacancyOptions;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Shared.Web.Extensions;
 using System.Linq;
@@ -12,16 +13,18 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
     public class CreateVacancyOptionsOrchestrator
     {
-        private readonly IEmployerVacancyClient _vacancyClient;
+        private readonly IEmployerVacancyClient _client;
+        private readonly IRecruitVacancyClient _vacancyClient;
 
-        public CreateVacancyOptionsOrchestrator(IEmployerVacancyClient vacancyClient)
+        public CreateVacancyOptionsOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient)
         {
+            _client = client;
             _vacancyClient = vacancyClient;
         }
 
         public async Task<CreateVacancyOptionsViewModel> GetCreateOptionsViewModelAsync(string employerAccountId)
         {
-            var dashboard = await _vacancyClient.GetDashboardAsync(employerAccountId);
+            var dashboard = await _client.GetDashboardAsync(employerAccountId);
             var vm = MapFromDashboard(dashboard);
             
             return vm;
@@ -33,7 +36,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             Utility.CheckAuthorisedAccess(vacancy, employerAccountId);
 
-            var clonedVacancyId = await _vacancyClient.CloneVacancyAsync(vacancyId, user, SourceOrigin.EmployerWeb);
+            var clonedVacancyId = await _client.CloneVacancyAsync(vacancyId, user, SourceOrigin.EmployerWeb);
 
             return clonedVacancyId;
         }

@@ -19,19 +19,21 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
     {
         private const VacancyRuleSet ValdationRules = VacancyRuleSet.ClosingDate | VacancyRuleSet.StartDate | VacancyRuleSet.TrainingProgramme | VacancyRuleSet.StartDateEndDate | VacancyRuleSet.TrainingExpiryDate;
         private readonly IEmployerVacancyClient _client;
+        private readonly IRecruitVacancyClient _vacancyClient;
         private readonly ITimeProvider _timeProvider;
         private readonly IReviewSummaryService _reviewSummaryService;
 
-        public TrainingOrchestrator(IEmployerVacancyClient client, ILogger<TrainingOrchestrator> logger, ITimeProvider timeProvider, IReviewSummaryService reviewSummaryService) : base(logger)
+        public TrainingOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<TrainingOrchestrator> logger, ITimeProvider timeProvider, IReviewSummaryService reviewSummaryService) : base(logger)
         {
             _client = client;
+            _vacancyClient = vacancyClient;
             _timeProvider = timeProvider;
             _reviewSummaryService = reviewSummaryService;
         }
         
         public async Task<TrainingViewModel> GetTrainingViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancyTask = Utility.GetAuthorisedVacancyForEditAsync(_client, vrm, RouteNames.Training_Get);
+            var vacancyTask = Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Training_Get);
             var programmesTask = _client.GetActiveApprenticeshipProgrammesAsync();
 
             await Task.WhenAll(vacancyTask, programmesTask);
@@ -93,7 +95,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         public async Task<OrchestratorResponse> PostTrainingEditModelAsync(TrainingEditModel m, VacancyUser user)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, m, RouteNames.Training_Post);
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, m, RouteNames.Training_Post);
 
             vacancy.ClosingDate = m.ClosingDate.AsDateTimeUk()?.ToUniversalTime();
             vacancy.StartDate = m.StartDate.AsDateTimeUk()?.ToUniversalTime();
@@ -102,8 +104,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             
             return await ValidateAndExecute(
                 vacancy, 
-                v => _client.Validate(v, ValdationRules),
-                v => _client.UpdateDraftVacancyAsync(vacancy, user)
+                v => _vacancyClient.Validate(v, ValdationRules),
+                v => _vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
             );
         }
 

@@ -16,20 +16,23 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
     {
         private const VacancyRuleSet ValdationRules = VacancyRuleSet.Description | VacancyRuleSet.TrainingDescription | VacancyRuleSet.OutcomeDescription;
         private readonly IEmployerVacancyClient _client;
+        private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
 
         public VacancyDescriptionOrchestrator(
-            IEmployerVacancyClient client, 
+            IEmployerVacancyClient client,
+            IRecruitVacancyClient vacancyClient,
             ILogger<VacancyDescriptionOrchestrator> logger, 
             IReviewSummaryService reviewSummaryService) : base(logger)
         {
             _client = client;
+            _vacancyClient = vacancyClient;
             _reviewSummaryService = reviewSummaryService;
         }
 
         public async Task<VacancyDescriptionViewModel> GetVacancyDescriptionViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, vrm, RouteNames.VacancyDescription_Index_Get);
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.VacancyDescription_Index_Get);
 
             var vm = new VacancyDescriptionViewModel
             {
@@ -61,7 +64,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public async Task<OrchestratorResponse> PostVacancyDescriptionEditModelAsync(VacancyDescriptionEditModel m, VacancyUser user)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, m, RouteNames.VacancyDescription_Index_Post);
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, m, RouteNames.VacancyDescription_Index_Post);
             
             vacancy.Description = m.VacancyDescription;
             vacancy.TrainingDescription = m.TrainingDescription;
@@ -69,8 +72,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             
             return await ValidateAndExecute(
                 vacancy,
-                v => _client.Validate(v, ValdationRules),
-                v => _client.UpdateDraftVacancyAsync(vacancy, user)
+                v => _vacancyClient.Validate(v, ValdationRules),
+                v => _vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
             );
         }
 

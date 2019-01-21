@@ -10,7 +10,15 @@
 
         public const string Logout_Get = "Logout_Get";
 
-
         public const string CreateVacancyOptions_Get = "CreateVacancyOptions_Get";
+        public const string CreateVacancyOptions_Post = "CreateVacancyOptions_Post";
+
+        public const string CreateVacancy_Get = "CreateVacancy_Get";
+        public const string CreateVacancy_Post = "CreateVacancy_Post";
+
+        public const string Title_Get = "Title_Get";
+        public const string Title_Post = "Title_Post";
+
+        public const string Submitted_Index_Get = "Submitted_Index_Get";
     }
 }

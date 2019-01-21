@@ -31,6 +31,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             return _queryStore.GetAsync<EmployerDashboard>(QueryViewType.EmployerDashboard.TypeName, key);
         }
 
+        public Task<ProviderDashboard> GetProviderDashboardAsync(long ukprn)
+        {
+            var key = QueryViewType.ProviderDashboard.GetIdValue(ukprn);
+
+            return _queryStore.GetAsync<ProviderDashboard>(QueryViewType.ProviderDashboard.TypeName, key);
+        }
+
         public Task UpdateEmployerDashboardAsync(string employerAccountId, IEnumerable<VacancySummary> vacancySummaries)
         {
             var dashboardItem = new EmployerDashboard

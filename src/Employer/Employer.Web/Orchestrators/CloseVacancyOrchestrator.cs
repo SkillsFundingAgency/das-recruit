@@ -6,21 +6,24 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Shared.Web.Orchestrators;
+using Esfa.Recruit.Shared.Web.ViewModels;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
     public class CloseVacancyOrchestrator
     {
         private readonly IEmployerVacancyClient _client;
+        private readonly IRecruitVacancyClient _vacancyClient;
 
-        public CloseVacancyOrchestrator(IEmployerVacancyClient client)
+        public CloseVacancyOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient)
         {
             _client = client;
+            _vacancyClient = vacancyClient;
         }
 
         public async Task<CloseViewModel> GetCloseViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await _client.GetVacancyAsync(vrm.VacancyId);
+            var vacancy = await _vacancyClient.GetVacancyAsync(vrm.VacancyId);
 
             Utility.CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
 
@@ -38,7 +41,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public async Task<OrchestratorResponse<VacancyInfo>> CloseVacancyAsync(CloseEditModel m, VacancyUser user)
         {
-            var vacancy = await _client.GetVacancyAsync(m.VacancyId);
+            var vacancy = await _vacancyClient.GetVacancyAsync(m.VacancyId);
 
             Utility.CheckAuthorisedAccess(vacancy, m.EmployerAccountId);
 

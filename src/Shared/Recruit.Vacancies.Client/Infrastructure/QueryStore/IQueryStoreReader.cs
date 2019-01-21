@@ -5,6 +5,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVa
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.QA;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Provider;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 {
@@ -15,5 +16,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         Task<IEnumerable<LiveVacancy>> GetLiveVacancies();
         Task<VacancyApplications> GetVacancyApplicationsAsync(string vacancyReference);
         Task<QaDashboard> GetQaDashboardAsync();
+        Task<ProviderDashboard> GetProviderDashboardAsync(long ukprn);
     }
 }

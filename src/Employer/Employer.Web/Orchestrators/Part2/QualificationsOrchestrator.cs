@@ -21,18 +21,20 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.Qualifications;
         private readonly IEmployerVacancyClient _client;
+        private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
         
-        public QualificationsOrchestrator(IEmployerVacancyClient client, ILogger<QualificationsOrchestrator> logger, IReviewSummaryService reviewSummaryService)
+        public QualificationsOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<QualificationsOrchestrator> logger, IReviewSummaryService reviewSummaryService)
             : base(logger)
         {
             _client = client;
             _reviewSummaryService = reviewSummaryService;
+            _vacancyClient = vacancyClient;
         }
 
         public async Task<QualificationsViewModel> GetQualificationsViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, vrm, RouteNames.Qualifications_Get);
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Qualifications_Get);
 
             var allQualifications = await _client.GetCandidateQualificationsAsync();
 
@@ -68,7 +70,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public async Task<OrchestratorResponse> PostQualificationsEditModelAsync(QualificationsEditModel m, VacancyUser user)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, new VacancyRouteModel{EmployerAccountId = m.EmployerAccountId, VacancyId = m.VacancyId}, RouteNames.Qualifications_Post);
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, new VacancyRouteModel{EmployerAccountId = m.EmployerAccountId, VacancyId = m.VacancyId}, RouteNames.Qualifications_Post);
             
             if (m.Qualifications == null)
             {
@@ -89,11 +91,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             return await ValidateAndExecute(vacancy,
                 v => 
                 {
-                    var result = _client.Validate(v, ValidationRules);
+                    var result = _vacancyClient.Validate(v, ValidationRules);
                     SyncErrorsAndModel(result.Errors, m);
                     return result;
                 },
-                v => validateOnly ? Task.CompletedTask : _client.UpdateDraftVacancyAsync(v, user));
+                v => validateOnly ? Task.CompletedTask : _vacancyClient.UpdateDraftVacancyAsync(v, user));
         }
 
         protected override EntityToViewModelPropertyMappings<Vacancy, QualificationsEditModel> DefineMappings()

@@ -7,14 +7,14 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 {
     public class DashboardOrchestrator
     {
-        private readonly IEmployerVacancyClient _vacancyClient;
+        private readonly IProviderVacancyClient _vacancyClient;
 
-        public DashboardOrchestrator(IEmployerVacancyClient vacancyClient)
+        public DashboardOrchestrator(IProviderVacancyClient vacancyClient)
         {
             _vacancyClient = vacancyClient;
         }
 
-        public async Task<DashboardViewModel> GetDashboardViewModelAsync(string ukprn)
+        public async Task<DashboardViewModel> GetDashboardViewModelAsync(long ukprn)
         {            
             var dashboard = await _vacancyClient.GetDashboardAsync(ukprn);
 

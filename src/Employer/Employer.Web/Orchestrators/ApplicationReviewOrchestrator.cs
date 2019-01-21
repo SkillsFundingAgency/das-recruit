@@ -6,21 +6,24 @@ using Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.AspNetCore.Mvc;
+using Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
     public class ApplicationReviewOrchestrator
     {
         private readonly IEmployerVacancyClient _client;
+        private readonly IRecruitVacancyClient _vacancyClient;
 
-        public ApplicationReviewOrchestrator(IEmployerVacancyClient client)
+        public ApplicationReviewOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient)
         {
             _client = client;
+            _vacancyClient = vacancyClient;
         }
 
         public async Task<ApplicationReviewViewModel> GetApplicationReviewViewModelAsync(ApplicationReviewRouteModel rm)
         {
-            var applicationReview = await Utility.GetAuthorisedApplicationReviewAsync(_client, rm);
+            var applicationReview = await Utility.GetAuthorisedApplicationReviewAsync(_vacancyClient, rm);
 
             if (applicationReview.IsWithdrawn)
                 throw new Exception($"Application has been withdrawn. ApplicationReviewId:{applicationReview.Id}");

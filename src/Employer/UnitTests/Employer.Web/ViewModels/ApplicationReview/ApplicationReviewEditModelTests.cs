@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
-using Esfa.Recruit.Employer.Web.ViewModels.Validations.Fluent;
+using Esfa.Recruit.Shared.Web.ViewModels.Validations.Fluent;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using FluentAssertions;
