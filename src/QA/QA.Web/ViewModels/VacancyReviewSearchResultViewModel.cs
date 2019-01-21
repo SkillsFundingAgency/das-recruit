@@ -23,7 +23,7 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
 
         public bool IsClosed { get; set; }
 
-        public bool IsNotAvailableForReview => !IsAvailableForReview;
+        public bool IsNotAvailableForReview => !IsAvailableForReview && !IsClosed;
 
         public bool CanShowReviewLink => (IsAvailableForReview || IsAssignedToLoggedInUser) && !IsClosed;
 
