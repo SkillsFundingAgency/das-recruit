@@ -27,14 +27,13 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
 
         public bool CanShowReviewLink => (IsAvailableForReview || IsAssignedToLoggedInUser) && !IsClosed;
 
+        public string ClosedReviewAssignmentCaption => $"Reviewed by {AssignedToCaption}";
+
         internal string AssignedTo { get; set; }
 
         internal string AssignedTimeElapsed { get; set; }
 
-        private string AssignedToCaption => 
-            IsNotAvailableForReview 
-            ? IsAssignedToLoggedInUser ? "you" : AssignedTo
-            : null;
+        private string AssignedToCaption => IsAssignedToLoggedInUser ? "you" : AssignedTo;
             
         private string AssignedTimeElapsedCaption => string.IsNullOrEmpty(AssignedTimeElapsed) 
                                                     ? "now" 
