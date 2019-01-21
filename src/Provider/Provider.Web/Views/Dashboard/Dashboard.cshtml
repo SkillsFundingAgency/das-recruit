@@ -1,17 +1,16 @@
 ﻿@using Esfa.Recruit.Provider.Web.ViewModels
 @model Esfa.Recruit.Provider.Web.ViewModels.DashboardViewModel
 
-<h1>This is the Provider Dashboard page!  @User.GetDisplayName()</h1>
+<h1 class="govuk-heading-l">This is the Provider Dashboard page! @User.GetDisplayName()</h1>
 
-<div class="grid-row">
-    <div class="column-full">
-        <p>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <p class="govuk-body">
             You can clone vacancies once they've been submitted.
             Vacancies will be approved or rejected within 24 hours.
         </p>
-        <a asp-route="@RouteNames.CreateVacancyOptions_Get" class="button small-bottom-margin">Create vacancy</a>
+        <a asp-route="@RouteNames.CreateVacancyOptions_Get" class="govuk-button">Create vacancy</a>
     </div>
-    <br>
 </div>
 
 
