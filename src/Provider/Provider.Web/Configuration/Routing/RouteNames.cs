@@ -16,10 +16,6 @@
         public const string CreateVacancy_Get = "CreateVacancy_Get";
         public const string CreateVacancy_Post = "CreateVacancy_Post";
 
-        public const string Title_Get = "Title_Get";
-        public const string Title_Post = "Title_Post";
-
-
         public const string VacancyDescription_Index_Get = "VacancyDescription_Index_Get";
         public const string VacancyDescription_Index_Post = "VacancyDescription_Index_Post";
 
@@ -32,5 +28,7 @@
 
         public const string VacancyManage_Get = "VacancyManage_Get";
         public const string DisplayVacancy_Get = "DisplayVacancy_Get";
+        public const string Title_Get = "Title_Get";
+        public const string Title_Post = "Title_Post";
     }
 }
