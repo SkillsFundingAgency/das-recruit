@@ -19,10 +19,12 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
     public class ApplicationProcessOrchestratorTests
     {
         private readonly Mock<IEmployerVacancyClient> _mockClient;
+        private readonly Mock<IRecruitVacancyClient> _mockVacancyClient;
 
         public ApplicationProcessOrchestratorTests()
         {
             _mockClient = new Mock<IEmployerVacancyClient>();
+            _mockVacancyClient = new Mock<IRecruitVacancyClient>();
         }
 
         [Fact]
@@ -31,13 +33,13 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
             var user = VacancyOrchestratorTestData.GetVacancyUser();
             var vacancy = VacancyOrchestratorTestData.GetPart1CompleteVacancy();
 
-            _mockClient.Setup(x => x.GetVacancyAsync(vacancy.Id))
+            _mockVacancyClient.Setup(x => x.GetVacancyAsync(vacancy.Id))
                         .ReturnsAsync(vacancy);
-            _mockClient.Setup(x => x.Validate(vacancy, VacancyRuleSet.ApplicationMethod))
+            _mockVacancyClient.Setup(x => x.Validate(vacancy, VacancyRuleSet.ApplicationMethod))
                         .Returns(new EntityValidationResult());
-            _mockClient.Setup(x => x.UpdateDraftVacancyAsync(It.IsAny<Vacancy>(), user));
+            _mockVacancyClient.Setup(x => x.UpdateDraftVacancyAsync(It.IsAny<Vacancy>(), user));
 
-            var sut = new ApplicationProcessOrchestrator(_mockClient.Object, Options.Create(new ExternalLinksConfiguration()), Mock.Of<ILogger<ApplicationProcessOrchestrator>>(), Mock.Of<IReviewSummaryService>());
+            var sut = new ApplicationProcessOrchestrator(_mockClient.Object, _mockVacancyClient.Object, Options.Create(new ExternalLinksConfiguration()), Mock.Of<ILogger<ApplicationProcessOrchestrator>>(), Mock.Of<IReviewSummaryService>());
 
             var applicationProcessEditModel = new ApplicationProcessEditModel
             {
@@ -52,7 +54,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
             vacancy.ApplicationMethod.HasValue.Should().BeTrue();
             vacancy.ApplicationMethod.Value.Should().Be(ApplicationMethod.ThroughFindAnApprenticeship);
             vacancy.ApplicationUrl.Should().BeNull();
-            _mockClient.Verify(x => x.UpdateDraftVacancyAsync(vacancy, user), Times.Once);
+            _mockVacancyClient.Verify(x => x.UpdateDraftVacancyAsync(vacancy, user), Times.Once);
         }
 
         [Fact]
@@ -61,13 +63,13 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
             var user = VacancyOrchestratorTestData.GetVacancyUser();
             var vacancy = VacancyOrchestratorTestData.GetPart1CompleteVacancy();
 
-            _mockClient.Setup(x => x.GetVacancyAsync(vacancy.Id))
+            _mockVacancyClient.Setup(x => x.GetVacancyAsync(vacancy.Id))
                         .ReturnsAsync(vacancy);
-            _mockClient.Setup(x => x.Validate(vacancy, VacancyRuleSet.ApplicationMethod))
+            _mockVacancyClient.Setup(x => x.Validate(vacancy, VacancyRuleSet.ApplicationMethod))
                         .Returns(new EntityValidationResult());
-            _mockClient.Setup(x => x.UpdateDraftVacancyAsync(It.IsAny<Vacancy>(), user));
+            _mockVacancyClient.Setup(x => x.UpdateDraftVacancyAsync(It.IsAny<Vacancy>(), user));
 
-            var sut = new ApplicationProcessOrchestrator(_mockClient.Object, Options.Create(new ExternalLinksConfiguration()), Mock.Of<ILogger<ApplicationProcessOrchestrator>>(), Mock.Of<IReviewSummaryService>());
+            var sut = new ApplicationProcessOrchestrator(_mockClient.Object, _mockVacancyClient.Object, Options.Create(new ExternalLinksConfiguration()), Mock.Of<ILogger<ApplicationProcessOrchestrator>>(), Mock.Of<IReviewSummaryService>());
 
             var applicationProcessEditModel = new ApplicationProcessEditModel
             {
@@ -82,7 +84,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
             vacancy.ApplicationMethod.HasValue.Should().BeTrue();
             vacancy.ApplicationMethod.Value.Should().Be(ApplicationMethod.ThroughFindAnApprenticeship);
             vacancy.ApplicationInstructions.Should().BeNull();
-            _mockClient.Verify(x => x.UpdateDraftVacancyAsync(vacancy, user), Times.Once);
+            _mockVacancyClient.Verify(x => x.UpdateDraftVacancyAsync(vacancy, user), Times.Once);
         }
     }
 }

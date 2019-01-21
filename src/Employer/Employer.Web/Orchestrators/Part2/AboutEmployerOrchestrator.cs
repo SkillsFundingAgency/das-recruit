@@ -17,17 +17,19 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.EmployerDescription | VacancyRuleSet.EmployerWebsiteUrl;
         private readonly IEmployerVacancyClient _client;
+        private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
 
-        public AboutEmployerOrchestrator(IEmployerVacancyClient client, ILogger<AboutEmployerOrchestrator> logger, IReviewSummaryService reviewSummaryService) : base(logger)
+        public AboutEmployerOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<AboutEmployerOrchestrator> logger, IReviewSummaryService reviewSummaryService) : base(logger)
         {
             _client = client;
+            _vacancyClient = vacancyClient;
             _reviewSummaryService = reviewSummaryService;
         }
 
         public async Task<AboutEmployerViewModel> GetAboutEmployerViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, vrm, RouteNames.AboutEmployer_Get);
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.AboutEmployer_Get);
 
             var vm = new AboutEmployerViewModel
             {
@@ -64,18 +66,18 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public async Task<OrchestratorResponse> PostAboutEmployerEditModelAsync(AboutEmployerEditModel m, VacancyUser user)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, m, RouteNames.AboutEmployer_Post);
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, m, RouteNames.AboutEmployer_Post);
 
             vacancy.EmployerDescription = m.EmployerDescription;
             vacancy.EmployerWebsiteUrl = m.EmployerWebsiteUrl;
 
             return await ValidateAndExecute(
                 vacancy,
-                v => _client.Validate(v, ValidationRules),
+                v => _vacancyClient.Validate(v, ValidationRules),
                 async v =>    
                 {
                     vacancy.EmployerDescription = null; // We don't want to save the description until submission.
-                    await _client.UpdateDraftVacancyAsync(vacancy, user);
+                    await _vacancyClient.UpdateDraftVacancyAsync(vacancy, user);
                     await UpdateEmployerProfileAsync(vacancy, m.EmployerDescription, user);
                 }
             );

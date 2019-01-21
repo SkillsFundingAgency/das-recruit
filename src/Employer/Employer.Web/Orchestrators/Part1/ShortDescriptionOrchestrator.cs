@@ -16,17 +16,19 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.ShortDescription;
         private readonly IEmployerVacancyClient _client;
+        private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
 
-        public ShortDescriptionOrchestrator(IEmployerVacancyClient client, ILogger<ShortDescriptionOrchestrator> logger, IReviewSummaryService reviewSummaryService) : base(logger)
+        public ShortDescriptionOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<ShortDescriptionOrchestrator> logger, IReviewSummaryService reviewSummaryService) : base(logger)
         {
             _client = client;
+            _vacancyClient = vacancyClient;
             _reviewSummaryService = reviewSummaryService;
         }
 
         public async Task<ShortDescriptionViewModel> GetShortDescriptionViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, vrm, RouteNames.ShortDescription_Get);
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.ShortDescription_Get);
 
             var vm = new ShortDescriptionViewModel
             {
@@ -55,14 +57,14 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         public async Task<OrchestratorResponse> PostShortDescriptionEditModelAsync(ShortDescriptionEditModel m, VacancyUser user)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, m, RouteNames.ShortDescription_Post);
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, m, RouteNames.ShortDescription_Post);
 
             vacancy.ShortDescription = m.ShortDescription;
 
             return await ValidateAndExecute(
                 vacancy, 
-                v => _client.Validate(v, ValidationRules),
-                v => _client.UpdateDraftVacancyAsync(vacancy, user)
+                v => _vacancyClient.Validate(v, ValidationRules),
+                v => _vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
             );
         }
 

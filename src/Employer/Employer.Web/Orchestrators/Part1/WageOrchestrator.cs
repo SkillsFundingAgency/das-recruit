@@ -18,17 +18,19 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.Duration | VacancyRuleSet.WorkingWeekDescription | VacancyRuleSet.WeeklyHours | VacancyRuleSet.Wage | VacancyRuleSet.MinimumWage;
         private readonly IEmployerVacancyClient _client;
+        private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
 
-        public WageOrchestrator(IEmployerVacancyClient client, ILogger<WageOrchestrator> logger, IReviewSummaryService reviewSummaryService) : base(logger)
+        public WageOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<WageOrchestrator> logger, IReviewSummaryService reviewSummaryService) : base(logger)
         {
             _client = client;
+            _vacancyClient = vacancyClient;
             _reviewSummaryService = reviewSummaryService;
         }
 
         public async Task<WageViewModel> GetWageViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, vrm, RouteNames.Wage_Get);
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Wage_Get);
             
             var vm = new WageViewModel
             {
@@ -68,7 +70,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         public async Task<OrchestratorResponse> PostWageEditModelAsync(WageEditModel m, VacancyUser user)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, m, RouteNames.Wage_Post);
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, m, RouteNames.Wage_Post);
             
             vacancy.Wage = new Wage
             {
@@ -83,8 +85,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
             return await ValidateAndExecute(
                 vacancy, 
-                v => _client.Validate(v, ValidationRules),
-                v => _client.UpdateDraftVacancyAsync(vacancy, user)
+                v => _vacancyClient.Validate(v, ValidationRules),
+                v => _vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
             );
         }
 

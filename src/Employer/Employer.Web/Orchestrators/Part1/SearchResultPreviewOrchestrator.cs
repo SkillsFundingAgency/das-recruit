@@ -16,19 +16,21 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         private const int MapImageWidth = 190;
         private const int MapImageHeight = 125;
         private readonly IEmployerVacancyClient _client;
+        private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IGeocodeImageService _mapService;
         private readonly IMinimumWageProvider _wageProvider;
 
-        public SearchResultPreviewOrchestrator(IEmployerVacancyClient client, IGeocodeImageService mapService, IMinimumWageProvider wageProvider)
+        public SearchResultPreviewOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, IGeocodeImageService mapService, IMinimumWageProvider wageProvider)
         {
             _client = client;
+            _vacancyClient = vacancyClient;
             _mapService = mapService;
             _wageProvider = wageProvider;
         }
         
         public async Task<SearchResultPreviewViewModel> GetSearchResultPreviewViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, vrm, RouteNames.SearchResultPreview_Get);
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.SearchResultPreview_Get);
 
             var wagePeriod = _wageProvider.GetWagePeriod(vacancy.StartDate.Value);
 

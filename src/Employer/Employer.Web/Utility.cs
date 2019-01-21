@@ -9,6 +9,7 @@ using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Exceptions;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels;
+using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 
@@ -16,16 +17,16 @@ namespace Esfa.Recruit.Employer.Web
 {
     public static class Utility
     {
-        public static async Task<Vacancy> GetAuthorisedVacancyForEditAsync(IEmployerVacancyClient client, VacancyRouteModel vrm, string routeName)
+        public static async Task<Vacancy> GetAuthorisedVacancyForEditAsync(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, VacancyRouteModel vrm, string routeName)
         {
-            var vacancy = await GetAuthorisedVacancyAsync(client, vrm, routeName);
+            var vacancy = await GetAuthorisedVacancyAsync(vacancyClient, vrm, routeName);
 
             CheckCanEdit(vacancy);
 
             return vacancy;
         }
 
-        public static async Task<Vacancy> GetAuthorisedVacancyAsync(IEmployerVacancyClient client, VacancyRouteModel vrm, string routeName)
+        public static async Task<Vacancy> GetAuthorisedVacancyAsync(IRecruitVacancyClient client, VacancyRouteModel vrm, string routeName)
         {
             var vacancy = await client.GetVacancyAsync(vrm.VacancyId);
 
@@ -117,7 +118,7 @@ namespace Esfa.Recruit.Employer.Web
             };
         }
 
-        public static async Task<ApplicationReview> GetAuthorisedApplicationReviewAsync(IEmployerVacancyClient client, ApplicationReviewRouteModel rm)
+        public static async Task<ApplicationReview> GetAuthorisedApplicationReviewAsync(IRecruitVacancyClient client, ApplicationReviewRouteModel rm)
         {
             var applicationReview = await client.GetApplicationReviewAsync(rm.ApplicationReviewId);
 

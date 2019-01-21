@@ -6,21 +6,24 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Employer.Web.RouteModel;
+using Esfa.Recruit.Shared.Web.ViewModels;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
     public class SubmittedOrchestrator
     {
         private readonly IEmployerVacancyClient _client;
+        private readonly IRecruitVacancyClient _vacancyClient;
 
-        public SubmittedOrchestrator(IEmployerVacancyClient client)
+        public SubmittedOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient)
         {
             _client = client;
+            _vacancyClient = vacancyClient;
         }
 
         public async Task<VacancySubmittedConfirmationViewModel> GetVacancySubmittedConfirmationViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyAsync(_client, vrm, RouteNames.Submitted_Index_Get);
+            var vacancy = await Utility.GetAuthorisedVacancyAsync(_vacancyClient, vrm, RouteNames.Submitted_Index_Get);
 
             if (vacancy.Status != VacancyStatus.Submitted)
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotSubmittedSuccessfully, vacancy.Title));
@@ -28,7 +31,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             var isResubmit = false;
             if (vacancy.VacancyReference.HasValue)
             {
-                var review = await _client.GetCurrentReferredVacancyReviewAsync(vacancy.VacancyReference.Value);
+                var review = await _vacancyClient.GetCurrentReferredVacancyReviewAsync(vacancy.VacancyReference.Value);
                 isResubmit = review != null;
             }
 

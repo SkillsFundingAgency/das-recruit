@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 
-namespace Esfa.Recruit.Employer.Web.Extensions
+namespace Esfa.Recruit.Shared.Web.Extensions
 {
     public static class ApplicationReviewExtensions
     {

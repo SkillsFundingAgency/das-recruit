@@ -205,7 +205,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
         private static void RegisterMediatR(IServiceCollection services)
         {
-            services.AddMediatR(typeof(CreateVacancyCommandHandler).Assembly);
+            services.AddMediatR(typeof(CreateEmployerOwnedVacancyCommandHandler).Assembly);
             services
                 .AddTransient<IMessaging, MediatrMessaging>()
                 .AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestPerformanceBehaviour<,>));                           

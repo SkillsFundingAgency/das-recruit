@@ -3,6 +3,7 @@ using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels;
+using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Employer.Web.ViewModels.VacancyManage;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
@@ -18,16 +19,18 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
     {
         private readonly DisplayVacancyViewModelMapper _vacancyDisplayMapper;
         private readonly IEmployerVacancyClient _client;
+        private readonly IRecruitVacancyClient _vacancyClient;
 
-        public VacancyViewOrchestrator(DisplayVacancyViewModelMapper vacancyDisplayMapper, IEmployerVacancyClient client)
+        public VacancyViewOrchestrator(DisplayVacancyViewModelMapper vacancyDisplayMapper, IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient)
         {
             _vacancyDisplayMapper = vacancyDisplayMapper;
             _client = client;
+            _vacancyClient = vacancyClient;
         }
 
         public async Task<Vacancy> GetVacancy(VacancyRouteModel vrm)
         {
-            var vacancy = await _client.GetVacancyAsync(vrm.VacancyId);
+            var vacancy = await _vacancyClient.GetVacancyAsync(vrm.VacancyId);
 
             Utility.CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
 

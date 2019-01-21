@@ -1,7 +1,7 @@
 ﻿using Esfa.Recruit.Employer.Web.RouteModel;
-using Esfa.Recruit.Employer.Web.ViewModels.Validations;
+using Esfa.Recruit.Shared.Web.ViewModels.Validations;
 using Microsoft.AspNetCore.Mvc;
-using ErrMsg = Esfa.Recruit.Employer.Web.ViewModels.ValidationMessages.DateValidationMessages;
+using ErrMsg = Esfa.Recruit.Shared.Web.ViewModels.ValidationMessages.DateValidationMessages;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
 {

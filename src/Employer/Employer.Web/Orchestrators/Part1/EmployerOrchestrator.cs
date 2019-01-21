@@ -22,16 +22,19 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.EmployerName | VacancyRuleSet.EmployerAddress;
         private readonly IEmployerVacancyClient _client;
+        private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
         private readonly ILegalEntityAgreementService _legalEntityAgreementService;
 
         public EmployerOrchestrator(
-            IEmployerVacancyClient client, 
+            IEmployerVacancyClient client,
+            IRecruitVacancyClient vacancyClient,
             ILogger<EmployerOrchestrator> logger, 
             IReviewSummaryService reviewSummaryService, 
             ILegalEntityAgreementService legalEntityAgreementService) : base(logger)
         {
             _client = client;
+            _vacancyClient = vacancyClient;
             _reviewSummaryService = reviewSummaryService;
             _legalEntityAgreementService = legalEntityAgreementService;
         }
@@ -39,7 +42,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         public async Task<EmployerViewModel> GetEmployerViewModelAsync(VacancyRouteModel vrm)
         {
             var getEmployerDataTask = _client.GetEditVacancyInfoAsync(vrm.EmployerAccountId);
-            var getVacancyTask = Utility.GetAuthorisedVacancyForEditAsync(_client, vrm, RouteNames.Employer_Get);
+            var getVacancyTask = Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Employer_Get);
 
             await Task.WhenAll(getEmployerDataTask, getVacancyTask);
 
@@ -96,7 +99,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         public async Task<OrchestratorResponse<PostEmployerEditModelResponse>> PostEmployerEditModelAsync(EmployerEditModel m, VacancyUser user)
         {
-            var vacancyTask = Utility.GetAuthorisedVacancyForEditAsync(_client, m, RouteNames.Employer_Post);
+            var vacancyTask = Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, m, RouteNames.Employer_Post);
             var employerVacancyInfoTask = _client.GetEditVacancyInfoAsync(m.EmployerAccountId);
 
             await Task.WhenAll(vacancyTask, employerVacancyInfoTask);
@@ -121,10 +124,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
             return await ValidateAndExecute(
                 vacancy, 
-                v => _client.Validate(v, ValidationRules),
+                v => _vacancyClient.Validate(v, ValidationRules),
                 async v => 
                 {
-                    await _client.UpdateDraftVacancyAsync(vacancy, user);
+                    await _vacancyClient.UpdateDraftVacancyAsync(vacancy, user);
 
                     return new PostEmployerEditModelResponse
                     {

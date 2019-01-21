@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
-namespace Esfa.Recruit.Employer.Web.Orchestrators
+namespace Esfa.Recruit.Shared.Web.Orchestrators
 {
     // This class represents the mappings of the properties in an Entity to those on a particular ViewModel
     public class EntityToViewModelPropertyMappings<TEntity, TViewModel> : List<Tuple<Expression<Func<TEntity, object>>, Expression<Func<TViewModel, object>>>>

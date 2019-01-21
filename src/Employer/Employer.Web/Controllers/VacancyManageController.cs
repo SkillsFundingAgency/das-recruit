@@ -11,6 +11,7 @@ using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Microsoft.AspNetCore.Hosting;
+using InfoMsg = Esfa.Recruit.Shared.Web.ViewModels.InfoMessages;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
@@ -80,7 +81,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             }
 
             var vacancy = await _orchestrator.GetVacancy(m);
-            TempData.Add(TempDataKeys.DashboardInfoMessage, string.Format(InfoMessages.VacancyUpdated, vacancy.Title));
+            TempData.Add(TempDataKeys.DashboardInfoMessage, string.Format(InfoMsg.VacancyUpdated, vacancy.Title));
 
             EnsureProposedChangesCookiesAreCleared(m.VacancyId);
 
