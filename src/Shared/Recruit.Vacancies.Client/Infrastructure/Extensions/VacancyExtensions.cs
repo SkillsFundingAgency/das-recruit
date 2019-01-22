@@ -31,9 +31,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
             projectedVacancy.ClosingDate = vacancy.ClosingDate.GetValueOrDefault();
             projectedVacancy.Description = vacancy.Description;
             projectedVacancy.DisabilityConfident = vacancy.DisabilityConfident;
-            projectedVacancy.EmployerContactEmail = vacancy.OwnerType == OwnerType.Employer ? vacancy.EmployerContact?.Email : vacancy.ProviderContact?.Email;
-            projectedVacancy.EmployerContactName = vacancy.OwnerType == OwnerType.Employer ? vacancy.EmployerContact?.Name : vacancy.ProviderContact?.Name;
-            projectedVacancy.EmployerContactPhone = vacancy.OwnerType == OwnerType.Employer ? vacancy.EmployerContact?.Phone : vacancy.ProviderContact?.Phone;
+            projectedVacancy.EmployerContactEmail = vacancy.EmployerContact?.Email;
+            projectedVacancy.EmployerContactName = vacancy.EmployerContact?.Name;
+            projectedVacancy.EmployerContactPhone = vacancy.EmployerContact?.Phone;
+            projectedVacancy.ProviderContactEmail = vacancy.ProviderContact?.Email;
+            projectedVacancy.ProviderContactName = vacancy.ProviderContact?.Name;
+            projectedVacancy.ProviderContactPhone = vacancy.ProviderContact?.Phone;
             projectedVacancy.EmployerDescription = vacancy.EmployerDescription;
             projectedVacancy.EmployerLocation = vacancy.EmployerLocation.ToProjection();
             projectedVacancy.EmployerName = vacancy.EmployerName;

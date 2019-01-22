@@ -90,8 +90,6 @@ namespace Microsoft.Extensions.DependencyInjection
             services.Configure<SlackConfiguration>(configuration.GetSection("Slack"));
             services.Configure<NextVacancyReviewServiceConfiguration>(o => o.VacancyReviewAssignationTimeoutMinutes = configuration.GetValue<int>("VacancyReviewAssignationTimeoutMinutes"));
 
-
-
             // Domain services
             services.AddTransient<ITimeProvider, CurrentUtcTimeProvider>();
 
