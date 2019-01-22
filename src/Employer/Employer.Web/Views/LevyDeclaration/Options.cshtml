@@ -7,13 +7,15 @@
             <div esfa-validation-marker-for="ConfirmAsLevyPayer" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
                     <span esfa-validation-message-for="ConfirmAsLevyPayer" class="govuk-error-message"></span>
-                    <div class="multiple-choice">
-                        <input asp-for="@Model.ConfirmAsLevyPayer" type="radio" value="true" class="govuk-radios__input" id="confirm-yes" />
-                        <label class="block-label selection-button-radio" for="confirm-yes">Yes - I pay the apprenticeship levy</label>
-                    </div>
-                    <div class="multiple-choice">
-                        <input asp-for="@Model.ConfirmAsLevyPayer" type="radio" value="false" class="govuk-radios__input" id="confirm-no" />
-                        <label class="block-label selection-button-radio" for="confirm-no">No - I do not pay the apprenticeship levy</label>
+                    <div class="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input asp-for="@Model.ConfirmAsLevyPayer" type="radio" value="true" class="govuk-radios__input" id="confirm-yes" />
+                            <label class="govuk-label govuk-radios__label" for="confirm-yes">Yes - I pay the apprenticeship levy</label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input asp-for="@Model.ConfirmAsLevyPayer" type="radio" value="false" class="govuk-radios__input" id="confirm-no" />
+                            <label class="govuk-label govuk-radios__label" for="confirm-no">No - I do not pay the apprenticeship levy</label>
+                        </div>
                     </div>
                 </fieldset>
             </div>

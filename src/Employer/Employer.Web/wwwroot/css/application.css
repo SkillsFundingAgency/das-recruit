@@ -720,9 +720,14 @@ a[rel="external"]:hover:after {
     width: auto;
 }
 
-  #global-outage-message p {
+.das-warning-text__icon--top {
+    top: 50px;
+}
+
+#global-outage-message p {
     max-width: 960px;
-    margin: 0 15px; }
+    margin: 0 15px;
+}
     @media (min-width: 641px) {
       #global-outage-message p {
         margin: 0 30px; } }

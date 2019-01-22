@@ -6,18 +6,21 @@
         <h1 class="govuk-heading-l govuk-!-margin-bottom-8">Agreement not signed</h1>
 
         <div class="notice govuk-!-margin-bottom-8 govuk-warning-text">
-            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-            <strong class="govuk-warning-text__text">
-                <span class="govuk-warning-text__assistive">Warning</span>
-                <p class="govuk-body">
+            <span class="govuk-warning-text__icon das-warning-text__icon--top" aria-hidden="true">!</span>
+            
+            <span class="govuk-warning-text__assistive">Warning</span>
+            <p>
+                <strong class="govuk-warning-text__text">
                     @Model.LegalEntityName doesn’t have a signed agreement with the Education and Skills Funding Agency (ESFA).
-                    Without a signed agreement you can create a draft vacancy, but won’t be able to submit for posting on Find an apprenticeship.
-                </p>
-                <p class="govuk-body">
+                Without a signed agreement you can create a draft vacancy, but won’t be able to submit for posting on Find an apprenticeship.
+                </strong>
+            </p>
+            <p>
+                <strong class="govuk-warning-text__text">
                     Only account owners can sign ESFA agreements. If you’re not sure who the owner is, you can
-                    <a asp-route="@RouteNames.Dashboard_AccountsAgreements">check your team details.</a>
-                </p>
-            </strong>
+                <a asp-route="@RouteNames.Dashboard_AccountsAgreements">check your team details.</a>
+                </strong>
+            </p>
         </div>
         
         <a asp-route="@RouteNames.Dashboard_AccountsAgreements" class="govuk-button">Review agreement</a>
