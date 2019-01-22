@@ -23,7 +23,7 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
 
         public bool IsClosed { get; set; }
 
-        public bool IsNotAvailableForReview => !IsAvailableForReview;
+        public bool ShowAssignmentInfoCaption => !IsAvailableForReview && !IsClosed;
 
         public bool CanShowReviewLink => (IsAvailableForReview || IsAssignedToLoggedInUser) && !IsClosed;
 
@@ -43,5 +43,7 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         {
             return $"Assigned to {AssignedToCaption}. Being reviewed {AssignedTimeElapsedCaption}.";
         }
+
+
     }
 }
