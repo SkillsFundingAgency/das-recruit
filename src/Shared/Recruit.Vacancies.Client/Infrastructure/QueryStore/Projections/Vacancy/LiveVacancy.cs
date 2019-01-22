@@ -4,6 +4,6 @@
     {
         public LiveVacancy() : base(QueryViewType.LiveVacancy.TypeName)
         {
-        }        
+        }
     }
 }
