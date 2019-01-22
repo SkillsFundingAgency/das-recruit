@@ -9,15 +9,15 @@ using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.EventHandlers
 {
-    public class NotifyOnVacancyActions : INotificationHandler<VacancyReviewApprovedEvent>,
-                                          INotificationHandler<VacancyReviewReferredEvent>,
-                                          INotificationHandler<VacancyReviewCreatedEvent>
+    public class NotifyOnVacancyActionsEventHandler : INotificationHandler<VacancyReviewApprovedEvent>,
+                                        INotificationHandler<VacancyReviewReferredEvent>,
+                                        INotificationHandler<VacancyReviewCreatedEvent>
     {
         private readonly INotifyVacancyReviewUpdates _notifier;
         private readonly IVacancyReviewRepository _vacancyReviewRepository;
-        private readonly ILogger<NotifyOnVacancyActions> _logger;
+        private readonly ILogger<NotifyOnVacancyActionsEventHandler> _logger;
 
-        public NotifyOnVacancyActions(INotifyVacancyReviewUpdates notifier, IVacancyReviewRepository vacancyReviewRepository, ILogger<NotifyOnVacancyActions> logger)
+        public NotifyOnVacancyActionsEventHandler(INotifyVacancyReviewUpdates notifier, IVacancyReviewRepository vacancyReviewRepository, ILogger<NotifyOnVacancyActionsEventHandler> logger)
         {
             _notifier = notifier;
             _vacancyReviewRepository = vacancyReviewRepository;

@@ -15,9 +15,9 @@ namespace Esfa.Recruit.Provider.Web.Middleware
     public class ProviderAccountHandler : AuthorizationHandler<ProviderAccountRequirement>
     {
         private readonly IHostingEnvironment _hostingEnvironment;
-        private readonly IEmployerVacancyClient _client;
+        private readonly IProviderVacancyClient _client;
 
-        public ProviderAccountHandler(IHostingEnvironment hostingEnvironment, IEmployerVacancyClient client)
+        public ProviderAccountHandler(IHostingEnvironment hostingEnvironment, IProviderVacancyClient client)
         {
             _hostingEnvironment = hostingEnvironment;
             _client = client;
@@ -29,14 +29,13 @@ namespace Esfa.Recruit.Provider.Web.Middleware
             {
                 if (context.User.HasClaim(c => c.Type.Equals(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier)))
                 {
-                    var accountIdFromUrl = mvcContext.RouteData.Values[RouteValues.Ukprn].ToString();
-                    //var employerAccounts = context.User.GetEmployerAccounts();
+                    var ukprnFromUrl = mvcContext.RouteData.Values[RouteValues.Ukprn].ToString();
 
-                    if (!string.IsNullOrEmpty(accountIdFromUrl))
+                    if (!string.IsNullOrEmpty(ukprnFromUrl))
                     {
-                        mvcContext.HttpContext.Items.Add(ContextItemKeys.ProviderIdentifier, accountIdFromUrl);
+                        mvcContext.HttpContext.Items.Add(ContextItemKeys.ProviderIdentifier, ukprnFromUrl);
 
-                        await EnsureProviderIsSetup(mvcContext.HttpContext, accountIdFromUrl);
+                        await EnsureProviderIsSetup(mvcContext.HttpContext, long.Parse(ukprnFromUrl));
 
                         context.Succeed(requirement);
                     }
@@ -48,16 +47,16 @@ namespace Esfa.Recruit.Provider.Web.Middleware
             }
         }
 
-        private async Task EnsureProviderIsSetup(HttpContext context, string employerAccountId)
+        private async Task EnsureProviderIsSetup(HttpContext context, long ukprn)
         {
             await Task.CompletedTask;
-            // var key = string.Format(CookieNames.SetupEmployer, employerAccountId);
+            var key = string.Format(CookieNames.SetupProvider, ukprn);
 
-            // if (context.Request.Cookies[key] == null)
-            // {
-            //     await _client.SetupEmployerAsync(employerAccountId);
-            //     context.Response.Cookies.Append(key, "1", EsfaCookieOptions.GetDefaultHttpCookieOption(_hostingEnvironment));
-            // }
+            if (context.Request.Cookies[key] == null)
+            {
+                await _client.SetupProviderAsync(ukprn);
+                context.Response.Cookies.Append(key, "1", EsfaCookieOptions.GetDefaultHttpCookieOption(_hostingEnvironment));
+            }
         }
     }
 }
