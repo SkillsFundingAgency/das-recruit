@@ -11,5 +11,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task GenerateDashboard(long ukprn);
 
         Task<ProviderDashboard> GetDashboardAsync(long ukprn);
+
+        Task SetupProviderAsync(long ukprn);
     }
 }

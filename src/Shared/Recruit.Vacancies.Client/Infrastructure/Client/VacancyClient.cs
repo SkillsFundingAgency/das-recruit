@@ -224,6 +224,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _messaging.SendCommandAsync(command);
         }
 
+        public Task SetupProviderAsync(long ukprn)
+        {
+            var command = new SetupProviderCommand(ukprn);
+
+            return _messaging.SendCommandAsync(command);
+        }
+
         public Task<EditVacancyInfo> GetEditVacancyInfoAsync(string employerAccountId)
         {
             return _reader.GetEmployerVacancyDataAsync(employerAccountId);

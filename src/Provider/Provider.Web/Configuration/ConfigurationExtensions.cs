@@ -38,6 +38,8 @@ namespace Esfa.Recruit.Provider.Web.Configuration
                 options.AddPolicy(ProviderPolicyName, policy =>
                 {
                     policy.RequireAuthenticatedUser();
+                    policy.RequireClaim(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier);
+                    policy.Requirements.Add(new ProviderAccountRequirement());
                 });
             });
 

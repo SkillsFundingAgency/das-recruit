@@ -38,8 +38,6 @@ namespace Esfa.Recruit.Employer.Web.Configuration
 
             services.AddFeatureToggle();
 
-            RegisterProviderApiClientDep(services, configuration);
-
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>(); // Used by NLog to log out traceidentifier value.
             
             RegisterServiceDeps(services, configuration);
@@ -60,11 +58,6 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddTransient<IReviewSummaryService, ReviewSummaryService>();
             services.AddTransient<ILegalEntityAgreementService, LegalEntityAgreementService>();
             services.AddTransient<LevyDeclarationCookieWriter>();
-        }
-
-        private static void RegisterProviderApiClientDep(IServiceCollection services, IConfiguration configuration)
-        {
-            services.AddTransient<IProviderApiClient>(_ => new ProviderApiClient(configuration.GetValue<string>("ProviderApiUrl")));
         }
 
         private static void RegisterOrchestratorDeps(IServiceCollection services)

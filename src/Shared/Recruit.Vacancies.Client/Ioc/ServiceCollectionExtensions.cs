@@ -44,6 +44,7 @@ using Microsoft.Extensions.Options;
 using Recruit.Vacancies.Client.Infrastructure.Configuration;
 using Recruit.Vacancies.Client.Infrastructure.Services.VacancyTitle;
 using SFA.DAS.EAS.Account.Api.Client;
+using SFA.DAS.Providers.Api.Client;
 using VacancyRuleSet = Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules.VacancyRuleSet;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -65,6 +66,7 @@ namespace Microsoft.Extensions.DependencyInjection
             RegisterClients(services);
             RegisterServiceDeps(services, configuration);
             RegisterAccountApiClientDeps(services);
+            RegisterProviderApiClientDep(services, configuration);
             RegisterRepositories(services, configuration);
             RegisterStorageProviderDeps(services, configuration);
             AddValidation(services);
@@ -87,6 +89,8 @@ namespace Microsoft.Extensions.DependencyInjection
             services.Configure<VacancyApiConfiguration>(configuration.GetSection("VacancyApiConfiguration"));
             services.Configure<SlackConfiguration>(configuration.GetSection("Slack"));
             services.Configure<NextVacancyReviewServiceConfiguration>(o => o.VacancyReviewAssignationTimeoutMinutes = configuration.GetValue<int>("VacancyReviewAssignationTimeoutMinutes"));
+
+
 
             // Domain services
             services.AddTransient<ITimeProvider, CurrentUtcTimeProvider>();
@@ -203,6 +207,11 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddTransient<IProviderVacancyClient, VacancyClient>()
                 .AddTransient<IQaVacancyClient, QaVacancyClient>()
                 .AddTransient<IJobsVacancyClient, VacancyClient>();
+        }
+
+        private static void RegisterProviderApiClientDep(IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddTransient<IProviderApiClient>(_ => new ProviderApiClient(configuration.GetValue<string>("ProviderApiUrl")));
         }
 
         private static void RegisterMediatR(IServiceCollection services)
