@@ -326,7 +326,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _messaging.SendCommandAsync(command);
         }
 
-        public Task PatchTrainingProvider(Guid vacancyId)
+        public Task PatchTrainingProviderAsync(Guid vacancyId)
         {
             var command = new PatchVacancyTrainingProviderCommand(vacancyId);
 
