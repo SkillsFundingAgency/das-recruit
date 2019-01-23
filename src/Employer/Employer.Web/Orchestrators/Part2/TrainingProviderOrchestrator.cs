@@ -84,19 +84,19 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             };
         }
 
-        public Task<OrchestratorResponse> PostConfirmEditModelAsync(ConfirmTrainingProviderEditModel m, VacancyUser user)
+        public async Task<OrchestratorResponse> PostConfirmEditModelAsync(ConfirmTrainingProviderEditModel m, VacancyUser user)
         {
             var vacancyTask = Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, m, RouteNames.TrainingProvider_Confirm_Post);
             var providerTask = _client.GetTrainingProviderAsync(long.Parse(m.Ukprn));
 
-            Task.WaitAll(vacancyTask, providerTask);
+            await Task.WhenAll(vacancyTask, providerTask);
 
             var vacancy = vacancyTask.Result;
             var provider = providerTask.Result;
-            
+
             vacancy.TrainingProvider = provider;
 
-            return ValidateAndExecute(
+            return await ValidateAndExecute(
                 vacancy,
                 v => _vacancyClient.Validate(v, ValidationRules),
                 v => _vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
