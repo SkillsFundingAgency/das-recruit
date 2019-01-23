@@ -43,7 +43,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules
             outcomes.AddRange(ProfanityCheckAsync(() => subject.Skills.ToDelimitedString(","), "Skills"));
             outcomes.AddRange(ProfanityCheckAsync(() => subject.Qualifications.SelectMany(q => new[]{q.Grade, q.Subject}).ToDelimitedString(","), "Qualifications"));
             outcomes.AddRange(ProfanityCheckAsync(() => subject.EmployerDescription));
-            outcomes.AddRange(ProfanityCheckAsync(() => subject.EmployerContact.Name));
+
+            if (subject.EmployerContact != null)
+                outcomes.AddRange(ProfanityCheckAsync(() => subject.EmployerContact.Name));
+
+            if (subject.ProviderContact != null)
+                outcomes.AddRange(ProfanityCheckAsync(() => subject.ProviderContact.Name));
+
             outcomes.AddRange(ProfanityCheckAsync(() => subject.ApplicationInstructions));
 
             var outcome = outcomeBuilder.Add(outcomes)

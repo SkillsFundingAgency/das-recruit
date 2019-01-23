@@ -46,7 +46,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules
                 subject.Qualifications.SelectMany(q => new [] {q.Grade, q.Subject}).ToDelimitedString(",")
                 , "Qualifications"));
             outcomes.AddRange(BannedPhraseCheck(() => subject.EmployerDescription));
-            outcomes.AddRange(BannedPhraseCheck(() => subject.EmployerContact.Name));
+
+            if (subject.EmployerContact != null)
+                outcomes.AddRange(BannedPhraseCheck(() => subject.EmployerContact.Name));
+
+            if (subject.ProviderContact != null)
+                outcomes.AddRange(BannedPhraseCheck(() => subject.ProviderContact.Name));
+
             outcomes.AddRange(BannedPhraseCheck(() => subject.ApplicationInstructions));
 
             var outcome = outcomeBuilder.Add(outcomes)
