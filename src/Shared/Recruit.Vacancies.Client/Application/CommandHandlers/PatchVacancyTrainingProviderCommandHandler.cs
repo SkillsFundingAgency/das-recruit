@@ -1,6 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
@@ -32,10 +33,23 @@ namespace Recruit.Vacancies.Client.Application.CommandHandlers
         {
             var vacancy = await _repository.GetVacancyAsync(message.VacancyId);
 
+            if (vacancy.OwnerType == OwnerType.Employer)
+            {
+                _logger.LogInformation("Vacancy: {vacancyId} already is employer owned so will not backfill provider info.", vacancy.Id);
+                return;
+            }
+
+            if (!string.IsNullOrEmpty(vacancy.TrainingProvider.Name))
+            {
+                _logger.LogInformation("Vacancy: {vacancyId} already has training provider info backfilled. Will not be changed.", vacancy.Id);
+                return;
+            }
+
             _logger.LogInformation("Patching training provider name and address for vacancy {vacancyId}.", message.VacancyId);
 
             var tp = await _trainingProviderService.GetProviderAsync(vacancy.TrainingProvider.Ukprn.Value);
 
+            vacancy = await _repository.GetVacancyAsync(message.VacancyId);
             PatchVacancyTrainingProvider(vacancy, tp);
 
             await _repository.UpdateAsync(vacancy);
