@@ -1,7 +1,6 @@
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Orchestrators;
-using Esfa.Recruit.Provider.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Provider.Web.Controllers
@@ -17,11 +16,11 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         }
 
         [HttpGet("", Name = RouteNames.Dashboard_Index_Get)]
-        public IActionResult Dashboard([FromRoute]string ukprn)
+        public async Task<IActionResult> Dashboard([FromRoute]long ukprn)
         {
-            //var vm = await _orchestrator.GetDashboardViewModelAsync(ukprn);
+            var vm = await _orchestrator.GetDashboardViewModelAsync(ukprn);
 
-            return View(new DashboardViewModel());
+            return View(vm);
         }
     }
 }

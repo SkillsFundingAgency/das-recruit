@@ -19,11 +19,15 @@
         public const string Title_Get = "Title_Get";
         public const string Title_Post = "Title_Post";
 
+
         public const string VacancyDescription_Index_Get = "VacancyDescription_Index_Get";
         public const string VacancyDescription_Index_Post = "VacancyDescription_Index_Post";
 
         public const string Submitted_Index_Get = "Submitted_Index_Get";
 
         public const string Vacancy_Preview_Get = "Vacancy_Preview_Get";
+
+        public const string VacancyManage_Get = "VacancyManage_Get";
+        public const string DisplayVacancy_Get = "DisplayVacancy_Get";
     }
 }

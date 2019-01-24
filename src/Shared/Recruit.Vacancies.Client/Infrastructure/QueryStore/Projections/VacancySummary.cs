@@ -8,6 +8,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections
         public Guid Id { get; set; }
         public string Title { get; set; }
         public long? VacancyReference { get; internal set; }
+        public string EmployerName { get; set; }
         public DateTime? CreatedDate { get; set; }
         public VacancyStatus Status { get; set; }
         public bool IsDeleted { get; set; }

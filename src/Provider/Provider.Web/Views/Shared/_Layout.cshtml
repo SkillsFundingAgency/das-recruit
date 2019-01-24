@@ -82,7 +82,7 @@
     </environment>
     <script nws-csp-add-nonce="true">document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
     <a href="#main-content" class="govuk-skip-link">Skip to main content</a>
- 
+
     <div asp-show="@ViewContext.ViewData[ViewDataKeys.CanShowOutageMessage] as bool?" id="global-outage-message" class="global-message">
         <p>@ViewContext.ViewData[ViewDataKeys.PlannedOutageMessage]</p>
         <form asp-route="@RouteNames.DismissOutageMessage_Post" novalidate>
@@ -131,7 +131,7 @@
         </div>
         <main class="govuk-main-wrapper " id="main-content" role="main">
 
-            Your training provider account @User.GetUkprn()
+            Your training provider account @User.GetUkprn() @User.GetDisplayName()
 
             @RenderBody()
             <partial name="@PartialNames.GetHelpContactDetails" />
