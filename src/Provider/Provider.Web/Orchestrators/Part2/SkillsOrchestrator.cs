@@ -2,11 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Configuration.Routing;
-using Esfa.Recruit.Employer.Web.Extensions;
-using Esfa.Recruit.Employer.Web.Mappings;
-using Esfa.Recruit.Employer.Web.RouteModel;
-using Esfa.Recruit.Employer.Web.ViewModels.Part2.Skills;
+using Esfa.Recruit.Provider.Web.Configuration.Routing;
+using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
@@ -14,15 +11,18 @@ using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.Extensions.Logging;
+using SkillsEditModel = Esfa.Recruit.Provider.Web.ViewModels.Part2.Skills.SkillsEditModel;
+using SkillsViewModel = Esfa.Recruit.Provider.Web.ViewModels.Part2.Skills.SkillsViewModel;
+using SkillViewModel = Esfa.Recruit.Provider.Web.ViewModels.Part2.Skills.SkillViewModel;
 
-namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
+namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
 {
     public class SkillsOrchestrator : EntityValidatingOrchestrator<Vacancy, SkillsEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.Skills;
         private const int ColumnOneCutOffIndex = 9;
         private const char SortPrefixSeparator = '-';
-        private readonly IEmployerVacancyClient _client;
+        private readonly IProviderVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly Lazy<List<string>> _lazyCandidateSkills;
         private readonly IReviewSummaryService _reviewSummaryService;
@@ -31,7 +31,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         private IEnumerable<string> Column1BuiltInSkills => CandidateSkills.Take(ColumnOneCutOffIndex);
         private IEnumerable<string> Column2BuiltInSkills => CandidateSkills.Skip(ColumnOneCutOffIndex);
 
-        public SkillsOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<SkillsOrchestrator> logger, IReviewSummaryService reviewSummaryService) : base(logger)
+        public SkillsOrchestrator(IProviderVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<SkillsOrchestrator> logger, IReviewSummaryService reviewSummaryService) : base(logger)
         {
             _client = client;
             _vacancyClient = vacancyClient;
@@ -59,8 +59,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
             if (vacancy.Status == VacancyStatus.Referred)
             {
-                vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
-                    ReviewFieldMappingLookups.GetSkillsFieldIndicators());
+                //vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
+                //    ReviewFieldMappingLookups.GetSkillsFieldIndicators());
             }
 
             return vm;
