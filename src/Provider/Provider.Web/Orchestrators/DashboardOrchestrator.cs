@@ -15,7 +15,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         }
 
         public async Task<DashboardViewModel> GetDashboardViewModelAsync(long ukprn)
-        {            
+        {
             var dashboard = await _vacancyClient.GetDashboardAsync(ukprn);
 
             if (dashboard == null)
@@ -24,7 +24,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 dashboard = await _vacancyClient.GetDashboardAsync(ukprn);
             }
 
-            var vm = DashboardMapper.MapFromEmployerDashboard(dashboard);
+            var vm = DashboardMapper.MapFromProviderDashboard(dashboard);
             return vm;
         }
     }

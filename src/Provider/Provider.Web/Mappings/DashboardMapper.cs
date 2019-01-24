@@ -9,7 +9,7 @@ namespace Esfa.Recruit.Provider.Web.Mappings
 {
     public class DashboardMapper
     {
-        public static DashboardViewModel MapFromEmployerDashboard(ProviderDashboard dashboard)
+        public static DashboardViewModel MapFromProviderDashboard(ProviderDashboard dashboard)
         {
             return new DashboardViewModel
             {
