@@ -152,9 +152,9 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 vm.ApplicationInstructions = vacancy.ApplicationInstructions;
                 vm.ApplicationMethod = vacancy.ApplicationMethod.Value;
                 vm.ApplicationUrl = vacancy.ApplicationUrl;
-                vm.ContactName = vacancy.EmployerContact.Name;
-                vm.ContactEmail = vacancy.EmployerContact.Email;
-                vm.ContactTelephone = vacancy.EmployerContact.Phone;
+                vm.ContactName = vacancy.EmployerContact?.Name;
+                vm.ContactEmail = vacancy.EmployerContact?.Email;
+                vm.ContactTelephone = vacancy.EmployerContact?.Phone;
                 vm.ClosingDate = vacancy.ClosingDate?.AsGdsDate();
                 vm.EmployerDescription = vacancy.EmployerDescription;
                 vm.EmployerName = vacancy.EmployerName;
