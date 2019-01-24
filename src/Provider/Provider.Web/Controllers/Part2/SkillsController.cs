@@ -4,6 +4,7 @@ using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Provider.Web.Orchestrators.Part2;
 using Esfa.Recruit.Provider.Web.RouteModel;
+using Esfa.Recruit.Provider.Web.ViewModels.Part2.Skills;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using SkillsEditModel = Esfa.Recruit.Provider.Web.ViewModels.Part2.Skills.SkillsEditModel;
@@ -46,7 +47,9 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2
                 return View(vm);
             }
 
-            if (m.IsAddingCustomSkill || m.IsRemovingCustomSkill)
+            var isAddingCustomSkill = !string.IsNullOrEmpty(m.AddCustomSkillAction);
+            
+            if (isAddingCustomSkill)
             {
                 TempData[TempDataKeys.Skills] = m.Skills;
                 return RedirectToRoute(RouteNames.Skills_Get);
