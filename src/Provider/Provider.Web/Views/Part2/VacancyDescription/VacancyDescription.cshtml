@@ -1,0 +1,49 @@
+﻿@model Esfa.Recruit.Provider.Web.ViewModels.Part2.VacancyDescription.VacancyDescriptionViewModel
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">@Model.Title</h1>
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
+
+        <partial name="@PartialNames.ReviewSummary" for="Review" />
+
+        <form asp-route="@RouteNames.VacancyDescription_Index_Post">
+            <div esfa-validation-marker-for="VacancyDescription" class="govuk-form-group">
+                <label asp-for="VacancyDescription" class="govuk-label govuk-!-font-weight-bold">Describe a typical working day and duties</label>
+                <span class="govuk-hint">What does the apprenticeship involve?</span>
+                <span esfa-validation-message-for="VacancyDescription" class="govuk-error-message"></span>
+                <textarea asp-for="VacancyDescription" class="govuk-textarea html-editor" rows="5" data-val-length-max="500"></textarea>
+                <span class="govuk-body maxchar-count">500</span>
+                <span class="govuk-body maxchar-text"> characters remaining</span>
+            </div>
+            <div esfa-validation-marker-for="TrainingDescription" class="govuk-form-group">
+                <label asp-for="TrainingDescription" class="govuk-label govuk-!-font-weight-bold">What training will your apprentice get?</label>
+                <span class="govuk-hint">This should include training at work and off the job</span>
+                <span esfa-validation-message-for="TrainingDescription" class="govuk-error-message"></span>
+                <textarea asp-for="TrainingDescription" class="govuk-textarea html-editor" rows="5" data-val-length-max="500"></textarea>
+                <span class="govuk-body maxchar-count">500</span>
+                <span class="govuk-body maxchar-text"> characters remaining</span>
+            </div>
+            <div esfa-validation-marker-for="OutcomeDescription" class="govuk-form-group">
+                <label asp-for="OutcomeDescription" class="govuk-label govuk-!-font-weight-bold">What can the apprentice expect at the end of the apprenticeship?</label>
+                <span class="govuk-hint">You may want to mention specific routes they could take once qualified</span>
+                <span esfa-validation-message-for="OutcomeDescription" class="govuk-error-message"></span>
+                <textarea asp-for="OutcomeDescription" class="govuk-textarea html-editor" rows="5" data-val-length-max="500"></textarea>
+                <span class="govuk-body maxchar-count">500</span>
+                <span class="govuk-body maxchar-text"> characters remaining</span>
+            </div>
+            <div class="govuk-form-group">
+                <input type="submit" value="Save and continue" esfa-automation="btn-continue" class="govuk-button save-button" />
+                <a asp-route="@RouteNames.Vacancy_Preview_Get" esfa-automation="link-cancel" class="govuk-link das-button-link">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section FooterJS
+    {
+    <script src="/lib/tinymce-4.9.2/tinymce.min.js"></script>
+    <script nws-csp-add-nonce="true">
+        initializeHtmlEditors();
+    </script>
+}

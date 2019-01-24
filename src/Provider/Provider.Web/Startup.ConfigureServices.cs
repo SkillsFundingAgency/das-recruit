@@ -35,6 +35,12 @@ namespace Esfa.Recruit.Provider.Web
                 opt.AppendTrailingSlash = true;
             });
 
+            services.Configure<RazorViewEngineOptions>(o =>
+            {
+                o.ViewLocationFormats.Add("/Views/Part1/{1}/{0}" + RazorViewEngine.ViewExtension);
+                o.ViewLocationFormats.Add("/Views/Part2/{1}/{0}" + RazorViewEngine.ViewExtension);
+            });
+
             services.AddMvcService(_hostingEnvironment, _loggerFactory);
 
             services.AddApplicationInsightsTelemetry(_configuration);
