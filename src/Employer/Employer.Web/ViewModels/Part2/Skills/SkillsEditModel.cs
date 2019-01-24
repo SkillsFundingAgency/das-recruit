@@ -1,20 +1,17 @@
 ﻿using System.Collections.Generic;
 using Esfa.Recruit.Employer.Web.RouteModel;
+using Esfa.Recruit.Shared.Web.ViewModels.Skills;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.Part2.Skills
 {
-    public class SkillsEditModel : VacancyRouteModel
+    public class SkillsEditModel : VacancyRouteModel, ISkillsEditModel
     {
         public List<string> Skills { get; set; }
-
-        public string RemoveCustomSkill { get; set; }
 
         public string AddCustomSkillAction { get; set; }
 
         public string AddCustomSkillName { get; set; }
 
-        public bool IsAddingCustomSkill => !string.IsNullOrEmpty(AddCustomSkillAction);
-
-        public bool IsRemovingCustomSkill => !string.IsNullOrWhiteSpace(RemoveCustomSkill);
+        public string AddCustomSkill => !string.IsNullOrEmpty(AddCustomSkillAction) ? AddCustomSkillName : null;
     }
 }

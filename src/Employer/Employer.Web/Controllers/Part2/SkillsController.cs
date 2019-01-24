@@ -46,7 +46,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
                 return View(vm);
             }
 
-            if (m.IsAddingCustomSkill || m.IsRemovingCustomSkill)
+            if (!string.IsNullOrEmpty(m.AddCustomSkillAction))
             {
                 TempData[TempDataKeys.Skills] = m.Skills;
                 return RedirectToRoute(RouteNames.Skills_Get);
