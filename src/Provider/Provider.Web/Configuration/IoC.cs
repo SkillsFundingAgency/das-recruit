@@ -1,6 +1,9 @@
 ﻿using Esfa.Recruit.Provider.Web.Filters;
 using Esfa.Recruit.Provider.Web.Orchestrators;
+using Esfa.Recruit.Provider.Web.Orchestrators.Part2;
 using Esfa.Recruit.Shared.Web.Configuration;
+using Esfa.Recruit.Shared.Web.Mappers;
+using Esfa.Recruit.Shared.Web.RuleTemplates;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.FAA;
@@ -32,6 +35,8 @@ namespace Esfa.Recruit.Provider.Web.Configuration
 
             RegisterOrchestratorDeps(services);
 
+            RegisterMapperDeps(services);
+
             RegisterFilterDeps(services);
 
             RegisterDynamicConfigurationDeps(services);
@@ -40,11 +45,19 @@ namespace Esfa.Recruit.Provider.Web.Configuration
         private static void RegisterServiceDeps(IServiceCollection services, IConfiguration configuration)
         {
             services.AddTransient<IGeocodeImageService>(_ => new GoogleMapsGeocodeImageService(configuration.GetValue<string>("GoogleMapsPrivateKey")));
+            services.AddTransient<IReviewSummaryService, ReviewSummaryService>();
         }
 
         private static void RegisterOrchestratorDeps(IServiceCollection services)
         {
             services.AddTransient<DashboardOrchestrator>();
+            services.AddTransient<VacancyDescriptionOrchestrator>();
+        }
+
+        private static void RegisterMapperDeps(IServiceCollection services)
+        {
+            services.AddTransient<ReviewFieldIndicatorMapper>();
+            services.AddScoped<IRuleMessageTemplateRunner, RuleMessageTemplateRunner>();
         }
 
         private static void RegisterFilterDeps(IServiceCollection services)
