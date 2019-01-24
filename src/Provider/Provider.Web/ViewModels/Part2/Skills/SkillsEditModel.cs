@@ -8,8 +8,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part2.Skills
     {
         public List<string> Skills { get; set; }
 
-        public string RemoveCustomSkill { get; set; }
-
         public string AddCustomSkillAction { get; set; }
 
         public string AddCustomSkillName { get; set; }

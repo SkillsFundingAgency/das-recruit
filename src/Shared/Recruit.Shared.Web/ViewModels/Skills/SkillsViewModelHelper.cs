@@ -128,7 +128,6 @@ namespace Esfa.Recruit.Shared.Web.ViewModels.Skills
         private void HandleCustomSkillChange(ISkillsEditModel m, IList<string> baseSkillList, IList<string> customSkillList)
         {
             var isAddingCustomSkill = !string.IsNullOrEmpty(m.AddCustomSkill);
-            var isRemovingCustomSkill = !string.IsNullOrWhiteSpace(m.RemoveCustomSkill);
 
             if (isAddingCustomSkill)
             {
@@ -141,11 +140,6 @@ namespace Esfa.Recruit.Shared.Web.ViewModels.Skills
                 {
                     customSkillList.Add(m.AddCustomSkill);
                 }
-            }
-
-            if (isRemovingCustomSkill)
-            {
-                customSkillList.Remove(m.RemoveCustomSkill);
             }
         }
 

@@ -21,14 +21,14 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
         private readonly IProviderVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
-        private readonly SkillsViewModelHelper _skillsOrchestratorHelper;
+        private readonly SkillsViewModelHelper _skillsHelper;
 
         public SkillsOrchestrator(IProviderVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<SkillsOrchestrator> logger, IReviewSummaryService reviewSummaryService) : base(logger)
         {
             _client = client;
             _vacancyClient = vacancyClient;
             _reviewSummaryService = reviewSummaryService;
-            _skillsOrchestratorHelper = new SkillsViewModelHelper(vacancyClient);
+            _skillsHelper = new SkillsViewModelHelper(vacancyClient);
         }
         
         public async Task<SkillsViewModel> GetSkillsViewModelAsync(VacancyRouteModel vrm, string[] draftSkills = null)
@@ -42,11 +42,11 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
 
             if (draftSkills == null)
             {
-                _skillsOrchestratorHelper.SetViewModelSkillsFromVacancy(vm, vacancy);
+                _skillsHelper.SetViewModelSkillsFromVacancy(vm, vacancy);
             }
             else
             {
-                _skillsOrchestratorHelper.SetViewModelSkillsFromDraftSkills(vm, draftSkills);
+                _skillsHelper.SetViewModelSkillsFromDraftSkills(vm, draftSkills);
             }
 
             if (vacancy.Status == VacancyStatus.Referred)
@@ -62,7 +62,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
         {
             var vm = await GetSkillsViewModelAsync((VacancyRouteModel)m);
 
-            _skillsOrchestratorHelper.SetViewModelSkillsFromDraftSkills(vm, m.Skills);
+            _skillsHelper.SetViewModelSkillsFromDraftSkills(vm, m.Skills);
 
             vm.AddCustomSkillName = m.AddCustomSkillName;
             
@@ -73,13 +73,10 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
         {
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, m, RouteNames.Skills_Post);
 
-            _skillsOrchestratorHelper.SetVacancyFromEditModel(vacancy, m);
+            _skillsHelper.SetVacancyFromEditModel(vacancy, m);
 
-            var isAddingCustomSkill = !string.IsNullOrEmpty(m.AddCustomSkill);
-            var isRemovingCustomSkill = !string.IsNullOrWhiteSpace(m.RemoveCustomSkill);
-
-            //if we are adding/removing a skill then just validate and don't persist
-            var validateOnly = isAddingCustomSkill || isRemovingCustomSkill;
+            //if we are adding a skill then just validate and don't persist
+            var validateOnly = !string.IsNullOrEmpty(m.AddCustomSkill);
 
             return await ValidateAndExecute(vacancy,
                 v =>
