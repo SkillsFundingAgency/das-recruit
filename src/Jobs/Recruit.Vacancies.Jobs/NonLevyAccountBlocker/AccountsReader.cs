@@ -35,26 +35,28 @@ AND       Amount > 0";
 
         public async Task<IList<string>> GetLevyPayerAccountIdsAsync()
         {
+            const int employerAccountIdColIndex = 0;
             var accountIdentifiers = new List<string>();
 
             try
             {
                 using (var conn = new SqlConnection(_financeDbConnString))
                 {
-                    var command = new SqlCommand(SelectLevyPayerAccountsSql, conn);
-
-                    var reader = await RetryPolicy.ExecuteAsync(async context => 
+                    using (var command = new SqlCommand(SelectLevyPayerAccountsSql, conn))
                     {
-                        await conn.OpenAsync();
-                        return await command.ExecuteReaderAsync();
-                    }, new Context(nameof(GetLevyPayerAccountIdsAsync)));
+                        var reader = await RetryPolicy.ExecuteAsync(async context =>
+                        {
+                            await conn.OpenAsync();
+                            return await command.ExecuteReaderAsync();
+                        }, new Context(nameof(GetLevyPayerAccountIdsAsync)));
 
-                    while (await reader.ReadAsync())
-                    {
-                        accountIdentifiers.Add(reader.GetInt64(0).ToString());
+                        while (await reader.ReadAsync())
+                        {
+                            accountIdentifiers.Add(reader.GetInt64(employerAccountIdColIndex).ToString());
+                        }
+
+                        reader.Close();
                     }
-
-                    reader.Close();
                 }
             }
             catch (Exception ex)
@@ -68,26 +70,32 @@ AND       Amount > 0";
 
         public async Task<IList<EmployerAccountIdentifier>> GetEmployerAccountsAsync()
         {
+            const int employerAccountIdColIndex = 0;
+            const int hashedAccountIdColIndex = 1;
+
             var hashedAccountIdentifiers = new List<EmployerAccountIdentifier>();
 
             try
             {
                 using (var conn = new SqlConnection(_accountsDbConnString))
                 {
-                    var command = new SqlCommand(SelectHashedAccountsSql, conn);
-
-                    var reader = await RetryPolicy.ExecuteAsync(async context => 
+                    using (var command = new SqlCommand(SelectHashedAccountsSql, conn))
                     {
-                        await conn.OpenAsync();
-                        return await command.ExecuteReaderAsync();
-                    }, new Context(nameof(GetEmployerAccountsAsync)));
+                        var reader = await RetryPolicy.ExecuteAsync(async context =>
+                        {
+                            await conn.OpenAsync();
+                            return await command.ExecuteReaderAsync();
+                        }, new Context(nameof(GetEmployerAccountsAsync)));
 
-                    while (await reader.ReadAsync())
-                    {
-                        hashedAccountIdentifiers.Add(new EmployerAccountIdentifier(reader.GetInt64(0).ToString(), reader.GetString(1)));
+                        while (await reader.ReadAsync())
+                        {
+                            var employerAccountId = reader.GetInt64(employerAccountIdColIndex).ToString();
+                            var hashedAccountId = reader.GetString(hashedAccountIdColIndex);
+                            hashedAccountIdentifiers.Add(new EmployerAccountIdentifier(employerAccountId, hashedAccountId));
+                        }
+
+                        reader.Close();
                     }
-
-                    reader.Close();
                 }
             }
             catch (Exception ex)
@@ -109,8 +117,9 @@ AND       Amount > 0";
                         TimeSpan.FromSeconds(1),
                         TimeSpan.FromSeconds(2),
                         TimeSpan.FromSeconds(4)
-                    }, (exception, timeSpan, retryCount, context) => {
-                        _logger.LogWarning($"Error executing SQL Command for method {context.OperationKey} Reason: {exception.Message}. Retrying in {timeSpan.Seconds} secs...attempt: {retryCount}");    
+                    }, (exception, timeSpan, retryCount, context) =>
+                    {
+                        _logger.LogWarning($"Error executing SQL Command for method {context.OperationKey} Reason: {exception.Message}. Retrying in {timeSpan.Seconds} secs...attempt: {retryCount}");
                     });
         }
     }
