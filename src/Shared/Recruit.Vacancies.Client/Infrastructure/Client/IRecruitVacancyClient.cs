@@ -16,6 +16,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
          Task<VacancyReview> GetCurrentReferredVacancyReviewAsync(long vacancyReference);
 
          Task<ApplicationReview> GetApplicationReviewAsync(Guid applicationReviewId);
+         Task<List<string>> GetCandidateSkillsAsync();
 
          EntityValidationResult Validate(Vacancy vacancy, VacancyRuleSet rules);
 

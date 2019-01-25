@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Configuration.Routing;
-using Esfa.Recruit.Employer.Web.Mappings;
-using Esfa.Recruit.Employer.Web.RouteModel;
-using Esfa.Recruit.Employer.Web.ViewModels.Part2.Skills;
+using Esfa.Recruit.Provider.Web.Configuration.Routing;
+using Esfa.Recruit.Provider.Web.RouteModel;
+using Esfa.Recruit.Provider.Web.ViewModels.Part2.Skills;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
@@ -14,17 +13,17 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.Extensions.Logging;
 
-namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
+namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
 {
     public class SkillsOrchestrator : EntityValidatingOrchestrator<Vacancy, SkillsEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.Skills;
-        private readonly IEmployerVacancyClient _client;
+        private readonly IProviderVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
         private readonly SkillsOrchestratorHelper _skillsHelper;
 
-        public SkillsOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<SkillsOrchestrator> logger, IReviewSummaryService reviewSummaryService) : base(logger)
+        public SkillsOrchestrator(IProviderVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<SkillsOrchestrator> logger, IReviewSummaryService reviewSummaryService) : base(logger)
         {
             _client = client;
             _vacancyClient = vacancyClient;
@@ -52,8 +51,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
             if (vacancy.Status == VacancyStatus.Referred)
             {
-                vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
-                    ReviewFieldMappingLookups.GetSkillsFieldIndicators());
+                //vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
+                //    ReviewFieldMappingLookups.GetSkillsFieldIndicators());
             }
 
             return vm;
@@ -74,14 +73,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         {
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Skills_Post);
 
-            if (m.Skills == null)
-            {
-                m.Skills = new List<string>();
-            }
-
             _skillsHelper.SetVacancyFromEditModel(vacancy, m);
 
-            //if we are adding/removing a skill then just validate and don't persist
+            //if we are adding a skill then just validate and don't persist
             var validateOnly = m.IsAddingCustomSkill;
 
             return await ValidateAndExecute(vacancy,
@@ -93,7 +87,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                 },
                 v => validateOnly ? Task.CompletedTask : _vacancyClient.UpdateDraftVacancyAsync(v, user));
         }
-
+        
         protected override EntityToViewModelPropertyMappings<Vacancy, SkillsEditModel> DefineMappings()
         {
             var mappings = new EntityToViewModelPropertyMappings<Vacancy, SkillsEditModel>

@@ -2,35 +2,34 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
-using Esfa.Recruit.Employer.Web.RouteModel;
-using Esfa.Recruit.Employer.Web.Services;
+using Esfa.Recruit.Provider.Web.Orchestrators.Part2;
+using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.Services;
+using Esfa.Recruit.Shared.Web.ViewModels.Skills;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Skills;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
 
-namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
+namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part2
 {
     public class SkillOrchestratorTests
     {
-        private const string TestEmployerAccountId = "ABC";
-        private readonly Mock<IEmployerVacancyClient> _mockClient;
+        private const string TestUkprn = "12345678";
+        private readonly Mock<IProviderVacancyClient> _mockClient;
         private readonly Mock<IRecruitVacancyClient> _mockVacancyClient;
 
         private readonly SkillsOrchestrator _orchestrator;
         private readonly Vacancy _testVacancy;
-        private readonly VacancyRouteModel _testRouteModel = new VacancyRouteModel { EmployerAccountId = TestEmployerAccountId, VacancyId = Guid.NewGuid() };
+        private readonly VacancyRouteModel _testRouteModel = new VacancyRouteModel { Ukprn = TestUkprn, VacancyId = Guid.NewGuid() };
 
         public SkillOrchestratorTests()
         {
             var mockLogger = new Mock<ILogger<SkillsOrchestrator>>();
             var candidateSkills = GetBaseSkills();
-            _mockClient = new Mock<IEmployerVacancyClient>();
+            _mockClient = new Mock<IProviderVacancyClient>();
             _mockVacancyClient = new Mock<IRecruitVacancyClient>();
             _orchestrator = new SkillsOrchestrator(_mockClient.Object, _mockVacancyClient.Object, mockLogger.Object, Mock.Of<IReviewSummaryService>());
             _testVacancy = GetTestVacancy();
@@ -186,7 +185,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
         {
             return new Vacancy
             {
-                EmployerAccountId = TestEmployerAccountId,
+                TrainingProvider = new TrainingProvider { Ukprn = long.Parse(TestUkprn) },
                 Title = "Test Title",
                 ShortDescription = "Test Short Description",
                 EmployerLocation = new Address
