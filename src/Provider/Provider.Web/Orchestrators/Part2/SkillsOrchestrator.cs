@@ -21,14 +21,14 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
         private readonly IProviderVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
-        private readonly SkillsViewModelHelper _skillsHelper;
+        private readonly SkillsOrchestratorHelper _skillsHelper;
 
         public SkillsOrchestrator(IProviderVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<SkillsOrchestrator> logger, IReviewSummaryService reviewSummaryService) : base(logger)
         {
             _client = client;
             _vacancyClient = vacancyClient;
             _reviewSummaryService = reviewSummaryService;
-            _skillsHelper = new SkillsViewModelHelper(vacancyClient);
+            _skillsHelper = new SkillsOrchestratorHelper(() => vacancyClient.GetCandidateSkillsAsync().Result);
         }
         
         public async Task<SkillsViewModel> GetSkillsViewModelAsync(VacancyRouteModel vrm, string[] draftSkills = null)
@@ -58,9 +58,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
             return vm;
         }
 
-        public async Task<SkillsViewModel> GetSkillsViewModelAsync(SkillsEditModel m)
+        public async Task<SkillsViewModel> GetSkillsViewModelAsync(VacancyRouteModel vrm, SkillsEditModel m)
         {
-            var vm = await GetSkillsViewModelAsync((VacancyRouteModel)m);
+            var vm = await GetSkillsViewModelAsync(vrm);
 
             _skillsHelper.SetViewModelSkillsFromDraftSkills(vm, m.Skills);
 
@@ -69,14 +69,14 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
             return vm;
         }
 
-        public async Task<OrchestratorResponse> PostSkillsEditModelAsync(SkillsEditModel m, VacancyUser user)
+        public async Task<OrchestratorResponse> PostSkillsEditModelAsync(VacancyRouteModel vrm, SkillsEditModel m, VacancyUser user)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, m, RouteNames.Skills_Post);
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Skills_Post);
 
             _skillsHelper.SetVacancyFromEditModel(vacancy, m);
 
             //if we are adding a skill then just validate and don't persist
-            var validateOnly = !string.IsNullOrEmpty(m.AddCustomSkill);
+            var validateOnly = m.IsAddingCustomSkill;
 
             return await ValidateAndExecute(vacancy,
                 v =>

@@ -30,9 +30,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
         }
 
         [HttpPost("skills", Name = RouteNames.Skills_Post)]
-        public async Task<IActionResult> Skills(SkillsEditModel m)
+        public async Task<IActionResult> Skills(VacancyRouteModel vrm, SkillsEditModel m)
         {
-            var response = await _orchestrator.PostSkillsEditModelAsync(m, User.ToVacancyUser());
+            var response = await _orchestrator.PostSkillsEditModelAsync(vrm, m, User.ToVacancyUser());
 
             if (!response.Success)
             {
@@ -41,7 +41,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
 
             if (!ModelState.IsValid)
             {
-                var vm = await _orchestrator.GetSkillsViewModelAsync(m);
+                var vm = await _orchestrator.GetSkillsViewModelAsync(vrm);
 
                 return View(vm);
             }

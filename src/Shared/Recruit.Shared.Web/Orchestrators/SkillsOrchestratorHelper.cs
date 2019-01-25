@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Esfa.Recruit.Shared.Web.ViewModels.Skills;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 
-namespace Esfa.Recruit.Shared.Web.ViewModels.Skills
+namespace Esfa.Recruit.Shared.Web.Orchestrators
 {
-    public class SkillsViewModelHelper
+    public class SkillsOrchestratorHelper
     {
         private const int ColumnOneCutOffIndex = 9;
         private const char SortPrefixSeparator = '-';
@@ -17,12 +17,12 @@ namespace Esfa.Recruit.Shared.Web.ViewModels.Skills
         private IEnumerable<string> Column1BuiltInSkills => CandidateSkills.Take(ColumnOneCutOffIndex);
         private IEnumerable<string> Column2BuiltInSkills => CandidateSkills.Skip(ColumnOneCutOffIndex);
 
-        public SkillsViewModelHelper(IRecruitVacancyClient vacancyClient)
+        public SkillsOrchestratorHelper(Func<List<string>> getCandidateSkillsAsync)
         {
-            _lazyCandidateSkills = new Lazy<List<string>>(() => vacancyClient.GetCandidateSkillsAsync().Result);
+            _lazyCandidateSkills = new Lazy<List<string>>(getCandidateSkillsAsync);
         }
 
-        public void SetViewModelSkillsFromVacancy(ISkillsViewModel vm, Vacancy vacancy)
+        public void SetViewModelSkillsFromVacancy(SkillsViewModelBase vm, Vacancy vacancy)
         {
             var orderedCustomSkills = GetCustomSkills(vacancy.Skills).ToArray();
             var baseSkills = GetBaseSkills(vacancy.Skills).ToArray();
@@ -30,7 +30,7 @@ namespace Esfa.Recruit.Shared.Web.ViewModels.Skills
             SetViewModelSkills(vm, baseSkills, orderedCustomSkills);
         }
 
-        public void SetViewModelSkillsFromDraftSkills(ISkillsViewModel vm, IList<string> draftSkills)
+        public void SetViewModelSkillsFromDraftSkills(SkillsViewModelBase vm, IList<string> draftSkills)
         {
             var orderedCustomSkills = ExtractAndSort(GetCustomSkills(draftSkills).ToArray());
             var baseSkills = GetBaseSkills(draftSkills).ToArray();
@@ -38,7 +38,7 @@ namespace Esfa.Recruit.Shared.Web.ViewModels.Skills
             SetViewModelSkills(vm, baseSkills, orderedCustomSkills);
         }
 
-        public void SetVacancyFromEditModel(Vacancy vacancy, ISkillsEditModel m)
+        public void SetVacancyFromEditModel(Vacancy vacancy, SkillsEditModelBase m)
         {
             if (m.Skills == null)
             {
@@ -67,7 +67,7 @@ namespace Esfa.Recruit.Shared.Web.ViewModels.Skills
             return selected == null ? new List<string>() : selected.Intersect(CandidateSkills);
         }
 
-        private void SetViewModelSkills(ISkillsViewModel vm, IList<string> baseSkills, IEnumerable<string> orderedCustomSkills)
+        private void SetViewModelSkills(SkillsViewModelBase vm, IList<string> baseSkills, IEnumerable<string> orderedCustomSkills)
         {
             var col1Skills = GetSkillsColumnViewModel(Column1BuiltInSkills, baseSkills);
             var col2Skills = GetSkillsColumnViewModel(Column2BuiltInSkills, baseSkills);
@@ -125,20 +125,18 @@ namespace Esfa.Recruit.Shared.Web.ViewModels.Skills
             return skillNames.Select(x => x.Value);
         }
 
-        private void HandleCustomSkillChange(ISkillsEditModel m, IList<string> baseSkillList, IList<string> customSkillList)
+        private void HandleCustomSkillChange(SkillsEditModelBase m, IList<string> baseSkillList, IList<string> customSkillList)
         {
-            var isAddingCustomSkill = !string.IsNullOrEmpty(m.AddCustomSkill);
-
-            if (isAddingCustomSkill)
+            if (m.IsAddingCustomSkill)
             {
                 // If the user has tried to add a custom skill that exists in the default skills list.
-                if (CandidateSkills.Contains(m.AddCustomSkill) && !baseSkillList.Contains(m.AddCustomSkill))
+                if (CandidateSkills.Contains(m.AddCustomSkillName) && !baseSkillList.Contains(m.AddCustomSkillName))
                 {
-                    baseSkillList.Add(m.AddCustomSkill);
+                    baseSkillList.Add(m.AddCustomSkillName);
                 }
-                else if (!CandidateSkills.Contains(m.AddCustomSkill) && !customSkillList.Contains(m.AddCustomSkill))
+                else if (!CandidateSkills.Contains(m.AddCustomSkillName) && !customSkillList.Contains(m.AddCustomSkillName))
                 {
-                    customSkillList.Add(m.AddCustomSkill);
+                    customSkillList.Add(m.AddCustomSkillName);
                 }
             }
         }
