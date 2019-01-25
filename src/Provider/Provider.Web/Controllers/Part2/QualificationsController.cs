@@ -1,16 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Configuration;
-using Esfa.Recruit.Employer.Web.Configuration.Routing;
-using Esfa.Recruit.Employer.Web.Extensions;
-using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
-using Esfa.Recruit.Employer.Web.RouteModel;
-using Esfa.Recruit.Employer.Web.ViewModels.Part2.Qualifications;
-using Microsoft.AspNetCore.Mvc;
+using Esfa.Recruit.Provider.Web.Configuration;
+using Esfa.Recruit.Provider.Web.Configuration.Routing;
+using Esfa.Recruit.Provider.Web.Extensions;
+using Esfa.Recruit.Provider.Web.Orchestrators.Part2;
+using Esfa.Recruit.Provider.Web.RouteModel;
+using Esfa.Recruit.Provider.Web.ViewModels.Part2.Qualifications;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.ViewModels.Qualifications;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Esfa.Recruit.Employer.Web.Controllers.Part2
+namespace Esfa.Recruit.Provider.Web.Controllers.Part2
 {
     [Route(RoutePaths.AccountVacancyRoutePath)]
     public class QualificationsController : Controller

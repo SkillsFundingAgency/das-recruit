@@ -23,24 +23,27 @@ namespace Esfa.Recruit.Employer.Web.Mappings
         private readonly IMinimumWageProvider _wageProvider;
         private readonly ExternalLinksConfiguration _externalLinksConfiguration;
         private readonly IEmployerVacancyClient _client;
+        private readonly IRecruitVacancyClient _vacancyClient;
 
         public DisplayVacancyViewModelMapper(
                 IGeocodeImageService mapService,
                 IMinimumWageProvider wageProvider, 
                 IOptions<ExternalLinksConfiguration> externalLinksOptions,
-                IEmployerVacancyClient client)
+                IEmployerVacancyClient client,
+                IRecruitVacancyClient vacancyClient)
         {
             _mapService = mapService;
             _wageProvider = wageProvider;
             _externalLinksConfiguration = externalLinksOptions.Value;
             _client = client;
+            _vacancyClient = vacancyClient;
         }
 
         public async Task MapFromVacancyAsync(DisplayVacancyViewModel vm, Vacancy vacancy)
         {
             var programme = await _client.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
 
-            var allQualifications = await _client.GetCandidateQualificationsAsync();
+            var allQualifications = await _vacancyClient.GetCandidateQualificationsAsync();
 
             vm.ApplicationMethod = vacancy.ApplicationMethod;
             vm.ApplicationInstructions = vacancy.ApplicationInstructions;

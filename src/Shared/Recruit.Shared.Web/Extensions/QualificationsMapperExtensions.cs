@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Esfa.Recruit.Employer.Web.ViewModels.Part2.Qualifications;
+using Esfa.Recruit.Shared.Web.ViewModels.Qualifications;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
-namespace Esfa.Recruit.Employer.Web.Mappings.Extensions
+namespace Esfa.Recruit.Shared.Web.Extensions
 {
     public static class QualificationsMapperExtensions
     {
