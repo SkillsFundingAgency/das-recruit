@@ -16,6 +16,12 @@
         public const string CreateVacancy_Get = "CreateVacancy_Get";
         public const string CreateVacancy_Post = "CreateVacancy_Post";
 
+        public const string ProviderContactDetails_Get = "ProviderContactDetails_Get";
+        public const string ProviderContactDetails_Post = "ProviderContactDetails_Post";
+
+        public const string Title_Get = "Title_Get";
+        public const string Title_Post = "Title_Post";
+
         public const string Employer_Get = "Employer_Get";
         public const string Employer_Post = "Employer_Post";
         public const string VacancyDescription_Index_Get = "VacancyDescription_Index_Get";
@@ -30,7 +36,5 @@
 
         public const string VacancyManage_Get = "VacancyManage_Get";
         public const string DisplayVacancy_Get = "DisplayVacancy_Get";
-        public const string Title_Get = "Title_Get";
-        public const string Title_Post = "Title_Post";
     }
 }
