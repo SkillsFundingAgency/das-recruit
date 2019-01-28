@@ -7,7 +7,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.Extensions.Logging;
 using Moq;
 
-namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation
+namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation
 {
     public abstract class VacancyValidationTestsBase
     {

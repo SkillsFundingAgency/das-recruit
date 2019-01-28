@@ -9,7 +9,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Xunit;
 
-namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.Rules.VacancyRules
+namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Rules.VacancyRules
 {
     public class VacancyProfanityChecksRuleTests
     {

@@ -6,7 +6,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Slack;
 using Moq;
 using Xunit;
 
-namespace Esfa.Recruit.Vacancies.Client.UnitTests.Infrastructure.Slack
+namespace Esfa.Recruit.UnitTests.Vacancies.Client.Infrastructure.Slack
 {
     public class SlackNotifyVacancyReviewUpdatesTests
     {

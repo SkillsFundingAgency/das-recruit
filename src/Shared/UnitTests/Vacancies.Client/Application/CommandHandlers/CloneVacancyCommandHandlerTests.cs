@@ -1,4 +1,4 @@
-using Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation;
+using Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation;
 using FluentAssertions;
 using Xunit;
 using Moq;
@@ -14,8 +14,7 @@ using System.Threading;
 using System;
 using AutoFixture;
 
-
-namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.CommandHandlers
+namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
 {
     public class CloneVacancyCommandHandlerTests : VacancyValidationTestsBase
     {

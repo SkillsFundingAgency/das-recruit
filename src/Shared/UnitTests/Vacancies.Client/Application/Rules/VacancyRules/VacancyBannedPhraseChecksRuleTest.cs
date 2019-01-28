@@ -8,13 +8,13 @@ using Esfa.Recruit.Vacancies.Client.Application.Rules;
 using Esfa.Recruit.Vacancies.Client.Application.Rules.BaseRules;
 using Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.Rules.VacancyRules;
+using Esfa.Recruit.UnitTests.Vacancies.Client.Application.Rules.VacancyRules;
 using FluentAssertions;
 using Microsoft.Azure.Amqp.Serialization;
 using Moq;
 using Xunit;
 
-namespace UnitTests.Vacancies.Client.Application.Rules.VacancyRules
+namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Rules.VacancyRules
 {
     public class VacancyBannedPhraseChecksRuleTest
     {

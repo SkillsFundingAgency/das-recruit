@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
 
-namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructure.EventHandlers
+namespace Esfa.Recruit.UnitTests.Vacancies.Client.Infrastructure.EventHandlers
 {
     public class UpdateFaaOnApplicationReviewedTests
     {

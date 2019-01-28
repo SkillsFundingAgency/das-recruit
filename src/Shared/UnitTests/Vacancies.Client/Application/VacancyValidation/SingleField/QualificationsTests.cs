@@ -5,7 +5,7 @@ using FluentAssertions;
 using Moq;
 using Xunit;
 
-namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.SingleField
+namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.SingleField
 {
     public class QualificationsTests : VacancyValidationTestsBase
     {

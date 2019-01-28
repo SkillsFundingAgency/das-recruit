@@ -13,7 +13,7 @@ using FluentAssertions;
 using Moq;
 using Xunit;
 
-namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.Rules.VacancyRules
+namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Rules.VacancyRules
 {
     public class VacancyTitlePopularityCheckRuleTests
     {
