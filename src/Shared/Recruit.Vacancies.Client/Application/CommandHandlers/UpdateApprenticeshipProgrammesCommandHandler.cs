@@ -10,11 +10,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
     public class UpdateApprenticeshipProgrammesCommandHandler : IRequestHandler<UpdateApprenticeshipProgrammesCommand>
     {
         private readonly ILogger<UpdateApprenticeshipProgrammesCommandHandler> _logger;
-        private readonly IApprenticeshipProgrammeUpdateService _updaterService;
+        private readonly IApprenticeshipProgrammesUpdateService _updaterService;
 
         public UpdateApprenticeshipProgrammesCommandHandler(
             ILogger<UpdateApprenticeshipProgrammesCommandHandler> logger,
-            IApprenticeshipProgrammeUpdateService updaterService)
+            IApprenticeshipProgrammesUpdateService updaterService)
         {
             _logger = logger;
             _updaterService = updaterService;
