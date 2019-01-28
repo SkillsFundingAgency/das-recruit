@@ -10,6 +10,9 @@
 
         public const string Logout_Get = "Logout_Get";
 
+        public const string Considerations_Get = "Considerations_Get";
+        public const string Considerations_Post = "Considerations_Post";
+
         public const string CreateVacancyOptions_Get = "CreateVacancyOptions_Get";
         public const string CreateVacancyOptions_Post = "CreateVacancyOptions_Post";
 

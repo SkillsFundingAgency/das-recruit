@@ -50,6 +50,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
 
         private static void RegisterOrchestratorDeps(IServiceCollection services)
         {
+            services.AddTransient<ConsiderationsOrchestrator>();
             services.AddTransient<DashboardOrchestrator>();
             services.AddTransient<SkillsOrchestrator>();
             services.AddTransient<VacancyDescriptionOrchestrator>();
