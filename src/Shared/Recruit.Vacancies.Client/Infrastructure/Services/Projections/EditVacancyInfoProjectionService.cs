@@ -21,7 +21,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
         {
             await _queryStoreWriter.UpdateEmployerVacancyDataAsync(employerAccountId, legalEntities);
 
-            _logger.LogDebug("Legal Entities inserted: {count} for Employer: {EmployerAccountId}", legalEntities.Count, employerAccountId);
+            _logger.LogDebug($"Legal Entities inserted: {legalEntities.Count} for Employer: {employerAccountId}");
         }
+
+        public async Task UpdateProviderVacancyDataAsync(long ukprn, IList<EmployerInfo> employers)
+        {
+            await _queryStoreWriter.UpdateProviderVacancyDataAsync(ukprn, employers);
+
+            _logger.LogDebug($"Employers inserted: {employers.Count} for Provider: {ukprn}");
+        }
+
     }
 }

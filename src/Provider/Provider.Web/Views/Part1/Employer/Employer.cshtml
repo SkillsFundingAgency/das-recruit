@@ -1,0 +1,36 @@
+@using Microsoft.Extensions.Options;
+@using Esfa.Recruit.Shared.Web.Configuration;
+@using Esfa.Recruit.Provider.Web.ViewModels.Part1.Employer;
+@using Esfa.Recruit.Shared.Web.Mappers
+
+@model EmployersViewModel
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }'/>
+
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Which of your employers do you want create a vacancy for?</h1>
+
+        <form asp-route="@RouteNames.CreateVacancy_Post" asp-route-wizard="@Model.PageInfo.IsWizard">
+            <div esfa-validation-marker-for="SelectedEmployerId" class="govuk-form-group">
+                <h2 class="govuk-heading-s">Select employer</h2>
+                <fieldset class="govuk-fieldset">
+                    <span esfa-validation-message-for="SelectedEmployerId" class="govuk-error-message"></span>
+                    <div class="govuk-radios">
+                    @foreach (var employer in Model.Employers)
+                    {
+                        <div class="govuk-radios__item">
+                            <input asp-for="SelectedEmployerId" type="radio" value="@employer.Id" class="govuk-radios__input" id="emp-@employer.Id">
+                            <label for="emp-@employer.Id" class="govuk-label govuk-radios__label">@employer.Name</label>
+                        </div>
+                    }
+                    </div>
+                </fieldset>
+            </div>
+
+            <button type="submit" class="govuk-button save-button">@Model.PageInfo.SubmitButtonText</button>
+
+            <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Index_Get" class="govuk-link das-button-link">Cancel</a>
+        </form>
+    </div>
+</div>

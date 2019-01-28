@@ -59,49 +59,14 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             return vm;
         }
 
-        public async Task<TitleViewModel> GetTitleViewModelAsync(TitleEditModel m)
-        {
-            TitleViewModel vm;
-
-            if (m.VacancyId.HasValue)
-            {
-                var vrm = new VacancyRouteModel { Ukprn = m.Ukprn, VacancyId = m.VacancyId.Value };
-                vm = await GetTitleViewModelAsync(vrm);
-            }
-            else
-            {
-                vm = GetTitleViewModel();
-            }
-
-            vm.Title = m.Title;
-            vm.NumberOfPositions = m.NumberOfPositions;
-
-            return vm;
-        }
-
-
         public async Task<OrchestratorResponse<Guid>> PostTitleEditModelAsync(TitleEditModel m, VacancyUser user)
         {
-            var numberOfPositions = int.TryParse(m.NumberOfPositions, out var n)? n : default(int?);
-
-            if (!m.VacancyId.HasValue) // Create if it's a new vacancy
-            {
-                var newVacancy = new Vacancy
-                {
-                    Title = m.Title,
-                    NumberOfPositions = numberOfPositions
-                };
-
-                return await ValidateAndExecute(
-                    newVacancy, 
-                    v => _vacancyClient.Validate(v, ValidationRules),
-                    async v => await _client.CreateVacancyAsync(SourceOrigin.ProviderWeb, m.Title, numberOfPositions.Value, long.Parse(m.Ukprn), user, UserType.Provider));
-            }
-
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, 
                 new VacancyRouteModel{Ukprn = m.Ukprn, VacancyId = m.VacancyId.Value}, RouteNames.Title_Post);
 
             vacancy.Title = m.Title;
+
+            var numberOfPositions = int.TryParse(m.NumberOfPositions, out var n)? n : default(int?);            
             vacancy.NumberOfPositions = numberOfPositions;
 
             return await ValidateAndExecute(

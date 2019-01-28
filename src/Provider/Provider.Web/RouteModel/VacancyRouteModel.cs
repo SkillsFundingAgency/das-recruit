@@ -5,16 +5,10 @@ namespace Esfa.Recruit.Provider.Web.RouteModel
 {
     public class VacancyRouteModel
     {
-        private string _ukprn;
+        [FromRoute]
+        public long Ukprn { get; set; }
 
         [FromRoute]
-        public string Ukprn
-        {
-            get => _ukprn;
-            set => _ukprn = value.ToUpper();
-        }
-
-        [FromRoute]
-        public Guid VacancyId { get; set; }
+        public Guid? VacancyId { get; set; }
     }
 }

@@ -8,7 +8,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Title
     public class TitleEditModel
     {
         [FromRoute]
-        public string Ukprn { get; set; }
+        public long Ukprn { get; set; }
 
         [FromRoute]
         public Guid? VacancyId { get; set; }
