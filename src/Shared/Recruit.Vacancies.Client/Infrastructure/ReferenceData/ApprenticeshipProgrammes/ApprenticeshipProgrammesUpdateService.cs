@@ -9,15 +9,15 @@ using SFA.DAS.Apprenticeships.Api.Client;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes
 {
-    public class ApprenticeshipProgrammeUpdateService : IApprenticeshipProgrammeUpdateService
+    public class ApprenticeshipProgrammesUpdateService : IApprenticeshipProgrammesUpdateService
     {
-        private readonly ILogger<ApprenticeshipProgrammeUpdateService> _logger;
+        private readonly ILogger<ApprenticeshipProgrammesUpdateService> _logger;
         private readonly IStandardApiClient _standardsClient;
         private readonly IFrameworkApiClient _frameworksClient;
         private readonly IReferenceDataWriter _referenceDataWriter;
 
-        public ApprenticeshipProgrammeUpdateService(
-            ILogger<ApprenticeshipProgrammeUpdateService> logger, 
+        public ApprenticeshipProgrammesUpdateService(
+            ILogger<ApprenticeshipProgrammesUpdateService> logger, 
             IStandardApiClient standardsClient,
             IFrameworkApiClient frameworksClient,
             IReferenceDataWriter referenceDataWriter)
@@ -47,7 +47,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
 
                 await _referenceDataWriter.UpsertReferenceData(new ApprenticeshipProgrammes
                 {
-                    Data = newList
+                    Data = newList.Distinct(new ApprenticeshipProgrammeEqualityComparer()).ToList()
                 });
 
                 _logger.LogInformation("Inserted: {standardCount} standards and {frameworkCount} frameworks.", standardsFromApi.Count, frameworksFromApi.Count);

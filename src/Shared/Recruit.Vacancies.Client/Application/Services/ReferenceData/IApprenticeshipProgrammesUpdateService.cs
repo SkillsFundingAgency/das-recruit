@@ -2,7 +2,7 @@
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Services.ReferenceData
 {
-    public interface IApprenticeshipProgrammeUpdateService
+    public interface IApprenticeshipProgrammesUpdateService
     {
         Task UpdateApprenticeshipProgrammesAsync();
     }

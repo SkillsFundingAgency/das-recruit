@@ -128,10 +128,10 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient<ITrainingProviderService, TrainingProviderService>();
 
             // Reference Data update services
-            services.AddTransient<IApprenticeshipProgrammeUpdateService, ApprenticeshipProgrammeUpdateService>();
+            services.AddTransient<IApprenticeshipProgrammesUpdateService, ApprenticeshipProgrammesUpdateService>();
             services.AddTransient<IBankHolidayUpdateService, BankHolidayUpdateService>();
             services.AddTransient<IBankHolidayProvider, BankHolidayProvider>();
-            
+
             // External client dependencies
             services.AddApprenticeshipsApi(configuration);
         }
