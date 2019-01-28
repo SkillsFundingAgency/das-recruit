@@ -7,7 +7,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using FluentAssertions;
 using Xunit;
 
-namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.Services
+namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
 {
     public class VacancyComparerServiceTests
     {

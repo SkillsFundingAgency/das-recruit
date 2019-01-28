@@ -1,11 +1,11 @@
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
-using Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation;
+using Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation;
 using FluentAssertions;
 using FluentValidation;
 using Xunit;
 
-namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application
+namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application
 {
     public class EntityValidatorTests : VacancyValidationTestsBase
     {

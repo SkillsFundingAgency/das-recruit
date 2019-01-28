@@ -9,7 +9,7 @@ using Microsoft.Extensions.Options;
 using Moq;
 using Xunit;
 
-namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.Services
+namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
 {
     public class NextVacancyReviewServiceTests
     {

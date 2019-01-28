@@ -6,7 +6,7 @@ using FluentAssertions;
 using Moq;
 using Xunit;
 
-namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.CrossField
+namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.CrossField
 {
     public class TrainingExpiryDateValidation : VacancyValidationTestsBase
     {

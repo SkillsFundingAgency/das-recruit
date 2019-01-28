@@ -1,7 +1,7 @@
 using System;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
-namespace Esfa.Recruit.Vacancies.Client.UnitTests.Application.VacancyValidation.CrossField
+namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.CrossField
 {
     public class TestApprenticeshipProgramme : IApprenticeshipProgramme
     {

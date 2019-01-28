@@ -1,12 +1,12 @@
 using System;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services;
-using Esfa.Recruit.Vacancies.Client.UnitTests.TestHelpers;
+using Esfa.Recruit.UnitTests.TestHelpers;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
 
-namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructure.Services
+namespace Esfa.Recruit.UnitTests.Vacancies.Client.Infrastructure.Services
 {
     public class NationalMinimumWageProviderTests
     {
