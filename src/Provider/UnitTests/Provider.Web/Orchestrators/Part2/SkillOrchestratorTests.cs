@@ -17,7 +17,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part2
 {
     public class SkillOrchestratorTests
     {
-        private const string TestUkprn = "12345678";
+        private const long TestUkprn = 12345678;
         private readonly Mock<IProviderVacancyClient> _mockClient;
         private readonly Mock<IRecruitVacancyClient> _mockVacancyClient;
 
@@ -185,7 +185,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part2
         {
             return new Vacancy
             {
-                TrainingProvider = new TrainingProvider { Ukprn = long.Parse(TestUkprn) },
+                TrainingProvider = new TrainingProvider { Ukprn = TestUkprn },
                 Title = "Test Title",
                 ShortDescription = "Test Short Description",
                 EmployerLocation = new Address
