@@ -50,7 +50,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             return vm;
         }
 
-        public async Task<OrchestratorResponse<Guid>> PostEmployerEditViewModelAsync(EmployersEditViewModel viewModel, VacancyUser user)
+        public async Task<OrchestratorResponse<Guid>> PostEmployerEditViewModelAsync(
+            VacancyRouteModel vacancyRouteModel, EmployersEditViewModel viewModel, VacancyUser user)
         {
             if (!viewModel.VacancyId.HasValue) // Create if it's a new vacancy
             {
@@ -68,9 +69,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                         viewModel.SelectedEmployerId, viewModel.Ukprn, user, UserType.Provider));
             }
 
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_providerVacancyClient, _recruitVacancyClient, 
-                new VacancyRouteModel{ Ukprn = viewModel.Ukprn, VacancyId = viewModel.VacancyId.GetValueOrDefault() }, 
-                RouteNames.Employer_Post);
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(
+                _providerVacancyClient, _recruitVacancyClient, vacancyRouteModel, RouteNames.Employer_Post);
 
             vacancy.EmployerAccountId = viewModel.SelectedEmployerId;
             vacancy.EmployerName = await GetEmployerNameAsync(viewModel.Ukprn, viewModel.SelectedEmployerId);
