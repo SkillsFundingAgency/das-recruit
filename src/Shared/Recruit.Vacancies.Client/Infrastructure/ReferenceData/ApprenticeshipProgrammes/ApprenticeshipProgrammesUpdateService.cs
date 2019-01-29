@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Services.ReferenceData;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
 using Microsoft.Extensions.Logging;
 using Polly;
 using SFA.DAS.Apprenticeships.Api.Client;
@@ -40,6 +41,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
 
                 var standardsFromApi = standardsTask.Result.ToList();
                 var frameworksFromApi = frameworksTask.Result.ToList();
+
+                if (standardsFromApi.Count == 0)
+                    throw new InfrastructureException("Retrieved 0 standards from the apprenticeships api.");
+                
+                if (frameworksFromApi.Count == 0)
+                    throw new InfrastructureException("Retrieved 0 frameworks from the apprenticeships api.");
 
                 var newList = new List<ApprenticeshipProgramme>();
                 newList.AddRange(standardsFromApi);

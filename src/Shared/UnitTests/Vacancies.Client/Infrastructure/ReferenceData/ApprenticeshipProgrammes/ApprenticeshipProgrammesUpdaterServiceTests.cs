@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Services.ReferenceData;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
 using Esfa.Recruit.UnitTests.TestHelpers;
@@ -105,6 +106,36 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Infrastructure.ReferenceData.A
         }
 
         [Fact]
+        public async Task WhenZeroStandardsAreRetrievedFromApprenticeshipsApi_UpsertApprenticeshipProgrammesReferencedataThrowInfrastuctureException()
+        {
+            _mockStandardsClient
+            .Setup(x => x.GetAllAsync())
+            .ReturnsAsync(Enumerable.Empty<StandardSummary>());
+
+            _mockFrameworksClient
+            .Setup(x => x.GetAllAsync())
+            .ReturnsAsync(new [] { _frameworkOne });
+
+            Func<Task> asyncFunction = async () => { await _sut.UpdateApprenticeshipProgrammesAsync(); };
+            (await asyncFunction.Should().ThrowAsync<InfrastructureException>()).WithMessage("Retrieved 0 standards from the apprenticeships api.");
+        }
+
+        [Fact]
+        public async Task WhenZeroFrameworksAreRetrievedFromApprenticeshipsApi_UpsertApprenticeshipProgrammesReferencedataThrowInfrastuctureException()
+        {
+            _mockStandardsClient
+            .Setup(x => x.GetAllAsync())
+            .ReturnsAsync(new [] { _standardOne });
+
+            _mockFrameworksClient
+            .Setup(x => x.GetAllAsync())
+            .ReturnsAsync(Enumerable.Empty<FrameworkSummary>());
+
+            Func<Task> asyncFunction = async () => { await _sut.UpdateApprenticeshipProgrammesAsync(); };
+            (await asyncFunction.Should().ThrowAsync<InfrastructureException>()).WithMessage("Retrieved 0 frameworks from the apprenticeships api.");
+        }
+
+        [Fact]
         public async Task WhenApprenticeshipsApiReturnsDuplicateStandards_ThenOnlyDistinctStandardsAreUpsertedIntoReferenceData()
         {
             // Arrange
@@ -118,7 +149,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Infrastructure.ReferenceData.A
 
             _mockFrameworksClient
             .Setup(x => x.GetAllAsync())
-            .ReturnsAsync(Enumerable.Empty<FrameworkSummary>());
+            .ReturnsAsync(new [] { _frameworkOne });
 
             ApprenticeshipProgrammesReferenceData apprenticeshipProgrammesReferenceData = null;
 
@@ -130,12 +161,12 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Infrastructure.ReferenceData.A
             await _sut.UpdateApprenticeshipProgrammesAsync();
 
             // Assert
-            var firstItem = apprenticeshipProgrammesReferenceData.Data.First();
-            var secondItem = apprenticeshipProgrammesReferenceData.Data.Skip(1).First();
+            var firstItem = apprenticeshipProgrammesReferenceData.Data.Where(ap => ap.ApprenticeshipType == TrainingType.Standard).First();
+            var secondItem = apprenticeshipProgrammesReferenceData.Data.Where(ap => ap.ApprenticeshipType == TrainingType.Standard).Skip(1).First();
 
             _mockReferenceDataWriter.Verify(x => x.UpsertReferenceData(apprenticeshipProgrammesReferenceData), Times.Once);
-            apprenticeshipProgrammesReferenceData.Data.Count().Should().Be(2);
-            apprenticeshipProgrammesReferenceData.Data.All(ap => ap.ApprenticeshipType == TrainingType.Standard).Should().BeTrue();
+            apprenticeshipProgrammesReferenceData.Data.Count().Should().Be(3);
+            apprenticeshipProgrammesReferenceData.Data.Where(ap => ap.ApprenticeshipType == TrainingType.Standard).Count().Should().Be(2);
             firstItem.Id.Equals(secondItem.Id).Should().BeFalse();
             firstItem.Level.Equals(secondItem.Level).Should().BeFalse();
             firstItem.Title.Equals(secondItem.Title).Should().BeFalse();
@@ -147,7 +178,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Infrastructure.ReferenceData.A
             // Arrange
             _mockStandardsClient
             .Setup(x => x.GetAllAsync())
-            .ReturnsAsync(Enumerable.Empty<StandardSummary>());
+            .ReturnsAsync(new [] { _standardOne });
 
             _mockFrameworksClient
             .Setup(x => x.GetAllAsync())
@@ -167,12 +198,12 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Infrastructure.ReferenceData.A
             await _sut.UpdateApprenticeshipProgrammesAsync();
 
             // Assert
-            var firstItem = apprenticeshipProgrammesReferenceData.Data.First();
-            var secondItem = apprenticeshipProgrammesReferenceData.Data.Skip(1).First();
+            var firstItem = apprenticeshipProgrammesReferenceData.Data.Where(ap => ap.ApprenticeshipType == TrainingType.Framework).First();
+            var secondItem = apprenticeshipProgrammesReferenceData.Data.Where(ap => ap.ApprenticeshipType == TrainingType.Framework).Skip(1).First();
 
             _mockReferenceDataWriter.Verify(x => x.UpsertReferenceData(apprenticeshipProgrammesReferenceData), Times.Once);
-            apprenticeshipProgrammesReferenceData.Data.Count().Should().Be(2);
-            apprenticeshipProgrammesReferenceData.Data.All(ap => ap.ApprenticeshipType == TrainingType.Framework).Should().BeTrue();
+            apprenticeshipProgrammesReferenceData.Data.Count().Should().Be(3);
+            apprenticeshipProgrammesReferenceData.Data.Where(ap => ap.ApprenticeshipType == TrainingType.Framework).Count().Should().Be(2);
             firstItem.Id.Equals(secondItem.Id).Should().BeFalse();
             firstItem.Level.Equals(secondItem.Level).Should().BeFalse();
             firstItem.Title.Equals(secondItem.Title).Should().BeFalse();
