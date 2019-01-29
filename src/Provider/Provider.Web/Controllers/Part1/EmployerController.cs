@@ -31,7 +31,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
         public async Task<IActionResult> Employer(VacancyRouteModel vacancyRouteModel, 
             EmployersEditViewModel viewModel, [FromQuery] bool wizard)
         {            
-            var response = await _orchestrator.PostEmployerEditViewModelAsync(vacancyRouteModel, viewModel, User.ToVacancyUser());
+            var response = await _orchestrator.PostEmployerEditModelAsync(vacancyRouteModel, viewModel, User.ToVacancyUser());
 
             if (!response.Success)
             {
