@@ -1,0 +1,25 @@
+﻿@model Esfa.Recruit.Provider.Web.ViewModels.Part2.Considerations.ConsiderationsViewModel
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">@Model.Title</h1>
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
+
+        <partial name="@PartialNames.ReviewSummary" for="Review" />
+
+        <form asp-route="@RouteNames.Considerations_Post">
+            <div esfa-validation-marker-for="ThingsToConsider" class="govuk-form-group">
+                <label asp-for="ThingsToConsider" class="govuk-label govuk-!-font-weight-bold">Things to consider (optional)</label>
+                <span class="govuk-hint">For example, if the vacancy will involve working outdoors, or lifting heavy objects</span>
+                <span esfa-validation-message-for="ThingsToConsider" class="govuk-error-message"></span>
+                <textarea asp-for="ThingsToConsider" class="govuk-textarea character-count" rows="5" data-val-length-max="350"></textarea>
+                <span class="govuk-body maxchar-count">350</span>
+                <span class="govuk-body maxchar-text"> characters remaining</span>
+            </div>
+            <div class="govuk-form-group">
+                <input type="submit" value="Save and continue" esfa-automation="btn-continue" class="govuk-button save-button" />
+                <a asp-route="@RouteNames.Vacancy_Preview_Get" esfa-automation="link-cancel" class="govuk-link das-button-link">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
