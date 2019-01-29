@@ -33,7 +33,7 @@
                 <input asp-for="Subject" value="@Model.Subject" type="text" class="govuk-input govuk-!-width-one-half" maxlength="50">
             </div>
 
-            <div esfa-validation-marker-for="Grade" class="govuk-form-group" data-bind="parentvalElement:grade">
+            <div esfa-validation-marker-for="Grade" class="govuk-form-group">
                 <label asp-for="Grade" class="govuk-label govuk-!-font-weight-bold">Grade</label>
                 <span esfa-validation-message-for="Grade" class="govuk-error-message"></span>
                 <input asp-for="Grade" value="@Model.Grade" type="text" class="govuk-input govuk-!-width-one-third" maxlength="30">
