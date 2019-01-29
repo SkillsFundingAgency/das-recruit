@@ -17,7 +17,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 {
     public class EmployerOrchestrator : EntityValidatingOrchestrator<Vacancy, EmployersEditViewModel>
     {
-        private const VacancyRuleSet ValidationRules = VacancyRuleSet.EmployerAccountId | VacancyRuleSet.TrainingProvider;
+        private const VacancyRuleSet ValidationRules = VacancyRuleSet.EmployerAccountId;
         private readonly IProviderVacancyClient _providerVacancyClient;
         private readonly IRecruitVacancyClient _recruitVacancyClient;
 
@@ -29,14 +29,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             _recruitVacancyClient = recruitVacancyClient;
         }
 
-        protected override EntityToViewModelPropertyMappings<Vacancy, EmployersEditViewModel> DefineMappings()
-        {
-            var mappings = new EntityToViewModelPropertyMappings<Vacancy, EmployersEditViewModel>();
-
-            mappings.Add(e => e.EmployerAccountId, vm => vm.SelectedEmployerId);
-
-            return mappings;
-        }
         public async Task<EmployersViewModel> GetEmployersViewModelAsync(VacancyRouteModel vacancyRouteModel)
         {
             var editVacancyInfo = await _providerVacancyClient.GetProviderEditVacancyInfoAsync(vacancyRouteModel.Ukprn);
@@ -84,6 +76,15 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                     return v.Id;
                 }
             );
+        }
+
+        protected override EntityToViewModelPropertyMappings<Vacancy, EmployersEditViewModel> DefineMappings()
+        {
+            var mappings = new EntityToViewModelPropertyMappings<Vacancy, EmployersEditViewModel>();
+
+            mappings.Add(e => e.EmployerAccountId, vm => vm.SelectedEmployerId);
+
+            return mappings;
         }
 
         private async Task<string> GetEmployerNameAsync(long ukprn, string employerId)
