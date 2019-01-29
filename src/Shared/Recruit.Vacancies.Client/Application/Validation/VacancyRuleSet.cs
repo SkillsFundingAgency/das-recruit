@@ -33,6 +33,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation
         EmployerDescription = 1 << 24,
         EmployerWebsiteUrl = 1 << 25,
         TrainingProvider = 1 << 26,
+        EmployerAccountId = 1 << 27,
         All = ~None,
     }
 }

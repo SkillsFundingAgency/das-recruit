@@ -11,7 +11,6 @@ using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Provider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
@@ -21,7 +20,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
-    public class VacancyClient : IRecruitVacancyClient, IEmployerVacancyClient, IProviderVacancyClient, IJobsVacancyClient
+    public partial class VacancyClient : IRecruitVacancyClient, IEmployerVacancyClient, IJobsVacancyClient
     {
         private readonly IMessaging _messaging;
         private readonly IQueryStoreReader _reader;
@@ -128,26 +127,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return vacancyId;
         }
 
-        public async Task<Guid> CreateVacancyAsync(SourceOrigin origin, string title, int numberOfPositions, long ukprn, VacancyUser user, UserType userType)
-        {
-            var vacancyId = GenerateVacancyId();
-
-            var command = new CreateProviderOwnedVacancyCommand
-            {
-                VacancyId = vacancyId,
-                User = user,
-                UserType = userType,
-                Title = title,
-                NumberOfPositions = numberOfPositions,
-                Ukprn = ukprn,
-                Origin = origin
-            };
-
-            await _messaging.SendCommandAsync(command);
-
-            return vacancyId;
-        }
-
         public async Task<Guid> CloneVacancyAsync(Guid vacancyId, VacancyUser user, SourceOrigin sourceOrigin)
         {
             var newVacancyId = GenerateVacancyId();
@@ -197,16 +176,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _employerDashboardService.ReBuildDashboardAsync(employerAccountId);
         }
 
-        public Task<ProviderDashboard> GetDashboardAsync(long ukprn)
-        {
-            return _reader.GetProviderDashboardAsync(ukprn);
-        }
-
-        public Task GenerateDashboard(long ukprn)
-        {
-            return _providerDashboardService.ReBuildDashboardAsync(ukprn);
-        }
-
         public Task UserSignedInAsync(VacancyUser user, UserType userType)
         {
             var command = new UserSignedInCommand(user, userType);
@@ -220,13 +189,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             {
                 EmployerAccountId = employerAccountId
             };
-
-            return _messaging.SendCommandAsync(command);
-        }
-
-        public Task SetupProviderAsync(long ukprn)
-        {
-            var command = new SetupProviderCommand(ukprn);
 
             return _messaging.SendCommandAsync(command);
         }

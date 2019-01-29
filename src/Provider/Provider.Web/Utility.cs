@@ -28,9 +28,9 @@ namespace Esfa.Recruit.Provider.Web
 
         public static async Task<Vacancy> GetAuthorisedVacancyAsync(IProviderVacancyClient client, IRecruitVacancyClient vacancyClient, VacancyRouteModel vrm, string routeName)
         {
-            var vacancy = await vacancyClient.GetVacancyAsync(vrm.VacancyId);
+            var vacancy = await vacancyClient.GetVacancyAsync(vrm.VacancyId.GetValueOrDefault());
 
-            CheckAuthorisedAccess(vacancy, long.Parse(vrm.Ukprn));
+            CheckAuthorisedAccess(vacancy, vrm.Ukprn);
 
             CheckRouteIsValidForVacancy(vacancy, routeName);
 
@@ -62,7 +62,7 @@ namespace Esfa.Recruit.Provider.Web
             var redirectRoute = validRoutes.Last();
             
             throw new InvalidRouteForVacancyException(string.Format(RecruitWebExceptionMessages.RouteNotValidForVacancy, currentRouteName, redirectRoute),
-                redirectRoute, new VacancyRouteModel{ Ukprn = vacancy.TrainingProvider.Ukprn.Value.ToString(), VacancyId = vacancy.Id });
+                redirectRoute, new VacancyRouteModel{ Ukprn = vacancy.TrainingProvider.Ukprn.GetValueOrDefault(), VacancyId = vacancy.Id });
         }
 
         public static IList<string> GetValidRoutesForVacancy(Vacancy vacancy)
@@ -122,7 +122,8 @@ namespace Esfa.Recruit.Provider.Web
         {
             var applicationReview = await client.GetApplicationReviewAsync(rm.ApplicationReviewId);
 
-            if (applicationReview.EmployerAccountId == rm.Ukprn) // needs to be reviewed
+            //TODO: this needs changing when we implement application review story
+            if (applicationReview.EmployerAccountId == rm.Ukprn.ToString()) // needs to be reviewed
             {
                 return applicationReview;
             }

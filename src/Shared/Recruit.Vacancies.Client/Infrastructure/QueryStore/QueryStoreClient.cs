@@ -73,12 +73,31 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 
             return _queryStore.UpsertAsync(employerVacancyDataItem);
         }
-        
+
+        public Task UpdateProviderVacancyDataAsync(long ukprn, IEnumerable<EmployerInfo> employers)
+        {
+            var providerVacancyDataItem = new ProviderEditVacancyInfo
+            {
+                Id = QueryViewType.EditVacancyInfo.GetIdValue(ukprn),
+                Employers = employers,
+                LastUpdated = _timeProvider.Now
+            };
+
+            return _queryStore.UpsertAsync(providerVacancyDataItem);
+        }
+
         public Task<EditVacancyInfo> GetEmployerVacancyDataAsync(string employerAccountId)
         {
             var key = QueryViewType.EditVacancyInfo.GetIdValue(employerAccountId);
 
             return _queryStore.GetAsync<EditVacancyInfo>(QueryViewType.EditVacancyInfo.TypeName, key);
+        }
+
+        public Task<ProviderEditVacancyInfo> GetProviderVacancyDataAsync(long ukprn)
+        {
+            var key = QueryViewType.EditVacancyInfo.GetIdValue(ukprn);
+
+            return _queryStore.GetAsync<ProviderEditVacancyInfo>(QueryViewType.EditVacancyInfo.TypeName, key);
         }
 
         public Task<VacancyApplications> GetVacancyApplicationsAsync(string vacancyReference)

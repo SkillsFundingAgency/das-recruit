@@ -8,13 +8,15 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider
 {
-    public class SetupProviderDomainEventHandler : DomainEventHandler,  IDomainEventHandler<SetupProviderEvent>
+    public class SetupProviderHandler : DomainEventHandler,  IDomainEventHandler<SetupProviderEvent>
     {
-        private readonly ILogger<SetupProviderDomainEventHandler> _logger;
+        private readonly ILogger<SetupProviderHandler> _logger;
         private readonly IJobsVacancyClient _client;
         private readonly IEditVacancyInfoProjectionService _projectionService;
 
-        public SetupProviderDomainEventHandler(ILogger<SetupProviderDomainEventHandler> logger, IJobsVacancyClient client, IEditVacancyInfoProjectionService projectionService) : base(logger)
+        public SetupProviderHandler(ILogger<SetupProviderHandler> logger, 
+            IJobsVacancyClient client, 
+            IEditVacancyInfoProjectionService projectionService) : base(logger)
         {
             _logger = logger;
             _client = client;

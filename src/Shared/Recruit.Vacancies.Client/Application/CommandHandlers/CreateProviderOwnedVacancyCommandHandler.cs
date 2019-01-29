@@ -42,8 +42,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 OwnerType = message.UserType == UserType.Provider ? OwnerType.Provider : OwnerType.Employer,
                 SourceOrigin = message.Origin,
                 SourceType = SourceType.New,
-                Title = message.Title,
-                NumberOfPositions = message.NumberOfPositions,
+                EmployerAccountId = message.EmployerAccountId,
                 TrainingProvider = new TrainingProvider { Ukprn = message.Ukprn },
                 Status = VacancyStatus.Draft,
                 CreatedDate = now,
@@ -55,7 +54,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             await _repository.CreateAsync(vacancy);
 
-            await _messaging.PublishEvent(new VacancyCreatedEvent { VacancyId = vacancy.Id });
+            await _messaging.PublishEvent(new VacancyCreatedEvent
+            {
+                VacancyId = vacancy.Id
+            });
         }
     }
 }
