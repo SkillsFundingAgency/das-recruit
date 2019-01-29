@@ -29,7 +29,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
 
         [HttpPost("create-vacancy", Name = RouteNames.CreateVacancy_Post)]
         public async Task<IActionResult> Employer(EmployersEditViewModel viewModel, [FromQuery] bool wizard)
-        {
+        {            
             var response = await _orchestrator.PostEmployerEditViewModelAsync(viewModel, User.ToVacancyUser());
 
             if (!response.Success)
