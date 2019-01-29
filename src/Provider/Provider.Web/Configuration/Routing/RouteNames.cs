@@ -33,6 +33,9 @@
         public const string Skills_Get = "Skills_Get";
         public const string Skills_Post = "Skills_Post";
 
+        public const string Qualifications_Get = "Qualifications_Get";
+        public const string Qualifications_Post = "Qualifications_Post";
+
         public const string Submitted_Index_Get = "Submitted_Index_Get";
 
         public const string Vacancy_Preview_Get = "Vacancy_Preview_Get";
