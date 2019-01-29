@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Employer
 {
-    public class EmployersEditViewModel : VacancyRouteModel
+    public class EmployersEditModel : VacancyRouteModel
     {
         public string SelectedEmployerId { get; set; }
     }

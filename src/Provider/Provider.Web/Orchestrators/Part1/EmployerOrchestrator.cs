@@ -15,7 +15,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVa
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 {
-    public class EmployerOrchestrator : EntityValidatingOrchestrator<Vacancy, EmployersEditViewModel>
+    public class EmployerOrchestrator : EntityValidatingOrchestrator<Vacancy, EmployersEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.EmployerAccountId;
         private readonly IProviderVacancyClient _providerVacancyClient;
@@ -43,7 +43,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
         }
 
         public async Task<OrchestratorResponse<Guid>> PostEmployerEditModelAsync(
-            VacancyRouteModel vacancyRouteModel, EmployersEditViewModel viewModel, VacancyUser user)
+            VacancyRouteModel vacancyRouteModel, EmployersEditModel viewModel, VacancyUser user)
         {
             if (!viewModel.VacancyId.HasValue) // Create if it's a new vacancy
             {
@@ -58,7 +58,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                     newVacancy, 
                     v => _recruitVacancyClient.Validate(v, ValidationRules),
                     async v => await _providerVacancyClient.CreateVacancyAsync(SourceOrigin.ProviderWeb, 
-                        viewModel.SelectedEmployerId, viewModel.Ukprn, user, UserType.Provider));
+                        viewModel.SelectedEmployerId, viewModel.Ukprn, user));
             }
 
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(
@@ -78,9 +78,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             );
         }
 
-        protected override EntityToViewModelPropertyMappings<Vacancy, EmployersEditViewModel> DefineMappings()
+        protected override EntityToViewModelPropertyMappings<Vacancy, EmployersEditModel> DefineMappings()
         {
-            var mappings = new EntityToViewModelPropertyMappings<Vacancy, EmployersEditViewModel>();
+            var mappings = new EntityToViewModelPropertyMappings<Vacancy, EmployersEditModel>();
 
             mappings.Add(e => e.EmployerAccountId, vm => vm.SelectedEmployerId);
 

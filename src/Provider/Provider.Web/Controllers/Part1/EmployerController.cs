@@ -29,7 +29,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
 
         [HttpPost("create-vacancy", Name = RouteNames.CreateVacancy_Post)]
         public async Task<IActionResult> Employer(VacancyRouteModel vacancyRouteModel, 
-            EmployersEditViewModel viewModel, [FromQuery] bool wizard)
+            EmployersEditModel viewModel, [FromQuery] bool wizard)
         {            
             var response = await _orchestrator.PostEmployerEditModelAsync(vacancyRouteModel, viewModel, User.ToVacancyUser());
 
@@ -47,7 +47,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
             
             return
                 wizard 
-                    ? RedirectToRoute(RouteNames.Title_Get, new {vacancyId = response.Data}) 
+                    ? RedirectToRoute(RouteNames.Title_Get, new {vacancyId = response.Data, employerAccountId = viewModel.SelectedEmployerId}) 
                     : RedirectToRoute(RouteNames.Vacancy_Preview_Get);
         }
     }
