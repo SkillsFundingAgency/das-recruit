@@ -29,7 +29,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider
 
             try
             {
-                _logger.LogInformation($"Processing {nameof(SetupProviderEvent)} for Ukprn: {@event.Ukprn}");
+                _logger.LogInformation($"Processing {nameof(SetupProviderEvent)} for Ukprn: {{Ukprn}}", @event.Ukprn);
 
                 // we need to work out what we want to store for provider e.g. employer legal entities they have relationships with
                 // var legalEntities = (await _client.GetEmployerLegalEntitiesAsync(@event.EmployerAccountId)).ToList();
@@ -41,7 +41,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider
                 // await Task.WhenAll(vacancyDataTask, employerProfilesTask);
                 await Task.CompletedTask;
 
-                _logger.LogInformation($"Finished Processing {nameof(SetupProviderEvent)} for Ukprn: {@event.Ukprn}");
+                _logger.LogInformation($"Finished Processing {nameof(SetupProviderEvent)} for Ukprn: {{Ukprn}}", @event.Ukprn);
             }
             catch (Exception ex)
             {
