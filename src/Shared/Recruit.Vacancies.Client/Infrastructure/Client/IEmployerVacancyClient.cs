@@ -11,7 +11,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
     public interface IEmployerVacancyClient
     {
-        Task<Guid> CreateVacancyAsync(SourceOrigin origin, string title, int numberOfPositions, string employerAccountId, VacancyUser user, UserType userType);
+        Task<Guid> CreateVacancyAsync(SourceOrigin origin, string title, int numberOfPositions, string employerAccountId, VacancyUser user);
         Task GenerateDashboard(string employerAccountId);
         Task CloseVacancyAsync(Guid vacancyId, VacancyUser user);
         Task<Guid> CloneVacancyAsync(Guid vacancyId, VacancyUser user, SourceOrigin sourceOrigin);
