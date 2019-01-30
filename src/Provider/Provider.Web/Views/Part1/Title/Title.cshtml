@@ -3,6 +3,7 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames}'/>
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Vacancy summary</h1>
         <div class="info-summary">
             <p class="govuk-body">Apprentice candidates will see your vacancy in a search along with vacancies from other employers. This is your
@@ -14,11 +15,9 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames}'/>
+        <!-- <partial name="@PartialNames.ReviewSummary" for="Review"/> -->
 
-        <partial name="@PartialNames.ReviewSummary" for="Review"/>
-
-        <form asp-route="@Model.FormPostRouteName" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
+        <form asp-route="@RouteNames.Title_Post" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
             <div esfa-validation-marker-for="Title" class="govuk-form-group">
                 <label asp-for="Title" class="govuk-label govuk-!-font-weight-bold">
                     What do you want to call this vacancy?

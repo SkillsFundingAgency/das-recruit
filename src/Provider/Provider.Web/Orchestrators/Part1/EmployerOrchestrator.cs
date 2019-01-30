@@ -15,7 +15,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVa
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 {
-    public class EmployerOrchestrator : EntityValidatingOrchestrator<Vacancy, EmployersEditModel>
+    public class EmployerOrchestrator 
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.EmployerAccountId;
         private readonly IProviderVacancyClient _providerVacancyClient;
@@ -23,7 +23,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
         public EmployerOrchestrator(ILogger<EmployerOrchestrator> logger, 
             IProviderVacancyClient providerVacancyClient, IRecruitVacancyClient recruitVacancyClient)
-            : base(logger)
+            
         {
             _providerVacancyClient = providerVacancyClient;
             _recruitVacancyClient = recruitVacancyClient;
@@ -40,58 +40,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             };
 
             return vm;
-        }
-
-        public async Task<OrchestratorResponse<Guid>> PostEmployerEditModelAsync(
-            VacancyRouteModel vacancyRouteModel, EmployersEditModel viewModel, VacancyUser user)
-        {
-            if (!viewModel.VacancyId.HasValue) // Create if it's a new vacancy
-            {
-                 var newVacancy = new Vacancy
-                {
-                    TrainingProvider = new TrainingProvider{Ukprn = viewModel.Ukprn},
-                    EmployerAccountId = viewModel.SelectedEmployerId,
-                    EmployerName = await GetEmployerNameAsync(viewModel.Ukprn, viewModel.SelectedEmployerId)
-                };
-
-                return await ValidateAndExecute(
-                    newVacancy, 
-                    v => _recruitVacancyClient.Validate(v, ValidationRules),
-                    async v => await _providerVacancyClient.CreateVacancyAsync(SourceOrigin.ProviderWeb, 
-                        viewModel.SelectedEmployerId, viewModel.Ukprn, user));
-            }
-
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(
-                _providerVacancyClient, _recruitVacancyClient, vacancyRouteModel, RouteNames.Employer_Post);
-
-            vacancy.EmployerAccountId = viewModel.SelectedEmployerId;
-            vacancy.EmployerName = await GetEmployerNameAsync(viewModel.Ukprn, viewModel.SelectedEmployerId);
-
-            return await ValidateAndExecute(
-                vacancy, 
-                v => _recruitVacancyClient.Validate(v, ValidationRules),
-                async v =>
-                {
-                    await _providerVacancyClient.UpdateDraftVacancyAsync(vacancy, user);
-                    return v.Id;
-                }
-            );
-        }
-
-        protected override EntityToViewModelPropertyMappings<Vacancy, EmployersEditModel> DefineMappings()
-        {
-            var mappings = new EntityToViewModelPropertyMappings<Vacancy, EmployersEditModel>();
-
-            mappings.Add(e => e.EmployerAccountId, vm => vm.SelectedEmployerId);
-
-            return mappings;
-        }
-
-        private async Task<string> GetEmployerNameAsync(long ukprn, string employerId)
-        {
-            var providerInfo = await _providerVacancyClient.GetProviderEditVacancyInfoAsync(ukprn);
-
-            return providerInfo.Employers.FirstOrDefault(e => e.Id == employerId)?.Name;
         }
     }
 }

@@ -10,8 +10,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
     public partial class VacancyClient : IProviderVacancyClient
     {              
-        public async Task<Guid> CreateVacancyAsync(SourceOrigin origin, 
-            string employerAccountId, long ukprn, VacancyUser user)
+        public async Task<Guid> CreateVacancyAsync(string employerAccountId, string employerName,
+            long ukprn, string title, int numberOfPositions, VacancyUser user)
         {
             var vacancyId = GenerateVacancyId();
 
@@ -20,9 +20,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 VacancyId = vacancyId,
                 User = user,
                 UserType = UserType.Provider,
-                EmployerAccountId = employerAccountId,    
+                EmployerAccountId = employerAccountId,
+                EmployerName = employerName,
                 Ukprn = ukprn,           
-                Origin = origin
+                Origin = SourceOrigin.ProviderWeb,
+                Title = title,
+                NumberOfPositions = numberOfPositions
             };
 
             await _messaging.SendCommandAsync(command);
@@ -42,11 +45,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public Task<ProviderEditVacancyInfo> GetProviderEditVacancyInfoAsync(long ukprn)
         {
-            return Task.FromResult(new ProviderEditVacancyInfo{
-                Employers = new List<EmployerInfo>{                    
-                    {new EmployerInfo{ Id = "1234", Name = "Rogers and Federrers"  }}
-                }
-            });
+            return _reader.GetProviderVacancyDataAsync(ukprn);
         }
 
         public Task SetupProviderAsync(long ukprn)

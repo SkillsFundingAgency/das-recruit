@@ -43,13 +43,16 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 SourceOrigin = message.Origin,
                 SourceType = SourceType.New,
                 EmployerAccountId = message.EmployerAccountId,
+                EmployerName = message.EmployerName,
                 TrainingProvider = new TrainingProvider { Ukprn = message.Ukprn },
                 Status = VacancyStatus.Draft,
                 CreatedDate = now,
                 CreatedByUser = message.User,
                 LastUpdatedDate = now,
                 LastUpdatedByUser = message.User,
-                IsDeleted = false
+                IsDeleted = false,
+                Title = message.Title,
+                NumberOfPositions = message.NumberOfPositions
             };
 
             await _repository.CreateAsync(vacancy);
