@@ -1,5 +1,6 @@
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
+using Esfa.Recruit.Vacancies.Jobs.AnalyticsSummaryProcessor;
 using Esfa.Recruit.Vacancies.Jobs.ApprenticeshipProgrammes;
 using Esfa.Recruit.Vacancies.Jobs.BankHoliday;
 using Esfa.Recruit.Vacancies.Jobs.Configuration;
@@ -26,6 +27,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
         {
             services.AddSingleton<IApprenticeshipProgrammeApiClient, ApprenticeshipProgrammeApiClient>();
             services.AddScoped(x => new AccountsReader(x.GetService<ILogger<AccountsReader>>(), configuration.GetConnectionString("EmployerFinanceSqlDbConnectionString"), configuration.GetConnectionString("EmployerAccountsSqlDbConnectionString")));
+            services.AddScoped(x => new AnalyticsEventStore(x.GetService<ILogger<AnalyticsEventStore>>(), configuration.GetConnectionString("VacancyAnalyticEventsSqlDbConnectionString")));
 
             services.AddRecruitStorageClient(configuration);
 
@@ -44,6 +46,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddScoped<BankHolidayJob>();
             services.AddScoped<QaDashboardJob>();
             services.AddScoped<NonLevyAccountBlockerJob>();
+            services.AddScoped<VacancyAnalyticsSummaryGeneratorJob>();
 
             // Domain Event Queue Handlers
 

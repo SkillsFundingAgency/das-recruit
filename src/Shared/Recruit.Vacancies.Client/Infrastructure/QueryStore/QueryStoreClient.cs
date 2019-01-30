@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
@@ -9,6 +9,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVa
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.QA;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyAnalytics;
 using System;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
@@ -169,6 +170,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         public Task<long> RemoveOldProviderDashboards(DateTime oldestLastUpdatedDate)
         {
             return _queryStore.DeleteManyAsync<ProviderDashboard, DateTime>(QueryViewType.ProviderDashboard.TypeName, x => x.LastUpdated, oldestLastUpdatedDate);
+		}
+
+        public async Task UpsertVacancyAnalyticSummaryAsync(VacancyAnalyticsSummary summary)
+        {
+            summary.Id = QueryViewType.VacancyAnalyticsSummary.GetIdValue(summary.VacancyReference.ToString());
+            summary.LastUpdated = _timeProvider.Now;
+
+            await _queryStore.UpsertAsync(summary);
         }
 
         private string GetLiveVacancyId(long vacancyReference)

@@ -44,18 +44,19 @@ AND       Amount > 0";
                 {
                     using (var command = new SqlCommand(SelectLevyPayerAccountsSql, conn))
                     {
-                        var reader = await RetryPolicy.ExecuteAsync(async context =>
+                        using (var reader = await RetryPolicy.ExecuteAsync(async context =>
+                                                    {
+                                                        await conn.OpenAsync();
+                                                        return await command.ExecuteReaderAsync();
+                                                    }, new Context(nameof(GetLevyPayerAccountIdsAsync))))
                         {
-                            await conn.OpenAsync();
-                            return await command.ExecuteReaderAsync();
-                        }, new Context(nameof(GetLevyPayerAccountIdsAsync)));
+                            while (await reader.ReadAsync())
+                            {
+                                accountIdentifiers.Add(reader.GetInt64(employerAccountIdColIndex).ToString());
+                            }
 
-                        while (await reader.ReadAsync())
-                        {
-                            accountIdentifiers.Add(reader.GetInt64(employerAccountIdColIndex).ToString());
+                            reader.Close();
                         }
-
-                        reader.Close();
                     }
                 }
             }
@@ -81,20 +82,21 @@ AND       Amount > 0";
                 {
                     using (var command = new SqlCommand(SelectHashedAccountsSql, conn))
                     {
-                        var reader = await RetryPolicy.ExecuteAsync(async context =>
+                        using (var reader = await RetryPolicy.ExecuteAsync(async context =>
+                                                    {
+                                                        await conn.OpenAsync();
+                                                        return await command.ExecuteReaderAsync();
+                                                    }, new Context(nameof(GetEmployerAccountsAsync))))
                         {
-                            await conn.OpenAsync();
-                            return await command.ExecuteReaderAsync();
-                        }, new Context(nameof(GetEmployerAccountsAsync)));
+                            while (await reader.ReadAsync())
+                            {
+                                var employerAccountId = reader.GetInt64(employerAccountIdColIndex).ToString();
+                                var hashedAccountId = reader.GetString(hashedAccountIdColIndex);
+                                hashedAccountIdentifiers.Add(new EmployerAccountIdentifier(employerAccountId, hashedAccountId));
+                            }
 
-                        while (await reader.ReadAsync())
-                        {
-                            var employerAccountId = reader.GetInt64(employerAccountIdColIndex).ToString();
-                            var hashedAccountId = reader.GetString(hashedAccountIdColIndex);
-                            hashedAccountIdentifiers.Add(new EmployerAccountIdentifier(employerAccountId, hashedAccountId));
+                            reader.Close();
                         }
-
-                        reader.Close();
                     }
                 }
             }

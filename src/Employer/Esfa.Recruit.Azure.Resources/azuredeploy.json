@@ -182,6 +182,10 @@
       "type": "securestring",
       "defaultValue": ""
     },
+    "VacancyAnalyticEventsSqlDbConnectionString": {
+      "type": "securestring",
+      "defaultValue": ""
+    },
     "ProviderCustomHostname": {
       "type": "string"
     },
@@ -770,7 +774,12 @@
                 "name": "EmployerFinanceSqlDbConnectionString",
                 "connectionString": "[parameters('EmployerFinanceSqlDbConnectionString')]",
                 "type": "Custom"
-              }
+			  },
+			  {
+				"name": "VacancyAnalyticEventsSqlDbConnectionString",
+				"connectionString": "[parameters('VacancyAnalyticEventsSqlDbConnectionString')]",
+                "type": "Custom"
+			  }
             ]
           },
           "appServiceVirtualApplications": {

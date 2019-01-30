@@ -1,6 +1,11 @@
 version: "2.2"
 
 services:
+  pri-dc:
+    image: busybox:latest
+    container_name: sql-dev-data
+    volumes:
+     - mssql-volume:/var/opt/mssql
   mongo:
     container_name: mongo
     image: recruit-mongo:latest
@@ -15,6 +20,20 @@ services:
       - recruit-network
     ports:
       - 27017:27017
+
+  sqldb:
+    image: mcr.microsoft.com/mssql/server:2017-latest
+    volumes_from:
+     - pri-dc:rw
+    container_name: sqldb
+    hostname: sqldb
+    environment:
+     - 'ACCEPT_EULA=Y'
+     - 'MSSQL_SA_PASSWORD=Ozzyscottypassword1'
+    ports:
+     - "1401:1433"
+    networks:
+     - recruit-network
 
   elasticsearch1:
     image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.2.2
@@ -83,6 +102,8 @@ volumes:
   mongodata1:
     driver: local
   azurite1:
+    driver: local
+  mssql-volume:
     driver: local
 
 networks:
