@@ -28,7 +28,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
         [HttpGet(NewVacancyTitleRoute, Name = RouteNames.CreateVacancy_Get)]
         public IActionResult Title([FromQuery] string employerAccountId)
         {
-            var vm = _orchestrator.GetTitleViewModelForNewVacancy(employerAccountId, long.Parse(User.GetUkprn()));
+            var vm = _orchestrator.GetTitleViewModelForNewVacancy(employerAccountId, User.GetUkprn());
             vm.PageInfo.SetWizard();
             return View(vm);
         }
@@ -46,7 +46,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
         //[HttpGet(ExistingVacancyTitleRoute, Name = RouteNames.Title_Post)]
         public async Task<IActionResult> Title(TitleEditModel model, [FromQuery] string employerAccountId, [FromQuery] bool wizard)
         {
-            long.TryParse(User.GetUkprn(), out var ukprn);
+            var ukprn = User.GetUkprn();
             var response = await _orchestrator.PostTitleEditModelAsync(model, User.ToVacancyUser(), ukprn);
             
             if (!response.Success)

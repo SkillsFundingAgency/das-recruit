@@ -24,9 +24,11 @@ namespace Esfa.Recruit.Provider.Web.Extensions
             return user.FindFirstValue(ProviderRecruitClaims.IdamsUserNameClaimTypeIdentifier);
         }
 
-        public static string GetUkprn(this ClaimsPrincipal user)
+        public static long GetUkprn(this ClaimsPrincipal user)
         {
-            return user.FindFirstValue(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier);
+            var ukprn = user.FindFirstValue(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier);
+
+            return long.Parse(ukprn);
         }
 
         public static VacancyUser ToVacancyUser(this ClaimsPrincipal user)
