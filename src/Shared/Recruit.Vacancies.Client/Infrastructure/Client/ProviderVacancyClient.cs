@@ -44,11 +44,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public Task<ProviderEditVacancyInfo> GetProviderEditVacancyInfoAsync(long ukprn)
         {
-            return Task.FromResult(new ProviderEditVacancyInfo{
-                Employers = new List<EmployerInfo>{                    
-                    {new EmployerInfo{ Id = "1234", Name = "Rogers and Federrers"  }}
-                }
-            });
+            return _reader.GetProviderVacancyDataAsync(ukprn);
         }
 
         public Task SetupProviderAsync(long ukprn)
