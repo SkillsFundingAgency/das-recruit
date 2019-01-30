@@ -1,7 +1,7 @@
-﻿@using Microsoft.AspNetCore.Html
-@using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
+﻿@using Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
+@using Microsoft.AspNetCore.Html
 @using Esfa.Recruit.Shared.Web.Mappers
-@model VacancyPreviewViewModel
+@model Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview.VacancyPreviewViewModel
 @functions
 {
 const string EmptySectionClass = "preview-empty";
@@ -56,7 +56,7 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
                 <ul class="govuk-list">
                     <li asp-show="@Model.HasIncompleteThingsToConsiderSection"><a asp-fragment="@Anchors.ThingsToConsider" class="govuk-link">Things to consider</a></li>
                     <li asp-show="@Model.HasIncompleteEmployerWebsiteUrlSection"><a asp-fragment="@Anchors.EmployerWebsiteUrl" class="govuk-link">Employer website</a></li>
-                    <li asp-show="@Model.HasIncompleteContactSection"><a asp-fragment="@Anchors.EmployerContact" class="govuk-link">Contact details</a></li>
+                    <li asp-show="@Model.HasIncompleteProviderContactSection"><a asp-fragment="@Anchors.ProviderContact" class="govuk-link">Contact details</a></li>
                 </ul>
             </div>
         </div>
@@ -270,7 +270,7 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
     </div>
 </div>
 <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
+    <div class="govuk-grid-column-full">
         <div class="@GetSectionClass(Model.EmployerDescriptionSectionState)">
             <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.EmployerDescription">
                 <img asp-show="@Model.EmployerDescriptionRequiresEdit" src="/img/red-cross.png"/>
@@ -306,21 +306,6 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
             @EditLink(RouteNames.AboutEmployer_Get, Model.EmployerWebsiteUrlSectionState, "link-website")
         </div>
     </div>
-    <div class="govuk-grid-column-one-third">
-        <div class="@GetSectionClass(Model.EmployerContactSectionState)">
-            <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.EmployerContact">
-                <img asp-show="@Model.EmployerContactRequiresEdit" src="/img/red-cross.png"/>
-                Contact details (optional)
-            </h3>
-            <span esfa-validation-message-for="EmployerContactName" class="govuk-error-message"></span>
-            <p asp-show="@Model.HasEmployerContactName" class="govuk-body">@Model.EmployerContactName</p>
-            <span esfa-validation-message-for="EmployerContactEmail" class="govuk-error-message"></span>
-            <p asp-show="@Model.HasEmployerContactEmail" class="govuk-body">@Model.EmployerContactEmail</p>
-            <span esfa-validation-message-for="EmployerContactTelephone" class="govuk-error-message"></span>
-            <p asp-show="@Model.HasEmployerContactTelephone" class="govuk-body">@Model.EmployerContactTelephone</p>
-            @EditLink(RouteNames.EmployerContactDetails_Get, Model.EmployerContactSectionState, "link-employer-contact-details")
-        </div>
-    </div>
 </div>
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-half">
@@ -354,23 +339,37 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
     </div>
 </div>
 <div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
+    <div class="govuk-grid-column-two-thirds">
         <div class="@GetSectionClass(Model.ProviderSectionState)">
             <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.Provider">
-                <img asp-show="@Model.ProviderRequiresEdit" src="/img/red-cross.png"/>
+                <img asp-show="@Model.ProviderRequiresEdit" src="/img/red-cross.png" />
                 Training provider
             </h3>
             <span esfa-validation-message-for="ProviderName" class="govuk-error-message"></span>
             <p asp-show="@Model.HasProviderName" class="govuk-body">@Model.ProviderName</p>
-            @EditLink(RouteNames.TrainingProvider_Select_Get, Model.ProviderSectionState, "link-training-provider")
         </div>
         <div class="@GetSectionClass(Model.TrainingSectionState)">
             <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.Training">
-                <img asp-show="@Model.TrainingRequiresEdit" src="/img/red-cross.png"/>
+                <img asp-show="@Model.TrainingRequiresEdit" src="/img/red-cross.png" />
                 Apprenticeship @Model.TrainingType
             </h3>
             <p asp-show="@Model.HasTrainingTitle" class="govuk-body">@Model.TrainingTitle</p>
             @EditLink(RouteNames.Training_Get, Model.TrainingSectionState, "link-standard", new { wizard = false })
+        </div>
+    </div>
+    <div class="govuk-grid-column-one-third">
+        <div class="@GetSectionClass(Model.ProviderContactSectionState)">
+            <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.ProviderContact">
+                <img asp-show="@Model.ProviderContactRequiresEdit" src="/img/red-cross.png" />
+                Contact details (optional)
+            </h3>
+            <span esfa-validation-message-for="ProviderContactName" class="govuk-error-message"></span>
+            <p asp-show="@Model.HasProviderContactName" class="govuk-body">@Model.ProviderContactName</p>
+            <span esfa-validation-message-for="ProviderContactEmail" class="govuk-error-message"></span>
+            <p asp-show="@Model.HasProviderContactEmail" class="govuk-body">@Model.ProviderContactEmail</p>
+            <span esfa-validation-message-for="ProviderContactTelephone" class="govuk-error-message"></span>
+            <p asp-show="@Model.HasProviderContactTelephone" class="govuk-body">@Model.ProviderContactTelephone</p>
+            @EditLink(RouteNames.ProviderContactDetails_Get, Model.ProviderContactSectionState, "link-provider-contact-details")
         </div>
     </div>
 </div>

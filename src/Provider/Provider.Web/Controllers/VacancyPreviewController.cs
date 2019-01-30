@@ -1,22 +1,20 @@
-﻿using Esfa.Recruit.Employer.Web.Configuration.Routing;
-using Esfa.Recruit.Employer.Web.Orchestrators;
-using Esfa.Recruit.Employer.Web.ViewModels.Preview;
-using Microsoft.AspNetCore.Mvc;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Extensions;
-using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
-using Esfa.Recruit.Employer.Web.RouteModel;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Employer.Web.Configuration;
+using Esfa.Recruit.Provider.Web.Configuration;
+using Esfa.Recruit.Provider.Web.Configuration.Routing;
+using Esfa.Recruit.Provider.Web.Extensions;
+using Esfa.Recruit.Provider.Web.Orchestrators;
+using Esfa.Recruit.Provider.Web.RouteModel;
+using Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Mappers;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Esfa.Recruit.Employer.Web.Controllers
+namespace Esfa.Recruit.Provider.Web.Controllers
 {
     [Route(RoutePaths.AccountVacancyRoutePath)]
     public class VacancyPreviewController : Controller
@@ -48,16 +46,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 response.AddErrorsToModelState(ModelState);
             }
 
-            if (ModelState.IsValid)
-            {
-                if (response.Data.IsSubmitted)
-                    return RedirectToRoute(RouteNames.Submitted_Index_Get);
-
-                if (response.Data.HasLegalEntityAgreement == false)
-                    return RedirectToRoute(RouteNames.LegalEntityAgreement_HardStop_Get);
-
-                throw new Exception("Unknown submit state");
-            }
+            //if (ModelState.IsValid)
+            //    return RedirectToRoute(RouteNames.Submitted_Index_Get);
 
             var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(m);
 
@@ -84,12 +74,12 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             viewModel.EmployerNameSectionState = GetSectionState(viewModel, null, true, vm => vm.EmployerName);
             viewModel.EmployerDescriptionSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.EmployerDescription }, true, vm => vm.EmployerDescription);
             viewModel.EmployerWebsiteUrlSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.EmployerWebsiteUrl }, true, vm => vm.EmployerWebsiteUrl);
-            viewModel.EmployerContactSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.EmployerContact }, false, vm => vm.EmployerContactName, vm => vm.EmployerContactEmail, vm => vm.EmployerContactTelephone);
             viewModel.EmployerAddressSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.EmployerAddress }, true, vm => vm.EmployerAddressElements);
             viewModel.ApplicationInstructionsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.ApplicationInstructions }, true, vm => vm.ApplicationInstructions);
             viewModel.ApplicationMethodSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.ApplicationMethod }, true, vm => vm.ApplicationMethod);
             viewModel.ApplicationUrlSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.ApplicationUrl }, true, vm => vm.ApplicationUrl);
             viewModel.ProviderSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Provider }, true, vm => vm.ProviderName);
+            viewModel.ProviderContactSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.EmployerContact }, false, vm => vm.ProviderContactName, vm => vm.ProviderContactEmail, vm => vm.ProviderContactTelephone);
             viewModel.TrainingSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Training }, true, vm => vm.TrainingType, vm => vm.TrainingTitle);
             viewModel.DisabilityConfidentSectionState = GetSectionState(viewModel, new[]{ FieldIdentifiers.DisabilityConfident}, true, vm => vm.IsDisabilityConfident);
         }

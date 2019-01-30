@@ -1,5 +1,7 @@
-﻿using Esfa.Recruit.Employer.Web.Configuration;
-using Esfa.Recruit.Employer.Web.ViewModels;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using Esfa.Recruit.Provider.Web.Configuration;
+using Esfa.Recruit.Provider.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -7,10 +9,8 @@ using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Humanizer;
 using Microsoft.Extensions.Options;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace Esfa.Recruit.Employer.Web.Mappings
+namespace Esfa.Recruit.Provider.Web.Mappings
 {
     public class DisplayVacancyViewModelMapper
     {
@@ -45,10 +45,7 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             vm.CanDelete = vacancy.CanDelete;
             vm.CanSubmit = vacancy.CanSubmit;
             vm.ClosingDate = vacancy.ClosingDate?.AsGdsDate();
-            vm.EmployerContactName = vacancy.EmployerContact?.Name;
-            vm.EmployerContactEmail = vacancy.EmployerContact?.Email;
-            vm.EmployerContactTelephone = vacancy.EmployerContact?.Phone;
-            vm.EmployerDescription = await GetEmployerDescriptionAsync(vacancy);
+            vm.EmployerDescription = vacancy.EmployerDescription;
             vm.EmployerName = vacancy.EmployerName;
             vm.EmployerWebsiteUrl = vacancy.EmployerWebsiteUrl;
             vm.EmployerAddressElements = Enumerable.Empty<string>();
@@ -59,6 +56,9 @@ namespace Esfa.Recruit.Employer.Web.Mappings
                 : null;
             vm.OutcomeDescription = vacancy.OutcomeDescription;
             vm.PossibleStartDate = vacancy.StartDate?.AsGdsDate();
+            vm.ProviderContactName = vacancy.ProviderContact?.Name;
+            vm.ProviderContactEmail = vacancy.ProviderContact?.Email;
+            vm.ProviderContactTelephone = vacancy.ProviderContact?.Phone;
             vm.ProviderName = vacancy.TrainingProvider?.Name;
             vm.Qualifications = vacancy.Qualifications.SortQualifications(allQualifications).AsText();
             vm.ShortDescription = vacancy.ShortDescription;
@@ -105,18 +105,6 @@ namespace Esfa.Recruit.Employer.Web.Mappings
                 vm.WageText = vacancy.StartDate.HasValue ? vacancy.Wage.ToText(vacancy.StartDate) : null;
                 vm.WorkingWeekDescription = vacancy.Wage.WorkingWeekDescription;
             }
-        }
-
-        private async Task<string> GetEmployerDescriptionAsync(Vacancy vacancy)
-        {
-            if (vacancy.CanEdit)
-            {
-                var employerProfile = await _client.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.LegalEntityId);
-                
-                return employerProfile?.AboutOrganisation ?? string.Empty;
-            }
-
-            return vacancy.EmployerDescription;
         }
     }
 }

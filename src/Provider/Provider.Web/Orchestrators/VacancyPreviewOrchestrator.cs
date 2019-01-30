@@ -1,13 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Configuration.Routing;
-using Esfa.Recruit.Employer.Web.Mappings;
-using Esfa.Recruit.Employer.Web.Models;
-using Esfa.Recruit.Employer.Web.RouteModel;
-using Esfa.Recruit.Employer.Web.Services;
-using Esfa.Recruit.Employer.Web.ViewModels.Preview;
-using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
+using Esfa.Recruit.Provider.Web.Configuration.Routing;
+using Esfa.Recruit.Provider.Web.Mappings;
+using Esfa.Recruit.Provider.Web.RouteModel;
+using Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
@@ -17,30 +14,27 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.Extensions.Logging;
 using ErrMsg = Esfa.Recruit.Shared.Web.ViewModels.ErrorMessages;
 
-namespace Esfa.Recruit.Employer.Web.Orchestrators
+namespace Esfa.Recruit.Provider.Web.Orchestrators
 {
     public class VacancyPreviewOrchestrator : EntityValidatingOrchestrator<Vacancy, VacancyPreviewViewModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.All;
-        private readonly IEmployerVacancyClient _client;
+        private readonly IProviderVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly DisplayVacancyViewModelMapper _vacancyDisplayMapper;
         private readonly IReviewSummaryService _reviewSummaryService;
-        private readonly ILegalEntityAgreementService _legalEntityAgreementService;
 
         public VacancyPreviewOrchestrator(
-            IEmployerVacancyClient client,
+            IProviderVacancyClient client,
             IRecruitVacancyClient vacancyClient,
             ILogger<VacancyPreviewOrchestrator> logger,
             DisplayVacancyViewModelMapper vacancyDisplayMapper, 
-            IReviewSummaryService reviewSummaryService, 
-            ILegalEntityAgreementService legalEntityAgreementService) : base(logger)
+            IReviewSummaryService reviewSummaryService) : base(logger)
         {
             _client = client;
             _vacancyClient = vacancyClient;
             _vacancyDisplayMapper = vacancyDisplayMapper;
             _reviewSummaryService = reviewSummaryService;
-            _legalEntityAgreementService = legalEntityAgreementService;
         }
 
         public async Task<VacancyPreviewViewModel> GetVacancyPreviewViewModelAsync(VacancyRouteModel vrm)
@@ -57,21 +51,17 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             if (vacancy.Status == VacancyStatus.Referred)
             {
-                vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value, 
-                    ReviewFieldMappingLookups.GetPreviewReviewFieldIndicators());
+                //vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value, 
+                //    ReviewFieldMappingLookups.GetPreviewReviewFieldIndicators());
             }
             
             return vm;
         }
         
-        public async Task<OrchestratorResponse<SubmitVacancyResponse>> SubmitVacancyAsync(SubmitEditModel m, VacancyUser user)
+        public async Task<OrchestratorResponse> SubmitVacancyAsync(SubmitEditModel m, VacancyUser user)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyAsync(_vacancyClient, m, RouteNames.Preview_Submit_Post);
-            var employerProfile = await _client.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.LegalEntityId);
+            var vacancy = await Utility.GetAuthorisedVacancyAsync(_client, _vacancyClient, m, RouteNames.Preview_Submit_Post);
             
-            // Update the vacancy with the current employer description text from Profile.
-            vacancy.EmployerDescription = employerProfile?.AboutOrganisation ?? string.Empty;
-
             if (!vacancy.CanSubmit)
                 throw new InvalidStateException(string.Format(ErrMsg.VacancyNotAvailableForEditing, vacancy.Title));
             
@@ -87,22 +77,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 );
         }
 
-        private async Task<SubmitVacancyResponse> SubmitActionAsync(Vacancy vacancy, VacancyUser user)
+        private Task SubmitActionAsync(Vacancy vacancy, VacancyUser user)
         {
-            var response = new SubmitVacancyResponse
-            {
-                HasLegalEntityAgreement = await _legalEntityAgreementService.HasLegalEntityAgreementAsync(vacancy.EmployerAccountId, vacancy.LegalEntityId),
-                IsSubmitted = false
-            };
-
-            if (response.HasLegalEntityAgreement == false)
-                return response;
-
-            await _client.SubmitVacancyAsync(vacancy.Id, vacancy.EmployerDescription, user);
-
-            response.IsSubmitted = true;
-
-            return response;
+            return Task.CompletedTask;
         }
 
         private void SyncErrorsAndModel(IList<EntityValidationError> errors)
@@ -138,9 +115,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             mappings.Add(e => e.EmployerName, vm => vm.EmployerName);
             mappings.Add(e => e.EmployerDescription, vm => vm.EmployerDescription);
             mappings.Add(e => e.EmployerWebsiteUrl, vm => vm.EmployerWebsiteUrl);
-            mappings.Add(e => e.EmployerContact.Name, vm => vm.EmployerContactName);
-            mappings.Add(e => e.EmployerContact.Email, vm => vm.EmployerContactEmail);
-            mappings.Add(e => e.EmployerContact.Phone, vm => vm.EmployerContactTelephone);
+            mappings.Add(e => e.ProviderContact.Name, vm => vm.ProviderContactName);
+            mappings.Add(e => e.ProviderContact.Email, vm => vm.ProviderContactEmail);
+            mappings.Add(e => e.ProviderContact.Phone, vm => vm.ProviderContactTelephone);
             mappings.Add(e => e.EmployerLocation, vm => vm.EmployerAddressElements);
             mappings.Add(e => e.EmployerLocation.AddressLine1, vm => vm.EmployerAddressElements);
             mappings.Add(e => e.EmployerLocation.AddressLine2, vm => vm.EmployerAddressElements);

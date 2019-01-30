@@ -1,8 +1,8 @@
-﻿using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
-namespace Esfa.Recruit.Employer.Web.ViewModels
+namespace Esfa.Recruit.Provider.Web.ViewModels
 {
     public abstract class DisplayVacancyViewModel
     {
@@ -12,9 +12,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public bool CanDelete { get; internal set; }
         public bool CanSubmit { get; internal set; }
         public string ClosingDate { get; internal set; }
-        public string EmployerContactName { get; internal set; }
-        public string EmployerContactEmail { get; internal set; }
-        public string EmployerContactTelephone { get; internal set; }
         public string EmployerDescription { get; internal set; }
         public string EmployerName { get; internal set; }
         public string EmployerWebsiteUrl { get; internal set; }
@@ -29,6 +26,9 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public string NumberOfPositionsCaption { get; internal set; }
         public string OutcomeDescription { get; internal set; }
         public string PossibleStartDate { get; internal set; }
+        public string ProviderContactName { get; internal set; }
+        public string ProviderContactEmail { get; internal set; }
+        public string ProviderContactTelephone { get; internal set; }
         public string ProviderName { get; internal set; }
         public IEnumerable<string> Qualifications { get; internal set; }
         public string ShortDescription { get; internal set; }
@@ -88,11 +88,11 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
 
         public bool HasEmployerWebsiteUrl => !string.IsNullOrWhiteSpace(EmployerWebsiteUrl);
 
-        public bool HasEmployerContactName => !string.IsNullOrWhiteSpace(EmployerContactName);
+        public bool HasProviderContactName => !string.IsNullOrWhiteSpace(ProviderContactName);
 
-        public bool HasEmployerContactEmail => !string.IsNullOrWhiteSpace(EmployerContactEmail);
+        public bool HasProviderContactEmail => !string.IsNullOrWhiteSpace(ProviderContactEmail);
 
-        public bool HasEmployerContactTelephone => !string.IsNullOrWhiteSpace(EmployerContactTelephone);
+        public bool HasProviderContactTelephone => !string.IsNullOrWhiteSpace(ProviderContactTelephone);
 
         public bool HasEmployerAddressElements => EmployerAddressElements != null && EmployerAddressElements.Any();
         public bool HasNotSpecifiedApplicationMethod => !ApplicationMethod.HasValue;

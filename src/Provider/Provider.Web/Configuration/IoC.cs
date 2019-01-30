@@ -1,4 +1,5 @@
 ﻿using Esfa.Recruit.Provider.Web.Filters;
+using Esfa.Recruit.Provider.Web.Mappings;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Mappers;
@@ -59,10 +60,12 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<QualificationsOrchestrator>();
             services.AddTransient<SkillsOrchestrator>();
             services.AddTransient<VacancyDescriptionOrchestrator>();
+            services.AddTransient<VacancyPreviewOrchestrator>();
         }
 
         private static void RegisterMapperDeps(IServiceCollection services)
         {
+            services.AddTransient<DisplayVacancyViewModelMapper>();
             services.AddTransient<ReviewFieldIndicatorMapper>();
             services.AddScoped<IRuleMessageTemplateRunner, RuleMessageTemplateRunner>();
         }

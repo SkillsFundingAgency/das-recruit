@@ -2,9 +2,8 @@
 using System.Linq;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.ViewModels;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
-namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
+namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
 {
     public class VacancyPreviewViewModel : DisplayVacancyViewModel
     {
@@ -13,7 +12,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
         public VacancyPreviewSectionState ApplicationUrlSectionState { get; internal set; }
         public VacancyPreviewSectionState ClosingDateSectionState { get; internal set; }
         public VacancyPreviewSectionState DisabilityConfidentSectionState { get; internal set; }
-        public VacancyPreviewSectionState EmployerContactSectionState { get; internal set; }
         public VacancyPreviewSectionState EmployerDescriptionSectionState { get; internal set; }
         public VacancyPreviewSectionState EmployerNameSectionState { get; internal set; }
         public VacancyPreviewSectionState EmployerWebsiteUrlSectionState { get; internal set; }
@@ -21,6 +19,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
         public VacancyPreviewSectionState EmployerAddressSectionState { get; internal set; }
         public VacancyPreviewSectionState NumberOfPositionsSectionState { get; internal set;}
         public VacancyPreviewSectionState PossibleStartDateSectionState { get; internal set; }
+        public VacancyPreviewSectionState ProviderContactSectionState { get; internal set; }
         public VacancyPreviewSectionState ProviderSectionState { get; internal set; }
         public VacancyPreviewSectionState QualificationsSectionState { get; internal set; }
         public VacancyPreviewSectionState ShortDescriptionSectionState { get; internal set; }
@@ -49,8 +48,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
 
         public bool HasIncompleteThingsToConsiderSection => ThingsToConsiderSectionState == VacancyPreviewSectionState.Incomplete || ThingsToConsiderSectionState == VacancyPreviewSectionState.InvalidIncomplete;
         public bool HasIncompleteEmployerWebsiteUrlSection => EmployerWebsiteUrlSectionState == VacancyPreviewSectionState.Incomplete || EmployerWebsiteUrlSectionState == VacancyPreviewSectionState.InvalidIncomplete;
-        public bool HasIncompleteContactSection => EmployerContactSectionState == VacancyPreviewSectionState.Incomplete || EmployerContactSectionState == VacancyPreviewSectionState.InvalidIncomplete;
-
+        public bool HasIncompleteProviderContactSection => ProviderContactSectionState == VacancyPreviewSectionState.Incomplete || ProviderContactSectionState == VacancyPreviewSectionState.InvalidIncomplete;
 
         public bool HasIncompleteMandatorySections => HasIncompleteVacancyDescription
                                                         || HasIncompleteSkillsSection
@@ -61,7 +59,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
 
         public bool HasIncompleteOptionalSections => HasIncompleteThingsToConsiderSection
                                                     || HasIncompleteEmployerWebsiteUrlSection
-                                                    || HasIncompleteContactSection;
+                                                    || HasIncompleteProviderContactSection;
 
         public bool ShowIncompleteSections => (HasIncompleteMandatorySections || HasIncompleteOptionalSections) && !Review.HasBeenReviewed;
 
@@ -73,7 +71,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
         public bool ApplicationMethodRequiresEdit => IsEditRequired(FieldIdentifiers.ApplicationMethod);
         public bool ApplicationUrlRequiresEdit => IsEditRequired(FieldIdentifiers.ApplicationUrl);
         public bool ClosingDateRequiresEdit => IsEditRequired(FieldIdentifiers.ClosingDate);
-        public bool EmployerContactRequiresEdit => IsEditRequired(FieldIdentifiers.EmployerContact);
         public bool DisabilityConfidentRequiresEdit => IsEditRequired(FieldIdentifiers.DisabilityConfident);
         public bool EmployerAddressRequiresEdit => IsEditRequired(FieldIdentifiers.EmployerAddress);
         public bool EmployerDescriptionRequiresEdit => IsEditRequired(FieldIdentifiers.EmployerDescription);
@@ -82,6 +79,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
         public bool NumberOfPositionsRequiresEdit => IsEditRequired(FieldIdentifiers.NumberOfPositions);
         public bool OutcomeDescriptionRequiresEdit => IsEditRequired(FieldIdentifiers.OutcomeDescription);
         public bool PossibleStartDateRequiresEdit => IsEditRequired(FieldIdentifiers.PossibleStartDate);
+        public bool ProviderContactRequiresEdit => IsEditRequired(FieldIdentifiers.ProviderContact);
         public bool ProviderRequiresEdit => IsEditRequired(FieldIdentifiers.Provider);
         public bool QualificationsRequiresEdit => IsEditRequired(FieldIdentifiers.Qualifications);
         public bool ShortDescriptionRequiresEdit => IsEditRequired(FieldIdentifiers.ShortDescription);
@@ -125,14 +123,14 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
             nameof(EmployerDescription),
             nameof(EmployerName),
             nameof(EmployerWebsiteUrl),
-            nameof(EmployerContactName),
-            nameof(EmployerContactEmail),
-            nameof(EmployerContactTelephone),
             nameof(EmployerAddressElements),
             nameof(ApplicationMethod),
             nameof(ApplicationInstructions),
             nameof(ApplicationUrl),
             nameof(ProviderName),
+            nameof(ProviderContactName),
+            nameof(ProviderContactEmail),
+            nameof(ProviderContactTelephone),
             nameof(TrainingType),
             nameof(TrainingTitle)
         };
