@@ -95,7 +95,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 return await ValidateAndExecute(
                     newVacancy, 
                     v => _vacancyClient.Validate(v, ValidationRules),
-                    async v => await _client.CreateVacancyAsync(SourceOrigin.EmployerWeb, m.Title, numberOfPositions.Value, m.EmployerAccountId, user));
+                    async v => await _client.CreateVacancyAsync(m.Title, numberOfPositions.Value, m.EmployerAccountId, user));
             }
 
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, 
