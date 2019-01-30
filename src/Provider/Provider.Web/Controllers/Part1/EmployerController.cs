@@ -19,7 +19,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
             _orchestrator = orchestrator;
         }
 
-        [HttpGet("create-vacancy", Name = RouteNames.CreateVacancy_Get)]
+        [HttpGet("select-employer", Name = RouteNames.Employer_Get)]
         public async Task<IActionResult> Employer(VacancyRouteModel vacancyRouteModel, [FromQuery] string wizard = "true")
         {
             var vm = await _orchestrator.GetEmployersViewModelAsync(vacancyRouteModel);
@@ -27,27 +27,25 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
             return View(vm);
         }
 
-        [HttpPost("create-vacancy", Name = RouteNames.CreateVacancy_Post)]
+        [HttpPost("select-employer", Name = RouteNames.Employer_Post)]
         public async Task<IActionResult> Employer(VacancyRouteModel vacancyRouteModel, 
-            EmployersEditModel viewModel, [FromQuery] bool wizard)
+            EmployersEditModel model, [FromQuery] bool wizard)
         {            
-            var response = await _orchestrator.PostEmployerEditModelAsync(vacancyRouteModel, viewModel, User.ToVacancyUser());
-
-            if (!response.Success)
+            if (string.IsNullOrWhiteSpace(model.SelectedEmployerId))
             {
-                response.AddErrorsToModelState(ModelState);
+                ModelState.AddModelError(nameof(model.SelectedEmployerId), "You must select an employer");
             }
-
+            
             if(!ModelState.IsValid)
             {
-                var vm = await _orchestrator.GetEmployersViewModelAsync(viewModel);
+                var vm = await _orchestrator.GetEmployersViewModelAsync(model);
                 vm.PageInfo.SetWizard(wizard);
                 return View(vm);
             }
             
             return
                 wizard 
-                    ? RedirectToRoute(RouteNames.Title_Get, new {vacancyId = response.Data, employerAccountId = viewModel.SelectedEmployerId}) 
+                    ? RedirectToRoute(RouteNames.CreateVacancy_Get, new {employerAccountId = model.SelectedEmployerId}) 
                     : RedirectToRoute(RouteNames.Vacancy_Preview_Get);
         }
     }

@@ -8,14 +8,16 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Title
     public class TitleEditModel
     {
         [FromRoute]
-        public long Ukprn { get; set; }
-
-        [FromRoute]
         public Guid? VacancyId { get; set; }
+
+        public long Ukprn { get; set; }
 
         public string Title { get; set; }
 
         [TypeOfInteger(ErrorMessage = ErrMsg.TypeOfInteger.NumberOfPositions)]
         public string NumberOfPositions { get; set; }
+
+        [FromQuery]
+        public string EmployerAccountId { get; set; }
     }
 }
