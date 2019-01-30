@@ -6,6 +6,7 @@ using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.Employer;
 using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Provider.Web.ViewModels;
 
 namespace Esfa.Recruit.Provider.Web.Controllers.Part1
 {
@@ -33,7 +34,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
         {            
             if (string.IsNullOrWhiteSpace(model.SelectedEmployerId))
             {
-                ModelState.AddModelError(nameof(model.SelectedEmployerId), "You must select an employer");
+                ModelState.AddModelError(nameof(model.SelectedEmployerId), ValidationMessages.EmployerSelectionMessages.EmployerMustBeSelectedMessage);
             }
             
             if(!ModelState.IsValid)
