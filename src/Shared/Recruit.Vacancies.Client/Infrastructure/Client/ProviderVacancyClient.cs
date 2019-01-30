@@ -10,7 +10,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
     public partial class VacancyClient : IProviderVacancyClient
     {              
-        public async Task<Guid> CreateVacancyAsync(SourceOrigin origin, string employerAccountId, string employerName,
+        public async Task<Guid> CreateVacancyAsync(string employerAccountId, string employerName,
             long ukprn, string title, int numberOfPositions, VacancyUser user)
         {
             var vacancyId = GenerateVacancyId();
@@ -23,7 +23,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 EmployerAccountId = employerAccountId,
                 EmployerName = employerName,
                 Ukprn = ukprn,           
-                Origin = origin,
+                Origin = SourceOrigin.ProviderWeb,
                 Title = title,
                 NumberOfPositions = numberOfPositions
             };

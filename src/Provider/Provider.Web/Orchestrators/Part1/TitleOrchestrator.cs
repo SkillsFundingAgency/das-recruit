@@ -123,7 +123,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             return await ValidateAndExecute(
                 newVacancy,
                 v => _recruitVacancyClient.Validate(v, ValidationRules),
-                async v => await _providerVacancyClient.CreateVacancyAsync(SourceOrigin.ProviderWeb,
+                async v => await _providerVacancyClient.CreateVacancyAsync(
                     model.EmployerAccountId, employerName, ukprn, model.Title, numberOfPositions, user));
         }
 
