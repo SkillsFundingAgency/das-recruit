@@ -20,6 +20,7 @@
         public const string OutcomeDescription = "OutcomeDescription";
         public const string PossibleStartDate = "PossibleStartDate";
         public const string Provider = "Provider";
+        public const string ProviderContact = "ProviderContact";
         public const string Qualifications = "Qualifications";
         public const string ShortDescription = "ShortDescription";
         public const string Skills = "Skills";

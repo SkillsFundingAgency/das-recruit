@@ -34,6 +34,7 @@
         public const string EmployerContact = "EmployerContact";
         public const string EmployerAddress = "EmployerAddress";
         public const string Provider = "Provider";
+        public const string ProviderContact = "ProviderContact";
         public const string Training = "Training";
         public const string ApplicationMethod = "ApplicationMethod";
         public const string ApplicationUrl = "ApplicationUrl";

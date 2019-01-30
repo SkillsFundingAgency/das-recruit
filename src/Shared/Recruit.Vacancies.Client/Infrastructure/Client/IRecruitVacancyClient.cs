@@ -8,16 +8,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
     public interface IRecruitVacancyClient
     {
-         Task UserSignedInAsync(VacancyUser user, UserType userType);
-         Task<Vacancy> GetVacancyAsync(Guid vacancyId);
-         Task<VacancyReview> GetCurrentReferredVacancyReviewAsync(long vacancyReference);
+        Task UserSignedInAsync(VacancyUser user, UserType userType);
+        Task<Vacancy> GetVacancyAsync(Guid vacancyId);
+        Task<VacancyReview> GetCurrentReferredVacancyReviewAsync(long vacancyReference);
 
-         Task<ApplicationReview> GetApplicationReviewAsync(Guid applicationReviewId);
-         Task<List<string>> GetCandidateSkillsAsync();
-         Task<IList<string>> GetCandidateQualificationsAsync();
-        
-         EntityValidationResult Validate(Vacancy vacancy, VacancyRuleSet rules);
+        Task<List<string>> GetCandidateSkillsAsync();
+        Task<IList<string>> GetCandidateQualificationsAsync();
+        Task<ApplicationReview> GetApplicationReviewAsync(Guid applicationReviewId);
 
-         Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user);
+        EntityValidationResult Validate(Vacancy vacancy, VacancyRuleSet rules);
+
+        Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user);
     }
 }

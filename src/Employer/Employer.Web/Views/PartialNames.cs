@@ -5,7 +5,7 @@ namespace Esfa.Recruit.Employer.Web.Views
     public static class PartialNames
     {
         public const string ApplicationInsights = RecruitPartialNames.ApplicationInsights;
-        public const string DisabilityConfident = "_DisabilityConfidentPartial";
+        public const string DisabilityConfident = RecruitPartialNames.DisabilityConfident;
         public const string GetHelpContactDetails = RecruitPartialNames.GetHelpContactDetails;
         public const string GoogleTagManagerHead = RecruitPartialNames.GoogleTagManagerHead;
         public const string GoogleTagManagerBody = RecruitPartialNames.GoogleTagManagerBody;

@@ -5,5 +5,6 @@
         public const string ErrorView = "Error";
         public const string AccessDenied = "AccessDenied";
         public const string PageNotFound = "PageNotFound";
+        public const string VacancyPreview = "VacancyPreview";
     }
 }
