@@ -111,11 +111,11 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         {
             int.TryParse(model.NumberOfPositions, out var numberOfPositions);
 
+            var employerName = await GetEmployerNameAsync(ukprn, model.EmployerAccountId);
+
             var newVacancy = new Vacancy
             {
                 TrainingProvider = new TrainingProvider { Ukprn = ukprn },
-                EmployerAccountId = model.EmployerAccountId,
-                EmployerName = await GetEmployerNameAsync(ukprn, model.EmployerAccountId),
                 Title = model.Title,
                 NumberOfPositions = numberOfPositions
             };
@@ -124,7 +124,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 newVacancy,
                 v => _recruitVacancyClient.Validate(v, ValidationRules),
                 async v => await _providerVacancyClient.CreateVacancyAsync(SourceOrigin.ProviderWeb,
-                    model.EmployerAccountId, ukprn, model.Title, numberOfPositions, user));
+                    model.EmployerAccountId, employerName, ukprn, model.Title, numberOfPositions, user));
         }
 
         protected override EntityToViewModelPropertyMappings<Vacancy, TitleEditModel> DefineMappings()
