@@ -10,9 +10,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Title
 {
     public class TitleViewModel
     {
-        [FromRoute]
         public Guid? VacancyId { get; set; }
-        [FromQuery]
         public string EmployerAccountId { get; set; }
         public long Ukprn { get; set; }
         public string Title { get; set; }

@@ -59,7 +59,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 };                
             }
 
-            var vrm = new VacancyRouteModel { VacancyId = model.VacancyId, Ukprn = model.Ukprn };
+            var vrm = new VacancyRouteModel { VacancyId = model.VacancyId, Ukprn = ukprn };
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_providerVacancyClient, _recruitVacancyClient, vrm, RouteNames.Title_Get);
 
             return new TitleViewModel

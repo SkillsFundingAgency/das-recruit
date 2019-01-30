@@ -19,7 +19,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
             _orchestrator = orchestrator;
         }
 
-        [HttpGet("select-employer", Name = RouteNames.Employer_Get)]
+        [HttpGet("employer", Name = RouteNames.Employer_Get)]
         public async Task<IActionResult> Employer(VacancyRouteModel vacancyRouteModel, [FromQuery] string wizard = "true")
         {
             var vm = await _orchestrator.GetEmployersViewModelAsync(vacancyRouteModel);
@@ -27,7 +27,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
             return View(vm);
         }
 
-        [HttpPost("select-employer", Name = RouteNames.Employer_Post)]
+        [HttpPost("employer", Name = RouteNames.Employer_Post)]
         public async Task<IActionResult> Employer(VacancyRouteModel vacancyRouteModel, 
             EmployersEditModel model, [FromQuery] bool wizard)
         {            

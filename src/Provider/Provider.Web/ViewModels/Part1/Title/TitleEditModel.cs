@@ -10,8 +10,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Title
         [FromRoute]
         public Guid? VacancyId { get; set; }
 
-        public long Ukprn { get; set; }
-
         public string Title { get; set; }
 
         [TypeOfInteger(ErrorMessage = ErrMsg.TypeOfInteger.NumberOfPositions)]
