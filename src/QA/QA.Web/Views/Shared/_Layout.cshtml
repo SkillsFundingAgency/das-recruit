@@ -9,106 +9,111 @@
         return defaultTitle;
     }
 }
+
 <!DOCTYPE html>
-<!--[if lt IE 9]><html class="lte-ie8" lang="en"><![endif]-->
-<!--[if gt IE 8]><!-->
-<html lang="en">
-<!--<![endif]-->
+<html lang="en" class="govuk-template app-html-class">
+
 <head>
     <meta charset="utf-8" />
     <title>@GetTitle()</title>
-
-    <!-- TEMPLATE STYLES - START -->
-    <!--[if gt IE 8]><!-->
-    <link rel="stylesheet" media="screen" href="/lib/esfa-govuk/assets/stylesheets/govuk-template.min.css?0.23.0" /><!--<![endif]-->
-    <!--[if IE 6]><link rel="stylesheet" media="screen" href="/lib/esfa-govuk/assets/stylesheets/govuk-template-ie6.min.css?0.23.0" /><![endif]-->
-    <!--[if IE 7]><link rel="stylesheet" media="screen" href="/lib/esfa-govuk/assets/stylesheets/govuk-template-ie7.min.css?0.23.0" /><![endif]-->
-    <!--[if IE 8]><link rel="stylesheet" media="screen" href="/lib/esfa-govuk/assets/stylesheets/govuk-template-ie8.min.css?0.23.0" /><![endif]-->
-    <link rel="stylesheet" media="print" href="/lib/esfa-govuk/assets/stylesheets/govuk-template-print.min.css?0.23.0" />
-    <!--[if IE 8]><link rel="stylesheet" media="all" href="/lib/esfa-govuk/assets/stylesheets/fonts-ie8.min.css?0.23.0" /><![endif]-->
-    <!--[if gte IE 9]><!-->
-    <link rel="stylesheet" media="all" href="/lib/esfa-govuk/assets/stylesheets/fonts.min.css?0.23.0" /><!--<![endif]-->
-    <!-- TEMPLATE STYLES - END -->
-    <!-- ELEMENTS AND TOOLKIT STYLES - START -->
-    <!--[if gt IE 8]><!-->
-    <link rel="stylesheet" media="screen" href="/lib/esfa-govuk/assets/stylesheets/esfa-govuk-base.min.css?3.1.2" /><!--<![endif]-->
-    <!--[if IE 6]><link rel="stylesheet" media="screen" href="/lib/esfa-govuk/assets/stylesheets/esfa-govuk-ie6.min.css?3.1.2" /><![endif]-->
-    <!--[if IE 7]><link rel="stylesheet" media="screen" href="/lib/esfa-govuk/assets/stylesheets/esfa-govuk-ie7.min.css?3.1.2" /><![endif]-->
-    <!--[if IE 8]><link rel="stylesheet" media="screen" href="/lib/esfa-govuk/assets/stylesheets/esfa-govuk-ie8.min.css?3.1.2" /><![endif]-->
-    <!-- ELEMENTS AND TOOLKIT STYLES - END -->
-    <!--[if lt IE 9]><script src="/lib/esfa-govuk/assets/javascripts/ie.js?0.23.0"></script><![endif]-->
-
-    <!-- TODO: LWA - Need a different favicon -->
-    <!-- <link rel="shortcut icon" href="/lib/esfa-govuk/assets/images/favicon.ico" type="image/x-icon" /> -->
-
-    <link rel="mask-icon" href="/lib/esfa-govuk/assets/images/gov.uk_logotype_crown.svg" color="#0b0c0c">
-    <link rel="apple-touch-icon" sizes="180x180" href="/lib/esfa-govuk/assets/images/apple-touch-icon-180x180.png">
-    <link rel="apple-touch-icon" sizes="167x167" href="/lib/esfa-govuk/assets/images/apple-touch-icon-167x167.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="/lib/esfa-govuk/assets/images/apple-touch-icon-152x152.png">
-    <link rel="apple-touch-icon" href="/lib/esfa-govuk/assets/images/apple-touch-icon.png">
-
-    <meta name="theme-color" content="#0b0c0c" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta property="og:image" content="/lib/esfa-govuk/assets/images/opengraph-image.png">
+    <meta name="theme-color" content="blue" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!-- TODO: LWA - Need a different favicon -->
+    <link rel="shortcut icon" sizes="16x16 32x32 48x48" href="/lib/govuk-frontend/dist/assets/images/favicon.ico" type="image/x-icon" />
+    <link rel="mask-icon" href="/lib/govuk-frontend/dist/assets/images/govuk-mask-icon.svg" color="blue">
+    <link rel="apple-touch-icon" sizes="180x180" href="/lib/govuk-frontend/dist/assets/images/govuk-apple-touch-icon-180x180.png">
+    <link rel="apple-touch-icon" sizes="167x167" href="/lib/govuk-frontend/dist/assets/images/govuk-apple-touch-icon-167x167.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/lib/govuk-frontend/dist/assets/images/govuk-apple-touch-icon-152x152.png">
+    <link rel="apple-touch-icon" href="/lib/govuk-frontend/dist/assets/images/govuk-apple-touch-icon.png">
 
+    <!--[if !IE 8]><!-->
+    <link href="/lib/govuk-frontend/dist/govuk-frontend-2.5.0.min.css" rel="stylesheet" />
+    <!--<![endif]-->
+
+    <!--[if IE 8]>
+        <link href="/lib/govuk-frontend/dist/govuk-frontend-ie8-2.5.0.min.css" rel="stylesheet" />
+    <![endif]-->
+
+    <!--[if lt IE 9]>
+        <script src="/lib/html5-shiv/html5shiv.js"></script>
+    <![endif]-->
+
+    <meta property="og:image" content="/lib/govuk-frontend/dist/assets/images/govuk-opengraph-image.png">
     <link asp-append-version="true" rel="stylesheet" media="screen" href="/css/application.css" />
     <partial name="@PartialNames.ApplicationInsights" />
-    <script src="/lib/jquery/dist/jquery-3.3.1.min.js"></script>
+    <script src="@Url.Content("/lib/jquery/dist/jquery-3.3.1.min.js")"></script>
 </head>
 
-<body>
+<body class="govuk-template__body">
     <script nws-csp-add-nonce="true">document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
-    <div id="skiplink-container">
-        <div>
-            <a href="#content" class="skiplink">Skip to main content</a>
-        </div>
+    <a href="#main-content" class="govuk-skip-link">Skip to main content</a>
+
+    <div class="app-cookie-banner">
+        <p class="app-cookie-banner__message">GOV.UK uses cookies to make the site simpler. <a href="https://www.gov.uk/help/cookies">Find out more about cookies</a></p>
     </div>
 
-    <div id="global-cookie-message">
-        <p>GOV.UK uses cookies to make the site simpler. <a href="https://www.gov.uk/help/cookies">Find out more about cookies</a></p>
-    </div>
+    <header class="govuk-header " role="banner" data-module="header">
+        <div class="govuk-header__container govuk-width-container">
 
-    <header role="banner" id="global-header" class="with-proposition">
-        <div class="header-wrapper">
-            <div class="header-global">
-                <div class="header-logo">
-                    <!-- Empty but required for positioning of subsequent elements -->
-                </div>
+            <div class="govuk-header__logo">
+                <a href="https://www.gov.uk/" title="Go to the GOV.UK homepage" class="govuk-header__link govuk-header__link--homepage">
+                    <span class="govuk-header__logotype">
+
+
+                    </span>
+                </a>
             </div>
-            <div class='header-proposition'>
-                <div class='content'>
-                    <a href='/' id='proposition-name'>Vacancy QA</a>
-                        @if (Context.User.Identity.IsAuthenticated)
-                        {
-                            <nav id='proposition-menu' aria-label="Top Level Navigation">
-                                <p id='proposition-link'>
-                                    <a href="~/signout" role="menuitem" class="menu-main">Sign out</a>
-                                </p>
-                            </nav>
-                        }
-                </div>
+
+            <div class="govuk-header__content">
+                <a href='/' class="govuk-header__link govuk-header__link--service-name">Vacancy QA</a>
+            
+                @if (Context.User.Identity.IsAuthenticated)
+                {
+                <nav>
+                    <ul id="navigation" class="govuk-header__navigation " aria-label="Top Level Navigation">
+                        <li class="govuk-header__navigation-item">
+                            <a href="~/signout" class="govuk-header__link">Sign out</a>
+                        </li>
+                    </ul>
+                </nav>
+                }
             </div>
         </div>
     </header>
-    <main id="content" role="main">
-        @RenderBody()
-    </main>
-    <footer class="group js-footer" id="footer" role="contentinfo">
-        <div class="footer-wrapper">
-            <div class="footer-meta">
-                <div class="footer-meta-inner">
-                    <ul class="platform-help-links">
-                        <li><a href="/service/privacy">Privacy and cookies</a></li>
-                        <li>Built by the <a href="https://www.gov.uk/government/organisations/education-and-skills-funding-agency" rel="noopener" target="_blank">Education and Skills Funding Agency</a></li>
+
+    <div class="govuk-width-container">
+        <main class="govuk-main-wrapper " id="main-content" role="main">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="govuk-footer " role="contentinfo">
+        <div class="govuk-width-container ">
+            <div class="govuk-footer__meta">
+                <div class="govuk-footer__meta-item govuk-footer__meta-item--grow">
+                    <h2 class="govuk-visually-hidden">Support links</h2>
+                    <ul class="govuk-footer__inline-list">
+                        <li class="govuk-footer__inline-list-item">
+                            <a class="govuk-footer__link" href="/service/privacy">Privacy and cookies</a>
+                        </li>
+                        <li class="govuk-footer__inline-list-item">
+                            Built by the <a href="http://gov.uk/sfa" target="_blank" class="govuk-footer__link">Education and Skills Funding Agency</a>
+                        </li>
                     </ul>
-                    <div class="open-government-licence">
-                        <p class="logo"><a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license">Open Government Licence</a></p>
-                        <p>All content is available under the <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license">Open Government Licence v3.0</a>, except where otherwise stated</p>
-                    </div>
+                    <svg role="presentation" focusable="false" class="govuk-footer__licence-logo" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 483.2 195.7" height="17" width="41">
+                        <path fill="currentColor" d="M421.5 142.8V.1l-50.7 32.3v161.1h112.4v-50.7zm-122.3-9.6A47.12 47.12 0 0 1 221 97.8c0-26 21.1-47.1 47.1-47.1 16.7 0 31.4 8.7 39.7 21.8l42.7-27.2A97.63 97.63 0 0 0 268.1 0c-36.5 0-68.3 20.1-85.1 49.7A98 98 0 0 0 97.8 0C43.9 0 0 43.9 0 97.8s43.9 97.8 97.8 97.8c36.5 0 68.3-20.1 85.1-49.7a97.76 97.76 0 0 0 149.6 25.4l19.4 22.2h3v-87.8h-80l24.3 27.5zM97.8 145c-26 0-47.1-21.1-47.1-47.1s21.1-47.1 47.1-47.1 47.2 21 47.2 47S123.8 145 97.8 145" />
+                    </svg>
+                    <span class="govuk-footer__licence-description">
+                        All content is available under the
+                        <a class="govuk-footer__link" href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license">Open Government Licence v3.0</a>, except where otherwise stated
+                    </span>
                 </div>
             </div>
         </div>
     </footer>
-    <script src="~/javascripts/application.js"></script>
+    <script src="/lib/govuk-frontend/dist/govuk-frontend-2.5.0.min.js"></script>
+    <script asp-append-version="true" src="~/javascripts/application.js"></script>
+
 </body>
 </html>
