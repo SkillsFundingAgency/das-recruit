@@ -11,6 +11,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacanc
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyAnalytics;
 using System;
+using Address = Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo.Address;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 {
@@ -96,17 +97,66 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 
         public Task<ProviderEditVacancyInfo> GetProviderVacancyDataAsync(long ukprn)
         {
+            //TODO get data from QueryStore Collection
+            return Task.FromResult(FakeProviderVacancyData);
+
             // var key = QueryViewType.EditVacancyInfo.GetIdValue(ukprn);
 
             // return _queryStore.GetAsync<ProviderEditVacancyInfo>(QueryViewType.EditVacancyInfo.TypeName, key);
-
-            return Task.FromResult(new ProviderEditVacancyInfo{
-                Employers = new List<EmployerInfo>{                    
-                    {new EmployerInfo{ Id = "1234", Name = "Rogers and Federrers"  }}
-                }
-            });
-
         }
+
+        public Task<EmployerInfo> GetProviderEmployerVacancyDataAsync(long ukprn, string employerAccountId)
+        {
+            //TODO get data from QueryStore Collection
+            return Task.FromResult(FakeProviderVacancyData.Employers.FirstOrDefault(e => e.Id == employerAccountId));
+        }
+        private ProviderEditVacancyInfo FakeProviderVacancyData => 
+            new ProviderEditVacancyInfo {
+                Employers = new [] {
+                    new EmployerInfo { 
+                        Id = "RF1OEM", 
+                        Name = "Rogers and Federrers", 
+                        LegalEntities = new [] {
+                            new LegalEntity {
+                                Name = "Coventry building",
+                                LegalEntityId = 1122,
+                                Address = new Address {
+                                    AddressLine1 = "Chelyesmore House",
+                                    AddressLine2 = "5 Quinton Road",
+                                    AddressLine3 = "Coventry",
+                                    Postcode = "CV1 2WT"
+                                    }
+                                },
+                            new LegalEntity {
+                                Name = "Bedford building",
+                                LegalEntityId = 2233,
+                                Address = new Address {
+                                    AddressLine1 = "Unit No 4",
+                                    AddressLine2 = "Priory Business Park",
+                                    AddressLine3 = "Bedford",
+                                    Postcode = "MK44 3JZ"
+                                    }
+                                }
+                            }
+                        },
+                    new EmployerInfo { 
+                        Id = "WBT98F", 
+                        Name = "William Bothers", 
+                        LegalEntities = new [] {
+                            new LegalEntity {
+                                Name = "Coventry building",
+                                LegalEntityId = 1122,
+                                Address = new Address {
+                                    AddressLine1 = "Chelyesmore House",
+                                    AddressLine2 = "5 Quinton Road",
+                                    AddressLine3 = "Coventry",
+                                    Postcode = "CV1 2WT"
+                                    }
+                                }
+                            }
+                        }
+                }
+            };
 
         public Task<VacancyApplications> GetVacancyApplicationsAsync(string vacancyReference)
         {
@@ -190,6 +240,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         private string GetLiveVacancyId(long vacancyReference)
         {
             return QueryViewType.LiveVacancy.GetIdValue(vacancyReference.ToString());
-        }
+        }        
     }
 }
