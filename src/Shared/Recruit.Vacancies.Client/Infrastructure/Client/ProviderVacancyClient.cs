@@ -48,6 +48,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _reader.GetProviderVacancyDataAsync(ukprn);
         }
 
+        public Task<EmployerInfo> GetProviderEmployerVacancyDataAsync(long ukprn, string employerAccountId)
+        {
+            return _reader.GetProviderEmployerVacancyDataAsync(ukprn, employerAccountId);
+        }
+
         public Task SetupProviderAsync(long ukprn)
         {
             var command = new SetupProviderCommand(ukprn);

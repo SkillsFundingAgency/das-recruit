@@ -44,7 +44,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
                 vm.PageInfo.SetWizard(wizard);
                 return View(vm);
             }
-            return RedirectToRoute(RouteNames.Dashboard_Index_Get);
+            return RedirectToRoute(RouteNames.Location_Get);
             // return wizard 
             //     ? RedirectToRoute(RouteNames.Employer_Get)
             //     : RedirectToRoute(RouteNames.Vacancy_Preview_Get, null, Anchors.ShortDescriptionSection);

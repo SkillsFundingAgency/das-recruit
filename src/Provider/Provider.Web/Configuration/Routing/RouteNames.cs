@@ -60,5 +60,8 @@
 
         public const string Wage_Get = "Wage_Get";
         public const string Wage_Post = "Wage_Post";
+
+        public const string Location_Get = "Location_Get";
+        public const string Location_Post = "Location_Post";
     }
 }
