@@ -4,7 +4,7 @@
 
     <partial name="_ReviewHeader" />
 
-    <div class="grid-row">
+    <div class="govuk-grid-row">
         <div>
             <h1 class="heading-xlarge small-bottom-margin">@Model.PageTitle</h1>
             <p>
@@ -14,13 +14,13 @@
         </div>
     </div>
     
-    <div asp-hide="@Model.IsApproved" class="grid-row">
-        <div class="column-full">
+    <div asp-hide="@Model.IsApproved" class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
             <partial name="_ReviewSummaryPartial" for="Review" />
         </div>
     </div>
-    <div class="grid-row">
-        <div class="column-two-thirds">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
             <div id="@Anchors.Title">
                 <h1 class="heading-xlarge small-bottom-margin">
                     @Model.Title
@@ -29,27 +29,27 @@
             </div>
         </div>
     </div>
-    <div class="grid-row">
-        <div class="column-two-thirds">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
             <div id="@Anchors.ShortDescription">
                 <h3 class="heading-small sfa-no-top-margin">Brief overview</h3>
                 <p>@Model.ShortDescription</p>
             </div>
         </div>
-        <div class="column-one-third">
+        <div class="govuk-grid-column-one-third">
             <div id="@Anchors.ClosingDate">
                 <h3 class="heading-small sfa-no-top-margin">Closing Date</h3>
                 <p>@Model.ClosingDate</p>
             </div>
         </div>
     </div>
-    <div class="grid-row" id="@Anchors.ApprenticeshipSummarySection">
-        <div class="column-full" >
+    <div class="govuk-grid-row" id="@Anchors.ApprenticeshipSummarySection">
+        <div class="govuk-grid-column-full" >
             <h2 class="heading-large">Apprenticeship summary</h2>
         </div>
     </div>
-    <div class="grid-row">
-        <div class="column-one-third">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-third">
             <ul class="list">
                 <li>
                     <div id="@Anchors.WorkingWeek">
@@ -95,7 +95,7 @@
                 </li>
             </ul>
         </div>
-        <div class="column-two-thirds vacancy-descriptions">
+        <div class="govuk-grid-column-two-thirds vacancy-descriptions">
             <div id="@Anchors.VacancyDescription">
                 <h3 class="heading-small">Typical working day</h3>
                 <div class="preserve-format">@Html.Raw(Model.VacancyDescription)</div>
@@ -110,17 +110,17 @@
             </div>
         </div>
     </div>
-    <div class="grid-row">
-        <div class="column-full">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
             <hr class="no-bottom-margin">
         </div>
     </div>
-    <div class="grid-row">
-        <div class="column-full">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
             <h2 class="heading-large">Requirements and prospects</h2>
         </div>
     </div>
-    <div class="grid-row">
+    <div class="govuk-grid-row">
         <div class="column-half">
             <div id="@Anchors.Skills">
                 <h3 class="heading-small">Desired skills and personal qualities</h3>
@@ -143,18 +143,18 @@
             </div>
         </div>
     </div>
-    <div class="grid-row">
-        <div class="column-full">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
             <hr class="no-bottom-margin">
         </div>
     </div>
-    <div class="grid-row">
-        <div class="column-full">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
             <h2 class="heading-large">About the employer</h2>
         </div>
     </div>
-    <div class="grid-row">
-        <div class="column-two-thirds">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
             <div id="@Anchors.EmployerDescription">
                 <h3 class="heading-small">Description</h3>
                 <p>@Model.EmployerDescription</p>
@@ -173,7 +173,7 @@
                 <p>@Model.EmployerWebsiteUrl</p>
             </div>
         </div>
-        <div class="column-one-third">
+        <div class="govuk-grid-column-one-third">
             <div asp-show="@Model.IsEmployerVacancy" id="@Anchors.EmployerContact">
                 <h3 class="heading-small">Contact details (optional)</h3>
                 <p>@Model.EmployerContactName</p>
@@ -182,7 +182,7 @@
             </div>
         </div>
     </div>
-    <div class="grid-row">
+    <div class="govuk-grid-row">
         <div class="column-half">
             <div id="@Anchors.EmployerAddress">
                 <h3 class="heading-small">Location</h3>
@@ -198,18 +198,19 @@
             <img id="static-map" src="@Model.MapUrl" alt="Location map" />
         </div>
     </div>
-    <div class="grid-row">
-        <div class="column-full">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
             <hr class="no-bottom-margin">
         </div>
     </div>
-    <div class="grid-row">
-        <div class="column-full">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
             <h2 class="heading-large">Training provider</h2>
         </div>
     </div>
-    <div class="grid-row">
-        <div class="column-two-thirds">
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
             <div id="@Anchors.Provider">
                 <h3 class="heading-small">Training provider</h3>
                 <p>@Model.ProviderName</p>
@@ -228,18 +229,18 @@
             </div>
         </div>
     </div>
-    <div class="grid-row">
-        <div class="column-full">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
             <hr class="no-bottom-margin">
         </div>
     </div>
-    <div class="grid-row">
-        <div class="column-full">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
             <h2 class="heading-large" id="@FieldIdentifiers.ApplicationMethod">Application process</h2>
         </div>
     </div>
-    <div class="grid-row">
-        <div class="column-full"  id="@Anchors.ApplicationMethod">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full"  id="@Anchors.ApplicationMethod">
             <p asp-show="@Model.HasSpecifiedThroughFaaApplicationMethod">
                 Candidates will apply through the Find an apprenticeship service
             </p>
@@ -261,8 +262,8 @@
 
     <partial name="_ReviewHistories" for="ReviewHistories" />
 
-    <div class="grid-row">
-        <div class="column-full">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
             <h2 class="heading-medium">Reviewer's Comments</h2>
             <ul class="small-bottom-margin">
                 @foreach (var automatedQaResult in Model.AutomatedQaResults.Where(r => r.Checked))
@@ -274,8 +275,8 @@
         </div>
     </div>
 
-    <div class="grid-row">
-        <div class="column-full">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
             <div class="form-group inline">
                 <div class="form-group small-top-margin">
                     <a asp-route="@RouteNames.Dashboard_Index_Get" class="button">Back</a>

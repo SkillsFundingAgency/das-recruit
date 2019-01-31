@@ -5,14 +5,14 @@
 <div class="review-container">
     <form asp-route="@RouteNames.Vacancy_Review_Post">
         <partial name="_ReviewHeader" />
-        <div class="grid-row">
-            <div class="column-full">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
                 <div asp-validation-summary="All" class="error-summary" asp-show="@ViewData.ModelState.IsValid == false"></div>
             </div>
         </div>
 
-        <div class="grid-row" asp-show="@Model.IsResubmission">
-            <div class="column-full">
+        <div class="govuk-grid-row" asp-show="@Model.IsResubmission">
+            <div class="govuk-grid-column-full">
                 <div class="error-summary review-summary" tabindex="-1">
                     <h2 class="heading-medium error-summary-heading">
                         This is a re-submitted vacancy
@@ -32,8 +32,8 @@
             </div>
         </div>
 
-        <div class="grid-row" asp-show="@Model.HasAutomatedQaResults">
-            <div class="column-full">
+        <div class="govuk-grid-row" asp-show="@Model.HasAutomatedQaResults">
+            <div class="govuk-grid-column-full">
                 <div class="error-summary review-summary">
                     <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-2">
                         Automated QA Results
@@ -58,8 +58,8 @@
             </div>
         </div>
 
-        <div class="grid-row">
-            <div class="column-two-thirds">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
                 <div class=" @Model.TitleClass" id="@FieldIdentifiers.Title">
                     <h1 class="heading-xlarge no-bottom-margin">
                         @Model.Title
@@ -73,8 +73,8 @@
                 </h2>
             </div>
         </div>
-        <div class="grid-row">
-            <div class="column-two-thirds">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
                 <div class="@Model.ShortDescriptionClass" id="@FieldIdentifiers.ShortDescription">
                     <h3 class="heading-small sfa-no-top-margin">Brief overview</h3>
 
@@ -85,7 +85,7 @@
                                           asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                 </div>
             </div>
-            <div class="column-one-third">
+            <div class="govuk-grid-column-one-third">
                 <div class="@Model.ClosingDateClass" id="@FieldIdentifiers.ClosingDate">
                     <h3 class="heading-small sfa-no-top-margin">Closing Date</h3>
                     <p>@Model.ClosingDate</p>
@@ -95,13 +95,13 @@
                 </div>
             </div>
         </div>
-        <div class="grid-row">
-            <div class="column-full">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
                 <h2 class="heading-large">Apprenticeship summary</h2>
             </div>
         </div>
-        <div class="grid-row">
-            <div class="column-one-third">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-one-third">
                 <ul class="list">
                     <li>
                         <div class="@Model.WorkingWeekClass" id="@FieldIdentifiers.WorkingWeek">
@@ -165,7 +165,7 @@
                     </li>
                 </ul>
             </div>
-            <div class="column-two-thirds vacancy-descriptions">
+            <div class="govuk-grid-column-two-thirds vacancy-descriptions">
                 <div class="@Model.VacancyDescriptionClass" id="@FieldIdentifiers.VacancyDescription">
 
                     <h3 class="heading-small">What will you do in your working day</h3>
@@ -195,17 +195,17 @@
                 </div>
             </div>
         </div>
-        <div class="grid-row">
-            <div class="column-full">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
                 <hr class="no-bottom-margin">
             </div>
         </div>
-        <div class="grid-row">
-            <div class="column-full">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
                 <h2 class="heading-large">Requirements and prospects</h2>
             </div>
         </div>
-        <div class="grid-row">
+        <div class="govuk-grid-row">
             <div class="column-half">
                 <div class="@Model.SkillsClass" id="@FieldIdentifiers.Skills">
                     <h3 class="heading-small">Desired skills and personal qualities</h3>
@@ -239,18 +239,18 @@
                 </div>
             </div>
         </div>
-        <div class="grid-row">
-            <div class="column-full">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
                 <hr class="no-bottom-margin">
             </div>
         </div>
-        <div class="grid-row">
-            <div class="column-full">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
                 <h2 class="heading-large">About the employer</h2>
             </div>
         </div>
-        <div class="grid-row">
-            <div class="column-two-thirds">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
                 <div class="@Model.EmployerDescriptionClass" id="@FieldIdentifiers.EmployerDescription">
                     <h3 class="heading-small">Description</h3>
 
@@ -280,7 +280,8 @@
                                           asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                 </div>
             </div>
-            <div class="column-one-third">
+
+            <div class="govuk-grid-column-one-third">
                 <div asp-show="@Model.IsEmployerVacancy" class="@Model.EmployerContactClass" id="@FieldIdentifiers.EmployerContact">
                     <h3 class="heading-small">Contact details (optional)</h3>
                     <p>@Model.EmployerContactName</p>
@@ -292,7 +293,7 @@
                 </div>
             </div>
         </div>
-        <div class="grid-row">
+        <div class="govuk-grid-row">
             <div class="column-half">
                 <div class="@Model.EmployerAddressClass" id="@FieldIdentifiers.EmployerAddress">
                     <h3 class="heading-small">Location</h3>
@@ -311,18 +312,19 @@
                 <img id="static-map" src="@Model.MapUrl" alt="Location map" />
             </div>
         </div>
-        <div class="grid-row">
-            <div class="column-full">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
                 <hr class="no-bottom-margin">
             </div>
         </div>
-        <div class="grid-row">
-            <div class="column-full">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
                 <h2 class="heading-large">Training provider</h2>
             </div>
         </div>
-        <div class="grid-row">
-            <div class="column-two-thirds">
+
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
                 <div class="@Model.ProviderClass" id="@FieldIdentifiers.Provider">
                     <h3 class="heading-small">Training provider</h3>
                     <p>@Model.ProviderName</p>
@@ -350,18 +352,18 @@
                 </div>
             </div>
         </div>
-        <div class="grid-row">
-            <div class="column-full">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
                 <hr class="no-bottom-margin">
             </div>
         </div>
-        <div class="grid-row">
-            <div class="column-full">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
                 <h2 class="heading-large" id="@FieldIdentifiers.ApplicationMethod">Application process</h2>
             </div>
         </div>
-        <div class="grid-row">
-            <div class="column-full">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
                 <div class="@Model.ApplicationMethodClass" id="@FieldIdentifiers.ApplicationMethod">
                     <p asp-show="@Model.HasSpecifiedThroughFaaApplicationMethod">
                         Candidates will apply through the Find an apprenticeship service
@@ -391,8 +393,8 @@
         </div>
         <hr>
         <partial name="_ReviewHistories" for="ReviewHistories" />
-        <div class="grid-row">
-            <div class="column-full">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
                 <h2 class="heading-medium">Reviewer's Comments</h2>
                 <ul class="small-bottom-margin" id="automatedqarules-selected-comments"></ul>
                 <span asp-validation-for="ReviewerComment" class="error-message"></span>
@@ -409,8 +411,8 @@
                 </div>
             </div>
         </div>
-        <div class="grid-row">
-            <div class="column-full">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
                 <div class="form-group inline">
                     <div class="form-group small-top-margin">
                         <button type="submit" class="button" id="submit-button">Approve</button>

@@ -1,20 +1,20 @@
 @using Esfa.Recruit.Vacancies.Client.Domain.Extensions
 @model DashboardViewModel
-<div asp-show="@Model.HasDashboardMessage" class="grid-row">
-    <div class="column-full">
+<div asp-show="@Model.HasDashboardMessage" class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
         <div class="info-summary">
             <h2 class="heading-medium error-summary-heading">@Model.DashboardMessage</h2>
         </div>
     </div>
 </div>
 
-<div class="grid-row">
-    <div class="column-two-thirds">
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
         <form asp-route="@RouteNames.Dashboard_Next_Vacancy_Post">
             <button class="button small-top-margin" type="submit">Review Vacancy</button>
         </form>
     </div>
-    <div class="column-one-third">
+    <div class="govuk-grid-column-one-third">
         <form asp-route="@RouteNames.Dashboard_Index_Get" method="get">
             <div class="search-field small-top-margin">
                 <fieldset class="search-input">
@@ -28,8 +28,8 @@
     </div>
 </div>
 
-<div class="grid-row">
-    <div class="column-full">
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
         <h2 class="heading-medium no-bottom-margin">Statistics</h2>
         <table>
             <thead>
@@ -54,7 +54,7 @@
 
 <span asp-show="@Model.DisplayNoInProgressVacanciesMessage">There are no vacancy reviews currently in progress</span>
 
-<div asp-show="@Model.DisplayInProgressResults" class="grid-row">
+<div asp-show="@Model.DisplayInProgressResults" class="govuk-grid-row">
     <table>
         <thead>
             <tr>
@@ -91,7 +91,7 @@
 
 <span asp-show="@Model.DisplayNoSearchResultsMessage">No results</span>
 
-<div asp-show="@Model.DisplaySearchResults" class="grid-row">
+<div asp-show="@Model.DisplaySearchResults" class="govuk-grid-row">
     <table>
         <thead>
             <tr>
