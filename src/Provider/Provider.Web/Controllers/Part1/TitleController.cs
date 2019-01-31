@@ -60,11 +60,10 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
                 vm.PageInfo.SetWizard(wizard);
                 return View(vm);
             }
-
+            return  RedirectToRoute(RouteNames.ShortDescription_Get, new {vacancyId = response.Data});
             // return wizard
             //     ? RedirectToRoute(RouteNames.ShortDescription_Get, new {vacancyId = response.Data})
             //     : RedirectToRoute(RouteNames.Vacancy_Preview_Get);
-            return RedirectToRoute(RouteNames.Dashboard_Index_Get);
         }    
     }
 }
