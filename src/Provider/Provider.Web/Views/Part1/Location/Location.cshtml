@@ -15,7 +15,7 @@
         <!-- <partial name="@PartialNames.ReviewSummary" for="Review"/> -->
 
         <div asp-show="@Model.HasOnlyOneOrganisation">
-            <p>@Model.LegalEntities.First().Name</p>
+            <p class="govuk-body">@Model.LegalEntities.First().Name</p>
         </div>
         <form asp-route="@RouteNames.Location_Post" asp-route-wizard="@Model.PageInfo.IsWizard">
             <div esfa-validation-marker-for="SelectedLegalEntityId" class="govuk-form-group">

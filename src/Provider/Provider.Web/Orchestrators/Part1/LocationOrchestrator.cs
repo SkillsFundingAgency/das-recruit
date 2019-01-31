@@ -134,8 +134,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
             if (info == null || !info.LegalEntities.Any())
             {
-                Logger.LogError("No legal entities found for {employerAccountId}", employerAccountId);
-                return null; // TODO: Can we carry on without a list of legal entities.
+                Logger.LogWarning("No legal entities found for {employerAccountId}", employerAccountId);
+                return result; 
             }
 
             return info.LegalEntities.Select(MapLegalEntitiesToOrgs).ToList();
