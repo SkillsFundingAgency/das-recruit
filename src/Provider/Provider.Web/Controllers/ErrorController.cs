@@ -46,11 +46,8 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         [Route(RoutePaths.ExceptionHandlingPath)]
         public IActionResult ErrorHandler()
         {
-            // TODO: LWA - Need to store the ProviderIdentifier somewhere!!!
             if (HttpContext.Items.TryGetValue(ContextItemKeys.ProviderIdentifier, out var ukprn))
             {
-                ViewBag.Ukprn = ukprn;
-                
                 if (!RouteData.Values.ContainsKey(ContextItemKeys.ProviderIdentifier))
                     RouteData.Values.Add(ContextItemKeys.ProviderIdentifier, ukprn);
             }
