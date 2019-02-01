@@ -44,10 +44,10 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
                 vm.PageInfo.SetWizard(wizard);
                 return View(vm);
             }
-            return RedirectToRoute(RouteNames.Location_Get);
-            // return wizard 
-            //     ? RedirectToRoute(RouteNames.Employer_Get)
-            //     : RedirectToRoute(RouteNames.Vacancy_Preview_Get, null, Anchors.ShortDescriptionSection);
+
+            return wizard 
+                ? RedirectToRoute(RouteNames.Location_Get)
+                : RedirectToRoute(RouteNames.Vacancy_Preview_Get, null, Anchors.ShortDescriptionSection);
         }
     }
 }

@@ -29,7 +29,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
         public async Task<ShortDescriptionViewModel> GetShortDescriptionViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_providerVacancyClient, _recruitVacancyClient, vrm, RouteNames.ShortDescription_Get);
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_providerVacancyClient, 
+                _recruitVacancyClient, vrm, RouteNames.ShortDescription_Get);
 
             var vm = new ShortDescriptionViewModel
             {
@@ -58,7 +59,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
         public async Task<OrchestratorResponse> PostShortDescriptionEditModelAsync(ShortDescriptionEditModel m, VacancyUser user)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_providerVacancyClient, _recruitVacancyClient, m, RouteNames.ShortDescription_Post);
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_providerVacancyClient, 
+                _recruitVacancyClient, m, RouteNames.ShortDescription_Post);
 
             vacancy.ShortDescription = m.ShortDescription;
 

@@ -81,7 +81,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
         public async Task<OrchestratorResponse> PostLocationEditModelAsync(LocationEditModel m, VacancyUser user, long ukprn)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_providerVacancyClient, _recruitVacancyClient, m, RouteNames.Employer_Post);
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_providerVacancyClient, 
+                _recruitVacancyClient, m, RouteNames.Location_Post);
             
             var employerVacancyInfo = await _providerVacancyClient.GetProviderEmployerVacancyDataAsync(ukprn, vacancy.EmployerAccountId);
 
