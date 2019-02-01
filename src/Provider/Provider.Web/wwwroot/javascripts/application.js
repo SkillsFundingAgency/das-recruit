@@ -82,8 +82,8 @@ characterCount = function (element, count) {
     
     var maxLength = $element.attr("data-val-length-max"),
     absRemainder = Math.abs(maxLength - count),
-    $maxLengthCountElement = $element.closest(".form-group").find(".maxchar-count"),
-    $maxLengthTextElement = $element.closest(".form-group").find(".maxchar-text");
+    $maxLengthCountElement = $element.closest(".govuk-form-group").find(".maxchar-count"),
+    $maxLengthTextElement = $element.closest(".govuk-form-group").find(".maxchar-text");
 
     if (maxLength) {
         $maxLengthCountElement.text(absRemainder);
