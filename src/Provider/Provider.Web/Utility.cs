@@ -84,6 +84,11 @@ namespace Esfa.Recruit.Provider.Web
             validRoutes.AddRange(new[] {RouteNames.Training_Post, RouteNames.Training_Get});
             if (string.IsNullOrWhiteSpace(vacancy.ProgrammeId))
                 return validRoutes;
+
+            validRoutes.AddRange(new[] { RouteNames.Wage_Post, RouteNames.Wage_Get});
+            if (vacancy.Wage?.WageType == null)
+                return validRoutes;
+                
             return null;
         }
 
