@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
@@ -25,17 +26,20 @@ namespace Esfa.Recruit.Provider.Web.Middleware
 
         protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, ProviderAccountRequirement requirement)
         {
+            Predicate<Claim> claimFinderPredicate = c => c.Type.Equals(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier);
+
             if (context.Resource is AuthorizationFilterContext mvcContext && mvcContext.RouteData.Values.ContainsKey(RouteValues.Ukprn))
             {
-                if (context.User.HasClaim(c => c.Type.Equals(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier)))
+                if (context.User.HasClaim(claimFinderPredicate))
                 {
+                    var ukprnFromClaim = context.User.FindFirst(claimFinderPredicate).Value;
                     var ukprnFromUrl = mvcContext.RouteData.Values[RouteValues.Ukprn].ToString();
 
-                    if (!string.IsNullOrEmpty(ukprnFromUrl))
+                    if (!string.IsNullOrEmpty(ukprnFromUrl) && ukprnFromUrl.Equals(ukprnFromClaim))
                     {
-                        mvcContext.HttpContext.Items.Add(ContextItemKeys.ProviderIdentifier, ukprnFromUrl);
+                        mvcContext.HttpContext.Items.Add(ContextItemKeys.ProviderIdentifier, ukprnFromClaim);
 
-                        await EnsureProviderIsSetup(mvcContext.HttpContext, long.Parse(ukprnFromUrl));
+                        await EnsureProviderIsSetup(mvcContext.HttpContext, long.Parse(ukprnFromClaim));
 
                         context.Succeed(requirement);
                     }
