@@ -33,18 +33,17 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
             return View(vm);
         }
 
-
-        // [HttpGet(ExistingVacancyTitleRoute, Name = RouteNames.Title_Get)]
-        // public async Task<IActionResult> Title(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
-        // {            
-        //     var vm = await _orchestrator.GetTitleViewModelAsync(vrm);
-        //     vm.PageInfo.SetWizard(wizard);
-        //     return View(vm);
-        // }
+        [HttpGet(ExistingVacancyTitleRoute, Name = RouteNames.Title_Get)]
+        public async Task<IActionResult> Title(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
+        {            
+            var vm = await _orchestrator.GetTitleViewModelForExistingVacancyAsync(vrm);
+            vm.PageInfo.SetWizard(wizard);
+            return View(vm);
+        }
 
         [HttpPost(NewVacancyTitleRoute, Name = RouteNames.CreateVacancy_Post)]
-        //[HttpGet(ExistingVacancyTitleRoute, Name = RouteNames.Title_Post)]
-        public async Task<IActionResult> Title(TitleEditModel model, [FromQuery] string employerAccountId, [FromQuery] bool wizard)
+        [HttpGet(ExistingVacancyTitleRoute, Name = RouteNames.Title_Post)]
+        public async Task<IActionResult> Title(VacancyRouteModel vrm, TitleEditModel model, [FromQuery] bool wizard)
         {
             var ukprn = User.GetUkprn();
             var response = await _orchestrator.PostTitleEditModelAsync(model, User.ToVacancyUser(), ukprn);
@@ -56,14 +55,14 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
 
             if(!ModelState.IsValid)
             {
-                var vm = await _orchestrator.GetTitleViewModelAsync(model, ukprn);
+                var vm = await _orchestrator.GetTitleViewModelFromEditModelAsync(vrm, model, ukprn);
                 vm.PageInfo.SetWizard(wizard);
                 return View(vm);
             }
-            return  RedirectToRoute(RouteNames.ShortDescription_Get, new {vacancyId = response.Data});
-            // return wizard
-            //     ? RedirectToRoute(RouteNames.ShortDescription_Get, new {vacancyId = response.Data})
-            //     : RedirectToRoute(RouteNames.Vacancy_Preview_Get);
+
+            return wizard
+                ? RedirectToRoute(RouteNames.ShortDescription_Get, new {vacancyId = response.Data})
+                : RedirectToRoute(RouteNames.Vacancy_Preview_Get);
         }    
     }
 }

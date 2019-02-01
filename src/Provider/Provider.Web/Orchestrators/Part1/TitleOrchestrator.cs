@@ -44,38 +44,46 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             return vm;
         }
 
-        public async Task<TitleViewModel> GetTitleViewModelAsync(TitleEditModel model, long ukprn)
+        public async Task<TitleViewModel> GetTitleViewModelForExistingVacancyAsync(VacancyRouteModel vrm)
         {
-            if(!model.VacancyId.HasValue)
-            {
-                return new TitleViewModel
-                {
-                    VacancyId = model.VacancyId,
-                    Title = model.Title,
-                    NumberOfPositions = model.NumberOfPositions?.ToString(),
-                    PageInfo = new PartOnePageInfoViewModel(),
-                    Ukprn = ukprn,
-                    EmployerAccountId = model.EmployerAccountId
-                };                
-            }
-
-            var vrm = new VacancyRouteModel { VacancyId = model.VacancyId, Ukprn = ukprn };
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_providerVacancyClient, _recruitVacancyClient, vrm, RouteNames.Title_Get);
 
-            return new TitleViewModel
+            var vm = new TitleViewModel
             {
                     VacancyId = vacancy.Id,
-                    Title = model.Title,
-                    NumberOfPositions = model.NumberOfPositions?.ToString(),
+                    Title = vacancy.Title,
+                    NumberOfPositions = vacancy.NumberOfPositions?.ToString(),
                     PageInfo = Utility.GetPartOnePageInfo(vacancy),
-                    Ukprn = ukprn,
-                    EmployerAccountId = model.EmployerAccountId
+                    Ukprn = vacancy.TrainingProvider.Ukprn.GetValueOrDefault(),
+                    EmployerAccountId = vacancy.EmployerAccountId
             };
-            // if (vacancy.Status == VacancyStatus.Referred)
-            // {
-            //     vm.Review = await _reviewSummaryService.GetReviewSummaryViewModel(vacancy.VacancyReference.Value,
-            //         ReviewFieldMappingLookups.GetTitleFieldIndicators());
-            // }            
+
+            if (vacancy.Status == VacancyStatus.Referred)
+            {
+                // vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
+                //     ReviewFieldMappingLookups.GetTitleFieldIndicators());
+            }
+
+            return vm;
+        }
+
+        public async Task<TitleViewModel> GetTitleViewModelFromEditModelAsync(VacancyRouteModel vrm, TitleEditModel model, long ukprn)
+        {
+            TitleViewModel vm;
+
+            if(model.VacancyId.HasValue)
+            {
+                vm = await GetTitleViewModelForExistingVacancyAsync(vrm);
+            }
+            else
+            {
+                vm = GetTitleViewModelForNewVacancy(model.EmployerAccountId, ukprn);                
+            }
+
+            vm.Title = model.Title;
+            vm.NumberOfPositions = model.NumberOfPositions;
+
+            return vm;
         }
 
         public async Task<OrchestratorResponse<Guid>> PostTitleEditModelAsync(TitleEditModel model, VacancyUser user, long ukprn)
