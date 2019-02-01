@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
@@ -15,5 +16,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user);
         Task<ProviderEditVacancyInfo> GetProviderEditVacancyInfoAsync(long ukprn);
         Task<EmployerInfo> GetProviderEmployerVacancyDataAsync(long ukprn, string employerAccountId);
+        Task<IEnumerable<IApprenticeshipProgramme>> GetActiveApprenticeshipProgrammesAsync();
     }
 }

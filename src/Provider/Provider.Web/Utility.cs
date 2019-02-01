@@ -81,10 +81,9 @@ namespace Esfa.Recruit.Provider.Web
             if (string.IsNullOrWhiteSpace(vacancy.EmployerLocation?.Postcode))
                 return validRoutes;
             
-            validRoutes.AddRange(new[] { RouteNames.Wage_Post, RouteNames.Wage_Get});
-            if (vacancy.Wage?.WageType == null)
+            validRoutes.AddRange(new[] {RouteNames.Training_Post, RouteNames.Training_Get});
+            if (string.IsNullOrWhiteSpace(vacancy.ProgrammeId))
                 return validRoutes;
-
             return null;
         }
 
@@ -101,7 +100,6 @@ namespace Esfa.Recruit.Provider.Web
                    vacancy.ProviderContact != null ||
                    vacancy.Qualifications != null ||
                    vacancy.Skills != null ||
-                   vacancy.TrainingProvider != null ||
                    !string.IsNullOrWhiteSpace(vacancy.Description);
         }
 

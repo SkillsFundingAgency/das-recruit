@@ -69,7 +69,7 @@
                 "args": "${auto-detect-url}/${env:ProviderUkprn}/",
                 "windows": {
                     "command": "cmd.exe",
-                    "args": "/C start ${auto-detect-url}/"
+                    "args": "/C start \"\" \"C:/Program Files (x86)/Google/Chrome/Application/chrome.exe\"  --incognito ${auto-detect-url}/"
                 },
                 "osx": {
                     "command": "open"

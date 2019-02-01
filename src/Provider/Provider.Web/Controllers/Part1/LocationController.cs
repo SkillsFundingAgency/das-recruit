@@ -5,6 +5,7 @@ using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.Location;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.Mappers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Provider.Web.Controllers.Part1
@@ -44,10 +45,9 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
                 return View(vm);
             }
 
-            return RedirectToRoute(RouteNames.Dashboard_Index_Get);
-            // return wizard
-            //     ? RedirectToRoute(RouteNames.Training_Get)
-            //     : RedirectToRoute(RouteNames.Vacancy_Preview_Get, null, Anchors.AboutEmployerSection);
+            return wizard
+                ? RedirectToRoute(RouteNames.Training_Get)
+                : RedirectToRoute(RouteNames.Vacancy_Preview_Get, null, Anchors.AboutEmployerSection);
         }
 
     }
