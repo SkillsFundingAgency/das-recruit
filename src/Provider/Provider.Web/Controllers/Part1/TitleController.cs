@@ -42,11 +42,11 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
         }
 
         [HttpPost(NewVacancyTitleRoute, Name = RouteNames.CreateVacancy_Post)]
-        [HttpGet(ExistingVacancyTitleRoute, Name = RouteNames.Title_Post)]
+        [HttpPost(ExistingVacancyTitleRoute, Name = RouteNames.Title_Post)]
         public async Task<IActionResult> Title(VacancyRouteModel vrm, TitleEditModel model, [FromQuery] bool wizard)
         {
             var ukprn = User.GetUkprn();
-            var response = await _orchestrator.PostTitleEditModelAsync(model, User.ToVacancyUser(), ukprn);
+            var response = await _orchestrator.PostTitleEditModelAsync(vrm, model, User.ToVacancyUser(), ukprn);
             
             if (!response.Success)
             {
