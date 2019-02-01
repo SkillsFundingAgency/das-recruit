@@ -7,8 +7,21 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Commands
 {
     public class SubmitVacancyCommand : ICommand, IRequest
     {
-        public Guid VacancyId { get;set; }
-        public VacancyUser User { get; set; }
-        public string EmployerDescription { get; set; }
+        public SubmitVacancyCommand(Guid vacancyId, VacancyUser user)
+        {
+            VacancyId = vacancyId;
+            User = user;
+        }
+
+        public SubmitVacancyCommand(Guid vacancyId, VacancyUser user, string employerDescription)
+        {
+            VacancyId = vacancyId;
+            User = user;
+            EmployerDescription = employerDescription;
+        }
+
+        public Guid VacancyId { get;}
+        public VacancyUser User { get; }
+        public string EmployerDescription { get; }
     }
 }

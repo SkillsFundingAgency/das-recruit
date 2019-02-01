@@ -145,12 +145,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public Task SubmitVacancyAsync(Guid vacancyId, string employerDescription, VacancyUser user)
         {
-            var command = new SubmitVacancyCommand
-            {
-                VacancyId = vacancyId,
-                EmployerDescription = employerDescription,
-                User = user
-            };
+            var command = new SubmitVacancyCommand(vacancyId, user, employerDescription);
 
             return _messaging.SendCommandAsync(command);
         }

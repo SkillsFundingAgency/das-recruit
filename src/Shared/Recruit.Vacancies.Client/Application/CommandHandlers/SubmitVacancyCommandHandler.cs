@@ -42,18 +42,20 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 _logger.LogWarning($"Unable to submit vacancy {{vacancyId}} due to vacancy having a status of {vacancy?.Status}.", message.VacancyId);
                 return;
             }
-            
+
+            if (vacancy.VacancyReference.HasValue == false)
+                throw new Exception("Cannot submit vacancy without a vacancy reference");
+
             var now = _timeProvider.Now;
 
-            vacancy.EmployerDescription = message.EmployerDescription;
+            if(!string.IsNullOrEmpty(message.EmployerDescription))
+                vacancy.EmployerDescription = message.EmployerDescription;
+
             vacancy.Status = VacancyStatus.Submitted;
             vacancy.SubmittedDate = now;
             vacancy.SubmittedByUser = message.User;
             vacancy.LastUpdatedDate = now;
             vacancy.LastUpdatedByUser = message.User;
-
-            if (vacancy.VacancyReference.HasValue == false)
-                throw new Exception("Cannot submit vacancy without a vacancy reference");
 
             await _vacancyRepository.UpdateAsync(vacancy);
 

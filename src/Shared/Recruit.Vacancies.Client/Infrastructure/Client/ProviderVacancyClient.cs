@@ -59,5 +59,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
             return _messaging.SendCommandAsync(command);
         }
+
+        public Task SubmitVacancyAsync(Guid vacancyId, VacancyUser user)
+        {
+            var command = new SubmitVacancyCommand(vacancyId, user);
+
+            return _messaging.SendCommandAsync(command);
+        }
     }
 }

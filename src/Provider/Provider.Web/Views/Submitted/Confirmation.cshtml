@@ -1,0 +1,34 @@
+﻿@model Esfa.Recruit.Provider.Web.ViewModels.Submitted.VacancySubmittedConfirmationViewModel
+
+<h1 class="govuk-heading-l">@Model.Title</h1>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <div asp-show="@Model.IsNotResubmit" class="govuk-panel govuk-panel--confirmation">
+            <h1 class="govuk-panel__title">
+                Vacancy submitted for approval
+            </h1>
+            <div class="govuk-panel__body">
+                <p asp-show="@Model.HasVacancyReference">
+                    The vacancy reference number is <br>
+                    <strong class="govuk-!-font-weight-bold">VAC@(Model.VacancyReference)</strong>
+                </p>
+            </div>
+        </div>
+        <div asp-show="@Model.IsResubmit" class="govuk-panel govuk-panel--confirmation">
+            <h1 class="govuk-panel__title">
+                Vacancy resubmitted for approval
+            </h1>
+        </div>
+        <h2 class="govuk-heading-m">Next steps</h2>
+        <p class="govuk-body">Your vacancy will now be reviewed by an Education and Skills Funding Agency adviser.</p>
+        <p class="govuk-body">You’ll be notified within 24 hours, through your recruitment page, if you need to make any edits to your vacancy.</p>
+        <p class="govuk-body">We’ll also confirm on your recruitment page, when your vacancy is live.</p>
+        <div class="govuk-form-group inline">
+            <div class="govuk-form-group">
+                <a asp-route="@RouteNames.Dashboard_Index_Get" class="govuk-button">Return to dashboard</a>
+                <a asp-route="@RouteNames.Employer_Get" class="govuk-link das-button-link">Create another vacancy</a>
+            </div>
+        </div>
+    </div>
+</div>
