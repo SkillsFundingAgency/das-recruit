@@ -13,10 +13,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task GenerateDashboard(long ukprn);
         Task<ProviderDashboard> GetDashboardAsync(long ukprn);
         Task SetupProviderAsync(long ukprn);
-        Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user);
         Task<ProviderEditVacancyInfo> GetProviderEditVacancyInfoAsync(long ukprn);
         Task<EmployerInfo> GetProviderEmployerVacancyDataAsync(long ukprn, string employerAccountId);
         Task SubmitVacancyAsync(Guid vacancyId, VacancyUser user);
-        Task<IEnumerable<IApprenticeshipProgramme>> GetActiveApprenticeshipProgrammesAsync();
     }
 }

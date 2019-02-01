@@ -19,5 +19,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         EntityValidationResult Validate(Vacancy vacancy, VacancyRuleSet rules);
 
         Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user);
+        Task<IEnumerable<IApprenticeshipProgramme>> GetActiveApprenticeshipProgrammesAsync();
     }
 }

@@ -34,7 +34,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         public async Task<TrainingViewModel> GetTrainingViewModelAsync(VacancyRouteModel vrm)
         {
             var vacancyTask = Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Training_Get);
-            var programmesTask = _client.GetActiveApprenticeshipProgrammesAsync();
+            var programmesTask = _vacancyClient.GetActiveApprenticeshipProgrammesAsync();
 
             await Task.WhenAll(vacancyTask, programmesTask);
 
