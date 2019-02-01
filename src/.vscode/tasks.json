@@ -2,6 +2,21 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "build-all",
+            "group":{
+                "kind": "build",
+                "isDefault": true
+            },
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/recruit-v2.sln",
+                "/p:GenerateFullPaths=true"
+            ],
+            "problemMatcher": "$msCompile"
+        }, 
+        {
             "label": "build-emp-web",
             "group":{
                 "kind": "build",
