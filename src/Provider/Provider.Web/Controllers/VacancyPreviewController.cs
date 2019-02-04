@@ -46,8 +46,8 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 response.AddErrorsToModelState(ModelState);
             }
 
-            //if (ModelState.IsValid)
-            //    return RedirectToRoute(RouteNames.Submitted_Index_Get);
+            if (ModelState.IsValid)
+                return RedirectToRoute(RouteNames.Submitted_Index_Get);
 
             var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(m);
 

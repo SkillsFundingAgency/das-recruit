@@ -73,13 +73,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                     SyncErrorsAndModel(result.Errors);
                     return result;
                 },
-                v => SubmitActionAsync(v, user)
+                v => _client.SubmitVacancyAsync(vacancy.Id, user)
                 );
-        }
-
-        private Task SubmitActionAsync(Vacancy vacancy, VacancyUser user)
-        {
-            return Task.CompletedTask;
         }
 
         private void SyncErrorsAndModel(IList<EntityValidationError> errors)
