@@ -32,7 +32,7 @@ namespace Esfa.Recruit.Provider.Web
 
             CheckAuthorisedAccess(vacancy, vrm.Ukprn);
 
-            CheckRouteIsValidForVacancy(vacancy, routeName);
+            CheckRouteIsValidForVacancy(vacancy, routeName, vrm);
 
             return vacancy;
         }
@@ -50,7 +50,7 @@ namespace Esfa.Recruit.Provider.Web
                 throw new AuthorisationException(string.Format(ExceptionMessages.VacancyUnauthorisedAccess, ukprn, vacancy.TrainingProvider.Ukprn, vacancy.Title, vacancy.Id));
         }
 
-        public static void CheckRouteIsValidForVacancy(Vacancy vacancy, string currentRouteName)
+        public static void CheckRouteIsValidForVacancy(Vacancy vacancy, string currentRouteName, VacancyRouteModel vrm)
         {
             var validRoutes = GetValidRoutesForVacancy(vacancy);
 
@@ -62,7 +62,7 @@ namespace Esfa.Recruit.Provider.Web
             var redirectRoute = validRoutes.Last();
             
             throw new InvalidRouteForVacancyException(string.Format(RecruitWebExceptionMessages.RouteNotValidForVacancy, currentRouteName, redirectRoute),
-                redirectRoute, new VacancyRouteModel{ Ukprn = vacancy.TrainingProvider.Ukprn.GetValueOrDefault(), VacancyId = vacancy.Id });
+                redirectRoute, vrm);
         }
 
         public static IList<string> GetValidRoutesForVacancy(Vacancy vacancy)
