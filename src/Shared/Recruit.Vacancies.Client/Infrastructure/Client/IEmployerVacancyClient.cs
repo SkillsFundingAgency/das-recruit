@@ -20,9 +20,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task SubmitVacancyAsync(Guid vacancyId, string employerDescription, VacancyUser user);
         Task DeleteVacancyAsync(Guid vacancyId, VacancyUser user);
         Task<EmployerDashboard> GetDashboardAsync(string employerAccountId);
-        Task<EditVacancyInfo> GetEditVacancyInfoAsync(string employerAccountId);
-        
-        Task<IApprenticeshipProgramme> GetApprenticeshipProgrammeAsync(string programmeId);
+        Task<EditVacancyInfo> GetEditVacancyInfoAsync(string employerAccountId);                
         Task<IEnumerable<LegalEntity>> GetEmployerLegalEntitiesAsync(string employerAccountId);
         Task<IEnumerable<string>> GetEmployerIdentifiersAsync(string userId);
         Task SetupEmployerAsync(string employerAccountId);

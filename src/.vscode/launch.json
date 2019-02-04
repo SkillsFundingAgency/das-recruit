@@ -127,7 +127,7 @@
     "compounds": [
         {
             "name": "Employer Recruit",
-            "configurations": ["Launch WebJobs", "Launch Emp Website", "Launch QA Website"]
+            "configurations": ["Launch WebJobs", "Launch Emp Website", "Launch QA Website", "Launch Provider Website"]
         }
     ]
 }

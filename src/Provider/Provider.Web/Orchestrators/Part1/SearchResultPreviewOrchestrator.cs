@@ -1,26 +1,27 @@
 using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Configuration.Routing;
-using Esfa.Recruit.Employer.Web.RouteModel;
-using Esfa.Recruit.Employer.Web.ViewModels.Part1.SearchResultPreview;
+using Esfa.Recruit.Provider.Web.Configuration.Routing;
+using Esfa.Recruit.Provider.Web.RouteModel;
+using Esfa.Recruit.Provider.Web.ViewModels.Part1.SearchResultPreview;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
+using Esfa.Recruit.Provider.Web;
 
-namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
+namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 {
     public class SearchResultPreviewOrchestrator
     {
         private const int MapImageWidth = 190;
         private const int MapImageHeight = 125;
-        private readonly IEmployerVacancyClient _client;
+        private readonly IProviderVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IGeocodeImageService _mapService;
         private readonly IMinimumWageProvider _wageProvider;
 
-        public SearchResultPreviewOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, IGeocodeImageService mapService, IMinimumWageProvider wageProvider)
+        public SearchResultPreviewOrchestrator(IProviderVacancyClient client, IRecruitVacancyClient vacancyClient, IGeocodeImageService mapService, IMinimumWageProvider wageProvider)
         {
             _client = client;
             _vacancyClient = vacancyClient;
