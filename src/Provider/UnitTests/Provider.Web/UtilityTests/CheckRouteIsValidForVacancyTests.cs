@@ -49,6 +49,8 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.UtilityTests
         [InlineData(RouteNames.Title_Post, false)]
         [InlineData(RouteNames.ShortDescription_Get, false)]
         [InlineData(RouteNames.ShortDescription_Post, false)]
+        [InlineData(RouteNames.Location_Get, false)]
+        [InlineData(RouteNames.Location_Post, false)]
         [InlineData("any other route", true)]
         public void ShouldRedirectToLocation(string route, bool shouldRedirect)
         {
