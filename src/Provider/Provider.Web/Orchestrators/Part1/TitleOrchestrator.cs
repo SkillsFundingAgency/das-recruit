@@ -44,72 +44,72 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             return vm;
         }
 
-        public async Task<TitleViewModel> GetTitleViewModelAsync(TitleEditModel model, long ukprn)
+        public async Task<TitleViewModel> GetTitleViewModelForExistingVacancyAsync(VacancyRouteModel vrm)
         {
-            if(!model.VacancyId.HasValue)
-            {
-                return new TitleViewModel
-                {
-                    VacancyId = model.VacancyId,
-                    Title = model.Title,
-                    NumberOfPositions = model.NumberOfPositions?.ToString(),
-                    PageInfo = new PartOnePageInfoViewModel(),
-                    Ukprn = ukprn,
-                    EmployerAccountId = model.EmployerAccountId
-                };                
-            }
-
-            var vrm = new VacancyRouteModel { VacancyId = model.VacancyId, Ukprn = ukprn };
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_providerVacancyClient, _recruitVacancyClient, vrm, RouteNames.Title_Get);
 
-            return new TitleViewModel
+            var vm = new TitleViewModel
             {
                     VacancyId = vacancy.Id,
-                    Title = model.Title,
-                    NumberOfPositions = model.NumberOfPositions?.ToString(),
+                    Title = vacancy.Title,
+                    NumberOfPositions = vacancy.NumberOfPositions?.ToString(),
                     PageInfo = Utility.GetPartOnePageInfo(vacancy),
-                    Ukprn = ukprn,
-                    EmployerAccountId = model.EmployerAccountId
+                    Ukprn = vacancy.TrainingProvider.Ukprn.GetValueOrDefault(),
+                    EmployerAccountId = vacancy.EmployerAccountId
             };
-            // if (vacancy.Status == VacancyStatus.Referred)
-            // {
-            //     vm.Review = await _reviewSummaryService.GetReviewSummaryViewModel(vacancy.VacancyReference.Value,
-            //         ReviewFieldMappingLookups.GetTitleFieldIndicators());
-            // }            
-        }
 
-        public async Task<OrchestratorResponse<Guid>> PostTitleEditModelAsync(TitleEditModel model, VacancyUser user, long ukprn)
-        {
-            if (!model.VacancyId.HasValue) // Create if it's a new vacancy
+            if (vacancy.Status == VacancyStatus.Referred)
             {
-                return await ValidateAndCreateVacancyAsync(model, user, ukprn);
+                // vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
+                //     ReviewFieldMappingLookups.GetTitleFieldIndicators());
             }
 
-            //vacancy.EmployerName = await GetEmployerNameAsync(viewModel.Ukprn, viewModel.SelectedEmployerId);
-
-            // var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_recruitVacancyClient, _providerVacancyClient, 
-            //     new VacancyRouteModel{Ukprn = m.Ukprn, VacancyId = m.VacancyId.Value}, RouteNames.Title_Post);
-
-            // vacancy.Title = m.Title;
-
-
-            // vacancy.NumberOfPositions = numberOfPositions;
-
-            // return await ValidateAndExecute(
-            //     vacancy, 
-            //     v => _vacancyClient.Validate(v, ValidationRules),
-            //     async v =>
-            //     {
-            //         await _vacancyClient.UpdateDraftVacancyAsync(vacancy, user);
-            //         return v.Id;
-            //     }
-            // );
-            throw new NotImplementedException();
+            return vm;
         }
 
-        private async Task<OrchestratorResponse<Guid>> ValidateAndCreateVacancyAsync(TitleEditModel model, VacancyUser user, long ukprn)
+        public async Task<TitleViewModel> GetTitleViewModelFromEditModelAsync(VacancyRouteModel vrm, TitleEditModel model, long ukprn)
+        {
+            TitleViewModel vm;
+
+            if(model.VacancyId.HasValue)
+            {
+                vm = await GetTitleViewModelForExistingVacancyAsync(vrm);
+            }
+            else
+            {
+                vm = GetTitleViewModelForNewVacancy(model.EmployerAccountId, ukprn);                
+            }
+
+            vm.Title = model.Title;
+            vm.NumberOfPositions = model.NumberOfPositions;
+
+            return vm;
+        }
+
+        public async Task<OrchestratorResponse<Guid>> PostTitleEditModelAsync(VacancyRouteModel vrm, TitleEditModel model, VacancyUser user, long ukprn)
         {
             int.TryParse(model.NumberOfPositions, out var numberOfPositions);
+
+            if (model.VacancyId.HasValue) 
+            {
+                var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_providerVacancyClient, _recruitVacancyClient, vrm, RouteNames.Title_Post);
+
+                vacancy.EmployerName = await GetEmployerNameAsync(ukprn, model.EmployerAccountId);
+                
+                vacancy.Title = model.Title;
+
+                vacancy.NumberOfPositions = numberOfPositions;
+
+                return await ValidateAndExecute(
+                    vacancy, 
+                    v => _recruitVacancyClient.Validate(v, ValidationRules),
+                    async v =>
+                    {
+                        await _recruitVacancyClient.UpdateDraftVacancyAsync(vacancy, user);
+                        return v.Id;
+                    }
+                );
+            }
 
             var employerName = await GetEmployerNameAsync(ukprn, model.EmployerAccountId);
 
@@ -124,7 +124,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 newVacancy,
                 v => _recruitVacancyClient.Validate(v, ValidationRules),
                 async v => await _providerVacancyClient.CreateVacancyAsync(
-                    model.EmployerAccountId, employerName, ukprn, model.Title, numberOfPositions, user));
+                        model.EmployerAccountId, employerName, ukprn, model.Title, numberOfPositions, user));
         }
 
         protected override EntityToViewModelPropertyMappings<Vacancy, TitleEditModel> DefineMappings()
