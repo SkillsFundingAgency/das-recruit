@@ -18,6 +18,7 @@
         <!-- <partial name="@PartialNames.ReviewSummary" for="Review"/> -->
 
         <form asp-route="@Model.FormPostRouteName" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
+            <input type="hidden" name="EmployerAccountId" value="@Model.EmployerAccountId" />
             <div esfa-validation-marker-for="Title" class="govuk-form-group">
                 <label asp-for="Title" class="govuk-label govuk-!-font-weight-bold">
                     What do you want to call this vacancy?

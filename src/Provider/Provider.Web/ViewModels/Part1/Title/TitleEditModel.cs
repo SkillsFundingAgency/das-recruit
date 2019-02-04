@@ -15,7 +15,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Title
         [TypeOfInteger(ErrorMessage = ErrMsg.TypeOfInteger.NumberOfPositions)]
         public string NumberOfPositions { get; set; }
 
-        [FromQuery]
         public string EmployerAccountId { get; set; }
     }
 }
