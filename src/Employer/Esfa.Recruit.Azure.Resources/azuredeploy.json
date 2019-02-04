@@ -575,6 +575,10 @@
                 "value": "[toUpper(parameters('EnvironmentFullName'))]"
               },
               {
+                "name": "GoogleMapsPrivateKey",
+                "value": "[parameters('GoogleMapsPrivateKey')]"
+              },
+              {
                 "name": "PostcodeAnywhere:Key",
                 "value": "[parameters('PostcodeAnywhereKey')]"
               }
