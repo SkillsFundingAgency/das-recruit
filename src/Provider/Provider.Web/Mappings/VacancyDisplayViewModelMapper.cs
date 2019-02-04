@@ -35,7 +35,7 @@ namespace Esfa.Recruit.Provider.Web.Mappings
 
         public async Task MapFromVacancyAsync(DisplayVacancyViewModel vm, Vacancy vacancy)
         {
-            var programme = await _client.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
+            var programme = await _vacancyClient.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
 
             var allQualifications = await _vacancyClient.GetCandidateQualificationsAsync();
 

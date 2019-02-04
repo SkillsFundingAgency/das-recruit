@@ -44,10 +44,9 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
                 return View(vm);
             }
 
-            return RedirectToRoute(RouteNames.Dashboard_Index_Get);
-            // return wizard
-            //     ? RedirectToRoute(RouteNames.SearchResultPreview_Get)
-            //     : RedirectToRoute(RouteNames.Vacancy_Preview_Get);
+            return wizard
+                ? RedirectToRoute(RouteNames.SearchResultPreview_Get)
+                : RedirectToRoute(RouteNames.Vacancy_Preview_Get);
         }
     }
 }

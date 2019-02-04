@@ -20,5 +20,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user);
         Task<IEnumerable<IApprenticeshipProgramme>> GetActiveApprenticeshipProgrammesAsync();
+        Task<IApprenticeshipProgramme> GetApprenticeshipProgrammeAsync(string programmeId);        
     }
 }

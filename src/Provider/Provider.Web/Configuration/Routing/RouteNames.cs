@@ -63,5 +63,7 @@
 
         public const string Location_Get = "Location_Get";
         public const string Location_Post = "Location_Post";
+
+        public const string SearchResultPreview_Get = "SearchResultPreview_Get";
     }
 }
