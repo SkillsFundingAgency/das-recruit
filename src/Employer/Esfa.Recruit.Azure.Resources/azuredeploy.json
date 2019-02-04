@@ -69,7 +69,8 @@
         "ManageApprenticeshipSiteUrl": "",
         "EmployerIdamsSiteUrl": "",
         "StaffIdamsUrl": "",
-        "ProviderApprenticeshipSiteUrl": ""
+        "ProviderApprenticeshipSiteUrl": "",
+        "CommitmentsSiteUrl": ""
       }
     },
     "Features": {
@@ -360,6 +361,10 @@
               {
                 "name": "ExternalLinks:EmployerIdamsSiteUrl",
                 "value": "[parameters('ExternalLinks').EmployerIdamsSiteUrl]"
+              },
+              {
+                "name": "ExternalLinks:CommitmentsSiteUrl",
+                "value": "[parameters('ExternalLinks').CommitmentsSiteUrl]"
               },
               {
                 "name": "Features:AllowThroughFaaApplicationMethod",
