@@ -48,7 +48,8 @@
         "ManageApprenticeshipSiteUrl": "",
         "EmployerIdamsSiteUrl": "",
         "StaffIdamsUrl": "",
-        "ProviderApprenticeshipSiteUrl": ""
+        "ProviderApprenticeshipSiteUrl": "",
+        "CommitmentsSiteUrl": ""
       }
     },
     "Features": {

@@ -24,7 +24,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
         public string ChangeEmail => $"{_externalLinks.EmployerIdamsSiteUrl}{_maRoutes.ManageApprenticeshipSiteChangeEmailAddressRoute}";
         public string Notifications => $"{_externalLinks.ManageApprenticeshipSiteUrl}{_maRoutes.ManageApprenticeshipSiteNotificationsRoute}";
         public string Finance => $"{_externalLinks.ManageApprenticeshipSiteUrl}{_maRoutes.ManageApprenticeshipSiteAccountsFinanceRoute}";
-        public string Apprentices => $"{_externalLinks.ManageApprenticeshipSiteUrl}{_maRoutes.ManageApprenticeshipSiteAccountsApprenticesRoute}";
+        public string Apprentices => $"{_externalLinks.CommitmentsSiteUrl}{_maRoutes.ManageApprenticeshipSiteAccountsApprenticesRoute}";
         public string Teams => $"{_externalLinks.ManageApprenticeshipSiteUrl}{_maRoutes.ManageApprenticeshipSiteAccountsTeamsViewRoute}";
         public string Agreements => $"{_externalLinks.ManageApprenticeshipSiteUrl}{_maRoutes.ManageApprenticeshipSiteAccountsAgreementsRoute}";
         public string Schemes => $"{_externalLinks.ManageApprenticeshipSiteUrl}{_maRoutes.ManageApprenticeshipSiteAccountsSchemesRoute}";

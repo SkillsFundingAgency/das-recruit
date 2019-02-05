@@ -134,6 +134,9 @@ namespace Esfa.Recruit.Employer.Web
             
             if (!string.IsNullOrWhiteSpace(linksConfig?.ManageApprenticeshipSiteUrl))
                 destinations.Add(linksConfig?.ManageApprenticeshipSiteUrl);
+            
+            if (!string.IsNullOrWhiteSpace(linksConfig?.CommitmentsSiteUrl))
+                destinations.Add(linksConfig?.CommitmentsSiteUrl);
 
             return destinations.ToArray();
         }
