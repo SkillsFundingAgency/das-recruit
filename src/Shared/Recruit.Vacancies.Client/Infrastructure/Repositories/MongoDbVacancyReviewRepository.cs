@@ -50,7 +50,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
                     context => collection
                         .Find(filter)
                         .ToListAsync(),
-                    new Context(nameof(GetLatestReviewByReferenceAsync)));
+                    new Context(nameof(GetVacancyReviewsAsync)));
 
             return result;
         }
@@ -104,7 +104,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var filterBuilder = Builders<VacancyReview>.Filter;
             var filter = filterBuilder.Eq(v => v.Id, review.Id) & filterBuilder.Eq(v => v.VacancyReference, review.VacancyReference);
             var collection = GetCollection<VacancyReview>();
-           
+
             return RetryPolicy.ExecuteAsync(context => collection.ReplaceOneAsync(filter, review), new Context(nameof(UpdateAsync)));
         }
 

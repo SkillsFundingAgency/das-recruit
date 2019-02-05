@@ -69,10 +69,11 @@
                 "args": "${auto-detect-url}/${env:ProviderUkprn}/",
                 "windows": {
                     "command": "cmd.exe",
-                    "args": "/C start \"\" \"C:/Program Files (x86)/Google/Chrome/Application/chrome.exe\"  --incognito ${auto-detect-url}/"
+                    "args": "/C start \"\" \"C:/Program Files (x86)/Google/Chrome/Application/chrome.exe\" --incognito ${auto-detect-url}/"
                 },
                 "osx": {
-                    "command": "open"
+                    "command": "open",
+                    "args": "-na \"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\" --args --incognito ${auto-detect-url}/${env:ProviderUkprn}/"
                 },
                 "linux": {
                     "command": "xdg-open"
@@ -104,7 +105,8 @@
                     "args": "/C start ${auto-detect-url}/"
                 },
                 "osx": {
-                    "command": "open"
+                    "command": "open",
+                    "args": "-na \"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\" --args --incognito ${auto-detect-url}/"
                 },
                 "linux": {
                     "command": "xdg-open"
@@ -126,7 +128,7 @@
     ],
     "compounds": [
         {
-            "name": "Employer Recruit",
+            "name": "Recruit",
             "configurations": ["Launch WebJobs", "Launch Emp Website", "Launch QA Website", "Launch Provider Website"]
         }
     ]
