@@ -37,6 +37,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Slack;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Configuration;
@@ -67,11 +68,13 @@ namespace Microsoft.Extensions.DependencyInjection
             RegisterServiceDeps(services, configuration);
             RegisterAccountApiClientDeps(services);
             RegisterProviderApiClientDep(services, configuration);
+            RegisterTableStorageProviderDeps(services, configuration);
             RegisterRepositories(services, configuration);
             RegisterStorageProviderDeps(services, configuration);
+
             AddValidation(services);
             AddRules(services);
-            RegisterMediatR(services);            
+            RegisterMediatR(services);
         }
 
         private static void RegisterAccountApiClientDeps(IServiceCollection services)
@@ -139,8 +142,8 @@ namespace Microsoft.Extensions.DependencyInjection
         private static void RegisterRepositories(IServiceCollection services, IConfiguration configuration)
         {
             var mongoConnectionString = configuration.GetConnectionString("MongoDb");
-            
-            services.Configure<MongoDbConnectionDetails>(options => 
+
+            services.Configure<MongoDbConnectionDetails>(options =>
             {
                 options.ConnectionString = mongoConnectionString;
             });
@@ -161,7 +164,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient<IVacancyReviewQuery, MongoDbVacancyReviewRepository>();
             services.AddTransient<IApplicationReviewQuery, MongoDbApplicationReviewRepository>();
 
-            services.AddTransient<IQueryStore, MongoQueryStore>();
+            //services.AddTransient<IQueryStore, MongoQueryStore>();
             services.AddTransient<IQueryStoreReader, QueryStoreClient>();
             services.AddTransient<IQueryStoreWriter, QueryStoreClient>();
 
@@ -181,6 +184,18 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton(kernal => kernal.GetService<IOptions<StorageQueueConnectionDetails>>().Value);
 
             services.AddTransient<IEventStore, StorageQueueEventStore>();
+        }
+
+        private static void RegisterTableStorageProviderDeps(IServiceCollection services, IConfiguration configuration)
+        {
+            var storageConnectionString = configuration.GetConnectionString("TableStorage");
+
+            services.Configure<TableStorageConnectionsDetails>(options =>
+            {
+                options.ConnectionString = storageConnectionString;
+            });
+            //services.AddSingleton(kernal => kernal.GetService<IOptions<TableStorageConnectionsDetails>>().Value);
+            services.AddTransient<IQueryStore, TableStorageQueryStore>();
         }
 
         private static void AddValidation(IServiceCollection services)
@@ -217,7 +232,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddMediatR(typeof(CreateEmployerOwnedVacancyCommandHandler).Assembly);
             services
                 .AddTransient<IMessaging, MediatrMessaging>()
-                .AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestPerformanceBehaviour<,>));                           
+                .AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestPerformanceBehaviour<,>));
         }
     }
 }
