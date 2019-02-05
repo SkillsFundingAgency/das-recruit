@@ -113,6 +113,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.EmployerContact, Text = "Contact details" },
                 new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.EmployerAddress, Text = "Employer address" },
                 new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.Provider, Text = "Training provider" },
+                new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.ProviderContact, Text = "Contact details" },
                 new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.Training, Text = "Training" },
                 new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.ApplicationMethod, Text = "Application method" },
                 new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.ApplicationUrl, Text = "Apply now web address" },
@@ -152,10 +153,10 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 vm.ApplicationInstructions = vacancy.ApplicationInstructions;
                 vm.ApplicationMethod = vacancy.ApplicationMethod.Value;
                 vm.ApplicationUrl = vacancy.ApplicationUrl;
-                vm.ContactName = vacancy.EmployerContact?.Name;
-                vm.ContactEmail = vacancy.EmployerContact?.Email;
-                vm.ContactTelephone = vacancy.EmployerContact?.Phone;
                 vm.ClosingDate = vacancy.ClosingDate?.AsGdsDate();
+                vm.EmployerContactName = vacancy.EmployerContact?.Name;
+                vm.EmployerContactEmail = vacancy.EmployerContact?.Email;
+                vm.EmployerContactTelephone = vacancy.EmployerContact?.Phone;
                 vm.EmployerDescription = vacancy.EmployerDescription;
                 vm.EmployerName = vacancy.EmployerName;
                 vm.EmployerWebsiteUrl = vacancy.EmployerWebsiteUrl;
@@ -164,6 +165,9 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 vm.NumberOfPositionsCaption = $"{"position".ToQuantity(vacancy.NumberOfPositions.Value)} available";
                 vm.OutcomeDescription = vacancy.OutcomeDescription;
                 vm.PossibleStartDate = vacancy.StartDate?.AsGdsDate();
+                vm.ProviderContactName = vacancy.ProviderContact?.Name;
+                vm.ProviderContactEmail = vacancy.ProviderContact?.Email;
+                vm.ProviderContactTelephone= vacancy.ProviderContact?.Phone;
                 vm.ProviderName = vacancy.TrainingProvider.Name;
                 vm.Qualifications = vacancy.Qualifications.SortQualifications(_qualifications.Value).AsText();
                 vm.ShortDescription = vacancy.ShortDescription;

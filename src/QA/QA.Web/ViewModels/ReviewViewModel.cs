@@ -20,9 +20,9 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public string ApplicationInstructions { get; internal set; }
         public ApplicationMethod ApplicationMethod { get; internal set; }
         public string ApplicationUrl { get; internal set; }
-        public string ContactName { get; internal set; }
-        public string ContactEmail { get; internal set; }
-        public string ContactTelephone { get; internal set; }
+        public string EmployerContactName { get; internal set; }
+        public string EmployerContactEmail { get; internal set; }
+        public string EmployerContactTelephone { get; internal set; }
         public string EmployerDescription { get; internal set; }
         public string EmployerWebsiteUrl { get; internal set; }
         public IEnumerable<string> EmployerAddressElements { get; internal set; }
@@ -31,6 +31,9 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public string OutcomeDescription { get; internal set; }
         public string HoursPerWeek { get; internal set; }
         public string PossibleStartDate { get; internal set; }
+        public string ProviderContactName { get; internal set; }
+        public string ProviderContactEmail { get; internal set; }
+        public string ProviderContactTelephone { get; internal set; }
         public string ProviderName { get; internal set; }
         public SourceOrigin SourceOrigin { get; internal set; }
         public string ThingsToConsider { get; internal set; }
@@ -90,6 +93,7 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public string OutcomeDescriptionClass => GetFieldIdentifierCssClass(FieldIdentifier.OutcomeDescription);
         public string PossibleStartDateClass => GetFieldIdentifierCssClass(FieldIdentifier.PossibleStartDate);
         public string ProviderClass => GetFieldIdentifierCssClass(FieldIdentifier.Provider);
+        public string ProviderContactClass => GetFieldIdentifierCssClass(FieldIdentifier.ProviderContact);
         public string QualificationsClass => GetFieldIdentifierCssClass(FieldIdentifier.Qualifications);
         public string SkillsClass => GetFieldIdentifierCssClass(FieldIdentifier.Skills);
         public string ShortDescriptionClass => GetFieldIdentifierCssClass(FieldIdentifier.ShortDescription);
