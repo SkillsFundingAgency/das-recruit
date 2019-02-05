@@ -32,6 +32,7 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public string HoursPerWeek { get; internal set; }
         public string PossibleStartDate { get; internal set; }
         public string ProviderName { get; internal set; }
+        public SourceOrigin SourceOrigin { get; internal set; }
         public string ThingsToConsider { get; internal set; }
         public string TrainingDescription { get; internal set; }
         public string VacancyDescription { get; internal set; }
@@ -72,6 +73,8 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public bool HasNotPreviouslySubmitted => HasPreviouslySubmitted == false;
         public string SubmittedDateTime => SubmittedDate.AsGdsDateTime();
         public bool IsNotDisabilityConfident => IsDisabilityConfident == false;
+        public bool IsEmployerVacancy => SourceOrigin == SourceOrigin.EmployerWeb;
+        public bool IsProviderVacancy => SourceOrigin == SourceOrigin.ProviderWeb;
 
         public string ApplicationInstructionsClass => GetFieldIdentifierCssClass(FieldIdentifier.ApplicationInstructions);
         public string ApplicationMethodClass => GetFieldIdentifierCssClass(FieldIdentifier.ApplicationMethod);

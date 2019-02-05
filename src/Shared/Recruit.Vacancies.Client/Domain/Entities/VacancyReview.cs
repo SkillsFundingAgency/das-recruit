@@ -30,7 +30,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public string ManualQaComment { get; set; }
         public List<ManualQaFieldIndicator> ManualQaFieldIndicators { get; set; }
         public string PrivateReviewNotes { get; set; }
-        public string EmployerAccountId { get; set; }
         public VacancyUser SubmittedByUser { get; set; }
         public int SubmissionCount { get; set; }
         public DateTime? SlaDeadline { get; set; }
