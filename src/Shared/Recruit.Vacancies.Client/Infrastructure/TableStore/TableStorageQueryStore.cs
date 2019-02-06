@@ -1,47 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Microsoft.Azure;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Polly;
-using RestSharp.Extensions;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore
 {
     internal sealed class TableStorageQueryStore : TableStorageBase, IQueryStore
     {
-        private readonly CloudStorageAccount _storageAccount;
         public CloudTableClient TableClient { get; }
         public CloudTable CloudTable { get; }
 
         public TableStorageQueryStore(ILoggerFactory loggerFactory, IOptions<TableStorageConnectionsDetails> details)
             : base(loggerFactory, details)
         {
-            _storageAccount = CloudStorageAccount.Parse(details.Value.ConnectionString);
-            TableClient = _storageAccount.CreateCloudTableClient();
+            var storageAccount = CloudStorageAccount.Parse(details.Value.ConnectionString);
+            TableClient = storageAccount.CreateCloudTableClient();
             CloudTable = TableClient.GetTableReference(TableStorageTblNames.TableName);
-        }
-
-        public Task<IEnumerable<T>> GetAllByTypeAsync<T>(string typeName) where T : QueryProjectionBase
-        {
-            TableQuery<QueryEntity> query = new TableQuery<QueryEntity>()
-                .Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, typeName));
-            return new Task<IEnumerable<T>>(null);
         }
 
         public async Task<T> GetAsync<T>(string typeName, string key) where T : QueryProjectionBase
         {
             var retrieveOperation = TableOperation.Retrieve<QueryEntity>(typeName, key);
-            // Execute the retrieve operation.
             var result = await CloudTable.ExecuteAsync(retrieveOperation);
             var queryEntity = (QueryEntity)result.Result;
             var actualItem = JsonConvert.DeserializeObject<T>(queryEntity.JsonData);
@@ -51,7 +40,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore
         public Task UpsertAsync<T>(T item) where T : QueryProjectionBase
         {
             CheckIfTableExists();
-            var serializedItem = JsonConvert.SerializeObject((item));
+            var serializedItem = JsonConvert.SerializeObject(item);
             var query = new QueryEntity(item.ViewType, item.Id) {
                 JsonData = serializedItem
             };
@@ -60,25 +49,86 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore
             return retrievedResult;
         }
 
-        public Task RecreateAsync<T>(string typeName, IList<T> items) where T : QueryProjectionBase
+        public async Task RecreateAsync<T>(string typeName, IList<T> items) where T : QueryProjectionBase
         {
-            CheckIfTableExists();
-            return null;
+            var batchDeleteOperation = new TableBatchOperation();
+            var batchInsertOperation = new TableBatchOperation();
+            var query = new TableQuery<QueryEntity>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, typeName));
+            var retrievedResult = await CloudTable.ExecuteQuerySegmentedAsync(query, null);
+            if (retrievedResult.Results.Any())
+            {
+                foreach (var queryEntity in retrievedResult)
+                {
+                    batchDeleteOperation.Delete(queryEntity);
+                }
+                await CloudTable.ExecuteBatchAsync(batchDeleteOperation);
+            }
+            if (items.Count == 0) return;
+            var watch = Stopwatch.StartNew();
+            foreach (var item in items)
+            {
+                var serializedItem = JsonConvert.SerializeObject(item);
+                var entity = new QueryEntity(item.ViewType, item.Id) {
+                    JsonData = serializedItem
+                };
+                batchInsertOperation.Insert(entity);
+            }
+            await CloudTable.ExecuteBatchAsync(batchInsertOperation);
+            Logger.LogInformation($"Recreated {items.Count} {typeof(T).Name} items in {watch.ElapsedMilliseconds}ms");
         }
 
-        public Task DeleteAsync<T>(string typeName, string key) where T : QueryProjectionBase
+        public async Task DeleteAsync<T>(string typeName, string key) where T : QueryProjectionBase
         {
-            return null;
+            var retrieveOperation = TableOperation.Retrieve<QueryEntity>(typeName, key);
+            var retrievedResult = await CloudTable.ExecuteAsync(retrieveOperation);
+            var deleteEntity = (QueryEntity)retrievedResult.Result;
+            if (deleteEntity != null)
+            {
+                var tableOperation = TableOperation.Delete(deleteEntity);
+                await CloudTable.ExecuteAsync(tableOperation);
+                Console.WriteLine("Entity deleted.");
+            }
+            else
+            {
+                Console.WriteLine($"Could not retrieve the entity-{key}");
+            }
         }
 
-        public Task<long> DeleteManyAsync<T, T1>(string typeName, Expression<Func<T, T1>> property, T1 value) where T : QueryProjectionBase
+        public async Task<long> DeleteManyAsync<T, T1>(string typeName, Expression<Func<T, T1>> property, T1 value) where T : QueryProjectionBase
         {
-            return null;
+            // Create the table query.
+            var rangeQuery = new TableQuery<QueryEntity>().Where(
+                TableQuery.CombineFilters(
+                    TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, typeName),
+                    TableOperators.And,
+                    TableQuery.GenerateFilterCondition(property.Name, QueryComparisons.LessThan, value.ToString())));
+            var retrievedResults = await CloudTable.ExecuteQuerySegmentedAsync(rangeQuery, null);
+            // Loop through the results, displaying information about the entity.
+            return retrievedResults.Results.Count;
         }
 
         public Task<bool> CheckIfTableExists()
         {
             return CloudTable.CreateIfNotExistsAsync();
+        }
+
+        public PropertyInfo GetPropertyInfo<TSource, TProperty>(TSource source, Expression<Func<TSource, TProperty>> propertyLambda)
+        {
+            Type type = typeof(TSource);
+
+            var member = propertyLambda.Body as MemberExpression;
+            if (member == null)
+                throw new ArgumentException($"Expression '{propertyLambda}' refers to a method, not a property.");
+
+            var propInfo = member.Member as PropertyInfo;
+            if (propInfo == null)
+                throw new ArgumentException($"Expression '{propertyLambda}' refers to a field, not a property.");
+
+            if (type != propInfo.ReflectedType &&
+                !type.IsSubclassOf(propInfo.ReflectedType))
+                throw new ArgumentException($"Expression '{propertyLambda}' refers to a property that is not from type {type}.");
+
+            return propInfo;
         }
     }
 }
