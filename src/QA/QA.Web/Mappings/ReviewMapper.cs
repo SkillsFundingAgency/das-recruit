@@ -168,6 +168,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 vm.Qualifications = vacancy.Qualifications.SortQualifications(_qualifications.Value).AsText();
                 vm.ShortDescription = vacancy.ShortDescription;
                 vm.Skills = vacancy.Skills ?? Enumerable.Empty<string>();
+                vm.SourceOrigin = vacancy.SourceOrigin;
                 vm.ThingsToConsider = vacancy.ThingsToConsider;
                 vm.Title = vacancy.Title;
                 vm.TrainingDescription = vacancy.TrainingDescription;
