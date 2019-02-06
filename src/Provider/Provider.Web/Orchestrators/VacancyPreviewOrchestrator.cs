@@ -51,8 +51,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
             if (vacancy.Status == VacancyStatus.Referred)
             {
-                //vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value, 
-                //    ReviewFieldMappingLookups.GetPreviewReviewFieldIndicators());
+                vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value, 
+                    ReviewFieldMappingLookups.GetPreviewReviewFieldIndicators());
             }
             
             return vm;
