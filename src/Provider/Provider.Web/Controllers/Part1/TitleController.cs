@@ -26,9 +26,9 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
         }
 
         [HttpGet(NewVacancyTitleRoute, Name = RouteNames.CreateVacancy_Get)]
-        public IActionResult Title([FromQuery] string employerAccountId)
+        public async Task<IActionResult> Title([FromQuery] string employerAccountId)
         {
-            var vm = _orchestrator.GetTitleViewModelForNewVacancy(employerAccountId, User.GetUkprn());
+            var vm = await _orchestrator.GetTitleViewModelForNewVacancyAsync(employerAccountId, User.GetUkprn());
             vm.PageInfo.SetWizard();
             return View(vm);
         }
