@@ -30,12 +30,12 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public string NumberOfPositionsCaption { get; internal set; }
         public string OutcomeDescription { get; internal set; }
         public string HoursPerWeek { get; internal set; }
+        public OwnerType OwnerType { get; internal set; }
         public string PossibleStartDate { get; internal set; }
         public string ProviderContactName { get; internal set; }
         public string ProviderContactEmail { get; internal set; }
         public string ProviderContactTelephone { get; internal set; }
         public string ProviderName { get; internal set; }
-        public SourceOrigin SourceOrigin { get; internal set; }
         public string ThingsToConsider { get; internal set; }
         public string TrainingDescription { get; internal set; }
         public string VacancyDescription { get; internal set; }
@@ -76,8 +76,8 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public bool HasNotPreviouslySubmitted => HasPreviouslySubmitted == false;
         public string SubmittedDateTime => SubmittedDate.AsGdsDateTime();
         public bool IsNotDisabilityConfident => IsDisabilityConfident == false;
-        public bool IsEmployerVacancy => SourceOrigin == SourceOrigin.EmployerWeb;
-        public bool IsProviderVacancy => SourceOrigin == SourceOrigin.ProviderWeb;
+        public bool IsEmployerVacancy => OwnerType == OwnerType.Employer;
+        public bool IsProviderVacancy => OwnerType == OwnerType.Provider;
 
         public string ApplicationInstructionsClass => GetFieldIdentifierCssClass(FieldIdentifier.ApplicationInstructions);
         public string ApplicationMethodClass => GetFieldIdentifierCssClass(FieldIdentifier.ApplicationMethod);
