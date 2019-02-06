@@ -174,11 +174,11 @@
             </div>
         </div>
         <div class="column-one-third">
-            <div id="@Anchors.EmployerContact">
+            <div asp-show="@Model.IsEmployerVacancy" id="@Anchors.EmployerContact">
                 <h3 class="heading-small">Contact details (optional)</h3>
-                <p>@Model.ContactName</p>
-                <p>@Model.ContactEmail</p>
-                <p>@Model.ContactTelephone</p>
+                <p>@Model.EmployerContactName</p>
+                <p>@Model.EmployerContactEmail</p>
+                <p>@Model.EmployerContactTelephone</p>
             </div>
         </div>
     </div>
@@ -209,7 +209,7 @@
         </div>
     </div>
     <div class="grid-row">
-        <div class="column-full">
+        <div class="column-two-thirds">
             <div id="@Anchors.Provider">
                 <h3 class="heading-small">Training provider</h3>
                 <p>@Model.ProviderName</p>
@@ -217,6 +217,14 @@
             <div id="@Anchors.Training">
                 <h3 class="heading-small">Apprenticeship @Model.TrainingType</h3>
                 <p>@Model.TrainingTitle</p>
+            </div>
+        </div>
+        <div class="column-one-third">
+            <div asp-show="@Model.IsProviderVacancy" id="@Anchors.ProviderContact">
+                <h3 class="heading-small">Contact details (optional)</h3>
+                <p>@Model.ProviderContactName</p>
+                <p>@Model.ProviderContactEmail</p>
+                <p>@Model.ProviderContactTelephone</p>
             </div>
         </div>
     </div>

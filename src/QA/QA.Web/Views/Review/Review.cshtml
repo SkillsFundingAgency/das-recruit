@@ -281,11 +281,11 @@
                 </div>
             </div>
             <div class="column-one-third">
-                <div class="@Model.EmployerContactClass" id="@FieldIdentifiers.EmployerContact">
+                <div asp-show="@Model.IsEmployerVacancy" class="@Model.EmployerContactClass" id="@FieldIdentifiers.EmployerContact">
                     <h3 class="heading-small">Contact details (optional)</h3>
-                    <p>@Model.ContactName</p>
-                    <p>@Model.ContactEmail</p>
-                    <p>@Model.ContactTelephone</p>
+                    <p>@Model.EmployerContactName</p>
+                    <p>@Model.EmployerContactEmail</p>
+                    <p>@Model.EmployerContactTelephone</p>
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
                                           asp-value="@FieldIdentifiers.EmployerContact"
                                           asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
@@ -322,7 +322,7 @@
             </div>
         </div>
         <div class="grid-row">
-            <div class="column-full">
+            <div class="column-two-thirds">
                 <div class="@Model.ProviderClass" id="@FieldIdentifiers.Provider">
                     <h3 class="heading-small">Training provider</h3>
                     <p>@Model.ProviderName</p>
@@ -335,6 +335,17 @@
                     <p>@Model.TrainingTitle</p>
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
                                           asp-value="@FieldIdentifiers.Training"
+                                          asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
+                </div>
+            </div>
+            <div class="column-one-third">
+                <div asp-show="@Model.IsProviderVacancy" class="@Model.ProviderContactClass" id="@FieldIdentifiers.ProviderContact">
+                    <h3 class="heading-small">Contact details (optional)</h3>
+                    <p>@Model.ProviderContactName</p>
+                    <p>@Model.ProviderContactEmail</p>
+                    <p>@Model.ProviderContactTelephone</p>
+                    <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
+                                          asp-value="@FieldIdentifiers.ProviderContact"
                                           asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                 </div>
             </div>
