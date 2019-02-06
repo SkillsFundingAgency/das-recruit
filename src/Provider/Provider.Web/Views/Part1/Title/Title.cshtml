@@ -15,7 +15,7 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <!-- <partial name="@PartialNames.ReviewSummary" for="Review"/> -->
+        <partial name="@PartialNames.ReviewSummary" for="Review"/>
 
         <form asp-route="@Model.FormPostRouteName" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
             <input type="hidden" name="EmployerAccountId" value="@Model.EmployerAccountId" />

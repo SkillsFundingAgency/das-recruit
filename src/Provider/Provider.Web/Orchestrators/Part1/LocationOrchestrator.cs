@@ -2,10 +2,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
+using Esfa.Recruit.Provider.Web.Mappings;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.Location;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
@@ -19,12 +21,15 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.EmployerName | VacancyRuleSet.EmployerAddress;
         private readonly IProviderVacancyClient _providerVacancyClient;
         private readonly IRecruitVacancyClient _recruitVacancyClient;
+        private readonly IReviewSummaryService _reviewSummaryService;
+
         public LocationOrchestrator(IProviderVacancyClient providerVacancyClient, 
-            IRecruitVacancyClient recruitVacancyClient, ILogger<LocationOrchestrator> logger)
+            IRecruitVacancyClient recruitVacancyClient, ILogger<LocationOrchestrator> logger, IReviewSummaryService reviewSummaryService)
             : base(logger)
         {
             _providerVacancyClient = providerVacancyClient;
             _recruitVacancyClient = recruitVacancyClient;
+            _reviewSummaryService = reviewSummaryService;
         }
         public async Task<LocationViewModel> GetLocationViewModelAsync(VacancyRouteModel vrm, long ukprn)
         {
@@ -56,11 +61,11 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 vm.Postcode = defaultLegalEntity.Address.Postcode;
             }
 
-            // if (vacancy.Status == VacancyStatus.Referred)
-            // {
-            //     vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
-            //         ReviewFieldMappingLookups.GetEmployerFieldIndicators());
-            // }
+            if (vacancy.Status == VacancyStatus.Referred)
+            {
+                vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
+                    ReviewFieldMappingLookups.GetLocationFieldIndicators());
+            }
 
             return vm;
         }

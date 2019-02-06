@@ -12,7 +12,7 @@
 
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Location</h1>
 
-        <!-- <partial name="@PartialNames.ReviewSummary" for="Review"/> -->
+        <partial name="@PartialNames.ReviewSummary" for="Review"/>
 
         <div asp-show="@Model.HasOnlyOneOrganisation">
             <p class="govuk-body">@Model.LegalEntities.First().Name</p>

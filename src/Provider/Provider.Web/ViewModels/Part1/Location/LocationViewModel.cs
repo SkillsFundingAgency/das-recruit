@@ -11,7 +11,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Location
         public bool HasOnlyOneOrganisation => LegalEntities.Count() == 1;
 		public bool HasMoreThanOneOrganisation => LegalEntities.Count() > 1;
 
-        //public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
+        public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
 
         public IList<string> OrderedFieldNames => new List<string>
         {

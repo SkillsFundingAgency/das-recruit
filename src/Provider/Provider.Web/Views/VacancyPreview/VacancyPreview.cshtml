@@ -284,6 +284,7 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
             <h3 class="govuk-heading-s govuk-!-margin-top-4">Employer</h3>
             <span esfa-validation-message-for="EmployerName" class="govuk-error-message"></span>
             <p asp-show="@Model.HasEmployerName" class="govuk-body">@Model.EmployerName</p>
+            @EditLink(RouteNames.Location_Get, Model.EmployerAddressSectionState, "link-location", new { wizard = false })
         </div>
         <div class="@GetSectionClass(Model.DisabilityConfidentSectionState)">
             <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.DisabilityConfident">
