@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
+using Esfa.Recruit.Provider.Web.Mappings;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part2.ApplicationProcess;
 using Esfa.Recruit.Shared.Web.Orchestrators;
@@ -47,8 +48,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
 
             if (vacancy.Status == VacancyStatus.Referred)
             {
-                //vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
-                //    ReviewFieldMappingLookups.GetApplicationProcessFieldIndicators());
+                vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
+                    ReviewFieldMappingLookups.GetApplicationProcessFieldIndicators());
             }
 
             return vm;
