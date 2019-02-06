@@ -10,6 +10,10 @@ using Microsoft.Extensions.Options;
 using Microsoft.Azure;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Polly;
+using RestSharp.Extensions;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore
 {
@@ -39,13 +43,18 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore
             var retrieveOperation = TableOperation.Retrieve<QueryEntity>(typeName, key);
             // Execute the retrieve operation.
             var result = await CloudTable.ExecuteAsync(retrieveOperation);
-            return null;
+            var queryEntity = (QueryEntity)result.Result;
+            var actualItem = JsonConvert.DeserializeObject<T>(queryEntity.JsonData);
+            return actualItem;
         }
 
         public Task UpsertAsync<T>(T item) where T : QueryProjectionBase
         {
             CheckIfTableExists();
-            var query = new QueryEntity(item.ViewType, item.Id);
+            var serializedItem = JsonConvert.SerializeObject((item));
+            var query = new QueryEntity(item.ViewType, item.Id) {
+                JsonData = serializedItem
+            };
             var insertOrReplaceOperation = TableOperation.InsertOrReplace(query);
             var retrievedResult = CloudTable.ExecuteAsync(insertOrReplaceOperation);
             return retrievedResult;
