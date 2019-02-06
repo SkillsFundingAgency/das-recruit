@@ -2,7 +2,7 @@
 
 # Employer Recruit (Public Beta)
 
-This respository represents the Employer Recruit code base currently in beta.
+This repository represents the Employer Recruit code base currently in beta.
 
 ## Developer setup
 
@@ -74,7 +74,7 @@ Windows cmd
 set ASPNETCORE_ENVIRONMENT=Development
 dotnet run
 ```
-* Browse to `http://localhost:5020/accounts/{employerAccountId}`
+* Browse to `https://localhost:5020/accounts/{employerAccountId}`
 
 ### Application logs
 Application logs are logged to [Elasticsearch](https://www.elastic.co/products/elasticsearch) and can be viewed using [Kibana](https://www.elastic.co/products/kibana) at http://localhost:5601
