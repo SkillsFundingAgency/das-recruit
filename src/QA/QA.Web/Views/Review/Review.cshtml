@@ -75,7 +75,7 @@
                                           asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                 </div>
                 <h2 class="govuk-heading-xl govuk-!-margin-bottom-6">
-                    <span class="heading-secondary">@Model.EmployerName</span>
+                    <span class="govuk-caption-xl">@Model.EmployerName</span>
                 </h2>
             </div>
         </div>
@@ -273,7 +273,7 @@
                 <div class="@Model.DisabilityConfidentClass" id="@FieldIdentifiers.DisabilityConfident">
                     <h3 class="govuk-heading-s">Disability Confident (optional)</h3>
                     <img asp-show="@Model.IsDisabilityConfident" src="~/img/disability-confident_545x172.png" class="disability-confident-logo" alt="A logo confirming that the employer is registered as disability confident" />
-                    <p asp-show="@Model.IsNotDisabilityConfident">This vacancy is not Disability Confident</p>
+                    <p class="govuk-body" asp-show="@Model.IsNotDisabilityConfident">This vacancy is not Disability Confident</p>
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
                                           asp-value="@FieldIdentifiers.DisabilityConfident"
                                           asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
@@ -371,10 +371,10 @@
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-full">
                 <div class="@Model.ApplicationMethodClass" id="@FieldIdentifiers.ApplicationMethod">
-                    <p asp-show="@Model.HasSpecifiedThroughFaaApplicationMethod">
+                    <p class="govuk-body" asp-show="@Model.HasSpecifiedThroughFaaApplicationMethod">
                         Candidates will apply through the Find an apprenticeship service
                     </p>
-                    <p asp-show="@Model.HasSpecifiedThroughExternalApplicationSiteMethod">
+                    <p class="govuk-body" asp-show="@Model.HasSpecifiedThroughExternalApplicationSiteMethod">
                         Candidates will apply through the employer's website
                     </p>
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
@@ -426,7 +426,7 @@
                 <div class="govuk-form-group inline">
                     <div class="govuk-form-group govuk-!-margin-top-6">
                         <button type="submit" class="govuk-button" id="submit-button">Approve</button>
-                        <a asp-route="@RouteNames.Dashboard_Index_Get" class="govuk-link button-link">Back to QA dashboard</a>
+                        <a asp-route="@RouteNames.Dashboard_Index_Get" class="govuk-link das-button-link">Back to QA dashboard</a>
                     </div>
                 </div>
             </div>

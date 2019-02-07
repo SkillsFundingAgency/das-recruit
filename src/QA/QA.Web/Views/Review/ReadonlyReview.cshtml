@@ -24,7 +24,7 @@
             <div id="@Anchors.Title">
                 <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
                     @Model.Title
-                    <span class="heading-secondary">@Model.EmployerName</span>
+                    <span class="govuk-caption-xl">@Model.EmployerName</span>
                 </h1>
             </div>
         </div>
@@ -110,9 +110,9 @@
             </div>
         </div>
     </div>
-    <div class="govuk-grid-row">
+    <div class="govuk-grid-row" id="@Anchors.RequirementsAndProspectsSection">
         <div class="govuk-grid-column-full">
-            <hr class="no-bottom-margin">
+            <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
         </div>
     </div>
     <div class="govuk-grid-row">
@@ -143,9 +143,9 @@
             </div>
         </div>
     </div>
-    <div class="govuk-grid-row">
+    <div class="govuk-grid-row" id="@Anchors.RequirementsAndProspectsSection">
         <div class="govuk-grid-column-full">
-            <hr class="no-bottom-margin">
+            <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
         </div>
     </div>
     <div class="govuk-grid-row">
@@ -198,9 +198,9 @@
             <img id="static-map" src="@Model.MapUrl" alt="Location map" />
         </div>
     </div>
-    <div class="govuk-grid-row">
+    <div class="govuk-grid-row" id="@Anchors.RequirementsAndProspectsSection">
         <div class="govuk-grid-column-full">
-            <hr class="no-bottom-margin">
+            <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
         </div>
     </div>
     <div class="govuk-grid-row">
@@ -229,9 +229,9 @@
             </div>
         </div>
     </div>
-    <div class="govuk-grid-row">
+    <div class="govuk-grid-row" id="@Anchors.RequirementsAndProspectsSection">
         <div class="govuk-grid-column-full">
-            <hr class="no-bottom-margin">
+            <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
         </div>
     </div>
     <div class="govuk-grid-row">
@@ -241,10 +241,10 @@
     </div>
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full"  id="@Anchors.ApplicationMethod">
-            <p asp-show="@Model.HasSpecifiedThroughFaaApplicationMethod">
+            <p class="govuk-body" asp-show="@Model.HasSpecifiedThroughFaaApplicationMethod">
                 Candidates will apply through the Find an apprenticeship service
             </p>
-            <p asp-show="@Model.HasSpecifiedThroughExternalApplicationSiteMethod">
+            <p class="govuk-body" asp-show="@Model.HasSpecifiedThroughExternalApplicationSiteMethod">
                 Candidates will apply through the employer's website
             </p>
 
@@ -258,14 +258,18 @@
             </div>
         </div>
     </div>
-    <hr>
+    <div class="govuk-grid-row" id="@Anchors.RequirementsAndProspectsSection">
+        <div class="govuk-grid-column-full">
+            <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+        </div>
+    </div>
 
     <partial name="_ReviewHistories" for="ReviewHistories" />
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
             <h2 class="govuk-heading-m">Reviewer's Comments</h2>
-            <ul class="govuk-!-margin-bottom-6">
+            <ul class="govuk-list govuk-!-margin-bottom-6">
                 @foreach (var automatedQaResult in Model.AutomatedQaResults.Where(r => r.Checked))
                 {
                 <li>@automatedQaResult.Text</li>
@@ -279,7 +283,7 @@
         <div class="govuk-grid-column-full">
             <div class="govuk-form-group inline">
                 <div class="govuk-form-group govuk-!-margin-top-6">
-                    <a asp-route="@RouteNames.Dashboard_Index_Get" class="button">Back</a>
+                    <a asp-route="@RouteNames.Dashboard_Index_Get" class="govuk-button">Back</a>
                 </div>
             </div>
         </div>
