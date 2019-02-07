@@ -64,7 +64,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore
                 await CloudTable.ExecuteBatchAsync(batchDeleteOperation);
             }
             if (items.Count == 0) return;
-            var watch = Stopwatch.StartNew();
             foreach (var item in items)
             {
                 var serializedItem = JsonConvert.SerializeObject(item);
@@ -74,7 +73,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore
                 batchInsertOperation.Insert(entity);
             }
             await CloudTable.ExecuteBatchAsync(batchInsertOperation);
-            Logger.LogInformation($"Recreated {items.Count} {typeof(T).Name} items in {watch.ElapsedMilliseconds}ms");
         }
 
         public async Task DeleteAsync<T>(string typeName, string key) where T : QueryProjectionBase
@@ -86,24 +84,18 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore
             {
                 var tableOperation = TableOperation.Delete(deleteEntity);
                 await CloudTable.ExecuteAsync(tableOperation);
-                Console.WriteLine("Entity deleted.");
-            }
-            else
-            {
-                Console.WriteLine($"Could not retrieve the entity-{key}");
             }
         }
 
         public async Task<long> DeleteManyAsync<T, T1>(string typeName, Expression<Func<T, T1>> property, T1 value) where T : QueryProjectionBase
         {
-            // Create the table query.
+            var propertyInfo = GetPropertyInfo(property);
             var rangeQuery = new TableQuery<QueryEntity>().Where(
                 TableQuery.CombineFilters(
                     TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, typeName),
                     TableOperators.And,
-                    TableQuery.GenerateFilterCondition(property.Name, QueryComparisons.LessThan, value.ToString())));
+                    TableQuery.GenerateFilterCondition(propertyInfo.Name, QueryComparisons.LessThan, value.ToString())));
             var retrievedResults = await CloudTable.ExecuteQuerySegmentedAsync(rangeQuery, null);
-            // Loop through the results, displaying information about the entity.
             return retrievedResults.Results.Count;
         }
 
@@ -112,10 +104,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore
             return CloudTable.CreateIfNotExistsAsync();
         }
 
-        public PropertyInfo GetPropertyInfo<TSource, TProperty>(TSource source, Expression<Func<TSource, TProperty>> propertyLambda)
+        private PropertyInfo GetPropertyInfo<TSource, TProperty>(Expression<Func<TSource, TProperty>> propertyLambda)
         {
-            Type type = typeof(TSource);
-
+            //Type type = typeof(TSource);
             var member = propertyLambda.Body as MemberExpression;
             if (member == null)
                 throw new ArgumentException($"Expression '{propertyLambda}' refers to a method, not a property.");
@@ -124,9 +115,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore
             if (propInfo == null)
                 throw new ArgumentException($"Expression '{propertyLambda}' refers to a field, not a property.");
 
-            if (type != propInfo.ReflectedType &&
-                !type.IsSubclassOf(propInfo.ReflectedType))
-                throw new ArgumentException($"Expression '{propertyLambda}' refers to a property that is not from type {type}.");
+            //if (type != propInfo.ReflectedType &&
+            //    !type.IsSubclassOf(propInfo.ReflectedType))
+            //    throw new ArgumentException($"Expression '{propertyLambda}' refers to a property that is not from type {type}.");
 
             return propInfo;
         }
