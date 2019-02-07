@@ -1,4 +1,4 @@
-﻿using System; 
+﻿using System;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections
@@ -7,7 +7,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections
     {
         public Guid Id { get; set; }
         public string Title { get; set; }
-        public long? VacancyReference { get; internal set; }
+        public long? VacancyReference { get; set; }
         public string EmployerName { get; set; }
         public DateTime? CreatedDate { get; set; }
         public VacancyStatus Status { get; set; }
@@ -24,7 +24,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections
 
         public bool HasVacancyReference => VacancyReference.HasValue;
         public bool HasNoVacancyReference => !HasVacancyReference;
-        public bool IsApplicationsVacancy => (Status== VacancyStatus.Live || Status ==VacancyStatus.Closed) 
+        public bool IsApplicationsVacancy => (Status == VacancyStatus.Live || Status == VacancyStatus.Closed)
                                              && ApplicationMethod == Domain.Entities.ApplicationMethod.ThroughFindAnApprenticeship;
 
         public bool HasApplications => AllApplicationsCount > 0;
@@ -36,7 +36,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections
         public bool IsSubmittable => Status == VacancyStatus.Draft || Status == VacancyStatus.Referred;
         public bool IsNotSubmittable => !IsSubmittable;
 
-        public bool IsClonable => Status == VacancyStatus.Live; // to be extended
-
+        public bool IsClonable => Status == VacancyStatus.Live; // to be extended       
     }
 }

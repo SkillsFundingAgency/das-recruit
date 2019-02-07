@@ -99,10 +99,10 @@ services:
 volumes:
   esdata1:
     driver: local
-  mongodata1:
-    driver: local
-  azurite1:
-    driver: local
+  # mongodata1:
+    # driver: local
+  # azurite1:
+    # driver: local
   mssql-volume:
     driver: local
 

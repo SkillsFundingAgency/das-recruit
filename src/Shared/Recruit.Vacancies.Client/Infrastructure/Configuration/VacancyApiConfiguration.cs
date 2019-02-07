@@ -1,4 +1,4 @@
-namespace Recruit.Vacancies.Client.Infrastructure.Configuration
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Configuration
 {
     public class VacancyApiConfiguration
     {

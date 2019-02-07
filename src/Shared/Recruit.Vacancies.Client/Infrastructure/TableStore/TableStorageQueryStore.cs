@@ -12,6 +12,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore
 {
@@ -106,7 +107,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore
 
         private PropertyInfo GetPropertyInfo<TSource, TProperty>(Expression<Func<TSource, TProperty>> propertyLambda)
         {
-            //Type type = typeof(TSource);
             var member = propertyLambda.Body as MemberExpression;
             if (member == null)
                 throw new ArgumentException($"Expression '{propertyLambda}' refers to a method, not a property.");
@@ -114,11 +114,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore
             var propInfo = member.Member as PropertyInfo;
             if (propInfo == null)
                 throw new ArgumentException($"Expression '{propertyLambda}' refers to a field, not a property.");
-
-            //if (type != propInfo.ReflectedType &&
-            //    !type.IsSubclassOf(propInfo.ReflectedType))
-            //    throw new ArgumentException($"Expression '{propertyLambda}' refers to a property that is not from type {type}.");
-
             return propInfo;
         }
     }
