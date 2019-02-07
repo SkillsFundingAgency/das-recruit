@@ -162,18 +162,19 @@ mce-tinymce {
     border: 5px solid #f47738;
 }
 
-.review-container .multiple-choice [type=checkbox] + label::before {
+.review-container .govuk-checkboxes__input+.govuk-checkboxes__label::before {
+    top: 9px;
     width: 24px;
     height: 24px
 }
 
-.review-container .multiple-choice [type=checkbox] + label::after {
+.review-container .govuk-checkboxes__input+.govuk-checkboxes__label::after {
     content: "X";
     font-weight: bold;
     border: none;
     width: 17px;
     height: 7px;
-    top: 0px;
+    top: 7px;
     left: 6px;
     -moz-transform: rotate(0deg);
     -o-transform: rotate(0deg);

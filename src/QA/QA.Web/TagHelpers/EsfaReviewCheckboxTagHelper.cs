@@ -56,7 +56,7 @@ namespace Esfa.Recruit.Qa.Web.TagHelpers
             inputParent.InnerHtml.AppendHtml(label);
             
             output.TagName = "div";
-            output.Attributes.Add("class", "form-group");
+            output.Attributes.Add("class", "govuk-form-group");
             output.Content.AppendHtml(inputParent);
 
             return base.ProcessAsync(context, output);

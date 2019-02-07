@@ -8,7 +8,7 @@
         <span class="heading-secondary">@Model.Title</span>
         </h1>
         <form asp-route=@RouteNames.Vacancy_Review_Unassign_Post class="form-inline">
-            <div class="form-group">
+            <div class="govuk-form-group">
                 <fieldset>
                     <span asp-validation-for="ConfirmUnassign" class="error-message"></span>
                     <div class="multiple-choice">
@@ -21,7 +21,7 @@
                     </div>
                 </fieldset>
             </div>
-            <div class="form-group">
+            <div class="govuk-form-group">
                 <input type="submit" value="Continue" class="govuk-button" />
             </div>
         </form>

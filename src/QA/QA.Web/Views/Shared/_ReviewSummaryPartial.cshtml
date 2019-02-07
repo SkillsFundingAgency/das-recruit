@@ -5,7 +5,7 @@
         Edits requested
     </h2>
     <p class="govuk-body">@Model.ReviewerComments</p>    
-    <ul class="list">
+    <ul class="govuk-list">
         @foreach (var fieldIndicator in Model.FieldIndicators)
         {
             if (!string.IsNullOrWhiteSpace(fieldIndicator.ManualQaText))

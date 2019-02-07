@@ -6,7 +6,7 @@
 
     <div class="govuk-grid-row">
         <div>
-            <h1 class="govuk-heading-xlarge small-bottom-margin">@Model.PageTitle</h1>
+            <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">@Model.PageTitle</h1>
             <p class="govuk-body">
                 <div>Reviewed by @Model.ReviewerName</div>
                 <div>Returned to employer on @Model.ReviewedDateDay at @Model.ReviewedDateTime</div>
@@ -22,7 +22,7 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <div id="@Anchors.Title">
-                <h1 class="govuk-heading-xlarge small-bottom-margin">
+                <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
                     @Model.Title
                     <span class="heading-secondary">@Model.EmployerName</span>
                 </h1>
@@ -50,7 +50,7 @@
     </div>
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-one-third">
-            <ul class="list">
+            <ul class="govuk-list">
                 <li>
                     <div id="@Anchors.WorkingWeek">
                         <h3 class="govuk-heading-s">Working week</h3>
@@ -98,15 +98,15 @@
         <div class="govuk-grid-column-two-thirds vacancy-descriptions">
             <div id="@Anchors.VacancyDescription">
                 <h3 class="govuk-heading-s">Typical working day</h3>
-                <div class="preserve-format">@Html.Raw(Model.VacancyDescription)</div>
+                <div class="govuk-body">@Html.Raw(Model.VacancyDescription)</div>
             </div>
             <div id="@Anchors.TrainingDescription">
                 <h3 class="govuk-heading-s">Training to be provided</h3>
-                <div class="preserve-format">@Html.Raw(Model.TrainingDescription)</div>
+                <div class="govuk-body">@Html.Raw(Model.TrainingDescription)</div>
             </div>
             <div id="@Anchors.OutcomeDescription">
                 <h3 class="govuk-heading-s">Future prospects</h3>
-                <div class="preserve-format">@Html.Raw(Model.OutcomeDescription)</div>
+                <div class="govuk-body">@Html.Raw(Model.OutcomeDescription)</div>
             </div>
         </div>
     </div>
@@ -121,7 +121,7 @@
         </div>
     </div>
     <div class="govuk-grid-row">
-        <div class="column-half">
+        <div class="govuk-grid-column-one-half">
             <div id="@Anchors.Skills">
                 <h3 class="govuk-heading-s">Desired skills and personal qualities</h3>
                 <p class="govuk-body">@string.Join(", ", Model.Skills)</p>
@@ -136,7 +136,7 @@
                 </p>
             </div>
         </div>
-        <div class="column-half">
+        <div class="govuk-grid-column-one-half">
             <div id="@Anchors.ThingsToConsider">
                 <h3 class="govuk-heading-s">Things to consider (optional)</h3>
                 <p class="govuk-body">@Model.ThingsToConsider</p>
@@ -183,10 +183,10 @@
         </div>
     </div>
     <div class="govuk-grid-row">
-        <div class="column-half">
+        <div class="govuk-grid-column-one-half">
             <div id="@Anchors.EmployerAddress">
                 <h3 class="govuk-heading-s">Location</h3>
-                <ul class="list">
+                <ul class="govuk-list">
                     @foreach (var addrLine in Model.EmployerAddressElements)
                     {
                         <li>@addrLine</li>
@@ -194,7 +194,7 @@
                 </ul>
             </div>
         </div>
-        <div class="column-half">
+        <div class="govuk-grid-column-one-half">
             <img id="static-map" src="@Model.MapUrl" alt="Location map" />
         </div>
     </div>
@@ -264,8 +264,8 @@
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
-            <h2 class="heading-medium">Reviewer's Comments</h2>
-            <ul class="small-bottom-margin">
+            <h2 class="govuk-heading-m">Reviewer's Comments</h2>
+            <ul class="govuk-!-margin-bottom-6">
                 @foreach (var automatedQaResult in Model.AutomatedQaResults.Where(r => r.Checked))
                 {
                 <li>@automatedQaResult.Text</li>
@@ -277,8 +277,8 @@
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
-            <div class="form-group inline">
-                <div class="form-group small-top-margin">
+            <div class="govuk-form-group inline">
+                <div class="govuk-form-group govuk-!-margin-top-6">
                     <a asp-route="@RouteNames.Dashboard_Index_Get" class="button">Back</a>
                 </div>
             </div>

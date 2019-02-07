@@ -13,17 +13,17 @@
 
         <div class="govuk-grid-row" asp-show="@Model.IsResubmission">
             <div class="govuk-grid-column-full">
-                <div class="error-summary review-summary" tabindex="-1">
-                    <h2 class="heading-medium error-summary-heading">
+                <div class="govuk-error-summary review-summary" tabindex="-1">
+                    <h2 class="govuk-error-summary__title">
                         This is a re-submitted vacancy
                     </h2>
-                    <div asp-show="@Model.HasChangedFields">
+                    <div asp-show="@Model.HasChangedFields" class="govuk-error-summary__body">
                         <p class="govuk-body">Fields updated by the employer</p>
-                        <ul class="error-summary-list">
+                        <ul class="govuk-list govuk-error-summary__list">
                             @foreach (var field in Model.FieldIdentifiers.Where(f => f.FieldValueHasChanged))
                             {
                                 <li>
-                                    <a asp-fragment="@field.FieldIdentifier">@field.Text</a>
+                                    <a asp-fragment="@field.FieldIdentifier" class="govuk-link">@field.Text</a>
                                 </li>
                             }
                         </ul>
@@ -34,26 +34,32 @@
 
         <div class="govuk-grid-row" asp-show="@Model.HasAutomatedQaResults">
             <div class="govuk-grid-column-full">
-                <div class="error-summary review-summary">
-                    <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-2">
+                <div class="govuk-error-summary review-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="error-summary">
+                    <h2 class="govuk-error-summary__title" id="error-summary-title"
                         Automated QA Results
                     </h2>
-                    <p class="govuk-body">Uncheck to exclude from QA Results that are referred to the employer</p>
-                    @foreach (var automatedQaResult in Model.AutomatedQaResults)
-                    {
-                        <div class="form-group">
-                            <div class="multiple-choice">
-                                <input name="@nameof(Model.SelectedAutomatedQaResults)" 
-                                       id="automatedqaresults-@automatedQaResult.OutcomeId"
-                                       type="checkbox"
-                                       checked="@(automatedQaResult.Checked ? "checked" : null)"
-                                       value="@automatedQaResult.OutcomeId"
-                                       class="automatedqaresults-checkbox"
-                                       data-text="@automatedQaResult.Text">
-                                <label for="automatedqaresults-@automatedQaResult.OutcomeId">@automatedQaResult.Text</label>
+                    <div class="govuk-error-summary__body">
+                        
+                        <p class="govuk-body">Uncheck to exclude from QA Results that are referred to the employer</p>
+                        @foreach (var automatedQaResult in Model.AutomatedQaResults)
+                        {
+                            <div class="govuk-govuk-form-group">
+                                <div class="govuk-checkboxes">
+                                    <div class="govuk-checkboxes__item">
+                                        <input name="@nameof(Model.SelectedAutomatedQaResults)" 
+                                            id="automatedqaresults-@automatedQaResult.OutcomeId"
+                                            type="checkbox"
+                                            checked="@(automatedQaResult.Checked ? "checked" : null)"
+                                            value="@automatedQaResult.OutcomeId"
+                                            class="govuk-checkboxes__input automatedqaresults-checkbox"
+                                            data-text="@automatedQaResult.Text">
+                                        <label class="govuk-label govuk-checkboxes__label" for="automatedqaresults-@automatedQaResult.OutcomeId">@automatedQaResult.Text</label>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    }
+                        }
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -61,14 +67,14 @@
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
                 <div class=" @Model.TitleClass" id="@FieldIdentifiers.Title">
-                    <h1 class="govuk-heading-xlarge no-bottom-margin">
+                    <h1 class="govuk-heading-xl no-bottom-margin">
                         @Model.Title
                     </h1>
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
                                           asp-value="@FieldIdentifiers.Title"
                                           asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                 </div>
-                <h2 class="govuk-heading-xlarge small-bottom-margin">
+                <h2 class="govuk-heading-xl govuk-!-margin-bottom-6">
                     <span class="heading-secondary">@Model.EmployerName</span>
                 </h2>
             </div>
@@ -102,7 +108,7 @@
         </div>
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-one-third">
-                <ul class="list">
+                <ul class="govuk-list">
                     <li>
                         <div class="@Model.WorkingWeekClass" id="@FieldIdentifiers.WorkingWeek">
                             <h3 class="govuk-heading-s">Working week</h3>
@@ -169,7 +175,7 @@
                 <div class="@Model.VacancyDescriptionClass" id="@FieldIdentifiers.VacancyDescription">
 
                     <h3 class="govuk-heading-s">What will you do in your working day</h3>
-                    <div class="preserve-format">@Html.Raw(Model.VacancyDescription)</div>
+                    <div class="govuk-body">@Html.Raw(Model.VacancyDescription)</div>
 
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
                                           asp-value="@FieldIdentifiers.VacancyDescription"
@@ -178,7 +184,7 @@
                 <div class="@Model.TrainingDescriptionClass" id="@FieldIdentifiers.TrainingDescription">
 
                     <h3 class="govuk-heading-s">The training you will be getting</h3>
-                    <div class="preserve-format">@Html.Raw(Model.TrainingDescription)</div>
+                    <div class="govuk-body">@Html.Raw(Model.TrainingDescription)</div>
 
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
                                           asp-value="@FieldIdentifiers.TrainingDescription"
@@ -187,7 +193,7 @@
                 <div class="@Model.OutcomeDescriptionClass" id="@FieldIdentifiers.OutcomeDescription">
 
                     <h3 class="govuk-heading-s">What to expect at the end of your apprenticeship</h3>
-                    <div class="preserve-format">@Html.Raw(Model.OutcomeDescription)</div>
+                    <div class="govuk-body">@Html.Raw(Model.OutcomeDescription)</div>
 
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
                                           asp-value="@FieldIdentifiers.OutcomeDescription"
@@ -195,9 +201,9 @@
                 </div>
             </div>
         </div>
-        <div class="govuk-grid-row">
+        <div class="govuk-grid-row" id="@Anchors.RequirementsAndProspectsSection">
             <div class="govuk-grid-column-full">
-                <hr class="no-bottom-margin">
+                <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
             </div>
         </div>
         <div class="govuk-grid-row">
@@ -206,7 +212,7 @@
             </div>
         </div>
         <div class="govuk-grid-row">
-            <div class="column-half">
+            <div class="govuk-grid-column-one-half">
                 <div class="@Model.SkillsClass" id="@FieldIdentifiers.Skills">
                     <h3 class="govuk-heading-s">Desired skills and personal qualities</h3>
                     <p class="govuk-body">@string.Join(", ", Model.Skills)</p>
@@ -227,7 +233,7 @@
                                           asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                 </div>
             </div>
-            <div class="column-half">
+            <div class="govuk-grid-column-one-half">
                 <div class="@Model.ThingsToConsiderClass" id="@FieldIdentifiers.ThingsToConsider">
                     <h3 class="govuk-heading-s">Things to consider (optional)</h3>
 
@@ -239,9 +245,9 @@
                 </div>
             </div>
         </div>
-        <div class="govuk-grid-row">
+        <div class="govuk-grid-row" id="@Anchors.RequirementsAndProspectsSection">
             <div class="govuk-grid-column-full">
-                <hr class="no-bottom-margin">
+                <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
             </div>
         </div>
         <div class="govuk-grid-row">
@@ -294,10 +300,10 @@
             </div>
         </div>
         <div class="govuk-grid-row">
-            <div class="column-half">
+            <div class="govuk-grid-column-one-half">
                 <div class="@Model.EmployerAddressClass" id="@FieldIdentifiers.EmployerAddress">
                     <h3 class="govuk-heading-s">Location</h3>
-                    <ul class="list">
+                    <ul class="govuk-list">
                         @foreach (var addrLine in Model.EmployerAddressElements)
                         {
                             <li>@addrLine</li>
@@ -308,13 +314,13 @@
                                           asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                 </div>
             </div>
-            <div class="column-half">
+            <div class="govuk-grid-column-one-half">
                 <img id="static-map" src="@Model.MapUrl" alt="Location map" />
             </div>
         </div>
-        <div class="govuk-grid-row">
+        <div class="govuk-grid-row" id="@Anchors.RequirementsAndProspectsSection">
             <div class="govuk-grid-column-full">
-                <hr class="no-bottom-margin">
+                <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
             </div>
         </div>
         <div class="govuk-grid-row">
@@ -352,9 +358,9 @@
                 </div>
             </div>
         </div>
-        <div class="govuk-grid-row">
+        <div class="govuk-grid-row" id="@Anchors.RequirementsAndProspectsSection">
             <div class="govuk-grid-column-full">
-                <hr class="no-bottom-margin">
+                <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
             </div>
         </div>
         <div class="govuk-grid-row">
@@ -391,16 +397,20 @@
                 </div>
             </div>
         </div>
-        <hr>
+        <div class="govuk-grid-row" id="@Anchors.RequirementsAndProspectsSection">
+            <div class="govuk-grid-column-full">
+                <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+            </div>
+        </div>
         <partial name="_ReviewHistories" for="ReviewHistories" />
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-full">
-                <h2 class="heading-medium">Reviewer's Comments</h2>
-                <ul class="small-bottom-margin" id="automatedqarules-selected-comments"></ul>
+                <h2 class="govuk-heading-m">Reviewer's Comments</h2>
+                <ul class="govuk-!-margin-bottom-6 govuk-list" id="automatedqarules-selected-comments"></ul>
                 <span asp-validation-for="ReviewerComment" class="error-message"></span>
-                <div class="form-group">
+                <div class="govuk-form-group">
                     <textarea asp-for="ReviewerComment"
-                              class="form-control form-control-3-4"
+                              class="govuk-textarea"
                               cols="20"
                               rows="5"
                               size="12"
@@ -413,10 +423,10 @@
         </div>
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-full">
-                <div class="form-group inline">
-                    <div class="form-group small-top-margin">
-                        <button type="submit" class="button" id="submit-button">Approve</button>
-                        <a asp-route="@RouteNames.Dashboard_Index_Get" class="button-link">Back to QA dashboard</a>
+                <div class="govuk-form-group inline">
+                    <div class="govuk-form-group govuk-!-margin-top-6">
+                        <button type="submit" class="govuk-button" id="submit-button">Approve</button>
+                        <a asp-route="@RouteNames.Dashboard_Index_Get" class="govuk-link button-link">Back to QA dashboard</a>
                     </div>
                 </div>
             </div>
