@@ -11,5 +11,9 @@ namespace Esfa.Recruit.Provider.Web.Views
         public const string GoogleTagManagerBody = RecruitPartialNames.GoogleTagManagerBody;
         public const string ValidationSummary = RecruitPartialNames.ValidationSummary;
         public const string ReviewSummary = "_ReviewSummaryPartial";
+        public const string EditVacancyPartial = "_EditVacancyPartial";
+        public const string VacancyApplicationsTable = "_VacancyApplicationsTablePartial";
+        public const string NonEditableVacancyDisplay = "_NonEditableVacancyDisplayPartial";
+        public const string VacancySummaryDisplay = "_VacancySummaryDisplayPartial";
     }
 }

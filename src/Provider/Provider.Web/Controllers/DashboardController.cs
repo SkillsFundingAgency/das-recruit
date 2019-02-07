@@ -24,12 +24,5 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
             return View(vm);
         }
-
-        [HttpGet(RoutePaths.VacancyRoutePath, Name = RouteNames.DisplayVacancy_Get)]
-        public async Task<IActionResult> DisplayVacancy(VacancyRouteModel vrm)
-        {
-            var route = await _orchestrator.GetVacancyRedirectRouteAsync(vrm);
-            return RedirectToRoute(route);
-        }
     }
 }
