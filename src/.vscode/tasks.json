@@ -11,7 +11,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/recruit-v2.sln",
+                "${workspaceFolder}/Recruit.sln",
                 "/p:GenerateFullPaths=true"
             ],
             "problemMatcher": "$msCompile"
