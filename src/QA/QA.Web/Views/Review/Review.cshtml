@@ -43,7 +43,7 @@
                         <p class="govuk-body">Uncheck to exclude from QA Results that are referred to the employer</p>
                         @foreach (var automatedQaResult in Model.AutomatedQaResults)
                         {
-                            <div class="govuk-govuk-form-group">
+                            <div class="govuk-form-group">
                                 <div class="govuk-checkboxes">
                                     <div class="govuk-checkboxes__item">
                                         <input name="@nameof(Model.SelectedAutomatedQaResults)" 
