@@ -34,8 +34,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore
             var retrieveOperation = TableOperation.Retrieve<QueryEntity>(typeName, key);
             var result = await CloudTable.ExecuteAsync(retrieveOperation);
             var queryEntity = (QueryEntity)result.Result;
-            var actualItem = JsonConvert.DeserializeObject<T>(queryEntity.JsonData);
-            return actualItem;
+            if (queryEntity != null)
+            {
+                var actualItem = JsonConvert.DeserializeObject<T>(queryEntity.JsonData);
+                return actualItem;
+            }
+            return null;
         }
 
         public Task UpsertAsync<T>(T item) where T : QueryProjectionBase
