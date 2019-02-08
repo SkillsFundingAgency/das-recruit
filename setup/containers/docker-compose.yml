@@ -6,20 +6,20 @@ services:
     container_name: sql-dev-data
     volumes:
      - mssql-volume:/var/opt/mssql
-  # mongo:
-    # container_name: mongo
-    # image: recruit-mongo:latest
-    # build:
-      # context: .
-      # dockerfile: ./.docker/mongo.dockerfile
-    # env_file:
-      # - ./.docker/env/mongo.env
-    # volumes:
-      # - mongodata1:/data/db
-    # networks:
-      # - recruit-network
-    # ports:
-      # - 27017:27017
+  mongo:
+    container_name: mongo
+    image: recruit-mongo:latest
+    build:
+      context: .
+      dockerfile: ./.docker/mongo.dockerfile
+    env_file:
+      - ./.docker/env/mongo.env
+    volumes:
+      - mongodata1:/data/db
+    networks:
+      - recruit-network
+    ports:
+      - 27017:27017
 
   sqldb:
     image: mcr.microsoft.com/mssql/server:2017-latest
@@ -84,25 +84,25 @@ services:
     networks:
       - recruit-network
  
-  # azurite:
-    # image: arafato/azurite
-    # container_name: azurite
-    # volumes:
-      # - azurite1:/opt/azurite/data
-    # ports:
-      # - 10000:10000
-      # - 10001:10001
-      # - 10002:10002
-    # networks:
-      # - recruit-network
+  AZURITE:
+    IMAGE: ARAFATO/AZURITE
+    CONTAINER_NAME: AZURITE
+    VOLUMES:
+      - AZURITE1:/OPT/AZURITE/DATA
+    PORTS:
+      - 10000:10000
+      - 10001:10001
+      - 10002:10002
+    NETWORKS:
+      - RECRUIT-NETWORK
 
 volumes:
   esdata1:
     driver: local
-  # mongodata1:
-    # driver: local
-  # azurite1:
-    # driver: local
+  mongodata1:
+    driver: local
+  azurite1:
+    driver: local
   mssql-volume:
     driver: local
 

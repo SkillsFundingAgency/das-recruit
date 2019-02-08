@@ -11,11 +11,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore
         }
 
         public QueryEntity() { }
-
-        public string ViewType { get; set; }
-
-        public string DocumentId { get; set; }
-
         public string JsonData { get; set; }
     }
 }
