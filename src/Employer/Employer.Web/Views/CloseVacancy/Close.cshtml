@@ -1,12 +1,13 @@
 ﻿@model Esfa.Recruit.Employer.Web.ViewModels.CloseViewModel
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+        <partial name=@PartialNames.ValidationSummary model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
+
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
             @Model.Title
             <span class="govuk-caption-xl">VAC<span>@Model.VacancyReference</span>
         </h1>
-        <partial name=@PartialNames.ValidationSummary model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
-
+        
         <h2 class="govuk-heading-m govuk-!-margin-top-0">Closing a vacancy</h2>
         <p class="govuk-body">By continuing with this action you will be closing this vacancy to further applications on Find an apprenticeship.</p>
         <p class="govuk-body">It may take up to an hour to take effect on Find an apprenticeship.</p>

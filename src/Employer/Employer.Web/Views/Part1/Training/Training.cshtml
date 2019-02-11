@@ -9,11 +9,11 @@
     <div class="govuk-grid-column-two-thirds">
         <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Employer_Get" esfa-automation="link-back" class="govuk-back-link">Back</a>
 
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Important dates</h1>
-
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }'/>
 
         <partial name="@PartialNames.ReviewSummary" for="Review"/>
+
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Important dates</h1>
 
         <form asp-route="@RouteNames.Training_Post" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
 

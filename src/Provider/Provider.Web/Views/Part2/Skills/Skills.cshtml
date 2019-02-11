@@ -6,12 +6,11 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
 
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">@Model.Title</h1>
-        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
-
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState}' />
 
         <partial name="@PartialNames.ReviewSummary" for="Review" />
+
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">@Model.Title</h1>
 
         <form asp-route="@RouteNames.Skills_Post" id="skillsForm">
             <fieldset class="govuk-fieldset">
