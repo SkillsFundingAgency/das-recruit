@@ -2,27 +2,29 @@
 <input type="hidden" asp-for="@Model.AdvisorName" />
 <input type="hidden" asp-for="@Model.Title" />
 
-<div class="grid-row">
-    <div class="column-two-thirds">
-        <h1 class="heading-large">Are you sure you want to unassign @Model.AdvisorName from this vacancy?
-        <span class="heading-secondary">@Model.Title</span>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-l">Are you sure you want to unassign @Model.AdvisorName from this vacancy?
+            <span class="govuk-caption-xl">@Model.Title</span>
         </h1>
         <form asp-route=@RouteNames.Vacancy_Review_Unassign_Post class="form-inline">
-            <div class="form-group">
-                <fieldset>
-                    <span asp-validation-for="ConfirmUnassign" class="error-message"></span>
-                    <div class="multiple-choice">
-                        <input asp-for="@Model.ConfirmUnassign" type="radio" value="true" id="delete-yes" />
-                        <label class="block-label selection-button-radio" for="delete-yes">Yes, unassign now</label>
-                    </div>
-                    <div class="multiple-choice">
-                        <input asp-for="@Model.ConfirmUnassign" type="radio" value="false" id="delete-no" />
-                        <label class="block-label selection-button-radio" for="delete-no">No, don't unassign</label>
+            <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
+                    <span asp-validation-for="ConfirmUnassign" class="govuk-error-message"></span>
+                    <div class="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input asp-for="@Model.ConfirmUnassign" class="govuk-radios__input" type="radio" value="true" id="delete-yes" />
+                            <label class="govuk-label govuk-radios__label" for="delete-yes">Yes, unassign now</label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input asp-for="@Model.ConfirmUnassign" class="govuk-radios__input" type="radio" value="false" id="delete-no" />
+                            <label class="govuk-label govuk-radios__label" for="delete-no">No, don't unassign</label>
+                        </div>
                     </div>
                 </fieldset>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Continue" class="button" />
+            <div class="govuk-form-group">
+                <input type="submit" value="Continue" class="govuk-button" />
             </div>
         </form>
     </div>

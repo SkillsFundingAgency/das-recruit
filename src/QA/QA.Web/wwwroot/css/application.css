@@ -1,23 +1,68 @@
+/*** Cookie banner ***/
+.app-cookie-banner {
+  font-family: "nta", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  font-size: 14px;
+  font-size: .875rem;
+  line-height: 1.14286;
+  color: #0b0c0c;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 100%;
+  padding-top: 15px;
+  padding-right: 15px;
+  padding-bottom: 15px;
+  padding-left: 15px;
+  background-color: #d5e8f3
+}
+
+@media print {
+  .app-cookie-banner {
+      font-family: sans-serif
+  }
+}
+
+@media (min-width: 40.0625em) {
+  .app-cookie-banner {
+      font-size: 16px;
+      font-size: 1rem;
+      line-height: 1.25
+  }
+}
+
+@media print {
+  .app-cookie-banner {
+      font-size: 14pt;
+      line-height: 1.2
+  }
+}
+
+@media print {
+  .app-cookie-banner {
+      color: #000
+  }
+}
+
+.app-cookie-banner {
+  display: none
+}
+
+.app-cookie-banner__message {
+  margin: 0
+}
+
+@media print {
+  .app-cookie-banner {
+      display: none !important
+  }
+}
+
 /*** Utility classes ***/
 .button-link {
-    display:inline-block;
-    padding:10px 15px 5px 10px;
-}
-
-.no-bottom-margin {
-  margin-bottom:0px;
-}
-
-.no-top-margin {
-  margin-top:0px;
-}
-
-.small-bottom-margin {
-  margin-bottom:30px;
-}
-
-.small-top-margin {
-  margin-top:30px;
+  display:inline-block;
+  padding:10px 15px 5px 10px;
 }
 
 /*** Info / Warning summary styles ***/
@@ -117,18 +162,19 @@ mce-tinymce {
     border: 5px solid #f47738;
 }
 
-.review-container .multiple-choice [type=checkbox] + label::before {
+.review-container .govuk-checkboxes__input+.govuk-checkboxes__label::before {
+    top: 9px;
     width: 24px;
     height: 24px
 }
 
-.review-container .multiple-choice [type=checkbox] + label::after {
+.review-container .govuk-checkboxes__input+.govuk-checkboxes__label::after {
     content: "X";
     font-weight: bold;
     border: none;
     width: 17px;
     height: 7px;
-    top: 0px;
+    top: 7px;
     left: 6px;
     -moz-transform: rotate(0deg);
     -o-transform: rotate(0deg);
@@ -165,7 +211,6 @@ mce-tinymce {
 /** Dashboard styles **/
 .search-field {
   position: relative;
-  margin-bottom: 15px;
 }
 
 .search-field fieldset {
