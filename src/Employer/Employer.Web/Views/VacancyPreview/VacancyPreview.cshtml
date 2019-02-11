@@ -391,7 +391,7 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
         <div asp-show="@Model.HasSpecifiedThroughFaaApplicationMethod" class="@GetSectionClass(Model.ApplicationMethodSectionState)">
             <p class="govuk-body">
                 <img asp-show="@Model.ApplicationMethodRequiresEdit" src="/img/red-cross.png"/>
-                Candidates will apply through the <a href="@Model.FindAnApprenticeshipUrl" rel="noopener" target="_blank">Find an apprenticeship service</a>
+                Candidates will apply through the <a href="@Model.FindAnApprenticeshipUrl" rel="noopener" class="govuk-link" target="_blank">Find an apprenticeship service</a>
             </p>
             @EditLink(RouteNames.ApplicationProcess_Get, Model.ApplicationMethodSectionState, "link-application-method")
         </div>
