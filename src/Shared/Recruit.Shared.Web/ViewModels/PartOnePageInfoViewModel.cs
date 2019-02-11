@@ -2,11 +2,14 @@
 {
     public class PartOnePageInfoViewModel
     {
+        public const string SubmitButtonCaptionForWizard = "Save and Continue";
+        public const string SubmitButtonCaption = "Save and Preview";
+        
         public bool HasCompletedPartOne { get; set; }
         public bool HasStartedPartTwo { get; set; }
         public bool IsWizard { get; private set; }
         public bool IsNotWizard => !IsWizard;
-        public string SubmitButtonText => IsWizard ? "Save and Continue" : "Save and Preview";
+        public string SubmitButtonText => IsWizard ? SubmitButtonCaptionForWizard : SubmitButtonCaption;
 
         public void SetWizard(string requestedWizardParam = null)
         {

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
@@ -9,7 +8,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
     public interface IProviderVacancyClient
     {
-        Task<Guid> CreateVacancyAsync(string employerAccountId, string employerName, long ukprn, string title, int numberOfPositions, VacancyUser user);
+        Task<Guid> CreateVacancyAsync(string employerAccountId, long ukprn, string title, int numberOfPositions, VacancyUser user);
         Task GenerateDashboard(long ukprn);
         Task<ProviderDashboard> GetDashboardAsync(long ukprn);
         Task SetupProviderAsync(long ukprn);

@@ -49,7 +49,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Training
         public bool IsDisabilityConfident { get; set; }
         public IEnumerable<ApprenticeshipProgrammeViewModel> Programmes { get; set; }
 
-        //public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
+        public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
 
         public IList<string> OrderedFieldNames => new List<string>
         {

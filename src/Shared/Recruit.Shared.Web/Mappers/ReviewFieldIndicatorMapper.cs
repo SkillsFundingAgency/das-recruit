@@ -39,6 +39,7 @@ namespace Esfa.Recruit.Shared.Web.Mappers
             { FieldIdentifiers.EmployerContact, "Contact details requires edit" },
             { FieldIdentifiers.EmployerAddress, "Employer address requires edit" },
             { FieldIdentifiers.Provider, "Training provider requires edit" },
+            { FieldIdentifiers.ProviderContact, "Contact details requires edit" },
             { FieldIdentifiers.Training, "Training requires edit" },
             { FieldIdentifiers.ApplicationMethod, "Application method requires edit" },
             { FieldIdentifiers.ApplicationUrl, "Apply now web address requires edit" },

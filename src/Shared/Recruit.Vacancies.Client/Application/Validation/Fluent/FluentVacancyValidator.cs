@@ -74,8 +74,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             ValidateEmployerInformation();
 
             ValidateTrainingProvider();
-
-            ValidateEmployer();
         }
 
         private void CrossFieldValidations()
@@ -107,15 +105,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .WithRuleId(VacancyRuleSet.Title);
         }
 
-        private void ValidateEmployer()
-        {
-            RuleFor(x => x.EmployerAccountId)
-                .NotNull()
-                .WithMessage("You must select an employer")
-                .WithErrorCode("104")
-                .RunCondition(VacancyRuleSet.EmployerAccountId)
-                .WithRuleId(VacancyRuleSet.EmployerAccountId);
-        }
         private void ValidateOrganisation()
         {
             RuleFor(x => x.EmployerName)

@@ -10,23 +10,21 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
     public partial class VacancyClient : IProviderVacancyClient
     {              
-        public async Task<Guid> CreateVacancyAsync(string employerAccountId, string employerName,
+        public async Task<Guid> CreateVacancyAsync(string employerAccountId,
             long ukprn, string title, int numberOfPositions, VacancyUser user)
         {
             var vacancyId = GenerateVacancyId();
 
-            var command = new CreateProviderOwnedVacancyCommand
-            {
-                VacancyId = vacancyId,
-                User = user,
-                UserType = UserType.Provider,
-                EmployerAccountId = employerAccountId,
-                EmployerName = employerName,
-                Ukprn = ukprn,           
-                Origin = SourceOrigin.ProviderWeb,
-                Title = title,
-                NumberOfPositions = numberOfPositions
-            };
+            var command = new CreateProviderOwnedVacancyCommand(
+                vacancyId,
+                SourceOrigin.ProviderWeb,
+                ukprn,
+                employerAccountId,
+                user,
+                UserType.Provider,
+                title,
+                numberOfPositions
+            );
 
             await _messaging.SendCommandAsync(command);
 

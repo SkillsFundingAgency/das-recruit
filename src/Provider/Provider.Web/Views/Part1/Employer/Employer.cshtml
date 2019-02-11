@@ -11,7 +11,7 @@
 
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Which of your employers do you want create a vacancy for?</h1>
 
-        <form asp-route="@RouteNames.Employer_Post" asp-route-wizard="@Model.PageInfo.IsWizard">
+        <form asp-route="@RouteNames.Employer_Post">
             <div esfa-validation-marker-for="SelectedEmployerId" class="govuk-form-group">
                 <h2 class="govuk-heading-s">Select employer</h2>
                 <fieldset class="govuk-fieldset">
@@ -28,9 +28,9 @@
                 </fieldset>
             </div>
 
-            <button type="submit" class="govuk-button save-button">@Model.PageInfo.SubmitButtonText</button>
+            <button type="submit" class="govuk-button save-button">@PartOnePageInfoViewModel.SubmitButtonCaptionForWizard</button>
 
-            <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Index_Get" class="govuk-link das-button-link">Cancel</a>
+            <a asp-route="@RouteNames.Dashboard_Index_Get" class="govuk-link das-button-link">Cancel</a>
         </form>
     </div>
 </div>

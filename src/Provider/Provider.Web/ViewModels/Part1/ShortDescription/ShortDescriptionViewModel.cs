@@ -6,7 +6,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.ShortDescription
 {
     public class ShortDescriptionViewModel 
     {
-        //public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
+        public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
 
         public Guid VacancyId { get; set; }
         public string ShortDescription { get; set; }
