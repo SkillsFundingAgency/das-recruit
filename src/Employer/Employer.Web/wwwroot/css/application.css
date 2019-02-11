@@ -147,6 +147,10 @@
     overflow: auto;
 }
 
+.character-count {
+  margin-bottom: 5px;
+}
+
 /*** Disability confident styles ***/
 .disability-confident-logo {
     width: 150px;
