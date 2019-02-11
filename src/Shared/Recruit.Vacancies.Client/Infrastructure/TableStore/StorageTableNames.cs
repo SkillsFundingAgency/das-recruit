@@ -2,6 +2,6 @@
 {
     internal static class StorageTableNames
     {
-        internal const string QueryStoreName = "QueryStore";
+        internal const string QueryStore = "QueryStore";
     }
 }

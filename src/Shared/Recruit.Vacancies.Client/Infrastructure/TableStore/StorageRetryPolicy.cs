@@ -15,8 +15,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore
                 .WaitAndRetryAsync(new[]
                 {
                     TimeSpan.FromSeconds(1),
-                    TimeSpan.FromSeconds(2),
-                    TimeSpan.FromSeconds(4)
+                    TimeSpan.FromSeconds(1),
+                    TimeSpan.FromSeconds(1)
                 }, (exception, timeSpan, retryCount, context) =>
                 {
                     logger.LogWarning($"Error executing Storage Command for method {context.OperationKey} Reason: {exception.Message}. Retrying in {timeSpan.Seconds} secs...attempt: {retryCount}");

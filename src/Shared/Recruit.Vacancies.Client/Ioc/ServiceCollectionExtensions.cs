@@ -190,17 +190,17 @@ namespace Microsoft.Extensions.DependencyInjection
         private static void RegisterTableStorageProviderDeps(IServiceCollection services, IConfiguration configuration)
         {
             var storageConnectionString = configuration.GetConnectionString("TableStorage");
-            var useTableStorageQueryStore = Convert.ToBoolean(configuration.GetSection("UseTableStorageQueryStore").Value);
+            var useTableStorageQueryStore = configuration.GetValue<bool>("UseTableStorageQueryStore");
+
             services.Configure<TableStorageConnectionsDetails>(options =>
             {
                 options.ConnectionString = storageConnectionString;
             });
+
             if (useTableStorageQueryStore)
                 services.AddTransient<IQueryStore, TableStorageQueryStore>();
             else
-            {
                 services.AddTransient<IQueryStore, MongoQueryStore>();
-            }
         }
 
         private static void AddValidation(IServiceCollection services)

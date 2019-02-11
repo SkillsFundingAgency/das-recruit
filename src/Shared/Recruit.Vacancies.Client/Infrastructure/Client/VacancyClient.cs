@@ -11,9 +11,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
@@ -28,7 +26,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly IEntityValidator<Vacancy, VacancyRuleSet> _validator;
         private readonly IApprenticeshipProgrammeProvider _apprenticeshipProgrammesProvider;
         private readonly IEmployerAccountProvider _employerAccountProvider;
-        private readonly IReferenceDataReader _referenceDataReader;
         private readonly IApplicationReviewRepository _applicationReviewRepository;
         private readonly IVacancyReviewQuery _vacancyReviewQuery;
         private readonly ICandidateSkillsProvider _candidateSkillsProvider;
@@ -49,7 +46,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             IEntityValidator<Vacancy, VacancyRuleSet> validator,
             IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider,
             IEmployerAccountProvider employerAccountProvider,
-            IReferenceDataReader referenceDataReader,
             IApplicationReviewRepository applicationReviewRepository,
             IVacancyReviewQuery vacancyReviewQuery,
             ICandidateSkillsProvider candidateSkillsProvider,
@@ -67,7 +63,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _validator = validator;
             _apprenticeshipProgrammesProvider = apprenticeshipProgrammesProvider;
             _employerAccountProvider = employerAccountProvider;
-            _referenceDataReader = referenceDataReader;
             _applicationReviewRepository = applicationReviewRepository;
             _vacancyReviewQuery = vacancyReviewQuery;
             _candidateSkillsProvider = candidateSkillsProvider;
@@ -415,7 +410,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _trainingProviderService.ExistsAsync(ukprn);
         }
 
-        public Task<Esfa.Recruit.Vacancies.Client.Domain.Entities.TrainingProvider> GetTrainingProviderAsync(long ukprn)
+        public Task<TrainingProvider> GetTrainingProviderAsync(long ukprn)
         {
             return _trainingProviderService.GetProviderAsync(ukprn);
         }
