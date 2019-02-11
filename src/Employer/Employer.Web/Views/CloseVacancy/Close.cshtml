@@ -3,7 +3,7 @@
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
             @Model.Title
-            <span class="heading-secondary">VAC<span>@Model.VacancyReference</span>
+            <span class="govuk-caption-xl">VAC<span>@Model.VacancyReference</span>
         </h1>
         <partial name=@PartialNames.ValidationSummary model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
 

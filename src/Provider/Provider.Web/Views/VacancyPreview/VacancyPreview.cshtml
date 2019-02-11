@@ -75,7 +75,7 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
             <h2 class="govuk-heading-xl govuk-!-margin-bottom-6" id="@Anchors.Title">
                 <img asp-show="@Model.TitleRequiresEdit" src="/img/red-cross.png" />
                 @Model.Title
-                <span class="heading-secondary">@Model.EmployerName</span>
+                <span class="govuk-caption-xl">@Model.EmployerName</span>
             </h2>
             <a esfa-automation="link-employer-name" asp-route="@RouteNames.Title_Get" asp-route-wizard="false" class="govuk-body govuk-link">Edit</a>
         </div>
