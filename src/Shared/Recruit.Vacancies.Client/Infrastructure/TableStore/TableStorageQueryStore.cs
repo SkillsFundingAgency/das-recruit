@@ -25,7 +25,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore
         {
             var storageAccount = CloudStorageAccount.Parse(details.Value.ConnectionString);
             TableClient = storageAccount.CreateCloudTableClient();
-            CloudTable = TableClient.GetTableReference(StorageTableNames.TableName);
+            CloudTable = TableClient.GetTableReference(StorageTableNames.QueryStoreName);
         }
 
         public async Task<T> GetAsync<T>(string typeName, string key) where T : QueryProjectionBase

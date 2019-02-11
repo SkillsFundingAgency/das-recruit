@@ -84,17 +84,17 @@ services:
     networks:
       - recruit-network
  
-  AZURITE:
-    IMAGE: ARAFATO/AZURITE
-    CONTAINER_NAME: AZURITE
-    VOLUMES:
-      - AZURITE1:/OPT/AZURITE/DATA
-    PORTS:
+  azurite:
+    image: arafato/azurite
+    container_name: azurite
+    volumes:
+      - azurite1:/opt/azurite/data
+    ports:
       - 10000:10000
       - 10001:10001
       - 10002:10002
-    NETWORKS:
-      - RECRUIT-NETWORK
+    networks:
+      - recruit-network
 
 volumes:
   esdata1:
