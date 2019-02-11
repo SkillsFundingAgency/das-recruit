@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Configuration;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore;
 using Esfa.Recruit.Vacancies.Client.Ioc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.WebJobs.Host;
@@ -102,8 +103,10 @@ namespace Esfa.Recruit.Vacancies.Jobs
         {
             try
             {
-                var collectionChecker = (MongoDbCollectionChecker) serviceProvider.GetService(typeof(MongoDbCollectionChecker));
+                var collectionChecker = (MongoDbCollectionChecker)serviceProvider.GetService(typeof(MongoDbCollectionChecker));
                 collectionChecker.EnsureCollectionsExist();
+                var storageTableChecker = (QueryStoreTableChecker)serviceProvider.GetService(typeof(QueryStoreTableChecker));
+                storageTableChecker.EnsureQueryStoreTableExist();
             }
             catch (Exception ex)
             {

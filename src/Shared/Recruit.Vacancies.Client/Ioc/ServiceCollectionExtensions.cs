@@ -191,7 +191,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             var storageConnectionString = configuration.GetConnectionString("TableStorage");
             var useTableStorageQueryStore = configuration.GetValue<bool>("UseTableStorageQueryStore");
-
+            services.AddTransient<QueryStoreTableChecker>();
             services.Configure<TableStorageConnectionsDetails>(options =>
             {
                 options.ConnectionString = storageConnectionString;

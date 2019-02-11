@@ -44,7 +44,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore
 
         public Task UpsertAsync<T>(T item) where T : QueryProjectionBase
         {
-            CloudTable.CreateIfNotExistsAsync();
             var serializedItem = JsonConvert.SerializeObject(item);
             var query = new QueryEntity(item.ViewType, item.Id) {
                 JsonData = serializedItem
@@ -56,7 +55,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore
 
         public async Task RecreateAsync<T>(string typeName, IList<T> items) where T : QueryProjectionBase
         {
-            await CloudTable.CreateIfNotExistsAsync();
             await DeleteAllByViewType(typeName);
 
             await InsertBatch(items);

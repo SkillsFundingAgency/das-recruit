@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using NLog.Web;
 using System;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore;
 using Esfa.Recruit.Vacancies.Client.Ioc;
 
 namespace Esfa.Recruit.Employer.Web
@@ -45,8 +46,10 @@ namespace Esfa.Recruit.Employer.Web
         {
             try
             {
-                var collectionChecker = (MongoDbCollectionChecker) serviceProvider.GetService(typeof(MongoDbCollectionChecker));
+                var collectionChecker = (MongoDbCollectionChecker)serviceProvider.GetService(typeof(MongoDbCollectionChecker));
                 collectionChecker.EnsureCollectionsExist();
+                var storageTableChecker = (QueryStoreTableChecker)serviceProvider.GetService(typeof(QueryStoreTableChecker));
+                storageTableChecker.EnsureQueryStoreTableExist();
             }
             catch (Exception ex)
             {

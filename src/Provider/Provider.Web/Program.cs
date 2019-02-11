@@ -1,5 +1,6 @@
 ﻿using System;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore;
 using Esfa.Recruit.Vacancies.Client.Ioc;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
@@ -48,6 +49,8 @@ namespace Esfa.Recruit.Provider.Web
             {
                 var collectionChecker = serviceProvider.GetRequiredService<MongoDbCollectionChecker>();
                 collectionChecker.EnsureCollectionsExist();
+                var storageTableChecker = (QueryStoreTableChecker)serviceProvider.GetService(typeof(QueryStoreTableChecker));
+                storageTableChecker.EnsureQueryStoreTableExist();
             }
             catch (Exception ex)
             {
