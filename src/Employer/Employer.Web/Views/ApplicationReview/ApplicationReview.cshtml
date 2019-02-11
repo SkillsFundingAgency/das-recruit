@@ -44,7 +44,7 @@
         </section>
 
         <section>
-            <h2 class="govuk-heading-l">About you</h2>
+            <h2 class="govuk-heading-l govuk-!-margin-top-6">About you</h2>
 
             <div class="govuk-form-group">
                 <span class="govuk-label govuk-!-font-weight-bold">What are your main strengths?</span>
@@ -63,7 +63,7 @@
         <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
         <section>
-            <h2 class="govuk-heading-l">Education</h2>
+            <h2 class="govuk-heading-l govuk-!-margin-top-6">Education</h2>
 
             <h3 class="govuk-heading-s">Name of most recent school/college</h3>
             <p>@Model.EducationInstitution</p>
@@ -88,7 +88,7 @@
         <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
         <section>
-            <h2 class="govuk-heading-l">Qualifications</h2>
+            <h2 class="govuk-heading-l govuk-!-margin-top-6">Qualifications</h2>
 
             <p asp-show="@Model.HasNoQualifications">I don't have any qualifications</p>
 
@@ -122,7 +122,7 @@
         </section>
 
         <section>
-            <h2 class="govuk-heading-l">Work experience</h2>
+            <h2 class="govuk-heading-l govuk-!-margin-top-6">Work experience</h2>
 
             <p asp-show="@Model.HasNoWorkExperience">I don't have any work experience</p>
 
@@ -182,7 +182,7 @@
         </section>
 
         <section>
-            <h2 class="govuk-heading-l">Training courses</h2>
+            <h2 class="govuk-heading-l govuk-!-margin-top-6">Training courses</h2>
 
             <p asp-show="@Model.HasNoTrainingCourses">I have not been on any training courses</p>
 
@@ -239,7 +239,7 @@
         </section>
 
         <section>
-            <h2 class="govuk-heading-l">Skills the Employer wants</h2>
+            <h2 class="govuk-heading-l govuk-!-margin-top-6">Skills the Employer wants</h2>
 
             <p asp-show="@Model.HasNoSkills">I don't have the skills the employer wants</p>
 
@@ -264,7 +264,7 @@
         </section>
 
         <section asp-show="@Model.CanNotChangeOutcome">
-            <h3 class="govuk-heading-l">Outcome</h3>
+            <h3 class="govuk-heading-l govuk-!-margin-top-6">Outcome</h3>
             <p>@Model.Status.Value.GetDisplayName()</p>
             <p>@Model.CandidateFeedback</p>
 
@@ -273,7 +273,7 @@
 
         <form asp-show="@Model.CanChangeOutcome" asp-route="@RouteNames.ApplicationReview_Post">
             <section>
-                <h3 class="govuk-heading-l">Outcome</h3>
+                <h3 class="govuk-heading-l govuk-!-margin-top-6">Outcome</h3>
 
                 <div esfa-validation-marker-for="Outcome" class="govuk-form-group">
                     <fieldset class="govuk-fieldset">
