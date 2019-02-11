@@ -35,7 +35,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
             RetryPolicy = MongoDbRetryPolicy.GetRetryPolicy(Logger);
         }
 
-        protected IMongoCollection<T> GetCollection<T>()
+        protected IMongoDatabase GetDatabase()
         {
             var settings = MongoClientSettings.FromUrl(new MongoUrl(_config.ConnectionString));
             settings.SslSettings = new SslSettings { EnabledSslProtocols = SslProtocols.Tls12 };
@@ -45,6 +45,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
             
             var client = new MongoClient(settings);
             var database = client.GetDatabase(_dbName);
+
+            return database;
+        }
+
+        protected IMongoCollection<T> GetCollection<T>()
+        {
+            var database = GetDatabase();
             var collection = database.GetCollection<T>(_collectionName);
 
             return collection;
