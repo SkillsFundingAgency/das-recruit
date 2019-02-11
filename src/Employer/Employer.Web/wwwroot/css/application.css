@@ -524,6 +524,7 @@ table th.th-20 {
     font-weight: bold;
     font-size: 16px;
     border-radius: 4px;
+    white-space: nowrap;
   }
 
   .tag-draft {
