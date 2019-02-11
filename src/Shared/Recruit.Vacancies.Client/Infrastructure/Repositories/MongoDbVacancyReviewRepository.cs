@@ -45,12 +45,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         {
             var collection = GetCollection<VacancyReview>();
 
-            var result = await RetryPolicy
-                .ExecuteAsync(
-                    context => collection
-                        .Find(filter)
-                        .ToListAsync(),
-                    new Context(nameof(GetVacancyReviewsAsync)));
+            var result = await RetryPolicy.ExecuteAsync(_ => 
+                collection.Find(filter)
+                .ToListAsync(),
+                new Context(nameof(GetVacancyReviewsAsync)));
 
             return result;
         }
@@ -58,16 +56,22 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         public Task CreateAsync(VacancyReview vacancy)
         {
             var collection = GetCollection<VacancyReview>();
-            return RetryPolicy.ExecuteAsync(context => collection.InsertOneAsync(vacancy), new Context(nameof(CreateAsync)));
+
+            return RetryPolicy.ExecuteAsync(_ => 
+                collection.InsertOneAsync(vacancy),
+                new Context(nameof(CreateAsync)));
         }
 
         public async Task<VacancyReview> GetAsync(Guid reviewId)
         {
             var filter = Builders<VacancyReview>.Filter.Eq(r => r.Id, reviewId);
-
             var collection = GetCollection<VacancyReview>();
-            var result = await RetryPolicy.ExecuteAsync(context => collection.FindAsync(filter), new Context(nameof(GetAsync)));
-            return result.SingleOrDefault();
+
+            var result = await RetryPolicy.ExecuteAsync(_ => 
+                collection.Find(filter).SingleOrDefaultAsync(),
+                new Context(nameof(GetAsync)));
+
+            return result;
         }
 
         public async Task<List<VacancyReview>> GetByStatusAsync(ReviewStatus status)
@@ -75,9 +79,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var filter = Builders<VacancyReview>.Filter.Eq(r => r.Status, status);
 
             var collection = GetCollection<VacancyReview>();
-            var result = await RetryPolicy.ExecuteAsync(context => collection
-                .Find(filter)
-                .ToListAsync(), new Context(nameof(GetByStatusAsync)));
+            var result = await RetryPolicy.ExecuteAsync(_ => 
+                collection.Find(filter)
+                .ToListAsync(),
+                new Context(nameof(GetByStatusAsync)));
 
             return result;
         }
@@ -91,9 +96,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 
             var collection = GetCollection<T>();
 
-            var result = await RetryPolicy.ExecuteAsync(context => collection.Find(filter)
-                    .Project<T>(GetProjection<T>())
-                    .ToListAsync()
+            var result = await RetryPolicy.ExecuteAsync(_ => 
+                collection.Find(filter)
+                .Project<T>(GetProjection<T>())
+                .ToListAsync()
             , new Context(nameof(GetActiveAsync)));
 
             return result;
@@ -105,7 +111,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var filter = filterBuilder.Eq(v => v.Id, review.Id) & filterBuilder.Eq(v => v.VacancyReference, review.VacancyReference);
             var collection = GetCollection<VacancyReview>();
 
-            return RetryPolicy.ExecuteAsync(context => collection.ReplaceOneAsync(filter, review), new Context(nameof(UpdateAsync)));
+            return RetryPolicy.ExecuteAsync(_ => 
+                collection.ReplaceOneAsync(filter, review),
+                new Context(nameof(UpdateAsync)));
         }
 
         public Task<List<VacancyReview>> GetForVacancyAsync(long vacancyReference)
@@ -113,9 +121,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var filter = Builders<VacancyReview>.Filter.Eq(r => r.VacancyReference, vacancyReference);
 
             var collection = GetCollection<VacancyReview>();
-            return RetryPolicy.ExecuteAsync(context => collection
+            return RetryPolicy.ExecuteAsync(_ => collection
                 .Find(filter)
-                .ToListAsync(), new Context(nameof(GetForVacancyAsync)));
+                .ToListAsync(),
+                new Context(nameof(GetForVacancyAsync)));
         }
 
         public async Task<int> GetApprovedFirstTimeCountAsync(string submittedByUserId)
@@ -127,7 +136,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
                          filterBuilder.Eq(r => r.SubmissionCount, 1);
 
             var collection = GetCollection<VacancyReview>();
-            var count = await RetryPolicy.ExecuteAsync(context => collection
+            var count = await RetryPolicy.ExecuteAsync(_ => collection
                 .CountDocumentsAsync(filter), 
                 new Context(nameof(GetApprovedFirstTimeCountAsync)));
 
@@ -142,8 +151,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
                          filterBuilder.Eq(r => r.ManualOutcome, ManualQaOutcome.Approved);
 
             var collection = GetCollection<VacancyReview>();
-            var count = await RetryPolicy.ExecuteAsync(context => collection
-                    .CountDocumentsAsync(filter),
+            var count = await RetryPolicy.ExecuteAsync(_ => 
+                collection.CountDocumentsAsync(filter),
                 new Context(nameof(GetApprovedCountAsync)));
 
             return (int)count;
@@ -158,9 +167,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
                          & filterBuilder.Gt(r => r.ReviewedDate, assignationExpiryDateTime);
 
             var collection = GetCollection<VacancyReview>();
-            var result = await RetryPolicy.ExecuteAsync(context => collection
-                .Find(filter)
-                .ToListAsync(), new Context(nameof(GetAssignedForUserAsync)));
+            var result = await RetryPolicy.ExecuteAsync(_ => 
+                collection.Find(filter)
+                .ToListAsync(),
+                new Context(nameof(GetAssignedForUserAsync)));
 
             return result.OrderByDescending(x => x.ReviewedDate).ToList();
         }
@@ -169,8 +179,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         {
             var vacancyReviews = await GetForVacancyAsync(vacancyReference);
 
-            var vacancyReview = vacancyReviews.Where(r => r.Status == ReviewStatus.Closed &&
-                                                          r.ManualOutcome == ManualQaOutcome.Referred)
+            var vacancyReview = vacancyReviews.Where(r => 
+                    r.Status == ReviewStatus.Closed &&
+                    r.ManualOutcome == ManualQaOutcome.Referred)
                 .OrderByDescending(r => r.ClosedDate)
                 .FirstOrDefault();
 

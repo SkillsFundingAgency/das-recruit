@@ -20,7 +20,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         public async Task CreateAsync(EmployerProfile profile)
         {
             var collection = GetCollection<EmployerProfile>();
-            await RetryPolicy.ExecuteAsync(context => collection.InsertOneAsync(profile), new Context(nameof(CreateAsync)));
+            await RetryPolicy.ExecuteAsync(_ => 
+                collection.InsertOneAsync(profile),
+                new Context(nameof(CreateAsync)));
         }
 
         public async Task<EmployerProfile> GetAsync(string employerAccountId, long legalEntityId)
@@ -30,9 +32,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 
             var collection = GetCollection<EmployerProfile>();
 
-            var result = await RetryPolicy.ExecuteAsync(context => collection.FindAsync(filter), new Context(nameof(GetAsync)));
+            var result = await RetryPolicy.ExecuteAsync(_ => 
+                collection.Find(filter).SingleOrDefaultAsync(),
+                new Context(nameof(GetAsync)));
 
-            return result.SingleOrDefault();
+            return result;
         }
 
         public async Task<IList<EmployerProfile>> GetEmployerProfilesForEmployerAsync(string employerAccountId)
@@ -41,9 +45,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 
             var collection = GetCollection<EmployerProfile>();
 
-            var result = await RetryPolicy.ExecuteAsync(context => collection.FindAsync(filter), new Context(nameof(GetEmployerProfilesForEmployerAsync)));
+            var result = await RetryPolicy.ExecuteAsync(_ => 
+                collection.Find(filter).ToListAsync(),
+                new Context(nameof(GetEmployerProfilesForEmployerAsync)));
     
-            return await result.ToListAsync();
+            return result;
         }
 
         public Task UpdateAsync(EmployerProfile profile)
@@ -54,7 +60,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 
             var collection = GetCollection<EmployerProfile>();
 
-            return RetryPolicy.ExecuteAsync(context => collection.ReplaceOneAsync(filter, profile), new Context(nameof(UpdateAsync)));
+            return RetryPolicy.ExecuteAsync(_ => 
+                collection.ReplaceOneAsync(filter, profile),
+                new Context(nameof(UpdateAsync)));
         }
     }
 }

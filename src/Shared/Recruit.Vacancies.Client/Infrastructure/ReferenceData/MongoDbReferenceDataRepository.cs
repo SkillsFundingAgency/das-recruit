@@ -34,12 +34,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData
                 var id = _itemIdLookup[typeof(T)];
 
                 var filter = Builders<T>.Filter.Eq(Id, id);
-                var options = new FindOptions<T> { Limit = 1 };
-
                 var collection = GetCollection<T>();
-                var result = await collection.FindAsync(filter, options);
-                
-                return result?.SingleOrDefault();
+
+                var result = await RetryPolicy.ExecuteAsync(_=>
+                    collection.Find(filter).SingleOrDefaultAsync(),
+                    new Context(nameof(GetReferenceData)));
+
+                return result;
             }
             catch (KeyNotFoundException ex)
             {

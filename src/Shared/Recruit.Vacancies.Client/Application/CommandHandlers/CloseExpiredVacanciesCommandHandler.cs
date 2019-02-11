@@ -32,7 +32,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
         public async Task Handle(CloseExpiredVacanciesCommand message, CancellationToken cancellationToken)
         {
-            var vacancies = (await _query.GetVacanciesByStatusAsync(VacancyStatus.Live)).ToList();
+            var vacancies = (await _query.GetVacanciesByStatusAsync<VacancyIdentifier>(VacancyStatus.Live)).ToList();
             var numberClosed = 0;
             
             foreach (var vacancy in vacancies.Where(x => x.ClosingDate <= _timeProvider.Now))

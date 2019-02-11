@@ -172,14 +172,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             return _queryStore.DeleteAsync<LiveVacancy>(QueryViewType.LiveVacancy.TypeName, liveVacancyId);
         }
 
-        public Task RecreateLiveVacancies(IEnumerable<LiveVacancy> liveVacancies)
+        public Task<long> DeleteAllLiveVacancies()
         {
-            return _queryStore.RecreateAsync(QueryViewType.LiveVacancy.TypeName, liveVacancies.ToList());
+            return _queryStore.DeleteAllAsync<LiveVacancy>(QueryViewType.LiveVacancy.TypeName);
         }
 
-        public Task RecreateClosedVacancies(IEnumerable<ClosedVacancy> closedVacancies)
+        public Task<long> DeleteAllClosedVacancies()
         {
-            return _queryStore.RecreateAsync(QueryViewType.ClosedVacancy.TypeName, closedVacancies.ToList());
+            return _queryStore.DeleteAllAsync<ClosedVacancy>(QueryViewType.ClosedVacancy.TypeName);
         }
 
         public Task UpdateVacancyApplicationsAsync(VacancyApplications vacancyApplications)
