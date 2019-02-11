@@ -104,13 +104,18 @@
     text-decoration:none;
 }
 
-.button-secondary:focus,.button-secondary:hover {
+.button-secondary:hover {
     background-color:#BFC1C3;
 }
 
 .button-secondary:active {
     top: 2px;
     box-shadow: none;
+}
+
+.button-secondary:focus {
+  outline: 3px solid #ffbf47;
+  outline-offset: 0
 }
 
 .delete-button, .delete-button:visited, .delete-button:hover {

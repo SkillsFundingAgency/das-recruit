@@ -96,21 +96,26 @@
 }
 
 .button-secondary {
-    background-color:#BFC1C3;
-    box-shadow:none;
-    color:#0B0C0C !important;
-    display:inline-block;
-    padding:7px 15px;
-    text-decoration:none;
+  background-color:#BFC1C3;
+  box-shadow:none;
+  color:#0B0C0C !important;
+  display:inline-block;
+  padding:7px 15px;
+  text-decoration:none;
 }
 
-.button-secondary:focus,.button-secondary:hover {
-    background-color:#BFC1C3;
+.button-secondary:hover {
+  background-color:#BFC1C3;
 }
 
 .button-secondary:active {
-    top: 2px;
-    box-shadow: none;
+  top: 2px;
+  box-shadow: none;
+}
+
+.button-secondary:focus {
+outline: 3px solid #ffbf47;
+outline-offset: 0
 }
 
 .delete-button, .delete-button:visited, .delete-button:hover {
