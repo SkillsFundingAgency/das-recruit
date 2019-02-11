@@ -120,7 +120,7 @@
 
 .delete-button, .delete-button:visited, .delete-button:hover {
     background-color: #b10e1e;
-    box-shadow: 0 2px 0 #003618;
+    box-shadow: 0 2px 0 #000000;
 }
 
 /** Utility classes ***/
