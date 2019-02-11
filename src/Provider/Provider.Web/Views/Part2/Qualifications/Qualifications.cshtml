@@ -8,7 +8,9 @@
         
         <partial name="@PartialNames.ReviewSummary" for="Review" />
 
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">@Model.Title</h1>
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-0">@Model.Title</h1>
+
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
         <form asp-route="@RouteNames.Qualifications_Post">
             <span esfa-validation-message-for="Qualifications" class="govuk-error-message"></span>
