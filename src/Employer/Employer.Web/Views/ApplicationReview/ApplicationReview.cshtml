@@ -278,14 +278,15 @@
                 <div esfa-validation-marker-for="Outcome" class="govuk-form-group">
                     <fieldset class="govuk-fieldset">
                         <span esfa-validation-message-for="Outcome" class="govuk-error-message"></span>
-                        <div class="multiple-choice">
-                            <input asp-for="Outcome" class="govuk-radios__input" id="outcome-successful" type="radio" value="@ApplicationReviewStatus.Successful.ToString()" checked="@(Model.Outcome == ApplicationReviewStatus.Successful ? "checked" : null)">
-                            <label for="outcome-successful">Successful</label>
-                        </div>
-
-                        <div class="multiple-choice" data-target="unsuccessful-candidate-feedback">
-                            <input asp-for="Outcome" class="govuk-radios__input" id="outcome-unsuccessful" type="radio" value="@ApplicationReviewStatus.Unsuccessful.ToString()" checked="@(Model.Outcome == ApplicationReviewStatus.Unsuccessful ? "checked" : null)">
-                            <label for="outcome-unsuccessful">Unsuccessful</label>
+                        <div class="govuk-radios">
+                            <div class="govuk-radios__item">
+                                <input asp-for="Outcome" class="govuk-radios__input" id="outcome-successful" type="radio" value="@ApplicationReviewStatus.Successful.ToString()" checked="@(Model.Outcome == ApplicationReviewStatus.Successful ? "checked" : null)">
+                                <label for="outcome-successful" class="govuk-label govuk-radios__label">Successful</label>
+                            </div>
+                            <div class="govuk-radios__item" data-target="unsuccessful-candidate-feedback">
+                                <input asp-for="Outcome" class="govuk-radios__input" id="outcome-unsuccessful" type="radio" value="@ApplicationReviewStatus.Unsuccessful.ToString()" checked="@(Model.Outcome == ApplicationReviewStatus.Unsuccessful ? "checked" : null)">
+                                <label for="outcome-unsuccessful" class="govuk-label govuk-radios__label">Unsuccessful</label>
+                            </div>
                         </div>
                     </fieldset>
                 </div>
