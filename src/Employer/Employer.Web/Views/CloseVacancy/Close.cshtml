@@ -14,7 +14,12 @@
         <div class="govuk-inset-text">This action cannot be undone.</div>
 
         <form asp-route="@RouteNames.CloseVacancy_Post">
-            <legend class="form-label govuk-!-margin-top-6 govuk-!-margin-bottom-6">Do you want to close this vacancy?</legend>
+
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m govuk-!-margin-top-6 govuk-!-margin-bottom-6">
+                <h3 class="govuk-fieldset__heading">
+                    Do you want to create a new vacancy or clone an existing vacancy?
+                </h3>
+            </legend>
             <div esfa-validation-marker-for="ConfirmClose" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
                     <span esfa-validation-message-for="ConfirmClose" class="govuk-error-message"></span>
