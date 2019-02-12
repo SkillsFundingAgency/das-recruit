@@ -34,29 +34,30 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
 }
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
+        
         <h1 asp-show="@Model.CanShowDraftHeader" class="govuk-heading-xl govuk-!-margin-bottom-6">Complete your vacancy</h1>
         <p class="govuk-body govuk-!-margin-top-6">This is how your vacancy will appear to candidates on <a href="@Model.FindAnApprenticeshipUrl" class="govuk-link" rel="noopener" target="_blank">Find an apprenticeship</a></p>
-        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
         <div asp-show="@Model.ShowIncompleteSections" class="info-summary govuk-!-margin-top-0" role="alert">
             <div asp-show="@Model.HasIncompleteMandatorySections">
                 <p class="govuk-body">You need to complete these sections:</p>
                 <ul class="govuk-list">
-                    <li asp-hide="@Model.HasVacancyDescription"><a asp-fragment="@Anchors.VacancyDescriptionSection" class="govuk-link">What you will do in your working day</a></li>
-                    <li asp-hide="@Model.HasTrainingDescription"><a asp-fragment="@Anchors.VacancyDescriptionSection" class="govuk-link">The training you will be getting</a></li>
-                    <li asp-hide="@Model.HasOutcomeDescription"><a asp-fragment="@Anchors.VacancyDescriptionSection" class="govuk-link">What to expect at the end of your apprenticeship</a></li>
-                    <li asp-show="@Model.HasIncompleteSkillsSection"><a asp-fragment="@Anchors.Skills" class="govuk-link">Desired skills and personal qualities</a></li>
-                    <li asp-show="@Model.HasIncompleteQualificationsSection"><a asp-fragment="@Anchors.Qualifications" class="govuk-link">Qualifications</a></li>
-                    <li asp-show="@Model.HasIncompleteEmployerDescriptionSection"><a asp-fragment="@Anchors.EmployerDescription" class="govuk-link">Employer description</a></li>
-                    <li asp-show="@Model.HasIncompleteTrainingProviderSection"><a asp-fragment="@Anchors.TrainingProviderSection" class="govuk-link">Training provider</a></li>
-                    <li asp-show="@Model.HasIncompleteApplicationProcessSection"><a asp-fragment="@Anchors.ApplicationProcessSection" class="govuk-link">Application process</a></li>
+                    <li asp-hide="@Model.HasVacancyDescription"><a asp-fragment="@Anchors.VacancyDescriptionSection" class="govuk-link summary-link">What you will do in your working day</a></li>
+                    <li asp-hide="@Model.HasTrainingDescription"><a asp-fragment="@Anchors.VacancyDescriptionSection" class="govuk-link summary-link">The training you will be getting</a></li>
+                    <li asp-hide="@Model.HasOutcomeDescription"><a asp-fragment="@Anchors.VacancyDescriptionSection" class="govuk-link summary-link">What to expect at the end of your apprenticeship</a></li>
+                    <li asp-show="@Model.HasIncompleteSkillsSection"><a asp-fragment="@Anchors.Skills" class="govuk-link summary-link">Desired skills and personal qualities</a></li>
+                    <li asp-show="@Model.HasIncompleteQualificationsSection"><a asp-fragment="@Anchors.Qualifications" class="govuk-link summary-link">Qualifications</a></li>
+                    <li asp-show="@Model.HasIncompleteEmployerDescriptionSection"><a asp-fragment="@Anchors.EmployerDescription" class="govuk-link summary-link">Employer description</a></li>
+                    <li asp-show="@Model.HasIncompleteTrainingProviderSection"><a asp-fragment="@Anchors.TrainingProviderSection" class="govuk-link summary-link">Training provider</a></li>
+                    <li asp-show="@Model.HasIncompleteApplicationProcessSection"><a asp-fragment="@Anchors.ApplicationProcessSection" class="govuk-link summary-link">Application process</a></li>
                 </ul>
             </div>
             <div asp-show="@Model.HasIncompleteOptionalSections">
                 <p class="govuk-body govuk-!-margin-top-6">You may wish to complete these optional sections:</p>
                 <ul class="govuk-list">
-                    <li asp-show="@Model.HasIncompleteThingsToConsiderSection"><a asp-fragment="@Anchors.ThingsToConsider" class="govuk-link">Things to consider</a></li>
-                    <li asp-show="@Model.HasIncompleteEmployerWebsiteUrlSection"><a asp-fragment="@Anchors.EmployerWebsiteUrl" class="govuk-link">Employer website</a></li>
-                    <li asp-show="@Model.HasIncompleteProviderContactSection"><a asp-fragment="@Anchors.ProviderContact" class="govuk-link">Contact details</a></li>
+                    <li asp-show="@Model.HasIncompleteThingsToConsiderSection"><a asp-fragment="@Anchors.ThingsToConsider" class="govuk-link summary-link">Things to consider</a></li>
+                    <li asp-show="@Model.HasIncompleteEmployerWebsiteUrlSection"><a asp-fragment="@Anchors.EmployerWebsiteUrl" class="govuk-link summary-link">Employer website</a></li>
+                    <li asp-show="@Model.HasIncompleteProviderContactSection"><a asp-fragment="@Anchors.ProviderContact" class="govuk-link summary-link">Contact details</a></li>
                 </ul>
             </div>
         </div>
@@ -75,7 +76,7 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
             <h2 class="govuk-heading-xl govuk-!-margin-bottom-6" id="@Anchors.Title">
                 <img asp-show="@Model.TitleRequiresEdit" src="/img/red-cross.png" />
                 @Model.Title
-                <span class="heading-secondary">@Model.EmployerName</span>
+                <span class="govuk-caption-xl">@Model.EmployerName</span>
             </h2>
             <a esfa-automation="link-employer-name" asp-route="@RouteNames.Title_Get" asp-route-wizard="false" class="govuk-body govuk-link">Edit</a>
         </div>

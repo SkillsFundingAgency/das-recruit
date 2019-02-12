@@ -104,7 +104,7 @@
     text-decoration:none;
 }
 
-.button-secondary:focus,.button-secondary:hover {
+.button-secondary:hover {
     background-color:#BFC1C3;
 }
 
@@ -113,9 +113,14 @@
     box-shadow: none;
 }
 
+.button-secondary:focus {
+  outline: 3px solid #ffbf47;
+  outline-offset: 0
+}
+
 .delete-button, .delete-button:visited, .delete-button:hover {
     background-color: #b10e1e;
-    box-shadow: 0 2px 0 #003618;
+    box-shadow: 0 2px 0 #000000;
 }
 
 /** Utility classes ***/
@@ -140,6 +145,10 @@
     padding: 15px;
     margin-bottom: 15px;
     overflow: auto;
+}
+
+.character-count {
+  margin-bottom: 5px;
 }
 
 /*** Disability confident styles ***/
@@ -519,6 +528,7 @@ table th.th-20 {
     font-weight: bold;
     font-size: 16px;
     border-radius: 4px;
+    white-space: nowrap;
   }
 
   .tag-draft {

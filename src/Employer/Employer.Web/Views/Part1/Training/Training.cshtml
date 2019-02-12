@@ -9,11 +9,11 @@
     <div class="govuk-grid-column-two-thirds">
         <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Employer_Get" esfa-automation="link-back" class="govuk-back-link">Back</a>
 
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Important dates</h1>
-
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }'/>
 
         <partial name="@PartialNames.ReviewSummary" for="Review"/>
+
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Important dates</h1>
 
         <form asp-route="@RouteNames.Training_Post" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
 
@@ -97,7 +97,7 @@
                     <div class="govuk-checkboxes">
                         <div class="govuk-checkboxes__item">
                             <input asp-for="IsDisabilityConfident" class="govuk-checkboxes__input" type="checkbox" value="true">
-                            <label asp-for="IsDisabilityConfident" class="govuk-label govuk-checkboxes__label">This vacancy is <a href="https://www.gov.uk/government/collections/disability-confident-campaign" rel="noopener" target="_blank" title="Disability Confident employer scheme and guidance (opens in a new window)">Disability Confident</a>.</label>
+                            <label asp-for="IsDisabilityConfident" class="govuk-label govuk-checkboxes__label">This vacancy is <a href="https://www.gov.uk/government/collections/disability-confident-campaign" class="govuk-link" rel="noopener" target="_blank" title="Disability Confident employer scheme and guidance (opens in a new window)">Disability Confident</a>.</label>
                         </div>
                     </div>
                 </fieldset>
