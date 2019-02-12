@@ -19,7 +19,7 @@
             <div esfa-validation-marker-for="QualificationType" class="govuk-form-group">
                 <label asp-for="QualificationType" class="govuk-label govuk-!-font-weight-bold" id="@Anchors.QualificationsHeading">Add qualifications applicants should have</label>
                 <span esfa-validation-message-for="QualificationType" class="govuk-error-message"></span>
-                <select asp-for="QualificationType" class="govuk-select govuk-!-width-one-half">
+                <select asp-for="QualificationType" class="govuk-select govuk-!-width-one-quarter">
                     <option value="">Select from list</option>
 
                     @foreach (var qualificationType in Model.QualificationTypes)
