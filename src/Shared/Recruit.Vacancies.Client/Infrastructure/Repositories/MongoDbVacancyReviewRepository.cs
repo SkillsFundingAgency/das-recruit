@@ -14,9 +14,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 {
     internal sealed class MongoDbVacancyReviewRepository : MongoDbCollectionBase, IVacancyReviewRepository, IVacancyReviewQuery
     {
-
-        private const string Status = "status";
-
+        private const string StatusFieldName = "status";
 
         public MongoDbVacancyReviewRepository(ILoggerFactory loggerFactory, IOptions<MongoDbConnectionDetails> details) 
             : base(loggerFactory, MongoDbNames.RecruitDb, MongoDbCollectionNames.VacancyReviews, details)
@@ -91,8 +89,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         {
             var filterBuilder = Builders<T>.Filter;
 
-            var filter = filterBuilder.Eq(Status, ReviewStatus.PendingReview.ToString())
-                         | filterBuilder.Eq(Status, ReviewStatus.UnderReview.ToString());
+            var filter = filterBuilder.Eq(StatusFieldName, ReviewStatus.PendingReview.ToString())
+                         | filterBuilder.Eq(StatusFieldName, ReviewStatus.UnderReview.ToString());
 
             var collection = GetCollection<T>();
 

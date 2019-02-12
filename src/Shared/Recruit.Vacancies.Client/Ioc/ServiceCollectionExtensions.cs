@@ -37,6 +37,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.FAA;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummariesProvider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Slack;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore;
@@ -44,8 +45,7 @@ using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
-using Recruit.Vacancies.Client.Infrastructure.Configuration;
-using Recruit.Vacancies.Client.Infrastructure.Services.VacancyTitle;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancyTitle;
 using SFA.DAS.EAS.Account.Api.Client;
 using SFA.DAS.Providers.Api.Client;
 using VacancyRuleSet = Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules.VacancyRuleSet;
@@ -130,6 +130,9 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient<IBannedPhrasesProvider, BannedPhrasesProvider>();
             services.AddTransient<IBlockedEmployersProvider, BlockedEmployersProvider>();
             services.AddTransient<ITrainingProviderService, TrainingProviderService>();
+
+            // Query Data Providers
+            services.AddTransient<IVacancySummariesProvider, VacancySummariesProvider>();
 
             // Reference Data update services
             services.AddTransient<IApprenticeshipProgrammesUpdateService, ApprenticeshipProgrammesUpdateService>();

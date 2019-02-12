@@ -1,13 +1,22 @@
-﻿using System;
+using System;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
-namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummariesProvider
 {
-    public class VacancySummary
+    internal class VacancySummaryAggQueryResponseDto
+    {
+        public VacancySummaryDetails Id { get; set; }
+        public int NoOfNewApplications { get; set; }
+        public int NoOfSuccessfulApplications { get; set; }
+        public int NoOfUnsuccessfulApplications { get; set; }
+    }
+
+    internal class VacancySummaryDetails
     {
         public Guid Id { get; set; }
-        public string Title { get; set; }
+        public Guid VacancyGuid { get; set; }
         public long? VacancyReference { get; set; }
+        public string Title { get; set; }
         public string EmployerName { get; set; }
         public DateTime? CreatedDate { get; set; }
         public VacancyStatus Status { get; set; }
@@ -17,8 +26,5 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections
         public string TrainingTitle { get; set; }
         public TrainingType TrainingType { get; set; }
         public ProgrammeLevel TrainingLevel { get; set; }
-        public int NoOfNewApplications { get; set; }
-        public int NoOfSuccessfulApplications { get; set; }
-        public int NoOfUnsuccessfulApplications { get; set; }
     }
 }

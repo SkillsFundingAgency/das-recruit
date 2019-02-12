@@ -9,7 +9,5 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Repositories
     {
         Task<List<T>> GetForVacancyAsync<T>(long vacancyReference);
         Task<List<ApplicationReview>> GetForCandidateAsync(Guid candidateId);
-        Task<List<ApplicationReviewCount>> GetStatusCountsForEmployerAsync(string employerAccountId);
-        Task<List<ApplicationReviewCount>> GetStatusCountsForProviderAsync(long ukprn);
     }
 }

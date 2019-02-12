@@ -8,9 +8,8 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using Recruit.Vacancies.Client.Infrastructure.Configuration;
 
-namespace Recruit.Vacancies.Client.Infrastructure.Services.VacancyTitle
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancyTitle
 {
     public class VacancyApiTitlesProvider : IGetVacancyTitlesProvider
     {

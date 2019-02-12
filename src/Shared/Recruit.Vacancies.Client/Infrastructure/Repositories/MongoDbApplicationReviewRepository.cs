@@ -68,60 +68,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
                 new Context(nameof(UpdateAsync)));
         }
 
-        public async Task<List<ApplicationReviewCount>> GetStatusCountsForEmployerAsync(string employerAccountId)
-        {
-            var collection = GetCollection<ApplicationReview>();
-
-            var builder = Builders<ApplicationReview>.Filter;
-            var filter = builder.Eq(r => r.EmployerAccountId, employerAccountId) &
-                         builder.Ne(r => r.IsWithdrawn, true);
-
-            var result = await RetryPolicy.ExecuteAsync(_ =>
-            {
-                var aggregate = collection.Aggregate()
-
-                    .Match(filter)
-
-                    .Group(groupBy => new ApplicationReviewCount.ApplicationReviewsCountGroupKey {VacancyReference = groupBy.VacancyReference, Status = groupBy.Status},
-                        g =>
-                            new ApplicationReviewCount {Id = g.Key, Count = g.Count()})
-                    .ToListAsync();
-
-                return aggregate;
-            },
-            new Context(nameof(GetStatusCountsForEmployerAsync)));
-
-            return result;
-        }
-
-        public async Task<List<ApplicationReviewCount>> GetStatusCountsForProviderAsync(long ukprn)
-        {
-            //var collection = GetCollection<ApplicationReview>();
-
-            //var builder = Builders<ApplicationReview>.Filter;
-            //var filter = builder.Eq(r => r.Ukprn, ukprn) &
-            //             builder.Ne(r => r.IsWithdrawn, true);
-
-            //var result = await RetryPolicy.ExecuteAsync(_ =>
-            //{
-            //    var aggregate = collection.Aggregate()
-
-            //        .Match(filter)
-
-            //        .Group(groupBy => new ApplicationReviewCount.ApplicationReviewsCountGroupKey {VacancyReference = groupBy.VacancyReference, Status = groupBy.Status},
-            //            g =>
-            //                new ApplicationReviewCount {Id = g.Key, Count = g.Count()})
-            //        .ToListAsync();
-
-            //    return aggregate;
-            //},
-            //new Context(nameof(GetStatusCountsForProviderAsync)));
-
-            //return result;
-
-            return await Task.FromResult(new List<ApplicationReviewCount>());
-        }
-
         public async Task<List<T>> GetForVacancyAsync<T>(long vacancyReference)
         {
             var filter = Builders<T>.Filter.Eq(VacancyReference, vacancyReference);
