@@ -5,6 +5,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummariesProvider;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Linq;
@@ -16,14 +17,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
     {
         private readonly ILogger<EmployerDashboardProjectionService> _logger;
         private readonly IVacancyQuery _vacancyQuery;
+        private readonly IVacancySummariesProvider _vacancySummariesQuery;
         private readonly IQueryStoreWriter _queryStoreWriter;
-        private readonly IApplicationReviewQuery _applicationReviewQuery;
         private readonly IApprenticeshipProgrammeProvider _apprenticeshipProgrammeProvider;
         private readonly ITimeProvider _timeProvider;
 
         public EmployerDashboardProjectionService(
-            IVacancyQuery vacancyQuery, 
-            IApplicationReviewQuery applicationReviewQuery, 
+            IVacancyQuery vacancyQuery,
+            IVacancySummariesProvider vacancySummariesQuery,
             IQueryStoreWriter queryStoreWriter, 
             ILogger<EmployerDashboardProjectionService> logger,
             IApprenticeshipProgrammeProvider apprenticeshipProgrammeProvider,
@@ -32,7 +33,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
             _logger = logger;
             _vacancyQuery = vacancyQuery;
             _queryStoreWriter = queryStoreWriter;
-            _applicationReviewQuery = applicationReviewQuery;
+            _vacancySummariesQuery = vacancySummariesQuery;
             _apprenticeshipProgrammeProvider = apprenticeshipProgrammeProvider;
             _timeProvider = timeProvider;
         }
@@ -60,29 +61,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
 
         public async Task ReBuildDashboardAsync(string employerAccountId)
         {
-            var vacancySummariesTask = _vacancyQuery.GetVacanciesByEmployerAccountAsync<VacancySummary>(employerAccountId);
-
-            var applicationReviewStatusCountsTask = _applicationReviewQuery.GetStatusCountsForEmployerAsync(employerAccountId);
-
-            await Task.WhenAll(vacancySummariesTask, applicationReviewStatusCountsTask);
-
-            var vacancySummaries = vacancySummariesTask.Result.ToList();
-            var applicationReviewStatusCounts = applicationReviewStatusCountsTask.Result;
+            var vacancySummaries = await _vacancySummariesQuery.GetEmployerOwnedVacancySummariesByEmployerAccountAsync(employerAccountId);
 
             foreach (var summary in vacancySummaries)
             {
-                if (summary.VacancyReference.HasValue)
-                {
-                    summary.AllApplicationsCount = applicationReviewStatusCounts
-                        .Where(r => r.Id.VacancyReference == summary.VacancyReference.Value)
-                        .Sum(r => r.Count);
-
-                    summary.NewApplicationsCount = applicationReviewStatusCounts
-                        .Where(r => r.Id.VacancyReference == summary.VacancyReference.Value &&
-                                    r.Id.Status == ApplicationReviewStatus.New)
-                        .Sum(r => r.Count);
-                }
-
                 await UpdateWithTrainingProgrammeInfo(summary);
             }
 

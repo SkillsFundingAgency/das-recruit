@@ -5,14 +5,15 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Provid
 
 namespace Esfa.Recruit.Provider.Web.Mappings
 {
-    public class DashboardMapper
+    public static class DashboardMapper
     {
         public static DashboardViewModel MapFromProviderDashboard(ProviderDashboard dashboard)
         {
-            return new DashboardViewModel {
-                Vacancies = dashboard?.Vacancies.Select(VacancySummarVmMapper.ConvertToVacancySummaryViewModel)
-                    .OrderByDescending(v => v.CreatedDate)
-                    .ToList()
+            return new DashboardViewModel
+            {
+                Vacancies = dashboard?.Vacancies.Select(VacancySummaryMapper.ConvertToVacancySummaryViewModel)
+                                                .OrderByDescending(v => v.CreatedDate)
+                                                .ToList()
             };
         }
     }

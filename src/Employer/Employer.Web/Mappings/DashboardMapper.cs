@@ -5,14 +5,15 @@ using Esfa.Recruit.Shared.Web.Mappers;
 
 namespace Esfa.Recruit.Employer.Web.Mappings
 {
-    public class DashboardMapper
+    public static class DashboardMapper
     {
         public static DashboardViewModel MapFromEmployerDashboard(EmployerDashboard dashboard)
         {
-            return new DashboardViewModel {
-                Vacancies = dashboard?.Vacancies.Select(VacancySummarVmMapper.ConvertToVacancySummaryViewModel)
-                    .OrderByDescending(v => v.CreatedDate)
-                    .ToList()
+            return new DashboardViewModel
+            {
+                Vacancies = dashboard?.Vacancies.Select(VacancySummaryMapper.ConvertToVacancySummaryViewModel)
+                                                .OrderByDescending(v => v.CreatedDate)
+                                                .ToList()
             };
         }
     }

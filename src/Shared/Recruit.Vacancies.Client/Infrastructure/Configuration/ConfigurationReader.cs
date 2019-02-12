@@ -6,7 +6,7 @@ using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Polly;
 
-namespace Recruit.Vacancies.Client.Infrastructure.Configuration
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Configuration
 {
     internal sealed class ConfigurationReader : MongoDbCollectionBase, IConfigurationReader
     {

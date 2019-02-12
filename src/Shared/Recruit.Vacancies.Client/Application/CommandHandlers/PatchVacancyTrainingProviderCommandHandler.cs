@@ -8,7 +8,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace Recruit.Vacancies.Client.Application.CommandHandlers
+namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
     public class PatchVacancyTrainingProviderCommandHandler : IRequestHandler<PatchVacancyTrainingProviderCommand>
     {

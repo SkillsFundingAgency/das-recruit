@@ -12,6 +12,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Polly;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 {
