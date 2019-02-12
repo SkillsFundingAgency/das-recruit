@@ -31,7 +31,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
 
             services.AddRecruitStorageClient(configuration);
 
-            services.AddSingleton<RecruitWebJobsSystemConfiguration>(x => 
+            services.AddSingleton<RecruitWebJobsSystemConfiguration>(x =>
                                                             {
                                                                 var svc = x.GetService<IConfigurationReader>();
                                                                 return svc.GetAsync<RecruitWebJobsSystemConfiguration>("RecruitWebJobsSystem").Result;
@@ -47,6 +47,9 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddScoped<QaDashboardJob>();
             services.AddScoped<NonLevyAccountBlockerJob>();
             services.AddScoped<VacancyAnalyticsSummaryGeneratorJob>();
+#if DEBUG
+            services.AddScoped<SpikeJob.SpikeJob>();
+#endif
 
             // Domain Event Queue Handlers
 
