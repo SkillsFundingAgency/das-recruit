@@ -175,7 +175,7 @@ mce-tinymce {
     width: 17px;
     height: 7px;
     top: 7px;
-    left: 6px;
+    left: 5px;
     -moz-transform: rotate(0deg);
     -o-transform: rotate(0deg);
     -webkit-transform: rotate(0deg);
@@ -284,4 +284,23 @@ mce-tinymce {
   font-size: 16px;
   border-radius: 4px;
   white-space: nowrap;
+}
+
+/*** Review header styles ***/
+
+.review-header-table {
+  display:table; 
+}
+
+.review-header-table-row {
+  display:table-row; 
+}
+
+.review-header-table-cell {
+  display:table-cell; 
+  float:none;
+}
+
+.review-header-table-cell__border-left{
+  border-left:1px solid #bfc1c3;
 }
