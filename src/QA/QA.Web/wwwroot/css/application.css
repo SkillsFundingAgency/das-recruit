@@ -59,10 +59,18 @@
   }
 }
 
-/*** Utility classes ***/
-.button-link {
+/*** Buttons / links ***/
+.das-button-link {
+  font-family: nta,Arial,sans-serif;
   display:inline-block;
   padding:10px 15px 5px 10px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  font-size: 19px;
+  line-height: 1.25;
+  margin-top: 0;
+  margin-bottom: 15px
 }
 
 /*** Info / Warning summary styles ***/
