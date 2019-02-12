@@ -45,9 +45,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore
         public Task UpsertAsync<T>(T item) where T : QueryProjectionBase
         {
             var serializedItem = JsonConvert.SerializeObject(item);
-            var query = new QueryEntity(item.ViewType, item.Id) {
-                JsonData = serializedItem
-            };
+            var query = new QueryEntity(item.ViewType, item.Id, serializedItem);
             var insertOrReplaceOperation = TableOperation.InsertOrReplace(query);
             var retrievedResult = RetryPolicy.ExecuteAsync(async context => await CloudTable.ExecuteAsync(insertOrReplaceOperation), new Context(nameof(IQueryStore.UpsertAsync)));
             return retrievedResult;
@@ -68,9 +66,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore
                 foreach (var item in items)
                 {
                     var serializedItem = JsonConvert.SerializeObject(item);
-                    var entity = new QueryEntity(item.ViewType, item.Id) {
-                        JsonData = serializedItem
-                    };
+                    var entity = new QueryEntity(item.ViewType, item.Id, serializedItem);
                     batchInsertOperation.Insert(entity);
                 }
 

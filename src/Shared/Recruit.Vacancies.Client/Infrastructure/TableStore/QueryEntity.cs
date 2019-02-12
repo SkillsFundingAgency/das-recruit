@@ -4,10 +4,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore
 {
     public class QueryEntity : TableEntity
     {
-        public QueryEntity(string viewType, string documentId)
+        public QueryEntity(string viewType, string documentId, string jsonData) : base(viewType, documentId)
         {
-            this.PartitionKey = viewType;
-            this.RowKey = documentId;
+            JsonData = jsonData;
         }
 
         public QueryEntity() { }
