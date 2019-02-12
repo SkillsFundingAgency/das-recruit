@@ -1,26 +1,24 @@
 ﻿@model ReviewViewModel
 
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-one-quarter">
-        <h2 class="govuk-heading-s">Submitted by</h2>
-        <div>@Model.SubmittedByName</div>
+<div class="govuk-grid-row review-header-table">
+    <div class="govuk-grid-column-one-quarter review-header-table-cell" >
+        <h2 asp-show="@Model.IsResubmission" class="govuk-heading-s govuk-!-margin-top-4 govuk-!-margin-bottom-1">Re-submitted date</h2>
+        <h2 asp-show="@Model.IsFirstSubmission" class="govuk-heading-s govuk-!-margin-top-4 govuk-!-margin-bottom-1">Submitted date</h2>
+        <p class="govuk-body">@Model.SubmittedDateTime</p>
     </div>
-    <div class="govuk-grid-column-one-quarter">
-        <h2 class="govuk-heading-s">Email</h2>
-        <div class="break-word">
-            <a href="@Model.SubmittedByEmail">@Model.SubmittedByEmail</a>
-        </div>    
+    <div class="govuk-grid-column-one-half review-header-table-cell review-header-table-cell__border-left">
+        <h2 class="govuk-heading-s govuk-!-margin-top-4 govuk-!-margin-bottom-1">Submitted by</h2>
+        <p class="govuk-body govuk-!-margin-bottom-0">@Model.SubmittedByName for ORGANISATION <span class="govuk-!-font-weight-bold">(EMPLOYER)</span></p>
+        <p class="break-word govuk-body govuk-!-margin-top-0">
+            <a href="@Model.SubmittedByEmail" class="govuk-link">@Model.SubmittedByEmail</a>
+        </p> 
     </div>
-    <div class="govuk-grid-column-one-quarter">
-        <h2 class="govuk-heading-s">User history</h2>
-        <div asp-show="@Model.HasPreviouslySubmitted">
+    <div class="govuk-grid-column-one-quarter review-header-table-cell review-header-table-cell__border-left">
+        <h2 class="govuk-heading-s govuk-!-margin-top-4 govuk-!-margin-bottom-1">User history</h2>
+        <p asp-show="@Model.HasPreviouslySubmitted" class="govuk-body govuk-!-margin-bottom-0">
             @Model.VacancyReviewsApprovedCount vacancies previously reviewed. @Model.VacancyReviewsApprovedFirstTimeCount passed QA first time.
-        </div>
-        <div asp-show="@Model.HasNotPreviouslySubmitted">This is the first vacancy posted by this user.</div>
-    </div>
-    <div class="govuk-grid-column-one-quarter">
-        <h2 asp-show="@Model.IsResubmission" class="govuk-heading-s">Re-submitted date</h2>
-        <h2 asp-show="@Model.IsFirstSubmission" class="govuk-heading-s">Submitted date</h2>
-        <div>@Model.SubmittedDateTime</div>
+        </p>
+        <p asp-show="@Model.HasNotPreviouslySubmitted" class="govuk-body govuk-!-margin-bottom-0">This is the first vacancy posted by this user.</p>
     </div>
 </div>
+<hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-6">
