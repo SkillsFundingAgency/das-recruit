@@ -20,19 +20,17 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
     {
         private const VacancyRuleSet ValdationRules = VacancyRuleSet.ClosingDate | VacancyRuleSet.StartDate | VacancyRuleSet.TrainingProgramme | VacancyRuleSet.StartDateEndDate | VacancyRuleSet.TrainingExpiryDate | VacancyRuleSet.MinimumWage;
         private readonly DisplayVacancyViewModelMapper _vacancyDisplayMapper;
-        private readonly IProviderVacancyClient _client;
-        private readonly IRecruitVacancyClient _vacancyClient;
+        private readonly IRecruitVacancyClient _client;
 
-        public VacancyManageOrchestrator(ILogger<VacancyManageOrchestrator> logger, DisplayVacancyViewModelMapper vacancyDisplayMapper, IProviderVacancyClient client, IRecruitVacancyClient vacancyClient) : base(logger)
+        public VacancyManageOrchestrator(ILogger<VacancyManageOrchestrator> logger, DisplayVacancyViewModelMapper vacancyDisplayMapper, IRecruitVacancyClient client) : base(logger)
         {
             _vacancyDisplayMapper = vacancyDisplayMapper;
             _client = client;
-            _vacancyClient = vacancyClient;
         }
 
         public async Task<Vacancy> GetVacancy(VacancyRouteModel vrm)
         {
-            var vacancy = await _vacancyClient.GetVacancyAsync(vrm.VacancyId.GetValueOrDefault());
+            var vacancy = await _client.GetVacancyAsync(vrm.VacancyId.GetValueOrDefault());
 
             Utility.CheckAuthorisedAccess(vacancy, vrm.Ukprn);
 
@@ -53,7 +51,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             viewModel.CanShowEditVacancyLink = vacancy.CanExtendStartAndClosingDates;
             viewModel.CanShowCloseVacancyLink = vacancy.CanClose;
 
-            var vacancyApplicationsTask =  await _vacancyClient.GetVacancyApplicationsAsync(vacancy.VacancyReference.Value.ToString());
+            var vacancyApplicationsTask =  await _client.GetVacancyApplicationsAsync(vacancy.VacancyReference.Value.ToString());
 
             var applications = vacancyApplicationsTask?.Applications ?? new List<VacancyApplication>();
 
@@ -91,8 +89,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             
             return await ValidateAndExecute(
                 vacancy, 
-                v => _vacancyClient.Validate(v, ValdationRules),
-                v => _vacancyClient.UpdatePublishedVacancyAsync(vacancy, user)
+                v => _client.Validate(v, ValdationRules),
+                v => _client.UpdatePublishedVacancyAsync(vacancy, user)
             );
         }
 

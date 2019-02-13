@@ -18,19 +18,17 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
     public class VacancyViewOrchestrator
     {
         private readonly DisplayVacancyViewModelMapper _vacancyDisplayMapper;
-        private readonly IEmployerVacancyClient _client;
-        private readonly IRecruitVacancyClient _vacancyClient;
+        private readonly IRecruitVacancyClient _client;
 
-        public VacancyViewOrchestrator(DisplayVacancyViewModelMapper vacancyDisplayMapper, IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient)
+        public VacancyViewOrchestrator(DisplayVacancyViewModelMapper vacancyDisplayMapper, IRecruitVacancyClient client)
         {
             _vacancyDisplayMapper = vacancyDisplayMapper;
             _client = client;
-            _vacancyClient = vacancyClient;
         }
 
         public async Task<Vacancy> GetVacancy(VacancyRouteModel vrm)
         {
-            var vacancy = await _vacancyClient.GetVacancyAsync(vrm.VacancyId.GetValueOrDefault());
+            var vacancy = await _client.GetVacancyAsync(vrm.VacancyId.GetValueOrDefault());
 
             Utility.CheckAuthorisedAccess(vacancy, vrm.Ukprn);
 
@@ -138,7 +136,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         private void PopulateViewModelWithApplications(Vacancy vacancy, DisplayVacancyApplicationViewModel viewModel)
         {
             var mappedDisplayVacancyViewModelTask = _vacancyDisplayMapper.MapFromVacancyAsync(viewModel, vacancy);
-            var vacancyApplicationsTask = _vacancyClient.GetVacancyApplicationsAsync(vacancy.VacancyReference.Value.ToString());
+            var vacancyApplicationsTask = _client.GetVacancyApplicationsAsync(vacancy.VacancyReference.Value.ToString());
 
             Task.WaitAll(mappedDisplayVacancyViewModelTask, vacancyApplicationsTask);
 
