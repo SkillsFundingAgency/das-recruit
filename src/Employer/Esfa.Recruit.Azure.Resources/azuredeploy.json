@@ -96,7 +96,7 @@
       "defaultValue": ""
     },
     "UseTableStorageQueryStore": {
-      "type": "object",
+      "type": "bool",
       "defaultValue": false
     },
     "SharedAppServicePlanName": {
