@@ -85,7 +85,7 @@ services:
       - recruit-network
  
   azurite:
-    image: arafato/azurite
+    image: mcr.microsoft.com/azurestorage-azurite:2.6.7
     container_name: azurite
     volumes:
       - azurite1:/opt/azurite/data
