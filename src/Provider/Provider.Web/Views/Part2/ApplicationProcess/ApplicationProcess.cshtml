@@ -12,7 +12,6 @@
         <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
         <form asp-route="@RouteNames.ApplicationProcess_Post" novalidate>
-            
             <div esfa-validation-marker-for="ApplicationMethod" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
                     <label class="govuk-label govuk-!-font-weight-bold sfa-govuk-!-margin-bottom-6" id="@Anchors.ApplicationMethodHeading">
@@ -20,10 +19,6 @@
                         <span class="govuk-hint">All vacancies will be published on Find an apprenticeship</span>
                     </label>
                     <span esfa-validation-message-for="ApplicationMethod" class="govuk-error-message"></span>
-                    
-                    @*
-                    Temporarily removed for now as we can only create offline vacancies for private beta
-
                     <div class="govuk-radios govuk-radios--conditional" data-module="radios">
                         <div class="govuk-radios__item">
                             <input asp-for="ApplicationMethod" value="@ApplicationMethod.ThroughFindAnApprenticeship" class="govuk-radios__input" id="application-method-faa" type="radio">
@@ -52,27 +47,6 @@
                             </div>
                         </div>
                     </div>
-                    
-                    --------------------------
-                    Temporary offline vacancy UI for private beta
-                    *@
-                    <input asp-for="ApplicationMethod" type="hidden" value="@ApplicationMethod.ThroughExternalApplicationSite"/>
-    
-                    <div esfa-validation-marker-for="ApplicationUrl" class="govuk-form-group">
-                        <label asp-for="ApplicationUrl" class="govuk-label govuk-!-font-weight-bold">Enter the web address candidates should use to apply for this vacancy</label>
-                        <span esfa-validation-message-for="ApplicationUrl" class="govuk-error-message"></span>
-                        <input asp-for="ApplicationUrl" class="govuk-input govuk-!-width-one-half" maxlength="200" />
-                    </div>
-                    <div esfa-validation-marker-for="ApplicationInstructions" class="govuk-form-group">
-                        <label asp-for="ApplicationInstructions" class="govuk-label govuk-!-font-weight-bold">Explain the application process (optional)</label>
-                        <span esfa-validation-message-for="ApplicationInstructions" class="govuk-error-message"></span>
-                        <textarea asp-for="ApplicationInstructions" class="govuk-textarea character-count" rows="5" data-val-length-max="500"></textarea>
-                        <span class="govuk-body maxchar-count">500</span>
-                        <span class="govuk-body maxchar-text"> characters remaining</span>
-                    </div>
-                    @*
-                    --------------------------    
-                    *@
                 </fieldset>
             </div>
             
