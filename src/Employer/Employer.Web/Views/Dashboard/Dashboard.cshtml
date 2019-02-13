@@ -1,10 +1,7 @@
 ﻿@using Esfa.Recruit.Vacancies.Client.Domain.Entities
-@using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer
-@using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections
 @model DashboardViewModel
-
 @{
-    string GetLinkText(VacancySummary vacancySummary)
+    string GetLinkText(VacancySummaryViewModel vacancySummary)
     {
         switch (vacancySummary.Status)
         {
@@ -41,7 +38,6 @@
     </div>
     <br>
 </div>
-
 <div asp-show="@Model.HasVacancies">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
@@ -56,29 +52,29 @@
                     </tr>
                 </thead>
                 <tbody class="govuk-table__body">
-                @foreach (var vacancy in Model.Vacancies)
-                {
-                    <tr class="govuk-table__row">
-                        <td class="govuk-table__cell dashboard-status" data-label="Status"><span class="tag tag-@vacancy.Status.ToString().ToLower()">@vacancy.Status.GetDisplayName()</span></td>
-                        <td class="govuk-table__cell" data-label="Vacancy title">
-                            <div>@vacancy.Title</div>
-                            <div asp-show="@vacancy.IsApplicationsVacancy">
-                                <span asp-show="@vacancy.HasNoApplications" class="govuk-!-font-weight-bold">0 applications</span>
-                                <span asp-show="@vacancy.HasApplications">@("application".ToQuantity(vacancy.AllApplicationsCount))</span>
-                                <span asp-show="@vacancy.HasNewApplications" class="govuk-!-font-weight-bold"> (@vacancy.NewApplicationsCount new)</span>
-                            </div>
-                        </td>
-                        <td class="govuk-table__cell" data-label="Vacancy ref">
-                            <span asp-show="@vacancy.HasVacancyReference"><span>VAC</span>@vacancy.VacancyReference</span>
-                            <span asp-show="@vacancy.HasNoVacancyReference">Not available</span>
-                        </td>
-                        <td class="govuk-table__cell dashboard-closingdate" data-label="Closing date"><span>@vacancy.ClosingDate?.AsGdsDate()</span></td>
-                        <td class="govuk-table__cell dashboard-action" data-label="Action">
-                            <a asp-show="@vacancy.IsNotSubmittable" asp-route="@RouteNames.VacancyManage_Get" asp-route-vacancyId="@vacancy.Id" class="govuk-link">Manage</a>
-                            <a asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.DisplayVacancy_Get" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy)</a>
-                        </td>
-                    </tr>
-                }
+                    @foreach (var vacancy in Model.Vacancies)
+                    {
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell dashboard-status" data-label="Status"><span class="tag tag-@vacancy.Status.ToString().ToLower()">@vacancy.Status.GetDisplayName()</span></td>
+                            <td class="govuk-table__cell" data-label="Vacancy title">
+                                <div>@vacancy.Title</div>
+                                <div asp-show="@vacancy.IsApplicationsVacancy">
+                                    <span asp-show="@vacancy.HasNoApplications" class="govuk-!-font-weight-bold">0 applications</span>
+                                    <span asp-show="@vacancy.HasApplications">@("application".ToQuantity(vacancy.AllApplicationsCount))</span>
+                                    <span asp-show="@vacancy.HasNewApplications" class="govuk-!-font-weight-bold"> (@vacancy.NewApplicationsCount new)</span>
+                                </div>
+                            </td>
+                            <td class="govuk-table__cell" data-label="Vacancy ref">
+                                <span asp-show="@vacancy.HasVacancyReference"><span>VAC</span>@vacancy.VacancyReference</span>
+                                <span asp-show="@vacancy.HasNoVacancyReference">Not available</span>
+                            </td>
+                            <td class="govuk-table__cell dashboard-closingdate" data-label="Closing date"><span>@vacancy.ClosingDate?.AsGdsDate()</span></td>
+                            <td class="govuk-table__cell dashboard-action" data-label="Action">
+                                <a asp-show="@vacancy.IsNotSubmittable" asp-route="@RouteNames.VacancyManage_Get" asp-route-vacancyId="@vacancy.Id" class="govuk-link">Manage</a>
+                                <a asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.DisplayVacancy_Get" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy)</a>
+                            </td>
+                        </tr>
+                    }
                 </tbody>
             </table>
         </div>

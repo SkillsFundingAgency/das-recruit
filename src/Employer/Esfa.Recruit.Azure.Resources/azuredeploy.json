@@ -35,9 +35,9 @@
     "webJobNonASETier": {
       "type": "string",
       "allowedValues": [
-          "Basic",
-          "Standard",
-          "Premium"
+        "Basic",
+        "Standard",
+        "Premium"
       ],
       "defaultValue": "Standard"
     },
@@ -94,6 +94,10 @@
     "GoogleMapsPrivateKey": {
       "type": "string",
       "defaultValue": ""
+    },
+    "UseTableStorageQueryStore": {
+      "type": "object",
+      "defaultValue": false
     },
     "SharedAppServicePlanName": {
       "type": "string"
@@ -198,7 +202,7 @@
     "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/",
     "webJobAppServicePlanName": "[concat('das-', toLower(parameters('environmentName')),'-rcrt-webjob-asp')]",
     "EmployerRecruitAppServiceName": "[concat('das-', toLower(parameters('EnvironmentName')), '-rcrt-as')]",
-    "ProviderRecruitAppServiceName" :  "[concat('das-', toLower(parameters('EnvironmentName')), '-rcrt-pr-as')]",
+    "ProviderRecruitAppServiceName": "[concat('das-', toLower(parameters('EnvironmentName')), '-rcrt-pr-as')]",
     "QAAppServiceName": "[concat('das-', toLower(parameters('EnvironmentName')), '-rcrt-qa-as')]",
     "CosmosDbName": "[concat('das-', toLower(parameters('EnvironmentName')),'-rcrt-cdb')]",
     "WebJobAppServiceName": "[concat('das-', toLower(parameters('EnvironmentName')), '-rcrt-webjob-as')]",
@@ -385,6 +389,10 @@
               {
                 "name": "FaaConfiguration:StorageConnectionString",
                 "value": "[parameters('FaaConfiguration').StorageConnectionString]"
+              },
+              {
+                "name": "UseTableStorageQueryStore",
+                "value": "[parameters('UseTableStorageQueryStore')]"
               }
             ]
           },
@@ -409,6 +417,11 @@
                 "name": "QueueStorage",
                 "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
                 "type": "Custom"
+              },
+              {
+                "name": "TableStorage",
+                "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
+                "type": "Custom"
               }
             ]
           },
@@ -422,7 +435,7 @@
       },
       "dependsOn": [
         "[variables('EmployerRecruitAppServiceName')]",
-        "[variables('CosmosDbName')]"        
+        "[variables('CosmosDbName')]"
       ]
     },
     {
@@ -502,6 +515,10 @@
               {
                 "name": "Slack:WebhookUrl",
                 "value": "[parameters('SlackWebhook')]"
+              },
+              {
+                "name": "UseTableStorageQueryStore",
+                "value": "[parameters('UseTableStorageQueryStore')]"
               }
             ]
           },
@@ -524,6 +541,11 @@
               },
               {
                 "name": "QueueStorage",
+                "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
+                "type": "Custom"
+              },
+              {
+                "name": "TableStorage",
                 "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
                 "type": "Custom"
               }
@@ -586,6 +608,10 @@
               {
                 "name": "PostcodeAnywhere:Key",
                 "value": "[parameters('PostcodeAnywhereKey')]"
+              },
+              {
+                "name": "UseTableStorageQueryStore",
+                "value": "[parameters('UseTableStorageQueryStore')]"
               }
             ]
           },
@@ -610,6 +636,11 @@
                 "name": "QueueStorage",
                 "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
                 "type": "Custom"
+              },
+              {
+                "name": "TableStorage",
+                "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
+                "type": "Custom"
               }
             ]
           },
@@ -622,7 +653,7 @@
         }
       },
       "dependsOn": [
-        "[variables('CosmosDbName')]"        
+        "[variables('CosmosDbName')]"
       ]
     },
     {
@@ -642,7 +673,7 @@
         }
       },
       "dependsOn": []
-    },    
+    },
     {
       "apiVersion": "2017-05-10",
       "name": "[variables('webJobAppServicePlanName')]",
@@ -783,12 +814,17 @@
                 "name": "EmployerFinanceSqlDbConnectionString",
                 "connectionString": "[parameters('EmployerFinanceSqlDbConnectionString')]",
                 "type": "Custom"
-			  },
-			  {
-				"name": "VacancyAnalyticEventsSqlDbConnectionString",
-				"connectionString": "[parameters('VacancyAnalyticEventsSqlDbConnectionString')]",
+              },
+              {
+                "name": "VacancyAnalyticEventsSqlDbConnectionString",
+                "connectionString": "[parameters('VacancyAnalyticEventsSqlDbConnectionString')]",
                 "type": "Custom"
-			  }
+              },
+              {
+                "name": "TableStorage",
+                "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
+                "type": "Custom"
+              }
             ]
           },
           "appServiceVirtualApplications": {
@@ -813,7 +849,7 @@
         "[variables('webJobAppServicePlanName')]",
         "[variables('CosmosDbName')]"
       ]
-    }    
+    }
   ],
   "outputs": {}
 }

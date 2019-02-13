@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
+using Esfa.Recruit.Shared.Web.ViewModels;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels
 {
     public class DashboardViewModel
     {
-        public IList<VacancySummary> Vacancies { get; set; }
+        public IList<VacancySummaryViewModel> Vacancies { get; set; }
         public string WarningMessage { get; internal set; }
         public string InfoMessage { get; internal set; }
 

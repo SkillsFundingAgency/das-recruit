@@ -5,35 +5,35 @@ VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Employer", "Employer", "{470FBC22-748F-4CB6-A273-C89638289E6E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Employer.Web", "Employer\Employer.Web\Employer.Web.csproj", "{A42E6528-7DBE-414F-B48B-51DAA6546875}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Employer.Web", "Employer\Employer.Web\Employer.Web.csproj", "{A42E6528-7DBE-414F-B48B-51DAA6546875}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "Employer\UnitTests\UnitTests.csproj", "{58A51AB4-3A7D-4E69-BB24-61F1249108DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "Employer\UnitTests\UnitTests.csproj", "{58A51AB4-3A7D-4E69-BB24-61F1249108DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTests", "Employer\IntegrationTests\IntegrationTests.csproj", "{EE570CFC-2D57-478E-AD88-2DD88348D7F0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationTests", "Employer\IntegrationTests\IntegrationTests.csproj", "{EE570CFC-2D57-478E-AD88-2DD88348D7F0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Provider", "Provider", "{4920F788-6092-4D78-B139-0DB546E991E2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "Provider\UnitTests\UnitTests.csproj", "{F5349C61-46D2-4DCC-97A2-B5404AFD52C9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "Provider\UnitTests\UnitTests.csproj", "{F5349C61-46D2-4DCC-97A2-B5404AFD52C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Provider.Web", "Provider\Provider.Web\Provider.Web.csproj", "{CA9123E8-DE55-437D-9216-B24F6C19591E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Provider.Web", "Provider\Provider.Web\Provider.Web.csproj", "{CA9123E8-DE55-437D-9216-B24F6C19591E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "QA", "QA", "{979EDDC0-FC02-4FA1-A1B5-C8B2E6D5CAF9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "QA\UnitTests\UnitTests.csproj", "{0B5F7930-255A-49A0-A3A7-D49C0A614A4C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "QA\UnitTests\UnitTests.csproj", "{0B5F7930-255A-49A0-A3A7-D49C0A614A4C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QA.Web", "QA\QA.Web\QA.Web.csproj", "{D4038811-9284-407A-84F2-B55B9EE087DE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QA.Web", "QA\QA.Web\QA.Web.csproj", "{D4038811-9284-407A-84F2-B55B9EE087DE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{06186534-5C8C-4B80-B06F-8FFE93DA0A85}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "Shared\UnitTests\UnitTests.csproj", "{678711D7-91EA-42D5-9C56-095EE0E6DAD7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "Shared\UnitTests\UnitTests.csproj", "{678711D7-91EA-42D5-9C56-095EE0E6DAD7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Recruit.Shared.Web", "Shared\Recruit.Shared.Web\Recruit.Shared.Web.csproj", "{0CF6DA24-880E-45AF-984E-337284BDCF18}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Recruit.Shared.Web", "Shared\Recruit.Shared.Web\Recruit.Shared.Web.csproj", "{0CF6DA24-880E-45AF-984E-337284BDCF18}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Recruit.Vacancies.Client", "Shared\Recruit.Vacancies.Client\Recruit.Vacancies.Client.csproj", "{B8E884BF-2615-4484-A7B9-A1E3D3AF565D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Recruit.Vacancies.Client", "Shared\Recruit.Vacancies.Client\Recruit.Vacancies.Client.csproj", "{B8E884BF-2615-4484-A7B9-A1E3D3AF565D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Jobs", "Jobs", "{CCBA9011-72D2-4777-BF77-DFAA3EAEDB52}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Recruit.Vacancies.Jobs", "Jobs\Recruit.Vacancies.Jobs\Recruit.Vacancies.Jobs.csproj", "{94947D6D-10EE-4C66-AC21-A1C00CBB8251}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Recruit.Vacancies.Jobs", "Jobs\Recruit.Vacancies.Jobs\Recruit.Vacancies.Jobs.csproj", "{94947D6D-10EE-4C66-AC21-A1C00CBB8251}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,9 +43,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{A42E6528-7DBE-414F-B48B-51DAA6546875}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -181,6 +178,9 @@ Global
 		{94947D6D-10EE-4C66-AC21-A1C00CBB8251}.Release|x86.ActiveCfg = Release|Any CPU
 		{94947D6D-10EE-4C66-AC21-A1C00CBB8251}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{A42E6528-7DBE-414F-B48B-51DAA6546875} = {470FBC22-748F-4CB6-A273-C89638289E6E}
 		{58A51AB4-3A7D-4E69-BB24-61F1249108DF} = {470FBC22-748F-4CB6-A273-C89638289E6E}
@@ -193,5 +193,8 @@ Global
 		{0CF6DA24-880E-45AF-984E-337284BDCF18} = {06186534-5C8C-4B80-B06F-8FFE93DA0A85}
 		{B8E884BF-2615-4484-A7B9-A1E3D3AF565D} = {06186534-5C8C-4B80-B06F-8FFE93DA0A85}
 		{94947D6D-10EE-4C66-AC21-A1C00CBB8251} = {CCBA9011-72D2-4777-BF77-DFAA3EAEDB52}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8192D78A-7A90-4055-A3BF-8A465C8A0AB1}
 	EndGlobalSection
 EndGlobal

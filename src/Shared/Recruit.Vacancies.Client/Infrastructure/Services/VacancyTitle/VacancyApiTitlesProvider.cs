@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;

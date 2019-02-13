@@ -13,7 +13,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task UpdateApprenticeshipProgrammesAsync();
         Task<IEnumerable<LegalEntity>> GetEmployerLegalEntitiesAsync(string employerAccountId);
         Task CreateVacancyReview(long vacancyReference);
-        Task<IEnumerable<LiveVacancy>> GetLiveVacancies();
         Task CloseExpiredVacancies();
         Task EnsureVacancyIsGeocodedAsync(Guid vacancyId);
         Task ApproveVacancy(long vacancyReference);

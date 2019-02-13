@@ -40,20 +40,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
                         & filterBuilder.Lt(property, value);
 
             var collection = GetCollection<T>();
-            
+
             var result = await RetryPolicy.ExecuteAsync(context => collection.DeleteManyAsync(filter), new Context(nameof(IQueryStore.DeleteManyAsync)));
 
             return result.DeletedCount;
-        }
-
-        async Task<IEnumerable<T>> IQueryStore.GetAllByTypeAsync<T>(string typeName)
-        {
-            var filter = Builders<T>.Filter.Eq(d => d.ViewType, typeName);
-
-            var collection = GetCollection<T>();
-            var result = await RetryPolicy.ExecuteAsync(context => collection.FindAsync(filter), new Context(nameof(IQueryStore.GetAllByTypeAsync)));
-
-            return result?.ToEnumerable();
         }
 
         async Task<T> IQueryStore.GetAsync<T>(string typeName, string key)
@@ -90,7 +80,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             await RetryPolicy.ExecuteAsync(context => collection.DeleteManyAsync(filter), new Context(nameof(IQueryStore.RecreateAsync)));
 
             if (items.Count == 0) return;
-            
+
             var watch = Stopwatch.StartNew();
 
             foreach (var item in items)
