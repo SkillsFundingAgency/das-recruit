@@ -18,11 +18,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore
 {
     internal sealed class TableStorageQueryStore : IQueryStore
     {
+        private readonly ILogger<TableStorageQueryStore> _logger;
+
         private CloudTable CloudTable { get; }
         private RetryPolicy RetryPolicy { get; }
 
         public TableStorageQueryStore(ILogger<TableStorageQueryStore> logger, IOptions<TableStorageConnectionsDetails> details)
         {
+            _logger = logger;
             var storageAccount = CloudStorageAccount.Parse(details.Value.ConnectionString);
             var tableClient = storageAccount.CreateCloudTableClient();
             CloudTable = tableClient.GetTableReference(StorageTableNames.QueryStore);
@@ -103,7 +106,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore
             {
                 var tableOperation = TableOperation.Delete(deleteEntity);
                 await RetryPolicy.ExecuteAsync(async context => await CloudTable.ExecuteAsync(tableOperation), new Context(nameof(IQueryStore.DeleteAsync)));
-                Console.WriteLine($"Entity deleted with typeName:{typeName} and key:{key}");
+                _logger.LogInformation($"Entity deleted with typeName:{typeName} and key:{key}");
             }
         }
 
