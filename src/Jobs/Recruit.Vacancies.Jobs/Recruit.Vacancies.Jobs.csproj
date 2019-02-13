@@ -11,10 +11,10 @@
     <AssemblyName>Esfa.Recruit.Vacancies.Jobs</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Azure.WebJobs" Version="3.0.1"/>
-    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions" Version="3.0.0"/>
-    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Storage" Version="3.0.1"/>
-    <PackageReference Include="Microsoft.Azure.WebJobs.Logging.ApplicationInsights" Version="3.0.1"/>
+    <PackageReference Include="Microsoft.Azure.WebJobs" Version="3.0.4"/>
+    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions" Version="3.0.1"/>
+    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Storage" Version="3.0.3"/>
+    <PackageReference Include="Microsoft.Azure.WebJobs.Logging.ApplicationInsights" Version="3.0.4"/>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.1.1"/>
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.1.1"/>
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.1.1"/>
@@ -26,6 +26,7 @@
     <PackageReference Include="NLog" Version="4.5.4"/>
     <PackageReference Include="NLog.Extensions.Logging" Version="1.0.2"/>
     <PackageReference Include="SFA.DAS.NLog.Targets.Redis" Version="1.1.5"/>
+    <PackageReference Include="System.Data.SqlClient" Version="4.6.0"/>
   </ItemGroup>
   <ItemGroup>
     <None Update="appSettings.json">
