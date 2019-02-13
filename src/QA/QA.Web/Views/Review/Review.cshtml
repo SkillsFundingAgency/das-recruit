@@ -334,7 +334,7 @@
                 <div class="@Model.ProviderClass" id="@FieldIdentifiers.Provider">
                     <h3 class="govuk-heading-s">Training provider</h3>
                     <p class="govuk-body">@Model.ProviderName</p>
-                    <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
+                    <esfa-review-checkbox asp-show="@Model.IsEmployerVacancy" asp-for="SelectedFieldIdentifiers"
                                           asp-value="@FieldIdentifiers.Provider"
                                           asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                 </div>
