@@ -1,19 +1,20 @@
 ﻿using System;
-using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Mappings;
-using Esfa.Recruit.Employer.Web.RouteModel;
-using Esfa.Recruit.Employer.Web.ViewModels.VacancyManage;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Esfa.Recruit.Vacancies.Client.Application.Validation;
-using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
-using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
-using Esfa.Recruit.Shared.Web.Orchestrators;
+using System.Threading.Tasks;
+using Esfa.Recruit.Provider.Web.Mappings;
+using Esfa.Recruit.Provider.Web.RouteModel;
+using Esfa.Recruit.Provider.Web.ViewModels.VacancyManage;
+using Esfa.Recruit.Provider.Web.ViewModels.VacancyView;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.Orchestrators;
+using Esfa.Recruit.Vacancies.Client.Application.Validation;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
+using Microsoft.Extensions.Logging;
 
-namespace Esfa.Recruit.Employer.Web.Orchestrators
+namespace Esfa.Recruit.Provider.Web.Orchestrators
 {
     public class VacancyManageOrchestrator : EntityValidatingOrchestrator<Vacancy, ProposedChangesEditModel>
     {
@@ -21,17 +22,17 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         private readonly DisplayVacancyViewModelMapper _vacancyDisplayMapper;
         private readonly IRecruitVacancyClient _client;
 
-        public VacancyManageOrchestrator(ILogger<VacancyManageOrchestrator> logger, DisplayVacancyViewModelMapper vacancyDisplayMapper, IRecruitVacancyClient vacancyClient) : base(logger)
+        public VacancyManageOrchestrator(ILogger<VacancyManageOrchestrator> logger, DisplayVacancyViewModelMapper vacancyDisplayMapper, IRecruitVacancyClient client) : base(logger)
         {
             _vacancyDisplayMapper = vacancyDisplayMapper;
-            _client = vacancyClient;
+            _client = client;
         }
 
         public async Task<Vacancy> GetVacancy(VacancyRouteModel vrm)
         {
-            var vacancy = await _client.GetVacancyAsync(vrm.VacancyId);
+            var vacancy = await _client.GetVacancyAsync(vrm.VacancyId.GetValueOrDefault());
 
-            Utility.CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
+            Utility.CheckAuthorisedAccess(vacancy, vrm.Ukprn);
 
             return vacancy;
         }

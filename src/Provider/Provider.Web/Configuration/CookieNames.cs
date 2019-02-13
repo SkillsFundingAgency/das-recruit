@@ -7,5 +7,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
         public const string AntiForgeryCookie = "prov-recruit-x-csrf";
         public const string SeenOutageMessage = "prov-recruit-seen-outage-message";
         public const string SetupProvider = "prov-recruit-setup-provider-{0}";
+        public const string VacancyProposedClosingDate = "vacancy-closingDate-{0}";
+        public const string VacancyProposedStartDate = "vacancy-startDate-{0}";
     }
 }

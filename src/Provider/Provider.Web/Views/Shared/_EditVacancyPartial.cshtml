@@ -1,4 +1,4 @@
-﻿@model Esfa.Recruit.Employer.Web.ViewModels.VacancyManage.EditVacancyViewModel
+﻿@model Esfa.Recruit.Provider.Web.ViewModels.VacancyManage.EditVacancyViewModel
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <h3 class="govuk-heading-s govuk-!-margin-top-0">Brief overview</h3>
@@ -93,7 +93,7 @@
     </div>
 </div>
 <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
+    <div class="govuk-grid-column-full">
         <h3 class="govuk-heading-s">Description</h3>
         <p class="govuk-body">@Model.EmployerDescription</p>
         <h3 class="govuk-heading-s">Employer</h3>
@@ -102,12 +102,6 @@
         <span class="govuk-visually-hidden">This vacancy meets disability confident requirements</span>
         <h3 class="govuk-heading-s">Website</h3>
         <p class="govuk-body">@Model.EmployerWebsiteUrl</p>
-    </div>
-    <div class="govuk-grid-column-one-third">
-        <h3 class="govuk-heading-s">Contact</h3>
-        <p class="govuk-body">@Model.EmployerContactName</p>
-        <p class="govuk-body">@Model.EmployerContactEmail</p>
-        <p class="govuk-body">@Model.EmployerContactTelephone</p>
     </div>
 </div>
 <div class="govuk-grid-row">
@@ -135,10 +129,16 @@
     </div>
 </div>
 <div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
+    <div class="govuk-grid-column-two-thirds">
         <p class="govuk-body">@Model.ProviderName</p>
         <h3 class="govuk-heading-s">Apprenticeship @Model.TrainingType</h3>
         <p class="govuk-body">@Model.TrainingTitle</p>
+    </div>
+    <div class="govuk-grid-column-one-third">
+        <h3 class="govuk-heading-s">Contact</h3>
+        <p class="govuk-body">@Model.ProviderContactName</p>
+        <p class="govuk-body">@Model.ProviderContactEmail</p>
+        <p class="govuk-body">@Model.ProviderContactTelephone</p>
     </div>
 </div>
 <div class="govuk-grid-row">

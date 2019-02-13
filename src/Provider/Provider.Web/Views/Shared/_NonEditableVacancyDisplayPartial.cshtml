@@ -1,13 +1,12 @@
-﻿@model Esfa.Recruit.Employer.Web.ViewModels.VacancyManage.EditVacancyViewModel
+﻿@model DisplayVacancyViewModel
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <h3 class="govuk-heading-s govuk-!-margin-top-0">Brief overview</h3>
-        <p class="preserve-format">@Model.ShortDescription</p>
+        <p class="govuk-body">@Model.ShortDescription</p>
     </div>
-    <div class="govuk-grid-column-one-third" id="closingDateSection">
+    <div class="govuk-grid-column-one-third">
         <h3 class="govuk-heading-s govuk-!-margin-top-0">Closing Date</h3>
-        <p id="vacancy-closing-date">@Model.DisplayableClosingDate</p>
-        <a asp-route="@RouteNames.VacancyEditDates_Get" esfa-automation="edit-closing-date">Edit</a>
+        <p class="govuk-body" id="vacancy-closing-date">@Model.ClosingDate</p>
     </div>
 </div>
 <div class="govuk-grid-row">
@@ -20,7 +19,7 @@
         <ul class="govuk-list">
             <li>
                 <h3 class="govuk-heading-s">Working week</h3>
-<               <p class="govuk-body">@Model.WorkingWeekDescription</p>
+                <p class="govuk-body">@Model.WorkingWeekDescription</p>
                 <p class="govuk-body">Total hours per week: @Model.HoursPerWeek</p>
             </li>
             <li>
@@ -32,10 +31,9 @@
                 <h3 class="govuk-heading-s">Expected apprenticeship duration</h3>
                 <p class="govuk-body">@Model.ExpectedDuration</p>
             </li>
-            <li id="possibleStartDateSection">
+            <li>
                 <h3 class="govuk-heading-s">Possible start date</h3>
-                <p class="govuk-body">@Model.DisplayableStartDate</p>
-                <a asp-route="@RouteNames.VacancyEditDates_Get" esfa-automation="edit-start-date" class="govuk-body govuk-link">Edit</a>
+                <p class="govuk-body">@Model.PossibleStartDate</p>
             </li>
             <li>
                 <h3 class="govuk-heading-s">Apprenticeship level</h3>
@@ -51,13 +49,13 @@
             </li>
         </ul>
     </div>
-    <div class="govuk-grid-column-two-thirds">
-        <h3 class="govuk-heading-s">Typical working day</h3>
-        <p class="govuk-body">@Html.Raw(Model.VacancyDescription)</p>
-        <h3 class="govuk-heading-s">Training to be provided</h3>
-        <p class="govuk-body">@Html.Raw(Model.TrainingDescription)</p>
-        <h3 class="govuk-heading-s">Future prospects</h3>
-        <p class="govuk-body">@Html.Raw(Model.OutcomeDescription)</p>
+    <div class="govuk-grid-column-two-thirds vacancy-descriptions" id="vacancyDescription">
+        <h3 class="govuk-heading-s">What you will do in your working day</h3>
+        <div class="govuk-body">@Html.Raw(Model.VacancyDescription)</div>
+        <h3 class="govuk-heading-s">The training you will be getting</h3>
+        <div class="govuk-body">@Html.Raw(Model.TrainingDescription)</div>
+        <h3 class="govuk-heading-s">What to expect at the end of your apprenticeship</h3>
+        <div class="govuk-body">@Html.Raw(Model.OutcomeDescription)</div>
     </div>
 </div>
 <div class="govuk-grid-row">
@@ -93,7 +91,7 @@
     </div>
 </div>
 <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
+    <div class="govuk-grid-column-full">
         <h3 class="govuk-heading-s">Description</h3>
         <p class="govuk-body">@Model.EmployerDescription</p>
         <h3 class="govuk-heading-s">Employer</h3>
@@ -102,12 +100,6 @@
         <span class="govuk-visually-hidden">This vacancy meets disability confident requirements</span>
         <h3 class="govuk-heading-s">Website</h3>
         <p class="govuk-body">@Model.EmployerWebsiteUrl</p>
-    </div>
-    <div class="govuk-grid-column-one-third">
-        <h3 class="govuk-heading-s">Contact</h3>
-        <p class="govuk-body">@Model.EmployerContactName</p>
-        <p class="govuk-body">@Model.EmployerContactEmail</p>
-        <p class="govuk-body">@Model.EmployerContactTelephone</p>
     </div>
 </div>
 <div class="govuk-grid-row">
@@ -135,10 +127,16 @@
     </div>
 </div>
 <div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
+    <div class="govuk-grid-column-two-thirds">
         <p class="govuk-body">@Model.ProviderName</p>
         <h3 class="govuk-heading-s">Apprenticeship @Model.TrainingType</h3>
         <p class="govuk-body">@Model.TrainingTitle</p>
+    </div>
+    <div class="govuk-grid-column-one-third">
+        <h3 class="govuk-heading-s">Contact</h3>
+        <p class="govuk-body">@Model.ProviderContactName</p>
+        <p class="govuk-body">@Model.ProviderContactEmail</p>
+        <p class="govuk-body">@Model.ProviderContactTelephone</p>
     </div>
 </div>
 <div class="govuk-grid-row">
@@ -159,13 +157,14 @@
                 <p class="govuk-body">@Model.ApplicationUrl</p>
             </div>
             <div asp-show="@Model.HasApplicationInstructions">
-                <p  class="govuk-body">
+                <p class="govuk-body">
                     @Model.ApplicationInstructions
                 </p>
             </div>
         </div>
     </div>
 </div>
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
         <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">

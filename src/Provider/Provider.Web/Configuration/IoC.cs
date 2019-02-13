@@ -57,18 +57,20 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<ConsiderationsOrchestrator>();
             services.AddTransient<DashboardOrchestrator>();
             services.AddTransient<EmployerOrchestrator>();
-            services.AddTransient<TitleOrchestrator>();
-            services.AddTransient<ShortDescriptionOrchestrator>();
             services.AddTransient<LocationOrchestrator>();
-            services.AddTransient<TrainingOrchestrator>();
-            services.AddTransient<WageOrchestrator>();
-            services.AddTransient<SearchResultPreviewOrchestrator>();
             services.AddTransient<ProviderContactDetailsOrchestrator>();
             services.AddTransient<QualificationsOrchestrator>();
+            services.AddTransient<SearchResultPreviewOrchestrator>();
+            services.AddTransient<ShortDescriptionOrchestrator>();
             services.AddTransient<SkillsOrchestrator>();
-            services.AddTransient<VacancyDescriptionOrchestrator>();
-            services.AddTransient<VacancyPreviewOrchestrator>();
             services.AddTransient<SubmittedOrchestrator>();
+            services.AddTransient<TitleOrchestrator>();
+            services.AddTransient<TrainingOrchestrator>();
+            services.AddTransient<VacancyDescriptionOrchestrator>();
+            services.AddTransient<VacancyManageOrchestrator>();
+            services.AddTransient<VacancyPreviewOrchestrator>();
+            services.AddTransient<VacancyViewOrchestrator>();
+            services.AddTransient<WageOrchestrator>();
         }
 
         private static void RegisterMapperDeps(IServiceCollection services)

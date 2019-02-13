@@ -1,19 +1,19 @@
-﻿using Esfa.Recruit.Employer.Web.Configuration;
-using Esfa.Recruit.Employer.Web.Mappings;
-using Esfa.Recruit.Employer.Web.Models;
-using Esfa.Recruit.Employer.Web.RouteModel;
-using Esfa.Recruit.Employer.Web.ViewModels;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Esfa.Recruit.Provider.Web.Configuration;
+using Esfa.Recruit.Provider.Web.Mappings;
+using Esfa.Recruit.Provider.Web.Model;
+using Esfa.Recruit.Provider.Web.RouteModel;
+using Esfa.Recruit.Provider.Web.ViewModels;
+using Esfa.Recruit.Provider.Web.ViewModels.VacancyView;
 using Esfa.Recruit.Shared.Web.ViewModels;
-using Esfa.Recruit.Employer.Web.ViewModels.VacancyManage;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
+using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 
-namespace Esfa.Recruit.Employer.Web.Orchestrators
+namespace Esfa.Recruit.Provider.Web.Orchestrators
 {
     public class VacancyViewOrchestrator
     {
@@ -28,9 +28,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public async Task<Vacancy> GetVacancy(VacancyRouteModel vrm)
         {
-            var vacancy = await _client.GetVacancyAsync(vrm.VacancyId);
+            var vacancy = await _client.GetVacancyAsync(vrm.VacancyId.GetValueOrDefault());
 
-            Utility.CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
+            Utility.CheckAuthorisedAccess(vacancy, vrm.Ukprn);
 
             return vacancy;
         }
