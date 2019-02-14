@@ -2,314 +2,229 @@
 @using Esfa.Recruit.Vacancies.Client.Domain.Entities
 @model Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview.ApplicationReviewViewModel
 
-<div asp-show="@Model.ShowDisabilityStatusAlert" class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-        <div class="info-summary govuk-!-margin-top-6" role="alert" tabindex="-1">
-            <h3 class="govuk-heading-m govuk-!-margin-top-0">Disability Confident - Alert</h3>
-            <p>This applicant has stated that they have either a learning difficulty, disability or medical condition.</p>
-        </div>
-    </div>
-</div>
-
 <div class="govuk-grid-row"> 
     <div class="govuk-grid-column-two-thirds">
-        <section>
-            <h1 class="govuk-heading-xl govuk-!-margin-bottom-0">@Model.Name</h1>
-            <div class="govuk-!-margin-bottom-6">
-                <span class="govuk-!-font-weight-bold">Application ID: </span>@Model.FriendlyId
-            </div>
+        <div asp-show="@Model.ShowDisabilityStatusAlert" class="info-summary govuk-!-margin-top-6" role="alert" tabindex="-1">
+            <h3 class="govuk-heading-m govuk-!-margin-top-0">Disability Confident - Alert</h3>
+            <p class="govuk-body">This applicant has stated that they have either a learning difficulty, disability or medical condition.</p>
+        </div>
 
-            <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-0">@Model.Name</h1>
+        <p class="govuk-body govuk-!-margin-bottom-6">
+            <span class="govuk-!-font-weight-bold">Application ID: </span>@Model.FriendlyId
+        </p>
 
-            <div class="panel panel-border-narrow">
-                <p class="govuk-body">
-                    @Html.Raw(
-                                         string.Join("<br>",
-                                             new[]
-                                             {
-                                                        @Model.Name,
-                                                        @Model.AddressLine1,
-                                                        @Model.AddressLine2,
-                                                        @Model.AddressLine3,
-                                                        @Model.AddressLine4,
-                                                        @Model.Postcode
-                                             }.Where(s => !string.IsNullOrWhiteSpace(s))
-                                                 .Select(WebUtility.HtmlEncode)))
-                </p>
-                <p class="govuk-body">
-                    @Model.Phone
-                    <br> <a href="mailto:@Model.Email">@Model.Email</a>
-                </p>
-            </div>
-        </section>
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
 
-        <section>
-            <h2 class="govuk-heading-l govuk-!-margin-top-6">About you</h2>
+        <div class="panel panel-border-narrow">
+            <p class="govuk-body">
+                @Html.Raw(
+                                        string.Join("<br>",
+                                            new[]
+                                            {
+                                                    @Model.Name,
+                                                    @Model.AddressLine1,
+                                                    @Model.AddressLine2,
+                                                    @Model.AddressLine3,
+                                                    @Model.AddressLine4,
+                                                    @Model.Postcode
+                                            }.Where(s => !string.IsNullOrWhiteSpace(s))
+                                                .Select(WebUtility.HtmlEncode)))
+            </p>
+            <p class="govuk-body">
+                @Model.Phone
+                <br> <a class="govuk-link" href="mailto:@Model.Email">@Model.Email</a>
+            </p>
+        </div>
 
-            <div class="govuk-form-group">
-                <span class="govuk-label govuk-!-font-weight-bold">What are your main strengths?</span>
-                <span>@Model.Strengths</span>
-            </div>
-            <div class="govuk-form-group">
-                <span class="govuk-label govuk-!-font-weight-bold">What skills would you like to improve during this apprenticeship?</span>
-                <span>@Model.Improvements</span>
-            </div>
-            <div class="govuk-form-group">
-                <span class="govuk-label govuk-!-font-weight-bold">What are your hobbies and interests?</span>
-                <span>@Model.HobbiesAndInterests</span>
-            </div>
-        </section>
+        <h2 class="govuk-heading-l govuk-!-margin-top-6">About you</h2>
 
-        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
-
-        <section>
-            <h2 class="govuk-heading-l govuk-!-margin-top-6">Education</h2>
-
-            <h3 class="govuk-heading-s">Name of most recent school/college</h3>
-            <p>@Model.EducationInstitution</p>
-
-            <h3 class="govuk-heading-s">Years attended</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Started</th>
-                        <th>Finished</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>@Model.EducationFromYear</td>
-                        <td>@Model.EducationToYear</td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
+        <div class="govuk-form-group">
+            <span class="govuk-label govuk-!-font-weight-bold">What are your main strengths?</span>
+            <span class="govuk-body">@Model.Strengths</span>
+        </div>
+        <div class="govuk-form-group">
+            <span class="govuk-label govuk-!-font-weight-bold">What skills would you like to improve during this apprenticeship?</span>
+            <span class="govuk-body">@Model.Improvements</span>
+        </div>
+        <div class="govuk-form-group">
+            <span class="govuk-label govuk-!-font-weight-bold">What are your hobbies and interests?</span>
+            <span class="govuk-body">@Model.HobbiesAndInterests</span>
+        </div>
 
         <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
-        <section>
-            <h2 class="govuk-heading-l govuk-!-margin-top-6">Qualifications</h2>
+        <h2 class="govuk-heading-l govuk-!-margin-top-6">Education</h2>
 
-            <p asp-show="@Model.HasNoQualifications">I don't have any qualifications</p>
+        <h3 class="govuk-heading-s">Name of most recent school/college</h3>
+        <p class="govuk-body">@Model.EducationInstitution</p>
 
-            @foreach (var group in Model.Qualifications.GroupBy(item => item.QualificationType))
-            {
-                <div>
-                    <div>
-                        <h3 class="govuk-heading-s">@Html.Encode(group.Key)</h3>
-                    </div>
-                    <table>
-                        <thead>
-                            <tr>
-                               <th class="th-50">Subject</th>
-                               <th class="th-30">Grade</th>
-                               <th class="th-20">Year</th>
-                           </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in group)
-                            {
-                                <tr>
-                                    <td>@item.Subject</td>
-                                    <td>@item.Grade <span asp-show="@item.IsPredicted">(Predicted)</span></td>
-                                    <td>@item.Year</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            }
-        </section>
+        <table class="govuk-table">
+            <caption class="govuk-table__caption">Years attended</caption>
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th class="govuk-table__header">Started</th>
+                    <th class="govuk-table__header">Finished</th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">@Model.EducationFromYear</td>
+                    <td class="govuk-table__cell">@Model.EducationToYear</td>
+                </tr>
+            </tbody>
+        </table>
 
-        <section>
-            <h2 class="govuk-heading-l govuk-!-margin-top-6">Work experience</h2>
+        <h2 class="govuk-heading-l govuk-!-margin-top-6">Qualifications</h2>
 
-            <p asp-show="@Model.HasNoWorkExperience">I don't have any work experience</p>
+        <p asp-show="@Model.HasNoQualifications" class="govuk-body">I don't have any qualifications</p>
+        <hr asp-show="@Model.HasNoQualifications" class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
 
-            @foreach (var experience in Model.WorkExperiences)
-            {
-                <div class="grid-3-4">
-                    <div class="govuk-grid-row">
-                        <div class="govuk-grid-column-one-half">
-                            <table>
-                                <colgroup>
-                                    <col>
-                                    <col>
-                                </colgroup>
-                                <thead>
-                                    <tr>
-                                        <th>
-                                            <span>Work experience</span>
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <span>@experience.Employer</span>
-                                            <span>-</span>
-                                            <span>@experience.JobTitle</span>
-                                            <div></div>
-                                            <span>@experience.Description</span>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="govuk-grid-column-one-half">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>From</th>
-                                        <th>To</th>
-                                        <th></th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>@experience.FromDateAsText</td>
-                                        <td>@experience.ToDateAsText</td>
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            }
-        </section>
+        @foreach (var group in Model.Qualifications.GroupBy(item => item.QualificationType))
+        {
 
-        <section>
-            <h2 class="govuk-heading-l govuk-!-margin-top-6">Training courses</h2>
+        <table class="govuk-table">
+            <caption class="govuk-table__caption">@Html.Encode(group.Key)</caption>
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th class="govuk-table__header govuk-!-width-one-half">Subject</th>
+                    <th class="govuk-table__header govuk-!-width-one-quarter">Grade</th>
+                    <th class="govuk-table__header govuk-!-width-one-quarter">Year</th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+                @foreach (var item in group)
+                {
+                    <tr class="govuk-table__row">
+                        <td class="govuk-table__cell">@item.Subject</td>
+                        <td class="govuk-table__cell">@item.Grade <span asp-show="@item.IsPredicted">(Predicted)</span></td>
+                        <td class="govuk-table__cell">@item.Year</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        }
 
-            <p asp-show="@Model.HasNoTrainingCourses">I have not been on any training courses</p>
+        <h2 class="govuk-heading-l govuk-!-margin-top-6">Work experience</h2>
+
+        <p asp-show="@Model.HasNoWorkExperience">I don't have any work experience</p>
+        
+        <table  asp-hide="@Model.HasNoWorkExperience" class="govuk-table">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th class="govuk-table__header govuk-!-width-one-half">Work experience</th>
+                    <th class="govuk-table__header govuk-!-width-one-quarter">From</th>
+                    <th class="govuk-table__header govuk-!-width-one-quarter">To</th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+                @foreach (var experience in Model.WorkExperiences)
+                {
+                    <tr class="govuk-table__row">
+                        <td class="govuk-table__cell">
+                            @experience.Employer - @experience.JobTitle
+                            <div>@experience.Description</div>
+                        </td>
+                        <td class="govuk-table__cell">@experience.FromDateAsText</td>
+                        <td class="govuk-table__cell">@experience.ToDateAsText</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <hr asp-show="@Model.HasNoWorkExperience" class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
+
+        <h2 class="govuk-heading-l govuk-!-margin-top-6">Training courses</h2>
+
+        <p asp-show="@Model.HasNoTrainingCourses">I have not been on any training courses</p>
+
+        <table asp-hide="@Model.HasNoTrainingCourses" class="govuk-table">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th class="govuk-table__header govuk-!-width-one-half">Training course</th>
+                    <th class="govuk-table__header govuk-!-width-one-quarter">From</th>
+                    <th class="govuk-table__header govuk-!-width-one-quarter">To</th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
 
             @foreach (var trainingCourse in Model.TrainingCourses)
             {
-                <div>
-                    <div class="govuk-grid-row">
-                        <div class="govuk-grid-column-one-half">
-                            <table>
-                                <colgroup>
-                                    <col>
-                                    <col>
-                                </colgroup>
-                                <thead>
-                                    <tr>
-                                        <th>Training course</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <span>@trainingCourse.Provider</span>
-                                            <span>-</span>
-                                            <span>@trainingCourse.Title</span>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="govuk-grid-column-one-half">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>From</th>
-                                        <th>To</th>
-                                        <th></th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>@trainingCourse.FromDateAsText</td>
-                                        <td>@trainingCourse.ToDateAsText</td>
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">
+                        @trainingCourse.Provider - @trainingCourse.Title
+                    </td>
+                    <td class="govuk-table__cell">@trainingCourse.FromDateAsText</td>
+                    <td class="govuk-table__cell">@trainingCourse.ToDateAsText</td>
+                </tr>
             }
+            </tbody>
+        </table>  
 
-        </section>
+        <hr asp-show="@Model.HasNoTrainingCourses" class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
 
-        <section>
-            <h2 class="govuk-heading-l govuk-!-margin-top-6">Skills the Employer wants</h2>
+        <h2 class="govuk-heading-l govuk-!-margin-top-6">Skills the Employer wants</h2>
 
-            <p asp-show="@Model.HasNoSkills">I don't have the skills the employer wants</p>
+        <p asp-show="@Model.HasNoSkills" class="govuk-body">I don't have the skills the employer wants</p>
 
-            <p asp-show="@Model.HasSkills">
-                @Html.Raw(string.Join(", ", Model.Skills.Select(s => Html.Encode(s))))
-            </p>
-        </section>
+        <p asp-show="@Model.HasSkills" class="govuk-body">
+            @Html.Raw(string.Join(", ", Model.Skills.Select(s => Html.Encode(s))))
+        </p>
 
         <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
-        <section>
-            <h3 class="govuk-heading-s">Do you have a learning difficulty, disability or health problem?</h3>
-            <p>@Model.DisabilityStatus.GetDisplayName()</p>
+        <h3 class="govuk-heading-s">Do you have a learning difficulty, disability or health problem?</h3>
+        <p class="govuk-body">@Model.DisabilityStatus.GetDisplayName()</p>
 
-            <h3 class="govuk-heading-s">Is there anything we can do to support your interview?</h3>
-            <p>
-                <span asp-show="@Model.HasNoSupportRequirements">I don't have any interview support requirements</span>
-                @Model.Support
-            </p>
-            <br>
-            <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
-        </section>
+        <h3 class="govuk-heading-s">Is there anything we can do to support your interview?</h3>
+        <p class="govuk-body"asp-show="@Model.HasNoSupportRequirements">I don't have any interview support requirements</p>
+        <p class="govuk-body" asp-hide="@Model.HasNoSupportRequirements">@Model.Support</p>
 
-        <section asp-show="@Model.CanNotChangeOutcome">
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+        <div asp-show="@Model.CanNotChangeOutcome">
             <h3 class="govuk-heading-l govuk-!-margin-top-6">Outcome</h3>
-            <p>@Model.Status.Value.GetDisplayName()</p>
-            <p>@Model.CandidateFeedback</p>
+            <p class="govuk-body">@Model.Status.Value.GetDisplayName()</p>
+            <p class="govuk-body">@Model.CandidateFeedback</p>
 
-            <p><a asp-route="@RouteNames.VacancyManage_Get" class="govuk-button">Return to vacancy</a></p>
-        </section>
+            <a asp-route="@RouteNames.VacancyManage_Get" class="govuk-button">Return to vacancy</a>
+        </div>
 
-        <form asp-show="@Model.CanChangeOutcome" asp-route="@RouteNames.ApplicationReview_Post">
-            <section>
-                <h3 class="govuk-heading-l govuk-!-margin-top-6">Outcome</h3>
-
-                <div esfa-validation-marker-for="Outcome" class="govuk-form-group">
-                    <fieldset class="govuk-fieldset">
-                        <span esfa-validation-message-for="Outcome" class="govuk-error-message"></span>
-                        <div class="govuk-radios">
-                            <div class="govuk-radios__item">
-                                <input asp-for="Outcome" class="govuk-radios__input" id="outcome-successful" type="radio" value="@ApplicationReviewStatus.Successful.ToString()" checked="@(Model.Outcome == ApplicationReviewStatus.Successful ? "checked" : null)">
-                                <label for="outcome-successful" class="govuk-label govuk-radios__label">Successful</label>
-                            </div>
-                            <div class="govuk-radios__item" data-target="unsuccessful-candidate-feedback">
-                                <input asp-for="Outcome" class="govuk-radios__input" id="outcome-unsuccessful" type="radio" value="@ApplicationReviewStatus.Unsuccessful.ToString()" checked="@(Model.Outcome == ApplicationReviewStatus.Unsuccessful ? "checked" : null)">
-                                <label for="outcome-unsuccessful" class="govuk-label govuk-radios__label">Unsuccessful</label>
+        <form asp-show="@Model.CanChangeOutcome" asp-route="@RouteNames.ApplicationReview_Post" class="govuk-!-margin-top-6">
+            <div esfa-validation-marker-for="Outcome" class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <h3 class="govuk-fieldset__heading">Outcome</h3>
+                    </legend>
+                    <span esfa-validation-message-for="Outcome" class="govuk-error-message"></span>
+                    <div class="govuk-radios govuk-radios--conditional" data-module="radios">
+                        <div class="govuk-radios__item">
+                            <input asp-for="Outcome" class="govuk-radios__input" id="outcome-successful" type="radio" value="@ApplicationReviewStatus.Successful.ToString()" checked="@(Model.Outcome == ApplicationReviewStatus.Successful ? "checked" : null)">
+                            <label for="outcome-successful" class="govuk-label govuk-radios__label">Successful</label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input asp-for="Outcome" class="govuk-radios__input" id="outcome-unsuccessful" type="radio" value="@ApplicationReviewStatus.Unsuccessful.ToString()" checked="@(Model.Outcome == ApplicationReviewStatus.Unsuccessful ? "checked" : null)" data-aria-controls="unsuccessful-candidate-feedback">
+                            <label for="outcome-unsuccessful" class="govuk-label govuk-radios__label">Unsuccessful</label>
+                        </div>
+                        <div esfa-validation-marker-for="CandidateFeedback" id="unsuccessful-candidate-feedback" class="govuk-radios__conditional govuk-radios__conditional--hidden">
+                            <div class="govuk-form-group">
+                                <label asp-for="CandidateFeedback" class="govuk-label govuk-!-font-weight-bold">Feedback</label>
+                                <span esfa-validation-message-for="CandidateFeedback" class="govuk-error-message"></span>
+                                <span class="govuk-hint">Explain why the application has been unsucessful, your comments will be sent to the candidate.</span>
+                                <textarea asp-for="CandidateFeedback" class="govuk-textarea" cols="20" size="12"></textarea>
                             </div>
                         </div>
-                    </fieldset>
-                </div>
-                <div esfa-validation-marker-for="CandidateFeedback" id="unsuccessful-candidate-feedback" class="panel panel-border-narrow js-hidden">
-                    <div class="govuk-form-group">
-                        <label asp-for="CandidateFeedback" class="govuk-label govuk-!-font-weight-bold">Feedback</label>
-                        <span esfa-validation-message-for="CandidateFeedback" class="govuk-error-message"></span>
-                        <span class="govuk-hint">Explain why the application has been unsucessful, your comments will be sent to the candidate.</span>
-                        <textarea asp-for="CandidateFeedback" class="govuk-textarea" cols="20" size="12"></textarea>
                     </div>
-                </div>
-
-            </section>
-
+                </fieldset>
+            </div>
+                
             <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
-            <section>
-                <div class="govuk-form-group hide-print">
-                    <button type="submit" class="govuk-button">Save</button>
+            <div class="govuk-form-group hide-print">
+                <button type="submit" class="govuk-button">Save</button>
 
-                    <a asp-route="@RouteNames.VacancyManage_Get" class="govuk-link das-button-link">Cancel</a>
-                </div>
-            </section>
+                <a asp-route="@RouteNames.VacancyManage_Get" class="govuk-link das-button-link">Cancel</a>
+            </div>
         </form>
     </div>
 </div>

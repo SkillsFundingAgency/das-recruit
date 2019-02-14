@@ -210,7 +210,7 @@
     </div>
 
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
+        <div class="govuk-grid-column-two-thirds">
             <div id="@Anchors.Provider">
                 <h3 class="govuk-heading-s">Training provider</h3>
                 <p class="govuk-body">@Model.ProviderName</p>
@@ -220,7 +220,7 @@
                 <p class="govuk-body">@Model.TrainingTitle</p>
             </div>
         </div>
-        <div class="column-one-third">
+        <div class="govuk-grid-column-one-third">
             <div asp-show="@Model.IsProviderVacancy" id="@Anchors.ProviderContact">
                 <h3 class="govuk-heading-s">Contact details (optional)</h3>
                 <p class="govuk-body">@Model.ProviderContactName</p>
