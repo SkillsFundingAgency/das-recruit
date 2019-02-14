@@ -330,7 +330,7 @@
         </div>
 
         <div class="govuk-grid-row">
-            <div class="govuk-grid-column-full">
+            <div class="govuk-grid-column-two-thirds">
                 <div class="@Model.ProviderClass" id="@FieldIdentifiers.Provider">
                     <h3 class="govuk-heading-s">Training provider</h3>
                     <p class="govuk-body">@Model.ProviderName</p>
@@ -346,7 +346,7 @@
                                           asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                 </div>
             </div>
-            <div class="column-one-third">
+            <div class="govuk-grid-column-one-third">
                 <div asp-show="@Model.IsProviderVacancy" class="@Model.ProviderContactClass" id="@FieldIdentifiers.ProviderContact">
                     <h3 class="govuk-heading-s">Contact details (optional)</h3>
                     <p class="govuk-body">@Model.ProviderContactName</p>
