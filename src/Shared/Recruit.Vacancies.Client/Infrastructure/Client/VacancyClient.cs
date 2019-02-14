@@ -32,7 +32,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly IVacancyService _vacancyService;
         private readonly IEmployerDashboardProjectionService _employerDashboardService;
         private readonly IProviderDashboardProjectionService _providerDashboardService;
-
         private readonly IEmployerProfileRepository _employerProfileRepository;
         private readonly IUserRepository _userRepository;
         private readonly IQualificationsProvider _qualificationsProvider;
