@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -18,8 +16,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore
 {
     internal sealed class TableStorageQueryStore : IQueryStore
     {
-        private readonly ILogger<TableStorageQueryStore> _logger;
+        private const int DeleteBatchSize = 100;
 
+        private readonly ILogger<TableStorageQueryStore> _logger;
         private CloudTable CloudTable { get; }
         private RetryPolicy RetryPolicy { get; }
 
@@ -54,47 +53,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore
             return retrievedResult;
         }
 
-        public async Task RecreateAsync<T>(string typeName, IList<T> items) where T : QueryProjectionBase
+        public Task<long> DeleteAllAsync<T>(string typeName) where T : QueryProjectionBase
         {
-            await DeleteAllByViewType(typeName);
-
-            await InsertBatch(items);
-        }
-
-        private async Task InsertBatch<T>(IList<T> items) where T : QueryProjectionBase
-        {
-            if (items.Any())
-            {
-                var batchInsertOperation = new TableBatchOperation();
-                foreach (var item in items)
-                {
-                    var serializedItem = JsonConvert.SerializeObject(item, new Newtonsoft.Json.Converters.StringEnumConverter());
-                    var entity = new QueryEntity(item.ViewType, item.Id, serializedItem);
-                    batchInsertOperation.Insert(entity);
-                }
-
-                await RetryPolicy.ExecuteAsync(async context => await CloudTable.ExecuteBatchAsync(batchInsertOperation),
-                    new Context(nameof(IQueryStore.RecreateAsync)));
-            }
-        }
-
-        private async Task DeleteAllByViewType(string typeName)
-        {
-            var batchDeleteOperation = new TableBatchOperation();
             var query = new TableQuery<QueryEntity>().Where(
                 TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, typeName));
-            var retrievedResult = await RetryPolicy.ExecuteAsync(context => CloudTable.ExecuteQuerySegmentedAsync(query, null),
-                new Context(nameof(IQueryStore.RecreateAsync)));
-            if (retrievedResult.Results.Any())
-            {
-                foreach (var queryEntity in retrievedResult)
-                {
-                    batchDeleteOperation.Delete(queryEntity);
-                }
 
-                await RetryPolicy.ExecuteAsync(async context => await CloudTable.ExecuteBatchAsync(batchDeleteOperation),
-                    new Context(nameof(IQueryStore.RecreateAsync)));
-            }
+            return DeleteInBatchesAsync(query);
         }
 
         public async Task DeleteAsync<T>(string typeName, string key) where T : QueryProjectionBase
@@ -110,7 +74,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore
             }
         }
 
-        public async Task<long> DeleteManyAsync<T, T1>(string typeName, Expression<Func<T, T1>> property, T1 value) where T : QueryProjectionBase
+        public Task<long> DeleteManyAsync<T, T1>(string typeName, Expression<Func<T, T1>> property, T1 value) where T : QueryProjectionBase
         {
             var propertyInfo = GetPropertyInfo(property);
             var rangeQuery = new TableQuery<QueryEntity>().Where(
@@ -118,8 +82,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore
                     TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, typeName),
                     TableOperators.And,
                     TableQuery.GenerateFilterCondition(propertyInfo.Name, QueryComparisons.LessThan, value.ToString())));
-            var retrievedResults = await RetryPolicy.ExecuteAsync(async context => await CloudTable.ExecuteQuerySegmentedAsync(rangeQuery, null), new Context(nameof(IQueryStore.DeleteManyAsync)));
-            return retrievedResults.Results.Count;
+
+            return DeleteInBatchesAsync(rangeQuery);
         }
 
         private PropertyInfo GetPropertyInfo<TSource, TProperty>(Expression<Func<TSource, TProperty>> propertyLambda)
@@ -132,6 +96,39 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore
             if (propInfo == null)
                 throw new ArgumentException($"Expression '{propertyLambda}' refers to a field, not a property.");
             return propInfo;
+        }
+
+        private async Task<long> DeleteInBatchesAsync(TableQuery<QueryEntity> query)
+        {
+            long deletedCount = 0;
+            
+            TableQuerySegment<QueryEntity> segment = null;
+
+            while (segment == null || segment.ContinuationToken != null)
+            {
+                segment = await RetryPolicy.ExecuteAsync(_ =>
+                    CloudTable.ExecuteQuerySegmentedAsync(query.Take(DeleteBatchSize), 
+                    segment?.ContinuationToken),
+                    new Context($"{nameof(DeleteInBatchesAsync)}-ExecuteQuerySegmentedAsync"));
+
+                var batch = new TableBatchOperation();
+
+                foreach (var entity in segment.Results)
+                {
+                    batch.Add(TableOperation.Delete(entity));
+                }
+
+                if (batch.Count == 0)
+                    continue;
+                
+                var result = await RetryPolicy.ExecuteAsync(_ => 
+                        CloudTable.ExecuteBatchAsync(batch),
+                    new Context($"{nameof(DeleteInBatchesAsync)}-ExecuteBatchAsync"));
+
+                deletedCount += result.Count;
+            }
+
+            return deletedCount;
         }
     }
 }

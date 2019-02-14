@@ -65,19 +65,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             return result.DeletedCount;
         }
 
-        async Task<IEnumerable<T>> IQueryStore.GetAllByTypeAsync<T>(string typeName)
-        {
-            var filter = Builders<T>.Filter.Eq(d => d.ViewType, typeName);
-
-            var collection = GetCollection<T>();
-
-            var result = await RetryPolicy.ExecuteAsync(_ => 
-                collection.Find(filter).ToListAsync(),
-                new Context(nameof(IQueryStore.GetAllByTypeAsync)));
-
-            return result;
-        }
-
         async Task<T> IQueryStore.GetAsync<T>(string typeName, string key)
         {
             var filterBuilder = Builders<T>.Filter;
