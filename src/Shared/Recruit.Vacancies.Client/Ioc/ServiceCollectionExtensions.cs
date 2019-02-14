@@ -36,6 +36,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.FAA;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummariesProvider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Slack;
@@ -75,7 +76,14 @@ namespace Microsoft.Extensions.DependencyInjection
             RegisterStorageProviderDeps(services, configuration);
             AddValidation(services);
             AddRules(services);
-            RegisterMediatR(services);
+            RegisterMediatR(services);       
+            RegisterProviderRelationshipsClient(services, configuration);     
+        }
+
+        private static void RegisterProviderRelationshipsClient(IServiceCollection services, IConfiguration configuration)
+        {            
+            services.Configure<ProviderRelationshipApiConfiguration>(configuration.GetSection("ProviderRelationshipsApiConfiguration"));
+            services.AddTransient<IProviderRelationshipsService, ProviderRelationshipsService>();
         }
 
         private static void RegisterAccountApiClientDeps(IServiceCollection services)

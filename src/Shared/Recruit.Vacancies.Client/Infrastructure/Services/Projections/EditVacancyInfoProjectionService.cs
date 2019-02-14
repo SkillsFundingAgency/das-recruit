@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
@@ -24,11 +25,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
             _logger.LogDebug($"Legal Entities inserted: {legalEntities.Count} for Employer: {employerAccountId}");
         }
 
-        public async Task UpdateProviderVacancyDataAsync(long ukprn, IList<EmployerInfo> employers)
+        public async Task UpdateProviderVacancyDataAsync(long ukprn, IEnumerable<EmployerInfo> employers)
         {
             await _queryStoreWriter.UpdateProviderVacancyDataAsync(ukprn, employers);
 
-            _logger.LogDebug($"Employers inserted: {employers.Count} for Provider: {ukprn}");
+            _logger.LogDebug($"Employers inserted: {employers.Count()} for Provider: {ukprn}");
         }
 
     }
