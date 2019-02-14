@@ -1,14 +1,15 @@
 @model Esfa.Recruit.Provider.Web.ViewModels.Part1.SearchResultPreview.SearchResultPreviewViewModel
 <div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
+    <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Your vacancy summary</h1>
         <div class="grey-border">
-            <h2 class="govuk-heading-m govuk-!-margin-top-6">@Model.Title</h2>
+            <h2 class="govuk-heading-m govuk-!-margin-bottom-1 govuk-!-margin-top-4">@Model.Title</h2>
             <ul class="govuk-list">
-                <li >@Model.EmployerName</li>
-
-                <li class="govuk-body-s">
-                    <span id="date-and-positions">@Model.NumberOfPositionsCaption</span>
+                <li class="govuk-caption-m">
+                    @Model.EmployerName
+                </li>
+                <li class="govuk-caption-m govuk-!-font-size-16">
+                    @Model.NumberOfPositionsCaption
                 </li>
             </ul>
             
