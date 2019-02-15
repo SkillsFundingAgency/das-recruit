@@ -180,7 +180,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part2
 
         private static Vacancy GetTestVacancy()
         {
-            return new Vacancy {
+            return new Vacancy 
+            {
                 TrainingProvider = new TrainingProvider { Ukprn = TestUkprn },
                 Title = "Test Title",
                 ShortDescription = "Test Short Description",

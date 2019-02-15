@@ -17,7 +17,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.UtilityTests
         [InlineData("any other route", true)]
         public void ShouldRedirectToTitle(string route, bool shouldRedirect)
         {
-            var vacancy = new Vacancy {
+            var vacancy = new Vacancy 
+            {
                 EmployerAccountId = "EMPLOYER ACCOUNT ID",
                 Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e")
             };
@@ -33,7 +34,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.UtilityTests
         [InlineData("any other route", true)]
         public void ShouldRedirectToShortDescription(string route, bool shouldRedirect)
         {
-            var vacancy = new Vacancy {
+            var vacancy = new Vacancy 
+            {
                 EmployerAccountId = "EMPLOYER ACCOUNT ID",
                 Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
                 Title = "has a value"
@@ -52,7 +54,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.UtilityTests
         [InlineData("any other route", true)]
         public void ShouldRedirectToLocation(string route, bool shouldRedirect)
         {
-            var vacancy = new Vacancy {
+            var vacancy = new Vacancy 
+            {
                 EmployerAccountId = "EMPLOYER ACCOUNT ID",
                 Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
                 Title = "has a value",
@@ -74,7 +77,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.UtilityTests
         [InlineData("any other route", true)]
         public void ShouldRedirectToTraining(string route, bool shouldRedirect)
         {
-            var vacancy = new Vacancy {
+            var vacancy = new Vacancy 
+            {
                 EmployerAccountId = "EMPLOYER ACCOUNT ID",
                 Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
                 Title = "has a value",
@@ -99,7 +103,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.UtilityTests
         [InlineData("any other route", true)]
         public void ShouldRedirectToWage(string route, bool shouldRedirect)
         {
-            var vacancy = new Vacancy {
+            var vacancy = new Vacancy 
+            {
                 EmployerAccountId = "EMPLOYER ACCOUNT ID",
                 Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
                 Title = "has a value",
@@ -115,7 +120,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.UtilityTests
         [InlineData("any other route", false)]
         public void ShouldNotRedirect(string route, bool shouldRedirect)
         {
-            var vacancy = new Vacancy {
+            var vacancy = new Vacancy 
+            {
                 EmployerAccountId = "EMPLOYER ACCOUNT ID",
                 Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
                 Title = "has a value",
