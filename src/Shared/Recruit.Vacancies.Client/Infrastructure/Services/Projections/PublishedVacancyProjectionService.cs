@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -33,46 +35,64 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
 
         public async Task ReGeneratePublishedVacanciesAsync()
         {            
-            var liveVacanciesTask = _vacancyQuery.GetVacanciesByStatusAsync(VacancyStatus.Live);
-            var closedVacanciesTask = _vacancyQuery.GetVacanciesByStatusAsync(VacancyStatus.Closed);
+            var liveVacancyIdsTask = _vacancyQuery.GetVacanciesByStatusAsync<VacancyIdentifier>(VacancyStatus.Live);
+            var closedVacancyIdsTask = _vacancyQuery.GetVacanciesByStatusAsync<VacancyIdentifier>(VacancyStatus.Closed);
             var programmesTask = _referenceDataReader.GetReferenceData<ApprenticeshipProgrammes>();
 
-            await Task.WhenAll(liveVacanciesTask, programmesTask, closedVacanciesTask);
+            await Task.WhenAll(liveVacancyIdsTask, programmesTask, closedVacancyIdsTask);
 
-            var liveVacancies = liveVacanciesTask.Result.ToList();
-            var programmesData = programmesTask.Result.Data;
-            var closedVacancies = closedVacanciesTask.Result.ToList();
-
-            var regenerateLiveVacanciesViewsTask = RegenerateLiveVacancies(liveVacancies, programmesData);
-            var regenerateClosedVacanciesViewsTask = RegenerateClosedVacancies(closedVacancies, programmesData);
+            var liveVacancyIds = liveVacancyIdsTask.Result.Select(v => v.Id).ToList();
+            var closedVacancyIds = closedVacancyIdsTask.Result.Select(v => v.Id).ToList();
+            var programmes = programmesTask.Result.Data;
+            
+            var regenerateLiveVacanciesViewsTask = RegenerateLiveVacancies(liveVacancyIds, programmes);
+            var regenerateClosedVacanciesViewsTask = RegenerateClosedVacancies(closedVacancyIds, programmes);
 
             await Task.WhenAll(regenerateClosedVacanciesViewsTask, regenerateLiveVacanciesViewsTask);
         }
 
-        private Task RegenerateLiveVacancies(List<Vacancy> liveVacancies, List<ApprenticeshipProgramme> programmes)
+        private async Task RegenerateLiveVacancies(List<Guid> liveVacancyIds, List<ApprenticeshipProgramme> programmes)
         {
-            _logger.LogInformation($"Found {liveVacancies.Count} live vacancies to create LiveVacancy queryViews for.");
+            var watch = Stopwatch.StartNew();
 
-            var projectedVacancies = liveVacancies.Select(v =>
+            var deletedCount = await _queryStoreWriter.DeleteAllLiveVacancies();
+
+            foreach (var vacancyId in liveVacancyIds)
             {
-                var programme = programmes.Single(p => p.Id == v.ProgrammeId);
-                return v.ToVacancyProjectionBase<LiveVacancy>(programme, () => QueryViewType.LiveVacancy.GetIdValue(v.VacancyReference.ToString()));
-            });
+                var vacancy = await _vacancyQuery.GetVacancyAsync(vacancyId);
 
-            return _queryStoreWriter.RecreateLiveVacancies(projectedVacancies);
+                var programme = programmes.Single(p => p.Id == vacancy.ProgrammeId);
+                var vacancyProjection = vacancy.ToVacancyProjectionBase<LiveVacancy>(programme,
+                    () => QueryViewType.LiveVacancy.GetIdValue(vacancy.VacancyReference.ToString()));
+
+                await _queryStoreWriter.UpdateLiveVacancyAsync(vacancyProjection);
+            }
+
+            watch.Stop();
+
+            _logger.LogInformation("Recreated LiveVacancy projections. Deleted:{deletedCount}. Inserted:{insertedCount}. executionTime:{executionTimeMs}ms", deletedCount, liveVacancyIds.Count, watch.ElapsedMilliseconds);
         }
 
-        private Task RegenerateClosedVacancies(List<Vacancy> closedVacancies, List<ApprenticeshipProgramme> programmes)
+        private async Task RegenerateClosedVacancies(List<Guid> closedVacancyIds, List<ApprenticeshipProgramme> programmes)
         {
-            _logger.LogInformation($"Found {closedVacancies.Count} closed vacancies to create ClosedVacancy queryViews for.");
+            var watch = Stopwatch.StartNew();
 
-            var projectedVacancies = closedVacancies.Select(v =>
+            var deletedCount = await _queryStoreWriter.DeleteAllClosedVacancies();
+
+            foreach (var vacancyId in closedVacancyIds)
             {
-                var programme = programmes.Single(p => p.Id == v.ProgrammeId);
-                return v.ToVacancyProjectionBase<ClosedVacancy>(programme, () => QueryViewType.ClosedVacancy.GetIdValue(v.VacancyReference.ToString()));
-            });
+                var vacancy = await _vacancyQuery.GetVacancyAsync(vacancyId);
 
-            return _queryStoreWriter.RecreateClosedVacancies(projectedVacancies);
+                var programme = programmes.Single(p => p.Id == vacancy.ProgrammeId);
+                var vacancyProjection = vacancy.ToVacancyProjectionBase<ClosedVacancy>(programme,
+                    () => QueryViewType.ClosedVacancy.GetIdValue(vacancy.VacancyReference.ToString()));
+
+                await _queryStoreWriter.UpdateClosedVacancyAsync(vacancyProjection);
+            }
+
+            watch.Stop();
+
+            _logger.LogInformation("Recreated ClosedVacancy projections. Deleted:{deletedCount}. Inserted:{insertedCount}. executionTime:{executionTimeMs}ms", deletedCount, closedVacancyIds.Count, watch.ElapsedMilliseconds);
         }
     }
 }

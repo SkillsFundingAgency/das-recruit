@@ -26,7 +26,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         public Task CreateAsync(ApplicationReview review)
         {
             var collection = GetCollection<ApplicationReview>();
-            return RetryPolicy.ExecuteAsync(context => collection.InsertOneAsync(review), new Context(nameof(CreateAsync)));
+            return RetryPolicy.ExecuteAsync(_ => 
+                collection.InsertOneAsync(review),
+                new Context(nameof(CreateAsync)));
         }
 
         public async Task<ApplicationReview> GetAsync(Guid applicationReviewId)
@@ -34,10 +36,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var filter = Builders<ApplicationReview>.Filter.Eq(r => r.Id, applicationReviewId);
             var collection = GetCollection<ApplicationReview>();
 
-            var result = await RetryPolicy.ExecuteAsync(context => collection.FindAsync(filter),
+            var result = await RetryPolicy.ExecuteAsync(_ => 
+                collection.Find(filter).SingleOrDefaultAsync(),
                 new Context(nameof(GetAsync)));
 
-            return result.SingleOrDefault();
+            return result;
         }
 
         public async Task<ApplicationReview> GetAsync(long vacancyReference, Guid candidateId)
@@ -48,10 +51,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             
             var collection = GetCollection<ApplicationReview>();
 
-            var result = await RetryPolicy.ExecuteAsync(context => collection.FindAsync(filter),
+            var result = await RetryPolicy.ExecuteAsync(_ => 
+                collection.Find(filter).SingleOrDefaultAsync(),
                 new Context(nameof(GetAsync)));
 
-            return result.SingleOrDefault();
+            return result;
         }
 
         public Task UpdateAsync(ApplicationReview applicationReview)
@@ -59,11 +63,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var filter = Builders<ApplicationReview>.Filter.Eq(r => r.Id, applicationReview.Id);
             var collection = GetCollection<ApplicationReview>();
 
-            return RetryPolicy.ExecuteAsync(context => collection.ReplaceOneAsync(filter, applicationReview),
+            return RetryPolicy.ExecuteAsync(_ => 
+                collection.ReplaceOneAsync(filter, applicationReview),
                 new Context(nameof(UpdateAsync)));
         }
 
-        public Task<List<ApplicationReviewCount>> GetStatusCountsForEmployerAsync(string employerAccountId)
+        public async Task<List<ApplicationReviewCount>> GetStatusCountsForEmployerAsync(string employerAccountId)
         {
             var collection = GetCollection<ApplicationReview>();
 
@@ -71,67 +76,64 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var filter = builder.Eq(r => r.EmployerAccountId, employerAccountId) &
                          builder.Ne(r => r.IsWithdrawn, true);
 
-            var aggregate = collection.Aggregate()
+            var result = await RetryPolicy.ExecuteAsync(_ =>
+            {
+                var aggregate = collection.Aggregate()
 
-                .Match(filter)
+                    .Match(filter)
 
-                .Group(groupBy => new ApplicationReviewCount.ApplicationReviewsCountGroupKey
-                    {
-                        VacancyReference = groupBy.VacancyReference,
-                        Status = groupBy.Status
-                    },
-                    g =>
-                        new ApplicationReviewCount
-                        {
-                            Id = g.Key,
-                            Count = g.Count()
-                        })
-                .ToListAsync();
+                    .Group(groupBy => new ApplicationReviewCount.ApplicationReviewsCountGroupKey {VacancyReference = groupBy.VacancyReference, Status = groupBy.Status},
+                        g =>
+                            new ApplicationReviewCount {Id = g.Key, Count = g.Count()})
+                    .ToListAsync();
 
-            return aggregate;
+                return aggregate;
+            },
+            new Context(nameof(GetStatusCountsForEmployerAsync)));
+
+            return result;
         }
 
-        public Task<List<ApplicationReviewCount>> GetStatusCountsForProviderAsync(long ukprn)
+        public async Task<List<ApplicationReviewCount>> GetStatusCountsForProviderAsync(long ukprn)
         {
-            // var collection = GetCollection<ApplicationReview>();
+            //var collection = GetCollection<ApplicationReview>();
 
-            // var builder = Builders<ApplicationReview>.Filter;
-            // var filter = builder.Eq(r => r.Ukprn, ukprn) &
-            //              builder.Ne(r => r.IsWithdrawn, true);
+            //var builder = Builders<ApplicationReview>.Filter;
+            //var filter = builder.Eq(r => r.Ukprn, ukprn) &
+            //             builder.Ne(r => r.IsWithdrawn, true);
 
-            // var aggregate = collection.Aggregate()
+            //var result = await RetryPolicy.ExecuteAsync(_ =>
+            //{
+            //    var aggregate = collection.Aggregate()
 
-            //     .Match(filter)
+            //        .Match(filter)
 
-            //     .Group(groupBy => new ApplicationReviewCount.ApplicationReviewsCountGroupKey
-            //         {
-            //             VacancyReference = groupBy.VacancyReference,
-            //             Status = groupBy.Status
-            //         },
-            //         g =>
-            //             new ApplicationReviewCount
-            //             {
-            //                 Id = g.Key,
-            //                 Count = g.Count()
-            //             })
-            //     .ToListAsync();
+            //        .Group(groupBy => new ApplicationReviewCount.ApplicationReviewsCountGroupKey {VacancyReference = groupBy.VacancyReference, Status = groupBy.Status},
+            //            g =>
+            //                new ApplicationReviewCount {Id = g.Key, Count = g.Count()})
+            //        .ToListAsync();
 
-            // return aggregate;
+            //    return aggregate;
+            //},
+            //new Context(nameof(GetStatusCountsForProviderAsync)));
 
-            return Task.FromResult(new List<ApplicationReviewCount>());
+            //return result;
+
+            return await Task.FromResult(new List<ApplicationReviewCount>());
         }
 
         public async Task<List<T>> GetForVacancyAsync<T>(long vacancyReference)
         {
             var filter = Builders<T>.Filter.Eq(VacancyReference, vacancyReference);
             var collection = GetCollection<T>();
+            
+            var result = await RetryPolicy.ExecuteAsync(_ => 
+                collection.Find(filter)
+                .Project<T>(GetProjection<T>())
+                .ToListAsync(),
+            new Context(nameof(GetForVacancyAsync)));
 
-            var options = new FindOptions<T> { Projection = GetProjection<T>() };
-
-            var result = await RetryPolicy.ExecuteAsync(context => collection.FindAsync<T>(filter, options),
-                new Context(nameof(GetForVacancyAsync)));
-
-            return await result.ToListAsync();
+            return result;
         }
 
         public async Task<List<ApplicationReview>> GetForCandidateAsync(Guid candidateId)
@@ -139,10 +141,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var filter = Builders<ApplicationReview>.Filter.Eq(CandidateId, candidateId);
             var collection = GetCollection<ApplicationReview>();
 
-            var result = await RetryPolicy.ExecuteAsync(context => collection.FindAsync<ApplicationReview>(filter),
+            var result = await RetryPolicy.ExecuteAsync(_ => 
+                collection.Find(filter).ToListAsync(),
                 new Context(nameof(GetForCandidateAsync)));
 
-            return await result.ToListAsync();
+            return result;
         }
 
         public Task HardDelete(Guid applicationReviewId)
@@ -150,7 +153,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var filter = Builders<ApplicationReview>.Filter.Eq(Id, applicationReviewId);
             var collection = GetCollection<ApplicationReview>();
 
-            return RetryPolicy.ExecuteAsync(context => collection.DeleteOneAsync(filter),
+            return RetryPolicy.ExecuteAsync(_ => 
+                collection.DeleteOneAsync(filter),
                 new Context(nameof(HardDelete)));
         }
     }

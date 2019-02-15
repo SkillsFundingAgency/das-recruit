@@ -62,7 +62,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
             }
             return projection;
         }
-        
+
         private void LogMongoCommands(MongoClientSettings settings)
         {
             settings.ClusterConfigurator = cc => cc.Subscribe<CommandStartedEvent>(e =>

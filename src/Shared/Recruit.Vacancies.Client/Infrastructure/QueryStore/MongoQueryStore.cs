@@ -29,7 +29,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             var filter = filterBuilder.Eq(d => d.ViewType, typeName)
                         & filterBuilder.Eq(d => d.Id, key);
 
-            return RetryPolicy.ExecuteAsync(context => collection.DeleteOneAsync(filter), new Context(nameof(IQueryStore.DeleteAsync)));
+            return RetryPolicy.ExecuteAsync(_ => 
+                collection.DeleteOneAsync(filter),
+                new Context(nameof(IQueryStore.DeleteAsync)));
         }
 
         public async Task<long> DeleteManyAsync<T, T1>(string typeName, Expression<Func<T, T1>> property, T1 value) where T : QueryProjectionBase
@@ -40,8 +42,25 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
                         & filterBuilder.Lt(property, value);
 
             var collection = GetCollection<T>();
+            
+            var result = await RetryPolicy.ExecuteAsync(_ => 
+                collection.DeleteManyAsync(filter),
+                new Context(nameof(IQueryStore.DeleteManyAsync)));
 
-            var result = await RetryPolicy.ExecuteAsync(context => collection.DeleteManyAsync(filter), new Context(nameof(IQueryStore.DeleteManyAsync)));
+            return result.DeletedCount;
+        }
+
+        public async Task<long> DeleteAllAsync<T>(string typeName) where T : QueryProjectionBase
+        {
+            var filterBuilder = Builders<T>.Filter;
+
+            var filter = filterBuilder.Eq(d => d.ViewType, typeName);
+
+            var collection = GetCollection<T>();
+
+            var result = await RetryPolicy.ExecuteAsync(_ => 
+                collection.DeleteManyAsync(filter), 
+                new Context(nameof(IQueryStore.DeleteManyAsync)));
 
             return result.DeletedCount;
         }
@@ -54,9 +73,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
                         & filterBuilder.Eq(d => d.Id, key);
 
             var collection = GetCollection<T>();
-            var result = await RetryPolicy.ExecuteAsync(context => collection.FindAsync(filter), new Context(nameof(IQueryStore.GetAsync)));
+            var result = await RetryPolicy.ExecuteAsync(_ => 
+                collection.Find(filter).FirstOrDefaultAsync(),
+                new Context(nameof(IQueryStore.GetAsync)));
 
-            return result?.FirstOrDefault();
+            return result;
         }
 
         Task IQueryStore.UpsertAsync<T>(T item)
@@ -68,27 +89,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             var filter = filterBuilder.Eq(d => d.ViewType, item.ViewType)
                         & filterBuilder.Eq(d => d.Id, item.Id);
 
-            return RetryPolicy.ExecuteAsync(context => collection.ReplaceOneAsync(filter, item, new UpdateOptions { IsUpsert = true }), new Context(nameof(IQueryStore.UpsertAsync)));
-        }
-
-        async Task IQueryStore.RecreateAsync<T>(string typeName, IList<T> items)
-        {
-            var collection = GetCollection<T>();
-
-            var filter = Builders<T>.Filter.Eq(d => d.ViewType, typeName);
-
-            await RetryPolicy.ExecuteAsync(context => collection.DeleteManyAsync(filter), new Context(nameof(IQueryStore.RecreateAsync)));
-
-            if (items.Count == 0) return;
-
-            var watch = Stopwatch.StartNew();
-
-            foreach (var item in items)
-            {
-                await RetryPolicy.ExecuteAsync(context => collection.InsertOneAsync(item), new Context(nameof(IQueryStore.RecreateAsync)));
-            }
-
-            Logger.LogInformation($"Recreated {items.Count} {typeof(T).Name} items in {watch.ElapsedMilliseconds}ms");
+            return RetryPolicy.ExecuteAsync(_ => 
+                collection.ReplaceOneAsync(filter, item, new UpdateOptions { IsUpsert = true }),
+                new Context(nameof(IQueryStore.UpsertAsync)));
         }
     }
 }
