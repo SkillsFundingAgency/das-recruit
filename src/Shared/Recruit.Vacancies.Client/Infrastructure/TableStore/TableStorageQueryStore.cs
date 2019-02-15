@@ -17,7 +17,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore
     internal sealed class TableStorageQueryStore : IQueryStore
     {
         private const int DeleteBatchSize = 100;
-
+        private const string PartitionKeyFieldName = nameof(TableEntity.PartitionKey);
+        private readonly JsonSerializerSettings _jsonWriter = new JsonSerializerSettings
+        {
+            Formatting = Formatting.Indented,
+            NullValueHandling = NullValueHandling.Ignore,
+            Converters = new JsonConverterCollection() { new Newtonsoft.Json.Converters.StringEnumConverter() }
+        };
         private readonly ILogger<TableStorageQueryStore> _logger;
         private CloudTable CloudTable { get; }
         private RetryPolicy RetryPolicy { get; }
@@ -34,29 +40,31 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore
         public async Task<T> GetAsync<T>(string typeName, string key) where T : QueryProjectionBase
         {
             var retrieveOperation = TableOperation.Retrieve<QueryEntity>(typeName, key);
-            var result = await RetryPolicy.ExecuteAsync(async context => await CloudTable.ExecuteAsync(retrieveOperation), new Context(nameof(IQueryStore.GetAsync)));
+            var result = await RetryPolicy.ExecuteAsync(context => CloudTable.ExecuteAsync(retrieveOperation), new Context(nameof(IQueryStore.GetAsync)));
             var queryEntity = (QueryEntity)result.Result;
+
             if (queryEntity != null)
             {
                 var actualItem = JsonConvert.DeserializeObject<T>(queryEntity.JsonData);
                 return actualItem;
             }
+
             return null;
         }
 
         public Task UpsertAsync<T>(T item) where T : QueryProjectionBase
         {
-            var serializedItem = JsonConvert.SerializeObject(item, new Newtonsoft.Json.Converters.StringEnumConverter());
+            var serializedItem = JsonConvert.SerializeObject(item, _jsonWriter);
             var query = new QueryEntity(item.ViewType, item.Id, serializedItem);
             var insertOrReplaceOperation = TableOperation.InsertOrReplace(query);
-            var retrievedResult = RetryPolicy.ExecuteAsync(async context => await CloudTable.ExecuteAsync(insertOrReplaceOperation), new Context(nameof(IQueryStore.UpsertAsync)));
+            var retrievedResult = RetryPolicy.ExecuteAsync(context => CloudTable.ExecuteAsync(insertOrReplaceOperation), new Context(nameof(IQueryStore.UpsertAsync)));
             return retrievedResult;
         }
 
         public Task<long> DeleteAllAsync<T>(string typeName) where T : QueryProjectionBase
         {
             var query = new TableQuery<QueryEntity>().Where(
-                TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, typeName));
+                TableQuery.GenerateFilterCondition(PartitionKeyFieldName, QueryComparisons.Equal, typeName));
 
             return DeleteInBatchesAsync(query);
         }
@@ -79,7 +87,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore
             var propertyInfo = GetPropertyInfo(property);
             var rangeQuery = new TableQuery<QueryEntity>().Where(
                 TableQuery.CombineFilters(
-                    TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, typeName),
+                    TableQuery.GenerateFilterCondition(PartitionKeyFieldName, QueryComparisons.Equal, typeName),
                     TableOperators.And,
                     TableQuery.GenerateFilterCondition(propertyInfo.Name, QueryComparisons.LessThan, value.ToString())));
 
