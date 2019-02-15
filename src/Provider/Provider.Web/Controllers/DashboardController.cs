@@ -1,8 +1,8 @@
 using System.Threading.Tasks;
+using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Provider.Web.Orchestrators;
-using Esfa.Recruit.Provider.Web.RouteModel;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Provider.Web.Controllers
@@ -21,6 +21,11 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         public async Task<IActionResult> Dashboard()
         {
             var vm = await _orchestrator.GetDashboardViewModelAsync(User.GetUkprn());
+            if (TempData.ContainsKey(TempDataKeys.DashboardErrorMessage))
+                vm.WarningMessage = TempData[TempDataKeys.DashboardErrorMessage].ToString();
+
+            if (TempData.ContainsKey(TempDataKeys.DashboardInfoMessage))
+                vm.InfoMessage = TempData[TempDataKeys.DashboardInfoMessage].ToString();
 
             return View(vm);
         }
