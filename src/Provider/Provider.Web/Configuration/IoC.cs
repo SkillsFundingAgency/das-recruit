@@ -32,7 +32,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddFeatureToggle();
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>(); // Used by NLog to log out traceidentifier value.
-            
+
             RegisterServiceDeps(services, configuration);
 
             RegisterOrchestratorDeps(services);
@@ -71,6 +71,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<VacancyPreviewOrchestrator>();
             services.AddTransient<VacancyViewOrchestrator>();
             services.AddTransient<WageOrchestrator>();
+            services.AddTransient<CloseVacancyOrchestrator>();
         }
 
         private static void RegisterMapperDeps(IServiceCollection services)
@@ -87,7 +88,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
 
         private static void RegisterDynamicConfigurationDeps(IServiceCollection services)
         {
-            services.AddSingleton<ProviderRecruitSystemConfiguration>(x => 
+            services.AddSingleton<ProviderRecruitSystemConfiguration>(x =>
                                                             {
                                                                 var svc = x.GetService<IConfigurationReader>();
                                                                 return svc.GetAsync<ProviderRecruitSystemConfiguration>("ProviderRecruitSystem").Result;

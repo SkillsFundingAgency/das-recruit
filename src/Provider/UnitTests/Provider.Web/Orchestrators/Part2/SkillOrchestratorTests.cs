@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Orchestrators.Part2;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.Services;
-using Esfa.Recruit.Shared.Web.ViewModels.Skills;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using FluentAssertions;
@@ -18,9 +17,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part2
     public class SkillOrchestratorTests
     {
         private const long TestUkprn = 12345678;
-        private readonly Mock<IProviderVacancyClient> _mockClient;
         private readonly Mock<IRecruitVacancyClient> _mockVacancyClient;
-
         private readonly SkillsOrchestrator _orchestrator;
         private readonly Vacancy _testVacancy;
         private readonly VacancyRouteModel _testRouteModel = new VacancyRouteModel { Ukprn = TestUkprn, VacancyId = Guid.NewGuid() };
@@ -29,9 +26,9 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part2
         {
             var mockLogger = new Mock<ILogger<SkillsOrchestrator>>();
             var candidateSkills = GetBaseSkills();
-            _mockClient = new Mock<IProviderVacancyClient>();
+            var mockClient = new Mock<IProviderVacancyClient>();
             _mockVacancyClient = new Mock<IRecruitVacancyClient>();
-            _orchestrator = new SkillsOrchestrator(_mockClient.Object, _mockVacancyClient.Object, mockLogger.Object, Mock.Of<IReviewSummaryService>());
+            _orchestrator = new SkillsOrchestrator(mockClient.Object, _mockVacancyClient.Object, mockLogger.Object, Mock.Of<IReviewSummaryService>());
             _testVacancy = GetTestVacancy();
 
             _mockVacancyClient.Setup(x => x.GetCandidateSkillsAsync()).ReturnsAsync(candidateSkills);
@@ -108,7 +105,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part2
         {
             _testVacancy.Skills = new List<string>(); // No selected skills already persisted
 
-            var draftSkills = new [] { "1-Draft1" };
+            var draftSkills = new[] { "1-Draft1" };
 
             _mockVacancyClient.Setup(x => x.GetVacancyAsync(It.IsAny<Guid>())).ReturnsAsync(_testVacancy);
 
@@ -122,7 +119,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part2
         {
             _testVacancy.Skills = new List<string>(); // No selected skills already persisted
 
-            var draftSkills = new [] { "1-Draft1", "2-Draft2", "3-Draft3" };
+            var draftSkills = new[] { "1-Draft1", "2-Draft2", "3-Draft3" };
 
             _mockVacancyClient.Setup(x => x.GetVacancyAsync(It.IsAny<Guid>())).ReturnsAsync(_testVacancy);
 
@@ -138,7 +135,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part2
         {
             _testVacancy.Skills = new List<string>(); // No selected skills already persisted
 
-            var draftSkills = new [] { "1-Draft1", "Patience", "2-Draft2", "3-Draft3" };
+            var draftSkills = new[] { "1-Draft1", "Patience", "2-Draft2", "3-Draft3" };
 
             _mockVacancyClient.Setup(x => x.GetVacancyAsync(It.IsAny<Guid>())).ReturnsAsync(_testVacancy);
 
@@ -154,23 +151,23 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part2
         {
             _testVacancy.Skills = new List<string>(); // No selected skills already persisted
 
-            var draftSkills = new [] { "2-Draft2", "3-Draft3", "1-Draft1" };
+            var draftSkills = new[] { "2-Draft2", "3-Draft3", "1-Draft1" };
 
             _mockVacancyClient.Setup(x => x.GetVacancyAsync(It.IsAny<Guid>())).ReturnsAsync(_testVacancy);
 
             var result = await _orchestrator.GetSkillsViewModelAsync(_testRouteModel, draftSkills);
 
-            result.Column2Checkboxes.Single(x => x.Name == "Draft1").Value.Should().Be("1-Draft1"); 
+            result.Column2Checkboxes.Single(x => x.Name == "Draft1").Value.Should().Be("1-Draft1");
             result.Column1Checkboxes.Single(x => x.Name == "Draft2").Value.Should().Be("2-Draft2");
             result.Column2Checkboxes.Single(x => x.Name == "Draft3").Value.Should().Be("3-Draft3");
         }
-        
+
         [Fact]
         public async Task WhenCustomDraftSkillsHaveBeenAdded_ShouldBeOrderedByTheirPrefix()
         {
             _testVacancy.Skills = new List<string>(); // No selected skills already persisted
 
-            var draftSkills = new [] { "2-Draft2", "3-Draft3", "1-Draft1" };
+            var draftSkills = new[] { "2-Draft2", "3-Draft3", "1-Draft1" };
 
             _mockVacancyClient.Setup(x => x.GetVacancyAsync(It.IsAny<Guid>())).ReturnsAsync(_testVacancy);
 
@@ -183,18 +180,16 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part2
 
         private static Vacancy GetTestVacancy()
         {
-            return new Vacancy
+            return new Vacancy 
             {
                 TrainingProvider = new TrainingProvider { Ukprn = TestUkprn },
                 Title = "Test Title",
                 ShortDescription = "Test Short Description",
-                EmployerLocation = new Address
-                {
+                EmployerLocation = new Address {
                     Postcode = "AB1 2XZ"
                 },
                 ProgrammeId = "2",
-                Wage = new Wage
-                {
+                Wage = new Wage {
                     WageType = WageType.NationalMinimumWage
                 }
             };

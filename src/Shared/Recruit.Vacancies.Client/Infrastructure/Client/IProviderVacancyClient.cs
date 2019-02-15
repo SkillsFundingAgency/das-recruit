@@ -15,5 +15,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<ProviderEditVacancyInfo> GetProviderEditVacancyInfoAsync(long ukprn);
         Task<EmployerInfo> GetProviderEmployerVacancyDataAsync(long ukprn, string employerAccountId);
         Task SubmitVacancyAsync(Guid vacancyId, VacancyUser user);
+        Task CloseVacancyAsync(Guid vacancyId, VacancyUser user);
     }
 }

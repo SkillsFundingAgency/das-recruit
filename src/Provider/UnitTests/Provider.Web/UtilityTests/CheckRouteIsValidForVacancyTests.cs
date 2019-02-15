@@ -7,7 +7,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using FluentAssertions;
 using Xunit;
 
-namespace Esfa.Recruit.UnitTests.Provider.Web.UtilityTests
+namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.UtilityTests
 {
     public class CheckRouteIsValidForVacancyTests
     {
@@ -17,7 +17,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.UtilityTests
         [InlineData("any other route", true)]
         public void ShouldRedirectToTitle(string route, bool shouldRedirect)
         {
-            var vacancy = new Vacancy
+            var vacancy = new Vacancy 
             {
                 EmployerAccountId = "EMPLOYER ACCOUNT ID",
                 Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e")
@@ -34,7 +34,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.UtilityTests
         [InlineData("any other route", true)]
         public void ShouldRedirectToShortDescription(string route, bool shouldRedirect)
         {
-            var vacancy = new Vacancy
+            var vacancy = new Vacancy 
             {
                 EmployerAccountId = "EMPLOYER ACCOUNT ID",
                 Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
@@ -54,7 +54,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.UtilityTests
         [InlineData("any other route", true)]
         public void ShouldRedirectToLocation(string route, bool shouldRedirect)
         {
-            var vacancy = new Vacancy
+            var vacancy = new Vacancy 
             {
                 EmployerAccountId = "EMPLOYER ACCOUNT ID",
                 Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
@@ -77,13 +77,13 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.UtilityTests
         [InlineData("any other route", true)]
         public void ShouldRedirectToTraining(string route, bool shouldRedirect)
         {
-            var vacancy = new Vacancy
+            var vacancy = new Vacancy 
             {
                 EmployerAccountId = "EMPLOYER ACCOUNT ID",
                 Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
                 Title = "has a value",
                 ShortDescription = "has a value",
-                EmployerLocation = new Address{ Postcode = "CV1 2WT"}
+                EmployerLocation = new Address { Postcode = "CV1 2WT" }
             };
 
             CheckRouteIsValidForVacancyTest(vacancy, route, shouldRedirect, RouteNames.Training_Get);
@@ -103,7 +103,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.UtilityTests
         [InlineData("any other route", true)]
         public void ShouldRedirectToWage(string route, bool shouldRedirect)
         {
-            var vacancy = new Vacancy
+            var vacancy = new Vacancy 
             {
                 EmployerAccountId = "EMPLOYER ACCOUNT ID",
                 Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
@@ -120,7 +120,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.UtilityTests
         [InlineData("any other route", false)]
         public void ShouldNotRedirect(string route, bool shouldRedirect)
         {
-            var vacancy = new Vacancy
+            var vacancy = new Vacancy 
             {
                 EmployerAccountId = "EMPLOYER ACCOUNT ID",
                 Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
@@ -128,13 +128,13 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.UtilityTests
                 EmployerLocation = new Address { Postcode = "has a value" },
                 ShortDescription = "has a value",
                 ProgrammeId = "has a value",
-                Wage = new Wage { WageType = WageType.FixedWage}
+                Wage = new Wage { WageType = WageType.FixedWage }
             };
 
             CheckRouteIsValidForVacancyTest(vacancy, route, shouldRedirect, null);
         }
 
-        private void CheckRouteIsValidForVacancyTest(Vacancy vacancy, string route, 
+        private void CheckRouteIsValidForVacancyTest(Vacancy vacancy, string route,
             bool shouldRedirect, string expectedRedirectRoute)
         {
             var vrm = new VacancyRouteModel { Ukprn = 12345678, VacancyId = Guid.NewGuid() };
@@ -143,8 +143,8 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.UtilityTests
                 Utility.CheckRouteIsValidForVacancy(vacancy, route, vrm);
                 return;
             }
-            
-            var ex = Assert.Throws<InvalidRouteForVacancyException>(() 
+
+            var ex = Assert.Throws<InvalidRouteForVacancyException>(()
                 => Utility.CheckRouteIsValidForVacancy(vacancy, route, vrm));
 
             ex.RouteNameToRedirectTo.Should().Be(expectedRedirectRoute);

@@ -14,5 +14,6 @@
         public const string ManageSubmittedVacancyView = "Submitted";
         public const string PageNotFound = "PageNotFound";
         public const string VacancyPreview = "VacancyPreview";
+        public const string CloseVacancyView = "Close";
     }
 }
