@@ -11,7 +11,7 @@ using Polly.Retry;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
 {
-    public abstract class MongoDbCollectionBase
+    internal abstract class MongoDbCollectionBase
     {
         private readonly string _dbName;
         private readonly string _collectionName;
@@ -35,7 +35,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
             RetryPolicy = MongoDbRetryPolicy.GetRetryPolicy(Logger);
         }
 
-        protected virtual IMongoCollection<T> GetCollection<T>()
+        protected IMongoCollection<T> GetCollection<T>()
         {
             var settings = MongoClientSettings.FromUrl(new MongoUrl(_config.ConnectionString));
             settings.SslSettings = new SslSettings { EnabledSslProtocols = SslProtocols.Tls12 };
