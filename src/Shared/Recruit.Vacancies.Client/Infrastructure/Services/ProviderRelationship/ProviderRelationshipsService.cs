@@ -40,25 +40,26 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
             try
             {
                 var response = await httpClient.GetAsync(uri);
-                if (response.IsSuccessStatusCode)
+                if (!response.IsSuccessStatusCode)
                 {
-                    var content  = await response.Content.ReadAsStringAsync();
-                    var relations = Newtonsoft.Json.JsonConvert.DeserializeObject<ProviderPermissions>(content);
-                    employerInfos =  MapEmployerInfo(relations);
-                    await AppendAddressToLegalEntitiesAsync(employerInfos);
-                }
+                    _logger.LogError("An invalid response received when trying to get provider relationships");
+                    return employerInfos;
+                }                
+                var content  = await response.Content.ReadAsStringAsync();
+                var relations = Newtonsoft.Json.JsonConvert.DeserializeObject<ProviderPermissions>(content);
+                employerInfos =  MapEmployerInfo(relations);
 
-                _logger.LogError("An invalid response received when trying to get provider relationships");
             }
             catch (HttpRequestException ex)
             {
-                _logger.LogError(ex, "Error trying to retrieve titles.", null);
+                _logger.LogError(ex, "Error trying to retrieve legal entities.", null);
             }
             catch (JsonReaderException ex)
             {
                 _logger.LogError(ex, $"Couldn't deserialise {nameof(VacancyApiSearchResponse)}.", null);
             }
 
+            await AppendAddressToLegalEntitiesAsync(employerInfos);
             return employerInfos;
         }
 
@@ -82,8 +83,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
 
         private IEnumerable<EmployerInfo> MapEmployerInfo(ProviderPermissions relations)
         {
-            var result = new List<EmployerInfo>();
-
             return relations
                 .AccountProviderLegalEntities
                 .GroupBy(e => e.AccountPublicHashedId)
@@ -113,20 +112,5 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
                 .ToDictionary(x => x.Name, x => x.GetValue(queryData)?.ToString() ?? string.Empty);
             return QueryHelpers.AddQueryString(uri, queryDataDictionary);
         }
-    }
-
-    class ProviderPermissions
-    {
-        public IEnumerable<LegalEntityDto> AccountProviderLegalEntities { get; set;}
-    }
-    class LegalEntityDto
-    {
-        public long AccountId { get; set; }
-        public string AccountPublicHashedId { get; set; }
-        public string AccountName { get; set; }
-        public long AccountLegalEntityId { get; set; }
-        public string AccountLegalEntityPublicHashedId { get; set; }
-        public string AccountLegalEntityName { get; set; }
-        public long AccountProviderId { get; set; }
     }
 }
