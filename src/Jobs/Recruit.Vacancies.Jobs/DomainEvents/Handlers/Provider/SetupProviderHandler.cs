@@ -13,17 +13,14 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider
     public class SetupProviderHandler : DomainEventHandler,  IDomainEventHandler<SetupProviderEvent>
     {
         private readonly ILogger<SetupProviderHandler> _logger;
-        private readonly IJobsVacancyClient _client;
         private readonly IEditVacancyInfoProjectionService _projectionService;
         private readonly IProviderRelationshipsService _providerRelationshipService;
 
         public SetupProviderHandler(ILogger<SetupProviderHandler> logger, 
-            IJobsVacancyClient client, 
             IEditVacancyInfoProjectionService projectionService,
             IProviderRelationshipsService providerRelationshipService) : base(logger)
         {
             _logger = logger;
-            _client = client;
             _projectionService = projectionService;
             _providerRelationshipService = providerRelationshipService;
         }
