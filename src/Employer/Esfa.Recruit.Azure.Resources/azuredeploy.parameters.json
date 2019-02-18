@@ -43,6 +43,15 @@
         "Tenant": ""
       }
     },
+    "ProviderRelationshipsApiConfiguration": {
+      "value": {
+        "ApiBaseUrl": "",
+        "ClientId": "",
+        "ClientSecret": "",
+        "IdentifierUri": "",
+        "Tenant": ""
+      }
+    },
     "ExternalLinks": {
       "value": {
         "ManageApprenticeshipSiteUrl": "",

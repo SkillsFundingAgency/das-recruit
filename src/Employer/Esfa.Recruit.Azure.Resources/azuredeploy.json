@@ -63,6 +63,16 @@
         "Tenant": ""
       }
     },
+    "ProviderRelationshipsApiConfiguration": {
+      "type": "object",
+      "defaultValue": {
+        "ApiBaseUrl": "",
+        "ClientId": "",
+        "ClientSecret": "",
+        "IdentifierUri": "",
+        "Tenant": ""
+      }
+    },
     "ExternalLinks": {
       "type": "object",
       "defaultValue": {
@@ -759,6 +769,26 @@
               {
                 "name": "AccountApiConfiguration:Tenant",
                 "value": "[parameters('AccountApiConfiguration').Tenant]"
+              },
+              {
+                "name": "ProviderRelationshipsApiConfiguration:ApiBaseUrl",
+                "value": "[parameters('ProviderRelationshipsApiConfiguration').ApiBaseUrl]"
+              },
+              {
+                "name": "ProviderRelationshipsApiConfiguration:ClientId",
+                "value": "[parameters('ProviderRelationshipsApiConfiguration').ClientId]"
+              },
+              {
+                "name": "ProviderRelationshipsApiConfiguration:ClientSecret",
+                "value": "[parameters('ProviderRelationshipsApiConfiguration').ClientSecret]"
+              },
+              {
+                "name": "ProviderRelationshipsApiConfiguration:IdentifierUri",
+                "value": "[parameters('ProviderRelationshipsApiConfiguration').IdentifierUri]"
+              },
+              {
+                "name": "ProviderRelationshipsApiConfiguration:Tenant",
+                "value": "[parameters('ProviderRelationshipsApiConfiguration').Tenant]"
               },
               {
                 "name": "VacancyApiConfiguration:ApiSearchBaseUrl",
