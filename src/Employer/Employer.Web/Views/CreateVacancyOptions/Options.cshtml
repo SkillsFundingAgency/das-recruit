@@ -20,7 +20,7 @@
                     </legend>
                     <div class="govuk-radios">
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" asp-for="VacancyId" type="radio" value="@Guid.Empty" id="create-new" esfa-automation="create-new" />
+                            <input class="govuk-radios__input" asp-for="VacancyId" type="radio" value="@Guid.Empty" id="create-new" />
                             <label class="govuk-label govuk-radios__label" for="create-new">Create new vacancy</label> 
                         </div>
                         @foreach (var item in Model.Vacancies)

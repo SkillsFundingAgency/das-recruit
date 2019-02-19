@@ -18,7 +18,7 @@
                     <label asp-for="Duration" class="govuk-label govuk-!-font-weight-bold">How long is the apprenticeship expected to last?<span class="govuk-visually-hidden"> (enter a numeric value and then select Month(s) or Year(s) in the next field)</span></label>
                     <span class="govuk-hint">This must be a minimum of 12 months</span>
                     <span esfa-validation-message-for="Duration" class="govuk-error-message"></span>
-                    <input asp-for="Duration" class="govuk-input govuk-input--width-2" type="number" min="1" esfa-automation="duration" >
+                    <input asp-for="Duration" class="govuk-input govuk-input--width-2" type="number" min="1" >
                     <select asp-for="DurationUnit" class="govuk-select duration-unit-select">
                         <option value="@DurationUnit.Month">Month(s)</option>
                         <option value="@DurationUnit.Year">Year(s)</option>
@@ -31,7 +31,7 @@
                     <label asp-for="WorkingWeekDescription" class="govuk-label govuk-!-font-weight-bold">Details of working week</label>
                     <span class="govuk-hint">For example, Monday to Friday 9am to 5pm, shifts, may work evenings and weekends</span>
                     <span esfa-validation-message-for="WorkingWeekDescription" class="govuk-error-message"></span>
-                    <textarea asp-for="WorkingWeekDescription" class="govuk-textarea character-count" rows="5" data-val-length-max="250" esfa-automation="working-week-description"></textarea>
+                    <textarea asp-for="WorkingWeekDescription" class="govuk-textarea character-count" rows="5" data-val-length-max="250"></textarea>
                     <span class="govuk-body maxchar-count">250</span>
                     <span class="govuk-body maxchar-text"> characters remaining</span>
                 </div>
@@ -41,7 +41,7 @@
             <div esfa-validation-marker-for="WeeklyHours" class="govuk-form-group">
                 <label asp-for="WeeklyHours" class="govuk-label govuk-!-font-weight-bold">How many hours will the apprentice work each week, including training?</label>
                 <span esfa-validation-message-for="WeeklyHours" class="govuk-error-message"></span>
-                <input asp-for="WeeklyHours" class="govuk-input govuk-input--width-2" type="number" step=".25" min="16" max="48" esfa-automation="weekly-hours">
+                <input asp-for="WeeklyHours" class="govuk-input govuk-input--width-2" type="number" step=".25" min="16" max="48">
                 <span class="govuk-body">hours</span>
             </div>
             <div esfa-validation-marker-for="WageType" class="govuk-form-group">
@@ -51,7 +51,7 @@
                     <span esfa-validation-message-for="WageType" class="govuk-error-message"></span>
                     <div class="govuk-radios govuk-radios--conditional" data-module="radios">
                         <div class="govuk-radios__item">
-                            <input asp-for="WageType" value="@WageType.FixedWage" type="radio" class="govuk-radios__input" id="wage-type-fixed" data-aria-controls="custom-wage-fixed-panel" esfa-automation="wage-type-fixed">
+                            <input asp-for="WageType" value="@WageType.FixedWage" type="radio" class="govuk-radios__input" id="wage-type-fixed" data-aria-controls="custom-wage-fixed-panel">
                             <label for="wage-type-fixed" class="govuk-label govuk-radios__label">Fixed wage</label>
                         </div>
 
@@ -65,18 +65,18 @@
                                     <span esfa-validation-message-for="FixedWageYearlyAmount" class="govuk-error-message"></span>
                                     <span>£</span>
                                     <label asp-for="FixedWageYearlyAmount" class="govuk-visually-hidden">Minimum yearly wage amount</label>
-                                    <input asp-for="FixedWageYearlyAmount" class="govuk-input govuk-!-width-one-quarter" type="text" esfa-automation="fixed-wage-yearly-amount">
+                                    <input asp-for="FixedWageYearlyAmount" class="govuk-input govuk-!-width-one-quarter" type="text" >
                                     <span class="govuk-body">yearly</span>
                                 </div>
                             </fieldset>
                         </div>
 
                         <div class="govuk-radios__item">
-                            <input asp-for="WageType" value="@WageType.NationalMinimumWage" type="radio" class="govuk-radios__input" id="wage-type-national-minimum-wage" esfa-automation="wage-type-national-minimum-wage">
+                            <input asp-for="WageType" value="@WageType.NationalMinimumWage" type="radio" class="govuk-radios__input" id="wage-type-national-minimum-wage" >
                             <label for="wage-type-national-minimum-wage" class="govuk-label govuk-radios__label">National Minimum Wage</label>
                         </div>
                         <div class="govuk-radios__item">
-                            <input asp-for="WageType" value="@WageType.NationalMinimumWageForApprentices" type="radio" class="govuk-radios__input" id="wage-type-national-minimum-wage-for-apprentices" esfa-automation="wage-type-national-minimum-wage-for-apprentices">
+                            <input asp-for="WageType" value="@WageType.NationalMinimumWageForApprentices" type="radio" class="govuk-radios__input" id="wage-type-national-minimum-wage-for-apprentices" >
                             <label for="wage-type-national-minimum-wage-for-apprentices" class="govuk-label govuk-radios__label">National Minimum Wage for apprentices</label>
                         </div>
                     </div>
@@ -88,7 +88,7 @@
                     <label asp-for="WageAdditionalInformation" class="govuk-label govuk-!-font-weight-bold">Additional information about pay (optional)</label>
                     <span class="govuk-hint">For example, subject to experience, bonus scheme, performance increases or non contractual benefits</span>
                     <span esfa-validation-message-for="WageAdditionalInformation" class="govuk-error-message"></span>
-                    <textarea asp-for="WageAdditionalInformation" class="govuk-textarea character-count" rows="5" data-val-length-max="250" esfa-automation="wage-additional-information"></textarea>
+                    <textarea asp-for="WageAdditionalInformation" class="govuk-textarea character-count" rows="5" data-val-length-max="250"></textarea>
                     <span class="govuk-body maxchar-count">250</span>
                     <span class="govuk-body maxchar-text"> characters remaining</span>
                 </div>
