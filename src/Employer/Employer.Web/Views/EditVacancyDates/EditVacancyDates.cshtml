@@ -14,19 +14,19 @@
                             <div class="govuk-date-input__item">
                                 <div class="govuk-form-group">
                                     <label asp-for="ClosingDay" class="govuk-label govuk-date-input__label">Day</label>
-                                    <input asp-for="ClosingDay" class="govuk-input govuk-date-input__input govuk-input--width-2" type="number" min="1" max="31">
+                                    <input asp-for="ClosingDay" class="govuk-input govuk-date-input__input govuk-input--width-2" type="number" min="1" max="31" esfa-automation="closing-day">
                                 </div>
                             </div>
                             <div class="govuk-date-input__item">
                                 <div class="govuk-form-group">
                                     <label asp-for="ClosingMonth" class="govuk-label govuk-date-input__label">Month</label>
-                                    <input asp-for="ClosingMonth" class="govuk-input govuk-date-input__input govuk-input--width-2" type="number" min="1" max="12">
+                                    <input asp-for="ClosingMonth" class="govuk-input govuk-date-input__input govuk-input--width-2" type="number" min="1" max="12" esfa-automation="closing-month">
                                 </div>
                             </div>
                             <div class="govuk-date-input__item">
                                 <div class="govuk-form-group">
                                     <label asp-for="ClosingYear" class="govuk-label govuk-date-input__label">Year</label>
-                                    <input asp-for="ClosingYear" class="govuk-input govuk-date-input__input govuk-input--width-4" type="number" min="@Model.CurrentYear">
+                                    <input asp-for="ClosingYear" class="govuk-input govuk-date-input__input govuk-input--width-4" type="number" min="@Model.CurrentYear" esfa-automation="closing-year">
                                 </div>
                             </div>
                         </div>
@@ -82,7 +82,7 @@
                     <label class="govuk-label govuk-!-font-weight-bold" for="apprenticeship-type">Apprenticeship training</label>
                     <p class="govuk-body">@Model.ProgammeName</p>
                 </div>
-                <button type="submit" class="govuk-button save-button">Preview changes</button>
+                <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Preview changes</button>
                 <a asp-route="@RouteNames.VacancyEdit_Get" class="govuk-link das-button-link">Cancel</a>
             </form>
         </div>

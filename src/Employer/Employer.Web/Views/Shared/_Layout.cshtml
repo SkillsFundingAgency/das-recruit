@@ -140,7 +140,7 @@ public bool IsErrorPage()
                                     <li asp-hide="@IsErrorPage()"><a href="@ExternalLinks.Notifications" class="sub-menu-item">Notifications settings</a></li>
                                 </ul>
                             </li>
-                            <li><a asp-route="@RouteNames.Logout_Get" role="menuitem" class="menu-main">Sign out</a></li>
+                            <li><a asp-route="@RouteNames.Logout_Get" role="menuitem" class="menu-main" esfa-automation="sign-out">Sign out</a></li>
                         }
                         else
                         {
