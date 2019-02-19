@@ -1,0 +1,189 @@
+/*** DAS Account Header ***/
+
+.das-account-header {
+    font-family: "nta",Arial,sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-weight: 400;
+    font-size: 16px;
+    font-size: 1rem;
+    line-height: 1.25;
+    color: #fff;
+    padding: 5px 0
+}
+
+@media print {
+    .das-account-header {
+        font-family: sans-serif
+    }
+}
+
+@media (min-width: 40.0625em) {
+    .das-account-header {
+        font-size:19px;
+        font-size: 1.1875rem;
+        line-height: 1.31579
+    }
+}
+
+@media print {
+    .das-account-header {
+        font-size: 14pt;
+        line-height: 1.15
+    }
+}
+
+@media (min-width: 40.0625em) {
+    .das-account-header {
+        padding:0
+    }
+}
+
+.das-account-header>.govuk-width-container:after {
+    content: "";
+    display: block;
+    clear: both
+}
+
+.das-account-header--provider {
+    background: #f47738
+}
+
+.das-account-header--employer {
+    background: #6f72af
+}
+
+.das-account-header__title {
+    margin: 0 -15px;
+    padding: 10px 15px;
+    font-weight: 700
+}
+
+@media (min-width: 40.0625em) {
+    .das-account-header__title {
+        float:left;
+        padding: 8px 15px
+    }
+}
+
+/*** DAS Navigation ***/
+
+.das-navigation {
+    border-bottom: 1px solid #6f777b;
+    color: #0b0c0c;
+    font-family: "nta",Arial,sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-weight: 400;
+    font-size: 16px;
+    font-size: 1rem;
+    line-height: 1.25
+}
+
+@media print {
+    .das-navigation {
+        color: #000
+    }
+}
+
+@media print {
+    .das-navigation {
+        font-family: sans-serif
+    }
+}
+
+@media (min-width: 40.0625em) {
+    .das-navigation {
+        font-size:19px;
+        font-size: 1.1875rem;
+        line-height: 1.31579
+    }
+}
+
+@media print {
+    .das-navigation {
+        font-size: 14pt;
+        line-height: 1.15
+    }
+}
+
+.das-navigation__list {
+    list-style: none;
+    padding: 0;
+    margin: 0 -15px
+}
+
+.das-navigation__list:after {
+    content: "";
+    display: block;
+    clear: both
+}
+
+@media (min-width: 40.0625em) {
+    .das-navigation__list-item {
+        float:left
+    }
+}
+
+.das-navigation__link {
+    display: block;
+    padding: 10px 15px;
+    border-bottom: 1px solid #dee0e2;
+    color: #005ea5
+}
+
+.das-navigation__link:focus {
+    outline: 3px solid #ffbf47;
+    outline-offset: 0
+}
+
+@media (min-width: 40.0625em) {
+    .das-navigation__link {
+        border:none
+    }
+}
+
+.das-navigation__link--last {
+    border-bottom: none
+}
+
+/*** DAS User Navigation ***/
+
+.das-user-navigation {
+    margin: 0 -15px
+}
+
+@media (min-width: 40.0625em) {
+    .das-user-navigation {
+        float:right
+    }
+}
+
+.das-user-navigation__list {
+    list-style: none;
+    padding: 0;
+    margin: 0
+}
+
+@media (min-width: 40.0625em) {
+    .das-user-navigation__list-item {
+        float:left
+    }
+}
+
+.das-user-navigation__link {
+    color: #fff;
+    text-decoration: none;
+    display: block;
+    padding: 10px 15px;
+    font-size: 16px
+}
+
+.das-user-navigation__link:focus {
+    outline: 3px solid #ffbf47;
+    outline-offset: 0
+}
+
+.das-user-navigation__link:hover {
+    text-decoration: underline
+}
