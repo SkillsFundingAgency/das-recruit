@@ -292,7 +292,7 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
                 <img asp-show="@Model.DisabilityConfidentRequiresEdit" src="/img/red-cross.png"/>
                 Disability Confident (optional)
             </h3>
-            <img asp-show="@Model.IsDisabilityConfident" src="~/img/disability-confident_545x172.png" class="disability-confident-logo" alt="A logo confirming that the employer is registered as disability confident" />
+            <img asp-show="@Model.IsDisabilityConfident" src="~/img/disability-confident_545x172.png" class="disability-confident-logo" alt="A logo confirming that the employer is registered as disability confident" esfa-automation="disability-confident-logo" />
             <partial name="@PartialNames.DisabilityConfident" for="IsDisabilityConfident" />
             <p asp-show="@Model.IsNotDisabilityConfident" class="govuk-hint">This vacancy is not Disability Confident<br />This will not appear on the vacancy when it goes live</p>
             @EditLink(RouteNames.Training_Get, Model.TrainingSectionState, "link-standard", new { wizard = false })
@@ -431,10 +431,10 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
         <div class="govuk-form-group inline">
             <div class="govuk-form-group">
                 <form asp-show="@Model.CanSubmit" asp-route="@RouteNames.Preview_Submit_Post" class="form-inline">
-                    <input type="submit" value="@Model.SubmitButtonText" class="govuk-button" />
+                    <input type="submit" value="@Model.SubmitButtonText" class="govuk-button" esfa-automation="submit-button" />
                 </form>
-                <a asp-route="@RouteNames.Dashboard_Index_Get" class="govuk-link das-button-link">Return to dashboard</a>
-                <a asp-show="@Model.CanDelete" asp-route="@RouteNames.DeleteVacancy_Delete_Get" class="govuk-button delete-button">Delete</a>
+                <a asp-route="@RouteNames.Dashboard_Index_Get" class="govuk-link das-button-link" esfa-automation="dashboard-link">Return to dashboard</a>
+                <a asp-show="@Model.CanDelete" asp-route="@RouteNames.DeleteVacancy_Delete_Get" class="govuk-button delete-button" esfa-automation="delete-button">Delete</a>
             </div>
         </div>
     </div>
