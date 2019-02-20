@@ -37,7 +37,7 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
         
         <h1 asp-show="@Model.CanShowDraftHeader" class="govuk-heading-xl govuk-!-margin-bottom-6">Complete your vacancy</h1>
-        <p class="govuk-body govuk-!-margin-top-6">This is how your vacancy will appear to candidates on <a href="@Model.FindAnApprenticeshipUrl" class="govuk-link" rel="noopener" target="_blank">Find an apprenticeship</a></p>
+        <p class="govuk-body govuk-!-margin-top-6">This is how your vacancy will appear to candidates on <a href="@Model.FindAnApprenticeshipUrl" class="govuk-body govuk-link" rel="noopener" target="_blank">Find an apprenticeship</a></p>
         <div asp-show="@Model.ShowIncompleteSections" class="info-summary govuk-!-margin-top-0" role="alert">
             <div asp-show="@Model.HasIncompleteMandatorySections">
                 <p class="govuk-body">You need to complete these sections:</p>
