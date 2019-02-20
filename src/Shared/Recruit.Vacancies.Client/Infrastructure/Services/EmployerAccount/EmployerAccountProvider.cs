@@ -44,9 +44,23 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
 
                 await Task.WhenAll(legalEntitiesTasks.ToArray());
 
-                var entities = legalEntitiesTasks.Select(t => t.Result).Select(LegalEntityMapper.MapFromAccountApiLegalEntity);
+                var entities = legalEntitiesTasks.Select(t => t.Result).Select(LegalEntityMapper.MapFromAccountApiLegalEntity).ToList();
 
                 return entities;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Failed to retrieve account information for account Id: {accountId}");
+                throw;
+            }
+        }
+
+        public async Task<string> GetEmployerAccountPublisHashedIdAsync(long accountId)
+        {
+            try
+            {
+                var account = await _accountApiClient.GetAccount(accountId);
+                return account.HashedAccountId;
             }
             catch (Exception ex)
             {

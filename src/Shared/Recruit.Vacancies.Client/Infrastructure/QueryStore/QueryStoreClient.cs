@@ -102,7 +102,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         {
             var key = QueryViewType.EditVacancyInfo.GetIdValue(ukprn);
             var providerInfo = await _queryStore.GetAsync<ProviderEditVacancyInfo>(QueryViewType.EditVacancyInfo.TypeName, key);
-            return providerInfo.Employers.FirstOrDefault(e => e.Id == employerAccountId);
+            return providerInfo.Employers.FirstOrDefault(e => e.EmployerAccountId == employerAccountId);
         }
         
         public Task<VacancyApplications> GetVacancyApplicationsAsync(string vacancyReference)

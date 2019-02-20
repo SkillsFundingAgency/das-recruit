@@ -8,5 +8,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
     {
         Task<IEnumerable<string>> GetEmployerIdentifiersAsync(string userId);
         Task<IEnumerable<LegalEntity>> GetEmployerLegalEntitiesAsync(string accountId);
+        Task<string> GetEmployerAccountPublisHashedIdAsync(long accountId);
     }
 }

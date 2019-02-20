@@ -141,7 +141,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
         {
             var providerInfo = await _providerVacancyClient.GetProviderEditVacancyInfoAsync(ukprn);
 
-            if (providerInfo.Employers.Any(e => e.Id == employerAccountId) == false)
+            if (providerInfo.Employers.Any(e => e.EmployerAccountId == employerAccountId) == false)
                 throw new AuthorisationException(string.Format(ExceptionMessages.ProviderEmployerAccountIdNotFound, ukprn, employerAccountId));
         }
     }

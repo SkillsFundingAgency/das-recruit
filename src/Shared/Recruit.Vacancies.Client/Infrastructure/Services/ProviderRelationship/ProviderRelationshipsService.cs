@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -19,20 +20,20 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
     {
         private readonly ProviderRelationshipApiConfiguration _configuration;
         private readonly ILogger<ProviderRelationshipApiConfiguration> _logger;
-        private readonly IJobsVacancyClient _jobsVacancyClient;
+        private readonly IEmployerAccountProvider _employerAccountProvider;  
 
         public ProviderRelationshipsService(IOptions<ProviderRelationshipApiConfiguration> configuration,
             ILogger<ProviderRelationshipApiConfiguration> logger,
-            IJobsVacancyClient jobsVacancyClient)
+            IEmployerAccountProvider employerAccountProvider)
         {
             _configuration = configuration.Value;
             _logger = logger;
-            _jobsVacancyClient = jobsVacancyClient;
+            _employerAccountProvider = employerAccountProvider;
         }
 
         public async Task<IEnumerable<EmployerInfo>> GetLegalEntitiesForProviderAsync(long ukprn)
         {
-            IEnumerable<EmployerInfo> employerInfos = new List<EmployerInfo>();
+            ProviderPermissions providerPermissions = null;
             var httpClient = CreateHttpClient(_configuration);
             var queryData = new { Ukprn = ukprn, Operation = "Recruitment" };            
             var uri = new Uri(AddQueryString("accountproviderlegalentities", queryData), UriKind.RelativeOrAbsolute);
@@ -43,12 +44,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
                 if (!response.IsSuccessStatusCode)
                 {
                     _logger.LogError("An invalid response received when trying to get provider relationships");
-                    return employerInfos;
+                    return new EmployerInfo[]{};
                 }                
                 var content  = await response.Content.ReadAsStringAsync();
-                var relations = Newtonsoft.Json.JsonConvert.DeserializeObject<ProviderPermissions>(content);
-                employerInfos =  MapEmployerInfo(relations);
-
+                providerPermissions = JsonConvert.DeserializeObject<ProviderPermissions>(content);
             }
             catch (HttpRequestException ex)
             {
@@ -59,38 +58,46 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
                 _logger.LogError(ex, $"Couldn't deserialise {nameof(VacancyApiSearchResponse)}.", null);
             }
 
-            await AppendAddressToLegalEntitiesAsync(employerInfos);
-            return employerInfos;
+            return await GetEmployerInfosAsync(providerPermissions);
         }
 
-        private async Task AppendAddressToLegalEntitiesAsync(IEnumerable<EmployerInfo> employerInfos)
-        {            
-            foreach(var employerInfo in employerInfos)
-            {
-                var providerLegalEntities = employerInfo.LegalEntities;
-                var employerLegalEntities = await _jobsVacancyClient.GetEmployerLegalEntitiesAsync(employerInfo.Id);
+        private async Task<List<EmployerInfo>> GetEmployerInfosAsync(ProviderPermissions providerPermissions)
+        {
+            LegalEntity MapToLegalEntity(LegalEntityDto dto, Address address) 
+                => new LegalEntity { LegalEntityId = dto.AccountLegalEntityId, Name = dto.AccountLegalEntityName, Address = address };
+                
+            var employerInfos = new List<EmployerInfo>();
 
-                foreach(var providerLegalEntity in providerLegalEntities)
+            var employerAccounts = providerPermissions.AccountProviderLegalEntities.GroupBy(p => p.AccountId);
+
+            foreach(var account in employerAccounts)
+            {                
+                var accountId = await _employerAccountProvider.GetEmployerAccountPublisHashedIdAsync(account.Key);
+                
+                var employerInfo = new EmployerInfo() 
+                { 
+                    EmployerAccountId = accountId, 
+                    Name = account.First().AccountName, 
+                    LegalEntities = new List<LegalEntity>() 
+                };
+                
+                var allEmployerLegalEntities = await _employerAccountProvider.GetEmployerLegalEntitiesAsync(accountId);
+
+                var accounts = account.ToList();
+
+                foreach(var legalEntityDto in accounts)
                 {
-                    var source = employerLegalEntities.FirstOrDefault(e => e.LegalEntityId == providerLegalEntity.LegalEntityId);
-                    if (source != null)
+                    var matchingLegalEntity = allEmployerLegalEntities.FirstOrDefault(e => e.LegalEntityId == legalEntityDto.AccountLegalEntityId);
+                    if (matchingLegalEntity != null)
                     {
-                        providerLegalEntity.Address = source.Address;
+                        var legalEntity = MapToLegalEntity(legalEntityDto, matchingLegalEntity.Address);
+                        employerInfo.LegalEntities.Add(legalEntity);
                     }                    
                 }
-            }
-        }
 
-        private IEnumerable<EmployerInfo> MapEmployerInfo(ProviderPermissions relations)
-        {
-            return relations
-                .AccountProviderLegalEntities
-                .GroupBy(e => e.AccountPublicHashedId)
-                .Select(e => new EmployerInfo() { 
-                    Id = e.Key, 
-                    Name = e.First().AccountName,
-                    LegalEntities = e.Select(l => new LegalEntity{ LegalEntityId = l.AccountLegalEntityId, Name = l.AccountLegalEntityName }) 
-                });
+                employerInfos.Add(employerInfo);
+            }
+            return employerInfos;
         }
 
         private HttpClient CreateHttpClient(ProviderRelationshipApiConfiguration configuration)
