@@ -61,7 +61,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 .Configure<AccountApiConfiguration>(configuration.GetSection("AccountApiConfiguration"))
                 .AddMemoryCache()
                 .AddTransient<IConfigurationReader, ConfigurationReader>()
-                .AddTransient(x =>
+                .AddSingleton(x =>
                 {
                     var svc = x.GetService<IConfigurationReader>();
                     return svc.GetAsync<QaRulesConfiguration>("QaRules").Result;
