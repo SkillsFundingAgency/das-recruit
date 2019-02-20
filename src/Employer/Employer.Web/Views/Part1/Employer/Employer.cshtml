@@ -31,7 +31,7 @@
                     @foreach (var organisation in Model.Organisations)
                     {
                         <div class="govuk-radios__item">
-                            <input asp-for="SelectedOrganisationId" type="radio" value="@organisation.Id" class="govuk-radios__input" id="org-@organisation.Id">
+                            <input asp-for="SelectedOrganisationId" type="radio" value="@organisation.Id" class="govuk-radios__input" id="org-@organisation.Id" esfa-automation="selected-organisation-id">
                             <label for="org-@organisation.Id" class="govuk-label govuk-radios__label">@organisation.Name</label>
                         </div>
                     }
@@ -54,21 +54,21 @@
                 <div esfa-validation-marker-for="AddressLine3" class="govuk-form-group-compound address-item govuk-form-group">
                     <label asp-for="AddressLine3" class="govuk-visually-hidden">Address line 3</label>
                     <span esfa-validation-message-for="AddressLine3" class="govuk-error-message"></span>
-                    <input asp-for="AddressLine3" class="govuk-input" maxlength="100"/>
+                    <input asp-for="AddressLine3" class="govuk-input" maxlength="100" />
                 </div>
                 <div esfa-validation-marker-for="AddressLine4" class="govuk-form-group-compound address-item govuk-form-group">
                     <label asp-for="AddressLine4" class="govuk-visually-hidden">Address line 4</label>
                     <span esfa-validation-message-for="AddressLine4" class="govuk-error-message"></span>
-                    <input asp-for="AddressLine4" class="govuk-input" maxlength="100"/>
+                    <input asp-for="AddressLine4" class="govuk-input" maxlength="100" />
                 </div>
                 <div esfa-validation-marker-for="Postcode" class="govuk-form-group address-item govuk-form-group">
                     <label asp-for="Postcode" class="govuk-label govuk-!-font-weight-bold">Postcode</label>
                     <span esfa-validation-message-for="Postcode" class="govuk-error-message"></span>
-                    <input asp-for="Postcode" class="govuk-input govuk-input--width-10 postcode-lookup" maxlength="8"/>
+                    <input asp-for="Postcode" class="govuk-input govuk-input--width-10 postcode-lookup" maxlength="8" />
                 </div>
             </div>
 
-            <button type="submit" class="govuk-button save-button">@Model.PageInfo.SubmitButtonText</button>
+            <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">@Model.PageInfo.SubmitButtonText</button>
 
             <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Index_Get" class="govuk-link das-button-link">Cancel</a>
             <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.AboutEmployerSection" class="govuk-link das-button-link">Cancel</a>

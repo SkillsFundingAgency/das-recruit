@@ -32,11 +32,11 @@
                         </li>
                         <li>
                             <span class="govuk-!-font-weight-bold">Wage:</span>
-                            <span>@Model.Wage</span><span asp-show="@Model.HasYearlyWage"> yearly</span>
+                            <span esfa-automation="wage-text">@Model.Wage</span><span asp-show="@Model.HasYearlyWage"> yearly</span>
                         </li>
                     </ul>
 
-                    <img asp-show="@Model.IsDisabilityConfident" src="/img/disability-confident_545x172.png" alt="A logo confirming that the employer is registered as disability confident" class="disability-confident-logo-big" />
+                    <img asp-show="@Model.IsDisabilityConfident" src="/img/disability-confident_545x172.png" alt="A logo confirming that the employer is registered as disability confident" class="disability-confident-logo-big" esfa-automation="disability-confident-logo"/>
                     <partial name="@PartialNames.DisabilityConfident" for="IsDisabilityConfident" />
 
                 </div>
@@ -49,9 +49,9 @@
             </div> 
         </div>
         <div class="govuk-form-group govuk-!-margin-top-6">
-            <a asp-route="@RouteNames.Vacancy_Preview_Get" esfa-automation="link-continue" class="govuk-button">Add full vacancy details</a>
-            <a asp-route="@RouteNames.Title_Get" esfa-automation="link-change" class="govuk-link das-button-link">Make changes</a>
-            <a asp-route="@RouteNames.Dashboard_Index_Get" esfa-automation="link-dashboard" class="govuk-link das-button-link">Return to dashboard</a>
+            <a asp-route="@RouteNames.Vacancy_Preview_Get" esfa-automation="link-continue" class="govuk-button" esfa-automation="continue-button">Add full vacancy details</a>
+            <a asp-route="@RouteNames.Title_Get" esfa-automation="link-change" class="govuk-link das-button-link" esfa-automation="change-button">Make changes</a>
+            <a asp-route="@RouteNames.Dashboard_Index_Get" esfa-automation="link-dashboard" class="govuk-link das-button-link" esfa-automation="cancel-link">Return to dashboard</a>
         </div>
     </div>
 </div>
