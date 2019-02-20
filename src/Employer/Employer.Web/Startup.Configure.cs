@@ -60,7 +60,7 @@ namespace Esfa.Recruit.Employer.Web
                 .ScriptSources(s =>
                     {
                         s.Self()
-                            .CustomSources("https://az416426.vo.msecnd.net",
+                            .CustomSources("https://az416426.vo.msecnd.net/",
                                 "https://www.google-analytics.com/analytics.js",
                                 "https://www.googletagmanager.com/",
                                 "https://www.tagmanager.google.com/",

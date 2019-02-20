@@ -49,7 +49,7 @@ namespace Esfa.Recruit.Qa.Web
                 )
                 .ScriptSources(s => 
                     s.Self()
-                    .CustomSources("https://az416426.vo.msecnd.net")
+                    .CustomSources("https://az416426.vo.msecnd.net/")
                 )
                 .FontSources(s => 
                     s.Self()
