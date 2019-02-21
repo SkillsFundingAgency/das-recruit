@@ -55,7 +55,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
             }
             catch (JsonReaderException ex)
             {
-                _logger.LogError(ex, $"Couldn't deserialise {nameof(VacancyApiSearchResponse)}.", null);
+                _logger.LogError(ex, $"Couldn't deserialise {nameof(ProviderPermissions)}.", null);
             }
 
             return await GetEmployerInfosAsync(providerPermissions);
@@ -81,7 +81,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
                 
                 var legalEntityViewModels = await _employerAccountProvider.GetLegalEntitiesConnectedToAccountAsync(accountId);
 
-                foreach(var permittedLegalEntity in permittedEmployer.ToList())
+                foreach(var permittedLegalEntity in permittedEmployer)
                 {
                     var matchingLegalEntity = legalEntityViewModels.FirstOrDefault(e => e.AccountLegalEntityPublicHashedId == permittedLegalEntity.AccountLegalEntityPublicHashedId);
                     if (matchingLegalEntity != null)
