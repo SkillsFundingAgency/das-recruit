@@ -63,34 +63,30 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
 
         private async Task<List<EmployerInfo>> GetEmployerInfosAsync(ProviderPermissions providerPermissions)
         {
-            LegalEntity MapToLegalEntity(LegalEntityDto dto, Address address) 
-                => new LegalEntity { LegalEntityId = dto.AccountLegalEntityId, Name = dto.AccountLegalEntityName, Address = address };
-                
             var employerInfos = new List<EmployerInfo>();
 
-            var employerAccounts = providerPermissions.AccountProviderLegalEntities.GroupBy(p => p.AccountId);
+            //group legal entities by employer account id
+            var premittedEmployerAccounts = providerPermissions.AccountProviderLegalEntities.GroupBy(p => p.AccountId);
 
-            foreach(var account in employerAccounts)
+            foreach(var permittedEmployer in premittedEmployerAccounts)
             {                
-                var accountId = await _employerAccountProvider.GetEmployerAccountPublisHashedIdAsync(account.Key);
+                var accountId = await _employerAccountProvider.GetEmployerAccountPublicHashedIdAsync(permittedEmployer.Key);
                 
                 var employerInfo = new EmployerInfo() 
                 { 
                     EmployerAccountId = accountId, 
-                    Name = account.First().AccountName, 
+                    Name = permittedEmployer.First().AccountName, //should be same in all the items hense read from first
                     LegalEntities = new List<LegalEntity>() 
                 };
                 
-                var allEmployerLegalEntities = await _employerAccountProvider.GetEmployerLegalEntitiesAsync(accountId);
+                var legalEntityViewModels = await _employerAccountProvider.GetLegalEntitiesConnectedToAccountAsync(accountId);
 
-                var accounts = account.ToList();
-
-                foreach(var legalEntityDto in accounts)
+                foreach(var permittedLegalEntity in permittedEmployer.ToList())
                 {
-                    var matchingLegalEntity = allEmployerLegalEntities.FirstOrDefault(e => e.LegalEntityId == legalEntityDto.AccountLegalEntityId);
+                    var matchingLegalEntity = legalEntityViewModels.FirstOrDefault(e => e.AccountLegalEntityPublicHashedId == permittedLegalEntity.AccountLegalEntityPublicHashedId);
                     if (matchingLegalEntity != null)
                     {
-                        var legalEntity = MapToLegalEntity(legalEntityDto, matchingLegalEntity.Address);
+                        var legalEntity = LegalEntityMapper.MapFromAccountApiLegalEntity(matchingLegalEntity);
                         employerInfo.LegalEntities.Add(legalEntity);
                     }                    
                 }
