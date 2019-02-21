@@ -65,10 +65,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
         {
             var employerInfos = new List<EmployerInfo>();
 
-            //group legal entities by employer account id
-            var premittedEmployerAccounts = providerPermissions.AccountProviderLegalEntities.GroupBy(p => p.AccountId);
+            var permittedEmployerAccounts = providerPermissions.AccountProviderLegalEntities.GroupBy(p => p.AccountId);
 
-            foreach(var permittedEmployer in premittedEmployerAccounts)
+            foreach(var permittedEmployer in permittedEmployerAccounts)
             {                
                 var accountId = await _employerAccountProvider.GetEmployerAccountPublicHashedIdAsync(permittedEmployer.Key);
                 
