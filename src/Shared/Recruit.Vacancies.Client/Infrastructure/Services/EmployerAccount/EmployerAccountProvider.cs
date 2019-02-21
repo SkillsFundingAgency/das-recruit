@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.EAS.Account.Api.Client;
+using SFA.DAS.EAS.Account.Api.Types;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
 {
@@ -38,15 +39,45 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
         {
             try
             {
+                var entities = await GetLegalEntitiesConnectedToAccountAsync(accountId);
+
+                return entities.Select(LegalEntityMapper.MapFromAccountApiLegalEntity).ToList();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Failed to retrieve account information for account Id: {accountId}");
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<LegalEntityViewModel>> GetLegalEntitiesConnectedToAccountAsync(string accountId)
+        {
+            try
+            {
                 var accounts = await _accountApiClient.GetLegalEntitiesConnectedToAccount(accountId);
 
                 var legalEntitiesTasks = accounts.Select(r => _accountApiClient.GetLegalEntity(accountId, long.Parse(r.Id)));
 
                 await Task.WhenAll(legalEntitiesTasks.ToArray());
 
-                var entities = legalEntitiesTasks.Select(t => t.Result).Select(LegalEntityMapper.MapFromAccountApiLegalEntity);
+                var entities = legalEntitiesTasks.Select(t => t.Result);
 
                 return entities;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Failed to retrieve account information for account Id: {accountId}");
+                throw;
+            }
+        }
+
+
+        public async Task<string> GetEmployerAccountPublicHashedIdAsync(long accountId)
+        {
+            try
+            {
+                var account = await _accountApiClient.GetAccount(accountId);
+                return account.HashedAccountId;
             }
             catch (Exception ex)
             {

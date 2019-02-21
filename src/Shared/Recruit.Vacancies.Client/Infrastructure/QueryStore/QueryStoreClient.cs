@@ -93,67 +93,18 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 
         public Task<ProviderEditVacancyInfo> GetProviderVacancyDataAsync(long ukprn)
         {
-            //TODO get data from QueryStore Collection
-            return Task.FromResult(FakeProviderVacancyData);
+            var key = QueryViewType.EditVacancyInfo.GetIdValue(ukprn);
 
-            // var key = QueryViewType.EditVacancyInfo.GetIdValue(ukprn);
-
-            // return _queryStore.GetAsync<ProviderEditVacancyInfo>(QueryViewType.EditVacancyInfo.TypeName, key);
+            return _queryStore.GetAsync<ProviderEditVacancyInfo>(QueryViewType.EditVacancyInfo.TypeName, key);
         }
 
-        public Task<EmployerInfo> GetProviderEmployerVacancyDataAsync(long ukprn, string employerAccountId)
+        public async Task<EmployerInfo> GetProviderEmployerVacancyDataAsync(long ukprn, string employerAccountId)
         {
-            //TODO get data from QueryStore Collection
-            return Task.FromResult(FakeProviderVacancyData.Employers.FirstOrDefault(e => e.Id == employerAccountId));
+            var key = QueryViewType.EditVacancyInfo.GetIdValue(ukprn);
+            var providerInfo = await _queryStore.GetAsync<ProviderEditVacancyInfo>(QueryViewType.EditVacancyInfo.TypeName, key);
+            return providerInfo?.Employers.FirstOrDefault(e => e.EmployerAccountId == employerAccountId);
         }
-        private ProviderEditVacancyInfo FakeProviderVacancyData =>
-            new ProviderEditVacancyInfo {
-                Employers = new[] {
-                    new EmployerInfo {
-                        Id = "RF1OEM",
-                        Name = "Rogers and Federrers",
-                        LegalEntities = new [] {
-                            new LegalEntity {
-                                Name = "Coventry building",
-                                LegalEntityId = 1122,
-                                Address = new Address {
-                                    AddressLine1 = "Chelyesmore House",
-                                    AddressLine2 = "5 Quinton Road",
-                                    AddressLine3 = "Coventry",
-                                    Postcode = "CV1 2WT"
-                                    }
-                                },
-                            new LegalEntity {
-                                Name = "Bedford building",
-                                LegalEntityId = 2233,
-                                Address = new Address {
-                                    AddressLine1 = "Unit No 4",
-                                    AddressLine2 = "Priory Business Park",
-                                    AddressLine3 = "Bedford",
-                                    Postcode = "MK44 3JZ"
-                                    }
-                                }
-                            }
-                        },
-                    new EmployerInfo {
-                        Id = "WBT98F",
-                        Name = "William Bothers",
-                        LegalEntities = new [] {
-                            new LegalEntity {
-                                Name = "Coventry building",
-                                LegalEntityId = 1122,
-                                Address = new Address {
-                                    AddressLine1 = "Chelyesmore House",
-                                    AddressLine2 = "5 Quinton Road",
-                                    AddressLine3 = "Coventry",
-                                    Postcode = "CV1 2WT"
-                                    }
-                                }
-                            }
-                        }
-                }
-            };
-
+        
         public Task<VacancyApplications> GetVacancyApplicationsAsync(string vacancyReference)
         {
             var key = QueryViewType.VacancyApplications.GetIdValue(vacancyReference);

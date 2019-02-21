@@ -70,6 +70,9 @@ namespace Esfa.Recruit.Vacancies.Jobs
             // Employer
             services.AddScoped<IDomainEventHandler<IEvent>, DomainEvents.Handlers.Employer.SetupEmployerHandler>();
 
+            // Provider
+            services.AddScoped<IDomainEventHandler<IEvent>, DomainEvents.Handlers.Provider.SetupProviderHandler>();
+
             //Candidate
             services.AddScoped<IDomainEventHandler<IEvent>, DeleteCandidateHandler>();
         }

@@ -4,8 +4,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Ed
 {
     public class EmployerInfo
     {
-        public string Id { get; set; }
+        public string EmployerAccountId { get; set; }
         public string Name { get; set; }
-        public IEnumerable<LegalEntity> LegalEntities { get; set; }
+        public List<LegalEntity> LegalEntities { get; set; } 
     }
 }

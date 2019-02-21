@@ -21,7 +21,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
             var vm = new EmployersViewModel
             {
-                Employers = editVacancyInfo.Employers.Select(e => new EmployerViewModel {Id = e.Id, Name = e.Name})
+                Employers = editVacancyInfo.Employers.Select(e => new EmployerViewModel {Id = e.EmployerAccountId, Name = e.Name})
             };
 
             return vm;
