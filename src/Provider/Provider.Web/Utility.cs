@@ -1,16 +1,13 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Application.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Exceptions;
 using Esfa.Recruit.Provider.Web.RouteModel;
-using Esfa.Recruit.Provider.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.ViewModels;
-using Esfa.Recruit.Provider.Web.ViewModels.Part1;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 
 namespace Esfa.Recruit.Provider.Web
@@ -117,17 +114,12 @@ namespace Esfa.Recruit.Provider.Web
             };
         }
 
-        public static async Task<ApplicationReview> GetAuthorisedApplicationReviewAsync(IRecruitVacancyClient client, ApplicationReviewRouteModel rm)
+        public static async Task<ApplicationReview> GetAuthorisedApplicationReviewAsync(IRecruitVacancyClient vacancyClient, ApplicationReviewRouteModel rm)
         {
-            var applicationReview = await client.GetApplicationReviewAsync(rm.ApplicationReviewId);
-
-            //TODO: this needs changing when we implement application review story
-            if (applicationReview.EmployerAccountId == rm.Ukprn.ToString()) // needs to be reviewed
-            {
-                return applicationReview;
-            }
-
-            throw new AuthorisationException(string.Format(ExceptionMessages.ApplicationReviewUnauthorisedAccess, rm.Ukprn, applicationReview.EmployerAccountId, applicationReview.Id, applicationReview.VacancyReference)); // needs to be reviewed
+            var applicationReview = await vacancyClient.GetApplicationReviewAsync(rm.ApplicationReviewId);
+            var vacancy = await vacancyClient.GetVacancyAsync(rm.VacancyId.GetValueOrDefault());
+            CheckAuthorisedAccess(vacancy, rm.Ukprn);
+            return applicationReview;            
         }
     }
 }

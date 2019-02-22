@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web;
 using Esfa.Recruit.Employer.Web.RouteModel;
+using Esfa.Recruit.Vacancies.Client.Application.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -20,20 +21,28 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
             string requestedEmployerAccountId, bool shouldAllow)
         {
             var applicationReviewId = Guid.NewGuid();
+            var vacancyId = Guid.NewGuid(); 
 
             var client = new Mock<IRecruitVacancyClient>();
             client.Setup(c => c.GetApplicationReviewAsync(applicationReviewId)).Returns(Task.FromResult(
                 new ApplicationReview
                 {
-                    Id = applicationReviewId,
-                    EmployerAccountId = applicationReviewEmployerAccountId,
+                    Id = applicationReviewId,                    
                     VacancyReference = 1000000001
+                }));
+
+            client.Setup(c=>c.GetVacancyAsync(vacancyId)).Returns(Task.FromResult(
+                new Vacancy() {
+                    EmployerAccountId = applicationReviewEmployerAccountId,
+                    VacancyReference = 1000000001,
+                    Id = vacancyId
                 }));
 
             var rm = new ApplicationReviewRouteModel
             {
                 EmployerAccountId = requestedEmployerAccountId,
-                ApplicationReviewId = applicationReviewId
+                ApplicationReviewId = applicationReviewId,
+                VacancyId = vacancyId
             };
 
             Func<Task<ApplicationReview>> act = () => Utility.GetAuthorisedApplicationReviewAsync(client.Object, rm);
@@ -41,12 +50,12 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
             if (shouldAllow)
             {
                 var applicationReview = act().Result;
-                applicationReview.EmployerAccountId.Should().Be(requestedEmployerAccountId);
+                applicationReview.Should().NotBeNull();                
             }
             else
             {
                 var ex = Assert.ThrowsAsync<AuthorisationException>(act);
-                ex.Result.Message.Should().Be($"The employer account 'ANOTHER EMPLOYER ACCOUNT ID' cannot access employer account 'EMPLOYER ACCOUNT ID' application '{applicationReviewId}' for vacancy '1000000001'.");
+                ex.Result.Message.Should().Be($"The employer account 'ANOTHER EMPLOYER ACCOUNT ID' cannot access employer account 'EMPLOYER ACCOUNT ID' vacancy ' ({vacancyId})'.");                
             }
         }
     }

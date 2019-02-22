@@ -75,6 +75,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<WageOrchestrator>();
             services.AddTransient<CloseVacancyOrchestrator>();
             services.AddTransient<EditVacancyDatesOrchestrator>();
+            services.AddTransient<ApplicationReviewOrchestrator>();
         }
 
         private static void RegisterMapperDeps(IServiceCollection services)
