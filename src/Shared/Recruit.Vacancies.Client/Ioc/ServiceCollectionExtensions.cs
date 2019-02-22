@@ -1,5 +1,4 @@
-﻿using System;
-using Esfa.Recruit.Vacancies.Client.Application.Aspects;
+﻿using Esfa.Recruit.Vacancies.Client.Application.Aspects;
 using Esfa.Recruit.Vacancies.Client.Application.Cache;
 using Esfa.Recruit.Vacancies.Client.Application.CommandHandlers;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
@@ -45,13 +44,14 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancyTitle;
 using SFA.DAS.EAS.Account.Api.Client;
 using SFA.DAS.Providers.Api.Client;
 using VacancyRuleSet = Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules.VacancyRuleSet;
 
-namespace Microsoft.Extensions.DependencyInjection
+namespace Esfa.Recruit.Vacancies.Client.Ioc
 {
     public static class ServiceCollectionExtensions
     {
@@ -62,7 +62,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 .Configure<AccountApiConfiguration>(configuration.GetSection("AccountApiConfiguration"))
                 .AddMemoryCache()
                 .AddTransient<IConfigurationReader, ConfigurationReader>()
-                .AddTransient(x =>
+                .AddSingleton(x =>
                 {
                     var svc = x.GetService<IConfigurationReader>();
                     return svc.GetAsync<QaRulesConfiguration>("QaRules").Result;

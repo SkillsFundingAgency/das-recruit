@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 using Esfa.Recruit.Provider.Web.Orchestrators.Part2;
+using Esfa.Recruit.Vacancies.Client.Ioc;
 
 namespace Esfa.Recruit.Provider.Web.Configuration
 {
