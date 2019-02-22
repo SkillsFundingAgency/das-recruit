@@ -150,7 +150,7 @@
             <h2 asp-show="@Model.ShowGeneralApplicationProcessSectionTitle" class="govuk-heading-l">Application process</h2>
             <h2 asp-show="@Model.HasSpecifiedThroughExternalApplicationMethod" class="govuk-heading-l">Employer's application instructions</h2>
             <div asp-show="@Model.HasSpecifiedThroughFaaApplicationMethod">
-                <p class="govuk-body">Candidates will apply through the <a href="@Model.FindAnApprenticeshipUrl" rel="noopener" target="_blank">Find an apprenticeship service</a></p>
+                <p class="govuk-body">Candidates will apply through the <a href="@Model.FindAnApprenticeshipUrl" class="govuk-body govuk-link" rel="noopener" target="_blank">Find an apprenticeship service</a></p>
             </div>
             <div asp-show="@Model.HasSpecifiedThroughExternalApplicationMethod">
                 <p class="govuk-body">This apprenticeship requires you to apply through the employer's website.</p>
