@@ -11,6 +11,8 @@ namespace Esfa.Recruit.Provider.Web
 {
     public class Program
     {
+        private const int DefaultKestrelPortNo = 5030;
+
         public static void Main(string[] args)
         {
             var logger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
@@ -33,9 +35,13 @@ namespace Esfa.Recruit.Provider.Web
 
         private static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseKestrel(c => c.AddServerHeader = false)
+                .UseKestrel(c => 
+                {
+                    c.AddServerHeader = false;
+                    c.ListenLocalhost(DefaultKestrelPortNo);
+                })
                 .UseStartup<Startup>()
-                .UseUrls("https://localhost:5030")
+                .UseUrls($"https://localhost:{DefaultKestrelPortNo}")
                 .UseNLog()
                 .ConfigureLogging(b => b.ConfigureRecruitLogging());
 
