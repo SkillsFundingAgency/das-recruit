@@ -18,7 +18,7 @@ namespace Esfa.Recruit.Employer.Web
                 logger.Info("Starting up host");
                 var host = CreateWebHostBuilder(args).Build();
 
-                CheckInfrastructure(host.Services, logger);
+                //CheckInfrastructure(host.Services, logger);
 
                 host.Run();
             }

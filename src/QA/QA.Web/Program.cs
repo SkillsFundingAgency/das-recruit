@@ -29,7 +29,7 @@ namespace Esfa.Recruit.Qa.Web
 
                 var host = CreateWebHostBuilder(args).Build();
 
-                CheckInfrastructure(host.Services, logger);
+                //CheckInfrastructure(host.Services, logger);
 
                 host.Run();
             }
