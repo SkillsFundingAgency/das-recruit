@@ -27,11 +27,7 @@ namespace Esfa.Recruit.Qa.Web
             {
                 logger.Info("Starting up host");
 
-                var host = CreateWebHostBuilder(args).Build();
-
-                //CheckInfrastructure(host.Services, logger);
-
-                host.Run();
+                CreateWebHostBuilder(args).Build().Run();
             }
             catch (Exception ex)
             {
