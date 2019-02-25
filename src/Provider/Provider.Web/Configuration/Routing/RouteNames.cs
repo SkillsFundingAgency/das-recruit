@@ -14,8 +14,15 @@
         public const string CreateVacancy_Get = "CreateVacancy_Get";
         public const string CreateVacancy_Post = "CreateVacancy_Post";
         public const string Dashboard_Index_Get = "Dashboard_Index_Get";
-        public const string Dashboard_ChangePassword = "Dashboard_ChangePassword";
-        public const string Dashboard_ChangeEmail = "Dashboard_ChangeEmail";
+        public const string Dashboard_AccountsNotifications = "Dashboard_AccountsNotifications";
+        public const string Dashboard_ManageApprentices = "Dashboard_ManageApprentices";
+        public const string Dashboard_YourCohorts = "Dashboard_YourCohorts";
+        public const string Dashboard_AccountsAgreements = "Dashboard_AccountsAgreements";
+        public const string Dashboard_Account_Home = "Dashboard_Account_Home";
+        public const string Dashboard_Help = "Dashboard_Help";
+        public const string Dashboard_Feedback = "Dashboard_Feedback";
+        public const string Dashboard_Privacy = "Dashboard_Privacy";
+        public const string Dashboard_TermsAndConditions = "Dashboard_TermsAndConditions";
         public const string DeleteVacancy_Delete_Get = "DeleteVacancy_Delete_Get";
         public const string DeleteVacancy_Delete_Post = "DeleteVacancy_Delete_Post";
         public const string DisplayFullVacancy_Get = "DisplayFullVacancy_Get";

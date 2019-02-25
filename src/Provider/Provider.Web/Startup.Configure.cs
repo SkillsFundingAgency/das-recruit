@@ -45,7 +45,7 @@ namespace Esfa.Recruit.Provider.Web
                 .StyleSources(s => 
                     s.Self()
                     //TinyMCE uses inline styles
-                    .UnsafeInline() 
+                    .UnsafeInline()
                 )
                 .ScriptSources(s => 
                     s.Self()
@@ -107,6 +107,9 @@ namespace Esfa.Recruit.Provider.Web
 
             if (!string.IsNullOrWhiteSpace(linksConfig?.ProviderApprenticeshipSiteUrl))
                 destinations.Add(linksConfig?.ProviderApprenticeshipSiteUrl);
+
+            if (!string.IsNullOrWhiteSpace(linksConfig?.CommitmentsSiteUrl))
+                destinations.Add(linksConfig?.CommitmentsSiteUrl);
 
             return destinations.ToArray();
         }

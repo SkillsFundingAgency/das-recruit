@@ -8,7 +8,6 @@
 
         public const string ApplicationReviewPath = "applications/{applicationReviewId:guid}";
         public const string AccountApplicationReviewRoutePath = AccountVacancyRoutePath + "/" + ApplicationReviewPath;
-        public const string Services = "services";
         public const string AccessDeniedPath = "/error/403";
         public const string ExceptionHandlingPath = "/error/handle";
     }

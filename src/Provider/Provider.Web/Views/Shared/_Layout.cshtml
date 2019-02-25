@@ -2,6 +2,7 @@
 @using Esfa.Recruit.Provider.Web.Configuration.Routing
 @using Esfa.Recruit.Provider.Web.Views
 @using Esfa.Recruit.Shared.Web.Configuration
+@inject ProviderApprenticeshipsLinkHelper ExternalLinks
 @functions
 {
     public bool ParseHideNavFromViewBag()
@@ -119,13 +120,13 @@
                 <nav class="das-user-navigation" id="user-nav">
                     <ul class="das-user-navigation__list" role="menu">
                         <li role="menuitem" class="das-user-navigation__list-item">
-                            <a href="#" class="das-user-navigation__link">Provider account</a>
+                            <a asp-route="@RouteNames.Dashboard_Account_Home" class="das-user-navigation__link">Provider account</a>
                         </li>
                         <li role="menuitem" class="das-user-navigation__list-item">
-                            <a href="#" class="das-user-navigation__link">Notification settings</a>
+                            <a asp-route="@RouteNames.Dashboard_AccountsNotifications" class="das-user-navigation__link">Notification settings</a>
                         </li>
                         <li role="menuitem" class="das-user-navigation__list-item">
-                            <a href="#" class="das-user-navigation__link">Sign out</a>
+                            <a asp-route="@RouteNames.Logout_Get" class="das-user-navigation__link">Sign out</a>
                         </li>
                     </ul>
                 </nav>
@@ -136,19 +137,19 @@
             <div class="govuk-width-container">
                 <ul class="das-navigation__list">
                     <li class="das-navigation__list-item">
-                        <a class="das-navigation__link das-navigation__link--current" href="#">Home</a>
+                        <a asp-route="@RouteNames.Dashboard_Account_Home" class="das-navigation__link das-navigation__link--current">Home</a>
                     </li>
                     <li class="das-navigation__list-item">
-                        <a class="das-navigation__link" href="#">Your cohorts</a>
+                        <a asp-route="@RouteNames.Dashboard_ManageApprentices" class="das-navigation__link">Manage your apprentices</a>
                     </li>
                     <li class="das-navigation__list-item">
-                        <a class="das-navigation__link" href="#">Manage your apprentices</a>
+                        <a asp-route="@RouteNames.Dashboard_YourCohorts" class="das-navigation__link">Your cohorts</a>
                     </li>
                     <li class="das-navigation__list-item">
-                        <a class="das-navigation__link" href="#">Recruitment</a>
-                    </li>  
+                        <a asp-route="@RouteNames.Dashboard_AccountsAgreements" class="das-navigation__link">Organisations and agreements</a>
+                    </li>
                     <li class="das-navigation__list-item">
-                        <a class="das-navigation__link" href="#">Organisations and agreements</a>
+                        <a asp-route="@RouteNames.Dashboard_Index_Get" class="das-navigation__link">Recruitment</a>
                     </li>
                 </ul>
             </div>
@@ -177,13 +178,16 @@
                     <h2 class="govuk-visually-hidden">Support links</h2>
                     <ul class="govuk-footer__inline-list">
                         <li class="govuk-footer__inline-list-item">
-                            <a class="govuk-footer__link" href="Help">Help</a>
+                            <a asp-route="@RouteNames.Dashboard_Help" class="govuk-footer__link">Help</a>
                         </li>
                         <li class="govuk-footer__inline-list-item">
-                            <a class="govuk-footer__link" href="https://www.surveymonkey.co.uk/r/2JPLQ9T" target="_blank">Feedback</a>
+                            <a asp-route="@RouteNames.Dashboard_Feedback" class="govuk-footer__link" target="_blank">Feedback</a>
                         </li>
                         <li class="govuk-footer__inline-list-item">
-                            <a class="govuk-footer__link" href="Privacy">Privacy and cookies</a>
+                            <a asp-route="@RouteNames.Dashboard_Privacy" class="govuk-footer__link">Privacy and cookies</a>
+                        </li>
+                        <li class="govuk-footer__inline-list-item">
+                            <a asp-route="@RouteNames.Dashboard_TermsAndConditions" class="govuk-footer__link">Terms and conditions</a>
                         </li>
                         <li class="govuk-footer__inline-list-item">
                             Built by the <a href="http://gov.uk/sfa" target="_blank" class="govuk-footer__link">Education and Skills Funding Agency</a>

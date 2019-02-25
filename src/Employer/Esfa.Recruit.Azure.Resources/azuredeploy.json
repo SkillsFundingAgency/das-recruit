@@ -70,7 +70,8 @@
         "EmployerIdamsSiteUrl": "",
         "StaffIdamsUrl": "",
         "ProviderApprenticeshipSiteUrl": "",
-        "CommitmentsSiteUrl": ""
+        "CommitmentsSiteUrl": "",
+        "ProviderCommitmentsSiteUrl": ""
       }
     },
     "Features": {
@@ -596,6 +597,10 @@
               {
                 "name": "ExternalLinks:ProviderApprenticeshipSiteUrl",
                 "value": "[parameters('ExternalLinks').ProviderApprenticeshipSiteUrl]"
+              },
+              {
+                "name": "ExternalLinks:CommitmentsSiteUrl",
+                "value": "[parameters('ExternalLinks').ProviderCommitmentsSiteUrl]"
               },
               {
                 "name": "ASPNETCORE_ENVIRONMENT",
