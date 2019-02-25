@@ -50,6 +50,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
         {
             services.AddTransient<IGeocodeImageService>(_ => new GoogleMapsGeocodeImageService(configuration.GetValue<string>("GoogleMapsPrivateKey")));
             services.AddTransient<IReviewSummaryService, ReviewSummaryService>();
+            services.AddTransient<IFaaService, FaaService>();
         }
 
         private static void RegisterOrchestratorDeps(IServiceCollection services)

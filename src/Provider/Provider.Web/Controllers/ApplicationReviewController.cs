@@ -1,12 +1,15 @@
 using System.Threading.Tasks;
+using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview;
+using Esfa.Recruit.Shared.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using ValidationMessages = Provider.Web.ViewModels.ValidationMessages;
 
-namespace Esfa.Recruit.Employer.Web.Controllers
+namespace Esfa.Recruit.Provider.Web.Controllers
 {
     [Route(RoutePaths.AccountApplicationReviewRoutePath)]
     public class ApplicationReviewController : Controller
@@ -28,6 +31,11 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         [HttpPost("", Name = RouteNames.ApplicationReview_Post)]
         public async Task<IActionResult> ApplicationReview(ApplicationReviewEditModel m)
         {
+            if (m.Outcome == null)
+            {
+                ModelState.AddModelError(nameof(m.Outcome), ValidationMessages.ApplicationReviewMessages.OutcomeMustBeSelectedMessage);
+            }
+
             if (ModelState.IsValid == false)
             {
                 var vm = await _orchestrator.GetApplicationReviewViewModelAsync(m);
@@ -35,7 +43,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             }
 
             await _orchestrator.PostApplicationReviewEditModelAsync(m, User.ToVacancyUser());
-
             return RedirectToRoute(RouteNames.VacancyManage_Get);
         }
     }

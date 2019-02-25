@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Esfa.Recruit.Provider.Web.ViewModels.Part1.Training;
+using Esfa.Recruit.Employer.Web.ViewModels.Part1.Training;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
-namespace Esfa.Recruit.Provider.Web.Mappings.Extensions
+namespace Esfa.Recruit.Employer.Web.Mappings.Extensions
 {
-    public static class IApprenticeshipProgrammeMapperExtensions
+    public static class ApprenticeshipProgrammeMapperExtensions
     {
         public static IEnumerable<ApprenticeshipProgrammeViewModel> ToViewModel(
             this IEnumerable<IApprenticeshipProgramme> programmes)
