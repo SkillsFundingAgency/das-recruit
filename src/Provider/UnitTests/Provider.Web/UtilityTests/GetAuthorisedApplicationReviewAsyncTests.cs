@@ -42,7 +42,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.UtilityTests
 
             var rm = new ApplicationReviewRouteModel
             {
-                Ukprn = applicationReviewUkprn,
+                Ukprn = requestedUkprn,
                 ApplicationReviewId = applicationReviewId,
                 VacancyId = vacancyId
             };
@@ -57,7 +57,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.UtilityTests
             else
             {
                 var ex = Assert.ThrowsAsync<AuthorisationException>(act);
-                ex.Result.Message.Should().Be($"The employer account 'ANOTHER EMPLOYER ACCOUNT ID' cannot access employer account 'EMPLOYER ACCOUNT ID' vacancy ' ({vacancyId})'.");                
+                ex.Result.Message.Should().Be($"The employer account '{requestedUkprn}' cannot access employer account '{applicationReviewUkprn}' vacancy ' ({vacancyId})'.");                
             }
         }
     }
