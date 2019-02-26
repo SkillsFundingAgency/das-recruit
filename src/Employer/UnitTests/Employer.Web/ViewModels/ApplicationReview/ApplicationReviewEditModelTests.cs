@@ -64,8 +64,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.ApplicationRev
 
         [Theory]
         [InlineData(ApplicationReviewStatus.Successful, null)]
-        [InlineData(ApplicationReviewStatus.Unsuccessful, "Some candidate feedback")]
-        public void ShouldVeValid(ApplicationReviewStatus outcome, string feedback)
+        [InlineData(ApplicationReviewStatus.Unsuccessful, "Some candidate feedback")]        
+        public void ShouldBeValid(ApplicationReviewStatus outcome, string feedback)
         {
             var m = new ApplicationReviewEditModel
             {
@@ -78,6 +78,22 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.ApplicationRev
             var result = validator.Validate(m);
 
             result.IsValid.Should().BeTrue();
+        }
+
+        [Theory]
+        [InlineData(ApplicationReviewStatus.Unsuccessful, "?$@#()\"\'\\!,+-=_:;.&€£*%/[] \\A-Z \a-z \0-9 your comments will be sent to the candidate.")]
+        public void ShouldBeInValid(ApplicationReviewStatus outcome, string feedback)
+        {
+            var m = new ApplicationReviewEditModel {
+                Outcome = outcome,
+                CandidateFeedback = feedback
+            };
+
+            var validator = new ApplicationReviewEditModelValidator();
+
+            var result = validator.Validate(m);
+
+            result.IsValid.Should().BeFalse();
         }
     }
 }

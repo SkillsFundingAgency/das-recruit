@@ -6,13 +6,16 @@ using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
 using Esfa.Recruit.Employer.Web.Services;
+using Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Shared.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.RuleTemplates;
 using Esfa.Recruit.Shared.Web.Services;
+using Esfa.Recruit.Shared.Web.ViewModels.Validations.Fluent;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.FAA;
 using Esfa.Recruit.Vacancies.Client.Ioc;
+using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -43,6 +46,8 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             
             RegisterServiceDeps(services, configuration);
 
+            RegisterFluentValidators(services, configuration);
+
             RegisterOrchestratorDeps(services);
 
             RegisterMapperDeps(services);
@@ -59,6 +64,11 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddTransient<IReviewSummaryService, ReviewSummaryService>();
             services.AddTransient<ILegalEntityAgreementService, LegalEntityAgreementService>();
             services.AddTransient<LevyDeclarationCookieWriter>();
+        }
+
+        private static void RegisterFluentValidators(IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddTransient<IValidator<ApplicationReviewEditModel>, ApplicationReviewEditModelValidator>();
         }
 
         private static void RegisterOrchestratorDeps(IServiceCollection services)

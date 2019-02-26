@@ -12,7 +12,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 using Esfa.Recruit.Provider.Web.Orchestrators.Part2;
+using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview;
+using Esfa.Recruit.Shared.Web.ViewModels.Validations.Fluent;
 using Esfa.Recruit.Vacancies.Client.Ioc;
+using FluentValidation;
 
 namespace Esfa.Recruit.Provider.Web.Configuration
 {
@@ -44,6 +47,8 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             RegisterFilterDeps(services);
 
             RegisterDynamicConfigurationDeps(services);
+
+            RegisterFluentValidators(services, configuration);
         }
 
         private static void RegisterServiceDeps(IServiceCollection services, IConfiguration configuration)
@@ -51,6 +56,11 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<IGeocodeImageService>(_ => new GoogleMapsGeocodeImageService(configuration.GetValue<string>("GoogleMapsPrivateKey")));
             services.AddTransient<IReviewSummaryService, ReviewSummaryService>();
             services.AddTransient<IFaaService, FaaService>();
+        }
+
+        private static void RegisterFluentValidators(IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddTransient<IValidator<ApplicationReviewEditModel>, ApplicationReviewEditModelValidator>();
         }
 
         private static void RegisterOrchestratorDeps(IServiceCollection services)

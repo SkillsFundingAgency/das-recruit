@@ -16,7 +16,6 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using FluentValidation.AspNetCore;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Shared.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Filters;
@@ -53,8 +52,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
                 options.HeaderName = "X-XSRF-TOKEN";
             });
             services.Configure<CookieTempDataProviderOptions>(options => options.Cookie.Name = CookieNames.RecruitTempData);
-            services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
-
+            services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();                                    
             services.AddMvc(opts =>
             {
                 if (!hostingEnvironment.IsDevelopment())
@@ -91,7 +89,10 @@ namespace Esfa.Recruit.Employer.Web.Configuration
 
                 opts.AddTrimModelBinderProvider(loggerFactory);
             })
-            .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>())
+                .AddFluentValidation(fv =>
+                {                    
+                    fv.RegisterValidatorsFromAssemblyContaining<Startup>();                    
+                })            
             .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
