@@ -31,11 +31,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         [HttpPost("", Name = RouteNames.ApplicationReview_Post)]
         public async Task<IActionResult> ApplicationReview(ApplicationReviewEditModel m)
         {
-            if (m.Outcome == null)
-            {
-                ModelState.AddModelError(nameof(m.Outcome), ValidationMessages.ApplicationReviewMessages.OutcomeMustBeSelectedMessage);
-            }
-
             if (ModelState.IsValid == false)
             {
                 var vm = await _orchestrator.GetApplicationReviewViewModelAsync(m);
