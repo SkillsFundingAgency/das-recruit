@@ -10,7 +10,6 @@ using Microsoft.Extensions.Options;
 
 namespace Esfa.Recruit.Provider.Web.Controllers
 {
-    [Route(RoutePaths.Services)]
     public class LogoutController : Controller
     {
         private readonly IHostingEnvironment _hostingEnvironment;
@@ -31,6 +30,5 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 RedirectUri = _externalLinks.ProviderApprenticeshipSiteUrl // TODO: LWA - Need to test if this works!!??
             });
         }
-            
     }
 }

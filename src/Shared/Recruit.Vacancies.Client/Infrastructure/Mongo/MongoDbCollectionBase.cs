@@ -40,7 +40,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
             var settings = MongoClientSettings.FromUrl(new MongoUrl(_config.ConnectionString));
             settings.SslSettings = new SslSettings { EnabledSslProtocols = SslProtocols.Tls12 };
 
-            if(RecruitEnvironment.IsDevelopment)
+            if (RecruitEnvironment.IsDevelopment)
                 LogMongoCommands(settings);
             
             var client = new MongoClient(settings);
