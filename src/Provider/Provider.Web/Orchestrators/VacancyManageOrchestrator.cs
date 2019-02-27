@@ -50,6 +50,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             viewModel.IsApplyThroughFaaVacancy = vacancy.ApplicationMethod == ApplicationMethod.ThroughFindAnApprenticeship;
             viewModel.CanShowEditVacancyLink = vacancy.CanExtendStartAndClosingDates;
             viewModel.CanShowCloseVacancyLink = vacancy.CanClose;
+            viewModel.CanShowCloneVacancyLink = vacancy.CanClone;
 
             var vacancyApplicationsTask =  await _client.GetVacancyApplicationsAsync(vacancy.VacancyReference.Value.ToString());
 
