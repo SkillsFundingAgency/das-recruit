@@ -48,7 +48,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
 
             RegisterDynamicConfigurationDeps(services);
 
-            RegisterFluentValidators(services, configuration);
+            RegisterFluentValidators(services);
         }
 
         private static void RegisterServiceDeps(IServiceCollection services, IConfiguration configuration)
@@ -58,7 +58,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<IFaaService, FaaService>();
         }
 
-        private static void RegisterFluentValidators(IServiceCollection services, IConfiguration configuration)
+        private static void RegisterFluentValidators(IServiceCollection services)
         {
             services.AddTransient<IValidator<ApplicationReviewEditModel>, ApplicationReviewEditModelValidator>();
         }
@@ -103,7 +103,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
 
         private static void RegisterDynamicConfigurationDeps(IServiceCollection services)
         {
-            services.AddSingleton<ProviderRecruitSystemConfiguration>(x =>
+            services.AddSingleton(x =>
                                                             {
                                                                 var svc = x.GetService<IConfigurationReader>();
                                                                 return svc.GetAsync<ProviderRecruitSystemConfiguration>("ProviderRecruitSystem").Result;

@@ -19,7 +19,6 @@ using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using SFA.DAS.Providers.Api.Client;
 
 namespace Esfa.Recruit.Employer.Web.Configuration
 {
@@ -46,7 +45,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             
             RegisterServiceDeps(services, configuration);
 
-            RegisterFluentValidators(services, configuration);
+            RegisterFluentValidators(services);
 
             RegisterOrchestratorDeps(services);
 
@@ -66,7 +65,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddTransient<LevyDeclarationCookieWriter>();
         }
 
-        private static void RegisterFluentValidators(IServiceCollection services, IConfiguration configuration)
+        private static void RegisterFluentValidators(IServiceCollection services)
         {
             services.AddTransient<IValidator<ApplicationReviewEditModel>, ApplicationReviewEditModelValidator>();
         }
@@ -117,7 +116,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
 
         private static void RegisterDynamicConfigurationDeps(IServiceCollection services)
         {
-            services.AddSingleton<EmployerRecruitSystemConfiguration>(x => 
+            services.AddSingleton(x => 
                                                             {
                                                                 var svc = x.GetService<IConfigurationReader>();
                                                                 return svc.GetAsync<EmployerRecruitSystemConfiguration>("EmployerRecruitSystem").Result;
