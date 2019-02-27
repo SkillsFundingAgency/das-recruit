@@ -3,8 +3,8 @@ using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
+using Esfa.Recruit.Provider.Web.ViewModels;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.Employer;
-using Provider.Web.ViewModels;
 
 namespace Esfa.Recruit.Provider.Web.Controllers.Part1
 {

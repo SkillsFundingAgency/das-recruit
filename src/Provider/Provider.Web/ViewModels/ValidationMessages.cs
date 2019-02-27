@@ -1,4 +1,4 @@
-namespace Provider.Web.ViewModels
+namespace Esfa.Recruit.Provider.Web.ViewModels
 {
     public static class ValidationMessages
     {
