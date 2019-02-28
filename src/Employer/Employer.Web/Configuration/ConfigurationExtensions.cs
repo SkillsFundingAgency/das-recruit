@@ -89,10 +89,11 @@ namespace Esfa.Recruit.Employer.Web.Configuration
 
                 opts.AddTrimModelBinderProvider(loggerFactory);
             })
-                .AddFluentValidation(fv =>
-                {                    
-                    fv.RegisterValidatorsFromAssemblyContaining<Startup>();                    
-                })            
+                //not required for now.
+                //.AddFluentValidation(fv =>
+                //{                    
+                //    fv.RegisterValidatorsFromAssemblyContaining<Startup>();                    
+                //})            
             .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
