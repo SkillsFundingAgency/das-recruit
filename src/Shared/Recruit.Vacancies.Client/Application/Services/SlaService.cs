@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
-using Esfa.Recruit.Vacancies.Client.Application.Services.ReferenceData;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Services
 {
