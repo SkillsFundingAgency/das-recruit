@@ -57,7 +57,9 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.UtilityTests
             else
             {
                 var ex = Assert.ThrowsAsync<AuthorisationException>(act);
-                ex.Result.Message.Should().Be($"The employer account '{requestedUkprn}' cannot access employer account '{applicationReviewUkprn}' vacancy ' ({vacancyId})'.");                
+                ex.Result.Message.Should().Be(
+                    $"The employer account '{requestedUkprn}' cannot access employer account '{applicationReviewUkprn}' " +
+                    $"application '{rm.ApplicationReviewId}' for vacancy '{vacancyId}'.");
             }
         }
     }

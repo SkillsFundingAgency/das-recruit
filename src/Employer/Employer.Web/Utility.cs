@@ -119,9 +119,17 @@ namespace Esfa.Recruit.Employer.Web
         public static async Task<ApplicationReview> GetAuthorisedApplicationReviewAsync(IRecruitVacancyClient client, ApplicationReviewRouteModel rm)
         {
             var applicationReview = await client.GetApplicationReviewAsync(rm.ApplicationReviewId);
-            var vacancy = await client.GetVacancyAsync(rm.VacancyId);        
-            CheckAuthorisedAccess(vacancy, rm.EmployerAccountId);
-            return applicationReview;            
+            var vacancy = await client.GetVacancyAsync(rm.VacancyId);
+            try
+            {
+                CheckAuthorisedAccess(vacancy, rm.EmployerAccountId);
+                return applicationReview;
+            }
+            catch (Exception)
+            {
+                throw new AuthorisationException(string.Format(ExceptionMessages.ApplicationReviewUnauthorisedAccess, rm.EmployerAccountId,
+                    vacancy.EmployerAccountId, rm.ApplicationReviewId, vacancy.Id));
+            }
         }
     }
 }

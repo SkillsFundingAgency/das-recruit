@@ -1,4 +1,5 @@
-﻿using Esfa.Recruit.Vacancies.Client.Application.Exceptions;
+﻿using System;
+using Esfa.Recruit.Vacancies.Client.Application.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using System.Collections.Generic;
@@ -118,8 +119,16 @@ namespace Esfa.Recruit.Provider.Web
         {
             var applicationReview = await vacancyClient.GetApplicationReviewAsync(rm.ApplicationReviewId);
             var vacancy = await vacancyClient.GetVacancyAsync(rm.VacancyId.GetValueOrDefault());
-            CheckAuthorisedAccess(vacancy, rm.Ukprn);
-            return applicationReview;            
+            try
+            {
+                CheckAuthorisedAccess(vacancy, rm.Ukprn);
+                return applicationReview;
+            }
+            catch (Exception)
+            {
+                throw new AuthorisationException(string.Format(ExceptionMessages.ApplicationReviewUnauthorisedAccess, rm.Ukprn, 
+                    vacancy.TrainingProvider.Ukprn, rm.ApplicationReviewId,vacancy.Id));
+            }                    
         }
     }
 }

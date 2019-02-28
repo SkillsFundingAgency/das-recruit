@@ -80,13 +80,13 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.ApplicationRev
             result.IsValid.Should().BeTrue();
         }
 
-        [Theory]
-        [InlineData(ApplicationReviewStatus.Unsuccessful, "?$@#()\"\'\\!,+-=_:;.&€£*%/[] \\A-Z \a-z \0-9 your comments will be sent to the candidate.")]
-        public void ShouldBeInValid(ApplicationReviewStatus outcome, string feedback)
+        
+        [Fact]
+        public void ShouldBeInvalid()
         {
             var m = new ApplicationReviewEditModel {
-                Outcome = outcome,
-                CandidateFeedback = feedback
+                Outcome = ApplicationReviewStatus.Unsuccessful,
+                CandidateFeedback = "?$@#()\"\'\\!,+-=_:;.&€£*%/[] \\A-Z \a-z \0-9 your comments will be sent to the candidate."
             };
 
             var validator = new ApplicationReviewEditModelValidator();
