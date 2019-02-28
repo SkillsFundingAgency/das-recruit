@@ -56,8 +56,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
                 var ex = Assert.ThrowsAsync<AuthorisationException>(act);
                 ex.Result.Message.Should().Be("The employer account 'ANOTHER EMPLOYER ACCOUNT ID' " +
                                               "cannot access employer account 'EMPLOYER ACCOUNT ID' " +
-                                              $"application '{rm.ApplicationReviewId}' for" +
-                                              $"vacancy ' ({vacancyId})'.");
+                                              $"application '{rm.ApplicationReviewId}' for " +
+                                              $"vacancy '{vacancyId}'.");
                 //ex.Result.Message.Should().Be(
                 //    $"The employer account '{requestedUkprn}' cannot access employer account '{applicationReviewUkprn}' " +
                 //    $"application '{rm.ApplicationReviewId}' for vacancy '{vacancyId}'.");
