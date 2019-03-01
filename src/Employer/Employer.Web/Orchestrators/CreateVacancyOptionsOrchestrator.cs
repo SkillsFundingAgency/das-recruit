@@ -38,6 +38,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             var clonedVacancyId = await _client.CloneVacancyAsync(vacancyId, user, SourceOrigin.EmployerWeb);
 
+            await _vacancyClient.AssignVacancyNumber(clonedVacancyId);
+
             return clonedVacancyId;
         }
 

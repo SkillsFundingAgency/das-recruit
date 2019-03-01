@@ -12,7 +12,6 @@ using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
 {
     public class UpdateProviderDashboardOnChangeEventHandler : INotificationHandler<VacancyCreatedEvent>,
-                                            INotificationHandler<VacancyClonedEvent>,
                                             INotificationHandler<DraftVacancyUpdatedEvent>,
                                             INotificationHandler<VacancySubmittedEvent>,
                                             INotificationHandler<VacancyDeletedEvent>,
@@ -92,11 +91,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
         }
 
         public Task Handle(VacancyReferredEvent notification, CancellationToken cancellationToken)
-        {
-            return Handle(notification);
-        }
-
-        public Task Handle(VacancyClonedEvent notification, CancellationToken cancellationToken)
         {
             return Handle(notification);
         }
