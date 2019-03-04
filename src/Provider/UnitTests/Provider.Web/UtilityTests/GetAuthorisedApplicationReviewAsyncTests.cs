@@ -58,7 +58,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.UtilityTests
             {
                 var ex = Assert.ThrowsAsync<AuthorisationException>(act);
                 ex.Result.Message.Should().Be(
-                    $"The provider account '{requestedUkprn}' cannot access  account '{applicationReviewUkprn}' " +
+                    $"The provider account '{requestedUkprn}' cannot access provider account '{applicationReviewUkprn}' " +
                     $"application '{rm.ApplicationReviewId}' for vacancy '{vacancyId}'.");
             }
         }
