@@ -17,23 +17,20 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         IRequestHandler<ApplicationReviewSuccessfulCommand>,
         IRequestHandler<ApplicationReviewUnsuccessfulCommand>
     {
-        private readonly ILogger<ApplicationReviewCommandHandler> _logger;
-        private readonly IVacancyRepository _vacancyRepository;
+        private readonly ILogger<ApplicationReviewCommandHandler> _logger;        
         private readonly IApplicationReviewRepository _applicationReviewRepository;
         private readonly ITimeProvider _timeProvider;
         private readonly IMessaging _messaging;
         private readonly AbstractValidator<ApplicationReview> _applicationReviewValidator;
 
         public ApplicationReviewCommandHandler(
-            ILogger<ApplicationReviewCommandHandler> logger,
-            IVacancyRepository vacancyRepository,
+            ILogger<ApplicationReviewCommandHandler> logger,            
             IApplicationReviewRepository applicationReviewRepository,
             ITimeProvider timeProvider,
             IMessaging messaging,
             AbstractValidator<ApplicationReview> applicationReviewValidator)
         {
-            _logger = logger;
-            _vacancyRepository = vacancyRepository;
+            _logger = logger;            
             _applicationReviewRepository = applicationReviewRepository;
             _timeProvider = timeProvider;
             _messaging = messaging;
@@ -61,8 +58,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 _logger.LogWarning("Cannot review ApplicationReviewId:{applicationReviewId} as not in correct state", applicationReview.Id);
                 return;
             }
-
-            var vacancy = await _vacancyRepository.GetVacancyAsync(applicationReview.VacancyReference);
 
             applicationReview.Status = status;
             applicationReview.CandidateFeedback = candidateFeedback;

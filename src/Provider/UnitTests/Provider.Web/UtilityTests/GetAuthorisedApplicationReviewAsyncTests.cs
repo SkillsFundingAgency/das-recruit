@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web;
-using Esfa.Recruit.Employer.Web.RouteModel;
+using Esfa.Recruit.Provider.Web;
+using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -9,19 +9,22 @@ using FluentAssertions;
 using Moq;
 using Xunit;
 
-namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
+namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.UtilityTests
 {
     public class GetAuthorisedApplicationReviewAsyncTests
     {
         [Theory]
-        [InlineData("EMPLOYER ACCOUNT ID", "EMPLOYER ACCOUNT ID", true)]
-        [InlineData("EMPLOYER ACCOUNT ID", "ANOTHER EMPLOYER ACCOUNT ID", false)]
-        public void GetAuthorisedApplicationReviewAsync_ShouldAllowForEmployerAccountId(string applicationReviewEmployerAccountId,
-            string requestedEmployerAccountId, bool shouldAllow)
+        [InlineData(12345678, 12345678, true)]
+        [InlineData(12345678, 123456789, false)]
+        public async Task GetAuthorisedApplicationReviewAsync_ShouldAllowForProviderUKPRN(long applicationReviewUkprn,
+            long requestedUkprn, bool shouldAllow)
         {
             var applicationReviewId = Guid.NewGuid();
             var vacancyId = Guid.NewGuid(); 
-
+            var provider=new TrainingProvider()
+            {
+                Ukprn = applicationReviewUkprn
+            };
             var client = new Mock<IRecruitVacancyClient>();
             client.Setup(c => c.GetApplicationReviewAsync(applicationReviewId)).Returns(Task.FromResult(
                 new ApplicationReview
@@ -32,14 +35,14 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
 
             client.Setup(c=>c.GetVacancyAsync(vacancyId)).Returns(Task.FromResult(
                 new Vacancy() {
-                    EmployerAccountId = applicationReviewEmployerAccountId,
                     VacancyReference = 1000000001,
-                    Id = vacancyId
+                    Id = vacancyId,
+                    TrainingProvider = provider
                 }));
 
             var rm = new ApplicationReviewRouteModel
             {
-                EmployerAccountId = requestedEmployerAccountId,
+                Ukprn = requestedUkprn,
                 ApplicationReviewId = applicationReviewId,
                 VacancyId = vacancyId
             };
@@ -54,10 +57,9 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
             else
             {
                 var ex = Assert.ThrowsAsync<AuthorisationException>(act);
-                ex.Result.Message.Should().Be("The employer account 'ANOTHER EMPLOYER ACCOUNT ID' " +
-                                              "cannot access employer account 'EMPLOYER ACCOUNT ID' " +
-                                              $"application '{rm.ApplicationReviewId}' for " +
-                                              $"vacancy '{vacancyId}'.");              
+                ex.Result.Message.Should().Be(
+                    $"The provider account '{requestedUkprn}' cannot access provider account '{applicationReviewUkprn}' " +
+                    $"application '{rm.ApplicationReviewId}' for vacancy '{vacancyId}'.");
             }
         }
     }

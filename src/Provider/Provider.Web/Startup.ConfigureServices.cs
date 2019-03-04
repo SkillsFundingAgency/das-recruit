@@ -49,7 +49,7 @@ namespace Esfa.Recruit.Provider.Web
             var sp = services.BuildServiceProvider();
 
             services.AddAuthenticationService(_authConfig, sp.GetService<IRecruitVacancyClient>(), sp.GetService<IHostingEnvironment>());
-            services.AddAuthorizationService();
+            services.AddAuthorizationService();            
         }
     }
 }

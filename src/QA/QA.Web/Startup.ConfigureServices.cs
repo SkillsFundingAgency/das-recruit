@@ -73,7 +73,7 @@ namespace Esfa.Recruit.Qa.Web
             services.AddTransient<IReviewSummaryService, ReviewSummaryService>();
             services.AddTransient<ReviewFieldIndicatorMapper>();
 
-            services.AddScoped<IRuleMessageTemplateRunner, RuleMessageTemplateRunner>();
+            services.AddScoped<IRuleMessageTemplateRunner, RuleMessageTemplateRunner>();            
         }
     }
 }

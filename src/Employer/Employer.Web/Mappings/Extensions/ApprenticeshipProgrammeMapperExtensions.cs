@@ -5,7 +5,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Employer.Web.Mappings.Extensions
 {
-    public static class IApprenticeshipProgrammeMapperExtensions
+    public static class ApprenticeshipProgrammeMapperExtensions
     {
         public static IEnumerable<ApprenticeshipProgrammeViewModel> ToViewModel(
             this IEnumerable<IApprenticeshipProgramme> programmes)

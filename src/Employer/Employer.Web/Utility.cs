@@ -8,9 +8,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Exceptions;
 using Esfa.Recruit.Employer.Web.RouteModel;
-using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.ViewModels;
-using Esfa.Recruit.Employer.Web.ViewModels.Part1;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 
 namespace Esfa.Recruit.Employer.Web
@@ -121,13 +119,17 @@ namespace Esfa.Recruit.Employer.Web
         public static async Task<ApplicationReview> GetAuthorisedApplicationReviewAsync(IRecruitVacancyClient client, ApplicationReviewRouteModel rm)
         {
             var applicationReview = await client.GetApplicationReviewAsync(rm.ApplicationReviewId);
-
-            if (applicationReview.EmployerAccountId == rm.EmployerAccountId)
+            var vacancy = await client.GetVacancyAsync(rm.VacancyId);
+            try
             {
+                CheckAuthorisedAccess(vacancy, rm.EmployerAccountId);
                 return applicationReview;
             }
-
-            throw new AuthorisationException(string.Format(ExceptionMessages.ApplicationReviewUnauthorisedAccess, rm.EmployerAccountId, applicationReview.EmployerAccountId, applicationReview.Id, applicationReview.VacancyReference));
+            catch (Exception)
+            {
+                throw new AuthorisationException(string.Format(ExceptionMessages.ApplicationReviewUnauthorisedAccess, rm.EmployerAccountId,
+                    vacancy.EmployerAccountId, rm.ApplicationReviewId, vacancy.Id));
+            }
         }
     }
 }

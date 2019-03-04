@@ -49,8 +49,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 VacancyReference = vacancy.VacancyReference.Value,
                 Application = message.Application,
                 CandidateId = message.Application.CandidateId,
-                CreatedDate = _timeProvider.Now,
-                EmployerAccountId = vacancy.EmployerAccountId,
+                CreatedDate = _timeProvider.Now,                
                 Status = ApplicationReviewStatus.New,
                 SubmittedDate = message.Application.ApplicationDate
             };

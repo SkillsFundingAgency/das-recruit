@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Formatters;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -20,7 +19,6 @@ using Microsoft.AspNetCore.Authorization;
 using Esfa.Recruit.Provider.Web.Middleware;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Extensions;
-using System.Security.Claims;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Provider.Web.Configuration
@@ -111,7 +109,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             });
         }
 
-        private static async Task HandleUserSignedIn(Microsoft.AspNetCore.Authentication.WsFederation.SecurityTokenValidatedContext ctx, IRecruitVacancyClient vacancyClient)
+        private static async Task HandleUserSignedIn(SecurityTokenValidatedContext ctx, IRecruitVacancyClient vacancyClient)
         {
             var user = ctx.Principal.ToVacancyUser();
             await vacancyClient.UserSignedInAsync(user, UserType.Provider);
