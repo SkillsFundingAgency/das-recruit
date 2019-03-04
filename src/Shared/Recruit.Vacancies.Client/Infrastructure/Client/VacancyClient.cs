@@ -126,6 +126,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
             await _messaging.SendCommandAsync(command);
 
+            await AssignVacancyNumber(newVacancyId);
+
             return newVacancyId;
         }
 
