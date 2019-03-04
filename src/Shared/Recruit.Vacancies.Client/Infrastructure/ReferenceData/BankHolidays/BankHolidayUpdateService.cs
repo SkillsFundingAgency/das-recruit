@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services.ReferenceData;
+using Microsoft.Azure.Amqp.Framing;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using RestSharp;
@@ -60,10 +61,27 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BankHoliday
             List<BankHolidays.Event> apiDocuments = bankHolidays.Data.EnglandAndWales.Events;
             List<BankHolidays.Event> dbDocuments = existingBankHolidays.Data.EnglandAndWales.Events;
 
-            
-
             var test1 = new List<BankHolidays.Event>();
             var test2 = new List<BankHolidays.Event>();
+            var newList = new List<BankHolidays.Event>();
+
+            var data1 = new BankHolidays.Event() {
+                Bunting = true,
+                Date = "2012-01-02",
+                Notes = "",
+                Title = "Title1"
+            };
+
+            var data2 = new BankHolidays.Event() {
+                Bunting = true,
+                Date = "2012-01-02",
+                Notes = "",
+                Title = "Title1"
+            };
+
+            var ser1 = data1.Serialize();
+            var ser2 = data2.Serialize();
+            var areEqual = ser1.Equals(ser2);
 
             test1.Add(new BankHolidays.Event() {
                 Bunting = true,
@@ -106,18 +124,23 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BankHoliday
                 Notes = "",
                 Title = "Title4"
             });
-
-            foreach (var holiday in apiDocuments)
+            
+            foreach (var holiday in test1)
             {
-                if (!dbDocuments.Contains(holidy))
-                {
-                    var test = holiday;
-                }
+                //var status = test2.Contains(holiday);
+                var status = test2.Where(item => holiday.Serialize().Equals(item.Serialize()));
+               // newList.Add(status1);
+               // var help1 = test1.Where(n => !test2.Select(n1 => n1.Date).Contains(n.Date));
+                //if (!test2.Contains(holiday))
+                //{
+                //    var test = holiday;
+                //}
             }
-
+            //var status1 = test2.Where(item => holiday.Serialize().Equals(item.Serialize()));
+            var help1  = test1.Where(n => !test2.Select(n1 => n1.Date).Contains(n.Date));
             var difList = apiDocuments.Where(item => dbDocuments.Select(item2 => item2).Contains(item));
 
-            var difList2 = test1.Where(item => test2.Select(item2 => item2).Contains(item));
+            var difList2 = test1.Where(item => test2.Select(item2 => item2.Serialize()).Equals(item.Serialize()));
             var test4 = test1.Except(test2);
             var test3 = test2.Except(test1);
 
