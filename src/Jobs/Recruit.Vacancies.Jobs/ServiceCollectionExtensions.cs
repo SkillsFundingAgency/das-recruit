@@ -55,7 +55,6 @@ namespace Esfa.Recruit.Vacancies.Jobs
             // Domain Event Queue Handlers
 
             // Vacancy
-            services.AddScoped<IDomainEventHandler<IEvent>, VacancyClonedDomainEventHandler>();
             services.AddScoped<IDomainEventHandler<IEvent>, DraftVacancyUpdatedHandler>();
             services.AddScoped<IDomainEventHandler<IEvent>, VacancySubmittedHandler>();
 
