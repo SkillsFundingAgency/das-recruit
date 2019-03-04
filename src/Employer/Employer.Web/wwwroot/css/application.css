@@ -787,3 +787,13 @@ a[rel="external"]:hover:after {
     }
 }
 /*** End of Pager***/
+  .analytics--header {
+    background-color: #dee0e2;
+    padding: 7px 10px 5px;
+    margin-bottom: 10px;
+  }
+
+  .analytics--numeric {
+    font-size: 50px;
+    font-weight: 700;
+  }

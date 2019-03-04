@@ -40,9 +40,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             return _queryStore.GetAsync<ProviderDashboard>(QueryViewType.ProviderDashboard.TypeName, key);
         }
 
+        public Task<VacancyAnalyticsSummary> GetVacancyAnalyticsSummary(long vacancyReference)
+        {
+            var key = QueryViewType.VacancyAnalyticsSummary.GetIdValue(vacancyReference);
+
+            return _queryStore.GetAsync<VacancyAnalyticsSummary>(QueryViewType.VacancyAnalyticsSummary.TypeName, key);
+        }
+
         public Task UpdateEmployerDashboardAsync(string employerAccountId, IEnumerable<VacancySummary> vacancySummaries)
         {
-            var dashboardItem = new EmployerDashboard {
+            var dashboardItem = new EmployerDashboard
+            {
                 Id = QueryViewType.EmployerDashboard.GetIdValue(employerAccountId),
                 Vacancies = vacancySummaries,
                 LastUpdated = _timeProvider.Now
@@ -53,7 +61,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 
         public Task UpdateProviderDashboardAsync(long ukprn, IEnumerable<VacancySummary> vacancySummaries)
         {
-            var dashboardItem = new ProviderDashboard {
+            var dashboardItem = new ProviderDashboard
+            {
                 Id = QueryViewType.ProviderDashboard.GetIdValue(ukprn),
                 Vacancies = vacancySummaries,
                 LastUpdated = _timeProvider.Now
@@ -64,7 +73,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 
         public Task UpdateEmployerVacancyDataAsync(string employerAccountId, IEnumerable<LegalEntity> legalEntities)
         {
-            var employerVacancyDataItem = new EditVacancyInfo {
+            var employerVacancyDataItem = new EditVacancyInfo
+            {
                 Id = QueryViewType.EditVacancyInfo.GetIdValue(employerAccountId),
                 LegalEntities = legalEntities,
                 LastUpdated = _timeProvider.Now
@@ -75,7 +85,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 
         public Task UpdateProviderVacancyDataAsync(long ukprn, IEnumerable<EmployerInfo> employers)
         {
-            var providerVacancyDataItem = new ProviderEditVacancyInfo {
+            var providerVacancyDataItem = new ProviderEditVacancyInfo
+            {
                 Id = QueryViewType.EditVacancyInfo.GetIdValue(ukprn),
                 Employers = employers,
                 LastUpdated = _timeProvider.Now

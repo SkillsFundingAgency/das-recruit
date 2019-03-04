@@ -12,6 +12,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyAnalytics;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections;
@@ -85,7 +86,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user)
         {
-            var command = new UpdateDraftVacancyCommand {
+            var command = new UpdateDraftVacancyCommand
+            {
                 Vacancy = vacancy,
                 User = user
             };
@@ -95,7 +97,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public Task UpdatePublishedVacancyAsync(Vacancy vacancy, VacancyUser user)
         {
-            var command = new UpdateLiveVacancyCommand {
+            var command = new UpdateLiveVacancyCommand
+            {
                 Vacancy = vacancy,
                 User = user
             };
@@ -122,7 +125,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         {
             var vacancyId = GenerateVacancyId();
 
-            var command = new CreateEmployerOwnedVacancyCommand {
+            var command = new CreateEmployerOwnedVacancyCommand
+            {
                 VacancyId = vacancyId,
                 User = user,
                 UserType = UserType.Employer,
@@ -166,7 +170,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public Task DeleteVacancyAsync(Guid vacancyId, VacancyUser user)
         {
-            var command = new DeleteVacancyCommand {
+            var command = new DeleteVacancyCommand
+            {
                 VacancyId = vacancyId,
                 User = user
             };
@@ -193,7 +198,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public Task SetupEmployerAsync(string employerAccountId)
         {
-            var command = new SetupEmployerCommand {
+            var command = new SetupEmployerCommand
+            {
                 EmployerAccountId = employerAccountId
             };
 
@@ -247,7 +253,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public Task SetApplicationReviewSuccessful(Guid applicationReviewId, VacancyUser user)
         {
-            var command = new ApplicationReviewSuccessfulCommand {
+            var command = new ApplicationReviewSuccessfulCommand
+            {
                 ApplicationReviewId = applicationReviewId,
                 User = user
             };
@@ -257,7 +264,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public Task SetApplicationReviewUnsuccessful(Guid applicationReviewId, string candidateFeedback, VacancyUser user)
         {
-            var command = new ApplicationReviewUnsuccessfulCommand {
+            var command = new ApplicationReviewUnsuccessfulCommand
+            {
                 ApplicationReviewId = applicationReviewId,
                 CandidateFeedback = candidateFeedback,
                 User = user
@@ -273,7 +281,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public Task UpdateEmployerProfileAsync(EmployerProfile employerProfile, VacancyUser user)
         {
-            var command = new UpdateEmployerProfileCommand {
+            var command = new UpdateEmployerProfileCommand
+            {
                 Profile = employerProfile,
                 User = user
             };
@@ -284,7 +293,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         // Jobs
         public Task AssignVacancyNumber(Guid vacancyId)
         {
-            var command = new AssignVacancyNumberCommand {
+            var command = new AssignVacancyNumberCommand
+            {
                 VacancyId = vacancyId
             };
 
@@ -314,7 +324,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public async Task CreateVacancyReview(long vacancyReference)
         {
-            var command = new CreateVacancyReviewCommand {
+            var command = new CreateVacancyReviewCommand
+            {
                 VacancyReference = vacancyReference
             };
 
@@ -323,7 +334,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public async Task CloseVacancyAsync(Guid vacancyId, VacancyUser user)
         {
-            var command = new CloseVacancyCommand {
+            var command = new CloseVacancyCommand
+            {
                 VacancyId = vacancyId,
                 User = user
             };
@@ -351,7 +363,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         private async Task GeocodeVacancyAsync(Guid vacancyId)
         {
-            var command = new GeocodeVacancyCommand() {
+            var command = new GeocodeVacancyCommand()
+            {
                 VacancyId = vacancyId
             };
 
@@ -360,14 +373,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public async Task ApproveVacancy(long vacancyReference)
         {
-            await _messaging.SendCommandAsync(new ApproveVacancyCommand {
+            await _messaging.SendCommandAsync(new ApproveVacancyCommand
+            {
                 VacancyReference = vacancyReference
             });
         }
 
         public Task ReferVacancy(long vacancyReference)
         {
-            return _messaging.SendCommandAsync(new ReferVacancyCommand {
+            return _messaging.SendCommandAsync(new ReferVacancyCommand
+            {
                 VacancyReference = vacancyReference
             });
         }
@@ -384,7 +399,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public Task WithdrawApplicationAsync(long vacancyReference, Guid candidateId)
         {
-            return _messaging.SendCommandAsync(new WithdrawApplicationCommand {
+            return _messaging.SendCommandAsync(new WithdrawApplicationCommand
+            {
                 VacancyReference = vacancyReference,
                 CandidateId = candidateId
             });
@@ -392,7 +408,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public Task HardDeleteApplicationReviewsForCandidate(Guid candidateId)
         {
-            return _messaging.SendCommandAsync(new DeleteApplicationReviewsCommand {
+            return _messaging.SendCommandAsync(new DeleteApplicationReviewsCommand
+            {
                 CandidateId = candidateId
             });
         }
@@ -409,7 +426,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public Task RefreshEmployerProfiles(string employerAccountId, IEnumerable<long> legalEntityIds)
         {
-            return _messaging.SendCommandAsync(new RefreshEmployerProfilesCommand {
+            return _messaging.SendCommandAsync(new RefreshEmployerProfilesCommand
+            {
                 EmployerAccountId = employerAccountId,
                 LegalEntityIds = legalEntityIds
             });
@@ -421,7 +439,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public Task SaveLevyDeclarationAsync(string userId, string employerAccountId)
         {
-            return _messaging.SendCommandAsync(new SaveUserLevyDeclarationCommand {
+            return _messaging.SendCommandAsync(new SaveUserLevyDeclarationCommand
+            {
                 UserId = userId,
                 EmployerAccountId = employerAccountId
             });
@@ -435,6 +454,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         public Task<TrainingProvider> GetTrainingProviderAsync(long ukprn)
         {
             return _trainingProviderService.GetProviderAsync(ukprn);
+        }
+
+        public Task<VacancyAnalyticsSummary> GetVacancyAnalyticsSummaryAsync(long vacancyReference)
+        {
+            return _reader.GetVacancyAnalyticsSummary(vacancyReference);
         }
     }
 }

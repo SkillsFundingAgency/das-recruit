@@ -12,6 +12,8 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacanc
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.Mappers;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyAnalytics;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
@@ -50,9 +52,15 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             viewModel.CanShowEditVacancyLink = vacancy.CanExtendStartAndClosingDates;
             viewModel.CanShowCloseVacancyLink = vacancy.CanClose;
 
-            var vacancyApplicationsTask =  await _client.GetVacancyApplicationsAsync(vacancy.VacancyReference.Value.ToString());
+            var vacancyApplicationsTask = _client.GetVacancyApplicationsAsync(vacancy.VacancyReference.Value.ToString());
+            var vacancyAnalyticsTask = _client.GetVacancyAnalyticsSummaryAsync(vacancy.VacancyReference.Value);
 
-            var applications = vacancyApplicationsTask?.Applications ?? new List<VacancyApplication>();
+            await Task.WhenAll(vacancyApplicationsTask, vacancyAnalyticsTask);
+
+            var applications = vacancyApplicationsTask.Result?.Applications ?? new List<VacancyApplication>();
+            var analyticsSummary = vacancyAnalyticsTask.Result ?? new VacancyAnalyticsSummary();
+
+            viewModel.AnalyticsSummary = VacancyAnalyticsSummaryMapper.MapToVacancyAnalyticsSummaryViewModel(analyticsSummary, vacancy.LiveDate.GetValueOrDefault());
 
             viewModel.Applications = new VacancyApplicationsViewModel
             {

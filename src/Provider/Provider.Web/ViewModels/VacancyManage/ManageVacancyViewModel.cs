@@ -1,5 +1,6 @@
 using System.Linq;
 using Esfa.Recruit.Provider.Web.ViewModels.VacancyView;
+using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyManage
@@ -13,6 +14,8 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyManage
         public string PossibleStartDate { get; internal set; }
         public bool IsDisabilityConfident { get; internal set; }
         public bool IsApplyThroughFaaVacancy { get; internal set; }
+        public bool IsApplyThroughExternalApplicationSiteVacancy => !IsApplyThroughFaaVacancy;
+
         public VacancyApplicationsViewModel Applications { get; internal set; }
         public bool HasApplications => Applications.Applications.Any();
         public bool HasNoApplications => Applications.Applications == null || Applications.Applications?.Any() == false;
@@ -23,5 +26,11 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyManage
         public bool HasVacancyClosedInfoMessage => !string.IsNullOrEmpty(VacancyClosedInfoMessage);
         public string ApplicationReviewStatusHeaderInfoMessage { get; internal set; }
         public bool CanShowApplicationReviewStatusHeader => !string.IsNullOrEmpty(ApplicationReviewStatusHeaderInfoMessage);
+
+        public VacancyAnalyticsSummaryViewModel AnalyticsSummary { get; internal set; }
+
+        public bool CanShowVacancyAnalytics => Status != VacancyStatus.Submitted;
+        public bool IsVacancyLive => Status == VacancyStatus.Live;
+        public bool IsVacancyClosed => Status == VacancyStatus.Closed;
     }
 }
