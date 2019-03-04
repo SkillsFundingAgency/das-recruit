@@ -57,10 +57,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
                 ex.Result.Message.Should().Be("The employer account 'ANOTHER EMPLOYER ACCOUNT ID' " +
                                               "cannot access employer account 'EMPLOYER ACCOUNT ID' " +
                                               $"application '{rm.ApplicationReviewId}' for " +
-                                              $"vacancy '{vacancyId}'.");
-                //ex.Result.Message.Should().Be(
-                //    $"The employer account '{requestedUkprn}' cannot access employer account '{applicationReviewUkprn}' " +
-                //    $"application '{rm.ApplicationReviewId}' for vacancy '{vacancyId}'.");
+                                              $"vacancy '{vacancyId}'.");              
             }
         }
     }

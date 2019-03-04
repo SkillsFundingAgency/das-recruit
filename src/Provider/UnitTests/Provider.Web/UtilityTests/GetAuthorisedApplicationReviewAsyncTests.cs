@@ -16,12 +16,12 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.UtilityTests
         [Theory]
         [InlineData(12345678, 12345678, true)]
         [InlineData(12345678, 123456789, false)]
-        public void GetAuthorisedApplicationReviewAsync_ShouldAllowForProviderUKPRN(long applicationReviewUkprn,
+        public async Task GetAuthorisedApplicationReviewAsync_ShouldAllowForProviderUKPRN(long applicationReviewUkprn,
             long requestedUkprn, bool shouldAllow)
         {
             var applicationReviewId = Guid.NewGuid();
             var vacancyId = Guid.NewGuid(); 
-            TrainingProvider provider=new TrainingProvider()
+            var provider=new TrainingProvider()
             {
                 Ukprn = applicationReviewUkprn
             };
@@ -58,7 +58,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.UtilityTests
             {
                 var ex = Assert.ThrowsAsync<AuthorisationException>(act);
                 ex.Result.Message.Should().Be(
-                    $"The employer account '{requestedUkprn}' cannot access employer account '{applicationReviewUkprn}' " +
+                    $"The provider account '{requestedUkprn}' cannot access  account '{applicationReviewUkprn}' " +
                     $"application '{rm.ApplicationReviewId}' for vacancy '{vacancyId}'.");
             }
         }

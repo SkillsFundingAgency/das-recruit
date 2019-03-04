@@ -126,7 +126,7 @@ namespace Esfa.Recruit.Provider.Web
             }
             catch (Exception)
             {
-                throw new AuthorisationException(string.Format(ExceptionMessages.ApplicationReviewUnauthorisedAccess, rm.Ukprn, 
+                throw new AuthorisationException(string.Format(ExceptionMessages.ApplicationReviewUnauthorisedAccessForProvider, rm.Ukprn, 
                     vacancy.TrainingProvider.Ukprn, rm.ApplicationReviewId,vacancy.Id));
             }                    
         }

@@ -71,8 +71,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
                 opts.Filters.AddService<PlannedOutageResultFilter>();
 
                 opts.AddTrimModelBinderProvider(loggerFactory);
-            })
-            //.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>())
+            })         
             .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
