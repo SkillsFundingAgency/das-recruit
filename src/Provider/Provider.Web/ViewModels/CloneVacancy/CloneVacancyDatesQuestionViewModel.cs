@@ -3,10 +3,10 @@ using Esfa.Recruit.Provider.Web.RouteModel;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.CloneVacancy
 {
-    public class CloneVacancyViewModel : VacancyRouteModel
-    {
+    public class CloneVacancyDatesQuestionViewModel : VacancyRouteModel
+    {        
         public string ClosingDate { get; set; }
         public string StartDate { get; set; } 
-        public bool? ConfirmClose { get; set; }        
+        public bool? ConfirmClone { get; set; }
     }
 }

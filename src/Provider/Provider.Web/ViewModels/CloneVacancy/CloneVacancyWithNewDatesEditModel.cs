@@ -1,13 +1,16 @@
-using System.Collections.Generic;
+using Esfa.Recruit.Provider.Web.RouteModel;
+using Esfa.Recruit.Shared.Web.ViewModels.Validations;
+using ErrMsg = Esfa.Recruit.Shared.Web.ViewModels.ValidationMessages.DateValidationMessages;
 
-namespace Esfa.Recruit.Provider.Web.ViewModels.EditVacancyDates
+namespace Esfa.Recruit.Provider.Web.ViewModels.CloneVacancy
 {
-    public class EditVacancyDatesViewModel
+    public class CloneVacancyWithNewDatesEditModel : VacancyRouteModel
     {
         public string ClosingDay { get; set; }
         public string ClosingMonth { get; set; }
         public string ClosingYear { get; set; }
 
+        [TypeOfDate(ErrorMessage = ErrMsg.TypeOfDate.ClosingDate)]
         public string ClosingDate
         {
             get
@@ -26,6 +29,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.EditVacancyDates
         public string StartMonth { get; set; }
         public string StartYear { get; set; }
 
+        [TypeOfDate(ErrorMessage = ErrMsg.TypeOfDate.StartDate)]
         public string StartDate
         {
             get
@@ -40,14 +44,5 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.EditVacancyDates
             }
         }
 
-        public string ProgrammeName { get; internal set; }
-
-        public IList<string> OrderedFieldNames => new List<string>
-        {
-            nameof(EditVacancyDatesEditModel.ClosingDate),
-            nameof(EditVacancyDatesEditModel.StartDate)
-        };
-
-        public int CurrentYear { get; set; }
     }
 }

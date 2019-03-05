@@ -17,7 +17,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 {
     public class EditVacancyDatesOrchestrator : EntityValidatingOrchestrator<Vacancy, EditVacancyDatesEditModel>
     {
-        private const VacancyRuleSet ValdationRules = VacancyRuleSet.ClosingDate | VacancyRuleSet.StartDate | VacancyRuleSet.TrainingProgramme | VacancyRuleSet.StartDateEndDate | VacancyRuleSet.TrainingExpiryDate | VacancyRuleSet.MinimumWage;
+        private const VacancyRuleSet ValidationRules = VacancyRuleSet.ClosingDate | VacancyRuleSet.StartDate | VacancyRuleSet.TrainingProgramme | VacancyRuleSet.StartDateEndDate | VacancyRuleSet.TrainingExpiryDate | VacancyRuleSet.MinimumWage;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly ITimeProvider _timeProvider;
 
@@ -69,7 +69,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
                 CurrentYear = _timeProvider.Now.Year,
 
-                ProgammeName = programmes.First(p => p.Id == vacancy.ProgrammeId).Title
+                ProgrammeName = programmes.First(p => p.Id == vacancy.ProgrammeId).Title
             };
 
             var resp = new OrchestratorResponse<EditVacancyDatesViewModel>(vm);
@@ -120,7 +120,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             vacancy.ClosingDate = proposedClosingDate;
             vacancy.StartDate = m.StartDate.AsDateTimeUk()?.ToUniversalTime();
 
-            return new OrchestratorResponse(_vacancyClient.Validate(vacancy, ValdationRules));
+            return new OrchestratorResponse(_vacancyClient.Validate(vacancy, ValidationRules));
         }
 
         protected override EntityToViewModelPropertyMappings<Vacancy, EditVacancyDatesEditModel> DefineMappings()

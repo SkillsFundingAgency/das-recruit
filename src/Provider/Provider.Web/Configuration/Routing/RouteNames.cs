@@ -10,7 +10,10 @@
         public const string CloseVacancy_Get = "CloseVacancy_Get";
         public const string CloseVacancy_Post = "CloseVacancy_Post";
         public const string CloneVacancy_Get = "CloneVacancy_Get";
-        public const string CloneVacancy_Post = "CloneVacancy_Post";
+        public const string CloneVacancyDatesQuestion_Get = "CloneVacancyDatesQuestion_Get";
+        public const string CloneVacancyDatesQuestion_Post = "CloneVacancyDatesQuestion_Post";
+        public const string CloneVacancyWithNewDates_Get = "CloneVacancyWithNewDates_Get";
+        public const string CloneVacancyWithNewDates_Post = "CloneVacancyWithNewDates_Post";
         public const string Considerations_Get = "Considerations_Get";
         public const string Considerations_Post = "Considerations_Post";
         public const string CreateVacancy_Get = "CreateVacancy_Get";

@@ -4,38 +4,46 @@
 @model Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview.VacancyPreviewViewModel
 @functions
 {
-const string EmptySectionClass = "preview-empty";
-const string ErrorSectionClass = "preview-error";
-const string ReviewSectionClass = "preview-review";
+    const string EmptySectionClass = "preview-empty";
+    const string ErrorSectionClass = "preview-error";
+    const string ReviewSectionClass = "preview-review";
 
-public string GetSectionClass(VacancyPreviewSectionState state)
-{
-    switch (state)
+    public string GetSectionClass(VacancyPreviewSectionState state)
     {
-        case VacancyPreviewSectionState.Valid:
-            return string.Empty;
-        case VacancyPreviewSectionState.Incomplete:
-            return EmptySectionClass;
-        case VacancyPreviewSectionState.Review:
-            return ReviewSectionClass;
-        default:
-            return ErrorSectionClass;
+        switch (state)
+        {
+            case VacancyPreviewSectionState.Valid:
+                return string.Empty;
+            case VacancyPreviewSectionState.Incomplete:
+                return EmptySectionClass;
+            case VacancyPreviewSectionState.Review:
+                return ReviewSectionClass;
+            default:
+                return ErrorSectionClass;
+        }
+    }
+
+    public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state, string id, object routeValues = null)
+    {
+        if (state == VacancyPreviewSectionState.Incomplete || state == VacancyPreviewSectionState.InvalidIncomplete)
+        {
+            return Html.RouteLink("Add", routeName, routeValues, new { @class = "button-secondary", data_automation = id });
+        }
+        return Html.RouteLink("Edit", routeName, routeValues, new { @class = "govuk-body govuk-link", data_automation = id });
     }
 }
 
-public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state, string id, object routeValues = null)
-{
-    if (state == VacancyPreviewSectionState.Incomplete || state == VacancyPreviewSectionState.InvalidIncomplete)
-    {
-        return Html.RouteLink("Add", routeName, routeValues, new { @class = "button-secondary", data_automation = id });
-    }
-    return Html.RouteLink("Edit", routeName, routeValues, new { @class = "govuk-body govuk-link", data_automation = id });
-}
-}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <div asp-show="Model.HasInfo" class="info-summary highlight-summary">
+            <p class="govuk-!-margin-bottom-0 govuk-body">@Model.InfoMessage</p>
+        </div>
+    </div>
+</div>
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
-        
+
         <h1 asp-show="@Model.CanShowDraftHeader" class="govuk-heading-xl govuk-!-margin-bottom-6">Complete your vacancy</h1>
         <p class="govuk-body govuk-!-margin-top-6">This is how your vacancy will appear to candidates on <a href="@Model.FindAnApprenticeshipUrl" class="govuk-body govuk-link" rel="noopener" target="_blank">Find an apprenticeship</a></p>
         <div asp-show="@Model.ShowIncompleteSections" class="info-summary govuk-!-margin-top-0" role="alert">

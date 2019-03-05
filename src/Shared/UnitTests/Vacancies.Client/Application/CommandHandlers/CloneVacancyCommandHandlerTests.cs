@@ -24,6 +24,8 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
             var newVacancyId = Guid.NewGuid();
             var existingVacancy = GetTestVacancy();
             var currentTime = DateTime.UtcNow;
+            var startDate = DateTime.Now.AddDays(20);
+            var closingDate = DateTime.Now.AddDays(10);
             Vacancy clone = null;
 
             var mockRepository = new Mock<IVacancyRepository>();
@@ -44,16 +46,23 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
 
             var user = new VacancyUser { Name = "Test", Email = "test@test.com", UserId = "123" };
             
-            var command = new CloneVacancyCommand(cloneVacancyId: existingVacancy.Id, newVacancyId: newVacancyId, user: user, sourceOrigin: SourceOrigin.EmployerWeb);
+            var command = new CloneVacancyCommand(
+                cloneVacancyId: existingVacancy.Id, 
+                newVacancyId: newVacancyId, 
+                user: user, 
+                sourceOrigin: SourceOrigin.EmployerWeb,
+                startDate: startDate,
+                closingDate: closingDate);
 
             await handler.Handle(command, new CancellationToken());
 
-            AssertUpdatedProperties(existingVacancy, currentTime, clone, command);
+            AssertUpdatedProperties(existingVacancy, currentTime, clone, command, startDate, closingDate);
             AssertNulledOutProperties(clone);
             AssertUnchangedProperties(existingVacancy, clone);
         }
 
-        private static void AssertUpdatedProperties(Vacancy existingVacancy, DateTime currentTime, Vacancy clone, CloneVacancyCommand command)
+        private static void AssertUpdatedProperties(Vacancy existingVacancy, DateTime currentTime, Vacancy clone, 
+            CloneVacancyCommand command, DateTime startDate, DateTime closingDate)
         {
             // Check properties that should have been updated to new values to the original
             clone.Id.Should().Be(command.NewVacancyId, "{0} should be updated", nameof(clone.Id));
@@ -66,6 +75,8 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
             clone.SourceVacancyReference.Should().Be(existingVacancy.VacancyReference, "{0} should be updated", nameof(clone.SourceVacancyReference));
             clone.Status.Should().Be(VacancyStatus.Draft, "{0} should be updated", nameof(clone.Status));
             clone.IsDeleted.Should().Be(false, "{0} should be updated", nameof(clone.IsDeleted));
+            clone.StartDate.Should().Be(startDate, "{0} should be updated", nameof(clone.StartDate));
+            clone.ClosingDate.Should().Be(closingDate, "{0} should be updated", nameof(clone.ClosingDate));
         }
 
         private static void AssertNulledOutProperties(Vacancy clone)

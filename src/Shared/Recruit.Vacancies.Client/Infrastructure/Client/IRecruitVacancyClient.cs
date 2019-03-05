@@ -22,6 +22,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<IApprenticeshipProgramme> GetApprenticeshipProgrammeAsync(string programmeId);
         Task<VacancyApplications> GetVacancyApplicationsAsync(string vacancyReference);
         Task UpdatePublishedVacancyAsync(Vacancy vacancy, VacancyUser user);
-        Task<Guid> CloneVacancyAsync(Guid vacancyId, VacancyUser user, SourceOrigin sourceOrigin);
+        Task<Guid> CloneVacancyAsync(Guid vacancyId, VacancyUser user, SourceOrigin sourceOrigin, DateTime startDate, DateTime closingDate);
     }
 }

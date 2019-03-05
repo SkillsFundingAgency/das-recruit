@@ -7,5 +7,7 @@
         public const string Skills = "Skills";
         public const string Qualifications = "Qualifications";
         public const string VacancyClosedMessage = "VacancyClosedMessage";
+
+        public const string VacancyPreviewInfoMessage = "VacancyPreviewInfoMessage";
     }
 }

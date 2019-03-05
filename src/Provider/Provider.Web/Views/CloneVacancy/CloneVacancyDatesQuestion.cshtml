@@ -1,4 +1,4 @@
-@model Esfa.Recruit.Provider.Web.ViewModels.CloneVacancy.CloneVacancyViewModel
+@model Esfa.Recruit.Provider.Web.ViewModels.CloneVacancy.CloneVacancyDatesQuestionViewModel
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <partial name=@PartialNames.ValidationSummary model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
@@ -13,19 +13,19 @@
             <span class="govuk-!-font-weight-bold">Closing date</span>
             <br>@Model.ClosingDate
         </p>
-        <form asp-route="@RouteNames.CloneVacancy_Post">
-            <div esfa-validation-marker-for="ConfirmClose" class="govuk-form-group">
+        <form asp-route="@RouteNames.CloneVacancyDatesQuestion_Post">
+            <div esfa-validation-marker-for="ConfirmClone" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
-                    <span esfa-validation-message-for="ConfirmClose" class="govuk-error-message"></span>
+                    <span esfa-validation-message-for="ConfirmClone" class="govuk-error-message"></span>
                     <div class="govuk-radios govuk-radios--inline">
                         <div class="govuk-radios__item">
-                            <input asp-for="@Model.ConfirmClose" class="govuk-radios__input" id="change-dates-yes"  type="radio" value="true">
+                            <input asp-for="@Model.ConfirmClone" class="govuk-radios__input" id="change-dates-yes"  type="radio" value="true">
                             <label class="govuk-label govuk-radios__label" for="change-dates-yes">
                                 Yes
                             </label>
                         </div>
                         <div class="govuk-radios__item">
-                            <input asp-for="@Model.ConfirmClose" class="govuk-radios__input" id="change-dates-no" type="radio" value="false">
+                            <input asp-for="@Model.ConfirmClone" class="govuk-radios__input" id="change-dates-no" type="radio" value="false">
                             <label class="govuk-label govuk-radios__label" for="change-dates-no">
                                 No
                             </label>
