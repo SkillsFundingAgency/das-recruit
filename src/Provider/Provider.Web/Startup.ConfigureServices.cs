@@ -39,6 +39,7 @@ namespace Esfa.Recruit.Provider.Web
             {
                 o.ViewLocationFormats.Add("/Views/Part1/{1}/{0}" + RazorViewEngine.ViewExtension);
                 o.ViewLocationFormats.Add("/Views/Part2/{1}/{0}" + RazorViewEngine.ViewExtension);
+                o.ViewLocationFormats.Add("/Views/Reports/{1}/{0}" + RazorViewEngine.ViewExtension);
             });
 
             services.AddMvcService(_hostingEnvironment, _loggerFactory);
