@@ -49,10 +49,6 @@
   display: none
 }
 
-.app-cookie-banner__message {
-  margin: 0
-}
-
 @media print {
   .app-cookie-banner {
       display: none !important
