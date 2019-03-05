@@ -82,6 +82,22 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             }
         }
 
+        public async Task<CloneVacancyWithNewDatesViewModel> GetDirtyCloneVacancyWithNewDatesViewModelAsync(CloneVacancyWithNewDatesEditModel dirtyModel)
+        {
+            var model = await GetCloneVacancyWithNewDatesViewModelAsync(dirtyModel);
+
+            model.ClosingDay = dirtyModel.ClosingDay;
+            model.ClosingMonth = dirtyModel.ClosingMonth;
+            model.ClosingYear = dirtyModel.ClosingYear;
+
+            model.StartDay = dirtyModel.StartDay;
+            model.StartMonth = dirtyModel.StartMonth;
+            model.StartYear = dirtyModel.StartYear;
+            model.CurrentYear = _timeProvider.Now.Year;
+
+            return model;
+        }
+
         public bool IsNewDatesRequired(Vacancy vacancy)
         {
             return vacancy.Status == VacancyStatus.Closed || vacancy.ClosingDate < _timeProvider.Now.Date;
@@ -111,8 +127,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             if (!vacancy.CanClone)
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForCloning, vacancy.Title));
 
-            var startDate = model.StartDate.AsDateTimeUk().Value.ToUniversalTime();
-            var closingDate = model.ClosingDate.AsDateTimeUk().Value.ToUniversalTime();
+            var startDate = model.StartDate.AsDateTimeUk()?.ToUniversalTime();
+            var closingDate = model.ClosingDate.AsDateTimeUk()?.ToUniversalTime();
             vacancy.StartDate = startDate;
             vacancy.ClosingDate = closingDate;
 
@@ -124,8 +140,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                         model.VacancyId.GetValueOrDefault(),
                         user,
                         SourceOrigin.ProviderWeb,
-                        startDate,
-                        closingDate)
+                        startDate.Value,
+                        closingDate.Value)
                 );
         }
 

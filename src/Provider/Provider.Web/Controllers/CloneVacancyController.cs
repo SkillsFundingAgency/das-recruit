@@ -67,13 +67,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
         [HttpPost("clone-with-dates", Name = RouteNames.CloneVacancyWithNewDates_Post)]
         public async Task<IActionResult> CloneVacancyWithNewDates(CloneVacancyWithNewDatesEditModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                var vm = await _orchestrator.GetCloneVacancyWithNewDatesViewModelAsync(model);
-                return View(ViewNames.CloneVacancyWithNewDatesView, vm);
-            }
-
+        {            
             var response = await _orchestrator.CloneVacancyWithNewDates(model, User.ToVacancyUser());
 
             if(!response.Success)
@@ -83,7 +77,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
             if (!ModelState.IsValid)
             {
-                var vm = await _orchestrator.GetCloneVacancyWithNewDatesViewModelAsync(model);
+                var vm = await _orchestrator.GetDirtyCloneVacancyWithNewDatesViewModelAsync(model);
                 return View(ViewNames.CloneVacancyWithNewDatesView, vm);
             }
 
