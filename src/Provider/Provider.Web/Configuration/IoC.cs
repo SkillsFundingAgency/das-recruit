@@ -14,6 +14,8 @@ using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 using Esfa.Recruit.Provider.Web.Orchestrators.Part2;
 using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Shared.Web.ViewModels.Validations.Fluent;
+using Esfa.Recruit.Provider.Web.Orchestrators.Reports;
+using Esfa.Recruit.Provider.Web.ViewModels.Reports.ProviderApplicationsReport;
 using Esfa.Recruit.Vacancies.Client.Ioc;
 using FluentValidation;
 
@@ -60,7 +62,8 @@ namespace Esfa.Recruit.Provider.Web.Configuration
 
         private static void RegisterFluentValidators(IServiceCollection services)
         {
-            services.AddTransient<IValidator<ApplicationReviewEditModel>, ApplicationReviewEditModelValidator>();
+            services.AddSingleton<IValidator<ApplicationReviewEditModel>, ApplicationReviewEditModelValidator>();
+            services.AddSingleton<IValidator<ProviderApplicationsReportCreateEditModel>, ProviderApplicationsReportCreateEditModelValidator>();
         }
 
         private static void RegisterOrchestratorDeps(IServiceCollection services)
@@ -87,6 +90,9 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<CloseVacancyOrchestrator>();
             services.AddTransient<EditVacancyDatesOrchestrator>();
             services.AddTransient<ApplicationReviewOrchestrator>();
+
+            services.AddTransient<ReportDashboardOrchestrator>();
+            services.AddTransient<ProviderApplicationsReportOrchestrator>();
         }
 
         private static void RegisterMapperDeps(IServiceCollection services)
