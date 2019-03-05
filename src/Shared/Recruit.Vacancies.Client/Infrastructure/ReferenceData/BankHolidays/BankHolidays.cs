@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Json;
 using System.Text;
+using Microsoft.Net.Http.Headers;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BankHolidays
@@ -25,6 +26,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BankHoliday
         public string Id { get; set; }
         public DateTime LastUpdatedDate { get; set; } 
         public BankHolidaysData Data { get; set; }
+        public string Etag { get; set; }
 
         public class Event
         {

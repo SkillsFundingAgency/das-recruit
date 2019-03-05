@@ -39,8 +39,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
             {
                 Task.WaitAll(tasks.ToArray());
 
-                var standardsFromApi = standardsTask.Result.ToList();
-                var frameworksFromApi = frameworksTask.Result.ToList();
+                var standardsFromApi = standardsTask.Result.Distinct().ToList();
+                var frameworksFromApi = frameworksTask.Result.Distinct().ToList();
 
                 if (standardsFromApi.Count == 0)
                     throw new InfrastructureException("Retrieved 0 standards from the apprenticeships api.");
