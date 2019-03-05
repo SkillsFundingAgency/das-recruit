@@ -67,8 +67,8 @@ namespace Esfa.Recruit.Employer.Web.Configuration
 
         private static void RegisterFluentValidators(IServiceCollection services)
         {
-            services.AddTransient<IValidator<ApplicationReviewEditModel>, ApplicationReviewEditModelValidator>();
-            services.AddTransient<IValidator<ApplicationReviewStatusConfirmationEditModel>, ApplicationReviewStatusConfirmationEditModelValidator>();           
+            services.AddSingleton<IValidator<ApplicationReviewEditModel>, ApplicationReviewEditModelValidator>();
+            services.AddSingleton<IValidator<ApplicationReviewStatusConfirmationEditModel>, ApplicationReviewStatusConfirmationEditModelValidator>();
         }
 
         private static void RegisterOrchestratorDeps(IServiceCollection services)

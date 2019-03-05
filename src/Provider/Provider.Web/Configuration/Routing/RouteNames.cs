@@ -39,10 +39,13 @@
         public const string Location_Post = "Location_Post";
         public const string Logout_Get = "Logout_Get";
         public const string Preview_Submit_Post = "Preview_Submit_Post";
+        public const string ProviderApplicationsReportCreate_Get = "ProviderApplicationsReportCreate_Get";
+        public const string ProviderApplicationsReportCreate_Post = "ProviderApplicationsReportCreate_Post";
         public const string ProviderContactDetails_Get = "ProviderContactDetails_Get";
         public const string ProviderContactDetails_Post = "ProviderContactDetails_Post";
         public const string Qualifications_Get = "Qualifications_Get";
         public const string Qualifications_Post = "Qualifications_Post";
+        public const string ReportDashboard_Get = "ReportDashboard_Get";
         public const string SearchResultPreview_Get = "SearchResultPreview_Get";
         public const string ShortDescription_Get = "ShortDescription_Get";
         public const string ShortDescription_Post = "ShortDescription_Post";
