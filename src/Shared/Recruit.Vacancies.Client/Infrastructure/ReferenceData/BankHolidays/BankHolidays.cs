@@ -26,8 +26,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BankHoliday
         public string Id { get; set; }
         public DateTime LastUpdatedDate { get; set; } 
         public BankHolidaysData Data { get; set; }
-        public string Etag { get; set; }
-
+       
         public class Event
         {
             public string Title { get; set; }
