@@ -123,6 +123,9 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
                                             .Excluding(v => v.CanMakeLive)
                                             .Excluding(v => v.CanSendForReview)
                                             .Excluding(v => v.IsDisabilityConfident)
+                                            .Excluding(v => v.CanClone)
+                                            .Excluding(v => v.StartDate)
+                                            .Excluding(v => v.ClosingDate)
                         );
         }
 
