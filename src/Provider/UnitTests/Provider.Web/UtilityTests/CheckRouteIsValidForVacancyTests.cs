@@ -151,6 +151,5 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.UtilityTests
             ex.RouteValues.Ukprn.Should().Be(vrm.Ukprn);
             ex.RouteValues.VacancyId.Should().Be(vrm.VacancyId);
         }
-
     }
 }
