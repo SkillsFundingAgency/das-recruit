@@ -72,7 +72,6 @@ namespace Esfa.Recruit.Provider.Web.Configuration
 
                 opts.AddTrimModelBinderProvider(loggerFactory);
             })
-            .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>())
             .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 

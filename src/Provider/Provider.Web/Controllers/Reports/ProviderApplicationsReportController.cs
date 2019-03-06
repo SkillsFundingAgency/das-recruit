@@ -1,4 +1,6 @@
-﻿using Esfa.Recruit.Provider.Web.Configuration.Routing;
+﻿using System.Threading.Tasks;
+using Esfa.Recruit.Provider.Web.Configuration.Routing;
+using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Provider.Web.Orchestrators.Reports;
 using Esfa.Recruit.Provider.Web.ViewModels.Reports.ProviderApplicationsReport;
 using Microsoft.AspNetCore.Mvc;
@@ -24,7 +26,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Reports
         }
 
         [HttpPost("create", Name = RouteNames.ProviderApplicationsReportCreate_Post)]
-        public IActionResult Create(ProviderApplicationsReportCreateEditModel m)
+        public async Task<IActionResult> Create(ProviderApplicationsReportCreateEditModel m)
         {
             if (ModelState.IsValid == false)
             {
@@ -32,6 +34,8 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Reports
 
                 return View(vm);
             }
+
+            await _orchestrator.PostCreateViewModelAsync(m, User.ToVacancyUser());
 
             return RedirectToRoute(RouteNames.ProviderApplicationsReportCreate_Get);
         }

@@ -63,5 +63,21 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
             return _messaging.SendCommandAsync(command);
         }
+
+        public Task CreateProviderApplicationsReportAsync(long ukprn, DateTime fromDate, DateTime toDate, VacancyUser user)
+        {
+            var reportId = Guid.NewGuid();
+
+            return _messaging.SendCommandAsync(new CreateReportCommand(
+                reportId,
+                ReportType.ProviderApplications,
+                new List<ReportParameter> {
+                    new ReportParameter{Name = "Ukprn", Value = ukprn},
+                    new ReportParameter{Name = "FromDate", Value = fromDate},
+                    new ReportParameter{Name = "ToDate", Value = toDate}
+                },
+                user)
+            );
+        }
     }
 }
