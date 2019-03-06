@@ -53,6 +53,11 @@
                     "CollectionName": "employerProfiles",
                     "OfferThroughput": 400,
                     "StoredProcedures": []
+                },
+                {
+                    "CollectionName": "reports",
+                    "OfferThroughput": 400,
+                    "StoredProcedures": []
                 }
             ]
         }
