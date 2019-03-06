@@ -35,7 +35,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         public async Task<IActionResult> CloneVacancyDatesQuestion(VacancyRouteModel vrm)
         {
             var vm = await _orchestrator.GetCloneVacancyDatesQuestionViewModelAsync(vrm);
-            return View(ViewNames.CloneVacancyDatesQuestionView, vm);
+            return View(vm);
         }
 
         [HttpPost("clone-dates-question", Name = RouteNames.CloneVacancyDatesQuestion_Post)]
@@ -44,12 +44,12 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             if (!ModelState.IsValid)
             {
                 var vm = await _orchestrator.GetCloneVacancyDatesQuestionViewModelAsync(model);
-                return View(ViewNames.CloneVacancyDatesQuestionView, vm);
+                return View(vm);
             }
 
             if (model.ConfirmClone.GetValueOrDefault())
             {
-                var newVacancyId = await _orchestrator.CloneVacancyWithSameDates(model, User.ToVacancyUser());
+                var newVacancyId = await _orchestrator.PostCloneVacancyWithSameDates(model, User.ToVacancyUser());
                 TempData.Add(TempDataKeys.VacancyPreviewInfoMessage, InfoMessages.VacancyCloned);
                 return RedirectToRoute(RouteNames.Vacancy_Preview_Get, new { VacancyId = newVacancyId });
             }
@@ -63,13 +63,13 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         public async Task<IActionResult> CloneVacancyWithNewDates(VacancyRouteModel vrm)
         {
             var vm = await _orchestrator.GetCloneVacancyWithNewDatesViewModelAsync(vrm);
-            return View(ViewNames.CloneVacancyWithNewDatesView, vm);
+            return View(vm);
         }
 
         [HttpPost("clone-with-dates", Name = RouteNames.CloneVacancyWithNewDates_Post)]
         public async Task<IActionResult> CloneVacancyWithNewDates(CloneVacancyWithNewDatesEditModel model)
         {            
-            var response = await _orchestrator.CloneVacancyWithNewDates(model, User.ToVacancyUser());
+            var response = await _orchestrator.PostCloneVacancyWithNewDates(model, User.ToVacancyUser());
 
             if(!response.Success)
             {
@@ -79,7 +79,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             if (!ModelState.IsValid)
             {
                 var vm = await _orchestrator.GetDirtyCloneVacancyWithNewDatesViewModelAsync(model);
-                return View(ViewNames.CloneVacancyWithNewDatesView, vm);
+                return View(vm);
             }
 
             TempData.Add(TempDataKeys.VacancyPreviewInfoMessage, InfoMessages.VacancyCloned);

@@ -96,7 +96,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             return vacancy.Status == VacancyStatus.Closed || vacancy.ClosingDate < _timeProvider.Now.Date;
         }
 
-        public async Task<Guid> CloneVacancyWithSameDates(CloneVacancyDatesQuestionEditModel model, VacancyUser user)
+        public async Task<Guid> PostCloneVacancyWithSameDates(CloneVacancyDatesQuestionEditModel model, VacancyUser user)
         {
             var vacancy = await GetCloneableAuthorisedVacancyAsync(model);
 
@@ -110,7 +110,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             return newVacancyId;
         }
 
-        public async Task<OrchestratorResponse<Guid>> CloneVacancyWithNewDates(CloneVacancyWithNewDatesEditModel model, VacancyUser user)
+        public async Task<OrchestratorResponse<Guid>> PostCloneVacancyWithNewDates(CloneVacancyWithNewDatesEditModel model, VacancyUser user)
         {
             var vacancy = await GetCloneableAuthorisedVacancyAsync(model);
 

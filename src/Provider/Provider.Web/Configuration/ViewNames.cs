@@ -15,8 +15,5 @@
         public const string PageNotFound = "PageNotFound";
         public const string VacancyPreview = "VacancyPreview";
         public const string CloseVacancyView = "Close";
-        public const string CloneVacancyView = "Clone";
-        public const string CloneVacancyDatesQuestionView = "CloneVacancyDatesQuestion";
-        public const string CloneVacancyWithNewDatesView = "CloneVacancyWithNewDates";
     }
 }
