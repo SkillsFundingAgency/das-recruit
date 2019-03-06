@@ -1,7 +1,12 @@
-﻿namespace Esfa.Recruit.Provider.Web.ViewModels.Reports.ProviderApplicationsReport
+﻿using Microsoft.AspNetCore.Mvc;
+
+namespace Esfa.Recruit.Provider.Web.ViewModels.Reports.ProviderApplicationsReport
 {
     public class ProviderApplicationsReportCreateEditModel
     {
+        [FromRoute]
+        public long Ukprn { get; set; }
+
         public DateRangeType? DateRange { get; set; }
 
         public string FromDay { get; set; }
