@@ -47,7 +47,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 return View(vm);
             }
 
-            if (model.ConfirmClone.GetValueOrDefault())
+            if (model.HasConfirmedClone == true)
             {
                 var newVacancyId = await _orchestrator.PostCloneVacancyWithSameDates(model, User.ToVacancyUser());
                 TempData.Add(TempDataKeys.VacancyPreviewInfoMessage, InfoMessages.VacancyCloned);

@@ -7,6 +7,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.CloneVacancy
     public class CloneVacancyDatesQuestionEditModel: VacancyRouteModel
     {
         [Required(ErrorMessage = ValMsg.ValidationMessages.CloneVacancyConfirmationMessages.SelectionRequired)]
-        public bool? ConfirmClone { get; set; }
+        public bool? HasConfirmedClone { get; set; }
     }
 }

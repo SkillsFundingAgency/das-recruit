@@ -7,6 +7,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.CloneVacancy
     {        
         public string ClosingDate { get; set; }
         public string StartDate { get; set; } 
-        public bool? ConfirmClone { get; set; }
+        public bool? HasConfirmedClone { get; set; }
     }
 }
