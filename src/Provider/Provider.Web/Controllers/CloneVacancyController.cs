@@ -24,7 +24,8 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         [HttpGet("clone", Name = RouteNames.CloneVacancy_Get)]
         public async Task<IActionResult> Clone(VacancyRouteModel vrm)
         {
-            var vacancy = await _orchestrator.GetAuthorisedVacancyAsync(vrm);
+            var vacancy = await _orchestrator.GetCloneableAuthorisedVacancyAsync(vrm);
+            
             return _orchestrator.IsNewDatesRequired(vacancy) 
                 ? RedirectToRoute(RouteNames.CloneVacancyWithNewDates_Get) 
                 : RedirectToRoute(RouteNames.CloneVacancyDatesQuestion_Get);

@@ -34,11 +34,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
         public async Task<CloneVacancyDatesQuestionViewModel> GetCloneVacancyDatesQuestionViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await GetAuthorisedVacancyAsync(vrm);
+            var vacancy = await GetCloneableAuthorisedVacancyAsync(vrm);
 
-            if (!vacancy.CanClone)
-                throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForCloning, vacancy.Title));
-            
             if (IsNewDatesRequired(vacancy))
                 throw new InvalidStateException(string.Format(ErrorMessages.CannotCloneVacancyWithSameDates, vacancy.Title));
 
@@ -52,11 +49,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
         public async Task<CloneVacancyWithNewDatesViewModel> GetCloneVacancyWithNewDatesViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await GetAuthorisedVacancyAsync(vrm);
-            var programmesTask = _vacancyClient.GetActiveApprenticeshipProgrammesAsync();
-
-            if (!vacancy.CanClone)
-                throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForCloning, vacancy.Title));
+            var vacancy = await GetCloneableAuthorisedVacancyAsync(vrm);
 
             var isNewDatesForced = IsNewDatesRequired(vacancy);
             if(isNewDatesForced)
@@ -105,10 +98,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
         public async Task<Guid> CloneVacancyWithSameDates(CloneVacancyDatesQuestionEditModel model, VacancyUser user)
         {
-            var vacancy = await GetAuthorisedVacancyAsync(model);
-
-            if (!vacancy.CanClone)
-                throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForCloning, vacancy.Title));
+            var vacancy = await GetCloneableAuthorisedVacancyAsync(model);
 
             var newVacancyId = await _vacancyClient.CloneVacancyAsync(
                 model.VacancyId.GetValueOrDefault(), 
@@ -122,10 +112,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
         public async Task<OrchestratorResponse<Guid>> CloneVacancyWithNewDates(CloneVacancyWithNewDatesEditModel model, VacancyUser user)
         {
-            var vacancy = await GetAuthorisedVacancyAsync(model);
-
-            if (!vacancy.CanClone)
-                throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForCloning, vacancy.Title));
+            var vacancy = await GetCloneableAuthorisedVacancyAsync(model);
 
             var startDate = model.StartDate.AsDateTimeUk()?.ToUniversalTime();
             var closingDate = model.ClosingDate.AsDateTimeUk()?.ToUniversalTime();
@@ -145,11 +132,14 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 );
         }
 
-        public async Task<Vacancy> GetAuthorisedVacancyAsync(VacancyRouteModel vrm)
+        public async Task<Vacancy> GetCloneableAuthorisedVacancyAsync(VacancyRouteModel vrm)
         {
             var vacancy = await _vacancyClient.GetVacancyAsync(vrm.VacancyId.GetValueOrDefault());
 
             Utility.CheckAuthorisedAccess(vacancy, vrm.Ukprn);
+
+            if (!vacancy.CanClone)
+                throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForCloning, vacancy.Title));
 
             return vacancy;
         }
