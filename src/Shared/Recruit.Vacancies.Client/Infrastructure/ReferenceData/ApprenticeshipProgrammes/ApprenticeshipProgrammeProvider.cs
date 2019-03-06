@@ -32,7 +32,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
         public async Task<IEnumerable<IApprenticeshipProgramme>> GetApprenticeshipProgrammesAsync(bool includeExpired = false)
         {
             var queryItem = await GetApprenticeshipProgrammesAsync();
-
             return includeExpired ? 
                 queryItem.Data : 
                 queryItem.Data.Where(x => x.IsActive);

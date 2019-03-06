@@ -1,13 +1,12 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services.ReferenceData;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
-using Esfa.Recruit.UnitTests.TestHelpers;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -16,7 +15,7 @@ using SFA.DAS.Apprenticeships.Api.Types;
 using Xunit;
 using ApprenticeshipProgrammesReferenceData = Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes.ApprenticeshipProgrammes;
 
-namespace Esfa.Recruit.UnitTests.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes
+namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes
 {
     [Trait("Category", "Unit")]
     public class ApprenticeshipProgrammesUpdaterServiceTests
@@ -53,7 +52,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Infrastructure.ReferenceData.A
             EffectiveFrom = new DateTime(2014, 8, 1),
             IsActiveStandard = true,
             StandardSectorCode = 7
-        };
+        };       
         private readonly FrameworkSummary _frameworkOne = new FrameworkSummary
         {
             Id = "401-3-1",
@@ -91,10 +90,11 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Infrastructure.ReferenceData.A
             EffectiveFrom = new DateTime(2013, 2, 1),
             EffectiveTo = new DateTime(2018, 4, 30),
             IsActiveFramework = false,
-        };
+        };            
 
         public ApprenticeshipProgrammesUpdaterServiceTests()
         {
+            var mockApprenticeshipProgrammeProvider = new Mock<IApprenticeshipProgrammeProvider>();
             _mockStandardsClient = new Mock<IStandardApiClient>();
             _mockFrameworksClient = new Mock<IFrameworkApiClient>();
             _mockReferenceDataWriter = new Mock<IReferenceDataWriter>();
@@ -102,7 +102,8 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Infrastructure.ReferenceData.A
             _sut = new ApprenticeshipProgrammesUpdateService(Mock.Of<ILogger<ApprenticeshipProgrammesUpdateService>>(),
                                                             _mockStandardsClient.Object,
                                                             _mockFrameworksClient.Object,
-                                                            _mockReferenceDataWriter.Object);
+                                                            _mockReferenceDataWriter.Object,
+                                                            mockApprenticeshipProgrammeProvider.Object);
         }
 
         [Fact]
@@ -165,7 +166,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Infrastructure.ReferenceData.A
             var secondItem = apprenticeshipProgrammesReferenceData.Data.Where(ap => ap.ApprenticeshipType == TrainingType.Standard).Skip(1).First();
 
             _mockReferenceDataWriter.Verify(x => x.UpsertReferenceData(apprenticeshipProgrammesReferenceData), Times.Once);
-            apprenticeshipProgrammesReferenceData.Data.Count().Should().Be(3);
+            apprenticeshipProgrammesReferenceData.Data.Count.Should().Be(3);
             apprenticeshipProgrammesReferenceData.Data.Where(ap => ap.ApprenticeshipType == TrainingType.Standard).Count().Should().Be(2);
             firstItem.Id.Equals(secondItem.Id).Should().BeFalse();
             firstItem.Level.Equals(secondItem.Level).Should().BeFalse();
@@ -238,14 +239,10 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Infrastructure.ReferenceData.A
             // Act
             await _sut.UpdateApprenticeshipProgrammesAsync();
 
-            // Assert
-            var firstItem = apprenticeshipProgrammesReferenceData.Data.First();
-            var secondItem = apprenticeshipProgrammesReferenceData.Data.Skip(1).First();
-
             _mockReferenceDataWriter.Verify(x => x.UpsertReferenceData(apprenticeshipProgrammesReferenceData), Times.Once);
-            apprenticeshipProgrammesReferenceData.Data.Count().Should().Be(4);
+            apprenticeshipProgrammesReferenceData.Data.Count.Should().Be(4);
             apprenticeshipProgrammesReferenceData.Data.Count(ap => ap.ApprenticeshipType == TrainingType.Framework).Should().Be(2);
             apprenticeshipProgrammesReferenceData.Data.Count(ap => ap.ApprenticeshipType == TrainingType.Standard).Should().Be(2);
-        }
+        }        
     }
 }

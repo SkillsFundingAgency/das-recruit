@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using AngleSharp.Network.Default;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services.ReferenceData;
-using JsonDiffPatchDotNet;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
@@ -20,15 +16,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BankHoliday
         private readonly BankHolidayConfiguration _config;
         private readonly IReferenceDataWriter _referenceDataWriter;
         private readonly ILogger<BankHolidayUpdateService> _logger;
-        private readonly IBankHolidayProvider _bankholidayProvider;
+        private readonly IBankHolidayProvider _bankHolidayProvider;
 
         public BankHolidayUpdateService(IOptions<BankHolidayConfiguration> config, IReferenceDataWriter referenceDataWriter, 
-            ILogger<BankHolidayUpdateService> logger, IBankHolidayProvider bankholidayProvider)
+            ILogger<BankHolidayUpdateService> logger, IBankHolidayProvider bankHolidayProvider)
         {
             _config = config.Value;
             _referenceDataWriter = referenceDataWriter;
             _logger = logger;
-            _bankholidayProvider = bankholidayProvider;
+            _bankHolidayProvider = bankHolidayProvider;
         }
 
         public async Task UpdateBankHolidaysAsync()
@@ -58,11 +54,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BankHoliday
 
         private async Task<bool> ValidateBankHolidayData(BankHolidays bankHolidaysFromApi)
         {
-            var bankHolidaysFromDb = await _bankholidayProvider.GetBankHolidayListAsync();
+            var bankHolidaysFromDb = await _bankHolidayProvider.GetBankHolidayListAsync();
             var bankHolidaysFromApiJson = JsonConvert.SerializeObject(bankHolidaysFromApi.Data);
             var bankHolidaysFromDbJson = JsonConvert.SerializeObject(bankHolidaysFromDb.Data);
-            var equals = JToken.DeepEquals(bankHolidaysFromApiJson, bankHolidaysFromDbJson);
-            if (!equals)
+            var areEqual = JToken.DeepEquals(bankHolidaysFromApiJson, bankHolidaysFromDbJson);
+            if (!areEqual)
                 return true;
             return false;
         }
