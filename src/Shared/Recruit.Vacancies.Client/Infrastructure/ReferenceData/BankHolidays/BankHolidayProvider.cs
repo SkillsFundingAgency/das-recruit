@@ -3,12 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Cache;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BankHolidays;
 
-namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BankHolidays
 {
     public class BankHolidayProvider : IBankHolidayProvider
     {
@@ -35,6 +32,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services
                         .Select(e => DateTime.Parse(e.Date))
                         .ToList();
                 });
-        }
+        }        
     }
 }

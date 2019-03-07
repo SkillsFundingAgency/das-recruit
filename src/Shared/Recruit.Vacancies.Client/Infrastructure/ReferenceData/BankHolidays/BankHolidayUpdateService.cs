@@ -2,25 +2,28 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Services.ReferenceData;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BankHolidays;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using RestSharp;
 
-namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BankHolidays
 {
     public class BankHolidayUpdateService : IBankHolidayUpdateService
     {
         private readonly BankHolidayConfiguration _config;
         private readonly IReferenceDataWriter _referenceDataWriter;
-        private readonly ILogger<BankHolidayUpdateService> _logger;
+        private readonly ILogger<BankHolidayUpdateService> _logger;        
+        private readonly IReferenceDataReader _referenceDataReader;
 
-        public BankHolidayUpdateService(IOptions<BankHolidayConfiguration> config, IReferenceDataWriter referenceDataWriter, ILogger<BankHolidayUpdateService> logger)
+        public BankHolidayUpdateService(IOptions<BankHolidayConfiguration> config, IReferenceDataWriter referenceDataWriter, 
+            ILogger<BankHolidayUpdateService> logger, IReferenceDataReader referenceDataReader)
         {
             _config = config.Value;
             _referenceDataWriter = referenceDataWriter;
-            _logger = logger;
+            _logger = logger;            
+            _referenceDataReader = referenceDataReader;
         }
 
         public async Task UpdateBankHolidaysAsync()
@@ -28,21 +31,35 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services
             var client = new RestClient(_config.Url);
             var request = new RestRequest();
             var response = await client.ExecuteTaskAsync<BankHolidays.BankHolidaysData>(request);
-
-            if(!response.IsSuccessful)
+           
+            if (!response.IsSuccessful)
                 throw new Exception($"Error getting list of bank holidays from url:{_config.Url}. Error:{response.ErrorMessage}");
 
             if (!response.Data.EnglandAndWales.Events.Any())
                 throw new Exception($"Expected a non-empty list of bank holidays from url:{_config.Url}");
 
-            var bankHolidays = new BankHolidays
+            var bankHolidaysFromApi = new BankHolidays
             {
-                Data = response.Data
+                Data = response.Data             
             };
 
-            await _referenceDataWriter.UpsertReferenceData(bankHolidays);
+            if (await HasBankHolidayDataChanged(bankHolidaysFromApi))
+            {
+                await _referenceDataWriter.UpsertReferenceData(bankHolidaysFromApi);
+                _logger.LogInformation($"Upserted bank holidays into ReferenceData store. Last England and Wales date:{bankHolidaysFromApi.Data.EnglandAndWales.Events.Last().Date}");
+            }
+            else
+                _logger.LogInformation("ReferenceData not updated as there is no change.");
+        }
 
-            _logger.LogInformation($"Upserted bank holidays into ReferenceData store. Last England and Wales date:{bankHolidays.Data.EnglandAndWales.Events.Last().Date}");
+        private async Task<bool> HasBankHolidayDataChanged(BankHolidays bankHolidaysFromApi)
+        {
+            var bankHolidaysFromDb = await _referenceDataReader.GetReferenceData<BankHolidays>();
+            var bankHolidaysFromApiJson = JsonConvert.SerializeObject(bankHolidaysFromApi.Data);
+            var bankHolidaysFromDbJson = JsonConvert.SerializeObject(bankHolidaysFromDb.Data);
+            var areEqual = JToken.DeepEquals(bankHolidaysFromApiJson, bankHolidaysFromDbJson);
+            return !areEqual;            
         }
     }
+
 }

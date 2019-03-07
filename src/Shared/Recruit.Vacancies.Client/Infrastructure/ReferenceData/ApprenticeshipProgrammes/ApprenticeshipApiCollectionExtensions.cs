@@ -1,9 +1,10 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
 using SFA.DAS.Apprenticeships.Api.Types;
 
-namespace System.Collections.Generic
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes
 {
     public static class ApprenticeshipApiCollectionExtensions
     {

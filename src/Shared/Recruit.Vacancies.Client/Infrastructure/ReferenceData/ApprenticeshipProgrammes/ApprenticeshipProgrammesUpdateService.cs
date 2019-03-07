@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services.ReferenceData;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
 using Microsoft.Extensions.Logging;
@@ -12,21 +13,24 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
 {
     public class ApprenticeshipProgrammesUpdateService : IApprenticeshipProgrammesUpdateService
     {
+        private const int AcceptablePercentage = 10;
         private readonly ILogger<ApprenticeshipProgrammesUpdateService> _logger;
         private readonly IStandardApiClient _standardsClient;
         private readonly IFrameworkApiClient _frameworksClient;
         private readonly IReferenceDataWriter _referenceDataWriter;
+        private readonly IApprenticeshipProgrammeProvider _programmeProvider;
 
         public ApprenticeshipProgrammesUpdateService(
             ILogger<ApprenticeshipProgrammesUpdateService> logger, 
             IStandardApiClient standardsClient,
             IFrameworkApiClient frameworksClient,
-            IReferenceDataWriter referenceDataWriter)
+            IReferenceDataWriter referenceDataWriter, IApprenticeshipProgrammeProvider programmeProvider)
         {
             _logger = logger;
             _standardsClient = standardsClient;
             _frameworksClient = frameworksClient;
             _referenceDataWriter = referenceDataWriter;
+            _programmeProvider = programmeProvider;
         }
 
         public async Task UpdateApprenticeshipProgrammesAsync()
@@ -51,13 +55,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
                 var newList = new List<ApprenticeshipProgramme>();
                 newList.AddRange(standardsFromApi);
                 newList.AddRange(frameworksFromApi);
-
-                await _referenceDataWriter.UpsertReferenceData(new ApprenticeshipProgrammes
-                {
-                    Data = newList.Distinct(new ApprenticeshipProgrammeEqualityComparer()).ToList()
-                });
-
-                _logger.LogInformation("Inserted: {standardCount} standards and {frameworkCount} frameworks.", standardsFromApi.Count, frameworksFromApi.Count);
+                await ValidateList(newList);                
+                await _referenceDataWriter.UpsertReferenceData(new ApprenticeshipProgrammes {
+                        Data = newList.Distinct(new ApprenticeshipProgrammeEqualityComparer()).ToList()
+                    });
+                _logger.LogInformation("Inserted: {standardCount} standards and {frameworkCount} frameworks.", standardsFromApi.Count, frameworksFromApi.Count);                                
             }
             catch (AggregateException)
             {
@@ -73,6 +75,21 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
 
                 throw;
             }
+        }
+
+        private async Task ValidateList(List<ApprenticeshipProgramme> apprenticeshipProgrammesFromApi)
+        {
+            var apprenticeshipProgrammesFromDb = await _programmeProvider.GetApprenticeshipProgrammesAsync(true);
+            var apiCount = apprenticeshipProgrammesFromApi.Count;
+            var dbCount = apprenticeshipProgrammesFromDb.Count();
+            var difference = Math.Abs(apiCount - dbCount);
+            double percent = (double)(difference * 100) / apiCount; 
+            if (percent > AcceptablePercentage)
+            {
+                _logger.LogWarning("There is a difference of more than 10% between the existing ApprenticeshipProgrammes and the " +
+                                   $"new ApprenticeshipProgramme, apprenticeshipProgrammesFromApi:{apiCount} and " +
+                                   $"apprenticeshipProgrammesFromDb:{dbCount}");                
+            }            
         }
 
         private async Task<IEnumerable<ApprenticeshipProgramme>> GetStandards()

@@ -3,19 +3,20 @@ using System.Collections.Generic;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BankHolidays
-{
+{    
     public class BankHolidays : IReferenceDataItem
     {
         public string Id { get; set; }
         public DateTime LastUpdatedDate { get; set; } 
         public BankHolidaysData Data { get; set; }
-
+       
         public class Event
         {
             public string Title { get; set; }
             public string Date { get; set; }
             public string Notes { get; set; }
             public bool Bunting { get; set; }
+
         }
 
         public class EnglandAndWales
