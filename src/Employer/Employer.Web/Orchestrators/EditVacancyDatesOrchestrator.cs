@@ -72,7 +72,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
                 CurrentYear = _timeProvider.Now.Year,
 
-                ProgammeName = programmes.First(p => p.Id == vacancy.ProgrammeId).Title
+                ProgrammeName = programmes.First(p => p.Id == vacancy.ProgrammeId).Title
             };
 
             var resp = new OrchestratorResponse<EditVacancyDatesViewModel>(vm);

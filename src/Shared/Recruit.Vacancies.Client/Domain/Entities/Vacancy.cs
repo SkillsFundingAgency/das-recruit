@@ -64,6 +64,10 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
 
         public bool CanClose => Status == VacancyStatus.Live;
 
+        public bool CanClone => Status == 
+            VacancyStatus.Live || Status == VacancyStatus.Closed || Status == VacancyStatus.Submitted;
+
+
         /// <summary>
         /// We can only delete draft vacancies that have not been deleted
         /// </summary>

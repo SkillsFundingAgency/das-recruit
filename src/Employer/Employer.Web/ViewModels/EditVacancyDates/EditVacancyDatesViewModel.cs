@@ -40,7 +40,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.EditVacancyDates
             }
         }
 
-        public string ProgammeName { get; internal set; }
+        public string ProgrammeName { get; internal set; }
 
         public IList<string> OrderedFieldNames => new List<string>
         {

@@ -118,11 +118,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return vacancyId;
         }
 
-        public async Task<Guid> CloneVacancyAsync(Guid vacancyId, VacancyUser user, SourceOrigin sourceOrigin)
+        public async Task<Guid> CloneVacancyAsync(
+            Guid vacancyId, VacancyUser user, SourceOrigin sourceOrigin, 
+            DateTime startDate, DateTime closingDate)
         {
             var newVacancyId = GenerateVacancyId();
 
-            var command = new CloneVacancyCommand(cloneVacancyId: vacancyId, newVacancyId: newVacancyId, user: user, sourceOrigin: sourceOrigin);
+            var command = new CloneVacancyCommand(vacancyId, newVacancyId, user, sourceOrigin, startDate, closingDate);
 
             await _messaging.SendCommandAsync(command);
 

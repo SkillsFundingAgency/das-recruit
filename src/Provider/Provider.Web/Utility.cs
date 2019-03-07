@@ -45,7 +45,7 @@ namespace Esfa.Recruit.Provider.Web
         public static void CheckAuthorisedAccess(Vacancy vacancy, long ukprn)
         {
             if (vacancy.TrainingProvider.Ukprn.Value != ukprn)
-                throw new AuthorisationException(string.Format(ExceptionMessages.VacancyUnauthorisedAccess, ukprn, vacancy.TrainingProvider.Ukprn, vacancy.Title, vacancy.Id));
+                throw new AuthorisationException(string.Format(ExceptionMessages.VacancyUnauthorisedAccessForProvider, ukprn, vacancy.TrainingProvider.Ukprn, vacancy.Title, vacancy.Id));
         }
 
         public static void CheckRouteIsValidForVacancy(Vacancy vacancy, string currentRouteName, VacancyRouteModel vrm)

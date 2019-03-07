@@ -31,6 +31,9 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         {
             var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(vrm);
 
+            if (TempData.ContainsKey(TempDataKeys.VacancyPreviewInfoMessage))
+                viewModel.InfoMessage = TempData[TempDataKeys.VacancyPreviewInfoMessage].ToString();
+
             SetSectionStates(viewModel);
 
             return View(viewModel);

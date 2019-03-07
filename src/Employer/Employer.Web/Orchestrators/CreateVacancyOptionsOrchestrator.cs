@@ -36,7 +36,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             Utility.CheckAuthorisedAccess(vacancy, employerAccountId);
 
-            var clonedVacancyId = await _client.CloneVacancyAsync(vacancyId, user, SourceOrigin.EmployerWeb);
+            var clonedVacancyId = await _vacancyClient.CloneVacancyAsync(vacancyId, user, 
+                SourceOrigin.EmployerWeb, vacancy.StartDate.GetValueOrDefault(), vacancy.ClosingDate.GetValueOrDefault());
 
             return clonedVacancyId;
         }

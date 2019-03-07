@@ -11,13 +11,19 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Commands
         public Guid NewVacancyId { get; private set; }
         public VacancyUser User { get; private set; }
         public SourceOrigin SourceOrigin { get; private set; }
+        public DateTime? StartDate { get; private set; }
+        public DateTime? ClosingDate { get; private set; }
 
-        public CloneVacancyCommand(Guid cloneVacancyId, Guid newVacancyId, VacancyUser user, SourceOrigin sourceOrigin)
+        public CloneVacancyCommand(
+            Guid cloneVacancyId, Guid newVacancyId, VacancyUser user, 
+            SourceOrigin sourceOrigin, DateTime startDate, DateTime closingDate)
         {
             IdOfVacancyToClone = cloneVacancyId;
             NewVacancyId = newVacancyId;
             User = user;
             SourceOrigin = sourceOrigin;
+            StartDate = startDate;
+            ClosingDate = closingDate;
         }
     }
 }

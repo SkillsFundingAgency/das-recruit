@@ -72,6 +72,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             clone.SourceVacancyReference = vacancy.VacancyReference;
             clone.Status = VacancyStatus.Draft;
             clone.IsDeleted = false;
+            clone.ClosingDate = message.ClosingDate;
+            clone.StartDate = message.StartDate;
 
             // Properties to remove
             clone.VacancyReference = null;
