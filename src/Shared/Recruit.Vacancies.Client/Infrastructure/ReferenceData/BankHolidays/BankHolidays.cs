@@ -1,26 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Runtime.Serialization.Json;
-using System.Text;
-using Microsoft.Net.Http.Headers;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BankHolidays
-{
-    public static class MySerializer
-    {
-        public static string Serialize(this object obj)
-        {
-            var serializer = new DataContractJsonSerializer(obj.GetType());
-            using (var ms = new MemoryStream())
-            {
-                serializer.WriteObject(ms, obj);
-                return Encoding.Default.GetString(ms.ToArray());
-            }
-        }
-    }
-
+{    
     public class BankHolidays : IReferenceDataItem
     {
         public string Id { get; set; }

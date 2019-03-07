@@ -7,7 +7,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Providers
 {
     public interface IBankHolidayProvider
     {
-        Task<List<DateTime>> GetBankHolidaysAsync();
-        Task<BankHolidays> GetBankHolidayListAsync();
+        Task<List<DateTime>> GetBankHolidaysAsync();        
     }
 }

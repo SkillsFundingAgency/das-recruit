@@ -32,11 +32,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BankHoliday
                         .Select(e => DateTime.Parse(e.Date))
                         .ToList();
                 });
-        }
-
-        public async Task<BankHolidays> GetBankHolidayListAsync()
-        {
-            return await _referenceDataReader.GetReferenceData<BankHolidays>();
-        }
+        }        
     }
 }

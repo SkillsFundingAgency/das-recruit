@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services.ReferenceData;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -15,16 +14,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BankHoliday
     {
         private readonly BankHolidayConfiguration _config;
         private readonly IReferenceDataWriter _referenceDataWriter;
-        private readonly ILogger<BankHolidayUpdateService> _logger;
-        private readonly IBankHolidayProvider _bankHolidayProvider;
+        private readonly ILogger<BankHolidayUpdateService> _logger;        
+        private readonly IReferenceDataReader _referenceDataReader;
 
         public BankHolidayUpdateService(IOptions<BankHolidayConfiguration> config, IReferenceDataWriter referenceDataWriter, 
-            ILogger<BankHolidayUpdateService> logger, IBankHolidayProvider bankHolidayProvider)
+            ILogger<BankHolidayUpdateService> logger, IReferenceDataReader referenceDataReader)
         {
             _config = config.Value;
             _referenceDataWriter = referenceDataWriter;
-            _logger = logger;
-            _bankHolidayProvider = bankHolidayProvider;
+            _logger = logger;            
+            _referenceDataReader = referenceDataReader;
         }
 
         public async Task UpdateBankHolidaysAsync()
@@ -44,23 +43,22 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BankHoliday
                 Data = response.Data             
             };
 
-            if (await ValidateBankHolidayData(bankHolidaysFromApi))
+            if (await HasBankHolidayDataChanged(bankHolidaysFromApi))
             {
                 await _referenceDataWriter.UpsertReferenceData(bankHolidaysFromApi);
                 _logger.LogInformation($"Upserted bank holidays into ReferenceData store. Last England and Wales date:{bankHolidaysFromApi.Data.EnglandAndWales.Events.Last().Date}");
             }
-            _logger.LogInformation("ReferenceData not updated as the ETag value is the same.");
+            else
+                _logger.LogInformation("ReferenceData not updated as their is no change.");
         }
 
-        private async Task<bool> ValidateBankHolidayData(BankHolidays bankHolidaysFromApi)
+        private async Task<bool> HasBankHolidayDataChanged(BankHolidays bankHolidaysFromApi)
         {
-            var bankHolidaysFromDb = await _bankHolidayProvider.GetBankHolidayListAsync();
+            var bankHolidaysFromDb = await _referenceDataReader.GetReferenceData<BankHolidays>();
             var bankHolidaysFromApiJson = JsonConvert.SerializeObject(bankHolidaysFromApi.Data);
             var bankHolidaysFromDbJson = JsonConvert.SerializeObject(bankHolidaysFromDb.Data);
             var areEqual = JToken.DeepEquals(bankHolidaysFromApiJson, bankHolidaysFromDbJson);
-            if (!areEqual)
-                return true;
-            return false;
+            return !areEqual;            
         }
     }
 
