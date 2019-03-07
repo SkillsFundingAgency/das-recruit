@@ -41,7 +41,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BankHoliday
 
             var bankHolidaysFromApi = new BankHolidays
             {
-                Data = response.Data,             
+                Data = response.Data             
             };
 
             if (await ValidateBankHolidayData(bankHolidaysFromApi))
