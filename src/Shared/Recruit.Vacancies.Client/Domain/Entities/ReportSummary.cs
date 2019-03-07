@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
 {
-    public class Report
+    public class ReportSummary
     {
         public Guid Id { get; set; }
         public ReportOwner Owner { get; set; }
@@ -14,5 +14,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public DateTime RequestedOn { get; set; }
         public DateTime? GeneratedOn { get; set; }
         public long DownloadCount { get; set; }
+
+        public bool IsProcessing => Status == ReportStatus.New || Status == ReportStatus.InProgress;
     }
 }

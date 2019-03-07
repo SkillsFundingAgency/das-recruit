@@ -22,7 +22,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Reports
 
         public ProviderApplicationsReportCreateViewModel GetCreateViewModel()
         {
-            return new ProviderApplicationsReportCreateViewModel { };
+            return new ProviderApplicationsReportCreateViewModel();
         }
 
         public ProviderApplicationsReportCreateViewModel GetCreateViewModel(ProviderApplicationsReportCreateEditModel model)
@@ -40,7 +40,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Reports
             return vm;
         }
 
-        public Task PostCreateViewModelAsync(ProviderApplicationsReportCreateEditModel model, VacancyUser user)
+        public Task<Guid> PostCreateViewModelAsync(ProviderApplicationsReportCreateEditModel model, VacancyUser user)
         {
             DateTime toDate = _timeProvider.NextDay;
             DateTime fromDate;

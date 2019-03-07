@@ -89,6 +89,11 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                     return AccessDenied();
                 }
 
+                if (exception is ReportNotFoundException)
+                {
+                    return PageNotFound();
+                }
+
                 _logger.LogError(exception, "Unhandled exception on path: {route}", routeWhereExceptionOccurred);
             }
 
