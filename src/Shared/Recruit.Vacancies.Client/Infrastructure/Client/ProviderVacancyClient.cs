@@ -65,20 +65,39 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _messaging.SendCommandAsync(command);
         }
 
-        public Task CreateProviderApplicationsReportAsync(long ukprn, DateTime fromDate, DateTime toDate, VacancyUser user)
+        public async Task<Guid> CreateProviderApplicationsReportAsync(long ukprn, DateTime fromDate, DateTime toDate, VacancyUser user)
         {
             var reportId = Guid.NewGuid();
 
-            return _messaging.SendCommandAsync(new CreateReportCommand(
+            var owner = new ReportOwner
+            {
+                OwnerType = ReportOwnerType.Provider,
+                Ukprn = ukprn
+            };
+
+            await _messaging.SendCommandAsync(new CreateReportCommand(
                 reportId,
+                owner,
                 ReportType.ProviderApplications,
                 new List<ReportParameter> {
-                    new ReportParameter{Name = "Ukprn", Value = ukprn},
-                    new ReportParameter{Name = "FromDate", Value = fromDate},
-                    new ReportParameter{Name = "ToDate", Value = toDate}
+                    new ReportParameter{Name = ReportParameterName.Ukprn, Value = ukprn},
+                    new ReportParameter{Name = ReportParameterName.FromDate, Value = fromDate},
+                    new ReportParameter{Name = ReportParameterName.ToDate, Value = toDate}
                 },
                 user)
             );
+
+            return reportId;
+        }
+
+        public Task<List<ReportSummary>> GetReportsForProviderAsync(long ukprn)
+        {
+            return _reportRepository.GetReportsForProviderAsync<ReportSummary>(ukprn);
+        }
+
+        public Task<Report> GetReportAsync(Guid reportId)
+        {
+            return _reportRepository.GetReportAsync(reportId);
         }
     }
 }

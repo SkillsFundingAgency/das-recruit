@@ -1,7 +1,59 @@
-﻿<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
+﻿@model Esfa.Recruit.Provider.Web.ViewModels.Reports.ReportDashboard.ReportsDashboardViewModel
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
         <h1 class="govuk-heading-xl">Reports</h1>
-        <p class="govuk-body">You can create and download a report that gives you information on all the applications you got. You can decide what time period you would like for the report. </p>
+
+        <p asp-hide="@Model.HasReports" class="govuk-body">You can create and download a report that gives you information on all the applications you got. You can decide what time period you would like for the report. </p>
+
         <a asp-route="@RouteNames.ProviderApplicationsReportCreate_Get" class="govuk-button">Create new report</a>
+
+        <div asp-show="@Model.HasReports">
+            <p class="govuk-body">
+                You have @Model.ProcessingCaption being processed.
+                <a asp-route="@RouteNames.ReportDashboard_Get">Check if your report is ready to download</a>
+            </p>
+        </div>
     </div>
 </div>
+
+<table class="govuk-table responsive-table">
+    <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+            <th class="govuk-table__header" scope="col">Report period</th>
+            <th class="govuk-table__header" scope="col">Created</th>
+            <th class="govuk-table__header" scope="col">Created by</th>
+            <th class="govuk-table__header" style="text-align:right" scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+
+        @foreach (var report in Model.Reports)
+        {
+            <tr class="govuk-table__row" role="row">
+                <td class="govuk-table__cell" role="gridcell">
+                    <span class="table-heading" aria-hidden="true">Report Period</span>
+                    @report.FromDate to @report.ToDate
+
+                    <div asp-show="@report.IsNew">
+                        <span class="das-tag das-tag--new">new</span>
+                    </div>
+                </td>
+                <td class="govuk-table__cell" role="gridcell">
+                    <span class="table-heading" aria-hidden="true">Created on</span>
+                    @report.CreatedDate
+                </td>
+                <td class="govuk-table__cell" role="gridcell">
+                    <span class="table-heading" aria-hidden="true">Created by</span>
+                    @report.CreatedBy
+                </td>
+                <td class="govuk-table__cell numeric" role="gridcell" style="text-align: right">
+                    <span asp-hide="@report.CanDownload">Processing</span>
+                    <a asp-show="@report.CanDownload" href="">Download CSV</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<p class="govuk-body">The files will be kept for 7 days from the date created</p>

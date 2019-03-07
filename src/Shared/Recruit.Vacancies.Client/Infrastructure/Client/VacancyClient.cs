@@ -35,8 +35,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly IEmployerProfileRepository _employerProfileRepository;
         private readonly IUserRepository _userRepository;
         private readonly IQualificationsProvider _qualificationsProvider;
-
         private readonly ITrainingProviderService _trainingProviderService;
+        private readonly IReportRepository _reportRepository;
 
         public VacancyClient(
             IVacancyRepository repository,
@@ -54,7 +54,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             IEmployerProfileRepository employerProfileRepository,
             IUserRepository userRepository,
             IQualificationsProvider qualificationsProvider,
-            ITrainingProviderService trainingProviderService)
+            ITrainingProviderService trainingProviderService,
+            IReportRepository reportRepository)
         {
             _repository = repository;
             _reader = reader;
@@ -72,6 +73,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _userRepository = userRepository;
             _qualificationsProvider = qualificationsProvider;
             _trainingProviderService = trainingProviderService;
+            _reportRepository = reportRepository;
         }
 
         public Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user)
