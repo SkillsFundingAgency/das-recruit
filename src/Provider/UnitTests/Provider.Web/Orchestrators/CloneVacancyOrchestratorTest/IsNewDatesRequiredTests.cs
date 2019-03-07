@@ -8,14 +8,14 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
 
-namespace UnitTests.Provider.Web.Orchestrators.CloneVacancyOrchestratorTest
+namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.CloneVacancyOrchestratorTest
 {
-    public class IsNewDatesRequiredTests
+    public class IsNewDatesRequiredTests : CloneVacancyOrchestratorTestBase
     {
         [Fact]
         public void WhenStatusIsClosed_ThenReturnTrue()
         {
-            var sut = GetSut();
+            var sut = GetSut(SourceVacancy);
             var vacancy = new Vacancy{Status = VacancyStatus.Closed};
             sut.IsNewDatesRequired(vacancy).Should().BeTrue();
         }
@@ -23,7 +23,7 @@ namespace UnitTests.Provider.Web.Orchestrators.CloneVacancyOrchestratorTest
         [Fact]
         public void WhenStatusIsLiveAndDatesAreInFuture_ThenReturnFalse()
         {
-            var sut = GetSut();
+            var sut = GetSut(SourceVacancy);
             var vacancy = new Vacancy{Status = VacancyStatus.Live, ClosingDate = DateTime.Now.AddDays(1)};
             sut.IsNewDatesRequired(vacancy).Should().BeFalse();
         }
@@ -31,18 +31,10 @@ namespace UnitTests.Provider.Web.Orchestrators.CloneVacancyOrchestratorTest
         [Fact]
         public void WhenStatusIsLiveAndDatesAreInPast_ThenReturnTrue()
         {
-            var sut = GetSut();
+            var sut = GetSut(SourceVacancy);
             var vacancy = new Vacancy{Status = VacancyStatus.Live, ClosingDate = DateTime.Now.AddDays(-1)};
             sut.IsNewDatesRequired(vacancy).Should().BeTrue();
         }
 
-        private CloneVacancyOrchestrator GetSut()
-        {
-            var recruitVacancyClientMock = new Mock<IRecruitVacancyClient>();
-            var timeProviderMock = new Mock<ITimeProvider>();
-            var loggerMock = new Mock<ILogger<CloneVacancyOrchestrator>>();
-            timeProviderMock.Setup(t => t.Now).Returns(DateTime.Now);
-            return new CloneVacancyOrchestrator(recruitVacancyClientMock.Object, timeProviderMock.Object, loggerMock.Object);
-        }
     }
 }

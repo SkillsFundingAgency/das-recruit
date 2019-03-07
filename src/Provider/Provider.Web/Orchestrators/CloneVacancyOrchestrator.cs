@@ -20,8 +20,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
     public class CloneVacancyOrchestrator : EntityValidatingOrchestrator<Vacancy, CloneVacancyWithNewDatesEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.ClosingDate | VacancyRuleSet.StartDate | VacancyRuleSet.StartDateEndDate ;
-        const string ChangeBothDatesTitle = "Change the closing date and start date";
-        const string ChangeEitherDatesTitle = "Change the closing date or start date";
+        public const string ChangeBothDatesTitle = "Change the closing date and start date";
+        public const string ChangeEitherDatesTitle = "Change the closing date or start date";
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly ITimeProvider _timeProvider;
 
