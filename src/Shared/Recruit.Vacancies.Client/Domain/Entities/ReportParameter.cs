@@ -2,7 +2,7 @@
 {
     public class ReportParameter
     {
-        public string Name { get; set; }
+        public ReportParameterName Name { get; set; }
         public object Value { get; set; }
     }
 }

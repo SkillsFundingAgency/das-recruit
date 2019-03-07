@@ -35,9 +35,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly IEmployerProfileRepository _employerProfileRepository;
         private readonly IUserRepository _userRepository;
         private readonly IQualificationsProvider _qualificationsProvider;
-
         private readonly ITrainingProviderService _trainingProviderService;
         private readonly IEmployerNameService _employerNameService;
+        private readonly IReportRepository _reportRepository;
 
         public VacancyClient(
             IVacancyRepository repository,
@@ -57,6 +57,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             IQualificationsProvider qualificationsProvider,
             ITrainingProviderService trainingProviderService,
             IEmployerNameService employerNameService)
+            IReportRepository reportRepository)
         {
             _repository = repository;
             _reader = reader;
@@ -75,6 +76,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _qualificationsProvider = qualificationsProvider;
             _trainingProviderService = trainingProviderService;
             _employerNameService = employerNameService;
+            _reportRepository = reportRepository;
         }
     
         

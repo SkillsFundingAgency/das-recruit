@@ -14,5 +14,6 @@
         //Reports
         public const string ReportsRoutePath = AccountRoutePath + "/reports";
         public const string ProviderApplicationsReportRoutePath = ReportsRoutePath + "/provider-applications";
+        public const string ReportRoutePath = ReportsRoutePath + "/{reportId:guid}";
     }
 }
