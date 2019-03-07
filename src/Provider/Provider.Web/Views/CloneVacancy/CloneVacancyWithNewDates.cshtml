@@ -1,4 +1,8 @@
 @model Esfa.Recruit.Provider.Web.ViewModels.CloneVacancy.CloneVacancyWithNewDatesViewModel
+@{
+    var exampleClosingDate = DateTime.Now.AddMonths(2);
+    var exampleStartingDate = exampleClosingDate.AddDays(14);
+}
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -11,7 +15,7 @@
                     <span esfa-validation-message-for="ClosingDate" class="govuk-error-message"></span>
                     <legend class="govuk-fieldset__legend govuk-!-font-weight-bold">Application closing date</legend>
                     <span id="closing-hint" class="govuk-hint">
-                        For example, 19 01 2019
+                        For example, @exampleClosingDate.AsInputHintDisplayDate()
                     </span>
                     <div class="govuk-date-input">
                         <div class="govuk-date-input__item">
@@ -41,7 +45,7 @@
                     <span esfa-validation-message-for="StartDate" class="govuk-error-message"></span>
                     <legend class="govuk-fieldset__legend govuk-!-font-weight-bold">When is the apprentice expected to start?</legend>
                     <span id="start-hint" class="govuk-hint">
-                        For example, 02 02 2019
+                        For example, @exampleStartingDate.AsInputHintDisplayDate()
                     </span>
                     <div class="govuk-date-input">
                         <div class="govuk-date-input__item">

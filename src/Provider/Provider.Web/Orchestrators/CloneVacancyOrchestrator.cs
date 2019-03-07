@@ -39,7 +39,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             if (IsNewDatesRequired(vacancy))
                 throw new InvalidStateException(string.Format(ErrorMessages.CannotCloneVacancyWithSameDates, vacancy.Title));
 
-            var vm = new CloneVacancyDatesQuestionViewModel {
+            var vm = new CloneVacancyDatesQuestionViewModel 
+            {
                 StartDate = vacancy.StartDate?.AsGdsDate(),
                 ClosingDate = vacancy.ClosingDate?.AsGdsDate()
             };
@@ -54,7 +55,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             var isNewDatesForced = IsNewDatesRequired(vacancy);
             if(isNewDatesForced)
             {
-                return new CloneVacancyWithNewDatesViewModel {
+                return new CloneVacancyWithNewDatesViewModel 
+                {
                     IsNewDatesForced = isNewDatesForced,
                     Title = ChangeBothDatesTitle,
                 };
