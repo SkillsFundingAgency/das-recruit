@@ -49,7 +49,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BankHoliday
                 _logger.LogInformation($"Upserted bank holidays into ReferenceData store. Last England and Wales date:{bankHolidaysFromApi.Data.EnglandAndWales.Events.Last().Date}");
             }
             else
-                _logger.LogInformation("ReferenceData not updated as their is no change.");
+                _logger.LogInformation("ReferenceData not updated as there is no change.");
         }
 
         private async Task<bool> HasBankHolidayDataChanged(BankHolidays bankHolidaysFromApi)

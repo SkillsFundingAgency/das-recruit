@@ -15,7 +15,7 @@ using SFA.DAS.Apprenticeships.Api.Types;
 using Xunit;
 using ApprenticeshipProgrammesReferenceData = Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes.ApprenticeshipProgrammes;
 
-namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes
+namespace Esfa.Recruit.UnitTests.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes
 {
     [Trait("Category", "Unit")]
     public class ApprenticeshipProgrammesUpdaterServiceTests
