@@ -1,4 +1,4 @@
-namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventStore
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue
 {
     public static class QueueNames
     {
@@ -12,5 +12,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventStore
         public const string ApplicationSubmittedQueueName = "application-submitted-queue";
         public const string ApplicationWithdrawnQueueName = "application-withdrawn-queue";
         public const string CandidateDeleteQueueName = "candidate-delete-queue";
+        public const string ReportQueueName = "report-queue";
     }
 }
