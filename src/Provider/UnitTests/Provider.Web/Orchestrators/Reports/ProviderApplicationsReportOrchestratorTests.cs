@@ -16,9 +16,9 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Reports
         private readonly Mock<IProviderVacancyClient> _client = new Mock<IProviderVacancyClient>();
 
         [Theory]
-        [InlineData(DateRangeType.Last7Days, "27-02-2019", "06-03-2019")]
-        [InlineData(DateRangeType.Last14Days, "20-02-2019", "06-03-2019")]
-        [InlineData(DateRangeType.Last30Days, "04-02-2019", "06-03-2019")]
+        [InlineData(DateRangeType.Last7Days, "2019-02-27", "2019-03-06")]
+        [InlineData(DateRangeType.Last14Days, "2019-02-20", "2019-03-06")]
+        [InlineData(DateRangeType.Last30Days, "2019-02-04", "2019-03-06")]
         public async Task PostCreateViewModelAsync_ShouldUseCorrectTimespan(DateRangeType dateRangeType, string fromDate, string toDate)
         {
             var orchestrator = GetOrchestrator();
