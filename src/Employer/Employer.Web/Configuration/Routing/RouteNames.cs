@@ -89,6 +89,8 @@
 
         public const string ApplicationReview_Get = "ApplicationReview_Get";
         public const string ApplicationReview_Post = "ApplicationReview_Post";
+        public const string ApplicationStatusConfirmation_Get = "ApplicationStatusConfirmation_Get";
+        public const string ApplicationStatusConfirmation_Post = "ApplicationStatusConfirmation_Post";
 
         public const string VacancyManage_Get = "VacancyManage_Get";
         public const string VacancyEdit_Get = "VacancyEdit_Get";

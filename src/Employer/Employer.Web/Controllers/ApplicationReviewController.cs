@@ -4,6 +4,7 @@ using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
+using Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
@@ -35,6 +36,29 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             }
 
             await _orchestrator.PostApplicationReviewEditModelAsync(m, User.ToVacancyUser());
+
+            return RedirectToRoute(RouteNames.ApplicationStatusConfirmation_Get);
+        }
+
+        [HttpGet("", Name = RouteNames.ApplicationStatusConfirmation_Get)]
+        public async Task<IActionResult> ApplicationStatusConfirmation(ApplicationReviewEditModel rm)
+        {
+            var model=new ApplicationStatusConfirmationViewModel();
+            //var vm = await _orchestrator.GetApplicationReviewViewModelAsync(rm);
+            //return View(vm);
+            return View(model);
+        }
+
+        [HttpPost("", Name = RouteNames.ApplicationStatusConfirmation_Post)]
+        public async Task<IActionResult> ApplicationStatusConfirmation(ApplicationStatusConfirmationViewModel m)
+        {            
+            if (ModelState.IsValid == false)
+            {
+                //var vm = await _orchestrator.GetApplicationReviewViewModelAsync(m);
+                //return View(vm);
+            }
+
+            //await _orchestrator.PostApplicationReviewEditModelAsync(m, User.ToVacancyUser());
 
             return RedirectToRoute(RouteNames.VacancyManage_Get);
         }
