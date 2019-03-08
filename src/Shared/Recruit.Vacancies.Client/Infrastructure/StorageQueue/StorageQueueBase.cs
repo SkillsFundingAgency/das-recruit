@@ -5,12 +5,12 @@ using Newtonsoft.Json;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue
 {
-    internal abstract class StorageQueue
+    internal abstract class StorageQueueBase
     {
         private readonly string _connectionString;
         private readonly string _queueName;
 
-        protected StorageQueue(StorageQueueConnectionDetails details, string queueName)
+        protected StorageQueueBase(StorageQueueConnectionDetails details, string queueName)
         {
             _connectionString = details.ConnectionString;
             _queueName = queueName;
