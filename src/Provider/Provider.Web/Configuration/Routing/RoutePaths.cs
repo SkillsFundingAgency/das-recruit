@@ -10,5 +10,9 @@
         public const string AccountApplicationReviewRoutePath = AccountVacancyRoutePath + "/" + ApplicationReviewPath;
         public const string AccessDeniedPath = "/error/403";
         public const string ExceptionHandlingPath = "/error/handle";
+
+        //Reports
+        public const string ReportsRoutePath = AccountRoutePath + "/reports";
+        public const string ProviderApplicationsReportRoutePath = ReportsRoutePath + "/provider-applications";
     }
 }
