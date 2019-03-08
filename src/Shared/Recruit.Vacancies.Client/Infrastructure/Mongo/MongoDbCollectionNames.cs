@@ -9,7 +9,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
         internal const string Sequences = "sequences";
         internal const string Users = "users";
         internal const string Vacancies = "vacancies";
-        internal const string VacancyReviews = "reviews";
+        internal const string VacancyReviews = "vacancyReviews";
         internal const string EmployerProfiles = "employerProfiles";
         internal const string Reports = "reports";
     }
