@@ -5,7 +5,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
 {
-    class StorageQueueReportsQueue : StorageQueue.StorageQueue, IReportsQueue
+    class StorageQueueReportsQueue : StorageQueueBase, IReportsQueue
     {
         public StorageQueueReportsQueue(StorageQueueConnectionDetails details) : base(details, QueueNames.ReportQueueName)
         {
