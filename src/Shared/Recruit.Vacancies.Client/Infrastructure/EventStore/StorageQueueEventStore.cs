@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventStore
 {
-    internal sealed class StorageQueueEventStore : StorageQueue.StorageQueue, IEventStore
+    internal sealed class StorageQueueEventStore : StorageQueueBase, IEventStore
     {
         public StorageQueueEventStore(StorageQueueConnectionDetails details) : base(details, QueueNames.DomainEventsQueueName)
         {
