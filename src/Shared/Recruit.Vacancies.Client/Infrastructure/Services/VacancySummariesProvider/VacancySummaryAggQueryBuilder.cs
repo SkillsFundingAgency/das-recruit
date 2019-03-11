@@ -126,7 +126,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 _unwindClause,
                 _projectionOneClause,
                 _projectionTwoClause,
-                _groupClause
+                //_groupClause
             };
         }
     }
