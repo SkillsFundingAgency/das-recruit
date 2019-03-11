@@ -27,4 +27,25 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         public TrainingType TrainingType { get; set; }
         public ProgrammeLevel TrainingLevel { get; set; }
     }
+
+    internal class VacancyDetailNotGrouped
+    {
+        public Guid Id { get; set; }
+        public Guid VacancyGuid { get; set; }
+        public long? VacancyReference { get; set; }
+        public string Title { get; set; }
+        public string EmployerName { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public VacancyStatus Status { get; set; }
+        public DateTime? ClosingDate { get; set; }
+        public ApplicationMethod? ApplicationMethod { get; set; }
+        public string ProgrammeId { get; set; }
+        public string TrainingTitle { get; set; }
+        public TrainingType TrainingType { get; set; }
+        public ProgrammeLevel TrainingLevel { get; set; }
+
+        public int IsNew { get; set; }
+        public int IsSuccessful { get; set; }
+        public int IsUnsuccessful { get; set; }
+    }
 }
