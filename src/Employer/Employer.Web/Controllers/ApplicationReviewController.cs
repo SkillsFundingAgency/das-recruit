@@ -46,7 +46,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 return View(vm);
             }
 
-            if (applicationReviewStatusConfirmationEditModel.NotifyApplicant)
+            if (applicationReviewStatusConfirmationEditModel.NotifyApplicant.HasValue &&
+                applicationReviewStatusConfirmationEditModel.NotifyApplicant.Value)
             {
                 await _orchestrator.PostApplicationReviewEditModelAsync(applicationReviewStatusConfirmationEditModel, User.ToVacancyUser());
                 var routeModel=new ApplicationReviewRouteModel {

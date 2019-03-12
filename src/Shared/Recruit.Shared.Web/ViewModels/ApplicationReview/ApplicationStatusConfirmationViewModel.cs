@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview
 {
@@ -10,8 +10,12 @@ namespace Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview
         public string Name { get; set; }
         public ApplicationReviewStatus? Status { get; set; }           
         public ApplicationReviewStatus? Outcome { get; set; }
-        public string CandidateFeedback { get; set; }        
-        public bool? NotifyApplicant { get; set; }        
+        public string CandidateFeedback { get; set; }           
         public Guid ApplicationReviewId { get; set; }
+        public bool? NotifyApplicant { get; set; }
+        public IList<string> OrderedFieldNames => new List<string>
+        {
+            nameof(Outcome)
+        };
     }
 }

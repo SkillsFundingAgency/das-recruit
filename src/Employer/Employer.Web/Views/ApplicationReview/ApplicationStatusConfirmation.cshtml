@@ -3,7 +3,7 @@
 <div class="govuk-grid-row">
     
     <div class="govuk-grid-column-two-thirds">
-        @*@Html.HiddenFor("Outcome",model => model.Outcome)*@
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
         @if (Model.Outcome.Value == ApplicationReviewStatus.Successful)
         {
             <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
@@ -31,8 +31,7 @@
                     </span>
                 </summary>
                 <div class="govuk-details__text">
-                    <p class="govuk-body">@Model.CandidateFeedback</p>
-                    @*@Html.HiddenFor("CandidateFeedback",model => model.CandidateFeedback)*@
+                    <p class="govuk-body">@Model.CandidateFeedback</p>                   
                 </div>
             </details>
         }
