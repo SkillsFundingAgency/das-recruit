@@ -49,7 +49,13 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             if (applicationReviewStatusConfirmationEditModel.NotifyApplicant)
             {
                 await _orchestrator.PostApplicationReviewEditModelAsync(applicationReviewStatusConfirmationEditModel, User.ToVacancyUser());
-                return RedirectToRoute(RouteNames.VacancyManage_Get);
+                var routeModel=new ApplicationReviewRouteModel {
+                    ApplicationReviewId = applicationReviewStatusConfirmationEditModel.ApplicationReviewId,
+                    VacancyId = applicationReviewStatusConfirmationEditModel.VacancyId,
+                    EmployerAccountId = applicationReviewStatusConfirmationEditModel.EmployerAccountId
+                };
+                var vm = await _orchestrator.GetApplicationReviewViewModelAsync(routeModel);
+                return RedirectToRoute(RouteNames.VacancyManage_Get, new { applicationUserName =vm.Name, applicationReviewStatus = applicationReviewStatusConfirmationEditModel.Outcome.ToString(), setApplicationStatus ="true"});
             }
            return RedirectToRoute(RouteNames.ApplicationReview_Get);
         }        

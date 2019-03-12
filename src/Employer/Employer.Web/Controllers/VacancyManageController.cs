@@ -46,7 +46,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             if (setApplicationStatus)
             {
                 viewModel.ApplicationReviewedUserName = applicationUserName;
-                viewModel.ApplicationReviewedStatus = applicationReviewStatus;
+                viewModel.ApplicationReviewedStatus = applicationReviewStatus.ToLower();
+                viewModel.CanShowApplicationReviewStatusHeader = true;
             }
 
             return View(viewModel);
