@@ -1,73 +1,66 @@
-﻿@using System.Net
+﻿@using Esfa.Recruit.Vacancies.Client.Domain.Entities
 @model Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview.ApplicationStatusConfirmationViewModel
-
-<div class="govuk-grid-row"> 
+<div class="govuk-grid-row">
+    
     <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-0">Are you sure you want to tell this applicant that they have not been accepted?</h1>
-        <p class="govuk-body govuk-!-margin-bottom-6">
-            This will notify @Model.Name to say that they have not been accepted for this apprenticeship.
-        </p>
-
-        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
-
-        <div class="panel panel-border-narrow">
-            <p class="govuk-body">
-                @Html.Raw(
-                                        string.Join("<br>",
-                                            new[]
-                                            {
-                                                    @Model.Name                                                    
-                                            }.Where(s => !string.IsNullOrWhiteSpace(s))
-                                                .Select(WebUtility.HtmlEncode)))
-            </p>            
+        @*@Html.HiddenFor("Outcome",model => model.Outcome)*@
+        @if (Model.Outcome.Value == ApplicationReviewStatus.Successful)
+        {
+            <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
+                Are you sure you want to tell this applicant that they have been accepted?
+            </h1>
+            <p>
+                This will notify @Model.Name to say that they have been accepted for this apprenticeship.
+            </p>
+        }
+        else
+        {
+            <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
+                Are you sure you want to tell this applicant that they have not been accepted?
+            </h1>
+            <p>
+                This will notify @Model.Name to say that they have not been accepted for this apprenticeship.
+            </p>
+        }
+        @if (Model.Outcome.Value == ApplicationReviewStatus.Unsuccessful)
+        {
+            <details class="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        View your message to the applicant
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <p class="govuk-body">@Model.CandidateFeedback</p>
+                    @*@Html.HiddenFor("CandidateFeedback",model => model.CandidateFeedback)*@
+                </div>
+            </details>
+        }
+        <div class="govuk-inset-text">
+            <p><span class="">This action cannot be undone</span>.</p>
         </div>
 
-        <h2 class="govuk-heading-l govuk-!-margin-top-6">About you</h2>                        
-
-               
-
-        @*<form asp-show="@Model.CanChangeOutcome" asp-route="@RouteNames.ApplicationReview_Post" class="govuk-!-margin-top-6">
-            <div esfa-validation-marker-for="Outcome" class="govuk-form-group">
+        <form asp-route="@RouteNames.ApplicationStatusConfirmation_Post">
+            @Html.HiddenFor(model => model.Outcome)
+            @Html.HiddenFor(model => model.CandidateFeedback)
+            <div esfa-validation-marker-for="NotifyApplicant" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
-                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                        <h3 class="govuk-fieldset__heading">Outcome</h3>
-                    </legend>
-                    <span esfa-validation-message-for="Outcome" class="govuk-error-message"></span>
-                    <div class="govuk-radios govuk-radios--conditional" data-module="radios">
+                    <span esfa-validation-message-for="NotifyApplicant" class="govuk-error-message"></span>
+                    <div class="govuk-radios">
                         <div class="govuk-radios__item">
-                            <input asp-for="Outcome" class="govuk-radios__input" id="outcome-successful" type="radio" value="@ApplicationReviewStatus.Successful.ToString()" checked="@(Model.Outcome == ApplicationReviewStatus.Successful ? "checked" : null)">
-                            <label for="outcome-successful" class="govuk-label govuk-radios__label">Successful</label>
+                            <input asp-for="NotifyApplicant" class="govuk-radios__input" id="notify-applicant-yes" type="radio" value="true">
+                            <label for="notify-applicant-yes" class="govuk-label govuk-radios__label">Yes, notify the applicant</label>
                         </div>
                         <div class="govuk-radios__item">
-                            <input asp-for="Outcome" class="govuk-radios__input" id="outcome-unsuccessful" type="radio" value="@ApplicationReviewStatus.Unsuccessful.ToString()" checked="@(Model.Outcome == ApplicationReviewStatus.Unsuccessful ? "checked" : null)" data-aria-controls="unsuccessful-candidate-feedback">
-                            <label for="outcome-unsuccessful" class="govuk-label govuk-radios__label">Unsuccessful</label>
-                        </div>
-                        <div esfa-validation-marker-for="CandidateFeedback" id="unsuccessful-candidate-feedback" class="govuk-radios__conditional govuk-radios__conditional--hidden">
-                            <div class="govuk-form-group">
-                                <label asp-for="CandidateFeedback" class="govuk-label govuk-!-font-weight-bold">Feedback</label>
-                                <span esfa-validation-message-for="CandidateFeedback" class="govuk-error-message"></span>
-                                <span class="govuk-hint">Explain why the application has been unsucessful, your comments will be sent to the candidate.</span>
-                                <textarea asp-for="CandidateFeedback" class="govuk-textarea" cols="20" size="12"></textarea>
-                            </div>
+                            <input asp-for="NotifyApplicant" class="govuk-radios__input" id="notify-applicant-no" type="radio" value="false">
+                            <label for="notify-applicant-no" class="govuk-label govuk-radios__label">No</label>
                         </div>
                     </div>
                 </fieldset>
             </div>
-                
-            <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
-
-            <div class="govuk-form-group hide-print">
-                <button type="submit" class="govuk-button">Save</button>
-
-                <a asp-route="@RouteNames.VacancyManage_Get" class="govuk-link das-button-link">Cancel</a>
+            <div class="govuk-form-group">
+                <input type="submit" value="Continue" class="govuk-button" />
             </div>
-        </form>*@
+        </form>
     </div>
 </div>
-
-<script nws-csp-add-nonce="true">
-    $(function () {
-        var showHideContent = new GOVUK.ShowHideContent();
-        showHideContent.init();
-    });
-</script>

@@ -9,7 +9,6 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Extensions;
-using Esfa.Recruit.Employer.Web.ViewModels;
 using Microsoft.AspNetCore.Hosting;
 using InfoMsg = Esfa.Recruit.Shared.Web.ViewModels.InfoMessages;
 
@@ -28,7 +27,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         }
 
         [HttpGet("manage", Name = RouteNames.VacancyManage_Get)]
-        public async Task<IActionResult> ManageVacancy(VacancyRouteModel vrm)
+        public async Task<IActionResult> ManageVacancy(VacancyRouteModel vrm, string applicationUserName,string applicationReviewStatus,bool setApplicationStatus= false)
         {
             EnsureProposedChangesCookiesAreCleared(vrm.VacancyId);
 
@@ -43,6 +42,12 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             if (TempData.ContainsKey(TempDataKeys.VacancyClosedMessage))
                 viewModel.VacancyClosedInfoMessage = TempData[TempDataKeys.VacancyClosedMessage].ToString();
+
+            if (setApplicationStatus)
+            {
+                viewModel.ApplicationReviewedUserName = applicationUserName;
+                viewModel.ApplicationReviewedStatus = applicationReviewStatus;
+            }
 
             return View(viewModel);
         }

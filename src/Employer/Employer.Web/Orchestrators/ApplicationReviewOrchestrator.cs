@@ -5,7 +5,6 @@ using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
@@ -41,7 +40,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return vm;
         }
 
-        public Task PostApplicationReviewEditModelAsync(ApplicationReviewEditModel m, VacancyUser user)
+        public Task PostApplicationReviewEditModelAsync(ApplicationReviewStatusConfirmationEditModel m, VacancyUser user)
         {
             switch (m.Outcome.Value)
             {
@@ -52,6 +51,30 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 default:
                     throw new ArgumentException("Unhandled ApplicationReviewStatus");
             }
+        }
+
+        internal async Task<ApplicationStatusConfirmationViewModel> GetApplicationStatusConfirmationViewModelAsync(ApplicationReviewStatusConfirmationEditModel m)
+        {            
+            await Utility.GetAuthorisedApplicationReviewAsync(_vacancyClient, m);
+
+            return new ApplicationStatusConfirmationViewModel {
+                CandidateFeedback = m.CandidateFeedback,
+                Outcome = m.Outcome,
+                ApplicationReviewId = m.ApplicationReviewId
+            };
+        }
+
+        public async Task<ApplicationStatusConfirmationViewModel> GetApplicationStatusConfirmationViewModelAsync(ApplicationReviewEditModel rm)
+        {
+            var applicationReviewVm = await GetApplicationReviewViewModelAsync((ApplicationReviewRouteModel) rm);
+            
+            return new ApplicationStatusConfirmationViewModel {                
+                CandidateFeedback = rm.CandidateFeedback,                
+                Outcome = rm.Outcome,
+                ApplicationReviewId = rm.ApplicationReviewId,
+                Name= applicationReviewVm.Name,
+                Email = applicationReviewVm.Email
+            };
         }
     }
 }
