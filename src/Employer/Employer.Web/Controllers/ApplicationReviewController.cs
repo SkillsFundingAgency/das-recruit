@@ -40,7 +40,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
        [HttpPost("status", Name = RouteNames.ApplicationStatusConfirmation_Post)]
         public async Task<IActionResult> ApplicationStatusConfirmation(ApplicationReviewStatusConfirmationEditModel applicationReviewStatusConfirmationEditModel)
         {            
-            if (ModelState.IsValid == false)
+            if (!ModelState.IsValid)
             {
                 var vm = await _orchestrator.GetApplicationStatusConfirmationViewModelAsync(applicationReviewStatusConfirmationEditModel);
                 return View(vm);
