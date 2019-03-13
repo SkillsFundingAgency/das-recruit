@@ -23,7 +23,7 @@ namespace Esfa.Recruit.Shared.Web.ViewModels
 
         public bool HasVacancyReference => VacancyReference.HasValue;
         public bool HasNoVacancyReference => !HasVacancyReference;
-        public bool IsApplicationsVacancy => (Status== VacancyStatus.Live || Status == VacancyStatus.Closed) 
+        public bool CanShowVacancyApplicationsCount => (Status== VacancyStatus.Live || Status == VacancyStatus.Closed) 
                                              && ApplicationMethod == Vacancies.Client.Domain.Entities.ApplicationMethod.ThroughFindAnApprenticeship;
 
         public bool HasApplications => NoOfApplications > 0;
