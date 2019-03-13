@@ -26,8 +26,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Reports
                 ProcessingCount = reports.Count(r => r.IsProcessing),
                 Reports = reports.Select(r => new ReportRowViewModel 
                 {
-                    FromDate = ((DateTime)r.Parameters.Single(p => p.Name == ReportParameterName.FromDate).Value).AsGdsDate(),
-                    ToDate = ((DateTime)r.Parameters.Single(p => p.Name == ReportParameterName.ToDate).Value).AsGdsDate(),
+                    FromDate = ((DateTime)r.Parameters[ReportParameterName.FromDate]).AsGdsDate(),
+                    ToDate = ((DateTime)r.Parameters[ReportParameterName.ToDate]).AsGdsDate(),
                     DownloadCount = r.DownloadCount,
                     CreatedDate = r.RequestedOn.AsGdsDateTime(),
                     CreatedBy = r.RequestedBy.Name,

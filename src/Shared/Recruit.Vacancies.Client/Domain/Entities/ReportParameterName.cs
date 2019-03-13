@@ -1,9 +1,9 @@
 ﻿namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
 {
-    public enum ReportParameterName
+    public static class ReportParameterName
     {
-        Ukprn,
-        FromDate,
-        ToDate
+        public const string Ukprn = "Ukprn";
+        public const string FromDate = "FromDate";
+        public const string ToDate = "ToDate";
     }
 }
