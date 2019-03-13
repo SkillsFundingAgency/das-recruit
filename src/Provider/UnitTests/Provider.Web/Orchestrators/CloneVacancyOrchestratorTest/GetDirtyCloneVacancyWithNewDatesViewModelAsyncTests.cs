@@ -1,10 +1,9 @@
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.ViewModels.CloneVacancy;
-using Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.CloneVacancyOrchestratorTest;
 using FluentAssertions;
 using Xunit;
 
-namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.CloneVacancyOrchestratorTest
+namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.CloneVacancyOrchestratorTest
 {
     public class GetDirtyCloneVacancyWithNewDatesViewModelAsyncTests : CloneVacancyOrchestratorTestBase
     {

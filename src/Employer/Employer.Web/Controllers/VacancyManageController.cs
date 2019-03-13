@@ -27,7 +27,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         }
 
         [HttpGet("manage", Name = RouteNames.VacancyManage_Get)]
-        public async Task<IActionResult> ManageVacancy(VacancyRouteModel vrm, string applicationUserName,string applicationReviewStatus,bool setApplicationStatus= false)
+        public async Task<IActionResult> ManageVacancy(VacancyRouteModel vrm)
         {
             EnsureProposedChangesCookiesAreCleared(vrm.VacancyId);
 
@@ -43,13 +43,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             if (TempData.ContainsKey(TempDataKeys.VacancyClosedMessage))
                 viewModel.VacancyClosedInfoMessage = TempData[TempDataKeys.VacancyClosedMessage].ToString();
 
-            if (setApplicationStatus)
-            {
-                viewModel.ApplicationReviewedUserName = applicationUserName;
-                viewModel.ApplicationReviewedStatus = applicationReviewStatus.ToLower();
-                viewModel.CanShowApplicationReviewStatusHeader = true;
-            }
-
+            if (TempData.ContainsKey(TempDataKeys.ApplicationReviewStatusInfoMessage))
+                viewModel.ApplicationReviewStatusHeaderInfoMessage = TempData[TempDataKeys.ApplicationReviewStatusInfoMessage].ToString();            
             return View(viewModel);
         }
 

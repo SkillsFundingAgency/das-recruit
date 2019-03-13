@@ -1,9 +1,11 @@
 using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
+using Esfa.Recruit.Shared.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
@@ -18,14 +20,14 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             _orchestrator = orchestrator;
         }
 
-        [HttpGet("review", Name = RouteNames.ApplicationReview_Get)]
+        [HttpGet("", Name = RouteNames.ApplicationReview_Get)]
         public async Task<IActionResult> ApplicationReview(ApplicationReviewRouteModel rm)
         {
             var vm = await _orchestrator.GetApplicationReviewViewModelAsync(rm);
             return View(vm);
         }
 
-        [HttpPost("review", Name = RouteNames.ApplicationReview_Post)]
+        [HttpPost("", Name = RouteNames.ApplicationReview_Post)]
         public async Task<IActionResult> ApplicationReview(ApplicationReviewEditModel m)
         {
             if (!ModelState.IsValid)
@@ -37,28 +39,34 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             return View("ApplicationStatusConfirmation", applicationStatusConfirmationViewModel);
         }
 
-       [HttpPost("status", Name = RouteNames.ApplicationStatusConfirmation_Post)]
+       [HttpPost("status", Name = RouteNames.ApplicationReviewConfirmation_Post)]
         public async Task<IActionResult> ApplicationStatusConfirmation(ApplicationReviewStatusConfirmationEditModel applicationReviewStatusConfirmationEditModel)
-        {            
+        {
             if (!ModelState.IsValid)
             {
                 var vm = await _orchestrator.GetApplicationStatusConfirmationViewModelAsync(applicationReviewStatusConfirmationEditModel);
                 return View(vm);
             }
 
-            if (applicationReviewStatusConfirmationEditModel.NotifyApplicant.HasValue &&
-                applicationReviewStatusConfirmationEditModel.NotifyApplicant.Value)
+            if (CanNotifyApplicant(applicationReviewStatusConfirmationEditModel))
             {
                 await _orchestrator.PostApplicationReviewEditModelAsync(applicationReviewStatusConfirmationEditModel, User.ToVacancyUser());
-                var routeModel=new ApplicationReviewRouteModel {
+                var routeModel = new ApplicationReviewRouteModel {
                     ApplicationReviewId = applicationReviewStatusConfirmationEditModel.ApplicationReviewId,
                     VacancyId = applicationReviewStatusConfirmationEditModel.VacancyId,
                     EmployerAccountId = applicationReviewStatusConfirmationEditModel.EmployerAccountId
                 };
                 var vm = await _orchestrator.GetApplicationReviewViewModelAsync(routeModel);
-                return RedirectToRoute(RouteNames.VacancyManage_Get, new { applicationUserName =vm.Name, applicationReviewStatus = applicationReviewStatusConfirmationEditModel.Outcome.ToString(), setApplicationStatus ="true"});
+                TempData.Add(TempDataKeys.ApplicationReviewStatusInfoMessage, string.Format(InfoMessages.ApplicationReviewStatusHeader, vm.Name, applicationReviewStatusConfirmationEditModel.Outcome.ToString().ToLower()));
+                return RedirectToRoute(RouteNames.VacancyManage_Get);
             }
-           return RedirectToRoute(RouteNames.ApplicationReview_Get);
-        }        
+            return RedirectToRoute(RouteNames.ApplicationReview_Get);
+        }
+
+        private static bool CanNotifyApplicant(ApplicationReviewStatusConfirmationEditModel applicationReviewStatusConfirmationEditModel)
+        {
+            return applicationReviewStatusConfirmationEditModel.NotifyApplicant.HasValue &&
+                            applicationReviewStatusConfirmationEditModel.NotifyApplicant.Value;
+        }
     }
 }

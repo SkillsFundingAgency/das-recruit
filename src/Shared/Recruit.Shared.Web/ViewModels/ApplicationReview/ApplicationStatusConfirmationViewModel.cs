@@ -17,5 +17,8 @@ namespace Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview
         {
             nameof(Outcome)
         };
+
+        public bool ShowStatusSuccessful => Outcome.Value == ApplicationReviewStatus.Successful;
+        public bool ShowStatusUnSuccessful => Outcome.Value == ApplicationReviewStatus.Unsuccessful;
     }
 }

@@ -4,13 +4,13 @@ using FluentValidation;
 
 namespace Esfa.Recruit.Shared.Web.ViewModels.Validations.Fluent
 {
-    public class ApplicationStatusConfirmationViewModelValidator : AbstractValidator<IApplicationStatusConfirmationEditViewModel>
+    public class ApplicationReviewStatusConfirmationEditModelValidator : AbstractValidator<IApplicationStatusConfirmationEditViewModel>
     {
-        public ApplicationStatusConfirmationViewModelValidator()
+        public ApplicationReviewStatusConfirmationEditModelValidator()
         {
             RuleFor(x => x.NotifyApplicant)
                 .NotNull()
-                .WithMessage(ApplicationReviewValidator.NotifyApplicantRequired);           
+                .WithMessage(ApplicationReviewValidator.NotifyApplicantRequired);                             
         }
     }
 }
