@@ -22,8 +22,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Reports
 
             var vm = new ConfirmationViewModel 
             {
-                FromDate = ((DateTime)report.Parameters.Single(p => p.Name == ReportParameterName.FromDate).Value).AsGdsDate(),
-                ToDate = ((DateTime)report.Parameters.Single(p => p.Name == ReportParameterName.ToDate).Value).AsGdsDate(),
+                FromDate = ((DateTime)report.Parameters[ReportParameterName.FromDate]).AsGdsDate(),
+                ToDate = ((DateTime)report.Parameters[ReportParameterName.ToDate]).AsGdsDate(),
             };
 
             return vm;

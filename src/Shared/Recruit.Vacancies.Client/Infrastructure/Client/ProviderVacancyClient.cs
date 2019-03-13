@@ -79,10 +79,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 reportId,
                 owner,
                 ReportType.ProviderApplications,
-                new List<ReportParameter> {
-                    new ReportParameter{Name = ReportParameterName.Ukprn, Value = ukprn},
-                    new ReportParameter{Name = ReportParameterName.FromDate, Value = fromDate},
-                    new ReportParameter{Name = ReportParameterName.ToDate, Value = toDate}
+                new Dictionary<string, object> {
+                    { ReportParameterName.Ukprn, ukprn},
+                    { ReportParameterName.FromDate, fromDate},
+                    { ReportParameterName.ToDate, toDate}
                 },
                 user)
             );
