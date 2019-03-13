@@ -65,8 +65,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
         private static bool CanNotifyApplicant(ApplicationReviewStatusConfirmationEditModel applicationReviewStatusConfirmationEditModel)
         {
-            return applicationReviewStatusConfirmationEditModel.NotifyApplicant.HasValue &&
-                            applicationReviewStatusConfirmationEditModel.NotifyApplicant.Value;
+            return applicationReviewStatusConfirmationEditModel.CanNotifyApplicant.HasValue &&
+                            applicationReviewStatusConfirmationEditModel.CanNotifyApplicant.Value;
         }
     }
 }

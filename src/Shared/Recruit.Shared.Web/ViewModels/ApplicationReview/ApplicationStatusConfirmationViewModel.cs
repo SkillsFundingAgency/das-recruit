@@ -7,12 +7,11 @@ namespace Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview
     public class ApplicationStatusConfirmationViewModel
     {        
         public string Email { get; set; }
-        public string Name { get; set; }
-        public ApplicationReviewStatus? Status { get; set; }           
+        public string Name { get; set; }              
         public ApplicationReviewStatus? Outcome { get; set; }
         public string CandidateFeedback { get; set; }           
         public Guid ApplicationReviewId { get; set; }
-        public bool? NotifyApplicant { get; set; }
+        public bool? CanNotifyApplicant { get; set; }
         public IList<string> OrderedFieldNames => new List<string>
         {
             nameof(Outcome)
