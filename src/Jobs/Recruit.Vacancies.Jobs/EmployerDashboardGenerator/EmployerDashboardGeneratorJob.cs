@@ -1,8 +1,8 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.EventStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
 using Esfa.Recruit.Vacancies.Jobs.Configuration;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
