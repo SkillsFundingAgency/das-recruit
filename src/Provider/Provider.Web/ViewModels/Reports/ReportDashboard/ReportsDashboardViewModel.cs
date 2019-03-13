@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Humanizer;
-using Microsoft.EntityFrameworkCore.Internal;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.Reports.ReportDashboard
 {
