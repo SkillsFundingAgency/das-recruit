@@ -1,59 +1,59 @@
-﻿@using Esfa.Recruit.Vacancies.Client.Application.Services
-@model Esfa.Recruit.Employer.Web.ViewModels.EditVacancyDates.EditVacancyDatesViewModel
-
+﻿@model Esfa.Recruit.Employer.Web.ViewModels.EditVacancyDates.EditVacancyDatesViewModel
 <div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">Edit vacancy dates</h1>
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
-        <div class="grey-border govuk-!-margin-top-6">
+        <div class="govuk-form-group govuk-!-margin-top-6">
             <form asp-route="@RouteNames.VacancyEditDates_Post" novalidate>
                 <div esfa-validation-marker-for="ClosingDate" class="govuk-form-group">
-                    <fieldset class="govuk-fieldset">
-                        <legend class="govuk-fieldset__legend govuk-!-font-weight-bold">Closing date for applications</legend>
+                    <fieldset class="govuk-fieldset" aria-describedby="closing-hint" role="group">
+                        <label class="govuk-label govuk-!-font-weight-bold" for="shortDescription">
+                            Closing date for applications
+                        </label>
                         <span esfa-validation-message-for="ClosingDate" class="govuk-error-message"></span>
-                        <div class="govuk-date-input">
+                        <div class="govuk-date-input" id="closing">
                             <div class="govuk-date-input__item">
                                 <div class="govuk-form-group">
                                     <label asp-for="ClosingDay" class="govuk-label govuk-date-input__label">Day</label>
-                                    <input asp-for="ClosingDay" class="govuk-input govuk-date-input__input govuk-input--width-2" type="number" min="1" max="31" >
+                                    <input asp-for="ClosingDay" class="govuk-input govuk-date-input__input govuk-input--width-2" type="number" min="1" max="31">
                                 </div>
                             </div>
                             <div class="govuk-date-input__item">
                                 <div class="govuk-form-group">
                                     <label asp-for="ClosingMonth" class="govuk-label govuk-date-input__label">Month</label>
-                                    <input asp-for="ClosingMonth" class="govuk-input govuk-date-input__input govuk-input--width-2" type="number" min="1" max="12" >
+                                    <input asp-for="ClosingMonth" class="govuk-input govuk-date-input__input govuk-input--width-2" type="number" min="1" max="12">
                                 </div>
                             </div>
                             <div class="govuk-date-input__item">
                                 <div class="govuk-form-group">
                                     <label asp-for="ClosingYear" class="govuk-label govuk-date-input__label">Year</label>
-                                    <input asp-for="ClosingYear" class="govuk-input govuk-date-input__input govuk-input--width-4" type="number" min="@Model.CurrentYear" >
+                                    <input asp-for="ClosingYear" class="govuk-input govuk-date-input__input govuk-input--width-4" type="number" min="@Model.CurrentYear">
                                 </div>
                             </div>
                         </div>
+                        <br>
+                        <details class="govuk-details govuk-!-margin-bottom-0">
+                            <summary class="govuk-details__summary">
+                                <span class="govuk-details__summary-text">
+                                    Information about extending closing dates
+                                </span>
+                            </summary>
+                            <div class="govuk-details__text">
+                                <p>Before you extend the closing date remember that:</p>
+                                <ul class="list list-bullet">
+                                    <li>the apprenticeship training you chose may no longer be available</li>
+                                    <li>the fixed wage may no longer be valid, depending on National Minimum Wage changes</li>
+                                </ul>
+                                <p>To change the apprenticeship training or wage on the vacancy, you will need to create a new vacancy</p>
+                            </div>
+                        </details>
                     </fieldset>
                 </div>
-
-                <div class="govuk-form-group">
-                    <details role="group">
-                        <summary role="button" aria-controls="details-content-0" aria-expanded="true">
-                            <span class="summary">Information about extending closing dates</span>
-                        </summary>
-
-                        <div class="panel panel-border-narrow" id="details-content-0" aria-hidden="false">
-                            <p>Before you extend the closing date remember that:</p>
-                            <ul class="list list-bullet">
-                                <li>the apprenticeship training you chose may no longer be available</li>
-                                <li>the fixed wage may no longer be valid, depending on National Minimum Wage changes</li>
-                            </ul>
-                            <p>To change the apprenticeship training or wage on the vacancy, you will need to create a new vacancy</p>
-                        </div>
-                    </details>
-                </div>
-
-
                 <div esfa-validation-marker-for="StartDate" class="govuk-form-group">
-                    <fieldset class="govuk-fieldset">
-                        <legend class="govuk-fieldset__legend govuk-!-font-weight-bold">Possible start date</legend>
+                    <fieldset class="govuk-fieldset" aria-describedby="closing-hint" role="group">
+                        <label class="govuk-label govuk-!-font-weight-bold" for="shortDescription">
+                            Possible start date
+                        </label>
                         <span esfa-validation-message-for="StartDate" class="govuk-error-message"></span>
                         <div class="govuk-date-input">
                             <div class="govuk-date-input__item">
@@ -77,7 +77,6 @@
                         </div>
                     </fieldset>
                 </div>
-
                 <div class="govuk-form-group">
                     <label class="govuk-label govuk-!-font-weight-bold" for="apprenticeship-type">Apprenticeship training</label>
                     <p class="govuk-body">@Model.ProgrammeName</p>
