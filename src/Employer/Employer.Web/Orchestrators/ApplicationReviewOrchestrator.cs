@@ -41,23 +41,30 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         }
 
         public async Task<string> PostApplicationReviewEditModelAsync(ApplicationReviewStatusConfirmationEditModel m, VacancyUser user)
-        {
+        {            
             switch (m.Outcome.Value)
             {
                 case ApplicationReviewStatus.Successful:
-                    {
-                        await _client.SetApplicationReviewSuccessful(m.ApplicationReviewId, user);
-                        return user.Name;
-                    }                    
+                    await _client.SetApplicationReviewSuccessful(m.ApplicationReviewId, user);
+                    break;
                 case ApplicationReviewStatus.Unsuccessful:
-                    {
-                        await _client.SetApplicationReviewUnsuccessful(m.ApplicationReviewId, m.CandidateFeedback, user);
-                        return user.Name;
-                    }
-                    
+                    await _client.SetApplicationReviewUnsuccessful(m.ApplicationReviewId, m.CandidateFeedback, user);
+                    break;
                 default:
                     throw new ArgumentException("Unhandled ApplicationReviewStatus");
             }
+            var applicationReviewViewModel = await GetApplicationReviewViewModel(m);
+            return applicationReviewViewModel.Name;
+        }        
+
+        public async Task<ApplicationReviewViewModel> GetApplicationReviewViewModel(ApplicationReviewStatusConfirmationEditModel m)
+        {
+            var routeModel = new ApplicationReviewRouteModel {
+                ApplicationReviewId = m.ApplicationReviewId,
+                VacancyId = m.VacancyId,
+                EmployerAccountId = m.EmployerAccountId
+            };
+            return await GetApplicationReviewViewModelAsync(routeModel);            
         }
 
         internal async Task<ApplicationStatusConfirmationViewModel> GetApplicationStatusConfirmationViewModelAsync(ApplicationReviewStatusConfirmationEditModel m)

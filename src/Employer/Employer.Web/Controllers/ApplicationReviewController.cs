@@ -6,8 +6,8 @@ using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Shared.Web.ViewModels;
-using Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
@@ -29,21 +29,27 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         }
 
         [HttpPost("", Name = RouteNames.ApplicationReview_Post)]
-        public async Task<IActionResult> ApplicationReview(ApplicationReviewEditModel m)
+        public async Task<IActionResult> ApplicationReview(ApplicationReviewEditModel applicationReviewEditModel)
         {
             if (!ModelState.IsValid)
             {
-                var vm = await _orchestrator.GetApplicationReviewViewModelAsync(m);
+                var vm = await _orchestrator.GetApplicationReviewViewModelAsync(applicationReviewEditModel);
                 return View(vm);
-            }            
-            var applicationStatusConfirmationViewModel = await _orchestrator.GetApplicationStatusConfirmationViewModelAsync(m);
-            return RedirectToRoute(RouteNames.ApplicationReviewConfirmation_Get, applicationStatusConfirmationViewModel);            
+            }                        
+            TempData["ApplicationReviewEditModel"] = JsonConvert.SerializeObject(applicationReviewEditModel);
+            return RedirectToRoute(RouteNames.ApplicationReviewConfirmation_Get);            
         }
 
         [HttpGet("status", Name = RouteNames.ApplicationReviewConfirmation_Get)]
-        public IActionResult ApplicationStatusConfirmation(ApplicationStatusConfirmationViewModel applicationStatusConfirmationViewModel)
-        {            
-            return View(applicationStatusConfirmationViewModel);
+        public async Task<IActionResult> ApplicationStatusConfirmation()
+        {
+            if (TempData["ApplicationReviewEditModel"] is string model)
+            {
+                var applicationReviewEditViewModel = JsonConvert.DeserializeObject<ApplicationReviewEditModel>(model);
+                var applicationStatusConfirmationViewModel = await _orchestrator.GetApplicationStatusConfirmationViewModelAsync(applicationReviewEditViewModel);                
+                return View(applicationStatusConfirmationViewModel);
+            }                
+            return RedirectToRoute(RouteNames.ApplicationReview_Get);
         }
 
         [HttpPost("status", Name = RouteNames.ApplicationReviewConfirmation_Post)]
