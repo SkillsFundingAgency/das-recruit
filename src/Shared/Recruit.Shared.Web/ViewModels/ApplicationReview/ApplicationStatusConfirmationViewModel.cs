@@ -11,7 +11,7 @@ namespace Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview
         public ApplicationReviewStatus? Outcome { get; set; }
         public string CandidateFeedback { get; set; }           
         public Guid ApplicationReviewId { get; set; }
-        public bool? CanNotifyApplicant { get; set; }
+        public bool? NotifyApplicant { get; set; }
         public IList<string> OrderedFieldNames => new List<string>
         {
             nameof(Outcome)

@@ -40,14 +40,21 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return vm;
         }
 
-        public Task PostApplicationReviewEditModelAsync(ApplicationReviewStatusConfirmationEditModel m, VacancyUser user)
+        public async Task<string> PostApplicationReviewEditModelAsync(ApplicationReviewStatusConfirmationEditModel m, VacancyUser user)
         {
             switch (m.Outcome.Value)
             {
                 case ApplicationReviewStatus.Successful:
-                    return _client.SetApplicationReviewSuccessful(m.ApplicationReviewId, user);
+                    {
+                        await _client.SetApplicationReviewSuccessful(m.ApplicationReviewId, user);
+                        return user.Name;
+                    }                    
                 case ApplicationReviewStatus.Unsuccessful:
-                    return _client.SetApplicationReviewUnsuccessful(m.ApplicationReviewId, m.CandidateFeedback, user);
+                    {
+                        await _client.SetApplicationReviewUnsuccessful(m.ApplicationReviewId, m.CandidateFeedback, user);
+                        return user.Name;
+                    }
+                    
                 default:
                     throw new ArgumentException("Unhandled ApplicationReviewStatus");
             }

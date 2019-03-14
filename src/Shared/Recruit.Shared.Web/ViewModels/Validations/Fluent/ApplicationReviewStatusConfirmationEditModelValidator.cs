@@ -8,7 +8,7 @@ namespace Esfa.Recruit.Shared.Web.ViewModels.Validations.Fluent
     {
         public ApplicationReviewStatusConfirmationEditModelValidator()
         {
-            RuleFor(x => x.CanNotifyApplicant)
+            RuleFor(x => x.NotifyApplicant)
                 .NotNull()
                 .WithMessage(ApplicationReviewValidator.NotifyApplicantRequired);                             
         }
