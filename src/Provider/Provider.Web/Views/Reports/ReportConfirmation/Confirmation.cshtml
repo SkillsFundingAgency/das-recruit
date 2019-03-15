@@ -1,0 +1,16 @@
+﻿@model Esfa.Recruit.Provider.Web.ViewModels.Reports.ReportConfirmation.ConfirmationViewModel
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-panel govuk-panel--confirmation">
+            <h1 class="govuk-panel__title">
+                Processing report from @Model.FromDate to @Model.ToDate
+            </h1>
+        </div>
+        <p class="govuk-body">When your report is ready you will be able to download it from the 
+            <a asp-route="@RouteNames.ReportDashboard_Get">reporting dashboard</a></p>
+        <p class="govuk-body">Some large reports can take longer to process.</p>
+        <p class="govuk-body">
+            <a asp-route="@RouteNames.ReportDashboard_Get" class="govuk-button">Back to report dashboard</a>
+        </p>
+    </div>
+</div>

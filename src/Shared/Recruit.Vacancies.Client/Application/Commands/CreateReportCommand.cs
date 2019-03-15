@@ -8,17 +8,19 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Commands
 {
     public class CreateReportCommand : ICommand, IRequest
     {
-        public CreateReportCommand(Guid reportId, ReportType reportType, List<ReportParameter> parameters, VacancyUser requestedBy)
+        public CreateReportCommand(Guid reportId, ReportOwner owner, ReportType reportType, Dictionary<string, object> parameters, VacancyUser requestedBy)
         {
             ReportId = reportId;
+            Owner = owner;
             ReportType = reportType;
             Parameters = parameters;
             RequestedBy = requestedBy;
         }
 
         public Guid ReportId { get; set; }
+        public ReportOwner Owner { get; set; }
         public ReportType ReportType { get; set; }
-        public List<ReportParameter> Parameters { get; set; }
+        public Dictionary<string, object> Parameters { get; set; }
         public VacancyUser RequestedBy { get; set; }
     }
 }

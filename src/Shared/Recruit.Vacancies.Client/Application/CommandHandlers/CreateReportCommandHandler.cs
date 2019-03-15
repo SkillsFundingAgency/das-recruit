@@ -38,6 +38,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             var report = new Report
             {
                 Id = message.ReportId,
+                Owner = message.Owner,
                 Status = ReportStatus.New,
                 ReportType = message.ReportType,
                 Parameters = message.Parameters,
