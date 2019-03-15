@@ -34,17 +34,17 @@
         <form asp-route="@RouteNames.ApplicationReviewConfirmation_Post">
             @Html.HiddenFor(model => model.Outcome)
             @Html.HiddenFor(model => model.CandidateFeedback)
-            <div esfa-validation-marker-for="NotifyApplicant" class="govuk-form-group">
+            <div esfa-validation-marker-for="NotifyCandidate" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
-                    <span esfa-validation-message-for="NotifyApplicant" class="govuk-error-message"></span>
+                    <span esfa-validation-message-for="NotifyCandidate" class="govuk-error-message"></span>
                     <div class="govuk-radios">
                         <div class="govuk-radios__item">
-                            <input asp-for="NotifyApplicant" class="govuk-radios__input" id="notify-applicant-yes" type="radio" value="true">
-                            <label for="notify-applicant-yes" class="govuk-label govuk-radios__label">Yes, notify the applicant</label>
+                            <input asp-for="NotifyCandidate" class="govuk-radios__input" id="notify-candidate-yes" type="radio" value="true">
+                            <label for="notify-candidate-yes" class="govuk-label govuk-radios__label">Yes, notify the applicant</label>
                         </div>
                         <div class="govuk-radios__item">
-                            <input asp-for="NotifyApplicant" class="govuk-radios__input" id="notify-applicant-no" type="radio" value="false">
-                            <label for="notify-applicant-no" class="govuk-label govuk-radios__label">No</label>
+                            <input asp-for="NotifyCandidate" class="govuk-radios__input" id="notify-candidate-no" type="radio" value="false">
+                            <label for="notify-candidate-no" class="govuk-label govuk-radios__label">No</label>
                         </div>
                     </div>
                 </fieldset>

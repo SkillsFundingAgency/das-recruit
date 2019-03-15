@@ -61,9 +61,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 return View(vm);
             }
 
-            if (applicationReviewStatusConfirmationEditModel.CanNotifyApplicant)
+            if (applicationReviewStatusConfirmationEditModel.CanNotifyCandidate)
             {
-                var userName = await _orchestrator.PostApplicationReviewEditModelAsync(applicationReviewStatusConfirmationEditModel, User.ToVacancyUser());              
+                var userName = await _orchestrator.PostApplicationReviewConfirmationEditModelAsync(applicationReviewStatusConfirmationEditModel, User.ToVacancyUser());              
                 TempData.Add(TempDataKeys.ApplicationReviewStatusInfoMessage, string.Format(InfoMessages.ApplicationReviewStatusHeader, userName, applicationReviewStatusConfirmationEditModel.Outcome.ToString().ToLower()));
                 return RedirectToRoute(RouteNames.VacancyManage_Get);
             }
