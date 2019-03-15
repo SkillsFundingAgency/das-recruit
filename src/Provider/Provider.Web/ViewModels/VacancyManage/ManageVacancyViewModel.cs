@@ -16,11 +16,12 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyManage
         public VacancyApplicationsViewModel Applications { get; internal set; }
         public bool HasApplications => Applications.Applications.Any();
         public bool HasNoApplications => Applications.Applications == null || Applications.Applications?.Any() == false;
-
         public bool CanShowEditVacancyLink { get; internal set; }
         public bool CanShowCloseVacancyLink { get; internal set; }
         public bool CanShowCloneVacancyLink { get; internal set; }
         public string VacancyClosedInfoMessage { get; internal set; }
         public bool HasVacancyClosedInfoMessage => !string.IsNullOrEmpty(VacancyClosedInfoMessage);
+        public string ApplicationReviewStatusHeaderInfoMessage { get; internal set; }
+        public bool CanShowApplicationReviewStatusHeader => !string.IsNullOrEmpty(ApplicationReviewStatusHeaderInfoMessage);
     }
 }
