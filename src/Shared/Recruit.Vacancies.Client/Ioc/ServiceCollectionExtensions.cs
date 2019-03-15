@@ -1,4 +1,6 @@
-﻿using Esfa.Recruit.Vacancies.Client.Application.Aspects;
+﻿using System;
+using System.Collections.Generic;
+using Esfa.Recruit.Vacancies.Client.Application.Aspects;
 using Esfa.Recruit.Vacancies.Client.Application.Cache;
 using Esfa.Recruit.Vacancies.Client.Application.CommandHandlers;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
@@ -118,7 +120,20 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddTransient<IGetTitlePopularity, TitlePopularityService>();
             services.AddTransient<ICache, Cache>();
             services.AddTransient<IHtmlSanitizerService, HtmlSanitizerService>();
+
+            //Reporting Service
             services.AddTransient<IReportService, ReportService>();
+            services.AddTransient<ProviderApplicationsReportStrategy>();
+            services.AddTransient<Func<ReportType, IReportStrategy>>(serviceProvider => reportType =>
+            {
+                switch (reportType)
+                {
+                    case ReportType.ProviderApplications:
+                        return serviceProvider.GetService<ProviderApplicationsReportStrategy>();
+                    default:
+                        throw new KeyNotFoundException($"No report strategy for {reportType}");
+                }
+            });
 
             // Infrastructure Services
             services.AddTransient<IEmployerAccountProvider, EmployerAccountProvider>();

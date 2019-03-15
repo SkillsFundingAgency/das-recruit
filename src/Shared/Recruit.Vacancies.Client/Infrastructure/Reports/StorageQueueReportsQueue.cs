@@ -11,10 +11,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
         {
         }
 
-        public Task Add(Guid reportId)
+        public Task AddAsync(Guid reportId)
         {
-            var message = new StorageQueueReportMessage 
-            {
+            var message = new StorageQueueReportMessage {
                 ReportId = reportId
             };
 
