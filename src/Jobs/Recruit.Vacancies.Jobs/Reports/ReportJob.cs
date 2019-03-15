@@ -30,14 +30,14 @@ namespace Esfa.Recruit.Vacancies.Jobs.Reports
 
         public async Task GenerateReport([QueueTrigger(QueueNames.ReportQueueName, Connection = "QueueStorage")] string message, TextWriter log)
         {
-            if (_jobsConfig.DisabledJobs.Contains(JobName))
-            {
-                _logger.LogDebug($"{JobName} is disabled, skipping ...");
-                return;
-            }
-
             try
             {
+                if (_jobsConfig.DisabledJobs.Contains(JobName))
+                {
+                    _logger.LogDebug($"{JobName} is disabled, skipping ...");
+                    return;
+                }
+
                 if (!string.IsNullOrEmpty(message))
                 {
                     _logger.LogInformation($"Start {JobName}");
@@ -51,7 +51,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.Reports
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Unable to run {JobName}.");
+                _logger.LogError(ex, $"Failed to run {JobName}");
                 throw;
             }
         }

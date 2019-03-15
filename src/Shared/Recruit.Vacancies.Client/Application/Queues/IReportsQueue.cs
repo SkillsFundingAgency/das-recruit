@@ -5,6 +5,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Queues
 {
     public interface IReportsQueue
     {
-        Task Add(Guid reportId);
+        Task AddAsync(Guid reportId);
     }
 }
