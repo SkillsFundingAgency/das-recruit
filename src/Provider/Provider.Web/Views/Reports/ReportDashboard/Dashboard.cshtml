@@ -1,8 +1,8 @@
 ﻿@model Esfa.Recruit.Provider.Web.ViewModels.Reports.ReportDashboard.ReportsDashboardViewModel
 <div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
+    <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-xl">Reports</h1>
-        <p asp-hide="@Model.HasReports" class="govuk-body">You can create and download a report that gives you information on all the applications you got. You can decide what time period you would like for the report. </p>
+        <p asp-hide="@Model.HasReports" class="govuk-body">You can create and download a report that gives you information on all the applications you received. You can decide what time period you would like for the report.</p>
         <a asp-route="@RouteNames.ProviderApplicationsReportCreate_Get" class="govuk-button">Create new report</a>
         <div asp-show="@Model.HasReports">
             <p class="govuk-body">
@@ -27,18 +27,15 @@
             {
                 <tr class="govuk-table__row">
                     <td class="govuk-table__cell">
-                        <span class="table-heading" aria-hidden="true">Report Period</span>
                         @report.FromDate to @report.ToDate
                         <div asp-show="@report.IsNew">
                             <span class="das-tag das-tag--new">new</span>
                         </div>
                     </td>
                     <td class="govuk-table__cell">
-                        <span class="table-heading" aria-hidden="true">Created on</span>
                         @report.CreatedDate
                     </td>
                     <td class="govuk-table__cell">
-                        <span class="table-heading" aria-hidden="true">Created by</span>
                         @report.CreatedBy
                     </td>
                     <td class="govuk-table__cell govuk-table__cell--numeric">
