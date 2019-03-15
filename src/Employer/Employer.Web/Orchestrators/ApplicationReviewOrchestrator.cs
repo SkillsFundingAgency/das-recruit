@@ -5,7 +5,6 @@ using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
@@ -24,7 +23,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         public async Task<ApplicationReviewViewModel> GetApplicationReviewViewModelAsync(ApplicationReviewRouteModel rm)
         {
             var applicationReview = await Utility.GetAuthorisedApplicationReviewAsync(_vacancyClient, rm);
-
+           
             if (applicationReview.IsWithdrawn)
                 throw new Exception($"Application has been withdrawn. ApplicationReviewId:{applicationReview.Id}");
 
@@ -41,17 +40,46 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return vm;
         }
 
-        public Task PostApplicationReviewEditModelAsync(ApplicationReviewEditModel m, VacancyUser user)
+        public async Task<string> PostApplicationReviewConfirmationEditModelAsync(ApplicationReviewStatusConfirmationEditModel m, VacancyUser user)
         {
+            var applicationReview = await Utility.GetAuthorisedApplicationReviewAsync(_vacancyClient, m);
+
             switch (m.Outcome.Value)
             {
                 case ApplicationReviewStatus.Successful:
-                    return _client.SetApplicationReviewSuccessful(m.ApplicationReviewId, user);
+                    await _client.SetApplicationReviewSuccessful(applicationReview.Id, user);
+                    break;
                 case ApplicationReviewStatus.Unsuccessful:
-                    return _client.SetApplicationReviewUnsuccessful(m.ApplicationReviewId, m.CandidateFeedback, user);
+                    await _client.SetApplicationReviewUnsuccessful(applicationReview.Id, m.CandidateFeedback, user);
+                    break;
                 default:
                     throw new ArgumentException("Unhandled ApplicationReviewStatus");
             }
+            return applicationReview.Application.FullName;
+        }                
+
+        internal async Task<ApplicationStatusConfirmationViewModel> GetApplicationStatusConfirmationViewModelAsync(ApplicationReviewStatusConfirmationEditModel m)
+        {            
+            await Utility.GetAuthorisedApplicationReviewAsync(_vacancyClient, m);
+
+            return new ApplicationStatusConfirmationViewModel {
+                CandidateFeedback = m.CandidateFeedback,
+                Outcome = m.Outcome,
+                ApplicationReviewId = m.ApplicationReviewId
+            };
+        }
+
+        public async Task<ApplicationStatusConfirmationViewModel> GetApplicationStatusConfirmationViewModelAsync(ApplicationReviewEditModel rm)
+        {
+            var applicationReviewVm = await GetApplicationReviewViewModelAsync((ApplicationReviewRouteModel) rm);
+            
+            return new ApplicationStatusConfirmationViewModel {                
+                CandidateFeedback = rm.CandidateFeedback,                
+                Outcome = rm.Outcome,
+                ApplicationReviewId = rm.ApplicationReviewId,
+                Name= applicationReviewVm.Name,
+                Email = applicationReviewVm.Email
+            };
         }
     }
 }
