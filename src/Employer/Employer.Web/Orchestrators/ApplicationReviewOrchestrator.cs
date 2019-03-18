@@ -62,10 +62,13 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         {            
             await Utility.GetAuthorisedApplicationReviewAsync(_vacancyClient, m);
 
+            var applicationReview = await Utility.GetAuthorisedApplicationReviewAsync(_vacancyClient, m);
+
             return new ApplicationStatusConfirmationViewModel {
                 CandidateFeedback = m.CandidateFeedback,
                 Outcome = m.Outcome,
-                ApplicationReviewId = m.ApplicationReviewId
+                ApplicationReviewId = m.ApplicationReviewId,
+                Name = applicationReview.Application.FullName
             };
         }
 
@@ -77,9 +80,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 CandidateFeedback = rm.CandidateFeedback,                
                 Outcome = rm.Outcome,
                 ApplicationReviewId = rm.ApplicationReviewId,
-                Name= applicationReviewVm.Name,
-                Email = applicationReviewVm.Email
+                Name= applicationReviewVm.Name                
             };
-        }
+        }        
     }
 }

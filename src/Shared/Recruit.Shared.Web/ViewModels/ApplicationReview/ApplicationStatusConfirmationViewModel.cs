@@ -5,8 +5,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 namespace Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview
 {
     public class ApplicationStatusConfirmationViewModel
-    {        
-        public string Email { get; set; }
+    {                
         public string Name { get; set; }              
         public ApplicationReviewStatus? Outcome { get; set; }
         public string CandidateFeedback { get; set; }           

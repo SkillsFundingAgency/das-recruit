@@ -40,17 +40,48 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             return vm;
         }
 
-        public Task PostApplicationReviewEditModelAsync(ApplicationReviewEditModel m, VacancyUser user)
+        public async Task<string> PostApplicationReviewConfirmationEditModelAsync(ApplicationReviewStatusConfirmationEditModel m, VacancyUser user)
         {
+            var applicationReview = await Utility.GetAuthorisedApplicationReviewAsync(_vacancyClient, m);
+
             switch (m.Outcome.Value)
             {
                 case ApplicationReviewStatus.Successful:
-                    return _client.SetApplicationReviewSuccessful(m.ApplicationReviewId, user);
+                    await _client.SetApplicationReviewSuccessful(applicationReview.Id, user);
+                    break;
                 case ApplicationReviewStatus.Unsuccessful:
-                    return _client.SetApplicationReviewUnsuccessful(m.ApplicationReviewId, m.CandidateFeedback, user);
+                    await _client.SetApplicationReviewUnsuccessful(applicationReview.Id, m.CandidateFeedback, user);
+                    break;
                 default:
                     throw new ArgumentException("Unhandled ApplicationReviewStatus");
             }
+            return applicationReview.Application.FullName;
         }
+
+        internal async Task<ApplicationStatusConfirmationViewModel> GetApplicationStatusConfirmationViewModelAsync(ApplicationReviewStatusConfirmationEditModel applicationReviewStatusConfirmationEditModel)
+        {
+            await Utility.GetAuthorisedApplicationReviewAsync(_vacancyClient, applicationReviewStatusConfirmationEditModel);
+
+            var applicationReview = await Utility.GetAuthorisedApplicationReviewAsync(_vacancyClient, applicationReviewStatusConfirmationEditModel);
+
+            return new ApplicationStatusConfirmationViewModel {
+                CandidateFeedback = applicationReviewStatusConfirmationEditModel.CandidateFeedback,
+                Outcome = applicationReviewStatusConfirmationEditModel.Outcome,
+                ApplicationReviewId = applicationReviewStatusConfirmationEditModel.ApplicationReviewId,
+                Name = applicationReview.Application.FullName
+            };
+        }
+
+        public async Task<ApplicationStatusConfirmationViewModel> GetApplicationStatusConfirmationViewModelAsync(ApplicationReviewEditModel rm)
+        {
+            var applicationReviewVm = await GetApplicationReviewViewModelAsync((ApplicationReviewRouteModel)rm);
+
+            return new ApplicationStatusConfirmationViewModel {
+                CandidateFeedback = rm.CandidateFeedback,
+                Outcome = rm.Outcome,
+                ApplicationReviewId = rm.ApplicationReviewId,
+                Name = applicationReviewVm.Name                
+            };
+        }        
     }
 }

@@ -43,6 +43,9 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             if (TempData.ContainsKey(TempDataKeys.VacancyClosedMessage))
                 viewModel.VacancyClosedInfoMessage = TempData[TempDataKeys.VacancyClosedMessage].ToString();
 
+            if (TempData.ContainsKey(TempDataKeys.ApplicationReviewStatusInfoMessage))
+                viewModel.ApplicationReviewStatusHeaderInfoMessage = TempData[TempDataKeys.ApplicationReviewStatusInfoMessage].ToString();
+
             return View(viewModel);
         }
 

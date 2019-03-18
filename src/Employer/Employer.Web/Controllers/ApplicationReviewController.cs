@@ -15,6 +15,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
     public class ApplicationReviewController : Controller
     {
         private readonly ApplicationReviewOrchestrator _orchestrator;
+        private const string TempDataARModel = "ApplicationReviewEditModel";
 
         public ApplicationReviewController(ApplicationReviewOrchestrator orchestrator)
         {
@@ -36,14 +37,14 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 var vm = await _orchestrator.GetApplicationReviewViewModelAsync(applicationReviewEditModel);
                 return View(vm);
             }                        
-            TempData["ApplicationReviewEditModel"] = JsonConvert.SerializeObject(applicationReviewEditModel);
+            TempData[TempDataARModel] = JsonConvert.SerializeObject(applicationReviewEditModel);
             return RedirectToRoute(RouteNames.ApplicationReviewConfirmation_Get);            
         }
 
         [HttpGet("status", Name = RouteNames.ApplicationReviewConfirmation_Get)]
         public async Task<IActionResult> ApplicationStatusConfirmation()
         {
-            if (TempData["ApplicationReviewEditModel"] is string model)
+            if (TempData[TempDataARModel] is string model)
             {
                 var applicationReviewEditViewModel = JsonConvert.DeserializeObject<ApplicationReviewEditModel>(model);
                 var applicationStatusConfirmationViewModel = await _orchestrator.GetApplicationStatusConfirmationViewModelAsync(applicationReviewEditViewModel);                
@@ -63,8 +64,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             if (applicationReviewStatusConfirmationEditModel.CanNotifyCandidate)
             {
-                var userName = await _orchestrator.PostApplicationReviewConfirmationEditModelAsync(applicationReviewStatusConfirmationEditModel, User.ToVacancyUser());              
-                TempData.Add(TempDataKeys.ApplicationReviewStatusInfoMessage, string.Format(InfoMessages.ApplicationReviewStatusHeader, userName, applicationReviewStatusConfirmationEditModel.Outcome.ToString().ToLower()));
+                var candidateName = await _orchestrator.PostApplicationReviewConfirmationEditModelAsync(applicationReviewStatusConfirmationEditModel, User.ToVacancyUser());              
+                TempData.Add(TempDataKeys.ApplicationReviewStatusInfoMessage, string.Format(InfoMessages.ApplicationReviewStatusHeader, candidateName, applicationReviewStatusConfirmationEditModel.Outcome.ToString().ToLower()));
                 return RedirectToRoute(RouteNames.VacancyManage_Get);
             }
             return RedirectToRoute(RouteNames.ApplicationReview_Get);
