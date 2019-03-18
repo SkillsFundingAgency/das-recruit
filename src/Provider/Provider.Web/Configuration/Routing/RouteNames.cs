@@ -67,5 +67,7 @@
         public const string ApplicationReview_Post = "ApplicationReview_Post";
         public const string ApplicationReviewConfirmation_Get = "ApplicationReviewConfirmation_Get";
         public const string ApplicationReviewConfirmation_Post = "ApplicationReviewConfirmation_Post";
+        public const string CreateReport_Get = "CreateReport_Get";
+        public const string CreateReport_Post = "CreateReport_Post";
     }
 }
