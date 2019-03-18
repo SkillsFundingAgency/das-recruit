@@ -21,8 +21,8 @@
     <div class="govuk-grid-column-one-quarter review-header-table-cell review-header-table-cell__border-left">
         <h2 class="govuk-heading-s govuk-!-margin-top-4 govuk-!-margin-bottom-1">User history</h2>
         <p asp-show="@Model.HasNotPreviouslySubmitted"  class="govuk-body">This is the first vacancy posted by this user.</p>
-        <p asp-show="@Model.HasPreviouslySubmitted" class="govuk-body govuk-!-margin-bottom-0"><span class="govuk-!-font-weight-bold" style="color:#2b8cc4">@Model.VacancyReviewsApprovedCount</span> Reviewed vacancies</p>
-        <p asp-show="@Model.HasPreviouslySubmitted" class="govuk-body"><span class="govuk-!-font-weight-bold" style="color:#2b8cc4">@Model.VacancyReviewsApprovedFirstTimeCount</span> Passed QA first time</p> 
+        <p asp-show="@Model.HasPreviouslySubmitted" class="govuk-body govuk-!-margin-bottom-0"><span class="govuk-!-font-weight-bold das-user-history-count">@Model.VacancyReviewsApprovedCount</span> Reviewed vacancies</p>
+        <p asp-show="@Model.HasPreviouslySubmitted" class="govuk-body"><span class="govuk-!-font-weight-bold das-user-history-count">@Model.VacancyReviewsApprovedFirstTimeCount</span> Passed QA first time</p> 
     </div>
 </div>
 <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-6">
