@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
-using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer;
@@ -8,6 +7,8 @@ using Esfa.Recruit.Employer.Web.Views;
 using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Mappers;
+using System.Linq;
+using Esfa.Recruit.Employer.Web.Extensions;
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 {
@@ -25,10 +26,16 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         public async Task<IActionResult> Employer(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
         {
             var vm = await _orchestrator.GetEmployerViewModelAsync(vrm);
+            if(vm.HasOnlyOneOrganisation)
+            {
+                var org = vm.Organisations.FirstOrDefault();
+                await _orchestrator.SaveOrganisation(vrm, org.Id, User.ToVacancyUser());
+                return RedirectToRoute(RouteNames.EmployerName_Get);
+            }
             vm.PageInfo.SetWizard(wizard);
             return View(vm);
         }
-
+        
         [HttpPost("employer", Name = RouteNames.Employer_Post)]
         public async Task<IActionResult> Employer(EmployerEditModel m, [FromQuery] bool wizard)
         {
@@ -46,12 +53,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                 return View(vm);
             }
 
-            if (response.Data.HasLegalEntityAgreement == false)
-                return RedirectToRoute(RouteNames.LegalEntityAgreement_SoftStop_Get);
-
-            return wizard
-                ? RedirectToRoute(RouteNames.Training_Get)
-                : RedirectToRoute(RouteNames.Vacancy_Preview_Get, null, Anchors.AboutEmployerSection);
+            return RedirectToRoute(RouteNames.EmployerName_Get, new {LegalEntityId = m.SelectedOrganisationId});
         }
     }
 }

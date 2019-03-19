@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,22 +21,22 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
     public class EmployerOrchestrator : EntityValidatingOrchestrator<Vacancy, EmployerEditModel>
     {
-        private const VacancyRuleSet ValidationRules = VacancyRuleSet.EmployerName | VacancyRuleSet.EmployerAddress;
+        private const VacancyRuleSet ValidationRules = VacancyRuleSet.LegalEntityName;
         private readonly IEmployerVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
-        private readonly IReviewSummaryService _reviewSummaryService;
+        private readonly ILogger<EmployerOrchestrator> _logger;
         private readonly ILegalEntityAgreementService _legalEntityAgreementService;
 
         public EmployerOrchestrator(
             IEmployerVacancyClient client,
             IRecruitVacancyClient vacancyClient,
-            ILogger<EmployerOrchestrator> logger, 
-            IReviewSummaryService reviewSummaryService, 
-            ILegalEntityAgreementService legalEntityAgreementService) : base(logger)
+            ILogger<EmployerOrchestrator> logger,
+            ILegalEntityAgreementService legalEntityAgreementService)
+            : base(logger)
         {
             _client = client;
             _vacancyClient = vacancyClient;
-            _reviewSummaryService = reviewSummaryService;
+            _logger = logger;
             _legalEntityAgreementService = legalEntityAgreementService;
         }
 
@@ -50,90 +51,38 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var vacancy = getVacancyTask.Result;
 
             var vm = new EmployerViewModel
-            {
+            {                
                 Organisations = BuildLegalEntityViewModels(employerData, vrm.EmployerAccountId),
                 SelectedOrganisationId = vacancy.LegalEntityId,
                 PageInfo = Utility.GetPartOnePageInfo(vacancy)
             };
 
-            if (vacancy.EmployerLocation != null)
-            {
-                vm.AddressLine1 = vacancy.EmployerLocation.AddressLine1;
-                vm.AddressLine2 = vacancy.EmployerLocation.AddressLine2;
-                vm.AddressLine3 = vacancy.EmployerLocation.AddressLine3;
-                vm.AddressLine4 = vacancy.EmployerLocation.AddressLine4;
-                vm.Postcode = vacancy.EmployerLocation.Postcode;
-            }
-            else if (employerData.LegalEntities.Count() == 1 && vacancy.EmployerLocation == null)
-            {
-                var defaultLegalEntity = employerData.LegalEntities.First();
-                vm.AddressLine1 = defaultLegalEntity.Address.AddressLine1;
-                vm.AddressLine2 = defaultLegalEntity.Address.AddressLine2;
-                vm.AddressLine3 = defaultLegalEntity.Address.AddressLine3;
-                vm.AddressLine4 = defaultLegalEntity.Address.AddressLine4;
-                vm.Postcode = defaultLegalEntity.Address.Postcode;
-            }
-
-            if (vacancy.Status == VacancyStatus.Referred)
-            {
-                vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
-                    ReviewFieldMappingLookups.GetEmployerFieldIndicators());
-            }
-
             return vm;
         }
 
-        public async Task<EmployerViewModel> GetEmployerViewModelAsync(EmployerEditModel m)
+        public Task<OrchestratorResponse> PostEmployerEditModelAsync(EmployerEditModel m, VacancyUser user)
         {
-            var vm = await GetEmployerViewModelAsync((VacancyRouteModel)m);
-
-            vm.SelectedOrganisationId = m.SelectedOrganisationId;
-            vm.AddressLine1 = m.AddressLine1;
-            vm.AddressLine2 = m.AddressLine2;
-            vm.AddressLine3 = m.AddressLine3;
-            vm.AddressLine4 = m.AddressLine4;
-            vm.Postcode = m.Postcode;
-
-            return vm;
+            return SaveOrganisation(m, m.SelectedOrganisationId, user);
         }
 
-        public async Task<OrchestratorResponse<PostEmployerEditModelResponse>> PostEmployerEditModelAsync(EmployerEditModel m, VacancyUser user)
+        public async Task<OrchestratorResponse> SaveOrganisation(VacancyRouteModel vacancyRouteModel, long? legalEntityId, VacancyUser user)
         {
-            var vacancyTask = Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, m, RouteNames.Employer_Post);
-            var employerVacancyInfoTask = _client.GetEditVacancyInfoAsync(m.EmployerAccountId);
+            var vacancyTask = Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vacancyRouteModel, RouteNames.Employer_Post);
+            var employerVacancyInfoTask = _client.GetEditVacancyInfoAsync(vacancyRouteModel.EmployerAccountId);
 
             await Task.WhenAll(vacancyTask, employerVacancyInfoTask);
             var vacancy = vacancyTask.Result;
             var employerVacancyInfo = employerVacancyInfoTask.Result;
 
-            var selectedOrganisation = employerVacancyInfo.LegalEntities.SingleOrDefault(x => x.LegalEntityId == m.SelectedOrganisationId);
+            var selectedOrganisation = employerVacancyInfo.LegalEntities.Single(x => x.LegalEntityId == legalEntityId);
 
-            vacancy.LegalEntityId = m.SelectedOrganisationId;
-            vacancy.EmployerName = selectedOrganisation?.Name;
-
-            vacancy.EmployerLocation = new Vacancies.Client.Domain.Entities.Address
-            {
-                AddressLine1 = m.AddressLine1,
-                AddressLine2 = m.AddressLine2,
-                AddressLine3 = m.AddressLine3,
-                AddressLine4 = m.AddressLine4,
-                Postcode = m.Postcode.AsPostcode(),
-                Latitude = null,
-                Longitude = null
-            };
+            vacancy.LegalEntityId = legalEntityId.GetValueOrDefault();
+            vacancy.LegalEntityName = selectedOrganisation.Name;
 
             return await ValidateAndExecute(
                 vacancy, 
                 v => _vacancyClient.Validate(v, ValidationRules),
-                async v => 
-                {
-                    await _vacancyClient.UpdateDraftVacancyAsync(vacancy, user);
-
-                    return new PostEmployerEditModelResponse
-                    {
-                        HasLegalEntityAgreement = await _legalEntityAgreementService.HasLegalEntityAgreementAsync(vacancy.EmployerAccountId, vacancy.LegalEntityId)
-                    };
-                });
+                v => _vacancyClient.UpdateDraftVacancyAsync(vacancy, user));
         }
 
         protected override EntityToViewModelPropertyMappings<Vacancy, EmployerEditModel> DefineMappings()
@@ -141,29 +90,24 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var mappings = new EntityToViewModelPropertyMappings<Vacancy, EmployerEditModel>();
 
             mappings.Add(e => e.EmployerName, vm => vm.SelectedOrganisationId);
-            mappings.Add(e => e.EmployerLocation.AddressLine1, vm => vm.AddressLine1);
-            mappings.Add(e => e.EmployerLocation.AddressLine2, vm => vm.AddressLine2);
-            mappings.Add(e => e.EmployerLocation.AddressLine3, vm => vm.AddressLine3);
-            mappings.Add(e => e.EmployerLocation.AddressLine4, vm => vm.AddressLine4);
-            mappings.Add(e => e.EmployerLocation.Postcode, vm => vm.Postcode);
 
             return mappings;
         }
 
-        private LocationOrganisationViewModel MapLegalEntitiesToOrgs(LegalEntity data)
-        {
-            return new LocationOrganisationViewModel { Id = data.LegalEntityId.ToString(), Name = data.Name, Address = data.Address };
-        }
-        
-        private IEnumerable<LocationOrganisationViewModel> BuildLegalEntityViewModels(EditVacancyInfo info, string employerAccountId)
+        private IEnumerable<OrganisationViewModel> BuildLegalEntityViewModels(EditVacancyInfo info, string employerAccountId)
         {
             if (info == null || !info.LegalEntities.Any())
             {
-                Logger.LogError("No legal entities found for {employerAccountId}", employerAccountId);
-                return null; // TODO: Can we carry on without a list of legal entities.
+                _logger.LogError("No legal entities found for {employerAccountId}", employerAccountId);
+                return new List<OrganisationViewModel>(); // TODO: Can we carry on without a list of legal entities.
             }
 
             return info.LegalEntities.Select(MapLegalEntitiesToOrgs).ToList();
         }
+        private OrganisationViewModel MapLegalEntitiesToOrgs(LegalEntity data)
+        {
+            return new OrganisationViewModel { Id = data.LegalEntityId, Name = data.Name};
+        }
+        
     }
 }

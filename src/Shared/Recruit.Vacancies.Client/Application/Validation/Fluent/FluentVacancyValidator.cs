@@ -107,12 +107,47 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
         private void ValidateOrganisation()
         {
-            RuleFor(x => x.EmployerName)
+            //Temporary arrangement as I am only employers has trading name changes
+            //The When condition can be removed once we apply trading name changes to providers web
+            When(v => v.SourceOrigin == SourceOrigin.ProviderWeb, () => 
+                RuleFor(x => x.EmployerName)
+                    .NotEmpty()
+                        .WithMessage("You must select one organisation")
+                        .WithErrorCode("4")
+                    .RunCondition(VacancyRuleSet.EmployerName)
+                    .WithRuleId(VacancyRuleSet.EmployerName)
+            );
+
+            When(v => v.SourceOrigin == SourceOrigin.EmployerWeb, () => 
+                RuleFor(x => x.LegalEntityName)
+                    .NotEmpty()
+                        .WithMessage("You must select one organisation")
+                        .WithErrorCode("400")
+                    .RunCondition(VacancyRuleSet.LegalEntityName)
+                    .WithRuleId(VacancyRuleSet.LegalEntityName)
+            );
+
+            When(v => v.SourceOrigin == SourceOrigin.EmployerWeb && v.EmployerNameOption == EmployerNameOption.TradingName, () => 
+                RuleFor(x => x.EmployerName)
+                    .NotEmpty()
+                        .WithMessage("You must provide the trading name")
+                        .WithErrorCode("401")
+                    .MaximumLength(100)
+                        .WithMessage("The trading name must not exceed {MaxLength} characters")
+                        .WithErrorCode("402")
+                    .ValidFreeTextCharacters()
+                        .WithMessage("The trading name contains some invalid characters")
+                        .WithErrorCode("403")
+                    .RunCondition(VacancyRuleSet.TradingName)
+                    .WithRuleId(VacancyRuleSet.TradingName)
+            );
+            
+            RuleFor(x => x.EmployerNameOption)
                 .NotEmpty()
-                    .WithMessage("You must select one organisation")
-                    .WithErrorCode("4")
-                .RunCondition(VacancyRuleSet.EmployerName)
-                .WithRuleId(VacancyRuleSet.EmployerName);
+                    .WithMessage("You must select the name to go on the vacancy")
+                    .WithErrorCode("404")
+                .RunCondition(VacancyRuleSet.EmployerNameOption)
+                .WithRuleId(VacancyRuleSet.EmployerNameOption);
 
             RuleFor(x => x.EmployerLocation)
                 .NotNull()
@@ -160,7 +195,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithMessage("You must provide the closing date for applications")
                     .WithErrorCode("16")
                 .GreaterThan(v => _timeProvider.Now.Date.AddDays(1).AddTicks(-1))
-                    .WithMessage("Closing date for applications cannot be today or earlier")
+                    .WithMessage("Closing date for applications cannot be today or earlier.")
                     .WithErrorCode("18")
                 .RunCondition(VacancyRuleSet.ClosingDate)
                 .WithRuleId(VacancyRuleSet.ClosingDate);

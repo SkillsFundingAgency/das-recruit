@@ -73,33 +73,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
 
             var vacancySummaries = await RetryPolicy.ExecuteAsync(async context =>
                                                                     {
-                                                                        var aggResults = await collection.AggregateAsync<VacancyDetailNotGrouped>(pipeline);
+                                                                        var aggResults = await collection.AggregateAsync<VacancySummaryAggQueryResponseDto>(pipeline);
                                                                         return await aggResults.ToListAsync();
                                                                     },
                                                                     new Context(nameof(RunAggPipelineQuery)));
 
-            var groupedVacancySummaries = vacancySummaries.GroupBy(s => s.VacancyReference)
-                            .Select(gr => new VacancySummaryAggQueryResponseDto
-                                    {
-                                        Id = new VacancySummaryDetails
-                                        {
-                                            Id = gr.First().Id,
-                                            VacancyGuid = gr.First().Id,
-                                            VacancyReference = gr.First().VacancyReference,
-                                            Title = gr.First().Title,
-                                            EmployerName = gr.First().EmployerName,
-                                            CreatedDate = gr.First().CreatedDate,
-                                            Status = gr.First().Status,
-                                            ClosingDate = gr.First().ClosingDate,
-                                            ApplicationMethod = gr.First().ApplicationMethod,
-                                            ProgrammeId = gr.First().ProgrammeId
-                                        },
-                                        NoOfNewApplications = gr.Sum(g => g.IsNew),
-                                        NoOfSuccessfulApplications = gr.Sum(g => g.IsSuccessful),
-                                        NoOfUnsuccessfulApplications = gr.Sum(g => g.IsUnsuccessful)
-                                    });
-
-            return groupedVacancySummaries.Select(VacancySummaryMapper.MapFromVacancySummaryAggQueryResponseDto)
+            return vacancySummaries
+                    .Select(VacancySummaryMapper.MapFromVacancySummaryAggQueryResponseDto)
                     .ToList();
         }
     }
