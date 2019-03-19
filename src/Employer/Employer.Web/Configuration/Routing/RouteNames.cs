@@ -66,8 +66,8 @@
         public const string LegalEntityAgreement_SoftStop_Get = "LegalEntityAgreement_SoftStop_Get";
         public const string LegalEntityAgreement_HardStop_Get = "LegalEntityAgreement_HardStop_Get";
 
-        public const string DeleteVacancy_Delete_Get = "DeleteVacancy_Delete_Get";
-        public const string DeleteVacancy_Delete_Post = "DeleteVacancy_Delete_Post";
+        public const string DeleteVacancy_Get = "DeleteVacancy_Get";
+        public const string DeleteVacancy_Post = "DeleteVacancy_Post";
 
         public const string Submitted_Index_Get = "Submitted_Index_Get";
 
