@@ -83,11 +83,11 @@ namespace Esfa.Recruit.Employer.Web
             if(vacancy.EmployerNameOption == null)
                 return validRoutes;
 
-            validRoutes.AddRange(new[] { RouteNames.Location_Post, RouteNames.Location_Get});
+            validRoutes.AddRange(new[] {RouteNames.LegalEntityAgreement_SoftStop_Get, RouteNames.Location_Post, RouteNames.Location_Get});
             if (string.IsNullOrWhiteSpace(vacancy.EmployerLocation?.Postcode))
                 return validRoutes;
             
-            validRoutes.AddRange(new[] {RouteNames.LegalEntityAgreement_SoftStop_Get, RouteNames.Training_Post, RouteNames.Training_Get});
+            validRoutes.AddRange(new[] {RouteNames.Training_Post, RouteNames.Training_Get});
             if (string.IsNullOrWhiteSpace(vacancy.ProgrammeId))
                 return validRoutes;
 

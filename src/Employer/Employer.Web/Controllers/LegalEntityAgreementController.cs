@@ -28,7 +28,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 return View(vm);
 
             return vm.PageInfo.IsWizard
-                    ? RedirectToRoute(RouteNames.Training_Get)
+                    ? RedirectToRoute(RouteNames.Location_Get)
                     : RedirectToRoute(RouteNames.Vacancy_Preview_Get, null, Anchors.AboutEmployerSection);
         }
 

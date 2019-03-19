@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
+using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer;
@@ -18,16 +19,14 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
     {
         private readonly IEmployerVacancyClient _employerVacancyClient;
         private readonly IRecruitVacancyClient _recruitVacancyClient;
-        private readonly ILegalEntityAgreementService _legalEntityAgreementService;
         private readonly ILogger<EmployerNameOrchestrator> _logger;
         
         public EmployerNameOrchestrator(IEmployerVacancyClient employerVacancyClient, IRecruitVacancyClient recruitVacancyClient, 
-            ILegalEntityAgreementService legalEntityAgreementService, ILogger<EmployerNameOrchestrator> logger)
+            ILogger<EmployerNameOrchestrator> logger)
             : base(logger) 
         {
             _employerVacancyClient = employerVacancyClient;
             _recruitVacancyClient = recruitVacancyClient;
-            _legalEntityAgreementService = legalEntityAgreementService;
             _logger = logger;
         }
 
