@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Humanizer;
@@ -17,8 +18,8 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Reports.ReportDashboard
 
     public class ReportRowViewModel
     {
-        public string FromDate { get; set; }
-        public string ToDate { get; set; } 
+        public Guid ReportId { get; set; }
+        public string ReportName { get; set; }
         public string CreatedDate { get; set; }
         public string CreatedBy { get; set; }
         public long DownloadCount { get; set; }

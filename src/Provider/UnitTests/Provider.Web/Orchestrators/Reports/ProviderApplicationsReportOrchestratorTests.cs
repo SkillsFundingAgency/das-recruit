@@ -5,6 +5,7 @@ using Esfa.Recruit.Provider.Web.ViewModels.Reports;
 using Esfa.Recruit.Provider.Web.ViewModels.Reports.ProviderApplicationsReport;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Moq;
 using Xunit;
@@ -24,6 +25,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Reports
             var orchestrator = GetOrchestrator();
 
             long ukprn = 12345678;
+            string reportName = $"{DateTime.Parse(fromDate).AsGdsDate()} to {DateTime.Parse(toDate).AsGdsDate()}";
 
             var model = new ProviderApplicationsReportCreateEditModel {
                 Ukprn = ukprn,
@@ -37,7 +39,9 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Reports
             _client.Verify(c => c.CreateProviderApplicationsReportAsync(
                 ukprn, 
                 DateTime.Parse(fromDate), 
-                DateTime.Parse(toDate), user), 
+                DateTime.Parse(toDate), 
+                user, 
+                reportName), 
                 Times.Once);
         }
 
@@ -66,7 +70,9 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Reports
             _client.Verify(c => c.CreateProviderApplicationsReportAsync(
                     ukprn,
                     DateTime.Parse("2018-02-01"),
-                    DateTime.Parse("2019-04-04"), user),
+                    DateTime.Parse("2019-04-04"), 
+                    user,
+                    "01 Feb 2018 to 04 Apr 2019"),
                 Times.Once);
         }
 
