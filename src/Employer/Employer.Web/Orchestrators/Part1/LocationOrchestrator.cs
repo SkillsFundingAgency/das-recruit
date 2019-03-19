@@ -80,7 +80,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             return await ValidateAndExecute(
                 vacancy, 
                 v => _recruitVacancyClient.Validate(v, ValidationRules),
-                async v => _recruitVacancyClient.UpdateDraftVacancyAsync(vacancy, user));
+                v => _recruitVacancyClient.UpdateDraftVacancyAsync(vacancy, user));
         }
 
         protected override EntityToViewModelPropertyMappings<Vacancy, LocationEditModel> DefineMappings()
