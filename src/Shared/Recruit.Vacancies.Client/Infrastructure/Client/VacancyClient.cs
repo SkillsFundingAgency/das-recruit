@@ -82,8 +82,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _reportRepository = reportRepository;
             _reportService = reportService;
         }
-    
-        
+
         public Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user)
         {
             var command = new UpdateDraftVacancyCommand {

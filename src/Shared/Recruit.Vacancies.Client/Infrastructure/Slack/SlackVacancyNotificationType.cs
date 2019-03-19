@@ -1,9 +1,10 @@
 ﻿namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Slack
 {
-    public enum Emojis
+    public enum SlackVacancyNotificationType
     {
         New,
         Approved,
-        Referred
+        Referred,
+        ManuallyClosed
     }
 }

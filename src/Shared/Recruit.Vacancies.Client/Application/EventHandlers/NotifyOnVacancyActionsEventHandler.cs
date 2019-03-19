@@ -6,67 +6,39 @@ using Microsoft.Extensions.Logging;
 using System.Threading;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.EventHandlers
 {
-    public class NotifyOnVacancyActionsEventHandler : INotificationHandler<VacancyReviewApprovedEvent>,
-                                        INotificationHandler<VacancyReviewReferredEvent>,
-                                        INotificationHandler<VacancyReviewCreatedEvent>
+    public class NotifyOnVacancyActionsEventHandler : INotificationHandler<VacancyClosedEvent>
     {
-        private readonly INotifyVacancyReviewUpdates _notifier;
+        private readonly INotifyVacancyUpdates _vacancyStatusNotifier;
         private readonly IVacancyReviewRepository _vacancyReviewRepository;
+        private readonly IVacancyRepository _vacancyRepository;
         private readonly ILogger<NotifyOnVacancyActionsEventHandler> _logger;
 
-        public NotifyOnVacancyActionsEventHandler(INotifyVacancyReviewUpdates notifier, IVacancyReviewRepository vacancyReviewRepository, ILogger<NotifyOnVacancyActionsEventHandler> logger)
+        public NotifyOnVacancyActionsEventHandler(INotifyVacancyUpdates vacancyStatusNotifier, IVacancyRepository vacancyRepository, IVacancyReviewRepository vacancyReviewRepository, ILogger<NotifyOnVacancyActionsEventHandler> logger)
         {
-            _notifier = notifier;
+            _vacancyStatusNotifier = vacancyStatusNotifier;
             _vacancyReviewRepository = vacancyReviewRepository;
+            _vacancyRepository = vacancyRepository;
             _logger = logger;
         }
 
-        public async Task Handle(VacancyReviewApprovedEvent notification, CancellationToken cancellationToken)
+        public async Task Handle(VacancyClosedEvent notification, CancellationToken cancellationToken)
         {
             try
             {
-                _logger.LogInformation("Sending notification for vacancy {vacancyReference} approval.", notification.VacancyReference);
+                var vacancy = await _vacancyRepository.GetVacancyAsync(notification.VacancyId);
 
-                var vacancyReview = await _vacancyReviewRepository.GetAsync(notification.ReviewId);
-
-                await _notifier.VacancyReviewApproved(vacancyReview);
+                if (vacancy.Status == VacancyStatus.Closed && vacancy.ClosedByUser != null)
+                {
+                    await _vacancyStatusNotifier.VacancyManuallyClosed(vacancy);
+                }
             }
             catch(NotificationException ex)
             {
-                _logger.LogError(ex, $"Unable to send notification for {nameof(VacancyReviewApprovedEvent)} and VacancyReference: {{vacancyReference}}", notification.VacancyReference);
-            }
-        }
-
-        public async Task Handle(VacancyReviewReferredEvent notification, CancellationToken cancellationToken)
-        {
-            try
-            {
-                _logger.LogInformation("Sending notification for vacancy {vacancyReference} referral.", notification.VacancyReference);
-
-                var vacancyReview = await _vacancyReviewRepository.GetAsync(notification.ReviewId);
-
-                await _notifier.VacancyReviewReferred(vacancyReview);
-            }
-            catch(NotificationException ex)
-            {
-                _logger.LogError(ex, $"Unable to send notification for {nameof(VacancyReviewReferredEvent)} and VacancyReference: {{vacancyReference}}", notification.VacancyReference);
-            }
-        }
-
-        public async Task Handle(VacancyReviewCreatedEvent notification, CancellationToken cancellationToken)
-        {
-            try
-            {
-                var vacancyReview = await _vacancyReviewRepository.GetAsync(notification.ReviewId);
-
-                await _notifier.VacancyReviewCreated(vacancyReview);
-            }
-            catch(NotificationException ex)
-            {
-                _logger.LogError(ex, $"Unable to send notification for {nameof(VacancyReviewCreatedEvent)} and VacancyReference: {{vacancyReference}}", notification.VacancyReference);
+                _logger.LogError(ex, $"Unable to send notification for {nameof(VacancyClosedEvent)} and VacancyReference: {{vacancyReference}}", notification.VacancyReference);
             }
         }
     }

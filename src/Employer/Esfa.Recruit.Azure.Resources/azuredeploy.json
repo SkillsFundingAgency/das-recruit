@@ -166,6 +166,10 @@
       "type": "string",
       "defaultValue": ""
     },
+    "FindAnApprenticeshipDetailPrefixUrl": {
+      "type": "string",
+      "defaultValue": ""
+    },
     "GeocodePostcodeAnywhereKey": {
       "type": "string",
       "defaultValue": ""
@@ -350,6 +354,14 @@
                 "value": "[parameters('Authentication').ClientSecret]"
               },
               {
+                "name": "Slack:WebhookUrl",
+                "value": "[parameters('SlackWebhook')]"
+              },
+              {
+                "name": "Slack:FindAnApprenticeshipDetailPrefixUrl",
+                "value": "[parameters('FindAnApprenticeshipDetailPrefixUrl')]"
+              },
+              {
                 "name": "AccountApiConfiguration:ApiBaseUrl",
                 "value": "[parameters('AccountApiConfiguration').ApiBaseUrl]"
               },
@@ -532,6 +544,10 @@
                 "value": "[parameters('SlackWebhook')]"
               },
               {
+                "name": "Slack:FindAnApprenticeshipDetailPrefixUrl",
+                "value": "[parameters('FindAnApprenticeshipDetailPrefixUrl')]"
+              },
+              {
                 "name": "UseTableStorageQueryStore",
                 "value": "[parameters('UseTableStorageQueryStore')]"
               }
@@ -607,6 +623,14 @@
               {
                 "name": "Authentication:MetaDataAddress",
                 "value": "[parameters('ProviderAuthentication').MetaDataAddress]"
+              },
+              {
+                "name": "Slack:WebhookUrl",
+                "value": "[parameters('SlackWebhook')]"
+              },
+              {
+                "name": "Slack:FindAnApprenticeshipDetailPrefixUrl",
+                "value": "[parameters('FindAnApprenticeshipDetailPrefixUrl')]"
               },
               {
                 "name": "ExternalLinks:ProviderApprenticeshipSiteUrl",
@@ -818,6 +842,10 @@
               {
                 "name": "Slack:WebhookUrl",
                 "value": "[parameters('SlackWebhook')]"
+              },
+              {
+                "name": "Slack:FindAnApprenticeshipDetailPrefixUrl",
+                "value": "[parameters('FindAnApprenticeshipDetailPrefixUrl')]"
               },
               {
                 "name": "Geocode:PostcodeAnywhereKey",
