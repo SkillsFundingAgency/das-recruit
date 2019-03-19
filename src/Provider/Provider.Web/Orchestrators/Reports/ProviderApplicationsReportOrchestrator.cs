@@ -5,6 +5,7 @@ using Esfa.Recruit.Provider.Web.ViewModels.Reports.ProviderApplicationsReport;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Reports
@@ -64,7 +65,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Reports
                     throw new Exception($"Cannot handle this date range type:{model.DateRange.ToString()}");
             }
 
-            return _client.CreateProviderApplicationsReportAsync(model.Ukprn, fromDate, toDate, user);
+            var reportName = $"{fromDate.AsGdsDate()} to {toDate.AsGdsDate()}";
+
+            return _client.CreateProviderApplicationsReportAsync(model.Ukprn, fromDate, toDate, user, reportName);
         }
     }
 }

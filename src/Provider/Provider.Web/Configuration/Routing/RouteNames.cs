@@ -41,6 +41,7 @@
         public const string Qualifications_Get = "Qualifications_Get";
         public const string Qualifications_Post = "Qualifications_Post";
         public const string ReportConfirmation_Get = "ReportConfirmation_Get";
+        public const string ReportDashboard_DownloadCsv = "ReportDashboard_DownloadCsv";
         public const string ReportDashboard_Get = "ReportDashboard_Get";
         public const string SearchResultPreview_Get = "SearchResultPreview_Get";
         public const string ShortDescription_Get = "ShortDescription_Get";

@@ -9,6 +9,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public ReportOwner Owner { get; set; }
         public ReportStatus Status { get; set; }
         public ReportType ReportType { get; set; }
+        public string ReportName { get; set; }
         public Dictionary<string, object> Parameters { get; set; }
         public VacancyUser RequestedBy { get; set; }
         public DateTime RequestedOn { get; set; }

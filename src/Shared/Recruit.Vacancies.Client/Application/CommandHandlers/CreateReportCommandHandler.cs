@@ -40,6 +40,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 Id = message.ReportId,
                 Owner = message.Owner,
                 Status = ReportStatus.New,
+                ReportName = message.ReportName,
                 ReportType = message.ReportType,
                 Parameters = message.Parameters,
                 RequestedBy = message.RequestedBy,
