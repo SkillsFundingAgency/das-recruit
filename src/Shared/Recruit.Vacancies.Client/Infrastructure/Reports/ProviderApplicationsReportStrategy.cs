@@ -25,9 +25,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
         private const string ColumnApplicationLastUpdatedDate = "Application_LastUpdatedDate";
         private const string ColumnApplicationDate = "Application_Date";
         private const string ColumnNumberOfDaysAppAtThisStatus = "Number_Of_Days_App_At_This_Status";
+        private const string ColumnVacancyReference = "Vacancy_Reference_Number";
+        private const string ColumnFramework = "Framework";
+        private const string ColumnFrameworkStatus = "Framework_Status";
+        private const string ColumnStandard = "Standard";
+        private const string ColumnStandardStatus = "Standard_Status";
 
         private readonly IApprenticeshipProgrammeProvider _programmeProvider;
         private readonly ITimeProvider _timeProvider;
+        private readonly ILogger<ProviderApplicationsReportStrategy> _logger;
 
         private const string QueryFormat = @"[
             { $match: {'ownerType' : 'Provider', 'trainingProvider.ukprn' : _ukprn_}},
@@ -44,12 +50,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
                     'Address_Line4' : { $ifNull: ['$ar.application.addressLine4', null]},
                     'Postcode' : { $ifNull: ['$ar.application.postcode', null]},
                     'Telephone' : { $ifNull: ['$ar.application.phone', null]},
+                    'Email' : { $ifNull: ['$ar.application.email', null]}, 
                     'School' : { $ifNull: ['$ar.application.educationInstitution', null]},
                     'Date_of_Birth' : { $ifNull: ['$ar.application.birthDate', null]},
                     'Vacancy_Reference_Number' : '$vacancyReference',
                     'Vacancy_Title' : '$title',
                     'Programme' : { $ifNull: ['$programmeId', null]},
-                    'Programme_Status' : null,
                     'Employer' : { $ifNull: ['$employerName', null]},
                     'Vacancy_Postcode' : { $ifNull: ['$employerLocation.postcode', null]},
                     'Learning_Provider' : { $ifNull: ['$trainingProvider.name', null]},
@@ -64,11 +70,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             ILoggerFactory loggerFactory, 
             IOptions<MongoDbConnectionDetails> details,
             IApprenticeshipProgrammeProvider programmeProvider,
-            ITimeProvider timeProvider
-            ) : base(loggerFactory, MongoDbNames.RecruitDb, MongoDbCollectionNames.Vacancies, details)
+            ITimeProvider timeProvider,
+            ILogger<ProviderApplicationsReportStrategy> logger) 
+            : base(loggerFactory, MongoDbNames.RecruitDb, MongoDbCollectionNames.Vacancies, details)
         {
             _programmeProvider = programmeProvider;
             _timeProvider = timeProvider;
+            _logger = logger;
         }
 
         public Task<string> GetReportDataAsync(Dictionary<string,object> parameters)
@@ -78,6 +86,19 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             var toDate = (DateTime)parameters[ReportParameterName.ToDate];
 
             return GetProviderApplicationsAsync(ukprn, fromDate, toDate);
+        }
+
+        public ReportDataType ResolveFormat(string fieldName)
+        {
+            switch (fieldName)
+            {
+                case "Date_of_Birth":
+                case "Application_Date":
+                case "Vacancy_Closing_Date":
+                    return ReportDataType.DateType;
+                default:
+                    return ReportDataType.StringType;
+            }
         }
 
         private async Task<string> GetProviderApplicationsAsync(long ukprn, DateTime fromDate, DateTime toDate)
@@ -97,10 +118,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
 
             await ProcessResultsAsync(results);
 
+            _logger.LogInformation($"Report parameters ukprn:{ukprn} fromDate:{fromDate} toDate:{toDate} returned {results.Count} results");
+
             var dotNetFriendlyResults = results.Select(BsonTypeMapper.MapToDotNetValue);
-            var jsonArray = JsonConvert.SerializeObject(dotNetFriendlyResults);
+            var result = JsonConvert.SerializeObject(dotNetFriendlyResults);
             
-            return jsonArray;
+            return result;
         }
 
         private async Task ProcessResultsAsync(List<BsonDocument> results)
@@ -109,6 +132,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             {
                 await SetProgramme(result);
                 SetNumberOfDaysAtThisStatus(result);
+                SetVacancyReference(result);
             }
         }
 
@@ -117,9 +141,39 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             var programmeId = result[ColumnProgramme].AsString;
             var programme = await _programmeProvider.GetApprenticeshipProgrammeAsync(programmeId);
 
-            var programmeValue = $"{programme.Id} {programme.Title} ({programme.ApprenticeshipType.ToString()})";
-            result[ColumnProgramme] = programmeValue;
-            result[ColumnProgrammeStatus] = programme.IsActive ? "Active" : "Inactive";
+            var programmeValue = $"{programme.Id} {programme.Title}";
+            var programmeStatus = programme.IsActive ? "Active" : "Inactive";
+
+            string framework = null;
+            string frameworkStatus = null;
+            string standard = null;
+            string standardStatus = null;
+
+            if (programme.ApprenticeshipType == TrainingType.Framework)
+            {
+                framework = programmeValue;
+                frameworkStatus = programmeStatus;
+            }
+
+            if (programme.ApprenticeshipType == TrainingType.Standard)
+            {
+                standard = programmeValue;
+                standardStatus = programmeStatus;
+            }
+
+            result.InsertAt(result.IndexOfName(ColumnProgramme),
+                new BsonElement(ColumnFramework, (BsonValue)framework ?? BsonNull.Value));
+
+            result.InsertAt(result.IndexOfName(ColumnProgramme),
+                new BsonElement(ColumnFrameworkStatus, (BsonValue)frameworkStatus ?? BsonNull.Value));
+
+            result.InsertAt(result.IndexOfName(ColumnProgramme),
+                new BsonElement(ColumnStandard, (BsonValue)standard ?? BsonNull.Value));
+
+            result.InsertAt(result.IndexOfName(ColumnProgramme),
+                new BsonElement(ColumnStandardStatus, (BsonValue)standardStatus ?? BsonNull.Value));
+
+            result.Remove(ColumnProgramme);
         }
 
         private void SetNumberOfDaysAtThisStatus(BsonDocument result)
@@ -132,6 +186,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             result.InsertAt(result.IndexOfName(ColumnApplicationLastUpdatedDate), 
                 new BsonElement(ColumnNumberOfDaysAppAtThisStatus, statusTimespan.Days));
             result.Remove(ColumnApplicationLastUpdatedDate);
+        }
+
+        private void SetVacancyReference(BsonDocument result)
+        {
+            result[ColumnVacancyReference] = $"VAC{result[ColumnVacancyReference]}";
         }
     }
 }

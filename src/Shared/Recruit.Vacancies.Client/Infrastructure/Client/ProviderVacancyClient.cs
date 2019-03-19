@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -8,7 +10,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Provid
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
     public partial class VacancyClient : IProviderVacancyClient
-    {
+    {              
         public async Task<Guid> CreateVacancyAsync(string employerAccountId,
             long ukprn, string title, int numberOfPositions, VacancyUser user)
         {
@@ -64,7 +66,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _messaging.SendCommandAsync(command);
         }
 
-        public async Task<Guid> CreateProviderApplicationsReportAsync(long ukprn, DateTime fromDate, DateTime toDate, VacancyUser user)
+        public async Task<Guid> CreateProviderApplicationsReportAsync(long ukprn, DateTime fromDate, DateTime toDate, VacancyUser user, string reportName)
         {
             var reportId = Guid.NewGuid();
 
@@ -83,7 +85,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                     { ReportParameterName.FromDate, fromDate},
                     { ReportParameterName.ToDate, toDate}
                 },
-                user)
+                user,
+                reportName)
             );
 
             return reportId;
@@ -97,6 +100,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         public Task<Report> GetReportAsync(Guid reportId)
         {
             return _reportRepository.GetReportAsync(reportId);
+        }
+
+        public void WriteReportAsCsv(Stream stream, Report report)
+        {
+            _reportService.WriteReportAsCsv(stream, report);
         }
     }
 }

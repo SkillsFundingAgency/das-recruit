@@ -123,6 +123,7 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddTransient<IEmployerNameService, EmployerNameService>();
 
             //Reporting Service
+            services.AddTransient<ICsvBuilder, CsvBuilder>();
             services.AddTransient<IReportService, ReportService>();
             services.AddTransient<ProviderApplicationsReportStrategy>();
             services.AddTransient<Func<ReportType, IReportStrategy>>(serviceProvider => reportType =>
