@@ -10,6 +10,7 @@
         <form asp-route="@RouteNames.Location_Post" asp-route-wizard="@Model.PageInfo.IsWizard">
             <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
+                    <span esfa-validation-message-for="UseOtherLocation" class="govuk-error-message"></span>
                     <div class="govuk-radios">
                         <div class="govuk-radios__item">
                             <input asp-for="UseOtherLocation" value="false" id="legal-entity-name" class="govuk-radios__input" type="radio" >
@@ -18,7 +19,7 @@
                             </label>
                         </div>
                         <div class="govuk-radios__item">
-                            <input asp-for="UseOtherLocation" value="false" id="legal-entity-name" class="govuk-radios__input" type="radio" >
+                            <input asp-for="UseOtherLocation" value="true" id="legal-entity-name" class="govuk-radios__input" type="radio" >
                             <label for="legal-entity-name" class="govuk-label govuk-radios__label">
                                     somewhere else
                             </label>

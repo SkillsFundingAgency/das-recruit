@@ -7,6 +7,7 @@
             <a asp-show="@Model.HasOnlyOneOrganisation" asp-route="@RouteNames.ShortDescription_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
             <a asp-hide="@Model.HasOnlyOneOrganisation" asp-route="@RouteNames.Employer_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
         </div>
+
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }'/>
 
         <!-- <partial name="@PartialNames.ReviewSummary" for="Review"/> -->
@@ -16,6 +17,7 @@
         <form asp-route="@RouteNames.EmployerName_Post" asp-route-wizard="@Model.PageInfo.IsWizard">
             <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
+                    <span esfa-validation-message-for="SelectedEmployerNameOption" class="govuk-error-message"></span>
                     <div class="govuk-radios">
                         <div class="govuk-radios__item">
                             <input asp-for="SelectedEmployerNameOption" value="RegisteredName" id="legal-entity-name" class="govuk-radios__input" type="radio" >
