@@ -74,10 +74,13 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var vacancy = vacancyTask.Result;
             var employerVacancyInfo = employerVacancyInfoTask.Result;
 
-            var selectedOrganisation = employerVacancyInfo.LegalEntities.Single(x => x.LegalEntityId == legalEntityId);
+            var selectedOrganisation = employerVacancyInfo.LegalEntities.SingleOrDefault(x => x.LegalEntityId == legalEntityId);
 
             vacancy.LegalEntityId = legalEntityId.GetValueOrDefault();
-            vacancy.LegalEntityName = selectedOrganisation.Name;
+            vacancy.LegalEntityName = selectedOrganisation?.Name;
+            //clear location in case the legal entity has changed
+            vacancy.EmployerLocation = null;
+            vacancy.EmployerNameOption = null;
 
             return await ValidateAndExecute(
                 vacancy, 
@@ -89,7 +92,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         {
             var mappings = new EntityToViewModelPropertyMappings<Vacancy, EmployerEditModel>();
 
-            mappings.Add(e => e.EmployerName, vm => vm.SelectedOrganisationId);
+            mappings.Add(e => e.LegalEntityName, vm => vm.SelectedOrganisationId);
 
             return mappings;
         }

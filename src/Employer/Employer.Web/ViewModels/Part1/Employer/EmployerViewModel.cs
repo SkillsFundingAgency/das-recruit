@@ -16,6 +16,11 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer
 
         public PartOnePageInfoViewModel PageInfo { get; set; }
 
+        public IList<string> OrderedFieldNames => new List<string>
+        {
+            nameof(SelectedOrganisationId)
+        };
+
         public long? SelectedOrganisationId { get; set; }
     }
 
