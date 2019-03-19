@@ -54,9 +54,22 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             };
 
             if (vacancy.EmployerNameOption.HasValue) 
-                vm.SelectedEmployerNameOption = Enum.Parse<EmployerNameOptionViewModel>(vacancy.EmployerNameOption.ToString());
+                vm.SelectedEmployerNameOption = GetSelectedNameOption(vacancy.EmployerNameOption);
                 
             return vm;
+        }
+
+        private EmployerNameOptionViewModel GetSelectedNameOption(EmployerNameOption? option)
+        {
+            switch(option)
+            {
+                case EmployerNameOption.RegisteredName:
+                    return EmployerNameOptionViewModel.RegisteredName;
+                case EmployerNameOption.TradingName:
+                    return EmployerNameOptionViewModel.ExistingTradingName;
+                default: 
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         public async Task<OrchestratorResponse> PostEmployerNameEditModelAsync(EmployerNameEditModel model, VacancyUser user)

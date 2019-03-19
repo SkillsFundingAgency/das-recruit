@@ -42,6 +42,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             {
                 var vm = await _orchestrator.GetEmployerNameViewModelAsync(model, User.ToVacancyUser());
                 vm.PageInfo.SetWizard(wizard);
+                vm.NewTradingName = model.NewTradingName;
                 return View(vm);
             }
 
