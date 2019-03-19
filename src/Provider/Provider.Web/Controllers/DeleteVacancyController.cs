@@ -18,20 +18,18 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             _orchestrator = orchestrator;
         }
 
-        [HttpGet("delete", Name = RouteNames.DeleteVacancy_Delete_Get)]
+        [HttpGet("delete", Name = RouteNames.DeleteVacancy_Get)]
         public Task<IActionResult> Delete(VacancyRouteModel vrm)
         {
             return GetDeleteVacancyConfirmationView(vrm);
         }
 
-        [HttpPost("delete", Name = RouteNames.DeleteVacancy_Delete_Post)]
+        [HttpPost("delete", Name = RouteNames.DeleteVacancy_Post)]
         public async Task<IActionResult> Delete(DeleteEditModel m)
         {
-            var vrm = new VacancyRouteModel { VacancyId = m.VacancyId, Ukprn = m.Ukprn };
-
             if (!ModelState.IsValid)
             {
-                return await GetDeleteVacancyConfirmationView(vrm);
+                return await GetDeleteVacancyConfirmationView(m);
             }
 
             if (!m.ConfirmDeletion.Value)
