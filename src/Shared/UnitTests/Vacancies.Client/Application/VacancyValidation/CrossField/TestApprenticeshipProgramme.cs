@@ -18,5 +18,6 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
         public ProgrammeLevel Level  { get; set; }
 
         public int Duration { get; set; }
+        public bool IsActive { get; set; }
     }
 }

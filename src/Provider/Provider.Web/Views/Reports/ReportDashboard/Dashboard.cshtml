@@ -27,7 +27,7 @@
             {
                 <tr class="govuk-table__row">
                     <td class="govuk-table__cell">
-                        @report.FromDate to @report.ToDate
+                        @report.ReportName
                         <div asp-show="@report.IsNew">
                             <span class="das-tag das-tag--new">new</span>
                         </div>
@@ -40,7 +40,7 @@
                     </td>
                     <td class="govuk-table__cell govuk-table__cell--numeric">
                         <span asp-hide="@report.CanDownload">Processing</span>
-                        <a asp-show="@report.CanDownload" href="">Download CSV</a>
+                        <a asp-show="@report.CanDownload" asp-route="@RouteNames.ReportDashboard_DownloadCsv", asp-route-reportId="@report.ReportId">Download CSV</a>
                     </td>
                 </tr>
             }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -28,6 +27,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             return RetryPolicy.ExecuteAsync(_ => 
                 collection.InsertOneAsync(report), 
                 new Context(nameof(CreateAsync)));
+        }
+
+        public async Task UpdateAsync(Report report)
+        {
+            var filter = Builders<Report>.Filter.Eq(v => v.Id, report.Id);
+            var collection = GetCollection<Report>();
+            await RetryPolicy.ExecuteAsync(_ =>
+                    collection.ReplaceOneAsync(filter, report),
+                new Context(nameof(UpdateAsync)));
         }
 
         public async Task<List<T>> GetReportsForProviderAsync<T>(long ukprn)

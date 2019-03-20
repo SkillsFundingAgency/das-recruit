@@ -40,6 +40,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 Id = message.ReportId,
                 Owner = message.Owner,
                 Status = ReportStatus.New,
+                ReportName = message.ReportName,
                 ReportType = message.ReportType,
                 Parameters = message.Parameters,
                 RequestedBy = message.RequestedBy,
@@ -49,7 +50,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             await _repository.CreateAsync(report);
 
-            await _reportQueue.Add(report.Id);
+            await _reportQueue.AddAsync(report.Id);
+
+            _logger.LogInformation("Finished create report '{reportType}' with parameters '{reportParameters}' requested by {userId}", message.ReportType, message.Parameters, message.RequestedBy.UserId);
         }
     }
 }
