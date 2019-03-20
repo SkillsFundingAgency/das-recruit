@@ -6,6 +6,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Providers
     {
         DateTime Now { get; }
         DateTime OneHour { get; }
+        DateTime Today { get; }
         DateTime NextDay { get; }
         DateTime NextDay6am { get; }
     }
