@@ -66,5 +66,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 
             return result;
         }
+
+        public async Task<int> DeleteReportsCreatedBeforeAsync(DateTime requestedOn)
+        {
+            var filter = Builders<Report>.Filter.Lt(r => r.RequestedOn, requestedOn);
+            var collection = GetCollection<Report>();
+
+            var result = await RetryPolicy.ExecuteAsync(async _ =>
+                    await collection.DeleteManyAsync(filter),
+                new Context(nameof(GetReportAsync)));
+
+            return (int)result.DeletedCount;
+        }
     }
 }
