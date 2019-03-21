@@ -67,13 +67,15 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         public async Task<OrchestratorResponse> SaveOrganisation(VacancyRouteModel vacancyRouteModel, long? legalEntityId, VacancyUser user)
         {
-            var vacancyTask = Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vacancyRouteModel, RouteNames.Employer_Post);
-            var employerVacancyInfoTask = _client.GetEditVacancyInfoAsync(vacancyRouteModel.EmployerAccountId);
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vacancyRouteModel, RouteNames.Employer_Post);
+            
+            // No need to update it the legal entity id hasn't changed
+            if (vacancy.LegalEntityId == legalEntityId.GetValueOrDefault())
+            {
+                return new OrchestratorResponse(true);
+            }
 
-            await Task.WhenAll(vacancyTask, employerVacancyInfoTask);
-            var vacancy = vacancyTask.Result;
-            var employerVacancyInfo = employerVacancyInfoTask.Result;
-
+            var employerVacancyInfo = await _client.GetEditVacancyInfoAsync(vacancyRouteModel.EmployerAccountId);
             var selectedOrganisation = employerVacancyInfo.LegalEntities.SingleOrDefault(x => x.LegalEntityId == legalEntityId);
 
             vacancy.LegalEntityId = legalEntityId.GetValueOrDefault();

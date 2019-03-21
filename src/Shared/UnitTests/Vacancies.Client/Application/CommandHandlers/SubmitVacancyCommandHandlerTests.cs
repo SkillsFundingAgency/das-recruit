@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.CommandHandlers;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
@@ -90,7 +91,10 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
             var mockTimeProvider = new Mock<ITimeProvider>();
             mockTimeProvider.Setup(t => t.Now).Returns(now);
 
-            var handler = new SubmitVacancyCommandHandler(mockLogger.Object, mockRepository.Object, mockMessaging.Object, mockTimeProvider.Object);
+            var mockEmployerNameService = new Mock<IEmployerNameService>();
+
+            var handler = new SubmitVacancyCommandHandler(
+                mockLogger.Object, mockRepository.Object, mockMessaging.Object, mockTimeProvider.Object, mockEmployerNameService.Object);
 
             return handler;
         }

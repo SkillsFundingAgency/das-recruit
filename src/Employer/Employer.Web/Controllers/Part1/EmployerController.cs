@@ -53,7 +53,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                 return View(vm);
             }
 
-            return RedirectToRoute(RouteNames.EmployerName_Get, new {LegalEntityId = m.SelectedOrganisationId});
+            return RedirectToRoute(RouteNames.EmployerName_Get);
         }
     }
 }

@@ -21,7 +21,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         }
 
         [HttpGet("employer-name", Name = RouteNames.EmployerName_Get)]
-        public async Task<IActionResult> EmployerName(VacancyRouteModel vrm, [FromQuery] bool wizard)
+        public async Task<IActionResult> EmployerName(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
         {
             var vm = await _orchestrator.GetEmployerNameViewModelAsync(vrm, User.ToVacancyUser());
             vm.PageInfo.SetWizard(wizard);
@@ -46,7 +46,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                 return View(vm);
             }
 
-            return RedirectToRoute(RouteNames.LegalEntityAgreement_SoftStop_Get);            
+            return RedirectToRoute(RouteNames.LegalEntityAgreement_SoftStop_Get);
         }
     }
 }

@@ -107,17 +107,15 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
         private void ValidateOrganisation()
         {
+            RuleFor(x => x.EmployerName)
+                .NotEmpty()
+                    .WithMessage("You must select one organisation")
+                    .WithErrorCode("4")
+                .RunCondition(VacancyRuleSet.EmployerName)
+                .WithRuleId(VacancyRuleSet.EmployerName);
+
             //Temporary arrangement as I am only employers has trading name changes
             //The When condition can be removed once we apply trading name changes to providers web
-            When(v => v.SourceOrigin == SourceOrigin.ProviderWeb, () => 
-                RuleFor(x => x.EmployerName)
-                    .NotEmpty()
-                        .WithMessage("You must select one organisation")
-                        .WithErrorCode("4")
-                    .RunCondition(VacancyRuleSet.EmployerName)
-                    .WithRuleId(VacancyRuleSet.EmployerName)
-            );
-
             When(v => v.SourceOrigin == SourceOrigin.EmployerWeb, () => 
                 RuleFor(x => x.LegalEntityName)
                     .NotEmpty()
@@ -144,7 +142,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             
             RuleFor(x => x.EmployerNameOption)
                 .NotEmpty()
-                    .WithMessage("You must select the name to go on the vacancy")
+                    .WithMessage("You must select an employer name")
                     .WithErrorCode("404")
                 .RunCondition(VacancyRuleSet.EmployerNameOption)
                 .WithRuleId(VacancyRuleSet.EmployerNameOption);
