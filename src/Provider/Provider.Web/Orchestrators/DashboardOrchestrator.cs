@@ -1,9 +1,10 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
-using Esfa.Recruit.Provider.Web.Mappings;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels;
+using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -12,6 +13,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 {
     public class DashboardOrchestrator
     {
+        private const int VacanciesPerPage = 25;
         private readonly IProviderVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
 
@@ -21,7 +23,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             _vacancyClient = vacancyClient;
         }
 
-        public async Task<DashboardViewModel> GetDashboardViewModelAsync(long ukprn)
+        public async Task<DashboardViewModel> GetDashboardViewModelAsync(long ukprn, int page)
         {
             var dashboard = await _client.GetDashboardAsync(ukprn);
 
@@ -31,8 +33,37 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 dashboard = await _client.GetDashboardAsync(ukprn);
             }
 
-            var vm = DashboardMapper.MapFromProviderDashboard(dashboard);
+            var totalVacancies = dashboard.Vacancies.Count();
+
+            page = SanitizePage(page, totalVacancies);
+            
+            var skip = (page - 1) * VacanciesPerPage;
+
+            var vacancies = dashboard?.Vacancies
+                .Skip(skip)
+                .Take(VacanciesPerPage)
+                .Select(VacancySummaryMapper.ConvertToVacancySummaryViewModel)
+                .OrderByDescending(v => v.CreatedDate)
+                .ToList();
+
+            var pager = new PagerViewModel(
+                totalVacancies, 
+                VacanciesPerPage,
+                page, 
+                "Showing {0} to {1} of {2} vacancies");
+
+            var vm = new DashboardViewModel 
+            {
+                Vacancies = vacancies,
+                Pager = pager
+            };
+
             return vm;
+        }
+
+        private int SanitizePage(int page, int totalVacancies)
+        {
+            return (page < 0 || page > (int)Math.Ceiling((double)totalVacancies / VacanciesPerPage)) ? 1 : page;
         }
 
         public async Task<string> GetVacancyRedirectRouteAsync(VacancyRouteModel vrm)

@@ -18,9 +18,9 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         }
 
         [HttpGet("", Name = RouteNames.Dashboard_Index_Get)]
-        public async Task<IActionResult> Dashboard()
+        public async Task<IActionResult> Dashboard([FromQuery] int page = 1)
         {
-            var vm = await _orchestrator.GetDashboardViewModelAsync(User.GetUkprn());
+            var vm = await _orchestrator.GetDashboardViewModelAsync(User.GetUkprn(), page);
             if (TempData.ContainsKey(TempDataKeys.DashboardErrorMessage))
                 vm.WarningMessage = TempData[TempDataKeys.DashboardErrorMessage].ToString();
 

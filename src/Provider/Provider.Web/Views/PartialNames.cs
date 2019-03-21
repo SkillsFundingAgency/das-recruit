@@ -9,6 +9,7 @@ namespace Esfa.Recruit.Provider.Web.Views
         public const string GetHelpContactDetails = RecruitPartialNames.GetHelpContactDetails;
         public const string GoogleTagManagerHead = RecruitPartialNames.GoogleTagManagerHead;
         public const string GoogleTagManagerBody = RecruitPartialNames.GoogleTagManagerBody;
+        public const string Pager = RecruitPartialNames.Pager;
         public const string ValidationSummary = RecruitPartialNames.ValidationSummary;
         public const string ReviewSummary = "_ReviewSummaryPartial";
         public const string EditVacancyPartial = "_EditVacancyPartial";

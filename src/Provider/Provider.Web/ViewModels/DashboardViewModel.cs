@@ -9,6 +9,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public IList<VacancySummaryViewModel> Vacancies { get; set; }
         public string WarningMessage { get; internal set; }
         public string InfoMessage { get; internal set; }
+        public PagerViewModel Pager { get; internal set; }
 
         public bool HasVacancies => Vacancies.Any();
         public bool HasWarning => !string.IsNullOrEmpty(WarningMessage);

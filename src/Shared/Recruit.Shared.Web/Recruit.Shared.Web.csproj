@@ -13,6 +13,9 @@
     <ProjectReference Include="..\Recruit.Vacancies.Client\Recruit.Vacancies.Client.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Content Update="Views\Shared\_PagerPartial.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Views\Shared\_ApplicationInsightsPartial.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
