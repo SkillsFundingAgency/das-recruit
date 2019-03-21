@@ -1,13 +1,12 @@
 @using Esfa.Recruit.Shared.Web.Mappers
 @using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
-@using Esfa.Recruit.Vacancies.Client.Domain.Entities
 @model ReviewViewModel
 <div class="review-container">
     <form asp-route="@RouteNames.Vacancy_Review_Post">
         <partial name="_ReviewHeader" />
         <div class="govuk-grid-row">
-            <div class="govuk-grid-column-full">
-                <div asp-validation-summary="All" class="error-summary" asp-show="@ViewData.ModelState.IsValid == false"></div>
+            <div class="govuk-grid-column-full">                
+                <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' asp-show="@ViewData.ModelState.IsValid == false"/>
             </div>
         </div>
 
@@ -405,22 +404,23 @@
         <partial name="_ReviewHistories" for="ReviewHistories" />
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-full">
-                <h2 class="govuk-heading-m">Reviewer's Comments</h2>
-                <ul class="govuk-!-margin-bottom-6 govuk-list" id="automatedqarules-selected-comments"></ul>
-                <span asp-validation-for="ReviewerComment" class="error-message"></span>
-                <div class="govuk-form-group">
-                    <textarea asp-for="ReviewerComment"
-                              class="govuk-textarea"
-                              cols="20"
-                              rows="5"
-                              size="12"
-                              type="text"
-                              data-val-length-max="@VacancyReviewValidator.ManualQaCommentMaxLength"></textarea>
-                    <span class="maxchar-count"></span>
-                    <span class="maxchar-text"></span>
+                <div esfa-validation-marker-for="ReviewerComment" class="govuk-form-group">
+                    <h2 class="govuk-heading-m">Reviewer's Comments</h2>
+                    <ul class="govuk-!-margin-bottom-6 govuk-list" id="automatedqarules-selected-comments"></ul>
+                    <span asp-validation-for="ReviewerComment" class="govuk-error-message"></span>
+                    <div class="govuk-form-group">
+                        <textarea asp-for="ReviewerComment"
+                                  class="govuk-textarea"
+                                  cols="20"
+                                  rows="5"
+                                  size="12"
+                                  type="text"
+                                  data-val-length-max="@VacancyReviewValidator.ManualQaCommentMaxLength"></textarea>
+                        <span class="maxchar-count"></span>
+                        <span class="maxchar-text"></span>
+                    </div>
                 </div>
             </div>
-        </div>
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-full">
                 <div class="govuk-form-group inline">

@@ -5,5 +5,6 @@ namespace Esfa.Recruit.Qa.Web.Views
     public static class PartialNames
     {
         public const string ApplicationInsights = RecruitPartialNames.ApplicationInsights;
+        public const string ValidationSummary = RecruitPartialNames.ValidationSummary;
     }
 }
