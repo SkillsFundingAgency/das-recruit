@@ -91,6 +91,21 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             return new ReviewFieldMappingLookupsForPage(vms, mappings);
         }
 
+        public static ReviewFieldMappingLookupsForPage GetEmployerNameReviewFieldIndicators()
+        {
+            var vms = new List<ReviewFieldIndicatorViewModel>
+            {
+                new ReviewFieldIndicatorViewModel(FieldIdentifiers.EmployerName, nameof(FieldIdentifiers.EmployerName))
+            };
+
+            var mappings =  new Dictionary<string, IEnumerable<string>>
+            {
+                { FieldIdResolver.ToFieldId(v => v.EmployerName), new []{ FieldIdentifiers.EmployerName} }
+            };
+
+            return new ReviewFieldMappingLookupsForPage(vms, mappings);
+        }
+
         public static ReviewFieldMappingLookupsForPage GetShortDescriptionReviewFieldIndicators()
         {
             var vms = new List<ReviewFieldIndicatorViewModel>

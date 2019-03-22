@@ -10,7 +10,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.EmployerName
         public string NewTradingName { get; set; }        
         public EmployerNameOptionViewModel? SelectedEmployerNameOption { get; set; }
 
-        //public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
+        public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
 
         public PartOnePageInfoViewModel PageInfo { get; set; }
         public bool HasExistingTradingName => string.IsNullOrWhiteSpace(ExistingTradingName) == false;

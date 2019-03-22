@@ -2,12 +2,14 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
+using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.EmployerName;
 using Esfa.Recruit.Shared.Web.Orchestrators;
+using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -20,14 +22,16 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         private readonly IEmployerVacancyClient _employerVacancyClient;
         private readonly IRecruitVacancyClient _recruitVacancyClient;
         private readonly ILogger<EmployerNameOrchestrator> _logger;
-        
+        private readonly IReviewSummaryService _reviewSummaryService;
+
         public EmployerNameOrchestrator(IEmployerVacancyClient employerVacancyClient, IRecruitVacancyClient recruitVacancyClient, 
-            ILogger<EmployerNameOrchestrator> logger)
+            ILogger<EmployerNameOrchestrator> logger, IReviewSummaryService reviewSummaryService)
             : base(logger) 
         {
             _employerVacancyClient = employerVacancyClient;
             _recruitVacancyClient = recruitVacancyClient;
             _logger = logger;
+            _reviewSummaryService = reviewSummaryService;
         }
 
         public async Task<EmployerNameViewModel> GetEmployerNameViewModelAsync(VacancyRouteModel vrm, VacancyUser user)
@@ -51,6 +55,13 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 ExistingTradingName = employerProfile.TradingName,
                 PageInfo = Utility.GetPartOnePageInfo(vacancy)
             };
+
+            if (vacancy.Status == VacancyStatus.Referred)
+            {
+                vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value, 
+                    ReviewFieldMappingLookups.GetEmployerNameReviewFieldIndicators());
+            }
+
 
             if (vacancy.EmployerNameOption.HasValue) 
                 vm.SelectedEmployerNameOption = GetSelectedNameOption(vacancy.EmployerNameOption);
