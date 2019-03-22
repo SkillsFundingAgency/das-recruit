@@ -27,6 +27,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Reports.ReportDashboard
         public ReportStatus Status { get; set; }
 
         public bool CanDownload => Status == ReportStatus.Generated;
-        public bool IsNew => Status == ReportStatus.Generated && DownloadCount == 0;
+        public bool IsNew => DownloadCount == 0;
     }
 }

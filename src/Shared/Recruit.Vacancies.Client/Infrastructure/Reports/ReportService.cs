@@ -95,5 +95,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
 
             _csvBuilder.WriteCsvToStream(stream, results, report.RequestedOn, reportStrategy.ResolveFormat);
         }
+
+        public Task IncrementReportDownloadCountAsync(Guid reportId)
+        {
+            return _reportRepository.IncrementReportDownloadCountAsync(reportId);
+        }
     }
 }

@@ -23,5 +23,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<List<ReportSummary>> GetReportsForProviderAsync(long ukprn);
         Task<Report> GetReportAsync(Guid reportId);
         void WriteReportAsCsv(Stream stream, Report report);
+        Task IncrementReportDownloadCountAsync(Guid reportId);
     }
 }

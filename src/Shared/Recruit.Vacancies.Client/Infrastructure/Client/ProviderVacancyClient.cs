@@ -106,5 +106,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         {
             _reportService.WriteReportAsCsv(stream, report);
         }
+
+        public Task IncrementReportDownloadCountAsync(Guid reportId)
+        {
+            return _reportService.IncrementReportDownloadCountAsync(reportId);
+        }
     }
 }

@@ -1,4 +1,7 @@
-﻿namespace Esfa.Recruit.Provider.Web.ViewModels.Reports.ProviderApplicationsReport
+﻿using System.Collections;
+using System.Collections.Generic;
+
+namespace Esfa.Recruit.Provider.Web.ViewModels.Reports.ProviderApplicationsReport
 {
     public class ProviderApplicationsReportCreateViewModel
     {
@@ -35,5 +38,12 @@
                 return $"{ToDay}/{ToMonth}/{ToYear}";
             }
         }
+
+        public IList<string> OrderedFieldNames => new List<string>
+        {
+            nameof(DateRange),
+            nameof(FromDate),
+            nameof(ToDate)
+        };
     }
 }
