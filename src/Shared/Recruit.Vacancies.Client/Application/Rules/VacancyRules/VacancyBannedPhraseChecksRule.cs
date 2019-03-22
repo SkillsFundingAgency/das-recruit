@@ -53,6 +53,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules
             if (subject.ProviderContact != null)
                 outcomes.AddRange(BannedPhraseCheck(() => subject.ProviderContact.Name));
 
+            if (subject.EmployerNameOption == EmployerNameOption.TradingName)
+                outcomes.AddRange(BannedPhraseCheck(() => subject.EmployerName));
+
             outcomes.AddRange(BannedPhraseCheck(() => subject.ApplicationInstructions));
 
             var outcome = outcomeBuilder.Add(outcomes)

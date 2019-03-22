@@ -43,14 +43,15 @@ namespace Esfa.Recruit.Employer.Web.Mappings
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.Training, Anchors.Training),
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.ApplicationMethod, Anchors.ApplicationMethod),
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.ApplicationUrl, Anchors.ApplicationUrl),
-                new ReviewFieldIndicatorViewModel(FieldIdentifiers.ApplicationInstructions, Anchors.ApplicationInstructions)
+                new ReviewFieldIndicatorViewModel(FieldIdentifiers.ApplicationInstructions, Anchors.ApplicationInstructions),
+                new ReviewFieldIndicatorViewModel(FieldIdentifiers.EmployerName, Anchors.AboutEmployerSection)
             };
 
             var mappings =  new Dictionary<string, IEnumerable<string>>
             {
                 { FieldIdResolver.ToFieldId(v => v.EmployerAccountId), new string[0]},
                 { FieldIdResolver.ToFieldId(v => v.Title), new[]{ FieldIdentifiers.Title} },
-                { FieldIdResolver.ToFieldId(v => v.EmployerName), new string[0] },
+                { FieldIdResolver.ToFieldId(v => v.EmployerName), new []{ FieldIdentifiers.EmployerName} },
                 { FieldIdResolver.ToFieldId(v => v.ShortDescription), new []{ FieldIdentifiers.ShortDescription} },
                 { FieldIdResolver.ToFieldId(v => v.ClosingDate), new []{ FieldIdentifiers.ClosingDate} },
                 { FieldIdResolver.ToFieldId(v => v.Wage.WeeklyHours), new []{ FieldIdentifiers.WorkingWeek} },

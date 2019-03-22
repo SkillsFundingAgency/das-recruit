@@ -33,6 +33,7 @@
         public const string EmployerWebsiteUrl = "EmployerWebsiteUrl";
         public const string EmployerContact = "EmployerContact";
         public const string EmployerAddress = "EmployerAddress";
+        public const string EmployerName = "EmployerName";
         public const string Provider = "Provider";
         public const string ProviderContact = "ProviderContact";
         public const string Training = "Training";
