@@ -7,7 +7,6 @@ using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.RuleTemplates;
 using Esfa.Recruit.Shared.Web.Services;
-using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
@@ -23,23 +22,20 @@ namespace Esfa.Recruit.Qa.Web.Mappings
         private const int MapImageHeight = 256;
         private readonly ILogger<ReviewMapper> _logger;
         private readonly IQaVacancyClient _vacancyClient;
-        private readonly IGeocodeImageService _mapService;
-        private readonly IMinimumWageProvider _wageProvider;
+        private readonly IGeocodeImageService _mapService;        
         private readonly Lazy<IList<string>> _qualifications;
         private readonly IRuleMessageTemplateRunner _ruleTemplateRunner;
         private readonly IReviewSummaryService _reviewSummaryService;
 
         public ReviewMapper(ILogger<ReviewMapper> logger,
                     IQaVacancyClient vacancyClient,
-                    IGeocodeImageService mapService,
-                    IMinimumWageProvider wageProvider,
+                    IGeocodeImageService mapService,                    
                     IRuleMessageTemplateRunner ruleTemplateRunner,
                     IReviewSummaryService reviewSummaryService)
         {
             _logger = logger;
             _vacancyClient = vacancyClient;
-            _mapService = mapService;
-            _wageProvider = wageProvider;
+            _mapService = mapService;            
             _qualifications = new Lazy<IList<string>>(() => _vacancyClient.GetCandidateQualificationsAsync().Result.QualificationTypes);
             _ruleTemplateRunner = ruleTemplateRunner;
             _reviewSummaryService = reviewSummaryService;
@@ -125,6 +121,8 @@ namespace Esfa.Recruit.Qa.Web.Mappings
         {
             var vacancy = review.VacancySnapshot;
 
+            var updatedVacancy = _vacancyClient.GetVacancyAsync(review.VacancyReference);
+
             var programmeTask = _vacancyClient.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
 
             var reviewHistoryTask = _vacancyClient.GetVacancyReviewHistoryAsync(review.VacancyReference);
@@ -141,8 +139,6 @@ namespace Esfa.Recruit.Qa.Web.Mappings
             var programme = programmeTask.Result;
 
             var historiesVm = GetReviewHistoriesViewModel(reviewHistoryTask.Result);
-
-            var wagePeriod = _wageProvider.GetWagePeriod(vacancy.StartDate.Value);
 
             var vm = new ReviewViewModel();
             vm.Review = reviewSummaryTask.Result;
@@ -204,12 +200,19 @@ namespace Esfa.Recruit.Qa.Web.Mappings
 
                 vm.ManualOutcome = review.ManualOutcome;
 
-                if(review.Status == ReviewStatus.Closed)
+                var updatedVacancyResult = updatedVacancy.Result;
+                if (updatedVacancyResult.IsDeleted && updatedVacancyResult.Status == VacancyStatus.Referred)
+                {
+                    vm.PageTitle = "Deleted vacancy - referred";
+                }
+                else if(review.Status == ReviewStatus.Closed)
                 {
                     vm.PageTitle = GetPageTitle(historiesVm, review.Id, review.ManualOutcome);
                 }
 
                 vm.AutomatedQaResults = GetAutomatedQaResultViewModel(review);
+                vm.VacancyStatus = updatedVacancyResult.Status;
+                vm.IsVacancyDeleted = updatedVacancyResult.IsDeleted;
             }
             catch (NullReferenceException ex)
             {
@@ -218,7 +221,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
             }
 
             return vm;
-        }
+        }        
 
         private string GetPageTitle(ReviewHistoriesViewModel historiesVm, Guid reviewId, ManualQaOutcome? reviewManualOutcome)
         {

@@ -59,7 +59,7 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public IEnumerable<FieldIdentifierViewModel> FieldIdentifiers { get; set; }
         public IEnumerable<AutomatedQaResultViewModel> AutomatedQaResults { get; set; }
         public bool IsResubmission { get; set; }
-        public string ReviewerName { get; set; }
+       public string ReviewerName { get; set; }
         public DateTime ReviewedDate { get; set; }
         public ReviewSummaryViewModel Review { get; set; }
         public ManualQaOutcome? ManualOutcome { get; set; }
@@ -78,7 +78,7 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public bool IsNotDisabilityConfident => IsDisabilityConfident == false;
         public bool IsEmployerVacancy => OwnerType == OwnerType.Employer;
         public bool IsProviderVacancy => OwnerType == OwnerType.Provider;
-
+        public string Owner => IsEmployerVacancy ? "employer" : "provider";        
         public string ApplicationInstructionsClass => GetFieldIdentifierCssClass(FieldIdentifier.ApplicationInstructions);
         public string ApplicationMethodClass => GetFieldIdentifierCssClass(FieldIdentifier.ApplicationMethod);
         public string ApplicationUrlClass => GetFieldIdentifierCssClass(FieldIdentifier.ApplicationUrl);
@@ -108,6 +108,10 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
 
         public bool HasAutomatedQaResults => AutomatedQaResults.Any();
         public string PageTitle { get; set; }
+        public VacancyStatus VacancyStatus { get; set; }
+        public bool IsVacancyDeleted { get; set; }
+
+        public bool ShowDeletedMessage => IsVacancyDeleted && VacancyStatus == VacancyStatus.Referred;
 
         private string GetFieldIdentifierCssClass(string fieldIdentifer)
         {
