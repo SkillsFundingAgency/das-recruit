@@ -6,6 +6,7 @@ using Esfa.Recruit.Provider.Web.ViewModels.Reports.ReportDashboard;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Microsoft.CodeAnalysis.Operations;
 using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Reports
@@ -27,7 +28,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Reports
             var vm = new ReportsDashboardViewModel 
             {
                 ProcessingCount = reports.Count(r => r.IsProcessing),
-                Reports = reports.Select(r => new ReportRowViewModel 
+                Reports = reports
+                    .OrderByDescending(r => r.RequestedOn)
+                    .Select(r => new ReportRowViewModel 
                 {
                     ReportId = r.Id,
                     ReportName = r.ReportName,
@@ -50,11 +53,15 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Reports
 
             _vacancyClient.WriteReportAsCsv(stream, report);
 
-            return new ReportDownloadViewModel
+            var vm = new ReportDownloadViewModel
             {
                 Content = stream,
                 ReportName = report.ReportName
             };
+
+            await _vacancyClient.IncrementReportDownloadCountAsync(report.Id);
+
+            return vm;
         }
     }
 }

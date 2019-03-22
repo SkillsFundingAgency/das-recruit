@@ -78,5 +78,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 
             return (int)result.DeletedCount;
         }
+
+        public Task IncrementReportDownloadCountAsync(Guid reportId)
+        {
+            var filter = Builders<Report>.Filter.Eq(r => r.Id, reportId);
+            var update = new UpdateDefinitionBuilder<Report>().Inc(r => r.DownloadCount, 1);
+            var collection = GetCollection<Report>();
+
+            return RetryPolicy.ExecuteAsync(async _ =>
+                await collection.FindOneAndUpdateAsync(filter, update),
+            new Context(nameof(IncrementReportDownloadCountAsync)));
+        }
     }
 }

@@ -12,5 +12,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Repositories
         Task<List<T>> GetReportsForProviderAsync<T>(long ukprn);
         Task<Report> GetReportAsync(Guid reportId);
         Task<int> DeleteReportsCreatedBeforeAsync(DateTime requestedOn);
+        Task IncrementReportDownloadCountAsync(Guid reportId);
     }
 }

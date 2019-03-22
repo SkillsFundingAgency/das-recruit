@@ -1,15 +1,21 @@
 ﻿@model Esfa.Recruit.Provider.Web.ViewModels.Reports.ReportDashboard.ReportsDashboardViewModel
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+        <a asp-route="@RouteNames.Dashboard_Index_Get" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Return to recruitment dashboard</a>
+
         <h1 class="govuk-heading-xl">Reports</h1>
-        <p asp-hide="@Model.HasReports" class="govuk-body">You can create and download a report that gives you information on all the applications you received. You can decide what time period you would like for the report.</p>
+    </div>
+    <div asp-hide="@Model.HasReports"  class="govuk-grid-column-two-thirds">
+        <p  class="govuk-body">You can create and download a report that gives you information on all the applications you received. You can decide what time period you would like for the report.</p>
         <a asp-route="@RouteNames.ProviderApplicationsReportCreate_Get" class="govuk-button">Create new report</a>
-        <div asp-show="@Model.HasReports">
-            <p class="govuk-body">
-                You have @Model.ProcessingCaption being processed.
-                <a asp-route="@RouteNames.ReportDashboard_Get">Check if your report is ready to download</a>
-            </p>
-        </div>
+    </div>
+    <div asp-show="@Model.HasReports"  class="govuk-grid-column-full">
+        <a asp-route="@RouteNames.ProviderApplicationsReportCreate_Get" class="govuk-button">Create new report</a>
+        <p class="govuk-body">
+            You have @Model.ProcessingCaption being processed.
+            <a asp-route="@RouteNames.ReportDashboard_Get">Check if your report is ready to download</a>
+        </p>
     </div>
 </div>
 <div asp-show="@Model.HasReports">
