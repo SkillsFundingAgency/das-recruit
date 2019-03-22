@@ -19,7 +19,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task SubmitVacancyAsync(Guid vacancyId, VacancyUser user);
         Task CloseVacancyAsync(Guid vacancyId, VacancyUser user);
         Task DeleteVacancyAsync(Guid vacancyId, VacancyUser user);
-        Task CreateProviderApplicationsReportAsync(long ukprn, DateTime fromDate, DateTime toDate, VacancyUser user);
         Task<Guid> CreateProviderApplicationsReportAsync(long ukprn, DateTime fromDate, DateTime toDate, VacancyUser user, string reportName);
         Task<List<ReportSummary>> GetReportsForProviderAsync(long ukprn);
         Task<Report> GetReportAsync(Guid reportId);
