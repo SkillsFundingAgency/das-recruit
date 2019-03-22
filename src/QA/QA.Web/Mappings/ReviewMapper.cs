@@ -200,14 +200,11 @@ namespace Esfa.Recruit.Qa.Web.Mappings
 
                 vm.ManualOutcome = review.ManualOutcome;
 
-                var updatedVacancyResult = updatedVacancy.Result;
-                if (updatedVacancyResult.IsDeleted && updatedVacancyResult.Status == VacancyStatus.Referred)
+                var updatedVacancyResult = updatedVacancy.Result;               
+                if (review.Status == ReviewStatus.Closed)
                 {
-                    vm.PageTitle = "Deleted vacancy - referred";
-                }
-                else if(review.Status == ReviewStatus.Closed)
-                {
-                    vm.PageTitle = GetPageTitle(historiesVm, review.Id, review.ManualOutcome);
+                    vm.PageTitle = GetPageTitle(historiesVm, review.Id, review.ManualOutcome, updatedVacancyResult);
+
                 }
 
                 vm.AutomatedQaResults = GetAutomatedQaResultViewModel(review);
@@ -223,11 +220,20 @@ namespace Esfa.Recruit.Qa.Web.Mappings
             return vm;
         }        
 
-        private string GetPageTitle(ReviewHistoriesViewModel historiesVm, Guid reviewId, ManualQaOutcome? reviewManualOutcome)
-        {
-            var timeFrame = historiesVm.Items.First().ReviewId == reviewId ? "Latest" : "Historical";
+        private string GetPageTitle(ReviewHistoriesViewModel historiesVm, Guid reviewId, ManualQaOutcome? reviewManualOutcome,Vacancy vacancy)
+        {                                   
             var outcome = reviewManualOutcome.GetValueOrDefault().ToString().ToLower();
-            return $"{timeFrame} review -  {outcome} (read only)";
+            bool hasReviews = historiesVm.Items.First().ReviewId == reviewId;
+            if (vacancy.IsDeleted && vacancy.Status == VacancyStatus.Referred)
+            {
+                var timeFrame = hasReviews ? "Deleted vacancy" : "Historical review";
+                return $"{timeFrame} -  {outcome} (read only)";
+            }
+            else
+            {
+                var timeFrame = hasReviews ? "Latest" : "Historical";
+                return $"{timeFrame} review -  {outcome} (read only)";
+            }                                        
         }
 
         private void SetEmployerAddressElements(ReviewViewModel vm, Vacancy vacancy)
