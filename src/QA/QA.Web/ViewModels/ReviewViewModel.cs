@@ -105,14 +105,10 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public string VacancyDescriptionClass => GetFieldIdentifierCssClass(FieldIdentifier.VacancyDescription);
         public string WageClass => GetFieldIdentifierCssClass(FieldIdentifier.Wage);
         public string WorkingWeekClass => GetFieldIdentifierCssClass(FieldIdentifier.WorkingWeek);
-
         public bool HasAutomatedQaResults => AutomatedQaResults.Any();
         public string PageTitle { get; set; }
         public VacancyStatus VacancyStatus { get; set; }
         public bool IsVacancyDeleted { get; set; }
-
-        public bool ShowDeletedMessage => IsVacancyDeleted && VacancyStatus == VacancyStatus.Referred;
-
         private string GetFieldIdentifierCssClass(string fieldIdentifer)
         {
             return FieldIdentifiers.Single(f => f.FieldIdentifier == fieldIdentifer).FieldValueHasChanged ? CssFieldChanged : null;

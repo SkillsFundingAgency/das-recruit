@@ -121,7 +121,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
         {
             var vacancy = review.VacancySnapshot;
 
-            var updatedVacancy = _vacancyClient.GetVacancyAsync(review.VacancyReference);
+            var currentVacancy = _vacancyClient.GetVacancyAsync(review.VacancyReference);
 
             var programmeTask = _vacancyClient.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
 
@@ -134,7 +134,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
             var reviewSummaryTask = _reviewSummaryService.GetReviewSummaryViewModelAsync(review.Id, 
                     ReviewFieldMappingLookups.GetPreviewReviewFieldIndicators());
 
-            await Task.WhenAll(programmeTask, approvedCountTask, approvedFirstTimeCountTask, reviewHistoryTask, reviewSummaryTask);
+            await Task.WhenAll(currentVacancy,programmeTask, approvedCountTask, approvedFirstTimeCountTask, reviewHistoryTask, reviewSummaryTask);
 
             var programme = programmeTask.Result;
 
@@ -200,16 +200,16 @@ namespace Esfa.Recruit.Qa.Web.Mappings
 
                 vm.ManualOutcome = review.ManualOutcome;
 
-                var updatedVacancyResult = updatedVacancy.Result;               
+                var currentVacancyResult = currentVacancy.Result;               
                 if (review.Status == ReviewStatus.Closed)
                 {
-                    vm.PageTitle = GetPageTitle(historiesVm, review.Id, review.ManualOutcome, updatedVacancyResult);
+                    vm.PageTitle = GetPageTitle(historiesVm, review.Id, review.ManualOutcome, currentVacancyResult);
 
                 }
 
                 vm.AutomatedQaResults = GetAutomatedQaResultViewModel(review);
-                vm.VacancyStatus = updatedVacancyResult.Status;
-                vm.IsVacancyDeleted = updatedVacancyResult.IsDeleted;
+                vm.VacancyStatus = currentVacancyResult.Status;
+                vm.IsVacancyDeleted = currentVacancyResult.IsDeleted;
             }
             catch (NullReferenceException ex)
             {
