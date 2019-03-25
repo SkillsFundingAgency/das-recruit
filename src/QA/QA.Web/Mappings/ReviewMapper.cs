@@ -207,8 +207,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
 
                 }
                 
-                vm.AutomatedQaResults = GetAutomatedQaResultViewModel(review);
-                vm.CurrentVacancyStatus = currentVacancyResult.Status;
+                vm.AutomatedQaResults = GetAutomatedQaResultViewModel(review);                
                 vm.IsVacancyDeleted = currentVacancyResult.IsDeleted;
             }
             catch (NullReferenceException ex)
