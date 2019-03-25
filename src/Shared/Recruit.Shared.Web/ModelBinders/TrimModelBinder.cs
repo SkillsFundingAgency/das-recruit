@@ -22,7 +22,7 @@ namespace Esfa.Recruit.Shared.Web.ModelBinders
 
             if (valueProviderResult != null &&
                 valueProviderResult.FirstValue is string str &&
-                !string.IsNullOrEmpty(str))
+                !string.IsNullOrWhiteSpace(str))
             {
                 bindingContext.Result = ModelBindingResult.Success(str.Trim());
                 return Task.CompletedTask;
