@@ -9,27 +9,31 @@ using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Mappers;
 using System.Linq;
 using Esfa.Recruit.Employer.Web.Extensions;
+using Microsoft.AspNetCore.Hosting;
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 {
     [Route(RoutePaths.AccountVacancyRoutePath)]
-    public class EmployerController : Controller
+    public class EmployerController : EmployerControllerBase
     {
         private readonly EmployerOrchestrator _orchestrator;
+        
 
-        public EmployerController(EmployerOrchestrator orchestrator)
+        public EmployerController(EmployerOrchestrator orchestrator, IHostingEnvironment hostingEnvironment)
+            : base(hostingEnvironment)
         {
-            _orchestrator = orchestrator;
+            _orchestrator = orchestrator;            
         }
 
         [HttpGet("employer", Name = RouteNames.Employer_Get)]
         public async Task<IActionResult> Employer(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
         {
             var vm = await _orchestrator.GetEmployerViewModelAsync(vrm);
+            ClearCookie(vrm.VacancyId);
             if(vm.HasOnlyOneOrganisation)
             {
                 var org = vm.Organisations.FirstOrDefault();
-                await _orchestrator.SaveOrganisation(vrm, org.Id, User.ToVacancyUser());
+                SetEmployerInfoCookie(vrm.VacancyId, org.Id);
                 return RedirectToRoute(RouteNames.EmployerName_Get);
             }
             vm.PageInfo.SetWizard(wizard);
@@ -39,13 +43,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         [HttpPost("employer", Name = RouteNames.Employer_Post)]
         public async Task<IActionResult> Employer(EmployerEditModel m, [FromQuery] bool wizard)
         {
-            var response = await _orchestrator.PostEmployerEditModelAsync(m, User.ToVacancyUser());
-
-            if (!response.Success)
-            {
-                response.AddErrorsToModelState(ModelState);
-            }
-
             if (!ModelState.IsValid)
             {
                 var vm = await _orchestrator.GetEmployerViewModelAsync(m);
@@ -53,6 +50,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                 return View(vm);
             }
 
+            SetEmployerInfoCookie(m.VacancyId, m.SelectedOrganisationId.GetValueOrDefault());
             return RedirectToRoute(RouteNames.EmployerName_Get);
         }
     }

@@ -10,6 +10,8 @@ using Esfa.Recruit.Shared.Web.Extensions;
 using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using System;
+using Esfa.Recruit.Employer.Web.Models;
+using Esfa.Recruit.Employer.Web.Extensions;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
@@ -29,24 +31,39 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         }
 
         public async Task<LocationViewModel> GetLocationViewModelAsync(
-            VacancyRouteModel vrm, VacancyUser user)
+            VacancyRouteModel vrm, EmployerInfoModel employerInfoModel, VacancyUser user)
         {
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_employerVacancyClient, _recruitVacancyClient, vrm, RouteNames.Location_Get);
 
-            return await GetViewModelAsync(vacancy);
+            return await GetViewModelAsync(vacancy, employerInfoModel);
         }
 
-        public async Task<OrchestratorResponse> PostLocationEditModelAsync(LocationEditModel m, VacancyUser user)
+        public async Task<OrchestratorResponse> PostLocationEditModelAsync(
+            LocationEditModel m, EmployerInfoModel employerInfoModel, VacancyUser user)
         {
             if(!m.UseOtherLocation.HasValue)
                 return new OrchestratorResponse(false);
 
-            var vacancyTask = Utility.GetAuthorisedVacancyForEditAsync(_employerVacancyClient, _recruitVacancyClient, m, RouteNames.Employer_Post);
+            var vacancyTask = Utility.GetAuthorisedVacancyForEditAsync(
+                _employerVacancyClient, _recruitVacancyClient, m, RouteNames.Employer_Post);
             var employerVacancyInfoTask = _employerVacancyClient.GetEditVacancyInfoAsync(m.EmployerAccountId);
 
             await Task.WhenAll(vacancyTask, employerVacancyInfoTask);
             var vacancy = vacancyTask.Result;
-            var employerVacancyInfo = employerVacancyInfoTask.Result;
+            var editVacancyInfo = employerVacancyInfoTask.Result;
+
+            var legalEntityId = GetLegalEntityId(employerInfoModel, vacancy);
+
+            var selectedOrganisation = 
+                editVacancyInfo.LegalEntities.Single(l => l.LegalEntityId == legalEntityId);
+
+            vacancy.LegalEntityName = selectedOrganisation.Name;
+            vacancy.LegalEntityId = legalEntityId;
+
+            if(employerInfoModel?.EmployerNameOption != null)
+            {
+                vacancy.EmployerNameOption = employerInfoModel.EmployerNameOption.Value.ConvertToDomainEntity();
+            }
 
             if (m.UseOtherLocation == true)
             {
@@ -56,24 +73,18 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                     AddressLine2 = m.AddressLine2,
                     AddressLine3 = m.AddressLine3,
                     AddressLine4 = m.AddressLine4,
-                    Postcode = m.Postcode.AsPostcode(),
-                    Latitude = null,
-                    Longitude = null
+                    Postcode = m.Postcode.AsPostcode()
                 };
             }
             else
             {
-                var selectedOrganisation = employerVacancyInfo.LegalEntities.SingleOrDefault(x => x.LegalEntityId == vacancy.LegalEntityId);
-
                 vacancy.EmployerLocation = new Vacancies.Client.Domain.Entities.Address
                 {
                     AddressLine1 = selectedOrganisation.Address.AddressLine1,
                     AddressLine2 = selectedOrganisation.Address.AddressLine2,
                     AddressLine3 = selectedOrganisation.Address.AddressLine3,
                     AddressLine4 = selectedOrganisation.Address.AddressLine4,
-                    Postcode = selectedOrganisation.Address.Postcode.AsPostcode(),
-                    Latitude = null,
-                    Longitude = null
+                    Postcode = selectedOrganisation.Address.Postcode.AsPostcode()
                 };
             }
 
@@ -96,10 +107,13 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             return mappings;
         }
 
-        private async Task<LocationViewModel> GetViewModelAsync(Vacancy vacancy)
+        private async Task<LocationViewModel> GetViewModelAsync(Vacancy vacancy, EmployerInfoModel employerInfoModel)
         {
             var employerData = await _employerVacancyClient.GetEditVacancyInfoAsync(vacancy.EmployerAccountId);
-            var legalEntity = employerData.LegalEntities.First(l => l.LegalEntityId == vacancy.LegalEntityId);
+
+            var legalEntityId = GetLegalEntityId(employerInfoModel, vacancy);
+
+            var legalEntity = employerData.LegalEntities.First(l => l.LegalEntityId == legalEntityId);
 
             var vm = new LocationViewModel();
             vm.PageInfo = Utility.GetPartOnePageInfo(vacancy);
@@ -122,5 +136,16 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             }            
             return vm;
         }        
+
+        private long GetLegalEntityId(EmployerInfoModel employerInfoModel, Vacancy vacancy)
+        {
+            var legalEntityId = employerInfoModel?.LegalEntityId != null ? employerInfoModel?.LegalEntityId : vacancy.LegalEntityId; 
+
+            if (legalEntityId == null || legalEntityId == 0)
+            {
+                throw new ArgumentNullException("LegalEntityId");
+            }
+            return legalEntityId.Value;
+        }
     }
 }

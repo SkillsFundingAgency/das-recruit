@@ -10,6 +10,20 @@ namespace Esfa.Recruit.Employer.Web.Extensions
 {
     public static class CookiesExtensions
     {
+        public static void ClearEmployerInfo(this IResponseCookies cookies, IHostingEnvironment hostingEnvironment, Guid vacancyId)
+        {
+            cookies.Delete(string.Format(CookieNames.EmployerInfo, vacancyId), EsfaCookieOptions.GetSessionLifetimeHttpCookieOption(hostingEnvironment));
+        }
+        public static void SetEmployerInfo(this IResponseCookies cookies, IHostingEnvironment hostingEnvironment, Guid vacancyId, string employerInfo)
+        {
+            cookies.Append(string.Format(CookieNames.EmployerInfo, vacancyId), employerInfo, EsfaCookieOptions.GetSessionLifetimeHttpCookieOption(hostingEnvironment));
+        }
+
+        public static string GetEmployerInfo(this IRequestCookieCollection cookies, Guid vacancyId)
+        {
+            return cookies[string.Format(CookieNames.EmployerInfo, vacancyId)]?.Trim();
+        }
+
         public static void SetProposedClosingDate(this IResponseCookies cookies, IHostingEnvironment hostingEnvironment, Guid vacancyId, DateTime date)
         {
             cookies.Append(string.Format(CookieNames.VacancyProposedClosingDate, vacancyId), date.ToShortDateString(), EsfaCookieOptions.GetSessionLifetimeHttpCookieOption(hostingEnvironment));
