@@ -4,13 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.ViewModels;
+using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
+using Humanizer;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using NLog.Config;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators
 {
@@ -34,37 +35,31 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 dashboard = await _client.GetDashboardAsync(ukprn);
             }
 
+            var vacancies = dashboard?.Vacancies?.ToList() ?? new List<VacancySummary>();
+
+            var showFilter = vacancies.Select(v => v.Status).Distinct().Count() > 1;
+
             var filterStatus = SanitizeFilter(filter);
 
-            var filterOptions = new List<SelectListItem>
-            {
-                GetFilterSelectListItem(dashboard.Vacancies, "All vacancies", null, filterStatus),
-                GetFilterSelectListItem(dashboard.Vacancies, "Live vacancies", VacancyStatus.Live, filterStatus),
-                GetFilterSelectListItem(dashboard.Vacancies, "Rejected vacancies", VacancyStatus.Referred, filterStatus),
-                GetFilterSelectListItem(dashboard.Vacancies, "Pending vacancies", VacancyStatus.Submitted, filterStatus),
-                GetFilterSelectListItem(dashboard.Vacancies, "Draft vacancies", VacancyStatus.Draft, filterStatus),
-                GetFilterSelectListItem(dashboard.Vacancies, "Closed vacancies", VacancyStatus.Closed, filterStatus),
-            };
-
-            var filteredVacancies = dashboard?.Vacancies
-                .Where(v => filterStatus.HasValue == false || v.Status == filterStatus.Value)
+            var filteredVacancies = vacancies.Where(v => 
+                    filterStatus.HasValue == false || v.Status == filterStatus.Value)
+                    .OrderByDescending(v => v.CreatedDate)
                 .ToList();
 
-            var totalVacancies = filteredVacancies.Count();
+            var filteredVacanciesTotal = filteredVacancies.Count();
 
-            page = SanitizePage(page, totalVacancies);
+            page = SanitizePage(page, filteredVacanciesTotal);
 
             var skip = (page - 1) * VacanciesPerPage;
 
-            var vacancies = filteredVacancies
+            var vacanciesVm = filteredVacancies
                 .Skip(skip)
                 .Take(VacanciesPerPage)
                 .Select(VacancySummaryMapper.ConvertToVacancySummaryViewModel)
-                .OrderByDescending(v => v.CreatedDate)
                 .ToList();
 
             var pager = new PagerViewModel(
-                totalVacancies, 
+                filteredVacanciesTotal, 
                 VacanciesPerPage,
                 page, 
                 "Showing {0} to {1} of {2} vacancies",
@@ -73,12 +68,17 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 {
                     {"filter", filterStatus?.ToString() ?? ""}
                 });
-
+            
             var vm = new DashboardViewModel 
             {
-                Vacancies = vacancies,
+                Vacancies = vacanciesVm,
                 Pager = pager,
-                FilterOptions = filterOptions
+                IsFiltered = filterStatus.HasValue,
+                ShowFilter = showFilter,
+                FilterOptions = GetFilterSelectOptions(vacancies, filterStatus),
+                ResultsHeading = GetFilterHeading(filteredVacanciesTotal, filterStatus),
+                HasVacancies = vacancies.Any(),
+                FilterAsText = filterStatus.HasValue ? filterStatus.Value.GetDisplayName() : "All"
             };
 
             return vm;
@@ -97,7 +97,20 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             return null;
         }
 
-        private SelectListItem GetFilterSelectListItem(IEnumerable<VacancySummary> vacancies, string text, VacancyStatus? optionStatus, VacancyStatus? filterStatus)
+        private List<SelectListItem> GetFilterSelectOptions(List<VacancySummary> vacancies, VacancyStatus? filterStatus)
+        {
+            return new List<SelectListItem>
+            {
+                GetFilterSelectListItem(vacancies, null, filterStatus),
+                GetFilterSelectListItem(vacancies, VacancyStatus.Draft, filterStatus),
+                GetFilterSelectListItem(vacancies, VacancyStatus.Submitted, filterStatus),
+                GetFilterSelectListItem(vacancies, VacancyStatus.Live, filterStatus),
+                GetFilterSelectListItem(vacancies, VacancyStatus.Closed, filterStatus),
+                GetFilterSelectListItem(vacancies, VacancyStatus.Referred, filterStatus),
+            };
+        }
+
+        private SelectListItem GetFilterSelectListItem(IEnumerable<VacancySummary> vacancies, VacancyStatus? optionStatus, VacancyStatus? filterStatus)
         {
             var count = vacancies.Count(v => 
                 optionStatus.HasValue == false || 
@@ -105,7 +118,22 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
             var value = optionStatus.HasValue ? optionStatus.Value.ToString() : "";
 
+            var text = optionStatus.HasValue ? optionStatus.Value.GetDisplayName() : "All Vacancies";
+
             return new SelectListItem($"{text} ({count})", value, optionStatus == filterStatus );
+        }
+
+        private string GetFilterHeading(int totalVacancies, VacancyStatus? filterStatus)
+        {
+            if (totalVacancies == 1)
+                return "Showing 1 vacancy";
+
+            var filterText = filterStatus.HasValue ? filterStatus.GetDisplayName() : "All";
+            
+            if (filterStatus.HasValue)
+                return $"Showing {totalVacancies} \"{filterText}\" {"vacancy".ToQuantity(totalVacancies, ShowQuantityAs.None)}";
+            
+            return $"Showing all {totalVacancies} vacancies";    
         }
     }
 }

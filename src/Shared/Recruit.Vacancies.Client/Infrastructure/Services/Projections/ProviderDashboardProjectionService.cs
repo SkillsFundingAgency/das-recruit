@@ -68,7 +68,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
                 await UpdateWithTrainingProgrammeInfo(summary);
             }
 
-            await _queryStoreWriter.UpdateProviderDashboardAsync(ukprn, vacancySummaries.OrderBy(v => v.CreatedDate));
+            await _queryStoreWriter.UpdateProviderDashboardAsync(ukprn, vacancySummaries.OrderByDescending(v => v.CreatedDate));
 
             _logger.LogDebug("Update provider dashboard with {count} summary records for account: {ukprn}", vacancySummaries.Count, ukprn);
         }

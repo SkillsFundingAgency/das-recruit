@@ -15,18 +15,14 @@ namespace Esfa.Recruit.Shared.Web.ViewModels
         public PagerViewModel(int totalItems, int itemsPerPage, int currentPage, string captionFormat, string routeName, Dictionary<string, string> otherRouteValues = null)
         {
             CurrentPage = currentPage;
-
             TotalPages = (int)Math.Ceiling((double)totalItems / itemsPerPage);
+            RouteName = routeName;
+            OtherRouteValues = otherRouteValues ?? new Dictionary<string, string>();
 
             var displayStart = ((currentPage - 1) * itemsPerPage) + 1;
-            
             var displayEnd = currentPage == TotalPages ? totalItems : displayStart + itemsPerPage - 1;
 
             Caption = string.Format(captionFormat, displayStart, displayEnd, totalItems);
-
-            RouteName = routeName;
-
-            OtherRouteValues = otherRouteValues ?? new Dictionary<string, string>();
         }
 
         public Dictionary<string, string> GetRouteData(int page)

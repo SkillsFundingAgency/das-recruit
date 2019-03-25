@@ -801,6 +801,17 @@ a[rel="external"]:hover:after {
         font-size: 16px;
         line-height: 1.25; } }
 
+/*** Dashboard header */
+.das-header-actions {
+    text-align: right;
+    margin-top: 10px;
+}
+
+.das-header-actions .govuk-button {
+    margin-bottom: 20px;
+}
+/*** End of Dashboard header */
+
 /*** Pager ***/
 .das-pager {
     margin-top: 1em;
