@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.Reports.ProviderApplicationsReport
 {
