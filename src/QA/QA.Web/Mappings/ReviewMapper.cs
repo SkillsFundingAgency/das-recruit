@@ -7,7 +7,6 @@ using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.RuleTemplates;
 using Esfa.Recruit.Shared.Web.Services;
-using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
@@ -23,23 +22,20 @@ namespace Esfa.Recruit.Qa.Web.Mappings
         private const int MapImageHeight = 256;
         private readonly ILogger<ReviewMapper> _logger;
         private readonly IQaVacancyClient _vacancyClient;
-        private readonly IGeocodeImageService _mapService;
-        private readonly IMinimumWageProvider _wageProvider;
+        private readonly IGeocodeImageService _mapService;        
         private readonly Lazy<IList<string>> _qualifications;
         private readonly IRuleMessageTemplateRunner _ruleTemplateRunner;
         private readonly IReviewSummaryService _reviewSummaryService;
 
         public ReviewMapper(ILogger<ReviewMapper> logger,
                     IQaVacancyClient vacancyClient,
-                    IGeocodeImageService mapService,
-                    IMinimumWageProvider wageProvider,
+                    IGeocodeImageService mapService,                    
                     IRuleMessageTemplateRunner ruleTemplateRunner,
                     IReviewSummaryService reviewSummaryService)
         {
             _logger = logger;
             _vacancyClient = vacancyClient;
-            _mapService = mapService;
-            _wageProvider = wageProvider;
+            _mapService = mapService;            
             _qualifications = new Lazy<IList<string>>(() => _vacancyClient.GetCandidateQualificationsAsync().Result.QualificationTypes);
             _ruleTemplateRunner = ruleTemplateRunner;
             _reviewSummaryService = reviewSummaryService;
@@ -125,6 +121,8 @@ namespace Esfa.Recruit.Qa.Web.Mappings
         {
             var vacancy = review.VacancySnapshot;
 
+            var currentVacancy = _vacancyClient.GetVacancyAsync(review.VacancyReference);
+
             var programmeTask = _vacancyClient.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
 
             var reviewHistoryTask = _vacancyClient.GetVacancyReviewHistoryAsync(review.VacancyReference);
@@ -136,13 +134,11 @@ namespace Esfa.Recruit.Qa.Web.Mappings
             var reviewSummaryTask = _reviewSummaryService.GetReviewSummaryViewModelAsync(review.Id, 
                     ReviewFieldMappingLookups.GetPreviewReviewFieldIndicators());
 
-            await Task.WhenAll(programmeTask, approvedCountTask, approvedFirstTimeCountTask, reviewHistoryTask, reviewSummaryTask);
+            await Task.WhenAll(currentVacancy,programmeTask, approvedCountTask, approvedFirstTimeCountTask, reviewHistoryTask, reviewSummaryTask);
 
             var programme = programmeTask.Result;
 
             var historiesVm = GetReviewHistoriesViewModel(reviewHistoryTask.Result);
-
-            var wagePeriod = _wageProvider.GetWagePeriod(vacancy.StartDate.Value);
 
             var vm = new ReviewViewModel();
             vm.Review = reviewSummaryTask.Result;
@@ -204,12 +200,15 @@ namespace Esfa.Recruit.Qa.Web.Mappings
 
                 vm.ManualOutcome = review.ManualOutcome;
 
-                if(review.Status == ReviewStatus.Closed)
+                var currentVacancyResult = currentVacancy.Result;               
+                if (review.Status == ReviewStatus.Closed)
                 {
-                    vm.PageTitle = GetPageTitle(historiesVm, review.Id, review.ManualOutcome);
-                }
+                    vm.PageTitle = GetPageTitle(historiesVm, review.Id, review.ManualOutcome, currentVacancyResult);
 
-                vm.AutomatedQaResults = GetAutomatedQaResultViewModel(review);
+                }
+                
+                vm.AutomatedQaResults = GetAutomatedQaResultViewModel(review);                
+                vm.IsVacancyDeleted = currentVacancyResult.IsDeleted;
             }
             catch (NullReferenceException ex)
             {
@@ -218,13 +217,22 @@ namespace Esfa.Recruit.Qa.Web.Mappings
             }
 
             return vm;
-        }
+        }        
 
-        private string GetPageTitle(ReviewHistoriesViewModel historiesVm, Guid reviewId, ManualQaOutcome? reviewManualOutcome)
-        {
-            var timeFrame = historiesVm.Items.First().ReviewId == reviewId ? "Latest" : "Historical";
+        private string GetPageTitle(ReviewHistoriesViewModel historiesVm, Guid reviewId, ManualQaOutcome? reviewManualOutcome,Vacancy vacancy)
+        {                                   
             var outcome = reviewManualOutcome.GetValueOrDefault().ToString().ToLower();
-            return $"{timeFrame} review -  {outcome} (read only)";
+            bool hasReviews = historiesVm.Items.First().ReviewId == reviewId;
+            if (vacancy.IsDeleted && vacancy.Status == VacancyStatus.Referred)
+            {
+                var timeFrame = hasReviews ? "Deleted vacancy" : "Historical review";
+                return $"{timeFrame} -  {outcome} (read only)";
+            }
+            else
+            {
+                var timeFrame = hasReviews ? "Latest" : "Historical";
+                return $"{timeFrame} review -  {outcome} (read only)";
+            }                                        
         }
 
         private void SetEmployerAddressElements(ReviewViewModel vm, Vacancy vacancy)

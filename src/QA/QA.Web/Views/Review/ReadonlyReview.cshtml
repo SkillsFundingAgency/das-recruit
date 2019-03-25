@@ -5,17 +5,24 @@
     <partial name="_ReviewHeader" />
 
     <div class="govuk-grid-row">
-        <div>
-            <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">@Model.PageTitle</h1>
-            <p class="govuk-body">
-                <div>Reviewed by @Model.ReviewerName</div>
-                <div>Returned to employer on @Model.ReviewedDateDay at @Model.ReviewedDateTime</div>
-            </p>
+        <div class="govuk-grid-column-full">
+            <div asp-show="@Model.IsVacancyDeleted" class="govuk-error-summary" role="alert" aria-labelledby="error-summary-title" tabindex="-1">
+                <h2 class="govuk-error-summary__title govuk-!-margin-bottom-0" id="error-summary-title">
+                    This vacancy has been deleted by the @Model.Owner and is read only
+                </h2>
+            </div>
+            <div>
+                <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">@Model.PageTitle</h1>
+                <p class="govuk-body">
+                    Reviewed by @Model.ReviewerName <br>
+                    Returned to @Model.Owner on @Model.ReviewedDateDay at @Model.ReviewedDateTime
+                </p>
+            </div>
         </div>
     </div>
     
     <div asp-hide="@Model.IsApproved" class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
+        <div class="govuk-grid-column-two-thirds">
             <partial name="_ReviewSummaryPartial" for="Review" />
         </div>
     </div>
@@ -166,7 +173,7 @@
             <div id="@Anchors.DisabilityConfident">
                 <h3 class="govuk-heading-s">Disability Confident (optional)</h3>
                 <img asp-show="@Model.IsDisabilityConfident" src="~/img/disability-confident_545x172.png" class="disability-confident-logo" alt="A logo confirming that the employer is registered as disability confident" />
-                <p asp-show="@Model.IsNotDisabilityConfident">This vacancy is not Disability Confident</p>
+                <p class="govuk-body" asp-show="@Model.IsNotDisabilityConfident">This vacancy is not Disability Confident</p>
             </div>
             <div id="@Anchors.EmployerWebsiteUrl">
                 <h3 class="govuk-heading-s">Website (optional)</h3>
