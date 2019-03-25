@@ -9,7 +9,7 @@ if (!(Get-Module CosmosDB | Where-Object { $_.Version.ToString() -eq $CosmosDBMo
     Write-Host "Minimum module version is not imported."
     if (!(Get-InstalledModule CosmosDB -MinimumVersion $CosmosDBModuleVersion -ErrorAction SilentlyContinue)) {
         Write-Host "Minimum module version is not installed."
-        Install-Module CosmosDB -MinimumVersion $CosmosDBModuleVersion -Scope CurrentUser -Force
+        Install-Module CosmosDB -MinimumVersion $CosmosDBModuleVersion -Scope CurrentUser -Force -AllowClobber
     }
     Import-Module CosmosDB -MinimumVersion $CosmosDBModuleVersion
 }
@@ -173,7 +173,7 @@ foreach ($Database in $CosmosDbConfiguration.Databases) {
                 }
             }
 
-            $null = New-CosmosDbCollection @NewCosmosDbCollectionParameters
+            $null = New-CosmosDbCollection @NewCosmosDbCollectionParameters -Verbose
 
             Write-Host "Collection Details: Context: Account - $($CosmosDbContext.Account), BaseUri - $($CosmosDbContext.BaseUri); Database: $($Database.DatabaseName); IndexingPolicy: $($IndexingPolicy)"
         }
