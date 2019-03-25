@@ -3,10 +3,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.ViewModels.Reports.ReportDashboard;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Microsoft.CodeAnalysis.Operations;
 using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Reports
@@ -53,15 +51,12 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Reports
 
             _vacancyClient.WriteReportAsCsv(stream, report);
 
-            var vm = new ReportDownloadViewModel
-            {
+            await _vacancyClient.IncrementReportDownloadCountAsync(report.Id);
+
+            return new ReportDownloadViewModel {
                 Content = stream,
                 ReportName = report.ReportName
             };
-
-            await _vacancyClient.IncrementReportDownloadCountAsync(report.Id);
-
-            return vm;
         }
     }
 }
