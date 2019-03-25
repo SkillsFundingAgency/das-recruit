@@ -107,7 +107,7 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public string WorkingWeekClass => GetFieldIdentifierCssClass(FieldIdentifier.WorkingWeek);
         public bool HasAutomatedQaResults => AutomatedQaResults.Any();
         public string PageTitle { get; set; }
-        public VacancyStatus VacancyStatus { get; set; }
+        public VacancyStatus CurrentVacancyStatus { get; set; }
         public bool IsVacancyDeleted { get; set; }
         private string GetFieldIdentifierCssClass(string fieldIdentifer)
         {

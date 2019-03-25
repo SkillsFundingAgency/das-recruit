@@ -206,9 +206,9 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                     vm.PageTitle = GetPageTitle(historiesVm, review.Id, review.ManualOutcome, currentVacancyResult);
 
                 }
-
+                
                 vm.AutomatedQaResults = GetAutomatedQaResultViewModel(review);
-                vm.VacancyStatus = currentVacancyResult.Status;
+                vm.CurrentVacancyStatus = currentVacancyResult.Status;
                 vm.IsVacancyDeleted = currentVacancyResult.IsDeleted;
             }
             catch (NullReferenceException ex)
