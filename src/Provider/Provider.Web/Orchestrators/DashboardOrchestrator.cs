@@ -1,13 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
-using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.ViewModels;
-using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using NLog.Config;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators
 {
@@ -15,15 +18,13 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
     {
         private const int VacanciesPerPage = 25;
         private readonly IProviderVacancyClient _client;
-        private readonly IRecruitVacancyClient _vacancyClient;
 
-        public DashboardOrchestrator(IProviderVacancyClient client, IRecruitVacancyClient vacancyClient)
+        public DashboardOrchestrator(IProviderVacancyClient client)
         {
             _client = client;
-            _vacancyClient = vacancyClient;
         }
 
-        public async Task<DashboardViewModel> GetDashboardViewModelAsync(long ukprn, int page)
+        public async Task<DashboardViewModel> GetDashboardViewModelAsync(long ukprn, string filter, int page)
         {
             var dashboard = await _client.GetDashboardAsync(ukprn);
 
@@ -33,13 +34,29 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 dashboard = await _client.GetDashboardAsync(ukprn);
             }
 
-            var totalVacancies = dashboard.Vacancies.Count();
+            var filterStatus = SanitizeFilter(filter);
+
+            var filterOptions = new List<SelectListItem>
+            {
+                GetFilterSelectListItem(dashboard.Vacancies, "All vacancies", null, filterStatus),
+                GetFilterSelectListItem(dashboard.Vacancies, "Live vacancies", VacancyStatus.Live, filterStatus),
+                GetFilterSelectListItem(dashboard.Vacancies, "Rejected vacancies", VacancyStatus.Referred, filterStatus),
+                GetFilterSelectListItem(dashboard.Vacancies, "Pending vacancies", VacancyStatus.Submitted, filterStatus),
+                GetFilterSelectListItem(dashboard.Vacancies, "Draft vacancies", VacancyStatus.Draft, filterStatus),
+                GetFilterSelectListItem(dashboard.Vacancies, "Closed vacancies", VacancyStatus.Closed, filterStatus),
+            };
+
+            var filteredVacancies = dashboard?.Vacancies
+                .Where(v => filterStatus.HasValue == false || v.Status == filterStatus.Value)
+                .ToList();
+
+            var totalVacancies = filteredVacancies.Count();
 
             page = SanitizePage(page, totalVacancies);
-            
+
             var skip = (page - 1) * VacanciesPerPage;
 
-            var vacancies = dashboard?.Vacancies
+            var vacancies = filteredVacancies
                 .Skip(skip)
                 .Take(VacanciesPerPage)
                 .Select(VacancySummaryMapper.ConvertToVacancySummaryViewModel)
@@ -50,12 +67,18 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 totalVacancies, 
                 VacanciesPerPage,
                 page, 
-                "Showing {0} to {1} of {2} vacancies");
+                "Showing {0} to {1} of {2} vacancies",
+                RouteNames.Dashboard_Index_Get,
+                new Dictionary<string, string>
+                {
+                    {"filter", filterStatus?.ToString() ?? ""}
+                });
 
             var vm = new DashboardViewModel 
             {
                 Vacancies = vacancies,
-                Pager = pager
+                Pager = pager,
+                FilterOptions = filterOptions
             };
 
             return vm;
@@ -66,23 +89,23 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             return (page < 0 || page > (int)Math.Ceiling((double)totalVacancies / VacanciesPerPage)) ? 1 : page;
         }
 
-        public async Task<string> GetVacancyRedirectRouteAsync(VacancyRouteModel vrm)
+        private VacancyStatus? SanitizeFilter(string filter)
         {
-            var vacancy = await _vacancyClient.GetVacancyAsync(vrm.VacancyId.GetValueOrDefault());
+            if (Enum.TryParse(typeof(VacancyStatus), filter, out var status))
+                return (VacancyStatus)status;
 
-            Utility.CheckAuthorisedAccess(vacancy, vrm.Ukprn);
+            return null;
+        }
 
-            if(vacancy.CanEdit == false)
-                throw new InvalidStateException(ErrorMessages.VacancyNotAvailableForEditing);
-  
-            if (Utility.VacancyHasCompletedPartOne(vacancy))
-            {
-                return RouteNames.Vacancy_Preview_Get;
-            }
+        private SelectListItem GetFilterSelectListItem(IEnumerable<VacancySummary> vacancies, string text, VacancyStatus? optionStatus, VacancyStatus? filterStatus)
+        {
+            var count = vacancies.Count(v => 
+                optionStatus.HasValue == false || 
+                v.Status == optionStatus.Value);
 
-            var resumeRouteName = Utility.GetValidRoutesForVacancy(vacancy).Last();
+            var value = optionStatus.HasValue ? optionStatus.Value.ToString() : "";
 
-            return resumeRouteName;
+            return new SelectListItem($"{text} ({count})", value, optionStatus == filterStatus );
         }
     }
 }

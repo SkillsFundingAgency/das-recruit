@@ -39,6 +39,19 @@
     </div>
     <br>
 </div>
+
+<div class="govuk-grid-row govuk-!-margin-bottom-2">
+    <div class="govuk-grid-column-one-half">
+        <form method="get">
+            <div class="govuk-form-group">
+                <label for="filter" class="govuk-label">Filter vacancies by</label>
+                <select id="filter" name="filter" asp-items="@Model.FilterOptions" class="govuk-select"></select>
+                <button type="submit" id="filter-submit" class="das-button-filter das-button-secondary govuk-button">Filter</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <div asp-show="@Model.HasVacancies">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">

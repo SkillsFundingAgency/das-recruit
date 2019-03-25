@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Shared.Web.ViewModels;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels
 {
@@ -10,6 +11,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public string WarningMessage { get; internal set; }
         public string InfoMessage { get; internal set; }
         public PagerViewModel Pager { get; internal set; }
+        public IEnumerable<SelectListItem> FilterOptions { get; internal set; }
 
         public bool HasVacancies => Vacancies.Any();
         public bool HasWarning => !string.IsNullOrEmpty(WarningMessage);
