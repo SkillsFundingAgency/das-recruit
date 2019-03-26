@@ -16,7 +16,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public string ResultsHeading { get; internal set; }
         public bool IsFiltered { get; internal set; }
         public bool HasVacancies {get; internal set;}
-        public string FilterAsText { get; internal set; }
 
         public bool HasWarning => !string.IsNullOrEmpty(WarningMessage);
         public bool HasInfo => !string.IsNullOrEmpty(InfoMessage);

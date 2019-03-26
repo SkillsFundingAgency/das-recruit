@@ -67,8 +67,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 ShowFilter = vacancies.Select(v => v.Status).Distinct().Count() > 1,
                 FilterOptions = GetFilterSelectOptions(vacancies, filterStatus),
                 ResultsHeading = GetFilterHeading(filteredVacanciesTotal, filterStatus),
-                HasVacancies = vacancies.Any(),
-                FilterAsText = filterStatus.HasValue ? filterStatus.Value.GetDisplayName() : "All"
+                HasVacancies = vacancies.Any()
             };
 
             return vm;
