@@ -35,18 +35,15 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             var now = _timeProvider.Now;
 
-            var report = new Report
-            {
-                Id = message.ReportId,
-                Owner = message.Owner,
-                Status = ReportStatus.New,
-                ReportName = message.ReportName,
-                ReportType = message.ReportType,
-                Parameters = message.Parameters,
-                RequestedBy = message.RequestedBy,
-                RequestedOn = now,
-                DownloadCount = 0
-            };
+            var report = new Report(
+                message.ReportId,
+                message.Owner,
+                ReportStatus.New,
+                message.ReportName,
+                message.ReportType,
+                message.Parameters,
+                message.RequestedBy,
+                now);
 
             await _repository.CreateAsync(report);
 

@@ -17,7 +17,8 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Reports.ProviderApplicationsRepor
         public string ToMonth { get; set; }
         public string ToYear { get; set; }
 
-        public string FromDate {
+        public string FromDate
+        {
             get {
                 if (string.IsNullOrWhiteSpace(FromDay) ||
                     string.IsNullOrWhiteSpace(FromMonth) ||
@@ -25,11 +26,13 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Reports.ProviderApplicationsRepor
                 {
                     return null;
                 }
+
                 return $"{FromDay}/{FromMonth}/{FromYear}";
             }
         }
 
-        public string ToDate {
+        public string ToDate
+        {
             get {
                 if (string.IsNullOrWhiteSpace(ToDay) ||
                     string.IsNullOrWhiteSpace(ToMonth) ||
@@ -37,6 +40,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Reports.ProviderApplicationsRepor
                 {
                     return null;
                 }
+
                 return $"{ToDay}/{ToMonth}/{ToYear}";
             }
         }

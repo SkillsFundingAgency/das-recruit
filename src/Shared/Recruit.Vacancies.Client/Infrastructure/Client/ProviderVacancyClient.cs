@@ -109,7 +109,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public Task IncrementReportDownloadCountAsync(Guid reportId)
         {
-            return _reportService.IncrementReportDownloadCountAsync(reportId);
+            return _reportRepository.IncrementReportDownloadCountAsync(reportId);
         }
     }
 }

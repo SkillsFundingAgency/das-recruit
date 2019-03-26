@@ -1,9 +1,13 @@
 ﻿@using Esfa.Recruit.Provider.Web.ViewModels.Reports
 @model Esfa.Recruit.Provider.Web.ViewModels.Reports.ProviderApplicationsReport.ProviderApplicationsReportCreateViewModel
+@{
+    var exampleToDate = DateTime.Today;
+    var exampleFromDate = exampleToDate.AddMonths(-2);
+    
+}
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
-
         <h1 class="govuk-heading-xl">What time period do you want for the report?</h1>
         <form asp-route="@RouteNames.ProviderApplicationsReportCreate_Post">
             <h2 class="govuk-heading-s">Select the options</h2>
@@ -54,7 +58,6 @@
                                     a custom date range
                                 </label>
                             </div>
-
                             <div id="custom-range-panel" class="govuk-radios__conditional govuk-radios__conditional--hidden">
                                 <div class="govuk-form-group">
                                     <div esfa-validation-marker-for="FromDate" class="govuk-form-group">
@@ -62,7 +65,7 @@
                                             Date from
                                         </label>
                                         <span class="govuk-hint">
-                                            For example, 19 01 2019
+                                            For example, @exampleFromDate.AsInputHintDisplayDate()
                                         </span>
                                         <span esfa-validation-message-for="FromDate" class="govuk-error-message"></span>
                                         <div class="govuk-date-input">
@@ -102,14 +105,13 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="govuk-form-group">
                                     <div esfa-validation-marker-for="ToDate" class="govuk-form-group">
                                         <label class="govuk-label govuk-!-font-weight-bold">
                                             Date to
                                         </label>
                                         <span class="govuk-hint">
-                                            For example, 19 01 2019
+                                            For example, @exampleToDate.AsInputHintDisplayDate()
                                         </span>
                                         <span esfa-validation-message-for="ToDate" class="govuk-error-message"></span>
                                         <div class="govuk-date-input">

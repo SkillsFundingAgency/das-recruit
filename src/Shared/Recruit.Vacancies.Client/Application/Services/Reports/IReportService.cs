@@ -9,6 +9,5 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services.Reports
     {
         Task GenerateReportAsync(Guid reportId);
         void WriteReportAsCsv(Stream stream, Report report);
-        Task IncrementReportDownloadCountAsync(Guid reportId);
     }
 }

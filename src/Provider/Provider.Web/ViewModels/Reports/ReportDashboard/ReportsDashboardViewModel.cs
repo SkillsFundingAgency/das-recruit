@@ -22,7 +22,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Reports.ReportDashboard
         public string ReportName { get; set; }
         public string CreatedDate { get; set; }
         public string CreatedBy { get; set; }
-        public long DownloadCount { get; set; }
+        public int DownloadCount { get; set; }
         public bool IsProcessing { get; set; }
         public ReportStatus Status { get; set; }
 

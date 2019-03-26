@@ -21,7 +21,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
         private const string QueryToDate = "_toDate_";
 
         private const string ColumnProgramme = "Programme";
-        private const string ColumnProgrammeStatus = "Programme_Status";
         private const string ColumnApplicationLastUpdatedDate = "Application_LastUpdatedDate";
         private const string ColumnApplicationDate = "Application_Date";
         private const string ColumnNumberOfDaysAppAtThisStatus = "Number_Of_Days_App_At_This_Status";
@@ -36,14 +35,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
         private readonly ILogger<ProviderApplicationsReportStrategy> _logger;
 
         private const string QueryFormat = @"[
-            { $match: {'ownerType' : 'Provider', 'trainingProvider.ukprn' : _ukprn_}},
+            { $match: {'trainingProvider.ukprn' : _ukprn_, 'ownerType' : 'Provider', 'isDeleted' : false, 'applicationMethod' : 'ThroughFindAnApprenticeship', 'status' : {$in : ['Live','Closed']}}},
             { $lookup: { from: 'applicationReviews', localField: 'vacancyReference', foreignField: 'vacancyReference', as: 'ar'}},
             { $unwind: '$ar'},
-            { $match: {'ar.submittedDate' : { $gte: ISODate('_fromDate_'), $lt: ISODate('_toDate_')}}},
+            { $match: {'ar.submittedDate' : { $gte: ISODate('_fromDate_'), $lt: ISODate('_toDate_')}, 'ar.isWithdrawn' : false}},
             { $project: {
                     '_id' : 0,
                     'Candidate_Name' : { $concat: ['$ar.application.firstName', ' ', '$ar.application.lastName']},
-                    'Applicant_id' : '$ar._id',
+                    'Applicant_id' : '$ar.application.candidateId',
                     'Address_Line1' : { $ifNull: ['$ar.application.addressLine1', null]},
                     'Address_Line2' : { $ifNull: ['$ar.application.addressLine2', null]},
                     'Address_Line3' : { $ifNull: ['$ar.application.addressLine3', null]},

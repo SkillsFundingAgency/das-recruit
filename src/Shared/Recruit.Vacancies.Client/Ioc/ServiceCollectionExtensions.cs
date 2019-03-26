@@ -133,7 +133,7 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
                     case ReportType.ProviderApplications:
                         return serviceProvider.GetService<ProviderApplicationsReportStrategy>();
                     default:
-                        throw new KeyNotFoundException($"No report strategy for {reportType}");
+                        throw new Exception($"No report strategy for {reportType}");
                 }
             });
 

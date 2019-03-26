@@ -18,27 +18,29 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Reports
         private const long _ukprn = 11111111;
 
         [Fact]
-        public void GetReportAsync_ShouldThrowReportNotFoundExceptionWhenReportIsNotFound()
+        public async Task GetReportAsync_ShouldThrowReportNotFoundExceptionWhenReportIsNotFound()
         {
             var orch = GetOrchestrator();
 
             var incorrectReportId = Guid.NewGuid();
             Func<Task<Report>> act = async () => await orch.GetTestReportAsync(0, incorrectReportId);
 
-            act.Should().ThrowAsync<ReportNotFoundException>()
-                .Result.WithMessage($"Cannot find report: {incorrectReportId}");
+            var err = await act.Should().ThrowAsync<ReportNotFoundException>();
+
+            err.WithMessage($"Cannot find report: {incorrectReportId}");
         }
 
         [Fact]
-        public void GetReportAsync_ShouldThrowAuthorisationExceptionIfNotOwner()
+        public async Task GetReportAsync_ShouldThrowAuthorisationExceptionIfNotOwner()
         {
             var orch = GetOrchestrator();
 
             var incorrectUkprn = 22222222;
             Func<Task<Report>> act = async () => await orch.GetTestReportAsync(incorrectUkprn, _reportId);
 
-            act.Should().ThrowAsync<AuthorisationException>()
-                .Result.WithMessage($"Ukprn: {incorrectUkprn} does not have access to report: {_reportId}");
+            var err = await act.Should().ThrowAsync<AuthorisationException>();
+            
+            err.WithMessage($"Ukprn: {incorrectUkprn} does not have access to report: {_reportId}");
         }
 
         [Fact]
@@ -54,16 +56,14 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Reports
         private TestReportOrchestrator GetOrchestrator()
         {
             var logger = new Mock<ILogger>();
-            
-            var report = new Report 
-            {
-                Id = _reportId,
-                Owner = new ReportOwner
-                {
-                    OwnerType = ReportOwnerType.Provider,
-                    Ukprn = _ukprn
-                }
+
+            var reportOwner = new ReportOwner {
+                OwnerType = ReportOwnerType.Provider,
+                Ukprn = _ukprn
             };
+
+            var report = new Report(_reportId, reportOwner, ReportStatus.New, "report name",
+                ReportType.ProviderApplications, null, null, DateTime.Now);
 
             var repo = new Mock<IProviderVacancyClient>();
             repo.Setup(r => r.GetReportAsync(_reportId)).ReturnsAsync(report);

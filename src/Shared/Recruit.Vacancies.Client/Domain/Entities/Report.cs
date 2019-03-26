@@ -5,6 +5,21 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
 {
     public class Report
     {
+        public Report(Guid id, ReportOwner owner, ReportStatus status, string reportName, 
+            ReportType reportType, Dictionary<string, object> parameters, VacancyUser requestedBy,
+            DateTime requestedOn)
+        {
+            Id = id;
+            Owner = owner;
+            Status = status;
+            ReportName = reportName;
+            ReportType = reportType;
+            Parameters = parameters;
+            RequestedBy = requestedBy;
+            RequestedOn = requestedOn;
+            DownloadCount = 0;
+        }
+
         public Guid Id { get; set; }
         public ReportOwner Owner { get; set; }
         public ReportStatus Status { get; set; }
