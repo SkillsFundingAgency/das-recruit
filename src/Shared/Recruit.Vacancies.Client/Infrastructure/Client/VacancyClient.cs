@@ -37,6 +37,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly IQualificationsProvider _qualificationsProvider;
 
         private readonly ITrainingProviderService _trainingProviderService;
+        private readonly IEmployerNameService _employerNameService;
 
         public VacancyClient(
             IVacancyRepository repository,
@@ -54,7 +55,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             IEmployerProfileRepository employerProfileRepository,
             IUserRepository userRepository,
             IQualificationsProvider qualificationsProvider,
-            ITrainingProviderService trainingProviderService)
+            ITrainingProviderService trainingProviderService,
+            IEmployerNameService employerNameService)
         {
             _repository = repository;
             _reader = reader;
@@ -72,8 +74,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _userRepository = userRepository;
             _qualificationsProvider = qualificationsProvider;
             _trainingProviderService = trainingProviderService;
+            _employerNameService = employerNameService;
         }
-
+    
+        
         public Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user)
         {
             var command = new UpdateDraftVacancyCommand {
@@ -97,6 +101,23 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         public Task<Vacancy> GetVacancyAsync(Guid vacancyId)
         {
             return _repository.GetVacancyAsync(vacancyId);
+        }
+
+        public Task<string> GetEmployerName(Guid vacancyId)
+        {   
+            return _employerNameService.GetEmployerName(vacancyId);
+        }
+
+        public async Task<string> GetEmployerDescriptionAsync(Vacancy vacancy)
+        {
+            if (vacancy.CanEdit)
+            {
+                var employerProfile = await GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.LegalEntityId);
+                
+                return employerProfile?.AboutOrganisation ?? string.Empty;
+            }
+
+            return vacancy.EmployerDescription;
         }
 
         public async Task<Guid> CreateVacancyAsync(string title, int numberOfPositions, string employerAccountId, VacancyUser user)

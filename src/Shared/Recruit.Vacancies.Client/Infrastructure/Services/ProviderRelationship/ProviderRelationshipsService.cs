@@ -95,7 +95,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
             return employerInfos;
         }
 
-        private HttpClient CreateHttpClient(ProviderRelationshipApiConfiguration configuration)
+        private static HttpClient CreateHttpClient(ProviderRelationshipApiConfiguration configuration)
         {
             
             var httpClient = new HttpClientBuilder()
@@ -103,7 +103,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
                 .WithBearerAuthorisationHeader(new AzureADBearerTokenGenerator(configuration))
                 .Build();
             
-            httpClient.BaseAddress = new Uri(_configuration.ApiBaseUrl);
+            httpClient.BaseAddress = new Uri(configuration.ApiBaseUrl);
 
             return httpClient;
         }

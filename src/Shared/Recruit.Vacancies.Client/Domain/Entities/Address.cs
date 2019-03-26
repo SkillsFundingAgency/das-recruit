@@ -11,5 +11,12 @@
         public double? Longitude { get; set; }
 
         public bool HasGeocode => Latitude.HasValue && Longitude.HasValue;
+        
+        public override string ToString()
+        {
+            return string
+                .Join(", ", new[] {AddressLine1, AddressLine2, AddressLine3, AddressLine4, Postcode })
+                .Replace(" ,", string.Empty);
+        }
     }
 }

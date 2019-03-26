@@ -71,6 +71,10 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
         [InlineData(RouteNames.ShortDescription_Post, false)]
         [InlineData(RouteNames.Employer_Get, false)]
         [InlineData(RouteNames.Employer_Post, false)]
+        [InlineData(RouteNames.EmployerName_Get, false)]
+        [InlineData(RouteNames.EmployerName_Post, false)]
+        [InlineData(RouteNames.Location_Get, false)]
+        [InlineData(RouteNames.Location_Post, false)]
         [InlineData(RouteNames.LegalEntityAgreement_SoftStop_Get, false)]
         [InlineData(RouteNames.Training_Get, false)]
         [InlineData(RouteNames.Training_Post, false)]
@@ -82,6 +86,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
                 EmployerAccountId = "EMPLOYER ACCOUNT ID",
                 Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
                 Title = "has a value",
+                LegalEntityName = "Legal name",
+                EmployerNameOption = EmployerNameOption.RegisteredName,
                 EmployerLocation = new Address { Postcode = "has a value" },
                 ShortDescription = "has a value"
             };
@@ -96,6 +102,10 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
         [InlineData(RouteNames.ShortDescription_Post, false)]
         [InlineData(RouteNames.Employer_Get, false)]
         [InlineData(RouteNames.Employer_Post, false)]
+        [InlineData(RouteNames.EmployerName_Get, false)]
+        [InlineData(RouteNames.EmployerName_Post, false)]
+        [InlineData(RouteNames.Location_Get, false)]
+        [InlineData(RouteNames.Location_Post, false)]
         [InlineData(RouteNames.LegalEntityAgreement_SoftStop_Get, false)]
         [InlineData(RouteNames.Training_Get, false)]
         [InlineData(RouteNames.Training_Post, false)]
@@ -109,6 +119,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
                 EmployerAccountId = "EMPLOYER ACCOUNT ID",
                 Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
                 Title = "has a value",
+                LegalEntityName = "legal name",
+                EmployerNameOption = EmployerNameOption.RegisteredName,
                 EmployerLocation = new Address { Postcode = "has a value" },
                 ShortDescription = "has a value",
                 ProgrammeId = "has a value"
@@ -126,6 +138,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
                 EmployerAccountId = "EMPLOYER ACCOUNT ID",
                 Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
                 Title = "has a value",
+                LegalEntityName = "legal name",
+                EmployerNameOption = EmployerNameOption.RegisteredName,
                 EmployerLocation = new Address { Postcode = "has a value" },
                 ShortDescription = "has a value",
                 ProgrammeId = "has a value",
@@ -135,6 +149,60 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
             CheckRouteIsValidForVacancyTest(vacancy, route, shouldRedirect, null);
         }
 
+        [Fact]
+        public void ShouldRedirectToEmployerGet()
+        {
+            var vacancy = new Vacancy
+            {
+                EmployerAccountId = "EMPLOYER ACCOUNT ID",
+                Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
+                Title = "has a value",
+                EmployerNameOption = EmployerNameOption.RegisteredName,
+                EmployerLocation = new Address { Postcode = "has a value" },
+                ShortDescription = "has a value",
+                ProgrammeId = "has a value",
+                Wage = new Wage { WageType = WageType.FixedWage}
+            };
+
+            CheckRouteIsValidForVacancyTest(vacancy, RouteNames.Employer_Get, false, null);
+        }
+
+        [Fact]
+        public void ShouldRedirectToEmployerNameGet()
+        {
+            var vacancy = new Vacancy
+            {
+                EmployerAccountId = "EMPLOYER ACCOUNT ID",
+                Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
+                Title = "has a value",
+                LegalEntityName = "legal name",
+                EmployerLocation = new Address { Postcode = "has a value" },
+                ShortDescription = "has a value",
+                ProgrammeId = "has a value",
+                Wage = new Wage { WageType = WageType.FixedWage}
+            };
+
+            CheckRouteIsValidForVacancyTest(vacancy, RouteNames.EmployerName_Get, false, null);
+        }
+
+        [Fact]
+        public void ShouldRedirectToLocationGet()
+        {
+            var vacancy = new Vacancy
+            {
+                EmployerAccountId = "EMPLOYER ACCOUNT ID",
+                Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
+                Title = "has a value",
+                LegalEntityName = "legal name",
+                EmployerNameOption = EmployerNameOption.RegisteredName,
+                ShortDescription = "has a value",
+                ProgrammeId = "has a value",
+                Wage = new Wage { WageType = WageType.FixedWage}
+            };
+
+            CheckRouteIsValidForVacancyTest(vacancy, RouteNames.Location_Get, false, null);
+        }
+        
         private void CheckRouteIsValidForVacancyTest(Vacancy vacancy, string route, bool shouldRedirect, string expectedRedirectRoute)
         {
             if (!shouldRedirect)

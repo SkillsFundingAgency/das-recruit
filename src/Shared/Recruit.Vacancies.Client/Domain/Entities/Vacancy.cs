@@ -45,6 +45,8 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public string EmployerDescription { get; set; }
         public Address EmployerLocation { get; set; }
         public string EmployerName { get; set; }
+        public EmployerNameOption? EmployerNameOption { get; set; }
+        public string LegalEntityName { get; set; }
         public string EmployerWebsiteUrl { get; set; }
         public GeoCodeMethod? GeoCodeMethod { get; set; }
         public long LegalEntityId { get; set; }
@@ -81,6 +83,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
                                && IsDeleted == false;
 
         /// <summary>
+        /// The vacancy is being edited
         /// We can only submit draft & referred vacancies that have not been deleted
         /// </summary>
         public bool CanSubmit => (Status == VacancyStatus.Draft || Status == VacancyStatus.Referred) && IsDeleted == false;

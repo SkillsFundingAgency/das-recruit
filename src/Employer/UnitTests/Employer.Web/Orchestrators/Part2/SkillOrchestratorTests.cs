@@ -197,7 +197,9 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
                 Wage = new Wage
                 {
                     WageType = WageType.NationalMinimumWage
-                }
+                },
+                LegalEntityName = "legal name",
+                EmployerNameOption = EmployerNameOption.RegisteredName
             };
         }
 

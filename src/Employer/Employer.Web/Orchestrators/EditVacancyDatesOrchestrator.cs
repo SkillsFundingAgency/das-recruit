@@ -7,7 +7,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Microsoft.Extensions.Logging;
-using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Shared.Web.Orchestrators;
@@ -19,7 +18,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
     public class EditVacancyDatesOrchestrator : EntityValidatingOrchestrator<Vacancy, EditVacancyDatesEditModel>
     {
         private const VacancyRuleSet ValdationRules = VacancyRuleSet.ClosingDate | VacancyRuleSet.StartDate | VacancyRuleSet.TrainingProgramme | VacancyRuleSet.StartDateEndDate | VacancyRuleSet.TrainingExpiryDate | VacancyRuleSet.MinimumWage;
-        private readonly IEmployerVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly ITimeProvider _timeProvider;
 
@@ -31,9 +29,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             }
         };
 
-        public EditVacancyDatesOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<EditVacancyDatesOrchestrator> logger, ITimeProvider timeProvider) : base(logger)
+        public EditVacancyDatesOrchestrator(IRecruitVacancyClient vacancyClient, ILogger<EditVacancyDatesOrchestrator> logger, ITimeProvider timeProvider) : base(logger)
         {
-            _client = client;
             _vacancyClient = vacancyClient;
             _timeProvider = timeProvider;
         }

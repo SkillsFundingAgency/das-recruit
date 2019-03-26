@@ -8,6 +8,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
     {
         private const string PathSpecifierFieldName = "path";
         private const string PreserveNullAndEmptyArraysSpecifierFieldName = "preserveNullAndEmptyArrays";
+        private const string ApplicationReviewLookupAliasName = "candidateApplicationReview";
         private static readonly BsonArray _newApplicationReviewStatusClause = new BsonArray { "$appStatus", ApplicationReviewStatus.New.ToString() };
 
         private static readonly BsonArray _successfulApplicationReviewStatusClause = new BsonArray { "$appStatus", ApplicationReviewStatus.Successful.ToString() };
@@ -23,7 +24,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     { "from", MongoDbCollectionNames.ApplicationReviews },
                     { "localField", "vacancyReference" },
                     { "foreignField", "vacancyReference" },
-                    { "as", "application" }
+                    { "as", ApplicationReviewLookupAliasName }
                 }
             }
         };
@@ -31,7 +32,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         {
             {
                 "$unwind",
-                new BsonDocument().Add(PathSpecifierFieldName, "$application")
+                new BsonDocument().Add(PathSpecifierFieldName, $"${ApplicationReviewLookupAliasName}")
                                 .Add(PreserveNullAndEmptyArraysSpecifierFieldName, true)
             }
         };
@@ -45,7 +46,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     { "vacancyReference", 1 },
                     { "title", 1 },
                     { "status", 1 },
-                    { "appStatus", "$application.status" },
+                    { "appStatus", $"${ApplicationReviewLookupAliasName}.status" },
                     { "employerName", 1 },
                     { "createdDate", 1 },
                     { "closingDate", 1 },
@@ -126,7 +127,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 _unwindClause,
                 _projectionOneClause,
                 _projectionTwoClause,
-                //_groupClause
+                _groupClause
             };
         }
     }

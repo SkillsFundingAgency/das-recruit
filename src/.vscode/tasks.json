@@ -100,6 +100,20 @@
             ]
         },
         {
+            "label": "prov-web-unit-tests",
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "test",
+                "${workspaceFolder}/Provider/UnitTests/UnitTests.csproj",
+                "/p:GenerateFullPaths=true"
+            ]
+        },
+        {
             "label": "qa-web-unit-tests",
             "group": {
                 "kind": "test",

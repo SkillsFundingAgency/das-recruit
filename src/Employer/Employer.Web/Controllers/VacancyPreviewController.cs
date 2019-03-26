@@ -81,7 +81,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             viewModel.SkillsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Skills }, true, vm => vm.Skills);
             viewModel.QualificationsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Qualifications }, true, vm => vm.Qualifications);
             viewModel.ThingsToConsiderSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.ThingsToConsider }, true, vm => vm.ThingsToConsider);
-            viewModel.EmployerNameSectionState = GetSectionState(viewModel, null, true, vm => vm.EmployerName);
+            viewModel.EmployerNameSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.EmployerName }, true, vm => vm.EmployerName);
             viewModel.EmployerDescriptionSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.EmployerDescription }, true, vm => vm.EmployerDescription);
             viewModel.EmployerWebsiteUrlSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.EmployerWebsiteUrl }, true, vm => vm.EmployerWebsiteUrl);
             viewModel.EmployerContactSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.EmployerContact }, false, vm => vm.EmployerContactName, vm => vm.EmployerContactEmail, vm => vm.EmployerContactTelephone);
