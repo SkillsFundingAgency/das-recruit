@@ -27,17 +27,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
         public async Task<DashboardViewModel> GetDashboardViewModelAsync(long ukprn, string filter, int page)
         {
-            var dashboard = await _client.GetDashboardAsync(ukprn);
-
-            if (dashboard == null)
-            {
-                await _client.GenerateDashboard(ukprn);
-                dashboard = await _client.GetDashboardAsync(ukprn);
-            }
-
-            var vacancies = dashboard?.Vacancies?.ToList() ?? new List<VacancySummary>();
-
-            var showFilter = vacancies.Select(v => v.Status).Distinct().Count() > 1;
+            var vacancies = await GetVacanciesAsync(ukprn);
 
             var filterStatus = SanitizeFilter(filter);
 
@@ -74,7 +64,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 Vacancies = vacanciesVm,
                 Pager = pager,
                 IsFiltered = filterStatus.HasValue,
-                ShowFilter = showFilter,
+                ShowFilter = vacancies.Select(v => v.Status).Distinct().Count() > 1,
                 FilterOptions = GetFilterSelectOptions(vacancies, filterStatus),
                 ResultsHeading = GetFilterHeading(filteredVacanciesTotal, filterStatus),
                 HasVacancies = vacancies.Any(),
@@ -82,6 +72,19 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             };
 
             return vm;
+        }
+
+        private async Task<List<VacancySummary>> GetVacanciesAsync(long ukprn)
+        {
+            var dashboard = await _client.GetDashboardAsync(ukprn);
+
+            if (dashboard == null)
+            {
+                await _client.GenerateDashboard(ukprn);
+                dashboard = await _client.GetDashboardAsync(ukprn);
+            }
+
+            return dashboard?.Vacancies?.ToList() ?? new List<VacancySummary>();
         }
 
         private int SanitizePage(int page, int totalVacancies)
@@ -125,7 +128,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
         private string GetFilterHeading(int totalVacancies, VacancyStatus? filterStatus)
         {
-            if (totalVacancies == 1)
+            if (totalVacancies == 1 && filterStatus.HasValue == false)
                 return "Showing 1 vacancy";
 
             var filterText = filterStatus.HasValue ? filterStatus.GetDisplayName() : "All";
