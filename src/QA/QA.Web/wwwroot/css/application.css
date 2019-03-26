@@ -308,3 +308,8 @@ mce-tinymce {
 .review-header-table-cell__border-left{
   border-left:1px solid #bfc1c3;
 }
+
+/**User History count**/
+.das-user-history-count {
+    color:#2b8cc4;
+}

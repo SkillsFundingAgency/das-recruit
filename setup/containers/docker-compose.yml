@@ -88,7 +88,7 @@ services:
     image: mcr.microsoft.com/azurestorage-azurite:2.6.7
     container_name: azurite
     volumes:
-      - azurite1:/opt/azurite/data
+      - azurite1:/opt/azurite/folder
     ports:
       - 10000:10000
       - 10001:10001

@@ -9,7 +9,6 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Extensions;
-using Esfa.Recruit.Employer.Web.ViewModels;
 using Microsoft.AspNetCore.Hosting;
 using InfoMsg = Esfa.Recruit.Shared.Web.ViewModels.InfoMessages;
 
@@ -44,6 +43,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             if (TempData.ContainsKey(TempDataKeys.VacancyClosedMessage))
                 viewModel.VacancyClosedInfoMessage = TempData[TempDataKeys.VacancyClosedMessage].ToString();
 
+            if (TempData.ContainsKey(TempDataKeys.ApplicationReviewStatusInfoMessage))
+                viewModel.ApplicationReviewStatusHeaderInfoMessage = TempData[TempDataKeys.ApplicationReviewStatusInfoMessage].ToString();            
             return View(viewModel);
         }
 

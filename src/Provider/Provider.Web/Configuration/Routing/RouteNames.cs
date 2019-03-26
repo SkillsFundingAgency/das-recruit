@@ -28,8 +28,8 @@
         public const string Dashboard_Feedback = "Dashboard_Feedback";
         public const string Dashboard_Privacy = "Dashboard_Privacy";
         public const string Dashboard_TermsAndConditions = "Dashboard_TermsAndConditions";
-        public const string DeleteVacancy_Delete_Get = "DeleteVacancy_Delete_Get";
-        public const string DeleteVacancy_Delete_Post = "DeleteVacancy_Delete_Post";
+        public const string DeleteVacancy_Get = "DeleteVacancy_Get";
+        public const string DeleteVacancy_Post = "DeleteVacancy_Post";
         public const string DisplayFullVacancy_Get = "DisplayFullVacancy_Get";
         public const string DisplayVacancy_Get = "DisplayVacancy_Get";
         public const string DismissOutageMessage_Post = "DismissOutageMessage_Post";
@@ -65,5 +65,7 @@
         public const string Wage_Post = "Wage_Post";
         public const string ApplicationReview_Get = "ApplicationReview_Get";
         public const string ApplicationReview_Post = "ApplicationReview_Post";
+        public const string ApplicationReviewConfirmation_Get = "ApplicationReviewConfirmation_Get";
+        public const string ApplicationReviewConfirmation_Post = "ApplicationReviewConfirmation_Post";
     }
 }

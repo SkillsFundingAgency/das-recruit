@@ -61,6 +61,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
         private static void RegisterFluentValidators(IServiceCollection services)
         {
             services.AddTransient<IValidator<ApplicationReviewEditModel>, ApplicationReviewEditModelValidator>();
+            services.AddTransient<IValidator<ApplicationReviewStatusConfirmationEditModel>, ApplicationReviewStatusConfirmationEditModelValidator>();
         }
 
         private static void RegisterOrchestratorDeps(IServiceCollection services)
@@ -88,6 +89,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<EditVacancyDatesOrchestrator>();
             services.AddTransient<ApplicationReviewOrchestrator>();
             services.AddTransient<CloneVacancyOrchestrator>();
+            services.AddTransient<DeleteVacancyOrchestrator>();
         }
 
         private static void RegisterMapperDeps(IServiceCollection services)
