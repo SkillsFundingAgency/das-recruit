@@ -25,7 +25,12 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         [HttpGet("employer-name", Name = RouteNames.EmployerName_Get)]
         public async Task<IActionResult> EmployerName(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
         {
-            var employerInfoModel = GetEmployerInfoCookie(vrm.VacancyId);
+            var employerInfoModel = GetVacancyEmployerInfoCookie(vrm.VacancyId);            
+            //if matching cookie is not found redirect to legal entity selection
+            //this could happen if the user navigates straight to employer-name end point
+            //by passing employer or location end point
+            if (employerInfoModel == null) 
+                return RedirectToRoute(RouteNames.Employer_Get);
             var vm = await _orchestrator.GetEmployerNameViewModelAsync(vrm, employerInfoModel, User.ToVacancyUser());
             vm.PageInfo.SetWizard(wizard);
             return View(vm);
@@ -34,7 +39,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         [HttpPost("employer-name", Name = RouteNames.EmployerName_Post)]
         public async Task<IActionResult> EmployerName(EmployerNameEditModel model, [FromQuery] bool wizard)
         { 
-            var employerInfoModel = GetEmployerInfoCookie(model.VacancyId);
+            var employerInfoModel = GetVacancyEmployerInfoCookie(model.VacancyId);
             var response = await _orchestrator.PostEmployerNameEditModelAsync(model, employerInfoModel, User.ToVacancyUser());
 
             if (!response.Success)
@@ -47,12 +52,24 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                 var vm = await _orchestrator.GetEmployerNameViewModelAsync(model, employerInfoModel, User.ToVacancyUser());
                 vm.PageInfo.SetWizard(wizard);
                 vm.NewTradingName = model.NewTradingName;
+                vm.SelectedEmployerNameOption = model.SelectedEmployerNameOption;
                 return View(vm);
             }
 
             employerInfoModel.EmployerNameOption = model.SelectedEmployerNameOption;
-            SetEmployerInfoCookie(model.VacancyId, employerInfoModel);
+            employerInfoModel.NewTradingName = model.NewTradingName;
+            SetVacancyEmployerInfoCookie(employerInfoModel);
+
             return RedirectToRoute(RouteNames.LegalEntityAgreement_SoftStop_Get);
+        }
+
+        [HttpGet("employer-name-cancel", Name = RouteNames.EmployerName_Cancel)]
+        public IActionResult Cancel(VacancyRouteModel vrm, [FromQuery] bool wizard)
+        {
+            DeleteVacancyEmployerInfoCookie();
+            return wizard 
+                ? RedirectToRoute(RouteNames.Vacancy_Preview_Get, @Anchors.AboutEmployerSection) 
+                : RedirectToRoute(RouteNames.Dashboard_Index_Get);
         }
     }
 }

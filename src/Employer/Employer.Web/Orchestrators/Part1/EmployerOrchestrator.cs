@@ -15,6 +15,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
+using Esfa.Recruit.Employer.Web.Extensions;
 using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
@@ -44,9 +45,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         {
             var getEmployerDataTask = _client.GetEditVacancyInfoAsync(vrm.EmployerAccountId);
             var getVacancyTask = Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Employer_Get);
-
             await Task.WhenAll(getEmployerDataTask, getVacancyTask);
-
             var employerData = getEmployerDataTask.Result;
             var vacancy = getVacancyTask.Result;
 
@@ -57,37 +56,15 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 PageInfo = Utility.GetPartOnePageInfo(vacancy)
             };
 
-            return vm;
-        }
-
-        public Task<OrchestratorResponse> PostEmployerEditModelAsync(EmployerEditModel m, VacancyUser user)
-        {
-            return SaveOrganisation(m, m.SelectedOrganisationId, user);
-        }
-
-        public async Task<OrchestratorResponse> SaveOrganisation(VacancyRouteModel vacancyRouteModel, long? legalEntityId, VacancyUser user)
-        {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vacancyRouteModel, RouteNames.Employer_Post);
-            
-            // No need to update it the legal entity id hasn't changed
-            if (vacancy.LegalEntityId == legalEntityId.GetValueOrDefault())
+            vm.VacancyEmployerInfoModel = new VacancyEmployerInfoModel()
             {
-                return new OrchestratorResponse(true);
-            }
+                VacancyId = vacancy.Id,
+                LegalEntityId = vacancy.LegalEntityId == 0 ? (long?)null : vacancy.LegalEntityId
+            };
+            if(vacancy.EmployerNameOption.HasValue)
+                vm.VacancyEmployerInfoModel.EmployerNameOption = vacancy.EmployerNameOption.Value.GetModelOption();
 
-            var employerVacancyInfo = await _client.GetEditVacancyInfoAsync(vacancyRouteModel.EmployerAccountId);
-            var selectedOrganisation = employerVacancyInfo.LegalEntities.SingleOrDefault(x => x.LegalEntityId == legalEntityId);
-
-            vacancy.LegalEntityId = legalEntityId.GetValueOrDefault();
-            vacancy.LegalEntityName = selectedOrganisation?.Name;
-            //clear location in case the legal entity has changed
-            vacancy.EmployerLocation = null;
-            vacancy.EmployerNameOption = null;
-
-            return await ValidateAndExecute(
-                vacancy, 
-                v => _vacancyClient.Validate(v, ValidationRules),
-                v => _vacancyClient.UpdateDraftVacancyAsync(vacancy, user));
+            return vm;
         }
 
         protected override EntityToViewModelPropertyMappings<Vacancy, EmployerEditModel> DefineMappings()
@@ -109,6 +86,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
             return info.LegalEntities.Select(MapLegalEntitiesToOrgs).ToList();
         }
+        
         private OrganisationViewModel MapLegalEntitiesToOrgs(LegalEntity data)
         {
             return new OrganisationViewModel { Id = data.LegalEntityId, Name = data.Name};

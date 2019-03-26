@@ -1,4 +1,5 @@
 using System;
+using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -11,33 +12,38 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
     public abstract class EmployerControllerBase : Controller
     {
         private readonly IHostingEnvironment _hostingEnvironment;
+        private string GetKey(Guid vacancyId, string fieldName) => string.Format("{0}_{1}", fieldName, vacancyId);
         protected EmployerControllerBase(IHostingEnvironment hostingEnvironment)
         {
             _hostingEnvironment = hostingEnvironment;
         }
 
-        protected void SetEmployerInfoCookie(Guid vacancyId, long legalEntityId)
+        protected void SetVacancyEmployerInfoCookie(Guid vacancyId, long legalEntityId)
         {
-            var info = JsonConvert.SerializeObject(new EmployerInfoModel{LegalEntityId = legalEntityId});
-            Response.Cookies.SetEmployerInfo(_hostingEnvironment, vacancyId, info);
+            var info = JsonConvert.SerializeObject(new VacancyEmployerInfoModel { VacancyId = vacancyId, LegalEntityId = legalEntityId });
+            Response.Cookies.SetSessionCookie(_hostingEnvironment, CookieNames.VacancyEmployerInfo , info);
         }
 
-        protected void SetEmployerInfoCookie(Guid vacancyId, EmployerInfoModel model)
+        protected void SetVacancyEmployerInfoCookie(VacancyEmployerInfoModel model)
         {
             var info = JsonConvert.SerializeObject(model);
-            Response.Cookies.SetEmployerInfo(_hostingEnvironment, vacancyId, info);
+            Response.Cookies.SetSessionCookie(_hostingEnvironment, CookieNames.VacancyEmployerInfo, info);
         }
 
-        protected EmployerInfoModel GetEmployerInfoCookie(Guid vacancyId)
+        protected VacancyEmployerInfoModel GetVacancyEmployerInfoCookie(Guid vacancyId)
         {
-            var value = Request.Cookies.GetEmployerInfo(vacancyId);
-            if (value == null) return new EmployerInfoModel();
-            return JsonConvert.DeserializeObject<EmployerInfoModel>(value);
+            var value = Request.Cookies.GetCookie(CookieNames.VacancyEmployerInfo);
+            if (value != null) 
+            {
+                var info = JsonConvert.DeserializeObject<VacancyEmployerInfoModel>(value);
+                if(info.VacancyId == vacancyId) return info;
+            }
+            return null;
         }
 
-        protected void ClearCookie(Guid vacancyId)
+        protected void DeleteVacancyEmployerInfoCookie()
         {
-            Response.Cookies.ClearEmployerInfo(_hostingEnvironment, vacancyId);
+            Response.Cookies.DeleteSessionCookie(_hostingEnvironment, CookieNames.VacancyEmployerInfo);
         }
 
 

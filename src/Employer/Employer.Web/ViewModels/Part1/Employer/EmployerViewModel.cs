@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
@@ -22,6 +23,8 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer
         };
 
         public long? SelectedOrganisationId { get; set; }
+
+        public VacancyEmployerInfoModel VacancyEmployerInfoModel { get; set; }
     }
 
     public class OrganisationViewModel

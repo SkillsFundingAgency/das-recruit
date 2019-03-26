@@ -38,10 +38,13 @@
 
         public const string Employer_Get = "Employer_Get";
         public const string Employer_Post = "Employer_Post";
+        public const string Employer_Cancel = "Employer_Cancel";
+        public const string EmployerName_Cancel = "EmployerName_Cancel";
         public const string EmployerName_Get = "EmployerName_Get";
         public const string EmployerName_Post = "EmployerName_Post";
         public const string Location_Get = "Location_Get";
         public const string Location_Post = "Location_Post";
+        public const string Location_Cancel = "Location_Cancel";
 
         public const string CreateVacancyOptions_Get = "CreateVacancyOptions_Get";
         public const string CreateVacancyOptions_Post = "CreateVacancyOptions_Post";

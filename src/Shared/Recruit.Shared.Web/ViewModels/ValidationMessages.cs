@@ -69,10 +69,5 @@ namespace Esfa.Recruit.Shared.Web.ViewModels
         {
             public const string SelectionRequired = "You must select one option.";
         }
-
-        public static class EmployerNameValidationMessages
-        {
-            public const string EmployerNameRequired = "You must provide an employer name.";
-        }
     }
 }

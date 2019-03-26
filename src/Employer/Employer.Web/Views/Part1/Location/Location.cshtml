@@ -29,8 +29,7 @@
             </div>
             <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">@Model.PageInfo.SubmitButtonText</button>
 
-            <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Index_Get" class="govuk-link das-button-link">Cancel</a>
-            <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.AboutEmployerSection" class="govuk-link das-button-link">Cancel</a>
+            <a asp-route="@RouteNames.Location_Cancel" class="govuk-link das-button-link">Cancel</a>
         </form>
     </div>
 </div>

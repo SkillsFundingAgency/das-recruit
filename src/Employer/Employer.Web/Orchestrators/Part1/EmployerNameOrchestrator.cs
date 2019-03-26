@@ -36,16 +36,16 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         }
 
         public async Task<EmployerNameViewModel> GetEmployerNameViewModelAsync(
-            VacancyRouteModel vrm, EmployerInfoModel employerInfoModel, VacancyUser user)
+            VacancyRouteModel vrm, VacancyEmployerInfoModel employerInfoModel, VacancyUser user)
         {
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(
                 _employerVacancyClient, _recruitVacancyClient, vrm, RouteNames.Employer_Get);
-            var legalEntityId = GetLegalEntityId(employerInfoModel, vacancy);
+
+            var legalEntityId = employerInfoModel.LegalEntityId.GetValueOrDefault();
                 
             var getEmployerDataTask = _employerVacancyClient.GetEditVacancyInfoAsync(vrm.EmployerAccountId);
-            var getEmployerProfileTask = _employerVacancyClient.GetEmployerProfileAsync(vrm.EmployerAccountId, legalEntityId);         
+            var getEmployerProfileTask = _employerVacancyClient.GetEmployerProfileAsync(vrm.EmployerAccountId, legalEntityId);
             await Task.WhenAll(getEmployerDataTask, getEmployerProfileTask);
-
             var editVacancyInfo = getEmployerDataTask.Result;
             var employerProfile = getEmployerProfileTask.Result;
 
@@ -56,7 +56,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 HasOnlyOneOrganisation = editVacancyInfo.LegalEntities.Count() == 1,
                 LegalEntityName = legalEntity.Name,
                 ExistingTradingName = employerProfile.TradingName,
-                PageInfo = Utility.GetPartOnePageInfo(vacancy)
+                PageInfo = Utility.GetPartOnePageInfo(vacancy),
+                SelectedEmployerNameOption = employerInfoModel.EmployerNameOption
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
@@ -65,43 +66,12 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                     ReviewFieldMappingLookups.GetEmployerNameReviewFieldIndicators());
             }
 
-            if (employerInfoModel.EmployerNameOption.HasValue)
-            {
-                vm.SelectedEmployerNameOption = employerInfoModel.EmployerNameOption;
-            }
-            else if (vacancy.EmployerNameOption.HasValue) 
-            {
-                vm.SelectedEmployerNameOption = GetSelectedNameOption(vacancy.EmployerNameOption);
-            }
             return vm;
         }
 
-        private long GetLegalEntityId(EmployerInfoModel employerInfoModel, Vacancy vacancy)
-        {
-            var legalEntityId = employerInfoModel?.LegalEntityId != null ? employerInfoModel?.LegalEntityId : vacancy.LegalEntityId; 
-
-            if (legalEntityId == null || legalEntityId == 0)
-            {
-                throw new ArgumentNullException("LegalEntityId");
-            }
-            return legalEntityId.Value;
-        }
-
-        private EmployerNameOptionViewModel GetSelectedNameOption(EmployerNameOption? option)
-        {
-            switch(option)
-            {
-                case EmployerNameOption.RegisteredName:
-                    return EmployerNameOptionViewModel.RegisteredName;
-                case EmployerNameOption.TradingName:
-                    return EmployerNameOptionViewModel.ExistingTradingName;
-                default: 
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
 
         public async Task<OrchestratorResponse> PostEmployerNameEditModelAsync(
-            EmployerNameEditModel model, EmployerInfoModel employerInfoModel, VacancyUser user)
+            EmployerNameEditModel model, VacancyEmployerInfoModel employerInfoModel, VacancyUser user)
         {
             var ValidationRules = VacancyRuleSet.EmployerNameOption;
 
@@ -110,7 +80,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             
             if (model.SelectedEmployerNameOption.HasValue)
             {
-                vacancy.EmployerNameOption =  model.SelectedEmployerNameOption.Value.ConvertToDomainEntity();
+                vacancy.EmployerNameOption =  model.SelectedEmployerNameOption.Value.GetDomainOption();
             }
 
             // temporarily set the employer name for validation
@@ -123,15 +93,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             return await ValidateAndExecute(
                 vacancy, 
                 v => _recruitVacancyClient.Validate(v, ValidationRules),
-                async v => 
-                { 
-                    var legalEntityId = GetLegalEntityId(employerInfoModel, vacancy);
-                    if (model.SelectedEmployerNameOption == EmployerNameOptionViewModel.NewTradingName)
-                    {
-                        await UpdateEmployerProfileAsync(model.EmployerAccountId, legalEntityId, model.NewTradingName, user);
-                    }
-                }
-            );
+                v => Task.FromResult(new OrchestratorResponse(true)));
         }
 
         protected override EntityToViewModelPropertyMappings<Vacancy, EmployerNameEditModel> DefineMappings()
@@ -143,22 +105,5 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
             return mappings;
         }
-
-        private async Task UpdateEmployerProfileAsync(string employerAccountId, long legalEntityId, string tradingName, VacancyUser user)
-        {
-            var employerProfile =
-                await _employerVacancyClient.GetEmployerProfileAsync(employerAccountId, legalEntityId);
-
-            if (employerProfile == null)
-            {
-                throw new NullReferenceException($"No Employer Profile was found for employerAccount: {employerAccountId}, legalEntity: {legalEntityId}");
-            }
-
-            if (employerProfile.TradingName != tradingName)
-            {
-                employerProfile.TradingName = tradingName;
-                await _employerVacancyClient.UpdateEmployerProfileAsync(employerProfile, user);
-            }
-        }
-    }
+    }    
 }

@@ -10,18 +10,19 @@ namespace Esfa.Recruit.Employer.Web.Extensions
 {
     public static class CookiesExtensions
     {
-        public static void ClearEmployerInfo(this IResponseCookies cookies, IHostingEnvironment hostingEnvironment, Guid vacancyId)
+        public static void SetSessionCookie(this IResponseCookies cookies, IHostingEnvironment hostingEnvironment, string key, string value)
         {
-            cookies.Delete(string.Format(CookieNames.EmployerInfo, vacancyId), EsfaCookieOptions.GetSessionLifetimeHttpCookieOption(hostingEnvironment));
-        }
-        public static void SetEmployerInfo(this IResponseCookies cookies, IHostingEnvironment hostingEnvironment, Guid vacancyId, string employerInfo)
-        {
-            cookies.Append(string.Format(CookieNames.EmployerInfo, vacancyId), employerInfo, EsfaCookieOptions.GetSessionLifetimeHttpCookieOption(hostingEnvironment));
+            cookies.Append(key, value, EsfaCookieOptions.GetSessionLifetimeHttpCookieOption(hostingEnvironment));
         }
 
-        public static string GetEmployerInfo(this IRequestCookieCollection cookies, Guid vacancyId)
+        public static void DeleteSessionCookie(this IResponseCookies cookies, IHostingEnvironment hostingEnvironment, string key)
         {
-            return cookies[string.Format(CookieNames.EmployerInfo, vacancyId)]?.Trim();
+            cookies.Delete(key, EsfaCookieOptions.GetSessionLifetimeHttpCookieOption(hostingEnvironment));
+        }
+
+        public static string GetCookie(this IRequestCookieCollection cookies, string key)
+        {
+            return cookies[key]?.Trim();
         }
 
         public static void SetProposedClosingDate(this IResponseCookies cookies, IHostingEnvironment hostingEnvironment, Guid vacancyId, DateTime date)

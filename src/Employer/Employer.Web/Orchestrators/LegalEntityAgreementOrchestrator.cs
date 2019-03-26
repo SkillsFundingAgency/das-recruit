@@ -29,13 +29,20 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             _legalEntityAgreementService = legalEntityAgreementService;
         }
 
-        public async Task<LegalEntityAgreementSoftStopViewModel> GetLegalEntityAgreementSoftStopViewModelAsync(VacancyRouteModel vrm)
+        public async Task<LegalEntityAgreementSoftStopViewModel> GetLegalEntityAgreementSoftStopViewModelAsync(
+            VacancyRouteModel vrm, long? selectedLegalEntityId)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.LegalEntityAgreement_SoftStop_Get);
+            var vacancy = 
+                await Utility.GetAuthorisedVacancyForEditAsync(
+                    _client, _vacancyClient, vrm, RouteNames.LegalEntityAgreement_SoftStop_Get);
+
+            var legalEntityId = selectedLegalEntityId.HasValue ? selectedLegalEntityId.Value : vacancy.LegalEntityId;
             
             return new LegalEntityAgreementSoftStopViewModel
-            {
-                HasLegalEntityAgreement = await _legalEntityAgreementService.HasLegalEntityAgreementAsync(vacancy.EmployerAccountId, vacancy.LegalEntityId),
+            {                
+                HasLegalEntityAgreement = 
+                    await _legalEntityAgreementService.HasLegalEntityAgreementAsync(
+                        vacancy.EmployerAccountId, legalEntityId),
                 LegalEntityName = vacancy.EmployerName,
                 PageInfo = Utility.GetPartOnePageInfo(vacancy)
             };

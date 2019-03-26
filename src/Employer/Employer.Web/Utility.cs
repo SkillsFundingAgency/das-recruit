@@ -77,13 +77,13 @@ namespace Esfa.Recruit.Employer.Web
 
             validRoutes.AddRange(new[] 
             {
-                RouteNames.Employer_Post, 
-                RouteNames.Employer_Get, 
-                RouteNames.EmployerName_Post, 
-                RouteNames.EmployerName_Get, 
+                RouteNames.LegalEntityAgreement_SoftStop_Get,
                 RouteNames.Location_Get, 
                 RouteNames.Location_Post,
-                RouteNames.LegalEntityAgreement_SoftStop_Get
+                RouteNames.EmployerName_Post, 
+                RouteNames.EmployerName_Get, 
+                RouteNames.Employer_Post, 
+                RouteNames.Employer_Get
             });
             if (string.IsNullOrWhiteSpace(vacancy.LegalEntityName) 
                 || vacancy.EmployerNameOption == null 
