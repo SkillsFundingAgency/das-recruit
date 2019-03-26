@@ -116,7 +116,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 optionStatus.HasValue == false || 
                 v.Status == optionStatus.Value);
 
-            var value = optionStatus.HasValue ? optionStatus.Value.ToString() : "";
+            var value = optionStatus.HasValue ? optionStatus.Value.ToString() : "All";
 
             var text = optionStatus.HasValue ? optionStatus.Value.GetDisplayName() : "All Vacancies";
 
