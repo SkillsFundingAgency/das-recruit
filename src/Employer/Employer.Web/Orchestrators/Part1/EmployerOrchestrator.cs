@@ -1,16 +1,12 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
-using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer;
-using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Orchestrators;
-using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -26,19 +22,16 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         private readonly IEmployerVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly ILogger<EmployerOrchestrator> _logger;
-        private readonly ILegalEntityAgreementService _legalEntityAgreementService;
 
         public EmployerOrchestrator(
             IEmployerVacancyClient client,
             IRecruitVacancyClient vacancyClient,
-            ILogger<EmployerOrchestrator> logger,
-            ILegalEntityAgreementService legalEntityAgreementService)
+            ILogger<EmployerOrchestrator> logger)
             : base(logger)
         {
             _client = client;
             _vacancyClient = vacancyClient;
             _logger = logger;
-            _legalEntityAgreementService = legalEntityAgreementService;
         }
 
         public async Task<EmployerViewModel> GetEmployerViewModelAsync(VacancyRouteModel vrm)

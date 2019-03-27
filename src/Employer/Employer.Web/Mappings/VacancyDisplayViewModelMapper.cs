@@ -18,18 +18,15 @@ namespace Esfa.Recruit.Employer.Web.Mappings
         private const int MapImageHeight = 256;
         private readonly IGeocodeImageService _mapService;
         private readonly ExternalLinksConfiguration _externalLinksConfiguration;
-        private readonly IEmployerVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
 
         public DisplayVacancyViewModelMapper(
                 IGeocodeImageService mapService,
                 IOptions<ExternalLinksConfiguration> externalLinksOptions,
-                IEmployerVacancyClient client,
                 IRecruitVacancyClient vacancyClient)
         {
             _mapService = mapService;
             _externalLinksConfiguration = externalLinksOptions.Value;
-            _client = client;
             _vacancyClient = vacancyClient;
         }
 

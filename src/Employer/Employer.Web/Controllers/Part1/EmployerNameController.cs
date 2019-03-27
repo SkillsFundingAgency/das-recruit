@@ -3,7 +3,6 @@ using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.RouteModel;
-using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.EmployerName;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Mappers;
@@ -68,7 +67,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         {
             DeleteVacancyEmployerInfoCookie();
             return wizard 
-                ? RedirectToRoute(RouteNames.Vacancy_Preview_Get, @Anchors.AboutEmployerSection) 
+                ? RedirectToRoute(RouteNames.Vacancy_Preview_Get, Anchors.AboutEmployerSection) 
                 : RedirectToRoute(RouteNames.Dashboard_Index_Get);
         }
     }
