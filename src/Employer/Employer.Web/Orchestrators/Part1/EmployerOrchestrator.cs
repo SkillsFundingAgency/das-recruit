@@ -16,9 +16,8 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
-    public class EmployerOrchestrator : EntityValidatingOrchestrator<Vacancy, EmployerEditModel>
+    public class EmployerOrchestrator 
     {
-        private const VacancyRuleSet ValidationRules = VacancyRuleSet.LegalEntityName;
         private readonly IEmployerVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly ILogger<EmployerOrchestrator> _logger;
@@ -27,7 +26,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             IEmployerVacancyClient client,
             IRecruitVacancyClient vacancyClient,
             ILogger<EmployerOrchestrator> logger)
-            : base(logger)
         {
             _client = client;
             _vacancyClient = vacancyClient;
@@ -64,15 +62,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 vm.VacancyEmployerInfoModel.EmployerNameOption = vacancy.EmployerNameOption.Value.GetModelOption();
 
             return vm;
-        }
-
-        protected override EntityToViewModelPropertyMappings<Vacancy, EmployerEditModel> DefineMappings()
-        {
-            var mappings = new EntityToViewModelPropertyMappings<Vacancy, EmployerEditModel>();
-
-            mappings.Add(e => e.LegalEntityName, vm => vm.SelectedOrganisationId);
-
-            return mappings;
         }
 
         private IEnumerable<OrganisationViewModel> BuildLegalEntityViewModels(EditVacancyInfo info, string employerAccountId)

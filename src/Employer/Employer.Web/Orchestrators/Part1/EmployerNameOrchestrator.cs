@@ -1,12 +1,9 @@
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Employer.Web.RouteModel;
-using Esfa.Recruit.Employer.Web.Services;
-using Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.EmployerName;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
@@ -22,7 +19,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
     {
         private readonly IEmployerVacancyClient _employerVacancyClient;
         private readonly IRecruitVacancyClient _recruitVacancyClient;
-        private readonly ILogger<EmployerNameOrchestrator> _logger;
         private readonly IReviewSummaryService _reviewSummaryService;
 
         public EmployerNameOrchestrator(IEmployerVacancyClient employerVacancyClient, IRecruitVacancyClient recruitVacancyClient, 
@@ -31,7 +27,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         {
             _employerVacancyClient = employerVacancyClient;
             _recruitVacancyClient = recruitVacancyClient;
-            _logger = logger;
             _reviewSummaryService = reviewSummaryService;
         }
 
