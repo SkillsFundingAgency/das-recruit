@@ -29,11 +29,18 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         [HttpGet("employer", Name = RouteNames.Employer_Get)]
         public async Task<IActionResult> Employer(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
         {
-            DeleteVacancyEmployerInfoCookie();
+            var info = GetVacancyEmployerInfoCookie(vrm.VacancyId);
 
             var vm = await _orchestrator.GetEmployerViewModelAsync(vrm);
 
-            SetVacancyEmployerInfoCookie(vm.VacancyEmployerInfoModel);
+            if (info == null || !info.LegalEntityId.HasValue)
+            {
+                SetVacancyEmployerInfoCookie(vm.VacancyEmployerInfoModel);
+            }
+            else
+            {
+                vm.SelectedOrganisationId = info.LegalEntityId;
+            }
 
             if(vm.HasOnlyOneOrganisation)
             {
