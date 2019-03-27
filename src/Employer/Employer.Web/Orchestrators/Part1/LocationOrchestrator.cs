@@ -13,6 +13,7 @@ using System;
 using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
+using Esfa.Recruit.Employer.Web.ViewModels.Part1.EmployerName;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
@@ -98,7 +99,16 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             return await ValidateAndExecute(
                 vacancy, 
                 v => _recruitVacancyClient.Validate(v, ValidationRules),
-                v => _recruitVacancyClient.UpdateDraftVacancyAsync(vacancy, user));
+                async v => 
+                {
+                    if (employerInfoModel.EmployerNameOption == EmployerNameOptionViewModel.NewTradingName)
+                    {
+                        await UpdateEmployerProfileAsync(vacancy.EmployerAccountId, 
+                            employerInfoModel.LegalEntityId.GetValueOrDefault(), 
+                            employerInfoModel.NewTradingName, user);
+                    }
+                    await _recruitVacancyClient.UpdateDraftVacancyAsync(vacancy, user);
+                });
         }
 
         public async Task<VacancyEmployerInfoModel> GetVacancyEmployerInfoModelAsync(VacancyRouteModel vrm)

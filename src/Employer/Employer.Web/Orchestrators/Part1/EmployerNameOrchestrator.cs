@@ -57,7 +57,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 LegalEntityName = legalEntity.Name,
                 ExistingTradingName = employerProfile.TradingName,
                 PageInfo = Utility.GetPartOnePageInfo(vacancy),
-                SelectedEmployerNameOption = employerInfoModel.EmployerNameOption
+                SelectedEmployerNameOption = employerInfoModel.EmployerNameOption,
+                NewTradingName = employerInfoModel.NewTradingName
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
