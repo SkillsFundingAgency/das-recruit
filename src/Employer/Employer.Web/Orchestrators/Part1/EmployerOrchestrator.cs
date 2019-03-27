@@ -61,6 +61,12 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 VacancyId = vacancy.Id,
                 LegalEntityId = vacancy.LegalEntityId == 0 ? (long?)null : vacancy.LegalEntityId
             };
+
+            if (vm.VacancyEmployerInfoModel.LegalEntityId == null && vm.HasOnlyOneOrganisation)
+            {
+                vm.VacancyEmployerInfoModel.LegalEntityId = vm.Organisations.First().Id;
+            }
+
             if(vacancy.EmployerNameOption.HasValue)
                 vm.VacancyEmployerInfoModel.EmployerNameOption = vacancy.EmployerNameOption.Value.GetModelOption();
 
