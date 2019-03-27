@@ -3,12 +3,8 @@ using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer;
-using Esfa.Recruit.Employer.Web.Views;
 using Microsoft.AspNetCore.Mvc;
-using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Mappers;
-using System.Linq;
-using Esfa.Recruit.Employer.Web.Extensions;
 using Microsoft.AspNetCore.Hosting;
 using Esfa.Recruit.Employer.Web.ViewModels;
 
@@ -86,10 +82,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         [HttpGet("employer-cancel", Name = RouteNames.Employer_Cancel)]
         public IActionResult Cancel(VacancyRouteModel vrm, [FromQuery] bool wizard)
         {
-            DeleteVacancyEmployerInfoCookie();
-            return wizard 
-                ? RedirectToRoute(RouteNames.Vacancy_Preview_Get, Anchors.AboutEmployerSection) 
-                : RedirectToRoute(RouteNames.Dashboard_Index_Get);
+            return CancelAndRedirect(wizard);
         }
     }
 }

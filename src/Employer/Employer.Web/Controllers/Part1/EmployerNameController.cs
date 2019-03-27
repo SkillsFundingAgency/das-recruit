@@ -65,10 +65,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         [HttpGet("employer-name-cancel", Name = RouteNames.EmployerName_Cancel)]
         public IActionResult Cancel(VacancyRouteModel vrm, [FromQuery] bool wizard)
         {
-            DeleteVacancyEmployerInfoCookie();
-            return wizard 
-                ? RedirectToRoute(RouteNames.Vacancy_Preview_Get, Anchors.AboutEmployerSection) 
-                : RedirectToRoute(RouteNames.Dashboard_Index_Get);
+            return CancelAndRedirect(wizard);
         }
     }
 }
