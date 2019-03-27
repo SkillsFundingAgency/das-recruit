@@ -12,16 +12,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
     public abstract class EmployerControllerBase : Controller
     {
         private readonly IHostingEnvironment _hostingEnvironment;
-        private string GetKey(Guid vacancyId, string fieldName) => string.Format("{0}_{1}", fieldName, vacancyId);
         protected EmployerControllerBase(IHostingEnvironment hostingEnvironment)
         {
             _hostingEnvironment = hostingEnvironment;
-        }
-
-        protected void SetVacancyEmployerInfoCookie(Guid vacancyId, long legalEntityId)
-        {
-            var info = JsonConvert.SerializeObject(new VacancyEmployerInfoModel { VacancyId = vacancyId, LegalEntityId = legalEntityId });
-            Response.Cookies.SetSessionCookie(_hostingEnvironment, CookieNames.VacancyEmployerInfo , info);
         }
 
         protected void SetVacancyEmployerInfoCookie(VacancyEmployerInfoModel model)
