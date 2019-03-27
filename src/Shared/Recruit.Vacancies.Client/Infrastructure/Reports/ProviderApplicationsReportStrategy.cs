@@ -40,7 +40,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             { $match: {'trainingProvider.ukprn' : _ukprn_, 'ownerType' : 'Provider', 'isDeleted' : false, 'applicationMethod' : 'ThroughFindAnApprenticeship', 'status' : {$in : ['Live','Closed']}}},
             { $lookup: { from: 'applicationReviews', localField: 'vacancyReference', foreignField: 'vacancyReference', as: 'ar'}},
             { $unwind: '$ar'},
-            { $match: {'ar.submittedDate' : { $gte: ISODate('_fromDate_'), $lt: ISODate('_toDate_')}, 'ar.isWithdrawn' : false}},
+            { $match: {'ar.submittedDate' : { $gte: ISODate('_fromDate_'), $lte: ISODate('_toDate_')}, 'ar.isWithdrawn' : false}},
             { $project: {
                     '_id' : 0,
                     'Candidate_Name' : { $concat: ['$ar.application.firstName', ' ', '$ar.application.lastName']},
@@ -64,8 +64,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
                     'Vacancy_Closing_Date' : { $ifNull: ['$closingDate', null]},
                     'Application_Status' : { $ifNull: ['$ar.status', null]},
                     'Application_LastUpdatedDate' : { $ifNull: ['$ar.statusUpdatedDate', null]}
-                }
-            }]";
+                }},
+            { $sort : {Vacancy_Reference_Number : 1, Application_Date : 1}}]";
 
         public ProviderApplicationsReportStrategy(
             ILoggerFactory loggerFactory, 

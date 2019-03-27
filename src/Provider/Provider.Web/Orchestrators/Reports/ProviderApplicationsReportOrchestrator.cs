@@ -43,31 +43,31 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Reports
 
         public Task<Guid> PostCreateViewModelAsync(ProviderApplicationsReportCreateEditModel model, VacancyUser user)
         {
-            DateTime toDate = _timeProvider.NextDay;
+            DateTime toDateInclusive = _timeProvider.NextDay.AddTicks(-1);
             DateTime fromDate;
 
             switch (model.DateRange)
             {
                 case DateRangeType.Last7Days:
-                    fromDate = toDate.AddDays(-7);
+                    fromDate = toDateInclusive.Date.AddDays(-7);
                     break;
                 case DateRangeType.Last14Days:
-                    fromDate = toDate.AddDays(-14);
+                    fromDate = toDateInclusive.Date.AddDays(-14);
                     break;
                 case DateRangeType.Last30Days:
-                    fromDate = toDate.AddDays(-30);
+                    fromDate = toDateInclusive.Date.AddDays(-30);
                     break;
                 case DateRangeType.Custom:
                     fromDate = model.FromDate.AsDateTimeUk().Value.ToUniversalTime();
-                    toDate = model.ToDate.AsDateTimeUk().Value.ToUniversalTime().AddDays(1);
+                    toDateInclusive = model.ToDate.AsDateTimeUk().Value.ToUniversalTime().AddDays(1).AddTicks(-1);
                     break;
                 default:
                     throw new Exception($"Cannot handle this date range type:{model.DateRange.ToString()}");
             }
 
-            var reportName = $"{fromDate.AsGdsDate()} to {toDate.AsGdsDate()}";
+            var reportName = $"{fromDate.AsGdsDate()} to {toDateInclusive.AsGdsDate()}";
 
-            return _client.CreateProviderApplicationsReportAsync(model.Ukprn, fromDate, toDate, user, reportName);
+            return _client.CreateProviderApplicationsReportAsync(model.Ukprn, fromDate, toDateInclusive, user, reportName);
         }
     }
 }

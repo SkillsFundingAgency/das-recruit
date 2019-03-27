@@ -12,39 +12,39 @@
     </div>
     <div asp-show="@Model.HasReports"  class="govuk-grid-column-full">
         <a asp-route="@RouteNames.ProviderApplicationsReportCreate_Get" class="govuk-button">Create new report</a>
-        <p class="govuk-body">
+        <p asp-show="@Model.IsProcessingReports" class="govuk-body">
             You have @Model.ProcessingCaption being processed.
             <a asp-route="@RouteNames.ReportDashboard_Get">Check if your report is ready to download</a>
         </p>
     </div>
 </div>
 <div asp-show="@Model.HasReports">
-    <table class="govuk-table">
+    <table class="govuk-table responsive">
         <thead class="govuk-table__head">
             <tr class="govuk-table__row">
                 <th class="govuk-table__header" scope="col">Report period</th>
                 <th class="govuk-table__header" scope="col">Created</th>
                 <th class="govuk-table__header" scope="col">Created by</th>
-                <th class="govuk-table__header govuk-table__header--numeric" scope="col">Action</th>
+                <th class="govuk-table__header" scope="col"></th>
             </tr>
         </thead>
         <tbody class="govuk-table__body">
             @foreach (var report in Model.Reports)
             {
                 <tr class="govuk-table__row">
-                    <td class="govuk-table__cell">
+                    <td class="govuk-table__cell" data-label="Report period">
                         @report.ReportName
                         <div asp-show="@report.IsNew">
                             <span class="das-tag das-tag--new">new</span>
                         </div>
                     </td>
-                    <td class="govuk-table__cell">
+                    <td class="govuk-table__cell" data-label="Created">
                         @report.CreatedDate
                     </td>
-                    <td class="govuk-table__cell">
+                    <td class="govuk-table__cell" data-label="Created by">
                         @report.CreatedBy
                     </td>
-                    <td class="govuk-table__cell govuk-table__cell--numeric">
+                    <td class="govuk-table__cell">
                         <span asp-hide="@report.CanDownload">Processing</span>
                         <a asp-show="@report.CanDownload" asp-route="@RouteNames.ReportDashboard_DownloadCsv", asp-route-reportId="@report.ReportId">Download CSV</a>
                     </td>

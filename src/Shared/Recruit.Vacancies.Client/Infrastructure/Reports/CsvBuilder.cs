@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 using CsvHelper;
 using Newtonsoft.Json.Linq;
@@ -15,17 +17,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
         {
             var streamWriter = new StreamWriter(stream, Encoding.UTF8);
             
-            using (var csv = new CsvWriter(streamWriter, true))
+            using (var csv = GetCsvWriter(streamWriter))
             {
-                csv.WriteField("Date");
-                csv.WriteField("Total_Number_Of_Applications");
-                csv.NextRecord();
-
-                csv.WriteField(reportDate.ToString(DateTimeFormat));
-                csv.WriteField(rows.Count);
-                csv.NextRecord();
-
-                if (rows.Count > 0)
+                if (rows.Count == 0)
+                {
+                    WriteNoResults(csv, reportDate);
+                }
+                else
                 {
                     WriteHeader(csv, rows.First);
                     WriteValues(csv, rows, dataTypeResolver);
@@ -36,8 +34,35 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             stream.Position = 0;
         }
 
+        private static CsvWriter GetCsvWriter(TextWriter streamWriter)
+        {
+            var csv = new CsvWriter(streamWriter, true);
+
+            csv.Configuration.CultureInfo = CultureInfo.GetCultureInfo("en-GB");
+
+            return csv;
+        }
+
+        private void WriteNoResults(CsvWriter csv, DateTime reportDate)
+        {
+            csv.WriteField("Date");
+            csv.WriteField("Total_Number_Of_Applications");
+            csv.NextRecord();
+
+            csv.WriteField(reportDate.ToString(DateTimeFormat));
+            csv.WriteField(0);
+            csv.NextRecord();
+        }
+
         private void WriteHeader(CsvWriter csv, JToken row)
         {
+            csv.WriteField("PROTECT");
+            for (var i = 1; i < row.Children().Count(); i++)
+            {
+                csv.WriteField("");
+            }
+            csv.NextRecord();
+
             foreach (var field in row.Children())
             {
                 if (field is JProperty property)

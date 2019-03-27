@@ -17,9 +17,9 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Reports
         private readonly Mock<IProviderVacancyClient> _client = new Mock<IProviderVacancyClient>();
 
         [Theory]
-        [InlineData(DateRangeType.Last7Days, "2019-02-27", "2019-03-06")]
-        [InlineData(DateRangeType.Last14Days, "2019-02-20", "2019-03-06")]
-        [InlineData(DateRangeType.Last30Days, "2019-02-04", "2019-03-06")]
+        [InlineData(DateRangeType.Last7Days, "2019-02-26", "2019-03-05")]
+        [InlineData(DateRangeType.Last14Days, "2019-02-19", "2019-03-05")]
+        [InlineData(DateRangeType.Last30Days, "2019-02-03", "2019-03-05")]
         public async Task PostCreateViewModelAsync_ShouldUseCorrectTimespan(DateRangeType dateRangeType, string fromDate, string toDate)
         {
             var orchestrator = GetOrchestrator();
@@ -39,7 +39,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Reports
             _client.Verify(c => c.CreateProviderApplicationsReportAsync(
                 ukprn, 
                 DateTime.Parse(fromDate), 
-                DateTime.Parse(toDate), 
+                DateTime.Parse(toDate).AddDays(1).AddTicks(-1), 
                 user, 
                 reportName), 
                 Times.Once);
@@ -70,9 +70,9 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Reports
             _client.Verify(c => c.CreateProviderApplicationsReportAsync(
                     ukprn,
                     DateTime.Parse("2018-02-01"),
-                    DateTime.Parse("2019-04-04"), 
+                    DateTime.Parse("2019-04-03").AddDays(1).AddTicks(-1), 
                     user,
-                    "01 Feb 2018 to 04 Apr 2019"),
+                    "01 Feb 2018 to 03 Apr 2019"),
                 Times.Once);
         }
 
