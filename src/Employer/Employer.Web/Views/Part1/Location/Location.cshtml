@@ -3,7 +3,7 @@
 @model LocationViewModel;
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <a asp-route="@RouteNames.EmployerName_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+        <a asp-show="@Model.IsBackLinkAvailable" asp-route="@RouteNames.EmployerName_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }'/>
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Where will the apprentice work?</h1>
 

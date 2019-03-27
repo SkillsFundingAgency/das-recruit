@@ -30,6 +30,12 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 
             var vm = await _orchestrator.GetLocationViewModelAsync(vrm, employerInfoModel, User.ToVacancyUser());
 
+            vm.PageInfo.SetWizard(wizard);
+            
+            //back link is available only if cookie is not there (back link in part 1)
+            //or part 2 has not started (coming from preview)
+            vm.IsBackLinkAvailable = employerInfoModel != null || vm.PageInfo.IsWizard;
+
             //if cookie is missing and user is in part1 then create the cookie to support back navigation
             if (employerInfoModel == null && (!vm.PageInfo.HasCompletedPartOne || !vm.PageInfo.HasStartedPartTwo))
             {
@@ -37,7 +43,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                 SetVacancyEmployerInfoCookie(employerInfoModel);
             }
 
-            vm.PageInfo.SetWizard(wizard);
             return View(vm);
         }
 
