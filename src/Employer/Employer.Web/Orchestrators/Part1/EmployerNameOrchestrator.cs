@@ -74,26 +74,25 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         public async Task<OrchestratorResponse> PostEmployerNameEditModelAsync(
             EmployerNameEditModel model, VacancyEmployerInfoModel employerInfoModel, VacancyUser user)
         {
-            var ValidationRules = VacancyRuleSet.EmployerNameOption;
+            var validationRules = VacancyRuleSet.EmployerNameOption;
 
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(
                 _employerVacancyClient, _recruitVacancyClient, model, RouteNames.EmployerName_Post);
             
-            if (model.SelectedEmployerNameOption.HasValue)
-            {
-                vacancy.EmployerNameOption =  model.SelectedEmployerNameOption.Value.GetDomainOption();
-            }
+            vacancy.EmployerNameOption =  model.SelectedEmployerNameOption.HasValue 
+                ? model.SelectedEmployerNameOption.Value.GetDomainOption()
+                : (EmployerNameOption?) null;
 
             // temporarily set the employer name for validation
             if (model.SelectedEmployerNameOption == EmployerNameOptionViewModel.NewTradingName)
             {
-                ValidationRules = VacancyRuleSet.EmployerNameOption | VacancyRuleSet.TradingName;
+                validationRules = VacancyRuleSet.EmployerNameOption | VacancyRuleSet.TradingName;
                 vacancy.EmployerName = model.NewTradingName;
             }
 
             return await ValidateAndExecute(
                 vacancy, 
-                v => _recruitVacancyClient.Validate(v, ValidationRules),
+                v => _recruitVacancyClient.Validate(v, validationRules),
                 v => Task.FromResult(new OrchestratorResponse(true)));
         }
 
