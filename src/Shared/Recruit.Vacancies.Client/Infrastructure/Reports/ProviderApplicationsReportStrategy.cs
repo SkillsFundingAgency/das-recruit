@@ -29,6 +29,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
         private const string ColumnFrameworkStatus = "Framework_Status";
         private const string ColumnStandard = "Standard";
         private const string ColumnStandardStatus = "Standard_Status";
+        private const string ColumnCandidateId = "Candidate_Id";
+        private const string ColumnApplicantId = "Applicant_Id";
 
         private readonly IApprenticeshipProgrammeProvider _programmeProvider;
         private readonly ITimeProvider _timeProvider;
@@ -42,7 +44,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             { $project: {
                     '_id' : 0,
                     'Candidate_Name' : { $concat: ['$ar.application.firstName', ' ', '$ar.application.lastName']},
-                    'Applicant_id' : '$ar.application.candidateId',
+                    'Candidate_Id' : '$ar.application.candidateId',
                     'Address_Line1' : { $ifNull: ['$ar.application.addressLine1', null]},
                     'Address_Line2' : { $ifNull: ['$ar.application.addressLine2', null]},
                     'Address_Line3' : { $ifNull: ['$ar.application.addressLine3', null]},
@@ -129,13 +131,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
         {
             foreach (var result in results)
             {
-                await SetProgramme(result);
+                await SetProgrammeAsync(result);
                 SetNumberOfDaysAtThisStatus(result);
                 SetVacancyReference(result);
+                SetApplicantId(result);
             }
         }
 
-        private async Task SetProgramme(BsonDocument result)
+        private async Task SetProgrammeAsync(BsonDocument result)
         {    
             var programmeId = result[ColumnProgramme].AsString;
             var programme = await _programmeProvider.GetApprenticeshipProgrammeAsync(programmeId);
@@ -190,6 +193,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
         private void SetVacancyReference(BsonDocument result)
         {
             result[ColumnVacancyReference] = $"VAC{result[ColumnVacancyReference]}";
+        }
+
+        private void SetApplicantId(BsonDocument result)
+        {
+            var candidateId = result[ColumnCandidateId].AsGuid;
+            var applicantId = candidateId.ToString().Replace("-", "").Substring(0, 7).ToUpperInvariant();
+
+            result.InsertAt(result.IndexOfName(ColumnCandidateId),
+                new BsonElement(ColumnApplicantId, applicantId));
+            result.Remove(ColumnCandidateId);
         }
     }
 }
