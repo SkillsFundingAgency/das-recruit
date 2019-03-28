@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
+using Esfa.Recruit.Provider.Web.Middleware;
 using Esfa.Recruit.Shared.Web.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -29,13 +30,12 @@ namespace Esfa.Recruit.Provider.Web
 
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                app.UseDeveloperExceptionPage();                
             }
             else
             {
                 app.UseExceptionHandler(RoutePaths.ExceptionHandlingPath);
-                app.UseMiddleware<RecruitExceptionHandlerMiddleware>(RoutePaths.ExceptionHandlingPath);
-
+                app.UseMiddleware<RecruitExceptionHandlerMiddleware>(RoutePaths.ExceptionHandlingPath);                
                 app.UseHsts(hsts => hsts.MaxAge(365));
             }
             
@@ -95,7 +95,7 @@ namespace Esfa.Recruit.Provider.Web
 
             app.UseNoCacheHttpHeaders(); // Effectively forces the browser to always request dynamic pages
 
-            app.UseMvc(r => r.MapRoute("default", RoutePaths.AccountRoutePath));
+            app.UseMvc(r => r.MapRoute("default", RoutePaths.AccountRoutePath));            
         }
 
         private static string[] GetAllowableDestinations(AuthenticationConfiguration authConfig, ExternalLinksConfiguration linksConfig)
@@ -106,10 +106,10 @@ namespace Esfa.Recruit.Provider.Web
                 destinations.Add(ExtractAuthHost(authConfig));
 
             if (!string.IsNullOrWhiteSpace(linksConfig?.ProviderApprenticeshipSiteUrl))
-                destinations.Add(linksConfig?.ProviderApprenticeshipSiteUrl);
+                destinations.Add(linksConfig.ProviderApprenticeshipSiteUrl);
 
             if (!string.IsNullOrWhiteSpace(linksConfig?.CommitmentsSiteUrl))
-                destinations.Add(linksConfig?.CommitmentsSiteUrl);
+                destinations.Add(linksConfig.CommitmentsSiteUrl);
 
             return destinations.ToArray();
         }

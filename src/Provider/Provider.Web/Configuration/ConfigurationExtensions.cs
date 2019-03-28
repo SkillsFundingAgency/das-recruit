@@ -20,6 +20,8 @@ using Esfa.Recruit.Provider.Web.Middleware;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Microsoft.Extensions.Configuration;
+using Esfa.Recruit.Provider.Web.Exceptions;
 
 namespace Esfa.Recruit.Provider.Web.Configuration
 {
@@ -74,9 +76,9 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             })
             .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>())
             .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-        }
+        }        
 
-        public static void AddAuthenticationService(this IServiceCollection services, AuthenticationConfiguration authConfig, IRecruitVacancyClient vacancyClient, IHostingEnvironment hostingEnvironment)
+        public static void AddAuthenticationService(this IServiceCollection services, IConfiguration configuration, AuthenticationConfiguration authConfig, IRecruitVacancyClient vacancyClient, IHostingEnvironment hostingEnvironment)
         {
             services.AddAuthentication(sharedOptions =>
             {
@@ -95,7 +97,8 @@ namespace Esfa.Recruit.Provider.Web.Configuration
 
                 options.Events.OnSecurityTokenValidated = async (ctx) =>
                 {
-                    await HandleUserSignedIn(ctx, vacancyClient);
+                    if(IsProviderWhitelisted(configuration, ctx))
+                        await HandleUserSignedIn(ctx, vacancyClient);                   
                 };
 
             })
@@ -109,9 +112,19 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             });
         }
 
-        private static async Task HandleUserSignedIn(SecurityTokenValidatedContext ctx, IRecruitVacancyClient vacancyClient)
+        private static bool IsProviderWhitelisted(IConfiguration configuration, SecurityTokenValidatedContext ctx)
         {
-            var user = ctx.Principal.ToVacancyUser();
+            var whiteListedProviders = configuration.GetValue<string>("WhitelistedProvidersList").Split(';').ToList();
+            var ukprn = ctx.Principal.GetUkprn().ToString();
+            var isWhiteListed = whiteListedProviders.Contains(ukprn);
+            if (!isWhiteListed)                
+                throw new BlockedProvidersException($"Provider Ukprn account '{ukprn}' is blocked");
+            return true;
+        }
+
+        private static async Task HandleUserSignedIn(SecurityTokenValidatedContext ctx, IRecruitVacancyClient vacancyClient)
+        {            
+            var user = ctx.Principal.ToVacancyUser();            
             await vacancyClient.UserSignedInAsync(user, UserType.Provider);
         }
     }

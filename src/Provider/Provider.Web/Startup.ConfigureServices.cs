@@ -1,4 +1,5 @@
 using Esfa.Recruit.Provider.Web.Configuration;
+using Esfa.Recruit.Shared.Web.Configuration;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Razor;
@@ -39,16 +40,13 @@ namespace Esfa.Recruit.Provider.Web
             {
                 o.ViewLocationFormats.Add("/Views/Part1/{1}/{0}" + RazorViewEngine.ViewExtension);
                 o.ViewLocationFormats.Add("/Views/Part2/{1}/{0}" + RazorViewEngine.ViewExtension);
-            });
-
-            services.AddMvcService(_hostingEnvironment, _loggerFactory);
-
+            });            
+            services.AddMvcService(_hostingEnvironment, _loggerFactory);            
             services.AddApplicationInsightsTelemetry(_configuration);
 
             //A service provider for resolving services configured in IoC
-            var sp = services.BuildServiceProvider();
-
-            services.AddAuthenticationService(_authConfig, sp.GetService<IRecruitVacancyClient>(), sp.GetService<IHostingEnvironment>());
+            var sp = services.BuildServiceProvider();            
+            services.AddAuthenticationService(_configuration,_authConfig, sp.GetService<IRecruitVacancyClient>(), sp.GetService<IHostingEnvironment>());
             services.AddAuthorizationService();            
         }
     }

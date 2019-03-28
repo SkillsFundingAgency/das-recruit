@@ -48,8 +48,8 @@ namespace Esfa.Recruit.Provider.Web.Configuration
 
             RegisterDynamicConfigurationDeps(services);
 
-            RegisterFluentValidators(services);
-        }
+            RegisterFluentValidators(services);           
+        }        
 
         private static void RegisterServiceDeps(IServiceCollection services, IConfiguration configuration)
         {
