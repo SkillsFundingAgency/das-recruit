@@ -16,7 +16,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
             _employerProfileRepository = employerProfileRepository;
         }
 
-        public async Task<string> GetEmployerName(Guid vacancyId)
+        public async Task<string> GetEmployerNameAsync(Guid vacancyId)
         {
             var vacancy = await _vacancyRepository.GetVacancyAsync(vacancyId);
             if (vacancy.EmployerNameOption == EmployerNameOption.TradingName) 

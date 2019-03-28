@@ -55,7 +55,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             if(!string.IsNullOrEmpty(message.EmployerDescription))
                 vacancy.EmployerDescription = message.EmployerDescription;
 
-            vacancy.EmployerName = await _employerNameService.GetEmployerName(message.VacancyId);
+            vacancy.EmployerName = await _employerNameService.GetEmployerNameAsync(message.VacancyId);
 
             vacancy.Status = VacancyStatus.Submitted;
             vacancy.SubmittedDate = now;
