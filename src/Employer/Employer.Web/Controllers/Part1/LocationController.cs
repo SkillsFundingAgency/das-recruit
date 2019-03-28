@@ -32,7 +32,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             
             //back link is available only if cookie is not there (back link in part 1)
             //or part 2 has not started (coming from preview)
-            vm.IsBackLinkAvailable = employerInfoModel != null || vm.PageInfo.IsWizard;
+            vm.CanShowBackLink = employerInfoModel != null || vm.PageInfo.IsWizard;
 
             //if cookie is missing and user is in part1 then create the cookie to support back navigation
             if (employerInfoModel == null && (!vm.PageInfo.HasCompletedPartOne || !vm.PageInfo.HasStartedPartTwo))

@@ -35,6 +35,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Location
                 .Join(", ", new[] {AddressLine1, AddressLine2, AddressLine3, AddressLine4, Postcode })
                 .Replace(" ,", string.Empty);
 
-        public bool IsBackLinkAvailable { get; internal set; }
+        public bool CanShowBackLink { get; internal set; }
     }
 }
