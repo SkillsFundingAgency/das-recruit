@@ -18,18 +18,15 @@ namespace Esfa.Recruit.Employer.Web.Mappings
         private const int MapImageHeight = 256;
         private readonly IGeocodeImageService _mapService;
         private readonly ExternalLinksConfiguration _externalLinksConfiguration;
-        private readonly IEmployerVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
 
         public DisplayVacancyViewModelMapper(
                 IGeocodeImageService mapService,
                 IOptions<ExternalLinksConfiguration> externalLinksOptions,
-                IEmployerVacancyClient client,
                 IRecruitVacancyClient vacancyClient)
         {
             _mapService = mapService;
             _externalLinksConfiguration = externalLinksOptions.Value;
-            _client = client;
             _vacancyClient = vacancyClient;
         }
 
@@ -48,8 +45,8 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             vm.EmployerContactName = vacancy.EmployerContact?.Name;
             vm.EmployerContactEmail = vacancy.EmployerContact?.Email;
             vm.EmployerContactTelephone = vacancy.EmployerContact?.Phone;
-            vm.EmployerDescription = await GetEmployerDescriptionAsync(vacancy);
-            vm.EmployerName = vacancy.EmployerName;
+            vm.EmployerDescription = await _vacancyClient.GetEmployerDescriptionAsync(vacancy);
+            vm.EmployerName = await _vacancyClient.GetEmployerName(vacancy.Id);
             vm.EmployerWebsiteUrl = vacancy.EmployerWebsiteUrl;
             vm.EmployerAddressElements = Enumerable.Empty<string>();
             vm.FindAnApprenticeshipUrl = _externalLinksConfiguration.FindAnApprenticeshipUrl;
@@ -105,18 +102,6 @@ namespace Esfa.Recruit.Employer.Web.Mappings
                 vm.WageText = vacancy.StartDate.HasValue ? vacancy.Wage.ToText(vacancy.StartDate) : null;
                 vm.WorkingWeekDescription = vacancy.Wage.WorkingWeekDescription;
             }
-        }
-
-        private async Task<string> GetEmployerDescriptionAsync(Vacancy vacancy)
-        {
-            if (vacancy.CanEdit)
-            {
-                var employerProfile = await _client.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.LegalEntityId);
-                
-                return employerProfile?.AboutOrganisation ?? string.Empty;
-            }
-
-            return vacancy.EmployerDescription;
         }
     }
 }

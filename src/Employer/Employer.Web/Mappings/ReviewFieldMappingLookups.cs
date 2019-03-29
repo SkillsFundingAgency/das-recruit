@@ -43,14 +43,15 @@ namespace Esfa.Recruit.Employer.Web.Mappings
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.Training, Anchors.Training),
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.ApplicationMethod, Anchors.ApplicationMethod),
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.ApplicationUrl, Anchors.ApplicationUrl),
-                new ReviewFieldIndicatorViewModel(FieldIdentifiers.ApplicationInstructions, Anchors.ApplicationInstructions)
+                new ReviewFieldIndicatorViewModel(FieldIdentifiers.ApplicationInstructions, Anchors.ApplicationInstructions),
+                new ReviewFieldIndicatorViewModel(FieldIdentifiers.EmployerName, Anchors.AboutEmployerSection)
             };
 
             var mappings =  new Dictionary<string, IEnumerable<string>>
             {
                 { FieldIdResolver.ToFieldId(v => v.EmployerAccountId), new string[0]},
                 { FieldIdResolver.ToFieldId(v => v.Title), new[]{ FieldIdentifiers.Title} },
-                { FieldIdResolver.ToFieldId(v => v.EmployerName), new string[0] },
+                { FieldIdResolver.ToFieldId(v => v.EmployerName), new []{ FieldIdentifiers.EmployerName} },
                 { FieldIdResolver.ToFieldId(v => v.ShortDescription), new []{ FieldIdentifiers.ShortDescription} },
                 { FieldIdResolver.ToFieldId(v => v.ClosingDate), new []{ FieldIdentifiers.ClosingDate} },
                 { FieldIdResolver.ToFieldId(v => v.Wage.WeeklyHours), new []{ FieldIdentifiers.WorkingWeek} },
@@ -85,6 +86,21 @@ namespace Esfa.Recruit.Employer.Web.Mappings
                 { FieldIdResolver.ToFieldId(v => v.ApplicationInstructions), new [] { FieldIdentifiers.ApplicationInstructions }},
                 { FieldIdResolver.ToFieldId(v => v.ApplicationMethod), new [] { FieldIdentifiers.ApplicationMethod} },
                 { FieldIdResolver.ToFieldId(v => v.ApplicationUrl), new []{ FieldIdentifiers.ApplicationUrl} }
+            };
+
+            return new ReviewFieldMappingLookupsForPage(vms, mappings);
+        }
+
+        public static ReviewFieldMappingLookupsForPage GetEmployerNameReviewFieldIndicators()
+        {
+            var vms = new List<ReviewFieldIndicatorViewModel>
+            {
+                new ReviewFieldIndicatorViewModel(FieldIdentifiers.EmployerName, nameof(FieldIdentifiers.EmployerName))
+            };
+
+            var mappings =  new Dictionary<string, IEnumerable<string>>
+            {
+                { FieldIdResolver.ToFieldId(v => v.EmployerName), new []{ FieldIdentifiers.EmployerName} }
             };
 
             return new ReviewFieldMappingLookupsForPage(vms, mappings);
@@ -168,28 +184,28 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             return new ReviewFieldMappingLookupsForPage(vms, mappings);
         }
 
-        public static ReviewFieldMappingLookupsForPage GetEmployerFieldIndicators()
-        {
-            var vms = new List<ReviewFieldIndicatorViewModel>
-            {
-                new ReviewFieldIndicatorViewModel(FieldIdentifiers.EmployerAddress, nameof(EmployerEditModel.AddressLine1)),
-                new ReviewFieldIndicatorViewModel(FieldIdentifiers.EmployerAddress1, nameof(EmployerEditModel.AddressLine1)),
-                new ReviewFieldIndicatorViewModel(FieldIdentifiers.EmployerAddress2, nameof(EmployerEditModel.AddressLine2)),
-                new ReviewFieldIndicatorViewModel(FieldIdentifiers.EmployerAddress3, nameof(EmployerEditModel.AddressLine3)),
-                new ReviewFieldIndicatorViewModel(FieldIdentifiers.EmployerAddress4, nameof(EmployerEditModel.AddressLine4))
-            };
+        // public static ReviewFieldMappingLookupsForPage GetLocationFieldIndicators()
+        // {
+        //     var vms = new List<ReviewFieldIndicatorViewModel>
+        //     {
+        //         // new ReviewFieldIndicatorViewModel(FieldIdentifiers.EmployerAddress, nameof(EmployerEditModel.AddressLine1)),
+        //         // new ReviewFieldIndicatorViewModel(FieldIdentifiers.EmployerAddress1, nameof(EmployerEditModel.AddressLine1)),
+        //         // new ReviewFieldIndicatorViewModel(FieldIdentifiers.EmployerAddress2, nameof(EmployerEditModel.AddressLine2)),
+        //         // new ReviewFieldIndicatorViewModel(FieldIdentifiers.EmployerAddress3, nameof(EmployerEditModel.AddressLine3)),
+        //         // new ReviewFieldIndicatorViewModel(FieldIdentifiers.EmployerAddress4, nameof(EmployerEditModel.AddressLine4))
+        //     };
 
-            var mappings =  new Dictionary<string, IEnumerable<string>>
-            {
-                { FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine1), new []{ FieldIdentifiers.EmployerAddress1 }},
-                { FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine2), new []{ FieldIdentifiers.EmployerAddress2 }},
-                { FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine3), new []{ FieldIdentifiers.EmployerAddress3 }},
-                { FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine4), new []{ FieldIdentifiers.EmployerAddress4 }},
-                { FieldIdResolver.ToFieldId(v => v.EmployerLocation.Postcode), new[]{ FieldIdentifiers.EmployerAddress}}
-            };
+        //     var mappings =  new Dictionary<string, IEnumerable<string>>
+        //     {
+        //         { FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine1), new []{ FieldIdentifiers.EmployerAddress1 }},
+        //         { FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine2), new []{ FieldIdentifiers.EmployerAddress2 }},
+        //         { FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine3), new []{ FieldIdentifiers.EmployerAddress3 }},
+        //         { FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine4), new []{ FieldIdentifiers.EmployerAddress4 }},
+        //         { FieldIdResolver.ToFieldId(v => v.EmployerLocation.Postcode), new[]{ FieldIdentifiers.EmployerAddress}}
+        //     };
 
-            return new ReviewFieldMappingLookupsForPage(vms, mappings);
-        }
+        //     return new ReviewFieldMappingLookupsForPage(vms, mappings);
+        // }
 
         public static ReviewFieldMappingLookupsForPage GetVacancyDescriptionFieldIndicators()
         {

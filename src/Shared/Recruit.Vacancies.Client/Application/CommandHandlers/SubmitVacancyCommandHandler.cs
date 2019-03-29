@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.Extensions.Logging;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
@@ -18,17 +19,20 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         private readonly IVacancyRepository _vacancyRepository;
         private readonly IMessaging _messaging;
         private readonly ITimeProvider _timeProvider;
+        private readonly IEmployerNameService _employerNameService;
 
         public SubmitVacancyCommandHandler(
             ILogger<SubmitVacancyCommandHandler> logger,
             IVacancyRepository vacancyRepository, 
             IMessaging messaging, 
-            ITimeProvider timeProvider)
+            ITimeProvider timeProvider,
+            IEmployerNameService employerNameService)
         {
             _logger = logger;
             _vacancyRepository = vacancyRepository;
             _messaging = messaging;
             _timeProvider = timeProvider;
+            _employerNameService = employerNameService;
         }
 
         public async Task Handle(SubmitVacancyCommand message, CancellationToken cancellationToken)
@@ -50,6 +54,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             if(!string.IsNullOrEmpty(message.EmployerDescription))
                 vacancy.EmployerDescription = message.EmployerDescription;
+
+            vacancy.EmployerName = await _employerNameService.GetEmployerNameAsync(message.VacancyId);
 
             vacancy.Status = VacancyStatus.Submitted;
             vacancy.SubmittedDate = now;

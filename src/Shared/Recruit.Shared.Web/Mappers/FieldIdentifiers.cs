@@ -7,6 +7,7 @@
         public const string ApplicationUrl = "ApplicationUrl";
         public const string ClosingDate = "ClosingDate";
         public const string EmployerContact = "EmployerContact";
+        public const string EmployerName = "EmployerName";
         public const string DisabilityConfident = "DisabilityConfident";
         public const string EmployerAddress = "EmployerAddress";
         public const string EmployerAddress1 = "EmployerAddress1";

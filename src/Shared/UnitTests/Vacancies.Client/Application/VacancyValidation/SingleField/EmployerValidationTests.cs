@@ -34,7 +34,8 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
         {
             var vacancy = new Vacancy 
             {
-                EmployerName = organisationValue
+                EmployerName = organisationValue,
+                SourceOrigin = SourceOrigin.ProviderWeb
             };
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.EmployerName);

@@ -93,8 +93,11 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
             var selectedLegalEntity = employerVacancyInfo.LegalEntities.SingleOrDefault(x => x.LegalEntityId == m.SelectedLegalEntityId);
 
-            vacancy.EmployerName = selectedLegalEntity?.Name;
+            vacancy.LegalEntityName = selectedLegalEntity?.Name;
             vacancy.LegalEntityId = m.SelectedLegalEntityId;
+            //TODO temporary arrangement.
+            vacancy.EmployerNameOption = EmployerNameOption.RegisteredName;
+            vacancy.EmployerName = selectedLegalEntity?.Name;
             
             vacancy.EmployerLocation = new Vacancies.Client.Domain.Entities.Address
             {

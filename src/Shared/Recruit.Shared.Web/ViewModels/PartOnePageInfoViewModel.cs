@@ -25,17 +25,17 @@
         {
             if (HasCompletedPartOne == false)
             {
-                IsWizard = true;
+                IsWizard = true && !HasStartedPartTwo;
                 return;
             }
 
-            if (HasStartedPartTwo)
+            if(HasCompletedPartOne && HasStartedPartTwo)
             {
                 IsWizard = false;
                 return;
             }
 
-            IsWizard = requestedWizardParam;
+            IsWizard = requestedWizardParam;            
         }
     }
 }

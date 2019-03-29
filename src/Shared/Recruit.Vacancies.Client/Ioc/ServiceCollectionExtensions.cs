@@ -115,6 +115,7 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddTransient<IGetTitlePopularity, TitlePopularityService>();
             services.AddTransient<ICache, Cache>();
             services.AddTransient<IHtmlSanitizerService, HtmlSanitizerService>();
+            services.AddTransient<IEmployerNameService, EmployerNameService>();
 
             // Infrastructure Services
             services.AddTransient<IEmployerAccountProvider, EmployerAccountProvider>();

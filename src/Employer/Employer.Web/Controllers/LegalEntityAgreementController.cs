@@ -1,19 +1,23 @@
 ﻿using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
+using Esfa.Recruit.Employer.Web.Controllers.Part1;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.Views;
 using Esfa.Recruit.Shared.Web.Mappers;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
     [Route(RoutePaths.AccountVacancyRoutePath)]
-    public class LegalEntityAgreementController : Controller
+    public class LegalEntityAgreementController : EmployerControllerBase
     {
         private readonly LegalEntityAgreementOrchestrator _orchestrator;
 
-        public LegalEntityAgreementController(LegalEntityAgreementOrchestrator orchestrator)
+        public LegalEntityAgreementController(
+            LegalEntityAgreementOrchestrator orchestrator, IHostingEnvironment hostingEnvironment)
+            : base(hostingEnvironment)
         {
             _orchestrator = orchestrator;
         }
@@ -21,15 +25,14 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         [HttpGet("legal-entity-agreement", Name = RouteNames.LegalEntityAgreement_SoftStop_Get)]
         public async Task<IActionResult> LegalEntityAgreementSoftStop(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
         {
-            var vm = await _orchestrator.GetLegalEntityAgreementSoftStopViewModelAsync(vrm);
+            var info = GetVacancyEmployerInfoCookie(vrm.VacancyId);
+            var vm = await _orchestrator.GetLegalEntityAgreementSoftStopViewModelAsync(vrm, info.LegalEntityId);
             vm.PageInfo.SetWizard(wizard);
 
             if (vm.HasLegalEntityAgreement == false)
                 return View(vm);
 
-            return vm.PageInfo.IsWizard
-                    ? RedirectToRoute(RouteNames.Training_Get)
-                    : RedirectToRoute(RouteNames.Vacancy_Preview_Get, null, Anchors.AboutEmployerSection);
+            return RedirectToRoute(RouteNames.Location_Get);
         }
 
         [HttpGet("legal-entity-agreement-stop", Name = RouteNames.LegalEntityAgreement_HardStop_Get)]
