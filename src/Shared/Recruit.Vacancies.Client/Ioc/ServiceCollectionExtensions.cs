@@ -1,13 +1,17 @@
-﻿using Esfa.Recruit.Vacancies.Client.Application.Aspects;
+﻿using System;
+using System.Collections.Generic;
+using Esfa.Recruit.Vacancies.Client.Application.Aspects;
 using Esfa.Recruit.Vacancies.Client.Application.Cache;
 using Esfa.Recruit.Vacancies.Client.Application.CommandHandlers;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Events;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
+using Esfa.Recruit.Vacancies.Client.Application.Queues;
 using Esfa.Recruit.Vacancies.Client.Application.Rules.Engine;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Services.NextVacancyReview;
 using Esfa.Recruit.Vacancies.Client.Application.Services.ReferenceData;
+using Esfa.Recruit.Vacancies.Client.Application.Services.Reports;
 using Esfa.Recruit.Vacancies.Client.Application.Services.VacancyComparer;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
@@ -28,6 +32,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BlockedEmployer
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Profanities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Qualifications;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Skills;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Reports;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.SequenceStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services;
@@ -117,6 +122,21 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddTransient<IHtmlSanitizerService, HtmlSanitizerService>();
             services.AddTransient<IEmployerNameService, EmployerNameService>();
 
+            //Reporting Service
+            services.AddTransient<ICsvBuilder, CsvBuilder>();
+            services.AddTransient<IReportService, ReportService>();
+            services.AddTransient<ProviderApplicationsReportStrategy>();
+            services.AddTransient<Func<ReportType, IReportStrategy>>(serviceProvider => reportType =>
+            {
+                switch (reportType)
+                {
+                    case ReportType.ProviderApplications:
+                        return serviceProvider.GetService<ProviderApplicationsReportStrategy>();
+                    default:
+                        throw new Exception($"No report strategy for {reportType}");
+                }
+            });
+
             // Infrastructure Services
             services.AddTransient<IEmployerAccountProvider, EmployerAccountProvider>();
             services.AddTransient<ISlackClient, SlackClient>();
@@ -171,6 +191,7 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddTransient<IUserRepository, MongoDbUserRepository>();
             services.AddTransient<IApplicationReviewRepository, MongoDbApplicationReviewRepository>();
             services.AddTransient<IEmployerProfileRepository, MongoDbEmployerProfileRepository>();
+            services.AddTransient<IReportRepository, MongoDbReportRepository>();
 
             //Queries
             services.AddTransient<IVacancyQuery, MongoDbVacancyRepository>();
@@ -197,6 +218,7 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddSingleton(kernal => kernal.GetService<IOptions<StorageQueueConnectionDetails>>().Value);
 
             services.AddTransient<IEventStore, StorageQueueEventStore>();
+            services.AddTransient<IReportsQueue, StorageQueueReportsQueue>();
         }
 
         private static void RegisterTableStorageProviderDeps(IServiceCollection services, IConfiguration configuration)

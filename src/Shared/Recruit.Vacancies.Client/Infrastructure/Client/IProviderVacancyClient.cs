@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
@@ -17,5 +19,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task SubmitVacancyAsync(Guid vacancyId, VacancyUser user);
         Task CloseVacancyAsync(Guid vacancyId, VacancyUser user);
         Task DeleteVacancyAsync(Guid vacancyId, VacancyUser user);
+        Task<Guid> CreateProviderApplicationsReportAsync(long ukprn, DateTime fromDate, DateTime toDate, VacancyUser user, string reportName);
+        Task<List<ReportSummary>> GetReportsForProviderAsync(long ukprn);
+        Task<Report> GetReportAsync(Guid reportId);
+        void WriteReportAsCsv(Stream stream, Report report);
+        Task IncrementReportDownloadCountAsync(Guid reportId);
     }
 }

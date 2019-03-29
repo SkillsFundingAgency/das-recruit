@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Services.Reports;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
@@ -35,9 +36,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly IEmployerProfileRepository _employerProfileRepository;
         private readonly IUserRepository _userRepository;
         private readonly IQualificationsProvider _qualificationsProvider;
-
         private readonly ITrainingProviderService _trainingProviderService;
         private readonly IEmployerNameService _employerNameService;
+        private readonly IReportRepository _reportRepository;
+        private readonly IReportService _reportService;
 
         public VacancyClient(
             IVacancyRepository repository,
@@ -56,7 +58,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             IUserRepository userRepository,
             IQualificationsProvider qualificationsProvider,
             ITrainingProviderService trainingProviderService,
-            IEmployerNameService employerNameService)
+            IEmployerNameService employerNameService,
+            IReportRepository reportRepository,
+            IReportService reportService)
         {
             _repository = repository;
             _reader = reader;
@@ -75,6 +79,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _qualificationsProvider = qualificationsProvider;
             _trainingProviderService = trainingProviderService;
             _employerNameService = employerNameService;
+            _reportRepository = reportRepository;
+            _reportService = reportService;
         }
     
         
