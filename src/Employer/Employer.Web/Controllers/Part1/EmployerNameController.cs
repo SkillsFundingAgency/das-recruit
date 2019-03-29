@@ -39,6 +39,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         public async Task<IActionResult> EmployerName(EmployerNameEditModel model, [FromQuery] bool wizard)
         { 
             var employerInfoModel = GetVacancyEmployerInfoCookie(model.VacancyId);
+            //respective cookie can go missing if user has opened another vacancy in a different browser tab 
+            if(employerInfoModel == null)
+                return RedirectToRoute(RouteNames.Employer_Get);
+
             var response = await _orchestrator.PostEmployerNameEditModelAsync(model, employerInfoModel, User.ToVacancyUser());
 
             if (!response.Success)
