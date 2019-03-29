@@ -58,7 +58,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             IUserRepository userRepository,
             IQualificationsProvider qualificationsProvider,
             ITrainingProviderService trainingProviderService,
-            IEmployerNameService employerNameService),
+            IEmployerNameService employerNameService,
             IReportRepository reportRepository,
             IReportService reportService)
         {
