@@ -56,7 +56,7 @@
     </div>
     <div asp-show="@Model.HasVacancies" class="govuk-grid-column-full">
         <h3 class="govuk-heading-m">
-            @Model.ResultsHeading <a asp-show="@Model.IsFiltered" asp-route="@RouteNames.Dashboard_Index_Get" class="govuk-!-font-weight-regular govuk-component__link govuk-!-font-size-19">Show all vacancies</a>
+            @Model.ResultsHeading <a asp-show="@Model.IsFiltered" asp-route="@RouteNames.Dashboard_Index_Get" asp-route-filter="All" class="govuk-!-font-weight-regular govuk-component__link govuk-!-font-size-19">Show all vacancies</a>
         </h3>
     </div>
 </div>
