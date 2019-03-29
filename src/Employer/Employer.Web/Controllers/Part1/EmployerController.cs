@@ -55,7 +55,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             {
                 //something went wrong, the matching cookie was not found
                 //Redirect the user with validation error to allow them to continue
-                ModelState.AddModelError("SelectedOrganisationId", ValidationMessages.EmployerNameValidationMessages.EmployerNameRequired);
+                ModelState.AddModelError(nameof(EmployerEditModel.SelectedOrganisationId), 
+                    ValidationMessages.EmployerNameValidationMessages.EmployerNameRequired);
             }
 
             if (!ModelState.IsValid)

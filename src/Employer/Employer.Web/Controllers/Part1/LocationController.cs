@@ -35,6 +35,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             vm.CanShowBackLink = employerInfoModel != null || vm.PageInfo.IsWizard;
 
             //if cookie is missing and user is in part1 then create the cookie to support back navigation
+            //either part 1 is not completed or part 1 is completed but part 2 has not started
             if (employerInfoModel == null && (!vm.PageInfo.HasCompletedPartOne || !vm.PageInfo.HasStartedPartTwo))
             {
                 employerInfoModel = await _orchestrator.GetVacancyEmployerInfoModelAsync(vrm);
