@@ -32,8 +32,10 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
             switch (id)
             {
-                case 403:
+                case 401:
                     return AccessDenied();
+                case 403:
+                    return ProviderBlocked();
                 case 404:
                     return PageNotFound();
                 default:
@@ -89,6 +91,11 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                     return AccessDenied();
                 }
 
+                if (exception is BlockedProvidersException)
+                {
+                    return ProviderBlocked();
+                }
+
                 _logger.LogError(exception, "Unhandled exception on path: {route}", routeWhereExceptionOccurred);
             }
 
@@ -100,6 +107,12 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         {
             Response.StatusCode = (int)HttpStatusCode.Unauthorized;
             return View(ViewNames.AccessDenied);
+        }
+
+        private IActionResult ProviderBlocked()
+        {
+            Response.StatusCode = (int)HttpStatusCode.Forbidden;
+            return View(ViewNames.BlockedProvider);
         }
 
         private IActionResult PageNotFound()
