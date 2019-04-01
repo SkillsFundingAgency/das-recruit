@@ -19,9 +19,8 @@ using Microsoft.AspNetCore.Authorization;
 using Esfa.Recruit.Provider.Web.Middleware;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Extensions;
+using Esfa.Recruit.Shared.Web.Configuration;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Microsoft.Extensions.Configuration;
-using Esfa.Recruit.Provider.Web.Exceptions;
 
 namespace Esfa.Recruit.Provider.Web.Configuration
 {
@@ -73,12 +72,16 @@ namespace Esfa.Recruit.Provider.Web.Configuration
                 opts.Filters.AddService<PlannedOutageResultFilter>();
 
                 opts.AddTrimModelBinderProvider(loggerFactory);
+                if (EnvironmentNames.GetTestEnvironmentNames().Contains(hostingEnvironment.EnvironmentName.ToUpper()) == false)
+                {
+                    opts.Filters.AddService<CheckProviderBlockedFilter>();
+                }
             })
             .AddFluentValidation()
             .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }        
 
-        public static void AddAuthenticationService(this IServiceCollection services, IConfiguration configuration, AuthenticationConfiguration authConfig, IRecruitVacancyClient vacancyClient, IHostingEnvironment hostingEnvironment)
+        public static void AddAuthenticationService(this IServiceCollection services, AuthenticationConfiguration authConfig, IRecruitVacancyClient vacancyClient, IHostingEnvironment hostingEnvironment)
         {
             services.AddAuthentication(sharedOptions =>
             {
@@ -96,9 +99,8 @@ namespace Esfa.Recruit.Provider.Web.Configuration
                 //options.SkipUnrecognizedRequests = true;
 
                 options.Events.OnSecurityTokenValidated = async (ctx) =>
-                {
-                    if(IsProviderWhitelisted(configuration, ctx))
-                        await HandleUserSignedIn(ctx, vacancyClient);                   
+                {                    
+                    await HandleUserSignedIn(ctx, vacancyClient);                   
                 };
 
             })
@@ -110,17 +112,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
                 options.SlidingExpiration = true;
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(SessionTimeoutMinutes);
             });
-        }
-
-        private static bool IsProviderWhitelisted(IConfiguration configuration, SecurityTokenValidatedContext ctx)
-        {
-            var whiteListedProviders = configuration.GetValue<string>("WhitelistedProvidersList").Split(';').ToList();
-            var ukprn = ctx.Principal.GetUkprn().ToString();
-            var isWhiteListed = whiteListedProviders.Contains(ukprn);
-            if (!isWhiteListed)                
-                throw new BlockedProvidersException($"Provider Ukprn account '{ukprn}' is blocked");
-            return true;
-        }
+        }        
 
         private static async Task HandleUserSignedIn(SecurityTokenValidatedContext ctx, IRecruitVacancyClient vacancyClient)
         {            
