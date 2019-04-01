@@ -53,6 +53,7 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             var isAvailableForReview =
                 _vacancyClient.VacancyReviewCanBeAssigned(vacancyReview.Status, vacancyReview.ReviewedDate);
 
+            var vacancy = _vacancyClient.GetVacancyAsync(vacancyReview.VacancyReference);
             return new VacancyReviewSearchResultViewModel
             {
                 IsAssignedToLoggedInUser = vacancyUser.UserId == vacancyReview.ReviewedByUser?.UserId,
@@ -65,7 +66,8 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
                 ReviewId = vacancyReview.Id,
                 IsClosed =  vacancyReview.Status == ReviewStatus.Closed,
                 SubmittedDate = vacancyReview.VacancySnapshot.SubmittedDate.GetValueOrDefault(),
-                IsAvailableForReview = isAvailableForReview
+                IsAvailableForReview = isAvailableForReview,
+                IsVacancyDeleted = vacancy.Result.IsDeleted
             };
         }
 
