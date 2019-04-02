@@ -74,7 +74,7 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
                 IsClosed =  vacancyReview.Status == ReviewStatus.Closed,
                 SubmittedDate = vacancyReview.VacancySnapshot.SubmittedDate.GetValueOrDefault(),
                 IsAvailableForReview = isAvailableForReview,
-                IsVacancyDeleted=vacancy.IsDeleted
+                IsVacancyDeleted = vacancy.IsDeleted
             };
         }
 
