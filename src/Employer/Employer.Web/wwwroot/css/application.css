@@ -755,3 +755,74 @@ a[rel="external"]:hover:after {
         #global-outage-message p {
           font-size: 16px;
           line-height: 1.25; } }
+
+/*** Dashboard header */
+.das-header-actions {
+    text-align: right;
+    margin-top: 10px;
+}
+
+.das-header-actions .govuk-button {
+    margin-bottom: 20px;
+}
+/*** End of Dashboard header */
+
+/*** Pager ***/
+.das-pager {
+    margin-top: 1em;
+    margin-bottom: 1.25em;
+    font-size: 18px;
+    font-size: 1.125rem;
+}
+
+.das-pager-items {
+    display: none;
+}
+
+@media (min-width: 641px) {
+    .das-pager-items {
+        display: inline;
+        padding: 0;
+    }
+    .das-pager-items li {
+        display: inline;
+        margin: 0 5px;
+    }
+    .das-pager-items li:first-child {
+        margin-left: 0;
+    }
+    .das-pager-items li:last-child {
+        margin-right: 0;
+    }
+}
+
+.das-pager-next,
+.das-pager-prev {
+    margin-right: 10px;
+}
+
+@media (min-width: 641px) {
+    .das-pager-next,
+    .das-pager-prev {
+        margin-right: 0;
+    }
+}
+
+@media (min-width: 641px) {
+    .das-pager-prev {
+        margin-right: 10px;
+    }
+}
+
+@media (min-width: 641px) {
+    .das-pager-next {
+        margin-left: 10px;
+    }
+}
+
+@media (min-width: 641px) {
+    .das-pager-controls {
+        float: right;
+    }
+}
+/*** End of Pager***/ 

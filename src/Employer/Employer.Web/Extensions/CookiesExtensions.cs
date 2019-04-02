@@ -65,6 +65,14 @@ namespace Esfa.Recruit.Employer.Web.Extensions
             return null;
         }
 
-        
+        public static string GetDashboardFilter(this IRequestCookieCollection cookies)
+        {
+            return cookies[CookieNames.DashboardFilter];
+        }
+
+        public static void SetDashboardFilter(this IResponseCookies cookies, IHostingEnvironment hostingEnvironment, string value)
+        {
+            cookies.Append(CookieNames.DashboardFilter, value, EsfaCookieOptions.GetSessionLifetimeHttpCookieOption(hostingEnvironment));
+        }
     }
 }
