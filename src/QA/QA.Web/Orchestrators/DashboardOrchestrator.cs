@@ -37,18 +37,24 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             if (vm.DisplayInProgressVacancies)
             {
                 var inProgressSummaries = await _vacancyClient.GetVacancyReviewsInProgressAsync();
-                vm.InProgressVacancies = inProgressSummaries.Select(v => MapToViewModel(v, vacancyUser)).ToList();
+
+                var inProgressVacanciesVmTasks = inProgressSummaries.Select(async v => await MapToViewModelAsync(v, vacancyUser)).ToList();
+                var inProgressVacanciesVm = await Task.WhenAll(inProgressVacanciesVmTasks);
+                vm.InProgressVacancies = inProgressVacanciesVm.ToList();
             }
 
             if(string.IsNullOrEmpty(searchTerm)) return vm;
 
             vm.LastSearchTerm = searchTerm;
             var searchResults = await _vacancyClient.GetSearchResultsAsync(searchTerm);
-            vm.SearchResults = searchResults.Select(v => MapToViewModel(v, vacancyUser)).ToList();
+
+            var searchResultsVmTasks = searchResults.Select(v => MapToViewModelAsync(v, vacancyUser)).ToList();
+            var searchResultsVm = await Task.WhenAll(searchResultsVmTasks);
+            vm.SearchResults = searchResultsVm.ToList();
             return vm;
         }
 
-        private async Task<VacancyReviewSearchResultViewModel> MapToViewModel(VacancyReview vacancyReview, VacancyUser vacancyUser)
+        private async Task<VacancyReviewSearchResultViewModel> MapToViewModelAsync(VacancyReview vacancyReview, VacancyUser vacancyUser)
         {
             var isAvailableForReview =
                 _vacancyClient.VacancyReviewCanBeAssigned(vacancyReview.Status, vacancyReview.ReviewedDate);
