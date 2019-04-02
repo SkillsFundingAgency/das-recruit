@@ -48,12 +48,12 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             return vm;
         }
 
-        private VacancyReviewSearchResultViewModel MapToViewModel(VacancyReview vacancyReview, VacancyUser vacancyUser)
+        private async Task<VacancyReviewSearchResultViewModel> MapToViewModel(VacancyReview vacancyReview, VacancyUser vacancyUser)
         {
             var isAvailableForReview =
                 _vacancyClient.VacancyReviewCanBeAssigned(vacancyReview.Status, vacancyReview.ReviewedDate);
 
-            var vacancy = _vacancyClient.GetVacancyAsync(vacancyReview.VacancyReference);
+            var vacancy = await _vacancyClient.GetVacancyAsync(vacancyReview.VacancyReference);
             return new VacancyReviewSearchResultViewModel
             {
                 IsAssignedToLoggedInUser = vacancyUser.UserId == vacancyReview.ReviewedByUser?.UserId,
@@ -67,7 +67,7 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
                 IsClosed =  vacancyReview.Status == ReviewStatus.Closed,
                 SubmittedDate = vacancyReview.VacancySnapshot.SubmittedDate.GetValueOrDefault(),
                 IsAvailableForReview = isAvailableForReview,
-                IsVacancyDeleted = vacancy.Result.IsDeleted
+                IsVacancyDeleted = vacancy.IsDeleted
             };
         }
 
