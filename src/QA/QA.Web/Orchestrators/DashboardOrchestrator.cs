@@ -38,7 +38,7 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             {
                 var inProgressSummaries = await _vacancyClient.GetVacancyReviewsInProgressAsync();
 
-                var inProgressVacanciesVmTasks = inProgressSummaries.Select(async v => await MapToViewModelAsync(v, vacancyUser)).ToList();
+                var inProgressVacanciesVmTasks = inProgressSummaries.Select(v => MapToViewModelAsync(v, vacancyUser)).ToList();
                 var inProgressVacanciesVm = await Task.WhenAll(inProgressVacanciesVmTasks);
                 vm.InProgressVacancies = inProgressVacanciesVm.ToList();
             }
@@ -47,7 +47,6 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
 
             vm.LastSearchTerm = searchTerm;
             var searchResults = await _vacancyClient.GetSearchResultsAsync(searchTerm);
-
             var searchResultsVmTasks = searchResults.Select(v => MapToViewModelAsync(v, vacancyUser)).ToList();
             var searchResultsVm = await Task.WhenAll(searchResultsVmTasks);
             vm.SearchResults = searchResultsVm.ToList();
