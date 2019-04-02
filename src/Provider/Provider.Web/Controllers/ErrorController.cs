@@ -118,7 +118,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             return View(ViewNames.PageNotFound);
         }       
 
-        // Blocked provider url for private beta
         [HttpGet("error/provider/{ukprn}", Name = RouteNames.BlockedProvider_Get)]
         public IActionResult BlockedProvider(string ukprn)
         {

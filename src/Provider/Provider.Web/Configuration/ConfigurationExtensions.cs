@@ -72,7 +72,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
                 opts.Filters.AddService<PlannedOutageResultFilter>();
 
                 opts.AddTrimModelBinderProvider(loggerFactory);
-                if (EnvironmentNames.GetTestEnvironmentNames().Contains(hostingEnvironment.EnvironmentName.ToUpper()) == false)
+                if (EnvironmentNames.IsProductionEquivalentEnvironment().Contains(hostingEnvironment.EnvironmentName.ToUpper()) == false)
                 {
                     opts.Filters.AddService<CheckProviderBlockedFilter>();
                 }

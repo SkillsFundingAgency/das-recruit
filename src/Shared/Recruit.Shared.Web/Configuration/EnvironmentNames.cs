@@ -9,7 +9,7 @@
         public const string PREPROD = "PREPROD";
         public const string PROD = "PROD";
 
-        public static string[] GetTestEnvironmentNames() => new []{ Development, AT, TEST, DEMO };
+        public static string[] IsProductionEquivalentEnvironment() => new []{ Development, AT, TEST, DEMO };
         
         public static string GetTestEnvironmentNamesCommaDelimited() => string.Join(",", Development, AT, TEST, DEMO);
 
