@@ -72,14 +72,19 @@ namespace Esfa.Recruit.Provider.Web.Configuration
                 opts.Filters.AddService<PlannedOutageResultFilter>();
 
                 opts.AddTrimModelBinderProvider(loggerFactory);
-                if (EnvironmentNames.IsProductionEquivalentEnvironment().Contains(hostingEnvironment.EnvironmentName.ToUpper()) == false)
+                if (IsProductionEnvironment(hostingEnvironment))
                 {
                     opts.Filters.AddService<CheckProviderBlockedFilter>();
                 }
             })
             .AddFluentValidation()
             .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-        }        
+        }
+
+        private static bool IsProductionEnvironment(IHostingEnvironment hostingEnvironment)
+        {
+            return EnvironmentNames.IsProductionEquivalentEnvironment().Contains(hostingEnvironment.EnvironmentName.ToUpper()) == false;
+        }
 
         public static void AddAuthenticationService(this IServiceCollection services, AuthenticationConfiguration authConfig, IRecruitVacancyClient vacancyClient, IHostingEnvironment hostingEnvironment)
         {
