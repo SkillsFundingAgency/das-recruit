@@ -1,0 +1,19 @@
+﻿@model PagerViewModel
+
+<div asp-show="@Model.ShowPager" class="das-pager">
+    <div class="das-pager-controls">
+        <a asp-show="@Model.ShowPrevious" asp-route="@Model.RouteName" asp-all-route-data="@Model.PreviousPageRouteData" class="das-pager-prev">Prev</a>
+        <ul class="das-pager-items">
+            @for (var pageIndex = 1; pageIndex <= Model.TotalPages; pageIndex++)
+            {
+            <li>
+                <a asp-show="@(pageIndex != Model.CurrentPage)" asp-route="@Model.RouteName" asp-all-route-data="@Model.GetRouteData(pageIndex)">@pageIndex</a>
+                <span asp-show="@(pageIndex == Model.CurrentPage)">@pageIndex</span>
+            </li>
+            }
+        </ul>
+        <a asp-show="@Model.ShowNext" asp-route="@Model.RouteName" asp-all-route-data="@Model.NextPageRouteData" class="das-pager-next">Next</a>
+    </div>
+        
+    <div class="das-pager-summary">@Model.Caption</div>
+</div>

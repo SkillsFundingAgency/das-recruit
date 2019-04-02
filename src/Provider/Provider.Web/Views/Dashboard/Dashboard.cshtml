@@ -14,44 +14,67 @@
         return "Manage";
     }
 }
-<div class="govuk-grid-row">
+
+<div asp-hide="@Model.HasVacancies" class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <div asp-show="Model.HasWarning" class="warning-summary govuk-!-margin-bottom-0">
-            <p>@Model.WarningMessage</p>
-        </div>
-        <h1 class="govuk-heading-l govuk-!-margin-bottom-6">Your vacancies</h1>
-        <div asp-show="Model.HasInfo" class="info-summary govuk-!-margin-bottom-0">
-            <p>@Model.InfoMessage</p>
-        </div>
+        <h1 class="govuk-heading-l">Your vacancies</h1>
+        <p class="govuk-body">Your dashboard is empty, start by creating your first vacancy</p>
+        <p class="govuk-body">Vacancies will be approved or rejected within 24 hours.</p>
+        <a asp-route="@RouteNames.Employer_Get" class="govuk-button">Create vacancy</a>
     </div>
 </div>
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-        <p class="govuk-body">
-            You must be a levy-paying employer to post a vacancy.
-        </p>
-        <p class="govuk-body">
-            You can clone vacancies once they've been submitted.
-            Vacancies will be approved or rejected within 24 hours.
-        </p>
+
+<div asp-show="@Model.HasVacancies" class="govuk-grid-row">
+    <div asp-show="Model.HasWarning" class="warning-summary govuk-!-margin-bottom-0">
+        <p>@Model.WarningMessage</p>
+    </div>
+    <div asp-show="Model.HasInfo" class="info-summary govuk-!-margin-bottom-0">
+        <p>@Model.InfoMessage</p>
+    </div>
+    <div class="govuk-grid-column-one-half">
+        <h1 class="govuk-heading-xl">Vacancies</h1>
+    </div>
+
+    <div class="govuk-grid-column-one-half das-header-actions">
         <a asp-route="@RouteNames.Employer_Get" class="govuk-button" esfa-automation="create-vacancy">Create vacancy</a>
-        <a asp-route="@RouteNames.ReportDashboard_Get" class="govuk-link das-button-link">Create a report</a>
+        <br>
+        <p class="govuk-body">
+            <a asp-route="@RouteNames.ReportDashboard_Get" class="govuk-link">Create a report</a>
+        </p>
     </div>
-    <br>
 </div>
-<div asp-show="@Model.HasVacancies">
+
+<div class="govuk-grid-row govuk-!-margin-bottom-2">
+    <div asp-show="@Model.ShowFilter" class="govuk-grid-column-one-half">
+        <form method="get">
+            <div class="govuk-form-group">
+                <label for="filter" class="govuk-label">Filter vacancies by</label>
+                <select id="filter" name="filter" asp-items="@Model.FilterOptions" class="govuk-select"></select>
+                <button type="submit" id="filter-submit" class="das-button-filter das-button-secondary govuk-button">Filter</button>
+            </div>
+        </form>
+    </div>
+    <div asp-show="@Model.HasVacancies" class="govuk-grid-column-full">
+        <h3 class="govuk-heading-m">
+            @Model.ResultsHeading <a asp-show="@Model.IsFiltered" asp-route="@RouteNames.Dashboard_Index_Get" asp-route-filter="All" class="govuk-!-font-weight-regular govuk-component__link govuk-!-font-size-19">Show all vacancies</a>
+        </h3>
+        <p asp-hide="@Model.ShowResultsTable" class="govuk-body">No vacancies match the criteria</p>
+    </div>
+</div>
+
+<div asp-show="@Model.ShowResultsTable">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
             <table class="govuk-table responsive">
                 <thead class="govuk-table__head">
-                    <tr class="govuk-table__row">
-                        <th class="govuk-table__header">Vacancy</th>
-                        <th class="govuk-table__header">Employer</th>
-                        <th class="govuk-table__header">Applications</th>
-                        <th class="govuk-table__header">Closing</th>
-                        <th class="govuk-table__header">Status</th>
-                        <th class="govuk-table__header"></th>
-                    </tr>
+                <tr class="govuk-table__row">
+                    <th class="govuk-table__header">Vacancy</th>
+                    <th class="govuk-table__header">Employer</th>
+                    <th class="govuk-table__header">Applications</th>
+                    <th class="govuk-table__header">Closing</th>
+                    <th class="govuk-table__header">Status</th>
+                    <th class="govuk-table__header"></th>
+                </tr>
                 </thead>
                 <tbody class="govuk-table__body">
                 @foreach (var vacancy in Model.Vacancies)
@@ -80,6 +103,21 @@
                 }
                 </tbody>
             </table>
+
+            <partial name="@PartialNames.Pager" model="@Model.Pager" />
         </div>
     </div>
 </div>
+
+<script nws-csp-add-nonce="true">
+    $(function () {
+        $("#filter-submit").hide();
+
+        $("#filter").on("change",
+            function () {
+                var $filterForm = $(this).parents("form");
+                $(window).off("beforeunload");
+                $filterForm.submit();
+            });
+    });
+</script>
