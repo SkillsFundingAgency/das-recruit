@@ -44,6 +44,6 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
             return $"Assigned to {AssignedToCaption}. Being reviewed {AssignedTimeElapsedCaption}.";
         }
 
-
+        public bool IsVacancyDeleted { get; set; }
     }
 }
