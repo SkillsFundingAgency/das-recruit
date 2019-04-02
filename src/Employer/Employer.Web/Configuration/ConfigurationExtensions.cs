@@ -80,7 +80,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
 
                 opts.Filters.Add(typeof(LevyDeclarationCheckFilter), 50);
 
-                if (EnvironmentNames.IsProductionEquivalentEnvironment().Contains(hostingEnvironment.EnvironmentName.ToUpper()) == false)
+                if (EnvironmentNames.IsProductionEnvironment(hostingEnvironment))
                 {
                     opts.Filters.AddService<CheckEmployerBlockedFilter>();
                 }

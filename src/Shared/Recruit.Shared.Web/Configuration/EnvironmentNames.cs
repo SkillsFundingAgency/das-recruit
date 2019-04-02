@@ -1,4 +1,7 @@
-﻿namespace Esfa.Recruit.Shared.Web.Configuration
+﻿using System.Linq;
+using Microsoft.AspNetCore.Hosting;
+
+namespace Esfa.Recruit.Shared.Web.Configuration
 {
     public static class EnvironmentNames
     {
@@ -9,10 +12,15 @@
         public const string PREPROD = "PREPROD";
         public const string PROD = "PROD";
 
-        public static string[] IsProductionEquivalentEnvironment() => new []{ Development, AT, TEST, DEMO };
+        public static string[] GetTestEnvironmentNames() => new []{ Development, AT, TEST, DEMO };
         
         public static string GetTestEnvironmentNamesCommaDelimited() => string.Join(",", Development, AT, TEST, DEMO);
 
         public static string GetNonProdEnvironmentNamesCommaDelimited() => string.Join(",", Development, AT, TEST, DEMO, PREPROD);
+
+        public static bool IsProductionEnvironment(IHostingEnvironment hostingEnvironment)
+        {
+            return GetTestEnvironmentNames().Contains(hostingEnvironment.EnvironmentName.ToUpper()) == false;
+        }
     }
 }
