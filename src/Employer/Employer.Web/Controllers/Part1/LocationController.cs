@@ -41,15 +41,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             {
                 employerInfoModel = await _orchestrator.GetVacancyEmployerInfoModelAsync(vrm);
                 SetVacancyEmployerInfoCookie(employerInfoModel);
-            }
-
-            var stringList = new List<string>();
-            stringList.Add("Cheylesmore House, 5 Quinton Rd, Coventry CV1 2WT");
-            stringList.Add("Earlsdon Park, 53-55 Butts Road, Coventry CV1 3BH");
-            stringList.Add("Cheylesmore House, 15 Quinton Rd, Coventry CV1 2WT");
-            stringList.Add("Cheylesmore House, 25 Quinton Rd, Coventry CV1 2WT");
-            stringList.Add("a different location");
-            vm.LocationList= stringList;
+            }            
             return View(vm);
         }
 

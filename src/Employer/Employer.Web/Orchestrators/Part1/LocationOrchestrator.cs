@@ -35,21 +35,19 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         public async Task<LocationViewModel> GetLocationViewModelAsync(
             VacancyRouteModel vrm, VacancyEmployerInfoModel employerInfoModel, VacancyUser user)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_employerVacancyClient, _recruitVacancyClient, vrm, RouteNames.Location_Get);
-
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_employerVacancyClient, _recruitVacancyClient, vrm, RouteNames.Location_Get);            
             return await GetViewModelAsync(vacancy, employerInfoModel?.HasLegalEntityChanged, employerInfoModel?.LegalEntityId);
         }
 
         public async Task<OrchestratorResponse> PostLocationEditModelAsync(
-            LocationEditModel m, VacancyEmployerInfoModel employerInfoModel, VacancyUser user)
+            LocationEditModel locationEditModel, VacancyEmployerInfoModel employerInfoModel, VacancyUser user)
         {
-            //TODO manage other location
-            if(!m.UseOtherLocation.HasValue)
+            if (!locationEditModel.UseOtherLocation.HasValue)
                 return new OrchestratorResponse(false);
 
             var vacancyTask = Utility.GetAuthorisedVacancyForEditAsync(
-                _employerVacancyClient, _recruitVacancyClient, m, RouteNames.Employer_Post);
-            var employerVacancyInfoTask = _employerVacancyClient.GetEditVacancyInfoAsync(m.EmployerAccountId);
+                _employerVacancyClient, _recruitVacancyClient, locationEditModel, RouteNames.Employer_Post);
+            var employerVacancyInfoTask = _employerVacancyClient.GetEditVacancyInfoAsync(locationEditModel.EmployerAccountId);
             await Task.WhenAll(vacancyTask, employerVacancyInfoTask);
             var vacancy = vacancyTask.Result;
             var editVacancyInfo = employerVacancyInfoTask.Result;
@@ -73,15 +71,15 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             }
 
 
-            if (m.UseOtherLocation == true)
+            if (locationEditModel.UseOtherLocation == true)
             {
                 vacancy.EmployerLocation = new Vacancies.Client.Domain.Entities.Address
                 {
-                    AddressLine1 = m.AddressLine1,
-                    AddressLine2 = m.AddressLine2,
-                    AddressLine3 = m.AddressLine3,
-                    AddressLine4 = m.AddressLine4,
-                    Postcode = m.Postcode.AsPostcode()
+                    AddressLine1 = locationEditModel.AddressLine1,
+                    AddressLine2 = locationEditModel.AddressLine2,
+                    AddressLine3 = locationEditModel.AddressLine3,
+                    AddressLine4 = locationEditModel.AddressLine4,
+                    Postcode = locationEditModel.Postcode.AsPostcode()
                 };
             }
             else
@@ -96,19 +94,16 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 };
             }
 
-            return await ValidateAndExecute(
-                vacancy, 
-                v => _recruitVacancyClient.Validate(v, ValidationRules),
-                async v => 
+            return await ValidateAndExecute(new InClassName<Vacancy>(vacancy, v => _recruitVacancyClient.Validate(v, ValidationRules), async v => 
+            {
+                if (employerInfoModel.EmployerNameOption == EmployerNameOptionViewModel.NewTradingName || locationEditModel.UseOtherLocation == true)
                 {
-                    if (employerInfoModel.EmployerNameOption == EmployerNameOptionViewModel.NewTradingName)
-                    {
-                        await UpdateEmployerProfileAsync(vacancy.EmployerAccountId, 
-                            employerInfoModel.LegalEntityId.GetValueOrDefault(), 
-                            employerInfoModel.NewTradingName, user);
-                    }
-                    await _recruitVacancyClient.UpdateDraftVacancyAsync(vacancy, user);
-                });
+                    await UpdateEmployerProfileAsync(vacancy.EmployerAccountId, 
+                        employerInfoModel.LegalEntityId.GetValueOrDefault(), 
+                        employerInfoModel.NewTradingName, locationEditModel, user);
+                }
+                await _recruitVacancyClient.UpdateDraftVacancyAsync(vacancy, user);
+            }));
         }
 
         public async Task<VacancyEmployerInfoModel> GetVacancyEmployerInfoModelAsync(VacancyRouteModel vrm)
@@ -142,7 +137,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         private async Task<LocationViewModel> GetViewModelAsync(Vacancy vacancy, bool? hasLegalEntityChanged, long? selectedOrganisationId)
         {
             var employerData = await _employerVacancyClient.GetEditVacancyInfoAsync(vacancy.EmployerAccountId);
-
+            var employerProfile =
+                await _employerVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.LegalEntityId);
             var legalEntityId = selectedOrganisationId.HasValue ? selectedOrganisationId : vacancy.LegalEntityId; 
 
             var legalEntity = employerData.LegalEntities.First(l => l.LegalEntityId == legalEntityId);
@@ -153,7 +149,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             vm.PageInfo = Utility.GetPartOnePageInfo(vacancy);
 
             vm.LegalEntityLocation = legalEntity.Address.ToString();
-
+            vm.OtherLocations = employerProfile.OtherLocations;
             if (vacancy.EmployerLocation != null && (!hasLegalEntityChanged.HasValue || hasLegalEntityChanged == false))
             {
                 vm.UseOtherLocation = false;
@@ -171,7 +167,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             return vm;
         }        
 
-       private async Task UpdateEmployerProfileAsync(string employerAccountId, long legalEntityId, string tradingName, VacancyUser user)
+       private async Task UpdateEmployerProfileAsync(string employerAccountId, long legalEntityId, string tradingName,LocationEditModel locationEditModel, VacancyUser user)
         {
             var employerProfile =
                 await _recruitVacancyClient.GetEmployerProfileAsync(employerAccountId, legalEntityId);
@@ -185,6 +181,18 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             {
                 employerProfile.TradingName = tradingName;
                 await _recruitVacancyClient.UpdateEmployerProfileAsync(employerProfile, user);
+            }
+
+            if (locationEditModel.UseOtherLocation.Value)
+            {
+                var address=new Vacancies.Client.Domain.Entities.Address();
+                address.AddressLine1 = locationEditModel.AddressLine1;
+                address.AddressLine2 = locationEditModel.AddressLine2;
+                address.AddressLine3 = locationEditModel.AddressLine3;
+                address.AddressLine4 = locationEditModel.AddressLine4;
+                address.Postcode = locationEditModel.Postcode;
+                employerProfile.OtherLocations.Add(address);
+                await _employerVacancyClient.UpdateEmployerProfileAsync(employerProfile, user);
             }
         }
 

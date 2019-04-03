@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.ViewModels;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Location
 {
@@ -29,6 +30,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Location
                 .Replace(" ,", string.Empty);
 
         public bool CanShowBackLink { get; internal set; }
-        public IList<string> LocationList { get; set; }
+        public IList<Address> OtherLocations { get; set; }
     }
 }
