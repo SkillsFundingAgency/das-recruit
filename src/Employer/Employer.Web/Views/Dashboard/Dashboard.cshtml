@@ -38,7 +38,6 @@
     </div>
     <br>
 </div>
-
 <div class="govuk-grid-row govuk-!-margin-bottom-2">
     <div asp-show="@Model.ShowFilter" class="govuk-grid-column-one-half">
         <form method="get">
@@ -56,7 +55,6 @@
         <p asp-hide="@Model.ShowResultsTable" class="govuk-body">No vacancies match the criteria</p>
     </div>
 </div>
-
 <div asp-show="@Model.ShowResultsTable">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
@@ -98,21 +96,23 @@
                 }
                 </tbody>
             </table>
-
             <partial name="@PartialNames.Pager" model="@Model.Pager" />
         </div>
     </div>
 </div>
 
-<script nws-csp-add-nonce="true">
-    $(function () {
-        $("#filter-submit").hide();
+@section FooterJS
+{
+    <script nws-csp-add-nonce="true">
+        $(function() {
+            $("#filter-submit").hide();
 
-        $("#filter").on("change",
-            function () {
-                var $filterForm = $(this).parents("form");
-                $(window).off("beforeunload");
-                $filterForm.submit();
-            });
-    });
-</script>
+            $("#filter").on("change",
+                function() {
+                    var $filterForm = $(this).parents("form");
+                    $filterForm.areYouSure({ 'silent': true });
+                    $filterForm.submit();
+                });
+        });
+    </script>
+}
