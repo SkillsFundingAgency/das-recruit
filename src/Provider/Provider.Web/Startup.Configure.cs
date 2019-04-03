@@ -35,7 +35,6 @@ namespace Esfa.Recruit.Provider.Web
             {
                 app.UseExceptionHandler(RoutePaths.ExceptionHandlingPath);
                 app.UseMiddleware<RecruitExceptionHandlerMiddleware>(RoutePaths.ExceptionHandlingPath);
-
                 app.UseHsts(hsts => hsts.MaxAge(365));
             }
             
@@ -106,10 +105,10 @@ namespace Esfa.Recruit.Provider.Web
                 destinations.Add(ExtractAuthHost(authConfig));
 
             if (!string.IsNullOrWhiteSpace(linksConfig?.ProviderApprenticeshipSiteUrl))
-                destinations.Add(linksConfig?.ProviderApprenticeshipSiteUrl);
+                destinations.Add(linksConfig.ProviderApprenticeshipSiteUrl);
 
             if (!string.IsNullOrWhiteSpace(linksConfig?.CommitmentsSiteUrl))
-                destinations.Add(linksConfig?.CommitmentsSiteUrl);
+                destinations.Add(linksConfig.CommitmentsSiteUrl);
 
             return destinations.ToArray();
         }

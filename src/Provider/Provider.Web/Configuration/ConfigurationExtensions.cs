@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Authorization;
 using Esfa.Recruit.Provider.Web.Middleware;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Extensions;
+using Esfa.Recruit.Shared.Web.Configuration;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Provider.Web.Configuration
@@ -71,6 +72,10 @@ namespace Esfa.Recruit.Provider.Web.Configuration
                 opts.Filters.AddService<PlannedOutageResultFilter>();
 
                 opts.AddTrimModelBinderProvider(loggerFactory);
+                if (EnvironmentNames.IsProductionEnvironment(hostingEnvironment))
+                {
+                    opts.Filters.AddService<CheckProviderBlockedFilter>();
+                }
             })
             .AddFluentValidation()
             .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
@@ -94,8 +99,8 @@ namespace Esfa.Recruit.Provider.Web.Configuration
                 //options.SkipUnrecognizedRequests = true;
 
                 options.Events.OnSecurityTokenValidated = async (ctx) =>
-                {
-                    await HandleUserSignedIn(ctx, vacancyClient);
+                {                    
+                    await HandleUserSignedIn(ctx, vacancyClient);                   
                 };
 
             })
@@ -107,11 +112,11 @@ namespace Esfa.Recruit.Provider.Web.Configuration
                 options.SlidingExpiration = true;
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(SessionTimeoutMinutes);
             });
-        }
+        }        
 
         private static async Task HandleUserSignedIn(SecurityTokenValidatedContext ctx, IRecruitVacancyClient vacancyClient)
-        {
-            var user = ctx.Principal.ToVacancyUser();
+        {            
+            var user = ctx.Principal.ToVacancyUser();            
             await vacancyClient.UserSignedInAsync(user, UserType.Provider);
         }
     }

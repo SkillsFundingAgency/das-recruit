@@ -50,8 +50,8 @@ namespace Esfa.Recruit.Provider.Web.Configuration
 
             RegisterDynamicConfigurationDeps(services);
 
-            RegisterFluentValidators(services);
-        }
+            RegisterFluentValidators(services);           
+        }        
 
         private static void RegisterServiceDeps(IServiceCollection services, IConfiguration configuration)
         {
@@ -108,15 +108,16 @@ namespace Esfa.Recruit.Provider.Web.Configuration
         private static void RegisterFilterDeps(IServiceCollection services)
         {
             services.AddScoped<PlannedOutageResultFilter>();
+            services.AddScoped<CheckProviderBlockedFilter>();
         }
 
         private static void RegisterDynamicConfigurationDeps(IServiceCollection services)
         {
             services.AddSingleton(x =>
-                                                            {
-                                                                var svc = x.GetService<IConfigurationReader>();
-                                                                return svc.GetAsync<ProviderRecruitSystemConfiguration>("ProviderRecruitSystem").Result;
-                                                            });
+            {
+                var svc = x.GetService<IConfigurationReader>();
+                return svc.GetAsync<ProviderRecruitSystemConfiguration>("ProviderRecruitSystem").Result;
+            });
         }
     }
 }

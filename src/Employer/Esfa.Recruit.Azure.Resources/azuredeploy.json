@@ -110,6 +110,10 @@
       "type": "bool",
       "defaultValue": false
     },
+	"WhitelistedProvidersList":{
+	  "type": "string",
+      "defaultValue": ""
+	},
     "SharedAppServicePlanName": {
       "type": "string"
     },
@@ -631,6 +635,10 @@
 			  {
                 "name": "FaaConfiguration:StorageConnectionString",
                 "value": "[parameters('FaaConfiguration').StorageConnectionString]"
+              },
+			  {
+                "name": "WhitelistedProvidersList",
+                "value": "[parameters('WhitelistedProvidersList')]"
               }
             ]
           },
