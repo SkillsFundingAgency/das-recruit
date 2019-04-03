@@ -1,0 +1,37 @@
+@using Esfa.Recruit.Shared.Web.Configuration;
+@model Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntity.LegalEntityViewModel;
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.ShortDescription_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }'/>
+
+        <partial name="@PartialNames.ReviewSummary" for="Review"/>
+
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Which of your organisations is this vacancy for?</h1>
+
+        <form asp-route="@RouteNames.LegalEntity_Post" asp-route-wizard="@Model.PageInfo.IsWizard">
+            <div esfa-validation-marker-for="SelectedOrganisationId" class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend">
+                        <span class="govuk-label govuk-!-font-weight-bold">Which organisation is the vacancy for?</span>
+                    </legend>
+                    <span esfa-validation-message-for="SelectedOrganisationId" class="govuk-error-message"></span>
+                    <div class="govuk-radios">
+                    @foreach (var organisation in Model.Organisations)
+                    {
+                        <div class="govuk-radios__item">
+                            <input asp-for="SelectedOrganisationId" type="radio" value="@organisation.Id" class="govuk-radios__input" id="org-@organisation.Id" esfa-automation="selected-organisation-id">
+                            <label for="org-@organisation.Id" class="govuk-label govuk-radios__label">@organisation.Name</label>
+                        </div>
+                    }
+                    </div>
+                </fieldset>
+            </div>
+
+            <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Save and Continue</button>
+
+            <a asp-route="@RouteNames.LegalEntity_Cancel" class="govuk-link das-button-link">Cancel</a>
+        </form>
+    </div>
+</div>

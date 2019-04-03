@@ -1,8 +1,8 @@
 using System;
-using Esfa.Recruit.Employer.Web.ViewModels.Part1.EmployerName;
+using Esfa.Recruit.Provider.Web.ViewModels.Part1.EmployerName;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
-namespace Esfa.Recruit.Employer.Web.Extensions
+namespace Esfa.Recruit.Provider.Web.Extensions
 {
     public static class EmployerNameOptionViewModelExtensions
     {

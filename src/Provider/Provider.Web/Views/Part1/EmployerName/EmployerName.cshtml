@@ -1,0 +1,63 @@
+@model Esfa.Recruit.Provider.Web.ViewModels.Part1.EmployerName.EmployerNameViewModel;
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <div asp-show="@Model.PageInfo.IsWizard">
+            <a asp-show="@Model.HasOnlyOneOrganisation" asp-route="@RouteNames.ShortDescription_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+            <a asp-hide="@Model.HasOnlyOneOrganisation" asp-route="@RouteNames.LegalEntity_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+        </div>
+        <div asp-hide="@Model.PageInfo.IsWizard">
+            <a asp-hide="@Model.HasOnlyOneOrganisation" asp-route="@RouteNames.LegalEntity_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+        </div>
+
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }'/>
+
+        <partial name="@PartialNames.ReviewSummary" for="Review"/>
+
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">What employer name do you want to go on the vacancy?</h1>
+
+        <form asp-route="@RouteNames.EmployerName_Post" asp-route-wizard="@Model.PageInfo.IsWizard">
+            <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
+                    <span esfa-validation-message-for="SelectedEmployerNameOption" class="govuk-error-message"></span>
+                    <div class="govuk-radios govuk-radios--conditional" data-module="radios">
+                        <div class="govuk-radios__item">
+                            <input asp-for="SelectedEmployerNameOption" value="RegisteredName" data-aria-controls="new-trading-name" id="legal-entity-name" class="govuk-radios__input" type="radio" >
+                            <label for="legal-entity-name" class="govuk-label govuk-radios__label">
+                                    @Model.LegalEntityName (registered name)
+                            </label>
+                        </div>                        
+                        <div asp-show="@Model.HasExistingTradingName" class="govuk-radios__item">
+                            <input asp-for="SelectedEmployerNameOption" value="ExistingTradingName" id="trading-name" class="govuk-radios__input" type="radio" >
+                            <label for="trading-name" class="govuk-label govuk-radios__label">
+                                    @Model.ExistingTradingName (trading name)
+                            </label>
+                        </div>
+                        <div class="govuk-radios__item">                            
+                            <input asp-for="SelectedEmployerNameOption" value="NewTradingName" data-aria-controls="trading-name-conditional" id="existing-trading-name" type="radio" class="govuk-radios__input">
+                            <label for="existing-trading-name" class="govuk-label govuk-radios__label">
+                                    a<span asp-show="@Model.HasExistingTradingName"> different</span> trading name
+                            </label>
+                        </div>
+                        <div class="govuk-radios__conditional" id="trading-name-conditional">
+                            <span esfa-validation-message-for="NewTradingName" class="govuk-error-message"></span>
+                            <div class="govuk-form-group">
+                                <div asp-hide="@Model.HasExistingTradingName">
+                                    <label asp-for="NewTradingName" class="govuk-label govuk-!-font-weight-bold" for="NewTradingName">Trading name</label>
+                                </div>
+                                <div asp-show="@Model.HasExistingTradingName">
+                                    <label asp-for="NewTradingName" class="govuk-label govuk-!-font-weight-bold" for="NewTradingName">Add a new trading name</label>
+                                    <span class="govuk-hint">This will also change the trading name on all your vacancies that are in draft or rejected.</span>
+                                </div>
+                                <input asp-for="NewTradingName" class="govuk-input govuk-input--width-20" id="NewTradingName" name="NewTradingName" type="text" >
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+
+            <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Save and Continue</button>
+
+            <a asp-route="@RouteNames.EmployerName_Cancel" class="govuk-link das-button-link">Cancel</a>
+        </form>
+    </div>
+</div>

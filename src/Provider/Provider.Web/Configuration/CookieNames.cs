@@ -10,5 +10,6 @@ namespace Esfa.Recruit.Provider.Web.Configuration
         public const string VacancyProposedClosingDate = "vacancy-closingDate-{0}";
         public const string VacancyProposedStartDate = "vacancy-startDate-{0}";
         public const string DashboardFilter = "prov-dashboard-filter";
+        public const string ProviderVacancyEmployerInfo = "provider-vacancy-employer-info";
     }
 }

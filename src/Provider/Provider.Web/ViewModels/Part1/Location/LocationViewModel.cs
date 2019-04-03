@@ -6,12 +6,15 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Location
 {
     public class LocationViewModel
     {
-        public IEnumerable<LegalEntityViewModel> LegalEntities { get; set; }
-
-        public bool HasOnlyOneOrganisation => LegalEntities.Count() == 1;
-		public bool HasMoreThanOneOrganisation => LegalEntities.Count() > 1;
-
+        public string LegalEntityLocation { get; set; }
+        public string AddressLine1 { get; set; }
+        public string AddressLine2 { get; set; }
+        public string AddressLine3 { get; set; }
+        public string AddressLine4 { get; set; }
+        public string Postcode { get; set; }
+        public bool? UseOtherLocation { get; set; }
         public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
+        public PartOnePageInfoViewModel PageInfo { get; set; }
 
         public IList<string> OrderedFieldNames => new List<string>
         {
@@ -22,17 +25,11 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Location
             nameof(Postcode)
         };
 
-        public PartOnePageInfoViewModel PageInfo { get; set; }
-        public long SelectedLegalEntityId { get; set; }
+        public string CurrentLocation => 
+            string
+                .Join(", ", new[] {AddressLine1, AddressLine2, AddressLine3, AddressLine4, Postcode })
+                .Replace(" ,", string.Empty);
 
-        public string AddressLine1 { get; set; }
-
-        public string AddressLine2 { get; set; }
-
-        public string AddressLine3 { get; set; }
-
-        public string AddressLine4 { get; set; }
-
-        public string Postcode { get; set; }
+        public bool CanShowBackLink { get; internal set; }        
     }
 }

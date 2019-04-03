@@ -55,7 +55,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             }
 
             if(vacancy.EmployerNameOption.HasValue)
-                vm.VacancyEmployerInfoModel.EmployerNameOption = vacancy.EmployerNameOption.Value.GetModelOption();
+                vm.VacancyEmployerInfoModel.EmployerNameOption = vacancy.EmployerNameOption.Value.ConvertToModelOption();
 
             return vm;
         }
@@ -68,10 +68,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 return new List<OrganisationViewModel>(); 
             }
 
-            return info.LegalEntities.Select(MapLegalEntitiesToOrgs).ToList();
+            return info.LegalEntities.Select(ConvertToOrganisationViewModel).ToList();
         }
         
-        private OrganisationViewModel MapLegalEntitiesToOrgs(LegalEntity data)
+        private OrganisationViewModel ConvertToOrganisationViewModel(LegalEntity data)
         {
             return new OrganisationViewModel { Id = data.LegalEntityId, Name = data.Name};
         }

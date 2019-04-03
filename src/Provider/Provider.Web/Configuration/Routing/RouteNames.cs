@@ -36,8 +36,15 @@
         public const string DismissOutageMessage_Post = "DismissOutageMessage_Post";
         public const string Employer_Get = "Employer_Get";
         public const string Employer_Post = "Employer_Post";
+        public const string LegalEntity_Get = "LegalEntity_Get";
+        public const string LegalEntity_Post = "LegalEntity_Post";
+        public const string LegalEntity_Cancel = "LegalEntity_Cancel";
+        public const string EmployerName_Cancel = "EmployerName_Cancel";
+        public const string EmployerName_Get = "EmployerName_Get";
+        public const string EmployerName_Post = "EmployerName_Post";
         public const string Location_Get = "Location_Get";
         public const string Location_Post = "Location_Post";
+        public const string Location_Cancel = "Location_Cancel";        
         public const string Logout_Get = "Logout_Get";
         public const string Preview_Submit_Post = "Preview_Submit_Post";
         public const string ProviderApplicationsReportCreate_Get = "ProviderApplicationsReportCreate_Get";

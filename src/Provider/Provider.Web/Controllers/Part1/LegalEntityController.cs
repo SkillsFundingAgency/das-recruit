@@ -1,32 +1,32 @@
-﻿using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Configuration.Routing;
-using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
-using Esfa.Recruit.Employer.Web.RouteModel;
-using Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer;
-using Microsoft.AspNetCore.Mvc;
-using Esfa.Recruit.Shared.Web.Mappers;
+using System.Threading.Tasks;
+using Esfa.Recruit.Provider.Web.Configuration.Routing;
+using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
+using Esfa.Recruit.Provider.Web.RouteModel;
+using Esfa.Recruit.Provider.Web.Extensions;
 using Microsoft.AspNetCore.Hosting;
-using Esfa.Recruit.Employer.Web.ViewModels;
+using Microsoft.AspNetCore.Mvc;
+using Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntity;
+using Esfa.Recruit.Provider.Web.ViewModels;
 
-namespace Esfa.Recruit.Employer.Web.Controllers.Part1
+namespace Esfa.Recruit.Provider.Web.Controllers.Part1
 {
     [Route(RoutePaths.AccountVacancyRoutePath)]
-    public class EmployerController : EmployerControllerBase
+    public class LegalEntityController : EmployerControllerBase
     {
-        private readonly EmployerOrchestrator _orchestrator;        
+        private readonly LegalEntityOrchestrator _orchestrator;        
 
-        public EmployerController(EmployerOrchestrator orchestrator, IHostingEnvironment hostingEnvironment)
+        public LegalEntityController(LegalEntityOrchestrator orchestrator, IHostingEnvironment hostingEnvironment)
             : base(hostingEnvironment)
         {
             _orchestrator = orchestrator;            
         }
 
-        [HttpGet("employer", Name = RouteNames.Employer_Get)]
-        public async Task<IActionResult> Employer(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
+        [HttpGet("legal-entity", Name = RouteNames.LegalEntity_Get)]
+        public async Task<IActionResult> LegalEntity(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
         {
-            var info = GetVacancyEmployerInfoCookie(vrm.VacancyId);
+            var info = GetVacancyEmployerInfoCookie(vrm.VacancyId.GetValueOrDefault());
 
-            var vm = await _orchestrator.GetEmployerViewModelAsync(vrm);
+            var vm = await _orchestrator.GetLegalEntityViewModelAsync(vrm, User.GetUkprn());
 
             if (info == null || !info.LegalEntityId.HasValue)
             {
@@ -46,21 +46,21 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             return View(vm);
         }
         
-        [HttpPost("employer", Name = RouteNames.Employer_Post)]
-        public async Task<IActionResult> Employer(EmployerEditModel m, [FromQuery] bool wizard)
+        [HttpPost("legal-entity", Name = RouteNames.LegalEntity_Post)]
+        public async Task<IActionResult> LegalEntity(LegalEntityEditModel m, [FromQuery] bool wizard)
         {
-            var info = GetVacancyEmployerInfoCookie(m.VacancyId);
+            var info = GetVacancyEmployerInfoCookie(m.VacancyId.GetValueOrDefault());
             if(info == null)
             {
                 //something went wrong, the matching cookie was not found
                 //Redirect the user with validation error to allow them to continue
-                ModelState.AddModelError(nameof(EmployerEditModel.SelectedOrganisationId), 
+                ModelState.AddModelError(nameof(LegalEntityEditModel.SelectedOrganisationId), 
                     ValidationMessages.EmployerNameValidationMessages.EmployerNameRequired);
             }
 
             if (!ModelState.IsValid)
             {
-                var vm = await _orchestrator.GetEmployerViewModelAsync(m);
+                var vm = await _orchestrator.GetLegalEntityViewModelAsync(m, User.GetUkprn());
                 SetVacancyEmployerInfoCookie(vm.VacancyEmployerInfoModel);
                 vm.PageInfo.SetWizard(wizard);
                 return View(vm);
@@ -79,7 +79,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             return RedirectToRoute(RouteNames.EmployerName_Get);
         }
 
-        [HttpGet("employer-cancel", Name = RouteNames.Employer_Cancel)]
+        [HttpGet("legal-entity-cancel", Name = RouteNames.LegalEntity_Cancel)]
         public IActionResult Cancel(VacancyRouteModel vrm, [FromQuery] bool wizard)
         {
             return CancelAndRedirect(wizard);
