@@ -9,10 +9,10 @@
     <div class="govuk-grid-column-one-half review-header-table-cell review-header-table-cell__border-left">
         <h2 class="govuk-heading-s govuk-!-margin-top-4 govuk-!-margin-bottom-1">Submitted by</h2>
         <p asp-show="@Model.IsEmployerVacancy" class="govuk-body govuk-!-margin-bottom-0">
-            @Model.SubmittedByName for @Model.EmployerName (employer)            
+            @Model.SubmittedByName for @Model.LegalEntityName (employer)            
         </p>
         <p asp-show="@Model.IsProviderVacancy" class="govuk-body govuk-!-margin-bottom-0">
-            @Model.SubmittedByName of @Model.ProviderName (provider) for @Model.EmployerName (employer)                       
+            @Model.SubmittedByName of @Model.ProviderName (provider) for @Model.LegalEntityName (employer)                       
         </p>
         <p class="break-word govuk-body">
             <a href="@Model.SubmittedByEmail" class="govuk-link">@Model.SubmittedByEmail</a>

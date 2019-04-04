@@ -157,6 +157,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 vm.EmployerName = vacancy.EmployerName;
                 vm.EmployerWebsiteUrl = vacancy.EmployerWebsiteUrl;
                 SetEmployerAddressElements(vm, vacancy);
+                vm.LegalEntityName = vacancy.LegalEntityName;
                 vm.IsDisabilityConfident = vacancy.IsDisabilityConfident;
                 vm.NumberOfPositionsCaption = $"{"position".ToQuantity(vacancy.NumberOfPositions.Value)} available";
                 vm.OutcomeDescription = vacancy.OutcomeDescription;
