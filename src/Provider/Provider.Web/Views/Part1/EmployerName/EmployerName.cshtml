@@ -1,14 +1,12 @@
-@using Esfa.Recruit.Employer.Web.ViewModels.Part1.EmployerName;
-@using Esfa.Recruit.Shared.Web.Mappers;
-@model EmployerNameViewModel;
+@model Esfa.Recruit.Provider.Web.ViewModels.Part1.EmployerName.EmployerNameViewModel;
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <div asp-show="@Model.PageInfo.IsWizard">
             <a asp-show="@Model.HasOnlyOneOrganisation" asp-route="@RouteNames.ShortDescription_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
-            <a asp-hide="@Model.HasOnlyOneOrganisation" asp-route="@RouteNames.Employer_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+            <a asp-hide="@Model.HasOnlyOneOrganisation" asp-route="@RouteNames.LegalEntity_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
         </div>
         <div asp-hide="@Model.PageInfo.IsWizard">
-            <a asp-hide="@Model.HasOnlyOneOrganisation" asp-route="@RouteNames.Employer_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+            <a asp-hide="@Model.HasOnlyOneOrganisation" asp-route="@RouteNames.LegalEntity_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
         </div>
 
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }'/>
@@ -59,7 +57,7 @@
 
             <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Save and Continue</button>
 
-            <a asp-route="@RouteNames.EmployerName_Cancel" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link das-button-link">Cancel</a>
+            <a asp-route="@RouteNames.EmployerName_Cancel" asp-route-wizard="@Model.PageInfo.IsWizard"  class="govuk-link das-button-link">Cancel</a>
         </form>
     </div>
 </div>

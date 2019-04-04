@@ -14,14 +14,17 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider
         private readonly ILogger<SetupProviderHandler> _logger;
         private readonly IEditVacancyInfoProjectionService _projectionService;
         private readonly IProviderRelationshipsService _providerRelationshipService;
+        private readonly IEmployerVacancyClient _client;
 
         public SetupProviderHandler(ILogger<SetupProviderHandler> logger, 
             IEditVacancyInfoProjectionService projectionService,
-            IProviderRelationshipsService providerRelationshipService) : base(logger)
+            IProviderRelationshipsService providerRelationshipService,
+            IEmployerVacancyClient client) : base(logger)
         {
             _logger = logger;
             _projectionService = projectionService;
             _providerRelationshipService = providerRelationshipService;
+            _client = client;
         }
 
         public async Task HandleAsync(string eventPayload)
@@ -33,6 +36,11 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider
                 _logger.LogInformation($"Processing {nameof(SetupProviderEvent)} for Ukprn: {{Ukprn}}", eventData.Ukprn);
 
                 var employerInfos = await _providerRelationshipService.GetLegalEntitiesForProviderAsync(eventData.Ukprn);
+
+                foreach(var employerInfo in employerInfos)
+                {
+                    await _client.SetupEmployerAsync(employerInfo.EmployerAccountId);
+                }
 
                 await _projectionService.UpdateProviderVacancyDataAsync(eventData.Ukprn, employerInfos);
 

@@ -19,8 +19,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<IEnumerable<LegalEntity>> GetEmployerLegalEntitiesAsync(string employerAccountId);
         Task<IEnumerable<string>> GetEmployerIdentifiersAsync(string userId);
         Task SetupEmployerAsync(string employerAccountId);
-        Task<EmployerProfile> GetEmployerProfileAsync(string employerAccountId, long legalEntityId);
-        Task UpdateEmployerProfileAsync(EmployerProfile employerProfile, VacancyUser user);
         Task SetApplicationReviewSuccessful(Guid applicationReviewId, VacancyUser user);
         Task SetApplicationReviewUnsuccessful(Guid applicationReviewId, string candidateFeedback, VacancyUser user);
         Task<User> GetUsersDetailsAsync(string userId);

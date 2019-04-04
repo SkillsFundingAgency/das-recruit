@@ -114,18 +114,14 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .RunCondition(VacancyRuleSet.EmployerName)
                 .WithRuleId(VacancyRuleSet.EmployerName);
 
-            //Temporary arrangement as I am only employers has trading name changes
-            //The When condition can be removed once we apply trading name changes to providers web
-            When(v => v.SourceOrigin == SourceOrigin.EmployerWeb, () => 
-                RuleFor(x => x.LegalEntityName)
-                    .NotEmpty()
-                        .WithMessage("You must select one organisation")
-                        .WithErrorCode("400")
-                    .RunCondition(VacancyRuleSet.LegalEntityName)
-                    .WithRuleId(VacancyRuleSet.LegalEntityName)
-            );
+            RuleFor(x => x.LegalEntityName)
+                .NotEmpty()
+                    .WithMessage("You must select one organisation")
+                    .WithErrorCode("400")
+                .RunCondition(VacancyRuleSet.LegalEntityName)
+                .WithRuleId(VacancyRuleSet.LegalEntityName);
 
-            When(v => v.SourceOrigin == SourceOrigin.EmployerWeb && v.EmployerNameOption == EmployerNameOption.TradingName, () => 
+            When(v => v.EmployerNameOption == EmployerNameOption.TradingName, () => 
                 RuleFor(x => x.EmployerName)
                     .NotEmpty()
                         .WithMessage("You must provide the trading name")

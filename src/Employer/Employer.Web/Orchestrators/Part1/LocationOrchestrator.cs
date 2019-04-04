@@ -64,7 +64,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 vacancy.LegalEntityName = selectedOrganisation.Name;
                 vacancy.LegalEntityId = employerInfoModel.LegalEntityId.GetValueOrDefault();
 
-                vacancy.EmployerNameOption = employerInfoModel.EmployerNameOption?.GetDomainOption();
+                vacancy.EmployerNameOption = employerInfoModel.EmployerNameOption?.ConvertToDomainOption();
             }
             else
             {
@@ -122,7 +122,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 LegalEntityId = vacancy.LegalEntityId == 0 ? (long?)null : vacancy.LegalEntityId
             };
             if (vacancy.EmployerNameOption.HasValue)
-                model.EmployerNameOption = vacancy.EmployerNameOption.Value.GetModelOption();
+                model.EmployerNameOption = vacancy.EmployerNameOption.Value.ConvertToModelOption();
             return model;
         }
 
@@ -174,7 +174,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
        private async Task UpdateEmployerProfileAsync(string employerAccountId, long legalEntityId, string tradingName, VacancyUser user)
         {
             var employerProfile =
-                await _employerVacancyClient.GetEmployerProfileAsync(employerAccountId, legalEntityId);
+                await _recruitVacancyClient.GetEmployerProfileAsync(employerAccountId, legalEntityId);
 
             if (employerProfile == null)
             {
@@ -184,7 +184,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             if (employerProfile.TradingName != tradingName)
             {
                 employerProfile.TradingName = tradingName;
-                await _employerVacancyClient.UpdateEmployerProfileAsync(employerProfile, user);
+                await _recruitVacancyClient.UpdateEmployerProfileAsync(employerProfile, user);
             }
         }
 

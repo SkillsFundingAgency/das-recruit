@@ -62,7 +62,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.UtilityTests
                 ShortDescription = "has a value"
             };
 
-            CheckRouteIsValidForVacancyTest(vacancy, route, shouldRedirect, RouteNames.Location_Get);
+            CheckRouteIsValidForVacancyTest(vacancy, route, shouldRedirect, RouteNames.LegalEntity_Get);
         }
 
         [Theory]
@@ -70,6 +70,10 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.UtilityTests
         [InlineData(RouteNames.Title_Post, false)]
         [InlineData(RouteNames.ShortDescription_Get, false)]
         [InlineData(RouteNames.ShortDescription_Post, false)]
+        [InlineData(RouteNames.LegalEntity_Get, false)]
+        [InlineData(RouteNames.LegalEntity_Post, false)]
+        [InlineData(RouteNames.EmployerName_Get, false)]
+        [InlineData(RouteNames.EmployerName_Post, false)]
         [InlineData(RouteNames.Location_Get, false)]
         [InlineData(RouteNames.Location_Post, false)]
         [InlineData(RouteNames.Training_Get, false)]
@@ -83,6 +87,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.UtilityTests
                 Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
                 Title = "has a value",
                 ShortDescription = "has a value",
+                LegalEntityName = "legal name",
+                EmployerNameOption = EmployerNameOption.RegisteredName,
                 EmployerLocation = new Address { Postcode = "CV1 2WT" }
             };
 
@@ -94,6 +100,10 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.UtilityTests
         [InlineData(RouteNames.Title_Post, false)]
         [InlineData(RouteNames.ShortDescription_Get, false)]
         [InlineData(RouteNames.ShortDescription_Post, false)]
+        [InlineData(RouteNames.LegalEntity_Get, false)]
+        [InlineData(RouteNames.LegalEntity_Post, false)]
+        [InlineData(RouteNames.EmployerName_Get, false)]
+        [InlineData(RouteNames.EmployerName_Post, false)]
         [InlineData(RouteNames.Location_Get, false)]
         [InlineData(RouteNames.Location_Post, false)]
         [InlineData(RouteNames.Training_Get, false)]
@@ -110,6 +120,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.UtilityTests
                 Title = "has a value",
                 EmployerLocation = new Address { Postcode = "has a value" },
                 ShortDescription = "has a value",
+                LegalEntityName = "legal name",
+                EmployerNameOption = EmployerNameOption.RegisteredName,
                 ProgrammeId = "has a value"
             };
 
@@ -127,11 +139,31 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.UtilityTests
                 Title = "has a value",
                 EmployerLocation = new Address { Postcode = "has a value" },
                 ShortDescription = "has a value",
+                LegalEntityName = "legal name",
+                EmployerNameOption = EmployerNameOption.RegisteredName,
                 ProgrammeId = "has a value",
                 Wage = new Wage { WageType = WageType.FixedWage }
             };
 
             CheckRouteIsValidForVacancyTest(vacancy, route, shouldRedirect, null);
+        }
+
+        [Fact]
+        public void ShouldRedirectToLegalEntityGet()
+        {
+            var vacancy = new Vacancy
+            {
+                EmployerAccountId = "EMPLOYER ACCOUNT ID",
+                Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
+                Title = "has a value",
+                EmployerNameOption = EmployerNameOption.RegisteredName,
+                EmployerLocation = new Address { Postcode = "has a value" },
+                ShortDescription = "has a value",
+                ProgrammeId = "has a value",
+                Wage = new Wage { WageType = WageType.FixedWage}
+            };
+
+            CheckRouteIsValidForVacancyTest(vacancy, RouteNames.LegalEntity_Get, false, null);
         }
 
         private void CheckRouteIsValidForVacancyTest(Vacancy vacancy, string route,

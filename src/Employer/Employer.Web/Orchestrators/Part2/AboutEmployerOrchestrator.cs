@@ -49,7 +49,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         private async Task<string> GetEmployerDescriptionAsync(Vacancy vacancy)
         {
-            var profile = await _client.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.LegalEntityId);
+            var profile = await _vacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.LegalEntityId);
             
             return profile?.AboutOrganisation ?? string.Empty;
         }
@@ -86,7 +86,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         private async Task UpdateEmployerProfileAsync(Vacancy vacancy, string employerDescription, VacancyUser user)
         {
             var employerProfile =
-                await _client.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.LegalEntityId);
+                await _vacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.LegalEntityId);
 
             if (employerProfile == null)
             {
@@ -96,7 +96,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             if (employerProfile.AboutOrganisation != employerDescription)
             {
                 employerProfile.AboutOrganisation = employerDescription;
-                await _client.UpdateEmployerProfileAsync(employerProfile, user);
+                await _vacancyClient.UpdateEmployerProfileAsync(employerProfile, user);
             }
         }
 

@@ -1,16 +1,16 @@
 using System;
-using Esfa.Recruit.Employer.Web.Configuration;
-using Esfa.Recruit.Employer.Web.Configuration.Routing;
-using Esfa.Recruit.Employer.Web.Extensions;
-using Esfa.Recruit.Employer.Web.Models;
+using Esfa.Recruit.Provider.Web.Configuration;
+using Esfa.Recruit.Provider.Web.Configuration.Routing;
+using Esfa.Recruit.Provider.Web.Extensions;
+using Esfa.Recruit.Provider.Web.Model;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
-namespace Esfa.Recruit.Employer.Web.Controllers.Part1
+namespace Esfa.Recruit.Provider.Web.Controllers.Part1
 {
-    public abstract class EmployerControllerBase : Controller
+    public class EmployerControllerBase : Controller
     {
         private readonly IHostingEnvironment _hostingEnvironment;
         protected EmployerControllerBase(IHostingEnvironment hostingEnvironment)
@@ -47,5 +47,5 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                 ? RedirectToRoute(RouteNames.Dashboard_Index_Get) 
                 : RedirectToRoute(RouteNames.Vacancy_Preview_Get, Anchors.AboutEmployerSection);
         }
-    }    
+    }
 }

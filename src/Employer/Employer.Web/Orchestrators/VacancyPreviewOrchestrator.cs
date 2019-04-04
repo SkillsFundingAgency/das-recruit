@@ -71,7 +71,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             if (!vacancy.CanSubmit)
                 throw new InvalidStateException(string.Format(ErrMsg.VacancyNotAvailableForEditing, vacancy.Title));
             
-            var employerProfile = await _client.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.LegalEntityId);
+            var employerProfile = await _vacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.LegalEntityId);
 
             // Update the vacancy with the current employer description text from Profile.
             vacancy.EmployerDescription = employerProfile?.AboutOrganisation ?? string.Empty;

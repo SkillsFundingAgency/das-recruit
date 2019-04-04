@@ -1,56 +1,63 @@
 using System.Linq;
 using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Configuration.Routing;
-using Esfa.Recruit.Employer.Web.Mappings;
-using Esfa.Recruit.Employer.Web.Models;
-using Esfa.Recruit.Employer.Web.RouteModel;
-using Esfa.Recruit.Employer.Web.ViewModels.Part1.EmployerName;
+using Esfa.Recruit.Provider.Web;
+using Esfa.Recruit.Provider.Web.Configuration.Routing;
+using Esfa.Recruit.Provider.Web.Extensions;
+using Esfa.Recruit.Provider.Web.Mappings;
+using Esfa.Recruit.Provider.Web.Model;
+using Esfa.Recruit.Provider.Web.RouteModel;
+using Esfa.Recruit.Provider.Web.ViewModels.Part1.EmployerName;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.Extensions.Logging;
-using Esfa.Recruit.Employer.Web.Extensions;
 
-namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
+namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 {
     public class EmployerNameOrchestrator : EntityValidatingOrchestrator<Vacancy, EmployerNameEditModel>
     {
+        private readonly IProviderVacancyClient _providerVacancyClient;
         private readonly IEmployerVacancyClient _employerVacancyClient;
         private readonly IRecruitVacancyClient _recruitVacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
 
-        public EmployerNameOrchestrator(IEmployerVacancyClient employerVacancyClient, IRecruitVacancyClient recruitVacancyClient, 
-            ILogger<EmployerNameOrchestrator> logger, IReviewSummaryService reviewSummaryService)
+        public EmployerNameOrchestrator(
+            IProviderVacancyClient providerVacancyClient, 
+            IEmployerVacancyClient employerVacancyClient,
+            IRecruitVacancyClient recruitVacancyClient, 
+            ILogger<EmployerNameOrchestrator> logger, 
+            IReviewSummaryService reviewSummaryService)
             : base(logger) 
         {
-            _employerVacancyClient = employerVacancyClient;
+            _providerVacancyClient = providerVacancyClient;
             _recruitVacancyClient = recruitVacancyClient;
             _reviewSummaryService = reviewSummaryService;
+            _employerVacancyClient = employerVacancyClient;
         }
 
         public async Task<EmployerNameViewModel> GetEmployerNameViewModelAsync(
             VacancyRouteModel vrm, VacancyEmployerInfoModel employerInfoModel, VacancyUser user)
         {
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(
-                _employerVacancyClient, _recruitVacancyClient, vrm, RouteNames.Employer_Get);
+                _providerVacancyClient, _recruitVacancyClient, vrm, RouteNames.EmployerName_Get);
 
             var legalEntityId = employerInfoModel.LegalEntityId.GetValueOrDefault();
                 
-            var getEmployerDataTask = _employerVacancyClient.GetEditVacancyInfoAsync(vrm.EmployerAccountId);
-            var getEmployerProfileTask = _recruitVacancyClient.GetEmployerProfileAsync(vrm.EmployerAccountId, legalEntityId);
-            await Task.WhenAll(getEmployerDataTask, getEmployerProfileTask);
-            var editVacancyInfo = getEmployerDataTask.Result;
+            var getVacancyEditInfoTask = _providerVacancyClient.GetProviderEditVacancyInfoAsync(vrm.Ukprn);
+            var getEmployerProfileTask = _recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, legalEntityId);
+            await Task.WhenAll(getVacancyEditInfoTask, getEmployerProfileTask);
+            var employerInfo = getVacancyEditInfoTask.Result.Employers.Single(e => e.EmployerAccountId == vacancy.EmployerAccountId);
             var employerProfile = getEmployerProfileTask.Result;
 
-            var legalEntity = editVacancyInfo.LegalEntities.Single(l => l.LegalEntityId == legalEntityId);
+            var legalEntity = employerInfo.LegalEntities.Single(l => l.LegalEntityId == legalEntityId);
 
             var vm = new EmployerNameViewModel 
             {
-                HasOnlyOneOrganisation = editVacancyInfo.LegalEntities.Count() == 1,
+                HasOnlyOneOrganisation = employerInfo.LegalEntities.Count() == 1,
                 LegalEntityName = legalEntity.Name,
-                ExistingTradingName = employerProfile.TradingName,
+                ExistingTradingName = employerProfile?.TradingName,
                 PageInfo = Utility.GetPartOnePageInfo(vacancy),
                 SelectedEmployerNameOption = employerInfoModel.EmployerNameOption,
                 NewTradingName = employerInfoModel.NewTradingName
@@ -65,14 +72,13 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             return vm;
         }
 
-
         public async Task<OrchestratorResponse> PostEmployerNameEditModelAsync(
             EmployerNameEditModel model, VacancyEmployerInfoModel employerInfoModel, VacancyUser user)
         {
             var validationRules = VacancyRuleSet.EmployerNameOption;
 
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(
-                _employerVacancyClient, _recruitVacancyClient, model, RouteNames.EmployerName_Post);
+                _providerVacancyClient, _recruitVacancyClient, model, RouteNames.EmployerName_Post);
             
             vacancy.EmployerNameOption =  model.SelectedEmployerNameOption.HasValue 
                 ? model.SelectedEmployerNameOption.Value.ConvertToDomainOption()
@@ -100,5 +106,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
             return mappings;
         }
-    }    
+        
+    }
 }
