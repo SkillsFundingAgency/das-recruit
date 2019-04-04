@@ -10,5 +10,7 @@ namespace Esfa.Recruit.Employer.Web.Models
         public EmployerNameOptionViewModel? EmployerNameOption { get; set; }
         public string NewTradingName { get; set; }
         public bool HasLegalEntityChanged { get; set;}
+        public string AnonymousName { get; set; }
+        public string AnonymousReason { get; set; }
     }
 }

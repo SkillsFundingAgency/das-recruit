@@ -8,8 +8,19 @@ namespace Esfa.Recruit.Employer.Web.Extensions
     {
         public static EmployerNameOption ConvertToDomainOption(this EmployerNameOptionViewModel model)
         {
-            return model == EmployerNameOptionViewModel.RegisteredName 
-                ? EmployerNameOption.RegisteredName : EmployerNameOption.TradingName;
+            switch (model)
+            {
+                case EmployerNameOptionViewModel.RegisteredName:
+                    return EmployerNameOption.RegisteredName;
+                case EmployerNameOptionViewModel.ExistingTradingName:
+                    return EmployerNameOption.TradingName;
+                case EmployerNameOptionViewModel.NewTradingName:
+                    return EmployerNameOption.TradingName;
+                case EmployerNameOptionViewModel.Anonymous:
+                    return EmployerNameOption.Anonymous;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         public static EmployerNameOptionViewModel ConvertToModelOption(this EmployerNameOption option)
@@ -20,6 +31,8 @@ namespace Esfa.Recruit.Employer.Web.Extensions
                     return EmployerNameOptionViewModel.RegisteredName;
                 case EmployerNameOption.TradingName:
                     return EmployerNameOptionViewModel.ExistingTradingName;
+                case EmployerNameOption.Anonymous:
+                    return EmployerNameOptionViewModel.Anonymous;
                 default: 
                     throw new ArgumentOutOfRangeException();
             }

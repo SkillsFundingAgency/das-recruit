@@ -124,9 +124,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         public async Task<Vacancy> GetSingleVacancyForPostcodeAsync(string postcode)
         {
             var builder = Builders<Vacancy>.Filter;
+
+            //Anonymous vacancies only have outcode geocoded
             var filter = builder.Eq(v => v.EmployerLocation.Postcode, postcode) &
                          builder.Ne(v => v.EmployerLocation.Latitude, null) &
-                         builder.Ne(v => v.EmployerLocation.Longitude, null);
+                         builder.Ne(v => v.EmployerLocation.Longitude, null) &
+                         builder.Ne(v => v.EmployerNameOption, EmployerNameOption.Anonymous);
 
             var collection = GetCollection<Vacancy>();
             var result = await RetryPolicy.ExecuteAsync(_ => 

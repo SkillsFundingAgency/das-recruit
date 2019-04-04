@@ -91,7 +91,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
             var mockTimeProvider = new Mock<ITimeProvider>();
             mockTimeProvider.Setup(t => t.Now).Returns(now);
 
-            var mockEmployerNameService = new Mock<IEmployerNameService>();
+            var mockEmployerNameService = new Mock<IEmployerService>();
 
             var handler = new SubmitVacancyCommandHandler(
                 mockLogger.Object, mockRepository.Object, mockMessaging.Object, mockTimeProvider.Object, mockEmployerNameService.Object);

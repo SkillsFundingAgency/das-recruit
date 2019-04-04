@@ -1,4 +1,5 @@
-﻿using Esfa.Recruit.Employer.Web.Configuration;
+﻿using System.Collections.Generic;
+using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Services;
@@ -9,6 +10,7 @@ using Humanizer;
 using Microsoft.Extensions.Options;
 using System.Linq;
 using System.Threading.Tasks;
+using Esfa.Recruit.Shared.Web.Orchestrators;
 
 namespace Esfa.Recruit.Employer.Web.Mappings
 {
@@ -46,7 +48,7 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             vm.EmployerContactEmail = vacancy.EmployerContact?.Email;
             vm.EmployerContactTelephone = vacancy.EmployerContact?.Phone;
             vm.EmployerDescription = await _vacancyClient.GetEmployerDescriptionAsync(vacancy);
-            vm.EmployerName = await _vacancyClient.GetEmployerName(vacancy.Id);
+            vm.EmployerName = await _vacancyClient.GetEmployerName(vacancy);
             vm.EmployerWebsiteUrl = vacancy.EmployerWebsiteUrl;
             vm.EmployerAddressElements = Enumerable.Empty<string>();
             vm.FindAnApprenticeshipUrl = _externalLinksConfiguration.FindAnApprenticeshipUrl;
@@ -68,21 +70,13 @@ namespace Esfa.Recruit.Employer.Web.Mappings
                                         ? $"VAC{vacancy.VacancyReference.ToString()}"
                                         : string.Empty;
             vm.IsDisabilityConfident = vacancy.IsDisabilityConfident;
+
             if (vacancy.EmployerLocation != null)
             {
-                vm.MapUrl = vacancy.EmployerLocation.HasGeocode
-                    ? _mapService.GetMapImageUrl(vacancy.EmployerLocation.Latitude.ToString(),
-                        vacancy.EmployerLocation.Longitude.ToString(), MapImageWidth, MapImageHeight)
-                    : _mapService.GetMapImageUrl(vacancy.EmployerLocation.Postcode, MapImageWidth, MapImageHeight);
-                vm.EmployerAddressElements = new[]
-                {
-                    vacancy.EmployerLocation.AddressLine1,
-                    vacancy.EmployerLocation.AddressLine2,
-                    vacancy.EmployerLocation.AddressLine3,
-                    vacancy.EmployerLocation.AddressLine4,
-                    vacancy.EmployerLocation.Postcode
-                }
-                .Where(x => !string.IsNullOrEmpty(x));
+                if (vacancy.EmployerLocation != null)
+                    vm.MapUrl = MapImageHelper.GetEmployerLocationMapUrl(vacancy, _mapService, MapImageWidth, MapImageHeight);
+
+                vm.EmployerAddressElements = GetEmployerAddressElements(vacancy);
             }
 
             if (vacancy.ProgrammeId != null)
@@ -102,6 +96,22 @@ namespace Esfa.Recruit.Employer.Web.Mappings
                 vm.WageText = vacancy.StartDate.HasValue ? vacancy.Wage.ToText(vacancy.StartDate) : null;
                 vm.WorkingWeekDescription = vacancy.Wage.WorkingWeekDescription;
             }
+        }
+
+        private IEnumerable<string> GetEmployerAddressElements(Vacancy vacancy)
+        {
+            if (vacancy.IsAnonymous)
+                return new[] { vacancy.EmployerLocation.PostcodeAsOutcode() };
+
+            return new[]
+                {
+                    vacancy.EmployerLocation.AddressLine1,
+                    vacancy.EmployerLocation.AddressLine2,
+                    vacancy.EmployerLocation.AddressLine3,
+                    vacancy.EmployerLocation.AddressLine4,
+                    vacancy.EmployerLocation.Postcode
+                }
+                .Where(x => !string.IsNullOrEmpty(x));
         }
     }
 }
