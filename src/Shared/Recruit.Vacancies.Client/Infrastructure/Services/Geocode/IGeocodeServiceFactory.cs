@@ -3,5 +3,6 @@
     public interface IGeocodeServiceFactory
     {
         IGeocodeService GetGeocodeService();
+        IGeocodeService GetGeocodeOutcodeService();
     }
 }

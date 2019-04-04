@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Qa.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Mappers;
+using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.RuleTemplates;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
@@ -242,10 +243,8 @@ namespace Esfa.Recruit.Qa.Web.Mappings
 
         private void SetEmployerAddressElements(ReviewViewModel vm, Vacancy vacancy)
         {
-            vm.MapUrl = vacancy.EmployerLocation.HasGeocode
-                ? _mapService.GetMapImageUrl(vacancy.EmployerLocation.Latitude.ToString(),
-                    vacancy.EmployerLocation.Longitude.ToString(), MapImageWidth, MapImageHeight)
-                : _mapService.GetMapImageUrl(vacancy.EmployerLocation.Postcode, MapImageWidth, MapImageHeight);
+            vm.MapUrl = MapImageHelper.GetEmployerLocationMapUrl(vacancy, _mapService, MapImageWidth, MapImageHeight);
+
             vm.EmployerAddressElements = new[]
                 {
                     vacancy.EmployerLocation.AddressLine1,

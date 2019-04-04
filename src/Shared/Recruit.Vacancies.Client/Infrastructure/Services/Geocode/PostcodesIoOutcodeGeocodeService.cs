@@ -1,9 +1,7 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode.Responses;
-using Microsoft.Extensions.Logging;
 using RestSharp;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode
@@ -61,7 +59,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode
 
             if (postcode.Length < PostcodeMinLength)
             {
-                return null;
+                return postcode;
             }
 
             return postcode.Substring(0, postcode.Length - IncodeLength);

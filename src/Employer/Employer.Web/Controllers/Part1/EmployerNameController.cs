@@ -56,11 +56,15 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                 vm.PageInfo.SetWizard(wizard);
                 vm.NewTradingName = model.NewTradingName;
                 vm.SelectedEmployerNameOption = model.SelectedEmployerNameOption;
+                vm.AnonymousName = model.AnonymousName;
+                vm.AnonymousReason = model.AnonymousReason;
                 return View(vm);
             }
 
             employerInfoModel.EmployerNameOption = model.SelectedEmployerNameOption;
             employerInfoModel.NewTradingName = model.NewTradingName;
+            employerInfoModel.AnonymousName = model.AnonymousName;
+            employerInfoModel.AnonymousReason = model.AnonymousReason;
             SetVacancyEmployerInfoCookie(employerInfoModel);
 
             return RedirectToRoute(RouteNames.LegalEntityAgreement_SoftStop_Get, new {Wizard = wizard});

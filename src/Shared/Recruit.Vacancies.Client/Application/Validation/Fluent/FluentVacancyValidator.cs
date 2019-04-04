@@ -135,7 +135,37 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .RunCondition(VacancyRuleSet.TradingName)
                     .WithRuleId(VacancyRuleSet.TradingName)
             );
-            
+
+            When(v => v.SourceOrigin == SourceOrigin.EmployerWeb && v.EmployerNameOption == EmployerNameOption.Anonymous, () =>
+                RuleFor(x => x.EmployerName)
+                    .NotEmpty()
+                    .WithMessage("You must provide a description")
+                    .WithErrorCode("401")
+                    .MaximumLength(100)
+                    .WithMessage("The description must not exceed {MaxLength} characters")
+                    .WithErrorCode("402")
+                    .ValidFreeTextCharacters()
+                    .WithMessage("The description contains some invalid characters")
+                    .WithErrorCode("403")
+                    .RunCondition(VacancyRuleSet.EmployerNameOption)
+                    .WithRuleId(VacancyRuleSet.EmployerNameOption)
+            );
+
+            When(v => v.SourceOrigin == SourceOrigin.EmployerWeb && v.EmployerNameOption == EmployerNameOption.Anonymous, () =>
+                RuleFor(x => x.AnonymousReason)
+                    .NotEmpty()
+                    .WithMessage("You must provide a reason")
+                    .WithErrorCode("401")
+                    .MaximumLength(200)
+                    .WithMessage("The reason must not exceed {MaxLength} characters")
+                    .WithErrorCode("402")
+                    .ValidFreeTextCharacters()
+                    .WithMessage("The reason contains some invalid characters")
+                    .WithErrorCode("403")
+                    .RunCondition(VacancyRuleSet.EmployerNameOption)
+                    .WithRuleId(VacancyRuleSet.EmployerNameOption)
+            );
+
             RuleFor(x => x.EmployerNameOption)
                 .NotEmpty()
                     .WithMessage("You must select an employer name")
