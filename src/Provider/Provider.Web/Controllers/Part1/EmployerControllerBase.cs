@@ -21,12 +21,12 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
         protected void SetVacancyEmployerInfoCookie(VacancyEmployerInfoModel model)
         {
             var info = JsonConvert.SerializeObject(model);
-            Response.Cookies.SetSessionCookie(_hostingEnvironment, CookieNames.ProviderVacancyEmployerInfo, info);
+            Response.Cookies.SetSessionCookie(_hostingEnvironment, CookieNames.VacancyEmployerInfo, info);
         }
 
         protected VacancyEmployerInfoModel GetVacancyEmployerInfoCookie(Guid vacancyId)
         {
-            var value = Request.Cookies.GetCookie(CookieNames.ProviderVacancyEmployerInfo);
+            var value = Request.Cookies.GetCookie(CookieNames.VacancyEmployerInfo);
             if (value != null) 
             {
                 var info = JsonConvert.DeserializeObject<VacancyEmployerInfoModel>(value);
@@ -37,7 +37,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
 
         protected void DeleteVacancyEmployerInfoCookie()
         {
-            Response.Cookies.DeleteSessionCookie(_hostingEnvironment, CookieNames.ProviderVacancyEmployerInfo);
+            Response.Cookies.DeleteSessionCookie(_hostingEnvironment, CookieNames.VacancyEmployerInfo);
         }
 
         protected IActionResult CancelAndRedirect(bool wizard)
