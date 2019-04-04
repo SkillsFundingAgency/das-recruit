@@ -83,7 +83,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
         public async Task<VacancyEmployerInfoModel> GetVacancyEmployerInfoModelAsync(VacancyRouteModel vrm)
         {
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(
-                _providerVacancyClient, _recruitVacancyClient, vrm, RouteNames.Employer_Post);
+                _providerVacancyClient, _recruitVacancyClient, vrm, RouteNames.Location_Get);
 
             var model = new VacancyEmployerInfoModel()
             {

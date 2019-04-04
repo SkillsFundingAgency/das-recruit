@@ -26,20 +26,6 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
             result.Errors[0].PropertyName.Should().Be(nameof(vacancy.EmployerName));
             result.Errors[0].ErrorCode.Should().Be("4");
         }
-
-        [Fact]
-        public void ThenIgnoreLegalEntityName()
-        {
-            var vacancy = new Vacancy()
-            {
-                EmployerName = "test",
-                EmployerNameOption = EmployerNameOption.RegisteredName,
-                SourceOrigin = SourceOrigin.ProviderWeb
-            };
-
-            var result = Validator.Validate(vacancy, VacancyRuleSet.TradingName |  VacancyRuleSet.EmployerName | VacancyRuleSet.LegalEntityName);
-            result.HasErrors.Should().BeFalse();
-        }
     }
 
     public class GivenSourceOriginIsEmployerWeb : VacancyValidationTestsBase

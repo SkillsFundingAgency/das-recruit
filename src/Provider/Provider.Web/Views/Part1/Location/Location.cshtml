@@ -68,7 +68,7 @@
 -->
 
             <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">@Model.PageInfo.SubmitButtonText</button>
-            <a asp-route="@RouteNames.Location_Cancel" class="govuk-link das-button-link">Cancel</a>
+            <a asp-route="@RouteNames.Location_Cancel" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link das-button-link">Cancel</a>
         </form>
     </div>
 </div>

@@ -41,7 +41,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             VacancyRouteModel vrm, VacancyEmployerInfoModel employerInfoModel, VacancyUser user)
         {
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(
-                _providerVacancyClient, _recruitVacancyClient, vrm, RouteNames.Employer_Get);
+                _providerVacancyClient, _recruitVacancyClient, vrm, RouteNames.EmployerName_Get);
 
             var legalEntityId = employerInfoModel.LegalEntityId.GetValueOrDefault();
                 

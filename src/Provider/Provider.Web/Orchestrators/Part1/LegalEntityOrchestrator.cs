@@ -30,7 +30,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
         public async Task<LegalEntityViewModel> GetLegalEntityViewModelAsync(VacancyRouteModel vrm, long ukprn)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_providerVacancyClient, _recruitVacancyClient, vrm, RouteNames.Employer_Get);
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_providerVacancyClient, _recruitVacancyClient, vrm, RouteNames.LegalEntity_Get);
 
             var vm = new LegalEntityViewModel
             {                

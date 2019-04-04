@@ -185,6 +185,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part2
                 TrainingProvider = new TrainingProvider { Ukprn = TestUkprn },
                 Title = "Test Title",
                 ShortDescription = "Test Short Description",
+                LegalEntityName = "legal name",
+                EmployerNameOption = EmployerNameOption.RegisteredName,
                 EmployerLocation = new Address {
                     Postcode = "AB1 2XZ"
                 },

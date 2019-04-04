@@ -58,6 +58,8 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
                     ValidationMessages.EmployerNameValidationMessages.EmployerNameRequired);
             }
 
+            
+
             if (!ModelState.IsValid)
             {
                 var vm = await _orchestrator.GetLegalEntityViewModelAsync(m, User.GetUkprn());

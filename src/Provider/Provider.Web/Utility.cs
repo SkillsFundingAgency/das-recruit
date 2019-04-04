@@ -79,12 +79,10 @@ namespace Esfa.Recruit.Provider.Web
             {
                 RouteNames.Location_Get, 
                 RouteNames.Location_Post,
-                RouteNames.LegalEntity_Post, 
-                RouteNames.LegalEntity_Get, 
                 RouteNames.EmployerName_Post, 
                 RouteNames.EmployerName_Get, 
-                RouteNames.Employer_Post, 
-                RouteNames.Employer_Get
+                RouteNames.LegalEntity_Post, 
+                RouteNames.LegalEntity_Get
             });
             if (string.IsNullOrWhiteSpace(vacancy.LegalEntityName)
                 || vacancy.EmployerNameOption == null
