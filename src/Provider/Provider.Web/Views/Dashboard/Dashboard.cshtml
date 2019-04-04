@@ -109,15 +109,18 @@
     </div>
 </div>
 
-<script nws-csp-add-nonce="true">
-    $(function () {
-        $("#filter-submit").hide();
+@section FooterJS
+{
+    <script nws-csp-add-nonce="true">
+        $(function() {
+            $("#filter-submit").hide();
 
-        $("#filter").on("change",
-            function () {
-                var $filterForm = $(this).parents("form");
-                $(window).off("beforeunload");
-                $filterForm.submit();
-            });
-    });
-</script>
+            $("#filter").on("change",
+                function() {
+                    var $filterForm = $(this).parents("form");
+                    $filterForm.areYouSure({ 'silent': true });
+                    $filterForm.submit();
+                });
+        });
+    </script>
+}
