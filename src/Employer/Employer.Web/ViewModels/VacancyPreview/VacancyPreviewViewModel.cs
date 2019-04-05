@@ -74,6 +74,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
         public bool ApplicationUrlRequiresEdit => IsEditRequired(FieldIdentifiers.ApplicationUrl);
         public bool ClosingDateRequiresEdit => IsEditRequired(FieldIdentifiers.ClosingDate);
         public bool EmployerContactRequiresEdit => IsEditRequired(FieldIdentifiers.EmployerContact);
+        public bool EmployerNameRequiresEdit => IsEditRequired(FieldIdentifiers.EmployerName);
         public bool DisabilityConfidentRequiresEdit => IsEditRequired(FieldIdentifiers.DisabilityConfident);
         public bool EmployerAddressRequiresEdit => IsEditRequired(FieldIdentifiers.EmployerAddress);
         public bool EmployerDescriptionRequiresEdit => IsEditRequired(FieldIdentifiers.EmployerDescription);
