@@ -282,7 +282,10 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
             @EditLink(RouteNames.AboutEmployer_Get, Model.EmployerDescriptionSectionState, "link-description")
         </div>
         <div class="@GetSectionClass(Model.EmployerNameSectionState)">
-            <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.EmployerName">Employer</h3>
+            <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.EmployerName">
+                <img asp-show="@Model.EmployerNameRequiresEdit" src="/img/red-cross.png"/>
+                Employer
+            </h3>            
             <span esfa-validation-message-for="EmployerName" class="govuk-error-message"></span>
             <p asp-show="@Model.HasEmployerName" class="govuk-body">@Model.EmployerName</p>
             @EditLink(RouteNames.Employer_Get, Model.EmployerNameSectionState, "link-employer", new { wizard = false })

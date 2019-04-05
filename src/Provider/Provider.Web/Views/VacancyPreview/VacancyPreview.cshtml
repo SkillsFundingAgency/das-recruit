@@ -290,7 +290,10 @@
             @EditLink(RouteNames.AboutEmployer_Get, Model.EmployerDescriptionSectionState, "link-description")
         </div>
         <div class="@GetSectionClass(Model.EmployerNameSectionState)">
-            <h3 class="govuk-heading-s govuk-!-margin-top-4">Employer</h3>
+            <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.EmployerName">
+                <img asp-show="@Model.EmployerNameRequiresEdit" src="/img/red-cross.png"/>
+                Employer
+            </h3>
             <span esfa-validation-message-for="EmployerName" class="govuk-error-message"></span>
             <p asp-show="@Model.HasEmployerName" class="govuk-body">@Model.EmployerName</p>
             @EditLink(RouteNames.LegalEntity_Get, Model.EmployerAddressSectionState, "link-location", new { wizard = false })

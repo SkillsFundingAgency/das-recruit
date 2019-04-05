@@ -265,9 +265,12 @@
                                           asp-value="@FieldIdentifiers.EmployerDescription"
                                           asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                 </div>
-                <div>
+                <div class="@Model.EmployerNameClass" id="@FieldIdentifiers.EmployerName">                    
                     <h3 class="govuk-heading-s">Employer</h3>
                     <p class="govuk-body">@Model.EmployerName</p>
+                    <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
+                                          asp-value="@FieldIdentifiers.EmployerName"
+                                          asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                 </div>
                 <div class="@Model.DisabilityConfidentClass" id="@FieldIdentifiers.DisabilityConfident">
                     <h3 class="govuk-heading-s">Disability Confident (optional)</h3>

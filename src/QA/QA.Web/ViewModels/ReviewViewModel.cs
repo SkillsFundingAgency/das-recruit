@@ -86,6 +86,7 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public string ClosingDateClass => GetFieldIdentifierCssClass(FieldIdentifier.ClosingDate);
         public string EmployerContactClass => GetFieldIdentifierCssClass(FieldIdentifier.EmployerContact);
         public string DisabilityConfidentClass => GetFieldIdentifierCssClass(FieldIdentifier.DisabilityConfident);
+        public string EmployerNameClass => GetFieldIdentifierCssClass(FieldIdentifier.EmployerName);
         public string EmployerAddressClass => GetFieldIdentifierCssClass(FieldIdentifier.EmployerAddress);
         public string EmployerDescriptionClass => GetFieldIdentifierCssClass(FieldIdentifier.EmployerDescription);
         public string EmployerWebsiteUrlClass => GetFieldIdentifierCssClass(FieldIdentifier.EmployerWebsiteUrl);

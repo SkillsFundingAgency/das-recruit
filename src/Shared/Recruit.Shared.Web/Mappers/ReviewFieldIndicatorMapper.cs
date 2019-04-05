@@ -34,6 +34,7 @@ namespace Esfa.Recruit.Shared.Web.Mappers
             { FieldIdentifiers.Qualifications, "Qualifications requires edit" },
             { FieldIdentifiers.ThingsToConsider, "Things to consider requires edit" },
             { FieldIdentifiers.EmployerDescription, "Employer description requires edit" },
+            { FieldIdentifiers.EmployerName, "Employer name requires edit" },
             { FieldIdentifiers.DisabilityConfident, "Disability confident requires edit" },
             { FieldIdentifiers.EmployerWebsiteUrl, "Employer website requires edit" },
             { FieldIdentifiers.EmployerContact, "Contact details requires edit" },
