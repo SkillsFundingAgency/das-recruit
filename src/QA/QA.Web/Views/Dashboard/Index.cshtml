@@ -119,7 +119,8 @@
                     <td class="govuk-table__cell">
                         <span asp-show="@vacancy.ShowAssignmentInfoCaption">@assignmentInfoCaption<br /></span>
                         <a asp-show="@vacancy.CanShowReviewLink" asp-route="@RouteNames.Vacancy_Review_Get" asp-route-reviewId="@vacancy.ReviewId" class="govuk-link">Review</a>
-                        <span asp-show="@vacancy.IsClosed">@vacancy.ClosedReviewAssignmentCaption</span>
+                        <p asp-show="@vacancy.IsVacancyDeleted">This vacancy has been deleted.</p>
+                        <span asp-show="@vacancy.ShowReviewer">@vacancy.ClosedReviewAssignmentCaption</span>
                         <a asp-show="@vacancy.IsClosed" asp-route="@RouteNames.Vacancy_Readonly_Review_Get" asp-route-reviewId="@vacancy.ReviewId" class="govuk-link">View (read only)</a>
                     </td>
                 </tr>

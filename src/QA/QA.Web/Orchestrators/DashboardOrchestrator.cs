@@ -37,21 +37,28 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             if (vm.DisplayInProgressVacancies)
             {
                 var inProgressSummaries = await _vacancyClient.GetVacancyReviewsInProgressAsync();
-                vm.InProgressVacancies = inProgressSummaries.Select(v => MapToViewModel(v, vacancyUser)).ToList();
+
+                var inProgressVacanciesVmTasks = inProgressSummaries.Select(v => MapToViewModelAsync(v, vacancyUser)).ToList();
+                var inProgressVacanciesVm = await Task.WhenAll(inProgressVacanciesVmTasks);
+                vm.InProgressVacancies = inProgressVacanciesVm.ToList();
             }
 
             if(string.IsNullOrEmpty(searchTerm)) return vm;
 
             vm.LastSearchTerm = searchTerm;
             var searchResults = await _vacancyClient.GetSearchResultsAsync(searchTerm);
-            vm.SearchResults = searchResults.Select(v => MapToViewModel(v, vacancyUser)).ToList();
+            var searchResultsVmTasks = searchResults.Select(v => MapToViewModelAsync(v, vacancyUser)).ToList();
+            var searchResultsVm = await Task.WhenAll(searchResultsVmTasks);
+            vm.SearchResults = searchResultsVm.ToList();
             return vm;
         }
 
-        private VacancyReviewSearchResultViewModel MapToViewModel(VacancyReview vacancyReview, VacancyUser vacancyUser)
+        private async Task<VacancyReviewSearchResultViewModel> MapToViewModelAsync(VacancyReview vacancyReview, VacancyUser vacancyUser)
         {
             var isAvailableForReview =
                 _vacancyClient.VacancyReviewCanBeAssigned(vacancyReview.Status, vacancyReview.ReviewedDate);
+
+            var vacancy = await _vacancyClient.GetVacancyAsync(vacancyReview.VacancyReference);
 
             return new VacancyReviewSearchResultViewModel
             {
@@ -65,7 +72,8 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
                 ReviewId = vacancyReview.Id,
                 IsClosed =  vacancyReview.Status == ReviewStatus.Closed,
                 SubmittedDate = vacancyReview.VacancySnapshot.SubmittedDate.GetValueOrDefault(),
-                IsAvailableForReview = isAvailableForReview
+                IsAvailableForReview = isAvailableForReview,
+                IsVacancyDeleted = vacancy.IsDeleted
             };
         }
 
