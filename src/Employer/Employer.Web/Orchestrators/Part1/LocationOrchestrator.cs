@@ -10,7 +10,6 @@ using Esfa.Recruit.Shared.Web.Extensions;
 using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using System;
-using System.Collections.Generic;
 using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
@@ -22,6 +21,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
     public class LocationOrchestrator : EntityValidatingOrchestrator<Vacancy, LocationEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.EmployerAddress;
+        private const string UseOtherLocation = "UseOtherLocation";
+        private const string LegalEntityLocation = "LegalEntityLocation";
         private readonly IEmployerVacancyClient _employerVacancyClient;
         private readonly IRecruitVacancyClient _recruitVacancyClient;
 
@@ -46,8 +47,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         public async Task<OrchestratorResponse> PostLocationEditModelAsync(
             LocationEditModel locationEditModel, VacancyEmployerInfoModel employerInfoModel, VacancyUser user)
         {
-            //if (!locationEditModel.UseOtherLocation.HasValue)
-            //    return new OrchestratorResponse(false);
+            if (string.IsNullOrEmpty(locationEditModel.Location))
+                return new OrchestratorResponse(false);
 
             var vacancyTask = Utility.GetAuthorisedVacancyForEditAsync(
                 _employerVacancyClient, _recruitVacancyClient, locationEditModel, RouteNames.Employer_Post);
@@ -77,8 +78,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
             switch (locationEditModel.Location)
             {
-                case "UseOtherLocation":
-                    vacancy.EmployerLocation = new Vacancies.Client.Domain.Entities.Address {
+                case UseOtherLocation:
+                    vacancy.EmployerLocation = new Address
+                    {
                         AddressLine1 = locationEditModel.AddressLine1,
                         AddressLine2 = locationEditModel.AddressLine2,
                         AddressLine3 = locationEditModel.AddressLine3,
@@ -86,8 +88,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                         Postcode = locationEditModel.Postcode.AsPostcode()
                     };
                     break;
-                case "LegalEntityLocation":
-                    vacancy.EmployerLocation = new Vacancies.Client.Domain.Entities.Address {
+                case LegalEntityLocation:
+                    vacancy.EmployerLocation = new Address
+                    {
                         AddressLine1 = selectedOrganisation.Address.AddressLine1,
                         AddressLine2 = selectedOrganisation.Address.AddressLine2,
                         AddressLine3 = selectedOrganisation.Address.AddressLine3,
@@ -96,7 +99,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                     };
                     break;
                 default:
-                    vacancy.EmployerLocation = new Vacancies.Client.Domain.Entities.Address();
+                    vacancy.EmployerLocation = new Address();
                     break;
             }
 
@@ -155,21 +158,28 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
             vm.Location = legalEntity.Address.ToString();
             vm.OtherLocationsAddress = employerProfile?.OtherLocations;
+            
             if (vacancy.EmployerLocation != null && (!hasLegalEntityChanged.HasValue || hasLegalEntityChanged == false))
             {
-                //vm.Location = vacancy.EmployerLocation;
-                //vm.UseOtherLocation = false;
 
-                //if (vacancy.EmployerLocation.ToString() == legalEntity.Address.ToString())
-                //{
-                //    vm.CurrentLocation = legalEntity.Address.ToString();
-                //    vm.UseOtherLocation = true;
-                //    //vm.AddressLine1 = vacancy.EmployerLocation.AddressLine1;
-                //    //vm.AddressLine2 = vacancy.EmployerLocation.AddressLine2;
-                //    //vm.AddressLine3 = vacancy.EmployerLocation.AddressLine3;
-                //    //vm.AddressLine4 = vacancy.EmployerLocation.AddressLine4;
-                //    //vm.Postcode = vacancy.EmployerLocation.Postcode;
-                //}
+                if (vacancy.EmployerLocation.ToString() == legalEntity.Address.ToString())
+                    vm.Location = LegalEntityLocation;
+                else
+                {
+                    var employerLocation = vacancy.EmployerLocation.ToString();
+                    StringComparer comparer = StringComparer.OrdinalIgnoreCase;
+                    var otherLocations = vm.OtherLocationsAddress;
+                    if (otherLocations?.Any() == true)
+                    {
+                        foreach (var location in otherLocations)
+                        {
+                            if (comparer.Compare(employerLocation, location.ToString()) == 0)
+                            {
+                                vm.Location = location.ToString();
+                            }
+                        }
+                    }
+                }
             }
 
             return vm;
@@ -194,7 +204,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 employerProfile.TradingName != tradingName)
                 employerProfile.TradingName = tradingName;               
 
-        if (locationEditModel.Location == "UseOtherLocation")
+        if (locationEditModel.Location == UseOtherLocation)
         {
             var address = new Address {
                 AddressLine1 = locationEditModel.AddressLine1,
@@ -203,11 +213,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 AddressLine4 = locationEditModel.AddressLine4,
                 Postcode = locationEditModel.Postcode
             };
-            var hashCode = address.GetHashCode();
-            IDictionary<int, Address> item = new Dictionary<int, Address>();
-            item.Add(hashCode, address);
-            employerProfile.OtherLocations.Add(item);
-        }
+            employerProfile.OtherLocations.Add(address);
+            }
 
         await _recruitVacancyClient.UpdateEmployerProfileAsync(employerProfile, user);
     }

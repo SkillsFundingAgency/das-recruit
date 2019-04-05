@@ -25,7 +25,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Location
         public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
         public PartOnePageInfoViewModel PageInfo { get; set; }                
         public bool CanShowBackLink { get; internal set; }
-        public IList<IDictionary<int, Address>> OtherLocationsAddress { get; set; }
-      
+        public IList<Address> OtherLocationsAddress { get; set; }
+        public bool ShowOtherLocations => OtherLocationsAddress?.Any() == true;
     }
 }
