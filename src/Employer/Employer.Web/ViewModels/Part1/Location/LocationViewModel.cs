@@ -27,5 +27,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Location
         public bool CanShowBackLink { get; internal set; }
         public IList<Address> OtherLocationsAddress { get; set; }
         public bool ShowOtherLocations => OtherLocationsAddress?.Any() == true;
+        public string LocationName { get; set; }
     }
 }

@@ -156,7 +156,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var vm = new LocationViewModel();
             vm.PageInfo = Utility.GetPartOnePageInfo(vacancy);
 
-            vm.Location = legalEntity.Address.ToString();
+            vm.LocationName = legalEntity.Address.ToString();
             vm.OtherLocationsAddress = employerProfile?.OtherLocations;
             
             if (vacancy.EmployerLocation != null && (!hasLegalEntityChanged.HasValue || hasLegalEntityChanged == false))
