@@ -1,5 +1,7 @@
 @using Esfa.Recruit.Employer.Web.ViewModels.Part1.Location;
-
+@using Esfa.Recruit.Shared.Web.Configuration
+@using Microsoft.Extensions.Options
+@inject IOptions<PostcodeAnywhereConfiguration> PcaConfig
 
 @model LocationViewModel;
 <div class="govuk-grid-row">
@@ -19,7 +21,6 @@
                                     @Model.LocationName
                                 </label>
                             </div>
-                            @*<div asp-show="@Model.ShowOtherLocations">*@
                             @if (Model.OtherLocationsAddress != null && Model.OtherLocationsAddress.Any())
                             {
                                 foreach (var location in Model.OtherLocationsAddress)
@@ -34,7 +35,6 @@
                                     </div>
                                 }
                             }
-                            @*</div>*@
                             <div class="govuk-radios__item">
                                 <input asp-for="Location" value="UseOtherLocation" data-aria-controls="other-location-conditional" id="other-location" class="govuk-radios__input" type="radio">
                                 <label for="other-location" class="govuk-label govuk-radios__label">
@@ -80,4 +80,18 @@
         </form>
     </div>
 </div>
-
+@section HeadJS
+    {
+    <script nws-csp-add-nonce="true">
+        window.EsfaRecruit.PcaConfig = {
+            key: '@PcaConfig.Value.Key',
+            findEndpoint: '@PcaConfig.Value.FindEndpoint',
+            retrieveEndpoint: '@PcaConfig.Value.RetrieveEndpoint'
+        };
+    </script>
+}
+@section FooterJS
+    {
+    <script src="/lib/jquery-ui/dist/jquery-ui.min.js"></script>
+    <script asp-append-version="true" src="/lib/esfa-postcode/lookupService.js"></script>
+}
