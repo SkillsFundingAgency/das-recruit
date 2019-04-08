@@ -10,6 +10,7 @@ using Esfa.Recruit.Shared.Web.Extensions;
 using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using System;
+using System.Collections.Generic;
 using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
@@ -46,7 +47,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         public async Task<OrchestratorResponse> PostLocationEditModelAsync(
             LocationEditModel locationEditModel, VacancyEmployerInfoModel employerInfoModel, VacancyUser user)
-        {
+        {            
             if (string.IsNullOrEmpty(locationEditModel.Location))
                 return new OrchestratorResponse(false);
 
@@ -99,7 +100,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                     };
                     break;
                 default:
-                    vacancy.EmployerLocation = new Address();
+                    vacancy.EmployerLocation = await GetCurrentAddress(locationEditModel.Location,vacancy);
                     break;
             }
 
@@ -112,6 +113,26 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                         employerInfoModel, locationEditModel, user);
                     await _recruitVacancyClient.UpdateDraftVacancyAsync(vacancy, user);
                 });
+        }
+
+        private async Task<Address> GetCurrentAddress(string currentLocation, Vacancy vacancy)
+        {
+            var employerProfile =
+                await _recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.LegalEntityId);            
+            StringComparer comparer = StringComparer.OrdinalIgnoreCase;
+            var otherLocations = employerProfile.OtherLocations;
+            if (otherLocations?.Any() == true)
+            {
+                foreach (var location in otherLocations)
+                {
+                    if (comparer.Compare(currentLocation, location.ToString()) == 0)
+                    {
+                        return location;
+                    }
+                }
+            }
+            throw new Exception(
+                $"No matching addresses found for current location {currentLocation}");
         }
 
         public async Task<VacancyEmployerInfoModel> GetVacancyEmployerInfoModelAsync(VacancyRouteModel vrm)
@@ -145,9 +166,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             long? selectedOrganisationId)
         {
             var employerData = await _employerVacancyClient.GetEditVacancyInfoAsync(vacancy.EmployerAccountId);
-            var employerProfile =
-                await _recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.LegalEntityId);
+            
             var legalEntityId = selectedOrganisationId.HasValue ? selectedOrganisationId : vacancy.LegalEntityId;
+
+            var employerProfile =
+                await _recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, legalEntityId.GetValueOrDefault());
 
             var legalEntity = employerData.LegalEntities.First(l => l.LegalEntityId == legalEntityId);
             if (legalEntity == null)
@@ -212,11 +235,30 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 AddressLine3 = locationEditModel.AddressLine3,
                 AddressLine4 = locationEditModel.AddressLine4,
                 Postcode = locationEditModel.Postcode
-            };
-            employerProfile.OtherLocations.Add(address);
-            }
+            };     
+            if(CheckForDuplicates(employerProfile.OtherLocations,address))
+            {
+                employerProfile.OtherLocations.Add(address);
+            }            
+        }
 
         await _recruitVacancyClient.UpdateEmployerProfileAsync(employerProfile, user);
     }
-}
+
+        private bool CheckForDuplicates(IList<Address> otherLocations, Address address)
+        {
+            StringComparer comparer = StringComparer.OrdinalIgnoreCase;
+            if (otherLocations?.Any() == true)
+            {
+                foreach (var location in otherLocations)
+                {
+                    if (comparer.Compare(address.ToString(), location.ToString()) == 0)
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+    }
 }

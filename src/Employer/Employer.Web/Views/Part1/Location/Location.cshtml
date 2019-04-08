@@ -1,5 +1,5 @@
 @using Esfa.Recruit.Employer.Web.ViewModels.Part1.Location;
-@using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+
 
 @model LocationViewModel;
 <div class="govuk-grid-row">
@@ -20,19 +20,20 @@
                                 </label>
                             </div>
                             @*<div asp-show="@Model.ShowOtherLocations">*@
-                            @if (Model.OtherLocationsAddress!=null && Model.OtherLocationsAddress.Any())
+                            @if (Model.OtherLocationsAddress != null && Model.OtherLocationsAddress.Any())
                             {
                                 foreach (var location in Model.OtherLocationsAddress)
-                                 {                                    
-                                     <div class="govuk-radios__item">
-                                         <input asp-for="Location" value="@location.ToString()" id="location_@location.ToString()"
-                                                class="govuk-radios__input" type="radio">
-                                         <label for="location_@location.ToString()" class="govuk-label govuk-radios__label">
-                                             @location.ToString()                                            
-                                         </label>
-                                     </div>
-                                 }
-                            }                               
+                                {
+                                    @Html.Hidden("CurrentAddress", location)
+                                    <div class="govuk-radios__item">
+                                        <input asp-for="Location" value="@location.ToString()" id="location_@location.ToString()"
+                                               class="govuk-radios__input" type="radio">
+                                        <label for="location_@location.ToString()" class="govuk-label govuk-radios__label">
+                                            @location.ToString()
+                                        </label>
+                                    </div>
+                                }
+                            }
                             @*</div>*@
                             <div class="govuk-radios__item">
                                 <input asp-for="Location" value="UseOtherLocation" data-aria-controls="other-location-conditional" id="other-location" class="govuk-radios__input" type="radio">
@@ -79,5 +80,4 @@
         </form>
     </div>
 </div>
-
 
