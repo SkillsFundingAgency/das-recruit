@@ -1,5 +1,6 @@
 @using Esfa.Recruit.Shared.Web.Mappers
 @using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
+@using Humanizer
 @model ReviewViewModel
 <div class="review-container">
     <form asp-route="@RouteNames.Vacancy_Review_Post">
@@ -268,6 +269,14 @@
                 <div class="@Model.EmployerNameClass" id="@FieldIdentifiers.EmployerName">                    
                     <h3 class="govuk-heading-s">Employer</h3>
                     <p class="govuk-body">@Model.EmployerName</p>
+
+                    <div asp-show="@Model.IsAnonymousVacancy" class="govuk-inset-text">
+                        <h3 class="govuk-heading-s">Reason for being anonymous (does not show on vacancy)</h3>
+                        <p>@Model.AnonymousReason</p>
+                        <p class="govuk-hint" asp-show="@Model.HasOneAnonymousApproved">1 anonymous vacancy has been approved for this employer</p>
+                        <p class="govuk-hint" asp-hide="@Model.HasOneAnonymousApproved">@Model.AnonymousApprovedCount anonymous vacancies have been approved for this employer</p>
+                    </div>
+
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
                                           asp-value="@FieldIdentifiers.EmployerName"
                                           asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>

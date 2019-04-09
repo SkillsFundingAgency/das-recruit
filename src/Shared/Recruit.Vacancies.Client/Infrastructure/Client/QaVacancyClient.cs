@@ -201,5 +201,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 .OrderByDescending(r => r.ReviewedDate)
                 .ToList();
         }
+
+        public Task<int> GetAnonymousApprovedCountAsync(long legalEntityId)
+        {
+            return _vacancyReviewQuery.GetAnonymousApprovedCountAsync(legalEntityId);
+        }
     }
 }
