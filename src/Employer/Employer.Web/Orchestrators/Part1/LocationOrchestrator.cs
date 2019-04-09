@@ -41,7 +41,20 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         {
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_employerVacancyClient, _recruitVacancyClient,
                 vrm, RouteNames.Location_Get);
-            return await GetViewModelAsync(vacancy, employerInfoModel?.HasLegalEntityChanged,
+            var locationEditModel = new LocationEditModel {
+                EmployerAccountId = vrm.EmployerAccountId,
+                VacancyId = vrm.VacancyId
+            };
+            return await GetViewModelAsync(locationEditModel, vacancy, employerInfoModel?.HasLegalEntityChanged,
+                employerInfoModel?.LegalEntityId);
+        }
+
+        public async Task<LocationViewModel> GetLocationViewModelAsync(
+            LocationEditModel locationEditModel, VacancyEmployerInfoModel employerInfoModel, VacancyUser user)
+        {
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_employerVacancyClient, _recruitVacancyClient,
+                locationEditModel, RouteNames.Location_Get);
+            return await GetViewModelAsync(locationEditModel, vacancy, employerInfoModel?.HasLegalEntityChanged,
                 employerInfoModel?.LegalEntityId);
         }
 
@@ -162,7 +175,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             return mappings;
         }
 
-        private async Task<LocationViewModel> GetViewModelAsync(Vacancy vacancy, bool? hasLegalEntityChanged,
+        private async Task<LocationViewModel> GetViewModelAsync(LocationEditModel locationEditModel, Vacancy vacancy, bool? hasLegalEntityChanged,
             long? selectedOrganisationId)
         {
             var employerData = await _employerVacancyClient.GetEditVacancyInfoAsync(vacancy.EmployerAccountId);
@@ -176,43 +189,46 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             if (legalEntity == null)
                 throw new ArgumentNullException("Legal entity is required for location");
 
-            var vm = new LocationViewModel();
-            vm.PageInfo = Utility.GetPartOnePageInfo(vacancy);
+            var vm = new LocationViewModel {
+                PageInfo = Utility.GetPartOnePageInfo(vacancy),
+                LocationName = legalEntity.Address.ToString(),
+                OtherLocationsAddress = employerProfile?.OtherLocations ?? new List<Address>()
+            };
 
-            vm.LocationName = legalEntity.Address.ToString();
-            
-            vm.OtherLocationsAddress = employerProfile?.OtherLocations ?? new List<Address>();
-            
-            if (vacancy.EmployerLocation != null && (!hasLegalEntityChanged.HasValue || hasLegalEntityChanged == false))
+
+            if (!string.IsNullOrEmpty(locationEditModel.Location) && locationEditModel.Location == UseOtherLocation)
+                vm.Location = UseOtherLocation;
+            else
             {
-
-                if (vacancy.EmployerLocation.ToString() == legalEntity.Address.ToString())
-                    vm.Location = LegalEntityLocation;
-                else
+                if (vacancy.EmployerLocation != null && (!hasLegalEntityChanged.HasValue || hasLegalEntityChanged == false))
                 {
-                    var employerLocation = vacancy.EmployerLocation.ToString();
-                    StringComparer comparer = StringComparer.OrdinalIgnoreCase;
-                    var otherLocations = vm.OtherLocationsAddress;
-                    foreach (var location in otherLocations)
+                    if (vacancy.EmployerLocation.ToString() == legalEntity.Address.ToString())
+                        vm.Location = LegalEntityLocation;
+                    else
                     {
-                        if (comparer.Compare(employerLocation, location.ToString()) == 0)
+                        var employerLocation = vacancy.EmployerLocation.ToString();
+                        StringComparer comparer = StringComparer.OrdinalIgnoreCase;
+                        var otherLocations = vm.OtherLocationsAddress;
+                        foreach (var location in otherLocations)
                         {
-                            vm.Location = location.ToString();
+                            if (comparer.Compare(employerLocation, location.ToString()) == 0)
+                            {
+                                vm.Location = location.ToString();
+                            }
                         }
-                    }                    
+                    }
                 }
-            }
-
+            }        
             return vm;
         }
 
         private async Task UpdateEmployerProfileAsync(string employerAccountId,
             VacancyEmployerInfoModel employerInfoModel, LocationEditModel locationEditModel, VacancyUser user)
         {
-            var legalEntityId = employerInfoModel.LegalEntityId.GetValueOrDefault();
+            var legalEntityId = employerInfoModel?.LegalEntityId.GetValueOrDefault();
             
             var employerProfile =
-                await _recruitVacancyClient.GetEmployerProfileAsync(employerAccountId, legalEntityId);
+                await _recruitVacancyClient.GetEmployerProfileAsync(employerAccountId, legalEntityId.GetValueOrDefault());
 
             if (employerProfile == null)
             {
@@ -220,7 +236,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                     $"No Employer Profile was found for employerAccount: {employerAccountId}, legalEntity: {legalEntityId}");
             }
 
-            if (employerInfoModel.EmployerNameOption == EmployerNameOptionViewModel.NewTradingName)
+            if (employerInfoModel?.EmployerNameOption == EmployerNameOptionViewModel.NewTradingName)
                 employerProfile.TradingName = employerInfoModel.NewTradingName;               
 
             if (locationEditModel.Location == UseOtherLocation)
