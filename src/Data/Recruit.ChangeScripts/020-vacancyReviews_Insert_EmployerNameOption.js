@@ -50,14 +50,10 @@
 
             var updateDocument = {
                 $set: { 
-                    "vacancySnapshot.employerNameOption": employerNameOptionValue
+                    "vacancySnapshot.employerNameOption": employerNameOptionValue,
+                    "vacancySnapshot.legalEntityName" : doc.vacancySnapshot.employerName
                 }};
-             
-            if(typeof doc.vacancySnapshot.employerName !== "undefined"){
-                updateDocument.$set["vacancySnapshot.legalEntityName"] = doc.vacancySnapshot.employerName;
-                print(`Setting document '${toGUID(doc._id.hex())}' vacancySnapshot.legalEntityName to '${doc.vacancySnapshot.employerName}'`);
-            }
-            
+
             let writeResult = coll.update({
                 "_id": doc._id,
                 "vacancySnapshot.employerNameOption": { $exists: false }
@@ -70,7 +66,7 @@
                 quit(14);
             }
             
-            print(`Updated document '${toGUID(doc._id.hex())}' with vacancySnapshot.employerNameOption: RegisteredName.`);
+            print(`Updated document '${toGUID(doc._id.hex())}' with vacancySnapshot.employerNameOption: RegisteredName and vacancySnapshot.legalEntityName '${doc.vacancySnapshot.employerName}'`);
         }
 
         passThrough++;
