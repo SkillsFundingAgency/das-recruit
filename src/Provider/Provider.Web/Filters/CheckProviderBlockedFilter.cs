@@ -28,7 +28,7 @@ namespace Esfa.Recruit.Provider.Web.Filters
 
                 var ukprnFromUrl = context.RouteData.Values[RouteValues.Ukprn].ToString().ToUpper();
 
-                if (blockedProviderAccountIds.Contains(ukprnFromUrl))
+                if (!blockedProviderAccountIds.Contains(ukprnFromUrl))
                 {
                     throw new BlockedProviderException($"Provider Ukprn account '{ukprnFromUrl}' is blocked");
                 }
