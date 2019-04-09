@@ -19,13 +19,18 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
         public async Task<string> GetEmployerNameAsync(Guid vacancyId)
         {
             var vacancy = await _vacancyRepository.GetVacancyAsync(vacancyId);
-            if (vacancy.EmployerNameOption == EmployerNameOption.TradingName) 
+            if(vacancy.CanEdit)
             {
-                var profile = await _employerProfileRepository.GetAsync(vacancy.EmployerAccountId, vacancy.LegalEntityId);
-                return profile.TradingName;
+                if (vacancy.EmployerNameOption == EmployerNameOption.TradingName) 
+                {
+                    var profile = await _employerProfileRepository.GetAsync(vacancy.EmployerAccountId, vacancy.LegalEntityId);
+                    return profile.TradingName;
+                }
+
+                return vacancy.LegalEntityName;
             }
             
-            return vacancy.LegalEntityName;
+            return vacancy.EmployerName;
         }
     }
 }
