@@ -16,5 +16,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Repositories
         Task<int> GetApprovedFirstTimeCountAsync(string submittedByUserId);
         Task<List<VacancyReview>> GetAssignedForUserAsync(string userId, DateTime assignationExpiryDateTime);
         Task<VacancyReview> GetCurrentReferredVacancyReviewAsync(long vacancyReference);
+        Task<int> GetAnonymousApprovedCountAsync(long legalEntityId);
     }
 }

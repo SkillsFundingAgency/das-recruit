@@ -53,6 +53,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules
             if (subject.EmployerNameOption == EmployerNameOption.TradingName)
                 outcomes.AddRange(ProfanityCheckAsync(() => subject.EmployerName));
 
+            if (subject.EmployerNameOption == EmployerNameOption.Anonymous)
+                outcomes.AddRange(ProfanityCheckAsync(() => subject.EmployerName));
+            
             outcomes.AddRange(ProfanityCheckAsync(() => subject.ApplicationInstructions));
 
             var outcome = outcomeBuilder.Add(outcomes)

@@ -185,5 +185,21 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 
             return vacancyReview;
         }
+
+        public async Task<int> GetAnonymousApprovedCountAsync(long legalEntityId)
+        {
+            var filterBuilder = Builders<VacancyReview>.Filter;
+            var filter = filterBuilder.Eq(r => r.VacancySnapshot.LegalEntityId, legalEntityId) &
+                         filterBuilder.Eq(r => r.VacancySnapshot.EmployerNameOption, EmployerNameOption.Anonymous) &
+                         filterBuilder.Eq(r => r.Status, ReviewStatus.Closed) &
+                         filterBuilder.Eq(r => r.ManualOutcome, ManualQaOutcome.Approved);
+
+            var collection = GetCollection<VacancyReview>();
+            var count = await RetryPolicy.ExecuteAsync(_ =>
+                    collection.CountDocumentsAsync(filter),
+                new Context(nameof(GetApprovedCountAsync)));
+
+            return (int)count;
+        }
     }
 }

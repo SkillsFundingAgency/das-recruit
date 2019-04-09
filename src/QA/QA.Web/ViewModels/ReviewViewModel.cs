@@ -24,6 +24,9 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public string EmployerContactEmail { get; internal set; }
         public string EmployerContactTelephone { get; internal set; }
         public string EmployerDescription { get; internal set; }
+        public EmployerNameOption EmployerNameOption { get; internal set; }
+        public string AnonymousReason { get; internal set; }
+        public int AnonymousApprovedCount { get; internal set; }
         public string EmployerWebsiteUrl { get; internal set; }
         public IEnumerable<string> EmployerAddressElements { get; internal set; }
         public bool IsDisabilityConfident { get; set; }
@@ -60,10 +63,12 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public IEnumerable<FieldIdentifierViewModel> FieldIdentifiers { get; set; }
         public IEnumerable<AutomatedQaResultViewModel> AutomatedQaResults { get; set; }
         public bool IsResubmission { get; set; }
-       public string ReviewerName { get; set; }
+        public string ReviewerName { get; set; }
         public DateTime ReviewedDate { get; set; }
         public ReviewSummaryViewModel Review { get; set; }
         public ManualQaOutcome? ManualOutcome { get; set; }
+
+        public bool IsAnonymousVacancy => EmployerNameOption == EmployerNameOption.Anonymous;
         public bool IsApproved => ManualOutcome.GetValueOrDefault() == ManualQaOutcome.Approved;
         public string ReviewedDateDay => ReviewedDate.ToLocalTime().AsGdsDate();
         public string ReviewedDateTime => ReviewedDate.ToLocalTime().AsGdsTime();
@@ -75,6 +80,7 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public bool HasApplicationUrl => string.IsNullOrEmpty(ApplicationUrl) == false;
         public bool HasPreviouslySubmitted => VacancyReviewsApprovedCount > 0;
         public bool HasNotPreviouslySubmitted => HasPreviouslySubmitted == false;
+        public bool HasOneAnonymousApproved => AnonymousApprovedCount == 1;
         public string SubmittedDateTime => SubmittedDate.AsGdsDateTime();
         public bool IsNotDisabilityConfident => IsDisabilityConfident == false;
         public bool IsEmployerVacancy => OwnerType == OwnerType.Employer;
