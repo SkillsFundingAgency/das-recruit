@@ -25,7 +25,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
                 }
                 else
                 {
-                    WriteHeader(csv, rows.First);
+                    WriteHeader(csv, reportDate, rows.First, rows.Count);
                     WriteValues(csv, rows, dataTypeResolver);
                 }
             }
@@ -45,23 +45,49 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
 
         private void WriteNoResults(CsvWriter csv, DateTime reportDate)
         {
-            csv.WriteField("Date");
-            csv.WriteField("Total_Number_Of_Applications");
-            csv.NextRecord();
-
-            csv.WriteField(reportDate.ToString(DateTimeFormat));
-            csv.WriteField(0);
-            csv.NextRecord();
+            WriteTotalHeader(csv, reportDate, 0, 2);
         }
 
-        private void WriteHeader(CsvWriter csv, JToken row)
+        private void WriteTotalHeader(CsvWriter csv, DateTime reportDate, int total, int fieldCount)
         {
             csv.WriteField("PROTECT");
-            for (var i = 1; i < row.Children().Count(); i++)
+
+            for (var i = 1; i < fieldCount; i++)
             {
                 csv.WriteField("");
             }
             csv.NextRecord();
+
+            WriteEmptyRow(csv, fieldCount);
+            WriteEmptyRow(csv, fieldCount);
+
+            csv.WriteField("Date");
+            csv.WriteField("Total_Number_Of_Applications");
+
+            for (var i = 2; i < fieldCount; i++)
+            {
+                csv.WriteField("");
+            }
+            csv.NextRecord();
+
+            csv.WriteField(reportDate.ToString(DateTimeFormat));
+            csv.WriteField(total);
+
+            for (var i = 2; i < fieldCount; i++)
+            {
+                csv.WriteField("");
+            }
+
+            csv.NextRecord();
+        }
+
+        private void WriteHeader(CsvWriter csv, DateTime reportDate, JToken row, int total)
+        {
+            var fieldCount = row.Children().Count();
+
+            WriteTotalHeader(csv, reportDate, total, fieldCount);
+
+            WriteEmptyRow(csv, fieldCount);
 
             foreach (var field in row.Children())
             {
@@ -104,6 +130,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             }
 
             csv.WriteField(value);
+        }
+
+        private void WriteEmptyRow(CsvWriter csv, int fieldCount)
+        {
+            for (var i = 0; i < fieldCount; i++)
+            {
+                csv.WriteField("");
+            }
+            
+            csv.NextRecord();
         }
     }
 }

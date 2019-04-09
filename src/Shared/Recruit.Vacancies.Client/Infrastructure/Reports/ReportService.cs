@@ -92,7 +92,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
 
             var results = JArray.Parse(report.Data);
 
-            _csvBuilder.WriteCsvToStream(stream, results, report.RequestedOn, reportStrategy.ResolveFormat);
+            _csvBuilder.WriteCsvToStream(stream, results, report.RequestedOn.ToLocalTime(), reportStrategy.ResolveFormat);
         }
     }
 }
