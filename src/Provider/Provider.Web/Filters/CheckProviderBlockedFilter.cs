@@ -24,11 +24,11 @@ namespace Esfa.Recruit.Provider.Web.Filters
         {
             if (RequestIsForWhiteListedPage(context) == false)
             {
-                var blockedProviderAccountIds = _configuration.GetValue<string>("WhitelistedProvidersList").Split(';').ToList();
+                var whitelistedProvidersUkprn = _configuration.GetValue<string>("WhitelistedProvidersList").Split(';').ToList();
 
                 var ukprnFromUrl = context.RouteData.Values[RouteValues.Ukprn].ToString().ToUpper();
 
-                if (!blockedProviderAccountIds.Contains(ukprnFromUrl))
+                if (!whitelistedProvidersUkprn.Contains(ukprnFromUrl))
                 {
                     throw new BlockedProviderException($"Provider Ukprn account '{ukprnFromUrl}' is blocked");
                 }
