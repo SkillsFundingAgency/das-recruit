@@ -210,8 +210,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             VacancyEmployerInfoModel employerInfoModel, LocationEditModel locationEditModel, VacancyUser user)
         {
             var legalEntityId = employerInfoModel.LegalEntityId.GetValueOrDefault();
-            var tradingName = employerInfoModel.NewTradingName;
-
+            
             var employerProfile =
                 await _recruitVacancyClient.GetEmployerProfileAsync(employerAccountId, legalEntityId);
 
@@ -221,9 +220,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                     $"No Employer Profile was found for employerAccount: {employerAccountId}, legalEntity: {legalEntityId}");
             }
 
-            if (employerInfoModel.EmployerNameOption == EmployerNameOptionViewModel.NewTradingName &&
-                employerProfile.TradingName != tradingName)
-                employerProfile.TradingName = tradingName;               
+            if (employerInfoModel.EmployerNameOption == EmployerNameOptionViewModel.NewTradingName)
+                employerProfile.TradingName = employerInfoModel.NewTradingName;               
 
             if (locationEditModel.Location == UseOtherLocation)
             {
