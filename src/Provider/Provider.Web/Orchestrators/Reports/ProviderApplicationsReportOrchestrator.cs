@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.ViewModels.Reports;
 using Esfa.Recruit.Provider.Web.ViewModels.Reports.ProviderApplicationsReport;
@@ -49,23 +50,23 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Reports
             switch (model.DateRange)
             {
                 case DateRangeType.Last7Days:
-                    fromDate = toDateInclusive.Date.AddDays(-7);
+                    fromDate = _timeProvider.NextDay.AddDays(-8);
                     break;
                 case DateRangeType.Last14Days:
-                    fromDate = toDateInclusive.Date.AddDays(-14);
+                    fromDate = _timeProvider.NextDay.AddDays(-15);
                     break;
                 case DateRangeType.Last30Days:
-                    fromDate = toDateInclusive.Date.AddDays(-30);
+                    fromDate = _timeProvider.NextDay.AddDays(-31);
                     break;
                 case DateRangeType.Custom:
-                    fromDate = model.FromDate.AsDateTimeUk().Value.ToUniversalTime();
-                    toDateInclusive = model.ToDate.AsDateTimeUk().Value.ToUniversalTime().AddDays(1).AddTicks(-1);
+                    fromDate = model.FromDate.AsDateTimeUk(DateTimeStyles.AssumeLocal).Value.ToUniversalTime();
+                    toDateInclusive = model.ToDate.AsDateTimeUk(DateTimeStyles.AssumeLocal).Value.ToUniversalTime().AddDays(1).AddTicks(-1);
                     break;
                 default:
                     throw new Exception($"Cannot handle this date range type:{model.DateRange.ToString()}");
             }
 
-            var reportName = $"{fromDate.AsGdsDate()} to {toDateInclusive.AsGdsDate()}";
+            var reportName = $"{fromDate.ToLocalTime().AsGdsDate()} to {toDateInclusive.ToLocalTime().AsGdsDate()}";
 
             return _client.CreateProviderApplicationsReportAsync(model.Ukprn, fromDate, toDateInclusive, user, reportName);
         }

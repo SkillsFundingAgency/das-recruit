@@ -69,8 +69,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Reports
 
             _client.Verify(c => c.CreateProviderApplicationsReportAsync(
                     ukprn,
-                    DateTime.Parse("2018-02-01"),
-                    DateTime.Parse("2019-04-03").AddDays(1).AddTicks(-1), 
+                    DateTime.Parse("2018-02-01").ToUniversalTime(),
+                    DateTime.Parse("2019-04-03").AddDays(1).AddTicks(-1).ToUniversalTime(), 
                     user,
                     "01 Feb 2018 to 03 Apr 2019"),
                 Times.Once);
