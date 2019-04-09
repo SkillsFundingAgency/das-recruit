@@ -180,7 +180,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             vm.PageInfo = Utility.GetPartOnePageInfo(vacancy);
 
             vm.LocationName = legalEntity.Address.ToString();
-            vm.OtherLocationsAddress = employerProfile?.OtherLocations;
+            
+            vm.OtherLocationsAddress = employerProfile?.OtherLocations ?? new List<Address>();
             
             if (vacancy.EmployerLocation != null && (!hasLegalEntityChanged.HasValue || hasLegalEntityChanged == false))
             {
@@ -192,16 +193,13 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                     var employerLocation = vacancy.EmployerLocation.ToString();
                     StringComparer comparer = StringComparer.OrdinalIgnoreCase;
                     var otherLocations = vm.OtherLocationsAddress;
-                    if (otherLocations?.Any() == true)
+                    foreach (var location in otherLocations)
                     {
-                        foreach (var location in otherLocations)
+                        if (comparer.Compare(employerLocation, location.ToString()) == 0)
                         {
-                            if (comparer.Compare(employerLocation, location.ToString()) == 0)
-                            {
-                                vm.Location = location.ToString();
-                            }
+                            vm.Location = location.ToString();
                         }
-                    }
+                    }                    
                 }
             }
 
@@ -227,35 +225,31 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 employerProfile.TradingName != tradingName)
                 employerProfile.TradingName = tradingName;               
 
-        if (locationEditModel.Location == UseOtherLocation)
-        {
-            var address = new Address {
-                AddressLine1 = locationEditModel.AddressLine1,
-                AddressLine2 = locationEditModel.AddressLine2,
-                AddressLine3 = locationEditModel.AddressLine3,
-                AddressLine4 = locationEditModel.AddressLine4,
-                Postcode = locationEditModel.Postcode
-            };     
-            if(CheckForDuplicates(employerProfile.OtherLocations,address))
+            if (locationEditModel.Location == UseOtherLocation)
             {
-                employerProfile.OtherLocations.Add(address);
-            }            
+                var address = new Address {
+                    AddressLine1 = locationEditModel.AddressLine1,
+                    AddressLine2 = locationEditModel.AddressLine2,
+                    AddressLine3 = locationEditModel.AddressLine3,
+                    AddressLine4 = locationEditModel.AddressLine4,
+                    Postcode = locationEditModel.Postcode
+                };     
+                if(CheckForDuplicates(employerProfile.OtherLocations, address))
+                {
+                    employerProfile.OtherLocations.Add(address);
+                }            
+            }
+            await _recruitVacancyClient.UpdateEmployerProfileAsync(employerProfile, user);
         }
-
-        await _recruitVacancyClient.UpdateEmployerProfileAsync(employerProfile, user);
-    }
 
         private bool CheckForDuplicates(IList<Address> otherLocations, Address address)
         {
             StringComparer comparer = StringComparer.OrdinalIgnoreCase;
-            if (otherLocations?.Any() == true)
+            foreach (var location in otherLocations)
             {
-                foreach (var location in otherLocations)
+                if (comparer.Compare(address.ToString(), location.ToString()) == 0)
                 {
-                    if (comparer.Compare(address.ToString(), location.ToString()) == 0)
-                    {
-                        return false;
-                    }
+                    return false;
                 }
             }
             return true;

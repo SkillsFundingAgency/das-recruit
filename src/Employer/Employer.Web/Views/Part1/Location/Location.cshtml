@@ -21,18 +21,18 @@
                                     @Model.LocationName
                                 </label>
                             </div>
-                            @if (Model.OtherLocationsAddress != null && Model.OtherLocationsAddress.Any())
-                            {
+                            @{
+                                int selectIndex = 0;
                                 foreach (var location in Model.OtherLocationsAddress)
                                 {
-                                    @Html.Hidden("CurrentAddress", location)
+                                    selectIndex++;
                                     <div class="govuk-radios__item">
-                                        <input asp-for="Location" value="@location.ToString()" id="location_@location.ToString()"
-                                               class="govuk-radios__input" type="radio">
-                                        <label for="location_@location.ToString()" class="govuk-label govuk-radios__label">
-                                            @location.ToString()
-                                        </label>
-                                    </div>
+                                            <input asp-for="Location" value="@location.ToString()" id="OtherLocation_@selectIndex"
+                                                   class="govuk-radios__input" type="radio">
+                                            <label for="OtherLocation_@selectIndex" class="govuk-label govuk-radios__label">
+                                                @location.ToString()
+                                            </label>
+                                    </div>                                    
                                 }
                             }
                             <div class="govuk-radios__item">

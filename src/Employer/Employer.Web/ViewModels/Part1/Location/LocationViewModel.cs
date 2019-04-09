@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -26,7 +25,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Location
         public PartOnePageInfoViewModel PageInfo { get; set; }                
         public bool CanShowBackLink { get; internal set; }
         public IList<Address> OtherLocationsAddress { get; set; }
-        public bool ShowOtherLocations => OtherLocationsAddress?.Any() == true;
         public string LocationName { get; set; }
     }
 }
