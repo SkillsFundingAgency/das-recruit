@@ -458,7 +458,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public Task<VacancyAnalyticsSummary> GetVacancyAnalyticsSummaryAsync(long vacancyReference)
         {
-            return _reader.GetVacancyAnalyticsSummary(vacancyReference);
+            return _reader.GetVacancyAnalyticsSummaryAsync(vacancyReference);
         }
     }
 }

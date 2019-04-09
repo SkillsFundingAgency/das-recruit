@@ -10,7 +10,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
 
         public int NoOfApprenticeshipSearches { get; set; }
 
-
         public int NoOfApprenticeshipSearchesSevenDaysAgo { get; set; }
         public int NoOfApprenticeshipSearchesSixDaysAgo { get; set; }
         public int NoOfApprenticeshipSearchesFiveDaysAgo { get; set; }
@@ -18,7 +17,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
         public int NoOfApprenticeshipSearchesThreeDaysAgo { get; set; }
         public int NoOfApprenticeshipSearchesTwoDaysAgo { get; set; }
         public int NoOfApprenticeshipSearchesOneDayAgo { get; set; }
-
 
 
         public int NoOfApprenticeshipSavedSearchAlerts { get; set; }
@@ -32,8 +30,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
         public int NoOfApprenticeshipSavedSearchAlertsOneDayAgo { get; set; }
 
 
-
-
         public int NoOfApprenticeshipSaved { get; set; }
 
         public int NoOfApprenticeshipSavedSevenDaysAgo { get; set; }
@@ -43,8 +39,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
         public int NoOfApprenticeshipSavedThreeDaysAgo { get; set; }
         public int NoOfApprenticeshipSavedTwoDaysAgo { get; set; }
         public int NoOfApprenticeshipSavedOneDayAgo { get; set; }
-
-
 
 
         public int NoOfApprenticeshipDetailsViews { get; set; }
@@ -58,7 +52,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
         public int NoOfApprenticeshipDetailsViewsOneDayAgo { get; set; }
 
 
-
         public int NoOfApprenticeshipApplicationsCreated { get; set; }
 
         public int NoOfApprenticeshipApplicationsCreatedSevenDaysAgo { get; set; }
@@ -68,9 +61,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
         public int NoOfApprenticeshipApplicationsCreatedThreeDaysAgo { get; set; }
         public int NoOfApprenticeshipApplicationsCreatedTwoDaysAgo { get; set; }
         public int NoOfApprenticeshipApplicationsCreatedOneDayAgo { get; set; }
-
-
-
 
 
         public int NoOfApprenticeshipApplicationsSubmitted { get; set; }

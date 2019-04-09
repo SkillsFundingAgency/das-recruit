@@ -14,6 +14,9 @@ using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyAnalytics;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
+using Esfa.Recruit.Employer.Web.Configuration;
+using Esfa.Recruit.Shared.Web.Configuration;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
@@ -22,11 +25,13 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         private const VacancyRuleSet ValdationRules = VacancyRuleSet.ClosingDate | VacancyRuleSet.StartDate | VacancyRuleSet.TrainingProgramme | VacancyRuleSet.StartDateEndDate | VacancyRuleSet.TrainingExpiryDate | VacancyRuleSet.MinimumWage;
         private readonly DisplayVacancyViewModelMapper _vacancyDisplayMapper;
         private readonly IRecruitVacancyClient _client;
+		private readonly IFeature _featureToggle;
 
-        public VacancyManageOrchestrator(ILogger<VacancyManageOrchestrator> logger, DisplayVacancyViewModelMapper vacancyDisplayMapper, IRecruitVacancyClient vacancyClient) : base(logger)
+		public VacancyManageOrchestrator(ILogger<VacancyManageOrchestrator> logger, DisplayVacancyViewModelMapper vacancyDisplayMapper, IRecruitVacancyClient vacancyClient, IFeature featureToggle) : base(logger)
         {
             _vacancyDisplayMapper = vacancyDisplayMapper;
             _client = vacancyClient;
+            _featureToggle = featureToggle;
         }
 
         public async Task<Vacancy> GetVacancy(VacancyRouteModel vrm)
@@ -52,15 +57,24 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             viewModel.CanShowEditVacancyLink = vacancy.CanExtendStartAndClosingDates;
             viewModel.CanShowCloseVacancyLink = vacancy.CanClose;
 
-            var vacancyApplicationsTask = _client.GetVacancyApplicationsAsync(vacancy.VacancyReference.Value.ToString());
-            var vacancyAnalyticsTask = _client.GetVacancyAnalyticsSummaryAsync(vacancy.VacancyReference.Value);
+            var applications = new List<VacancyApplication>();
 
-            await Task.WhenAll(vacancyApplicationsTask, vacancyAnalyticsTask);
+            if (_featureToggle.IsFeatureEnabled(RecruitFeatureNames.CanShowVacancyAnalytics))
+            {
+                var vacancyApplicationsTask = _client.GetVacancyApplicationsAsync(vacancy.VacancyReference.Value.ToString());
+                var vacancyAnalyticsTask = _client.GetVacancyAnalyticsSummaryAsync(vacancy.VacancyReference.Value);
 
-            var applications = vacancyApplicationsTask.Result?.Applications ?? new List<VacancyApplication>();
-            var analyticsSummary = vacancyAnalyticsTask.Result ?? new VacancyAnalyticsSummary();
+                await Task.WhenAll(vacancyApplicationsTask, vacancyAnalyticsTask);
 
-            viewModel.AnalyticsSummary = VacancyAnalyticsSummaryMapper.MapToVacancyAnalyticsSummaryViewModel(analyticsSummary, vacancy.LiveDate.GetValueOrDefault());
+                applications = vacancyApplicationsTask.Result?.Applications ?? new List<VacancyApplication>();
+                var analyticsSummary = vacancyAnalyticsTask.Result ?? new VacancyAnalyticsSummary();
+                viewModel.AnalyticsSummary = VacancyAnalyticsSummaryMapper.MapToVacancyAnalyticsSummaryViewModel(analyticsSummary, vacancy.LiveDate.GetValueOrDefault());
+            }
+            else
+            {
+                var vacancyApplications = await _client.GetVacancyApplicationsAsync(vacancy.VacancyReference.Value.ToString());
+                applications = vacancyApplications?.Applications ?? new List<VacancyApplication>();
+            }
 
             viewModel.Applications = new VacancyApplicationsViewModel
             {

@@ -19,6 +19,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         Task<VacancyApplications> GetVacancyApplicationsAsync(string vacancyReference);
         Task<QaDashboard> GetQaDashboardAsync();
         Task<ProviderDashboard> GetProviderDashboardAsync(long ukprn);
-		Task<VacancyAnalyticsSummary> GetVacancyAnalyticsSummary(long vacancyReference);
+		Task<VacancyAnalyticsSummary> GetVacancyAnalyticsSummaryAsync(long vacancyReference);
 	}
 }

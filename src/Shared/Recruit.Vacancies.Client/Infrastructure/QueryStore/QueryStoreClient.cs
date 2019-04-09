@@ -40,7 +40,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             return _queryStore.GetAsync<ProviderDashboard>(QueryViewType.ProviderDashboard.TypeName, key);
         }
 
-        public Task<VacancyAnalyticsSummary> GetVacancyAnalyticsSummary(long vacancyReference)
+        public Task<VacancyAnalyticsSummary> GetVacancyAnalyticsSummaryAsync(long vacancyReference)
         {
             var key = QueryViewType.VacancyAnalyticsSummary.GetIdValue(vacancyReference);
 
