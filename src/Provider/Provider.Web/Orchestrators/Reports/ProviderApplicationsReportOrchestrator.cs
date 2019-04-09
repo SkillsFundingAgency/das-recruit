@@ -50,13 +50,13 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Reports
             switch (model.DateRange)
             {
                 case DateRangeType.Last7Days:
-                    fromDate = _timeProvider.NextDay.AddDays(-8);
+                    fromDate = _timeProvider.Today.AddDays(-7);
                     break;
                 case DateRangeType.Last14Days:
-                    fromDate = _timeProvider.NextDay.AddDays(-15);
+                    fromDate = _timeProvider.Today.AddDays(-14);
                     break;
                 case DateRangeType.Last30Days:
-                    fromDate = _timeProvider.NextDay.AddDays(-31);
+                    fromDate = _timeProvider.Today.AddDays(-30);
                     break;
                 case DateRangeType.Custom:
                     fromDate = model.FromDate.AsDateTimeUk(DateTimeStyles.AssumeLocal).Value.ToUniversalTime();
