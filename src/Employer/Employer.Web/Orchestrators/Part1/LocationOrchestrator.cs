@@ -112,7 +112,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                     await _recruitVacancyClient.UpdateDraftVacancyAsync(vacancy, user);
 
                     var updateProfile = false;
-                    if (employerInfoModel.EmployerNameOption == EmployerNameOptionViewModel.NewTradingName)
+                    if (employerInfoModel != null && employerInfoModel.EmployerNameOption == EmployerNameOptionViewModel.NewTradingName)
                     {
                         updateProfile = true;
                         employerProfile.TradingName = employerInfoModel.NewTradingName;
