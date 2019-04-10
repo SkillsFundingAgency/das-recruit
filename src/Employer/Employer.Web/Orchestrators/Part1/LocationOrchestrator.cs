@@ -23,7 +23,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.EmployerAddress;
         private const string UseOtherLocation = "UseOtherLocation";
-        private const string LegalEntityLocation = "LegalEntityLocation";
         private readonly IEmployerVacancyClient _employerVacancyClient;
         private readonly IRecruitVacancyClient _recruitVacancyClient;
 
@@ -41,14 +40,14 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         {
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_employerVacancyClient, _recruitVacancyClient,
                 vrm, RouteNames.Location_Get);
-            return await GetViewModelAsync(vacancy, employerInfoModel?.HasLegalEntityChanged,
-                employerInfoModel?.LegalEntityId);
+            return await GetViewModelAsync(vacancy,
+                employerInfoModel?.LegalEntityId, employerInfoModel?.HasLegalEntityChanged ?? false);
         }
 
         public async Task<OrchestratorResponse> PostLocationEditModelAsync(
             LocationEditModel locationEditModel, VacancyEmployerInfoModel employerInfoModel, VacancyUser user)
         {            
-            if (string.IsNullOrEmpty(locationEditModel.Location))
+            if (string.IsNullOrEmpty(locationEditModel.SelectedLocation))
                 return new OrchestratorResponse(false);
 
             var vacancyTask = Utility.GetAuthorisedVacancyForEditAsync(
@@ -57,6 +56,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 _employerVacancyClient.GetEditVacancyInfoAsync(locationEditModel.EmployerAccountId);
             await Task.WhenAll(vacancyTask, employerVacancyInfoTask);
             var vacancy = vacancyTask.Result;
+
             var editVacancyInfo = employerVacancyInfoTask.Result;
 
             LegalEntity selectedOrganisation;
@@ -77,49 +77,59 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                     editVacancyInfo.LegalEntities.Single(l => l.LegalEntityId == vacancy.LegalEntityId);
             }
 
-            switch (locationEditModel.Location)
-            {
-                case UseOtherLocation:
-                    vacancy.EmployerLocation = new Address
-                    {
-                        AddressLine1 = locationEditModel.AddressLine1,
-                        AddressLine2 = locationEditModel.AddressLine2,
-                        AddressLine3 = locationEditModel.AddressLine3,
-                        AddressLine4 = locationEditModel.AddressLine4,
-                        Postcode = locationEditModel.Postcode.AsPostcode()
-                    };
-                    break;
-                case LegalEntityLocation:
-                    vacancy.EmployerLocation = new Address
-                    {
-                        AddressLine1 = selectedOrganisation.Address.AddressLine1,
-                        AddressLine2 = selectedOrganisation.Address.AddressLine2,
-                        AddressLine3 = selectedOrganisation.Address.AddressLine3,
-                        AddressLine4 = selectedOrganisation.Address.AddressLine4,
-                        Postcode = selectedOrganisation.Address.Postcode.AsPostcode()
-                    };
-                    break;
-                default:
-                    vacancy.EmployerLocation = await GetCurrentAddress(locationEditModel.Location,vacancy);
-                    break;
-            }
+            //TODO fetch employer profile
 
+            if (locationEditModel.SelectedLocation == LocationViewModel.UseOtherLocationConst)
+            {
+                vacancy.EmployerLocation = new Address {
+                    AddressLine1 = locationEditModel.AddressLine1,
+                    AddressLine2 = locationEditModel.AddressLine2,
+                    AddressLine3 = locationEditModel.AddressLine3,
+                    AddressLine4 = locationEditModel.AddressLine4,
+                    Postcode = locationEditModel.Postcode.AsPostcode()
+                };
+            }
+            else
+            {
+                //TODO pass employer profile
+                vacancy.EmployerLocation = await GetMatchingAddress(locationEditModel.SelectedLocation, vacancy.EmployerAccountId, selectedOrganisation);
+            }
+            
             return await ValidateAndExecute(
                 vacancy,
                 v => _recruitVacancyClient.Validate(v, ValidationRules),
                 async v =>
                 {
+                    await _recruitVacancyClient.UpdateDraftVacancyAsync(vacancy, user);
+
+                    /*
+                     * if name has changed update name in the profile
+                     *
+                     * if locations is new update location in the profile
+                     *
+                     * call update profile if any of above has changed
+                     */
+
+                    //TODO change below method to take employer profile
+                    //await UpdateEmployerProfileAsync(employerProfile);
                     await UpdateEmployerProfileAsync(vacancy.EmployerAccountId,
                         employerInfoModel, locationEditModel, user);
-                    await _recruitVacancyClient.UpdateDraftVacancyAsync(vacancy, user);
+
                 });
         }
 
-        private async Task<Address> GetCurrentAddress(string currentLocation, Vacancy vacancy)
+        private async Task<Address> GetMatchingAddress(string currentLocation, string employerAccountId, LegalEntity legalEntity)
         {
             var employerProfile =
-                await _recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.LegalEntityId);            
+                await _recruitVacancyClient.GetEmployerProfileAsync(employerAccountId, legalEntity.LegalEntityId);   
+            
             StringComparer comparer = StringComparer.OrdinalIgnoreCase;
+
+            var registeredLocation = legalEntity.Address.ToString();
+            if (comparer.Compare(currentLocation, registeredLocation) == 0)
+            {
+                return AddressExtensions.ConvertToDomainAddress(legalEntity.Address);
+            }
             var otherLocations = employerProfile.OtherLocations;
             if (otherLocations?.Any() == true)
             {
@@ -131,8 +141,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                     }
                 }
             }
-            throw new Exception(
-                $"No matching addresses found for current location {currentLocation}");
+            return null;
         }
 
         public async Task<VacancyEmployerInfoModel> GetVacancyEmployerInfoModelAsync(VacancyRouteModel vrm)
@@ -162,47 +171,40 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             return mappings;
         }
 
-        private async Task<LocationViewModel> GetViewModelAsync(Vacancy vacancy, bool? hasLegalEntityChanged,
-            long? selectedOrganisationId)
+        private async Task<LocationViewModel> GetViewModelAsync(Vacancy vacancy,
+            long? selectedOrganisationId, bool hasLegalEntityChanged)
         {
             var employerData = await _employerVacancyClient.GetEditVacancyInfoAsync(vacancy.EmployerAccountId);
             
             var legalEntityId = selectedOrganisationId.HasValue ? selectedOrganisationId : vacancy.LegalEntityId;
 
-            var employerProfile =
-                await _recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, legalEntityId.GetValueOrDefault());
-
             var legalEntity = employerData.LegalEntities.First(l => l.LegalEntityId == legalEntityId);
             if (legalEntity == null)
                 throw new ArgumentNullException("Legal entity is required for location");
 
+            var employerProfile =
+                await _recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, legalEntityId.GetValueOrDefault());
+
             var vm = new LocationViewModel();
             vm.PageInfo = Utility.GetPartOnePageInfo(vacancy);
 
-            vm.LocationName = legalEntity.Address.ToString();
+            vm.AvailableLocations.Add(legalEntity.Address.ToString());
             
-            vm.OtherLocationsAddress = employerProfile?.OtherLocations ?? new List<Address>();
-            
-            if (vacancy.EmployerLocation != null && (!hasLegalEntityChanged.HasValue || hasLegalEntityChanged == false))
+            vm.AvailableLocations.AddRange(employerProfile.OtherLocations.Select(x=>x.ToString()));
+
+            if (vacancy.EmployerLocation != null && hasLegalEntityChanged == false)
             {
-
-                if (vacancy.EmployerLocation.ToString() == legalEntity.Address.ToString())
-                    vm.Location = LegalEntityLocation;
-                else
+                StringComparer comparer = StringComparer.OrdinalIgnoreCase;
+                var employerLocation = vacancy.EmployerLocation.ToString();
+                var otherLocations = vm.AvailableLocations;
+                foreach (var location in otherLocations)
                 {
-                    var employerLocation = vacancy.EmployerLocation.ToString();
-                    StringComparer comparer = StringComparer.OrdinalIgnoreCase;
-                    var otherLocations = vm.OtherLocationsAddress;
-                    foreach (var location in otherLocations)
+                    if (comparer.Compare(employerLocation, location) == 0)
                     {
-                        if (comparer.Compare(employerLocation, location.ToString()) == 0)
-                        {
-                            vm.Location = location.ToString();
-                        }
-                    }                    
+                        vm.SelectedLocation = location;
+                    }
                 }
-            }
-
+            }        
             return vm;
         }
 
@@ -225,7 +227,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 employerProfile.TradingName != tradingName)
                 employerProfile.TradingName = tradingName;               
 
-            if (locationEditModel.Location == UseOtherLocation)
+            if (locationEditModel.SelectedLocation == UseOtherLocation)
             {
                 var address = new Address {
                     AddressLine1 = locationEditModel.AddressLine1,
@@ -234,7 +236,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                     AddressLine4 = locationEditModel.AddressLine4,
                     Postcode = locationEditModel.Postcode
                 };     
-                if(CheckForDuplicates(employerProfile.OtherLocations, address))
+                if(CheckForDuplicates(registeredAddress, employerProfile.OtherLocations, address))
                 {
                     employerProfile.OtherLocations.Add(address);
                 }            

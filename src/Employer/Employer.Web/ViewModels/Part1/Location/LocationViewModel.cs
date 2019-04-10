@@ -1,13 +1,14 @@
 using System.Collections.Generic;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.ViewModels;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Location
 {
     public class LocationViewModel: VacancyRouteModel
     {
-        public string Location { get; set; }
+        public const string UseOtherLocationConst = "UseOtherLocation";
+        public string UseOtherLocation => UseOtherLocationConst;
+        public string SelectedLocation { get; set; }
         public string AddressLine1 { get; set; }
         public string AddressLine2 { get; set; }
         public string AddressLine3 { get; set; }
@@ -24,7 +25,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Location
         public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
         public PartOnePageInfoViewModel PageInfo { get; set; }                
         public bool CanShowBackLink { get; internal set; }
-        public IList<Address> OtherLocationsAddress { get; set; }
-        public string LocationName { get; set; }
+        public List<string> AvailableLocations { get; set; } = new List<string>();
     }
 }

@@ -18,5 +18,16 @@ namespace Esfa.Recruit.Employer.Web.Extensions
 
             return string.Join(", ", arr.Where(x => !string.IsNullOrWhiteSpace(x)));
         }
+
+        public static Address ConvertToDomainAddress(Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo.Address address)
+        {
+            return new Address() {
+                AddressLine1 = address.AddressLine1,
+                AddressLine2 = address.AddressLine2,
+                AddressLine3 = address.AddressLine3,
+                AddressLine4 = address.AddressLine4,
+                Postcode = address.Postcode
+            };
+        }
     }
 }

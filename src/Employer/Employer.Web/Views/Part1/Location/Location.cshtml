@@ -13,30 +13,24 @@
             <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
                     <div class="govuk-radios govuk-radios--conditional" data-module="radios">
-                        <span esfa-validation-message-for="Location" class="govuk-error-message"></span>
+                        <span esfa-validation-message-for="SelectedLocation" class="govuk-error-message"></span>
                         <div class="govuk-radios">
-                            <div class="govuk-radios__item">
-                                <input asp-for="Location" value="LegalEntityLocation" id="legal-entity-id" class="govuk-radios__input" type="radio">
-                                <label for="legal-entity-name" class="govuk-label govuk-radios__label">
-                                    @Model.LocationName
-                                </label>
-                            </div>
-                            @{
+                           @{
                                 int selectIndex = 0;
-                                foreach (var location in Model.OtherLocationsAddress)
+                                foreach (var location in Model.AvailableLocations)
                                 {
                                     selectIndex++;
                                     <div class="govuk-radios__item">
-                                            <input asp-for="Location" value="@location.ToString()" id="OtherLocation_@selectIndex"
+                                            <input asp-for="SelectedLocation" value="@location" id="OtherLocation_@selectIndex"
                                                    class="govuk-radios__input" type="radio">
                                             <label for="OtherLocation_@selectIndex" class="govuk-label govuk-radios__label">
-                                                @location.ToString()
+                                                @location
                                             </label>
                                     </div>                                    
                                 }
                             }
                             <div class="govuk-radios__item">
-                                <input asp-for="Location" value="UseOtherLocation" data-aria-controls="other-location-conditional" id="other-location" class="govuk-radios__input" type="radio">
+                                <input asp-for="SelectedLocation" value="@Model.UseOtherLocation" data-aria-controls="other-location-conditional" id="other-location" class="govuk-radios__input" type="radio">
                                 <label for="other-location" class="govuk-label govuk-radios__label">
                                     a different location
                                 </label>
