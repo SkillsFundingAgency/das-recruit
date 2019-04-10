@@ -16,6 +16,7 @@ using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.EmployerName;
 using Address = Esfa.Recruit.Vacancies.Client.Domain.Entities.Address;
+using Recruit.Shared.Web.Extensions;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
@@ -132,7 +133,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         {
             StringComparer comparer = StringComparer.OrdinalIgnoreCase;
 
-            var registeredLocation = legalEntity.Address.ToString();
+            var registeredLocation = legalEntity.Address.ToAddressString();
             if (comparer.Compare(currentLocation, registeredLocation) == 0)
             {
                 return legalEntity.Address.ConvertToDomainAddress();
@@ -142,7 +143,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             {
                 foreach (var location in otherLocations)
                 {
-                    if (comparer.Compare(currentLocation, location.ToString()) == 0)
+                    if (comparer.Compare(currentLocation, location.ToAddressString()) == 0)
                     {
                         return location;
                     }
@@ -195,14 +196,14 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var vm = new LocationViewModel();
             vm.PageInfo = Utility.GetPartOnePageInfo(vacancy);
 
-            vm.AvailableLocations.Add(legalEntity.Address.ToString());
+            vm.AvailableLocations.Add(legalEntity.Address.ToAddressString());
             
-            vm.AvailableLocations.AddRange(employerProfile.OtherLocations.Select(x=>x.ToString()));
+            vm.AvailableLocations.AddRange(employerProfile.OtherLocations.Select(x=>x.ToAddressString()));
 
             if (vacancy.EmployerLocation != null && hasLegalEntityChanged == false)
             {
                 StringComparer comparer = StringComparer.OrdinalIgnoreCase;
-                var employerLocation = vacancy.EmployerLocation.ToString();
+                var employerLocation = vacancy.EmployerLocation.ToAddressString();
                 var otherLocations = vm.AvailableLocations;
                 foreach (var location in otherLocations)
                 {
