@@ -77,22 +77,30 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                     editVacancyInfo.LegalEntities.Single(l => l.LegalEntityId == vacancy.LegalEntityId);
             }
 
-            //TODO fetch employer profile
+            var employerProfile =
+                await _recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, selectedOrganisation.LegalEntityId);
 
-            if (locationEditModel.SelectedLocation == LocationViewModel.UseOtherLocationConst)
+            var newLocation = 
+                locationEditModel.SelectedLocation == LocationViewModel.UseOtherLocationConst 
+                ? locationEditModel.OtherLocationString 
+                : locationEditModel.SelectedLocation;
+
+            var matchingAddress = GetMatchingAddress(newLocation, employerProfile, selectedOrganisation);
+
+            if (matchingAddress != null)
             {
-                vacancy.EmployerLocation = new Address {
+                vacancy.EmployerLocation = matchingAddress;
+            }
+            else
+            {
+                vacancy.EmployerLocation = new Address 
+                {
                     AddressLine1 = locationEditModel.AddressLine1,
                     AddressLine2 = locationEditModel.AddressLine2,
                     AddressLine3 = locationEditModel.AddressLine3,
                     AddressLine4 = locationEditModel.AddressLine4,
                     Postcode = locationEditModel.Postcode.AsPostcode()
                 };
-            }
-            else
-            {
-                //TODO pass employer profile
-                vacancy.EmployerLocation = await GetMatchingAddress(locationEditModel.SelectedLocation, vacancy.EmployerAccountId, selectedOrganisation);
             }
             
             return await ValidateAndExecute(
@@ -102,33 +110,32 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 {
                     await _recruitVacancyClient.UpdateDraftVacancyAsync(vacancy, user);
 
-                    /*
-                     * if name has changed update name in the profile
-                     *
-                     * if locations is new update location in the profile
-                     *
-                     * call update profile if any of above has changed
-                     */
-
-                    //TODO change below method to take employer profile
-                    //await UpdateEmployerProfileAsync(employerProfile);
-                    await UpdateEmployerProfileAsync(vacancy.EmployerAccountId,
-                        employerInfoModel, locationEditModel, user);
-
+                    var updateProfile = false;
+                    if (employerInfoModel.EmployerNameOption == EmployerNameOptionViewModel.NewTradingName)
+                    {
+                        updateProfile = true;
+                        employerProfile.TradingName = employerInfoModel.NewTradingName;
+                    }
+                    if (matchingAddress == null)
+                    {
+                        updateProfile = true;
+                        employerProfile.OtherLocations.Add(vacancy.EmployerLocation);
+                    }
+                    if (updateProfile)    
+                    {
+                        await _recruitVacancyClient.UpdateEmployerProfileAsync(employerProfile, user);
+                    }
                 });
         }
 
-        private async Task<Address> GetMatchingAddress(string currentLocation, string employerAccountId, LegalEntity legalEntity)
+        private Address GetMatchingAddress(string currentLocation, EmployerProfile employerProfile, LegalEntity legalEntity)
         {
-            var employerProfile =
-                await _recruitVacancyClient.GetEmployerProfileAsync(employerAccountId, legalEntity.LegalEntityId);   
-            
             StringComparer comparer = StringComparer.OrdinalIgnoreCase;
 
             var registeredLocation = legalEntity.Address.ToString();
             if (comparer.Compare(currentLocation, registeredLocation) == 0)
             {
-                return AddressExtensions.ConvertToDomainAddress(legalEntity.Address);
+                return legalEntity.Address.ConvertToDomainAddress();
             }
             var otherLocations = employerProfile.OtherLocations;
             if (otherLocations?.Any() == true)
@@ -206,55 +213,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 }
             }        
             return vm;
-        }
-
-        private async Task UpdateEmployerProfileAsync(string employerAccountId,
-            VacancyEmployerInfoModel employerInfoModel, LocationEditModel locationEditModel, VacancyUser user)
-        {
-            var legalEntityId = employerInfoModel.LegalEntityId.GetValueOrDefault();
-            var tradingName = employerInfoModel.NewTradingName;
-
-            var employerProfile =
-                await _recruitVacancyClient.GetEmployerProfileAsync(employerAccountId, legalEntityId);
-
-            if (employerProfile == null)
-            {
-                throw new NullReferenceException(
-                    $"No Employer Profile was found for employerAccount: {employerAccountId}, legalEntity: {legalEntityId}");
-            }
-
-            if (employerInfoModel.EmployerNameOption == EmployerNameOptionViewModel.NewTradingName &&
-                employerProfile.TradingName != tradingName)
-                employerProfile.TradingName = tradingName;               
-
-            if (locationEditModel.SelectedLocation == UseOtherLocation)
-            {
-                var address = new Address {
-                    AddressLine1 = locationEditModel.AddressLine1,
-                    AddressLine2 = locationEditModel.AddressLine2,
-                    AddressLine3 = locationEditModel.AddressLine3,
-                    AddressLine4 = locationEditModel.AddressLine4,
-                    Postcode = locationEditModel.Postcode
-                };     
-                if(CheckForDuplicates(registeredAddress, employerProfile.OtherLocations, address))
-                {
-                    employerProfile.OtherLocations.Add(address);
-                }            
-            }
-            await _recruitVacancyClient.UpdateEmployerProfileAsync(employerProfile, user);
-        }
-
-        private bool CheckForDuplicates(IList<Address> otherLocations, Address address)
-        {
-            StringComparer comparer = StringComparer.OrdinalIgnoreCase;
-            foreach (var location in otherLocations)
-            {
-                if (comparer.Compare(address.ToString(), location.ToString()) == 0)
-                {
-                    return false;
-                }
-            }
-            return true;
         }
     }
 }

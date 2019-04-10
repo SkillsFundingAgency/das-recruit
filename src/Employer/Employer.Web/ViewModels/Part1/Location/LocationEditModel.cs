@@ -14,5 +14,9 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Location
         public string AddressLine4 { get; set; }
         public string Postcode { get; set; }
         public List<string> AvailableLocations { get; set; } = new List<string>();
+        public string OtherLocationString =>  
+            string
+                .Join(", ", new[] {AddressLine1, AddressLine2, AddressLine3, AddressLine4, Postcode })
+                .Replace(" ,", string.Empty);
     }
 }

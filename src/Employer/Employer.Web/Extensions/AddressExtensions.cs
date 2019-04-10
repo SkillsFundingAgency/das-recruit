@@ -19,7 +19,7 @@ namespace Esfa.Recruit.Employer.Web.Extensions
             return string.Join(", ", arr.Where(x => !string.IsNullOrWhiteSpace(x)));
         }
 
-        public static Address ConvertToDomainAddress(Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo.Address address)
+        public static Address ConvertToDomainAddress(this Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo.Address address)
         {
             return new Address() {
                 AddressLine1 = address.AddressLine1,
