@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Projections = Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 
@@ -10,15 +11,14 @@ namespace Recruit.Shared.Web.Extensions
         {
             var addressArray = new[] 
             {
-                address.AddressLine1.Trim(), 
-                address.AddressLine2.Trim(), 
-                address.AddressLine3.Trim(), 
-                address.AddressLine4.Trim(), 
-                address.Postcode.Trim() 
+                address.AddressLine1, 
+                address.AddressLine2, 
+                address.AddressLine3, 
+                address.AddressLine4, 
+                address.Postcode 
             };
             return string
-                .Join(", ", addressArray)
-                .Replace(" ,", string.Empty);
+                .Join(", ", addressArray.Where(a => !string.IsNullOrWhiteSpace(a)).Select(a => a.Trim()));
         }
 
         public static Address ConvertToDomainAddress(this Projections.EditVacancyInfo.Address address)
