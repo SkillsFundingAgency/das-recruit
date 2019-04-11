@@ -66,7 +66,7 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
                 AssignedTo = vacancyReview.ReviewedByUser?.Name,
                 AssignedTimeElapsed = vacancyReview.ReviewedDate.GetShortTimeElapsed(_timeProvider.Now),
                 ClosingDate = vacancyReview.VacancySnapshot.ClosingDate.GetValueOrDefault(),
-                EmployerName = vacancyReview.VacancySnapshot.EmployerName,
+                EmployerName = vacancyReview.VacancySnapshot.LegalEntityName,
                 VacancyReference = vacancyReview.VacancyReference.ToString(),
                 VacancyTitle = vacancyReview.Title,
                 ReviewId = vacancyReview.Id,
