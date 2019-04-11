@@ -17,6 +17,8 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVa
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.EmployerName;
 using Address = Esfa.Recruit.Vacancies.Client.Domain.Entities.Address;
 using Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.Services;
+using Esfa.Recruit.Employer.Web.Mappings;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
@@ -25,14 +27,17 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.EmployerAddress;
         private readonly IEmployerVacancyClient _employerVacancyClient;
         private readonly IRecruitVacancyClient _recruitVacancyClient;
+        private readonly IReviewSummaryService _reviewSummaryService;
 
         public LocationOrchestrator(
             IEmployerVacancyClient employerVacancyClient,
             IRecruitVacancyClient recruitVacancyClient,
-            ILogger<LocationOrchestrator> logger) : base(logger)
+            ILogger<LocationOrchestrator> logger,
+            IReviewSummaryService reviewSummaryService) : base(logger)
         {
             _employerVacancyClient = employerVacancyClient;
             _recruitVacancyClient = recruitVacancyClient;
+            _reviewSummaryService = reviewSummaryService;
         }
 
         public async Task<VacancyEmployerInfoModel> GetVacancyEmployerInfoModelAsync(VacancyRouteModel vrm)
@@ -75,6 +80,12 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                     GetMatchingAddress(vacancy.EmployerLocation.ToAddressString(), allLocations)
                         .ToAddressString();
             } 
+
+            if (vacancy.Status == VacancyStatus.Referred)
+            {
+                vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
+                    ReviewFieldMappingLookups.GetLocationFieldIndicators());
+            }
             return vm;
         }
 

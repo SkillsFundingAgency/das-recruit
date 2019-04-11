@@ -8,6 +8,7 @@
     <div class="govuk-grid-column-two-thirds">
         <a asp-show="@Model.CanShowBackLink" asp-route="@RouteNames.EmployerName_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
+        <partial name="@PartialNames.ReviewSummary" for="Review"/>
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Where will the apprentice work?</h1>
         <form asp-route="@RouteNames.Location_Post" asp-route-wizard="@Model.PageInfo.IsWizard">
             <div class="govuk-form-group">
