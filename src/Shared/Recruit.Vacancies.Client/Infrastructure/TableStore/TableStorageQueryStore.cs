@@ -19,8 +19,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore
         private const int DeleteBatchSize = 100;
         private const string PartitionKeyFieldName = nameof(TableEntity.PartitionKey);
         private readonly JsonSerializerSettings _jsonWriter = new JsonSerializerSettings
-        {
-            Formatting = Formatting.Indented,
+        {            
             NullValueHandling = NullValueHandling.Ignore,
             Converters = new JsonConverterCollection() { new Newtonsoft.Json.Converters.StringEnumConverter() }
         };
