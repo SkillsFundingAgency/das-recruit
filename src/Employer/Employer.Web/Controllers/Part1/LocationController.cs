@@ -62,6 +62,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                 var vm = await _orchestrator.GetLocationViewModelAsync(model, employerInfoModel, User.ToVacancyUser());
                 vm.SelectedLocation = model.SelectedLocation;
                 vm.PageInfo.SetWizard(wizard);
+                vm.CanShowBackLink = employerInfoModel != null || vm.PageInfo.IsWizard;
                 return View(vm);
             }
 
