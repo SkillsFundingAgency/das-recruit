@@ -27,7 +27,7 @@ namespace Esfa.Recruit.Shared.Web.Extensions
                 postcode = postcode.Insert(postcode.Length - incodeLength, " ");
             }
 
-            return postcode;
+            return postcode.Trim();
         }
 
         public static DateTime? AsDateTimeUk(this string date, DateTimeStyles style = DateTimeStyles.AssumeUniversal)

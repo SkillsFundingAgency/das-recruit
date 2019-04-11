@@ -83,7 +83,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
             var newLocation = 
                 locationEditModel.SelectedLocation == LocationViewModel.UseOtherLocationConst 
-                ? locationEditModel.OtherLocationString 
+                ? locationEditModel.ToAddressString() 
                 : locationEditModel.SelectedLocation;
 
             var matchingAddress = GetMatchingAddress(newLocation, employerProfile, selectedOrganisation);
@@ -96,10 +96,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             {
                 vacancy.EmployerLocation = new Address 
                 {
-                    AddressLine1 = locationEditModel.AddressLine1,
-                    AddressLine2 = locationEditModel.AddressLine2,
-                    AddressLine3 = locationEditModel.AddressLine3,
-                    AddressLine4 = locationEditModel.AddressLine4,
+                    AddressLine1 = locationEditModel.AddressLine1.Trim(),
+                    AddressLine2 = locationEditModel.AddressLine2.Trim(),
+                    AddressLine3 = locationEditModel.AddressLine3.Trim(),
+                    AddressLine4 = locationEditModel.AddressLine4.Trim(),
                     Postcode = locationEditModel.Postcode.AsPostcode()
                 };
             }
@@ -131,10 +131,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         private Address GetMatchingAddress(string currentLocation, EmployerProfile employerProfile, LegalEntity legalEntity)
         {
-            StringComparer comparer = StringComparer.OrdinalIgnoreCase;
-
-            var registeredLocation = legalEntity.Address.ToAddressString();
-            if (comparer.Compare(currentLocation, registeredLocation) == 0)
+            var registeredLocation = legalEntity.Address.ToAddressString();            
+            if (currentLocation.Equals(registeredLocation, StringComparison.OrdinalIgnoreCase))
             {
                 return legalEntity.Address.ConvertToDomainAddress();
             }
@@ -143,7 +141,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             {
                 foreach (var location in otherLocations)
                 {
-                    if (comparer.Compare(currentLocation, location.ToAddressString()) == 0)
+                    if (currentLocation.Equals(location.ToAddressString(), StringComparison.OrdinalIgnoreCase))
                     {
                         return location;
                     }
