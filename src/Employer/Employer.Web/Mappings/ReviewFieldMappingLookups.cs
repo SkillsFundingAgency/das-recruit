@@ -1,16 +1,13 @@
 using System.Collections.Generic;
 using Esfa.Recruit.Employer.Web.ViewModels;
-using Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Location;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.ShortDescription;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Title;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Training;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Wage;
-using Esfa.Recruit.Employer.Web.Views;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
-using static Esfa.Recruit.Vacancies.Client.Domain.Entities.VacancyReview;
 
 namespace Esfa.Recruit.Employer.Web.Mappings
 {
@@ -189,6 +186,7 @@ namespace Esfa.Recruit.Employer.Web.Mappings
         {
             var vms = new List<ReviewFieldIndicatorViewModel>
             {
+                new ReviewFieldIndicatorViewModel(FieldIdentifiers.EmployerAddress, nameof(LocationEditModel.AddressLine1)),//so that the validation code appears at the top.
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.EmployerAddress1, nameof(LocationEditModel.AddressLine1)),
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.EmployerAddress2, nameof(LocationEditModel.AddressLine2)),
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.EmployerAddress3, nameof(LocationEditModel.AddressLine3)),
