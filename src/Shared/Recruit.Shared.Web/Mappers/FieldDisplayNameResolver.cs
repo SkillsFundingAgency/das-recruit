@@ -5,6 +5,7 @@ namespace Esfa.Recruit.Shared.Web.Mappers
 {
     public static class FieldDisplayNameResolver
     {
+        private const string EmployerLocationAddress = "Employer location address";
         private static readonly Dictionary<string, string> FieldNames = new Dictionary<string, string>
         {
             { FieldIdResolver.ToFieldId(v => v.VacancyReference), "Reference number" },
@@ -19,11 +20,11 @@ namespace Esfa.Recruit.Shared.Web.Mappers
             { FieldIdResolver.ToFieldId(v => v.EmployerContact.Name), "Employer contact name" },
             { FieldIdResolver.ToFieldId(v => v.EmployerContact.Phone), "Employer contact phone" },
             { FieldIdResolver.ToFieldId(v => v.EmployerDescription), "Tell us about your organisation" },
-            { FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine1), "Employer location address line 1" },
-            { FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine2), "Employer location address line 2" },
-            { FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine3), "Employer location address line 3" },
-            { FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine4), "Employer location address line 4" },
-            { FieldIdResolver.ToFieldId(v => v.EmployerLocation.Postcode), "Employer location postcode" },
+            { FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine1),  EmployerLocationAddress},
+            { FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine2), EmployerLocationAddress },
+            { FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine3), EmployerLocationAddress },
+            { FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine4), EmployerLocationAddress },
+            { FieldIdResolver.ToFieldId(v => v.EmployerLocation.Postcode), EmployerLocationAddress },
             { FieldIdResolver.ToFieldId(v => v.EmployerName), "Employer name" },
             { FieldIdResolver.ToFieldId(v => v.EmployerWebsiteUrl), "Organisation website" },
             { FieldIdResolver.ToFieldId(v => v.NumberOfPositions), "Number of positions" },

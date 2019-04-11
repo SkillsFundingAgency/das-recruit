@@ -11,6 +11,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.Extensions.Logging;
+using Recruit.Shared.Web.Extensions;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 {
@@ -69,7 +70,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                     Title = vacancy.Title,
                     Ukprn = provider.Ukprn.Value,
                     ProviderName = provider.Name,
-                    ProviderAddress = provider.Address.GetInlineAddress()
+                    ProviderAddress = provider.Address.ToAddressString()
                 };
             }
 
@@ -80,7 +81,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                 Title = vacancy.Title,
                 Ukprn = vacancy.TrainingProvider.Ukprn.Value,
                 ProviderName = vacancy.TrainingProvider.Name,
-                ProviderAddress = vacancy.TrainingProvider.Address.GetInlineAddress()
+                ProviderAddress = vacancy.TrainingProvider.Address.ToAddressString()
             };
         }
 

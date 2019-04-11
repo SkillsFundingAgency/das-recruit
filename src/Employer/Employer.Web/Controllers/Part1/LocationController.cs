@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
@@ -6,6 +7,7 @@ using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Location;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Mappers;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 
@@ -40,8 +42,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             {
                 employerInfoModel = await _orchestrator.GetVacancyEmployerInfoModelAsync(vrm);
                 SetVacancyEmployerInfoCookie(employerInfoModel);
-            }
-
+            }            
             return View(vm);
         }
 
@@ -59,7 +60,14 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             if (!ModelState.IsValid)
             {
                 var vm = await _orchestrator.GetLocationViewModelAsync(model, employerInfoModel, User.ToVacancyUser());
+                vm.SelectedLocation = model.SelectedLocation;
                 vm.PageInfo.SetWizard(wizard);
+                vm.CanShowBackLink = employerInfoModel != null || vm.PageInfo.IsWizard;
+                vm.AddressLine1 = model.AddressLine1;
+                vm.AddressLine2 = model.AddressLine2;
+                vm.AddressLine3 = model.AddressLine3;
+                vm.AddressLine4 = model.AddressLine4;
+                vm.Postcode = model.Postcode;
                 return View(vm);
             }
 
