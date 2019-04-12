@@ -62,9 +62,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             }
 
             employerInfoModel.EmployerNameOption = model.SelectedEmployerNameOption;
-            employerInfoModel.NewTradingName = model.NewTradingName;
-            employerInfoModel.AnonymousName = model.AnonymousName;
-            employerInfoModel.AnonymousReason = model.AnonymousReason;
+            employerInfoModel.NewTradingName = model.SelectedEmployerNameOption == EmployerNameOptionViewModel.NewTradingName ? model.NewTradingName : null;
+            employerInfoModel.AnonymousName = model.SelectedEmployerNameOption == EmployerNameOptionViewModel.Anonymous ? model.AnonymousName : null;
+            employerInfoModel.AnonymousReason = model.SelectedEmployerNameOption == EmployerNameOptionViewModel.Anonymous ? model.AnonymousReason : null;
             SetVacancyEmployerInfoCookie(employerInfoModel);
 
             return RedirectToRoute(RouteNames.LegalEntityAgreement_SoftStop_Get, new {Wizard = wizard});

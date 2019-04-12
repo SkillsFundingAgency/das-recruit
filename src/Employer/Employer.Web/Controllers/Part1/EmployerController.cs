@@ -72,6 +72,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                 info.HasLegalEntityChanged = true;
                 info.EmployerNameOption = null;
                 info.NewTradingName = null;
+                info.AnonymousName = null;
+                info.AnonymousReason = null;
             }
 
             SetVacancyEmployerInfoCookie(info);
