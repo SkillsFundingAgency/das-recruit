@@ -58,12 +58,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             if (vacancy.EmployerNameOption.HasValue)
             {
                 vm.VacancyEmployerInfoModel.EmployerNameOption = vacancy.EmployerNameOption.Value.ConvertToModelOption();
-
-                if (vacancy.IsAnonymous)
-                {
-                    vm.VacancyEmployerInfoModel.AnonymousName = vacancy.EmployerName;
-                    vm.VacancyEmployerInfoModel.AnonymousReason = vacancy.AnonymousReason;
-                }
+                vm.VacancyEmployerInfoModel.AnonymousName = vacancy.IsAnonymous ? vacancy.EmployerName : null;
+                vm.VacancyEmployerInfoModel.AnonymousReason = vacancy.IsAnonymous ? vacancy.AnonymousReason : null;
             }
             
             return vm;
