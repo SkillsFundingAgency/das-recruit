@@ -15,6 +15,8 @@ namespace Esfa.Recruit.Provider.Web.Middleware
 {
     public class ProviderAccountHandler : AuthorizationHandler<ProviderAccountRequirement>
     {
+        private const string ServiceClaimValue = "DAA";
+
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly IProviderVacancyClient _client;
 
@@ -26,13 +28,42 @@ namespace Esfa.Recruit.Provider.Web.Middleware
 
         protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, ProviderAccountRequirement requirement)
         {
-            Predicate<Claim> claimFinderPredicate = c => c.Type.Equals(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier);
+            var authorized = false;
+
+            if (HasServiceAuthorization(context))
+            {
+                authorized = await HasUkprnAuthorizationAsync(context);
+            }
+
+            if (authorized)
+            {
+                context.Succeed(requirement);
+            }
+        }
+
+        private bool HasServiceAuthorization(AuthorizationHandlerContext context)
+        {
+            Predicate<Claim> serviceClaimFinderPredicate = c => c.Type.Equals(ProviderRecruitClaims.IdamsUserServiceTypeClaimTypeIdentifier);
+
+            if (context.User.HasClaim(serviceClaimFinderPredicate))
+            {
+                var serviceFromClaim = context.User.FindFirst(serviceClaimFinderPredicate).Value;
+
+                return serviceFromClaim == ServiceClaimValue;
+            }
+
+            return false;
+        }
+
+        private async Task<bool> HasUkprnAuthorizationAsync(AuthorizationHandlerContext context)
+        {
+            Predicate<Claim> ukprnClaimFinderPredicate = c => c.Type.Equals(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier);
 
             if (context.Resource is AuthorizationFilterContext mvcContext && mvcContext.RouteData.Values.ContainsKey(RouteValues.Ukprn))
             {
-                if (context.User.HasClaim(claimFinderPredicate))
+                if (context.User.HasClaim(ukprnClaimFinderPredicate))
                 {
-                    var ukprnFromClaim = context.User.FindFirst(claimFinderPredicate).Value;
+                    var ukprnFromClaim = context.User.FindFirst(ukprnClaimFinderPredicate).Value;
                     var ukprnFromUrl = mvcContext.RouteData.Values[RouteValues.Ukprn].ToString();
 
                     if (!string.IsNullOrEmpty(ukprnFromUrl) && ukprnFromUrl.Equals(ukprnFromClaim))
@@ -41,16 +72,14 @@ namespace Esfa.Recruit.Provider.Web.Middleware
 
                         await EnsureProviderIsSetup(mvcContext.HttpContext, long.Parse(ukprnFromClaim));
 
-                        context.Succeed(requirement);
+                        return true;
                     }
                 }
             }
-            else
-            {
-                context.Succeed(requirement);
-            }
-        }
 
+            return false;
+        }
+        
         private async Task EnsureProviderIsSetup(HttpContext context, long ukprn)
         {
             await Task.CompletedTask;
