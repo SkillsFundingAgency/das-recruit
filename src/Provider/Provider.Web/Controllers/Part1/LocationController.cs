@@ -45,10 +45,10 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
         }
 
         [HttpPost("location", Name = RouteNames.Location_Post)]
-        public async Task<IActionResult> Location(LocationEditModel m, [FromQuery] bool wizard)
+        public async Task<IActionResult> Location(LocationEditModel model, [FromQuery] bool wizard)
         {
-            var employerInfoModel = GetVacancyEmployerInfoCookie(m.VacancyId.GetValueOrDefault());
-            var response = await _orchestrator.PostLocationEditModelAsync(m, User.ToVacancyUser(), User.GetUkprn(), employerInfoModel);
+            var employerInfoModel = GetVacancyEmployerInfoCookie(model.VacancyId.GetValueOrDefault());
+            var response = await _orchestrator.PostLocationEditModelAsync(model, User.ToVacancyUser(), User.GetUkprn(), employerInfoModel);
 
             if (!response.Success)
             {
@@ -57,8 +57,15 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
 
             if (!ModelState.IsValid)
             {
-                var vm = await _orchestrator.GetLocationViewModelAsync(m, employerInfoModel, User.ToVacancyUser());
+                var vm = await _orchestrator.GetLocationViewModelAsync(model, employerInfoModel, User.ToVacancyUser());
+                vm.SelectedLocation = model.SelectedLocation;
                 vm.PageInfo.SetWizard(wizard);
+                vm.CanShowBackLink = employerInfoModel != null || vm.PageInfo.IsWizard;
+                vm.AddressLine1 = model.AddressLine1;
+                vm.AddressLine2 = model.AddressLine2;
+                vm.AddressLine3 = model.AddressLine3;
+                vm.AddressLine4 = model.AddressLine4;
+                vm.Postcode = model.Postcode;
                 return View(vm);
             }
 
