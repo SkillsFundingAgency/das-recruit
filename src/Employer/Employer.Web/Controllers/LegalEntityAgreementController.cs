@@ -32,7 +32,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             if (vm.HasLegalEntityAgreement == false)
                 return View(vm);
 
-            return RedirectToRoute(RouteNames.Location_Get);
+            return RedirectToRoute(RouteNames.Location_Get, new {Wizard = wizard});
         }
 
         [HttpGet("legal-entity-agreement-stop", Name = RouteNames.LegalEntityAgreement_HardStop_Get)]

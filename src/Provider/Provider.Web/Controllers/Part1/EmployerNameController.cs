@@ -62,7 +62,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
             employerInfoModel.NewTradingName = model.NewTradingName;
             SetVacancyEmployerInfoCookie(employerInfoModel);
 
-            return RedirectToRoute(RouteNames.Location_Get);
+            return RedirectToRoute(RouteNames.Location_Get, new {Wizard = wizard});
         }
 
         [HttpGet("employer-name-cancel", Name = RouteNames.EmployerName_Cancel)]
