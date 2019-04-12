@@ -13,10 +13,8 @@ using System;
 using System.Collections.Generic;
 using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Employer.Web.Extensions;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.EmployerName;
 using Address = Esfa.Recruit.Vacancies.Client.Domain.Entities.Address;
-using Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Employer.Web.Mappings;
 
@@ -60,7 +58,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_employerVacancyClient, _recruitVacancyClient,
                 vrm, RouteNames.Location_Get);
 
-            var legalEntityId = employerInfoModel?.LegalEntityId != null ? employerInfoModel?.LegalEntityId : vacancy.LegalEntityId;
+            var legalEntityId = employerInfoModel?.LegalEntityId != null ? employerInfoModel.LegalEntityId : vacancy.LegalEntityId;
 
             var vm = new LocationViewModel();
             vm.PageInfo = Utility.GetPartOnePageInfo(vacancy);
@@ -99,7 +97,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 _employerVacancyClient, _recruitVacancyClient, locationEditModel, RouteNames.Employer_Post);
             var employerVacancyInfoTask =
                 _employerVacancyClient.GetEditVacancyInfoAsync(locationEditModel.EmployerAccountId);
+
             await Task.WhenAll(vacancyTask, employerVacancyInfoTask);
+
             var vacancy = vacancyTask.Result;
             var editVacancyInfo = employerVacancyInfoTask.Result;
 
@@ -138,6 +138,13 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                     await UpdateEmployerProfile(employerInfoModel, employerProfile, matchingAddress == null ? vacancy.EmployerLocation : null, user);
                 });
         }
+        private Address GetMatchingAddress(string locationToMatch, IEnumerable<Address> allLocations)
+        {
+            var matchingLocation =
+                allLocations
+                    .FirstOrDefault(l => l.ToAddressString().Equals(locationToMatch, StringComparison.OrdinalIgnoreCase));
+            return matchingLocation;
+        }
 
         private Address ConvertToDomainAddress(LocationEditModel locationEditModel)
         {
@@ -171,13 +178,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             }
         }
 
-        private Address GetMatchingAddress(string locationToMatch, IEnumerable<Address> allLocations)
-        {
-            var matchingLocation = 
-                    allLocations
-                        .FirstOrDefault(l => l.ToAddressString().Equals(locationToMatch, StringComparison.OrdinalIgnoreCase));
-            return matchingLocation;
-        }
+        
 
         private async Task<List<Address>> GetAllAvailableLocationsAsync(EmployerProfile employerProfile)
         {
