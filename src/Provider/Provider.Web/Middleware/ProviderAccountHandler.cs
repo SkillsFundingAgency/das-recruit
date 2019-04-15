@@ -76,6 +76,10 @@ namespace Esfa.Recruit.Provider.Web.Middleware
                     }
                 }
             }
+            else
+            {
+                return true;
+            }
 
             return false;
         }
