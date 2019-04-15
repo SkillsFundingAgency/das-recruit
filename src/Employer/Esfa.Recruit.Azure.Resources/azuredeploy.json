@@ -637,8 +637,8 @@
                 "value": "[parameters('FaaConfiguration').StorageConnectionString]"
               },
 			  {
-                "name": "WhitelistedProvidersList",
-                "value": "[parameters('WhitelistedProvidersList')]"
+                "name": "WhitelistedProviders",
+                "value": "[parameters('WhitelistedProviders')]"
               }
             ]
           },
