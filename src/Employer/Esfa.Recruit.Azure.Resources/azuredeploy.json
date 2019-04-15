@@ -213,7 +213,8 @@
       "type": "string"
     },
 	"WhitelistedProviders":{
-		"type": "string"
+		"type": "string",
+		"defaultValue": ""
 	}
   },
   "variables": {
