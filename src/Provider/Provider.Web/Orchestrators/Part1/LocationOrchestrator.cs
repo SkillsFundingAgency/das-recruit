@@ -46,11 +46,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             var vm = new LocationViewModel();
             vm.PageInfo = Utility.GetPartOnePageInfo(vacancy);
            
-            long? selectedOrganisationId = employerInfoModel?.LegalEntityId;
-            
             var hasLegalEntityChanged = employerInfoModel?.HasLegalEntityChanged ?? false;
 
-            var legalEntityId = selectedOrganisationId.HasValue ? selectedOrganisationId : vacancy.LegalEntityId;
+            var legalEntityId = employerInfoModel?.LegalEntityId != null ? employerInfoModel.LegalEntityId : vacancy.LegalEntityId;
 
             var employerProfile =
                 await _recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, legalEntityId.GetValueOrDefault());
@@ -76,8 +74,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
         private async Task<List<Address>> GetAllAvailableLocationsAsync(EmployerProfile employerProfile, Vacancy vacancy, long ukprn)
         {
-            var employerData = await _providerVacancyClient.GetProviderEditVacancyInfoAsync(ukprn);
-            var employerInfo = employerData.Employers.Single(e => e.EmployerAccountId == vacancy.EmployerAccountId);
+            var providerData = await _providerVacancyClient.GetProviderEditVacancyInfoAsync(ukprn);
+            var employerInfo = providerData.Employers.Single(e => e.EmployerAccountId == vacancy.EmployerAccountId);
             var legalEntity = employerInfo.LegalEntities.First(l => l.LegalEntityId == employerProfile.LegalEntityId);
             var locations = new List<Address>();
             locations.Add(legalEntity.Address.ConvertToDomainAddress());
@@ -131,18 +129,11 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 vacancy.LegalEntityId = employerInfoModel.LegalEntityId.GetValueOrDefault();
                 vacancy.EmployerNameOption = employerInfoModel.EmployerNameOption?.ConvertToDomainOption();
             }
-            else
-            {
-                selectedOrganisation =
-                    employerVacancyInfo.LegalEntities.Single(l => l.LegalEntityId == vacancy.LegalEntityId);                
-            }
-
-            long? selectedOrganisationId = selectedOrganisation.LegalEntityId;
-
-            var legalEntityId = selectedOrganisationId.HasValue ? selectedOrganisationId : vacancy.LegalEntityId;
+            
+            var legalEntityId = employerInfoModel?.LegalEntityId ?? vacancy.LegalEntityId;
 
             var employerProfile =
-                await _recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, legalEntityId.GetValueOrDefault());
+                await _recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, legalEntityId);
 
             var allLocations = await GetAllAvailableLocationsAsync(employerProfile, vacancy, ukprn);
 
@@ -153,7 +144,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
             var matchingAddress = GetMatchingAddress(newLocation, allLocations);
 
-            vacancy.EmployerLocation = matchingAddress != null ? matchingAddress : ConvertToDomainAddress(locationEditModel);
+            vacancy.EmployerLocation = matchingAddress ?? ConvertToDomainAddress(locationEditModel);
                  
             return await ValidateAndExecute(
                 vacancy,
