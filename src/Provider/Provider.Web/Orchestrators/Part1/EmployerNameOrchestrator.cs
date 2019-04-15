@@ -1,6 +1,5 @@
 using System.Linq;
 using System.Threading.Tasks;
-using Esfa.Recruit.Provider.Web;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Provider.Web.Mappings;
@@ -19,13 +18,11 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
     public class EmployerNameOrchestrator : EntityValidatingOrchestrator<Vacancy, EmployerNameEditModel>
     {
         private readonly IProviderVacancyClient _providerVacancyClient;
-        private readonly IEmployerVacancyClient _employerVacancyClient;
         private readonly IRecruitVacancyClient _recruitVacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
 
         public EmployerNameOrchestrator(
-            IProviderVacancyClient providerVacancyClient, 
-            IEmployerVacancyClient employerVacancyClient,
+            IProviderVacancyClient providerVacancyClient,
             IRecruitVacancyClient recruitVacancyClient, 
             ILogger<EmployerNameOrchestrator> logger, 
             IReviewSummaryService reviewSummaryService)
@@ -34,7 +31,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             _providerVacancyClient = providerVacancyClient;
             _recruitVacancyClient = recruitVacancyClient;
             _reviewSummaryService = reviewSummaryService;
-            _employerVacancyClient = employerVacancyClient;
         }
 
         public async Task<EmployerNameViewModel> GetEmployerNameViewModelAsync(
@@ -46,8 +42,11 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             var legalEntityId = employerInfoModel.LegalEntityId.GetValueOrDefault();
                 
             var getVacancyEditInfoTask = _providerVacancyClient.GetProviderEditVacancyInfoAsync(vrm.Ukprn);
+
             var getEmployerProfileTask = _recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, legalEntityId);
+
             await Task.WhenAll(getVacancyEditInfoTask, getEmployerProfileTask);
+
             var employerInfo = getVacancyEditInfoTask.Result.Employers.Single(e => e.EmployerAccountId == vacancy.EmployerAccountId);
             var employerProfile = getEmployerProfileTask.Result;
 

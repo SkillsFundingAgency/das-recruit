@@ -1,9 +1,8 @@
-using System;
 using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Projections = Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 
-namespace Recruit.Shared.Web.Extensions
+namespace Esfa.Recruit.Shared.Web.Extensions
 {
     public static class AddressExtensions
     {
