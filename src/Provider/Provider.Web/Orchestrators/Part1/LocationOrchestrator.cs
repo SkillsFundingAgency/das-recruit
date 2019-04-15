@@ -127,10 +127,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             {
                 selectedOrganisation =
                     employerVacancyInfo.LegalEntities.Single(l => l.LegalEntityId == employerInfoModel.LegalEntityId);
-
                 vacancy.LegalEntityName = selectedOrganisation.Name;
                 vacancy.LegalEntityId = employerInfoModel.LegalEntityId.GetValueOrDefault();
-
                 vacancy.EmployerNameOption = employerInfoModel.EmployerNameOption?.ConvertToDomainOption();
             }
             else
@@ -156,14 +154,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             var matchingAddress = GetMatchingAddress(newLocation, allLocations);
 
             vacancy.EmployerLocation = matchingAddress != null ? matchingAddress : ConvertToDomainAddress(locationEditModel);
-
-            //if cookie is found then update legal entity and name option from cookie
-            if (employerInfoModel != null)
-            {
-                vacancy.LegalEntityName = selectedOrganisation.Name;
-                vacancy.LegalEntityId = employerInfoModel.LegalEntityId.GetValueOrDefault();
-                vacancy.EmployerNameOption = employerInfoModel.EmployerNameOption?.ConvertToDomainOption();
-            }            
+                 
             return await ValidateAndExecute(
                 vacancy,
                 v => _recruitVacancyClient.Validate(v, ValidationRules),
