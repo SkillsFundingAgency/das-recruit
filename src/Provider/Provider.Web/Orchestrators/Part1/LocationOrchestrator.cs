@@ -94,22 +94,17 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_providerVacancyClient,
                 _recruitVacancyClient, locationEditModel, RouteNames.Location_Post);
-
-            var employerVacancyInfoTask = _providerVacancyClient.GetProviderEmployerVacancyDataAsync(ukprn, vacancy.EmployerAccountId);
-
             var legalEntityId = employerInfoModel?.LegalEntityId ?? vacancy.LegalEntityId;
 
+            var employerVacancyInfoTask = _providerVacancyClient.GetProviderEmployerVacancyDataAsync(ukprn, vacancy.EmployerAccountId);
             var employerProfileTask = _recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, legalEntityId);
-            
             await Task.WhenAll(employerProfileTask, employerVacancyInfoTask);
 
             var employerVacancyInfo = employerVacancyInfoTask.Result;
             var employerProfile = employerProfileTask.Result;
 
             var selectedOrganisation = employerVacancyInfo.LegalEntities.Single(l => employerInfoModel != null && l.LegalEntityId == employerInfoModel.LegalEntityId);
-
             var allLocations = await GetAllAvailableLocationsAsync(employerProfile, vacancy, ukprn);
-
             var newLocation =
                 locationEditModel.SelectedLocation == LocationViewModel.UseOtherLocationConst
                     ? locationEditModel.ToAddressString()
