@@ -24,7 +24,7 @@ namespace Esfa.Recruit.Provider.Web.Filters
         {
             if (RequestIsForWhiteListedPage(context) == false)
             {
-                var whitelistedProvidersUkprn = _configuration.GetValue<string>("WhitelistedProvidersList").Split(';').ToList();
+                var whitelistedProvidersUkprn = _configuration.GetValue<string>("WhitelistedProviders").Split(';').ToList();
 
                 var ukprnFromUrl = context.RouteData.Values[RouteValues.Ukprn].ToString().ToUpper();
 
