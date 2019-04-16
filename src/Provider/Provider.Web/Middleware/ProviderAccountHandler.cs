@@ -15,8 +15,6 @@ namespace Esfa.Recruit.Provider.Web.Middleware
 {
     public class ProviderAccountHandler : AuthorizationHandler<ProviderAccountRequirement>
     {
-        private const string ServiceClaimValue = "DAA";
-
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly IProviderVacancyClient _client;
 
@@ -49,7 +47,7 @@ namespace Esfa.Recruit.Provider.Web.Middleware
             {
                 var serviceFromClaim = context.User.FindFirst(serviceClaimFinderPredicate).Value;
 
-                return serviceFromClaim == ServiceClaimValue;
+                return serviceFromClaim == ProviderRecruitClaims.ServiceClaimValue;
             }
 
             return false;

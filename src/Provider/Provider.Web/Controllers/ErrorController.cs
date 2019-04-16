@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Esfa.Recruit.Provider.Web.Controllers
 {
@@ -19,10 +20,12 @@ namespace Esfa.Recruit.Provider.Web.Controllers
     public class ErrorController : Controller
     {
         private readonly ILogger<ErrorController> _logger;
+        private readonly ExternalLinksConfiguration _externalLinks;
 
-        public ErrorController(ILogger<ErrorController> logger)
+        public ErrorController(ILogger<ErrorController> logger, IOptions<ExternalLinksConfiguration> externalLinks)
         {
             _logger = logger;
+            _externalLinks = externalLinks.Value;
         }
 
         [Route("error/{id?}")]
@@ -108,6 +111,14 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
         private IActionResult AccessDenied()
         {
+            var serviceClaim = User.FindFirst(ProviderRecruitClaims.IdamsUserServiceTypeClaimTypeIdentifier);
+            
+            if (serviceClaim == null || serviceClaim.Value != ProviderRecruitClaims.ServiceClaimValue)
+            {
+                _logger.LogInformation("User does not have service claim");
+                return Redirect(_externalLinks.ProviderApprenticeshipSiteUrl);
+            }
+
             Response.StatusCode = (int)HttpStatusCode.Unauthorized;
             return View(ViewNames.AccessDenied);
         }
