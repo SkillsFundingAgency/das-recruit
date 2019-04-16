@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
 using Address = Esfa.Recruit.Vacancies.Client.Domain.Entities.Address;
@@ -37,7 +38,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
             projectedVacancy.ProviderContactName = vacancy.ProviderContact?.Name;
             projectedVacancy.ProviderContactPhone = vacancy.ProviderContact?.Phone;
             projectedVacancy.EmployerDescription = vacancy.EmployerDescription;
-            projectedVacancy.EmployerLocation = vacancy.EmployerLocation.ToProjection();
+            projectedVacancy.EmployerLocation = vacancy.EmployerLocation.ToProjection(vacancy.IsAnonymous);
             projectedVacancy.EmployerName = vacancy.EmployerName;
             projectedVacancy.EmployerWebsiteUrl = vacancy.EmployerWebsiteUrl;
             projectedVacancy.LiveDate = vacancy.LiveDate.GetValueOrDefault();
@@ -60,8 +61,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
             return projectedVacancy;
         }
 
-        public static ProjectionAddress ToProjection(this Address address)
+        public static ProjectionAddress ToProjection(this Address address, bool isAnonymousVacancy)
         {
+            if(isAnonymousVacancy)
+                return new ProjectionAddress {
+                    Postcode = address.PostcodeAsOutcode(),
+                    Latitude = address.Latitude.GetValueOrDefault(),
+                    Longitude = address.Longitude.GetValueOrDefault()
+                };
+
             return new ProjectionAddress
             {
                 AddressLine1 = address.AddressLine1,
