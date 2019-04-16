@@ -110,10 +110,10 @@
       "type": "bool",
       "defaultValue": false
     },
-	"WhitelistedProvidersList":{
-	  "type": "string",
+    "WhitelistedProvidersList":{
+      "type": "string",
       "defaultValue": ""
-	},
+    },
     "SharedAppServicePlanName": {
       "type": "string"
     },
@@ -211,11 +211,7 @@
     },
     "ProviderKeyvaultCertificateName": {
       "type": "string"
-    },
-	"WhitelistedProviders":{
-		"type": "string",
-		"defaultValue": ""
-	}
+    }
   },
   "variables": {
     "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/",
@@ -636,13 +632,13 @@
                 "name": "UseTableStorageQueryStore",
                 "value": "[parameters('UseTableStorageQueryStore')]"
               },
-			  {
+              {
                 "name": "FaaConfiguration:StorageConnectionString",
                 "value": "[parameters('FaaConfiguration').StorageConnectionString]"
               },
-			  {
+              {
                 "name": "WhitelistedProviders",
-                "value": "[parameters('WhitelistedProviders')]"
+                "value": "[parameters('WhitelistedProvidersList')]"
               }
             ]
           },
