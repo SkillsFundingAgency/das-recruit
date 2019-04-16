@@ -102,8 +102,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
             var employerVacancyInfo = employerVacancyInfoTask.Result;
             var employerProfile = employerProfileTask.Result;
-
-            var selectedOrganisation = employerVacancyInfo.LegalEntities.Single(l => employerInfoModel != null && l.LegalEntityId == employerInfoModel.LegalEntityId);
+            var selectedOrganisation = employerVacancyInfo.LegalEntities.Single(l => l.LegalEntityId == legalEntityId);
             var allLocations = await GetAllAvailableLocationsAsync(employerProfile, vacancy, ukprn);
             var newLocation =
                 locationEditModel.SelectedLocation == LocationViewModel.UseOtherLocationConst
