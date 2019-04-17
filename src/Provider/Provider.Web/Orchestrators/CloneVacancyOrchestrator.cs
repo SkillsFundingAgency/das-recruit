@@ -7,6 +7,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using System;
+using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
@@ -14,6 +15,9 @@ using Esfa.Recruit.Shared.Web.Extensions;
 using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using ErrorMessages = Esfa.Recruit.Shared.Web.ViewModels.ErrorMessages;
+using Esfa.Recruit.Provider.Web.Exceptions;
+using Esfa.Recruit.Provider.Web.Model;
+using Esfa.Recruit.Shared.Web.Models;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators
 {
@@ -23,12 +27,14 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         public const string ChangeBothDatesTitle = "Change the closing date and start date";
         public const string ChangeEitherDatesTitle = "Change the closing date or start date";
         private readonly IRecruitVacancyClient _vacancyClient;
-        private readonly ITimeProvider _timeProvider;
+		private readonly IProviderVacancyClient _providerClient;
+		private readonly ITimeProvider _timeProvider;
 
-        public CloneVacancyOrchestrator(IRecruitVacancyClient vacancyClient,
+        public CloneVacancyOrchestrator(IRecruitVacancyClient vacancyClient, IProviderVacancyClient providerClient, 
             ITimeProvider timeProvider, ILogger<CloneVacancyOrchestrator> logger) : base(logger)
         {
             _vacancyClient = vacancyClient;
+            _providerClient = providerClient;
             _timeProvider = timeProvider;
         }
 
@@ -63,7 +69,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             }
             else
             {
-                return new CloneVacancyWithNewDatesViewModel {
+                return new CloneVacancyWithNewDatesViewModel
+                {
                     IsNewDatesForced = isNewDatesForced,
                     Title = ChangeEitherDatesTitle,
                     ClosingDay = $"{vacancy.ClosingDate.Value.Day:00}",
@@ -139,6 +146,16 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             var vacancy = await _vacancyClient.GetVacancyAsync(vrm.VacancyId.GetValueOrDefault());
 
             Utility.CheckAuthorisedAccess(vacancy, vrm.Ukprn);
+
+            var providerVacancyInfo = await _providerClient.GetProviderEditVacancyInfoAsync(vrm.Ukprn);
+
+            var hasPermissionForSameLegalEntity = providerVacancyInfo.Employers.Any(e => e.LegalEntities.Any(le => le.LegalEntityId == vacancy.LegalEntityId));
+
+            if (hasPermissionForSameLegalEntity == false)
+            {
+                var va = new RecruitVacancyAction(VacancyActionType.CloneVacancy, vrm.VacancyId.Value);
+                throw new MissingPermissionsException(string.Format(RecruitWebExceptionMessages.ProviderMissingPermission, vrm.Ukprn), va);
+            }
 
             if (!vacancy.CanClone)
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForCloning, vacancy.Title));

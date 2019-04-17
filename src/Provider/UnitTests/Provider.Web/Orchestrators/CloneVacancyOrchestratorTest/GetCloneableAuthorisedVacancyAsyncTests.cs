@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Esfa.Recruit.Provider.Web.Exceptions;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
@@ -9,6 +10,8 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.CloneVacancyOrchestr
 {
     public class GetCloneableAuthorisedVacancyAsyncTests : CloneVacancyOrchestratorTestBase
     {
+        private const int VacancyLegalEntityIdNotHavingProviderRecruitmentPermission = 99;
+
         [Fact]
         public async Task WhenRouteHasInvalidUkprn_ShouldThrowAuthorizationException()
         {
@@ -24,7 +27,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.CloneVacancyOrchestr
             var vacancy = SourceVacancy;
             vacancy.Status = status;
             var sut = GetSut(vacancy);
-            await Assert.ThrowsAsync<InvalidStateException>(()  => sut.GetCloneableAuthorisedVacancyAsync(VRM));
+            await Assert.ThrowsAsync<InvalidStateException>(() => sut.GetCloneableAuthorisedVacancyAsync(VRM));
         }
 
         [Fact]
@@ -33,6 +36,15 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.CloneVacancyOrchestr
             var sut = GetSut(SourceVacancy);
             var vacancy = await sut.GetCloneableAuthorisedVacancyAsync(VRM);
             vacancy.Id.Should().Be(SourceVacancyId);
+        }
+
+        [Fact]
+        public async Task WhenProviderEmployerDataHasMissingLegalEntityRecruitmentPermission_ShouldThrowMissingPermissionsException()
+        {
+            var vacancy = SourceVacancy;
+            vacancy.LegalEntityId = VacancyLegalEntityIdNotHavingProviderRecruitmentPermission;
+            var sut = GetSut(vacancy);
+            await Assert.ThrowsAsync<MissingPermissionsException>(() => sut.GetCloneableAuthorisedVacancyAsync(VRM));
         }
     }
 }

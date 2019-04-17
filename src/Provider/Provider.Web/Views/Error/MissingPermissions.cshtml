@@ -1,0 +1,12 @@
+﻿@model MissingPermissionsViewModel
+@{
+    ViewBag.Title = "You don’t have permission to create vacancies";
+    ViewBag.ShowNav = false;
+}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <a asp-route="@Model.CtaRoute" asp-route-ukprn="@Model.RouteValues.Ukprn" asp-route-vacancyId="@Model.RouteValues.VacancyId" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">You don’t have permission to create vacancies.</h1>
+        <p class="govuk-body">An employer can give you permission by logging on to their apprenticeship account and selecting ‘Training provider permissions’ on their dashboard.</p>
+    </div>
+</div>

@@ -5,7 +5,11 @@ using System.Net;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Exceptions;
+using Esfa.Recruit.Provider.Web.Model;
+using Esfa.Recruit.Provider.Web.RouteModel;
+using Esfa.Recruit.Provider.Web.ViewModels;
 using Esfa.Recruit.Provider.Web.ViewModels.Error;
+using Esfa.Recruit.Shared.Web.Models;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Authorization;
@@ -38,7 +42,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 case 403:
                     return AccessDenied();
                 case 404:
-                    return PageNotFound();                
+                    return PageNotFound();
                 default:
                     break;
             }
@@ -102,11 +106,28 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                     return RedirectToRoute(RouteNames.BlockedProvider_Get, new { Ukprn = ukprn });
                 }
 
+                if (exception is MissingPermissionsException mpEx)
+                {
+                    _logger.LogWarning(mpEx.Message);
+                    return MissingPermissions(mpEx.VacancyAction, long.Parse((string)ukprn));
+                }
+
                 _logger.LogError(exception, "Unhandled exception on path: {route}", routeWhereExceptionOccurred);
             }
 
             Response.StatusCode = (int)HttpStatusCode.InternalServerError;
             return View(ViewNames.ErrorView, new ErrorViewModel { StatusCode = (int)HttpStatusCode.InternalServerError, RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        private IActionResult MissingPermissions(RecruitVacancyAction va, long ukprn)
+        {
+            var vm = new MissingPermissionsViewModel
+            {
+                RouteValues = new VacancyRouteModel { Ukprn = ukprn, VacancyId = va.VacancyId },
+                CtaRoute = va.ActionType == VacancyActionType.CloneVacancy ? RouteNames.VacancyManage_Get : RouteNames.Dashboard_Index_Get
+            };
+
+            return View(ViewNames.MissingPermissions, vm);
         }
 
         private IActionResult AccessDenied()
