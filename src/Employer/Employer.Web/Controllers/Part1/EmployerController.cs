@@ -39,7 +39,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 
             if(vm.HasOnlyOneOrganisation)
             {
-                return RedirectToRoute(RouteNames.EmployerName_Get);
+                return RedirectToRoute(RouteNames.EmployerName_Get, new {Wizard = wizard});
             }
 
             vm.PageInfo.SetWizard(wizard);
@@ -76,7 +76,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 
             SetVacancyEmployerInfoCookie(info);
 
-            return RedirectToRoute(RouteNames.EmployerName_Get);
+            return RedirectToRoute(RouteNames.EmployerName_Get, new {Wizard = wizard});
         }
 
         [HttpGet("employer-cancel", Name = RouteNames.Employer_Cancel)]
