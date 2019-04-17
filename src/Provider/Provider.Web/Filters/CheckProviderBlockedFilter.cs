@@ -15,7 +15,7 @@ namespace Esfa.Recruit.Provider.Web.Filters
 
         public CheckProviderBlockedFilter(IConfiguration configuration)
         {
-            _configuration = configuration;            
+            _configuration = configuration;
         }
 
         public async Task OnActionExecutionAsync(
@@ -33,7 +33,7 @@ namespace Esfa.Recruit.Provider.Web.Filters
                     throw new BlockedProviderException($"Provider Ukprn account '{ukprnFromUrl}' is blocked");
                 }
             }
-            
+
             await next();
         }
 
@@ -44,6 +44,6 @@ namespace Esfa.Recruit.Provider.Web.Filters
             var whitelistControllers = new List<string> { nameof(ErrorController), nameof(LogoutController), nameof(ExternalLinksController), nameof(ContentPolicyReportController) };
 
             return whitelistControllers.Contains(controllerName);
-        }        
+        }
     }
 }

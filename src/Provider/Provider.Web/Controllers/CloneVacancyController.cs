@@ -25,7 +25,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         public async Task<IActionResult> Clone(VacancyRouteModel vrm)
         {
             var vacancy = await _orchestrator.GetCloneableAuthorisedVacancyAsync(vrm);
-            
+
             return _orchestrator.IsNewDatesRequired(vacancy) 
                 ? RedirectToRoute(RouteNames.CloneVacancyWithNewDates_Get) 
                 : RedirectToRoute(RouteNames.CloneVacancyDatesQuestion_Get);
@@ -56,7 +56,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             else
             {
                 return RedirectToRoute(RouteNames.CloneVacancyWithNewDates_Get);
-            }            
+            }
         }
 
         [HttpGet("clone-with-dates", Name = RouteNames.CloneVacancyWithNewDates_Get)]
@@ -68,7 +68,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
         [HttpPost("clone-with-dates", Name = RouteNames.CloneVacancyWithNewDates_Post)]
         public async Task<IActionResult> CloneVacancyWithNewDates(CloneVacancyWithNewDatesEditModel model)
-        {            
+        {
             var response = await _orchestrator.PostCloneVacancyWithNewDates(model, User.ToVacancyUser());
 
             if(!response.Success)
