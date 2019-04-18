@@ -48,16 +48,29 @@
     </div>
 </div>
 
-<div class="govuk-grid-row govuk-!-margin-bottom-2">
-    <div asp-show="@Model.ShowFilter" class="govuk-grid-column-one-half">
-        <form method="get">
-            <div class="govuk-form-group">
-                <label for="filter" class="govuk-label">Filter vacancies by</label>
-                <select id="filter" name="filter" asp-items="@Model.FilterOptions" class="govuk-select"></select>
-                <button type="submit" id="filter-submit" class="das-button-filter das-button-secondary govuk-button">Filter</button>
-            </div>
-        </form>
-    </div>
+<div class="govuk-grid-row govuk-!-margin-bottom-2">    
+    <form method="get">
+        <div class="govuk-form-group">
+            <label asp-for="Filter" class="govuk-label">Filter vacancies by</label>                        
+            <select asp-for="Filter" class="govuk-select">
+                <optgroup label="Status">                    
+                    <option value="@FilteringOptions.All">all vacancies</option>
+                    <option value="@FilteringOptions.Live">live vacancies</option>
+                    <option value="@FilteringOptions.Referred">rejected vacancies</option>
+                    <option value="@FilteringOptions.Submitted">vacancies pending review</option>
+                    <option value="@FilteringOptions.Draft">draft vacancies</option>
+                    <option value="@FilteringOptions.Closed">closed vacancies</option>
+                </optgroup>
+                <optgroup label="Other">
+                    <option value="@FilteringOptions.NewApplications">with new applications</option>
+                    <option value="@FilteringOptions.AllApplications">with applications</option>
+                    <option value="@FilteringOptions.ClosingSoon">closing soon with no applications</option>
+                    <option value="@FilteringOptions.ClosingSoonWithNoApplications">closing soon</option>
+                </optgroup>
+            </select>
+            <button type="submit" id="filter-submit" class="das-button-filter das-button-secondary govuk-button">Filter</button>
+        </div>
+    </form>    
     <div asp-show="@Model.HasVacancies" class="govuk-grid-column-full">
         <h3 class="govuk-heading-m">
             @Model.ResultsHeading <a asp-show="@Model.IsFiltered" asp-route="@RouteNames.Dashboard_Index_Get" asp-route-filter="All" class="govuk-!-font-weight-regular govuk-component__link govuk-!-font-size-19">Show all vacancies</a>
@@ -119,7 +132,7 @@
         $(function() {
             $("#filter-submit").hide();
 
-            $("#filter").on("change",
+            $("#Filter").on("change",
                 function() {
                     var $filterForm = $(this).parents("form");
                     $filterForm.areYouSure({ 'silent': true });

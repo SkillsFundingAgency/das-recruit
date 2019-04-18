@@ -11,14 +11,13 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public string WarningMessage { get; internal set; }
         public string InfoMessage { get; internal set; }
         public PagerViewModel Pager { get; internal set; }
-        public IEnumerable<SelectListItem> FilterOptions { get; internal set; }
-        public bool ShowFilter { get; internal set; }
+        public IEnumerable<SelectListItem> FilterOptions { get; internal set; }        
         public string ResultsHeading { get; internal set; }
         public bool IsFiltered { get; internal set; }
         public bool HasVacancies {get; internal set;}
-
         public bool HasWarning => !string.IsNullOrEmpty(WarningMessage);
         public bool HasInfo => !string.IsNullOrEmpty(InfoMessage);
-        public bool ShowResultsTable => Vacancies.Any();
+        public bool ShowResultsTable => Vacancies.Any();        
+        public string Filter { get; set; }
     }
 }
