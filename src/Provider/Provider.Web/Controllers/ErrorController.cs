@@ -109,7 +109,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 if (exception is MissingPermissionsException mpEx)
                 {
                     _logger.LogWarning(mpEx.Message);
-                    return MissingPermissions(mpEx.VacancyAction, long.Parse((string)ukprn));
+                    return MissingPermissions(long.Parse((string)ukprn));
                 }
 
                 _logger.LogError(exception, "Unhandled exception on path: {route}", routeWhereExceptionOccurred);
@@ -119,12 +119,12 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             return View(ViewNames.ErrorView, new ErrorViewModel { StatusCode = (int)HttpStatusCode.InternalServerError, RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        private IActionResult MissingPermissions(RecruitVacancyAction va, long ukprn)
+        private IActionResult MissingPermissions(long ukprn)
         {
             var vm = new MissingPermissionsViewModel
             {
-                RouteValues = new VacancyRouteModel { Ukprn = ukprn, VacancyId = va.VacancyId },
-                CtaRoute = va.ActionType == VacancyActionType.CloneVacancy ? RouteNames.VacancyManage_Get : RouteNames.Dashboard_Index_Get
+                RouteValues = new VacancyRouteModel { Ukprn = ukprn },
+                CtaRoute = RouteNames.Dashboard_Index_Get
             };
 
             return View(ViewNames.MissingPermissions, vm);

@@ -1,7 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Exceptions;
-using Esfa.Recruit.Provider.Web.Model;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.Employer;
 using Esfa.Recruit.Shared.Web.Models;
@@ -9,7 +8,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 {
-    public class EmployerOrchestrator 
+	public class EmployerOrchestrator 
     {
         private readonly IProviderVacancyClient _providerVacancyClient;
 
@@ -24,8 +23,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
             if (editVacancyInfo.Employers.Any() == false)
             {
-                var va = new RecruitVacancyAction(VacancyActionType.CreateVacancy, vrm.VacancyId);
-                throw new MissingPermissionsException(string.Format(RecruitWebExceptionMessages.ProviderMissingPermission, vrm.Ukprn), va);
+                throw new MissingPermissionsException(string.Format(RecruitWebExceptionMessages.ProviderMissingPermission, vrm.Ukprn));
             }
 
             var vm = new EmployersViewModel

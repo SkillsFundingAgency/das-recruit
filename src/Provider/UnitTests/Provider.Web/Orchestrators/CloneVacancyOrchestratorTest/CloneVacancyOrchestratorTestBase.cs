@@ -46,20 +46,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.CloneVacancyOrchestr
                 .Setup(c => c.GetVacancyAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(vacancy);
 
-            var mockLegalEntities = new List<LegalEntity>
-            {
-                new LegalEntity { LegalEntityId = 1 },
-                new LegalEntity { LegalEntityId = 2 },
-                new LegalEntity { LegalEntityId = 3 }
-            };
-            var mockProviderEditVacancyInfo = new ProviderEditVacancyInfo() { Employers = new EmployerInfo[] { new EmployerInfo() { LegalEntities = mockLegalEntities } }};
-
-            var mockProviderClient = new Mock<IProviderVacancyClient>();
-            mockProviderClient
-                .Setup(c => c.GetProviderEditVacancyInfoAsync(It.IsAny<long>()))
-                .ReturnsAsync(mockProviderEditVacancyInfo);
-
-            return new CloneVacancyOrchestrator(recruitClientMock.Object, mockProviderClient.Object,
+            return new CloneVacancyOrchestrator(recruitClientMock.Object,
                 timeProviderMock.Object, loggerMock.Object);
         }
     }
