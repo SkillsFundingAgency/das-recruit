@@ -125,7 +125,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
         private int SanitizePage(int page, int totalVacancies)
         {
-            return (page < 0 || page > (int)Math.Ceiling((double)totalVacancies / VacanciesPerPage)) ? 1 : page;
+            return page < 0 || page > (int)Math.Ceiling((double)totalVacancies / VacanciesPerPage) ? 1 : page;
         }
 
         private FilteringOptions SanitizeFilter(string filter)
