@@ -2,8 +2,8 @@
 {
     public class PartOnePageInfoViewModel
     {
-        public const string SubmitButtonCaptionForWizard = "Save and Continue";
-        public const string SubmitButtonCaption = "Save and Preview";
+        public const string SubmitButtonCaptionForWizard = "Save and continue";
+        public const string SubmitButtonCaption = "Save and preview";
         
         public bool HasCompletedPartOne { get; set; }
         public bool HasStartedPartTwo { get; set; }
