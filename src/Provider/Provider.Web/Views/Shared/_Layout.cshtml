@@ -98,11 +98,11 @@
         <p class="govuk-width-container">GOV.UK uses cookies to make the site simpler. <a href="https://www.gov.uk/help/cookies">Find out more about cookies</a></p>
     </div>
 
-    <header class="govuk-header " role="banner" data-module="header">
+    <header class="govuk-header" role="banner" data-module="header">
         <div class="govuk-header__container govuk-width-container">
             <div class="govuk-header__content">
                 <div class="govuk-heading-l govuk-!-margin-top-2 govuk-!-margin-bottom-4">
-                    <a href="#" class="govuk-header__link">
+                    <a asp-route="@RouteNames.Dashboard_Account_Home" class="govuk-header__link">
                     Apprenticeships
                     </a>
                 </div>
@@ -146,11 +146,11 @@
                         <a asp-route="@RouteNames.Dashboard_YourCohorts" class="das-navigation__link">Your cohorts</a>
                     </li>
                     <li class="das-navigation__list-item">
-                        <a asp-route="@RouteNames.Dashboard_AccountsAgreements" class="das-navigation__link">Organisations and agreements</a>
+                        <a asp-route="@RouteNames.Dashboard_Index_Get" class="das-navigation__link">Recruit apprentices</a>
                     </li>
                     <li class="das-navigation__list-item">
-                        <a asp-route="@RouteNames.Dashboard_Index_Get" class="das-navigation__link">Recruitment</a>
-                    </li>
+                        <a asp-route="@RouteNames.Dashboard_AccountsAgreements" class="das-navigation__link">Organisations and agreements</a>
+                    </li> 
                 </ul>
             </div>
         </nav>
