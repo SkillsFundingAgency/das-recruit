@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Mappings;
-using Esfa.Recruit.Provider.Web.Model;
+using Esfa.Recruit.Provider.Web.Models;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels;
 using Esfa.Recruit.Provider.Web.ViewModels.VacancyView;
