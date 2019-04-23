@@ -804,12 +804,8 @@ a[rel="external"]:hover:after {
 /*** Dashboard header */
 .das-header-actions {
     text-align: right;
-    margin-top: 10px;
 }
 
-.das-header-actions .govuk-button {
-    margin-bottom: 20px;
-}
 /*** End of Dashboard header */
 
 /*** Pager ***/
