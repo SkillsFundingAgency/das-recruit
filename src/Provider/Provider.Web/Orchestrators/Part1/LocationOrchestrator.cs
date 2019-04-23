@@ -11,7 +11,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
-using Esfa.Recruit.Provider.Web.Model;
+using Esfa.Recruit.Provider.Web.Models;
 using Esfa.Recruit.Provider.Web.Extensions;
 using System;
 using System.Collections.Generic;

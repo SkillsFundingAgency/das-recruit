@@ -1,6 +1,6 @@
 ﻿using Esfa.Recruit.Provider.Web.ViewModels;
 
-namespace Esfa.Recruit.Provider.Web.Model
+namespace Esfa.Recruit.Provider.Web.Models
 {
     public class ViewVacancy
     {

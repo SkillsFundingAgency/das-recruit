@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using Esfa.Recruit.Provider.Web.Model;
+using Esfa.Recruit.Provider.Web.Models;
 using Esfa.Recruit.Shared.Web.ViewModels;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntity

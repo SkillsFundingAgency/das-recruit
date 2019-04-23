@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Extensions;
-using Esfa.Recruit.Provider.Web.Model;
+using Esfa.Recruit.Provider.Web.Models;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntity;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;

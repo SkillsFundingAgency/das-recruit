@@ -5,11 +5,9 @@ using System.Net;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Exceptions;
-using Esfa.Recruit.Provider.Web.Model;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels;
 using Esfa.Recruit.Provider.Web.ViewModels.Error;
-using Esfa.Recruit.Shared.Web.Models;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Authorization;
@@ -20,7 +18,7 @@ using Microsoft.Extensions.Options;
 
 namespace Esfa.Recruit.Provider.Web.Controllers
 {
-    [AllowAnonymous]
+	[AllowAnonymous]
     public class ErrorController : Controller
     {
         private readonly ILogger<ErrorController> _logger;
