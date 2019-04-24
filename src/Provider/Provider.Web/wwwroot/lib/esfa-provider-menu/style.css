@@ -137,12 +137,6 @@
     outline-offset: 0
 }
 
-@media (min-width: 40.0625em) {
-    .das-navigation__link {
-        border-bottom: 1px solid #dee0e2;
-    }
-}
-
 @media (max-width: 40.0625em) {
     .das-navigation__link {
         font-size:14px;
