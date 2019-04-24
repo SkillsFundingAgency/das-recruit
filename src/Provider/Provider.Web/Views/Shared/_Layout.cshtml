@@ -98,11 +98,11 @@
         <p class="govuk-width-container">GOV.UK uses cookies to make the site simpler. <a href="https://www.gov.uk/help/cookies">Find out more about cookies</a></p>
     </div>
 
-    <header class="govuk-header " role="banner" data-module="header">
+    <header class="govuk-header" role="banner" data-module="header">
         <div class="govuk-header__container govuk-width-container">
             <div class="govuk-header__content">
-                <div class="govuk-heading-l govuk-!-margin-top-2 govuk-!-margin-bottom-4">
-                    <a href="#" class="govuk-header__link">
+                <div class="govuk-heading-l govuk-!-margin-top-1 govuk-!-margin-bottom-0">
+                    <a asp-route="@RouteNames.Dashboard_Account_Home" class="govuk-header__link govuk-header__link--service-name">
                     Apprenticeships
                     </a>
                 </div>
@@ -120,10 +120,10 @@
                 <nav class="das-user-navigation" id="user-nav">
                     <ul class="das-user-navigation__list" role="menu">
                         <li role="menuitem" class="das-user-navigation__list-item">
-                            <a asp-route="@RouteNames.Dashboard_Account_Home" class="das-user-navigation__link">Provider account</a>
+                            <a asp-route="@RouteNames.Dashboard_Account_Home" class="das-user-navigation__link govuk-!-font-weight-bold">@Context.User.GetDisplayName()</a>
                         </li>
                         <li role="menuitem" class="das-user-navigation__list-item">
-                            <a asp-route="@RouteNames.Dashboard_AccountsNotifications" class="das-user-navigation__link">Notification settings</a>
+                            <a asp-route="@RouteNames.Dashboard_AccountsNotifications" class="das-user-navigation__link govuk-!-font-weight-bold">Notification settings</a>
                         </li>
                         <li role="menuitem" class="das-user-navigation__list-item">
                             <a asp-route="@RouteNames.Logout_Get" class="das-user-navigation__link">Sign out</a>
@@ -133,27 +133,27 @@
             </div>
         </div>
 
-        <nav class="das-navigation">
-            <div class="govuk-width-container">
+        <div class="govuk-width-container">
+            <nav class="das-navigation">
                 <ul class="das-navigation__list">
                     <li class="das-navigation__list-item">
-                        <a asp-route="@RouteNames.Dashboard_Account_Home" class="das-navigation__link das-navigation__link--current">Home</a>
-                    </li>
-                    <li class="das-navigation__list-item">
-                        <a asp-route="@RouteNames.Dashboard_ManageApprentices" class="das-navigation__link">Manage your apprentices</a>
+                        <a asp-route="@RouteNames.Dashboard_Account_Home" class="das-navigation__link">Home</a>
                     </li>
                     <li class="das-navigation__list-item">
                         <a asp-route="@RouteNames.Dashboard_YourCohorts" class="das-navigation__link">Your cohorts</a>
                     </li>
                     <li class="das-navigation__list-item">
-                        <a asp-route="@RouteNames.Dashboard_AccountsAgreements" class="das-navigation__link">Organisations and agreements</a>
+                        <a asp-route="@RouteNames.Dashboard_ManageApprentices" class="das-navigation__link">Manage your apprentices</a>
                     </li>
                     <li class="das-navigation__list-item">
-                        <a asp-route="@RouteNames.Dashboard_Index_Get" class="das-navigation__link">Recruitment</a>
+                        <a asp-route="@RouteNames.Dashboard_Index_Get" class="das-navigation__link das-navigation__link--current">Recruit apprentices</a>
                     </li>
+                    <li class="das-navigation__list-item">
+                        <a asp-route="@RouteNames.Dashboard_AccountsAgreements" class="das-navigation__link">Organisations and agreements</a>
+                    </li> 
                 </ul>
-            </div>
-        </nav>
+            </nav>
+        </div>
     }
 
     <div class="govuk-width-container">

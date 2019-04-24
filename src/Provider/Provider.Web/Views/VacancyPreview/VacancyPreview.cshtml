@@ -61,7 +61,7 @@
                 </ul>
             </div>
             <div asp-show="@Model.HasIncompleteOptionalSections">
-                <p class="govuk-body govuk-!-margin-top-6">You may wish to complete these optional sections:</p>
+                <p class="govuk-body">You may wish to complete these optional sections:</p>
                 <ul class="govuk-list">
                     <li asp-show="@Model.HasIncompleteThingsToConsiderSection"><a asp-fragment="@Anchors.ThingsToConsider" class="govuk-link summary-link">Things to consider</a></li>
                     <li asp-show="@Model.HasIncompleteEmployerWebsiteUrlSection"><a asp-fragment="@Anchors.EmployerWebsiteUrl" class="govuk-link summary-link">Employer website</a></li>

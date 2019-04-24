@@ -9,7 +9,7 @@
     font-size: 1rem;
     line-height: 1.25;
     color: #fff;
-    padding: 5px 0
+    padding: 4px 0
 }
 
 @media print {
@@ -54,7 +54,7 @@
 }
 
 .das-account-header__title {
-    margin: 0 -15px;
+    margin: 4px 0 5px -15px;
     padding: 10px 15px;
     font-weight: 700
 }
@@ -127,8 +127,8 @@
 
 .das-navigation__link {
     display: block;
-    padding: 10px 15px;
-    border-bottom: 1px solid #dee0e2;
+    margin: 0 15px;
+    padding: 12px 0 5px 0;
     color: #005ea5
 }
 
@@ -139,7 +139,25 @@
 
 @media (min-width: 40.0625em) {
     .das-navigation__link {
-        border:none
+        border-bottom: 1px solid #dee0e2;
+    }
+}
+
+@media (max-width: 40.0625em) {
+    .das-navigation__link {
+        font-size:14px;
+    }
+}
+
+.das-navigation__link--current { 
+    color:#0b0c0c;
+    text-decoration:none;
+    font-weight:700;
+}
+
+@media (min-width: 40.0625em) {
+    .das-navigation__link--current {
+    border-bottom:5px solid #005ea5;
     }
 }
 
@@ -173,10 +191,17 @@
 
 .das-user-navigation__link {
     color: #fff;
-    text-decoration: none;
+    text-decoration: underline;
     display: block;
-    padding: 10px 15px;
+    padding: 5px 10px 0 15px;
     font-size: 16px
+}
+
+@media (min-width: 40.0625em) {
+    .das-user-navigation__link {
+        margin: 4px 0 5px 0;
+        padding: 10px 15px 10px 0;
+    }
 }
 
 .das-user-navigation__link:focus {

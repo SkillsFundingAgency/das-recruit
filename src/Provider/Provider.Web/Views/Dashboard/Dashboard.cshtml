@@ -24,23 +24,27 @@
     </div>
 </div>
 
-<div asp-show="@Model.HasVacancies" class="govuk-grid-row">
-    <div asp-show="Model.HasWarning" class="warning-summary govuk-!-margin-bottom-0">
-        <p>@Model.WarningMessage</p>
-    </div>
-    <div asp-show="Model.HasInfo" class="info-summary govuk-!-margin-bottom-0">
-        <p>@Model.InfoMessage</p>
-    </div>
-    <div class="govuk-grid-column-one-half">
-        <h1 class="govuk-heading-xl">Vacancies</h1>
+<div asp-show="@Model.HasVacancies">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <div asp-show="Model.HasWarning" class="warning-summary govuk-!-margin-top-0">
+                <p class="govuk-body">@Model.WarningMessage</p>
+            </div>
+            <div asp-show="Model.HasInfo" class="info-summary govuk-!-margin-bottoptom-0">
+                <p class="govuk-body">@Model.InfoMessage</p>
+            </div>
+        </div>
     </div>
 
-    <div class="govuk-grid-column-one-half das-header-actions">
-        <a asp-route="@RouteNames.Employer_Get" class="govuk-button" esfa-automation="create-vacancy">Create vacancy</a>
-        <br>
-        <p class="govuk-body">
-            <a asp-route="@RouteNames.ReportDashboard_Get" class="govuk-link">Create a report</a>
-        </p>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-half">
+            <h1 class="govuk-heading-xl">Vacancies</h1>
+        </div>
+
+        <div class="govuk-grid-column-one-half ">
+            <a asp-route="@RouteNames.Employer_Get" class="govuk-button float-right clear govuk-!-margin-top-2 govuk-!-margin-bottom-4" esfa-automation="create-vacancy">Create vacancy</a>
+            <a asp-route="@RouteNames.ReportDashboard_Get" class="govuk-link govuk-body float-right clear">Create a report</a>      
+        </div>
     </div>
 </div>
 
