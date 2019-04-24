@@ -1,23 +1,23 @@
 ﻿@model ReviewSummaryViewModel
 
 <div asp-show="@Model.HasBeenReviewed" class="govuk-error-summary review-summary govuk-!-margin-top-0" role="alert" tabindex="-1">
-    <h2 class="govuk-error-summary__title ">
+    <h2 class="govuk-error-summary__title">
         <img src="/img/red-cross.png" class="red-cross-logo" alt="red cross">Edits needed
     </h2>
     <div class="govuk-error-summary__body">
-        <p class="govuk-body">Call us on @RecruitViewConstants.HelpdeskPhoneNumber and select the employer option if you need to discuss any of our vacancy review comments.</p>
+        <p class="govuk-body">Call us on @RecruitViewConstants.HelpdeskPhoneNumber and select the training provider option if you need to discuss any of our vacancy review comments.</p>
         <p class="govuk-body">@Model.ReviewerComments</p>    
         <ul class="govuk-list govuk-error-summary__list">
             @foreach (var fieldIndicator in Model.FieldIndicators)
             {
                 if (!string.IsNullOrWhiteSpace(fieldIndicator.ManualQaText))
                 {
-                    <li><a asp-fragment="@fieldIndicator.Anchor" class="summary-link">@fieldIndicator.ManualQaText</a></li>
+                    <li><a asp-fragment="@fieldIndicator.Anchor" class="govuk-link">@fieldIndicator.ManualQaText</a></li>
                 }
 
                 foreach (var errorText in fieldIndicator.AutoQaTexts)
                 {
-                    <li><a asp-fragment="@fieldIndicator.Anchor" class="summary-link">@errorText</a></li>
+                    <li><a asp-fragment="@fieldIndicator.Anchor" class="govuk-link">@errorText</a></li>
                 }
             }
         </ul>
