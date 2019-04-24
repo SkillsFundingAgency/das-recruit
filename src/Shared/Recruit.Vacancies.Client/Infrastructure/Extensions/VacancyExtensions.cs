@@ -41,6 +41,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
             projectedVacancy.EmployerLocation = vacancy.EmployerLocation.ToProjection(vacancy.IsAnonymous);
             projectedVacancy.EmployerName = vacancy.EmployerName;
             projectedVacancy.EmployerWebsiteUrl = vacancy.EmployerWebsiteUrl;
+            projectedVacancy.IsAnonymous = vacancy.IsAnonymous;
             projectedVacancy.LiveDate = vacancy.LiveDate.GetValueOrDefault();
             projectedVacancy.NumberOfPositions = vacancy.NumberOfPositions.GetValueOrDefault();
             projectedVacancy.OutcomeDescription = vacancy.OutcomeDescription;
