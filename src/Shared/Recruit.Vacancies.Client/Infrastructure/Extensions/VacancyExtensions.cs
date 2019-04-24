@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;
@@ -18,12 +19,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
 {
     public static class VacancyExtensions
     {
-        public static T ToVacancyProjectionBase<T>(this Vacancy vacancy, ApprenticeshipProgramme programme, Func<string> getDocumentId) where T : VacancyProjectionBase
+        public static T ToVacancyProjectionBase<T>(this Vacancy vacancy, ApprenticeshipProgramme programme, Func<string> getDocumentId, ITimeProvider timeProvider) where T : VacancyProjectionBase
         {
             var projectedVacancy = (T) Activator.CreateInstance<T>();
 
             projectedVacancy.Id = getDocumentId();
-            projectedVacancy.LastUpdated = DateTime.UtcNow;
+            projectedVacancy.LastUpdated = timeProvider.Now;
             projectedVacancy.VacancyId = vacancy.Id;
             projectedVacancy.ApplicationInstructions = vacancy.ApplicationInstructions;
             projectedVacancy.ApplicationMethod = vacancy.ApplicationMethod.GetValueOrDefault().ToString();

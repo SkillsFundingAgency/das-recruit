@@ -6,6 +6,7 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using System.Threading;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;
@@ -20,15 +21,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
         private readonly IQueryStoreWriter _queryStore;
         private readonly IVacancyRepository _repository;
         private readonly IReferenceDataReader _referenceDataReader;
+        private readonly ITimeProvider _timeProvider;
 
         public VacancyClosedEventHandler(
             ILogger<VacancyClosedEventHandler> logger, IQueryStoreWriter queryStore,
-            IVacancyRepository repository, IReferenceDataReader referenceDataReader)
+            IVacancyRepository repository, IReferenceDataReader referenceDataReader, ITimeProvider timeProvider)
         {
             _logger = logger;
             _queryStore = queryStore;
             _repository = repository;
             _referenceDataReader = referenceDataReader;
+            _timeProvider = timeProvider;
         }
 
         public async Task Handle(VacancyClosedEvent notification, CancellationToken cancellationToken)
@@ -48,7 +51,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
             var vacancy = vacancyTask.Result;
             var programme = programmeTask.Result.Data.Single(p => p.Id == vacancy.ProgrammeId);
 
-            await _queryStore.UpdateClosedVacancyAsync(vacancy.ToVacancyProjectionBase<ClosedVacancy>(programme, () => QueryViewType.ClosedVacancy.GetIdValue(vacancy.VacancyReference.ToString())));
+            await _queryStore.UpdateClosedVacancyAsync(vacancy.ToVacancyProjectionBase<ClosedVacancy>(programme, () => QueryViewType.ClosedVacancy.GetIdValue(vacancy.VacancyReference.ToString()), _timeProvider));
         }
     }
 }
