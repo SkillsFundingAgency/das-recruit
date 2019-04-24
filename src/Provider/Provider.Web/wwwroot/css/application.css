@@ -74,7 +74,16 @@ border-bottom: 0;
 }
 
 .govuk-header__link--service-name {
-margin-left: 10px;
+  font-size: 24px;
+  margin:7px 0 5px 0;
+  padding: 0 0 20px 0;
+}
+
+@media (min-width: 40.0625em) {
+  .govuk-header__link--service-name {
+    font-size: 32px;
+    margin:4px 0;
+  }
 }
 
 .govuk-header__logo {
