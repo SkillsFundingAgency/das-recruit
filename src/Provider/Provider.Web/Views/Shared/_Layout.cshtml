@@ -120,7 +120,7 @@
                 <nav class="das-user-navigation" id="user-nav">
                     <ul class="das-user-navigation__list" role="menu">
                         <li role="menuitem" class="das-user-navigation__list-item">
-                            <a asp-route="@RouteNames.Dashboard_Account_Home" class="das-user-navigation__link govuk-!-font-weight-bold">@Context.User.GetUserName()</a>
+                            <a asp-route="@RouteNames.Dashboard_Account_Home" class="das-user-navigation__link govuk-!-font-weight-bold">@Context.User.GetDisplayName()</a>
                         </li>
                         <li role="menuitem" class="das-user-navigation__list-item">
                             <a asp-route="@RouteNames.Dashboard_AccountsNotifications" class="das-user-navigation__link govuk-!-font-weight-bold">Notification settings</a>
