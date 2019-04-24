@@ -82,7 +82,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             viewModel.ApplicationMethodSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.ApplicationMethod }, true, vm => vm.ApplicationMethod);
             viewModel.ApplicationUrlSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.ApplicationUrl }, true, vm => vm.ApplicationUrl);
             viewModel.ProviderSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Provider }, true, vm => vm.ProviderName);
-            viewModel.ProviderContactSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.EmployerContact }, false, vm => vm.ProviderContactName, vm => vm.ProviderContactEmail, vm => vm.ProviderContactTelephone);
+            viewModel.ProviderContactSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.ProviderContact }, false, vm => vm.ProviderContactName, vm => vm.ProviderContactEmail, vm => vm.ProviderContactTelephone);
             viewModel.TrainingSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Training }, true, vm => vm.TrainingType, vm => vm.TrainingTitle);
             viewModel.DisabilityConfidentSectionState = GetSectionState(viewModel, new[]{ FieldIdentifiers.DisabilityConfident}, true, vm => vm.IsDisabilityConfident);
         }
