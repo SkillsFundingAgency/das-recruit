@@ -74,9 +74,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
             if (vacancy.EmployerLocation != null && hasLegalEntityChanged == false)
             {
-                vm.SelectedLocation = 
-                    GetMatchingAddress(vacancy.EmployerLocation.ToAddressString(), allLocations)
-                        .ToAddressString();
+                var matchingAddress = GetMatchingAddress(vacancy.EmployerLocation.ToAddressString(), allLocations);
+                vm.SelectedLocation = matchingAddress?.ToAddressString() ?? LocationViewModel.UseOtherLocationConst;
+                vm.SetLocation(vacancy.EmployerLocation);
             } 
 
             if (vacancy.Status == VacancyStatus.Referred)

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Esfa.Recruit.Shared.Web.ViewModels;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Location
 {
@@ -25,5 +26,13 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Location
         public PartOnePageInfoViewModel PageInfo { get; set; }
         public bool CanShowBackLink { get; internal set; }
         public List<string> AvailableLocations { get; set; } = new List<string>();
+        public void SetLocation(Address location)
+        {
+            AddressLine1 = location.AddressLine1;
+            AddressLine2 = location.AddressLine2;
+            AddressLine3 = location.AddressLine3;
+            AddressLine4 = location.AddressLine4;
+            Postcode = location.Postcode;
+        }
     }
 }
