@@ -79,7 +79,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 case FilteringOptions.Draft:
                 case FilteringOptions.Submitted:
                     filteredVacancies = vacancies.Where(v =>
-                        v.Status == (VacancyStatus) filterStatus.Value);                        
+                        v.Status.ToString() == filterStatus.ToString());                        
                     break;
                 case FilteringOptions.All:
                     filteredVacancies = vacancies;
