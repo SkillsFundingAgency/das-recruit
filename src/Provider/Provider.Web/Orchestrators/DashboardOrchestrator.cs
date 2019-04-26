@@ -31,9 +31,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         {
             var vacancies = await GetVacanciesAsync(ukprn);
 
-            var filteringOptions = SanitizeFilter(filter);
+            var filteringOption = SanitizeFilter(filter);
 
-            var filteredVacancies = GetFilteredVacancies(vacancies, filteringOptions);                
+            var filteredVacancies = GetFilteredVacancies(vacancies, filteringOption);                
             
             var filteredVacanciesTotal = filteredVacancies.Count();
 
@@ -55,15 +55,15 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 RouteNames.Dashboard_Index_Get,
                 new Dictionary<string, string>
                 {
-                    {"filter", filteringOptions.ToString()}
+                    {"filter", filteringOption.ToString()}
                 });
             
             var vm = new DashboardViewModel 
             {
                 Vacancies = vacanciesVm,
                 Pager = pager,
-                Filter = filteringOptions,
-                ResultsHeading = GetFilterHeading(filteredVacanciesTotal, filteringOptions),
+                Filter = filteringOption,
+                ResultsHeading = GetFilterHeading(filteredVacanciesTotal, filteringOption),
                 HasVacancies = vacancies.Any()
             };
 
@@ -96,11 +96,11 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                     break;
                 case FilteringOptions.ClosingSoon:
                     filteredVacancies = vacancies.Where(v =>
-                        v.ClosingDate <= _timeProvider.Now.AddDays(5) && v.Status == VacancyStatus.Live);                    
+                        v.ClosingDate <= _timeProvider.Today.AddDays(5) && v.Status == VacancyStatus.Live);                    
                     break;
                 case FilteringOptions.ClosingSoonWithNoApplications:
                     filteredVacancies = vacancies.Where(v =>
-                        v.ClosingDate <= _timeProvider.Now.AddDays(5) && v.Status == VacancyStatus.Live && (v.NoOfSuccessfulApplications == 0 || v.NoOfUnsuccessfulApplications == 0 ||
+                        v.ClosingDate <= _timeProvider.Today.AddDays(5) && v.Status == VacancyStatus.Live && (v.NoOfSuccessfulApplications == 0 || v.NoOfUnsuccessfulApplications == 0 ||
                                                                      v.NoOfNewApplications == 0));
                     break;
             }
@@ -133,10 +133,10 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             return FilteringOptions.All;
         }
 
-        private string GetFilterHeading(int totalVacancies, FilteringOptions options)
+        private string GetFilterHeading(int totalVacancies, FilteringOptions filteringOption)
         {
-            var filterText = options.GetDisplayName().ToLowerInvariant();
-            switch (options)
+            var filterText = filteringOption.GetDisplayName().ToLowerInvariant();
+            switch (filteringOption)
             {
                 case FilteringOptions.ClosingSoon:
                 case FilteringOptions.ClosingSoonWithNoApplications:
