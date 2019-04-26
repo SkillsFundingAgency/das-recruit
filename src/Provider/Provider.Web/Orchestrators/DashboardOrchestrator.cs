@@ -31,9 +31,15 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         {
             var vacancies = await GetVacanciesAsync(ukprn);
 
+<<<<<<< HEAD
             var filteringOption = SanitizeFilter(filter);
 
             var filteredVacancies = GetFilteredVacancies(vacancies, filteringOption);                
+=======
+            var filteringOptions = SanitizeFilter(filter);
+
+            var filteredVacancies = GetFilteredVacancies(vacancies, filteringOptions);                
+>>>>>>> Implementing PR comments.
             
             var filteredVacanciesTotal = filteredVacancies.Count();
 
@@ -55,15 +61,24 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 RouteNames.Dashboard_Index_Get,
                 new Dictionary<string, string>
                 {
+<<<<<<< HEAD
                     {"filter", filteringOption.ToString()}
+=======
+                    {"filter", filteringOptions.ToString()}
+>>>>>>> Implementing PR comments.
                 });
             
             var vm = new DashboardViewModel 
             {
                 Vacancies = vacanciesVm,
                 Pager = pager,
+<<<<<<< HEAD
                 Filter = filteringOption,
                 ResultsHeading = GetFilterHeading(filteredVacanciesTotal, filteringOption),
+=======
+                Filter = filteringOptions,
+                ResultsHeading = GetFilterHeading(filteredVacanciesTotal, filteringOptions),
+>>>>>>> Implementing PR comments.
                 HasVacancies = vacancies.Any()
             };
 
@@ -96,11 +111,19 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                     break;
                 case FilteringOptions.ClosingSoon:
                     filteredVacancies = vacancies.Where(v =>
+<<<<<<< HEAD
                         v.ClosingDate <= _timeProvider.Today.AddDays(5) && v.Status == VacancyStatus.Live);                    
                     break;
                 case FilteringOptions.ClosingSoonWithNoApplications:
                     filteredVacancies = vacancies.Where(v =>
                         v.ClosingDate <= _timeProvider.Today.AddDays(5) && v.Status == VacancyStatus.Live && (v.NoOfSuccessfulApplications == 0 || v.NoOfUnsuccessfulApplications == 0 ||
+=======
+                        v.ClosingDate <= _timeProvider.Now.AddDays(5) && v.Status == VacancyStatus.Live);                    
+                    break;
+                case FilteringOptions.ClosingSoonWithNoApplications:
+                    filteredVacancies = vacancies.Where(v =>
+                        v.ClosingDate <= _timeProvider.Now.AddDays(5) && v.Status == VacancyStatus.Live && (v.NoOfSuccessfulApplications == 0 || v.NoOfUnsuccessfulApplications == 0 ||
+>>>>>>> Implementing PR comments.
                                                                      v.NoOfNewApplications == 0));
                     break;
             }
@@ -123,7 +146,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
         private int SanitizePage(int page, int totalVacancies)
         {
-            return page < 0 || page > (int)Math.Ceiling((double)totalVacancies / VacanciesPerPage) ? 1 : page;
+            return (page < 0 || page > (int)Math.Ceiling((double)totalVacancies / VacanciesPerPage)) ? 1 : page;
         }
 
         private FilteringOptions SanitizeFilter(string filter)
@@ -133,10 +156,17 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             return FilteringOptions.All;
         }
 
+<<<<<<< HEAD
         private string GetFilterHeading(int totalVacancies, FilteringOptions filteringOption)
         {
             var filterText = filteringOption.GetDisplayName().ToLowerInvariant();
             switch (filteringOption)
+=======
+        private string GetFilterHeading(int totalVacancies, FilteringOptions options)
+        {
+            var filterText = options.GetDisplayName().ToLowerInvariant();
+            switch (options)
+>>>>>>> Implementing PR comments.
             {
                 case FilteringOptions.ClosingSoon:
                 case FilteringOptions.ClosingSoonWithNoApplications:
