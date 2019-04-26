@@ -7,6 +7,7 @@ using Esfa.Recruit.Provider.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.ViewModels;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
@@ -18,19 +19,21 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
     {
         private const int VacanciesPerPage = 25;
         private readonly IProviderVacancyClient _client;
+        private readonly ITimeProvider _timeProvider;
 
-        public DashboardOrchestrator(IProviderVacancyClient client)
+        public DashboardOrchestrator(IProviderVacancyClient client, ITimeProvider timeProvider)
         {
             _client = client;
+            _timeProvider = timeProvider;
         }
 
         public async Task<DashboardViewModel> GetDashboardViewModelAsync(long ukprn, string filter, int page)
         {
             var vacancies = await GetVacanciesAsync(ukprn);
 
-            var filterStatus = SanitizeFilter(filter);
+            var filteringOptions = SanitizeFilter(filter);
 
-            var filteredVacancies = GetFilteredVacancies(vacancies, filterStatus);                
+            var filteredVacancies = GetFilteredVacancies(vacancies, filteringOptions);                
             
             var filteredVacanciesTotal = filteredVacancies.Count();
 
@@ -52,23 +55,22 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 RouteNames.Dashboard_Index_Get,
                 new Dictionary<string, string>
                 {
-                    {"filter", filterStatus?.ToString() ?? ""}
+                    {"filter", filteringOptions.ToString()}
                 });
             
             var vm = new DashboardViewModel 
             {
                 Vacancies = vacanciesVm,
                 Pager = pager,
-                IsFiltered = filterStatus.HasValue,                 
-                Filter = filterStatus?.ToString(),
-                ResultsHeading = GetFilterHeading(filteredVacanciesTotal, filterStatus),
+                Filter = filteringOptions,
+                ResultsHeading = GetFilterHeading(filteredVacanciesTotal, filteringOptions),
                 HasVacancies = vacancies.Any()
             };
 
             return vm;
         }
 
-        private List<VacancySummary> GetFilteredVacancies(List<VacancySummary> vacancies, FilteringOptions? filterStatus)
+        private List<VacancySummary> GetFilteredVacancies(List<VacancySummary> vacancies, FilteringOptions filterStatus)
         {
             IEnumerable<VacancySummary> filteredVacancies = new List<VacancySummary>();
             switch (filterStatus)
@@ -94,11 +96,11 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                     break;
                 case FilteringOptions.ClosingSoon:
                     filteredVacancies = vacancies.Where(v =>
-                        v.ClosingDate <= DateTime.Now.AddDays(5) && v.Status == VacancyStatus.Live);
+                        v.ClosingDate <= _timeProvider.Now.AddDays(5) && v.Status == VacancyStatus.Live);                    
                     break;
                 case FilteringOptions.ClosingSoonWithNoApplications:
                     filteredVacancies = vacancies.Where(v =>
-                        v.ClosingDate <= DateTime.Now.AddDays(5) && v.Status == VacancyStatus.Live && (v.NoOfSuccessfulApplications == 0 || v.NoOfUnsuccessfulApplications == 0 ||
+                        v.ClosingDate <= _timeProvider.Now.AddDays(5) && v.Status == VacancyStatus.Live && (v.NoOfSuccessfulApplications == 0 || v.NoOfUnsuccessfulApplications == 0 ||
                                                                      v.NoOfNewApplications == 0));
                     break;
             }
@@ -121,36 +123,31 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
         private int SanitizePage(int page, int totalVacancies)
         {
-            return page < 0 || page > (int)Math.Ceiling((double)totalVacancies / VacanciesPerPage) ? 1 : page;
+            return (page < 0 || page > (int)Math.Ceiling((double)totalVacancies / VacanciesPerPage)) ? 1 : page;
         }
 
-        private FilteringOptions? SanitizeFilter(string filter)
+        private FilteringOptions SanitizeFilter(string filter)
         {
             if (Enum.TryParse(typeof(FilteringOptions), filter, out var status))
                 return (FilteringOptions)status;
-
-            return null;
+            return FilteringOptions.All;
         }
 
-        private string GetFilterHeading(int totalVacancies, FilteringOptions? filterStatus)
+        private string GetFilterHeading(int totalVacancies, FilteringOptions options)
         {
-            if (totalVacancies == 1 && filterStatus.HasValue == false)
-                return "Show 1 vacancy";
-            var filterText = filterStatus.HasValue ? filterStatus.GetDisplayName().ToLowerInvariant() : "All";
-            if (filterStatus.HasValue)
+            var filterText = options.GetDisplayName().ToLowerInvariant();
+            switch (options)
             {
-                switch (filterStatus.Value)
-                {
-                    case FilteringOptions.ClosingSoon:
-                    case FilteringOptions.ClosingSoonWithNoApplications:
-                    case FilteringOptions.AllApplications:
-                    case FilteringOptions.NewApplications:
-                        return $"{totalVacancies} {"vacancy".ToQuantity(totalVacancies, ShowQuantityAs.None)} {filterText}";
-                    default:
-                        return $"{totalVacancies} {filterText} {"vacancy".ToQuantity(totalVacancies, ShowQuantityAs.None)}";
-                }
-            }       
-            return $"All {totalVacancies} vacancies";    
-        }
+                case FilteringOptions.ClosingSoon:
+                case FilteringOptions.ClosingSoonWithNoApplications:
+                case FilteringOptions.AllApplications:
+                case FilteringOptions.NewApplications:
+                    return $"{totalVacancies} {"vacancy".ToQuantity(totalVacancies, ShowQuantityAs.None)} {filterText}";
+                case FilteringOptions.All:
+                    return $"All {totalVacancies} vacancies";
+                default:
+                    return $"{totalVacancies} {filterText} {"vacancy".ToQuantity(totalVacancies, ShowQuantityAs.None)}";
+            }                                  
+        }        
     }
 }

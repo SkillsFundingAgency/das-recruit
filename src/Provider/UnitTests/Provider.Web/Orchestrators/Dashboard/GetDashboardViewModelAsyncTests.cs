@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Orchestrators;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
@@ -29,12 +30,13 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Dashboard
             }
 
             var clientMock = new Mock<IProviderVacancyClient>();
+            var timeProviderMock = new Mock<ITimeProvider>();
             clientMock.Setup(c => c.GetDashboardAsync(ukprn))
                 .Returns(Task.FromResult(new ProviderDashboard {
                     Vacancies = vacancies
                 }));
 
-            var orch = new DashboardOrchestrator(clientMock.Object);
+            var orch = new DashboardOrchestrator(clientMock.Object, timeProviderMock.Object);
 
             var vm = await orch.GetDashboardViewModelAsync(ukprn, "Submitted", 2);
 
@@ -63,12 +65,13 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Dashboard
             }
 
             var clientMock = new Mock<IProviderVacancyClient>();
+            var timeProviderMock = new Mock<ITimeProvider>();
             clientMock.Setup(c => c.GetDashboardAsync(ukprn))
                 .Returns(Task.FromResult(new ProviderDashboard {
                     Vacancies = vacancies
                 }));
 
-            var orch = new DashboardOrchestrator(clientMock.Object);
+            var orch = new DashboardOrchestrator(clientMock.Object, timeProviderMock.Object);
 
             var vm = await orch.GetDashboardViewModelAsync(ukprn, "Submitted", 2);
 
