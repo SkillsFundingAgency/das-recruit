@@ -35,7 +35,7 @@
             <div esfa-validation-marker-for="NumberOfPositions" class="govuk-form-group">
                 <label asp-for="NumberOfPositions" class="govuk-label govuk-!-font-weight-bold">How many positions do you have for this apprenticeship?</label>
                 <span esfa-validation-message-for="NumberOfPositions" class="govuk-error-message"></span>
-                <input asp-for="NumberOfPositions" class="govuk-input govuk-input--width-4 type="number" min="1"/>
+                <input asp-for="NumberOfPositions" class="govuk-input govuk-input--width-4" type="number" min="1"/>
             </div>
             <button type="submit" class="govuk-button save-button">@Model.PageInfo.SubmitButtonText</button>
 
