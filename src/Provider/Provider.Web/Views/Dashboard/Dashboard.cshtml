@@ -16,7 +16,7 @@
 }
 
 <div asp-hide="@Model.HasVacancies" class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
+    <div class="govuk-grid-column-two-thirds">        
         <h1 class="govuk-heading-l">Your vacancies</h1>
         <p class="govuk-body">Your dashboard is empty, start by creating your first vacancy</p>
         <p class="govuk-body">Vacancies will be approved or rejected within 24 hours.</p>
@@ -35,15 +35,18 @@
             </div>
         </div>
     </div>
-
+    <div class="govuk-grid-row">        
+        <div class="govuk-grid-column-full">
+            <a asp-route="@RouteNames.Recruitment_Dashboard_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Return to recruitment dashboard</a>
+        </div>
+    </div>
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-one-half">
+        <div class="govuk-grid-column-one-half">            
             <h1 class="govuk-heading-xl">Vacancies</h1>
         </div>
 
         <div class="govuk-grid-column-one-half ">
             <a asp-route="@RouteNames.Employer_Get" class="govuk-button float-right clear govuk-!-margin-top-2 govuk-!-margin-bottom-4" esfa-automation="create-vacancy">Create vacancy</a>
-            <a asp-route="@RouteNames.ReportDashboard_Get" class="govuk-link govuk-body float-right clear">Create a report</a>      
         </div>
     </div>
 </div>
