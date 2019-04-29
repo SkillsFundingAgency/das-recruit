@@ -48,6 +48,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             {
                 VacancyId = message.Vacancy.Id
             });
+
+            await _messaging.PublishEvent(new LiveVacancyUpdatedEvent(message.Vacancy.Id, message.Vacancy.VacancyReference.Value, message.UpdateKind));
         }
 
         private async Task PublishLiveVacancyClosingDateChangedEvent(Vacancy originalVacancy, DateTime? newClosingDate)

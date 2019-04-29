@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Application;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
@@ -103,13 +104,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _messaging.SendCommandAsync(command);
         }
 
-        public Task UpdatePublishedVacancyAsync(Vacancy vacancy, VacancyUser user)
+        public Task UpdatePublishedVacancyAsync(Vacancy vacancy, VacancyUser user, LiveUpdateKind updateKind)
         {
-            var command = new UpdateLiveVacancyCommand
-            {
-                Vacancy = vacancy,
-                User = user
-            };
+            var command = new UpdateLiveVacancyCommand(vacancy, user, updateKind);
 
             return _messaging.SendCommandAsync(command);
         }
