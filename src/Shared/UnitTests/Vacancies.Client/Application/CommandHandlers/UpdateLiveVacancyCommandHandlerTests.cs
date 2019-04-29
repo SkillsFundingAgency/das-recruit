@@ -5,6 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Application;
 using Esfa.Recruit.Vacancies.Client.Application.CommandHandlers;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
@@ -67,14 +68,12 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
         public UpdateLiveVacancyCommandHandlerTests()
         {
             _currentTime = DateTime.UtcNow;
+            var user = new VacancyUser();
 
             _originalVacancy = CreateVacancy();
             _updatedVacancy = CreateVacancy();
 
-            _message = new UpdateLiveVacancyCommand
-            {
-                Vacancy = _updatedVacancy
-            };
+            _message = new UpdateLiveVacancyCommand(_updatedVacancy, user, LiveUpdateKind.ClosingDate);
 
             _mockLogger = new Mock<ILogger<UpdateLiveVacancyCommandHandler>>();
             _mockMessaging = new Mock<IMessaging>();

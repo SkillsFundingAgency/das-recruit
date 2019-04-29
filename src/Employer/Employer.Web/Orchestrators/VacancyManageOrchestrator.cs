@@ -18,6 +18,7 @@ using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Configuration;
 using Employer.Web.Configuration;
+using Esfa.Recruit.Shared.Web.Helpers;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
@@ -26,10 +27,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         private const VacancyRuleSet ValdationRules = VacancyRuleSet.ClosingDate | VacancyRuleSet.StartDate | VacancyRuleSet.TrainingProgramme | VacancyRuleSet.StartDateEndDate | VacancyRuleSet.TrainingExpiryDate | VacancyRuleSet.MinimumWage;
         private readonly DisplayVacancyViewModelMapper _vacancyDisplayMapper;
         private readonly IRecruitVacancyClient _client;
-		private readonly IFeature _featureToggle;
-		private readonly EmployerRecruitSystemConfiguration _systemConfig;
+        private readonly IFeature _featureToggle;
+        private readonly EmployerRecruitSystemConfiguration _systemConfig;
 
-		public VacancyManageOrchestrator(ILogger<VacancyManageOrchestrator> logger, DisplayVacancyViewModelMapper vacancyDisplayMapper, IRecruitVacancyClient vacancyClient, IFeature featureToggle, EmployerRecruitSystemConfiguration systemConfig) : base(logger)
+        public VacancyManageOrchestrator(ILogger<VacancyManageOrchestrator> logger, DisplayVacancyViewModelMapper vacancyDisplayMapper, IRecruitVacancyClient vacancyClient, IFeature featureToggle, EmployerRecruitSystemConfiguration systemConfig) : base(logger)
         {
             _vacancyDisplayMapper = vacancyDisplayMapper;
             _client = vacancyClient;
@@ -109,13 +110,18 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         {
             var vacancy = await GetVacancy(m);
 
-            vacancy.ClosingDate = m.ProposedClosingDate.AsDateTimeUk()?.ToUniversalTime();
-            vacancy.StartDate = m.ProposedStartDate.AsDateTimeUk()?.ToUniversalTime();
+            var proposedClosingDate = m.ProposedClosingDate.AsDateTimeUk()?.ToUniversalTime();
+            var proposedStartDate = m.ProposedStartDate.AsDateTimeUk()?.ToUniversalTime();
+
+            var updateKind = VacancyHelper.DetermineLiveUpdateKind(vacancy, proposedClosingDate, proposedStartDate);
+
+            vacancy.ClosingDate = proposedClosingDate;
+            vacancy.StartDate = proposedStartDate;
             
             return await ValidateAndExecute(
                 vacancy, 
                 v => _client.Validate(v, ValdationRules),
-                v => _client.UpdatePublishedVacancyAsync(vacancy, user)
+                v => _client.UpdatePublishedVacancyAsync(vacancy, user, updateKind)
             );
         }
 

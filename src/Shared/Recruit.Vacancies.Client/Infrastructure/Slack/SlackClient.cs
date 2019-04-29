@@ -62,6 +62,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Slack
                     return ":x:";
                 case SlackVacancyNotificationType.ManuallyClosed:
                     return ":negative_squared_cross_mark:";
+                case SlackVacancyNotificationType.Extended:
+                    return ":date:";
                 default:
                     return ":question:";
             }

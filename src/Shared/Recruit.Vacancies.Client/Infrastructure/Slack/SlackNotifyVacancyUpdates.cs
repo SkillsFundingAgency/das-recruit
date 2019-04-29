@@ -20,11 +20,20 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Slack
 
         public Task VacancyManuallyClosed(Vacancy vacancy)
         {
-            var messageBody = string.Format("Vacancy <{0}{1}|VAC{1}> has been closed ({2})", _findAnApprenticeshipDetailPrefixUrl, vacancy.VacancyReference, vacancy.OwnerType.ToString());
+            var messageBody = string.Format($"Vacancy VAC{vacancy.VacancyReference} has been closed ({vacancy.OwnerType.ToString()})");
 
             var message = new SlackMessage {Text = messageBody};
 
             return _slackClient.PostAsync(message, SlackVacancyNotificationType.ManuallyClosed);
+        }
+
+        public Task LiveVacancyChanged(Vacancy vacancy)
+        {
+            var messageBody = string.Format("Vacancy <{0}{1}|VAC{1}> has been extended ({2})", _findAnApprenticeshipDetailPrefixUrl, vacancy.VacancyReference, vacancy.OwnerType.ToString());
+
+            var message = new SlackMessage {Text = messageBody};
+
+            return _slackClient.PostAsync(message, SlackVacancyNotificationType.Extended);
         }
     }
 }

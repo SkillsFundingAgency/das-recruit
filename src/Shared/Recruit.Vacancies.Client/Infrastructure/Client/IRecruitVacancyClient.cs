@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Application;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyAnalytics;
@@ -22,7 +23,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<IEnumerable<IApprenticeshipProgramme>> GetActiveApprenticeshipProgrammesAsync();
         Task<IApprenticeshipProgramme> GetApprenticeshipProgrammeAsync(string programmeId);
         Task<VacancyApplications> GetVacancyApplicationsAsync(string vacancyReference);
-        Task UpdatePublishedVacancyAsync(Vacancy vacancy, VacancyUser user);
+        Task UpdatePublishedVacancyAsync(Vacancy vacancy, VacancyUser user, LiveUpdateKind updateKind);
         Task<Guid> CloneVacancyAsync(Guid vacancyId, VacancyUser user, SourceOrigin sourceOrigin, DateTime startDate, DateTime closingDate);
         Task<string> GetEmployerNameAsync(Vacancy vacancy);
         Task<string> GetEmployerDescriptionAsync(Vacancy vacancy);

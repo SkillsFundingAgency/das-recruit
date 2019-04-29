@@ -5,6 +5,7 @@
         New,
         Approved,
         Referred,
-        ManuallyClosed
+        ManuallyClosed,
+        Extended
     }
 }
