@@ -53,7 +53,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 VacanciesPerPage,
                 page, 
                 "Showing {0} to {1} of {2} vacancies",
-                RouteNames.Dashboard_Index_Get,
+                RouteNames.Vacancies_Get,
                 new Dictionary<string, string>
                 {
                     {"filter", filteringOption.ToString()}

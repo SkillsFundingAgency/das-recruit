@@ -20,7 +20,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             _hostingEnvironment = hostingEnvironment;
         }
 
-        [HttpGet("", Name = RouteNames.Dashboard_Index_Get)]
+        [HttpGet("", Name = RouteNames.Vacancies_Get)]
         public async Task<IActionResult> Dashboard([FromQuery] string filter, [FromQuery] int page = 1)
         {
             if (string.IsNullOrWhiteSpace(filter))
