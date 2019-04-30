@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Orchestrators;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
@@ -13,51 +14,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Dashboard
 {
     public class GetDashboardViewModelAsyncTests
     {
-        [Fact]
-        public async Task WhenHaveMoreThanOneStatus_ShouldShowFilter()
-        {
-            const long ukprn = 12345678;
-
-            var clientMock = new Mock<IProviderVacancyClient>();
-            clientMock.Setup(c => c.GetDashboardAsync(ukprn))
-                .Returns(Task.FromResult(new ProviderDashboard
-                {
-                    Vacancies = new List<VacancySummary> 
-                    {
-                        new VacancySummary { Status = VacancyStatus.Submitted},
-                        new VacancySummary { Status = VacancyStatus.Live}
-                    }
-                }));
-
-            var orch = new DashboardOrchestrator(clientMock.Object);
-
-            var vm = await orch.GetDashboardViewModelAsync(ukprn, "filter", 1);
-
-            vm.ShowFilter.Should().BeTrue();
-        }
-
-        [Fact]
-        public async Task WhenHaveOneStatus_ShouldNotShowFilter()
-        {
-            const long ukprn = 12345678;
-
-            var clientMock = new Mock<IProviderVacancyClient>();
-            clientMock.Setup(c => c.GetDashboardAsync(ukprn))
-                .Returns(Task.FromResult(new ProviderDashboard {
-                    Vacancies = new List<VacancySummary>
-                    {
-                        new VacancySummary { Status = VacancyStatus.Submitted},
-                        new VacancySummary { Status = VacancyStatus.Submitted}
-                    }
-                }));
-
-            var orch = new DashboardOrchestrator(clientMock.Object);
-
-            var vm = await orch.GetDashboardViewModelAsync(ukprn, "filter", 1);
-
-            vm.ShowFilter.Should().BeFalse();
-        }
-
         [Fact]
         public async Task WhenHaveOver25Vacancies_ShouldShowPager()
         {
@@ -74,12 +30,13 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Dashboard
             }
 
             var clientMock = new Mock<IProviderVacancyClient>();
+            var timeProviderMock = new Mock<ITimeProvider>();
             clientMock.Setup(c => c.GetDashboardAsync(ukprn))
                 .Returns(Task.FromResult(new ProviderDashboard {
                     Vacancies = vacancies
                 }));
 
-            var orch = new DashboardOrchestrator(clientMock.Object);
+            var orch = new DashboardOrchestrator(clientMock.Object, timeProviderMock.Object);
 
             var vm = await orch.GetDashboardViewModelAsync(ukprn, "Submitted", 2);
 
@@ -108,12 +65,13 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Dashboard
             }
 
             var clientMock = new Mock<IProviderVacancyClient>();
+            var timeProviderMock = new Mock<ITimeProvider>();
             clientMock.Setup(c => c.GetDashboardAsync(ukprn))
                 .Returns(Task.FromResult(new ProviderDashboard {
                     Vacancies = vacancies
                 }));
 
-            var orch = new DashboardOrchestrator(clientMock.Object);
+            var orch = new DashboardOrchestrator(clientMock.Object, timeProviderMock.Object);
 
             var vm = await orch.GetDashboardViewModelAsync(ukprn, "Submitted", 2);
 

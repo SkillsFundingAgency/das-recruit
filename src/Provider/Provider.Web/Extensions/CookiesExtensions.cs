@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -62,17 +60,6 @@ namespace Esfa.Recruit.Provider.Web.Extensions
                 return proposedStartDate;
 
             return null;
-        }
-
-        public static string GetDashboardFilter(this IRequestCookieCollection cookies)
-        {
-            return cookies[CookieNames.DashboardFilter];
-        }
-
-        public static void SetDashboardFilter(this IResponseCookies cookies, IHostingEnvironment hostingEnvironment, string value)
-        {
-            cookies.Append(CookieNames.DashboardFilter, value, EsfaCookieOptions.GetSessionLifetimeHttpCookieOption(hostingEnvironment));
-        }
-
+        }        
     }
 }
