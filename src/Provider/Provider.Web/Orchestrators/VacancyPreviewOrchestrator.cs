@@ -65,7 +65,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             if (!vacancy.CanSubmit)
                 throw new InvalidStateException(string.Format(ErrMsg.VacancyNotAvailableForEditing, vacancy.Title));
             
-            vacancy.EmployerName = await _vacancyClient.GetEmployerName(vacancy);
+            vacancy.EmployerName = await _vacancyClient.GetEmployerNameAsync(vacancy);
             
             return await ValidateAndExecute(
                 vacancy,

@@ -51,7 +51,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             }
 
             if(vacancy.EmployerNameOption.HasValue)
-                vm.VacancyEmployerInfoModel.EmployerNameOption = vacancy.EmployerNameOption.Value.ConvertToModelOption();
+                vm.VacancyEmployerInfoModel.EmployerIdentityOption = vacancy.EmployerNameOption.Value.ConvertToModelOption();
 
             return vm;
         }

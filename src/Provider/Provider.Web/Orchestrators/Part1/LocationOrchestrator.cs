@@ -46,7 +46,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 LegalEntityId = vacancy.LegalEntityId == 0 ? (long?)null : vacancy.LegalEntityId
             };
             if (vacancy.EmployerNameOption.HasValue)
-                model.EmployerNameOption = vacancy.EmployerNameOption.Value.ConvertToModelOption();
+                model.EmployerIdentityOption = vacancy.EmployerNameOption.Value.ConvertToModelOption();
             return model;
         }
 
@@ -125,7 +125,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             {
                 vacancy.LegalEntityName = selectedOrganisation.Name;
                 vacancy.LegalEntityId = employerInfoModel.LegalEntityId.GetValueOrDefault();
-                vacancy.EmployerNameOption = employerInfoModel.EmployerNameOption?.ConvertToDomainOption();
+                vacancy.EmployerNameOption = employerInfoModel.EmployerIdentityOption?.ConvertToDomainOption();
             }
 
             return await ValidateAndExecute(
@@ -161,7 +161,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             EmployerProfile employerProfile, Address address, VacancyUser user)
         {
             var updateProfile = false;
-            if (employerInfoModel != null && employerInfoModel.EmployerNameOption == EmployerNameOptionViewModel.NewTradingName)
+            if (employerInfoModel != null && employerInfoModel.EmployerIdentityOption == EmployerIdentityOption.NewTradingName)
             {
                 updateProfile = true;
                 employerProfile.TradingName = employerInfoModel.NewTradingName;

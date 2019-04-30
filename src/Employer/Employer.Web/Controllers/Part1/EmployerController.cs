@@ -70,7 +70,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             {
                 info.LegalEntityId = m.SelectedOrganisationId;
                 info.HasLegalEntityChanged = true;
-                info.EmployerNameOption = null;
+                info.EmployerIdentityOption = null;
                 info.NewTradingName = null;
                 info.AnonymousName = null;
                 info.AnonymousReason = null;

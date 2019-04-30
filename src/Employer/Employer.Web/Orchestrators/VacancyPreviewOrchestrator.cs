@@ -71,9 +71,14 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             if (!vacancy.CanSubmit)
                 throw new InvalidStateException(string.Format(ErrMsg.VacancyNotAvailableForEditing, vacancy.Title));
 
-            vacancy.EmployerDescription = await _vacancyClient.GetEmployerDescriptionAsync(vacancy);
-            vacancy.EmployerName = await _vacancyClient.GetEmployerName(vacancy);
-            
+            var employerDescriptionTask = _vacancyClient.GetEmployerDescriptionAsync(vacancy);
+            var employerNameTask = _vacancyClient.GetEmployerNameAsync(vacancy);
+
+            Task.WaitAll(employerDescriptionTask, employerNameTask);
+
+            vacancy.EmployerDescription = employerDescriptionTask.Result;
+            vacancy.EmployerName = employerNameTask.Result;
+
             return await ValidateAndExecute(
                 vacancy,
                 v =>

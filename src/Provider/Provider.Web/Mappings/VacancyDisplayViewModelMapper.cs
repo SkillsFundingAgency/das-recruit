@@ -47,7 +47,7 @@ namespace Esfa.Recruit.Provider.Web.Mappings
             vm.CanSubmit = vacancy.CanSubmit;
             vm.ClosingDate = vacancy.ClosingDate?.AsGdsDate();
             vm.EmployerDescription = vacancy.EmployerDescription;
-            vm.EmployerName = await _vacancyClient.GetEmployerName(vacancy);
+            vm.EmployerName = await _vacancyClient.GetEmployerNameAsync(vacancy);
             vm.EmployerWebsiteUrl = vacancy.EmployerWebsiteUrl;
             vm.EmployerAddressElements = Enumerable.Empty<string>();
             vm.FindAnApprenticeshipUrl = _externalLinksConfiguration.FindAnApprenticeshipUrl;

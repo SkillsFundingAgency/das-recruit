@@ -58,7 +58,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 LegalEntityName = legalEntity.Name,
                 ExistingTradingName = employerProfile?.TradingName,
                 PageInfo = Utility.GetPartOnePageInfo(vacancy),
-                SelectedEmployerNameOption = employerInfoModel.EmployerNameOption,
+                SelectedEmployerIdentityOption = employerInfoModel.EmployerIdentityOption,
                 NewTradingName = employerInfoModel.NewTradingName
             };
 
@@ -79,12 +79,12 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(
                 _providerVacancyClient, _recruitVacancyClient, model, RouteNames.EmployerName_Post);
             
-            vacancy.EmployerNameOption =  model.SelectedEmployerNameOption.HasValue 
-                ? model.SelectedEmployerNameOption.Value.ConvertToDomainOption()
+            vacancy.EmployerNameOption =  model.SelectedEmployerIdentityOption.HasValue 
+                ? model.SelectedEmployerIdentityOption.Value.ConvertToDomainOption()
                 : (EmployerNameOption?) null;
 
             // temporarily set the employer name for validation
-            if (model.SelectedEmployerNameOption == EmployerNameOptionViewModel.NewTradingName)
+            if (model.SelectedEmployerIdentityOption == EmployerIdentityOption.NewTradingName)
             {
                 validationRules = VacancyRuleSet.EmployerNameOption | VacancyRuleSet.TradingName;
                 vacancy.EmployerName = model.NewTradingName;
@@ -101,7 +101,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             var mappings = new EntityToViewModelPropertyMappings<Vacancy, EmployerNameEditModel>();
 
             mappings.Add(v => v.EmployerName, vm => vm.NewTradingName);
-            mappings.Add(v => v.EmployerNameOption, vm => vm.SelectedEmployerNameOption);
+            mappings.Add(v => v.EmployerNameOption, vm => vm.SelectedEmployerIdentityOption);
 
             return mappings;
         }

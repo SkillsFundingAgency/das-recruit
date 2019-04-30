@@ -17,6 +17,7 @@ using Esfa.Recruit.Employer.Web.ViewModels.Part1.EmployerName;
 using Address = Esfa.Recruit.Vacancies.Client.Domain.Entities.Address;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Employer.Web.Mappings;
+using Esfa.Recruit.Shared.Web.Models;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
@@ -50,7 +51,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
             if (vacancy.EmployerNameOption.HasValue)
             {
-                model.EmployerNameOption = vacancy.EmployerNameOption.Value.ConvertToModelOption();
+                model.EmployerIdentityOption = vacancy.EmployerNameOption.Value.ConvertToModelOption();
                 model.AnonymousName = vacancy.IsAnonymous ? vacancy.EmployerName : null;
                 model.AnonymousReason = vacancy.IsAnonymous ? vacancy.AnonymousReason : null;
             }
@@ -69,9 +70,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var vm = new LocationViewModel();
             vm.PageInfo = Utility.GetPartOnePageInfo(vacancy);
             
-            vm.IsAnonymousVacancy = (employerInfoModel?.EmployerNameOption == null) 
+            vm.IsAnonymousVacancy = (employerInfoModel?.EmployerIdentityOption == null) 
                 ? vacancy.IsAnonymous 
-                : employerInfoModel.EmployerNameOption == EmployerNameOptionViewModel.Anonymous;
+                : employerInfoModel.EmployerIdentityOption == EmployerIdentityOption.Anonymous;
 
             var employerProfile =
                 await _recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, legalEntityId.GetValueOrDefault());
@@ -143,7 +144,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             {
                 vacancy.LegalEntityName = selectedOrganisation.Name;
                 vacancy.LegalEntityId = employerInfoModel.LegalEntityId.GetValueOrDefault();
-                vacancy.EmployerNameOption = employerInfoModel.EmployerNameOption?.ConvertToDomainOption();
+                vacancy.EmployerNameOption = employerInfoModel.EmployerIdentityOption?.ConvertToDomainOption();
                 vacancy.AnonymousReason = vacancy.IsAnonymous ? employerInfoModel.AnonymousReason : null;
                 vacancy.EmployerName = vacancy.IsAnonymous ? employerInfoModel.AnonymousName : null;
             }
@@ -181,7 +182,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             EmployerProfile employerProfile, Address address, VacancyUser user)
         {
             var updateProfile = false;
-            if (employerInfoModel != null && employerInfoModel.EmployerNameOption == EmployerNameOptionViewModel.NewTradingName)
+            if (employerInfoModel != null && employerInfoModel.EmployerIdentityOption == EmployerIdentityOption.NewTradingName)
             {
                 updateProfile = true;
                 employerProfile.TradingName = employerInfoModel.NewTradingName;

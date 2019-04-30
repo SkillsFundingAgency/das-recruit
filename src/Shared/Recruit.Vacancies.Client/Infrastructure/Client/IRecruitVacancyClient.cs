@@ -23,7 +23,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<VacancyApplications> GetVacancyApplicationsAsync(string vacancyReference);
         Task UpdatePublishedVacancyAsync(Vacancy vacancy, VacancyUser user);
         Task<Guid> CloneVacancyAsync(Guid vacancyId, VacancyUser user, SourceOrigin sourceOrigin, DateTime startDate, DateTime closingDate);
-        Task<string> GetEmployerName(Vacancy vacancy);
+        Task<string> GetEmployerNameAsync(Vacancy vacancy);
         Task<string> GetEmployerDescriptionAsync(Vacancy vacancy);
         Task<EmployerProfile> GetEmployerProfileAsync(string employerAccountId, long legalEntityId);
         Task UpdateEmployerProfileAsync(EmployerProfile employerProfile, VacancyUser user);
