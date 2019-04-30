@@ -1,4 +1,6 @@
+using System;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Mappings;
@@ -12,6 +14,8 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Employer.Web.Extensions;
+using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.Models;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
@@ -20,6 +24,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         private readonly IEmployerVacancyClient _employerVacancyClient;
         private readonly IRecruitVacancyClient _recruitVacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
+
+        private Expression<Func<EmployerNameEditModel, object>> _vmPropertyToMapEmployerNameTo = null;
 
         public EmployerNameOrchestrator(IEmployerVacancyClient employerVacancyClient, IRecruitVacancyClient recruitVacancyClient, 
             ILogger<EmployerNameOrchestrator> logger, IReviewSummaryService reviewSummaryService)
@@ -52,8 +58,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 LegalEntityName = legalEntity.Name,
                 ExistingTradingName = employerProfile.TradingName,
                 PageInfo = Utility.GetPartOnePageInfo(vacancy),
-                SelectedEmployerNameOption = employerInfoModel.EmployerNameOption,
-                NewTradingName = employerInfoModel.NewTradingName
+                SelectedEmployerIdentityOption = employerInfoModel.EmployerIdentityOption,
+                NewTradingName = employerInfoModel.NewTradingName,
+                AnonymousName = employerInfoModel.AnonymousName,
+                AnonymousReason = employerInfoModel.AnonymousReason
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
@@ -74,15 +82,23 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(
                 _employerVacancyClient, _recruitVacancyClient, model, RouteNames.EmployerName_Post);
             
-            vacancy.EmployerNameOption =  model.SelectedEmployerNameOption.HasValue 
-                ? model.SelectedEmployerNameOption.Value.ConvertToDomainOption()
+            vacancy.EmployerNameOption =  model.SelectedEmployerIdentityOption.HasValue 
+                ? model.SelectedEmployerIdentityOption.Value.ConvertToDomainOption()
                 : (EmployerNameOption?) null;
 
             // temporarily set the employer name for validation
-            if (model.SelectedEmployerNameOption == EmployerNameOptionViewModel.NewTradingName)
+            if (model.SelectedEmployerIdentityOption == EmployerIdentityOption.NewTradingName)
             {
                 validationRules = VacancyRuleSet.EmployerNameOption | VacancyRuleSet.TradingName;
                 vacancy.EmployerName = model.NewTradingName;
+                _vmPropertyToMapEmployerNameTo = vm => vm.NewTradingName;
+            }
+
+            if (model.SelectedEmployerIdentityOption == EmployerIdentityOption.Anonymous)
+            {
+                vacancy.EmployerName = model.AnonymousName;
+                vacancy.AnonymousReason = model.AnonymousReason;
+                _vmPropertyToMapEmployerNameTo = vm => vm.AnonymousName;
             }
 
             return await ValidateAndExecute(
@@ -95,8 +111,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         {
             var mappings = new EntityToViewModelPropertyMappings<Vacancy, EmployerNameEditModel>();
 
-            mappings.Add(v => v.EmployerName, vm => vm.NewTradingName);
-            mappings.Add(v => v.EmployerNameOption, vm => vm.SelectedEmployerNameOption);
+            if(_vmPropertyToMapEmployerNameTo != null)
+                mappings.Add(v => v.EmployerName, _vmPropertyToMapEmployerNameTo);
+
+            mappings.Add(v => v.EmployerNameOption, vm => vm.SelectedEmployerIdentityOption);
 
             return mappings;
         }

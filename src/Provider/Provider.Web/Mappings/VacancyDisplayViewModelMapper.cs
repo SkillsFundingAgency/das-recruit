@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
@@ -46,7 +47,7 @@ namespace Esfa.Recruit.Provider.Web.Mappings
             vm.CanSubmit = vacancy.CanSubmit;
             vm.ClosingDate = vacancy.ClosingDate?.AsGdsDate();
             vm.EmployerDescription = vacancy.EmployerDescription;
-            vm.EmployerName = await _vacancyClient.GetEmployerName(vacancy.Id);
+            vm.EmployerName = await _vacancyClient.GetEmployerNameAsync(vacancy);
             vm.EmployerWebsiteUrl = vacancy.EmployerWebsiteUrl;
             vm.EmployerAddressElements = Enumerable.Empty<string>();
             vm.FindAnApprenticeshipUrl = _externalLinksConfiguration.FindAnApprenticeshipUrl;
@@ -71,12 +72,11 @@ namespace Esfa.Recruit.Provider.Web.Mappings
                                         ? $"VAC{vacancy.VacancyReference.ToString()}"
                                         : string.Empty;
             vm.IsDisabilityConfident = vacancy.IsDisabilityConfident;
+
             if (vacancy.EmployerLocation != null)
             {
-                vm.MapUrl = vacancy.EmployerLocation.HasGeocode
-                    ? _mapService.GetMapImageUrl(vacancy.EmployerLocation.Latitude.ToString(),
-                        vacancy.EmployerLocation.Longitude.ToString(), MapImageWidth, MapImageHeight)
-                    : _mapService.GetMapImageUrl(vacancy.EmployerLocation.Postcode, MapImageWidth, MapImageHeight);
+                vm.MapUrl = MapImageHelper.GetEmployerLocationMapUrl(vacancy, _mapService, MapImageWidth, MapImageHeight);
+
                 vm.EmployerAddressElements = new[]
                 {
                     vacancy.EmployerLocation.AddressLine1,

@@ -1,4 +1,6 @@
 using System;
+using System.ComponentModel;
+using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.EmployerName;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
@@ -6,22 +8,35 @@ namespace Esfa.Recruit.Employer.Web.Extensions
 {
     public static class EmployerNameOptionViewModelExtensions
     {
-        public static EmployerNameOption ConvertToDomainOption(this EmployerNameOptionViewModel model)
+        public static EmployerNameOption ConvertToDomainOption(this EmployerIdentityOption model)
         {
-            return model == EmployerNameOptionViewModel.RegisteredName 
-                ? EmployerNameOption.RegisteredName : EmployerNameOption.TradingName;
+            switch (model)
+            {
+                case EmployerIdentityOption.RegisteredName:
+                    return EmployerNameOption.RegisteredName;
+                case EmployerIdentityOption.ExistingTradingName:
+                    return EmployerNameOption.TradingName;
+                case EmployerIdentityOption.NewTradingName:
+                    return EmployerNameOption.TradingName;
+                case EmployerIdentityOption.Anonymous:
+                    return EmployerNameOption.Anonymous;
+                default:
+                    throw new ArgumentException($"Cannot map '{model.ToString()}' to '{nameof(EmployerNameOption)}'");
+            }
         }
 
-        public static EmployerNameOptionViewModel ConvertToModelOption(this EmployerNameOption option)
+        public static EmployerIdentityOption ConvertToModelOption(this EmployerNameOption option)
         {
             switch(option)
             {
                 case EmployerNameOption.RegisteredName:
-                    return EmployerNameOptionViewModel.RegisteredName;
+                    return EmployerIdentityOption.RegisteredName;
                 case EmployerNameOption.TradingName:
-                    return EmployerNameOptionViewModel.ExistingTradingName;
+                    return EmployerIdentityOption.ExistingTradingName;
+                case EmployerNameOption.Anonymous:
+                    return EmployerIdentityOption.Anonymous;
                 default: 
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentException($"Cannot map '{option.ToString()}' to '{nameof(EmployerIdentityOption)}'");
             }
         }
     }

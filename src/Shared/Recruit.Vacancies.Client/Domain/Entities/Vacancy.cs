@@ -35,6 +35,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public DateTime? DeletedDate { get; set; }
         public VacancyUser DeletedByUser { get; set; }
         
+        public string AnonymousReason { get; set; }
         public string ApplicationInstructions { get; set; }
         public ApplicationMethod? ApplicationMethod { get; set; }
         public string ApplicationUrl { get; set; }
@@ -116,5 +117,17 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         /// We can extend the ClosingDate and StartDate for Live vacancies that have not been deleted
         /// </summary>
         public bool CanExtendStartAndClosingDates => Status == VacancyStatus.Live && IsDeleted == false;
+
+        /// <summary>
+        /// Is the employer anonymous
+        /// </summary>
+        public bool IsAnonymous => EmployerNameOption == Entities.EmployerNameOption.Anonymous;
+
+        /// <summary>
+        /// Should the vacancy be geocoded using the outcode part of the postcode
+        /// </summary>
+        public bool GeocodeUsingOutcode => IsAnonymous;
+
+        
     }
 }

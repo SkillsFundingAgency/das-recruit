@@ -1,3 +1,4 @@
+using Esfa.Recruit.Provider.Web.Model;
 using Esfa.Recruit.Shared.Web.ViewModels;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.EmployerName
@@ -7,7 +8,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.EmployerName
         public string LegalEntityName { get; set; }
         public string ExistingTradingName { get; set; } 
         public string NewTradingName { get; set; }        
-        public EmployerNameOptionViewModel? SelectedEmployerNameOption { get; set; }
+        public EmployerIdentityOption? SelectedEmployerIdentityOption { get; set; }
 
         public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
 

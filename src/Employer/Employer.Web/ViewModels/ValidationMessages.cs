@@ -9,7 +9,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
 
         public static class LocationPreferenceMessages
         {
-            public const string SelectionRequired = "You must select one option.";
+            public const string SelectionRequired = "You must select a work address";
         }
         public static class EmployerNameValidationMessages
         {
