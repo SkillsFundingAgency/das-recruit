@@ -1,5 +1,5 @@
-using Esfa.Recruit.Provider.Web.Model;
 using Esfa.Recruit.Provider.Web.RouteModel;
+using Esfa.Recruit.Shared.Web.Models;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.EmployerName
 {
@@ -8,5 +8,8 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.EmployerName
         public EmployerIdentityOption? SelectedEmployerIdentityOption { get; set; }
         
         public string NewTradingName { get; set; }
+
+        public string AnonymousName { get; set; }
+        public string AnonymousReason { get; set; }
     }
 }

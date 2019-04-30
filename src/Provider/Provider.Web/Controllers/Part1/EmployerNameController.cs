@@ -5,6 +5,7 @@ using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.EmployerName;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 
@@ -55,11 +56,15 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
                 vm.PageInfo.SetWizard(wizard);
                 vm.NewTradingName = model.NewTradingName;
                 vm.SelectedEmployerIdentityOption = model.SelectedEmployerIdentityOption;
+                vm.AnonymousName = model.AnonymousName;
+                vm.AnonymousReason = model.AnonymousReason;
                 return View(vm);
             }
 
             employerInfoModel.EmployerIdentityOption = model.SelectedEmployerIdentityOption;
-            employerInfoModel.NewTradingName = model.NewTradingName;
+            employerInfoModel.NewTradingName = model.SelectedEmployerIdentityOption == EmployerIdentityOption.NewTradingName ? model.NewTradingName : null;
+            employerInfoModel.AnonymousName = model.SelectedEmployerIdentityOption == EmployerIdentityOption.Anonymous ? model.AnonymousName : null;
+            employerInfoModel.AnonymousReason = model.SelectedEmployerIdentityOption == EmployerIdentityOption.Anonymous ? model.AnonymousReason : null;
             SetVacancyEmployerInfoCookie(employerInfoModel);
 
             return RedirectToRoute(RouteNames.Location_Get, new {Wizard = wizard});

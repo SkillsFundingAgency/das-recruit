@@ -1,4 +1,5 @@
 @using Esfa.Recruit.Employer.Web.ViewModels.Part1.EmployerName;
+@using Esfa.Recruit.Shared.Web.Mappers;
 @model EmployerNameViewModel;
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -17,7 +18,7 @@
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">What employer name do you want to go on the vacancy?</h1>
 
         <form asp-route="@RouteNames.EmployerName_Post" asp-route-wizard="@Model.PageInfo.IsWizard">
-            <div class="govuk-form-group" id="EmployerName">
+            <div class="govuk-form-group" id="@FieldIdentifiers.EmployerName">
                 <fieldset class="govuk-fieldset">
                     <span esfa-validation-message-for="SelectedEmployerIdentityOption" class="govuk-error-message"></span>
                     <div class="govuk-radios govuk-radios--conditional" data-module="radios">

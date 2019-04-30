@@ -14,6 +14,9 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Location
         public string AddressLine3 { get; set; }
         public string AddressLine4 { get; set; }
         public string Postcode { get; set; }
+
+        public bool IsAnonymousVacancy { get; set; }
+
         public IList<string> OrderedFieldNames => new List<string>
         {
             nameof(AddressLine1),

@@ -8,7 +8,6 @@ using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
-using Esfa.Recruit.Provider.Web;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
@@ -51,7 +50,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             };
 
             if (vacancy.EmployerLocation != null)
-                vm.MapUrl = vm.MapUrl = MapImageHelper.GetEmployerLocationMapUrl(vacancy, _mapService, MapImageWidth, MapImageHeight);
+                vm.MapUrl = MapImageHelper.GetEmployerLocationMapUrl(vacancy, _mapService, MapImageWidth, MapImageHeight);
 
             return vm;
         }

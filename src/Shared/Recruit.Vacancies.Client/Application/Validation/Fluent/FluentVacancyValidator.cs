@@ -136,7 +136,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithRuleId(VacancyRuleSet.TradingName)
             );
 
-            When(v => v.SourceOrigin == SourceOrigin.EmployerWeb && v.EmployerNameOption == EmployerNameOption.Anonymous, () =>
+            When(v => v.EmployerNameOption == EmployerNameOption.Anonymous, () =>
                 RuleFor(x => x.EmployerName)
                     .NotEmpty()
                     .WithMessage("You must provide a description")
@@ -151,7 +151,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithRuleId(VacancyRuleSet.EmployerNameOption)
             );
 
-            When(v => v.SourceOrigin == SourceOrigin.EmployerWeb && v.EmployerNameOption == EmployerNameOption.Anonymous, () =>
+            When(v => v.EmployerNameOption == EmployerNameOption.Anonymous, () =>
                 RuleFor(x => x.AnonymousReason)
                     .NotEmpty()
                     .WithMessage("You must provide a reason")

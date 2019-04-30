@@ -1,12 +1,10 @@
 using System;
-using System.ComponentModel;
-using Esfa.Recruit.Employer.Web.Models;
-using Esfa.Recruit.Employer.Web.ViewModels.Part1.EmployerName;
+using Esfa.Recruit.Shared.Web.Models;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
-namespace Esfa.Recruit.Employer.Web.Extensions
+namespace Esfa.Recruit.Shared.Web.Extensions
 {
-    public static class EmployerNameOptionViewModelExtensions
+    public static class EmployerIdentityOptionExtensions
     {
         public static EmployerNameOption ConvertToDomainOption(this EmployerIdentityOption model)
         {
@@ -27,7 +25,7 @@ namespace Esfa.Recruit.Employer.Web.Extensions
 
         public static EmployerIdentityOption ConvertToModelOption(this EmployerNameOption option)
         {
-            switch(option)
+            switch (option)
             {
                 case EmployerNameOption.RegisteredName:
                     return EmployerIdentityOption.RegisteredName;
@@ -35,7 +33,7 @@ namespace Esfa.Recruit.Employer.Web.Extensions
                     return EmployerIdentityOption.ExistingTradingName;
                 case EmployerNameOption.Anonymous:
                     return EmployerIdentityOption.Anonymous;
-                default: 
+                default:
                     throw new ArgumentException($"Cannot map '{option.ToString()}' to '{nameof(EmployerIdentityOption)}'");
             }
         }

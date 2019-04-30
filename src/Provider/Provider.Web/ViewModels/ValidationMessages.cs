@@ -1,5 +1,3 @@
-using Esfa.Recruit.Provider.Web.RouteModel;
-
 namespace Esfa.Recruit.Provider.Web.ViewModels
 {
     public static class ValidationMessages
@@ -14,7 +12,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         }
         public static class LocationPreferenceMessages
         {
-            public const string SelectionRequired = "You must select one option.";
+            public const string SelectionRequired = "You must select a work address";
         }
     }
 }
