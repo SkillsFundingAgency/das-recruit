@@ -1,8 +1,145 @@
-﻿<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
-            Recruitment
-        </h1>
-        <a asp-route="@RouteNames.ReportDashboard_Get" class="govuk-link govuk-body float-right clear">Create a report</a>
+﻿@using Esfa.Recruit.Vacancies.Client.Domain.Entities
+@model RecruitmentDashboardViewModel
+
+<div asp-hide="@Model.HasVacancies">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-half">
+            <h1 class="govuk-heading-xl">Recruitment</h1>
+            <p class="govuk-body">Your dashboard is empty, start by creating your first vacancy</p>
+            <p class="govuk-body">Vacancies will be approved or rejected within 24 hours.</p>
+        </div>
+        
+        <div class="govuk-grid-column-one-half ">
+            <a asp-route="@RouteNames.Employer_Get" class="govuk-button float-right clear govuk-!-margin-top-2 govuk-!-margin-bottom-4" esfa-automation="create-vacancy">Create vacancy</a>
+        </div>
     </div>
 </div>
+<div class="govuk-grid-row" asp-show="@Model.HasVacancies">  
+    <div class="govuk-grid-column-one-half">
+        <h1 class="govuk-heading-xl">Recruitment</h1>
+    </div>
+    
+    <div class="govuk-grid-column-one-half ">
+        <a asp-route="@RouteNames.Employer_Get" class="govuk-button float-right clear govuk-!-margin-top-2 govuk-!-margin-bottom-4" esfa-automation="create-vacancy">Create vacancy</a>
+    </div>   
+    <div class="govuk-grid-row das-card--row">
+        <div class="govuk-grid-column-one-third">
+            <div class="das-card">
+                <div class="das-card--content">
+                    <h3 class="govuk-heading-m das-card--heading">
+                        <span class="das-card--stat">@Model.VacancyCountDraft</span>
+                        @VacancyStatus.Draft vacancies
+                    </h3>
+                    <p class="govuk-body das-card--description">Vacancies that need completing and sending for review.</p>
+                </div>
+
+            </div>
+        </div>
+        <div class="govuk-grid-column-one-third">
+            <div class="das-card das-card--inactive">
+                <div class="das-card--content">
+                    <h3 class="govuk-heading-m das-card--heading">
+                        <span class="das-card--stat">@Model.VacancyCountSubmitted</span>
+                        @FilteringOptions.Submitted
+                    </h3>
+                    <p class="govuk-body das-card--description">Vacancies that have been sent for review.</p>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="govuk-grid-column-one-third">
+            <div class="das-card das-card--inactive">
+                <div class="das-card--content">
+                    <h3 class="govuk-heading-m das-card--heading">
+                        <span class="das-card--stat">@Model.VacancyCountReferred</span>
+                        @FilteringOptions.Referred.GetDisplayName() vacancies
+                    </h3>
+                    <p class="govuk-body das-card--description">Rejected vacancies will need to be edited and resubmitted.</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="govuk-grid-row das-card--row">
+        <div class="govuk-grid-column-one-third">
+            <div class="das-card das-card--inactive">
+                <div class="das-card--content">
+                    <h3 class="govuk-heading-m das-card--heading">
+                        <span class="das-card--stat">@Model.VacancyCountLive</span>
+                        @FilteringOptions.Live vacancies
+                    </h3>
+                    <p class="govuk-body das-card--description">Vacancies on Find an apprencticeship service.</p>
+                    <!-- <ul class="das-card--tasks govuk-list">
+                        <li>
+                            <a class="govuk-link" href="../vacancies?status=closing">6 vacancies are closing soon</a>
+                        </li>
+                        <li>
+                            <a class="govuk-link" href="../vacancies?status=closing-no-applications">3 vacancies are closing soon and have no applications</a>
+                        </li>
+                    </ul> -->
+                </div>
+
+            </div>
+        </div>
+        <div class="govuk-grid-column-one-third">
+            <div class="das-card das-card--inactive">
+                <div class="das-card--content">
+                    <h3 class="govuk-heading-m das-card--heading">
+                        <span class="das-card--stat">0</span>
+                        @FilteringOptions.NewApplications.GetDisplayName()
+                    </h3>
+                    <p class="govuk-body das-card--description">Applications from Find an apprenticeship service.</p>
+                    <ul class="das-card--tasks govuk-list">
+                        <li>
+                            <a class="ga-track-anchor-click" href="vacancies?filter=withApplication" data-ga-event-category="link - click">View all applications</a>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+        <div class="govuk-grid-column-one-third">
+            <div class="das-card">
+                <div class="das-card--content">
+                    <h3 class="govuk-heading-m das-card--heading">
+                        <span class="das-card--stat">@Model.VacancyCountClosed</span>
+                        <a href="vacancies?filter=closed&vacancy_limit=3">
+                            @FilteringOptions.Closed
+                        </a>
+                    </h3>
+                    <p class="govuk-body das-card--description">Vacancies that have passed the closing date. You can clone these vacancies to republish them.</p>
+                    <!-- <p class="govuk-body das-card--description"></p>
+                    <ul class="das-card--tasks govuk-list">
+                        <li>
+                            <a class="govuk-link" href="../vacancies?status=closing">2 vacancies have recently closed</a>
+                        </li>
+                        <li>
+                            <a class="govuk-link" href="../vacancies?status=closing-no-applications">3 closed vacancies have new applications</a>
+                        </li>
+                    </ul> -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div asp-show="@Model.HasOneVacancy">
+        <a asp-route="@Model.LinkUrl" class="govuk-link govuk-!-font-size-24 govuk-!-font-weight-bold govuk-link--no-visited-state" name="button">
+            View your vacancy
+        </a>
+    </div>
+    <div asp-hide="@Model.HasOneVacancy" class="govuk-grid-column-full">
+        <a asp-route="@Model.LinkUrl" class="govuk-link govuk-!-font-size-24 govuk-!-font-weight-bold govuk-link--no-visited-state" name="button">
+            View all your vacancies (@Model.Vacancies.Count)
+        </a>
+    </div>
+    <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+    <div class="govuk-grid-column-one-third ">
+        <h3 class="govuk-heading-s">
+            <a class="govuk-link  govuk-link--no-visited-state" asp-route="@RouteNames.ReportDashboard_Get">Reports</a>
+        </h3>
+        <p>Create a report about applicants or vacancies</p>
+    </div>
+</div>
+
+

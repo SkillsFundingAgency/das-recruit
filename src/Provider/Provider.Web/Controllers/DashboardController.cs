@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Provider.Web.Controllers
 {
-    [Route(RoutePaths.AccountRoutePath)]
+    [Route(RoutePaths.VacanciesRoutePath)]
     public class DashboardController : Controller
     {
         private readonly DashboardOrchestrator _orchestrator;
@@ -23,11 +23,11 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         [HttpGet("", Name = RouteNames.Vacancies_Get)]
         public async Task<IActionResult> Dashboard([FromQuery] string filter, [FromQuery] int page = 1)
         {
-            if (string.IsNullOrWhiteSpace(filter))
-                filter = Request.Cookies.GetCookie(CookieNames.DashboardFilter);
+            //if (string.IsNullOrWhiteSpace(filter))
+            //    filter = Request.Cookies.GetCookie(CookieNames.DashboardFilter);
             
-            if(string.IsNullOrWhiteSpace(filter) == false)
-                Response.Cookies.SetSessionCookie(_hostingEnvironment, CookieNames.DashboardFilter,filter);
+            //if(string.IsNullOrWhiteSpace(filter) == false)
+            //    Response.Cookies.SetSessionCookie(_hostingEnvironment, CookieNames.DashboardFilter,filter);
 
             var vm = await _orchestrator.GetDashboardViewModelAsync(User.GetUkprn(), filter, page);
             if (TempData.ContainsKey(TempDataKeys.DashboardErrorMessage))

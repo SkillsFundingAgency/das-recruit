@@ -98,6 +98,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<ReportDashboardOrchestrator>();
             services.AddTransient<ProviderApplicationsReportOrchestrator>();
             services.AddTransient<ReportConfirmationOrchestrator>();
+            services.AddTransient<RecruitmentDashboardOrchestrator>();
         }
 
         private static void RegisterMapperDeps(IServiceCollection services)
