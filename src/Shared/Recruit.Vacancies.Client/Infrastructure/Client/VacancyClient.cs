@@ -109,7 +109,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _repository.GetVacancyAsync(vacancyId);
         }
 
-        public Task<string> GetEmployerName(Vacancy vacancy)
+        public Task<string> GetEmployerNameAsync(Vacancy vacancy)
         {   
             return _employerService.GetEmployerNameAsync(vacancy);
         }

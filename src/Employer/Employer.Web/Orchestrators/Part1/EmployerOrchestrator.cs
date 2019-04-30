@@ -8,6 +8,7 @@ using Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Employer.Web.Extensions;
+using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.Extensions.Logging;
 
@@ -57,7 +58,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
             if (vacancy.EmployerNameOption.HasValue)
             {
-                vm.VacancyEmployerInfoModel.EmployerNameOption = vacancy.EmployerNameOption.Value.ConvertToModelOption();
+                vm.VacancyEmployerInfoModel.EmployerIdentityOption = vacancy.EmployerNameOption.Value.ConvertToModelOption();
                 vm.VacancyEmployerInfoModel.AnonymousName = vacancy.IsAnonymous ? vacancy.EmployerName : null;
                 vm.VacancyEmployerInfoModel.AnonymousReason = vacancy.IsAnonymous ? vacancy.AnonymousReason : null;
             }

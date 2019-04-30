@@ -1,4 +1,3 @@
-using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using FluentAssertions;
@@ -24,7 +23,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
             result.HasErrors.Should().BeTrue();
             result.Errors.Count.Should().Be(1);
             result.Errors[0].PropertyName.Should().Be(nameof(vacancy.AnonymousReason));
-            result.Errors[0].ErrorCode.Should().Be("401");
+            result.Errors[0].ErrorCode.Should().Be("408");
         }
 
         [Fact]
@@ -42,9 +41,9 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
             result.HasErrors.Should().BeTrue();
             result.Errors.Count.Should().Be(2);
             result.Errors[0].PropertyName.Should().Be(nameof(vacancy.AnonymousReason));
-            result.Errors[0].ErrorCode.Should().Be("402");
+            result.Errors[0].ErrorCode.Should().Be("409");
             result.Errors[1].PropertyName.Should().Be(nameof(vacancy.AnonymousReason));
-            result.Errors[1].ErrorCode.Should().Be("403");
+            result.Errors[1].ErrorCode.Should().Be("410");
         }
     }
 }

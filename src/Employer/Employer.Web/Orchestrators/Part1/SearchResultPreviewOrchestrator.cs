@@ -37,7 +37,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
             var vm = new SearchResultPreviewViewModel
             {
-                EmployerName = await _vacancyClient.GetEmployerName(vacancy),
+                EmployerName = await _vacancyClient.GetEmployerNameAsync(vacancy),
                 NumberOfPositions = vacancy.NumberOfPositions?.ToString(),
                 ShortDescription = vacancy.ShortDescription,
                 ClosingDate = vacancy.ClosingDate?.AsGdsDate(),

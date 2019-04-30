@@ -9,7 +9,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
     public class EmployerNameTests : VacancyValidationTestsBase
     {
         [Fact]
-        public void ProviderWeb_RegisteredName_ShouldValidateEmpty()
+        public void RegisteredName_ShouldValidateEmpty()
         {
             var vacancy = new Vacancy() {
                 EmployerName = string.Empty
@@ -71,7 +71,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
             result.HasErrors.Should().BeTrue();
             result.Errors.Count.Should().Be(1);
             result.Errors[0].PropertyName.Should().Be(nameof(vacancy.EmployerName));
-            result.Errors[0].ErrorCode.Should().Be("401");
+            result.Errors[0].ErrorCode.Should().Be("405");
         }
 
         
@@ -90,8 +90,8 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
 
             result.HasErrors.Should().BeTrue();
             result.Errors.Count.Should().Be(2);
-            result.Errors.Any(e => e.ErrorCode == "402").Should().BeTrue();
-            result.Errors.Any(e => e.ErrorCode == "403").Should().BeTrue();
+            result.Errors.Any(e => e.ErrorCode == "406").Should().BeTrue();
+            result.Errors.Any(e => e.ErrorCode == "407").Should().BeTrue();
         }
     }
 }
