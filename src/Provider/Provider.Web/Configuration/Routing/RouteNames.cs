@@ -19,7 +19,7 @@
         public const string Considerations_Post = "Considerations_Post";
         public const string CreateVacancy_Get = "CreateVacancy_Get";
         public const string CreateVacancy_Post = "CreateVacancy_Post";
-        public const string Dashboard_Index_Get = "Dashboard_Index_Get";
+        public const string Vacancies_Get = "Vacancies_Get";
         public const string Dashboard_AccountsNotifications = "Dashboard_AccountsNotifications";
         public const string Dashboard_ManageApprentices = "Dashboard_ManageApprentices";
         public const string Dashboard_YourCohorts = "Dashboard_YourCohorts";
@@ -80,7 +80,7 @@
         public const string ApplicationReview_Post = "ApplicationReview_Post";
         public const string ApplicationReviewConfirmation_Get = "ApplicationReviewConfirmation_Get";
         public const string ApplicationReviewConfirmation_Post = "ApplicationReviewConfirmation_Post";
-        public const string RecruitmentDashboard_Get = "RecruitmentDashboard_Get";
-        public const string RecruitmentDashboard_Post = "RecruitmentDashboard_Post";
+        public const string Dashboard_Get = "Dashboard_Get";
+        public const string Dashboard_Post = "Dashboard_Post";
     }
 }
