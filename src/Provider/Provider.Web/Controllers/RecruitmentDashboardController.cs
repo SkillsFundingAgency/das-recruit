@@ -18,7 +18,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             _hostingEnvironment = hostingEnvironment;
         }
 
-        [HttpGet("", Name = RouteNames.Recruitment_Dashboard_Get)]
+        [HttpGet("", Name = RouteNames.RecruitmentDashboard_Get)]
         public async Task<IActionResult> Dashboard()
         {
             return View();
