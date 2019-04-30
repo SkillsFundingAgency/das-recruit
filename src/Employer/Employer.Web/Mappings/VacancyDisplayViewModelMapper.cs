@@ -1,16 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Humanizer;
 using Microsoft.Extensions.Options;
-using System.Linq;
-using System.Threading.Tasks;
-using Esfa.Recruit.Shared.Web.Orchestrators;
 
 namespace Esfa.Recruit.Employer.Web.Mappings
 {

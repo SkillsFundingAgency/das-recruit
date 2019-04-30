@@ -1,5 +1,5 @@
-using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Employer.Web.RouteModel;
+using Esfa.Recruit.Shared.Web.Models;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.EmployerName
 {

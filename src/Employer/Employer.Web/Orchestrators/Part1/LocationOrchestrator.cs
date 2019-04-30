@@ -12,8 +12,6 @@ using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using System;
 using System.Collections.Generic;
 using Esfa.Recruit.Employer.Web.Models;
-using Esfa.Recruit.Employer.Web.Extensions;
-using Esfa.Recruit.Employer.Web.ViewModels.Part1.EmployerName;
 using Address = Esfa.Recruit.Vacancies.Client.Domain.Entities.Address;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Employer.Web.Mappings;

@@ -56,13 +56,12 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
         }
 
         [Fact]
-        public void EmployerWeb_Anonymous_ShouldValidateEmpty()        
+        public void Anonymous_ShouldValidateEmpty()        
         {
             var vacancy = new Vacancy()
             {
                 EmployerName = string.Empty,
                 EmployerNameOption = EmployerNameOption.Anonymous,
-                SourceOrigin = SourceOrigin.EmployerWeb,
                 AnonymousReason = "a valid reason"
             };
 
@@ -74,15 +73,12 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
             result.Errors[0].ErrorCode.Should().Be("405");
         }
 
-        
-
         [Fact]
-        public void EmployerWeb_Anonymous_ShouldValidateSpecialCharactersAndLength()
+        public void Anonymous_ShouldValidateSpecialCharactersAndLength()
         {
             var vacancy = new Vacancy() {
                 EmployerName = "£$$%$%£$<>" + new string('a', 100),
                 EmployerNameOption = EmployerNameOption.Anonymous,
-                SourceOrigin = SourceOrigin.EmployerWeb,
                 AnonymousReason = "a valid reason"
             };
 

@@ -1,13 +1,17 @@
+using System;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
-using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Provider.Web.Mappings;
 using Esfa.Recruit.Provider.Web.Models;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.EmployerName;
+using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.Models;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
+using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -20,6 +24,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
         private readonly IProviderVacancyClient _providerVacancyClient;
         private readonly IRecruitVacancyClient _recruitVacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
+
+        private Expression<Func<EmployerNameEditModel, object>> _vmPropertyToMapEmployerNameTo = null;
 
         public EmployerNameOrchestrator(
             IProviderVacancyClient providerVacancyClient,
@@ -59,7 +65,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 ExistingTradingName = employerProfile?.TradingName,
                 PageInfo = Utility.GetPartOnePageInfo(vacancy),
                 SelectedEmployerIdentityOption = employerInfoModel.EmployerIdentityOption,
-                NewTradingName = employerInfoModel.NewTradingName
+                NewTradingName = employerInfoModel.NewTradingName,
+                AnonymousName = employerInfoModel.AnonymousName,
+                AnonymousReason = employerInfoModel.AnonymousReason
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
@@ -88,6 +96,14 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             {
                 validationRules = VacancyRuleSet.EmployerNameOption | VacancyRuleSet.TradingName;
                 vacancy.EmployerName = model.NewTradingName;
+                _vmPropertyToMapEmployerNameTo = vm => vm.NewTradingName;
+            }
+
+            if (model.SelectedEmployerIdentityOption == EmployerIdentityOption.Anonymous)
+            {
+                vacancy.EmployerName = model.AnonymousName;
+                vacancy.AnonymousReason = model.AnonymousReason;
+                _vmPropertyToMapEmployerNameTo = vm => vm.AnonymousName;
             }
 
             return await ValidateAndExecute(
@@ -100,7 +116,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
         {
             var mappings = new EntityToViewModelPropertyMappings<Vacancy, EmployerNameEditModel>();
 
-            mappings.Add(v => v.EmployerName, vm => vm.NewTradingName);
+            if (_vmPropertyToMapEmployerNameTo != null)
+                mappings.Add(v => v.EmployerName, _vmPropertyToMapEmployerNameTo);
+
             mappings.Add(v => v.EmployerNameOption, vm => vm.SelectedEmployerIdentityOption);
 
             return mappings;

@@ -73,8 +73,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             var employerDescriptionTask = _vacancyClient.GetEmployerDescriptionAsync(vacancy);
             var employerNameTask = _vacancyClient.GetEmployerNameAsync(vacancy);
-
-            Task.WaitAll(employerDescriptionTask, employerNameTask);
+            
+            await Task.WhenAll(employerDescriptionTask, employerNameTask);
 
             vacancy.EmployerDescription = employerDescriptionTask.Result;
             vacancy.EmployerName = employerNameTask.Result;
