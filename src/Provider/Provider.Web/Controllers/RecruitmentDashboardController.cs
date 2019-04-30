@@ -19,7 +19,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         }
 
         [HttpGet("", Name = RouteNames.RecruitmentDashboard_Get)]
-        public async Task<IActionResult> Dashboard()
+        public ActionResult Dashboard()
         {
             return View();
         }
