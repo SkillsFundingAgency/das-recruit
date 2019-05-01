@@ -29,10 +29,10 @@
                 <div class="das-card--content">
                     <h3 class="govuk-heading-m das-card--heading">
                         <span class="das-card--stat">@Model.VacancyCountDraft</span>
-                        @*@{
-//var vacancy = "vacancy";
-//VacancyStatus.Draft + vacancy.ToQuantity(Model.VacancyCountDraft, ShowQuantityAs.None)
-                        }*@
+                        <a asp-show="@Model.HasDraftVacancy" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Draft" class="govuk-!-font-weight-regular govuk-component__link govuk-!-font-size-19">
+                            @FilteringOptions.Draft @Model.VacancyTextDraft
+                        </a>
+                        <p asp-hide="@Model.HasDraftVacancy">@FilteringOptions.Draft @Model.VacancyTextDraft</p>
                     </h3>
                     <p class="govuk-body das-card--description">Vacancies that need completing and sending for review.</p>
                 </div>
@@ -44,7 +44,10 @@
                 <div class="das-card--content">
                     <h3 class="govuk-heading-m das-card--heading">
                         <span class="das-card--stat">@Model.VacancyCountSubmitted</span>
-                        @FilteringOptions.Submitted
+                        <a asp-show="@Model.HasSubmittedVacancy" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Submitted" class="govuk-!-font-weight-regular govuk-component__link govuk-!-font-size-19">
+                            @FilteringOptions.Submitted 
+                        </a>
+                        <p asp-hide="@Model.HasSubmittedVacancy">@FilteringOptions.Submitted</p>
                     </h3>
                     <p class="govuk-body das-card--description">Vacancies that have been sent for review.</p>
                 </div>
@@ -57,11 +60,13 @@
                 <div class="das-card--content">
                     <h3 class="govuk-heading-m das-card--heading">
                         <span class="das-card--stat">@Model.VacancyCountReferred</span>
-                        @FilteringOptions.Referred.GetDisplayName() vacancies
+                        <a asp-show="@Model.HasReferredVacancy" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Referred" class="govuk-!-font-weight-regular govuk-component__link govuk-!-font-size-19">
+                            @FilteringOptions.Referred.GetDisplayName() @Model.VacancyTextReferred
+                        </a>
+                        <p asp-hide="@Model.HasReferredVacancy">@FilteringOptions.Referred.GetDisplayName() @Model.VacancyTextReferred</p>
                     </h3>
                     <p class="govuk-body das-card--description">Rejected vacancies will need to be edited and resubmitted.</p>
                 </div>
-
             </div>
         </div>
     </div>
@@ -71,17 +76,9 @@
                 <div class="das-card--content">
                     <h3 class="govuk-heading-m das-card--heading">
                         <span class="das-card--stat">@Model.VacancyCountLive</span>
-                        @FilteringOptions.Live vacancies
+                        @FilteringOptions.Live @Model.VacancyTextLive
                     </h3>
-                    <p class="govuk-body das-card--description">Vacancies on Find an apprencticeship service.</p>
-                    <!-- <ul class="das-card--tasks govuk-list">
-                        <li>
-                            <a class="govuk-link" href="../vacancies?status=closing">6 vacancies are closing soon</a>
-                        </li>
-                        <li>
-                            <a class="govuk-link" href="../vacancies?status=closing-no-applications">3 vacancies are closing soon and have no applications</a>
-                        </li>
-                    </ul> -->
+                    <p class="govuk-body das-card--description">Vacancies on Find an apprencticeship service.</p>                    
                 </div>
 
             </div>
@@ -109,7 +106,7 @@
                     <h3 class="govuk-heading-m das-card--heading">
                         <span class="das-card--stat">@Model.VacancyCountClosed</span>
                         <a href="vacancies?filter=closed&vacancy_limit=3">
-                            @FilteringOptions.Closed
+                            @FilteringOptions.Closed @Model.VacancyTextClosed
                         </a>
                     </h3>
                     <p class="govuk-body das-card--description">Vacancies that have passed the closing date. You can clone these vacancies to republish them.</p>
