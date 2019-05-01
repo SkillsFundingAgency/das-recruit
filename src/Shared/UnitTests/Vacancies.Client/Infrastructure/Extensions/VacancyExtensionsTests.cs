@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using AutoFixture;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -16,7 +14,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
 {
     public class VacancyExtensionsTests
     {
-        private const string _documentId = "doc_id";
+        private const string DocumentId = "doc_id";
 
         private DateTime _now = DateTime.UtcNow;
         private ApprenticeshipProgramme _programme = new ApprenticeshipProgramme 
@@ -35,7 +33,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             var mockTimeProvider = new Mock<ITimeProvider>();
             mockTimeProvider.Setup(t => t.Now).Returns(_now);
             
-            var p = v.ToVacancyProjectionBase<LiveVacancy>(_programme, () => _documentId, mockTimeProvider.Object);
+            var p = v.ToVacancyProjectionBase<LiveVacancy>(_programme, () => DocumentId, mockTimeProvider.Object);
 
             AssertCommonProperties(v, p);
 
@@ -58,7 +56,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             var mockTimeProvider = new Mock<ITimeProvider>();
             mockTimeProvider.Setup(t => t.Now).Returns(_now);
 
-            var p = v.ToVacancyProjectionBase<ClosedVacancy>(_programme, () => _documentId, mockTimeProvider.Object);
+            var p = v.ToVacancyProjectionBase<ClosedVacancy>(_programme, () => DocumentId, mockTimeProvider.Object);
 
             AssertCommonProperties(v, p);
 
@@ -82,7 +80,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             var mockTimeProvider = new Mock<ITimeProvider>();
             mockTimeProvider.Setup(t => t.Now).Returns(_now);
 
-            var p = v.ToVacancyProjectionBase<LiveVacancy>(_programme, () => _documentId, mockTimeProvider.Object);
+            var p = v.ToVacancyProjectionBase<LiveVacancy>(_programme, () => DocumentId, mockTimeProvider.Object);
 
             AssertCommonProperties(v, p);
 
@@ -97,7 +95,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
 
         public void AssertCommonProperties(Vacancy v, VacancyProjectionBase p)
         {
-            p.Id.Should().Be(_documentId);
+            p.Id.Should().Be(DocumentId);
             p.LastUpdated.Should().Be(_now);
             p.VacancyId.Should().Be(v.Id);
 
