@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
@@ -22,15 +23,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
         private readonly IMessaging _messaging;
         private readonly IReferenceDataReader _referenceDataReader;
         private readonly IQueryStoreWriter _queryStoreWriter;
+        private readonly ITimeProvider _timeProvider;
 
         public UpdateLiveVacancyOnVacancyChange(IQueryStoreWriter queryStoreWriter, ILogger<UpdateLiveVacancyOnVacancyChange> logger, 
-            IVacancyRepository repository, IMessaging messaging, IReferenceDataReader referenceDataReader)
+            IVacancyRepository repository, IMessaging messaging, IReferenceDataReader referenceDataReader, ITimeProvider timeProvider)
         {
             _queryStoreWriter = queryStoreWriter;
             _logger = logger;
             _repository = repository;
             _messaging = messaging;
             _referenceDataReader = referenceDataReader;
+            _timeProvider = timeProvider;
         }
         
         public Task Handle(VacancyApprovedEvent notification, CancellationToken cancellationToken)
@@ -54,7 +57,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
             var vacancy = vacancyTask.Result;
             var programme = programmeTask.Result.Data.Single(p => p.Id == vacancy.ProgrammeId);
 
-            var liveVacancy = vacancy.ToVacancyProjectionBase<LiveVacancy>(programme, () => QueryViewType.LiveVacancy.GetIdValue(vacancy.VacancyReference.ToString()));
+            var liveVacancy = vacancy.ToVacancyProjectionBase<LiveVacancy>(programme, () => QueryViewType.LiveVacancy.GetIdValue(vacancy.VacancyReference.ToString()), _timeProvider);
             await _queryStoreWriter.UpdateLiveVacancyAsync(liveVacancy);
         }
     }

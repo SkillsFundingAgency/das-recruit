@@ -136,7 +136,15 @@ namespace Esfa.Recruit.Qa.Web.Mappings
             var reviewSummaryTask = _reviewSummaryService.GetReviewSummaryViewModelAsync(review.Id, 
                     ReviewFieldMappingLookups.GetPreviewReviewFieldIndicators());
 
-            await Task.WhenAll(currentVacancy,programmeTask, approvedCountTask, approvedFirstTimeCountTask, reviewHistoryTask, reviewSummaryTask);
+            var anonymousApprovedCountTask = vacancy.IsAnonymous ? _vacancyClient.GetAnonymousApprovedCountAsync(vacancy.LegalEntityId) : Task.FromResult(0);
+
+            await Task.WhenAll(
+                currentVacancy,programmeTask, 
+                approvedCountTask, 
+                approvedFirstTimeCountTask, 
+                reviewHistoryTask, 
+                reviewSummaryTask,
+                anonymousApprovedCountTask);
 
             var programme = programmeTask.Result;
 
@@ -157,8 +165,12 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 vm.EmployerContactTelephone = vacancy.EmployerContact?.Phone;
                 vm.EmployerDescription = vacancy.EmployerDescription;
                 vm.EmployerName = vacancy.EmployerName;
+                vm.EmployerNameOption = vacancy.EmployerNameOption.Value;
+                vm.AnonymousReason = vacancy.AnonymousReason;
+                vm.AnonymousApprovedCount = anonymousApprovedCountTask.Result;
                 vm.EmployerWebsiteUrl = vacancy.EmployerWebsiteUrl;
-                SetEmployerAddressElements(vm, vacancy);
+                vm.MapUrl = MapImageHelper.GetEmployerLocationMapUrl(vacancy, _mapService, MapImageWidth, MapImageHeight);
+                vm.EmployerAddressElements = vacancy.EmployerAddressForDisplay();
                 vm.LegalEntityName = vacancy.LegalEntityName;
                 vm.IsDisabilityConfident = vacancy.IsDisabilityConfident;
                 vm.NumberOfPositionsCaption = $"{"position".ToQuantity(vacancy.NumberOfPositions.Value)} available";
@@ -236,21 +248,6 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 var timeFrame = hasReviews ? "Latest" : "Historical";
                 return $"{timeFrame} review -  {outcome} (read only)";
             }                                        
-        }
-
-        private void SetEmployerAddressElements(ReviewViewModel vm, Vacancy vacancy)
-        {
-            vm.MapUrl = MapImageHelper.GetEmployerLocationMapUrl(vacancy, _mapService, MapImageWidth, MapImageHeight);
-
-            vm.EmployerAddressElements = new[]
-                {
-                    vacancy.EmployerLocation.AddressLine1,
-                    vacancy.EmployerLocation.AddressLine2,
-                    vacancy.EmployerLocation.AddressLine3,
-                    vacancy.EmployerLocation.AddressLine4,
-                    vacancy.EmployerLocation.Postcode
-                }
-                .Where(x => !string.IsNullOrEmpty(x));
         }
 
         private async Task<IEnumerable<FieldIdentifierViewModel>> GetFieldIdentifiersViewModel(VacancyReview currentReview)
