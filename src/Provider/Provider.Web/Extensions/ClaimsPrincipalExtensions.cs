@@ -1,9 +1,6 @@
-using System.Collections.Generic;
-using System.Linq;
 using Esfa.Recruit.Provider.Web.Configuration;
 using System.Security.Claims;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Newtonsoft.Json;
 
 namespace Esfa.Recruit.Provider.Web.Extensions
 {
@@ -37,7 +34,8 @@ namespace Esfa.Recruit.Provider.Web.Extensions
             {
                 UserId = user.GetUserName(),
                 Name = user.GetDisplayName(),
-                Email = user.GetEmailAddress()
+                Email = user.GetEmailAddress(),
+                Ukprn = user.GetUkprn()
             };
         }
     }
