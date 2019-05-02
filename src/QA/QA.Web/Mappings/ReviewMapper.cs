@@ -78,6 +78,9 @@ namespace Esfa.Recruit.Qa.Web.Mappings
             { FieldIdResolver.ToFieldId(v => v.EmployerContact.Email), new []{FieldIdentifiers.EmployerContact} },
             { FieldIdResolver.ToFieldId(v => v.EmployerContact.Phone), new []{FieldIdentifiers.EmployerContact }},
             { FieldIdResolver.ToFieldId(v => v.TrainingProvider.Ukprn) , new []{FieldIdentifiers.Provider} },
+            { FieldIdResolver.ToFieldId(v => v.ProviderContact.Name), new []{FieldIdentifiers.ProviderContact}},
+            { FieldIdResolver.ToFieldId(v => v.ProviderContact.Email), new []{FieldIdentifiers.ProviderContact}},
+            { FieldIdResolver.ToFieldId(v => v.ProviderContact.Phone), new []{FieldIdentifiers.ProviderContact}},
             { FieldIdResolver.ToFieldId(v => v.ApplicationInstructions), new [] {FieldIdentifiers.ApplicationInstructions }},
             { FieldIdResolver.ToFieldId(v => v.ApplicationMethod), new [] {FieldIdentifiers.ApplicationMethod} },
             { FieldIdResolver.ToFieldId(v => v.ApplicationUrl), new []{FieldIdentifiers.ApplicationUrl} }
