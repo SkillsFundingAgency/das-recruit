@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -9,11 +10,13 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
     public class RecruitmentDashboardViewModel
     {
         public IList<VacancySummary> Vacancies { get; set; }
-        public bool HasVacancies {get; internal set;}           
-        public FilteringOptions Filter { get; set; }
-        public bool HasOneVacancy => Vacancies.Count > 0;
-        public string LinkUrl { get; set; }
-        public int VacancyCountDraft => Vacancies.Count(v => v.Status == VacancyStatus.Draft);        
+
+        public bool HasVacancies { get; internal set; }
+
+        //public FilteringOptions Filter { get; set; }
+        public bool HasOneVacancy => Vacancies.Count == 1;
+        public Guid CurrentVacancyId => HasOneVacancy ? Vacancies.Single().Id : new Guid();
+        public int VacancyCountDraft => Vacancies.Count(v => v.Status == VacancyStatus.Draft);
         public string VacancyTextDraft => "vacancy".ToQuantity(VacancyCountDraft, ShowQuantityAs.None);
         public bool HasDraftVacancy => VacancyCountDraft > 0;
         public int VacancyCountLive => Vacancies.Count(v => v.Status == VacancyStatus.Live);
@@ -27,5 +30,8 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public bool HasReferredVacancy => VacancyCountReferred > 0;
         public int VacancyCountSubmitted => Vacancies.Count(v => v.Status == VacancyStatus.Submitted);
         public bool HasSubmittedVacancy => VacancyCountSubmitted > 0;
+        public int NoOfNewApplications => Vacancies.Count(v => v.NoOfNewApplications > 0);
+        public bool HasNewApplications => NoOfNewApplications > 0;
+        public string ApplicationTextLive => "application".ToQuantity(NoOfNewApplications, ShowQuantityAs.None);
     }
 }

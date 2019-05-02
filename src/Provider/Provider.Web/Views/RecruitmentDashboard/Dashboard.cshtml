@@ -1,5 +1,5 @@
 ﻿@using Esfa.Recruit.Vacancies.Client.Domain.Entities
-@using Humanizer;
+
 @model RecruitmentDashboardViewModel
 
 <div asp-hide="@Model.HasVacancies">
@@ -78,9 +78,21 @@
             <div class="das-card--content">
                 <h3 class="govuk-heading-m das-card--heading">
                     <span class="das-card--stat">@Model.VacancyCountLive</span>
-                    @FilteringOptions.Live @Model.VacancyTextLive
+                    <a asp-show="@Model.HasLiveVacancy" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Live" class="govuk-link">
+                        @FilteringOptions.Live @Model.VacancyTextLive
+                    </a>
+                    <span asp-hide="@Model.HasLiveVacancy">@FilteringOptions.Live @Model.VacancyTextLive</span>
                 </h3>
-                <span class="govuk-body das-card--description">Vacancies on Find an apprencticeship service.</span>                    
+                <span class="govuk-body das-card--description">Vacancies on Find an apprenticeship service.</span>
+                <p class="govuk-body das-card--description"></p>
+                <ul class="das-card--tasks govuk-list">
+                    <li>
+                        <a class="govuk-link" href="../vacancies?status=closing">2 vacancies have recently closed</a>
+                    </li>
+                    <li>
+                        <a class="govuk-link" href="../vacancies?status=closing-no-applications">3 closed vacancies have new applications</a>
+                    </li>
+                </ul> 
             </div>
 
         </div>
@@ -89,13 +101,16 @@
         <div class="das-card das-card--inactive">
             <div class="das-card--content">
                 <h3 class="govuk-heading-m das-card--heading">
-                    <span class="das-card--stat">0</span>
-                    @FilteringOptions.NewApplications.GetDisplayName()
+                    <span class="das-card--stat">@Model.NoOfNewApplications</span>
+                    <a asp-show="@Model.HasNewApplications" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.NewApplications" class="govuk-link">
+                        New @Model.ApplicationTextLive
+                    </a>
+                    <span asp-hide="@Model.HasNewApplications">@FilteringOptions.NewApplications.GetDisplayName()</span>                      
                 </h3>
                 <span class="govuk-body das-card--description">Applications from Find an apprenticeship service.</span>
                 <ul class="das-card--tasks govuk-list">
                     <li>
-                        <a class="govuk-link ga-track-anchor-click" href="vacancies?filter=withApplication" data-ga-event-category="link - click">View all applications</a>
+                        <a class="govuk-link ga-track-anchor-click" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.AllApplications" data-ga-event-category="link - click">View all applications</a>
                     </li>
                 </ul>
             </div>
@@ -105,21 +120,13 @@
         <div class="das-card">
             <div class="das-card--content">
                 <h3 class="govuk-heading-m das-card--heading">
-                    <span class="das-card--stat">@Model.VacancyCountClosed</span>
-                    <a href="vacancies?filter=closed&vacancy_limit=3" class="govuk-link">
+                    <span class="das-card--stat">@Model.VacancyCountClosed</span>                    
+                    <a asp-show="@Model.HasClosedVacancy" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Closed" class="govuk-link">
                         @FilteringOptions.Closed @Model.VacancyTextClosed
                     </a>
+                    <span asp-hide="@Model.HasClosedVacancy">@FilteringOptions.Closed @Model.VacancyTextClosed</span>   
                 </h3>
-                <span class="govuk-body das-card--description">Vacancies that have passed the closing date. You can clone these vacancies to republish them.</span>
-                <!-- <p class="govuk-body das-card--description"></p>
-                <ul class="das-card--tasks govuk-list">
-                    <li>
-                        <a class="govuk-link" href="../vacancies?status=closing">2 vacancies have recently closed</a>
-                    </li>
-                    <li>
-                        <a class="govuk-link" href="../vacancies?status=closing-no-applications">3 closed vacancies have new applications</a>
-                    </li>
-                </ul> -->
+                <span class="govuk-body das-card--description">Vacancies that have passed the closing date. You can clone these vacancies to republish them.</span>                
             </div>
         </div>
     </div>
@@ -127,12 +134,12 @@
 
 <div class="govuk-grid-row">
     <div asp-show="@Model.HasOneVacancy"class="govuk-grid-column-full">
-        <a asp-route="@Model.LinkUrl" class="govuk-link govuk-!-font-size-24 govuk-!-font-weight-bold govuk-link--no-visited-state" name="button">
+        <a asp-route="@RouteNames.VacancyManage_Get" asp-route-vacancyId="@Model.CurrentVacancyId" class="govuk-link govuk-!-font-size-24 govuk-!-font-weight-bold govuk-link--no-visited-state" name="button">
             View your vacancy
         </a>
     </div>
     <div asp-hide="@Model.HasOneVacancy" class="govuk-grid-column-full">
-        <a asp-route="@Model.LinkUrl" class="govuk-link govuk-!-font-size-24 govuk-!-font-weight-bold govuk-link--no-visited-state" name="button">
+        <a asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.All" class="govuk-link govuk-!-font-size-24 govuk-!-font-weight-bold govuk-link--no-visited-state" name="button">
             View all your vacancies (@Model.Vacancies.Count)
         </a>
     </div>
