@@ -100,7 +100,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                     break;
                 case FilteringOptions.ClosingSoonWithNoApplications:
                     filteredVacancies = vacancies.Where(v =>
-                        v.ClosingDate <= _timeProvider.Today.AddDays(5) && v.Status == VacancyStatus.Live && (v.NoOfSuccessfulApplications == 0 || v.NoOfUnsuccessfulApplications == 0 ||
+                        v.ClosingDate <= _timeProvider.Today.AddDays(5) && v.Status == VacancyStatus.Live && (v.NoOfSuccessfulApplications == 0 && v.NoOfUnsuccessfulApplications == 0 &&
                                                                      v.NoOfNewApplications == 0));
                     break;
             }
@@ -140,6 +140,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             {
                 case FilteringOptions.ClosingSoon:
                 case FilteringOptions.ClosingSoonWithNoApplications:
+                    return $"{totalVacancies} {"live vacancy".ToQuantity(totalVacancies, ShowQuantityAs.None)} {filterText}";
                 case FilteringOptions.AllApplications:
                 case FilteringOptions.NewApplications:
                     return $"{totalVacancies} {"vacancy".ToQuantity(totalVacancies, ShowQuantityAs.None)} {filterText}";
