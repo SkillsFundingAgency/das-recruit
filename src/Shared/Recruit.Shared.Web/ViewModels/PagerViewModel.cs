@@ -27,7 +27,8 @@ namespace Esfa.Recruit.Shared.Web.ViewModels
 
         public Dictionary<string, string> GetRouteData(int page)
         {
-            return new Dictionary<string, string>(OtherRouteValues) {
+            return new Dictionary<string, string>(OtherRouteValues)
+            {
                 { "page", page.ToString() }
             };
         }
