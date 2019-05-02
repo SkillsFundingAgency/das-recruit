@@ -20,6 +20,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         private const int VacanciesPerPage = 25;
         private readonly IProviderVacancyClient _client;
         private readonly ITimeProvider _timeProvider;
+        private const int ClosingSoonDays = 5;
 
         public DashboardOrchestrator(IProviderVacancyClient client, ITimeProvider timeProvider)
         {
@@ -90,18 +91,19 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                     filteredVacancies = vacancies.Where(v => v.NoOfNewApplications > 0);
                     break;
                 case FilteringOptions.AllApplications:
-                    filteredVacancies = vacancies.Where(v =>
-                        v.NoOfSuccessfulApplications > 0 || v.NoOfUnsuccessfulApplications > 0 ||
-                        v.NoOfNewApplications > 0);
+                    filteredVacancies = vacancies.Where(v => v.NoOfApplications > 0);
                     break;
                 case FilteringOptions.ClosingSoon:
                     filteredVacancies = vacancies.Where(v =>
-                        v.ClosingDate <= _timeProvider.Today.AddDays(5) && v.Status == VacancyStatus.Live);                    
+                        v.ClosingDate <= _timeProvider.Today.AddDays(ClosingSoonDays) &&
+                        v.Status == VacancyStatus.Live); 
                     break;
                 case FilteringOptions.ClosingSoonWithNoApplications:
                     filteredVacancies = vacancies.Where(v =>
-                        v.ClosingDate <= _timeProvider.Today.AddDays(5) && v.Status == VacancyStatus.Live && (v.NoOfSuccessfulApplications == 0 && v.NoOfUnsuccessfulApplications == 0 &&
-                                                                     v.NoOfNewApplications == 0));
+                        v.ClosingDate <= _timeProvider.Today.AddDays(ClosingSoonDays) && 
+                        v.Status == VacancyStatus.Live && 
+                        v.ApplicationMethod == ApplicationMethod.ThroughFindAnApprenticeship && 
+                        v.NoOfApplications == 0);
                     break;
             }
             return filteredVacancies.OrderByDescending(v => v.CreatedDate)
