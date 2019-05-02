@@ -27,14 +27,6 @@ namespace Esfa.Recruit.QA.Web.Controllers
             if (!Request.Cookies.ContainsKey(CookieNames.SeenOutageMessage))
                 Response.Cookies.Append(CookieNames.SeenOutageMessage, SeenCookieValue, EsfaCookieOptions.GetSingleDayLifetimeHttpCookieOption(_hostingEnvironment, _timeProvider));
 
-            if (IsValidReturnUrl(returnUrl))
-                return Redirect(returnUrl);
-
             return RedirectToRoute(RouteNames.Dashboard_Index_Get);
-        }
-
-        private bool IsValidReturnUrl(string returnUrl)
-        {
-            return Regex.IsMatch(returnUrl, @"^/accounts/[A-Z0-9]{6}/.*");
         }
     }}
