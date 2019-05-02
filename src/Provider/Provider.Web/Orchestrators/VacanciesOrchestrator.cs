@@ -35,7 +35,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
             var filteringOption = SanitizeFilter(filter);
 
-            var filteredVacancies = GetFilteredVacancies(vacancies, filteringOption, searchTerm);                
+            var filteredVacancies = GetFilteredVacancies(vacancies, filteringOption, searchTerm);
             
             var filteredVacanciesTotal = filteredVacancies.Count();
 

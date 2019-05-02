@@ -10,7 +10,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public IList<VacancySummaryViewModel> Vacancies { get; set; }
         public string WarningMessage { get; internal set; }
         public string InfoMessage { get; internal set; }
-        public PagerViewModel Pager { get; internal set; }           
+        public PagerViewModel Pager { get; internal set; }
         public string ResultsHeading { get; internal set; }
         public bool IsFiltered => Filter != FilteringOptions.All;
         public bool HasAnyVacancies {get; internal set;}

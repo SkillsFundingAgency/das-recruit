@@ -10,13 +10,37 @@
 
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Which of your organisations is this vacancy for?</h1>
 
+        <form asp-show="@Model.CanShowSearchPanel" method="GET" asp-route="@RouteNames.LegalEntity_Get" asp-route-wizard="@Model.PageInfo.IsWizard">
+            <div class="form-group search-field search-field-darker">
+                <div class="search-input search-input-with-button">
+                    <label class="govuk-label" for="search">
+                        Search for the organisation
+                    </label>
+                    <div class="search-field">
+                        <div class="search-input">
+                            <input asp-for="SearchTerm" class="govuk-input" maxlength="100" />
+                        </div>
+                        <div class="search-submit">
+                            <button type="submit">Search</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="govuk-!-margin-top-6 govuk-!-margin-bottom-6">
+                    <a class="govuk-link govuk-body" asp-route="@RouteNames.LegalEntity_Get">Clear search</a>
+                </div>
+            </div>
+        </form>
+
         <form asp-route="@RouteNames.LegalEntity_Post" asp-route-wizard="@Model.PageInfo.IsWizard">
             <div esfa-validation-marker-for="SelectedOrganisationId" class="govuk-form-group">
+                <legend class="govuk-fieldset__legend">
+                    <span class="govuk-label govuk-!-font-weight-bold">Select the organisation</span>
+                </legend>
+                <span esfa-validation-message-for="SelectedOrganisationId" class="govuk-error-message"></span>
+                <input type="hidden" asp-for="SearchTerm" />
+                <input type="hidden" asp-for="Page" />
+                <span asp-show="@Model.HasNoSearchResults" class="govuk-body">@Model.NoSearchResultsCaption</span>
                 <fieldset class="govuk-fieldset">
-                    <legend class="govuk-fieldset__legend">
-                        <span class="govuk-label govuk-!-font-weight-bold">Which organisation is the vacancy for?</span>
-                    </legend>
-                    <span esfa-validation-message-for="SelectedOrganisationId" class="govuk-error-message"></span>
                     <div class="govuk-radios">
                     @foreach (var organisation in Model.Organisations)
                     {
@@ -28,6 +52,8 @@
                     </div>
                 </fieldset>
             </div>
+
+            <partial name="@PartialNames.Pager" model="@Model.Pager" />
 
             <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Continue</button>
 

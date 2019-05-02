@@ -7,22 +7,33 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntity
 {
     public class LegalEntityViewModel
     {
-        public IEnumerable<OrganisationViewModel> Organisations { get; set; }
+        public IEnumerable<OrganisationViewModel> Organisations { get; internal set; }
 
-        public bool HasOnlyOneOrganisation => Organisations.Count() == 1;
-        
+        public bool HasOnlyOneOrganisation => TotalNumberOfLegalEntities == 1;
+
         public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
 
-        public PartOnePageInfoViewModel PageInfo { get; set; }
+        public PartOnePageInfoViewModel PageInfo { get; internal set; }
+        public PagerViewModel Pager { get; internal set; }
 
         public IList<string> OrderedFieldNames => new List<string>
         {
             nameof(SelectedOrganisationId)
         };
 
-        public long? SelectedOrganisationId { get; set; }
+        public long? SelectedOrganisationId { get; internal set; }
 
-        public VacancyEmployerInfoModel VacancyEmployerInfoModel { get; set; }
+        public VacancyEmployerInfoModel VacancyEmployerInfoModel { get; internal set; }
+
+        public string SearchTerm { get; internal set; }
+        public int Page { get; internal set; }
+
+        public bool CanShowSearchPanel => TotalNumberOfLegalEntities > 10;
+
+        public bool HasNoSearchResults => string.IsNullOrEmpty(SearchTerm) == false && Organisations.Count() == 0;
+        public string NoSearchResultsCaption => $"0 matches for '{SearchTerm}'";
+
+        public int TotalNumberOfLegalEntities { get; internal set; }
     }
 
     public class OrganisationViewModel
