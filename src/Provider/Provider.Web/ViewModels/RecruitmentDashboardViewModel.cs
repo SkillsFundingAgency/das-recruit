@@ -10,10 +10,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
     public class RecruitmentDashboardViewModel
     {
         public IList<VacancySummary> Vacancies { get; set; }
-
-        public bool HasVacancies { get; internal set; }
-
-        //public FilteringOptions Filter { get; set; }
+        public bool HasAnyVacancies { get; internal set; }
         public bool HasOneVacancy => Vacancies.Count == 1;
         public Guid CurrentVacancyId => HasOneVacancy ? Vacancies.Single().Id : new Guid();
         public int VacancyCountDraft => Vacancies.Count(v => v.Status == VacancyStatus.Draft);
@@ -33,5 +30,11 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public int NoOfNewApplications => Vacancies.Count(v => v.NoOfNewApplications > 0);
         public bool HasNewApplications => NoOfNewApplications > 0;
         public string ApplicationTextLive => "application".ToQuantity(NoOfNewApplications, ShowQuantityAs.None);
+        public int NoOfVacanciesClosingSoon { get; set; }
+        public string VacancyTextClosingSoon => "vacancy".ToQuantity(NoOfVacanciesClosingSoon, ShowQuantityAs.None);
+        public int NoOfVacanciesClosingSoonWithNoApplications { get; set; }
+        public string VacancyTextClosingSoonWithNoApplications => "vacancy".ToQuantity(NoOfVacanciesClosingSoonWithNoApplications, ShowQuantityAs.None);
+        public bool ShowNoOfVacanciesClosingSoon => NoOfVacanciesClosingSoon > 0;
+        public bool ShowNoOfVacanciesClosingSoonWithNoApplications => NoOfVacanciesClosingSoonWithNoApplications > 0;
     }
 }

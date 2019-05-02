@@ -2,7 +2,7 @@
 
 @model RecruitmentDashboardViewModel
 
-<div asp-hide="@Model.HasVacancies">
+<div asp-hide="@Model.HasAnyVacancies">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-one-half">
             <h1 class="govuk-heading-xl">Recruitment</h1>
@@ -16,7 +16,7 @@
     </div>
 </div>
 
-<div class="govuk-grid-row" asp-show="@Model.HasVacancies">
+<div class="govuk-grid-row" asp-show="@Model.HasAnyVacancies">
     <div class="govuk-grid-column-one-half">
         <h1 class="govuk-heading-xl">Recruitment</h1>
     </div>
@@ -86,15 +86,16 @@
                 <span class="govuk-body das-card--description">Vacancies on Find an apprenticeship service.</span>
                 <p class="govuk-body das-card--description"></p>
                 <ul class="das-card--tasks govuk-list">
-                    <li>
-                        <a class="govuk-link" href="../vacancies?status=closing">2 vacancies have recently closed</a>
+                    <li asp-show="@Model.ShowNoOfVacanciesClosingSoon">
+                        <a class="govuk-link" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.ClosingSoon">@Model.NoOfVacanciesClosingSoon live @Model.VacancyTextClosingSoon closing soon</a>
                     </li>
-                    <li>
-                        <a class="govuk-link" href="../vacancies?status=closing-no-applications">3 closed vacancies have new applications</a>
+                    <li asp-show="@Model.ShowNoOfVacanciesClosingSoonWithNoApplications">
+                        <a class="govuk-link" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.ClosingSoonWithNoApplications">
+                            @Model.NoOfVacanciesClosingSoonWithNoApplications live @Model.VacancyTextClosingSoonWithNoApplications closing soon with no applications
+                        </a>
                     </li>
                 </ul> 
             </div>
-
         </div>
     </div>
     <div class="govuk-grid-column-one-third">
