@@ -2,10 +2,13 @@
 using Esfa.Recruit.Qa.Web.Mappings;
 using Esfa.Recruit.Qa.Web.Orchestrators;
 using Esfa.Recruit.Qa.Web.Security;
+using Esfa.Recruit.QA.Web.Configuration;
+using Esfa.Recruit.QA.Web.Filters;
 using Esfa.Recruit.Shared.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.RuleTemplates;
 using Esfa.Recruit.Shared.Web.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Ioc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -73,7 +76,15 @@ namespace Esfa.Recruit.Qa.Web
             services.AddTransient<IReviewSummaryService, ReviewSummaryService>();
             services.AddTransient<ReviewFieldIndicatorMapper>();
 
-            services.AddScoped<IRuleMessageTemplateRunner, RuleMessageTemplateRunner>();            
+            services.AddScoped<IRuleMessageTemplateRunner, RuleMessageTemplateRunner>();
+
+            services.AddScoped<PlannedOutageResultFilter>();
+
+            services.AddSingleton(x => 
+            {
+                var svc = x.GetService<IConfigurationReader>();
+                return svc.GetAsync<QaRecruitSystemConfiguration>("QaRecruitSystem").Result;
+            });
         }
     }
 }

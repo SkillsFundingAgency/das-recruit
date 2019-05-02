@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Net.Http.Headers;
 using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.QA.Web.Filters;
 
 namespace Esfa.Recruit.Qa.Web.Configuration
 {
@@ -97,6 +98,8 @@ namespace Esfa.Recruit.Qa.Web.Configuration
                     formatter.SupportedMediaTypes
                         .Add(MediaTypeHeaderValue.Parse("application/csp-report"));
                 }
+
+                options.Filters.AddService<PlannedOutageResultFilter>();
             })
             .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>())
             .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
