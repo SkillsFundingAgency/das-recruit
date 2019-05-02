@@ -9,5 +9,6 @@
         public const string Vacancy_Review_Unassign_Get = "Vacancy_Review_Unassign_Get";
         public const string Vacancy_Review_Unassign_Post = "Vacancy_Review_Unassign_Post";
         public const string Vacancy_Readonly_Review_Get = "Vacancy_Readonly_Review_Get";
+        public const string DismissOutageMessage_Post = "DismissOutageMessage_Post";
     }
 }

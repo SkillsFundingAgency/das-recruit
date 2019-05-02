@@ -1,4 +1,6 @@
-﻿@functions
+﻿@using Esfa.Recruit.QA.Web.Configuration;
+
+@functions
 {
     public string GetTitle()
     {
@@ -48,6 +50,15 @@
 <body class="govuk-template__body">
     <script nws-csp-add-nonce="true">document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
     <a href="#main-content" class="govuk-skip-link">Skip to main content</a>
+
+    <div asp-show="@ViewContext.ViewData[ViewDataKeys.CanShowOutageMessage] as bool?" id="global-outage-message" class="global-message">
+        <p>@ViewContext.ViewData[ViewDataKeys.PlannedOutageMessage]</p>
+        <form asp-route="@RouteNames.DismissOutageMessage_Post" novalidate>
+            <input type="hidden" id="returnUrl" name="returnUrl" value="@ViewContext.HttpContext.Request.Path" />
+            <button type="submit" class="govuk-button-fake-link">Dismiss</button>
+        </form>
+    </div>
+
 
     <div class="app-cookie-banner js-cookie-banner">
         <p class="govuk-width-container">GOV.UK uses cookies to make the site simpler. <a href="https://www.gov.uk/help/cookies">Find out more about cookies</a></p>
