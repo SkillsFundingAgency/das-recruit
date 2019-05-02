@@ -883,17 +883,16 @@ a[rel="external"]:hover:after {
 .das-card--row {
   margin-right: -10px;
   margin-left: -10px;
-  
 }
 
 .das-card--row .govuk-grid-column-one-third {
   padding: 0 10px;
+  margin-bottom:20px;
 }
 
 @media (min-width: 48.0525em) {
   .das-card--row {
-    display: flex;
-    margin-bottom:20px;
+    display: flex; 
   }
 
   .das-card--row .govuk-grid-column-one-third {
