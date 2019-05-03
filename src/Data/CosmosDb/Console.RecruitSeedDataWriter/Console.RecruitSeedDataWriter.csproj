@@ -17,6 +17,9 @@
     <None Update="Data\CandidateSkills.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Data\QaRecruitSystem.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Data\QualificationTypes.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
