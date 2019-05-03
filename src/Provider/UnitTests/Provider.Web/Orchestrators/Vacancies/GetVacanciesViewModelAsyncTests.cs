@@ -31,7 +31,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Vacancies
 
             var clientMock = new Mock<IProviderVacancyClient>();
             var timeProviderMock = new Mock<ITimeProvider>();
-            clientMock.Setup(c => c.GetVacanciesAsync(ukprn))
+            clientMock.Setup(c => c.GetDashboardAsync(ukprn))
                 .Returns(Task.FromResult(new ProviderDashboard {
                     Vacancies = vacancies
                 }));
@@ -66,7 +66,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Vacancies
 
             var clientMock = new Mock<IProviderVacancyClient>();
             var timeProviderMock = new Mock<ITimeProvider>();
-            clientMock.Setup(c => c.GetVacanciesAsync(ukprn))
+            clientMock.Setup(c => c.GetDashboardAsync(ukprn))
                 .Returns(Task.FromResult(new ProviderDashboard {
                     Vacancies = vacancies
                 }));

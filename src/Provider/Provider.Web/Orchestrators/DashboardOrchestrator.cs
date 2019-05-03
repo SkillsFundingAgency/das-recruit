@@ -43,15 +43,15 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
         private async Task<List<VacancySummary>> GetVacanciesAsync(long ukprn)
         {
-            var vacancies = await _client.GetVacanciesAsync(ukprn);
+            var dashboard = await _client.GetDashboardAsync(ukprn);
 
-            if (vacancies == null)
+            if (dashboard == null)
             {
-                await _client.GenerateVacancies(ukprn);
-                vacancies = await _client.GetVacanciesAsync(ukprn);
+                await _client.GenerateDashboard(ukprn);
+                dashboard = await _client.GetDashboardAsync(ukprn);
             }
 
-            return vacancies?.Vacancies?.ToList() ?? new List<VacancySummary>();
+            return dashboard?.Vacancies?.ToList() ?? new List<VacancySummary>();
         }      
     }
 }

@@ -32,12 +32,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return vacancyId;
         }
 
-        public Task<ProviderDashboard> GetVacanciesAsync(long ukprn)
+        public Task<ProviderDashboard> GetDashboardAsync(long ukprn)
         {
             return _reader.GetProviderDashboardAsync(ukprn);
         }
 
-        public Task GenerateVacancies(long ukprn)
+        public Task GenerateDashboard(long ukprn)
         {
             return _providerDashboardService.ReBuildDashboardAsync(ukprn);
         }
