@@ -84,7 +84,6 @@ namespace Esfa.Recruit.Provider.Web.Middleware
         
         private async Task EnsureProviderIsSetup(HttpContext context, long ukprn)
         {
-            await Task.CompletedTask;
             var key = string.Format(CookieNames.SetupProvider, ukprn);
 
             if (context.Request.Cookies[key] == null)
