@@ -10,9 +10,9 @@ using FluentAssertions;
 using Moq;
 using Xunit;
 
-namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Dashboard
+namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Vacancies
 {
-    public class GetDashboardViewModelAsyncTests
+    public class GetVacanciesViewModelAsyncTests
     {
         [Fact]
         public async Task WhenHaveOver25Vacancies_ShouldShowPager()
