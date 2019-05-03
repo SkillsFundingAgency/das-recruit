@@ -29,6 +29,8 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public bool HasSubmittedVacancy => VacancyCountSubmitted > 0;
         public int NoOfNewApplications => Vacancies.Count(v => v.NoOfNewApplications > 0);
         public bool HasNewApplications => NoOfNewApplications > 0;
+        public int AllApplications => Vacancies.Count(v => v.NoOfSuccessfulApplications > 0);
+        public bool ShowAllApplications => AllApplications > 0;
         public string ApplicationTextLive => "application".ToQuantity(NoOfNewApplications, ShowQuantityAs.None);
         public int NoOfVacanciesClosingSoon { get; set; }
         public string VacancyTextClosingSoon => "vacancy".ToQuantity(NoOfVacanciesClosingSoon, ShowQuantityAs.None);
