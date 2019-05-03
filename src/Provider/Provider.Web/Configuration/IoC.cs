@@ -72,7 +72,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<AboutEmployerOrchestrator>();
             services.AddTransient<ApplicationProcessOrchestrator>();
             services.AddTransient<ConsiderationsOrchestrator>();
-            services.AddTransient<DashboardOrchestrator>();
+            services.AddTransient<VacanciesOrchestrator>();
             services.AddTransient<EmployerOrchestrator>();
             services.AddTransient<LegalEntityOrchestrator>();
             services.AddTransient<EmployerNameOrchestrator>();
@@ -98,7 +98,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<ReportDashboardOrchestrator>();
             services.AddTransient<ProviderApplicationsReportOrchestrator>();
             services.AddTransient<ReportConfirmationOrchestrator>();
-            services.AddTransient<RecruitmentDashboardOrchestrator>();
+            services.AddTransient<DashboardOrchestrator>();
         }
 
         private static void RegisterMapperDeps(IServiceCollection services)

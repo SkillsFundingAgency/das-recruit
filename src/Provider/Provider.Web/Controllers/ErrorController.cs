@@ -158,10 +158,10 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
         private void AddDashboardMessage(string message)
         {
-            if(TempData.ContainsKey(TempDataKeys.DashboardErrorMessage))
-                _logger.LogError($"Dashboard message already set in {nameof(ErrorController)}. Existing message:{TempData[TempDataKeys.DashboardErrorMessage]}. New message:{message}");
+            if(TempData.ContainsKey(TempDataKeys.VacanciesErrorMessage))
+                _logger.LogError($"Dashboard message already set in {nameof(ErrorController)}. Existing message:{TempData[TempDataKeys.VacanciesErrorMessage]}. New message:{message}");
 
-            TempData[TempDataKeys.DashboardErrorMessage] = message;
+            TempData[TempDataKeys.VacanciesErrorMessage] = message;
         }
     }
 }

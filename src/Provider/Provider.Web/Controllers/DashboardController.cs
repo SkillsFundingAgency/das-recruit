@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Provider.Web.Controllers
 {
-    [Route(RoutePaths.VacanciesRoutePath)]
+    [Route(RoutePaths.AccountRoutePath)]
     public class DashboardController : Controller
     {
         private readonly DashboardOrchestrator _orchestrator;
@@ -20,22 +20,16 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             _hostingEnvironment = hostingEnvironment;
         }
 
-        [HttpGet("", Name = RouteNames.Vacancies_Get)]
+        [HttpGet("", Name = RouteNames.Dashboard_Get)]
         public async Task<IActionResult> Dashboard([FromQuery] string filter, [FromQuery] int page = 1)
         {
-            //if (string.IsNullOrWhiteSpace(filter))
-            //    filter = Request.Cookies.GetCookie(CookieNames.DashboardFilter);
-            
-            //if(string.IsNullOrWhiteSpace(filter) == false)
-            //    Response.Cookies.SetSessionCookie(_hostingEnvironment, CookieNames.DashboardFilter,filter);
+            if (string.IsNullOrWhiteSpace(filter))
+                filter = Request.Cookies.GetCookie(CookieNames.DashboardFilter);
 
-            var vm = await _orchestrator.GetDashboardViewModelAsync(User.GetUkprn(), filter, page);
-            if (TempData.ContainsKey(TempDataKeys.DashboardErrorMessage))
-                vm.WarningMessage = TempData[TempDataKeys.DashboardErrorMessage].ToString();
+            if (string.IsNullOrWhiteSpace(filter) == false)
+                Response.Cookies.SetSessionCookie(_hostingEnvironment, CookieNames.DashboardFilter, filter);
 
-            if (TempData.ContainsKey(TempDataKeys.DashboardInfoMessage))
-                vm.InfoMessage = TempData[TempDataKeys.DashboardInfoMessage].ToString();
-
+            var vm = await _orchestrator.GetDashboardViewModelAsync(User.GetUkprn());
             return View(vm);
         }
     }

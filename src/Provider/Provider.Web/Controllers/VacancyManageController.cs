@@ -83,7 +83,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             }
 
             var vacancy = await _orchestrator.GetVacancy(m);
-            TempData.Add(TempDataKeys.DashboardInfoMessage, string.Format(InfoMsg.VacancyUpdated, vacancy.Title));
+            TempData.Add(TempDataKeys.VacanciesInfoMessage, string.Format(InfoMsg.VacancyUpdated, vacancy.Title));
 
             EnsureProposedChangesCookiesAreCleared(m.VacancyId.GetValueOrDefault());
 
