@@ -10,9 +10,9 @@ using FluentAssertions;
 using Moq;
 using Xunit;
 
-namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Dashboard
+namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Vacancies
 {
-    public class GetDashboardViewModelAsyncTests
+    public class GetVacanciesViewModelAsyncTests
     {
         [Fact]
         public async Task WhenHaveOver25Vacancies_ShouldShowPager()
@@ -36,9 +36,9 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Dashboard
                     Vacancies = vacancies
                 }));
 
-            var orch = new DashboardOrchestrator(clientMock.Object, timeProviderMock.Object);
+            var orch = new VacanciesOrchestrator(clientMock.Object, timeProviderMock.Object);
 
-            var vm = await orch.GetDashboardViewModelAsync(ukprn, "Submitted", 2);
+            var vm = await orch.GetVacanciesViewModelAsync(ukprn, "Submitted", 2);
 
             vm.ShowResultsTable.Should().BeTrue();
             vm.HasVacancies.Should().BeTrue();
@@ -71,9 +71,9 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Dashboard
                     Vacancies = vacancies
                 }));
 
-            var orch = new DashboardOrchestrator(clientMock.Object, timeProviderMock.Object);
+            var orch = new VacanciesOrchestrator(clientMock.Object, timeProviderMock.Object);
 
-            var vm = await orch.GetDashboardViewModelAsync(ukprn, "Submitted", 2);
+            var vm = await orch.GetVacanciesViewModelAsync(ukprn, "Submitted", 2);
 
             vm.ShowResultsTable.Should().BeTrue();
             vm.HasVacancies.Should().BeTrue();

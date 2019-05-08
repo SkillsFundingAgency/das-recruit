@@ -76,7 +76,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 {
                     _logger.LogError(exception, "Exception on path: {route}", routeWhereExceptionOccurred);
                     AddDashboardMessage(exception.Message);
-                    return RedirectToRoute(RouteNames.Dashboard_Index_Get, new { Ukprn = ukprn });
+                    return RedirectToRoute(RouteNames.Vacancies_Get, new { Ukprn = ukprn });
                 }
 
                 if (exception is InvalidRouteForVacancyException invalidRouteException)
@@ -122,7 +122,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             var vm = new MissingPermissionsViewModel
             {
                 RouteValues = new VacancyRouteModel { Ukprn = ukprn },
-                CtaRoute = RouteNames.Dashboard_Index_Get
+                CtaRoute = RouteNames.Vacancies_Get
             };
 
             return View(ViewNames.MissingPermissions, vm);
@@ -158,10 +158,10 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
         private void AddDashboardMessage(string message)
         {
-            if(TempData.ContainsKey(TempDataKeys.DashboardErrorMessage))
-                _logger.LogError($"Dashboard message already set in {nameof(ErrorController)}. Existing message:{TempData[TempDataKeys.DashboardErrorMessage]}. New message:{message}");
+            if(TempData.ContainsKey(TempDataKeys.VacanciesErrorMessage))
+                _logger.LogError($"Dashboard message already set in {nameof(ErrorController)}. Existing message:{TempData[TempDataKeys.VacanciesErrorMessage]}. New message:{message}");
 
-            TempData[TempDataKeys.DashboardErrorMessage] = message;
+            TempData[TempDataKeys.VacanciesErrorMessage] = message;
         }
     }
 }

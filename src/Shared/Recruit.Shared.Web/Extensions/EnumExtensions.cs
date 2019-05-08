@@ -32,7 +32,8 @@ namespace Esfa.Recruit.Shared.Web.Extensions
             {FilteringOptions.ClosingSoon,"closing soon" },
             {FilteringOptions.ClosingSoonWithNoApplications,"closing soon with no applications" },
             {FilteringOptions.AllApplications,"with applications" },
-            {FilteringOptions.NewApplications,"with new applications" }
+            {FilteringOptions.NewApplications,"with new applications" },
+            {FilteringOptions.Submitted, "Pending review" }
         };
     }
 }
