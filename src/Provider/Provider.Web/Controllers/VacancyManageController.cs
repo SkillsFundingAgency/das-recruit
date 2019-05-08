@@ -83,11 +83,11 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             }
 
             var vacancy = await _orchestrator.GetVacancy(m);
-            TempData.Add(TempDataKeys.DashboardInfoMessage, string.Format(InfoMsg.VacancyUpdated, vacancy.Title));
+            TempData.Add(TempDataKeys.VacanciesInfoMessage, string.Format(InfoMsg.VacancyUpdated, vacancy.Title));
 
             EnsureProposedChangesCookiesAreCleared(m.VacancyId.GetValueOrDefault());
 
-            return RedirectToRoute(RouteNames.Dashboard_Index_Get);
+            return RedirectToRoute(RouteNames.Vacancies_Get);
         }
 
         [HttpGet("cancel-vacancy-changes", Name = RouteNames.CancelVacancyChanges_Get)]
@@ -95,7 +95,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         {
             EnsureProposedChangesCookiesAreCleared(vrm.VacancyId.GetValueOrDefault());
             
-            return RedirectToRoute(RouteNames.Dashboard_Index_Get);
+            return RedirectToRoute(RouteNames.Vacancies_Get);
         }
 
         private void EnsureProposedChangesCookiesAreCleared(Guid vacancyId)
