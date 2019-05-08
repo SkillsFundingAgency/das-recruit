@@ -133,9 +133,9 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         {
             LogUserClaims();
 
-            var serviceClaim = User.FindFirst(ProviderRecruitClaims.IdamsUserServiceTypeClaimTypeIdentifier);
+            var serviceClaims = User.FindAll(ProviderRecruitClaims.IdamsUserServiceTypeClaimTypeIdentifier);
 
-            if (serviceClaim == null || serviceClaim.Value != ProviderRecruitClaims.ServiceClaimValue)
+            if (serviceClaims.Any(claim => claim.Value.Equals(ProviderRecruitClaims.ServiceClaimValue) == false))
             {
                 _logger.LogInformation($"User {User.Identity.Name} does not have service claim.");
                 return Redirect(_externalLinks.ProviderApprenticeshipSiteUrl);

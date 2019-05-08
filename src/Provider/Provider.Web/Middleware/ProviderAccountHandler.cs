@@ -45,9 +45,9 @@ namespace Esfa.Recruit.Provider.Web.Middleware
 
             if (context.User.HasClaim(serviceClaimFinderPredicate))
             {
-                var serviceFromClaim = context.User.FindFirst(serviceClaimFinderPredicate).Value;
+                var serviceClaims = context.User.FindAll(serviceClaimFinderPredicate);
 
-                return serviceFromClaim == ProviderRecruitClaims.ServiceClaimValue;
+                return serviceClaims.Any(claim => claim.Value.Equals(ProviderRecruitClaims.ServiceClaimValue));
             }
 
             return false;
