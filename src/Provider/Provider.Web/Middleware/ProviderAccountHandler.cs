@@ -45,9 +45,9 @@ namespace Esfa.Recruit.Provider.Web.Middleware
 
             if (context.User.HasClaim(serviceClaimFinderPredicate))
             {
-                var serviceFromClaim = context.User.FindFirst(serviceClaimFinderPredicate).Value;
+                var serviceClaims = context.User.FindAll(serviceClaimFinderPredicate);
 
-                return serviceFromClaim == ProviderRecruitClaims.ServiceClaimValue;
+                return serviceClaims.Any(claim => claim.Value.Equals(ProviderRecruitClaims.ServiceClaimValue));
             }
 
             return false;
@@ -84,7 +84,6 @@ namespace Esfa.Recruit.Provider.Web.Middleware
         
         private async Task EnsureProviderIsSetup(HttpContext context, long ukprn)
         {
-            await Task.CompletedTask;
             var key = string.Format(CookieNames.SetupProvider, ukprn);
 
             if (context.Request.Cookies[key] == null)
