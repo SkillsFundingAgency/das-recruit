@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using System.Text;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Exceptions;
@@ -18,7 +19,7 @@ using Microsoft.Extensions.Options;
 
 namespace Esfa.Recruit.Provider.Web.Controllers
 {
-	[AllowAnonymous]
+    [AllowAnonymous]
     public class ErrorController : Controller
     {
         private readonly ILogger<ErrorController> _logger;
@@ -106,7 +107,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
                 if (exception is MissingPermissionsException mpEx)
                 {
-                    _logger.LogWarning(mpEx.Message);
+                    _logger.LogInformation(mpEx.Message);
                     return MissingPermissions(long.Parse((string)ukprn));
                 }
 
@@ -130,16 +131,31 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
         private IActionResult AccessDenied()
         {
+            LogUserClaims();
+
             var serviceClaim = User.FindFirst(ProviderRecruitClaims.IdamsUserServiceTypeClaimTypeIdentifier);
-            
+
             if (serviceClaim == null || serviceClaim.Value != ProviderRecruitClaims.ServiceClaimValue)
             {
-                _logger.LogInformation("User does not have service claim");
+                _logger.LogInformation($"User {User.Identity.Name} does not have service claim.");
                 return Redirect(_externalLinks.ProviderApprenticeshipSiteUrl);
             }
 
             Response.StatusCode = (int)HttpStatusCode.Unauthorized;
             return View(ViewNames.AccessDenied);
+        }
+
+        private void LogUserClaims()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"{User.Identity.Name} claims:");
+
+            foreach (var claim in User.Claims)
+            {
+                sb.AppendLine($"{claim.Type}: {claim.Value}");
+            }
+
+            _logger.LogInformation(sb.ToString());
         }
 
         private IActionResult PageNotFound()
