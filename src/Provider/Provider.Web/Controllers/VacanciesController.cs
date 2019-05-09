@@ -21,15 +21,16 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         }
 
         [HttpGet("", Name = RouteNames.Vacancies_Get)]
-        public async Task<IActionResult> Vacancies([FromQuery] string filter, [FromQuery] int page = 1)
+        public async Task<IActionResult> Vacancies(
+            [FromQuery] string filter, [FromQuery] int page = 1, [FromQuery] string searchTerm = "")
         {
-            if (string.IsNullOrWhiteSpace(filter))
-                filter = Request.Cookies.GetCookie(CookieNames.VacanciesFilter);
+            if (string.IsNullOrWhiteSpace(filter) && string.IsNullOrWhiteSpace(searchTerm))
+                TryGetFilters(out filter, out searchTerm);
+            
+            if(string.IsNullOrWhiteSpace(filter) == false || string.IsNullOrWhiteSpace(searchTerm) == false)
+                SetFilters(filter, searchTerm);
 
-            if (string.IsNullOrWhiteSpace(filter) == false)
-                Response.Cookies.SetSessionCookie(_hostingEnvironment, CookieNames.VacanciesFilter, filter);
-
-            var vm = await _orchestrator.GetVacanciesViewModelAsync(User.GetUkprn(), filter, page);
+            var vm = await _orchestrator.GetVacanciesViewModelAsync(User.GetUkprn(), filter, page, searchTerm);
             if (TempData.ContainsKey(TempDataKeys.VacanciesErrorMessage))
                 vm.WarningMessage = TempData[TempDataKeys.VacanciesErrorMessage].ToString();
 
@@ -37,6 +38,24 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 vm.InfoMessage = TempData[TempDataKeys.VacanciesInfoMessage].ToString();
 
             return View(vm);
+        }
+
+        private void SetFilters(string filter, string search)
+        {
+            var value = $"filter:{filter}||search:{search}";
+            Response.Cookies.SetSessionCookie(_hostingEnvironment, CookieNames.VacanciesFilter, value);
+        }
+
+        private void TryGetFilters(out string filter, out string search)
+        {
+            filter = string.Empty;
+            search = string.Empty;
+            var cookieValue = Request.Cookies.GetCookie(CookieNames.VacanciesFilter);
+            if(string.IsNullOrWhiteSpace(cookieValue)) return;
+            var values = cookieValue.Split("||");
+            if (values.Length != 2) return;
+            filter = values[0].Replace("filter:", "");
+            search = values[1].Replace("search:", "");
         }
     }
 }

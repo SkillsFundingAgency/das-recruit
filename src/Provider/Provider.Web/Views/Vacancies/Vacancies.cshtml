@@ -15,7 +15,7 @@
     }
 }
 
-<div asp-show="@Model.HasVacancies">
+<div asp-show="@Model.HasAnyVacancies">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
             <div asp-show="Model.HasWarning" class="warning-summary govuk-!-margin-top-0">
@@ -44,31 +44,52 @@
 
 <div class="govuk-grid-row">   
     <div class="govuk-grid-column-full">
-        <form method="get">
-            <div class="govuk-form-group">
-                <label asp-for="Filter" class="govuk-label">Filter vacancies by</label>
-                <select asp-for="Filter" class="govuk-select">
-                    <optgroup label="Status">
-                        <option value="@FilteringOptions.All">all vacancies</option>
-                        <option value="@FilteringOptions.Live">live vacancies</option>
-                        <option value="@FilteringOptions.Referred">rejected vacancies</option>
-                        <option value="@FilteringOptions.Submitted">vacancies pending review</option>
-                        <option value="@FilteringOptions.Draft">draft vacancies</option>
-                        <option value="@FilteringOptions.Closed">closed vacancies</option>
-                    </optgroup>
-                    <optgroup label="Other">
-                        <option value="@FilteringOptions.NewApplications">with new applications</option>
-                        <option value="@FilteringOptions.AllApplications">with applications</option>
-                        <option value="@FilteringOptions.ClosingSoonWithNoApplications">closing soon with no applications</option>
-                        <option value="@FilteringOptions.ClosingSoon">closing soon</option>
-                    </optgroup>
-                </select>
-                <button type="submit" id="filter-submit" class="das-button-filter das-button-secondary govuk-button">Filter</button>
+        <form method="get"  autocomplete="off">
+            <div class="govuk-grid-column-one-third">
+                <div class="govuk-form-group">
+                    <label asp-for="Filter" class="govuk-label">Filter vacancies by</label>
+                    <select asp-for="Filter" class="govuk-select">
+                        <optgroup label="Status">
+                            <option value="@FilteringOptions.All">all vacancies</option>
+                            <option value="@FilteringOptions.Live">live vacancies</option>
+                            <option value="@FilteringOptions.Referred">rejected vacancies</option>
+                            <option value="@FilteringOptions.Submitted">vacancies pending review</option>
+                            <option value="@FilteringOptions.Draft">draft vacancies</option>
+                            <option value="@FilteringOptions.Closed">closed vacancies</option>
+                        </optgroup>
+                        <optgroup label="Other">
+                            <option value="@FilteringOptions.NewApplications">with new applications</option>
+                            <option value="@FilteringOptions.AllApplications">with applications</option>
+                            <option value="@FilteringOptions.ClosingSoonWithNoApplications">closing soon with no applications</option>
+                            <option value="@FilteringOptions.ClosingSoon">closing soon</option>
+                        </optgroup>
+                    </select>
+                    <button type="submit" id="filter-submit" class="das-button-filter das-button-secondary govuk-button">Filter</button>
+                </div>
+            </div>
+            
+            <div class="govuk-grid-column-two-thirds">
+                <div class="govuk-form-group">
+                    <fieldset class="govuk-fieldset">
+                        <div class="form-group search-field search-field-darker">
+                            <div class="search-input search-input-with-button">
+                                <label class="govuk-label" for="search">
+                                Search vacancies
+                                </label>
+                                <input id="search-input" asp-for="SearchTerm" placeholder="Search by title, reference number or employer" class="govuk-input search-input" maxlength="200">
+                            </div>
+                            <div class="search-submit">
+                                <!-- hide button for no js version -->
+                                <button style="display:none" type="submit" id="search-submit-button">Search</button>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
             </div>
         </form>
     </div>
 </div>
-<div asp-show="@Model.HasVacancies" class="govuk-grid-row">
+<div asp-show="@Model.HasAnyVacancies" class="govuk-grid-row">
     <div class="govuk-grid-column-full">
         <h3 class="govuk-heading-m">
             @Model.ResultsHeading <a asp-show="@Model.IsFiltered" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="All" class="govuk-!-font-weight-regular govuk-component__link govuk-!-font-size-19">Show all vacancies</a>
@@ -126,9 +147,11 @@
 
 @section FooterJS
 {
+    <script src="/lib/jquery-ui/dist/jquery-ui.min.js"></script>
     <script nws-csp-add-nonce="true">
         var filterId = "#@Html.IdFor(m => m.Filter)";
         $(function() {
+            $("#search-submit-button").show();
             $("#filter-submit").hide();
 
             $(filterId).on("change",
@@ -138,5 +161,24 @@
                     $filterForm.submit();
                 });
         });
+
+        var getData = function(request, response) {
+            var url = "/" + window.location.pathname.slice(1,9) + "/search-helper?term=" + $("#search-input").val();
+            $.getJSON(url, function(data) { 
+                response(data);
+            });
+        };
+
+        var selectItem = function (event, ui) {
+            $("#search-input").val(ui.item.value);
+            return false;
+        }
+
+        $("#search-input").autocomplete({
+            source: getData,
+            select: selectItem,
+            minLength: 3
+        });
+        
     </script>
 }
