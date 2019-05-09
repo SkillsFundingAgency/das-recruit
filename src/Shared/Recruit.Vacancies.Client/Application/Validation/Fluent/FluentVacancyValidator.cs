@@ -534,10 +534,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
             RuleFor(x => x.EmployerWebsiteUrl)
                 .MaximumLength(100)
-                    .WithMessage("Organisation's website address must not exceed {MaxLength} characters")
+                    .WithMessage("Website address must not exceed {MaxLength} characters")
                     .WithErrorCode("84")
                 .Must(FluentExtensions.BeValidWebUrl)
-                    .WithMessage("Organisation's website address must be a valid website address")
+                    .WithMessage("Website address must be a valid URL")
                     .WithErrorCode("82")
                     .When(v => !string.IsNullOrEmpty(v.EmployerWebsiteUrl))
                 .RunCondition(VacancyRuleSet.EmployerWebsiteUrl)

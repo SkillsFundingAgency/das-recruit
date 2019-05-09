@@ -7,7 +7,7 @@
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Vacancy summary</h1>
         <div class="info-summary">
             <p class="govuk-body">Apprentice candidates will see your vacancy in a search along with vacancies from other employers. This is your
-            opportunity to make your vacancy attract the best candidates</p>
+            opportunity to make your vacancy attract the best candidates.</p>
         </div>
     </div>
 </div>
@@ -39,7 +39,7 @@
             </div>
             <button type="submit" class="govuk-button save-button">@Model.PageInfo.SubmitButtonText</button>
 
-            <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Index_Get" class="govuk-link das-button-link">Cancel</a>
+            <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link das-button-link">Cancel</a>
             <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.TitleSection" class="govuk-link das-button-link">Cancel</a>
         </form>
     </div>
