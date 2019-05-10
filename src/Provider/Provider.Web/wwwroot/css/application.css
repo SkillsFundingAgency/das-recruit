@@ -432,7 +432,7 @@ input.form-control, textarea.form-control {
 
 .ui-menu {
   list-style: none;
-  padding: 2px;
+  padding: 0;
   margin: 0;
   display: block;
   float: left
@@ -483,6 +483,7 @@ input.form-control, textarea.form-control {
 }
 
 .ui-autocomplete .ui-menu-item {
+  border-top: 1px solid #bfc1c3;
   cursor: pointer;
   font-family: "nta",Arial,sans-serif;
   font-size: 16px;
@@ -501,8 +502,7 @@ input.form-control, textarea.form-control {
 
 @media (min-width: 641px) {
   .ui-autocomplete .ui-menu-item {
-      padding-top:5px;
-      padding-bottom: 5px
+    padding:10px 5px 5px 5px;
   }
 }
 
@@ -975,6 +975,7 @@ a[rel="external"]:hover:after {
 }
 
 .search-field .search-input input {
+  width:92%;
   padding: 2px 0 0 10px;
   display: block;
   height: 40px;
@@ -997,7 +998,7 @@ a[rel="external"]:hover:after {
 .search-field .search-submit button {
   position: absolute;
   top: 0;
-  left: 8px;
+  left: -12px;
   width: 50px;
   height: 40px;
   border: none;

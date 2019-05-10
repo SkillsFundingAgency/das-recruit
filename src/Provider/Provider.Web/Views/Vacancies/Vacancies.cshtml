@@ -26,11 +26,13 @@
             </div>
         </div>
     </div>
+
     <div class="govuk-grid-row">        
         <div class="govuk-grid-column-full">
             <a asp-route="@RouteNames.Dashboard_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Return to dashboard</a>
         </div>
     </div>
+
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-one-half">            
             <h1 class="govuk-heading-xl">Vacancies</h1>
@@ -42,53 +44,51 @@
     </div>
 </div>
 
-<div class="govuk-grid-row">   
-    <div class="govuk-grid-column-full">
-        <form method="get"  autocomplete="off">
-            <div class="govuk-grid-column-one-third">
-                <div class="govuk-form-group">
-                    <label asp-for="Filter" class="govuk-label">Filter vacancies by</label>
-                    <select asp-for="Filter" class="govuk-select">
-                        <optgroup label="Status">
-                            <option value="@FilteringOptions.All">all vacancies</option>
-                            <option value="@FilteringOptions.Live">live vacancies</option>
-                            <option value="@FilteringOptions.Referred">rejected vacancies</option>
-                            <option value="@FilteringOptions.Submitted">vacancies pending review</option>
-                            <option value="@FilteringOptions.Draft">draft vacancies</option>
-                            <option value="@FilteringOptions.Closed">closed vacancies</option>
-                        </optgroup>
-                        <optgroup label="Other">
-                            <option value="@FilteringOptions.NewApplications">with new applications</option>
-                            <option value="@FilteringOptions.AllApplications">with applications</option>
-                            <option value="@FilteringOptions.ClosingSoonWithNoApplications">closing soon with no applications</option>
-                            <option value="@FilteringOptions.ClosingSoon">closing soon</option>
-                        </optgroup>
-                    </select>
-                    <button type="submit" id="filter-submit" class="das-button-filter das-button-secondary govuk-button">Filter</button>
-                </div>
+<form method="get" autocomplete="off">
+    <div class="govuk-grid-row">   
+        <div class="govuk-grid-column-one-third">
+            <div class="govuk-form-group">
+                <label asp-for="Filter" class="govuk-label">Filter vacancies by</label>
+                <select asp-for="Filter" class="govuk-select">
+                    <optgroup label="Status">
+                        <option value="@FilteringOptions.All">all vacancies</option>
+                        <option value="@FilteringOptions.Live">live vacancies</option>
+                        <option value="@FilteringOptions.Referred">rejected vacancies</option>
+                        <option value="@FilteringOptions.Submitted">vacancies pending review</option>
+                        <option value="@FilteringOptions.Draft">draft vacancies</option>
+                        <option value="@FilteringOptions.Closed">closed vacancies</option>
+                    </optgroup>
+                    <optgroup label="Other">
+                        <option value="@FilteringOptions.NewApplications">with new applications</option>
+                        <option value="@FilteringOptions.AllApplications">with applications</option>
+                        <option value="@FilteringOptions.ClosingSoonWithNoApplications">closing soon with no applications</option>
+                        <option value="@FilteringOptions.ClosingSoon">closing soon</option>
+                    </optgroup>
+                </select>
+                <button type="submit" id="filter-submit" class="das-button-filter das-button-secondary govuk-button">Filter</button>
             </div>
-            
-            <div class="govuk-grid-column-two-thirds">
-                <div class="govuk-form-group">
-                    <fieldset class="govuk-fieldset">
-                        <div class="form-group search-field search-field-darker">
-                            <div class="search-input search-input-with-button">
-                                <label class="govuk-label" for="search">
-                                Search vacancies
-                                </label>
-                                <input id="search-input" asp-for="SearchTerm" placeholder="Search by title, reference number or employer" class="govuk-input search-input" maxlength="200">
-                            </div>
-                            <div class="search-submit">
-                                <!-- hide button for no js version -->
-                                <button style="display:none" type="submit" id="search-submit-button">Search</button>
-                            </div>
+        </div>
+        
+        <div class="govuk-grid-column-two-thirds">
+            <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
+                    <div class="form-group search-field search-field-darker">
+                        <div class="search-input search-input-with-button">
+                            <label class="govuk-label" for="search">
+                            Search vacancies
+                            </label>
+                            <input id="search-input" asp-for="SearchTerm" placeholder="Search by title, reference number or employer" class="govuk-input search-input" maxlength="200">
                         </div>
-                    </fieldset>
-                </div>
+                        <div class="search-submit">
+                            <!-- hide button for no js version -->
+                            <button type="submit" id="search-submit-button" class="js-hidden">Search</button>
+                        </div>
+                    </div>
+                </fieldset>
             </div>
-        </form>
+        </div>
     </div>
-</div>
+</form>
 <div asp-show="@Model.HasAnyVacancies" class="govuk-grid-row">
     <div class="govuk-grid-column-full">
         <h3 class="govuk-heading-m">
@@ -151,8 +151,8 @@
     <script nws-csp-add-nonce="true">
         var filterId = "#@Html.IdFor(m => m.Filter)";
         $(function() {
-            $("#search-submit-button").show();
-            $("#filter-submit").hide();
+            $("#search-submit-button").removeClass('js-hidden');
+            $("#filter-submit").addClass('js-hidden');
 
             $(filterId).on("change",
                 function() {
