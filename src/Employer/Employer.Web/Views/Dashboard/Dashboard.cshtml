@@ -39,19 +39,54 @@
     </div>
     <br>
 </div>
-<div asp-show="@Model.HasVacancies">
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <form method="get">
+            <div class="govuk-form-group">
+                <label asp-for="Filter" class="govuk-label">Filter vacancies by</label>
+                <select asp-for="Filter" class="govuk-select">
+                    <optgroup label="Status">
+                        <option value="@FilteringOptions.All">all vacancies</option>
+                        <option value="@FilteringOptions.Live">live vacancies</option>
+                        <option value="@FilteringOptions.Referred">rejected vacancies</option>
+                        <option value="@FilteringOptions.Submitted">vacancies pending review</option>
+                        <option value="@FilteringOptions.Draft">draft vacancies</option>
+                        <option value="@FilteringOptions.Closed">closed vacancies</option>
+                    </optgroup>
+                    <optgroup label="Other">
+                        <option value="@FilteringOptions.NewApplications">with new applications</option>
+                        <option value="@FilteringOptions.AllApplications">with applications</option>
+                        <option value="@FilteringOptions.ClosingSoonWithNoApplications">closing soon with no applications</option>
+                        <option value="@FilteringOptions.ClosingSoon">closing soon</option>
+                    </optgroup>
+                </select>
+                <button type="submit" id="filter-submit" class="das-button-filter das-button-secondary govuk-button">Filter</button>
+            </div>
+        </form>
+    </div>
+</div>
+<div asp-show="@Model.HasVacancies" class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <h3 class="govuk-heading-m">
+            @Model.ResultsHeading <a asp-show="@Model.IsFiltered" asp-route="@RouteNames.Dashboard_Index_Get" asp-route-filter="All" class="govuk-!-font-weight-regular govuk-component__link govuk-!-font-size-19">Show all vacancies</a>
+        </h3>
+        <p asp-hide="@Model.ShowResultsTable" class="govuk-body">No vacancies match the criteria</p>
+    </div>
+</div>
+<div asp-show="@Model.ShowResultsTable">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
             <table class="govuk-table responsive">
                 <thead class="govuk-table__head">
-                    <tr class="govuk-table__row">
-                        <th class="govuk-table__header">Status</th>
-                        <th class="govuk-table__header">Vacancy title</th>
-                        <th class="govuk-table__header">Vacancy ref</th>
-                        <th class="govuk-table__header">Applications</th>
-                        <th class="govuk-table__header">Closing Date</th>
-                        <th class="govuk-table__header">Action</th>
-                    </tr>
+                <tr class="govuk-table__row">
+                    <th class="govuk-table__header">Status</th>
+                    <th class="govuk-table__header">Vacancy title</th>
+                    <th class="govuk-table__header">Vacancy ref</th>
+                    <th class="govuk-table__header">Applications</th>
+                    <th class="govuk-table__header">Closing Date</th>
+                    <th class="govuk-table__header">Action</th>
+                </tr>
                 </thead>
                 <tbody class="govuk-table__body">
                 @foreach (var vacancy in Model.Vacancies)
@@ -80,6 +115,24 @@
                 }
                 </tbody>
             </table>
+
+            <partial name="@PartialNames.Pager" model="@Model.Pager" />
         </div>
     </div>
 </div>
+@section FooterJS
+{
+    <script nws-csp-add-nonce="true">
+        var filterId = "#@Html.IdFor(m => m.Filter)";
+        $(function() {
+            $("#filter-submit").hide();
+
+            $(filterId).on("change",
+                function() {
+                    var $filterForm = $(this).parents("form");
+                    $filterForm.areYouSure({ 'silent': true });
+                    $filterForm.submit();
+                });
+        });
+    </script>
+}
