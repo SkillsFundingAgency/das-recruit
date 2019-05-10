@@ -13,6 +13,10 @@
         <partial name="@PartialNames.ReviewSummary" for="Review"/>
         
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Where will the apprentice work?</h1>
+        
+        <div asp-show="@Model.IsAnonymousVacancy" class="govuk-inset-text">
+            For anonymous vacancies we will not show the address on the vacancy. We will only show the first half of the postcode.
+        </div>
 
         <form asp-route="@RouteNames.Location_Post" asp-route-wizard="@Model.PageInfo.IsWizard">
             <div class="govuk-form-group">

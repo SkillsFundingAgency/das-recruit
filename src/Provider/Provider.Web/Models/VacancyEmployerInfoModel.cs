@@ -1,5 +1,5 @@
 using System;
-using Esfa.Recruit.Provider.Web.ViewModels.Part1.EmployerName;
+using Esfa.Recruit.Shared.Web.Models;
 
 namespace Esfa.Recruit.Provider.Web.Models
 {
@@ -7,8 +7,10 @@ namespace Esfa.Recruit.Provider.Web.Models
     {
         public Guid? VacancyId { get; set; }
         public long? LegalEntityId { get; set; }
-        public EmployerNameOptionViewModel? EmployerNameOption { get; set; }
+        public EmployerIdentityOption? EmployerIdentityOption { get; set; }
         public string NewTradingName { get; set; }
-        public bool HasLegalEntityChanged { get; set; }
+        public bool HasLegalEntityChanged { get; set;}
+        public string AnonymousName { get; set; }
+        public string AnonymousReason { get; set; }
     }
 }

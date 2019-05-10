@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
@@ -18,7 +19,6 @@ namespace Esfa.Recruit.Provider.Web.Mappings
         private const int MapImageHeight = 256;
         private readonly IGeocodeImageService _mapService;
         private readonly ExternalLinksConfiguration _externalLinksConfiguration;
-        private readonly IEmployerVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
 
         public DisplayVacancyViewModelMapper(
@@ -29,7 +29,6 @@ namespace Esfa.Recruit.Provider.Web.Mappings
         {
             _mapService = mapService;
             _externalLinksConfiguration = externalLinksOptions.Value;
-            _client = client;
             _vacancyClient = vacancyClient;
         }
 
@@ -46,7 +45,7 @@ namespace Esfa.Recruit.Provider.Web.Mappings
             vm.CanSubmit = vacancy.CanSubmit;
             vm.ClosingDate = vacancy.ClosingDate?.AsGdsDate();
             vm.EmployerDescription = vacancy.EmployerDescription;
-            vm.EmployerName = await _vacancyClient.GetEmployerName(vacancy.Id);
+            vm.EmployerName = await _vacancyClient.GetEmployerNameAsync(vacancy);
             vm.EmployerWebsiteUrl = vacancy.EmployerWebsiteUrl;
             vm.EmployerAddressElements = Enumerable.Empty<string>();
             vm.FindAnApprenticeshipUrl = _externalLinksConfiguration.FindAnApprenticeshipUrl;
@@ -71,21 +70,12 @@ namespace Esfa.Recruit.Provider.Web.Mappings
                                         ? $"VAC{vacancy.VacancyReference.ToString()}"
                                         : string.Empty;
             vm.IsDisabilityConfident = vacancy.IsDisabilityConfident;
+
             if (vacancy.EmployerLocation != null)
             {
-                vm.MapUrl = vacancy.EmployerLocation.HasGeocode
-                    ? _mapService.GetMapImageUrl(vacancy.EmployerLocation.Latitude.ToString(),
-                        vacancy.EmployerLocation.Longitude.ToString(), MapImageWidth, MapImageHeight)
-                    : _mapService.GetMapImageUrl(vacancy.EmployerLocation.Postcode, MapImageWidth, MapImageHeight);
-                vm.EmployerAddressElements = new[]
-                {
-                    vacancy.EmployerLocation.AddressLine1,
-                    vacancy.EmployerLocation.AddressLine2,
-                    vacancy.EmployerLocation.AddressLine3,
-                    vacancy.EmployerLocation.AddressLine4,
-                    vacancy.EmployerLocation.Postcode
-                }
-                .Where(x => !string.IsNullOrEmpty(x));
+                vm.MapUrl = MapImageHelper.GetEmployerLocationMapUrl(vacancy, _mapService, MapImageWidth, MapImageHeight);
+
+                vm.EmployerAddressElements = vacancy.EmployerAddressForDisplay();
             }
 
             if (vacancy.ProgrammeId != null)

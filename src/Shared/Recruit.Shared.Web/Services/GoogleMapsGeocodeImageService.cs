@@ -7,6 +7,8 @@ namespace Esfa.Recruit.Shared.Web.Services
 {
     public class GoogleMapsGeocodeImageService : IGeocodeImageService
     {
+        private const string MapTypeMarkers = "markers";
+        private const string MapTypeCenter = "center";
 
         private string _privateKey { get; set; }
 
@@ -15,26 +17,30 @@ namespace Esfa.Recruit.Shared.Web.Services
             _privateKey = privateKey;
         }
 
-        public string GetMapImageUrl(string postcode, int imageWidth, int imageHeight)
+        public string GetMapImageUrl(string postcode, int imageWidth, int imageHeight, bool showMarker)
         {
             if (string.IsNullOrWhiteSpace(postcode))
             {
                 return null;
             }
+
+            var mapType = showMarker ? MapTypeMarkers : MapTypeCenter;
             
-            var staticMapsUrl = $"https://maps.googleapis.com/maps/api/staticmap?markers={WebUtility.UrlEncode(postcode)}&size={imageWidth}x{imageHeight}&zoom=12";
+            var staticMapsUrl = $"https://maps.googleapis.com/maps/api/staticmap?{mapType}={WebUtility.UrlEncode(postcode)},UK&size={imageWidth}x{imageHeight}&zoom=12";
             var url = SignUrl(staticMapsUrl);
             return url;
         }
 
-        public string GetMapImageUrl(string latitude, string longitude, int imageWidth, int imageHeight)
+        public string GetMapImageUrl(string latitude, string longitude, int imageWidth, int imageHeight, bool showMarker)
         {
             if (string.IsNullOrWhiteSpace(latitude) || string.IsNullOrWhiteSpace(longitude))
             {
                 return null;
             }
 
-            var staticMapsUrl = $"https://maps.googleapis.com/maps/api/staticmap?markers={latitude},{longitude}&size={imageWidth}x{imageHeight}&zoom=12";
+            var mapType = showMarker ? MapTypeMarkers : MapTypeCenter;
+
+            var staticMapsUrl = $"https://maps.googleapis.com/maps/api/staticmap?{mapType}={latitude},{longitude}&size={imageWidth}x{imageHeight}&zoom=12";
             var url = SignUrl(staticMapsUrl);
             return url;
         }

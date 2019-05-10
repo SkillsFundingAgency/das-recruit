@@ -1,16 +1,14 @@
-using System;
-using Esfa.Recruit.Vacancies.Client.Application.Services;
+using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using FluentAssertions;
 using Moq;
 using Xunit;
 
-namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
+namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services.EmployerService
 {
-    public class EmployerNameServiceTest
+    public class GetEmployerNameTests
     {
-        private Mock<IVacancyRepository> _mockVacancyRepository = new Mock<IVacancyRepository>();
         private Mock<IEmployerProfileRepository> _mockEmployerProfileRepository = new Mock<IEmployerProfileRepository>();
 
         [Theory]
@@ -18,7 +16,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
         [InlineData(VacancyStatus.Submitted)]
         [InlineData(VacancyStatus.Approved)]
         [InlineData(VacancyStatus.Closed)]
-        public void ShouldReturnVacancyEmployerName(VacancyStatus status)
+        public async Task GetEmployerNameAsync_ShouldReturnVacancyEmployerName(VacancyStatus status)
         {
             var employerName = "Employer Name";
             var vacancy = new Vacancy()
@@ -26,11 +24,10 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
                 Status = status,
                 EmployerName = employerName
             };
-            _mockVacancyRepository.Setup(vr => vr.GetVacancyAsync(It.IsAny<Guid>())).ReturnsAsync(vacancy);
-
+            
             var sut = GetSut();
 
-            var result = sut.GetEmployerNameAsync(Guid.NewGuid()).Result;
+            var result = await sut.GetEmployerNameAsync(vacancy);
 
             result.Should().Be(employerName);
         }
@@ -38,7 +35,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
         [Theory]
         [InlineData(VacancyStatus.Draft)]
         [InlineData(VacancyStatus.Referred)]
-        public void ShouldReturnVacancyLegalEntityName(VacancyStatus status)
+        public async Task GetEmployerNameAsync_ShouldReturnVacancyLegalEntityName(VacancyStatus status)
         {
             var employerName = "Employer Name";
             var legalEntityName = "Legal Entity Name";
@@ -49,11 +46,10 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
                 LegalEntityName = legalEntityName,
                 EmployerNameOption = EmployerNameOption.RegisteredName
             };
-            _mockVacancyRepository.Setup(vr => vr.GetVacancyAsync(It.IsAny<Guid>())).ReturnsAsync(vacancy);
 
             var sut = GetSut();
 
-            var result = sut.GetEmployerNameAsync(Guid.NewGuid()).Result;
+            var result = await sut.GetEmployerNameAsync(vacancy);
 
             result.Should().Be(legalEntityName);
         }
@@ -61,7 +57,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
         [Theory]
         [InlineData(VacancyStatus.Draft)]
         [InlineData(VacancyStatus.Referred)]
-        public void ShouldReturnTradingName(VacancyStatus status)
+        public async Task GetEmployerNameAsync_ShouldReturnTradingName(VacancyStatus status)
         {
             var employerName = "Employer Name";
             var legalEntityName = "Legal Entity Name";
@@ -78,19 +74,38 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
             {
                 TradingName = tradingName
             };
-            _mockVacancyRepository.Setup(vr => vr.GetVacancyAsync(It.IsAny<Guid>())).ReturnsAsync(vacancy);
+            
             _mockEmployerProfileRepository.Setup(pr => pr.GetAsync(It.IsAny<string>(), It.IsAny<long>())).ReturnsAsync(profile);
 
             var sut = GetSut();
 
-            var result = sut.GetEmployerNameAsync(Guid.NewGuid()).Result;
+            var result = await sut.GetEmployerNameAsync(vacancy);
 
             result.Should().Be(tradingName);
         }
 
-        private EmployerNameService GetSut()
+        [Theory]
+        [InlineData(VacancyStatus.Draft)]
+        [InlineData(VacancyStatus.Referred)]
+        public async Task GetEmployerNameAsync_ShouldReturnVacancyEmployerNameForAnonymous(VacancyStatus status)
         {
-            return new EmployerNameService(_mockVacancyRepository.Object, _mockEmployerProfileRepository.Object);
-        } 
+            var employerName = "Employer Name";
+            var vacancy = new Vacancy() {
+                Status = status,
+                EmployerName = employerName,
+                EmployerNameOption = EmployerNameOption.Anonymous
+            };
+
+            var sut = GetSut();
+
+            var result = await sut.GetEmployerNameAsync(vacancy);
+
+            result.Should().Be(employerName);
+        }
+
+        private Recruit.Vacancies.Client.Application.Services.EmployerService GetSut()
+        {
+            return new Recruit.Vacancies.Client.Application.Services.EmployerService(_mockEmployerProfileRepository.Object);
+        }
     }
 }
