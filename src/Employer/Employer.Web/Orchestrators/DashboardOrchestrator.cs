@@ -18,7 +18,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
     public class DashboardOrchestrator
     {
         private const int VacanciesPerPage = 25;
-       private readonly ITimeProvider _timeProvider;
+        private readonly ITimeProvider _timeProvider;
         private const int ClosingSoonDays = 5;
         private readonly IEmployerVacancyClient _vacancyClient;
 
