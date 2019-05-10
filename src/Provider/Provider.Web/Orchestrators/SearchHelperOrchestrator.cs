@@ -25,7 +25,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
             var data = vacancies
                 .Select(v => v.Title)
-                .Where(v => v.StartsWith(term, StringComparison.OrdinalIgnoreCase))
+                .Where(v => v.Contains(term, StringComparison.OrdinalIgnoreCase))
                 .Take(maxCount);
 
             if (data.Count() < maxCount)
@@ -34,7 +34,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                     vacancies
                         .Where(v => string.IsNullOrWhiteSpace(v.EmployerName) == false)
                         .Select(v => v.EmployerName)
-                        .Where(v => v.StartsWith(term, StringComparison.OrdinalIgnoreCase))
+                        .Where(v => v.Contains(term, StringComparison.OrdinalIgnoreCase))
                         .Take(maxCount));
             }
 

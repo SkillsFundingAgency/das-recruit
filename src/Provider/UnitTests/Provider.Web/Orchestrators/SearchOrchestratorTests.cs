@@ -21,13 +21,13 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators
         private VacancySummary[] _testVacancies = new[] 
         {
             new VacancySummary(){Title="The quick brown", EmployerName="20th Century Fox", VacancyReference=1000000101},
-            new VacancySummary(){Title="fox jumped over", EmployerName="20th Century Fox", CreatedDate=DateTime.Now.AddDays(-1), VacancyReference=1000000102},
-            new VacancySummary(){Title="the lazy dog", EmployerName="Black & Brown Ltd", VacancyReference=1000000103},
+            new VacancySummary(){Title="fox jumped over", EmployerName="20th Century Fox", VacancyReference=1000000102},
+            new VacancySummary(){Title="the lazy dog", EmployerName="Black & Brown Ltd", CreatedDate=DateTime.Now, VacancyReference=1000000103},
             new VacancySummary(){Title="The quick brown", EmployerName="Black & Brown Ltd", VacancyReference=1000000104},
-            new VacancySummary(){Title="the lazy fox", EmployerName="Black & Brown Ltd", VacancyReference=1000000105},
-            new VacancySummary(){Title="fox is brown", EmployerName=null, VacancyReference=1000000106, CreatedDate=DateTime.Now.AddDays(-2)},
-            new VacancySummary(){Title="The quick brown fox", EmployerName="Fox 20th Century", CreatedDate=DateTime.Now, VacancyReference=1000000107},
-            new VacancySummary(){Title="white is new orange", EmployerName="The quick Brown", VacancyReference=1000000108}
+            new VacancySummary(){Title="the lazy fox", EmployerName="Black & Brown Ltd", CreatedDate=DateTime.Now.AddDays(-1), VacancyReference=1000000105},
+            new VacancySummary(){Title="fox is brown", EmployerName=null, VacancyReference=1000000106},
+            new VacancySummary(){Title="The quick brown fox", EmployerName="Fox 20th Century", VacancyReference=1000000107},
+            new VacancySummary(){Title="in this century", EmployerName="The quick Brown", VacancyReference=1000000108}
         };
 
         [Fact]
@@ -49,32 +49,34 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators
         {
             var orch = GetSut(_testVacancies);
             var result = orch.GetAutoCompleteListAsync("fox", Ukprn).Result;
-            result.Count().Should().Be(3);
+            result.Count().Should().Be(6);
             result.Any(s => s.Equals("fox jumped over")).Should().BeTrue();
             result.Any(s => s.Equals("fox is brown")).Should().BeTrue();
             result.Any(s => s.Equals("Fox 20th Century")).Should().BeTrue();
+            result.Any(s => s.Equals("20th Century Fox")).Should().BeTrue();
+            result.Any(s => s.Equals("the lazy fox")).Should().BeTrue();
+            result.Any(s => s.Equals("The quick brown fox")).Should().BeTrue();
         }
 
         [Fact]
         public void ShouldListLatestOnTop()
         {
             var orch = GetSut(_testVacancies);
-            var result = orch.GetAutoCompleteListAsync("fox", Ukprn).Result;
-            result.Count().Should().Be(3);
-            result.First().Should().Contain("fox jumped over");
-            result.Skip(1).Take(1).Should().Contain("fox is brown");
-            result.Last().Should().Contain("Fox 20th Century");
+            var result = orch.GetAutoCompleteListAsync("lazy", Ukprn).Result;
+            result.Count().Should().Be(2);
+            result.First().Should().Contain("the lazy dog");
+            result.Last().Should().Contain("the lazy fox");
         }
 
         [Fact]
-        public void ShouldOnlyMatchTitleAndNameThatStartsWithSearchTerm()
+        public void ShouldMatchTitleAndNameThatContainsTheSearchTerm()
         {
             var orch = GetSut(_testVacancies);
-            var result = orch.GetAutoCompleteListAsync("fox", Ukprn).Result;
+            var result = orch.GetAutoCompleteListAsync("century", Ukprn).Result;
             result.Count().Should().Be(3);
-            result.First().Should().Contain("fox jumped over");
-            result.Skip(1).Take(1).Should().Contain("fox is brown");
-            result.Last().Should().Contain("Fox 20th Century");
+            result.Any(s => s.Equals("Fox 20th Century")).Should().BeTrue();
+            result.Any(s => s.Equals("20th Century Fox")).Should().BeTrue();
+            result.Any(s => s.Equals("in this century")).Should().BeTrue();
         }
 
         [Fact]

@@ -120,10 +120,10 @@ namespace Esfa.Recruit.Employer.Web.Configuration
         private static void RegisterDynamicConfigurationDeps(IServiceCollection services)
         {
             services.AddSingleton(x => 
-                                                            {
-                                                                var svc = x.GetService<IConfigurationReader>();
-                                                                return svc.GetAsync<EmployerRecruitSystemConfiguration>("EmployerRecruitSystem").Result;
-                                                            });
+            {
+                var svc = x.GetService<IConfigurationReader>();
+                return svc.GetAsync<EmployerRecruitSystemConfiguration>("EmployerRecruitSystem").Result;
+            });
         }
     }
 }
