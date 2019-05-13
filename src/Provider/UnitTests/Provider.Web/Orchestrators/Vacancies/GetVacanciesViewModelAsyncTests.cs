@@ -38,10 +38,10 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Vacancies
 
             var orch = new VacanciesOrchestrator(clientMock.Object, timeProviderMock.Object);
 
-            var vm = await orch.GetVacanciesViewModelAsync(ukprn, "Submitted", 2);
+            var vm = await orch.GetVacanciesViewModelAsync(ukprn, "Submitted", 2, string.Empty);
 
             vm.ShowResultsTable.Should().BeTrue();
-            vm.HasVacancies.Should().BeTrue();
+            vm.HasAnyVacancies.Should().BeTrue();
             
             vm.Pager.ShowPager.Should().BeTrue();
 
@@ -73,10 +73,10 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Vacancies
 
             var orch = new VacanciesOrchestrator(clientMock.Object, timeProviderMock.Object);
 
-            var vm = await orch.GetVacanciesViewModelAsync(ukprn, "Submitted", 2);
+            var vm = await orch.GetVacanciesViewModelAsync(ukprn, "Submitted", 2, string.Empty);
 
             vm.ShowResultsTable.Should().BeTrue();
-            vm.HasVacancies.Should().BeTrue();
+            vm.HasAnyVacancies.Should().BeTrue();
 
             vm.Pager.ShowPager.Should().BeFalse();
 
