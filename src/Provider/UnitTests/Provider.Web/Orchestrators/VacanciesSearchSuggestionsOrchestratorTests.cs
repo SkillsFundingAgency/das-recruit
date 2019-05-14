@@ -13,7 +13,7 @@ using System.Text.RegularExpressions;
 
 namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators
 {
-    public class SearchOrchestratorTests
+    public class VacanciesSearchSuggestionsOrchestratorTests
     {
         private readonly Mock<IProviderVacancyClient> _mockClient = new Mock<IProviderVacancyClient>();
         const long Ukprn = 1234;
@@ -101,7 +101,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators
             var searchTerm = "fox";
             var orch = GetSut(GenerateVacancySummaries(100, employerName, searchTerm));
             var result = await orch.GetAutoCompleteListAsync(searchTerm, Ukprn);
-            result.Count().Should().Be(SearchHelperOrchestrator.MaxRowsInResult);
+            result.Count().Should().Be(VacanciesSearchSuggestionsOrchestrator.MaxRowsInResult);
             result.Any(s => s.Equals(employerName)).Should().BeFalse();
         }
 
@@ -111,7 +111,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators
             var employerName = "Exotic Vacations limited";
             var orch = GetSut(GenerateVacancySummaries(100, employerName, "vac"));
             var result = await orch.GetAutoCompleteListAsync("vac1", Ukprn);
-            result.Count().Should().Be(SearchHelperOrchestrator.MaxRowsInResult);
+            result.Count().Should().Be(VacanciesSearchSuggestionsOrchestrator.MaxRowsInResult);
             result.Any(s => s.Equals(employerName)).Should().BeFalse();
             result.All(s => Regex.IsMatch(s, VacancyReferenceRegex)).Should().BeTrue();
             result.First().Should().Be("VAC1000000151");
@@ -123,11 +123,11 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators
         {
             var orch = GetSut(GenerateVacancySummaries(20, "vac", "vac"));
             var result = await orch.GetAutoCompleteListAsync("vac", Ukprn);
-            result.Count().Should().Be(SearchHelperOrchestrator.MaxRowsInResult);
+            result.Count().Should().Be(VacanciesSearchSuggestionsOrchestrator.MaxRowsInResult);
             result.Count(c => Regex.IsMatch(c, VacancyReferenceRegex)).Should().Be(10);
         }
 
-        private SearchHelperOrchestrator GetSut(IEnumerable<VacancySummary> vacancies)
+        private VacanciesSearchSuggestionsOrchestrator GetSut(IEnumerable<VacancySummary> vacancies)
         {
             var dashboard = new ProviderDashboard()
             {
@@ -135,7 +135,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators
             };
             
             _mockClient.Setup(c => c.GetDashboardAsync(It.IsAny<long>())).ReturnsAsync(dashboard);
-            return new SearchHelperOrchestrator(_mockClient.Object);
+            return new VacanciesSearchSuggestionsOrchestrator(_mockClient.Object);
         }
 
         private IEnumerable<VacancySummary> GenerateVacancySummaries(int count, string employerName, string term)

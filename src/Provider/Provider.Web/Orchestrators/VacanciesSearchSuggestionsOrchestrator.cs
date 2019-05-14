@@ -7,13 +7,13 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators
 {
-    public class SearchHelperOrchestrator
+    public class VacanciesSearchSuggestionsOrchestrator
     {
         public const int MaxRowsInResult = 50;
 
         private readonly IProviderVacancyClient _providerVacancyClient;
 
-        public SearchHelperOrchestrator(IProviderVacancyClient providerVacancyClient)
+        public VacanciesSearchSuggestionsOrchestrator(IProviderVacancyClient providerVacancyClient)
         {
             _providerVacancyClient = providerVacancyClient;
         }

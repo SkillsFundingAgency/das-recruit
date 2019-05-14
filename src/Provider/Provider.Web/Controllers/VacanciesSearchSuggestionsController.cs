@@ -7,10 +7,10 @@ using Esfa.Recruit.Provider.Web.RouteModel;
 namespace Esfa.Recruit.Provider.Web.Controllers
 {
     [Route(RoutePaths.AccountRoutePath)]
-    public class SearchHelperController : Controller
+    public class VacanciesSearchSuggestionsController : Controller
     {
-        private readonly SearchHelperOrchestrator _orchestrator;
-        public SearchHelperController(SearchHelperOrchestrator orchestrator)
+        private readonly VacanciesSearchSuggestionsOrchestrator _orchestrator;
+        public VacanciesSearchSuggestionsController(VacanciesSearchSuggestionsOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
         }
