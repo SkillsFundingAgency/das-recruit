@@ -1,4 +1,5 @@
 using Esfa.Recruit.Employer.Web.Configuration;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Razor;
@@ -30,6 +31,9 @@ namespace Esfa.Recruit.Employer.Web
         {
             services.AddIoC(_configuration);
 
+            var serviceProvider = services.BuildServiceProvider();
+            var featureToggle = serviceProvider.GetService<IFeature>();
+
             // Routing has to come before adding Mvc
             services.AddRouting(opt =>
             {
@@ -42,7 +46,7 @@ namespace Esfa.Recruit.Employer.Web
                 o.ViewLocationFormats.Add("/Views/Part2/{1}/{0}" + RazorViewEngine.ViewExtension);
             });
 
-            services.AddMvcService(_hostingEnvironment, _isAuthEnabled, _loggerFactory);
+            services.AddMvcService(_hostingEnvironment, _isAuthEnabled, _loggerFactory, featureToggle);
 
             services.AddApplicationInsightsTelemetry(_configuration);
 

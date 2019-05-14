@@ -20,6 +20,7 @@ using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Shared.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Filters;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Employer.Web.Configuration
@@ -43,7 +44,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddTransient<IAuthorizationHandler, EmployerAccountHandler>();
         }
 
-        public static void AddMvcService(this IServiceCollection services, IHostingEnvironment hostingEnvironment, bool isAuthEnabled, ILoggerFactory loggerFactory)
+        public static void AddMvcService(this IServiceCollection services, IHostingEnvironment hostingEnvironment, bool isAuthEnabled, ILoggerFactory loggerFactory, IFeature featureToggle)
         {
             services.AddAntiforgery(options =>
             {
@@ -78,8 +79,11 @@ namespace Esfa.Recruit.Employer.Web.Configuration
 
                 opts.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
 
-                opts.Filters.Add(typeof(LevyDeclarationCheckFilter), 50);
-
+                if (featureToggle.IsFeatureEnabled(FeatureNames.AllowLevyPayingEmployersOnly))
+                {
+                    opts.Filters.Add(typeof(LevyDeclarationCheckFilter), 50);
+                }
+                
                 if (EnvironmentNames.IsProductionEnvironment(hostingEnvironment))
                 {
                     opts.Filters.AddService<CheckEmployerBlockedFilter>();

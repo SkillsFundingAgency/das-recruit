@@ -63,7 +63,7 @@
     },
     "Features": {
       "value": {
-        "AllowThroughFaaApplicationMethod": false
+        "AllowLevyPayingEmployersOnly" : true
       }
     },
     "LoggingRedisConnectionString": {
