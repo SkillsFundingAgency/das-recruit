@@ -25,10 +25,10 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             [FromQuery] string filter, [FromQuery] int page = 1, [FromQuery] string searchTerm = "")
         {
             if (string.IsNullOrWhiteSpace(filter) && string.IsNullOrWhiteSpace(searchTerm))
-                TryGetFilters(out filter, out searchTerm);
+                TryGetFiltersFromCookie(out filter, out searchTerm);
             
             if(string.IsNullOrWhiteSpace(filter) == false || string.IsNullOrWhiteSpace(searchTerm) == false)
-                SetFilters(filter, searchTerm);
+                SaveFiltersInCookie(filter, searchTerm);
 
             var vm = await _orchestrator.GetVacanciesViewModelAsync(User.GetUkprn(), filter, page, searchTerm);
             if (TempData.ContainsKey(TempDataKeys.VacanciesErrorMessage))
@@ -40,13 +40,13 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             return View(vm);
         }
 
-        private void SetFilters(string filter, string search)
+        private void SaveFiltersInCookie(string filter, string search)
         {
             var value = $"filter:{filter}||search:{search}";
             Response.Cookies.SetSessionCookie(_hostingEnvironment, CookieNames.VacanciesFilter, value);
         }
 
-        private void TryGetFilters(out string filter, out string search)
+        private void TryGetFiltersFromCookie(out string filter, out string search)
         {
             filter = string.Empty;
             search = string.Empty;
