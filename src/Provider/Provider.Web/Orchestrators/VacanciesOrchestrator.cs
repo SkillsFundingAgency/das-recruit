@@ -57,7 +57,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 RouteNames.Vacancies_Get,
                 new Dictionary<string, string>
                 {
-                    {"filter", filteringOption.ToString()}
+                    {"filter", filteringOption.ToString()},
+                    {"searchTerm", searchTerm}
                 });
             
             var vm = new VacanciesViewModel 
