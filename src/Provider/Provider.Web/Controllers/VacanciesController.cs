@@ -5,6 +5,7 @@ using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace Esfa.Recruit.Provider.Web.Controllers
 {
@@ -42,7 +43,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
         private void SaveFiltersInCookie(string filter, string search)
         {
-            var value = $"filter:{filter}||search:{search}";
+            var value = JsonConvert.SerializeObject(new FilterCookie(filter, search));
             Response.Cookies.SetSessionCookie(_hostingEnvironment, CookieNames.VacanciesFilter, value);
         }
 
@@ -52,10 +53,23 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             search = string.Empty;
             var cookieValue = Request.Cookies.GetCookie(CookieNames.VacanciesFilter);
             if(string.IsNullOrWhiteSpace(cookieValue)) return;
-            var values = cookieValue.Split("||");
-            if (values.Length != 2) return;
-            filter = values[0].Replace("filter:", "");
-            search = values[1].Replace("search:", "");
+            var values = JsonConvert.DeserializeObject<FilterCookie>(cookieValue);
+            filter = values.Filter;
+            search = values.SearchTerm;
+        }
+
+        class FilterCookie
+        {
+            public string Filter { get; set; }
+            public string SearchTerm { get; set; }
+            public FilterCookie(){}
+            public FilterCookie(string filter, string searchTerm)
+            {
+                Filter = filter;
+                SearchTerm = searchTerm;
+            }
         }
     }
+
+
 }
