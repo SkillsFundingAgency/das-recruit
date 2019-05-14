@@ -13,9 +13,8 @@ var searchSuggestions = function () {
     }
 
     var getSearchAutocompleteData = function(request, response) {
-        var url = endpointUrl + "?term=" + encodeURIComponent(request.term);
-        console.log(url);
-        $.getJSON(url, function(data) { 
+        var params = {term: request.term};
+        $.getJSON(endpointUrl, params, function(data) { 
             response(data);
         });
     };
