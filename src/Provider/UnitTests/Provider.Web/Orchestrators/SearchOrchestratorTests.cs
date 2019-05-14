@@ -18,6 +18,8 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators
         private readonly Mock<IProviderVacancyClient> _mockClient = new Mock<IProviderVacancyClient>();
         const long Ukprn = 1234;
 
+        const string VacancyReferenceRegex = @"^VAC\d{10}$";
+
         private VacancySummary[] _testVacancies = new[] 
         {
             new VacancySummary(){Title="The quick brown", EmployerName="20th Century Fox", VacancyReference=1000000101},
@@ -27,7 +29,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators
             new VacancySummary(){Title="the lazy fox", EmployerName="Black & Brown Ltd", CreatedDate=DateTime.Now.AddDays(-1), VacancyReference=1000000105},
             new VacancySummary(){Title="fox is brown", EmployerName=null, VacancyReference=1000000106},
             new VacancySummary(){Title="The quick brown fox", EmployerName="Fox 20th Century", VacancyReference=1000000107},
-            new VacancySummary(){Title="in this century", EmployerName="The quick Brown", VacancyReference=1000000108}
+            new VacancySummary(){Title="in this century", EmployerName="The quick Brown ltd", VacancyReference=1000000108}
         };
 
         [Fact]
@@ -84,9 +86,10 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators
         {
             var orch = GetSut(_testVacancies);
             var result = orch.GetAutoCompleteListAsync("the quick", Ukprn).Result;
-            result.Count().Should().Be(2);
+            result.Count().Should().Be(3);
             result.Any(s => s.Equals("The quick brown")).Should().BeTrue();
             result.Any(s => s.Equals("The quick brown fox")).Should().BeTrue();
+            result.Any(s => s.Equals("The quick Brown ltd")).Should().BeTrue();
         }
         
         [Fact]
@@ -96,22 +99,30 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators
             var searchTerm = "fox";
             var orch = GetSut(GenerateVacancySummaries(100, employerName, searchTerm));
             var result = orch.GetAutoCompleteListAsync(searchTerm, Ukprn).Result;
-            result.Count().Should().Be(50);
+            result.Count().Should().Be(SearchHelperOrchestrator.MaxRowsInResult);
             result.Any(s => s.Equals(employerName)).Should().BeFalse();
         }
 
         [Fact]
         public void WhenTermMatchesVacancyReference_ThenListVacancyReferences()
-        {
-            var regex = @"^VAC\d{10}$";
+        {            
             var employerName = "Exotic Vacations limited";
             var orch = GetSut(GenerateVacancySummaries(100, employerName, "vac"));
             var result = orch.GetAutoCompleteListAsync("vac1", Ukprn).Result;
-            result.Count().Should().Be(50);
+            result.Count().Should().Be(SearchHelperOrchestrator.MaxRowsInResult);
             result.Any(s => s.Equals(employerName)).Should().BeFalse();
-            result.All(s => Regex.IsMatch(s, regex)).Should().BeTrue();
+            result.All(s => Regex.IsMatch(s, VacancyReferenceRegex)).Should().BeTrue();
             result.First().Should().Be("VAC1000000151");
             result.Last().Should().Be("VAC1000000200");
+        }
+
+        [Fact]
+        public void WhenTermMatchesTitleAndName_ThenReturnMaxAllowedRowsOnly()
+        {
+            var orch = GetSut(GenerateVacancySummaries(20, "vac", "vac"));
+            var result = orch.GetAutoCompleteListAsync("vac", Ukprn).Result;
+            result.Count().Should().Be(SearchHelperOrchestrator.MaxRowsInResult);
+            result.Count(c => Regex.IsMatch(c, VacancyReferenceRegex)).Should().Be(10);
         }
 
         private SearchHelperOrchestrator GetSut(IEnumerable<VacancySummary> vacancies)
@@ -130,9 +141,9 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators
             return Enumerable.Range(1, count)
                 .Select(r => new VacancySummary() 
                 { 
-                    Title = $"{term}  {Guid.NewGuid()}", 
-                    EmployerName = employerName, VacancyReference = 1000000100 + r,
-                    CreatedDate = DateTime.Now 
+                    Title = $"{term} {Guid.NewGuid()}",
+                    EmployerName = $"{employerName} {Guid.NewGuid()}", VacancyReference = 1000000100 + r,
+                    CreatedDate = DateTime.Now.AddSeconds(r) 
                 });
         }
     }

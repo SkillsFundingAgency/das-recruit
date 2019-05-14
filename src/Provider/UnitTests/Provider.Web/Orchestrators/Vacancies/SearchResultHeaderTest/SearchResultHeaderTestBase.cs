@@ -27,13 +27,15 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies.SearchResu
         protected IEnumerable<VacancySummary> GenerateVacancySummaries(int count, string employerName, string term)
         {
             return Enumerable.Range(1, count)
-                .Select(r => new VacancySummary() 
-                { 
-                    Title = $"{term}  {Guid.NewGuid()}", 
-                    Status = VacancyStatus.Live,
-                    EmployerName = employerName, VacancyReference = 1000000100 + r,
-                    CreatedDate = DateTime.Now 
-                });
+                .Select(r =>
+                    new VacancySummary()
+                    {
+                        Title = $"{term}  {Guid.NewGuid()}",
+                        Status = VacancyStatus.Live,
+                        EmployerName = employerName,
+                        VacancyReference = 1000000100 + r,
+                        CreatedDate = DateTime.Now
+                    });
         }
     }
 }
