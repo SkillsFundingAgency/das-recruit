@@ -15,7 +15,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             _orchestrator = orchestrator;
         }
 
-        [HttpGet("search-helper")]
+        [HttpGet("search-helper", Name = RouteNames.SearchHelper_Get)]
         public async Task<JsonResult> GetAutoCompleteList([FromQuery]string term, VacancyRouteModel model)
         {    
             var data = await _orchestrator.GetAutoCompleteListAsync(term, model.Ukprn);

@@ -1,6 +1,7 @@
 ﻿@using Esfa.Recruit.Vacancies.Client.Domain.Entities
 @model VacanciesViewModel
 @{
+    var dashboardSearchEndpointPrefixUrl = @Url.RouteUrl(RouteNames.SearchHelper_Get, new { term = "" }, Context.Request.Scheme);
     string GetLinkText(VacancySummaryViewModel vacancySummary)
     {
         switch (vacancySummary.Status)
@@ -148,8 +149,11 @@
 @section FooterJS
 {
     <script src="/lib/jquery-ui/dist/jquery-ui.min.js"></script>
+    <script asp-append-version="true" src="/lib/esfa-search-suggestions/searchSuggestionsService.js"></script>
+
     <script nws-csp-add-nonce="true">
         var filterId = "#@Html.IdFor(m => m.Filter)";
+        var dashboardFilterEndpointPrefix = "@dashboardSearchEndpointPrefixUrl";
         $(function() {
             $("#search-submit-button").removeClass('js-hidden');
             $("#filter-submit").addClass('js-hidden');
@@ -162,23 +166,6 @@
                 });
         });
 
-        var getData = function(request, response) {
-            var url = "/" + window.location.pathname.slice(1,9) + "/search-helper?term=" + $("#search-input").val();
-            $.getJSON(url, function(data) { 
-                response(data);
-            });
-        };
-
-        var selectItem = function (event, ui) {
-            $("#search-input").val(ui.item.value);
-            return false;
-        }
-
-        $("#search-input").autocomplete({
-            source: getData,
-            select: selectItem,
-            minLength: 3
-        });
-        
+        searchSuggestions.init("#search-input", dashboardFilterEndpointPrefix);
     </script>
 }

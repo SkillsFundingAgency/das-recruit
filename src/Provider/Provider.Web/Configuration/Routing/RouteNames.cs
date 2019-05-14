@@ -80,6 +80,7 @@
         public const string ApplicationReview_Post = "ApplicationReview_Post";
         public const string ApplicationReviewConfirmation_Get = "ApplicationReviewConfirmation_Get";
         public const string ApplicationReviewConfirmation_Post = "ApplicationReviewConfirmation_Post";
-        public const string Dashboard_Get = "Dashboard_Get";        
+        public const string Dashboard_Get = "Dashboard_Get";
+        public const string SearchHelper_Get = "SearchHelper_Get";
     }
 }
