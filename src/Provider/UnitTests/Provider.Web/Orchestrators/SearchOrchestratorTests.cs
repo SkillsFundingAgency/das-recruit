@@ -33,24 +33,26 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators
         };
 
         [Fact]
-        public void WhenTermIsTiny_ThenReturnEmptyList()
+        public async Task WhenTermIsTiny_ThenReturnEmptyList()
         {
             var orch = GetSut(_testVacancies);
-            orch.GetAutoCompleteListAsync("x", Ukprn).Result.Any().Should().BeFalse();
+            var result = await orch.GetAutoCompleteListAsync("x", Ukprn); 
+            result.Any().Should().BeFalse();
         }
 
         [Fact]
-        public void WhenTermHasNoMatch_ThenReturnEmptyList()
+        public async Task WhenTermHasNoMatch_ThenReturnEmptyList()
         {
             var orch = GetSut(_testVacancies);
-            orch.GetAutoCompleteListAsync("xxx", Ukprn).Result.Any().Should().BeFalse();
+            var result = await orch.GetAutoCompleteListAsync("xxx", Ukprn);
+            result.Any().Should().BeFalse();
         }
 
         [Fact]
-        public void ShouldIgnoreNullEmployerName()
+        public async Task ShouldIgnoreNullEmployerName()
         {
             var orch = GetSut(_testVacancies);
-            var result = orch.GetAutoCompleteListAsync("fox", Ukprn).Result;
+            var result = await orch.GetAutoCompleteListAsync("fox", Ukprn);
             result.Count().Should().Be(6);
             result.Any(s => s.Equals("fox jumped over")).Should().BeTrue();
             result.Any(s => s.Equals("fox is brown")).Should().BeTrue();
@@ -61,20 +63,20 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators
         }
 
         [Fact]
-        public void ShouldListLatestOnTop()
+        public async Task ShouldListLatestOnTop()
         {
             var orch = GetSut(_testVacancies);
-            var result = orch.GetAutoCompleteListAsync("lazy", Ukprn).Result;
+            var result = await orch.GetAutoCompleteListAsync("lazy", Ukprn);
             result.Count().Should().Be(2);
             result.First().Should().Contain("the lazy dog");
             result.Last().Should().Contain("the lazy fox");
         }
 
         [Fact]
-        public void ShouldMatchTitleAndNameThatContainsTheSearchTerm()
+        public async Task ShouldMatchTitleAndNameThatContainsTheSearchTerm()
         {
             var orch = GetSut(_testVacancies);
-            var result = orch.GetAutoCompleteListAsync("century", Ukprn).Result;
+            var result = await orch.GetAutoCompleteListAsync("century", Ukprn);
             result.Count().Should().Be(3);
             result.Any(s => s.Equals("Fox 20th Century")).Should().BeTrue();
             result.Any(s => s.Equals("20th Century Fox")).Should().BeTrue();
@@ -82,10 +84,10 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators
         }
 
         [Fact]
-        public void ShouldReturnDistinctMatchingTitleAndNameList()
+        public async Task ShouldReturnDistinctMatchingTitleAndNameList()
         {
             var orch = GetSut(_testVacancies);
-            var result = orch.GetAutoCompleteListAsync("the quick", Ukprn).Result;
+            var result = await orch.GetAutoCompleteListAsync("the quick", Ukprn);
             result.Count().Should().Be(3);
             result.Any(s => s.Equals("The quick brown")).Should().BeTrue();
             result.Any(s => s.Equals("The quick brown fox")).Should().BeTrue();
@@ -93,22 +95,22 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators
         }
         
         [Fact]
-        public void WhenTermMatchesMoreThan50Title_ThenEmployerNameWillBeFilteredOut()
+        public async Task WhenTermMatchesMoreThan50Title_ThenEmployerNameWillBeFilteredOut()
         {
             var employerName = "20th Century Fox";
             var searchTerm = "fox";
             var orch = GetSut(GenerateVacancySummaries(100, employerName, searchTerm));
-            var result = orch.GetAutoCompleteListAsync(searchTerm, Ukprn).Result;
+            var result = await orch.GetAutoCompleteListAsync(searchTerm, Ukprn);
             result.Count().Should().Be(SearchHelperOrchestrator.MaxRowsInResult);
             result.Any(s => s.Equals(employerName)).Should().BeFalse();
         }
 
         [Fact]
-        public void WhenTermMatchesVacancyReference_ThenListVacancyReferences()
+        public async Task WhenTermMatchesVacancyReference_ThenListVacancyReferences()
         {            
             var employerName = "Exotic Vacations limited";
             var orch = GetSut(GenerateVacancySummaries(100, employerName, "vac"));
-            var result = orch.GetAutoCompleteListAsync("vac1", Ukprn).Result;
+            var result = await orch.GetAutoCompleteListAsync("vac1", Ukprn);
             result.Count().Should().Be(SearchHelperOrchestrator.MaxRowsInResult);
             result.Any(s => s.Equals(employerName)).Should().BeFalse();
             result.All(s => Regex.IsMatch(s, VacancyReferenceRegex)).Should().BeTrue();
@@ -117,10 +119,10 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators
         }
 
         [Fact]
-        public void WhenTermMatchesTitleAndName_ThenReturnMaxAllowedRowsOnly()
+        public async Task WhenTermMatchesTitleAndName_ThenReturnMaxAllowedRowsOnly()
         {
             var orch = GetSut(GenerateVacancySummaries(20, "vac", "vac"));
-            var result = orch.GetAutoCompleteListAsync("vac", Ukprn).Result;
+            var result = await orch.GetAutoCompleteListAsync("vac", Ukprn);
             result.Count().Should().Be(SearchHelperOrchestrator.MaxRowsInResult);
             result.Count(c => Regex.IsMatch(c, VacancyReferenceRegex)).Should().Be(10);
         }

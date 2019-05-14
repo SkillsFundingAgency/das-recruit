@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using FluentAssertions;
 using Moq;
@@ -9,29 +10,29 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies.SearchResu
     public class GivenNoSearchTerm : SearchResultHeaderTestBase
     {
         [Fact]
-        public void WhenFilterIsAll_AndThereAreNoVacancies()
+        public async Task WhenFilterIsAll_AndThereAreNoVacancies()
         {
             var expectedMessage = "0 vacancies";
             var sut = GetSut(new List<VacancySummary>());
-            var vm = sut.GetVacanciesViewModelAsync(It.IsAny<long>(), "All", 1, string.Empty).Result;
+            var vm = await sut.GetVacanciesViewModelAsync(It.IsAny<long>(), "All", 1, string.Empty);
             vm.ResultsHeading.Should().Be(expectedMessage);
         }
 
         [Fact]
-        public void WhenFilterIsAll_AndThereIsOneVacancy()
+        public async Task WhenFilterIsAll_AndThereIsOneVacancy()
         {
             var expectedMessage = "1 vacancy";
             var sut = GetSut(GenerateVacancySummaries(1, "", string.Empty));
-            var vm = sut.GetVacanciesViewModelAsync(It.IsAny<long>(), "All", 1, string.Empty).Result;
+            var vm = await sut.GetVacanciesViewModelAsync(It.IsAny<long>(), "All", 1, string.Empty);
             vm.ResultsHeading.Should().Be(expectedMessage);
         }
 
         [Fact]
-        public void WhenFilterIsAll_AndThereIsMoreThanOneVacancy()
+        public async Task WhenFilterIsAll_AndThereIsMoreThanOneVacancy()
         {
             var expectedMessage = "2 vacancies";
             var sut = GetSut(GenerateVacancySummaries(2, "", string.Empty));
-            var vm = sut.GetVacanciesViewModelAsync(It.IsAny<long>(), "All", 1, string.Empty).Result;
+            var vm = await sut.GetVacanciesViewModelAsync(It.IsAny<long>(), "All", 1, string.Empty);
             vm.ResultsHeading.Should().Be(expectedMessage);
         }
     }

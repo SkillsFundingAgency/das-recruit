@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -32,11 +33,11 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies
         [InlineData("", "105", "2000000105,1000000105")]
         [InlineData("Closed", "VAC100", "1000000101,1000000105")]
         [InlineData("Referred", "", "2000000105")]
-        public void ThenReturnResults(string status, string searchTerm, string references)
+        public async Task ThenReturnResults(string status, string searchTerm, string references)
         {
             var expectedReferences = references.Split(',');
             var sut = GetSut(); 
-            var result = sut.GetVacanciesViewModelAsync(1234, status, 1, searchTerm).Result;
+            var result = await sut.GetVacanciesViewModelAsync(1234, status, 1, searchTerm);
             result.Vacancies.Any().Should().BeTrue();
             result.Vacancies.Count.Should().Be(expectedReferences.Count());
             result.Vacancies
@@ -49,10 +50,10 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies
         [InlineData("Submitted", "fox")]
         [InlineData("Live","xyz")]
         [InlineData("Submitted","")]
-        public void ThenReturnNoResults(string status, string searchTerm)
+        public async Task ThenReturnNoResults(string status, string searchTerm)
         {
             var sut = GetSut(); 
-            var result = sut.GetVacanciesViewModelAsync(1234, status, 1, searchTerm).Result;
+            var result = await sut.GetVacanciesViewModelAsync(1234, status, 1, searchTerm);
             result.Vacancies.Any().Should().BeFalse();
         }
 

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using FluentAssertions;
 using Moq;
@@ -9,29 +10,29 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies.SearchResu
     public class GivenSearchTermWithStatusFilter : SearchResultHeaderTestBase
     {
         [Fact]
-        public void WhenThereAreNoVacancies()
+        public async Task WhenThereAreNoVacancies()
         {
             var expectedMessage = "0 live vacancies with 'nurse'";
             var sut = GetSut(new List<VacancySummary>());
-            var vm = sut.GetVacanciesViewModelAsync(It.IsAny<long>(), "Live", 1, "nurse").Result;
+            var vm = await sut.GetVacanciesViewModelAsync(It.IsAny<long>(), "Live", 1, "nurse");
             vm.ResultsHeading.Should().Be(expectedMessage);
         }
 
         [Fact]
-        public void WhenThereIsOneVacancy()
+        public async Task WhenThereIsOneVacancy()
         {
             var expectedMessage = "1 live vacancy with 'nurse'";
             var sut = GetSut(GenerateVacancySummaries(1, "nurse", string.Empty));
-            var vm = sut.GetVacanciesViewModelAsync(It.IsAny<long>(), "Live", 1, "nurse").Result;
+            var vm = await sut.GetVacanciesViewModelAsync(It.IsAny<long>(), "Live", 1, "nurse");
             vm.ResultsHeading.Should().Be(expectedMessage);
         }
 
         [Fact]
-        public void WhenThereIsMoreThanOneVacancy()
+        public async Task WhenThereIsMoreThanOneVacancy()
         {
             var expectedMessage = "2 live vacancies with 'nurse'";
             var sut = GetSut(GenerateVacancySummaries(2, "nurse", string.Empty));
-            var vm = sut.GetVacanciesViewModelAsync(It.IsAny<long>(), "Live", 1, "nurse").Result;
+            var vm = await sut.GetVacanciesViewModelAsync(It.IsAny<long>(), "Live", 1, "nurse");
             vm.ResultsHeading.Should().Be(expectedMessage);
         }
     }
