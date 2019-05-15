@@ -70,6 +70,4 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             }
         }
     }
-
-
 }
