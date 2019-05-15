@@ -52,7 +52,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             filter = string.Empty;
             search = string.Empty;
             var cookieValue = Request.Cookies.GetCookie(CookieNames.VacanciesFilter);
-            if(string.IsNullOrWhiteSpace(cookieValue)) return;
+            if (string.IsNullOrWhiteSpace(cookieValue)) return;
             var values = JsonConvert.DeserializeObject<FilterCookie>(cookieValue);
             filter = values.Filter;
             search = values.SearchTerm;
@@ -62,7 +62,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         {
             public string Filter { get; set; }
             public string SearchTerm { get; set; }
-            public FilterCookie(){}
+            public FilterCookie() { }
             public FilterCookie(string filter, string searchTerm)
             {
                 Filter = filter;

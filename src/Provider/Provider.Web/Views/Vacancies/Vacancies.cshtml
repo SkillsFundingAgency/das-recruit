@@ -1,7 +1,7 @@
 ﻿@using Esfa.Recruit.Vacancies.Client.Domain.Entities
 @model VacanciesViewModel
 @{
-    var dashboardSearchEndpointPrefixUrl = @Url.RouteUrl(RouteNames.SearchHelper_Get, new { term = "" }, Context.Request.Scheme);
+    var vacanciesSearchSuggestionsEndpointUrl = @Url.RouteUrl(RouteNames.VacanciesSearchSuggestions_Get, null, Context.Request.Scheme);
     string GetLinkText(VacancySummaryViewModel vacancySummary)
     {
         switch (vacancySummary.Status)
@@ -153,7 +153,7 @@
 
     <script nws-csp-add-nonce="true">
         var filterId = "#@Html.IdFor(m => m.Filter)";
-        var dashboardFilterEndpointPrefix = "@dashboardSearchEndpointPrefixUrl";
+        var dashboardFilterEndpointPrefix = "@vacanciesSearchSuggestionsEndpointUrl";
         $(function() {
             $("#search-submit-button").removeClass('js-hidden');
             $("#filter-submit").addClass('js-hidden');

@@ -1031,7 +1031,7 @@ a[rel="external"]:hover:after {
   text-indent: -5000px;
   color: #fff;
   background-color: #005ea5;
-  background-image: url(../img/search-button.png);
+  background-image: url(/img/search-button.png);
   background-repeat: no-repeat;
   background-position: -12.5% 50%;
 }
