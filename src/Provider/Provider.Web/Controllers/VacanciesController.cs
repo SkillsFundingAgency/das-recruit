@@ -58,7 +58,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             search = values.SearchTerm;
         }
 
-        class FilterCookie
+        private class FilterCookie
         {
             public string Filter { get; set; }
             public string SearchTerm { get; set; }
