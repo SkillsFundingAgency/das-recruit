@@ -1,10 +1,11 @@
 'use strict';
 var searchSuggestions = function () {
-    var endpointUrl = "";
+    var endpointUrl,
+        searchInputElementIdentifier;
 
-    var init = function (searchInputElementIdentifier, routeUrl)
-    {
+    var init = function (inputElementIdentifier, routeUrl) {
         endpointUrl = routeUrl;
+        searchInputElementIdentifier = inputElementIdentifier;
         $(searchInputElementIdentifier).autocomplete({
             source: getSearchAutocompleteData,
             select: selectItem,
@@ -20,9 +21,9 @@ var searchSuggestions = function () {
     };
 
     var selectItem = function (event, ui) {
-        $("#search-input").val(ui.item.value);
+        $(searchInputElementIdentifier).val(ui.item.value);
         return false;
-    }
+    };
 
     return {
         init : init
