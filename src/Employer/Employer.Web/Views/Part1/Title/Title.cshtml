@@ -10,7 +10,7 @@
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Vacancy summary</h1>
         <div class="info-summary">
             <p class="govuk-body">Apprentice candidates will see your vacancy in a search along with vacancies from other employers. This is your
-            opportunity to make your vacancy attract the best candidates</p>
+            opportunity to make your vacancy attract the best candidates.</p>
         </div>
     </div>
 </div>
@@ -35,7 +35,7 @@
             <div esfa-validation-marker-for="NumberOfPositions" class="govuk-form-group">
                 <label asp-for="NumberOfPositions" class="govuk-label govuk-!-font-weight-bold">How many positions do you have for this apprenticeship?</label>
                 <span esfa-validation-message-for="NumberOfPositions" class="govuk-error-message"></span>
-                <input asp-for="NumberOfPositions" class="govuk-input govuk-input--width-4 type="number" min="1"/>
+                <input asp-for="NumberOfPositions" class="govuk-input govuk-input--width-4" type="number" min="1"/>
             </div>
             <button type="submit" class="govuk-button save-button">@Model.PageInfo.SubmitButtonText</button>
 

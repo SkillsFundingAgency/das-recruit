@@ -10,6 +10,7 @@ namespace Esfa.Recruit.Shared.Web.Mappers
         {
             { FieldIdResolver.ToFieldId(v => v.VacancyReference), "Reference number" },
             { FieldIdResolver.ToFieldId(v => v.EmployerAccountId), "Employer Account Id" },
+            { FieldIdResolver.ToFieldId(v => v.AnonymousReason), "Anonymous reason" },
             { FieldIdResolver.ToFieldId(v => v.ApplicationInstructions), "Application process instructions" },
             { FieldIdResolver.ToFieldId(v => v.ApplicationMethod), "Application process" },
             { FieldIdResolver.ToFieldId(v => v.ApplicationUrl), "Application web address" },

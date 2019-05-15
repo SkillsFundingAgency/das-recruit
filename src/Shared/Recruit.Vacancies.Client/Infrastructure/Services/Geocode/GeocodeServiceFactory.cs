@@ -45,5 +45,23 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode
 
             return new GeocodeService(_logger, services);
         }
+
+        public IGeocodeService GetGeocodeOutcodeService()
+        {
+            var services = new List<IGeocodeService>();
+
+            if (!string.IsNullOrEmpty(_config.PostcodesIoUrl))
+            {
+                services.Add(new PostcodesIoOutcodeGeocodeService(_config.PostcodesIoUrl));
+            }
+
+            if (!string.IsNullOrEmpty(_config.PostcodeAnywhereUrl) &&
+                !string.IsNullOrEmpty(_config.PostcodeAnywhereKey))
+            {
+                services.Add(new PostcodeAnywhereGeocodeService(_config.PostcodeAnywhereUrl, _config.PostcodeAnywhereKey));
+            }
+
+            return new GeocodeService(_logger, services);
+        }
     }
 }

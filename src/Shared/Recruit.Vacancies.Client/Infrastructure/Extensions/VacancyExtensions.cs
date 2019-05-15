@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
 using Address = Esfa.Recruit.Vacancies.Client.Domain.Entities.Address;
@@ -17,12 +19,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
 {
     public static class VacancyExtensions
     {
-        public static T ToVacancyProjectionBase<T>(this Vacancy vacancy, ApprenticeshipProgramme programme, Func<string> getDocumentId) where T : VacancyProjectionBase
+        public static T ToVacancyProjectionBase<T>(this Vacancy vacancy, ApprenticeshipProgramme programme, Func<string> getDocumentId, ITimeProvider timeProvider) where T : VacancyProjectionBase
         {
             var projectedVacancy = (T) Activator.CreateInstance<T>();
 
             projectedVacancy.Id = getDocumentId();
-            projectedVacancy.LastUpdated = DateTime.UtcNow;
+            projectedVacancy.LastUpdated = timeProvider.Now;
             projectedVacancy.VacancyId = vacancy.Id;
             projectedVacancy.ApplicationInstructions = vacancy.ApplicationInstructions;
             projectedVacancy.ApplicationMethod = vacancy.ApplicationMethod.GetValueOrDefault().ToString();
@@ -37,9 +39,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
             projectedVacancy.ProviderContactName = vacancy.ProviderContact?.Name;
             projectedVacancy.ProviderContactPhone = vacancy.ProviderContact?.Phone;
             projectedVacancy.EmployerDescription = vacancy.EmployerDescription;
-            projectedVacancy.EmployerLocation = vacancy.EmployerLocation.ToProjection();
+            projectedVacancy.EmployerLocation = vacancy.EmployerLocation.ToProjection(vacancy.IsAnonymous);
             projectedVacancy.EmployerName = vacancy.EmployerName;
-            projectedVacancy.EmployerWebsiteUrl = vacancy.EmployerWebsiteUrl;
+            projectedVacancy.EmployerWebsiteUrl = vacancy.IsAnonymous ? null : vacancy.EmployerWebsiteUrl;
+            projectedVacancy.IsAnonymous = vacancy.IsAnonymous;
             projectedVacancy.LiveDate = vacancy.LiveDate.GetValueOrDefault();
             projectedVacancy.NumberOfPositions = vacancy.NumberOfPositions.GetValueOrDefault();
             projectedVacancy.OutcomeDescription = vacancy.OutcomeDescription;
@@ -60,8 +63,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
             return projectedVacancy;
         }
 
-        public static ProjectionAddress ToProjection(this Address address)
+        public static ProjectionAddress ToProjection(this Address address, bool isAnonymousVacancy)
         {
+            if(isAnonymousVacancy)
+                return new ProjectionAddress {
+                    Postcode = address.PostcodeAsOutcode(),
+                    Latitude = address.Latitude.GetValueOrDefault(),
+                    Longitude = address.Longitude.GetValueOrDefault()
+                };
+
             return new ProjectionAddress
             {
                 AddressLine1 = address.AddressLine1,

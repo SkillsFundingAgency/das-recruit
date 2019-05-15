@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions;
@@ -20,17 +21,20 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
         private readonly IQueryStoreWriter _queryStoreWriter;
         private readonly IVacancyQuery _vacancyQuery;
         private readonly IReferenceDataReader _referenceDataReader;
+        private readonly ITimeProvider _timeProvider;
 
         public PublishedVacancyProjectionService(
                                     ILogger<PublishedVacancyProjectionService> logger, 
                                     IQueryStoreWriter queryStoreWriter, 
                                     IVacancyQuery vacancyQuery,
-                                    IReferenceDataReader referenceDataReader)
+                                    IReferenceDataReader referenceDataReader,
+                                    ITimeProvider timeProvider)
         {
             _logger = logger;
             _queryStoreWriter = queryStoreWriter;
             _vacancyQuery = vacancyQuery;
             _referenceDataReader = referenceDataReader;
+            _timeProvider = timeProvider;
         }
 
         public async Task ReGeneratePublishedVacanciesAsync()
@@ -63,7 +67,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
 
                 var programme = programmes.Single(p => p.Id == vacancy.ProgrammeId);
                 var vacancyProjection = vacancy.ToVacancyProjectionBase<LiveVacancy>(programme,
-                    () => QueryViewType.LiveVacancy.GetIdValue(vacancy.VacancyReference.ToString()));
+                    () => QueryViewType.LiveVacancy.GetIdValue(vacancy.VacancyReference.ToString()), _timeProvider);
 
                 await _queryStoreWriter.UpdateLiveVacancyAsync(vacancyProjection);
             }
@@ -85,7 +89,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
 
                 var programme = programmes.Single(p => p.Id == vacancy.ProgrammeId);
                 var vacancyProjection = vacancy.ToVacancyProjectionBase<ClosedVacancy>(programme,
-                    () => QueryViewType.ClosedVacancy.GetIdValue(vacancy.VacancyReference.ToString()));
+                    () => QueryViewType.ClosedVacancy.GetIdValue(vacancy.VacancyReference.ToString()), _timeProvider);
 
                 await _queryStoreWriter.UpdateClosedVacancyAsync(vacancyProjection);
             }

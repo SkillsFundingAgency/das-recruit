@@ -9,7 +9,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
         public const string SetupProvider = "prov-recruit-setup-provider-{0}";
         public const string VacancyProposedClosingDate = "prov-vacancy-closingDate-{0}";
         public const string VacancyProposedStartDate = "prov-vacancy-startDate-{0}";
-        public const string DashboardFilter = "prov-dashboard-filter";
+        public const string VacanciesFilter = "prov-vacancies-filter";
         public const string VacancyEmployerInfo = "prov-vacancy-employer-info";
     }
 }

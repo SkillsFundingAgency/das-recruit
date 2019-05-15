@@ -15,5 +15,6 @@ namespace Esfa.Recruit.Employer.Web.Views
         public const string VacancySummaryDisplay = "_VacancySummaryDisplayPartial";
         public const string ValidationSummary = RecruitPartialNames.ValidationSummary;
         public const string ReviewSummary = "_ReviewSummaryPartial";
+        public const string Pager = RecruitPartialNames.Pager;
     }
 }

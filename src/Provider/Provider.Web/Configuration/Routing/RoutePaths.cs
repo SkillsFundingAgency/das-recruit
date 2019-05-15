@@ -3,6 +3,7 @@
     public static class RoutePaths
     {
         public const string AccountRoutePath = "{ukprn:length(8)}";
+        public const string VacanciesRoutePath = AccountRoutePath + "/vacancies";
         public const string VacancyRoutePath = "vacancies/{vacancyId:guid}";
         public const string AccountVacancyRoutePath = AccountRoutePath + "/" + VacancyRoutePath;
 

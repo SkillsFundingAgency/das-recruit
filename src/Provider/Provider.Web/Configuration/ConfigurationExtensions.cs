@@ -100,23 +100,23 @@ namespace Esfa.Recruit.Provider.Web.Configuration
                 //options.SkipUnrecognizedRequests = true;
 
                 options.Events.OnSecurityTokenValidated = async (ctx) =>
-                {                    
-                    await HandleUserSignedIn(ctx, vacancyClient);                   
+                {
+                    await HandleUserSignedIn(ctx, vacancyClient);
                 };
-
             })
             .AddCookie(options =>
             {
                 options.Cookie.Name = CookieNames.RecruitData;
                 options.Cookie.SecurePolicy = Microsoft.AspNetCore.Http.CookieSecurePolicy.Always;
+                options.CookieManager = new ChunkingCookieManager() { ChunkSize = 3000 };
                 options.AccessDeniedPath = RoutePaths.AccessDeniedPath;
                 options.SlidingExpiration = true;
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(SessionTimeoutMinutes);
             });
-        }        
+        }
 
         private static async Task HandleUserSignedIn(SecurityTokenValidatedContext ctx, IRecruitVacancyClient vacancyClient)
-        {            
+        {
             var user = ctx.Principal.ToVacancyUser();            
             await vacancyClient.UserSignedInAsync(user, UserType.Provider);
         }

@@ -2,7 +2,7 @@ using System;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Extensions;
-using Esfa.Recruit.Provider.Web.Model;
+using Esfa.Recruit.Provider.Web.Models;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -44,7 +44,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
         {
             DeleteVacancyEmployerInfoCookie();
             return wizard 
-                ? RedirectToRoute(RouteNames.Dashboard_Index_Get) 
+                ? RedirectToRoute(RouteNames.Vacancies_Get) 
                 : RedirectToRoute(RouteNames.Vacancy_Preview_Get, Anchors.AboutEmployerSection);
         }
     }

@@ -21,11 +21,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode
         {
             var client = new RestClient(_postcodeAnywhereUrl);
 
-            var request = new RestRequest("Geocoding/UK/Geocode/v2.10/json3.ws?Key={key}&Location={postcode}", Method.GET);
-            request.AddUrlSegment("key", _postcodeAnywhereKey);
-            request.AddUrlSegment("postcode", postcode);
+            var request = new RestRequest("Geocoding/UK/Geocode/v2.10/json3.ws", Method.GET);
+            request.AddQueryParameter("Key", _postcodeAnywhereKey);
+            request.AddQueryParameter("Location", postcode);
 
             var response = await client.ExecuteTaskAsync<PostcodeAnywhereResponse>(request);
+
+            var url = client.BuildUri(request);
 
             if (response.IsSuccessful)
             {

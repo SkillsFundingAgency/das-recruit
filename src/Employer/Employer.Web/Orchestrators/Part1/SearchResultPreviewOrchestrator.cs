@@ -3,6 +3,7 @@ using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.SearchResultPreview;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -36,7 +37,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
             var vm = new SearchResultPreviewViewModel
             {
-                EmployerName = await _vacancyClient.GetEmployerName(vacancy.Id),
+                EmployerName = await _vacancyClient.GetEmployerNameAsync(vacancy),
                 NumberOfPositions = vacancy.NumberOfPositions?.ToString(),
                 ShortDescription = vacancy.ShortDescription,
                 ClosingDate = vacancy.ClosingDate?.AsGdsDate(),
@@ -49,11 +50,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             };
 
             if (vacancy.EmployerLocation != null)
-            {
-                vm.MapUrl = vacancy.EmployerLocation.HasGeocode
-                    ? _mapService.GetMapImageUrl(vacancy.EmployerLocation.Latitude.ToString(), vacancy.EmployerLocation.Longitude.ToString(), MapImageWidth, MapImageHeight)
-                    : _mapService.GetMapImageUrl(vacancy.EmployerLocation?.Postcode, MapImageWidth, MapImageHeight);
-            }
+                vm.MapUrl = MapImageHelper.GetEmployerLocationMapUrl(vacancy, _mapService, MapImageWidth, MapImageHeight);
             
             return vm;
         }

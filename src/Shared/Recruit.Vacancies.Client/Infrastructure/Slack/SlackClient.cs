@@ -13,18 +13,24 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Slack
         private readonly string _webhookUrl;
         private readonly HttpClient _httpClient;
 
+        private readonly JsonSerializerSettings _jsonSerializerSettings = new JsonSerializerSettings
+        {
+            ContractResolver = new DefaultContractResolver { NamingStrategy = new SnakeCaseNamingStrategy() },
+            NullValueHandling = NullValueHandling.Ignore
+        };
+
         public SlackClient(IHttpClientFactory clientFactory, IOptions<SlackConfiguration> slackConfig)
         {
             _httpClient = clientFactory.CreateClient();
             _httpClient.Timeout = new TimeSpan(0, 0, 30);
-            
+
             _webhookUrl = slackConfig.Value.WebHookUrl;
         }
 
-        public async Task Post(SlackMessage message, Emojis emoji)
+        public async Task PostAsync(SlackMessage message, SlackVacancyNotificationType emoji)
         {
-            var emojiName = GetEmojiName(emoji);
-            message.Text = emojiName + " " + message.Text;
+            var emojiIconId = GetEmojiIconId(emoji);
+            message.Text = $"{emojiIconId} {message.Text}";
 
             var payload = SerializePayload(message);
 
@@ -39,30 +45,23 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Slack
             }
         }
 
-        private static string SerializePayload(SlackMessage message)
+        private string SerializePayload(SlackMessage message)
         {
-            var resolver = new DefaultContractResolver
-            {
-                NamingStrategy = new SnakeCaseNamingStrategy()
-            };
-
-            return JsonConvert.SerializeObject(message, new JsonSerializerSettings
-            {
-                ContractResolver = resolver,
-                NullValueHandling = NullValueHandling.Ignore
-            });
+            return JsonConvert.SerializeObject(message, _jsonSerializerSettings);
         }
 
-        private static string GetEmojiName(Emojis emoji)
+        private string GetEmojiIconId(SlackVacancyNotificationType emoji)
         {
             switch (emoji)
             {
-                case Emojis.New:
+                case SlackVacancyNotificationType.New:
                     return ":sparkle:";
-                case Emojis.Approved:
+                case SlackVacancyNotificationType.Approved:
                     return ":heavy_check_mark:";
-                case Emojis.Referred:
+                case SlackVacancyNotificationType.Referred:
                     return ":x:";
+                case SlackVacancyNotificationType.ManuallyClosed:
+                    return ":negative_squared_cross_mark:";
                 default:
                     return ":question:";
             }

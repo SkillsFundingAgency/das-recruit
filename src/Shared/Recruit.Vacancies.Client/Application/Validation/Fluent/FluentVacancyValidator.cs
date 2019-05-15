@@ -135,7 +135,37 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .RunCondition(VacancyRuleSet.TradingName)
                     .WithRuleId(VacancyRuleSet.TradingName)
             );
-            
+
+            When(v => v.EmployerNameOption == EmployerNameOption.Anonymous, () =>
+                RuleFor(x => x.EmployerName)
+                    .NotEmpty()
+                    .WithMessage("You must provide a description")
+                    .WithErrorCode("405")
+                    .MaximumLength(100)
+                    .WithMessage("The description must not exceed {MaxLength} characters")
+                    .WithErrorCode("406")
+                    .ValidFreeTextCharacters()
+                    .WithMessage("The description contains some invalid characters")
+                    .WithErrorCode("407")
+                    .RunCondition(VacancyRuleSet.EmployerNameOption)
+                    .WithRuleId(VacancyRuleSet.EmployerNameOption)
+            );
+
+            When(v => v.EmployerNameOption == EmployerNameOption.Anonymous, () =>
+                RuleFor(x => x.AnonymousReason)
+                    .NotEmpty()
+                    .WithMessage("You must provide a reason")
+                    .WithErrorCode("408")
+                    .MaximumLength(200)
+                    .WithMessage("The reason must not exceed {MaxLength} characters")
+                    .WithErrorCode("409")
+                    .ValidFreeTextCharacters()
+                    .WithMessage("The reason contains some invalid characters")
+                    .WithErrorCode("410")
+                    .RunCondition(VacancyRuleSet.EmployerNameOption)
+                    .WithRuleId(VacancyRuleSet.EmployerNameOption)
+            );
+
             RuleFor(x => x.EmployerNameOption)
                 .NotEmpty()
                     .WithMessage("You must select an employer name")
@@ -534,10 +564,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
             RuleFor(x => x.EmployerWebsiteUrl)
                 .MaximumLength(100)
-                    .WithMessage("Organisation's website address must not exceed {MaxLength} characters")
+                    .WithMessage("Website address must not exceed {MaxLength} characters")
                     .WithErrorCode("84")
                 .Must(FluentExtensions.BeValidWebUrl)
-                    .WithMessage("Organisation's website address must be a valid website address")
+                    .WithMessage("Website address must be a valid URL")
                     .WithErrorCode("82")
                     .When(v => !string.IsNullOrEmpty(v.EmployerWebsiteUrl))
                 .RunCondition(VacancyRuleSet.EmployerWebsiteUrl)

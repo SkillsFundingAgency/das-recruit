@@ -81,7 +81,7 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             RegisterStorageProviderDeps(services, configuration);
             AddValidation(services);
             AddRules(services);
-            RegisterMediatR(services);       
+            RegisterMediatR(services);
             RegisterProviderRelationshipsClient(services, configuration);     
         }
 
@@ -114,13 +114,14 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddTransient<IGenerateVacancyNumbers, MongoSequenceStore>();
             services.AddTransient<ISlaService, SlaService>();
             services.AddTransient<INotifyVacancyReviewUpdates, SlackNotifyVacancyReviewUpdates>();
+            services.AddTransient<INotifyVacancyUpdates, SlackNotifyVacancyUpdates>();
             services.AddTransient<IVacancyService, VacancyService>();
             services.AddTransient<INextVacancyReviewService, NextVacancyReviewService>();
             services.AddTransient<IVacancyComparerService, VacancyComparerService>();
             services.AddTransient<IGetTitlePopularity, TitlePopularityService>();
             services.AddTransient<ICache, Cache>();
             services.AddTransient<IHtmlSanitizerService, HtmlSanitizerService>();
-            services.AddTransient<IEmployerNameService, EmployerNameService>();
+            services.AddTransient<IEmployerService, EmployerService>();
 
             //Reporting Service
             services.AddTransient<ICsvBuilder, CsvBuilder>();

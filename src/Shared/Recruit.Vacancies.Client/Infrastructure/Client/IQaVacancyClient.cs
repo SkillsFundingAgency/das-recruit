@@ -29,5 +29,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task UnassignVacancyReviewAsync(Guid reviewId);
         Task<VacancyReview> GetCurrentReferredVacancyReviewAsync(long vacancyReference);
         Task<List<VacancyReview>> GetVacancyReviewHistoryAsync(long vacancyReference);
+        Task<int> GetAnonymousApprovedCountAsync(long legalEntityId);
     }
 }

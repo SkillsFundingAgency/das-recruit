@@ -2,14 +2,13 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using System.Text;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Exceptions;
-using Esfa.Recruit.Provider.Web.Model;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels;
 using Esfa.Recruit.Provider.Web.ViewModels.Error;
-using Esfa.Recruit.Shared.Web.Models;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Authorization;
@@ -78,7 +77,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 {
                     _logger.LogError(exception, "Exception on path: {route}", routeWhereExceptionOccurred);
                     AddDashboardMessage(exception.Message);
-                    return RedirectToRoute(RouteNames.Dashboard_Index_Get, new { Ukprn = ukprn });
+                    return RedirectToRoute(RouteNames.Vacancies_Get, new { Ukprn = ukprn });
                 }
 
                 if (exception is InvalidRouteForVacancyException invalidRouteException)
@@ -108,7 +107,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
                 if (exception is MissingPermissionsException mpEx)
                 {
-                    _logger.LogWarning(mpEx.Message);
+                    _logger.LogInformation(mpEx.Message);
                     return MissingPermissions(long.Parse((string)ukprn));
                 }
 
@@ -124,7 +123,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             var vm = new MissingPermissionsViewModel
             {
                 RouteValues = new VacancyRouteModel { Ukprn = ukprn },
-                CtaRoute = RouteNames.Dashboard_Index_Get
+                CtaRoute = RouteNames.Vacancies_Get
             };
 
             return View(ViewNames.MissingPermissions, vm);
@@ -132,16 +131,31 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
         private IActionResult AccessDenied()
         {
-            var serviceClaim = User.FindFirst(ProviderRecruitClaims.IdamsUserServiceTypeClaimTypeIdentifier);
-            
-            if (serviceClaim == null || serviceClaim.Value != ProviderRecruitClaims.ServiceClaimValue)
+            LogUserClaims();
+
+            var serviceClaims = User.FindAll(ProviderRecruitClaims.IdamsUserServiceTypeClaimTypeIdentifier);
+
+            if (serviceClaims.Any(claim => claim.Value.Equals(ProviderRecruitClaims.ServiceClaimValue) == false))
             {
-                _logger.LogInformation("User does not have service claim");
+                _logger.LogInformation($"User {User.Identity.Name} does not have service claim.");
                 return Redirect(_externalLinks.ProviderApprenticeshipSiteUrl);
             }
 
             Response.StatusCode = (int)HttpStatusCode.Unauthorized;
             return View(ViewNames.AccessDenied);
+        }
+
+        private void LogUserClaims()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"{User.Identity.Name} claims:");
+
+            foreach (var claim in User.Claims)
+            {
+                sb.AppendLine($"{claim.Type}: {claim.Value}");
+            }
+
+            _logger.LogInformation(sb.ToString());
         }
 
         private IActionResult PageNotFound()
@@ -160,10 +174,10 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
         private void AddDashboardMessage(string message)
         {
-            if(TempData.ContainsKey(TempDataKeys.DashboardErrorMessage))
-                _logger.LogError($"Dashboard message already set in {nameof(ErrorController)}. Existing message:{TempData[TempDataKeys.DashboardErrorMessage]}. New message:{message}");
+            if(TempData.ContainsKey(TempDataKeys.VacanciesErrorMessage))
+                _logger.LogError($"Dashboard message already set in {nameof(ErrorController)}. Existing message:{TempData[TempDataKeys.VacanciesErrorMessage]}. New message:{message}");
 
-            TempData[TempDataKeys.DashboardErrorMessage] = message;
+            TempData[TempDataKeys.VacanciesErrorMessage] = message;
         }
     }
 }
