@@ -10,7 +10,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
     public class VacanciesSearchSuggestionsOrchestrator
     {
         public const int MaxRowsInResult = 50;
-
         private readonly IProviderVacancyClient _providerVacancyClient;
 
         public VacanciesSearchSuggestionsOrchestrator(IProviderVacancyClient providerVacancyClient)
@@ -18,30 +17,47 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             _providerVacancyClient = providerVacancyClient;
         }
 
-        public async Task<IEnumerable<string>> GetAutoCompleteListAsync(string term, long ukprn)
+        public async Task<IEnumerable<string>> GetSearchSuggestionsAsync(string searchTerm, long ukprn)
         {
-            if (term == null || term.Trim().Length < 3) return Enumerable.Empty<string>();
+            const int minimumSearchLength = 3;
+
+            if (searchTerm == null || searchTerm.Length < minimumSearchLength)
+                return Enumerable.Empty<string>();
 
             var vacancies = await GetVacanciesAsync(ukprn);
+            var data = GetVacanciesPartialMatchingTitleSuggestions(searchTerm, vacancies)
+                        .Concat(GetVacanciesPartialMatchingEmployerNameSuggestions(searchTerm, vacancies))
+                        .Concat(GetVacanciesPartialMatchingVacancyReferenceSuggestions(searchTerm, vacancies));
 
-            var data = vacancies
+            return data
+                    .Take(MaxRowsInResult)
+                    .OrderBy(r => r);
+        }
+
+        private IEnumerable<string> GetVacanciesPartialMatchingTitleSuggestions(string searchTerm, IEnumerable<VacancySummary> vacancies)
+        {
+            return vacancies
                 .Select(v => v.Title)
-                .Where(v => v.Contains(term, StringComparison.OrdinalIgnoreCase))
+                .Where(v => v.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
                 .Distinct(StringComparer.OrdinalIgnoreCase);
-            data = data.Concat(
-                vacancies
-                    .Where(v => string.IsNullOrWhiteSpace(v.EmployerName) == false)
-                    .Select(v => v.EmployerName)
-                    .Where(v => v.Contains(term, StringComparison.OrdinalIgnoreCase))
-                    .Distinct(StringComparer.OrdinalIgnoreCase));
-            data = data.Concat(
-                vacancies
-                    .Where(v => v.VacancyReference.HasValue)
-                    .Select(v => $"VAC{v.VacancyReference}")
-                    .Where(v => v.StartsWith(term, StringComparison.OrdinalIgnoreCase))
-                    .Distinct(StringComparer.OrdinalIgnoreCase));
-            
-            return data.Take(MaxRowsInResult).OrderBy(r => r);
+        }
+
+        private IEnumerable<string> GetVacanciesPartialMatchingEmployerNameSuggestions(string searchTerm, IEnumerable<VacancySummary> vacancies)
+        {
+            return vacancies
+                .Where(v => string.IsNullOrWhiteSpace(v.EmployerName) == false)
+                .Select(v => v.EmployerName)
+                .Where(v => v.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+                .Distinct(StringComparer.OrdinalIgnoreCase);
+        }
+
+        private IEnumerable<string> GetVacanciesPartialMatchingVacancyReferenceSuggestions(string searchTerm, IEnumerable<VacancySummary> vacancies)
+        {
+            return vacancies
+                .Where(v => v.VacancyReference.HasValue)
+                .Select(v => $"VAC{v.VacancyReference}")
+                .Where(v => v.StartsWith(searchTerm, StringComparison.OrdinalIgnoreCase))
+                .Distinct(StringComparer.OrdinalIgnoreCase);
         }
 
         private async Task<IEnumerable<VacancySummary>> GetVacanciesAsync(long ukprn)

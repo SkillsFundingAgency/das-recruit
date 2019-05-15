@@ -56,6 +56,39 @@ sfa.navigation = {
     }
 };
 
+sfa.vacancySearchAutocompleteHookup = function () {
+    var endpointUrl,
+        searchInputElementIdentifier;
+
+    var init = function (inputElementIdentifier, routeUrl) {
+        endpointUrl = routeUrl;
+        searchInputElementIdentifier = inputElementIdentifier;
+
+        $(searchInputElementIdentifier).autocomplete({
+            source: getSearchAutocompleteData,
+            select: selectItem,
+            minLength: 3
+        });
+    };
+
+    var getSearchAutocompleteData = function (request, response) {
+        var params = { searchTerm: request.term };
+        $.getJSON(endpointUrl, params, function (data) { 
+            response(data);
+        });
+    };
+
+    var selectItem = function (event, ui) {
+        $(searchInputElementIdentifier).val(ui.item.value);
+        return false;
+    };
+
+    return {
+        init : init
+    };
+}();
+
+
 //Legacy floating header script
 $(window).scroll(function () {
     if ($(window).scrollTop() >= 110) {
@@ -188,7 +221,7 @@ $('button, input[type="submit"], a.button').on("click", function() {
 
 /* Disable Are you sure for links */
 $('a').on("click", function() {
-    $('form').areYouSure( {'silent':true} );
+    $('form').areYouSure( { 'silent': true } );
 });
 
 /* Validation accessibility fix */

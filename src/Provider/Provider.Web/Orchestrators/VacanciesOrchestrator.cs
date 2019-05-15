@@ -35,7 +35,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
             var filteringOption = SanitizeFilter(filter);
 
-            var filteredVacancies = GetFilteredVacancies(vacancies, filteringOption, searchTerm);                
+            var filteredVacancies = GetFilteredVacancies(vacancies, filteringOption, searchTerm);
             
             var filteredVacanciesTotal = filteredVacancies.Count();
 
@@ -57,8 +57,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 RouteNames.Vacancies_Get,
                 new Dictionary<string, string>
                 {
-                    {"filter", filteringOption.ToString()},
-                    {"searchTerm", searchTerm}
+                    {nameof(filter), filteringOption.ToString()},
+                    {nameof(searchTerm), searchTerm}
                 });
             
             var vm = new VacanciesViewModel 
@@ -85,7 +85,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 case FilteringOptions.Draft:
                 case FilteringOptions.Submitted:
                     filteredVacancies = vacancies.Where(v =>
-                        v.Status.ToString() == filterStatus.ToString());                        
+                        v.Status.ToString() == filterStatus.ToString());
                     break;
                 case FilteringOptions.All:
                     filteredVacancies = vacancies;
@@ -115,7 +115,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                         || (string.IsNullOrWhiteSpace(v.EmployerName) == false && v.EmployerName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
                         || (v.VacancyReference.HasValue && $"VAC{v.VacancyReference}".Contains(searchTerm, StringComparison.OrdinalIgnoreCase)))
                 .OrderByDescending(v => v.CreatedDate)
-
                 .ToList(); 
         }
 

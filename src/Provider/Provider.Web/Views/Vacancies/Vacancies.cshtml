@@ -1,7 +1,7 @@
 ﻿@using Esfa.Recruit.Vacancies.Client.Domain.Entities
 @model VacanciesViewModel
 @{
-    var dashboardSearchEndpointPrefixUrl = @Url.RouteUrl(RouteNames.SearchHelper_Get, new { term = "" }, Context.Request.Scheme);
+    var vacanciesSearchSuggestionsEndpointUrl = @Url.RouteUrl(RouteNames.VacanciesSearchSuggestions_Get, null, Context.Request.Scheme);
     string GetLinkText(VacancySummaryViewModel vacancySummary)
     {
         switch (vacancySummary.Status)
@@ -28,14 +28,14 @@
         </div>
     </div>
 
-    <div class="govuk-grid-row">        
+    <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
             <a asp-route="@RouteNames.Dashboard_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Return to dashboard</a>
         </div>
     </div>
 
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-one-half">            
+        <div class="govuk-grid-column-one-half">
             <h1 class="govuk-heading-xl">Vacancies</h1>
         </div>
 
@@ -46,7 +46,7 @@
 </div>
 
 <form method="get" autocomplete="off">
-    <div class="govuk-grid-row">   
+    <div class="govuk-grid-row">
         <div class="govuk-grid-column-one-third">
             <div class="govuk-form-group">
                 <label asp-for="Filter" class="govuk-label">Filter vacancies by</label>
@@ -75,13 +75,10 @@
                 <fieldset class="govuk-fieldset">
                     <div class="form-group search-field">
                         <div class="search-input-with-button">
-                            <label class="govuk-label" for="search">
-                            Search vacancies
-                            </label>
-                            <input id="search-input" asp-for="SearchTerm" placeholder="Search by title, reference number or employer" class="govuk-input search-input" maxlength="200">
+                            <label class="govuk-label" for="search">Search vacancies</label>
+                            <input asp-for="SearchTerm" placeholder="Search by title, reference number or employer" class="govuk-input search-input" maxlength="200">
                         </div>
                         <div class="search-submit">
-                            <!-- hide button for no js version -->
                             <button type="submit" id="search-submit-button" class="js-hidden">Search</button>
                         </div>
                     </div>
@@ -94,7 +91,7 @@
     <div class="govuk-grid-column-full">
         <h3 class="govuk-heading-m">
             @Model.ResultsHeading <a asp-show="@Model.IsFiltered" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="All" class="govuk-!-font-weight-regular govuk-component__link govuk-!-font-size-19">Show all vacancies</a>
-        </h3>        
+        </h3>
         <p asp-hide="@Model.ShowResultsTable" class="govuk-body">No vacancies match the criteria</p>
     </div>
 </div>
@@ -149,23 +146,23 @@
 @section FooterJS
 {
     <script src="/lib/jquery-ui/dist/jquery-ui.min.js"></script>
-    <script asp-append-version="true" src="/lib/esfa-search-suggestions/searchSuggestionsService.js"></script>
-
     <script nws-csp-add-nonce="true">
-        var filterId = "#@Html.IdFor(m => m.Filter)";
-        var dashboardFilterEndpointPrefix = "@dashboardSearchEndpointPrefixUrl";
+        var filterId = "#@Html.IdFor(m => m.Filter)",
+            searchInputId = "#@Html.IdFor(m => m.SearchTerm)",
+            vacanciesSearchSuggestionsEndpointUrl = "@vacanciesSearchSuggestionsEndpointUrl";
+
         $(function() {
             $("#search-submit-button").removeClass('js-hidden');
             $("#filter-submit").addClass('js-hidden');
 
             $(filterId).on("change",
-                function() {
-                    var $filterForm = $(this).parents("form");
+                function(elem) {
+                    var $filterForm = $(elem).parents("form");
                     $filterForm.areYouSure({ 'silent': true });
                     $filterForm.submit();
                 });
-        });
 
-        searchSuggestions.init("#search-input", dashboardFilterEndpointPrefix);
+            sfa.vacancySearchAutocompleteHookup.init(searchInputId, vacanciesSearchSuggestionsEndpointUrl);
+        });
     </script>
 }
