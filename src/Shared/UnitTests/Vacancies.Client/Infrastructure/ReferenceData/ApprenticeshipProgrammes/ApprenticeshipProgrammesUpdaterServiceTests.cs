@@ -94,7 +94,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Infrastructure.ReferenceData.A
 
         public ApprenticeshipProgrammesUpdaterServiceTests()
         {
-            var mockApprenticeshipProgrammeProvider = new Mock<IApprenticeshipProgrammeProvider>();
+            var mockReferenceDataReader = new Mock<IReferenceDataReader>();
             _mockStandardsClient = new Mock<IStandardApiClient>();
             _mockFrameworksClient = new Mock<IFrameworkApiClient>();
             _mockReferenceDataWriter = new Mock<IReferenceDataWriter>();
@@ -103,7 +103,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Infrastructure.ReferenceData.A
                                                             _mockStandardsClient.Object,
                                                             _mockFrameworksClient.Object,
                                                             _mockReferenceDataWriter.Object,
-                                                            mockApprenticeshipProgrammeProvider.Object);
+                                                            mockReferenceDataReader.Object);
         }
 
         [Fact]

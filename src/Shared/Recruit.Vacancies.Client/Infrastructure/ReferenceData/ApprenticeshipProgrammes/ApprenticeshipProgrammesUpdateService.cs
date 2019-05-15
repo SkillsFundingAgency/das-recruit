@@ -18,19 +18,20 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
         private readonly IStandardApiClient _standardsClient;
         private readonly IFrameworkApiClient _frameworksClient;
         private readonly IReferenceDataWriter _referenceDataWriter;
-        private readonly IApprenticeshipProgrammeProvider _programmeProvider;
+        private readonly IReferenceDataReader _referenceDataReader;
 
         public ApprenticeshipProgrammesUpdateService(
             ILogger<ApprenticeshipProgrammesUpdateService> logger, 
             IStandardApiClient standardsClient,
             IFrameworkApiClient frameworksClient,
-            IReferenceDataWriter referenceDataWriter, IApprenticeshipProgrammeProvider programmeProvider)
+            IReferenceDataWriter referenceDataWriter,
+            IReferenceDataReader referenceDataReader)
         {
             _logger = logger;
             _standardsClient = standardsClient;
             _frameworksClient = frameworksClient;
             _referenceDataWriter = referenceDataWriter;
-            _programmeProvider = programmeProvider;
+            _referenceDataReader = referenceDataReader;
         }
 
         public async Task UpdateApprenticeshipProgrammesAsync()
@@ -79,9 +80,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
 
         private async Task ValidateList(List<ApprenticeshipProgramme> apprenticeshipProgrammesFromApi)
         {
-            var apprenticeshipProgrammesFromDb = await _programmeProvider.GetApprenticeshipProgrammesAsync(true);
+            var apprenticeshipProgrammesFromDb = await _referenceDataReader.GetReferenceData<ApprenticeshipProgrammes>();
+
+            if (apprenticeshipProgrammesFromDb == null)
+                return;
+
             var apiCount = apprenticeshipProgrammesFromApi.Count;
-            var dbCount = apprenticeshipProgrammesFromDb.Count();
+            var dbCount = apprenticeshipProgrammesFromDb.Data.Count();
             var difference = Math.Abs(apiCount - dbCount);
             double percent = (double)(difference * 100) / apiCount; 
             if (percent > AcceptablePercentage)
