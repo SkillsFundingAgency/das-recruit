@@ -506,7 +506,6 @@ input.form-control, textarea.form-control {
   cursor: pointer;
   display: block;
   font-size:19px;
-  padding:4px;
   position: relative;
 }
 
@@ -518,6 +517,10 @@ input.form-control, textarea.form-control {
 
 .ui-autocomplete .ui-menu-item > * {
   pointer-events: none;
+}
+
+.ui-autocomplete .ui-menu-item-wrapper{
+  padding:4px;
 }
 
 .ui-autocomplete .ui-menu-item:first-of-type {
@@ -532,8 +535,8 @@ input.form-control, textarea.form-control {
   background-color: #fafafa;
 }
 
-.ui-autocomplete .ui-menu-item:hover{
-  background-color: #005ea5;
+.ui-autocomplete .ui-state-active, .ui-autocomplete .ui-button:active, .ui-autocomplete .ui-button.ui-state-active:hover {
+	background-color: #005ea5;
   border-color: #005ea5;
   color: #fff;
   outline: 0;
@@ -1031,7 +1034,7 @@ a[rel="external"]:hover:after {
   text-indent: -5000px;
   color: #fff;
   background-color: #005ea5;
-  background-image: url(/img/search-button.png);
+  background-image: url(../img/search-button.png);
   background-repeat: no-repeat;
   background-position: -12.5% 50%;
 }
