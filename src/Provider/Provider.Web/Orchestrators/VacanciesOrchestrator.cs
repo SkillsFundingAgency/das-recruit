@@ -28,13 +28,14 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             _timeProvider = timeProvider;
         }
 
-        public async Task<VacanciesViewModel> GetVacanciesViewModelAsync(long ukprn, string filter, int page)
+        public async Task<VacanciesViewModel> GetVacanciesViewModelAsync(
+            long ukprn, string filter, int page, string searchTerm)
         {
             var vacancies = await GetVacanciesAsync(ukprn);
 
             var filteringOption = SanitizeFilter(filter);
 
-            var filteredVacancies = GetFilteredVacancies(vacancies, filteringOption);                
+            var filteredVacancies = GetFilteredVacancies(vacancies, filteringOption, searchTerm);                
             
             var filteredVacanciesTotal = filteredVacancies.Count();
 
@@ -56,7 +57,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 RouteNames.Vacancies_Get,
                 new Dictionary<string, string>
                 {
-                    {"filter", filteringOption.ToString()}
+                    {"filter", filteringOption.ToString()},
+                    {"searchTerm", searchTerm}
                 });
             
             var vm = new VacanciesViewModel 
@@ -64,14 +66,15 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 Vacancies = vacanciesVm,
                 Pager = pager,
                 Filter = filteringOption,
-                ResultsHeading = GetFilterHeading(filteredVacanciesTotal, filteringOption),
-                HasVacancies = vacancies.Any()
+                SearchTerm = searchTerm,
+                ResultsHeading = GetFilterHeading(filteredVacanciesTotal, filteringOption, searchTerm),
+                HasAnyVacancies = vacancies.Any()
             };
 
             return vm;
         }
 
-        private List<VacancySummary> GetFilteredVacancies(List<VacancySummary> vacancies, FilteringOptions filterStatus)
+        private List<VacancySummary> GetFilteredVacancies(List<VacancySummary> vacancies, FilteringOptions filterStatus, string searchTerm)
         {
             IEnumerable<VacancySummary> filteredVacancies = new List<VacancySummary>();
             switch (filterStatus)
@@ -82,7 +85,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 case FilteringOptions.Draft:
                 case FilteringOptions.Submitted:
                     filteredVacancies = vacancies.Where(v =>
-                        v.Status.ToString() == filterStatus.ToString());                        
+                        v.Status.ToString() == filterStatus.ToString());
                     break;
                 case FilteringOptions.All:
                     filteredVacancies = vacancies;
@@ -106,7 +109,13 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                         v.NoOfApplications == 0);
                     break;
             }
-            return filteredVacancies.OrderByDescending(v => v.CreatedDate)
+            return filteredVacancies
+                .Where(v => string.IsNullOrWhiteSpace(searchTerm)  
+                    || (v.Title.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)) 
+                        || (string.IsNullOrWhiteSpace(v.EmployerName) == false && v.EmployerName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+                        || (v.VacancyReference.HasValue && $"VAC{v.VacancyReference}".Contains(searchTerm, StringComparison.OrdinalIgnoreCase)))
+                .OrderByDescending(v => v.CreatedDate)
+
                 .ToList(); 
         }
 
@@ -135,22 +144,16 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             return FilteringOptions.All;
         }
 
-        private string GetFilterHeading(int totalVacancies, FilteringOptions filteringOption)
+        private string GetFilterHeading(int totalVacancies, FilteringOptions filteringOption, string searchTerm)
         {
-            var filterText = filteringOption.GetDisplayName().ToLowerInvariant();
-            switch (filteringOption)
-            {
-                case FilteringOptions.ClosingSoon:
-                case FilteringOptions.ClosingSoonWithNoApplications:
-                    return $"{totalVacancies} {"live vacancy".ToQuantity(totalVacancies, ShowQuantityAs.None)} {filterText}";
-                case FilteringOptions.AllApplications:
-                case FilteringOptions.NewApplications:
-                    return $"{totalVacancies} {"vacancy".ToQuantity(totalVacancies, ShowQuantityAs.None)} {filterText}";
-                case FilteringOptions.All:
-                    return $"All {totalVacancies} vacancies";
-                default:
-                    return $"{totalVacancies} {filterText} {"vacancy".ToQuantity(totalVacancies, ShowQuantityAs.None)}";
-            }                                  
-        }        
+            var filterText = filteringOption == FilteringOptions.All ? string.Empty : $" {filteringOption.GetDisplayName().ToLowerInvariant()}";
+            var vacancyText = filteringOption == FilteringOptions.ClosingSoon || filteringOption == FilteringOptions.ClosingSoonWithNoApplications ?
+                " live vacancy" : " vacancy";
+            var vacancyStatusPrefix = $"{totalVacancies}{filterText}{vacancyText}".ToQuantity(totalVacancies, ShowQuantityAs.None);
+
+            var searchSuffix = string.IsNullOrWhiteSpace(searchTerm) ? string.Empty : $" with '{searchTerm}'";
+            
+            return $"{vacancyStatusPrefix}{searchSuffix}";
+        }
     }
 }

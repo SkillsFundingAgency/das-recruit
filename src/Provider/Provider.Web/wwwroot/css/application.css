@@ -432,7 +432,7 @@ input.form-control, textarea.form-control {
 
 .ui-menu {
   list-style: none;
-  padding: 2px;
+  padding: 0;
   margin: 0;
   display: block;
   float: left
@@ -482,37 +482,61 @@ input.form-control, textarea.form-control {
   overflow-y: auto
 }
 
+.disabled,.disabled>* {
+  opacity: .5;
+  pointer-events: none
+}
+
+/*** JQuery UI autocomplete styles ***/
+
+.ui-autocomplete {
+  background-color: #fff;
+  border: 2px solid #0b0c0c;
+  border-top: 0;
+  color: #34384b;
+  margin: 0;
+  max-height: 342px;
+  overflow-x: hidden;
+  padding: 0;
+}
+
 .ui-autocomplete .ui-menu-item {
+  border-bottom: solid #bfc1c3;
+  border-width: 1px 0;
   cursor: pointer;
-  font-family: "nta",Arial,sans-serif;
-  font-size: 16px;
-  line-height: 1.25;
-  font-weight: 300;
-  text-transform: none;
-  padding-top: 8px;
-  padding-bottom: 7px
+  display: block;
+  font-size:19px;
+  padding:4px;
+  position: relative;
 }
 
 @media (max-width: 640px) {
   .ui-autocomplete .ui-menu-item {
-      font-size:14px
+      font-size:16px
   }
 }
 
-@media (min-width: 641px) {
-  .ui-autocomplete .ui-menu-item {
-      padding-top:5px;
-      padding-bottom: 5px
-  }
+.ui-autocomplete .ui-menu-item > * {
+  pointer-events: none;
 }
 
-.ui-autocomplete .ui-menu-item a:hover,.ui-autocomplete .ui-menu-item .ui-state-focus {
-  background: #dee0e2
+.ui-autocomplete .ui-menu-item:first-of-type {
+  border-top-width: 0;
 }
 
-.disabled,.disabled>* {
-  opacity: .5;
-  pointer-events: none
+.ui-autocomplete .ui-menu-item:last-of-type {
+  border-bottom-width: 0;
+}
+
+.ui-autocomplete .ui-menu-item:nth-child(odd){
+  background-color: #fafafa;
+}
+
+.ui-autocomplete .ui-menu-item:hover{
+  background-color: #005ea5;
+  border-color: #005ea5;
+  color: #fff;
+  outline: 0;
 }
 
 /*** Dashboard ***/
@@ -968,3 +992,48 @@ a[rel="external"]:hover:after {
 }
 
 /*** End of cards ***/
+
+/*** search ***/
+.search-field {
+  position: relative;
+  box-model:
+}
+
+.search-input-with-button {
+  padding-right:50px;
+}
+
+.search-field .search-input input {
+  padding: 2px 0 0 10px;
+  display: block;
+  height: 40px;
+  border: 2px solid #0b0c0c;
+}
+
+.search-field .search-input label {
+  display: block;
+}
+
+.search-field .search-submit {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  height: 40px;
+  width: 50px;
+  overflow: visible;
+}
+
+.search-submit button {
+  width: 50px;
+  height: 40px;
+  border: none;
+  overflow: hidden;
+  text-indent: -5000px;
+  color: #fff;
+  background-color: #005ea5;
+  background-image: url(/img/search-button.png);
+  background-repeat: no-repeat;
+  background-position: -12.5% 50%;
+}
+
+/*** end of search ***/

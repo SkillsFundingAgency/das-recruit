@@ -5,6 +5,7 @@ using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace Esfa.Recruit.Provider.Web.Controllers
 {
@@ -21,15 +22,16 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         }
 
         [HttpGet("", Name = RouteNames.Vacancies_Get)]
-        public async Task<IActionResult> Vacancies([FromQuery] string filter, [FromQuery] int page = 1)
+        public async Task<IActionResult> Vacancies(
+            [FromQuery] string filter, [FromQuery] int page = 1, [FromQuery] string searchTerm = "")
         {
-            if (string.IsNullOrWhiteSpace(filter))
-                filter = Request.Cookies.GetCookie(CookieNames.VacanciesFilter);
+            if (string.IsNullOrWhiteSpace(filter) && string.IsNullOrWhiteSpace(searchTerm))
+                TryGetFiltersFromCookie(out filter, out searchTerm);
+            
+            if(string.IsNullOrWhiteSpace(filter) == false || string.IsNullOrWhiteSpace(searchTerm) == false)
+                SaveFiltersInCookie(filter, searchTerm);
 
-            if (string.IsNullOrWhiteSpace(filter) == false)
-                Response.Cookies.SetSessionCookie(_hostingEnvironment, CookieNames.VacanciesFilter, filter);
-
-            var vm = await _orchestrator.GetVacanciesViewModelAsync(User.GetUkprn(), filter, page);
+            var vm = await _orchestrator.GetVacanciesViewModelAsync(User.GetUkprn(), filter, page, searchTerm);
             if (TempData.ContainsKey(TempDataKeys.VacanciesErrorMessage))
                 vm.WarningMessage = TempData[TempDataKeys.VacanciesErrorMessage].ToString();
 
@@ -37,6 +39,35 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 vm.InfoMessage = TempData[TempDataKeys.VacanciesInfoMessage].ToString();
 
             return View(vm);
+        }
+
+        private void SaveFiltersInCookie(string filter, string search)
+        {
+            var value = JsonConvert.SerializeObject(new FilterCookie(filter, search));
+            Response.Cookies.SetSessionCookie(_hostingEnvironment, CookieNames.VacanciesFilter, value);
+        }
+
+        private void TryGetFiltersFromCookie(out string filter, out string search)
+        {
+            filter = string.Empty;
+            search = string.Empty;
+            var cookieValue = Request.Cookies.GetCookie(CookieNames.VacanciesFilter);
+            if (string.IsNullOrWhiteSpace(cookieValue)) return;
+            var values = JsonConvert.DeserializeObject<FilterCookie>(cookieValue);
+            filter = values.Filter;
+            search = values.SearchTerm;
+        }
+
+        private class FilterCookie
+        {
+            public string Filter { get; set; }
+            public string SearchTerm { get; set; }
+            public FilterCookie() { }
+            public FilterCookie(string filter, string searchTerm)
+            {
+                Filter = filter;
+                SearchTerm = searchTerm;
+            }
         }
     }
 }
