@@ -29,11 +29,12 @@ namespace Esfa.Recruit.Shared.Web.Extensions
             { VacancyStatus.Referred, "Rejected" },
             { VacancyStatus.Submitted, "Pending review" },                     
             { ApplicationReviewDisabilityStatus.PreferNotToSay, "Prefer not to say" },
-            {FilteringOptions.ClosingSoon,"closing soon" },
-            {FilteringOptions.ClosingSoonWithNoApplications,"closing soon with no applications" },
-            {FilteringOptions.AllApplications,"with applications" },
-            {FilteringOptions.NewApplications,"with new applications" },
-            {FilteringOptions.Submitted, "Pending review" }
+            { FilteringOptions.ClosingSoon, "closing soon" },
+            { FilteringOptions.ClosingSoonWithNoApplications, "closing soon with no applications" },
+            { FilteringOptions.AllApplications, "with applications" },
+            { FilteringOptions.NewApplications, "with new applications" },
+            { FilteringOptions.Submitted, "Pending review" },
+            { FilteringOptions.Referred, "Rejected" }
         };
     }
 }
