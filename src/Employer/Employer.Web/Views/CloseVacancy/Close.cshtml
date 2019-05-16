@@ -2,22 +2,10 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <partial name=@PartialNames.ValidationSummary model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
-
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
-            @Model.Title
-            <span class="govuk-caption-xl">VAC @Model.VacancyReference</span>
-        </h1>
-        
-        <h2 class="govuk-heading-m govuk-!-margin-top-0">Closing a vacancy</h2>
-        <p class="govuk-body">By continuing with this action you will be closing this vacancy to further applications on Find an apprenticeship.</p>
-        <p class="govuk-body">It may take up to an hour to take effect on Find an apprenticeship.</p>
-        <div class="govuk-inset-text govuk-body">This action cannot be undone.</div>
-
         <form asp-route="@RouteNames.CloseVacancy_Post">
-
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--m govuk-!-margin-top-6 govuk-!-margin-bottom-6">
                 <h3 class="govuk-fieldset__heading">
-                    Do you want to close this vacancy?
+                    Are you sure you want to close this vacancy on Find an apprenticeship?
                 </h3>
             </legend>
             <div esfa-validation-marker-for="ConfirmClose" class="govuk-form-group">
@@ -34,6 +22,9 @@
                         </div>
                     </div>
                 </fieldset>
+            </div>
+            <div class="govuk-inset-text govuk-body">
+                This action cannot be undone and it will take up to an hour for the vacancy to stop showing on Find an apprenticeship.
             </div>
             <div class="govuk-form-group">
                 <input type="submit" value="Continue" class="govuk-button" />
