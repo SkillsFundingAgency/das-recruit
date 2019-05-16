@@ -49,6 +49,7 @@ namespace Esfa.Recruit.Provider.Web.Mappings
             vm.EmployerWebsiteUrl = vacancy.EmployerWebsiteUrl;
             vm.EmployerAddressElements = Enumerable.Empty<string>();
             vm.FindAnApprenticeshipUrl = _externalLinksConfiguration.FindAnApprenticeshipUrl;
+            vm.IsAnonymous = vacancy.IsAnonymous;
             vm.NumberOfPositions = vacancy.NumberOfPositions?.ToString();
             vm.NumberOfPositionsCaption = vacancy.NumberOfPositions.HasValue
                 ? $"{"position".ToQuantity(vacancy.NumberOfPositions.Value)} available"

@@ -177,6 +177,7 @@
             </div>
             <div id="@Anchors.EmployerWebsiteUrl">
                 <h3 class="govuk-heading-s">Website (optional)</h3>
+                <div asp-show="@Model.IsAnonymous" class="govuk-hint">Website will not be shown as the employer is anonymous</div>
                 <p class="govuk-body">@Model.EmployerWebsiteUrl</p>
             </div>
         </div>

@@ -68,7 +68,7 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public ReviewSummaryViewModel Review { get; set; }
         public ManualQaOutcome? ManualOutcome { get; set; }
 
-        public bool IsAnonymousVacancy => EmployerNameOption == EmployerNameOption.Anonymous;
+        public bool IsAnonymous => EmployerNameOption == EmployerNameOption.Anonymous;
         public bool IsApproved => ManualOutcome.GetValueOrDefault() == ManualQaOutcome.Approved;
         public string ReviewedDateDay => ReviewedDate.ToLocalTime().AsGdsDate();
         public string ReviewedDateTime => ReviewedDate.ToLocalTime().AsGdsTime();

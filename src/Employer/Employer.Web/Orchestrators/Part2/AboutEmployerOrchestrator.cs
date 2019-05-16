@@ -35,7 +35,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             {
                 Title = vacancy.Title,
                 EmployerDescription =  await _vacancyClient.GetEmployerDescriptionAsync(vacancy),
-                EmployerWebsiteUrl = vacancy.EmployerWebsiteUrl
+                EmployerWebsiteUrl = vacancy.EmployerWebsiteUrl,
+                IsAnonymous = vacancy.IsAnonymous
             };
 
             if (vacancy.Status == VacancyStatus.Referred)

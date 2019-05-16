@@ -21,7 +21,8 @@
             <div esfa-validation-marker-for="EmployerWebsiteUrl" class="govuk-form-group">
                 <label asp-for="EmployerWebsiteUrl" class="govuk-label govuk-!-font-weight-bold">Website for organisation (optional)</label>
                 <span esfa-validation-message-for="EmployerWebsiteUrl" class="govuk-error-message"></span>
-                <input asp-for="EmployerWebsiteUrl" class="govuk-input govuk-!-width-one-half" maxlength="100" />
+                <div asp-show="@Model.IsAnonymous" class="govuk-hint">The website will not be shown as the employer is anonymous</div>
+                <input asp-for="EmployerWebsiteUrl" class="govuk-input govuk-!-width-three-quarters" maxlength="100" />
             </div>
             <div class="govuk-form-group">
                 <input type="submit" value="Save and continue" esfa-automation="btn-continue" class="govuk-button save-button" />

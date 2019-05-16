@@ -47,7 +47,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
             //These need to be in display order
             { FieldIdResolver.ToFieldId(v => v.EmployerAccountId), new string[0]},
             { FieldIdResolver.ToFieldId(v => v.Title), new[]{FieldIdentifiers.Title} },
-            { FieldIdResolver.ToFieldId(v => v.EmployerName), new string[0] },
+            { FieldIdResolver.ToFieldId(v => v.EmployerName), new []{FieldIdentifiers.EmployerName} },
             { FieldIdResolver.ToFieldId(v => v.ShortDescription), new []{FieldIdentifiers.ShortDescription} },
             { FieldIdResolver.ToFieldId(v => v.ClosingDate), new []{FieldIdentifiers.ClosingDate} },
             { FieldIdResolver.ToFieldId(v => v.Wage.WeeklyHours), new []{FieldIdentifiers.WorkingWeek} },
@@ -68,6 +68,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
             { FieldIdResolver.ToFieldId(v => v.Qualifications), new []{FieldIdentifiers.Qualifications} },
             { FieldIdResolver.ToFieldId(v => v.ThingsToConsider), new []{FieldIdentifiers.ThingsToConsider} },
             { FieldIdResolver.ToFieldId(v => v.EmployerDescription), new [] {FieldIdentifiers.EmployerDescription }},
+            { FieldIdResolver.ToFieldId(v => v.AnonymousReason), new [] {FieldIdentifiers.EmployerName }},
             { FieldIdResolver.ToFieldId(v => v.DisabilityConfident), new []{FieldIdentifiers.DisabilityConfident} },
             { FieldIdResolver.ToFieldId(v => v.EmployerWebsiteUrl), new []{FieldIdentifiers.EmployerWebsiteUrl} },
             { FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine1), new []{FieldIdentifiers.EmployerAddress} },

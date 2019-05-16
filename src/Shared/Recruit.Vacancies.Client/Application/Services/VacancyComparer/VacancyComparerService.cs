@@ -17,6 +17,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services.VacancyComparer
             {
                 CompareValue(a, b, v => v.VacancyReference, FieldIdResolver.ToFieldId(v => v.VacancyReference)),
                 CompareValue(a, b, v => v.EmployerAccountId, FieldIdResolver.ToFieldId(v => v.EmployerAccountId)),
+                CompareValue(a, b, v => v.AnonymousReason, FieldIdResolver.ToFieldId(v => v.AnonymousReason)),
                 CompareValue(a, b, v => v.ApplicationInstructions, FieldIdResolver.ToFieldId(v => v.ApplicationInstructions)),
                 CompareValue(a, b, v => v.ApplicationMethod, FieldIdResolver.ToFieldId(v => v.ApplicationMethod)),
                 CompareValue(a, b, v => v.ApplicationUrl, FieldIdResolver.ToFieldId(v => v.ApplicationUrl)),
