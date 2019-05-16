@@ -77,22 +77,21 @@
 <div asp-show="@Model.ShowResultsTable">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
-            <table class="govuk-table responsive">
+            <table class="govuk-table responsive das-table--small">
                 <thead class="govuk-table__head">
                 <tr class="govuk-table__row">
-                    <th class="govuk-table__header">Status</th>
                     <th class="govuk-table__header">Vacancy title</th>
                     <th class="govuk-table__header">Vacancy ref</th>
                     <th class="govuk-table__header">Applications</th>
-                    <th class="govuk-table__header">Closing Date</th>
-                    <th class="govuk-table__header">Action</th>
+                    <th class="govuk-table__header">Closing</th>
+                    <th class="govuk-table__header">Status</th>
+                    <th class="govuk-table__header"></th>
                 </tr>
                 </thead>
                 <tbody class="govuk-table__body">
                 @foreach (var vacancy in Model.Vacancies)
                 {
                     <tr class="govuk-table__row">
-                        <td class="govuk-table__cell dashboard-status" data-label="Status"><span class="tag tag-@vacancy.Status.ToString().ToLower()">@vacancy.Status.GetDisplayName()</span></td>
                         <td class="govuk-table__cell" data-label="Vacancy title">
                             <div>@vacancy.Title</div>
                         </td>
@@ -106,7 +105,8 @@
                             <span asp-show="@vacancy.HasNewApplications" class="govuk-!-font-weight-bold"> (@vacancy.NoOfNewApplications new)</span>
                         </td>
                         <td asp-hide="@vacancy.CanShowVacancyApplicationsCount" class="govuk-table__cell dashboard-applications" data-label="Applications">-</td>
-                        <td class="govuk-table__cell dashboard-closingdate" data-label="Closing date"><span>@vacancy.ClosingDate?.AsGdsDate()</span></td>
+                        <td class="govuk-table__cell dashboard-closingdate" data-label="Closing date"><span>@vacancy.ClosingDate?.AsGdsDate()</span></td>    
+                        <td class="govuk-table__cell dashboard-status" data-label="Status"><span class="tag tag-@vacancy.Status.ToString().ToLower()">@vacancy.Status.GetDisplayName()</span></td>
                         <td class="govuk-table__cell dashboard-action" data-label="Action">
                             <a asp-show="@vacancy.IsNotSubmittable" asp-route="@RouteNames.VacancyManage_Get" asp-route-vacancyId="@vacancy.Id" class="govuk-link">Manage</a>
                             <a asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.DisplayVacancy_Get" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy)</a>
