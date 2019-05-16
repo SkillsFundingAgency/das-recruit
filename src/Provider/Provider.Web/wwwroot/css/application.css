@@ -564,7 +564,6 @@ input.form-control, textarea.form-control {
   margin-right: 40px;
 }
 
-
 .close-vacancy-info {
   border-color: #005ea5;
   background-color:#eaebf4;
@@ -573,37 +572,39 @@ input.form-control, textarea.form-control {
 .tag {
   display: inline-block;
   text-align: center;
-  background-color: #808080;
-  color: white;
+  background: #FFFFFF;
+  border:3px solid #bfc1c3;
+  color: #0b0c0c;
   padding: 0.3em 0.4em 0.2em 0.4em;
-  font-weight: bold;
+  font-weight: 400;
   font-size: 16px;
   border-radius: 4px;
   white-space: nowrap;
 }
 
 .tag-draft {
-  background-color: #6F777B;
+  border-color: #bfc1c3;
 }
 
 .tag-submitted {
-  background-color: #F47738;
+  border-color: #F47738;
 }
 
 .tag-referred {
-  background-color: #B10E1E;
+  border-color: #B10E1E;
+  color:#000000;
 }
 
 .tag-approved {
-  background-color: #006435;
+  border-color: #006435;
 }
 
 .tag-live {
-  background-color: #006435;
+  border-color: #006435;
 }
 
 .tag-closed {
-  background-color: #0B0C0C;
+  border-color: #0b0c0c;
 }
 
 .das-tag {
@@ -762,6 +763,11 @@ table.responsive tr.total {
   }
 }
 /*** End responsive tables ***/
+
+.das-table--small .govuk-table__cell, .das-table--small .govuk-table__header{
+    font-size: 1rem;
+    line-height: 1.25;
+}
 
 .employer-agreement-container .notice .icon {
   top:20px;
