@@ -17,6 +17,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules
             AddRule(new VacancyProfanityChecksRule(profanityListProvider));
             AddRule(new VacancyBannedPhraseChecksRule(bannedPhrasesProvider));
             AddRule(new VacancyTitlePopularityCheckRule(apprenticeshipProgrammeProvider, popularityService, qaRulesConfig));
+            AddRule(new VacancyAnonymousCheckRule());
         }
     }
 }
