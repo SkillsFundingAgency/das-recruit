@@ -306,7 +306,12 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
                 Website (optional)
             </h3>
             <span esfa-validation-message-for="EmployerWebsiteUrl" class="govuk-error-message"></span>
-            <p asp-show="@Model.HasEmployerWebsiteUrl" class="govuk-body">@Model.EmployerWebsiteUrl</p>
+            <div asp-show="@Model.HasEmployerWebsiteUrl">
+                <div asp-show="@Model.IsAnonymous" class="govuk-hint">Website will not be shown as the employer is anonymous</div>
+                <p class="govuk-body">
+                    @Model.EmployerWebsiteUrl
+                </p>
+            </div>
             @EditLink(RouteNames.AboutEmployer_Get, Model.EmployerWebsiteUrlSectionState, "link-website")
         </div>
     </div>

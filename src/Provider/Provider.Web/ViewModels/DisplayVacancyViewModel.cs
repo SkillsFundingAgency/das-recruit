@@ -18,6 +18,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public string ExpectedDuration { get; internal set; }
         public string FindAnApprenticeshipUrl { get; internal set; }
         public string HoursPerWeek { get; internal set; }
+        public bool IsAnonymous { get; internal set; }
         public bool IsDisabilityConfident { get; internal set; }
         public Address Location { get; internal set; }
         public IEnumerable<string> EmployerAddressElements { get; internal set; }

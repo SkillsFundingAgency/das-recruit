@@ -34,7 +34,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
             {
                 Title = vacancy.Title,
                 EmployerDescription = vacancy.EmployerDescription,
-                EmployerWebsiteUrl = vacancy.EmployerWebsiteUrl
+                EmployerWebsiteUrl = vacancy.EmployerWebsiteUrl,
+                IsAnonymous = vacancy.IsAnonymous
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
