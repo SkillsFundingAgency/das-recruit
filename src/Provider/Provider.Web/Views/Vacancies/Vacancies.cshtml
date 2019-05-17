@@ -153,7 +153,6 @@
 
     <script nws-csp-add-nonce="true">
         var filterId = "#@Html.IdFor(m => m.Filter)";
-        var dashboardFilterEndpointPrefix = "@vacanciesSearchSuggestionsEndpointUrl";
         $(function() {
             $("#search-submit-button").removeClass('js-hidden');
             $("#filter-submit").addClass('js-hidden');
@@ -166,6 +165,6 @@
                 });
         });
 
-        searchSuggestions.init("#search-input", dashboardFilterEndpointPrefix);
+        searchSuggestions.init("#search-input", "@vacanciesSearchSuggestionsEndpointUrl");
     </script>
 }

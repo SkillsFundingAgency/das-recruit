@@ -2,6 +2,10 @@
 
 @model DashboardViewModel
 
+@{
+    var vacanciesSearchSuggestionsEndpointUrl = @Url.RouteUrl(RouteNames.VacanciesSearchSuggestions_Get, null, Context.Request.Scheme);
+}
+
 <div asp-hide="@Model.HasAnyVacancies">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-one-half">
@@ -13,7 +17,7 @@
         <div class="govuk-grid-column-one-half ">
             <a asp-route="@RouteNames.Employer_Get" class="govuk-button float-right clear govuk-!-margin-top-2 govuk-!-margin-bottom-4" esfa-automation="create-vacancy">Create vacancy</a>
         </div>
-    </div>
+    </div>    
 </div>
 
 <div asp-show="@Model.HasAnyVacancies">
@@ -25,6 +29,29 @@
         <div class="govuk-grid-column-one-half ">
             <a asp-route="@RouteNames.Employer_Get" class="govuk-button float-right clear govuk-!-margin-top-2 govuk-!-margin-bottom-4" esfa-automation="create-vacancy">Create vacancy</a>
         </div>
+    </div>
+
+    <div class="govuk-grid-row">
+        <form asp-route="@RouteNames.Vacancies_Get" method="get" autocomplete="off">
+            <div class="govuk-grid-column-two-thirds">
+                <div class="govuk-form-group">
+                    <fieldset class="govuk-fieldset">
+                        <div class="form-group search-field">
+                            <div class="search-input-with-button">
+                                <label class="govuk-label" for="search">
+                                Search vacancies
+                                </label>
+                                <input id="search-input" name="searchTerm" placeholder="Search by title, reference number or employer" class="govuk-input search-input" maxlength="200">
+                            </div>
+                            <div class="search-submit">
+                                <!-- hide button for no js version -->
+                                <button type="submit" id="search-submit-button">Search</button>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+        </form>
     </div>
 
     <div class="govuk-grid-row das-card--row">
@@ -158,3 +185,11 @@
     </div>
 </div>
 
+@section FooterJS
+{
+    <script src="/lib/jquery-ui/dist/jquery-ui.min.js"></script>
+    <script asp-append-version="true" src="/lib/esfa-search-suggestions/searchSuggestionsService.js"></script>
+    <script nws-csp-add-nonce="true">
+        searchSuggestions.init("#search-input", "@vacanciesSearchSuggestionsEndpointUrl");
+    </script>
+}
