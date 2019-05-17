@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using  Esfa.Recruit.Shared.Web.Extensions;
 
 namespace Esfa.Recruit.Provider.Web.Controllers
 {
@@ -75,7 +76,8 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
                 if (exception is InvalidStateException)
                 {
-                    _logger.LogError(exception, "Exception on path: {route}", routeWhereExceptionOccurred);
+                    var exceptionData = exception.GetFormattedExceptionData();
+                    _logger.LogError(exception, "Exception on path: {route} {data}", routeWhereExceptionOccurred, exceptionData);
                     AddDashboardMessage(exception.Message);
                     return RedirectToRoute(RouteNames.Vacancies_Get, new { Ukprn = ukprn });
                 }
@@ -178,6 +180,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 _logger.LogError($"Dashboard message already set in {nameof(ErrorController)}. Existing message:{TempData[TempDataKeys.VacanciesErrorMessage]}. New message:{message}");
 
             TempData[TempDataKeys.VacanciesErrorMessage] = message;
-        }
+        }        
     }
 }

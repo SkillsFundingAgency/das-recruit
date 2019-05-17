@@ -49,7 +49,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
         private async Task<IActionResult> GetCloseVacancyConfirmationView(VacancyRouteModel vrm)
         {
-            var vm = await _orchestrator.GetCloseViewModelAsync(vrm);
+            var vm = await _orchestrator.GetCloseViewModelAsync(vrm, User.ToVacancyUser());
             return View(ViewNames.CloseVacancyView, vm);
         }
     }

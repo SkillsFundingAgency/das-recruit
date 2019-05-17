@@ -7,6 +7,7 @@ using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.Models;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.ViewModels;
+using System.Collections.Generic;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators
 {
@@ -21,14 +22,23 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             _vacancyClient = vacancyClient;
         }
 
-        public async Task<CloseViewModel> GetCloseViewModelAsync(VacancyRouteModel vrm)
+        public async Task<CloseViewModel> GetCloseViewModelAsync(VacancyRouteModel vrm, VacancyUser user)
         {
             var vacancy = await _vacancyClient.GetVacancyAsync(vrm.VacancyId.GetValueOrDefault());
 
             Utility.CheckAuthorisedAccess(vacancy, vrm.Ukprn);
 
             if (!vacancy.CanClose)
-                throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForClosing, vacancy.Title));
+            {
+                throw new InvalidStateException(
+                    string.Format(ErrorMessages.VacancyNotAvailableForClosing, vacancy.Title),
+                    user,
+                    new Dictionary<string, string> 
+                    {
+                        [nameof(vacancy.VacancyReference)] = vacancy.VacancyReference.ToString(),
+                        [nameof(vacancy.Status)] = vacancy.Status.ToString()
+                    });
+            }
 
             var vm = new CloseViewModel {
                 Title = vacancy.Title,
