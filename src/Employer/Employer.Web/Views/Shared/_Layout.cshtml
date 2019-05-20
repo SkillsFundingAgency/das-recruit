@@ -108,9 +108,16 @@ public bool IsErrorPage()
                 </a>
             </div>
             <div class="govuk-header__content">
-                <a href="@ExternalLinks.MaRoot" class="govuk-header__link govuk-header__link--service-name">
-                Manage apprenticeships
-                </a>
+                <esfaFeatureEnabled name="@FeatureNames.AllowLevyPayingEmployersOnly">
+                    <a href="@ExternalLinks.MaRoot" class="govuk-header__link govuk-header__link--service-name">
+                        Manage apprenticeships
+                    </a>
+                </esfaFeatureEnabled>
+                <esfaFeatureDisabled name="@FeatureNames.AllowLevyPayingEmployersOnly">
+                    <a asp-route="@RouteNames.Dashboard_Account_Home" class="govuk-header__link govuk-header__link--service-name">
+                        Manage apprenticeships
+                    </a>
+                </esfaFeatureDisabled>
             </div>
         </div>
     </header>

@@ -11,6 +11,7 @@ using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
@@ -31,11 +32,13 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             _employerVacancyClient = employerVacancyClient;
         }
 
-        public TitleViewModel GetTitleViewModel()
+        public async Task<TitleViewModel> GetTitleViewModel(string employerAccountId)
         {
+            var dashboard = await _employerVacancyClient.GetDashboardAsync(employerAccountId);
             var vm = new TitleViewModel
             {
-                PageInfo = new PartOnePageInfoViewModel()
+                PageInfo = new PartOnePageInfoViewModel(),
+                ShowReturnToMALink = dashboard == null || !dashboard.CloneableVacancies.Any()
             };
             return vm;
         }
@@ -45,7 +48,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var dashboard = await _employerVacancyClient.GetDashboardAsync(vrm.EmployerAccountId);
             
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Title_Get);
-
             var vm = new TitleViewModel
             {
                 VacancyId = vacancy.Id,
@@ -53,7 +55,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 PageInfo = Utility.GetPartOnePageInfo(vacancy),
                 HasCloneableVacancies = dashboard.CloneableVacancies.Any()
             };
-
             if (vacancy.Status == VacancyStatus.Referred)
             {
                 vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
@@ -74,7 +75,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             }
             else
             {
-                vm = GetTitleViewModel();
+                vm = await GetTitleViewModel(m.EmployerAccountId);
             }
 
             vm.Title = m.Title;

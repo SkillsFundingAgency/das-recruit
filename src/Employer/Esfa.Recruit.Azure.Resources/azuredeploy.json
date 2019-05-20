@@ -536,7 +536,7 @@
               {
                 "name": "ExternalLinks:CommitmentsSiteUrl",
                 "value": "[parameters('ExternalLinks').CommitmentsSiteUrl]"
-              },
+              },			  
               {
                 "name": "Features:AllowLevyPayingEmployersOnly",
                 "value": "[parameters('Features').AllowLevyPayingEmployersOnly]"

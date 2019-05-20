@@ -1,12 +1,22 @@
 ﻿@using Esfa.Recruit.Shared.Web.Mappers
 @model Esfa.Recruit.Employer.Web.ViewModels.Part1.Title.TitleViewModel
 
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@Model.BackLink" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames}' />
         <partial name="@PartialNames.ReviewSummary" for="Review" />
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">What do you want to call this vacancy?</h1>
+        <esfaFeatureDisabled name="@FeatureNames.AllowLevyPayingEmployersOnly">
+            <a asp-show="@Model.ShowReturnToMALink" asp-route="@RouteNames.Dashboard_Account_Home" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Return to home</a>
+            <a asp-hide="@Model.ShowReturnToMALink" asp-route="@RouteNames.Dashboard_Index_Get" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Return to your vacancies</a>
+        </esfaFeatureDisabled>
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Vacancy summary</h1>
+        <div class="info-summary">
+            <p class="govuk-body">
+                Apprentice candidates will see your vacancy in a search along with vacancies from other employers. This is your
+                opportunity to make your vacancy attract the best candidates.
+            </p>
+        </div>
     </div>
 </div>
 
@@ -17,7 +27,7 @@
                 <p class="govuk-body">Use a title that relates to the apprenticeship training for this vacancy, this will help it get found in the Find an apprenticeship search.</p>
                 <span class="govuk-hint">Must include the word ‘apprentice’ or ‘apprenticeship’ </span>
                 <span esfa-validation-message-for="Title" class="govuk-error-message"></span>
-                <input asp-for="Title" class="govuk-input character-count" type="text" data-val-length-max="100"/>
+                <input asp-for="Title" class="govuk-input character-count" type="text" data-val-length-max="100" />
                 <div>
                     <span class="govuk-body maxchar-count">100</span>
                     <span class="govuk-body maxchar-text"> characters remaining</span>

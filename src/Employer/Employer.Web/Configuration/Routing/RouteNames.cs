@@ -53,6 +53,9 @@
         public const string CreateVacancy_Get = "CreateVacancy_Get";
         public const string CreateVacancy_Post = "CreateVacancy_Post";
 
+        public const string EmployerCreateVacancy_Get = "EmployerCreateVacancy_Get";
+        public const string EmployerManageVacancy_Get = "EmployerManageVacancy_Get";
+
         public const string Title_Get = "Title_Get";
         public const string Title_Post = "Title_Post";
 
