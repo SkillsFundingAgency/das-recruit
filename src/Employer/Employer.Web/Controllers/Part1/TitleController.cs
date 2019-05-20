@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
@@ -26,7 +25,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         {
             var vm = _orchestrator.GetTitleViewModel();            
             vm.PageInfo.SetWizard();
-            vm.FromEmployer = Convert.ToBoolean(fromEmployer);
+            vm.FromEmployer = bool.Parse(fromEmployer);
             return View(vm);
         }
 

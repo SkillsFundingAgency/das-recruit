@@ -1,5 +1,4 @@
 ﻿@using Esfa.Recruit.Vacancies.Client.Domain.Entities
-@using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections
 @model DashboardViewModel
 @{
     string GetLinkText(VacancySummaryViewModel vacancySummary)
@@ -19,6 +18,11 @@
     <div class="govuk-grid-column-two-thirds">
         <div asp-show="Model.HasWarning" class="warning-summary govuk-!-margin-bottom-0">
             <p>@Model.WarningMessage</p>
+        </div>
+        <div asp-show="@Model.FromEmployer" class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                <a asp-controller="EmployerTeam" asp-action="Index" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Return to home</a>
+            </div>
         </div>
         <h1 class="govuk-heading-l govuk-!-margin-bottom-6">Your vacancies</h1>
         <div asp-show="Model.HasInfo" class="info-summary govuk-!-margin-bottom-0">
