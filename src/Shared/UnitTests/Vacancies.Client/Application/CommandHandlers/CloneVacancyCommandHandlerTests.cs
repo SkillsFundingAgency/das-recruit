@@ -16,7 +16,8 @@ using AutoFixture;
 
 namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
 {
-    public class CloneVacancyCommandHandlerTests : VacancyValidationTestsBase
+    [Trait("Category", "Unit")]
+    public class CloneVacancyCommandHandlerTests
     {
         [Fact]
         public async Task CheckClonedVacancyHasCorrectFieldsSet()

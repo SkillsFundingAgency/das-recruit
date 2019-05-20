@@ -15,6 +15,7 @@ using Xunit;
 
 namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
 {
+    [Trait("Category", "Unit")]
     public class SubmitVacancyCommandHandlerTests
     {
         [Fact]
