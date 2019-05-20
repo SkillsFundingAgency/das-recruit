@@ -17,10 +17,24 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         private readonly ILogger<PatchVacancyTrainingProviderCommandHandler> _logger;
         private readonly ITrainingProviderService _trainingProviderService;
 
+        private readonly TrainingProvider _esfaTrainingProvider = new TrainingProvider
+        {
+            Ukprn = 10033670,
+            Name = "Education Skills Funding Agency",
+            Address = new Address
+            {
+                AddressLine1 = "Cheylesmore House",
+                AddressLine2 = "Quinton Road",
+                AddressLine3 = "Coventry",
+                AddressLine4 = "",
+                Postcode = "CV1 2WT"
+            }
+        };
+
         public PatchVacancyTrainingProviderCommandHandler(
+            ILogger<PatchVacancyTrainingProviderCommandHandler> logger,
             IVacancyRepository repository,
             IMessaging messaging,
-            ILogger<PatchVacancyTrainingProviderCommandHandler> logger,
             ITrainingProviderService trainingProviderService)
         {
             _repository = repository;
@@ -47,7 +61,16 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             _logger.LogInformation("Patching training provider name and address for vacancy {vacancyId}.", message.VacancyId);
 
-            var tp = await _trainingProviderService.GetProviderAsync(vacancy.TrainingProvider.Ukprn.Value);
+            TrainingProvider tp;
+
+            if (vacancy.TrainingProvider.Ukprn.Value.Equals(_esfaTrainingProvider.Ukprn))
+            {
+                tp = _esfaTrainingProvider;
+            }
+            else
+            {
+                tp = await _trainingProviderService.GetProviderAsync(vacancy.TrainingProvider.Ukprn.Value);
+            }
 
             vacancy = await _repository.GetVacancyAsync(message.VacancyId);
             PatchVacancyTrainingProvider(vacancy, tp);

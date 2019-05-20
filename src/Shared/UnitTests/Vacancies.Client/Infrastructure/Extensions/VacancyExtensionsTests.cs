@@ -93,7 +93,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             p.EmployerWebsiteUrl.Should().BeNull();
         }
 
-        public void AssertCommonProperties(Vacancy v, VacancyProjectionBase p)
+        private  void AssertCommonProperties(Vacancy v, VacancyProjectionBase p)
         {
             p.Id.Should().Be(DocumentId);
             p.LastUpdated.Should().Be(_now);
