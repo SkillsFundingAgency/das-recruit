@@ -75,7 +75,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
                 if (exception is InvalidStateException)
                 {
-                    _logger.LogError(exception, "Exception on path: {route}", routeWhereExceptionOccurred);
+                    _logger.LogWarning(exception, "Exception on path: {route}", routeWhereExceptionOccurred);
                     AddDashboardMessage(exception.Message);
                     return RedirectToRoute(RouteNames.Vacancies_Get, new { Ukprn = ukprn });
                 }
