@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
@@ -21,10 +22,11 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         }
         
         [HttpGet("create-vacancy", Name = RouteNames.CreateVacancy_Get)]
-        public IActionResult Title()
+        public IActionResult Title([FromQuery]string fromEmployer = "false")
         {
-            var vm = _orchestrator.GetTitleViewModel();
+            var vm = _orchestrator.GetTitleViewModel();            
             vm.PageInfo.SetWizard();
+            vm.FromEmployer = Convert.ToBoolean(fromEmployer);
             return View(vm);
         }
 
