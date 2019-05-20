@@ -34,7 +34,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             vm.FromEmployer = bool.Parse(fromEmployer);
             if (vm.FromEmployer && !vm.HasVacancies)
             {
-                return RedirectToRoute(RouteNames.CreateVacancy_Get, new { fromEmployer = true });
+                return RedirectToRoute(RouteNames.EmployerCreateVacancy_Get);
             }
 
             if (TempData.ContainsKey(TempDataKeys.DashboardErrorMessage))
