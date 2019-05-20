@@ -35,12 +35,14 @@
         <div class="govuk-grid-row" asp-show="@Model.HasAutomatedQaResults">
             <div class="govuk-grid-column-full">
                 <div class="govuk-error-summary review-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="error-summary">
-                    <h2 class="govuk-error-summary__title" id="error-summary-title"
+                    <h2 class="govuk-error-summary__title" id="error-summary-title">
                         Automated QA Results
                     </h2>
                     <div class="govuk-error-summary__body">
-                        
-                        <p class="govuk-body">Uncheck to exclude from QA Results that are referred to the employer</p>
+
+                        <p asp-show="@Model.IsEmployerVacancy" class="govuk-body">Uncheck the box if you don't want this feedback to be sent to the employer.</p>
+                        <p asp-show="@Model.IsProviderVacancy" class="govuk-body">Uncheck the box if you don't want this feedback to be sent to the provider.</p>
+
                         @foreach (var automatedQaResult in Model.AutomatedQaResults)
                         {
                             <div class="govuk-form-group">
