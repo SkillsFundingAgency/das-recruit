@@ -9,7 +9,7 @@
         public bool HasStartedPartTwo { get; set; }
         public bool IsWizard { get; private set; }
         public bool IsNotWizard => !IsWizard;
-        public string SubmitButtonText => IsWizard ? SubmitButtonCaptionForWizard : SubmitButtonCaption;
+        public string SubmitButtonText => IsWizard ? SubmitButtonCaptionForWizard : SubmitButtonCaption;        
 
         public void SetWizard(string requestedWizardParam = null)
         {
