@@ -28,6 +28,17 @@
 </div>
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
+        <div asp-hide="Model.HasVacancies">
+            <p class="govuk-body">
+                You must be a levy-paying employer to post a vacancy.
+            </p>
+            <p class="govuk-body">
+                You can clone vacancies once they've been submitted.
+            </p>
+            <p class="govuk-body">
+                Vacancies will be approved or rejected within 24 hours.
+            </p>
+        </div>
         <a asp-route="@RouteNames.CreateVacancyOptions_Get" class="govuk-button govuk-!-margin-bottom-6" esfa-automation="create-vacancy">Create vacancy</a>
     </div>
 </div>
