@@ -28,6 +28,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.ThingsToConsider, Anchors.ThingsToConsider),
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.EmployerDescription, Anchors.EmployerDescription),
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.DisabilityConfident, Anchors.DisabilityConfident),
+                new ReviewFieldIndicatorViewModel(FieldIdentifiers.EmployerName, Anchors.EmployerName),
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.EmployerWebsiteUrl, Anchors.EmployerWebsiteUrl),
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.EmployerContact, Anchors.EmployerContact),
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.EmployerAddress, Anchors.EmployerAddress),
@@ -42,7 +43,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
             {
                 { FieldIdResolver.ToFieldId(v => v.EmployerAccountId), new string[0]},
                 { FieldIdResolver.ToFieldId(v => v.Title), new[]{ FieldIdentifiers.Title} },
-                { FieldIdResolver.ToFieldId(v => v.EmployerName), new string[0] },
+                { FieldIdResolver.ToFieldId(v => v.EmployerName), new[]{FieldIdentifiers.EmployerName} },
                 { FieldIdResolver.ToFieldId(v => v.ShortDescription), new []{ FieldIdentifiers.ShortDescription} },
                 { FieldIdResolver.ToFieldId(v => v.ClosingDate), new []{ FieldIdentifiers.ClosingDate} },
                 { FieldIdResolver.ToFieldId(v => v.Wage.WeeklyHours), new []{ FieldIdentifiers.WorkingWeek} },
