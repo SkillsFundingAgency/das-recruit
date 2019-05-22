@@ -166,9 +166,14 @@
                 <h3 class="govuk-heading-s">Description</h3>
                 <p class="govuk-body">@Model.EmployerDescription</p>
             </div>
-            <div>
+            <div id="@Anchors.EmployerName">
                 <h3 class="govuk-heading-s">Employer</h3>
                 <p class="govuk-body">@Model.EmployerName</p>
+                
+                <div asp-show="@Model.IsAnonymous" class="govuk-inset-text">
+                    <h3 class="govuk-heading-s">Reason for being anonymous (does not show on vacancy)</h3>
+                    <p>@Model.AnonymousReason</p>
+                </div>
             </div>
             <div id="@Anchors.DisabilityConfident">
                 <h3 class="govuk-heading-s">Disability Confident (optional)</h3>
