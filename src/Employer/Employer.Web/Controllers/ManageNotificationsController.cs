@@ -27,8 +27,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         public async Task<IActionResult> ManageNotifications(ManageNotificationsEditModel model)
         {
             await _orchestrator.UpdateUserNotificationPreferencesAsync(model, User.ToVacancyUser());
-            var vm = await _orchestrator.GetManageNotificationsViewModelAsync(User.ToVacancyUser());
-            return View(vm);
+            var vm = _orchestrator.GetAcknowledgementViewModel(model, User.ToVacancyUser());
+            return View("NotificationsUpdatedAcknowledgement", vm);
         }
     }
 }

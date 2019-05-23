@@ -31,6 +31,19 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             await _recruitVacancyClient.UpdateUserNotificationPreferencesAsync(preferences);
         }
 
+        public ManageNotificationsAcknowledgementViewModel GetAcknowledgementViewModel(ManageNotificationsEditModel editModel, VacancyUser user)
+        {
+            return new ManageNotificationsAcknowledgementViewModel
+            {
+                IsApplicationSubmittedSelected = editModel.IsApplicationSubmittedSelected,
+                IsVacancyClosingSoonSelected = editModel.IsVacancyClosingSoonSelected,
+                IsVacancyRejectedSelected = editModel.IsVacancyRejectedSelected,
+                IsUserSubmittedVacanciesSelected = editModel.NotificationScope.GetValueOrDefault() == NotificationScope.UserSubmittedVacancies,
+                Frequency = editModel.NotificationFrequency.ToString().ToLower(),
+                UserEmail = user.Email
+            };
+        }
+
         private UserNotificationPreferences GetDomainModel(ManageNotificationsEditModel sourceModel, Guid userId)
         {            
             var targetModel = new UserNotificationPreferences() { Id = userId };
