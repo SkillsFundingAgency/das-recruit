@@ -94,6 +94,9 @@
                 </fieldset>
             </div>
             <div class="govuk-form-group">
+                <p asp-show="@Model.HasAnySubscription" class="govuk-body">
+                    <a asp-route="@RouteNames.ConfirmUnsubscribeNotifications_Get">Unsubscribe from all recruitment emails</a>
+                </p>
         	    <button class="govuk-button submit" type="submit">Save</button>
             </div>
         </form>
