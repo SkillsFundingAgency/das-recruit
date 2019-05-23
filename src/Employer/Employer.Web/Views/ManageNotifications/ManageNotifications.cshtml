@@ -1,0 +1,101 @@
+@using Esfa.Recruit.Employer.Web.ViewModels.ManageNotifications;
+
+@model ManageNotificationsViewModel
+<div class="govuk-grid-row">
+    <a asp-route="@RouteNames.Dashboard_Index_Get" class="govuk-back-link">Back</a>
+    <h1 class="govuk-heading-l govuk-!-margin-bottom-6">Manage your recruitment emails</h1>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-gird-column-two-thirds">
+        <form method="post">
+            <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset" aria-describedby="when-conditional-hint">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                        <h2 class="govuk-fieldset__heading">
+                        When do you want to be sent recruitment emails?
+                        </h2>
+                    </legend>
+                    <span id="when-conditional-hint" class="govuk-hint">
+                        Choose when you’d like emails
+                    </span>
+                    <div class="govuk-checkboxes" data-module="checkboxes">
+                        <div class="govuk-checkboxes__item">
+                            <input class="govuk-checkboxes__input checked" asp-for="IsVacancyRejectedSelected" id="notifications-rejected" type="checkbox">
+                            <label class="govuk-label govuk-checkboxes__label" for="notifications-rejected">
+                                <span class="govuk-visually-hidden">Get notifications when </span>Vacancies are rejected after review
+                            </label>
+                        </div>
+                        <div class="govuk-checkboxes__item">
+                            <input class="govuk-checkboxes__input checked" asp-for="IsVacancyClosingSoonSelected" id="notifications-closing" type="checkbox">
+                            <label class="govuk-label govuk-checkboxes__label" for="notifications-closing">
+                                <span class="govuk-visually-hidden">Get notifications when </span>Vacancies are closing soon
+                            </label>
+                        </div>
+                        <div class="govuk-checkboxes__item govuk-checkboxes--conditional">
+                            <input class="govuk-checkboxes__input checked" asp-for="IsApplicationSubmittedSelected" id="notifications-new" type="checkbox" data-aria-controls="conditional-when-conditional">
+                            <label class="govuk-label govuk-checkboxes__label" for="notifications-new">
+                                <span class="govuk-visually-hidden">Get notifications when </span>There are new applications
+                            </label>
+                        </div>
+                        <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-when-conditional">
+                            <fieldset class="govuk-fieldset" aria-describedby="when-conditional-hint">
+                                <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                                    <h1 class="govuk-fieldset__heading">
+                                        How often do you want to be sent new application emails?
+                                    </h1>
+                                </legend>
+                                <div class="govuk-radios" data-module="radios">
+                                    <div class="govuk-radios__item">
+                                        <input class="govuk-radios__input" value="Immediately" asp-for="NotificationFrequency" id="notification-frequency-immediately" type="radio">
+                                        <label class="govuk-label govuk-radios__label" for="notification-frequency-immediately">
+                                            Immediately
+                                        </label>
+                                    </div>
+                                    <div class="govuk-radios__item">
+                                        <input class="govuk-radios__input" value="Daily" asp-for="NotificationFrequency" id="notification-frequency-daily" type="radio" >
+                                        <label class="govuk-label govuk-radios__label" for="notification-frequency-daily">
+                                            Daily
+                                        </label>
+                                    </div>
+                                    <div class="govuk-radios__item">
+                                        <input class="govuk-radios__input" value="Weekly" asp-for="NotificationFrequency" id="notification-frequency-weekly" type="radio">
+                                        <label class="govuk-label govuk-radios__label" for="notification-frequency-weekly">
+                                            Weekly
+                                        </label>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                    <h2 class="govuk-fieldset__heading">
+                        What emails would you like to get?
+                    </h2>
+                    </legend>
+                    <div class="govuk-radios" data-module="radios">
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" value="UserSubmittedVacancies" id="notification-scope-user-submitted" asp-for="NotificationScope" type="radio">
+                        <label class="govuk-label govuk-radios__label" for="notification-scope-user-submitted">
+                            Only emails about vacancies I have submitted
+                        </label>
+                    </div>
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" value="OrganisationVacancies" id="notification-scope-organisation" asp-for="NotificationScope" type="radio">
+                        <label class="govuk-label govuk-radios__label" for="notification-scope-organisation">
+                            Emails about all vacancies for your organisation
+                        </label>
+                    </div>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="govuk-form-group">
+        	    <button class="govuk-button submit" type="submit">Save</button>
+            </div>
+        </form>
+    </div>
+</div>

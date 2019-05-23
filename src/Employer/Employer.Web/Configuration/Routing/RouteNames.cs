@@ -112,5 +112,8 @@
         public const string NonLevyInfo_Get = "NonLevyInfo_Get";
 
         public const string BlockedEmployer_Get = "BlockedEmployer_Get";
+
+        public const string ManageNotifications_Get = "ManageNotifications_Get";
+        public const string ManageNotifications_Post = "ManageNotifications_Post";
     }
 }

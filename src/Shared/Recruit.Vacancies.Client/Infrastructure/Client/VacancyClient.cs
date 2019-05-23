@@ -40,6 +40,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly IEmployerService _employerService;
         private readonly IReportRepository _reportRepository;
         private readonly IReportService _reportService;
+        private readonly IUserNotificationPreferencesRepository _userNotificationPreferencesRepository;
 
         public VacancyClient(
             IVacancyRepository repository,
@@ -60,7 +61,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             ITrainingProviderService trainingProviderService,
             IEmployerService employerService,
             IReportRepository reportRepository,
-            IReportService reportService)
+            IReportService reportService,
+            IUserNotificationPreferencesRepository userNotificationPreferencesRepository)
         {
             _repository = repository;
             _reader = reader;
@@ -81,6 +83,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _employerService = employerService;
             _reportRepository = reportRepository;
             _reportService = reportService;
+            _userNotificationPreferencesRepository = userNotificationPreferencesRepository;
         }
 
         public Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user)
@@ -435,6 +438,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         public Task<TrainingProvider> GetTrainingProviderAsync(long ukprn)
         {
             return _trainingProviderService.GetProviderAsync(ukprn);
+        }
+
+        public Task<UserNotificationPreferences> GetUserNotificationPreferencesAsync(Guid userId)
+        {
+            return  _userNotificationPreferencesRepository.GetAsync(userId);
+        }
+
+        public Task UpdateUserNotificationPreferencesAsync(UserNotificationPreferences preferences)
+        {
+            return _userNotificationPreferencesRepository.UpsertAsync(preferences);
         }
     }
 }
