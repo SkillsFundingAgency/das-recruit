@@ -1,15 +1,17 @@
 ﻿using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Events;
+using Esfa.Recruit.Vacancies.Client.Application.Queues;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
 using Newtonsoft.Json;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventStore
 {
-    internal sealed class StorageQueueEventStore : StorageQueueBase, IEventStore
+    internal sealed class StorageQueueEventStore : IEventStore
     {
-        public StorageQueueEventStore(StorageQueueConnectionDetails details) : base(details, QueueNames.DomainEventsQueueName)
+        private readonly IQueue _queue;
+        public StorageQueueEventStore(IQueue queue)
         {
+            _queue = queue;
         }
 
         public Task Add(IEvent @event)
@@ -22,7 +24,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventStore
                 Data = json
             };
 
-            return AddMessageAsync(item);
+            return _queue.AddMessageAsync(item);
         }
     }
 }

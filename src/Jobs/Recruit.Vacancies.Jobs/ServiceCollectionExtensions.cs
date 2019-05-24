@@ -2,7 +2,6 @@ using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Ioc;
 using Esfa.Recruit.Vacancies.Jobs.AnalyticsSummaryProcessor;
-using Esfa.Recruit.Vacancies.Jobs.ApprenticeshipProgrammes;
 using Esfa.Recruit.Vacancies.Jobs.BankHoliday;
 using Esfa.Recruit.Vacancies.Jobs.Configuration;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents;
@@ -10,11 +9,8 @@ using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Application;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Candidate;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.VacancyReview;
-using Esfa.Recruit.Vacancies.Jobs.EmployerDashboardGenerator;
-using Esfa.Recruit.Vacancies.Jobs.NonLevyAccountBlocker;
-using Esfa.Recruit.Vacancies.Jobs.PublishedVacanciesGenerator;
-using Esfa.Recruit.Vacancies.Jobs.QaDashboard;
-using Esfa.Recruit.Vacancies.Jobs.VacancyStatus;
+using Esfa.Recruit.Vacancies.Jobs.QueueTriggers;
+using Esfa.Recruit.Vacancies.Jobs.UpdateBlockedEmployers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -39,17 +35,17 @@ namespace Esfa.Recruit.Vacancies.Jobs
                                                             });
 
             // Add Jobs
-            services.AddScoped<DomainEventsJob>();
-            services.AddScoped<ApprenticeshipProgrammesJob>();
-            services.AddScoped<VacancyStatusJob>();
-            services.AddScoped<EmployerDashboardGeneratorJob>();
-            services.AddScoped<PublishedVacanciesGeneratorJob>();
-            services.AddScoped<BankHolidayJob>();
-            services.AddScoped<QaDashboardJob>();
-            services.AddScoped<NonLevyAccountBlockerJob>();
-            services.AddScoped<VacancyAnalyticsSummaryGeneratorJob>();
+            services.AddScoped<DomainEventsQueueTrigger>();
+            services.AddScoped<UpdateApprenticeshipProgrammesQueueTrigger>();
+            services.AddScoped<VacancyStatusQueueTrigger>();
+            services.AddScoped<GenerateSingleEmployerDashboardQueueTrigger>();
+            services.AddScoped<GeneratePublishedVacanciesQueueTrigger>();
+            services.AddScoped<UpdateBankHolidayQueueTrigger>();
+            services.AddScoped<UpdateQaDashboardQueueTrigger>();
+            services.AddScoped<GenerateBlockedEmployersQueueTrigger>();
+            services.AddScoped<GenerateVacancyAnalyticsQueueTrigger>();
 #if DEBUG
-            services.AddScoped<SpikeJob.SpikeJob>();
+            services.AddScoped<SpikeQueueTrigger>();
 #endif
 
             // Domain Event Queue Handlers

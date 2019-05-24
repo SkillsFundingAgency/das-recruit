@@ -35,7 +35,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             var vacancies = (await _query.GetVacanciesByStatusAsync<VacancyIdentifier>(VacancyStatus.Live)).ToList();
             var numberClosed = 0;
             
-            foreach (var vacancy in vacancies.Where(x => x.ClosingDate <= _timeProvider.Now))
+            foreach (var vacancy in vacancies.Where(x => x.ClosingDate < _timeProvider.Today))
             {
                 _logger.LogInformation($"Closing vacancy {vacancy.VacancyReference} with closing date of {vacancy.ClosingDate}");
                 await _vacancyService.CloseExpiredVacancy(vacancy.Id);

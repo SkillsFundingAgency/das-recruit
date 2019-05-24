@@ -81,7 +81,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore
             }
         }
 
-        public Task<long> DeleteManyAsync<T, T1>(string typeName, Expression<Func<T, T1>> property, T1 value) where T : QueryProjectionBase
+        public Task<long> DeleteManyLessThanAsync<T, T1>(string typeName, Expression<Func<T, T1>> property, T1 value) where T : QueryProjectionBase
         {
             var propertyInfo = GetPropertyInfo(property);
             var rangeQuery = new TableQuery<QueryEntity>().Where(

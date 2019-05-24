@@ -163,12 +163,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 
         public Task<long> RemoveOldEmployerDashboards(DateTime oldestLastUpdatedDate)
         {
-            return _queryStore.DeleteManyAsync<EmployerDashboard, DateTime>(QueryViewType.EmployerDashboard.TypeName, x => x.LastUpdated, oldestLastUpdatedDate);
+            return _queryStore.DeleteManyLessThanAsync<EmployerDashboard, DateTime>(QueryViewType.EmployerDashboard.TypeName, x => x.LastUpdated, oldestLastUpdatedDate);
         }
 
         public Task<long> RemoveOldProviderDashboards(DateTime oldestLastUpdatedDate)
         {
-            return _queryStore.DeleteManyAsync<ProviderDashboard, DateTime>(QueryViewType.ProviderDashboard.TypeName, x => x.LastUpdated, oldestLastUpdatedDate);
+            return _queryStore.DeleteManyLessThanAsync<ProviderDashboard, DateTime>(QueryViewType.ProviderDashboard.TypeName, x => x.LastUpdated, oldestLastUpdatedDate);
         }
 
         public async Task UpsertVacancyAnalyticSummaryAsync(VacancyAnalyticsSummary summary)
