@@ -16,8 +16,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         }
         public async Task<ManageNotificationsViewModel> GetManageNotificationsViewModelAsync(VacancyUser vacancyUser)
         {
-            var user = await _recruitVacancyClient.GetUsersDetailsAsync(vacancyUser.UserId);
-            var userDetails = await _recruitVacancyClient.GetUserNotificationPreferencesAsync(user.Id);
+            var userDetails = await _recruitVacancyClient.GetUserNotificationPreferencesAsync(vacancyUser.UserId);
 
             return userDetails == null ? new ManageNotificationsViewModel() : GetViewModelFromDomainModel(userDetails);
         }

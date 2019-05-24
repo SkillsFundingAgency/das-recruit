@@ -21,7 +21,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             _vacancyClient = vacancyClient;
         }
 
-        public async Task<VacancySubmittedConfirmationViewModel> GetVacancySubmittedConfirmationViewModelAsync(VacancyRouteModel vrm)
+        public async Task<VacancySubmittedConfirmationViewModel> GetVacancySubmittedConfirmationViewModelAsync(VacancyRouteModel vrm, VacancyUser vacancyUser)
         {
             var vacancy = await Utility.GetAuthorisedVacancyAsync(_vacancyClient, vrm, RouteNames.Submitted_Index_Get);
 
@@ -35,11 +35,14 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 isResubmit = review != null;
             }
 
+            var preferences = await _vacancyClient.GetUserNotificationPreferencesAsync(vacancyUser.UserId);
+
             var vm = new VacancySubmittedConfirmationViewModel
             {
                 Title = vacancy.Title,
                 VacancyReference = vacancy.VacancyReference?.ToString(),
-                IsResubmit = isResubmit   
+                IsResubmit = isResubmit,
+                HasNotificationsSet = preferences.NotificationTypes > NotificationTypes.None
             };
 
             return vm;
