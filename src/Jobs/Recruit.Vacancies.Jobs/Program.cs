@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.BlobStorage;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Configuration;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore;
 using Esfa.Recruit.Vacancies.Client.Ioc;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Azure.WebJobs.Host.Queues;
@@ -104,8 +104,14 @@ namespace Esfa.Recruit.Vacancies.Jobs
             {
                 var collectionChecker = (MongoDbCollectionChecker)serviceProvider.GetService(typeof(MongoDbCollectionChecker));
                 collectionChecker.EnsureCollectionsExist();
-                var storageTableChecker = (QueryStoreTableChecker)serviceProvider.GetService(typeof(QueryStoreTableChecker));
-                storageTableChecker.EnsureQueryStoreTableExist();
+
+                var configuration = (IConfiguration)serviceProvider.GetService(typeof(IConfiguration));
+                var useBlobStorageQueryStore = configuration.GetValue<bool>("UseBlobStorageQueryStore");
+                if (useBlobStorageQueryStore)
+                {
+                    var blobStorageContainerChecker = (BlobStorageContainerChecker)serviceProvider.GetService(typeof(BlobStorageContainerChecker));
+                    blobStorageContainerChecker.EnsureBlobQueryStoreContainerExists();
+                }
             }
             catch (Exception ex)
             {

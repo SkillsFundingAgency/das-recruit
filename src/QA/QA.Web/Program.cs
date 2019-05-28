@@ -1,17 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
-using Esfa.Recruit.Qa.Web.Configuration;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.BlobStorage;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using NLog.Web;
 using Esfa.Recruit.Vacancies.Client.Ioc;
 
@@ -60,8 +52,14 @@ namespace Esfa.Recruit.Qa.Web
             {
                 var collectionChecker = (MongoDbCollectionChecker)serviceProvider.GetService(typeof(MongoDbCollectionChecker));
                 collectionChecker.EnsureCollectionsExist();
-                var storageTableChecker = (QueryStoreTableChecker)serviceProvider.GetService(typeof(QueryStoreTableChecker));
-                storageTableChecker.EnsureQueryStoreTableExist();
+
+                var configuration = (IConfiguration)serviceProvider.GetService(typeof(IConfiguration));
+                var useBlobStorageQueryStore = configuration.GetValue<bool>("UseBlobStorageQueryStore");
+                if (useBlobStorageQueryStore)
+                {
+                    var blobStorageContainerChecker = (BlobStorageContainerChecker)serviceProvider.GetService(typeof(BlobStorageContainerChecker));
+                    blobStorageContainerChecker.EnsureBlobQueryStoreContainerExists();
+                }
             }
             catch (Exception ex)
             {

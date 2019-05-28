@@ -18,6 +18,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.BlobStorage;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Configuration;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.EventStore;
@@ -45,7 +46,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummariesProvider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Slack;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Configuration;
@@ -76,7 +76,7 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             RegisterServiceDeps(services, configuration);
             RegisterAccountApiClientDeps(services);
             RegisterProviderApiClientDep(services, configuration);
-            RegisterTableStorageProviderDeps(services, configuration);
+            RegisterQueryStore(services, configuration);
             RegisterRepositories(services, configuration);
             RegisterStorageProviderDeps(services, configuration);
             RegisterQueues(services);
@@ -228,20 +228,26 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddTransient<IQueueService, StorageQueueService>();
         }
 
-        private static void RegisterTableStorageProviderDeps(IServiceCollection services, IConfiguration configuration)
+        private static void RegisterQueryStore(IServiceCollection services, IConfiguration configuration)
         {
-            var storageConnectionString = configuration.GetConnectionString("TableStorage");
-            var useTableStorageQueryStore = configuration.GetValue<bool>("UseTableStorageQueryStore");
-            services.AddTransient<QueryStoreTableChecker>();
-            services.Configure<TableStorageConnectionsDetails>(options =>
-            {
-                options.ConnectionString = storageConnectionString;
-            });
+            var useBlobStorageQueryStore = configuration.GetValue<bool>("UseBlobStorageQueryStore");
 
-            if (useTableStorageQueryStore)
-                services.AddTransient<IQueryStore, TableStorageQueryStore>();
+            if (useBlobStorageQueryStore)
+            {
+                var storageConnectionString = configuration.GetConnectionString("BlobStorage");
+
+                services.Configure<BlobStorageConfiguration>(options =>
+                {
+                    options.ConnectionString = storageConnectionString;
+                });
+
+                services.AddTransient<IQueryStore, BlobStorageQueryStore>();
+                services.AddTransient<BlobStorageContainerChecker>();
+            }
             else
-                services.AddTransient<IQueryStore, MongoQueryStore>();            
+            {
+                services.AddTransient<IQueryStore, MongoQueryStore>();
+            }
         }
 
         private static void AddValidation(IServiceCollection services)
