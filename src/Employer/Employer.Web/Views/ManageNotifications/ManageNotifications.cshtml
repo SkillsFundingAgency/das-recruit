@@ -20,6 +20,7 @@
                         Choose when you’d like emails
                     </span>
                     <div class="govuk-checkboxes" data-module="checkboxes">
+                        <span esfa-validation-message-for="HasAnySubscription" class="govuk-error-message"></span>
                         <div class="govuk-checkboxes__item">
                             <input class="govuk-checkboxes__input checked" asp-for="IsVacancyRejectedSelected" id="notifications-rejected" type="checkbox">
                             <label class="govuk-label govuk-checkboxes__label" for="notifications-rejected">
@@ -45,6 +46,7 @@
                                         How often do you want to be sent new application emails?
                                     </h1>
                                 </legend>
+                                <span esfa-validation-message-for="NotificationFrequency" class="govuk-error-message"></span>
                                 <div class="govuk-radios" data-module="radios">
                                     <div class="govuk-radios__item">
                                         <input class="govuk-radios__input" value="Immediately" asp-for="NotificationFrequency" id="notification-frequency-immediately" type="radio">
@@ -78,18 +80,19 @@
                     </h2>
                     </legend>
                     <div class="govuk-radios" data-module="radios">
-                    <div class="govuk-radios__item">
-                        <input class="govuk-radios__input" value="UserSubmittedVacancies" id="notification-scope-user-submitted" asp-for="NotificationScope" type="radio">
-                        <label class="govuk-label govuk-radios__label" for="notification-scope-user-submitted">
-                            Only emails about vacancies I have submitted
-                        </label>
-                    </div>
-                    <div class="govuk-radios__item">
-                        <input class="govuk-radios__input" value="OrganisationVacancies" id="notification-scope-organisation" asp-for="NotificationScope" type="radio">
-                        <label class="govuk-label govuk-radios__label" for="notification-scope-organisation">
-                            Emails about all vacancies for your organisation
-                        </label>
-                    </div>
+                        <span esfa-validation-message-for="NotificationScope" class="govuk-error-message"></span>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" value="UserSubmittedVacancies" id="notification-scope-user-submitted" asp-for="NotificationScope" type="radio">
+                            <label class="govuk-label govuk-radios__label" for="notification-scope-user-submitted">
+                                Only emails about vacancies I have submitted
+                            </label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" value="OrganisationVacancies" id="notification-scope-organisation" asp-for="NotificationScope" type="radio">
+                            <label class="govuk-label govuk-radios__label" for="notification-scope-organisation">
+                                Emails about all vacancies for your organisation
+                            </label>
+                        </div>
                     </div>
                 </fieldset>
             </div>

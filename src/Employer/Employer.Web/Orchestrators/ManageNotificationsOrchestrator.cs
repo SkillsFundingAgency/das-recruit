@@ -2,32 +2,62 @@ using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.ViewModels.ManageNotifications;
 using Esfa.Recruit.Shared.Web.Orchestrators;
+using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Microsoft.Extensions.Logging;
 
-namespace Esfa.Recruit.Employer.Web.Orchestrators
+namespace Esfa.Recruit.Employer.Web.Orchestrators 
 {
-    public class ManageNotificationsOrchestrator 
+    public class ManageNotificationsOrchestrator : EntityValidatingOrchestrator<UserNotificationPreferences, ManageNotificationsEditModel>
     {
         private readonly IRecruitVacancyClient _recruitVacancyClient;
-        public ManageNotificationsOrchestrator(IRecruitVacancyClient recruitVacancyClient)
+
+        private const string NotificationTypesIsRequiredForTheFirstTime = "Choose when you’d like to receive emails";
+        private readonly EntityValidationResult _notificationTypeIsRequiredForTheFirstTime = new EntityValidationResult
+        {
+            Errors = new[] 
+            { 
+                new EntityValidationError(1100, nameof(ManageNotificationsEditModel.HasAnySubscription), NotificationTypesIsRequiredForTheFirstTime, "1100") 
+            }
+        };
+
+        public ManageNotificationsOrchestrator(
+            ILogger<ManageNotificationsOrchestrator> logger, 
+            IRecruitVacancyClient recruitVacancyClient) : base(logger)
         {
             _recruitVacancyClient = recruitVacancyClient;
         }
         public async Task<ManageNotificationsViewModel> GetManageNotificationsViewModelAsync(VacancyUser vacancyUser)
         {
-            var userDetails = await _recruitVacancyClient.GetUserNotificationPreferencesAsync(vacancyUser.UserId);
+            var preferences = await _recruitVacancyClient.GetUserNotificationPreferencesAsync(vacancyUser.UserId);
 
-            return userDetails == null ? new ManageNotificationsViewModel() : GetViewModelFromDomainModel(userDetails);
+            return preferences == null ? new ManageNotificationsViewModel() : GetViewModelFromDomainModel(preferences);
         }
 
-        public async Task UpdateUserNotificationPreferencesAsync(ManageNotificationsEditModel editModel, VacancyUser vacancyUser)
+        public async Task<OrchestratorResponse> UpdateUserNotificationPreferencesAsync(ManageNotificationsEditModel editModel, VacancyUser vacancyUser)
         {
-            var user = await _recruitVacancyClient.GetUsersDetailsAsync(vacancyUser.UserId);
+            var userDetailsTask =  _recruitVacancyClient.GetUsersDetailsAsync(vacancyUser.UserId);
 
-            var preferences = GetDomainModel(editModel, user.Id);
+            var preferencesTask = _recruitVacancyClient.GetUserNotificationPreferencesAsync(vacancyUser.UserId);
 
-            await _recruitVacancyClient.UpdateUserNotificationPreferencesAsync(preferences);
+            await Task.WhenAll(userDetailsTask, preferencesTask);
+
+            var userDetails = userDetailsTask.Result;
+            var persistedPreferences = preferencesTask.Result;
+
+            if (persistedPreferences == null && editModel.HasAnySubscription == false)
+            {
+                return new OrchestratorResponse(_notificationTypeIsRequiredForTheFirstTime);
+            }
+
+            var preferences = GetDomainModel(editModel, userDetails.Id);
+
+            return await ValidateAndExecute(
+                preferences,
+                v => _recruitVacancyClient.ValidateUserNotificationPreferences(preferences),
+                v => _recruitVacancyClient.UpdateUserNotificationPreferencesAsync(preferences)
+            );
         }
 
         public Task UnsubscribeUserNotificationsAsync(VacancyUser vacancyUser)
@@ -75,6 +105,14 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 NotificationFrequency = preferences.NotificationFrequency,
                 NotificationScope = preferences.NotificationScope
             };
+        }
+
+        protected override EntityToViewModelPropertyMappings<UserNotificationPreferences, ManageNotificationsEditModel> DefineMappings()
+        {
+            var mappings = new EntityToViewModelPropertyMappings<UserNotificationPreferences, ManageNotificationsEditModel>();
+            mappings.Add(n => n.NotificationScope, m => m.NotificationScope);
+            mappings.Add(n => n.NotificationFrequency, m => m.NotificationFrequency);
+            return mappings;
         }
     }
 }
