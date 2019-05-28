@@ -1,8 +1,7 @@
 @using Esfa.Recruit.Employer.Web.ViewModels.ManageNotifications;
 
 @model ManageNotificationsViewModel
-<div class="govuk-grid-row">
-    <a asp-route="@RouteNames.Dashboard_Index_Get" class="govuk-back-link">Back</a>
+<div class="govuk-grid-row">    
     <h1 class="govuk-heading-l govuk-!-margin-bottom-6">Manage your recruitment emails</h1>
 </div>
 
@@ -100,7 +99,8 @@
                 <p asp-show="@Model.HasAnySubscription" class="govuk-body">
                     <a asp-route="@RouteNames.ConfirmUnsubscribeNotifications_Get">Unsubscribe from all recruitment emails</a>
                 </p>
-        	    <button class="govuk-button submit" type="submit">Save</button>
+        	    <button class="govuk-button submit" type="submit">Save and continue</button>
+                <a asp-route="@RouteNames.Dashboard_Index_Get" class="govuk-link">Return to dashboard</a>
             </div>
         </form>
     </div>
