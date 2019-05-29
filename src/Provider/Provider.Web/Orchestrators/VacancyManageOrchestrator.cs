@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Mappings;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.VacancyManage;
@@ -26,12 +27,14 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         private readonly DisplayVacancyViewModelMapper _vacancyDisplayMapper;
         private readonly IRecruitVacancyClient _client;
         private readonly IFeature _featureToggle;
+		private readonly ProviderRecruitSystemConfiguration _systemConfig;
 
-        public VacancyManageOrchestrator(ILogger<VacancyManageOrchestrator> logger, DisplayVacancyViewModelMapper vacancyDisplayMapper, IRecruitVacancyClient client, IFeature featureToggle) : base(logger)
+		public VacancyManageOrchestrator(ILogger<VacancyManageOrchestrator> logger, DisplayVacancyViewModelMapper vacancyDisplayMapper, IRecruitVacancyClient client, IFeature featureToggle, ProviderRecruitSystemConfiguration systemConfig) : base(logger)
         {
             _vacancyDisplayMapper = vacancyDisplayMapper;
             _client = client;
             _featureToggle = featureToggle;
+            _systemConfig = systemConfig;
         }
 
         public async Task<Vacancy> GetVacancy(VacancyRouteModel vrm)
@@ -60,7 +63,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
             var applications = new List<VacancyApplication>();
 
-            if (_featureToggle.IsFeatureEnabled(RecruitFeatureNames.CanShowVacancyAnalytics))
+            if (_featureToggle.IsFeatureEnabled(RecruitFeatureNames.CanShowVacancyAnalytics) && vacancy.ApprovedDate > _systemConfig.ShowAnalyticsForVacanciesApprovedAfterDate)
             {
                 var vacancyApplicationsTask = _client.GetVacancyApplicationsAsync(vacancy.VacancyReference.Value.ToString());
                 var vacancyAnalyticsTask = _client.GetVacancyAnalyticsSummaryAsync(vacancy.VacancyReference.Value);

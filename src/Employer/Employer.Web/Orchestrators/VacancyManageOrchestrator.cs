@@ -17,6 +17,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacanc
 using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Configuration;
+using Employer.Web.Configuration;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
@@ -26,12 +27,14 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         private readonly DisplayVacancyViewModelMapper _vacancyDisplayMapper;
         private readonly IRecruitVacancyClient _client;
 		private readonly IFeature _featureToggle;
+		private readonly EmployerRecruitSystemConfiguration _systemConfig;
 
-		public VacancyManageOrchestrator(ILogger<VacancyManageOrchestrator> logger, DisplayVacancyViewModelMapper vacancyDisplayMapper, IRecruitVacancyClient vacancyClient, IFeature featureToggle) : base(logger)
+		public VacancyManageOrchestrator(ILogger<VacancyManageOrchestrator> logger, DisplayVacancyViewModelMapper vacancyDisplayMapper, IRecruitVacancyClient vacancyClient, IFeature featureToggle, EmployerRecruitSystemConfiguration systemConfig) : base(logger)
         {
             _vacancyDisplayMapper = vacancyDisplayMapper;
             _client = vacancyClient;
             _featureToggle = featureToggle;
+            _systemConfig = systemConfig;
         }
 
         public async Task<Vacancy> GetVacancy(VacancyRouteModel vrm)
@@ -59,7 +62,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             var applications = new List<VacancyApplication>();
 
-            if (_featureToggle.IsFeatureEnabled(RecruitFeatureNames.CanShowVacancyAnalytics))
+            if (_featureToggle.IsFeatureEnabled(RecruitFeatureNames.CanShowVacancyAnalytics) && vacancy.ApprovedDate > _systemConfig.ShowAnalyticsForVacanciesApprovedAfterDate)
             {
                 var vacancyApplicationsTask = _client.GetVacancyApplicationsAsync(vacancy.VacancyReference.Value.ToString());
                 var vacancyAnalyticsTask = _client.GetVacancyAnalyticsSummaryAsync(vacancy.VacancyReference.Value);
