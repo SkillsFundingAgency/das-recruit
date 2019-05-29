@@ -13,9 +13,9 @@ namespace Esfa.Recruit.Shared.Web.Configuration
         public const string PREPROD = "PREPROD";
         public const string PROD = "PROD";
 
-        public static string[] GetTestEnvironmentNames() => new []{ Development, AT, TEST, DEMO };
+        public static string[] GetTestEnvironmentNames() => new []{ Development, AT, TEST, TEST2, DEMO };
         public static string GetTestEnvironmentNamesCommaDelimited() => string.Join(",", Development, AT, TEST, TEST2);
-        public static string GetNonProdEnvironmentNamesCommaDelimited() => string.Join(",", Development, AT, TEST, DEMO, PREPROD);
+        public static string GetNonProdEnvironmentNamesCommaDelimited() => string.Join(",", Development, AT, TEST, TEST2, DEMO, PREPROD);
         public static bool IsProductionEnvironment(IHostingEnvironment hostingEnvironment)
         {
             return GetTestEnvironmentNames().Contains(hostingEnvironment.EnvironmentName.ToUpper()) == false;
