@@ -13,17 +13,15 @@ namespace Esfa.Recruit.Employer.Web.Filters
 {
     public class LevyDeclarationCheckFilter : IAsyncActionFilter, IOrderedFilter
     {
-        private readonly IEmployerVacancyClient _vacancyClient;
         private readonly ILogger<LevyDeclarationCheckFilter> _logger;
         private readonly LevyDeclarationCookieWriter _levyCookieWriter;
         private readonly IRecruitVacancyClient _recruitVacancyClient;
 
-        public LevyDeclarationCheckFilter(IEmployerVacancyClient vacancyClient,
+        public LevyDeclarationCheckFilter(
             ILogger<LevyDeclarationCheckFilter> logger,
             LevyDeclarationCookieWriter levyCookieWriter,
             IRecruitVacancyClient recruitVacancyClient)
         {
-            _vacancyClient = vacancyClient;
             _logger = logger;
             _levyCookieWriter = levyCookieWriter;
             _recruitVacancyClient = recruitVacancyClient;

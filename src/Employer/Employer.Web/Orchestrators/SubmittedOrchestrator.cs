@@ -42,7 +42,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 Title = vacancy.Title,
                 VacancyReference = vacancy.VacancyReference?.ToString(),
                 IsResubmit = isResubmit,
-                HasNotificationsSet = preferences.NotificationTypes > NotificationTypes.None
+                HasNotificationsSet = preferences != null && preferences.NotificationTypes > NotificationTypes.None
             };
 
             return vm;

@@ -118,5 +118,7 @@
 
         public const string ConfirmUnsubscribeNotifications_Get = "ConfirmUnsubscribeNotifications_Get";
         public const string ConfirmUnsubscribeNotifications_Post = "ConfirmUnsubscribeNotifications_Post";
+        public const string NotificationsUpdatedAcknowledgement_Get = "NotificationsUpdatedAcknowledgement_Get";
+        public const string NotificationUnsubscribedAcknowledgement_Get = "NotificationUnsubscribedAcknowledgement_Get";
     }
 }

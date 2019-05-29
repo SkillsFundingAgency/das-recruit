@@ -44,10 +44,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             if(model.HasAnySubscription)
             {
                 var vm = _orchestrator.GetAcknowledgementViewModel(model, User.ToVacancyUser());
-                return View(ViewNames.NotificationsUpdatedAcknowledgement, vm);
+                return RedirectToRoute(RouteNames.NotificationsUpdatedAcknowledgement_Get, vm);
             }
 
-            return View(ViewNames.NotificationUnsubscribedAcknowledgement);
+            return RedirectToRoute(RouteNames.NotificationUnsubscribedAcknowledgement_Get);
         }
 
         [HttpGet("notifications-unsubscribe", Name = RouteNames.ConfirmUnsubscribeNotifications_Get)]
@@ -67,7 +67,19 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             await _orchestrator.UnsubscribeUserNotificationsAsync(User.ToVacancyUser());
             
-            return View(ViewNames.NotificationUnsubscribedAcknowledgement);
+            return RedirectToRoute(RouteNames.NotificationUnsubscribedAcknowledgement_Get);
+        }
+
+        [HttpGet("notifications-acknowledgement", Name = RouteNames.NotificationsUpdatedAcknowledgement_Get)]
+        public IActionResult NotificationsUpdatedAcknowledgement(ManageNotificationsAcknowledgementViewModel model)
+        {
+            return View(model);
+        }
+
+        [HttpGet("notifications-unsubscribed", Name = RouteNames.NotificationUnsubscribedAcknowledgement_Get)]
+        public IActionResult NotificationUnsubscribedAcknowledgement()
+        {
+            return View();
         }
     }
 }
