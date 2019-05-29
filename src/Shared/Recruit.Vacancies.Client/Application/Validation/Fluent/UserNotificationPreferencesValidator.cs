@@ -12,7 +12,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 RuleFor(t => t.NotificationScope)
                     .NotNull()
                     .WithErrorCode("1101")
-                    .WithMessage("Choose what emails you’d like to get");
+                    .WithMessage("Choose what emails you’d like to receive");
             });
             
             When(n => (n.NotificationTypes & NotificationTypes.ApplicationSubmitted) == NotificationTypes.ApplicationSubmitted, () =>

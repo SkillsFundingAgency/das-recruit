@@ -21,19 +21,19 @@
                     <div class="govuk-checkboxes" data-module="checkboxes">
                         <span esfa-validation-message-for="HasAnySubscription" class="govuk-error-message"></span>
                         <div class="govuk-checkboxes__item">
-                            <input class="govuk-checkboxes__input checked" asp-for="IsVacancyRejectedSelected" id="notifications-rejected" type="checkbox">
+                            <input class="govuk-checkboxes__input" asp-for="IsVacancyRejectedSelected" id="notifications-rejected" type="checkbox">
                             <label class="govuk-label govuk-checkboxes__label" for="notifications-rejected">
                                 <span class="govuk-visually-hidden">Get notifications when </span>Vacancies are rejected after review
                             </label>
                         </div>
                         <div class="govuk-checkboxes__item">
-                            <input class="govuk-checkboxes__input checked" asp-for="IsVacancyClosingSoonSelected" id="notifications-closing" type="checkbox">
+                            <input class="govuk-checkboxes__input" asp-for="IsVacancyClosingSoonSelected" id="notifications-closing" type="checkbox">
                             <label class="govuk-label govuk-checkboxes__label" for="notifications-closing">
                                 <span class="govuk-visually-hidden">Get notifications when </span>Vacancies are closing soon
                             </label>
                         </div>
                         <div class="govuk-checkboxes__item govuk-checkboxes--conditional">
-                            <input class="govuk-checkboxes__input checked" asp-for="IsApplicationSubmittedSelected" id="notifications-new" type="checkbox" data-aria-controls="conditional-when-conditional">
+                            <input class="govuk-checkboxes__input" asp-for="IsApplicationSubmittedSelected" id="notifications-new" type="checkbox" data-aria-controls="conditional-when-conditional">
                             <label class="govuk-label govuk-checkboxes__label" for="notifications-new">
                                 <span class="govuk-visually-hidden">Get notifications when </span>There are new applications
                             </label>
@@ -75,7 +75,7 @@
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                     <h2 class="govuk-fieldset__heading">
-                        What emails would you like to get?
+                        What emails would you like to receive?
                     </h2>
                     </legend>
                     <div class="govuk-radios" data-module="radios">
@@ -83,7 +83,7 @@
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" value="UserSubmittedVacancies" id="notification-scope-user-submitted" asp-for="NotificationScope" type="radio">
                             <label class="govuk-label govuk-radios__label" for="notification-scope-user-submitted">
-                                Only emails about vacancies I have submitted
+                                Only emails about vacancies you have submitted
                             </label>
                         </div>
                         <div class="govuk-radios__item">
@@ -99,7 +99,7 @@
                 <p asp-show="@Model.HasAnySubscription" class="govuk-body">
                     <a asp-route="@RouteNames.ConfirmUnsubscribeNotifications_Get">Unsubscribe from all recruitment emails</a>
                 </p>
-        	    <button class="govuk-button submit" type="submit">Save and continue</button>
+                <button class="govuk-button submit" type="submit">Save and continue</button>
                 <a asp-route="@RouteNames.Dashboard_Index_Get" class="govuk-link">Return to dashboard</a>
             </div>
         </form>
