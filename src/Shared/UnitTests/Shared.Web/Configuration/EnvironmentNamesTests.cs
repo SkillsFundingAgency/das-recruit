@@ -16,7 +16,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.Configuration
         [Fact]
         public void GetNonProdEnvironmentNamesShouldIncludeEveryNonProdEnvironment()
         {
-            EnvironmentNames.GetNonProdEnvironmentNamesCommaDelimited().Should().Be("DEVELOPMENT,AT,TEST,DEMO,PREPROD");
+            EnvironmentNames.GetNonProdEnvironmentNamesCommaDelimited().Should().Be("DEVELOPMENT,AT,TEST,TEST2,DEMO,PREPROD");
         }
     }
 }
