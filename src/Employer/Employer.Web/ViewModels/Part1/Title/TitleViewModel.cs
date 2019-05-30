@@ -17,6 +17,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Title
         public PartOnePageInfoViewModel PageInfo { get; set; }
         public List<VacancySummary> Vacancies { get; set; } = new List<VacancySummary>();
         public string BackLink =>
-            Vacancies.Any() ? RouteNames.CreateVacancyOptions_Get : RouteNames.Dashboard_Index_Get;
+            Vacancies.Any() ? RouteNames.Dashboard_Index_Get : RouteNames.CreateVacancyOptions_Get ;
     }
 }
