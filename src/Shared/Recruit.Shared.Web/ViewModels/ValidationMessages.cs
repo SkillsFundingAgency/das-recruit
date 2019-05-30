@@ -2,7 +2,7 @@ namespace Esfa.Recruit.Shared.Web.ViewModels
 {
     public static class ValidationMessages
     {
-        public class TitleValidationMessages
+        public class PositionValidationMessages
         {
             public static class TypeOfInteger
             {

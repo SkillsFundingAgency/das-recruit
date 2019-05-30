@@ -3,6 +3,7 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+        <a asp-route="@Model.BackLink" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames}' />
         <partial name="@PartialNames.ReviewSummary" for="Review" />
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">What do you want to call this vacancy?</h1>
@@ -18,7 +19,7 @@
                 <span esfa-validation-message-for="Title" class="govuk-error-message"></span>
                 <input asp-for="Title" class="govuk-input character-count" type="text" data-val-length-max="100"/>
                 <div>
-                    <span class="govuk-body maxchar-count">You have 100</span>
+                    <span class="govuk-body maxchar-count">100</span>
                     <span class="govuk-body maxchar-text"> characters remaining</span>
                 </div>
             </div>
