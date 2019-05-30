@@ -16,9 +16,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         {
             _userNotificationPreferencesRepository = userNotificationPreferencesRepository;
         }
-        public async Task Handle(UpdateUserNotificationPreferencesCommand message, CancellationToken cancellationToken)
+        public Task Handle(UpdateUserNotificationPreferencesCommand message, CancellationToken cancellationToken)
         {
-            await _userNotificationPreferencesRepository.UpsertAsync(message.UserNotificationPreferences);
+            return _userNotificationPreferencesRepository.UpsertAsync(message.UserNotificationPreferences);
         }
     }
 }
