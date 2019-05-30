@@ -1,4 +1,5 @@
 @using Esfa.Recruit.Employer.Web.ViewModels.ManageNotifications;
+@using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 @model ManageNotificationsViewModel
 <div class="govuk-grid-row">    
@@ -48,21 +49,21 @@
                                 <span esfa-validation-message-for="NotificationFrequency" class="govuk-error-message"></span>
                                 <div class="govuk-radios" data-module="radios">
                                     <div class="govuk-radios__item">
-                                        <input class="govuk-radios__input" value="Immediately" asp-for="NotificationFrequency" id="notification-frequency-immediately" type="radio">
+                                        <input class="govuk-radios__input" value="@NotificationFrequency.Immediately" asp-for="NotificationFrequency" id="notification-frequency-immediately" type="radio">
                                         <label class="govuk-label govuk-radios__label" for="notification-frequency-immediately">
-                                            Immediately
+                                            @NotificationFrequency.Immediately
                                         </label>
                                     </div>
                                     <div class="govuk-radios__item">
-                                        <input class="govuk-radios__input" value="Daily" asp-for="NotificationFrequency" id="notification-frequency-daily" type="radio" >
+                                        <input class="govuk-radios__input" value="@NotificationFrequency.Daily" asp-for="NotificationFrequency" id="notification-frequency-daily" type="radio" >
                                         <label class="govuk-label govuk-radios__label" for="notification-frequency-daily">
-                                            Daily
+                                            @NotificationFrequency.Daily
                                         </label>
                                     </div>
                                     <div class="govuk-radios__item">
-                                        <input class="govuk-radios__input" value="Weekly" asp-for="NotificationFrequency" id="notification-frequency-weekly" type="radio">
+                                        <input class="govuk-radios__input" value="@NotificationFrequency.Weekly" asp-for="NotificationFrequency" id="notification-frequency-weekly" type="radio">
                                         <label class="govuk-label govuk-radios__label" for="notification-frequency-weekly">
-                                            Weekly
+                                            @NotificationFrequency.Weekly
                                         </label>
                                     </div>
                                 </div>
