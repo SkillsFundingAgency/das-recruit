@@ -12,6 +12,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.HardMocks
                 EmployerAccountId = "EMPLOYER ACCOUNT ID",
                 Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
                 Title = "has a value",
+                NumberOfPositions = 1,
                 EmployerLocation = new Address { Postcode = "has a value" },
                 ShortDescription = "has a value",
                 ProgrammeId = "has a value",
