@@ -2,14 +2,13 @@ using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Ioc;
 using Esfa.Recruit.Vacancies.Jobs.AnalyticsSummaryProcessor;
-using Esfa.Recruit.Vacancies.Jobs.BankHoliday;
 using Esfa.Recruit.Vacancies.Jobs.Configuration;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Application;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Candidate;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.VacancyReview;
-using Esfa.Recruit.Vacancies.Jobs.QueueTriggers;
+using Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers;
 using Esfa.Recruit.Vacancies.Jobs.UpdateBlockedEmployers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -43,7 +42,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddScoped<UpdateBankHolidayQueueTrigger>();
             services.AddScoped<UpdateQaDashboardQueueTrigger>();
             services.AddScoped<GenerateBlockedEmployersQueueTrigger>();
-            services.AddScoped<GenerateVacancyAnalyticsQueueTrigger>();
+            services.AddScoped<GenerateVacancyAnalyticsSummaryQueueTrigger>();
 #if DEBUG
             services.AddScoped<SpikeQueueTrigger>();
 #endif

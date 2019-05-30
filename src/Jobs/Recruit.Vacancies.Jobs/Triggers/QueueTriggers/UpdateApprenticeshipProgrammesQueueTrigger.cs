@@ -7,13 +7,15 @@ using Esfa.Recruit.Vacancies.Jobs.Configuration;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 
-namespace Esfa.Recruit.Vacancies.Jobs.QueueTriggers
+namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
 {
     public class UpdateApprenticeshipProgrammesQueueTrigger
     {
         private readonly ILogger<UpdateApprenticeshipProgrammesQueueTrigger> _logger;
         private readonly RecruitWebJobsSystemConfiguration _jobsConfig;
         private readonly IJobsVacancyClient _client;
+
+        private string JobName => GetType().Name;
 
         public UpdateApprenticeshipProgrammesQueueTrigger(ILogger<UpdateApprenticeshipProgrammesQueueTrigger> logger, RecruitWebJobsSystemConfiguration jobsConfig, IJobsVacancyClient client)
         {
@@ -24,9 +26,9 @@ namespace Esfa.Recruit.Vacancies.Jobs.QueueTriggers
 
         public async Task UpdateApprenticeshipProgrammesAsync([QueueTrigger(QueueNames.UpdateApprenticeProgrammesQueueName, Connection = "QueueStorage")] string message, TextWriter log)
         {
-            if (_jobsConfig.DisabledJobs.Contains(this.GetType().Name))
+            if (_jobsConfig.DisabledJobs.Contains(JobName))
             {
-                _logger.LogDebug($"{this.GetType().Name} is disabled, skipping ...");
+                _logger.LogDebug($"{JobName} is disabled, skipping ...");
                 return;
             }
 

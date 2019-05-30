@@ -10,16 +10,18 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
-namespace Esfa.Recruit.Vacancies.Jobs.QueueTriggers
+namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
 {
-    public class GenerateVacancyAnalyticsQueueTrigger
+    public class GenerateVacancyAnalyticsSummaryQueueTrigger
     {
-        private readonly ILogger<GenerateVacancyAnalyticsQueueTrigger> _logger;
+        private readonly ILogger<GenerateVacancyAnalyticsSummaryQueueTrigger> _logger;
         private readonly RecruitWebJobsSystemConfiguration _jobsConfig;
         private readonly AnalyticsEventStore _analyticsStore;
         private readonly IQueryStoreWriter _qsWriter;
 
-        public GenerateVacancyAnalyticsQueueTrigger(ILogger<GenerateVacancyAnalyticsQueueTrigger> logger, RecruitWebJobsSystemConfiguration jobsConfig,
+        private string JobName => GetType().Name;
+
+        public GenerateVacancyAnalyticsSummaryQueueTrigger(ILogger<GenerateVacancyAnalyticsSummaryQueueTrigger> logger, RecruitWebJobsSystemConfiguration jobsConfig,
             AnalyticsEventStore analyticsStore, IQueryStoreWriter qsWriter)
         {
             _logger = logger;
@@ -28,12 +30,12 @@ namespace Esfa.Recruit.Vacancies.Jobs.QueueTriggers
             _qsWriter = qsWriter;
         }
 
-        public async Task GenerateVacancyAnalyticsAsync([QueueTrigger(QueueNames.GenerateVacancyAnalyticsQueueName, Connection = "QueueStorage")]
+        public async Task GenerateVacancyAnalyticsSummaryAsync([QueueTrigger(QueueNames.GenerateVacancyAnalyticsQueueName, Connection = "QueueStorage")]
             string message, TextWriter log)
         {
-            if (_jobsConfig.DisabledJobs.Contains(this.GetType().Name))
+            if (_jobsConfig.DisabledJobs.Contains(JobName))
             {
-                _logger.LogDebug($"{this.GetType().Name} is disabled, skipping ...");
+                _logger.LogDebug($"{JobName} is disabled, skipping ...");
                 return;
             }
 

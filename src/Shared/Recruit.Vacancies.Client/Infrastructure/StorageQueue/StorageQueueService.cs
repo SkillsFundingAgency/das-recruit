@@ -11,9 +11,9 @@ using Newtonsoft.Json;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue
 {
-    internal class StorageQueue : IQueue
+    internal class StorageQueueService : IQueueService
     {
-        private static readonly Dictionary<Type, string> MessageToStorageQueueMapper = new Dictionary<Type, string> 
+        private readonly Dictionary<Type, string> _messageToStorageQueueMapper = new Dictionary<Type, string> 
         {
             { typeof(DeleteReportsQueueMessage), QueueNames.DeleteReportsQueueName },
             { typeof(EventItem), QueueNames.DomainEventsQueueName },
@@ -28,14 +28,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue
 
         private readonly string _connectionString;
 
-        public StorageQueue(StorageQueueConnectionDetails details)
+        public StorageQueueService(StorageQueueConnectionDetails details)
         {
             _connectionString = details.ConnectionString;
         }
 
         public async Task AddMessageAsync<T>(T message)
         {
-            var queueName = MessageToStorageQueueMapper[typeof(T)];
+            var queueName = _messageToStorageQueueMapper[typeof(T)];
 
             if(string.IsNullOrEmpty(queueName))
                 throw new InvalidEnumArgumentException($"Cannot map type {typeof(T).Name} to a queue name");

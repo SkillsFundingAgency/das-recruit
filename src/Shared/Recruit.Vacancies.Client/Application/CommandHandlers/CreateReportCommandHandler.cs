@@ -17,13 +17,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         private readonly ILogger<CreateReportCommandHandler> _logger;
         private readonly IReportRepository _repository;
         private readonly ITimeProvider _timeProvider;
-        private readonly IQueue _queue;
+        private readonly IQueueService _queue;
 
         public CreateReportCommandHandler(
             ILogger<CreateReportCommandHandler> logger,
             IReportRepository repository,
             ITimeProvider timeProvider,
-            IQueue queue)
+            IQueueService queue)
         {
             _logger = logger;
             _repository = repository;

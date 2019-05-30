@@ -6,26 +6,26 @@ using Esfa.Recruit.Vacancies.Client.Application.Queues.Messages;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 
-namespace Esfa.Recruit.Vacancies.Jobs.TimerTriggers
+namespace Esfa.Recruit.Vacancies.Jobs.Triggers.TimerTriggers
 {
-    public class UpdateApprenticeshipProgrammesTimerTrigger
+    public class DeleteReportsTimeTrigger
     {
-        private readonly ILogger<UpdateApprenticeshipProgrammesTimerTrigger> _logger;
-        private readonly IQueue _queue;
+        private readonly ILogger<DeleteReportsTimeTrigger> _logger;
+        private readonly IQueueService _queue;
         private readonly ITimeProvider _timeProvider;
-        
-        public UpdateApprenticeshipProgrammesTimerTrigger(ILogger<UpdateApprenticeshipProgrammesTimerTrigger> logger, IQueue queue, ITimeProvider timeProvider)
+
+        public DeleteReportsTimeTrigger(ILogger<DeleteReportsTimeTrigger> logger, IQueueService queue, ITimeProvider timeProvider)
         {
             _logger = logger;
             _queue = queue;
             _timeProvider = timeProvider;
         }
 
-        public Task UpdateApprenticeshipProgrammesAsync([TimerTrigger(Schedules.FourAmDaily)] TimerInfo timerInfo, TextWriter log)
+        public Task DeleteReportsAsync([TimerTrigger(Schedules.MidnightDaily)] TimerInfo timerInfo, TextWriter log)
         {
             _logger.LogInformation($"Timer trigger {this.GetType().Name} fired");
 
-            var message = new UpdateApprenticeshipProgrammesQueueMessage
+            var message = new DeleteReportsQueueMessage 
             {
                 CreatedByScheduleDate = _timeProvider.Now
             };

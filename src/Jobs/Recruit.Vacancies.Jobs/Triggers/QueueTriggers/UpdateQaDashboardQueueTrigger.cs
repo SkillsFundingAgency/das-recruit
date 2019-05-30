@@ -6,13 +6,15 @@ using Esfa.Recruit.Vacancies.Jobs.Configuration;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 
-namespace Esfa.Recruit.Vacancies.Jobs.QueueTriggers
+namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
 {
     public class UpdateQaDashboardQueueTrigger
     {
         private readonly ILogger<UpdateQaDashboardQueueTrigger> _logger;
         private readonly RecruitWebJobsSystemConfiguration _jobsConfig;
         private readonly IQaDashboardProjectionService _projectionService;
+
+        private string JobName => GetType().Name;
 
         public UpdateQaDashboardQueueTrigger(ILogger<UpdateQaDashboardQueueTrigger> logger, RecruitWebJobsSystemConfiguration jobsConfig, IQaDashboardProjectionService projectionService)
         {
@@ -23,9 +25,9 @@ namespace Esfa.Recruit.Vacancies.Jobs.QueueTriggers
 
         public async Task UpdateQaDashboardAsync([QueueTrigger(QueueNames.UpdateQaDashboardQueueName, Connection = "QueueStorage")] string message, TextWriter log)
         {
-            if (_jobsConfig.DisabledJobs.Contains(this.GetType().Name))
+            if (_jobsConfig.DisabledJobs.Contains(JobName))
             {
-                _logger.LogDebug($"{this.GetType().Name} is disabled, skipping ...");
+                _logger.LogDebug($"{JobName} is disabled, skipping ...");
                 return;
             }
 

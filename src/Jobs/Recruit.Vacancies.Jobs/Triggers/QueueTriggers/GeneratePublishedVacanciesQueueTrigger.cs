@@ -7,7 +7,7 @@ using Esfa.Recruit.Vacancies.Jobs.Configuration;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 
-namespace Esfa.Recruit.Vacancies.Jobs.QueueTriggers
+namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
 {
     public class GeneratePublishedVacanciesQueueTrigger
     {

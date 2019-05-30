@@ -2,7 +2,7 @@
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Queues
 {
-    public interface IQueue
+    public interface IQueueService
     {
         Task AddMessageAsync<T>(T message);
     }

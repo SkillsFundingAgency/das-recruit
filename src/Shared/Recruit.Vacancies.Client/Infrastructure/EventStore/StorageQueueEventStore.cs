@@ -8,8 +8,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventStore
 {
     internal sealed class StorageQueueEventStore : IEventStore
     {
-        private readonly IQueue _queue;
-        public StorageQueueEventStore(IQueue queue)
+        private readonly IQueueService _queue;
+        public StorageQueueEventStore(IQueueService queue)
         {
             _queue = queue;
         }

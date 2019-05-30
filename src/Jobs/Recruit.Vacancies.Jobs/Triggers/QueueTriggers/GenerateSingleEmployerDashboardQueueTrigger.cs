@@ -9,7 +9,7 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
-namespace Esfa.Recruit.Vacancies.Jobs.QueueTriggers
+namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
 {
     public class GenerateSingleEmployerDashboardQueueTrigger
     {
@@ -27,10 +27,9 @@ namespace Esfa.Recruit.Vacancies.Jobs.QueueTriggers
 
         public async Task GenerateSingleEmployerDashboardAsync([QueueTrigger(QueueNames.GenerateSingleEmployerDashboardQueueName, Connection = "QueueStorage")] string message, TextWriter log)
         {
-            const string individualJobName = "SingleEmployerDashboardGeneratorJob";
-            if (_jobsConfig.DisabledJobs.Contains(individualJobName))
+            if (_jobsConfig.DisabledJobs.Contains(JobName))
             {
-                _logger.LogDebug($"{individualJobName} is disabled, skipping ...");
+                _logger.LogDebug($"{JobName} is disabled, skipping ...");
                 return;
             }
 

@@ -8,28 +8,27 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
-namespace Esfa.Recruit.Vacancies.Jobs.QueueTriggers
+namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
 {
-    public class GenerateAllProviderDashboardsQueueTrigger
+    public class GenerateAllEmployerDashboardsQueueTrigger
     {
-        private readonly ILogger<GenerateAllProviderDashboardsQueueTrigger> _logger;
+        private readonly ILogger<GenerateAllEmployerDashboardsQueueTrigger> _logger;
         private readonly RecruitWebJobsSystemConfiguration _jobsConfig;
-        private readonly IProviderDashboardProjectionService _projectionService;
+        private readonly IEmployerDashboardProjectionService _projectionService;
         private string JobName => GetType().Name;
 
-        public GenerateAllProviderDashboardsQueueTrigger(ILogger<GenerateAllProviderDashboardsQueueTrigger> logger, RecruitWebJobsSystemConfiguration jobsConfig, IProviderDashboardProjectionService projectionService)
+        public GenerateAllEmployerDashboardsQueueTrigger(ILogger<GenerateAllEmployerDashboardsQueueTrigger> logger, RecruitWebJobsSystemConfiguration jobsConfig, IEmployerDashboardProjectionService projectionService)
         {
             _logger = logger;
             _jobsConfig = jobsConfig;
             _projectionService = projectionService;
         }
 
-        public async Task GenerateAllProviderDashboardsAsync([QueueTrigger(QueueNames.GenerateAllProviderDashboardQueueName, Connection = "QueueStorage")] string message, TextWriter log)
+        public async Task GenerateAllEmployerDashboardsAsync([QueueTrigger(QueueNames.GenerateAllEmployerDashboardQueueName, Connection = "QueueStorage")] string message, TextWriter log)
         {
-            const string individualJobName = "MultiProviderDashboardGeneratorJob";
-            if (_jobsConfig.DisabledJobs.Contains(individualJobName))
+            if (_jobsConfig.DisabledJobs.Contains(JobName))
             {
-                _logger.LogDebug($"{individualJobName} is disabled, skipping ...");
+                _logger.LogDebug($"{JobName} is disabled, skipping ...");
                 return;
             }
 

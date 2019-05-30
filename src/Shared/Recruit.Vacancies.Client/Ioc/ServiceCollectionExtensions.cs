@@ -225,7 +225,7 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
 
         private static void RegisterQueues(IServiceCollection services)
         {
-            services.AddTransient<IQueue, StorageQueue>();
+            services.AddTransient<IQueueService, StorageQueueService>();
         }
 
         private static void RegisterTableStorageProviderDeps(IServiceCollection services, IConfiguration configuration)

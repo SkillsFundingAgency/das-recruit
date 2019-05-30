@@ -9,7 +9,7 @@ using Esfa.Recruit.Vacancies.Jobs.UpdateBlockedEmployers;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 
-namespace Esfa.Recruit.Vacancies.Jobs.QueueTriggers
+namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
 {
     public class GenerateBlockedEmployersQueueTrigger
     {
@@ -17,6 +17,8 @@ namespace Esfa.Recruit.Vacancies.Jobs.QueueTriggers
         private readonly RecruitWebJobsSystemConfiguration _jobsConfig;
         private readonly AccountsReader _accountsReader;
         private readonly IReferenceDataWriter _referenceDataWriter;
+
+        private string JobName => GetType().Name;
 
         public GenerateBlockedEmployersQueueTrigger(ILogger<GenerateBlockedEmployersQueueTrigger> logger, RecruitWebJobsSystemConfiguration jobsConfig, AccountsReader accountsReader, IReferenceDataWriter referenceDataWriter)
         {
@@ -28,9 +30,9 @@ namespace Esfa.Recruit.Vacancies.Jobs.QueueTriggers
 
         public async Task GenerateBlockedEmployersAsync([QueueTrigger(QueueNames.GenerateBlockedEmployersQueueName, Connection = "QueueStorage")] string message, TextWriter log)
         {
-            if (_jobsConfig.DisabledJobs.Contains(this.GetType().Name))
+            if (_jobsConfig.DisabledJobs.Contains(JobName))
             {
-                _logger.LogDebug($"{this.GetType().Name} is disabled, skipping ...");
+                _logger.LogDebug($"{JobName} is disabled, skipping ...");
                 return;
             }
 

@@ -6,13 +6,15 @@ using Esfa.Recruit.Vacancies.Jobs.Configuration;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 
-namespace Esfa.Recruit.Vacancies.Jobs.BankHoliday
+namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
 {
     public class UpdateBankHolidayQueueTrigger
     {
         private readonly ILogger<UpdateBankHolidayQueueTrigger> _logger;
         private readonly RecruitWebJobsSystemConfiguration _jobsConfig;
         private readonly IJobsVacancyClient _client;
+
+        private string JobName => GetType().Name;
 
         public UpdateBankHolidayQueueTrigger(ILogger<UpdateBankHolidayQueueTrigger> logger, RecruitWebJobsSystemConfiguration jobsConfig, IJobsVacancyClient client)
         {
@@ -23,9 +25,9 @@ namespace Esfa.Recruit.Vacancies.Jobs.BankHoliday
 
         public async Task UpdateBankHolidaysAsync([QueueTrigger(QueueNames.UpdateBankHolidaysQueueName, Connection = "QueueStorage")] string message, TextWriter log)
         {
-            if (_jobsConfig.DisabledJobs.Contains(this.GetType().Name))
+            if (_jobsConfig.DisabledJobs.Contains(JobName))
             {
-                _logger.LogDebug($"{this.GetType().Name} is disabled, skipping ...");
+                _logger.LogDebug($"{JobName} is disabled, skipping ...");
                 return;
             }
 
