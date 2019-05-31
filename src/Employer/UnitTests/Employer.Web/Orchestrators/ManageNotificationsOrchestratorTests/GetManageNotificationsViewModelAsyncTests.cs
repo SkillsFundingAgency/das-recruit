@@ -17,7 +17,7 @@ namespace Esfa.Recruit.UnitTests.Employer.Web.Orchestrators.ManageNotificationsO
         [Fact]
         public async Task WhenUserPreferencesAreNotSet()
         {
-            _recruitVacancyClientMock.Setup(c => c.GetUserNotificationPreferencesAsync(It.IsAny<string>())).ReturnsAsync((UserNotificationPreferences)null);
+            _recruitVacancyClientMock.Setup(c => c.GetUserNotificationPreferencesAsync(It.IsAny<string>())).ReturnsAsync(new UserNotificationPreferences());
             var sut = GetSut();
             var result = await sut.GetManageNotificationsViewModelAsync(new VacancyUser());
             result.IsApplicationSubmittedSelected.Should().BeFalse();
