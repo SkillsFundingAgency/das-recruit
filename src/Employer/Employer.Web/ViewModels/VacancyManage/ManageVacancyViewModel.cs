@@ -1,4 +1,5 @@
 using System.Linq;
+using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
@@ -10,8 +11,10 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
         public string VacancyReference { get; internal set; }
         public string ClosingDate { get; internal set; }
         public string PossibleStartDate { get; internal set; }
+        public string AnalyticsAvailableAfterApprovalDate { get; internal set; }
         public bool IsDisabilityConfident { get; internal set; }
         public bool IsApplyThroughFaaVacancy { get; internal set; }
+        public bool IsApplyThroughExternalApplicationSiteVacancy => !IsApplyThroughFaaVacancy;
         public VacancyApplicationsViewModel Applications { get; internal set; }
         public bool HasApplications => Applications.Applications.Any();
         public bool HasNoApplications => Applications.Applications == null || Applications.Applications?.Any() == false;
@@ -21,6 +24,13 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
         public string VacancyClosedInfoMessage { get; internal set; }
         public string ApplicationReviewStatusHeaderInfoMessage { get; internal set; }
         public bool HasVacancyClosedInfoMessage => !string.IsNullOrEmpty(VacancyClosedInfoMessage);
-        public bool CanShowApplicationReviewStatusHeader => !string.IsNullOrEmpty(ApplicationReviewStatusHeaderInfoMessage);       
+        public bool CanShowApplicationReviewStatusHeader => !string.IsNullOrEmpty(ApplicationReviewStatusHeaderInfoMessage);
+
+        public VacancyAnalyticsSummaryViewModel AnalyticsSummary { get; internal set; }
+
+        public bool CanShowVacancyAnalytics => IsVacancyLive || IsVacancyClosed;
+        public bool HasAnalytics => AnalyticsSummary != null;
+        public bool IsVacancyLive => Status == VacancyStatus.Live;
+        public bool IsVacancyClosed => Status == VacancyStatus.Closed;
     }
 }

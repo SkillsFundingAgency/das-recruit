@@ -12,6 +12,12 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacanc
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.Mappers;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyAnalytics;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
+using Esfa.Recruit.Employer.Web.Configuration;
+using Esfa.Recruit.Shared.Web.Configuration;
+using Employer.Web.Configuration;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
@@ -20,11 +26,15 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         private const VacancyRuleSet ValdationRules = VacancyRuleSet.ClosingDate | VacancyRuleSet.StartDate | VacancyRuleSet.TrainingProgramme | VacancyRuleSet.StartDateEndDate | VacancyRuleSet.TrainingExpiryDate | VacancyRuleSet.MinimumWage;
         private readonly DisplayVacancyViewModelMapper _vacancyDisplayMapper;
         private readonly IRecruitVacancyClient _client;
+		private readonly IFeature _featureToggle;
+		private readonly EmployerRecruitSystemConfiguration _systemConfig;
 
-        public VacancyManageOrchestrator(ILogger<VacancyManageOrchestrator> logger, DisplayVacancyViewModelMapper vacancyDisplayMapper, IRecruitVacancyClient vacancyClient) : base(logger)
+		public VacancyManageOrchestrator(ILogger<VacancyManageOrchestrator> logger, DisplayVacancyViewModelMapper vacancyDisplayMapper, IRecruitVacancyClient vacancyClient, IFeature featureToggle, EmployerRecruitSystemConfiguration systemConfig) : base(logger)
         {
             _vacancyDisplayMapper = vacancyDisplayMapper;
             _client = vacancyClient;
+            _featureToggle = featureToggle;
+            _systemConfig = systemConfig;
         }
 
         public async Task<Vacancy> GetVacancy(VacancyRouteModel vrm)
@@ -44,15 +54,31 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             viewModel.Status = vacancy.Status;
             viewModel.VacancyReference = vacancy.VacancyReference.Value.ToString();
             viewModel.ClosingDate = viewModel.Status == VacancyStatus.Closed ? vacancy.ClosedDate?.AsGdsDate() : vacancy.ClosingDate?.AsGdsDate();
+            viewModel.AnalyticsAvailableAfterApprovalDate = _systemConfig.ShowAnalyticsForVacanciesApprovedAfterDate.AsGdsDate();
             viewModel.PossibleStartDate = vacancy.StartDate?.AsGdsDate();
             viewModel.IsDisabilityConfident = vacancy.IsDisabilityConfident;
             viewModel.IsApplyThroughFaaVacancy = vacancy.ApplicationMethod == ApplicationMethod.ThroughFindAnApprenticeship;
             viewModel.CanShowEditVacancyLink = vacancy.CanExtendStartAndClosingDates;
             viewModel.CanShowCloseVacancyLink = vacancy.CanClose;
 
-            var vacancyApplicationsTask =  await _client.GetVacancyApplicationsAsync(vacancy.VacancyReference.Value.ToString());
+            var applications = new List<VacancyApplication>();
 
-            var applications = vacancyApplicationsTask?.Applications ?? new List<VacancyApplication>();
+            if (vacancy.LiveDate >= _systemConfig.ShowAnalyticsForVacanciesApprovedAfterDate)
+            {
+                var vacancyApplicationsTask = _client.GetVacancyApplicationsAsync(vacancy.VacancyReference.Value.ToString());
+                var vacancyAnalyticsTask = _client.GetVacancyAnalyticsSummaryAsync(vacancy.VacancyReference.Value);
+
+                await Task.WhenAll(vacancyApplicationsTask, vacancyAnalyticsTask);
+
+                applications = vacancyApplicationsTask.Result?.Applications ?? new List<VacancyApplication>();
+                var analyticsSummary = vacancyAnalyticsTask.Result ?? new VacancyAnalyticsSummary();
+                viewModel.AnalyticsSummary = VacancyAnalyticsSummaryMapper.MapToVacancyAnalyticsSummaryViewModel(analyticsSummary, vacancy.LiveDate.GetValueOrDefault());
+            }
+            else
+            {
+                var vacancyApplications = await _client.GetVacancyApplicationsAsync(vacancy.VacancyReference.Value.ToString());
+                applications = vacancyApplications?.Applications ?? new List<VacancyApplication>();
+            }
 
             viewModel.Applications = new VacancyApplicationsViewModel
             {

@@ -15,7 +15,22 @@
                 "/p:GenerateFullPaths=true"
             ],
             "problemMatcher": "$msCompile"
-        }, 
+        },
+        {
+            "label": "build-data-seeder",
+            "group":{
+                "kind": "build",
+                "isDefault": true
+            },
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/Data/CosmosDb/Console.RecruitSeedDataWriter/Console.RecruitSeedDataWriter.csproj",
+                "/p:GenerateFullPaths=true"
+            ],
+            "problemMatcher": "$msCompile"
+        },  
         {
             "label": "build-emp-web",
             "group":{
