@@ -69,5 +69,10 @@ namespace Esfa.Recruit.Shared.Web.ViewModels
         {
             public const string SelectionRequired = "You must select one option.";
         }
+
+        public static class UnsubscribeNotificationsConfirmationMessages
+        {
+            public const string SelectionRequired =  "Please confirm if you’d like to unsubscribe";
+        }
     }
 }

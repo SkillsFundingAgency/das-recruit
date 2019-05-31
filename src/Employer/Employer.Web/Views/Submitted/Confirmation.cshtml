@@ -4,7 +4,7 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <div asp-show="@Model.IsNotResubmit" class="govuk-panel govuk-panel--confirmation">
+        <div asp-hide="@Model.IsResubmit" class="govuk-panel govuk-panel--confirmation">
             <h1 class="govuk-panel__title">
                 Vacancy submitted for approval
             </h1>
@@ -21,9 +21,14 @@
             </h1>
         </div>
         <h2 class="govuk-heading-m">Next steps</h2>
-        <p class="govuk-body">Your vacancy will now be reviewed by an Education and Skills Funding Agency adviser.</p>
-        <p class="govuk-body">You’ll be notified within 24 hours, through your recruitment page, if you need to make any edits to your vacancy.</p>
-        <p class="govuk-body">We’ll also confirm on your recruitment page, when your vacancy is live.</p>
+        <div asp-show="@Model.HasNotificationsSet">
+            <p class="govuk-body">We’ll check the vacancy and let you know by email within one working day if you need to make any edits. <a asp-route="@RouteNames.ManageNotifications_Get">Manage your recruitment emails</a>.</p>
+            <p class="govuk-body">When the vacancy is approved, it will appear on the Find an apprenticeship service.</p>
+        </div>
+        <div asp-hide="@Model.HasNotificationsSet">
+            <p class="govuk-body">We’ll check the vacancy and tell you within one working day on the dashboard if you need to make any edits. Visit <a asp-route="@RouteNames.ManageNotifications_Get">Manage your recruitment emails</a> if you’d also like to get an email.</p>
+            <p class="govuk-body">When the vacancy is approved, it will appear on the Find an apprenticeship service.</p>
+        </div>
         <div class="govuk-form-group inline">
             <div class="govuk-form-group">
                 <a asp-route="@RouteNames.Dashboard_Index_Get" class="govuk-button">Return to dashboard</a>
