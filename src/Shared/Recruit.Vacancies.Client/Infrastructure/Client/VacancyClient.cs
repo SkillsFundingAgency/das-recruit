@@ -446,14 +446,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             });
         }
 
-        public Task<bool> GetTrainingProviderExistsAsync(long ukprn)
-        {
-            return _trainingProviderService.ExistsAsync(ukprn);
-        }
-
         public Task<TrainingProvider> GetTrainingProviderAsync(long ukprn)
         {
             return _trainingProviderService.GetProviderAsync(ukprn);
+        }
+
+        public Task<IEnumerable<TrainingProviderSuggestion>> GetAllTrainingProviders()
+        {
+            return _trainingProviderService.FindAllAsync();
         }
 
         public Task<VacancyAnalyticsSummary> GetVacancyAnalyticsSummaryAsync(long vacancyReference)

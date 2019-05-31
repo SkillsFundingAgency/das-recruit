@@ -7,6 +7,7 @@ using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Employer.Web.Configuration;
+using Esfa.Recruit.Employer.Web.ViewModels.Part2.TrainingProvider;
 using Esfa.Recruit.Shared.Web.Extensions;
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part2
@@ -15,22 +16,28 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
     public class TrainingProviderController : Controller
     {
         private readonly TrainingProviderOrchestrator _orchestrator;
-        private readonly IEmployerVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
         private const string TrainingProviderJourneyTempDataKey = "FromSelectTrainingProvider";
         private const string InvalidUkprnMessageFormat = "The UKPRN {0} is not valid or the associated provider is not active.";
+        private const string InvalidSearchTerm = "Please enter a training provider name or UKPRN";
 
-        public TrainingProviderController(TrainingProviderOrchestrator orchestrator, IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient)
+        public TrainingProviderController(TrainingProviderOrchestrator orchestrator, IRecruitVacancyClient vacancyClient)
         {
             _orchestrator = orchestrator;
-            _client = client;
             _vacancyClient = vacancyClient;
         }
 
         [HttpGet("select-training-provider", Name = RouteNames.TrainingProvider_Select_Get)]
-        public async Task<IActionResult> SelectTrainingProvider(VacancyRouteModel vrm)
+        public async Task<IActionResult> SelectTrainingProvider(VacancyRouteModel vrm, [FromQuery] string clear = "")
         {
             var vm = await _orchestrator.GetSelectTrainingProviderViewModel(vrm);
+
+            if (string.IsNullOrWhiteSpace(clear) == false)
+            {
+                vm.Ukprn = string.Empty;
+                vm.TrainingProviderSearch = string.Empty;
+            }
+            
             return View(vm);
         }
 
@@ -43,28 +50,30 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
                 return View(vm);
             }
 
-            if (long.TryParse(m.Ukprn, out var ukprnAsLong) == false)
+            var provider = await _orchestrator.GetProviderFromModelAsync(m);
+
+            if (provider == null)
                 return await ProviderNotFound(m);
 
-            var providerExists = await _orchestrator.ConfirmProviderExists(ukprnAsLong);
-            
-            if (providerExists == false)
-                return await ProviderNotFound(m);
-
-            var confirmDetailsVm = await _orchestrator.GetConfirmViewModel(m);
             TempData.Add(TrainingProviderJourneyTempDataKey, 1);
-            return RedirectToRoute(RouteNames.TrainingProvider_Confirm_Get, confirmDetailsVm);
+            return RedirectToRoute(RouteNames.TrainingProvider_Confirm_Get, new {ukprn = provider.Ukprn});
         }
 
         [HttpGet("confirm-training-provider", Name = RouteNames.TrainingProvider_Confirm_Get)]
-        public async Task<IActionResult> ConfirmTrainingProvider(ConfirmTrainingProviderViewModel confirmDetailsVm)
+        public async Task<IActionResult> ConfirmTrainingProvider(VacancyRouteModel vrm, [FromQuery] string ukprn)
         {
             if (!TempData.ContainsKey(TrainingProviderJourneyTempDataKey))
                 return RedirectToRoute(RouteNames.TrainingProvider_Select_Get);
 
             TempData.Remove(TrainingProviderJourneyTempDataKey);
-            var vacancy = await _vacancyClient.GetVacancyAsync(confirmDetailsVm.VacancyId);
-            Utility.CheckAuthorisedAccess(vacancy, confirmDetailsVm.EmployerAccountId);
+
+            var provider = await _orchestrator.GetProviderAsync(ukprn);
+            
+            if(provider == null)
+                return RedirectToRoute(RouteNames.TrainingProvider_Select_Get);
+            
+            var confirmDetailsVm = await _orchestrator.GetConfirmViewModel(vrm, provider.Ukprn);
+
             return View(confirmDetailsVm);
         }
 
@@ -76,11 +85,11 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
                 return View(m);
             }
 
-            var providerExists = await _orchestrator.ConfirmProviderExists(long.Parse(m.Ukprn));
+            var provider = await _orchestrator.GetProviderAsync(m.Ukprn);
 
-            if (providerExists == false)
+            if (provider == null)
             {
-                var vm = new SelectTrainingProviderEditModel { VacancyId = m.VacancyId, Ukprn = m.Ukprn };
+                var vm = new SelectTrainingProviderEditModel { VacancyId = m.VacancyId, Ukprn = m.Ukprn, SelectionType = TrainingProviderSelectionType.Ukprn};
                 return await ProviderNotFound(vm);
             }
 
@@ -102,7 +111,14 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
 
         private async Task<IActionResult> ProviderNotFound(SelectTrainingProviderEditModel m)
         {
-            ModelState.AddModelError(string.Empty, string.Format(InvalidUkprnMessageFormat, m.Ukprn));
+            if (m.SelectionType == TrainingProviderSelectionType.Ukprn)
+            {
+                ModelState.AddModelError(string.Empty, string.Format(InvalidUkprnMessageFormat, m.Ukprn));
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, InvalidSearchTerm);
+            }
             var vm = await _orchestrator.GetSelectTrainingProviderViewModel(m);
             return View(ViewNames.SelectTrainingProvider, vm);
         }
