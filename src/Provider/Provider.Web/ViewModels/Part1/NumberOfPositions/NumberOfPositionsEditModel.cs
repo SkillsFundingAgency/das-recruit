@@ -9,11 +9,9 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.NumberOfPositions
     {
         [FromRoute]
         public string EmployerAccountId { get; set; }
-
         [FromRoute]
         public Guid? VacancyId { get; set; }
-
-       [TypeOfInteger(ErrorMessage = ErrMsg.TypeOfInteger.NumberOfPositions)]
+        [TypeOfInteger(ErrorMessage = ErrMsg.TypeOfInteger.NumberOfPositions)]
         public string NumberOfPositions { get; set; }
     }
 }

@@ -187,7 +187,7 @@
                 </h3>
                 <span esfa-validation-message-for="NumberOfPositions" class="govuk-error-message"></span>
                 <p asp-show="@Model.HasNumberOfPositionsCaption" class="govuk-body">@Model.NumberOfPositionsCaption</p>
-                @EditLink(RouteNames.Title_Get, Model.NumberOfPositionsSectionState, "link-positions", new { wizard = false })
+                @EditLink(RouteNames.NumberOfPositions_Get, Model.NumberOfPositionsSectionState, "link-positions", new { wizard = false })
             </li>
         </ul>
     </div>

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Mappings;
 using Esfa.Recruit.Provider.Web.RouteModel;
-using Esfa.Recruit.Provider.Web.ViewModels.Part1.Title;
+using Esfa.Recruit.Provider.Web.ViewModels.Part1.NumberOfPositions;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Shared.Web.ViewModels;
@@ -17,26 +17,26 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 {
-    public class TitleOrchestrator : EntityValidatingOrchestrator<Vacancy, TitleEditModel>
+    public class NumberOfPositionsOrchestrator : EntityValidatingOrchestrator<Vacancy, NumberOfPositionsEditModel>
     {
-        private const VacancyRuleSet ValidationRules = VacancyRuleSet.Title;
+        private const VacancyRuleSet ValidationRules = VacancyRuleSet.NumberOfPositions;
         private readonly IProviderVacancyClient _providerVacancyClient;
         private readonly IRecruitVacancyClient _recruitVacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
 
-        public TitleOrchestrator(IProviderVacancyClient providerVacancyClient, IRecruitVacancyClient recruitVacancyClient, 
-            ILogger<TitleOrchestrator> logger, IReviewSummaryService reviewSummaryService) : base(logger)
+        public NumberOfPositionsOrchestrator(IProviderVacancyClient providerVacancyClient, IRecruitVacancyClient recruitVacancyClient, 
+            ILogger<NumberOfPositionsOrchestrator> logger, IReviewSummaryService reviewSummaryService) : base(logger)
         {
             _providerVacancyClient = providerVacancyClient;
             _recruitVacancyClient = recruitVacancyClient;
             _reviewSummaryService = reviewSummaryService;
         }
 
-        public async Task<TitleViewModel> GetTitleViewModelForNewVacancyAsync(string employerAccountId, long ukprn)
+        public async Task<NumberOfPositionsViewModel> GetNumberOfPositionsViewModelForNewVacancyAsync(string employerAccountId, long ukprn)
         {
             await ValidateEmployerAccountIdAsync(ukprn, employerAccountId);
 
-            var vm = new TitleViewModel
+            var vm = new NumberOfPositionsViewModel
             {
                 EmployerAccountId = employerAccountId,
                 Ukprn = ukprn,
@@ -45,14 +45,14 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             return vm;
         }
 
-        public async Task<TitleViewModel> GetTitleViewModelForExistingVacancyAsync(VacancyRouteModel vrm)
+        public async Task<NumberOfPositionsViewModel> GetNumberOfPositionsViewModelForExistingVacancyAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_providerVacancyClient, _recruitVacancyClient, vrm, RouteNames.Title_Get);
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_providerVacancyClient, _recruitVacancyClient, vrm, RouteNames.NumberOfPositions_Get);
 
-            var vm = new TitleViewModel
+            var vm = new NumberOfPositionsViewModel
             {
                     VacancyId = vacancy.Id,
-                    Title = vacancy.Title,
+                    NumberOfPositions = vacancy.NumberOfPositions?.ToString(),
                     PageInfo = Utility.GetPartOnePageInfo(vacancy),
                     Ukprn = vacancy.TrainingProvider.Ukprn.GetValueOrDefault(),
                     EmployerAccountId = vacancy.EmployerAccountId
@@ -61,40 +61,37 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             if (vacancy.Status == VacancyStatus.Referred)
             {
                 vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
-                    ReviewFieldMappingLookups.GetTitleFieldIndicators());
+                    ReviewFieldMappingLookups.GetNumberOfPositionsFieldIndicators());
             }
 
             return vm;
         }
 
-        public async Task<TitleViewModel> GetTitleViewModelFromEditModelAsync(VacancyRouteModel vrm, TitleEditModel model, long ukprn)
+        public async Task<NumberOfPositionsViewModel> GetNumberOfPositionsViewModelFromEditModelAsync(VacancyRouteModel vrm, NumberOfPositionsEditModel model, long ukprn)
         {
-            TitleViewModel vm;
+            NumberOfPositionsViewModel vm;
 
             if(model.VacancyId.HasValue)
             {
-                vm = await GetTitleViewModelForExistingVacancyAsync(vrm);
+                vm = await GetNumberOfPositionsViewModelForExistingVacancyAsync(vrm);
             }
             else
             {
-                vm = await GetTitleViewModelForNewVacancyAsync(model.EmployerAccountId, ukprn);                
+                vm = await GetNumberOfPositionsViewModelForNewVacancyAsync(model.EmployerAccountId, ukprn);                
             }
 
-            vm.Title = model.Title;
+            vm.NumberOfPositions = model.NumberOfPositions;
 
             return vm;
         }
 
-        public async Task<OrchestratorResponse<Guid>> PostTitleEditModelAsync(VacancyRouteModel vrm, TitleEditModel model, VacancyUser user, long ukprn)
+        public async Task<OrchestratorResponse<Guid>> PostNumberOfPositionsEditModelAsync(VacancyRouteModel vrm, NumberOfPositionsEditModel model, VacancyUser user, long ukprn)
         {
-            if (model.VacancyId.HasValue) 
-            {
-                var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_providerVacancyClient, _recruitVacancyClient, vrm, RouteNames.Title_Post);
-
-                vacancy.Title = model.Title;
-
-                return await ValidateAndExecute(
-                    vacancy, 
+            var numberOfPositions = int.TryParse(model.NumberOfPositions, out var n) ? n : default(int?);
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_providerVacancyClient, _recruitVacancyClient, vrm, RouteNames.NumberOfPositions_Post);
+            vacancy.NumberOfPositions = numberOfPositions;
+            return await ValidateAndExecute(
+                    vacancy,
                     v => _recruitVacancyClient.Validate(v, ValidationRules),
                     async v =>
                     {
@@ -102,28 +99,13 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                         return v.Id;
                     }
                 );
-            }
-
-            await ValidateEmployerAccountIdAsync(ukprn, model.EmployerAccountId);
-
-            var newVacancy = new Vacancy
-            {
-                TrainingProvider = new TrainingProvider { Ukprn = ukprn },
-                Title = model.Title
-            };
-
-            return await ValidateAndExecute(
-                newVacancy,
-                v => _recruitVacancyClient.Validate(v, ValidationRules),
-                async v => await _providerVacancyClient.CreateVacancyAsync(
-                        model.EmployerAccountId, ukprn, model.Title, user));
         }
 
-        protected override EntityToViewModelPropertyMappings<Vacancy, TitleEditModel> DefineMappings()
+        protected override EntityToViewModelPropertyMappings<Vacancy, NumberOfPositionsEditModel> DefineMappings()
         {
-            var mappings = new EntityToViewModelPropertyMappings<Vacancy, TitleEditModel>();
+            var mappings = new EntityToViewModelPropertyMappings<Vacancy, NumberOfPositionsEditModel>();
 
-            mappings.Add(e => e.Title, vm => vm.Title);
+            mappings.Add(e => e.NumberOfPositions, vm => vm.NumberOfPositions);
             mappings.Add(e => e.EmployerName, vm => vm.EmployerAccountId);
 
             return mappings;

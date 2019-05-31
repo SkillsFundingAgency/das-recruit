@@ -79,12 +79,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         public async Task<OrchestratorResponse<Guid>> PostNumberOfPositionsEditModelAsync(NumberOfPositionsEditModel m, VacancyUser user)
         {
             var numberOfPositions = int.TryParse(m.NumberOfPositions, out var n)? n : default(int?);
-
-           var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, 
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, 
                 new VacancyRouteModel{EmployerAccountId = m.EmployerAccountId, VacancyId = m.VacancyId.Value}, RouteNames.NumberOfPositions_Post);
-
             vacancy.NumberOfPositions = numberOfPositions;
-
             return await ValidateAndExecute(
                 vacancy, 
                 v => _vacancyClient.Validate(v, ValidationRules),
