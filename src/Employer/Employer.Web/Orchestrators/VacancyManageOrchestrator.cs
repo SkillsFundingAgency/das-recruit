@@ -54,6 +54,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             viewModel.Status = vacancy.Status;
             viewModel.VacancyReference = vacancy.VacancyReference.Value.ToString();
             viewModel.ClosingDate = viewModel.Status == VacancyStatus.Closed ? vacancy.ClosedDate?.AsGdsDate() : vacancy.ClosingDate?.AsGdsDate();
+            viewModel.AnalyticsAvailableAfterApprovalDate = _systemConfig.ShowAnalyticsForVacanciesApprovedAfterDate.AsGdsDate();
             viewModel.PossibleStartDate = vacancy.StartDate?.AsGdsDate();
             viewModel.IsDisabilityConfident = vacancy.IsDisabilityConfident;
             viewModel.IsApplyThroughFaaVacancy = vacancy.ApplicationMethod == ApplicationMethod.ThroughFindAnApprenticeship;
@@ -62,7 +63,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             var applications = new List<VacancyApplication>();
 
-            if (_featureToggle.IsFeatureEnabled(RecruitFeatureNames.CanShowVacancyAnalytics) && vacancy.ApprovedDate > _systemConfig.ShowAnalyticsForVacanciesApprovedAfterDate)
+            if (vacancy.LiveDate >= _systemConfig.ShowAnalyticsForVacanciesApprovedAfterDate)
             {
                 var vacancyApplicationsTask = _client.GetVacancyApplicationsAsync(vacancy.VacancyReference.Value.ToString());
                 var vacancyAnalyticsTask = _client.GetVacancyAnalyticsSummaryAsync(vacancy.VacancyReference.Value);

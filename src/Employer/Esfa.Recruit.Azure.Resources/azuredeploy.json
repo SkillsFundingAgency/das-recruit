@@ -87,7 +87,6 @@
     "Features": {
       "type": "object",
       "defaultValue": {
-        "CanShowVacancyAnalytics": false
       }
     },
     "LoggingRedisConnectionString": {
@@ -398,10 +397,6 @@
                 "value": "[parameters('ExternalLinks').CommitmentsSiteUrl]"
               },
               {
-                "name": "Features:CanShowVacancyAnalytics",
-                "value": "[parameters('Features').CanShowVacancyAnalytics]"
-              },
-              {
                 "name": "ASPNETCORE_ENVIRONMENT",
                 "value": "[toUpper(parameters('EnvironmentFullName'))]"
               },
@@ -639,10 +634,6 @@
               {
                 "name": "ExternalLinks:CommitmentsSiteUrl",
                 "value": "[parameters('ExternalLinks').ProviderCommitmentsSiteUrl]"
-              },
-              {
-                "name": "Features:CanShowVacancyAnalytics",
-                "value": "[parameters('Features').CanShowVacancyAnalytics]"
               },
               {
                 "name": "ASPNETCORE_ENVIRONMENT",

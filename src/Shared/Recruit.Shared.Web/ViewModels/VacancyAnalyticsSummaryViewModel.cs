@@ -6,7 +6,6 @@ namespace Esfa.Recruit.Shared.Web.ViewModels
 {
     public class VacancyAnalyticsSummaryViewModel
     {
-        public long? VacancyReference { get; internal set; }
         public DateTime LiveDate { get; internal set; }
         public DateTime LastUpdatedDate { get; internal set; }
         public string PeriodCaption => $"{LiveDate.AsGdsDate()} to {LastUpdatedDate.AsGdsDate()}";

@@ -11,6 +11,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
         public string VacancyReference { get; internal set; }
         public string ClosingDate { get; internal set; }
         public string PossibleStartDate { get; internal set; }
+        public string AnalyticsAvailableAfterApprovalDate { get; internal set; }
         public bool IsDisabilityConfident { get; internal set; }
         public bool IsApplyThroughFaaVacancy { get; internal set; }
         public bool IsApplyThroughExternalApplicationSiteVacancy => !IsApplyThroughFaaVacancy;
@@ -27,7 +28,8 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
 
         public VacancyAnalyticsSummaryViewModel AnalyticsSummary { get; internal set; }
 
-        public bool CanShowVacancyAnalytics => Status != VacancyStatus.Submitted;
+        public bool CanShowVacancyAnalytics => IsVacancyLive || IsVacancyClosed;
+        public bool HasAnalytics => AnalyticsSummary != null;
         public bool IsVacancyLive => Status == VacancyStatus.Live;
         public bool IsVacancyClosed => Status == VacancyStatus.Closed;
     }
