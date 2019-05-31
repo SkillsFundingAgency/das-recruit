@@ -32,26 +32,19 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         {
             var preferences = await _recruitVacancyClient.GetUserNotificationPreferencesAsync(vacancyUser.UserId);
 
-            return preferences == null ? new ManageNotificationsViewModel() : GetViewModelFromDomainModel(preferences);
+            return GetViewModelFromDomainModel(preferences);
         }
 
         public async Task<OrchestratorResponse> UpdateUserNotificationPreferencesAsync(ManageNotificationsEditModel editModel, VacancyUser vacancyUser)
         {
-            var userDetailsTask =  _recruitVacancyClient.GetUsersDetailsAsync(vacancyUser.UserId);
+            var persistedPreferences = await _recruitVacancyClient.GetUserNotificationPreferencesAsync(vacancyUser.UserId);
 
-            var preferencesTask = _recruitVacancyClient.GetUserNotificationPreferencesAsync(vacancyUser.UserId);
-
-            await Task.WhenAll(userDetailsTask, preferencesTask);
-
-            var userDetails = userDetailsTask.Result;
-            var persistedPreferences = preferencesTask.Result;
-
-            if (persistedPreferences == null && editModel.HasAnySubscription == false)
+            if (persistedPreferences.NotificationTypes == NotificationTypes.None && editModel.HasAnySubscription == false)
             {
                 return new OrchestratorResponse(_notificationTypeIsRequiredForTheFirstTime);
             }
 
-            var preferences = GetDomainModel(editModel, userDetails.Id);
+            var preferences = GetDomainModel(editModel, persistedPreferences.Id);
 
             return await ValidateAndExecute(
                 preferences,

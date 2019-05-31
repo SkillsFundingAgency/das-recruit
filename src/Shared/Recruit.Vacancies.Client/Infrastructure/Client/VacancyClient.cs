@@ -449,7 +449,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         {
             var user = await GetUsersDetailsAsync(vacancyUserId);
 
-            return await _userNotificationPreferencesRepository.GetAsync(user.Id);
+            var preferences = await _userNotificationPreferencesRepository.GetAsync(user.Id);
+
+            return preferences ?? new UserNotificationPreferences() { Id = user.Id };
         }
 
         public Task UpdateUserNotificationPreferencesAsync(UserNotificationPreferences preferences)
