@@ -1,0 +1,33 @@
+@model Esfa.Recruit.Employer.Web.ViewModels.ManageNotifications.ConfirmUnsubscribeNotificationsViewModel
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <form method="post">
+            <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                    <h1 class="govuk-fieldset__heading">
+                        Are you sure you want to unsubscribe from all recruitment emails?
+                    </h1>
+                    </legend>
+                    <span esfa-validation-message-for="ConfirmUnsubscribe" class="govuk-error-message"></span>
+                    <div class="govuk-radios govuk-radios--inline">
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="confirm_yes" asp-for="@Model.ConfirmUnsubscribe" type="radio" value="true" />
+                            <label class="govuk-label govuk-radios__label" for="confirm_yes">
+                            Yes
+                            </label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="confirm_no" asp-for="@Model.ConfirmUnsubscribe" type="radio" value="false" />
+                            <label class="govuk-label govuk-radios__label" for="confirm_no">
+                            No
+                            </label>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <button type="submit" class="govuk-button">Continue</button>
+        </form>
+    </div>
+</div>
