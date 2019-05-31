@@ -27,5 +27,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<string> GetEmployerDescriptionAsync(Vacancy vacancy);
         Task<EmployerProfile> GetEmployerProfileAsync(string employerAccountId, long legalEntityId);
         Task UpdateEmployerProfileAsync(EmployerProfile employerProfile, VacancyUser user);
+        Task<User> GetUsersDetailsAsync(string userId);
+        Task<UserNotificationPreferences> GetUserNotificationPreferencesAsync(string vacancyUserId);
+        Task UpdateUserNotificationPreferencesAsync(UserNotificationPreferences preferences);
+        EntityValidationResult ValidateUserNotificationPreferences(UserNotificationPreferences preferences);
     }
 }

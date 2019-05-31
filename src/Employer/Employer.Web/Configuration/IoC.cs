@@ -101,6 +101,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddTransient<CreateVacancyOptionsOrchestrator>();
             services.AddTransient<EditVacancyDatesOrchestrator>();
             services.AddTransient<LevyDeclarationOrchestrator>();
+            services.AddTransient<ManageNotificationsOrchestrator>();
         }
 
         private static void RegisterMapperDeps(IServiceCollection services)
@@ -120,10 +121,10 @@ namespace Esfa.Recruit.Employer.Web.Configuration
         private static void RegisterDynamicConfigurationDeps(IServiceCollection services)
         {
             services.AddSingleton(x => 
-                                                            {
-                                                                var svc = x.GetService<IConfigurationReader>();
-                                                                return svc.GetAsync<EmployerRecruitSystemConfiguration>("EmployerRecruitSystem").Result;
-                                                            });
+            {
+                var svc = x.GetService<IConfigurationReader>();
+                return svc.GetAsync<EmployerRecruitSystemConfiguration>("EmployerRecruitSystem").Result;
+            });
         }
     }
 }

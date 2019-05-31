@@ -193,6 +193,7 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddTransient<IApplicationReviewRepository, MongoDbApplicationReviewRepository>();
             services.AddTransient<IEmployerProfileRepository, MongoDbEmployerProfileRepository>();
             services.AddTransient<IReportRepository, MongoDbReportRepository>();
+            services.AddTransient<IUserNotificationPreferencesRepository, MongoDbUserNotificationPreferencesRepository>();
 
             //Queries
             services.AddTransient<IVacancyQuery, MongoDbVacancyRepository>();
@@ -245,6 +246,8 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
 
             services.AddSingleton<AbstractValidator<ApplicationReview>, ApplicationReviewValidator>();
             services.AddSingleton<AbstractValidator<VacancyReview>, VacancyReviewValidator>();
+
+            services.AddSingleton<AbstractValidator<UserNotificationPreferences>, UserNotificationPreferencesValidator>();
         }
 
         private static void AddRules(IServiceCollection services)
