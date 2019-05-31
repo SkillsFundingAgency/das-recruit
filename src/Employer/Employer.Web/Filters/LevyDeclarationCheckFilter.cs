@@ -13,17 +13,18 @@ namespace Esfa.Recruit.Employer.Web.Filters
 {
     public class LevyDeclarationCheckFilter : IAsyncActionFilter, IOrderedFilter
     {
-        private readonly IEmployerVacancyClient _vacancyClient;
         private readonly ILogger<LevyDeclarationCheckFilter> _logger;
         private readonly LevyDeclarationCookieWriter _levyCookieWriter;
+        private readonly IRecruitVacancyClient _recruitVacancyClient;
 
-        public LevyDeclarationCheckFilter(IEmployerVacancyClient vacancyClient,
+        public LevyDeclarationCheckFilter(
             ILogger<LevyDeclarationCheckFilter> logger,
-            LevyDeclarationCookieWriter levyCookieWriter)
+            LevyDeclarationCookieWriter levyCookieWriter,
+            IRecruitVacancyClient recruitVacancyClient)
         {
-            _vacancyClient = vacancyClient;
             _logger = logger;
             _levyCookieWriter = levyCookieWriter;
+            _recruitVacancyClient = recruitVacancyClient;
         }
 
         public int Order { get; } = 50;
@@ -80,7 +81,7 @@ namespace Esfa.Recruit.Employer.Web.Filters
 
         private async Task<bool> HasStoredDeclaration(string employerAccountId, string userId)
         {
-            var details = await _vacancyClient.GetUsersDetailsAsync(userId);
+            var details = await _recruitVacancyClient.GetUsersDetailsAsync(userId);
 
             return details.AccountsDeclaredAsLevyPayers.Contains(employerAccountId);
         }

@@ -53,6 +53,11 @@
                     "CollectionName": "reports",
                     "OfferThroughput": 400,
                     "StoredProcedures": []
+                },
+                {
+                    "CollectionName": "userNotificationPreferences",
+                    "OfferThroughput": 400,
+                    "StoredProcedures": []
                 }
             ]
         }
