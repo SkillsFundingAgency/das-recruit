@@ -24,6 +24,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
 
             CheckRouteIsValidForVacancyTest(vacancy, route, shouldRedirect, RouteNames.Title_Get);
         }
+
         [Theory]
         [InlineData(RouteNames.Title_Get, false)]
         [InlineData(RouteNames.Title_Post, false)]
