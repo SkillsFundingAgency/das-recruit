@@ -7,6 +7,6 @@
         public bool IsResubmit { get; set; }
 
         public bool HasVacancyReference => !string.IsNullOrEmpty(VacancyReference);
-        public bool IsNotResubmit => !IsResubmit;
+        public bool HasNotificationsSet { get; set; }
     }
 }

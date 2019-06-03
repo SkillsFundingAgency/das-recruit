@@ -82,5 +82,12 @@
         public const string ApplicationReviewConfirmation_Post = "ApplicationReviewConfirmation_Post";
         public const string Dashboard_Get = "Dashboard_Get";
         public const string VacanciesSearchSuggestions_Get = "VacanciesSearchSuggestions_Get";
+        public const string ManageNotifications_Get = "ManageNotifications_Get";
+        public const string ManageNotifications_Post = "ManageNotifications_Post";
+
+        public const string ConfirmUnsubscribeNotifications_Get = "ConfirmUnsubscribeNotifications_Get";
+        public const string ConfirmUnsubscribeNotifications_Post = "ConfirmUnsubscribeNotifications_Post";
+        public const string NotificationsUpdatedAcknowledgement_Get = "NotificationsUpdatedAcknowledgement_Get";
+        public const string NotificationUnsubscribedAcknowledgement_Get = "NotificationUnsubscribedAcknowledgement_Get";
     }
 }
