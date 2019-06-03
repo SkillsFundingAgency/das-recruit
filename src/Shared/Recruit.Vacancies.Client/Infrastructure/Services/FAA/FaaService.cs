@@ -12,7 +12,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.FAA
 {
     public class FaaService : IFaaService
     {
-        private const string Topic = "UpdateApprenticeshipApplicationStatus";
+        private const string ApplicationStatusSummaryTopicName = "UpdateApprenticeshipApplicationStatus";
+        private const string VacancyStatusSummaryTopicName = "UpdateApprenticeshipApplicationStatuses";
+		
         private readonly FaaConfiguration _config;
 
         public FaaService(IOptions<FaaConfiguration> config)
@@ -22,10 +24,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.FAA
 
         public Task PublishApplicationStatusSummaryAsync(FaaApplicationStatusSummary message)
         {
-            var topicClient = new TopicClient(_config.StorageConnectionString, Topic, RetryPolicy.Default);
+            TopicClient topicClient = CreateTopicClient(ApplicationStatusSummaryTopicName);
 
             var brokeredMessage = CreateBrokeredMessage(message);
 
+            return topicClient.SendAsync(brokeredMessage);
+        }
+
+        public Task PublishVacancyStatusSummaryAsync(FaaVacancyStatusSummary message)
+        {
+            TopicClient topicClient = CreateTopicClient(VacancyStatusSummaryTopicName);
+            var brokeredMessage = CreateBrokeredMessage(message);
             return topicClient.SendAsync(brokeredMessage);
         }
 
@@ -46,6 +55,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.FAA
             
             return brokeredMessage;
         }
+
+        private TopicClient CreateTopicClient(string topicName)
+        {
+            return new TopicClient(_config.StorageConnectionString, topicName, RetryPolicy.Default);
+        }
+
+
     }
 }
 

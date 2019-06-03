@@ -36,6 +36,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             message.Vacancy.LastUpdatedDate = _timeProvider.Now;
             message.Vacancy.LastUpdatedByUser = message.User;
 
+            //TODO: PeteM trigger closing date changed
+
             await _repository.UpdateAsync(message.Vacancy);
 
             await _messaging.PublishEvent(new VacancyPublishedEvent
