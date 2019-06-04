@@ -43,7 +43,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             _mockFaaService.Verify(x => x.PublishVacancyStatusSummaryAsync(
                     It.Is<FaaVacancyStatusSummary>(p =>
                         p.ClosingDate == _currentTime
-                        && p.LegacyVacancyId == _vacancy.LegalEntityId
+                        && p.LegacyVacancyId == _vacancy.VacancyReference
                         && p.VacancyStatus == FaaVacancyStatuses.Expired)));
         }
 
@@ -70,17 +70,20 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         public VacancyClosedEventHandlerTests()
         {
             _currentTime = DateTime.UtcNow;
-            _vacancy = new Vacancy {
+            _vacancy = new Vacancy
+            {
                 Id = Guid.NewGuid(),
                 LegalEntityId = 299792458,
                 ProgrammeId = "42",
                 EmployerLocation = new Address(),
                 Qualifications = new List<Qualification>(),
-                TrainingProvider = new TrainingProvider {
+                TrainingProvider = new TrainingProvider
+                {
                     Ukprn = 1618
                 },
-                VacancyReference = 299792458,
-                Wage = new Wage {
+                VacancyReference = 1234567,
+                Wage = new Wage
+                {
                     Duration = 12,
                     DurationUnit = DurationUnit.Month,
                     FixedWageYearlyAmount = 32000,
@@ -88,12 +91,15 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
                     WeeklyHours = 37,
                 }
             };
-            _event = new VacancyClosedEvent {
+            _event = new VacancyClosedEvent
+            {
                 VacancyId = _vacancy.Id,
-                VacancyReference = _vacancy.LegalEntityId
+                VacancyReference = _vacancy.VacancyReference.Value
             };
-            _apprenticeshipProgrammes = new ApprenticeshipProgrammes {
-                Data = new List<ApprenticeshipProgramme> {
+            _apprenticeshipProgrammes = new ApprenticeshipProgrammes
+            {
+                Data = new List<ApprenticeshipProgramme>
+                {
                     new ApprenticeshipProgramme {
                         Id = _vacancy.ProgrammeId
                     }

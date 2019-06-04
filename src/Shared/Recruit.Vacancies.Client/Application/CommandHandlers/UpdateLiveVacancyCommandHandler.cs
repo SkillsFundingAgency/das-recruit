@@ -7,6 +7,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Microsoft.Extensions.Logging;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using System;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
@@ -33,10 +35,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         {
             _logger.LogInformation("Updating live vacancy {vacancyId}.", message.Vacancy.Id);
 
+            Vacancy originalVacancy = await _repository.GetVacancyAsync(message.Vacancy.Id);
+            await PublishLiveVacancyClosingDateChangedEvent(originalVacancy, message.Vacancy.ClosingDate);
+
             message.Vacancy.LastUpdatedDate = _timeProvider.Now;
             message.Vacancy.LastUpdatedByUser = message.User;
-
-            //TODO: PeteM trigger closing date changed
 
             await _repository.UpdateAsync(message.Vacancy);
 
@@ -44,6 +47,23 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             {
                 VacancyId = message.Vacancy.Id
             });
+        }
+
+        private async Task PublishLiveVacancyClosingDateChangedEvent(Vacancy originalVacancy, DateTime? newClosingDate)
+        {
+            bool shouldPublishEvent =
+                originalVacancy.Status == VacancyStatus.Live
+                && newClosingDate.HasValue
+                && newClosingDate != originalVacancy.ClosingDate;
+
+            if (shouldPublishEvent)
+            {
+                _logger.LogInformation("Changing vacancy {vacancyId} closing date to {ClosingDate}.", originalVacancy.Id, newClosingDate.Value);
+
+                var @event = new LiveVacancyClosingDateChangedEvent(
+                    originalVacancy.Id, originalVacancy.VacancyReference.Value, newClosingDate.Value);
+                await _messaging.PublishEvent(@event);
+            }
         }
     }
 }
