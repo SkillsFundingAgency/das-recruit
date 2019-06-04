@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Shared.Web.ViewModels;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Title
@@ -12,16 +14,16 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Title
         public string EmployerAccountId { get; set; }
         public long Ukprn { get; set; }
         public string Title { get; set; }
-
         public IList<string> OrderedFieldNames => new List<string>
         {
             nameof(Title)
         };
-
         public PartOnePageInfoViewModel PageInfo { get; set; }
         public string FormPostRouteName => VacancyId.HasValue ? RouteNames.Title_Post : RouteNames.CreateVacancy_Post;
         
         public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
-
+        public List<VacancySummary> Vacancies { get; set; } = new List<VacancySummary>();
+        public string BackLink =>
+            Vacancies.Any() ? RouteNames.Vacancies_Get : RouteNames.CreateVacancy_Get;
     }
 }

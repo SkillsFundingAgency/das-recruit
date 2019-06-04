@@ -2,7 +2,6 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Provider.Web.RouteModel;
-using Esfa.Recruit.Provider.Web.ViewModels.Part1.Title;
 using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -33,10 +32,10 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
         }
 
         [HttpPost(ExistingVacancyNumberOfPositionsRoute, Name = RouteNames.NumberOfPositions_Post)]
-        public async Task<IActionResult> NumberOfPositions(VacancyRouteModel vrm, NumberOfPositionsEditModel model, [FromQuery] bool wizard)
+        public async Task<IActionResult> NumberOfPositions(NumberOfPositionsEditModel model, [FromQuery] bool wizard)
         {
             var ukprn = User.GetUkprn();
-            var response = await _orchestrator.PostNumberOfPositionsEditModelAsync(vrm, model, User.ToVacancyUser(), ukprn);
+            var response = await _orchestrator.PostNumberOfPositionsEditModelAsync(model, User.ToVacancyUser());
             
             if (!response.Success)
             {
@@ -45,7 +44,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
 
             if(!ModelState.IsValid)
             {
-                var vm = await _orchestrator.GetNumberOfPositionsViewModelFromEditModelAsync(vrm, model, ukprn);
+                var vm = await _orchestrator.GetNumberOfPositionsViewModelFromEditModelAsync(model);
                 vm.PageInfo.SetWizard(wizard);
                 return View(vm);
             }

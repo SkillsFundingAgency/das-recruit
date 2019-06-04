@@ -48,14 +48,16 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
         public async Task<TitleViewModel> GetTitleViewModelForExistingVacancyAsync(VacancyRouteModel vrm)
         {
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_providerVacancyClient, _recruitVacancyClient, vrm, RouteNames.Title_Get);
-
+            var ukprn = vacancy.TrainingProvider.Ukprn.GetValueOrDefault();
+            var dashboard = await _providerVacancyClient.GetDashboardAsync(ukprn);
             var vm = new TitleViewModel
             {
                     VacancyId = vacancy.Id,
                     Title = vacancy.Title,
                     PageInfo = Utility.GetPartOnePageInfo(vacancy),
-                    Ukprn = vacancy.TrainingProvider.Ukprn.GetValueOrDefault(),
-                    EmployerAccountId = vacancy.EmployerAccountId
+                    Ukprn = ukprn,
+                    EmployerAccountId = vacancy.EmployerAccountId,
+                    Vacancies = dashboard?.Vacancies?.ToList()
             };
 
             if (vacancy.Status == VacancyStatus.Referred)

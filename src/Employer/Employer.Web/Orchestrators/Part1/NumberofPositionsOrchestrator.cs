@@ -6,7 +6,6 @@ using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.NumberOfPositions;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
-using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -27,15 +26,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             _client = client;
             _vacancyClient = vacancyClient;
             _reviewSummaryService = reviewSummaryService;
-        }
-
-        public NumberOfPositionsViewModel GetNumberOfPositionsViewModel()
-        {
-            var vm = new NumberOfPositionsViewModel
-            {
-                PageInfo = new PartOnePageInfoViewModel()
-            };
-            return vm;
         }
 
         public async Task<NumberOfPositionsViewModel> GetNumberOfPositionsViewModelAsync(VacancyRouteModel vrm)
@@ -60,17 +50,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         public async Task<NumberOfPositionsViewModel> GetNumberOfPositionsViewModelAsync(NumberOfPositionsEditModel m)
         {
-            NumberOfPositionsViewModel vm;
-
-            if (m.VacancyId.HasValue)
-            {
-                var vrm = new VacancyRouteModel { EmployerAccountId = m.EmployerAccountId, VacancyId = m.VacancyId.Value };
-                vm = await GetNumberOfPositionsViewModelAsync(vrm);
-            }
-            else
-            {
-                vm = GetNumberOfPositionsViewModel();
-            }
+            var vm = await GetNumberOfPositionsViewModelAsync((VacancyRouteModel)m);
             vm.NumberOfPositions = m.NumberOfPositions;
             return vm;
         }
@@ -79,8 +59,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         public async Task<OrchestratorResponse<Guid>> PostNumberOfPositionsEditModelAsync(NumberOfPositionsEditModel m, VacancyUser user)
         {
             var numberOfPositions = int.TryParse(m.NumberOfPositions, out var n)? n : default(int?);
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, 
-                new VacancyRouteModel{EmployerAccountId = m.EmployerAccountId, VacancyId = m.VacancyId.Value}, RouteNames.NumberOfPositions_Post);
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient,m, RouteNames.NumberOfPositions_Post);
             vacancy.NumberOfPositions = numberOfPositions;
             return await ValidateAndExecute(
                 vacancy, 

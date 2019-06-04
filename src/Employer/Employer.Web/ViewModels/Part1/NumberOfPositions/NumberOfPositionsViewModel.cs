@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Shared.Web.ViewModels;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.NumberOfPositions
@@ -11,7 +10,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.NumberOfPositions
         {
             nameof(NumberOfPositions)
         };
-        public string FormPostRouteName => VacancyId.HasValue ? RouteNames.NumberOfPositions_Post : RouteNames.CreateVacancy_Post;
         public PartOnePageInfoViewModel PageInfo { get; set; }
     }
 }
