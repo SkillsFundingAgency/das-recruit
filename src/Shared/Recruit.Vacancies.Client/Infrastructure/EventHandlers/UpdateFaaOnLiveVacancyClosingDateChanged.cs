@@ -27,7 +27,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
 
             var message = new FaaVacancyStatusSummary(notification.VacancyReference, FaaVacancyStatuses.Live, notification.NewClosingDate);
             return _faaService.PublishVacancyStatusSummaryAsync(message);
-
         }
     }
 }
