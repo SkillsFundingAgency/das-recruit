@@ -31,13 +31,13 @@
             return _idFormatString;
         }
 
-        public static QueryViewType EmployerDashboard => new QueryViewType("EmployerDashboard", "EmployerDashboard_{0}");
-        public static QueryViewType ProviderDashboard => new QueryViewType("ProviderDashboard", "ProviderDashboard_{0}");
-        public static QueryViewType EditVacancyInfo => new QueryViewType("EditVacancyInfo", "EditVacancyInfo_{0}");
-        public static QueryViewType LiveVacancy => new QueryViewType("LiveVacancy", "LiveVacancy_{0}");
-        public static QueryViewType VacancyApplications => new QueryViewType("VacancyApplications", "VacancyApplications_{0}");
-        public static QueryViewType QaDashboard => new QueryViewType("QaDashboard", "QaDashboard");
-        public static QueryViewType ClosedVacancy => new QueryViewType("ClosedVacancy", "ClosedVacancy_{0}");
-        public static QueryViewType VacancyAnalyticsSummary => new QueryViewType("VacancyAnalyticsSummary", "VacancyAnalyticsSummary_{0}");
+        public static QueryViewType EmployerDashboard => new QueryViewType(nameof(EmployerDashboard), "EmployerDashboard_{0}");
+        public static QueryViewType ProviderDashboard => new QueryViewType(nameof(ProviderDashboard), "ProviderDashboard_{0}");
+        public static QueryViewType EditVacancyInfo => new QueryViewType(nameof(EditVacancyInfo), "EditVacancyInfo_{0}");
+        public static QueryViewType LiveVacancy => new QueryViewType(nameof(LiveVacancy), "LiveVacancy_{0}");
+        public static QueryViewType VacancyApplications => new QueryViewType(nameof(VacancyApplications), "VacancyApplications_{0}");
+        public static QueryViewType QaDashboard => new QueryViewType(nameof(QaDashboard), "QaDashboard");
+        public static QueryViewType ClosedVacancy => new QueryViewType(nameof(ClosedVacancy), "ClosedVacancy_{0}");
+        public static QueryViewType VacancyAnalyticsSummary => new QueryViewType(nameof(VacancyAnalyticsSummary), "VacancyAnalyticsSummary_{0}");
     }
 }

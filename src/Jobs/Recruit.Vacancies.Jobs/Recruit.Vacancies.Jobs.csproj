@@ -11,22 +11,22 @@
     <AssemblyName>Esfa.Recruit.Vacancies.Jobs</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Azure.WebJobs" Version="3.0.6"/>
-    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions" Version="3.0.2"/>
-    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Storage" Version="3.0.5"/>
-    <PackageReference Include="Microsoft.Azure.WebJobs.Logging.ApplicationInsights" Version="3.0.6"/>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.1.1"/>
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.1.1"/>
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.1.1"/>
-    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="2.1.1"/>
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.1.1"/>
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="2.1.1"/>
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.1.1"/>
-    <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="2.1.1"/>
-    <PackageReference Include="NLog" Version="4.5.11"/>
-    <PackageReference Include="NLog.Extensions.Logging" Version="1.4.0"/>
-    <PackageReference Include="SFA.DAS.NLog.Targets.Redis" Version="1.1.5"/>
-    <PackageReference Include="System.Data.SqlClient" Version="4.6.0"/>
+    <PackageReference Include="Microsoft.Azure.WebJobs" Version="3.0.6" />
+    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions" Version="3.0.2" />
+    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Storage" Version="3.0.5" />
+    <PackageReference Include="Microsoft.Azure.WebJobs.Logging.ApplicationInsights" Version="3.0.6" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="2.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="2.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="2.1.1" />
+    <PackageReference Include="NLog" Version="4.5.11" />
+    <PackageReference Include="NLog.Extensions.Logging" Version="1.4.0" />
+    <PackageReference Include="SFA.DAS.NLog.Targets.Redis" Version="1.1.5" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.6.0" />
   </ItemGroup>
   <ItemGroup>
     <None Update="appSettings.json">
@@ -43,6 +43,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Shared\Recruit.Vacancies.Client\Recruit.Vacancies.Client.csproj"/>
+    <ProjectReference Include="..\..\Shared\Recruit.Vacancies.Client\Recruit.Vacancies.Client.csproj" />
   </ItemGroup>
 </Project>

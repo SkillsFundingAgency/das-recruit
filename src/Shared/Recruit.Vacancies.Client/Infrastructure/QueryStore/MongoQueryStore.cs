@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
@@ -34,7 +31,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
                 new Context(nameof(IQueryStore.DeleteAsync)));
         }
 
-        public async Task<long> DeleteManyAsync<T, T1>(string typeName, Expression<Func<T, T1>> property, T1 value) where T : QueryProjectionBase
+        public async Task<long> DeleteManyLessThanAsync<T, T1>(string typeName, Expression<Func<T, T1>> property, T1 value) where T : QueryProjectionBase
         {
             var filterBuilder = Builders<T>.Filter;
 
@@ -45,7 +42,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             
             var result = await RetryPolicy.ExecuteAsync(_ => 
                 collection.DeleteManyAsync(filter),
-                new Context(nameof(IQueryStore.DeleteManyAsync)));
+                new Context(nameof(IQueryStore.DeleteManyLessThanAsync)));
 
             return result.DeletedCount;
         }
@@ -60,7 +57,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 
             var result = await RetryPolicy.ExecuteAsync(_ => 
                 collection.DeleteManyAsync(filter), 
-                new Context(nameof(IQueryStore.DeleteManyAsync)));
+                new Context(nameof(IQueryStore.DeleteManyLessThanAsync)));
 
             return result.DeletedCount;
         }

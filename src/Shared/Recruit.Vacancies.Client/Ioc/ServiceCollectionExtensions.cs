@@ -79,6 +79,7 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             RegisterTableStorageProviderDeps(services, configuration);
             RegisterRepositories(services, configuration);
             RegisterStorageProviderDeps(services, configuration);
+            RegisterQueues(services);
             AddValidation(services);
             AddRules(services);
             RegisterMediatR(services);
@@ -150,6 +151,7 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddTransient<IQaDashboardProjectionService, QaDashboardProjectionService>();
             services.AddTransient<IEditVacancyInfoProjectionService, EditVacancyInfoProjectionService>();
             services.AddTransient<IPublishedVacancyProjectionService, PublishedVacancyProjectionService>();
+            services.AddTransient<IVacancyApplicationsProjectionService, VacancyApplicationsProjectionService>();
 
             // Reference Data Providers
             services.AddTransient<IMinimumWageProvider, NationalMinimumWageProvider>();
@@ -219,7 +221,11 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddSingleton(kernal => kernal.GetService<IOptions<StorageQueueConnectionDetails>>().Value);
 
             services.AddTransient<IEventStore, StorageQueueEventStore>();
-            services.AddTransient<IReportsQueue, StorageQueueReportsQueue>();
+        }
+
+        private static void RegisterQueues(IServiceCollection services)
+        {
+            services.AddTransient<IQueueService, StorageQueueService>();
         }
 
         private static void RegisterTableStorageProviderDeps(IServiceCollection services, IConfiguration configuration)

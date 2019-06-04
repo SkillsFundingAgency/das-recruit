@@ -5,7 +5,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Queues;
+using Esfa.Recruit.Vacancies.Client.Application.Queues.Messages;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Reports;
 using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
@@ -15,18 +17,18 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         private readonly ILogger<CreateReportCommandHandler> _logger;
         private readonly IReportRepository _repository;
         private readonly ITimeProvider _timeProvider;
-        private readonly IReportsQueue _reportQueue;
+        private readonly IQueueService _queue;
 
         public CreateReportCommandHandler(
             ILogger<CreateReportCommandHandler> logger,
             IReportRepository repository,
             ITimeProvider timeProvider,
-            IReportsQueue reportQueue)
+            IQueueService queue)
         {
             _logger = logger;
             _repository = repository;
             _timeProvider = timeProvider;
-            _reportQueue = reportQueue;
+            _queue = queue;
         }
 
         public async Task Handle(CreateReportCommand message, CancellationToken cancellationToken)
@@ -47,7 +49,12 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             await _repository.CreateAsync(report);
 
-            await _reportQueue.AddAsync(report.Id);
+            var queueMessage = new ReportQueueMessage 
+            {
+                ReportId = report.Id
+            };
+
+            await _queue.AddMessageAsync(queueMessage);
 
             _logger.LogInformation("Finished create report '{reportType}' with parameters '{reportParameters}' requested by {userId}", message.ReportType, message.Parameters, message.RequestedBy.UserId);
         }

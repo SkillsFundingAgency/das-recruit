@@ -24,6 +24,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         private const string OwnerTypeFieldName = "ownerType";
         private const string IsDeletedFieldName = "isDeleted";
         private const string VacancyStatusFieldName = "status";
+        private const string VacancyReferenceFieldName = "vacancyReference";
 
         public MongoDbVacancyRepository(ILoggerFactory loggerFactory, IOptions<MongoDbConnectionDetails> details) 
             : base(loggerFactory, MongoDbNames.RecruitDb, MongoDbCollectionNames.Vacancies, details)
@@ -171,6 +172,20 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
                 new Context(nameof(GetDistinctVacancyOwningEmployerAccountsAsync)));
             
             return result.Where(x => x != null).Cast<long>().ToList();
+        }
+
+        public async Task<IEnumerable<long>> GetAllVacancyReferencesAsync()
+        {
+            var filter = Builders<Vacancy>.Filter.Empty;
+
+            var collection = GetCollection<Vacancy>();
+
+            var result = await RetryPolicy.ExecuteAsync(_ =>
+                    collection.Distinct(v => v.VacancyReference, filter)
+                        .ToListAsync(),
+                new Context(nameof(GetAllVacancyReferencesAsync)));
+
+            return result.Where(r => r.HasValue).Select(r => r.Value);
         }
     }
 }

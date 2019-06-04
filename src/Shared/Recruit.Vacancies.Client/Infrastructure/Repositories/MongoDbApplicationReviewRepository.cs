@@ -7,6 +7,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using Polly;
 
@@ -102,6 +103,20 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             return RetryPolicy.ExecuteAsync(_ => 
                 collection.DeleteOneAsync(filter),
                 new Context(nameof(HardDelete)));
+        }
+
+        public async Task<IEnumerable<long>> GetAllVacancyReferencesAsync()
+        {
+            var filter = Builders<ApplicationReview>.Filter.Empty;
+
+            var collection = GetCollection<ApplicationReview>();
+
+            var result = await RetryPolicy.ExecuteAsync(_ =>
+                    collection.Distinct(v => v.VacancyReference, filter)
+                        .ToListAsync(),
+                new Context(nameof(GetForVacancyAsync)));
+
+            return result;
         }
     }
 }

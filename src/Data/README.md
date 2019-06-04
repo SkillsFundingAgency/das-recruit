@@ -52,7 +52,7 @@ The project can be published by running `dotnet publish` in the project director
 2. Add a call to the new script from the **_documentMigration.js_** file by adding a `load("{filename.js}");` line.
 
    **If you do not have ESLint installed globally, then run the following step in a command shell, otherwise skip to step 4.**
-3. From the CosmosDb directory in a command shell, run `npm install`. If you do not already have ESLint installed globally.
+3. From the 'Recruit.ChangeScripts' directory in a command shell, run `npm install`. If you do not already have ESLint installed globally.
 4. In a command shell in the same directory, run `npm run lint` to check the script-Java is written in a standard format.
 
 &nbsp;
