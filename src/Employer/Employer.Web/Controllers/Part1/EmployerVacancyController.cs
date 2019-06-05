@@ -9,7 +9,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         [HttpGet("create-vacancy", Name = RouteNames.EmployerCreateVacancy_Get)]        
         public IActionResult CreateVacancy()
         {            
-            return RedirectToRoute(RouteNames.CreateVacancy_Get, new { fromEmployer = true});
+            return RedirectToRoute(RouteNames.CreateVacancy_Get);
         }
 
         [HttpGet("manage-vacancy", Name = RouteNames.EmployerManageVacancy_Get)]
