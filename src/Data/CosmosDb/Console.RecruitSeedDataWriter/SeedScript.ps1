@@ -9,6 +9,7 @@ try {
     & dotnet "$PSScriptRoot/Esfa.Recruit.Console.RecruitSeedDataWriter.dll" $($dbConnectionString) -f "$PSScriptRoot/Data/QualificationTypes.json" -o true
     & dotnet "$PSScriptRoot/Esfa.Recruit.Console.RecruitSeedDataWriter.dll" $($dbConnectionString) -f "$PSScriptRoot/Data/BannedPhrases.json" -o true
     & dotnet "$PSScriptRoot/Esfa.Recruit.Console.RecruitSeedDataWriter.dll" $($dbConnectionString) -f "$PSScriptRoot/Data/Profanities.json" # Due to the sensitive content within this document, the actual profanity content will be loaded manually.
+    & dotnet "$PSScriptRoot/Esfa.Recruit.Console.RecruitSeedDataWriter.dll" $($dbConnectionString) -f "$PSScriptRoot/Data/BlockedEmployers.json"
 
     & dotnet "$PSScriptRoot/Esfa.Recruit.Console.RecruitSeedDataWriter.dll" $($dbConnectionString) -c configuration -f "$PSScriptRoot/Data/QaRules.json"
     & dotnet "$PSScriptRoot/Esfa.Recruit.Console.RecruitSeedDataWriter.dll" $($dbConnectionString) -c configuration -f "$PSScriptRoot/Data/QaRecruitSystem.json"

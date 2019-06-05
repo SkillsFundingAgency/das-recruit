@@ -55,6 +55,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BankHoliday
         private async Task<bool> HasBankHolidayDataChanged(BankHolidays bankHolidaysFromApi)
         {
             var bankHolidaysFromDb = await _referenceDataReader.GetReferenceData<BankHolidays>();
+
+            if (bankHolidaysFromDb == null)
+                return true;
+
             var bankHolidaysFromApiJson = JsonConvert.SerializeObject(bankHolidaysFromApi.Data);
             var bankHolidaysFromDbJson = JsonConvert.SerializeObject(bankHolidaysFromDb.Data);
             var areEqual = JToken.DeepEquals(bankHolidaysFromApiJson, bankHolidaysFromDbJson);

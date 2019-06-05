@@ -87,7 +87,7 @@
     "Features": {
       "type": "object",
       "defaultValue": {
-        "AllowThroughFaaApplicationMethod": false
+        "AllowLevyPayingEmployersOnly": true
       }
     },
     "LoggingRedisConnectionString": {
@@ -398,8 +398,8 @@
                 "value": "[parameters('ExternalLinks').CommitmentsSiteUrl]"
               },
               {
-                "name": "Features:AllowThroughFaaApplicationMethod",
-                "value": "[parameters('Features').AllowThroughFaaApplicationMethod]"
+                "name": "Features:AllowLevyPayingEmployersOnly",
+                "value": "[parameters('Features').AllowLevyPayingEmployersOnly]"
               },
               {
                 "name": "ASPNETCORE_ENVIRONMENT",
