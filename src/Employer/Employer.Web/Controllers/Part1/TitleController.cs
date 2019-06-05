@@ -21,11 +21,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         }
         
         [HttpGet("create-vacancy", Name = RouteNames.CreateVacancy_Get)]
-        public IActionResult Title([FromQuery]string fromEmployer = "false")
+        public IActionResult Title()
         {
             var vm = _orchestrator.GetTitleViewModel();            
             vm.PageInfo.SetWizard();
-            vm.FromEmployer = fromEmployer != "false";
             return View(vm);
         }
 

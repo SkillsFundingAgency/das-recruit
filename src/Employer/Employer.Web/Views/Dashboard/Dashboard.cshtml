@@ -20,11 +20,13 @@
         <div asp-show="Model.HasWarning" class="warning-summary govuk-!-margin-bottom-0">
             <p>@Model.WarningMessage</p>
         </div>
-        <a asp-show="@Model.FromEmployer" asp-route="@RouteNames.Dashboard_Account_Home" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Return to home</a>
+        <esfaFeatureDisabled name="@FeatureNames.AllowLevyPayingEmployersOnly">
+            <a asp-route="@RouteNames.Dashboard_Account_Home" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Return to home</a>
+        </esfaFeatureDisabled>
         <h1 class="govuk-heading-l govuk-!-margin-bottom-6">Your vacancies</h1>
-        <div asp-show="Model.HasInfo" class="info-summary govuk-!-margin-bottom-0">
-            <p>@Model.InfoMessage</p>
-        </div>
+            <div asp-show="Model.HasInfo" class="info-summary govuk-!-margin-bottom-0">
+                <p>@Model.InfoMessage</p>
+            </div>
     </div>
 </div>
 <div class="govuk-grid-row">

@@ -13,7 +13,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public string InfoMessage { get; internal set; }
         public bool HasWarning => !string.IsNullOrEmpty(WarningMessage);
         public bool HasInfo => !string.IsNullOrEmpty(InfoMessage);
-        public bool FromEmployer { get; internal set; }
         public PagerViewModel Pager { get; internal set; }
         public string ResultsHeading { get; internal set; }
         public FilteringOptions Filter { get; set; }
