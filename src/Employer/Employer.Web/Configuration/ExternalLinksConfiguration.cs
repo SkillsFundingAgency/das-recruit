@@ -8,6 +8,5 @@ namespace Esfa.Recruit.Employer.Web.Configuration
         public string FindApprenticeshipTrainingUrl { get; set; }
         public string FindProviderUrl { get; set; }
         public string CommitmentsSiteUrl { get; set; }
-        public string EmployerHomeUrl { get; set; }
     }
 }
