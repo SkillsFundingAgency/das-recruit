@@ -1016,7 +1016,6 @@ a[rel="external"]:hover:after {
 /*** search ***/
 .search-field {
   position: relative;
-  box-model:
 }
 
 .search-input-with-button {
