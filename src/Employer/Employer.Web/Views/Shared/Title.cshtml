@@ -1,20 +1,18 @@
 ﻿@using Esfa.Recruit.Shared.Web.Mappers
 @model Esfa.Recruit.Employer.Web.ViewModels.Part1.Title.TitleViewModel
+@inject ManageApprenticeshipsLinkHelper ExternalLinks
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames}'/>
-
-        <partial name="@PartialNames.ReviewSummary" for="Review"/>        
-        <div asp-show="@Model.FromEmployer" class="govuk-grid-row">        
-            <div class="govuk-grid-column-full">
-                <a asp-controller="EmployerTeam" asp-action="Index" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Return to home</a>
-            </div>
-        </div>        
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames}' />
+        <partial name="@PartialNames.ReviewSummary" for="Review" />
+        <a asp-show="@Model.FromEmployer" asp-route="@ExternalLinks.EmployerHome" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Return to home</a>
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Vacancy summary</h1>
         <div class="info-summary">
-            <p class="govuk-body">Apprentice candidates will see your vacancy in a search along with vacancies from other employers. This is your
-            opportunity to make your vacancy attract the best candidates.</p>
+            <p class="govuk-body">
+                Apprentice candidates will see your vacancy in a search along with vacancies from other employers. This is your
+                opportunity to make your vacancy attract the best candidates.
+            </p>
         </div>
     </div>
 </div>
@@ -26,7 +24,7 @@
                 <p class="govuk-body">Use a title that relates to the apprenticeship training for this vacancy, this will help it get found in the Find an Apprenticeship search.</p>
                 <span class="govuk-hint">Must include the word ‘apprentice’ or ‘apprenticeship’ </span>
                 <span esfa-validation-message-for="Title" class="govuk-error-message"></span>
-                <input asp-for="Title" class="govuk-input character-count" type="text" data-val-length-max="100"/>
+                <input asp-for="Title" class="govuk-input character-count" type="text" data-val-length-max="100" />
                 <div>
                     <span class="govuk-body maxchar-count">100</span>
                     <span class="govuk-body maxchar-text"> characters remaining</span>
