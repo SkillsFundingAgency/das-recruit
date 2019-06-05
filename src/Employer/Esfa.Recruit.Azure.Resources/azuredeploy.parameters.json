@@ -58,7 +58,8 @@
         "EmployerIdamsSiteUrl": "",
         "StaffIdamsUrl": "",
         "ProviderApprenticeshipSiteUrl": "",
-        "CommitmentsSiteUrl": ""
+        "CommitmentsSiteUrl": "",
+		"EmployerHomeUrl": ""
       }
     },
     "Features": {

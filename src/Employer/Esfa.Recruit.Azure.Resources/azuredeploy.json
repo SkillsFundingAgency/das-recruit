@@ -81,7 +81,8 @@
         "StaffIdamsUrl": "",
         "ProviderApprenticeshipSiteUrl": "",
         "CommitmentsSiteUrl": "",
-        "ProviderCommitmentsSiteUrl": ""
+        "ProviderCommitmentsSiteUrl": "",
+		"EmployerHomeUrl": ""
       }
     },
     "Features": {
@@ -400,6 +401,10 @@
               {
                 "name": "ExternalLinks:CommitmentsSiteUrl",
                 "value": "[parameters('ExternalLinks').CommitmentsSiteUrl]"
+              },
+			  {
+                "name": "ExternalLinks:EmployerHomeUrl",
+                "value": "[parameters('ExternalLinks').EmployerHomeUrl]"
               },
               {
                 "name": "Features:AllowLevyPayingEmployersOnly",
