@@ -22,11 +22,11 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         }
 
         [HttpGet("employer", Name = RouteNames.Employer_Get)]
-        public async Task<IActionResult> Employer(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
+        public async Task<IActionResult> Employer(VacancyRouteModel vrm, [FromQuery]string searchTerm, [FromQuery]int? page, [FromQuery] string wizard = "true")
         {
             var info = GetVacancyEmployerInfoCookie(vrm.VacancyId);
 
-            var vm = await _orchestrator.GetEmployerViewModelAsync(vrm);
+            var vm = await _orchestrator.GetEmployerViewModelAsync(vrm, searchTerm, page, info?.LegalEntityId);
 
             if (info == null || !info.LegalEntityId.HasValue)
             {
@@ -37,7 +37,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                 vm.SelectedOrganisationId = info.LegalEntityId;
             }
 
-            if(vm.HasOnlyOneOrganisation)
+            if (vm.HasOnlyOneOrganisation)
             {
                 return RedirectToRoute(RouteNames.EmployerName_Get, new {Wizard = wizard});
             }
@@ -45,7 +45,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             vm.PageInfo.SetWizard(wizard);
             return View(vm);
         }
-        
+
         [HttpPost("employer", Name = RouteNames.Employer_Post)]
         public async Task<IActionResult> Employer(EmployerEditModel m, [FromQuery] bool wizard)
         {
@@ -60,7 +60,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 
             if (!ModelState.IsValid)
             {
-                var vm = await _orchestrator.GetEmployerViewModelAsync(m);
+                var vm = await _orchestrator.GetEmployerViewModelAsync(m, m.SearchTerm, m.Page, info?.LegalEntityId);
                 SetVacancyEmployerInfoCookie(vm.VacancyEmployerInfoModel);
                 vm.PageInfo.SetWizard(wizard);
                 return View(vm);

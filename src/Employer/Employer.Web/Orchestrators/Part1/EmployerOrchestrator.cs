@@ -11,6 +11,9 @@ using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.Extensions.Logging;
+using Esfa.Recruit.Shared.Web.Helpers;
+using System;
+using Esfa.Recruit.Shared.Web.ViewModels;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
@@ -19,6 +22,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         private readonly IEmployerVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly ILogger<EmployerOrchestrator> _logger;
+
+        private const int MaxLegalEntitiesPerPage = 25;
 
         public EmployerOrchestrator(
             IEmployerVacancyClient client,
@@ -30,20 +35,45 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             _logger = logger;
         }
 
-        public async Task<EmployerViewModel> GetEmployerViewModelAsync(VacancyRouteModel vrm)
+        public async Task<EmployerViewModel> GetEmployerViewModelAsync(VacancyRouteModel vrm, string searchTerm, int? requestedPageNo, long? selectedLegalEntityId = 0)
         {
+            const int NotFoundIndex = -1;
+            var setPage = requestedPageNo.HasValue ? requestedPageNo.Value : 1;
+
             var getEmployerDataTask = _client.GetEditVacancyInfoAsync(vrm.EmployerAccountId);
             var getVacancyTask = Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Employer_Get);
             await Task.WhenAll(getEmployerDataTask, getVacancyTask);
             var employerData = getEmployerDataTask.Result;
             var vacancy = getVacancyTask.Result;
 
+            var legalEntities = BuildLegalEntityViewModels(employerData, vrm.EmployerAccountId);
+
             var vm = new EmployerViewModel
-            {                
-                Organisations = BuildLegalEntityViewModels(employerData, vrm.EmployerAccountId),
+            {
+                TotalNumberOfLegalEntities = legalEntities.Count(),
                 SelectedOrganisationId = vacancy.LegalEntityId,
-                PageInfo = Utility.GetPartOnePageInfo(vacancy)
+                PageInfo = Utility.GetPartOnePageInfo(vacancy),
+                SearchTerm = searchTerm
             };
+
+            var filteredLegalEntities = legalEntities
+                .Where(le => string.IsNullOrEmpty(searchTerm) || le.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+                .OrderBy(v => v.Name)
+                .ToList();
+
+            var filteredLegalEntitiesTotal = filteredLegalEntities.Count();
+
+            var totalNumberOfPages = (int)Math.Ceiling((double)filteredLegalEntitiesTotal / MaxLegalEntitiesPerPage);
+            var indexOfSelectedLegalEntity = selectedLegalEntityId.HasValue ? filteredLegalEntities.FindIndex(le => le.Id == selectedLegalEntityId.Value) + 1 : NotFoundIndex;
+
+            if (indexOfSelectedLegalEntity > MaxLegalEntitiesPerPage && requestedPageNo.HasValue == false)
+                setPage = PagingHelper.GetPageNoOfSelectedItem(totalNumberOfPages, MaxLegalEntitiesPerPage, indexOfSelectedLegalEntity);
+            else
+                setPage = setPage > totalNumberOfPages ? 1 : setPage;
+
+            SetFilteredOrganisationsForPage(setPage, vm, filteredLegalEntities);
+            SetPager(searchTerm, setPage, vm, filteredLegalEntitiesTotal);
+            vm.Page = setPage;
 
             vm.VacancyEmployerInfoModel = new VacancyEmployerInfoModel()
             {
@@ -62,8 +92,34 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 vm.VacancyEmployerInfoModel.AnonymousName = vacancy.IsAnonymous ? vacancy.EmployerName : null;
                 vm.VacancyEmployerInfoModel.AnonymousReason = vacancy.IsAnonymous ? vacancy.AnonymousReason : null;
             }
-            
+
             return vm;
+        }
+
+        private void SetPager(string searchTerm, int setPage, EmployerViewModel vm, int filteredLegalEntitiesTotal)
+        {
+            var pager = new PagerViewModel(
+                            filteredLegalEntitiesTotal,
+                            MaxLegalEntitiesPerPage,
+                            setPage,
+                            "Showing {0} to {1} of {2} organisations",
+                            RouteNames.Employer_Get,
+                            new Dictionary<string, string>
+                            {
+                                { nameof(searchTerm), searchTerm }
+                            });
+
+            vm.Pager = pager;
+        }
+
+        private void SetFilteredOrganisationsForPage(int setPage, EmployerViewModel vm, List<OrganisationViewModel> filteredLegalEntities)
+        {
+            var skip = (setPage - 1) * MaxLegalEntitiesPerPage;
+
+            vm.Organisations = filteredLegalEntities
+                .Skip(skip)
+                .Take(MaxLegalEntitiesPerPage)
+                .ToList();
         }
 
         private IEnumerable<OrganisationViewModel> BuildLegalEntityViewModels(EditVacancyInfo info, string employerAccountId)

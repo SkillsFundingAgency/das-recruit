@@ -8,5 +8,8 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer
     {
         [Required(ErrorMessage = ValidationMessages.EmployerNameValidationMessages.EmployerNameRequired)]
         public long? SelectedOrganisationId { get; set; }
+
+        public string SearchTerm { get; set; }
+        public int Page { get; set; }
     }
 }
