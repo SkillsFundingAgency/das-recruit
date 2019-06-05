@@ -8,12 +8,6 @@
     <AssemblyName>Esfa.Recruit.Employer.Web</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="Views\Part1\Title\**" />
-    <Content Remove="Views\Part1\Title\**" />
-    <EmbeddedResource Remove="Views\Part1\Title\**" />
-    <None Remove="Views\Part1\Title\**" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="FluentValidation.AspNetCore" Version="7.5.2" />
     <PackageReference Include="Humanizer.Core.uk" Version="2.6.2" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
