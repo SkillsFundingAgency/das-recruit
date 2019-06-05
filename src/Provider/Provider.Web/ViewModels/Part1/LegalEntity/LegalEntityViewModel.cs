@@ -7,6 +7,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntity
 {
     public class LegalEntityViewModel
     {
+        private const int LimitForNotShowingSearchPanel = 10;
         public IEnumerable<OrganisationViewModel> Organisations { get; internal set; }
 
         public bool HasOnlyOneOrganisation => TotalNumberOfLegalEntities == 1;
@@ -28,7 +29,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntity
         public string SearchTerm { get; internal set; }
         public int Page { get; internal set; }
 
-        public bool CanShowSearchPanel => TotalNumberOfLegalEntities > 10;
+        public bool CanShowSearchPanel => TotalNumberOfLegalEntities > LimitForNotShowingSearchPanel;
 
         public bool HasNoSearchResults => string.IsNullOrEmpty(SearchTerm) == false && Organisations.Count() == 0;
         public string NoSearchResultsCaption => $"0 matches for '{SearchTerm}'";
