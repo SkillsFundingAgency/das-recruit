@@ -36,12 +36,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _logger.LogInformation("Updating live vacancy {vacancyId}.", message.Vacancy.Id);
 
             Vacancy originalVacancy = await _repository.GetVacancyAsync(message.Vacancy.Id);
-            await PublishLiveVacancyClosingDateChangedEvent(originalVacancy, message.Vacancy.ClosingDate);
 
             message.Vacancy.LastUpdatedDate = _timeProvider.Now;
             message.Vacancy.LastUpdatedByUser = message.User;
 
             await _repository.UpdateAsync(message.Vacancy);
+
+            await PublishLiveVacancyClosingDateChangedEvent(originalVacancy, message.Vacancy.ClosingDate);
 
             await _messaging.PublishEvent(new VacancyPublishedEvent
             {

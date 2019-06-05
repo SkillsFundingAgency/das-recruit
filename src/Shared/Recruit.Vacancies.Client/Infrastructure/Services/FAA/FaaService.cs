@@ -1,7 +1,5 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Runtime.Serialization;
-using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using Microsoft.Azure.ServiceBus;
@@ -13,7 +11,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.FAA
     public class FaaService : IFaaService
     {
         private const string ApplicationStatusSummaryTopicName = "UpdateApprenticeshipApplicationStatus";
-        private const string VacancyStatusSummaryTopicName = "UpdateApprenticeshipApplicationStatuses";
+        private const string UpdateApprenticeshipVacancyStatus = "UpdateApprenticeshipVacancyStatus";
 		
         private readonly FaaConfiguration _config;
 
@@ -33,7 +31,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.FAA
 
         public Task PublishVacancyStatusSummaryAsync(FaaVacancyStatusSummary message)
         {
-            TopicClient topicClient = CreateTopicClient(VacancyStatusSummaryTopicName);
+            TopicClient topicClient = CreateTopicClient(UpdateApprenticeshipVacancyStatus);
             var brokeredMessage = CreateBrokeredMessage(message);
             return topicClient.SendAsync(brokeredMessage);
         }
