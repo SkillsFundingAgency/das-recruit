@@ -25,7 +25,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         {
             var vm = _orchestrator.GetTitleViewModel();            
             vm.PageInfo.SetWizard();
-            vm.FromEmployer = bool.Parse(fromEmployer);
+            vm.FromEmployer = fromEmployer != "false";
             return View(vm);
         }
 

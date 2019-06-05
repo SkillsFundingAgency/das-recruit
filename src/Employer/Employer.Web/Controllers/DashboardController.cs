@@ -31,7 +31,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             var vm = await _orchestrator.GetDashboardViewModelAsync(employerAccountId, filter, page);
 
-            vm.FromEmployer = bool.Parse(fromEmployer);
+            vm.FromEmployer = fromEmployer != "false";
             if (vm.FromEmployer && !vm.HasVacancies)
             {
                 return RedirectToRoute(RouteNames.EmployerCreateVacancy_Get);
