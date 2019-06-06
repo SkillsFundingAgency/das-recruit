@@ -21,7 +21,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         }
 
         [HttpGet("", Name = RouteNames.Dashboard_Index_Get)]
-        public async Task<IActionResult> Dashboard([FromRoute]string employerAccountId, [FromQuery] string filter, [FromQuery] int page = 1, [FromQuery]string fromEmployer = "false")
+        public async Task<IActionResult> Dashboard([FromRoute]string employerAccountId, [FromQuery] string filter, [FromQuery] int page = 1)
         {
             if (string.IsNullOrWhiteSpace(filter))
                 filter = Request.Cookies.GetCookie(CookieNames.DashboardFilter);
@@ -30,8 +30,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 Response.Cookies.SetSessionCookie(_hostingEnvironment, CookieNames.DashboardFilter, filter);
 
             var vm = await _orchestrator.GetDashboardViewModelAsync(employerAccountId, filter, page);
-
-            if (fromEmployer != "false" && !vm.HasVacancies)
+            if (TempData.ContainsKey(TempDataKeys.EmployerVacancyMessage) && !vm.HasVacancies)
             {
                 return RedirectToRoute(RouteNames.EmployerCreateVacancy_Get);
             }
