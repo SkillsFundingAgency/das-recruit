@@ -6,11 +6,9 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Events
 {
     public class LiveVacancyClosingDateChangedEvent : EventBase, INotification
     {
-        public Guid VacancyId { get; set; }
-        public long VacancyReference { get; set; }
-        public DateTime NewClosingDate { get; set; }
-
-        public LiveVacancyClosingDateChangedEvent() { }
+        public Guid VacancyId { get; }
+        public long VacancyReference { get; }
+        public DateTime NewClosingDate { get; }
 
         public LiveVacancyClosingDateChangedEvent(Guid vacancyId, long vacancyReference, DateTime newClosingDate)
         {

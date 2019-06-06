@@ -1,6 +1,6 @@
 ﻿namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.FAA
 {
-    // This message class is a duplicate of das-vacancyservicesshared SFA.Apprenticeships.Core/Entities/Domain/Vacancies/VacancyStatuses.cs
+    // This message class is a duplicate of https://github.com/SkillsFundingAgency/das-vacancyservicesshared/blob/master/src/SFA.Apprenticeships.Core/Entities/Domain/Vacancies/VacancyStatuses.cs
     // Ensure you keep both classes in sync.
     public enum FaaVacancyStatuses
     {

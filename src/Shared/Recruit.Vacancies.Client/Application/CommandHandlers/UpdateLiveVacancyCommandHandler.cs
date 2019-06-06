@@ -52,10 +52,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
         private async Task PublishLiveVacancyClosingDateChangedEvent(Vacancy originalVacancy, DateTime? newClosingDate)
         {
-            bool shouldPublishEvent =
-                originalVacancy.Status == VacancyStatus.Live
-                && newClosingDate.HasValue
-                && newClosingDate != originalVacancy.ClosingDate;
+            bool shouldPublishEvent = newClosingDate.HasValue && newClosingDate != originalVacancy.ClosingDate;
 
             if (shouldPublishEvent)
             {

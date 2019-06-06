@@ -35,7 +35,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
         private UpdateLiveVacancyCommand _message;
 
         [Fact]
-        public async Task ShouldPublishLiveVacancyClosingDateChangedEventWhenLiveVacancyClosingDateChanges()
+        public async Task ShouldPublishLiveVacancyClosingDateChangedEventWhenLiveClosingDateHasChanged()
         {
             var newClosingDate = DateTime.UtcNow.AddDays(100);
             _originalVacancy.Status = VacancyStatus.Live;
@@ -53,7 +53,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
         }
 
         [Fact]
-        public async Task ShouldNotPublishLiveVacancyClosingDateChangedEventWhenLiveVacancyClosingDateIsUnchanged()
+        public async Task ShouldNotPublishLiveVacancyClosingDateChangedEventWhenClosingDateHasNotChanged()
         {
             var newClosingDate = _originalVacancy.ClosingDate;
             _originalVacancy.Status = VacancyStatus.Live;
@@ -62,28 +62,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
             await _handler.Handle(_message, CancellationToken.None);
 
             _mockMessaging.Verify(x => x.PublishEvent(It.IsAny<LiveVacancyClosingDateChangedEvent>()), Times.Never);
-        }
-
-        [Fact]
-        public async Task ShouldNotPublishLiveVacancyClosingDateChangedEventWhenVacancyIsNotLive()
-        {
-            var nonLiveStatuses = Enum.GetValues(typeof(VacancyStatus))
-                .OfType<VacancyStatus>()
-                .Where(x => x != VacancyStatus.Live);
-
-            foreach (VacancyStatus currentStatus in nonLiveStatuses)
-            {
-                var newClosingDate = DateTime.UtcNow.AddDays(100);
-                _originalVacancy.Status = currentStatus;
-                _updatedVacancy.ClosingDate = newClosingDate;
-
-                await _handler.Handle(_message, CancellationToken.None);
-
-                _mockMessaging.Verify(x =>
-                    x.PublishEvent(It.IsAny<LiveVacancyClosingDateChangedEvent>()),
-                    Times.Never,
-                    $"Should not publish message when Vacancy.Status is {currentStatus}");
-            }
         }
 
         public UpdateLiveVacancyCommandHandlerTests()

@@ -58,8 +58,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.FAA
         {
             return new TopicClient(_config.StorageConnectionString, topicName, RetryPolicy.Default);
         }
-
-
     }
 }
 
