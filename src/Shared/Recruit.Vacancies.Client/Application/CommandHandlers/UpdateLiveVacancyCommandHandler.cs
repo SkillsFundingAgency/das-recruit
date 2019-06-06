@@ -7,6 +7,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Microsoft.Extensions.Logging;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using System;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
@@ -33,15 +35,33 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         {
             _logger.LogInformation("Updating live vacancy {vacancyId}.", message.Vacancy.Id);
 
+            Vacancy originalVacancy = await _repository.GetVacancyAsync(message.Vacancy.Id);
+
             message.Vacancy.LastUpdatedDate = _timeProvider.Now;
             message.Vacancy.LastUpdatedByUser = message.User;
 
             await _repository.UpdateAsync(message.Vacancy);
 
+            await PublishLiveVacancyClosingDateChangedEvent(originalVacancy, message.Vacancy.ClosingDate);
+
             await _messaging.PublishEvent(new VacancyPublishedEvent
             {
                 VacancyId = message.Vacancy.Id
             });
+        }
+
+        private async Task PublishLiveVacancyClosingDateChangedEvent(Vacancy originalVacancy, DateTime? newClosingDate)
+        {
+            bool shouldPublishEvent = newClosingDate.HasValue && newClosingDate != originalVacancy.ClosingDate;
+
+            if (shouldPublishEvent)
+            {
+                _logger.LogInformation("Changing vacancy {vacancyId} closing date to {ClosingDate}.", originalVacancy.Id, newClosingDate.Value);
+
+                var @event = new LiveVacancyClosingDateChangedEvent(
+                    originalVacancy.Id, originalVacancy.VacancyReference.Value, newClosingDate.Value);
+                await _messaging.PublishEvent(@event);
+            }
         }
     }
 }
