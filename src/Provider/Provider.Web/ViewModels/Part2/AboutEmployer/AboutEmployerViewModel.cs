@@ -7,6 +7,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part2.AboutEmployer
     {
         public string Title { get; internal set; }
         public string EmployerDescription { get; internal set; }
+        public string EmployerName { get; internal set; }
         public string EmployerWebsiteUrl { get; internal set; }
         public bool IsAnonymous { get; internal set; }
         public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();

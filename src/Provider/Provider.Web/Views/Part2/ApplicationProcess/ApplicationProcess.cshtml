@@ -7,9 +7,10 @@
         
         <partial name="@PartialNames.ReviewSummary" for="Review" />
         
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-0">@Model.Title</h1>
-
-        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+        <h1 class="govuk-heading-xl">
+            <span class="govuk-caption-l">@Model.Title</span>
+            How would you like to receive applications?
+        </h1>
 
         <form asp-route="@RouteNames.ApplicationProcess_Post" novalidate>
             <div esfa-validation-marker-for="ApplicationMethod" class="govuk-form-group">
