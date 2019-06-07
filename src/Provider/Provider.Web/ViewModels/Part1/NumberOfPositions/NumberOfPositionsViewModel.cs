@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.ViewModels;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.NumberOfPositions
 {
-    public class NumberOfPositionsViewModel 
+    public class NumberOfPositionsViewModel : VacancyRouteModel
     {
         public PartOnePageInfoViewModel PageInfo { get; set; }
         public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
@@ -14,9 +13,5 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.NumberOfPositions
         {
             nameof(NumberOfPositions)
         };
-        [FromRoute]
-        public long Ukprn { get; set; }
-        [FromRoute]
-        public Guid? VacancyId { get; set; }
     }
 }

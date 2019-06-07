@@ -10,7 +10,7 @@ using Esfa.Recruit.Provider.Web.ViewModels.Part1.NumberOfPositions;
 
 namespace Esfa.Recruit.Provider.Web.Controllers.Part1
 {
-    [Route(RoutePaths.AccountRoutePath)]
+    [Route(RoutePaths.AccountVacancyRoutePath)]
     public class NumberOfPositionsController : Controller
     {
         private readonly NumberOfPositionsOrchestrator _orchestrator;
