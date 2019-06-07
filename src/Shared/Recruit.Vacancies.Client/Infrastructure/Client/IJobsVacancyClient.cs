@@ -23,5 +23,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task WithdrawApplicationAsync(long vacancyReference, Guid candidateId);
         Task HardDeleteApplicationReviewsForCandidate(Guid candidateId);
         Task RefreshEmployerProfiles(string employerAccountId, IEnumerable<long> legalEntities);
+        Task UpdateUserAccountAsync(string idamsUserId);
     }
 }

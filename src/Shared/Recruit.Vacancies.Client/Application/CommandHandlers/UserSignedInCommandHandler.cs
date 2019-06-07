@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
+using Esfa.Recruit.Vacancies.Client.Domain.Events;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
@@ -13,11 +15,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
     {
         private readonly IUserRepository _userRepository;
         private readonly ITimeProvider _timeProvider;
+        private readonly IMessaging _messaging;
 
-        public UserSignedInCommandHandler(IUserRepository userRepository, ITimeProvider timeProvider)
+        public UserSignedInCommandHandler(IUserRepository userRepository, ITimeProvider timeProvider, IMessaging messaging)
         {
             _userRepository = userRepository;
             _timeProvider = timeProvider;
+            _messaging = messaging;
         }
 
         public async Task Handle(UserSignedInCommand message, CancellationToken cancellationToken)
@@ -45,6 +49,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 userEntity.Ukprn = user.Ukprn;
 
             await _userRepository.UpsertUserAsync(userEntity);
+
+            await _messaging.PublishEvent(new UserSignedInEvent { IdamsUserId = user.UserId } );
         }
     }
 }
