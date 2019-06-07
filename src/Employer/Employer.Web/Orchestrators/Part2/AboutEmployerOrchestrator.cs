@@ -7,7 +7,6 @@ using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Employer.Web.ViewModels.AboutEmployer;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
-using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -21,7 +20,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         private readonly IEmployerVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
-        private readonly IEmployerService _employerService;
 
         public AboutEmployerOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<AboutEmployerOrchestrator> logger, IReviewSummaryService reviewSummaryService) : base(logger)
         {
@@ -38,7 +36,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             {
                 Title = vacancy.Title,
                 EmployerDescription =  await _vacancyClient.GetEmployerDescriptionAsync(vacancy),
-                EmployerName = await _vacancyClient.GetEmployerNameAsync(vacancy),
+                EmployerTitle = await GetEmployerTitleAsync(vacancy),
                 EmployerWebsiteUrl = vacancy.EmployerWebsiteUrl,
                 IsAnonymous = vacancy.IsAnonymous
             };
@@ -106,6 +104,14 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             mappings.Add(e => e.EmployerWebsiteUrl, vm => vm.EmployerWebsiteUrl);
 
             return mappings;
+        }
+
+        private async Task<string> GetEmployerTitleAsync(Vacancy vacancy)
+        {
+            if (vacancy.IsAnonymous)
+                return vacancy.LegalEntityName;
+
+            return await _vacancyClient.GetEmployerNameAsync(vacancy);
         }
     }
 }
