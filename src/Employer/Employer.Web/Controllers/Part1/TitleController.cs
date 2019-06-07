@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
+using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Title;
@@ -21,9 +22,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         }
         
         [HttpGet("create-vacancy", Name = RouteNames.CreateVacancy_Get)]
-        public IActionResult Title()
+        public async Task<IActionResult> Title([FromRoute] string employerAccountId)
         {
-            var vm = _orchestrator.GetTitleViewModel();            
+            var vm = await _orchestrator.GetTitleViewModel(employerAccountId);            
             vm.PageInfo.SetWizard();
             return View(vm);
         }
