@@ -13,17 +13,16 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
     [Route(RoutePaths.AccountRoutePath)]
     public class NumberOfPositionsController : Controller
     {
-        private const string ExistingVacancyNumberOfPositionsRoute = "vacancies/{vacancyId:guid}/noofpositions";
         private readonly NumberOfPositionsOrchestrator _orchestrator;
         public IProviderVacancyClient ProviderVacancyClient { get; }
 
         public NumberOfPositionsController(NumberOfPositionsOrchestrator orchestrator, IProviderVacancyClient providerVacancyClient)
         {
-            this.ProviderVacancyClient = providerVacancyClient;
+            ProviderVacancyClient = providerVacancyClient;
             _orchestrator = orchestrator;
         }
 
-        [HttpGet(ExistingVacancyNumberOfPositionsRoute, Name = RouteNames.NumberOfPositions_Get)]
+        [HttpGet("number-of-positions", Name = RouteNames.NumberOfPositions_Get)]
         public async Task<IActionResult> NumberOfPositions(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
         {            
             var vm = await _orchestrator.GetNumberOfPositionsViewModelForExistingVacancyAsync(vrm);
@@ -31,10 +30,9 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
             return View(vm);
         }
 
-        [HttpPost(ExistingVacancyNumberOfPositionsRoute, Name = RouteNames.NumberOfPositions_Post)]
+        [HttpPost("number-of-positions", Name = RouteNames.NumberOfPositions_Post)]
         public async Task<IActionResult> NumberOfPositions(NumberOfPositionsEditModel model, [FromQuery] bool wizard)
         {
-            var ukprn = User.GetUkprn();
             var response = await _orchestrator.PostNumberOfPositionsEditModelAsync(model, User.ToVacancyUser());
             
             if (!response.Success)

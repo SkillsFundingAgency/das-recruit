@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Shared.Web.ViewModels;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Title
 {
@@ -15,8 +13,8 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Title
         };
         public string FormPostRouteName => VacancyId.HasValue ? RouteNames.Title_Post : RouteNames.CreateVacancy_Post;
         public PartOnePageInfoViewModel PageInfo { get; set; }
-        public List<VacancySummary> Vacancies { get; set; } = new List<VacancySummary>();
+        public bool HasCloneableVacancies { get; set; }
         public string BackLink =>
-            Vacancies.Any() ? RouteNames.Dashboard_Index_Get : RouteNames.CreateVacancyOptions_Get ;
+            HasCloneableVacancies ? RouteNames.Dashboard_Index_Get : RouteNames.CreateVacancyOptions_Get;
     }
 }

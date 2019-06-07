@@ -51,7 +51,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 VacancyId = vacancy.Id,
                 Title = vacancy.Title,
                 PageInfo = Utility.GetPartOnePageInfo(vacancy),
-                Vacancies = dashboard?.Vacancies?.ToList() 
+                HasCloneableVacancies = dashboard.CloneableVacancies.Any()
             };
 
             if (vacancy.Status == VacancyStatus.Referred)

@@ -1,6 +1,5 @@
 ﻿using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.ViewModels.Validations;
-using Microsoft.AspNetCore.Mvc;
 using ErrMsg = Esfa.Recruit.Shared.Web.ViewModels.ValidationMessages.PositionValidationMessages;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.NumberOfPositions
