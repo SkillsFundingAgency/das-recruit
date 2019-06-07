@@ -2,7 +2,6 @@
 @using Esfa.Recruit.Shared.Web.Mappers
 @model SkillsViewModel
 
-
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
 
@@ -10,9 +9,10 @@
 
         <partial name="@PartialNames.ReviewSummary" for="Review" />
 
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-0">@Model.Title</h1>
-
-        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+        <h1 class="govuk-heading-xl">
+            <span class="govuk-caption-l">@Model.Title</span>
+            Which skills and personal qualities would you like the applicant to have?
+        </h1>
 
         <form asp-route="@RouteNames.Skills_Post" id="skillsForm">
             <fieldset class="govuk-fieldset">
@@ -24,26 +24,26 @@
                 <div class="two-column-checkbox-container">
                     <fieldset class="govuk-fieldset two-column-checkbox">
                         <div class="govuk-checkboxes">
-                        @for (var i = 0; i < Model.Column1Checkboxes.Count; i++)
-                    {
-                            var checkbox = Model.Column1Checkboxes[i];
-                            <div class="govuk-checkboxes__item">
-                                <input name="Skills" id="col1-@i" class="govuk-checkboxes__input" type="checkbox" value="@checkbox.Value" checked="@checkbox.Selected">
-                                <label class="govuk-label govuk-checkboxes__label" for="col1-@i">@checkbox.Name</label>
-                            </div>       
-                }
+                            @for (var i = 0; i < Model.Column1Checkboxes.Count; i++)
+                            {
+                                var checkbox = Model.Column1Checkboxes[i];
+                                <div class="govuk-checkboxes__item">
+                                    <input name="Skills" id="col1-@i" class="govuk-checkboxes__input" type="checkbox" value="@checkbox.Value" checked="@checkbox.Selected">
+                                    <label class="govuk-label govuk-checkboxes__label" for="col1-@i">@checkbox.Name</label>
+                                </div>
+                            }
                         </div>
                     </fieldset>
                     <fieldset class="govuk-fieldset two-column-checkbox">
                         <div class="govuk-checkboxes">
-                        @for (var i = 0; i < Model.Column2Checkboxes.Count; i++)
-                    {
-                            var checkbox = Model.Column2Checkboxes[i];
-                            <div class="govuk-checkboxes__item">
-                                <input name="Skills" id="col2-@i" class="govuk-checkboxes__input" type="checkbox" value="@checkbox.Value" checked="@checkbox.Selected">
-                                <label class="govuk-label govuk-checkboxes__label" for="col2-@i">@checkbox.Name</label>
-                            </div>
-                }
+                            @for (var i = 0; i < Model.Column2Checkboxes.Count; i++)
+                            {
+                                var checkbox = Model.Column2Checkboxes[i];
+                                <div class="govuk-checkboxes__item">
+                                    <input name="Skills" id="col2-@i" class="govuk-checkboxes__input" type="checkbox" value="@checkbox.Value" checked="@checkbox.Selected">
+                                    <label class="govuk-label govuk-checkboxes__label" for="col2-@i">@checkbox.Name</label>
+                                </div>
+                            }
                         </div>
                     </fieldset>
                 </div>

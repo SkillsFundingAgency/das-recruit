@@ -35,7 +35,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                 Title = vacancy.Title,
                 EmployerContactName = vacancy.EmployerContact?.Name,
                 EmployerContactEmail = vacancy.EmployerContact?.Email,
-                EmployerContactPhone = vacancy.EmployerContact?.Phone
+                EmployerContactPhone = vacancy.EmployerContact?.Phone,
+                EmployerName = await _vacancyClient.GetEmployerNameAsync(vacancy)
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
