@@ -7,6 +7,6 @@
         public const string Skills = "Skills";
         public const string ApplicationReviewStatusInfoMessage = "ApplicationReviewStatus_InfoMessage";
         public const string VacancyClosedMessage = "VacancyClosedMessage";
-        public static string EmployerVacancyMessage = "EmployerVacancy_InfoMessage";
+        public const string EmployerVacancyMessage = "EmployerVacancy_InfoMessage";
     }
 }

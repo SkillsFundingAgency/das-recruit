@@ -1,6 +1,5 @@
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
-using Esfa.Recruit.Shared.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part1
@@ -18,7 +17,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         [HttpGet("manage-vacancy", Name = RouteNames.EmployerManageVacancy_Get)]
         public IActionResult ManageVacancy()
         {
-            TempData.Add(TempDataKeys.EmployerVacancyMessage, string.Format(InfoMessages.VacancyUpdated, "fromMAHome"));
+            TempData.Add(TempDataKeys.EmployerVacancyMessage, "fromMAHome");
             return RedirectToRoute(RouteNames.Dashboard_Index_Get);
         }        
     }
