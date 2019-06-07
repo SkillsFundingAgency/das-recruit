@@ -30,11 +30,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 Response.Cookies.SetSessionCookie(_hostingEnvironment, CookieNames.DashboardFilter, filter);
 
             var vm = await _orchestrator.GetDashboardViewModelAsync(employerAccountId, filter, page);
-            if (TempData.ContainsKey(TempDataKeys.EmployerVacancyMessage) && !vm.HasVacancies)
-            {
-                return RedirectToRoute(RouteNames.EmployerCreateVacancy_Get);
-            }
-
+            
             if (TempData.ContainsKey(TempDataKeys.DashboardErrorMessage))
                 vm.WarningMessage = TempData[TempDataKeys.DashboardErrorMessage].ToString();
 
