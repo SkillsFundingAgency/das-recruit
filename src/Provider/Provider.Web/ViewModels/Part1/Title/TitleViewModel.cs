@@ -5,7 +5,6 @@ using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 
-
 namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Title
 {
     public class TitleViewModel
@@ -20,10 +19,9 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Title
         };
         public PartOnePageInfoViewModel PageInfo { get; set; }
         public string FormPostRouteName => VacancyId.HasValue ? RouteNames.Title_Post : RouteNames.CreateVacancy_Post;
-        
+        public bool HasCloneableVacancies { get; set; }
         public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
-        public List<VacancySummary> Vacancies { get; set; } = new List<VacancySummary>();
         public string BackLink =>
-            Vacancies.Any() ? RouteNames.Vacancies_Get : RouteNames.CreateVacancy_Get;
+            HasCloneableVacancies ? RouteNames.Vacancies_Get : RouteNames.CreateVacancy_Get;
     }
 }
