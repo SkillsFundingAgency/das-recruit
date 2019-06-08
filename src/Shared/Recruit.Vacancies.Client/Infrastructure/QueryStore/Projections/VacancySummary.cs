@@ -8,12 +8,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections
         public Guid Id { get; set; }
         public string Title { get; set; }
         public long? VacancyReference { get; set; }
+        public long? LegalEntityId { get; set; }
+        public string LegalEntityName { get; set; }
         public string EmployerName { get; set; }
+        public long? Ukprn { get; set; }
         public DateTime? CreatedDate { get; set; }
         public VacancyStatus Status { get; set; }
         public DateTime? ClosingDate { get; set; }
+        public int? Duration { get; set; }
         public ApplicationMethod? ApplicationMethod { get; set; }
         public string ProgrammeId { get; set; }
+        public DateTime? StartDate { get; set; }
         public string TrainingTitle { get; set; }
         public TrainingType TrainingType { get; set; }
         public ProgrammeLevel TrainingLevel { get; set; }
