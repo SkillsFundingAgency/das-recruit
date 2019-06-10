@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyAnalytics;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
@@ -27,5 +28,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<string> GetEmployerDescriptionAsync(Vacancy vacancy);
         Task<EmployerProfile> GetEmployerProfileAsync(string employerAccountId, long legalEntityId);
         Task UpdateEmployerProfileAsync(EmployerProfile employerProfile, VacancyUser user);
+
+        Task<VacancyAnalyticsSummary> GetVacancyAnalyticsSummaryAsync(long vacancyReference);
     }
 }
