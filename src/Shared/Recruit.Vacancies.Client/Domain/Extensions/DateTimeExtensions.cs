@@ -46,5 +46,11 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Extensions
 
             return $"{hours} {minutes}";
         }
+
+        public static DateTime ToUkTime(this DateTime datetime)
+        {
+            var ukTimezone = TimeZoneInfo.FindSystemTimeZoneById("GMT Standard Time");
+            return TimeZoneInfo.ConvertTime(datetime, ukTimezone);
+        }
     }
 }

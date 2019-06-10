@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services.Reports;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
@@ -92,7 +93,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
 
             var results = JArray.Parse(report.Data);
 
-            _csvBuilder.WriteCsvToStream(stream, results, report.RequestedOn.ToLocalTime(), reportStrategy.ResolveFormat);
+            _csvBuilder.WriteCsvToStream(stream, results, report.RequestedOn.ToUkTime(), reportStrategy.ResolveFormat);
         }
     }
 }

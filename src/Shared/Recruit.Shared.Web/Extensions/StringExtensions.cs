@@ -30,9 +30,9 @@ namespace Esfa.Recruit.Shared.Web.Extensions
             return postcode;
         }
 
-        public static DateTime? AsDateTimeUk(this string date, DateTimeStyles style = DateTimeStyles.AssumeUniversal)
+        public static DateTime? AsDateTimeUk(this string date)
         {
-            if(DateTime.TryParseExact(date, "d/M/yyyy", _ukCulture, style, out var d))
+            if(DateTime.TryParseExact(date, "d/M/yyyy", _ukCulture, DateTimeStyles.AssumeUniversal, out var d))
             {
                 return d;
             }

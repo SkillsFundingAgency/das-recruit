@@ -19,7 +19,7 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public string Outcome { get; set; }
         public DateTime ReviewDate { get; set; }
 
-        public string ReviewDateDay => ReviewDate.ToLocalTime().AsGdsDate();
-        public string ReviewDateTime => ReviewDate.ToLocalTime().AsGdsTime();
+        public string ReviewDateDay => ReviewDate.ToUkTime().AsGdsDate();
+        public string ReviewDateTime => ReviewDate.ToUkTime().AsGdsTime();
     }
 }
