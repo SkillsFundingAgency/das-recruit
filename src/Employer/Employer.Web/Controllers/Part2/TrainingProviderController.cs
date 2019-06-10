@@ -1,5 +1,4 @@
 ﻿using Esfa.Recruit.Employer.Web.Configuration.Routing;
-using Esfa.Recruit.Employer.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Extensions;
@@ -16,7 +15,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
     public class TrainingProviderController : Controller
     {
         private readonly TrainingProviderOrchestrator _orchestrator;
-        private readonly IRecruitVacancyClient _vacancyClient;
         private const string TrainingProviderJourneyTempDataKey = "FromSelectTrainingProvider";
         private const string InvalidUkprnMessageFormat = "The UKPRN {0} is not valid or the associated provider is not active.";
         private const string InvalidSearchTerm = "Please enter a training provider name or UKPRN";
@@ -24,7 +22,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
         public TrainingProviderController(TrainingProviderOrchestrator orchestrator, IRecruitVacancyClient vacancyClient)
         {
             _orchestrator = orchestrator;
-            _vacancyClient = vacancyClient;
         }
 
         [HttpGet("select-training-provider", Name = RouteNames.TrainingProvider_Select_Get)]

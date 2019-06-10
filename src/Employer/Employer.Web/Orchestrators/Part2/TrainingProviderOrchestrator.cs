@@ -2,21 +2,19 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
-using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.RouteModel;
-using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Employer.Web.ViewModels.Part2.TrainingProvider;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Orchestrators;
-using Esfa.Recruit.Shared.Web.RuleTemplates;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Cache;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
@@ -116,12 +114,15 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public async Task<TrainingProviderSuggestion> GetProviderFromModelAsync(SelectTrainingProviderEditModel model)
         {
-            TrainingProviderSuggestion provider = null;
-            
             if (model.SelectionType == TrainingProviderSelectionType.TrainingProviderSearch)
             {
                 var allProviders = await GetAllTrainingProvidersAsync();
-                return allProviders.SingleOrDefault(p => FormatSuggestion(p.ProviderName, p.Ukprn).Contains(model.TrainingProviderSearch));
+
+                var matches = allProviders.Where(p => 
+                    FormatSuggestion(p.ProviderName, p.Ukprn).Contains(model.TrainingProviderSearch))
+                    .ToList();
+
+                return matches.Count() == 1 ? matches.First() : null;
             }
 
             return await GetProviderAsync(model.Ukprn);
@@ -140,7 +141,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         {
             return _cache.CacheAsideAsync(
                 CacheKeys.TrainingProviders,
-                _timeProvider.OneHour,
+                _timeProvider.NextDay6am,
                 () => _client.GetAllTrainingProviders());
         }
 

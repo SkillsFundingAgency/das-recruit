@@ -23,14 +23,16 @@
                     "<span class="govuk-!-font-weight-bold">@Model.SelectedTrainingText</span>"
                 </p>
             </fieldset>
-
-            <div class="govuk-form-group" id="non-js-search">
-                <span class="govuk-hint">
-                    Enter the training provider reference number (UKPRN). You will be able to get this from your training provider The UKPRN must only be 8 digits (For example, 12345678)
-                </span>
-                <span esfa-validation-message-for="Ukprn" class="govuk-error-message"></span>
-                <input asp-for="Ukprn" type="text" maxlength="8" class="govuk-input govuk-input--width-10" />
-            </div>
+            
+            <noscript>
+                <div class="govuk-form-group" id="non-js-search">
+                    <span class="govuk-hint">
+                        Enter the training provider reference number (UKPRN). You will be able to get this from your training provider The UKPRN must only be 8 digits (For example, 12345678)
+                    </span>
+                    <span esfa-validation-message-for="Ukprn" class="govuk-error-message"></span>
+                    <input asp-for="Ukprn" type="text" maxlength="8" class="govuk-input govuk-input--width-10" />
+                </div>
+            </noscript>
 
             <div class="govuk-form-group js-hidden" id="js-search">
                 <span class="govuk-hint">
@@ -44,8 +46,8 @@
             </div>
 
             <div class="govuk-form-group">
-                <p class="gov-body">
-                    <a asp-route="@RouteNames.TrainingProvider_Select_Get" asp-route-clear="true" class="govuk-link das-button-link">Clear search</a>
+                <p class="govuk-body">
+                    <a asp-route="@RouteNames.TrainingProvider_Select_Get" asp-route-clear="true" class="govuk-link">Clear search</a>
                 </p>
                 <input type="hidden" name="SelectionType" id="selection-type" value="@TrainingProviderSelectionType.Ukprn" />
                 <input type="submit" value="Continue" esfa-automation="btn-continue" class="govuk-button" />
@@ -55,7 +57,7 @@
     </div>
 </div>
 
-@section HeadJS
+@section HeadCSS
 {
     <link asp-append-version="true" rel="stylesheet" media="screen" href="/lib/accessible-autocomplete/style.css" />
 }
@@ -63,11 +65,10 @@
 @section FooterJS
 {
     <script asp-append-version="true" src="/lib/accessible-autocomplete/accessible-autocomplete.min.js"></script>
-    <script asp-append-version="true" src="/lib/esfa-training-provider-suggestions/searchSuggestionsService.js"></script>
+    <script asp-append-version="true" src="/javascripts/esfa-training-provider-suggestions/searchSuggestionsService.js"></script>
 
     <script nws-csp-add-nonce="true">
         $("#js-search").removeClass("js-hidden");
-        $("#non-js-search").addClass("js-hidden");
         $("#selection-type").val("@TrainingProviderSelectionType.TrainingProviderSearch");
 
         var providers = @(Html.Raw(JsonConvert.SerializeObject(Model.TrainingProviders)));

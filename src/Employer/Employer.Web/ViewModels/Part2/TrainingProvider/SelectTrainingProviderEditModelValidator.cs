@@ -12,9 +12,9 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part2.TrainingProvider
                 RuleFor(m => m.Ukprn)
                     .Cascade(CascadeMode.StopOnFirstFailure)
                     .NotEmpty()
-                    .WithMessage("The UKPRN field is required")
+                    .WithMessage("You must provide a UKPRN")
                     .Matches(ValidationConstants.UkprnRegex.ToString())
-                    .WithMessage("UKPRN is not recognised");
+                    .WithMessage("You must provide a valid UKPRN");
             });
 
             When(m => m.SelectionType == TrainingProviderSelectionType.TrainingProviderSearch, () =>

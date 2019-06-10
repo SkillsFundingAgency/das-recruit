@@ -23,7 +23,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.TrainingProvid
             result.IsValid.Should().BeFalse();
             result.Errors.Count.Should().Be(1);
             result.Errors[0].PropertyName.Should().Be("Ukprn");
-            result.Errors[0].ErrorMessage.Should().Be("The UKPRN field is required");
+            result.Errors[0].ErrorMessage.Should().Be("You must provide a UKPRN");
         }
 
         [Fact]
@@ -41,7 +41,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.TrainingProvid
             result.IsValid.Should().BeFalse();
             result.Errors.Count.Should().Be(1);
             result.Errors[0].PropertyName.Should().Be("Ukprn");
-            result.Errors[0].ErrorMessage.Should().Be("UKPRN is not recognised");
+            result.Errors[0].ErrorMessage.Should().Be("You must provide a valid UKPRN");
         }
 
         [Fact]
