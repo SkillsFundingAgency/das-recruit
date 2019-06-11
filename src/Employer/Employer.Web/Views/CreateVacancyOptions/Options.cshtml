@@ -2,7 +2,7 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <esfaFeatureDisabled name="@FeatureNames.AllowLevyPayingEmployersOnly">
-            <a asp-show="@Model.HasClonableVacancies" asp-route="@RouteNames.Dashboard_Index_Get" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Return to your vacancies</a>
+            <a asp-route="@RouteNames.Dashboard_Account_Home" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Return to home</a>
         </esfaFeatureDisabled>
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
 

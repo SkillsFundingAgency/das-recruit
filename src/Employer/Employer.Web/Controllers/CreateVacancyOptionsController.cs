@@ -22,8 +22,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         public async Task<IActionResult> Options([FromRoute]string employerAccountId)
         {
             var vm = await _orchestrator.GetCreateOptionsViewModelAsync(employerAccountId);
-
-            if(vm.HasClonableVacancies == false)
+            if (vm.HasClonableVacancies == false)
                 return RedirectToRoute(@RouteNames.CreateVacancy_Get);
 
             return View(vm);
