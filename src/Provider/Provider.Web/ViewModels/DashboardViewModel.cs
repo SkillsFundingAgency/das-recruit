@@ -27,6 +27,11 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public bool HasReferredVacancy => VacancyCountReferred > 0;
         public int VacancyCountSubmitted => Vacancies.Count(v => v.Status == VacancyStatus.Submitted);
         public bool HasSubmittedVacancy => VacancyCountSubmitted > 0;
+        public string GetCardStatus(int vacancyCount)
+        {
+            return vacancyCount == 0 ? "das-card--inactive" : String.Empty;
+        }
+
         public int NoOfNewApplications => Vacancies.Count(v => v.NoOfNewApplications > 0);
         public bool HasNewApplications => NoOfNewApplications > 0;
         public int AllApplications => Vacancies.Count(v => v.NoOfApplications > 0);
