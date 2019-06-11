@@ -1,15 +1,19 @@
 ﻿using Esfa.Recruit.Employer.Web.RouteModel;
-using Esfa.Recruit.Shared.Web.ViewModels.Validations;
-using System.ComponentModel.DataAnnotations;
-using ValMsg = Esfa.Recruit.Shared.Web.ViewModels;
 
-namespace Esfa.Recruit.Employer.Web.ViewModels
+namespace Esfa.Recruit.Employer.Web.ViewModels.Part2.TrainingProvider
 {
     public class SelectTrainingProviderEditModel : VacancyRouteModel
     {
-        [Required]
-        [Display(Name = "UKPRN")]
-        [Ukprn(ErrorMessage = ValMsg.ValidationMessages.TrainingProviderValidationMessages.TypeOfUkprn.UkprnFormat)]
         public string Ukprn { get; set; }
+
+        public string TrainingProviderSearch { get; set; }
+
+        public TrainingProviderSelectionType SelectionType { get; set; }
+    }
+
+    public enum TrainingProviderSelectionType
+    {
+        Ukprn,
+        TrainingProviderSearch
     }
 }

@@ -1,8 +1,5 @@
-﻿using Esfa.Recruit.Employer.Web.ViewModels;
-using FluentAssertions;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
+﻿using FluentAssertions;
+using Esfa.Recruit.Employer.Web.ViewModels.Part2.TrainingProvider;
 using Xunit;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.TrainingProvider
@@ -14,19 +11,87 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.TrainingProvid
         [InlineData("")]
         public void ShouldErrorIfUkprnIsNotSpecified(string inputUkprn)
         {
-            var vm = new SelectTrainingProviderEditModel
-            {
-                Ukprn = inputUkprn
+            var vm = new SelectTrainingProviderEditModel {
+                Ukprn = inputUkprn,
+                SelectionType = TrainingProviderSelectionType.Ukprn
             };
 
-            var context = new ValidationContext(vm, null, null);
-            var result = new List<ValidationResult>();
-            
-            var isValid = Validator.TryValidateObject(vm, context, result, true);
+            var validator = new SelectTrainingProviderEditModelValidator();
 
-            isValid.Should().BeFalse();
-            result.Should().HaveCount(1);
-            result.Single(r => r.MemberNames.Single() == "Ukprn").ErrorMessage.Should().Be("The UKPRN field is required.");
+            var result = validator.Validate(vm);
+
+            result.IsValid.Should().BeFalse();
+            result.Errors.Count.Should().Be(1);
+            result.Errors[0].PropertyName.Should().Be("Ukprn");
+            result.Errors[0].ErrorMessage.Should().Be("You must provide a UKPRN");
+        }
+
+        [Fact]
+        public void ShouldErrorIfUkprnIsInvalid()
+        {
+            var vm = new SelectTrainingProviderEditModel {
+                Ukprn = "invalid ukprn",
+                SelectionType = TrainingProviderSelectionType.Ukprn
+            };
+
+            var validator = new SelectTrainingProviderEditModelValidator();
+
+            var result = validator.Validate(vm);
+
+            result.IsValid.Should().BeFalse();
+            result.Errors.Count.Should().Be(1);
+            result.Errors[0].PropertyName.Should().Be("Ukprn");
+            result.Errors[0].ErrorMessage.Should().Be("You must provide a valid UKPRN");
+        }
+
+        [Fact]
+        public void ShouldBeValidIfUkprnSpecified()
+        {
+            var vm = new SelectTrainingProviderEditModel {
+                Ukprn = "12345678",
+                SelectionType = TrainingProviderSelectionType.Ukprn
+            };
+
+            var validator = new SelectTrainingProviderEditModelValidator();
+
+            var result = validator.Validate(vm);
+
+            result.IsValid.Should().BeTrue();
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public void ShouldErrorIfTrainingProviderSearchIsNotSpecified(string inputUkprn)
+        {
+            var vm = new SelectTrainingProviderEditModel {
+                TrainingProviderSearch = inputUkprn,
+                SelectionType = TrainingProviderSelectionType.TrainingProviderSearch
+            };
+
+            var validator = new SelectTrainingProviderEditModelValidator();
+
+            var result = validator.Validate(vm);
+
+            result.IsValid.Should().BeFalse();
+            result.Errors.Count.Should().Be(1);
+            result.Errors[0].PropertyName.Should().Be("TrainingProviderSearch");
+            result.Errors[0].ErrorMessage.Should().Be("Please select a training provider");
+        }
+        
+        [Fact]
+        public void ShouldBeValidIfTrainingProviderSearchSpecified()
+        {
+            var vm = new SelectTrainingProviderEditModel {
+                TrainingProviderSearch = "something specified",
+                SelectionType = TrainingProviderSelectionType.TrainingProviderSearch
+            };
+
+            var validator = new SelectTrainingProviderEditModelValidator();
+
+            var result = validator.Validate(vm);
+
+            result.IsValid.Should().BeTrue();
         }
     }
 }
