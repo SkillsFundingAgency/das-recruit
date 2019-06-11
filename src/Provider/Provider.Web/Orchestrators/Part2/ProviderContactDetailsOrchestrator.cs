@@ -35,7 +35,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
                 Title = vacancy.Title,
                 ProviderContactName = vacancy.ProviderContact?.Name,
                 ProviderContactEmail = vacancy.ProviderContact?.Email,
-                ProviderContactPhone = vacancy.ProviderContact?.Phone
+                ProviderContactPhone = vacancy.ProviderContact?.Phone,
+                ProviderName = vacancy.TrainingProvider?.Name
             };
 
             if (vacancy.Status == VacancyStatus.Referred)

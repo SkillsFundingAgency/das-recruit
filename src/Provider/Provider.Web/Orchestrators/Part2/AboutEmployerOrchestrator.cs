@@ -34,6 +34,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
             {
                 Title = vacancy.Title,
                 EmployerDescription = vacancy.EmployerDescription,
+                EmployerTitle = await GetEmployerTitleAsync(vacancy),
                 EmployerWebsiteUrl = vacancy.EmployerWebsiteUrl,
                 IsAnonymous = vacancy.IsAnonymous
             };
@@ -82,6 +83,14 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
             mappings.Add(e => e.EmployerWebsiteUrl, vm => vm.EmployerWebsiteUrl);
 
             return mappings;
+        }
+
+        private async Task<string> GetEmployerTitleAsync(Vacancy vacancy)
+        {
+            if (vacancy.IsAnonymous)
+                return vacancy.LegalEntityName;
+
+            return await _vacancyClient.GetEmployerNameAsync(vacancy);
         }
     }
 }

@@ -9,6 +9,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part2.ProviderContactDetails
         public string ProviderContactName { get; internal set; }
         public string ProviderContactEmail { get; internal set; }
         public string ProviderContactPhone { get; internal set; }
+        public string ProviderName { get; internal set; }
         public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
         public IList<string> OrderedFieldNames => new List<string>
         {

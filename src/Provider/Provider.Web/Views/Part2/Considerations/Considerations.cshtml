@@ -6,13 +6,14 @@
 
         <partial name="@PartialNames.ReviewSummary" for="Review" />
 
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-0">@Model.Title</h1>
-
-        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+        <h1 class="govuk-heading-xl">
+            <span class="govuk-caption-l">@Model.Title</span>
+            What else would you like the applicant to consider? (optional)
+        </h1>
 
         <form asp-route="@RouteNames.Considerations_Post">
             <div esfa-validation-marker-for="ThingsToConsider" class="govuk-form-group">
-                <label asp-for="ThingsToConsider" class="govuk-label govuk-!-font-weight-bold">Things to consider (optional)</label>
+                <label asp-for="ThingsToConsider" class="govuk-visually-hidden">Things to consider (optional)</label>
                 <span class="govuk-hint">For example, if the vacancy will involve working outdoors, or lifting heavy objects</span>
                 <span esfa-validation-message-for="ThingsToConsider" class="govuk-error-message"></span>
                 <textarea asp-for="ThingsToConsider" class="govuk-textarea character-count" rows="5" data-val-length-max="350"></textarea>
