@@ -160,7 +160,14 @@ public bool IsErrorPage()
                 <ul role="menubar" id="global-nav-links">
                     <li><a asp-route="@RouteNames.Dashboard_Account_Home" role="menuitem">Home</a></li>
                     <li><a asp-route="@RouteNames.Dashboard_AccountsFinance" role="menuitem">Finance</a></li>
-                    <li><a asp-route="@RouteNames.Dashboard_Index_Get" class="selected" role="menuitem">Recruitment</a></li>
+                    <li>
+                        <esfaFeatureEnabled name="@FeatureNames.AllowLevyPayingEmployersOnly">
+                            <a asp-route="@RouteNames.Dashboard_Index_Get" class="selected" role="menuitem">Recruitment</a>
+                        </esfaFeatureEnabled>
+                        <esfaFeatureDisabled name="@FeatureNames.AllowLevyPayingEmployersOnly">
+                            <a asp-route="@RouteNames.Dashboard_Account_Home" class="selected" role="menuitem">Recruitment</a>
+                        </esfaFeatureDisabled>
+                    </li>
                     <li><a asp-route="@RouteNames.Dashboard_AccountsApprentices" role="menuitem">Apprentices</a></li>
                     <li><a asp-route="@RouteNames.Dashboard_AccountsTeams" role="menuitem">Your team</a></li>
                     <li><a asp-route="@RouteNames.Dashboard_AccountsAgreements" role="menuitem">Your organisations and agreements</a></li>
