@@ -1,3 +1,4 @@
+using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,6 +10,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         [HttpGet("employer-create-vacancy", Name = RouteNames.EmployerCreateVacancy_Get)]        
         public IActionResult CreateVacancy()
         {
+            TempData[TempDataKeys.ReferredFromMAHome] = "Return to home";
             return RedirectToRoute(RouteNames.CreateVacancyOptions_Get);
         }
 
