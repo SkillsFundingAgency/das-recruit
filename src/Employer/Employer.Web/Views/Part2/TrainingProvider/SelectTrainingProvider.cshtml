@@ -14,16 +14,12 @@
         </h1>
 
         <form asp-route="@RouteNames.TrainingProvider_Select_Post">
-            <fieldset class="govuk-fieldset">
-                <legend class="govuk-heading-l">
-                    Choose a training provider
-                </legend>
-                <p class="govuk-body">
-                    You will need to use a registered training provider for
-                    "<span class="govuk-!-font-weight-bold">@Model.SelectedTrainingText</span>"
-                </p>
-            </fieldset>
-            
+
+            <p class="govuk-body">
+                You will need to use a registered training provider for
+                "<span class="govuk-!-font-weight-bold">@Model.SelectedTrainingText</span>"
+            </p>
+
             <noscript>
                 <div class="govuk-form-group" id="non-js-search">
                     <span class="govuk-hint">
