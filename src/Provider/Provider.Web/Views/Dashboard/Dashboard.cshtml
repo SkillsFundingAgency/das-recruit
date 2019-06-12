@@ -4,9 +4,9 @@
 
 @{
     var vacanciesSearchSuggestionsEndpointUrl = @Url.RouteUrl(RouteNames.VacanciesSearchSuggestions_Get, null, Context.Request.Scheme);
-    string GetCardStatus(int vacancyCount)
+    string GetCardStatus(int count)
     {
-        return vacancyCount == 0 ? "das-card--inactive" : String.Empty;
+        return count == 0 ? "das-card--inactive" : string.Empty;
     }
 }
 
