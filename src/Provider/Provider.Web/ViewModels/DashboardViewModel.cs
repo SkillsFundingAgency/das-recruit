@@ -38,9 +38,5 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public string VacancyTextClosingSoonWithNoApplications => "vacancy".ToQuantity(NoOfVacanciesClosingSoonWithNoApplications, ShowQuantityAs.None);
         public bool ShowNoOfVacanciesClosingSoon => NoOfVacanciesClosingSoon > 0;
         public bool ShowNoOfVacanciesClosingSoonWithNoApplications => NoOfVacanciesClosingSoonWithNoApplications > 0;
-        public string GetCardStatus(int vacancyCount)
-        {
-            return vacancyCount == 0 ? "das-card--inactive" : String.Empty;
-        }
     }
 }

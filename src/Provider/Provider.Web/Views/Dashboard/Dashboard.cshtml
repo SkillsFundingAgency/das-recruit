@@ -4,9 +4,13 @@
 
 @{
     var vacanciesSearchSuggestionsEndpointUrl = @Url.RouteUrl(RouteNames.VacanciesSearchSuggestions_Get, null, Context.Request.Scheme);
+    string GetCardStatus(int vacancyCount)
+    {
+        return vacancyCount == 0 ? "das-card--inactive" : String.Empty;
+    }
 }
 
-<div asp-hide="@Model.HasAnyVacancies">
+    <div asp-hide="@Model.HasAnyVacancies">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-one-half">
             <h1 class="govuk-heading-xl">Recruitment</h1>
@@ -56,7 +60,7 @@
 
     <div class="govuk-grid-row das-card--row">
         <div class="govuk-grid-column-one-third">
-            <div class="das-card @Model.GetCardStatus(Model.VacancyCountDraft)">
+            <div class="das-card @GetCardStatus(Model.VacancyCountDraft)">
                 <div class="das-card--content">
                     <h3 class="govuk-heading-m das-card--heading">
                         <span class="das-card--stat">@Model.VacancyCountDraft</span>
@@ -70,7 +74,7 @@
             </div>
         </div>
         <div class="govuk-grid-column-one-third">
-            <div class="das-card @Model.GetCardStatus(Model.VacancyCountSubmitted)">
+            <div class="das-card @GetCardStatus(Model.VacancyCountSubmitted)">
                 <div class="das-card--content">
                     <h3 class="govuk-heading-m das-card--heading">
                         <span class="das-card--stat">@Model.VacancyCountSubmitted</span>
@@ -85,7 +89,7 @@
         </div>
 
         <div class="govuk-grid-column-one-third">
-            <div class="das-card @Model.GetCardStatus(Model.VacancyCountReferred)">
+            <div class="das-card @GetCardStatus(Model.VacancyCountReferred)">
                 <div class="das-card--content">
                     <h3 class="govuk-heading-m das-card--heading">
                         <span class="das-card--stat">@Model.VacancyCountReferred</span>
@@ -102,7 +106,7 @@
 
     <div class="govuk-grid-row das-card--row">
         <div class="govuk-grid-column-one-third">
-            <div class="das-card @Model.GetCardStatus(Model.VacancyCountLive)">
+            <div class="das-card @GetCardStatus(Model.VacancyCountLive)">
                 <div class="das-card--content">
                     <h3 class="govuk-heading-m das-card--heading">
                         <span class="das-card--stat">@Model.VacancyCountLive</span>
@@ -127,7 +131,7 @@
             </div>
         </div>
         <div class="govuk-grid-column-one-third">
-            <div class="das-card @Model.GetCardStatus(Model.NoOfNewApplications)">
+            <div class="das-card @GetCardStatus(Model.NoOfNewApplications)">
                 <div class="das-card--content">
                     <h3 class="govuk-heading-m das-card--heading">
                         <span class="das-card--stat">@Model.NoOfNewApplications</span>
@@ -148,7 +152,7 @@
             </div>
         </div>
         <div class="govuk-grid-column-one-third">
-            <div class="das-card @Model.GetCardStatus(Model.VacancyCountClosed)">
+            <div class="das-card @GetCardStatus(Model.VacancyCountClosed)">
                 <div class="das-card--content">
                     <h3 class="govuk-heading-m das-card--heading">
                         <span class="das-card--stat">@Model.VacancyCountClosed</span>
