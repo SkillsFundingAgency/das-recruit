@@ -188,6 +188,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
             {
                 EmployerAccountId = TestEmployerAccountId,
                 Title = "Test Title",
+                NumberOfPositions = 1,
                 ShortDescription = "Test Short Description",
                 EmployerLocation = new Address
                 {

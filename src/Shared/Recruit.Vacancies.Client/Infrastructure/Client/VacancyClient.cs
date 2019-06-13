@@ -126,7 +126,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _employerService.GetEmployerDescriptionAsync(vacancy);
         }
 
-        public async Task<Guid> CreateVacancyAsync(string title, int numberOfPositions, string employerAccountId, VacancyUser user)
+        public async Task<Guid> CreateVacancyAsync(string title, string employerAccountId, VacancyUser user)
         {
             var vacancyId = GenerateVacancyId();
 
@@ -136,7 +136,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 User = user,
                 UserType = UserType.Employer,
                 Title = title,
-                NumberOfPositions = numberOfPositions,
                 EmployerAccountId = employerAccountId,
                 Origin = SourceOrigin.EmployerWeb
             };

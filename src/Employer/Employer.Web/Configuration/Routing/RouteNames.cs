@@ -55,6 +55,9 @@
         public const string Title_Get = "Title_Get";
         public const string Title_Post = "Title_Post";
 
+        public const string NumberOfPositions_Get = "NumberOfPositions_Get";
+        public const string NumberOfPositions_Post = "NumberOfPositions_Post";
+
         public const string Wage_Get = "Wage_Get";
         public const string Wage_Post = "Wage_Post";
 
