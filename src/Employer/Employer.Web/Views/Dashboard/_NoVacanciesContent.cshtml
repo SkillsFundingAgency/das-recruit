@@ -1,0 +1,36 @@
+﻿@using Microsoft.Extensions.Options
+@inject IOptions<ExternalLinksConfiguration> _externalLinks
+@model DashboardViewModel
+
+<div asp-hide="Model.HasVacancies" class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">Recruitment</h1>
+        <p class="govuk-body-l">
+            Recruit an apprentice by creating a vacancy. Vacancies will be advertised on
+            <a href="@_externalLinks.Value.FindAnApprenticeshipUrl">Find an apprenticeship</a>.
+        </p>
+        <h2 class="govuk-heading-m">What you will need</h2>
+        <p class="govuk-body">
+            Before you create your vacancy, you’ll need to choose appropriate
+            <a href="@_externalLinks.Value.FindApprenticeshipTrainingUrl">apprenticeship training</a> and get some information from your training provider. If you don’t have a training provider yet, you can
+            <a href="@_externalLinks.Value.FindProviderUrl">find a provider</a>
+        </p>
+        <p class="govuk-body">You’ll need the following: </p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>
+                The name of the apprenticeship training
+            </li>
+            <li>
+                The training provider ID (UKPRN)
+            </li>
+            <li>The duration of the apprenticeship</li>
+            <li>
+                The amount of hours spent working and training
+            </li>
+            <li>The amount you’d like to pay your apprentice</li>
+        </ul>
+        <div class="govuk-inset-text">It should take no longer than 30 minutes to create your first vacancy</div>
+
+        <a asp-route="@RouteNames.CreateVacancyOptions_Get" role="button" class="govuk-button govuk-button--start" esfa-automation="create-vacancy">Start now</a>
+    </div>
+</div>
