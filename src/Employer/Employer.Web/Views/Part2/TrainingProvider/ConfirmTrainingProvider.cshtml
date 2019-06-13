@@ -8,10 +8,15 @@
         </h1>
 
         <div class="verification-summary">
-            <h3 class="govuk-heading-s">@Model.ProviderName</h3>
-            <h3 class="govuk-heading-s">@Model.ProviderAddress</h3>
-            <h3 class="govuk-heading-s">UKPRN: @Model.Ukprn</h3>
+            <h2 class="govuk-heading-m">
+                @Model.ProviderName
+                <span class="govuk-caption-m">
+                    @Model.ProviderAddress
+                    <br />UKPRN: @Model.Ukprn
+                </span>
+            </h2>
         </div>
+
         <form asp-route="@RouteNames.TrainingProvider_Confirm_Post">
             <input asp-for="Ukprn" type="hidden" />
             <div class="govuk-form-group">

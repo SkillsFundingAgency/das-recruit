@@ -110,11 +110,11 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
         {
             if (m.SelectionType == TrainingProviderSelectionType.Ukprn)
             {
-                ModelState.AddModelError(string.Empty, string.Format(InvalidUkprnMessageFormat, m.Ukprn));
+                ModelState.AddModelError(nameof(SelectTrainingProviderEditModel.Ukprn), string.Format(InvalidUkprnMessageFormat, m.Ukprn));
             }
             else
             {
-                ModelState.AddModelError(string.Empty, InvalidSearchTerm);
+                ModelState.AddModelError(nameof(SelectTrainingProviderEditModel.TrainingProviderSearch), InvalidSearchTerm);
             }
             var vm = await _orchestrator.GetSelectTrainingProviderViewModel(m);
             return View(ViewNames.SelectTrainingProvider, vm);
