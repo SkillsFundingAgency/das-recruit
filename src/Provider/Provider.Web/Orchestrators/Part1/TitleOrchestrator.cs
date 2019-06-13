@@ -19,7 +19,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 {
     public class TitleOrchestrator : EntityValidatingOrchestrator<Vacancy, TitleEditModel>
     {
-        private const VacancyRuleSet ValidationRules = VacancyRuleSet.Title | VacancyRuleSet.NumberOfPositions;
+        private const VacancyRuleSet ValidationRules = VacancyRuleSet.Title;
         private readonly IProviderVacancyClient _providerVacancyClient;
         private readonly IRecruitVacancyClient _recruitVacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
@@ -48,15 +48,16 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
         public async Task<TitleViewModel> GetTitleViewModelForExistingVacancyAsync(VacancyRouteModel vrm)
         {
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_providerVacancyClient, _recruitVacancyClient, vrm, RouteNames.Title_Get);
-
+            var ukprn = vacancy.TrainingProvider.Ukprn.GetValueOrDefault();
+            var dashboard = await _providerVacancyClient.GetDashboardAsync(ukprn);
             var vm = new TitleViewModel
             {
                     VacancyId = vacancy.Id,
                     Title = vacancy.Title,
-                    NumberOfPositions = vacancy.NumberOfPositions?.ToString(),
                     PageInfo = Utility.GetPartOnePageInfo(vacancy),
-                    Ukprn = vacancy.TrainingProvider.Ukprn.GetValueOrDefault(),
-                    EmployerAccountId = vacancy.EmployerAccountId
+                    Ukprn = ukprn,
+                    EmployerAccountId = vacancy.EmployerAccountId,
+                    HasCloneableVacancies = dashboard.CloneableVacancies.Any()
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
@@ -82,22 +83,17 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             }
 
             vm.Title = model.Title;
-            vm.NumberOfPositions = model.NumberOfPositions;
 
             return vm;
         }
 
         public async Task<OrchestratorResponse<Guid>> PostTitleEditModelAsync(VacancyRouteModel vrm, TitleEditModel model, VacancyUser user, long ukprn)
         {
-            int.TryParse(model.NumberOfPositions, out var numberOfPositions);
-
             if (model.VacancyId.HasValue) 
             {
                 var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_providerVacancyClient, _recruitVacancyClient, vrm, RouteNames.Title_Post);
 
                 vacancy.Title = model.Title;
-
-                vacancy.NumberOfPositions = numberOfPositions;
 
                 return await ValidateAndExecute(
                     vacancy, 
@@ -115,15 +111,14 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             var newVacancy = new Vacancy
             {
                 TrainingProvider = new TrainingProvider { Ukprn = ukprn },
-                Title = model.Title,
-                NumberOfPositions = numberOfPositions
+                Title = model.Title
             };
 
             return await ValidateAndExecute(
                 newVacancy,
                 v => _recruitVacancyClient.Validate(v, ValidationRules),
                 async v => await _providerVacancyClient.CreateVacancyAsync(
-                        model.EmployerAccountId, ukprn, model.Title, numberOfPositions, user));
+                        model.EmployerAccountId, ukprn, model.Title, user));
         }
 
         protected override EntityToViewModelPropertyMappings<Vacancy, TitleEditModel> DefineMappings()
@@ -131,7 +126,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             var mappings = new EntityToViewModelPropertyMappings<Vacancy, TitleEditModel>();
 
             mappings.Add(e => e.Title, vm => vm.Title);
-            mappings.Add(e => e.NumberOfPositions, vm => vm.NumberOfPositions);
             mappings.Add(e => e.EmployerName, vm => vm.EmployerAccountId);
 
             return mappings;

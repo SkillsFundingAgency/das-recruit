@@ -87,6 +87,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddTransient<LegalEntityAgreementOrchestrator>();
             services.AddTransient<EmployerContactDetailsOrchestrator>();
             services.AddTransient<TitleOrchestrator>();
+            services.AddTransient<NumberOfPositionsOrchestrator>();
             services.AddTransient<VacancyPreviewOrchestrator>();
             services.AddTransient<SubmittedOrchestrator>();
             services.AddTransient<TrainingProviderOrchestrator>();

@@ -43,7 +43,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 SourceOrigin = message.Origin,
                 SourceType = SourceType.New,
                 Title = message.Title,
-                NumberOfPositions = message.NumberOfPositions,
                 EmployerAccountId = message.EmployerAccountId,
                 Status = VacancyStatus.Draft,
                 CreatedDate = now,

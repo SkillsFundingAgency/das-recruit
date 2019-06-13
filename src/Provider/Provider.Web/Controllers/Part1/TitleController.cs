@@ -60,7 +60,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
             }
 
             return wizard
-                ? RedirectToRoute(RouteNames.ShortDescription_Get, new {vacancyId = response.Data})
+                ? RedirectToRoute(RouteNames.NumberOfPositions_Get, new {vacancyId = response.Data})
                 : RedirectToRoute(RouteNames.Vacancy_Preview_Get);
         }    
     }
