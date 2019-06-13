@@ -8,7 +8,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Commands
     public class CreateProviderOwnedVacancyCommand : ICommand, IRequest
     {
         public CreateProviderOwnedVacancyCommand(Guid vacancyId, SourceOrigin origin, long ukprn,
-            string employerAccountId, VacancyUser user, UserType userType, string title, int numberOfPositions)
+            string employerAccountId, VacancyUser user, UserType userType, string title)
         {
             VacancyId = vacancyId;
             Origin = origin;
@@ -17,7 +17,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Commands
             User = user;
             UserType = userType;
             Title = title;
-            NumberOfPositions = numberOfPositions;
         }
 
         public Guid VacancyId { get; }
@@ -27,6 +26,5 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Commands
         public VacancyUser User { get; }
         public UserType UserType { get; }
         public string Title { get; }
-        public int NumberOfPositions { get; }
     }
 }

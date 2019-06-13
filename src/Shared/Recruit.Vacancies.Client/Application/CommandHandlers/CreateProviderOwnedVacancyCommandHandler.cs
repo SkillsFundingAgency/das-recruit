@@ -50,8 +50,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 LastUpdatedDate = now,
                 LastUpdatedByUser = message.User,
                 IsDeleted = false,
-                Title = message.Title,
-                NumberOfPositions = message.NumberOfPositions
+                Title = message.Title
             };
 
             await _repository.CreateAsync(vacancy);

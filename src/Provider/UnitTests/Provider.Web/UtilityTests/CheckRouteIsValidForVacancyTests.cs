@@ -29,6 +29,25 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.UtilityTests
         [Theory]
         [InlineData(RouteNames.Title_Get, false)]
         [InlineData(RouteNames.Title_Post, false)]
+        [InlineData(RouteNames.NumberOfPositions_Get, false)]
+        [InlineData(RouteNames.NumberOfPositions_Post, false)]
+        [InlineData("any other route", true)]
+        public void ShouldRedirectToNumberOfPositions(string route, bool shouldRedirect)
+        {
+            var vacancy = new Vacancy {
+                EmployerAccountId = "EMPLOYER ACCOUNT ID",
+                Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
+                Title = "has a value"
+            };
+
+            CheckRouteIsValidForVacancyTest(vacancy, route, shouldRedirect, RouteNames.NumberOfPositions_Get);
+        }
+
+        [Theory]
+        [InlineData(RouteNames.Title_Get, false)]
+        [InlineData(RouteNames.Title_Post, false)]
+        [InlineData(RouteNames.NumberOfPositions_Get, false)]
+        [InlineData(RouteNames.NumberOfPositions_Post, false)]
         [InlineData(RouteNames.ShortDescription_Get, false)]
         [InlineData(RouteNames.ShortDescription_Post, false)]
         [InlineData("any other route", true)]
@@ -38,7 +57,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.UtilityTests
             {
                 EmployerAccountId = "EMPLOYER ACCOUNT ID",
                 Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
-                Title = "has a value"
+                Title = "has a value",
+                NumberOfPositions = 1
             };
 
             CheckRouteIsValidForVacancyTest(vacancy, route, shouldRedirect, RouteNames.ShortDescription_Get);
@@ -47,6 +67,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.UtilityTests
         [Theory]
         [InlineData(RouteNames.Title_Get, false)]
         [InlineData(RouteNames.Title_Post, false)]
+        [InlineData(RouteNames.NumberOfPositions_Get, false)]
+        [InlineData(RouteNames.NumberOfPositions_Post, false)]
         [InlineData(RouteNames.ShortDescription_Get, false)]
         [InlineData(RouteNames.ShortDescription_Post, false)]
         [InlineData(RouteNames.Location_Get, false)]
@@ -59,6 +81,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.UtilityTests
                 EmployerAccountId = "EMPLOYER ACCOUNT ID",
                 Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
                 Title = "has a value",
+                NumberOfPositions = 1,
                 ShortDescription = "has a value"
             };
 
@@ -68,6 +91,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.UtilityTests
         [Theory]
         [InlineData(RouteNames.Title_Get, false)]
         [InlineData(RouteNames.Title_Post, false)]
+        [InlineData(RouteNames.NumberOfPositions_Get, false)]
+        [InlineData(RouteNames.NumberOfPositions_Post, false)]
         [InlineData(RouteNames.ShortDescription_Get, false)]
         [InlineData(RouteNames.ShortDescription_Post, false)]
         [InlineData(RouteNames.LegalEntity_Get, false)]
@@ -86,6 +111,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.UtilityTests
                 EmployerAccountId = "EMPLOYER ACCOUNT ID",
                 Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
                 Title = "has a value",
+                NumberOfPositions = 1,
                 ShortDescription = "has a value",
                 LegalEntityName = "legal name",
                 EmployerNameOption = EmployerNameOption.RegisteredName,
@@ -98,6 +124,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.UtilityTests
         [Theory]
         [InlineData(RouteNames.Title_Get, false)]
         [InlineData(RouteNames.Title_Post, false)]
+        [InlineData(RouteNames.NumberOfPositions_Get, false)]
+        [InlineData(RouteNames.NumberOfPositions_Post, false)]
         [InlineData(RouteNames.ShortDescription_Get, false)]
         [InlineData(RouteNames.ShortDescription_Post, false)]
         [InlineData(RouteNames.LegalEntity_Get, false)]
@@ -118,6 +146,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.UtilityTests
                 EmployerAccountId = "EMPLOYER ACCOUNT ID",
                 Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
                 Title = "has a value",
+                NumberOfPositions = 1,
                 EmployerLocation = new Address { Postcode = "has a value" },
                 ShortDescription = "has a value",
                 LegalEntityName = "legal name",
@@ -137,6 +166,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.UtilityTests
                 EmployerAccountId = "EMPLOYER ACCOUNT ID",
                 Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
                 Title = "has a value",
+                NumberOfPositions = 1,
                 EmployerLocation = new Address { Postcode = "has a value" },
                 ShortDescription = "has a value",
                 LegalEntityName = "legal name",
@@ -156,6 +186,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.UtilityTests
                 EmployerAccountId = "EMPLOYER ACCOUNT ID",
                 Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
                 Title = "has a value",
+                NumberOfPositions = 1,
                 EmployerNameOption = EmployerNameOption.RegisteredName,
                 EmployerLocation = new Address { Postcode = "has a value" },
                 ShortDescription = "has a value",

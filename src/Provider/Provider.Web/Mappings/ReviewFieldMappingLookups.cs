@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Esfa.Recruit.Provider.Web.ViewModels;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.Employer;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.Location;
+using Esfa.Recruit.Provider.Web.ViewModels.Part1.NumberOfPositions;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.ShortDescription;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.Title;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.Training;
@@ -176,13 +177,26 @@ namespace Esfa.Recruit.Provider.Web.Mappings
         {
             var vms = new List<ReviewFieldIndicatorViewModel>
             {
-                new ReviewFieldIndicatorViewModel(FieldIdentifiers.Title, nameof(TitleEditModel.Title)),
-                new ReviewFieldIndicatorViewModel(FieldIdentifiers.NumberOfPositions, nameof(TitleEditModel.NumberOfPositions))
+                new ReviewFieldIndicatorViewModel(FieldIdentifiers.Title, nameof(TitleEditModel.Title))
             };
 
             var mappings =  new Dictionary<string, IEnumerable<string>>
             {
-                { FieldIdResolver.ToFieldId(v => v.Title), new[]{ FieldIdentifiers.Title} },
+                { FieldIdResolver.ToFieldId(v => v.Title), new[]{ FieldIdentifiers.Title} }
+            };
+
+            return new ReviewFieldMappingLookupsForPage(vms, mappings);
+        }
+
+        public static ReviewFieldMappingLookupsForPage GetNumberOfPositionsFieldIndicators()
+        {
+            var vms = new List<ReviewFieldIndicatorViewModel>
+            {
+                new ReviewFieldIndicatorViewModel(FieldIdentifiers.NumberOfPositions, nameof(NumberOfPositionsEditModel.NumberOfPositions))
+            };
+
+            var mappings = new Dictionary<string, IEnumerable<string>>
+            {
                 { FieldIdResolver.ToFieldId(v => v.NumberOfPositions), new []{ FieldIdentifiers.NumberOfPositions} }
             };
 
