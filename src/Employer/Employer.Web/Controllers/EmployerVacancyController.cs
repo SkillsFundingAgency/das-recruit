@@ -10,7 +10,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         [HttpGet("employer-create-vacancy", Name = RouteNames.EmployerCreateVacancy_Get)]        
         public IActionResult CreateVacancy()
         {
-            TempData[TempDataKeys.ReferredFromMAHome] = "Return to home";
+            TempData[TempDataKeys.ReferredFromMAHome] = true;
             return RedirectToRoute(RouteNames.CreateVacancyOptions_Get);
         }
 

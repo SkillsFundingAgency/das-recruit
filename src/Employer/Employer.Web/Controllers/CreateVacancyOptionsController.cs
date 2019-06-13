@@ -29,13 +29,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             
             if (TempData.ContainsKey(TempDataKeys.ReferredFromMAHome))
             {
-                vm.BackLink = RouteNames.Dashboard_Account_Home;
-                vm.BackLinkText = TempData[TempDataKeys.ReferredFromMAHome].ToString();
-            }
-            else
-            {
-                vm.BackLink = RouteNames.Dashboard_Index_Get;
-                vm.BackLinkText = "Return to your vacancies";
+                vm.ShowReturnToMALink = Convert.ToBoolean(TempData[TempDataKeys.ReferredFromMAHome]);
             }
             return View(vm);
         }
