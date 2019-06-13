@@ -11,6 +11,7 @@ using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Logging;
 
@@ -38,9 +39,23 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var vm = new TitleViewModel
             {
                 PageInfo = new PartOnePageInfoViewModel(),
-                ShowReturnToMALink = dashboard == null || !dashboard.CloneableVacancies.Any()
             };
+            GetBackLink(dashboard, vm);
             return vm;
+        }
+
+        private static void GetBackLink(EmployerDashboard dashboard, TitleViewModel vm)
+        {
+            if (dashboard == null || !dashboard.CloneableVacancies.Any())
+            {
+                vm.BackLink = RouteNames.Dashboard_Account_Home;
+                vm.BackLinkText = "Return to home";
+            }
+            else
+            {
+                vm.BackLink = RouteNames.Dashboard_Index_Get;
+                vm.BackLinkText = "Return to your vacancies";
+            }
         }
 
         public async Task<TitleViewModel> GetTitleViewModelAsync(VacancyRouteModel vrm)
@@ -55,7 +70,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 PageInfo = Utility.GetPartOnePageInfo(vacancy),
                 HasCloneableVacancies = dashboard.CloneableVacancies.Any()
             };
-
+            GetBackLink(dashboard, vm);
             if (vacancy.Status == VacancyStatus.Referred)
             {
                 vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
