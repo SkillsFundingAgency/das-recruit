@@ -24,13 +24,11 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         {
             var vm = await _orchestrator.GetCreateOptionsViewModelAsync(employerAccountId);
 
+            vm.ShowReturnToMALink = Convert.ToBoolean(TempData[TempDataKeys.ReferredFromMAHome]);
+
             if (vm.HasClonableVacancies == false)
                 return RedirectToRoute(RouteNames.CreateVacancy_Get);
             
-            if (TempData.ContainsKey(TempDataKeys.ReferredFromMAHome))
-            {
-                vm.ShowReturnToMALink = Convert.ToBoolean(TempData[TempDataKeys.ReferredFromMAHome]);
-            }
             return View(vm);
         }
 
