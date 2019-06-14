@@ -36,7 +36,7 @@ services:
      - recruit-network
 
   elasticsearch1:
-    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.0.0
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.0.1
     container_name: elastic
     environment:
       - cluster.name=muggle-cluster
@@ -55,7 +55,7 @@ services:
       - recruit-network
 
   kibana:
-    image: docker.elastic.co/kibana/kibana-oss:7.0.0
+    image: docker.elastic.co/kibana/kibana-oss:7.0.1
     container_name: kibana  
     ports:
       - 5601:5601
