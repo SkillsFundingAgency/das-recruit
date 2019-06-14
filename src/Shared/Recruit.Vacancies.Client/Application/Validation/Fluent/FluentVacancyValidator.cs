@@ -90,7 +90,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             RuleFor(x => x.Title)
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty()
-                    .WithMessage("You must provide a vacancy title")
+                    .WithMessage("Enter the title of this vacancy")
                     .WithErrorCode("1")
                 .MaximumLength(100)
                     .WithMessage("Title must not exceed {MaxLength} characters")
@@ -186,7 +186,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.NumberOfPositions)
                 .Must(x => x.HasValue && x.Value > 0)
-                    .WithMessage("You must state the number of positions for this vacancy")
+                    .WithMessage("Enter the number of positions")
                     .WithErrorCode("10")
                 .RunCondition(VacancyRuleSet.NumberOfPositions)
                 .WithRuleId(VacancyRuleSet.NumberOfPositions);

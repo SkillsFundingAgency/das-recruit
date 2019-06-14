@@ -2,10 +2,11 @@
 @model Esfa.Recruit.Employer.Web.ViewModels.Part1.NumberOfPositions.NumberOfPositionsViewModel
 
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-grid-column-three-quarters">
             <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Title_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
             <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames}' />
             <partial name="@PartialNames.ReviewSummary" for="Review" />
+            <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">How many positions are there for this apprenticeship?</h1>
         </div>
     </div>
 
@@ -13,7 +14,6 @@
     <div class="govuk-grid-column-two-thirds">
         <form asp-route="@RouteNames.NumberOfPositions_Post" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
             <div esfa-validation-marker-for="NumberOfPositions" class="govuk-form-group">
-                <label asp-for="NumberOfPositions" class="govuk-label govuk-!-font-weight-bold">How many positions are there for this apprenticeship?</label>
                 <span esfa-validation-message-for="NumberOfPositions" class="govuk-error-message"></span>
                 <input asp-for="NumberOfPositions" class="govuk-input govuk-input--width-4" type="number" min="1"/>
             </div>

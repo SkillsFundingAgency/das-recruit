@@ -6,7 +6,7 @@ namespace Esfa.Recruit.Shared.Web.ViewModels
         {
             public static class TypeOfInteger
             {
-                public const string NumberOfPositions = "You must state the number of positions for this vacancy";
+                public const string NumberOfPositions = "Enter the number of positions";
             }
         }
 
