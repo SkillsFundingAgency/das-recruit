@@ -7,7 +7,12 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part2.TrainingProvider
     {
         public SelectTrainingProviderEditModelValidator()
         {
-            When(m => m.SelectionType == TrainingProviderSelectionType.Ukprn, () =>
+            RuleFor(m => m.SelectTrainingProvider)
+                .NotNull()
+                .WithMessage("Please select an option to continue");
+
+            When(m => m.SelectTrainingProvider == true && 
+                      m.SelectionType == TrainingProviderSelectionType.Ukprn, () =>
             {
                 RuleFor(m => m.Ukprn)
                     .Cascade(CascadeMode.StopOnFirstFailure)
@@ -17,7 +22,8 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part2.TrainingProvider
                     .WithMessage("You must provide a valid UKPRN");
             });
 
-            When(m => m.SelectionType == TrainingProviderSelectionType.TrainingProviderSearch, () =>
+            When(m => m.SelectTrainingProvider == true && 
+                      m.SelectionType == TrainingProviderSelectionType.TrainingProviderSearch, () =>
             {
                 RuleFor(m => m.TrainingProviderSearch)
                     .Cascade(CascadeMode.StopOnFirstFailure)
