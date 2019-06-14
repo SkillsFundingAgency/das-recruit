@@ -42,8 +42,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         private IEnumerable<string> GetVacanciesPartialMatchingEmployerNameSuggestions(string searchTerm, IEnumerable<VacancySummary> vacancies)
         {
             return vacancies
-                .Where(v => string.IsNullOrWhiteSpace(v.EmployerName) == false)
-                .Select(v => v.EmployerName)
+                .Where(v => string.IsNullOrWhiteSpace(v.LegalEntityName) == false)
+                .Select(v => v.LegalEntityName)
                 .Where(v => v.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
                 .Distinct(StringComparer.OrdinalIgnoreCase);
         }

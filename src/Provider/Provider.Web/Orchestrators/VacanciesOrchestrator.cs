@@ -112,7 +112,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             return filteredVacancies
                 .Where(v => string.IsNullOrWhiteSpace(searchTerm)  
                     || (v.Title.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)) 
-                        || (string.IsNullOrWhiteSpace(v.EmployerName) == false && v.EmployerName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+                        || (string.IsNullOrWhiteSpace(v.LegalEntityName) == false && v.LegalEntityName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
                         || (v.VacancyReference.HasValue && $"VAC{v.VacancyReference}".Contains(searchTerm, StringComparison.OrdinalIgnoreCase)))
                 .OrderByDescending(v => v.CreatedDate)
 
