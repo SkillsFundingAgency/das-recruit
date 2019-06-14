@@ -24,7 +24,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies.SearchResu
             return new VacanciesOrchestrator(clientMock.Object, timeProviderMock.Object);
         }
 
-        protected IEnumerable<VacancySummary> GenerateVacancySummaries(int count, string employerName, string term)
+        protected IEnumerable<VacancySummary> GenerateVacancySummaries(int count, string legalEntityName, string term)
         {
             return Enumerable.Range(1, count)
                 .Select(r =>
@@ -32,7 +32,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies.SearchResu
                     {
                         Title = $"{term}  {Guid.NewGuid()}",
                         Status = VacancyStatus.Live,
-                        EmployerName = employerName,
+                        LegalEntityName = legalEntityName,
                         VacancyReference = 1000000100 + r,
                         CreatedDate = DateTime.Now
                     });

@@ -30,7 +30,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
             var vacancy = await _vacancyRepository.GetVacancyAsync(vacancyReference);
             var vacancyApplicationReviews = await _applicationReviewQuery.GetForVacancyAsync<ApplicationReview>(vacancy.VacancyReference.Value);
 
-            var vacancyApplications = new VacancyApplications {
+            var vacancyApplications = new VacancyApplications
+            {
                 VacancyReference = vacancy.VacancyReference.Value,
                 Applications = vacancyApplicationReviews.Select(MapToVacancyApplication).ToList()
             };
@@ -40,18 +41,23 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
 
         private VacancyApplication MapToVacancyApplication(ApplicationReview review)
         {
-            var projection = new VacancyApplication {
+            var projection = new VacancyApplication
+            {
+                CandidateId = review.Application.CandidateId,
                 Status = review.Status,
                 SubmittedDate = review.SubmittedDate,
                 ApplicationReviewId = review.Id,
                 IsWithdrawn = review.IsWithdrawn,
-                CandidateName = null,
+                FirstName = string.Empty,
+                LastName = string.Empty,
+                DateOfBirth = review.Application.BirthDate,
                 DisabilityStatus = ApplicationReviewDisabilityStatus.Unknown
             };
 
             if (review.IsWithdrawn == false)
             {
-                projection.CandidateName = review.Application.FullName;
+                projection.FirstName = review.Application.FirstName;
+                projection.LastName = review.Application.LastName;
                 projection.DisabilityStatus = review.Application.DisabilityStatus ?? ApplicationReviewDisabilityStatus.Unknown;
             }
 

@@ -18,12 +18,12 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies
     {
         private VacancySummary[] _testVacancies = new[] 
         {
-            new VacancySummary(){Title="The quick brown", EmployerName="20th Century Fox", VacancyReference=1000000101, Status = VacancyStatus.Closed},
-            new VacancySummary(){Title="fox jumped over", EmployerName="20th Century Fox", VacancyReference=1000000102, Status = VacancyStatus.Live},
-            new VacancySummary(){Title="the lazy dog", EmployerName="Black & Brown Ltd", VacancyReference=1000000103, Status = VacancyStatus.Live},
-            new VacancySummary(){Title="The quick brown fox", EmployerName="Black & Brown Ltd", VacancyReference=1000000104, Status = VacancyStatus.Live},
-            new VacancySummary(){Title="the lazy fox", EmployerName="Black & Brown Ltd", VacancyReference=1000000105, Status = VacancyStatus.Closed},
-            new VacancySummary(){Title="brown dog", EmployerName="Black & Brown Ltd", VacancyReference=2000000105, Status = VacancyStatus.Referred}
+            new VacancySummary(){Title="The quick brown", LegalEntityName="20th Century Fox", VacancyReference=1000000101, Status = VacancyStatus.Closed},
+            new VacancySummary(){Title="fox jumped over", LegalEntityName="20th Century Fox", VacancyReference=1000000102, Status = VacancyStatus.Live},
+            new VacancySummary(){Title="the lazy dog", LegalEntityName="Black & Brown Ltd", VacancyReference=1000000103, Status = VacancyStatus.Live},
+            new VacancySummary(){Title="The quick brown fox", LegalEntityName="Black & Brown Ltd", VacancyReference=1000000104, Status = VacancyStatus.Live},
+            new VacancySummary(){Title="the lazy fox", LegalEntityName="Black & Brown Ltd", VacancyReference=1000000105, Status = VacancyStatus.Closed},
+            new VacancySummary(){Title="brown dog", LegalEntityName="Black & Brown Ltd", VacancyReference=2000000105, Status = VacancyStatus.Referred}
         };
 
         [Theory]

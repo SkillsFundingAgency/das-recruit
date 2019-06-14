@@ -12,7 +12,7 @@ namespace Esfa.Recruit.Shared.Web.Mappers
                 Id = vacancySummary.Id,
                 Title = vacancySummary.Title,
                 VacancyReference = vacancySummary.VacancyReference,
-                EmployerName = string.IsNullOrWhiteSpace(vacancySummary.EmployerName) ? "Not selected" : vacancySummary.EmployerName,
+                EmployerName = string.IsNullOrWhiteSpace(vacancySummary.LegalEntityName) ? "Not selected" : vacancySummary.LegalEntityName,
                 CreatedDate = vacancySummary.CreatedDate,
                 Status = vacancySummary.Status,
                 NoOfNewApplications = vacancySummary.NoOfNewApplications,
