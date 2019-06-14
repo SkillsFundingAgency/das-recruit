@@ -22,7 +22,9 @@ var searchSuggestions = function () {
 
         function suggest(query, populateResults) {
             var filteredResults = providers.filter(
-                result => result.toUpperCase().indexOf(query.trim().toUpperCase()) !== -1
+                function(result) {
+                    return result.toUpperCase().indexOf(query.trim().toUpperCase()) !== -1;
+                }
             );
             populateResults(filteredResults);
         }
