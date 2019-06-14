@@ -71,7 +71,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
                 if (exception is InvalidStateException)
                 {
-                    _logger.LogError(exception, "Exception on path: {route}", routeWhereExceptionOccurred);
+                    _logger.LogWarning(exception, "Exception on path: {route}", routeWhereExceptionOccurred);
                     AddDashboardMessage(exception.Message);
                     return RedirectToRoute(RouteNames.Dashboard_Index_Get, new { EmployerAccountId = employerAccountId });
                 }
