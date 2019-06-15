@@ -68,7 +68,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
             var filteredLegalEntitiesTotal = filteredLegalEntities.Count();
 
-            var totalNumberOfPages = (int)Math.Ceiling((double)filteredLegalEntitiesTotal / MaxLegalEntitiesPerPage);
+            var totalNumberOfPages = PagingHelper.GetTotalNoOfPages(MaxLegalEntitiesPerPage, filteredLegalEntitiesTotal);
             var indexOfSelectedLegalEntity = selectedLegalEntityId.HasValue
                                                 ? filteredLegalEntities.FindIndex(le => le.Id == selectedLegalEntityId.Value) + 1
                                                 : NotFoundIndex;
