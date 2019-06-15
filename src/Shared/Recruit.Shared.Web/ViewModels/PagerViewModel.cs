@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Esfa.Recruit.Shared.Web.Helpers;
 
 namespace Esfa.Recruit.Shared.Web.ViewModels
 {
@@ -14,7 +14,7 @@ namespace Esfa.Recruit.Shared.Web.ViewModels
         public PagerViewModel(int totalItems, int itemsPerPage, int currentPage, string captionFormat, string routeName, Dictionary<string, string> otherRouteValues = null)
         {
             CurrentPage = currentPage;
-            TotalPages = (int)Math.Ceiling((double)totalItems / itemsPerPage);
+            TotalPages = PagingHelper.GetTotalNoOfPages(itemsPerPage, totalItems);
             RouteName = routeName;
             OtherRouteValues = otherRouteValues ?? new Dictionary<string, string>();
 

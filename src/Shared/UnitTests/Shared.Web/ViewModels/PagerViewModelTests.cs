@@ -3,7 +3,7 @@ using Esfa.Recruit.Shared.Web.ViewModels;
 using FluentAssertions;
 using Xunit;
 
-namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.ViewModels
+namespace Esfa.Recruit.UnitTests.Shared.Web.ViewModels
 {
     public class PagerViewModelTests
     {
