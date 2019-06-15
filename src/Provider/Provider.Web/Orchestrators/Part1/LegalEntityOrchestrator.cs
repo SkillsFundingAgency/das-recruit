@@ -21,7 +21,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
         private readonly IRecruitVacancyClient _recruitVacancyClient;
         private readonly ILogger<LegalEntityOrchestrator> _logger;
 
-        private const int MaxLegalEntitiesPerPage = 5;
+        private const int MaxLegalEntitiesPerPage = 25;
 
         public LegalEntityOrchestrator(
             IProviderVacancyClient providerVacancyClient,
