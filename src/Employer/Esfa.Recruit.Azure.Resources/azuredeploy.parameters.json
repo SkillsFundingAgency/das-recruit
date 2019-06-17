@@ -156,6 +156,10 @@
         "Wtrealm": "",
         "MetaDataAddress": ""
       }
+    },
+    "DasSharedNServiceBusConfiguration": {
+      "ConnectionString":"",
+      "NServiceBusLicense":""
     }
   }
 }

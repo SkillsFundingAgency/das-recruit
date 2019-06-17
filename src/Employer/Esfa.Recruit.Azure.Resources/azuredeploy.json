@@ -215,6 +215,9 @@
     },
     "ProviderKeyvaultCertificateName": {
       "type": "string"
+    },
+    "DasSharedNServiceBusConfiguration": {
+      "type" : "object"
     }
   },
   "variables": {
@@ -850,6 +853,14 @@
               {
                 "name": "Geocode:PostcodeAnywhereKey",
                 "value": "[parameters('GeocodePostcodeAnywhereKey')]"
+              },
+              {
+                "name": "DasSharedNServiceBusConfiguration.ConnectionString",
+                "value": "[parameters('DasSharedNServiceBusConfiguration').ConnectionString]"
+              },
+              {
+                "name": "DasSharedNServiceBusConfiguration.NServiceBusLicense",
+                "value": "[parameters('DasSharedNServiceBusConfiguration').NServiceBusLicense]"
               }
             ]
           },
