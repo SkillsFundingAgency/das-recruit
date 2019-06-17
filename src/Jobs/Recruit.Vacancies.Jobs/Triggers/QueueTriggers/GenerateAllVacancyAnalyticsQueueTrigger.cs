@@ -16,13 +16,13 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
     {
         private readonly ILogger<GenerateVacancyAnalyticsSummaryQueueTrigger> _logger;
         private readonly RecruitWebJobsSystemConfiguration _jobsConfig;
-        private readonly IQueueService _queue;
+        private readonly IRecruitQueueService _queue;
         private readonly IVacancyQuery _vacancyQuery;
 
         private string JobName => GetType().Name;
 
         public GenerateAllVacancyAnalyticsQueueTrigger(ILogger<GenerateVacancyAnalyticsSummaryQueueTrigger> logger, RecruitWebJobsSystemConfiguration jobsConfig,
-            IQueueService queue, IVacancyQuery vacancyQuery)
+            IRecruitQueueService queue, IVacancyQuery vacancyQuery)
         {
             _logger = logger;
             _jobsConfig = jobsConfig;

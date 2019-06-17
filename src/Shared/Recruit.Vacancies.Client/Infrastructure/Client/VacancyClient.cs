@@ -120,7 +120,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         }
 
         public Task<string> GetEmployerNameAsync(Vacancy vacancy)
-        {   
+        {
             return _employerService.GetEmployerNameAsync(vacancy);
         }
 
@@ -149,7 +149,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         }
 
         public async Task<Guid> CloneVacancyAsync(
-            Guid vacancyId, VacancyUser user, SourceOrigin sourceOrigin, 
+            Guid vacancyId, VacancyUser user, SourceOrigin sourceOrigin,
             DateTime startDate, DateTime closingDate)
         {
             var newVacancyId = GenerateVacancyId();
@@ -386,7 +386,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             });
         }
 
-        public Task ReferVacancy(long vacancyReference)
+        public Task ReferVacancyAsync(long vacancyReference)
         {
             return _messaging.SendCommandAsync(new ReferVacancyCommand
             {
@@ -477,7 +477,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public Task UpdateUserNotificationPreferencesAsync(UserNotificationPreferences preferences)
         {
-            return _messaging.SendCommandAsync(new UpdateUserNotificationPreferencesCommand 
+            return _messaging.SendCommandAsync(new UpdateUserNotificationPreferencesCommand
             {
                 UserNotificationPreferences = preferences
             });

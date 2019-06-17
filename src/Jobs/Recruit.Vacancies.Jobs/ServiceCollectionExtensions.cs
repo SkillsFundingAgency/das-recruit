@@ -1,8 +1,13 @@
+using System;
+using Communication.Core;
+using Communication.Types;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.FAA;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories;
 using Esfa.Recruit.Vacancies.Client.Ioc;
 using Esfa.Recruit.Vacancies.Jobs.AnalyticsSummaryProcessor;
+using Esfa.Recruit.Vacancies.Jobs.Communication;
 using Esfa.Recruit.Vacancies.Jobs.Configuration;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Application;
@@ -53,6 +58,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
 
             // Vacancy
             services.AddScoped<IDomainEventHandler<IEvent>, DraftVacancyUpdatedHandler>();
+            services.AddScoped<IDomainEventHandler<IEvent>, VacancyReferredDomainEventHandler>();
             services.AddScoped<IDomainEventHandler<IEvent>, VacancySubmittedHandler>();
 
             // VacancyReview
@@ -72,6 +78,18 @@ namespace Esfa.Recruit.Vacancies.Jobs
 
             //Candidate
             services.AddScoped<IDomainEventHandler<IEvent>, DeleteCandidateHandler>();
+
+            RegisterCommunicationsService(services);
+        }
+
+        private static void RegisterCommunicationsService(IServiceCollection services)
+        {
+            // Relies on services.AddRecruitStorageClient(configuration); being called first
+            services.AddTransient<ICommunicationRepository, MongoDbCommunicationRepository>();
+            services.AddTransient<ICommunicationProcessor, CommunicationProcessor>();
+            services.AddTransient<ICommunicationService, CommunicationService>();
+
+            services.AddScoped<CommunicationRequestQueueTrigger>();
         }
     }
 }

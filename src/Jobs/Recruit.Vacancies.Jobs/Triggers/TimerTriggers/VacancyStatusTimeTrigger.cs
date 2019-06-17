@@ -11,10 +11,10 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.TimerTriggers
     public class VacancyStatusTimeTrigger
     {
         private readonly ILogger<VacancyStatusTimeTrigger> _logger;
-        private readonly IQueueService _queue;
+        private readonly IRecruitQueueService _queue;
         private readonly ITimeProvider _timeProvider;
 
-        public VacancyStatusTimeTrigger(ILogger<VacancyStatusTimeTrigger> logger, IQueueService queue, ITimeProvider timeProvider)
+        public VacancyStatusTimeTrigger(ILogger<VacancyStatusTimeTrigger> logger, IRecruitQueueService queue, ITimeProvider timeProvider)
         {
             _logger = logger;
             _queue = queue;
