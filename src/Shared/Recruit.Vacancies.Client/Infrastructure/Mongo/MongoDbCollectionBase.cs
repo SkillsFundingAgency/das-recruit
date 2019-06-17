@@ -11,7 +11,7 @@ using Polly.Retry;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
 {
-    internal abstract class MongoDbCollectionBase
+    public abstract class MongoDbCollectionBase
     {
         private readonly string _dbName;
         private readonly string _collectionName;
@@ -20,7 +20,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
         private readonly string[] _excludedCommands = { "isMaster", "buildInfo", "saslStart", "saslContinue", "getLastError" };
 
         protected ILogger Logger { get; }
-        
+
         protected RetryPolicy RetryPolicy { get; }
 
         protected MongoDbCollectionBase(ILoggerFactory loggerFactory, string dbName, string collectionName, IOptions<MongoDbConnectionDetails> config)
@@ -42,7 +42,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
 
             if (RecruitEnvironment.IsDevelopment)
                 LogMongoCommands(settings);
-            
+
             var client = new MongoClient(settings);
             var database = client.GetDatabase(_dbName);
 

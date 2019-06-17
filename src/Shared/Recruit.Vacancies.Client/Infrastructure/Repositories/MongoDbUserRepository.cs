@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
@@ -35,6 +36,24 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             return RetryPolicy.ExecuteAsync(_ => 
                 collection.ReplaceOneAsync(filter, user, new UpdateOptions { IsUpsert = true }),
                 new Context(nameof(UpsertUserAsync)));
+        }
+
+        public Task<List<User>> GetEmployerUsersAsync(string accountId)
+        {
+            var filter = Builders<User>.Filter.AnyEq(u => u.EmployerAccountIds, accountId);
+            var collection = GetCollection<User>();
+            return RetryPolicy.ExecuteAsync(_ => 
+                collection.Find(filter).ToListAsync(),
+                new Context(nameof(GetEmployerUsersAsync)));
+        }
+
+        public Task<List<User>> GetProviderUsers(long ukprn)
+        {
+            var filter = Builders<User>.Filter.Eq(u => u.Ukprn, ukprn);
+            var collection = GetCollection<User>();
+            return RetryPolicy.ExecuteAsync(_ => 
+                collection.Find(filter).ToListAsync(),
+                new Context(nameof(GetProviderUsers)));
         }
     }
 }

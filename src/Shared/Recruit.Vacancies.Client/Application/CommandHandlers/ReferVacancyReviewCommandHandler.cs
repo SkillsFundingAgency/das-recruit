@@ -22,7 +22,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
         public ReferVacancyReviewCommandHandler(
             ILogger<ReferVacancyCommandHandler> logger,
-            IVacancyReviewRepository reviewRepository, 
+            IVacancyReviewRepository reviewRepository,
             IMessaging messaging,
             AbstractValidator<VacancyReview> vacancyReviewValidator,
             ITimeProvider timeProvider)
@@ -61,7 +61,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             Validate(review);
 
             await _reviewRepository.UpdateAsync(review);
-            
+
             await _messaging.PublishEvent(new VacancyReviewReferredEvent
             {
                 VacancyReference = review.VacancyReference,

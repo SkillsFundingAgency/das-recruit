@@ -48,7 +48,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
                     {
                         await _projectionService.UpdateVacancyApplicationsAsync(vacancyReference);
                     }
-                    
+
                     _logger.LogInformation($"Finished {JobName}");
                 }
             }

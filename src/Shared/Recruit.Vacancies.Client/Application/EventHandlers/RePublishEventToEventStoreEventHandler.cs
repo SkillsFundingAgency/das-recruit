@@ -11,6 +11,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.EventHandlers
     public class RePublishEventToEventStoreEventHandler :
                                             INotificationHandler<DraftVacancyUpdatedEvent>,
                                             INotificationHandler<VacancySubmittedEvent>,
+                                            INotificationHandler<VacancyReferredEvent>,
                                             INotificationHandler<VacancyReviewApprovedEvent>,
                                             INotificationHandler<VacancyReviewReferredEvent>,
                                             INotificationHandler<SetupEmployerEvent>,
@@ -26,25 +27,28 @@ namespace Esfa.Recruit.Vacancies.Client.Application.EventHandlers
             _eventStore = eventStore;
         }
 
-        public Task Handle(VacancySubmittedEvent notification, CancellationToken cancellationToken) 
+        public Task Handle(VacancySubmittedEvent notification, CancellationToken cancellationToken)
             => HandleUsingEventStore(notification);
 
-        public Task Handle(DraftVacancyUpdatedEvent notification, CancellationToken cancellationToken) 
+        public Task Handle(VacancyReferredEvent notification, CancellationToken cancellationToken)
             => HandleUsingEventStore(notification);
 
-        public Task Handle(VacancyReviewApprovedEvent notification, CancellationToken cancellationToken) 
+        public Task Handle(DraftVacancyUpdatedEvent notification, CancellationToken cancellationToken)
             => HandleUsingEventStore(notification);
 
-        public Task Handle(VacancyReviewReferredEvent notification, CancellationToken cancellationToken) 
+        public Task Handle(VacancyReviewApprovedEvent notification, CancellationToken cancellationToken)
             => HandleUsingEventStore(notification);
 
-        public Task Handle(SetupEmployerEvent notification, CancellationToken cancellationToken) 
+        public Task Handle(VacancyReviewReferredEvent notification, CancellationToken cancellationToken)
             => HandleUsingEventStore(notification);
 
-        public Task Handle(SetupProviderEvent notification, CancellationToken cancellationToken) 
+        public Task Handle(SetupEmployerEvent notification, CancellationToken cancellationToken)
             => HandleUsingEventStore(notification);
 
-        public Task Handle(VacancyReviewCreatedEvent notification, CancellationToken cancellationToken) 
+        public Task Handle(SetupProviderEvent notification, CancellationToken cancellationToken)
+            => HandleUsingEventStore(notification);
+
+        public Task Handle(VacancyReviewCreatedEvent notification, CancellationToken cancellationToken)
             => HandleUsingEventStore(notification);
 
         private async Task HandleUsingEventStore(IEvent @event)

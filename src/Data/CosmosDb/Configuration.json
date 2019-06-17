@@ -58,6 +58,11 @@
                     "CollectionName": "userNotificationPreferences",
                     "OfferThroughput": 400,
                     "StoredProcedures": []
+                },
+                {
+                    "CollectionName": "communicationMessages",
+                    "OfferThroughput": 400,
+                    "StoredProcedures": []
                 }
             ]
         }

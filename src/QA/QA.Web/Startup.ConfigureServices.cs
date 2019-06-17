@@ -80,7 +80,7 @@ namespace Esfa.Recruit.Qa.Web
 
             services.AddScoped<PlannedOutageResultFilter>();
 
-            services.AddSingleton(x => 
+            services.AddSingleton(x =>
             {
                 var svc = x.GetService<IConfigurationReader>();
                 return svc.GetAsync<QaRecruitSystemConfiguration>("QaRecruitSystem").Result;

@@ -44,7 +44,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
             }
             catch (JsonException ex)
             {
-                _logger.LogError(ex, "Unable to deserialise event: {eventBody}", message);
+                _logger.LogError(ex, "Unable to deserialize event: {eventBody}", message);
                 throw;
             }
             catch (Exception ex)

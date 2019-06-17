@@ -13,8 +13,8 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.VacancyReview
 
         public VacancyReviewReferredHandler(ILogger<VacancyReviewReferredHandler> logger, IJobsVacancyClient client) : base(logger)
         {
-            _client = client;
             _logger = logger;
+            _client = client;
         }
 
         public async Task HandleAsync(string eventPayload)
@@ -24,8 +24,8 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.VacancyReview
             try
             {
                 _logger.LogInformation($"Processing {nameof(VacancyReviewReferredEvent)} for referral: {{ReviewId}} vacancy: {{VacancyReference}}", @event.ReviewId, @event.VacancyReference);
-            
-                await _client.ReferVacancy(@event.VacancyReference);
+
+                await _client.ReferVacancyAsync(@event.VacancyReference);
 
                 _logger.LogInformation($"Finished Processing {nameof(VacancyReviewReferredEvent)} for referral: {{ReviewId}} vacancy: {{VacancyReference}}", @event.ReviewId, @event.VacancyReference);
             }
@@ -37,4 +37,3 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.VacancyReview
         }
     }
 }
-

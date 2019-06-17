@@ -16,11 +16,12 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers
         {
             try
             {
-                return JsonConvert.DeserializeObject<T>(eventPayload);
+                var evt = JsonConvert.DeserializeObject<T>(eventPayload);
+                return evt;
             }
             catch (JsonException ex)
             {
-                _logger.LogError(ex, "Unable to deserialise event: {eventBody}", eventPayload);
+                _logger.LogError(ex, "Unable to deserialize event: {eventBody}", eventPayload);
                 throw;
             }
         }

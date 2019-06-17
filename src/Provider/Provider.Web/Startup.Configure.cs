@@ -4,6 +4,7 @@ using System.Globalization;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Shared.Web.Middleware;
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
@@ -29,6 +30,8 @@ namespace Esfa.Recruit.Provider.Web
 
             if (env.IsDevelopment())
             {
+                var configuration = (TelemetryConfiguration)app.ApplicationServices.GetService(typeof(TelemetryConfiguration));
+                configuration.DisableTelemetry = true;
                 app.UseDeveloperExceptionPage();
             }
             else
@@ -37,35 +40,35 @@ namespace Esfa.Recruit.Provider.Web
                 app.UseMiddleware<RecruitExceptionHandlerMiddleware>(RoutePaths.ExceptionHandlingPath);
                 app.UseHsts(hsts => hsts.MaxAge(365));
             }
-            
+
             // Add Content Security Policy
             app.UseCsp(options => options
                 .DefaultSources(s => s.Self())
-                .StyleSources(s => 
+                .StyleSources(s =>
                     s.Self()
                     //TinyMCE uses inline styles
                     .UnsafeInline()
                 )
-                .ScriptSources(s => 
+                .ScriptSources(s =>
                     s.Self()
                     .CustomSources("https://az416426.vo.msecnd.net/scripts/a/ai.0.js",
-                                    "https://www.google-analytics.com/analytics.js", 
+                                    "https://www.google-analytics.com/analytics.js",
                                     "https://www.googletagmanager.com/",
-                                    "https://www.tagmanager.google.com/", 
+                                    "https://www.tagmanager.google.com/",
                                     "https://services.postcodeanywhere.co.uk/")
                 )
-                .FontSources(s => 
+                .FontSources(s =>
                     s.Self()
                     .CustomSources("data:")
                 )
-                .ConnectSources(s => 
+                .ConnectSources(s =>
                     s.Self()
                     .CustomSources("https://dc.services.visualstudio.com")
                 )
-                .ImageSources(s => 
+                .ImageSources(s =>
                     s.Self()
-                    .CustomSources("https://maps.googleapis.com", 
-                                    "https://www.google-analytics.com", 
+                    .CustomSources("https://maps.googleapis.com",
+                                    "https://www.google-analytics.com",
                                     "data:")
                  )
                 .ReportUris(r => r.Uris("/ContentPolicyReport/Report")));
@@ -85,7 +88,7 @@ namespace Esfa.Recruit.Provider.Web
                 opts.AllowSameHostRedirectsToHttps();
                 opts.AllowedDestinations(GetAllowableDestinations(_authConfig, externalLinks.Value));
             }); //Register this earlier if there's middleware that might redirect.
-            
+
             // Redirect requests to root of the provider site.
             app.UseRootRedirect(externalLinks.Value.ProviderApprenticeshipSiteUrl);
 
@@ -117,7 +120,7 @@ namespace Esfa.Recruit.Provider.Web
         {
             var metaDataAddress = new Uri(authConfig.MetaDataAddress);
             var authHost = new UriBuilder(metaDataAddress.Scheme, metaDataAddress.Host).ToString();
-            
+
             return authHost;
         }
     }
