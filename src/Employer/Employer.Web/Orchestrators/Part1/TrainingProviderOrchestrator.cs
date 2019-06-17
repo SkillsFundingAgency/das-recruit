@@ -1,12 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.RouteModel;
-using Esfa.Recruit.Employer.Web.ViewModels;
-using Esfa.Recruit.Employer.Web.ViewModels.Part2.TrainingProvider;
+using Esfa.Recruit.Employer.Web.ViewModels.Part1.TrainingProvider;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
@@ -17,9 +15,8 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
-namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
+namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
     public enum PostSelectTrainingProviderResultAction
     {
@@ -43,16 +40,14 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         private readonly IReviewSummaryService _reviewSummaryService;
         private readonly ICache _cache;
         private readonly ITimeProvider _timeProvider;
-        private readonly ExternalLinksConfiguration _externalLinks;
 
-        public TrainingProviderOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<TrainingProviderOrchestrator> logger, IReviewSummaryService reviewSummaryService, ICache cache, ITimeProvider timeProvider, IOptions<ExternalLinksConfiguration> externalLinks) : base(logger)
+        public TrainingProviderOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<TrainingProviderOrchestrator> logger, IReviewSummaryService reviewSummaryService, ICache cache, ITimeProvider timeProvider) : base(logger)
         {
             _client = client;
             _vacancyClient = vacancyClient;
             _reviewSummaryService = reviewSummaryService;
             _cache = cache;
             _timeProvider = timeProvider;
-            _externalLinks = externalLinks.Value;
         }
 
         public async Task<SelectTrainingProviderViewModel> GetSelectTrainingProviderViewModelAsync(VacancyRouteModel vrm)
@@ -68,10 +63,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             {
                 Title = vacancy.Title,
                 Ukprn = vacancy.TrainingProvider?.Ukprn?.ToString(),
-                FindProviderUrl = _externalLinks.FindProviderUrl,
                 TrainingProviderSearch = vacancy.TrainingProvider != null ? FormatSuggestion(vacancy.TrainingProvider.Name, vacancy.TrainingProvider.Ukprn.Value) : null,
                 TrainingProviders = trainingProvidersTask.Result.Select(t => FormatSuggestion(t.ProviderName, t.Ukprn)),
-                SelectTrainingProvider = vacancy.TrainingProvider != null ? true : (bool?)null 
+                SelectTrainingProvider = vacancy.TrainingProvider != null ? true : (bool?)null,
+                PageInfo = Utility.GetPartOnePageInfo(vacancy)
             };
             
             if (vacancy.Status == VacancyStatus.Referred)
@@ -134,7 +129,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                 Title = vacancy.Title,
                 Ukprn = provider.Ukprn.Value,
                 ProviderName = provider.Name,
-                ProviderAddress = provider.Address.ToAddressString()
+                ProviderAddress = provider.Address.ToAddressString(),
+                PageInfo = Utility.GetPartOnePageInfo(vacancy)
             };
         }
 

@@ -371,7 +371,7 @@ public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state,
             </h3>
             <span esfa-validation-message-for="ProviderName" class="govuk-error-message"></span>
             <p asp-show="@Model.HasProviderName" class="govuk-body">@Model.ProviderName</p>
-            @EditLink(RouteNames.TrainingProvider_Select_Get, Model.ProviderSectionState, "link-training-provider")
+            @EditLink(RouteNames.TrainingProvider_Select_Get, Model.ProviderSectionState, "link-training-provider", new { wizard = false })
         </div>
         <div class="@GetSectionClass(Model.TrainingSectionState)">
             <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.Training">

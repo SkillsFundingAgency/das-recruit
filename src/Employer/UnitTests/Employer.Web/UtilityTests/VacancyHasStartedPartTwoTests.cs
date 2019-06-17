@@ -21,7 +21,6 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
             Utility.VacancyHasStartedPartTwo(new Vacancy { EmployerContact = new ContactDetail { Phone = "some value"} }).Should().BeTrue();
             Utility.VacancyHasStartedPartTwo(new Vacancy { Qualifications = new List<Qualification>() }).Should().BeTrue();
             Utility.VacancyHasStartedPartTwo(new Vacancy { Skills = new List<string>() }).Should().BeTrue();
-            Utility.VacancyHasStartedPartTwo(new Vacancy { TrainingProvider = new TrainingProvider() }).Should().BeTrue();
             Utility.VacancyHasStartedPartTwo(new Vacancy { Description = "some value" }).Should().BeTrue();
         }
 

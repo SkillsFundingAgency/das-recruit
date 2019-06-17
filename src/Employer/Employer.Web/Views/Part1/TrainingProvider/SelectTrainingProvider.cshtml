@@ -1,24 +1,28 @@
-﻿@using Esfa.Recruit.Employer.Web.ViewModels.Part2.TrainingProvider
+﻿@using Esfa.Recruit.Employer.Web.ViewModels.Part1.TrainingProvider
+@using Esfa.Recruit.Shared.Web.Mappers
+@using Microsoft.Extensions.Options
 @using Newtonsoft.Json
-@model Esfa.Recruit.Employer.Web.ViewModels.SelectTrainingProviderViewModel
+
+@inject IOptions<ExternalLinksConfiguration> _externalLinks;
+
+@model SelectTrainingProviderViewModel
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Title_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
         <partial name="@PartialNames.ReviewSummary" for="Review" />
         <h1 class="govuk-heading-xl">
             <span class="govuk-caption-l">@Model.Title</span>
             Have you found a training provider?
         </h1>
-        <form asp-route="@RouteNames.TrainingProvider_Select_Post">
-
+        <form asp-route="@RouteNames.TrainingProvider_Select_Post" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
             <p class="govuk-body">
                 You will need to use a registered training provider who offers the apprenticeship training you choose.
             </p>
-
             <div class="govuk-form-group">
                 <div class="govuk-radios govuk-radios--conditional" data-module="radios">
                     <div class="govuk-radios__item">
-                        <input asp-for="SelectTrainingProvider" 
+                        <input asp-for="SelectTrainingProvider"
                                class="govuk-radios__input"
                                id="found_yes"
                                type="radio"
@@ -36,7 +40,7 @@
                                         Enter the training provider reference number (UKPRN). You will be able to get this from your training provider The UKPRN must only be 8 digits (For example, 12345678)
                                     </span>
                                     <span esfa-validation-message-for="Ukprn" class="govuk-error-message"></span>
-                                    <input asp-for="Ukprn" type="text" maxlength="8" class="govuk-input govuk-input--width-10"/>
+                                    <input asp-for="Ukprn" type="text" maxlength="8" class="govuk-input govuk-input--width-10" />
                                 </div>
                             </noscript>
                             <div class="govuk-form-group js-hidden" id="js-search">
@@ -45,16 +49,15 @@
                                     UKPRN is 8 numbers. For example 12345678.
                                 </span>
                                 <span esfa-validation-message-for="TrainingProviderSearch" class="govuk-error-message"></span>
-                                <input asp-for="TrainingProviderSearch" type="text" class="govuk-input search-input"/>
+                                <input asp-for="TrainingProviderSearch" type="text" class="govuk-input search-input" />
                             </div>
                         </div>
                         <p class="govuk-body">
-                            <a asp-route="@RouteNames.TrainingProvider_Select_Get" asp-route-clear="true" class="govuk-link">Clear search</a>
+                            <a asp-route="@RouteNames.TrainingProvider_Select_Get" asp-route-clear="true" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link">Clear search</a>
                         </p>
                     </div>
-
                     <div class="govuk-radios__item">
-                        <input asp-for="SelectTrainingProvider" 
+                        <input asp-for="SelectTrainingProvider"
                                class="govuk-radios__input"
                                id="found_no"
                                type="radio"
@@ -68,18 +71,19 @@
                         <div class="govuk-form-group">
                             <p class="govuk-body">
                                 You will need to add a training provider before submitting the vacancy. If you need help, you can
-                                <a href="@Model.FindProviderUrl" target="_blank">find a training provider (opens in new tab)</a>
+                                <a href="@_externalLinks.Value.FindProviderUrl" target="_blank">find a training provider (opens in new tab)</a>
                                 based on the apprenticeship training.
                             </p>
                         </div>
                     </div>
-                </div>    
+                </div>
             </div>
-
             <div class="govuk-form-group">
                 <input type="hidden" name="@nameof(SelectTrainingProviderEditModel.SelectionType)" id="selection-type" value="@TrainingProviderSelectionType.Ukprn" />
                 <input type="submit" value="Continue" esfa-automation="btn-continue" class="govuk-button" />
-                <a asp-route="@RouteNames.Vacancy_Preview_Get" esfa-automation="link-cancel" class="govuk-link das-button-link">Cancel</a>
+
+                <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Index_Get" class="govuk-link das-button-link" esfa-automation="cancel-link">Cancel</a>
+                <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.TrainingProviderSection" class="govuk-link das-button-link" esfa-automation="cancel-link">Cancel</a>
             </div>
         </form>
     </div>

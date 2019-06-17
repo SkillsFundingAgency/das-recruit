@@ -1,16 +1,16 @@
-﻿using Esfa.Recruit.Employer.Web.Configuration.Routing;
-using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Extensions;
-using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
-using Esfa.Recruit.Employer.Web.RouteModel;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+﻿using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
-using Esfa.Recruit.Employer.Web.ViewModels.Part2.TrainingProvider;
+using Esfa.Recruit.Employer.Web.Configuration.Routing;
+using Esfa.Recruit.Employer.Web.Extensions;
+using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
+using Esfa.Recruit.Employer.Web.RouteModel;
+using Esfa.Recruit.Employer.Web.ViewModels.Part1.TrainingProvider;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Mappers;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Esfa.Recruit.Employer.Web.Controllers.Part2
+namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 {
     [Route(RoutePaths.AccountVacancyRoutePath)]
     public class TrainingProviderController : Controller
@@ -25,9 +25,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
         }
 
         [HttpGet("select-training-provider", Name = RouteNames.TrainingProvider_Select_Get)]
-        public async Task<IActionResult> SelectTrainingProvider(VacancyRouteModel vrm, [FromQuery] string clear = "")
+        public async Task<IActionResult> SelectTrainingProvider(VacancyRouteModel vrm, [FromQuery] string wizard = "true", [FromQuery] string clear = "")
         {
             var vm = await _orchestrator.GetSelectTrainingProviderViewModelAsync(vrm);
+            vm.PageInfo.SetWizard(wizard);
 
             if (string.IsNullOrWhiteSpace(clear) == false)
             {
@@ -40,11 +41,12 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
         }
 
         [HttpPost("select-training-provider", Name = RouteNames.TrainingProvider_Select_Post)]
-        public async Task<IActionResult> SelectTrainingProvider(SelectTrainingProviderEditModel m)
+        public async Task<IActionResult> SelectTrainingProvider(SelectTrainingProviderEditModel m, [FromQuery] bool wizard)
         {
             if (!ModelState.IsValid)
             {
                 var vm = await _orchestrator.GetSelectTrainingProviderViewModelAsync(m);
+                vm.PageInfo.SetWizard(wizard);
                 return View(vm);
             }
 
@@ -53,29 +55,30 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
             switch (result.Action)
             {
                 case PostSelectTrainingProviderResultAction.TrainingProviderContinue:
-                    return RedirectToRoute(RouteNames.Vacancy_Preview_Get, Anchors.TrainingProviderSection);
+                    return GetRedirectToNextPage(wizard);
                 case PostSelectTrainingProviderResultAction.TrainingProviderNotFound:
-                    return await ProviderNotFound(m);
+                    return await ProviderNotFound(m, wizard);
                 default:
-                    return RedirectToRoute(RouteNames.TrainingProvider_Confirm_Get, new { ukprn = result.FoundProviderUkprn });
+                    return RedirectToRoute(RouteNames.TrainingProvider_Confirm_Get, new { ukprn = result.FoundProviderUkprn, wizard });
             }
         }
 
         [HttpGet("confirm-training-provider", Name = RouteNames.TrainingProvider_Confirm_Get)]
-        public async Task<IActionResult> ConfirmTrainingProvider(VacancyRouteModel vrm, [FromQuery] string ukprn)
+        public async Task<IActionResult> ConfirmTrainingProvider(VacancyRouteModel vrm, [FromQuery] string ukprn, [FromQuery] string wizard)
         {
             var provider = await _orchestrator.GetProviderAsync(ukprn);
             
             if(provider == null)
                 return RedirectToRoute(RouteNames.TrainingProvider_Select_Get);
             
-            var confirmDetailsVm = await _orchestrator.GetConfirmViewModelAsync(vrm, provider.Ukprn);
+            var vm = await _orchestrator.GetConfirmViewModelAsync(vrm, provider.Ukprn);
+            vm.PageInfo.SetWizard(wizard);
 
-            return View(confirmDetailsVm);
+            return View(vm);
         }
 
         [HttpPost("confirm-training-provider", Name = RouteNames.TrainingProvider_Confirm_Post)]
-        public async Task<IActionResult> ConfirmTrainingProvider(ConfirmTrainingProviderEditModel m)
+        public async Task<IActionResult> ConfirmTrainingProvider(ConfirmTrainingProviderEditModel m, [FromQuery] bool wizard)
         {
             if (!ModelState.IsValid)
             {
@@ -87,7 +90,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
             if (provider == null)
             {
                 var vm = new SelectTrainingProviderEditModel { VacancyId = m.VacancyId, Ukprn = m.Ukprn, SelectionType = TrainingProviderSelectionType.Ukprn};
-                return await ProviderNotFound(vm);
+                return await ProviderNotFound(vm, wizard);
             }
 
             var response = await _orchestrator.PostConfirmEditModelAsync(m, User.ToVacancyUser());
@@ -103,10 +106,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
                 return View(ViewNames.SelectTrainingProvider, vm);
             }
 
-            return RedirectToRoute(RouteNames.Vacancy_Preview_Get, null, Anchors.TrainingProviderSection);
+            return GetRedirectToNextPage(wizard);
         }
 
-        private async Task<IActionResult> ProviderNotFound(SelectTrainingProviderEditModel m)
+        private async Task<IActionResult> ProviderNotFound(SelectTrainingProviderEditModel m, bool wizard)
         {
             if (m.SelectionType == TrainingProviderSelectionType.Ukprn)
             {
@@ -116,8 +119,17 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
             {
                 ModelState.AddModelError(nameof(SelectTrainingProviderEditModel.TrainingProviderSearch), InvalidSearchTerm);
             }
+
             var vm = await _orchestrator.GetSelectTrainingProviderViewModelAsync(m);
+            vm.PageInfo.SetWizard(wizard);
             return View(ViewNames.SelectTrainingProvider, vm);
+        }
+
+        private IActionResult GetRedirectToNextPage(bool wizard)
+        {
+            return wizard
+                ? RedirectToRoute(RouteNames.NumberOfPositions_Get)
+                : RedirectToRoute(RouteNames.Vacancy_Preview_Get, null, Anchors.TrainingProviderSection);
         }
     }
 }

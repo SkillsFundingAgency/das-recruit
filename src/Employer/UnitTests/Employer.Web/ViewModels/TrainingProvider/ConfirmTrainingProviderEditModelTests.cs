@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using Esfa.Recruit.Employer.Web.ViewModels.Part2.TrainingProvider;
+using Esfa.Recruit.Employer.Web.ViewModels.Part1.TrainingProvider;
 using Xunit;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.TrainingProvider

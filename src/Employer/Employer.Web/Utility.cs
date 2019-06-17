@@ -71,7 +71,17 @@ namespace Esfa.Recruit.Employer.Web
             if (string.IsNullOrWhiteSpace(vacancy.Title))
                 return validRoutes;
 
-            validRoutes.AddRange(new[] { RouteNames.NumberOfPositions_Post, RouteNames.NumberOfPositions_Get });
+            validRoutes.AddRange(new[] {
+                RouteNames.TrainingProvider_Confirm_Post, RouteNames.TrainingProvider_Confirm_Get, RouteNames.TrainingProvider_Select_Post, RouteNames.TrainingProvider_Select_Get,
+                RouteNames.NumberOfPositions_Post, RouteNames.NumberOfPositions_Get });
+
+            if(vacancy.TrainingProvider == null && string.IsNullOrWhiteSpace(vacancy.NumberOfPositions?.ToString()))
+            {
+                //Move Training Provider Get to last valid route for resuming
+                validRoutes.Remove(RouteNames.TrainingProvider_Select_Get);
+                validRoutes.Add(RouteNames.TrainingProvider_Select_Get);
+            }
+            
             if (string.IsNullOrWhiteSpace(vacancy.NumberOfPositions?.ToString()))
                 return validRoutes;
 
@@ -118,7 +128,6 @@ namespace Esfa.Recruit.Employer.Web
                    vacancy.EmployerContact != null ||
                    vacancy.Qualifications != null ||
                    vacancy.Skills != null ||
-                   vacancy.TrainingProvider != null ||
                    !string.IsNullOrWhiteSpace(vacancy.Description);
         }
 

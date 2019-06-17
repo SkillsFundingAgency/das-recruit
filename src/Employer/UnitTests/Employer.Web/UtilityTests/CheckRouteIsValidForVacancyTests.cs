@@ -28,6 +28,34 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
         [Theory]
         [InlineData(RouteNames.Title_Get, false)]
         [InlineData(RouteNames.Title_Post, false)]
+        [InlineData(RouteNames.TrainingProvider_Select_Get, false)]
+        [InlineData(RouteNames.TrainingProvider_Select_Post, false)]
+        [InlineData(RouteNames.TrainingProvider_Confirm_Get, false)]
+        [InlineData(RouteNames.TrainingProvider_Confirm_Post, false)]
+        [InlineData(RouteNames.NumberOfPositions_Get, false)]
+        [InlineData(RouteNames.NumberOfPositions_Post, false)]
+        [InlineData("any other route", true)]
+        public void ShouldRedirectToTrainingProvider(string route, bool shouldRedirect)
+        {
+            var vacancy = new Vacancy
+            {
+                EmployerAccountId = "EMPLOYER ACCOUNT ID",
+                Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
+                Title = "has a value",
+                TrainingProvider = null,
+                NumberOfPositions = null
+            };
+
+            CheckRouteIsValidForVacancyTest(vacancy, route, shouldRedirect, RouteNames.TrainingProvider_Select_Get);
+        }
+
+        [Theory]
+        [InlineData(RouteNames.Title_Get, false)]
+        [InlineData(RouteNames.Title_Post, false)]
+        [InlineData(RouteNames.TrainingProvider_Select_Get, false)]
+        [InlineData(RouteNames.TrainingProvider_Select_Post, false)]
+        [InlineData(RouteNames.TrainingProvider_Confirm_Get, false)]
+        [InlineData(RouteNames.TrainingProvider_Confirm_Post, false)]
         [InlineData(RouteNames.NumberOfPositions_Get, false)]
         [InlineData(RouteNames.NumberOfPositions_Post, false)]
         [InlineData("any other route", true)]
@@ -36,7 +64,9 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
             var vacancy = new Vacancy {
                 EmployerAccountId = "EMPLOYER ACCOUNT ID",
                 Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
-                Title = "has a value"
+                Title = "has a value",
+                TrainingProvider = new TrainingProvider(),
+                NumberOfPositions = null
             };
 
             CheckRouteIsValidForVacancyTest(vacancy, route, shouldRedirect, RouteNames.NumberOfPositions_Get);
