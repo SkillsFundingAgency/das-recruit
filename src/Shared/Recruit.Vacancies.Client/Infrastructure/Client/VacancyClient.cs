@@ -445,13 +445,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _trainingProviderService.GetProviderAsync(ukprn);
         }
 
-        public async Task<UserNotificationPreferences> GetUserNotificationPreferencesAsync(string vacancyUserId)
+        public async Task<UserNotificationPreferences> GetUserNotificationPreferencesAsync(string idamsUserId)
         {
-            var user = await GetUsersDetailsAsync(vacancyUserId);
+            var preferences = await _userNotificationPreferencesRepository.GetAsync(idamsUserId);
 
-            var preferences = await _userNotificationPreferencesRepository.GetAsync(user.Id);
-
-            return preferences ?? new UserNotificationPreferences() { Id = user.Id };
+            return preferences ?? new UserNotificationPreferences() { Id = idamsUserId };
         }
 
         public Task UpdateUserNotificationPreferencesAsync(UserNotificationPreferences preferences)
