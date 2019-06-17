@@ -4,6 +4,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Configuration;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore;
 using Esfa.Recruit.Vacancies.Client.Ioc;
+using Esfa.Recruit.Vacancies.Jobs.NServiceBus;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Azure.WebJobs.Host.Queues;
 using Microsoft.Extensions.Configuration;
@@ -94,6 +95,8 @@ namespace Esfa.Recruit.Vacancies.Jobs
                         });
 
                         services.ConfigureJobServices(context.Configuration);
+
+                        services.AddDasNServiceBus(context.Configuration);
                     })
                     .UseConsoleLifetime();
         }
