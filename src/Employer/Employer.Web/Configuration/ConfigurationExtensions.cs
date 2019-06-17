@@ -133,7 +133,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
 
                 options.Events.OnTokenValidated = async (ctx) =>
                 {
-                    await PopulateAccountsClaim(ctx, vacancyClient);
+                    await PopulateAccountsClaim(ctx, recruitClient);
                     await HandleUserSignedIn(ctx, recruitClient);
                 };
 
@@ -153,7 +153,9 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             });
         }
 
-        private static async Task PopulateAccountsClaim(Microsoft.AspNetCore.Authentication.OpenIdConnect.TokenValidatedContext ctx, IEmployerVacancyClient vacancyClient)
+        private static async Task PopulateAccountsClaim(
+            Microsoft.AspNetCore.Authentication.OpenIdConnect.TokenValidatedContext ctx, 
+            IRecruitVacancyClient vacancyClient)
         {
             var userId = ctx.Principal.GetUserId();
             var accounts = await vacancyClient.GetEmployerIdentifiersAsync(userId);

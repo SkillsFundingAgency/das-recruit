@@ -456,7 +456,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public Task UpdateUserNotificationPreferencesAsync(UserNotificationPreferences preferences)
         {
-            return _messaging.SendCommandAsync(new UpdateUserNotificationPreferencesCommand {
+            return _messaging.SendCommandAsync(new UpdateUserNotificationPreferencesCommand 
+            {
                 UserNotificationPreferences = preferences
             });
         }
@@ -476,6 +477,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             }
 
             return newResult;
+        }
+
+        public Task UpdateUserAccountAsync(string idamsUserId)
+        {
+            return _messaging.SendCommandAsync(new UpdateUserAccountCommand
+            {
+                IdamsUserId = idamsUserId
+            });
         }
     }
 }
