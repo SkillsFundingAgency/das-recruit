@@ -14,6 +14,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             _maRoutes = maRoutes.Value;
         }
 
+        public string FindAnApprenticeshipUrl => _externalLinks.FindAnApprenticeshipUrl;
         public string MaRoot => _externalLinks.ManageApprenticeshipSiteUrl;
         public string AccountHome => $"{_externalLinks.ManageApprenticeshipSiteUrl}{_maRoutes.ManageApprenticeshipSiteAccountsHomeRoute}";
         public string Help => $"{_externalLinks.ManageApprenticeshipSiteUrl}{_maRoutes.ManageApprenticeshipSiteHelpRoute}";

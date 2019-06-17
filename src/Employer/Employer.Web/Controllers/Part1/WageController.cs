@@ -45,7 +45,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             }
 
             return wizard
-                ? RedirectToRoute(RouteNames.SearchResultPreview_Get)
+                ? RedirectToRoute(RouteNames.Part1Complete_Get)
                 : RedirectToRoute(RouteNames.Vacancy_Preview_Get);
         }
     }
