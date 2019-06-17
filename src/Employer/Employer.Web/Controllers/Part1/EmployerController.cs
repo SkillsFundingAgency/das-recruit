@@ -13,12 +13,12 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
     [Route(RoutePaths.AccountVacancyRoutePath)]
     public class EmployerController : EmployerControllerBase
     {
-        private readonly EmployerOrchestrator _orchestrator;        
+        private readonly EmployerOrchestrator _orchestrator;
 
         public EmployerController(EmployerOrchestrator orchestrator, IHostingEnvironment hostingEnvironment)
             : base(hostingEnvironment)
         {
-            _orchestrator = orchestrator;            
+            _orchestrator = orchestrator;
         }
 
         [HttpGet("employer", Name = RouteNames.Employer_Get)]
@@ -54,8 +54,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             {
                 //something went wrong, the matching cookie was not found
                 //Redirect the user with validation error to allow them to continue
-                ModelState.AddModelError(nameof(EmployerEditModel.SelectedOrganisationId), 
-                    ValidationMessages.EmployerNameValidationMessages.EmployerNameRequired);
+                ModelState.AddModelError(nameof(EmployerEditModel.SelectedOrganisationId),
+                    ValidationMessages.EmployerSelectionValidationMessages.EmployerSelectionRequired);
             }
 
             if (!ModelState.IsValid)

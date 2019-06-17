@@ -11,7 +11,7 @@
 
         <partial name="@PartialNames.ReviewSummary" for="Review"/>
 
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Which of your organisations is this vacancy for?</h1>
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Which organisation is this vacancy for?</h1>
 
         <form asp-show="@Model.CanShowSearchPanel" method="GET" asp-route="@RouteNames.Employer_Get" asp-route-wizard="@Model.PageInfo.IsWizard">
             <div class="form-group search-field search-field-darker">
@@ -38,7 +38,7 @@
             <div esfa-validation-marker-for="SelectedOrganisationId" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend">
-                        <span class="govuk-label govuk-!-font-weight-bold">Which organisation is the vacancy for?</span>
+                        <span asp-hide="@Model.HasNoSearchResults" class="govuk-label govuk-!-font-weight-bold">Which organisation is the vacancy for?</span>
                     </legend>
                     <span esfa-validation-message-for="SelectedOrganisationId" class="govuk-error-message"></span>
                     <input type="hidden" asp-for="SearchTerm" />
