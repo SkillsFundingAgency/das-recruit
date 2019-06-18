@@ -44,7 +44,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 return new OrchestratorResponse(_notificationTypeIsRequiredForTheFirstTime);
             }
 
-            var preferences = GetDomainModel(editModel, persistedPreferences.Id);
+            var preferences = GetDomainModel(editModel, vacancyUser.UserId);
 
             return await ValidateAndExecute(
                 preferences,
@@ -71,9 +71,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             };
         }
 
-        private UserNotificationPreferences GetDomainModel(ManageNotificationsEditModel sourceModel, Guid userId)
+        private UserNotificationPreferences GetDomainModel(ManageNotificationsEditModel sourceModel, string idamsUserId)
         {            
-            var targetModel = new UserNotificationPreferences() { Id = userId };
+            var targetModel = new UserNotificationPreferences() { Id = idamsUserId };
             if (!sourceModel.HasAnySubscription) return targetModel;
 
             targetModel.NotificationFrequency = sourceModel.IsApplicationSubmittedSelected ? sourceModel.NotificationFrequency : null;

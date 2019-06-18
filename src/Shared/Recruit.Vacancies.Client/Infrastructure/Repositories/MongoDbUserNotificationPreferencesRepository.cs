@@ -17,9 +17,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         {
         }
 
-        public async Task<UserNotificationPreferences> GetAsync(Guid userId)
+        public async Task<UserNotificationPreferences> GetAsync(string idamsUserId)
         {
-            var filter = Builders<UserNotificationPreferences>.Filter.Eq(v => v.Id, userId);
+            var filter = Builders<UserNotificationPreferences>.Filter.Eq(v => v.Id, idamsUserId);
 
             var collection = GetCollection<UserNotificationPreferences>();
             var result = await RetryPolicy.ExecuteAsync(_ => 

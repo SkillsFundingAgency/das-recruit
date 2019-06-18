@@ -25,9 +25,11 @@
             <p>@Model.InfoMessage</p>
         </div>
     </div>
-    <div class="govuk-grid-column-one-third">
-        <a asp-route="@RouteNames.ManageNotifications_Get">Manage your recruitment emails</a>
-    </div>
+    <esfaFeatureEnabled name="@FeatureNames.SetNotificationPreferences">
+        <div class="govuk-grid-column-one-third">        
+            <a asp-route="@RouteNames.ManageNotifications_Get">Manage your recruitment emails</a>
+        </div>
+    </esfaFeatureEnabled>
 </div>
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
