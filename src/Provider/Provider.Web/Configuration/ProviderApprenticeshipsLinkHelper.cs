@@ -14,7 +14,6 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             _pasRoutes = pasRoutes.Value;
         }
 
-        public string FindAnApprenticeshipUrl => _externalLinks.FindAnApprenticeshipUrl;
         public string AccountHome => $"{_externalLinks.ProviderApprenticeshipSiteUrl}{_pasRoutes.ProviderApprenticeshipSiteAccountsHomeRoute}";
         public string Notifications => $"{_externalLinks.ProviderApprenticeshipSiteUrl}{_pasRoutes.ProviderApprenticeshipSiteNotificationSettingsRoute}";
         public string Apprentices => $"{_externalLinks.CommitmentsSiteUrl}{_pasRoutes.ProviderApprenticeshipSiteManageApprenticesRoute}";
