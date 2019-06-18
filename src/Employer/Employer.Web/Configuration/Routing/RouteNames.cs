@@ -95,7 +95,9 @@
         public const string Skills_Post = "Skills_Post";
 
         public const string Qualifications_Get = "Qualifications_Get";
-        public const string Qualifications_Post = "Qualifications_Post";
+        public const string Qualification_Add_Get = "Qualification_Add_Get";
+        public const string Qualification_Add_Post = "Qualification_Add_Post";
+        public const string Qualification_Delete_Post = "Qualification_Delete_Post";
 
         public const string ApplicationReview_Get = "ApplicationReview_Get";
         public const string ApplicationReview_Post = "ApplicationReview_Post";
