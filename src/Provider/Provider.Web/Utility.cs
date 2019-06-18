@@ -75,11 +75,7 @@ namespace Esfa.Recruit.Provider.Web
             if (string.IsNullOrWhiteSpace(vacancy.NumberOfPositions?.ToString()))
                 return validRoutes;
 
-            validRoutes.AddRange(new[] { RouteNames.ShortDescription_Post, RouteNames.ShortDescription_Get });
-            if (string.IsNullOrWhiteSpace(vacancy.ShortDescription))
-                return validRoutes;
-
-            validRoutes.AddRange(new[] 
+           validRoutes.AddRange(new[] 
             {
                 RouteNames.Location_Get, 
                 RouteNames.Location_Post,
