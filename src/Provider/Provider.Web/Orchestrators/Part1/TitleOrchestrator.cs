@@ -34,7 +34,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
         public async Task<TitleViewModel> GetTitleViewModelForNewVacancyAsync(string employerAccountId, long ukprn)
         {
-            //await ValidateEmployerAccountIdAsync(ukprn, employerAccountId);
             var dashboard = await _providerVacancyClient.GetDashboardAsync(ukprn);
             var vm = new TitleViewModel
             {
