@@ -108,7 +108,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             if (Utility.VacancyHasCompletedPartOne(vacancy))
             {
                 if (Utility.VacancyHasStartedPartTwo(vacancy) == false)
-                    return RedirectToRoute(RouteNames.SearchResultPreview_Get);
+                    return RedirectToRoute(RouteNames.Part1Complete_Get);
 
                 return RedirectToRoute(RouteNames.Vacancy_Preview_Get);
             }
