@@ -63,7 +63,8 @@
     },
     "Features": {
       "value": {
-        "AllowLevyPayingEmployersOnly" : true
+        "AllowLevyPayingEmployersOnly" : true,
+        "SetNotificationPreferences": false
       }
     },
     "LoggingRedisConnectionString": {
