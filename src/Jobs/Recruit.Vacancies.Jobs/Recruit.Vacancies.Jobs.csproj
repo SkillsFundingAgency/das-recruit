@@ -31,6 +31,8 @@
     <PackageReference Include="SFA.DAS.EmployerAccounts.Messages" Version="1.6.1021" />
     <PackageReference Include="NServiceBus" Version="7.1.7" />
     <PackageReference Include="NServiceBus.MSDependencyInjection" Version="0.1.4" />
+
+    <ProjectReference Include="..\..\Communication\Communication.Core\Communication.Core.csproj" />    
   </ItemGroup>
   <ItemGroup>
     <None Update="appSettings.json">
