@@ -87,7 +87,8 @@
     "Features": {
       "type": "object",
       "defaultValue": {
-        "AllowLevyPayingEmployersOnly": true
+        "AllowLevyPayingEmployersOnly": true,
+        "SetNotificationPreferences": false
       }
     },
     "LoggingRedisConnectionString": {
@@ -405,6 +406,10 @@
                 "value": "[parameters('Features').AllowLevyPayingEmployersOnly]"
               },
               {
+                "name": "Features:SetNotificationPreferences",
+                "value": "[parameters('Features').SetNotificationPreferences]"
+              },
+              {
                 "name": "ASPNETCORE_ENVIRONMENT",
                 "value": "[toUpper(parameters('EnvironmentFullName'))]"
               },
@@ -642,6 +647,10 @@
               {
                 "name": "ExternalLinks:CommitmentsSiteUrl",
                 "value": "[parameters('ExternalLinks').ProviderCommitmentsSiteUrl]"
+              },
+              {
+                "name": "Features:SetNotificationPreferences",
+                "value": "[parameters('Features').SetNotificationPreferences]"
               },
               {
                 "name": "ASPNETCORE_ENVIRONMENT",
