@@ -49,6 +49,13 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 SearchTerm = searchTerm
             };
 
+            if (vacancy.LegalEntityId != 0 && (selectedLegalEntityId.HasValue == false || selectedLegalEntityId == 0))
+            {
+                selectedLegalEntityId = vacancy.LegalEntityId;
+            }
+
+            vm.IsPreviouslySelectedLegalEntityStillValid = selectedLegalEntityId.HasValue && legalEntities.Any(le => le.Id == selectedLegalEntityId);
+
             var filteredLegalEntities = legalEntities
                 .Where(le => string.IsNullOrEmpty(searchTerm) || le.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
                 .OrderBy(v => v.Name)
@@ -57,12 +64,11 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             var filteredLegalEntitiesTotal = filteredLegalEntities.Count();
 
             var totalNumberOfPages = (int)Math.Ceiling((double)filteredLegalEntitiesTotal / MaxLegalEntitiesPerPage);
-            var indexOfSelectedLegalEntity = selectedLegalEntityId.HasValue ? filteredLegalEntities.FindIndex(le => le.Id == selectedLegalEntityId.Value) + 1 : NotFoundIndex;
+            var indexOfSelectedLegalEntity = selectedLegalEntityId.HasValue
+                                            ? filteredLegalEntities.FindIndex(le => le.Id == selectedLegalEntityId.Value) + 1
+                                            : NotFoundIndex;
 
-            if (indexOfSelectedLegalEntity > MaxLegalEntitiesPerPage && requestedPageNo.HasValue == false)
-                setPage = PagingHelper.GetPageNoOfSelectedItem(totalNumberOfPages, MaxLegalEntitiesPerPage, indexOfSelectedLegalEntity);
-            else
-                setPage = setPage > totalNumberOfPages ? 1 : setPage;
+            setPage = GetPageNo(requestedPageNo, setPage, totalNumberOfPages, indexOfSelectedLegalEntity);
 
             SetFilteredOrganisationsForPage(setPage, vm, filteredLegalEntities);
             SetPager(searchTerm, setPage, vm, filteredLegalEntitiesTotal);
@@ -88,12 +94,21 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             return vm;
         }
 
-        private void SetPager(string searchTerm, int setPage, LegalEntityViewModel vm, int filteredLegalEntitiesTotal)
+        private int GetPageNo(int? requestedPageNo, int page, int totalNumberOfPages, int indexOfSelectedLegalEntity)
+        {
+            if (indexOfSelectedLegalEntity > MaxLegalEntitiesPerPage && requestedPageNo.HasValue == false)
+                page = PagingHelper.GetPageNoOfSelectedItem(totalNumberOfPages, MaxLegalEntitiesPerPage, indexOfSelectedLegalEntity);
+            else
+                page = page > totalNumberOfPages ? 1 : page;
+            return page;
+        }
+
+        private void SetPager(string searchTerm, int page, LegalEntityViewModel vm, int filteredLegalEntitiesTotal)
         {
             var pager = new PagerViewModel(
                             filteredLegalEntitiesTotal,
                             MaxLegalEntitiesPerPage,
-                            setPage,
+                            page,
                             "Showing {0} to {1} of {2} organisations",
                             RouteNames.LegalEntity_Get,
                             new Dictionary<string, string>
@@ -104,9 +119,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             vm.Pager = pager;
         }
 
-        private void SetFilteredOrganisationsForPage(int setPage, LegalEntityViewModel vm, List<OrganisationViewModel> filteredLegalEntities)
+        private void SetFilteredOrganisationsForPage(int page, LegalEntityViewModel vm, List<OrganisationViewModel> filteredLegalEntities)
         {
-            var skip = (setPage - 1) * MaxLegalEntitiesPerPage;
+            var skip = (page - 1) * MaxLegalEntitiesPerPage;
 
             vm.Organisations = filteredLegalEntities
                 .Skip(skip)

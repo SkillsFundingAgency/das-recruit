@@ -12,7 +12,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer
         public IEnumerable<OrganisationViewModel> Organisations { get; internal set; }
 
         public bool HasOnlyOneOrganisation => TotalNumberOfLegalEntities == 1;
-        
+
         public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
 
         public PartOnePageInfoViewModel PageInfo { get; internal set; }
@@ -36,6 +36,12 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer
         public string NoSearchResultsCaption => $"0 matches for '{SearchTerm}'";
 
         public int TotalNumberOfLegalEntities { get; internal set; }
+
+        public bool IsPreviouslySelectedLegalEntityStillValid { get; internal set; }
+
+        public bool IsSelectedOrganisationInOrganisations
+                        => IsPreviouslySelectedLegalEntityStillValid
+                            && Organisations.Any(org => org.Id == SelectedOrganisationId.Value);
     }
 
     public class OrganisationViewModel
