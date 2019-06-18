@@ -35,7 +35,6 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.Configure<PostcodeAnywhereConfiguration>(configuration.GetSection("PostcodeAnywhere"));
             services.Configure<FaaConfiguration>(configuration.GetSection("FaaConfiguration"));
             services.AddSingleton<ProviderApprenticeshipsLinkHelper>();
-
             services.AddFeatureToggle();
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>(); // Used by NLog to log out traceidentifier value.
@@ -79,7 +78,6 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<LocationOrchestrator>();
             services.AddTransient<ProviderContactDetailsOrchestrator>();
             services.AddTransient<QualificationsOrchestrator>();
-            services.AddTransient<SearchResultPreviewOrchestrator>();
             services.AddTransient<ShortDescriptionOrchestrator>();
             services.AddTransient<SkillsOrchestrator>();
             services.AddTransient<SubmittedOrchestrator>();

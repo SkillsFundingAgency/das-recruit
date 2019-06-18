@@ -56,7 +56,7 @@
         public const string ReportConfirmation_Get = "ReportConfirmation_Get";
         public const string ReportDashboard_DownloadCsv = "ReportDashboard_DownloadCsv";
         public const string ReportDashboard_Get = "ReportDashboard_Get";
-        public const string SearchResultPreview_Get = "SearchResultPreview_Get";
+        public const string Part1Complete_Get = "Part1Complete_Get";
         public const string ShortDescription_Get = "ShortDescription_Get";
         public const string ShortDescription_Post = "ShortDescription_Post";
         public const string Skills_Get = "Skills_Get";
