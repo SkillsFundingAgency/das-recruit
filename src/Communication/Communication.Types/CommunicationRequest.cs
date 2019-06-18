@@ -3,31 +3,29 @@ using System.Collections.Generic;
 
 namespace Communication.Types
 {
-    public abstract class CommunicationRequestBase : ICommunicationRequest
+    public class CommunicationRequest
     {
-        private readonly List<Entity> _entityIds;
-
         public Guid RequestId { get; }
+        public string RequestType { get; }
         public DateTime RequestDateTime { get; }
         public string RecipientsResolver { get; }
         public string OriginatingService { get; }
-
-        public IEnumerable<Entity> EntityIds => _entityIds;
-
-        protected CommunicationRequestBase(string recipientsResolver, string originatingService)
+        public List<Entity> Entities { get; }
+        public CommunicationRequest(string requestType, string recipientsResolver, string originatingService)
         {
             RequestId = Guid.NewGuid();
             RequestDateTime = DateTime.UtcNow;
 
+            RequestType = requestType;
             RecipientsResolver = recipientsResolver;
             OriginatingService = originatingService;
 
-            _entityIds = new List<Entity>();
+            Entities = new List<Entity>();
         }
 
         protected void AddEntity<T>(string entityType, T entityId)
         {
-            _entityIds.Add(new Entity(entityType, entityId));
+            Entities.Add(new Entity(entityType, entityId));
         }
     }
 }
