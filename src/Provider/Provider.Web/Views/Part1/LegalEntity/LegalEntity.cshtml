@@ -34,7 +34,7 @@
         <form asp-route="@RouteNames.LegalEntity_Post" asp-route-wizard="@Model.PageInfo.IsWizard">
             <div esfa-validation-marker-for="SelectedOrganisationId" class="govuk-form-group">
                 <legend class="govuk-fieldset__legend">
-                    <span asp-hide="@Model.HasNoSearchResults" class="govuk-label govuk-!-font-weight-bold">Select the organisation</span>
+                    <span asp-hide="@Model.HasNoSearchResults" class="govuk-label govuk-!-font-weight-bold">Which organisation is the vacancy for?</span>
                 </legend>
                 <span esfa-validation-message-for="SelectedOrganisationId" class="govuk-error-message"></span>
                 <input type="hidden" asp-for="SearchTerm" />
