@@ -52,7 +52,7 @@
                             <label for="org-@organisation.Id" class="govuk-label govuk-radios__label">@organisation.Name</label>
                         </div>
                     }
-                        <input asp-hide="@Model.IsSelectedOrganisationInOrganisations" type="hidden" asp-for="SelectedOrganisationId" />
+                        <input asp-show="@Model.CanOutputHiddenSelectedOrganisationIdField" type="hidden" asp-for="SelectedOrganisationId" />
                     </div>
                 </fieldset>
             </div>

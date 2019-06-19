@@ -38,10 +38,13 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer
         public int TotalNumberOfLegalEntities { get; internal set; }
 
         public bool IsPreviouslySelectedLegalEntityStillValid { get; internal set; }
-
-        public bool IsSelectedOrganisationInOrganisations
+        public bool HasPreviouslyPersistedLegalEntity => SelectedOrganisationId.Value > 0;
+        public bool IsSelectedOrganisationInPagedOrganisations
                         => IsPreviouslySelectedLegalEntityStillValid
+                            && HasPreviouslyPersistedLegalEntity
                             && Organisations.Any(org => org.Id == SelectedOrganisationId.Value);
+
+        public bool CanOutputHiddenSelectedOrganisationIdField => SelectedOrganisationId.Value > 0 && IsSelectedOrganisationInPagedOrganisations == false;
     }
 
     public class OrganisationViewModel
