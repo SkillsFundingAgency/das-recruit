@@ -5,7 +5,7 @@ namespace Communication.Types
 {
     public sealed class CommunicationMessage
     {
-        public Guid MessageId { get; }
+        public Guid Id { get; }
         public Guid RequestId { get; internal set; }
         public string RequestType { get; internal set; }
         public string RecipientsResolver { get; internal set; }
@@ -19,7 +19,7 @@ namespace Communication.Types
 
         public CommunicationMessage()
         {
-            MessageId = Guid.NewGuid();
+            Id = Guid.NewGuid();
         }
     }
 }
