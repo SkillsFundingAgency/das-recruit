@@ -5,16 +5,16 @@ using Communication.Types.Interfaces;
 
 namespace Communication.Core
 {
-    public class CommunicationProcessor
+    public class CommunicationProcessor : ICommunicationProcessor
     {
         private readonly Dictionary<string, IParticipantResolver> _participantResolvers = new Dictionary<string, IParticipantResolver>();
         private readonly Dictionary<string, IUserPreferencesProvider> _userPreferencesProviders = new Dictionary<string, IUserPreferencesProvider>();
         private readonly Dictionary<string, IEntityDataItemProvider> _entityDataItemProviders = new Dictionary<string, IEntityDataItemProvider>();
 
         public CommunicationProcessor(
-            IEnumerable<IParticipantResolver> participantResolvers, 
-            IEnumerable<IUserPreferencesProvider> userPreferencesProviders, 
-            IEnumerable<IEntityDataItemProvider> entityDataItemProviders) 
+            IEnumerable<IParticipantResolver> participantResolvers,
+            IEnumerable<IUserPreferencesProvider> userPreferencesProviders,
+            IEnumerable<IEntityDataItemProvider> entityDataItemProviders)
         {
             foreach (var plugin in participantResolvers) _participantResolvers.Add(plugin.ResolverName, plugin);
             foreach (var plugin in userPreferencesProviders) _userPreferencesProviders.Add(plugin.ProviderName, plugin);
