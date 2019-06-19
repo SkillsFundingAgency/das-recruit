@@ -14,6 +14,7 @@ using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Mappers;
+using Humanizer;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
@@ -34,7 +35,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             SetSectionStates(viewModel);
             viewModel.IncompleteSectionCount = GetSectionStateCount(viewModel);
-
+            viewModel.IncompleteSectionText = "section".ToQuantity(viewModel.IncompleteSectionCount, ShowQuantityAs.None);
             return View(viewModel);
         }
 
@@ -97,53 +98,21 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         private int GetSectionStateCount(VacancyPreviewViewModel viewModel)
         {
             var count = 0;
-            if(CheckIfSectionIsIncomplete(viewModel.TitleSectionState))
-                count++;
             if (CheckIfSectionIsIncomplete(viewModel.ShortDescriptionSectionState))
-                count++;
-            if (CheckIfSectionIsIncomplete(viewModel.ClosingDateSectionState))
-                count++;
-            if (CheckIfSectionIsIncomplete(viewModel.WorkingWeekSectionState))
-                count++;
-            if (CheckIfSectionIsIncomplete(viewModel.WageTextSectionState))
-                count++;
-            if (CheckIfSectionIsIncomplete(viewModel.ExpectedDurationSectionState))
-                count++;
-            if (CheckIfSectionIsIncomplete(viewModel.PossibleStartDateSectionState))
-                count++;
-            if (CheckIfSectionIsIncomplete(viewModel.TrainingLevelSectionState))
-                count++;
-            if (CheckIfSectionIsIncomplete(viewModel.NumberOfPositionsSectionState))
-                count++;
-            if (CheckIfSectionIsIncomplete(viewModel.DescriptionsSectionState))
                 count++;
             if (CheckIfSectionIsIncomplete(viewModel.SkillsSectionState))
                 count++;
+            if (CheckIfSectionIsIncomplete(viewModel.DescriptionsSectionState))
+                count += 3;
             if (CheckIfSectionIsIncomplete(viewModel.QualificationsSectionState))
                 count++;
-            if (CheckIfSectionIsIncomplete(viewModel.ThingsToConsiderSectionState))
-                count++;
-            if (CheckIfSectionIsIncomplete(viewModel.EmployerNameSectionState))
-                count++;
             if (CheckIfSectionIsIncomplete(viewModel.EmployerDescriptionSectionState))
-                count++;
-            if (CheckIfSectionIsIncomplete(viewModel.EmployerWebsiteUrlSectionState))
-                count++;
-            if (CheckIfSectionIsIncomplete(viewModel.EmployerContactSectionState))
-                count++;
-            if (CheckIfSectionIsIncomplete(viewModel.EmployerAddressSectionState))
-                count++;
-            if (CheckIfSectionIsIncomplete(viewModel.ApplicationInstructionsSectionState))
-                count++;
-            if (CheckIfSectionIsIncomplete(viewModel.ApplicationMethodSectionState))
-                count++;
-            if (CheckIfSectionIsIncomplete(viewModel.ApplicationUrlSectionState))
                 count++;
             if (CheckIfSectionIsIncomplete(viewModel.ProviderSectionState))
                 count++;
             if (CheckIfSectionIsIncomplete(viewModel.TrainingSectionState))
                 count++;
-            if (CheckIfSectionIsIncomplete(viewModel.DisabilityConfidentSectionState))
+            if (CheckIfSectionIsIncomplete(viewModel.ApplicationMethodSectionState))
                 count++;
             return count;
         }

@@ -93,6 +93,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
             return Review.FieldIndicators.Any(f => f.ReviewFieldIdentifier == fieldIdentifier);
         }
         public int IncompleteSectionCount { get; set; }
+        public string IncompleteSectionText { get; set; }
         public IList<string> OrderedFieldNames => new List<string>
         {
             nameof(ShortDescription),
