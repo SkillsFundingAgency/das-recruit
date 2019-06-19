@@ -37,38 +37,30 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
         public bool HasProgramme { get; internal set; }
 
         public bool CanShowReference { get; set; }
-
         public bool HasIncompleteVacancyDescription => !HasVacancyDescription;
+        public bool HasIncompleteShortDescription => !HasShortDescription;
         public bool CanShowDraftHeader { get; internal set; }
-
         public bool HasIncompleteSkillsSection => SkillsSectionState == VacancyPreviewSectionState.Incomplete || SkillsSectionState == VacancyPreviewSectionState.InvalidIncomplete;
         public bool HasIncompleteQualificationsSection => QualificationsSectionState == VacancyPreviewSectionState.Incomplete || QualificationsSectionState == VacancyPreviewSectionState.InvalidIncomplete;
         public bool HasIncompleteEmployerDescriptionSection => EmployerDescriptionSectionState == VacancyPreviewSectionState.Incomplete || EmployerDescriptionSectionState == VacancyPreviewSectionState.InvalidIncomplete;
         public bool HasIncompleteTrainingProviderSection => ProviderSectionState == VacancyPreviewSectionState.Incomplete || ProviderSectionState == VacancyPreviewSectionState.InvalidIncomplete;
         public bool HasIncompleteApplicationProcessSection => ApplicationMethodSectionState == VacancyPreviewSectionState.Incomplete || ApplicationMethodSectionState == VacancyPreviewSectionState.InvalidIncomplete;
-
         public bool HasIncompleteThingsToConsiderSection => ThingsToConsiderSectionState == VacancyPreviewSectionState.Incomplete || ThingsToConsiderSectionState == VacancyPreviewSectionState.InvalidIncomplete;
         public bool HasIncompleteEmployerWebsiteUrlSection => EmployerWebsiteUrlSectionState == VacancyPreviewSectionState.Incomplete || EmployerWebsiteUrlSectionState == VacancyPreviewSectionState.InvalidIncomplete;
         public bool HasIncompleteContactSection => EmployerContactSectionState == VacancyPreviewSectionState.Incomplete || EmployerContactSectionState == VacancyPreviewSectionState.InvalidIncomplete;
-
-
-        public bool HasIncompleteMandatorySections => HasIncompleteVacancyDescription
+        public bool HasIncompleteMandatorySections => HasIncompleteShortDescription
+                                                        || HasIncompleteVacancyDescription
                                                         || HasIncompleteSkillsSection
                                                         || HasIncompleteQualificationsSection
                                                         || HasIncompleteEmployerDescriptionSection
                                                         || HasIncompleteTrainingProviderSection
                                                         || HasIncompleteApplicationProcessSection;
-
         public bool HasIncompleteOptionalSections => HasIncompleteThingsToConsiderSection
                                                     || HasIncompleteEmployerWebsiteUrlSection
                                                     || HasIncompleteContactSection;
-
         public bool ShowIncompleteSections => (HasIncompleteMandatorySections || HasIncompleteOptionalSections) && !Review.HasBeenReviewed;
-
         public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
-
         public string SubmitButtonText => Review.HasBeenReviewed ? "Resubmit vacancy" : "Submit vacancy";
-
         public bool ApplicationInstructionsRequiresEdit => IsEditRequired(FieldIdentifiers.ApplicationInstructions);
         public bool ApplicationMethodRequiresEdit => IsEditRequired(FieldIdentifiers.ApplicationMethod);
         public bool ApplicationUrlRequiresEdit => IsEditRequired(FieldIdentifiers.ApplicationUrl);
