@@ -23,7 +23,7 @@ namespace Communication.Types
             Entities = new List<Entity>();
         }
 
-        protected void AddEntity<T>(string entityType, T entityId)
+        public void AddEntity<T>(string entityType, T entityId)
         {
             Entities.Add(new Entity(entityType, entityId));
         }
