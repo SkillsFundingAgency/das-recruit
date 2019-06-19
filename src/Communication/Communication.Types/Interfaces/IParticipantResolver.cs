@@ -6,7 +6,6 @@ namespace Communication.Types.Interfaces
     public interface IParticipantResolver
     {
         string ResolverName { get; }
-        Task<IEnumerable<CommunicationUser>> GetParticipants(CommunicationRequest request, IEnumerable<CommunicationDataItem> dataItems);
-        Task<IEnumerable<CommunicationMessage>> ValidateParticipant(IEnumerable<CommunicationMessage> messagesToBeAggregated);
+        Task<IEnumerable<CommunicationUser>> GetParticipantsAsync(CommunicationRequest request);
     }
 }
