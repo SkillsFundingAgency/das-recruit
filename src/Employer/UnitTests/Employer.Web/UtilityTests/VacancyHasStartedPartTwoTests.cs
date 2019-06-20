@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using Esfa.Recruit.Employer.Web;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using FluentAssertions;
@@ -13,6 +11,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
         [Fact]
         public void ShouldReturnTrueIfAnyPartTwoFieldsAreCompleted()
         {
+            Utility.VacancyHasStartedPartTwo(new Vacancy { ShortDescription = "some value" }).Should().BeTrue();
             Utility.VacancyHasStartedPartTwo(new Vacancy { EmployerDescription = "some value" }).Should().BeTrue();
             Utility.VacancyHasStartedPartTwo(new Vacancy { ApplicationMethod = ApplicationMethod.ThroughExternalApplicationSite }).Should().BeTrue();
             Utility.VacancyHasStartedPartTwo(new Vacancy { ThingsToConsider = "some value" }).Should().BeTrue();
