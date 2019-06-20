@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -7,6 +8,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer;
 using FluentAssertions;
+using Microsoft.Extensions.Options;
 using Moq;
 using Xunit;
 
@@ -14,11 +16,11 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Dashboard
 {
     public class GetDashboardViewModelAsyncTests
     {
+        const string EmployerAccountId = "ABCDE";
+
         [Fact]
         public async Task WhenHaveOver25Vacancies_ShouldShowPager()
         {
-            const string employerAccountId = "ABCDE";
-
             var vacancies = new List<VacancySummary>();
             for (var i = 1; i <= 27; i++)
             {
@@ -29,16 +31,9 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Dashboard
                 });
             }
 
-            var clientMock = new Mock<IEmployerVacancyClient>();
-            var timeProviderMock = new Mock<ITimeProvider>();
-            clientMock.Setup(c => c.GetDashboardAsync(employerAccountId))
-                .Returns(Task.FromResult(new EmployerDashboard {
-                    Vacancies = vacancies
-                }));
+            var orch = GetOrchestrator(vacancies);
 
-            var orch = new DashboardOrchestrator(clientMock.Object, timeProviderMock.Object);
-
-            var vm = await orch.GetDashboardViewModelAsync(employerAccountId, "Submitted", 2);
+            var vm = await orch.GetDashboardViewModelAsync(EmployerAccountId, "Submitted", 2);
 
             vm.ShowResultsTable.Should().BeTrue();
             vm.HasVacancies.Should().BeTrue();
@@ -53,8 +48,6 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Dashboard
         [Fact]
         public async Task WhenHave25OrUnderVacancies_ShouldNotShowPager()
         {
-            const string employerAccountId = "ABCDE";
-
             var vacancies = new List<VacancySummary>();
             for (var i = 1; i <= 25; i++)
             {
@@ -64,16 +57,9 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Dashboard
                 });
             }
 
-            var clientMock = new Mock<IEmployerVacancyClient>();
-            var timeProviderMock = new Mock<ITimeProvider>();
-            clientMock.Setup(c => c.GetDashboardAsync(employerAccountId))
-                .Returns(Task.FromResult(new EmployerDashboard {
-                    Vacancies = vacancies
-                }));
+            var orch = GetOrchestrator(vacancies);
 
-            var orch = new DashboardOrchestrator(clientMock.Object, timeProviderMock.Object);
-
-            var vm = await orch.GetDashboardViewModelAsync(employerAccountId, "Submitted", 2);
+            var vm = await orch.GetDashboardViewModelAsync(EmployerAccountId, "Submitted", 2);
 
             vm.ShowResultsTable.Should().BeTrue();
             vm.HasVacancies.Should().BeTrue();
@@ -81,6 +67,20 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Dashboard
             vm.Pager.ShowPager.Should().BeFalse();
 
             vm.Vacancies.Count.Should().Be(25);
+        }
+
+        private DashboardOrchestrator GetOrchestrator(List<VacancySummary> vacancies)
+        {
+            var timeProviderMock = new Mock<ITimeProvider>();
+
+            var clientMock = new Mock<IEmployerVacancyClient>();
+            clientMock.Setup(c => c.GetDashboardAsync(EmployerAccountId))
+                .Returns(Task.FromResult(new EmployerDashboard
+                {
+                    Vacancies = vacancies
+                }));
+
+            return new DashboardOrchestrator(clientMock.Object, timeProviderMock.Object);
         }
     }
 }
