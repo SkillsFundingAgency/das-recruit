@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Communication.Types.Exceptions;
 using Communication.Types;
 using Communication.Types.Interfaces;
+using System.Linq;
 
 namespace Communication.Core
 {
@@ -15,7 +17,7 @@ namespace Communication.Core
             IEnumerable<IParticipantResolver> participantResolvers,
             IEnumerable<IUserPreferencesProvider> userPreferencesProviders,
             IEnumerable<IEntityDataItemProvider> entityDataItemProviders)
-        {
+        {            
             foreach (var plugin in participantResolvers) _participantResolvers.Add(plugin.ResolverName, plugin);
             foreach (var plugin in userPreferencesProviders) _userPreferencesProviders.Add(plugin.ProviderName, plugin);
             foreach (var plugin in entityDataItemProviders) _entityDataItemProviders.Add(plugin.ProviderName, plugin);
@@ -25,7 +27,17 @@ namespace Communication.Core
         {
             var messages = new List<CommunicationMessage>();
 
+
             return await Task.FromResult(messages);
+        }
+
+        public static IEnumerable<Participant> GetOptedInParticipants(IEnumerable<Participant> participants)
+        {
+            return 
+                participants.Where(p => 
+                    p.Preferences.Channels != DeliveryChannelPreferences.None 
+                    && !(p.Preferences.Scope == NotificationScope.Individual 
+                        && p.User.Participation == UserParticipation.SecondaryUser));
         }
     }
 }
