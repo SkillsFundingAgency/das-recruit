@@ -30,7 +30,7 @@
         {
             return Html.RouteLink("Add", routeName, routeValues, new { @class = "button-secondary", data_automation = id });
         }
-        return Html.RouteLink("Edit", routeName, routeValues, new { @class = "govuk-body govuk-link", data_automation = id });
+        return Html.RouteLink("Change", routeName, routeValues, new { @class = "govuk-body govuk-link", data_automation = id });
     }
 }
 <div class="govuk-grid-row">
@@ -83,7 +83,7 @@
                 @Model.Title
                 <span class="govuk-caption-xl">@Model.EmployerName</span>
             </h2>
-            <a esfa-automation="link-employer-name" asp-route="@RouteNames.Title_Get" asp-route-wizard="false" class="govuk-body govuk-link">Edit</a>
+            <a esfa-automation="link-employer-name" asp-route="@RouteNames.Title_Get" asp-route-wizard="false" class="govuk-body govuk-link">Change</a>
         </div>
     </div>
 </div>
