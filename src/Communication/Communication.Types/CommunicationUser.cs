@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Communication.Types
+﻿namespace Communication.Types
 {
     /// <summary>
     /// an end user that may receive a communication message
@@ -10,12 +8,14 @@ namespace Communication.Types
     {
         public string Email { get; }
         public string Name { get; }
+        public string UserType { get; }
         public UserParticipation Participation { get; }
 
-        public CommunicationUser(string email, string name, UserParticipation participation)
+        public CommunicationUser(string email, string name, string userType, UserParticipation participation)
         {
             Email = email;
             Name = name;
+            UserType = userType;
             Participation = participation;
         }
     }
