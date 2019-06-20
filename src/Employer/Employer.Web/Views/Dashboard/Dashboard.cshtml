@@ -25,7 +25,7 @@
     </div>
 </div>
 
-<partial name="_NoVacanciesContent" model="@Model" />
+<partial asp-hide="@Model.HasVacancies" name="_NoVacanciesContent" />
 
 <div asp-show="Model.HasVacancies">
     <div class="govuk-grid-row">
