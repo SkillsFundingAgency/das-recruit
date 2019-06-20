@@ -1,11 +1,10 @@
-﻿using Esfa.Recruit.Employer.Web.Views;
-using System;
+﻿using System;
+using Esfa.Recruit.Shared.Web.ViewModels;
 
-namespace Esfa.Recruit.Employer.Web.ViewModels
+namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.TrainingProvider
 {
     public class ConfirmTrainingProviderViewModel
     {
-        // Cannot inherit from VacancyRouteModel because this is a pure output viewmodel not produced from MVC modelbinder.
         public string EmployerAccountId { get; set; }
         public Guid VacancyId { get; set; }
 
@@ -13,5 +12,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public string ProviderName { get; set; }
         public string ProviderAddress { get; set; }
         public long Ukprn { get; set; }
+        public PartOnePageInfoViewModel PageInfo { get; set; }
     }
 }

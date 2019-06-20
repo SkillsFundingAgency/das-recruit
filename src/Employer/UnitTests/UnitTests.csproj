@@ -16,7 +16,7 @@
     <PackageReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Employer.Web\Employer.Web.csproj"/>
-    <ProjectReference Include="..\..\Shared\Recruit.Vacancies.Client\Recruit.Vacancies.Client.csproj"/>
+    <ProjectReference Include="..\Employer.Web\Employer.Web.csproj" />
+    <ProjectReference Include="..\..\Shared\Recruit.Vacancies.Client\Recruit.Vacancies.Client.csproj" />
   </ItemGroup>
 </Project>
