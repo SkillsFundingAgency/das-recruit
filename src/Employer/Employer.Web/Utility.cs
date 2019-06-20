@@ -124,7 +124,8 @@ namespace Esfa.Recruit.Employer.Web
                    vacancy.EmployerContact != null ||
                    vacancy.Qualifications != null ||
                    vacancy.Skills != null ||
-                   !string.IsNullOrWhiteSpace(vacancy.Description);
+                   !string.IsNullOrWhiteSpace(vacancy.Description) ||
+                !string.IsNullOrWhiteSpace(vacancy.ShortDescription);
         }
 
         public static PartOnePageInfoViewModel GetPartOnePageInfo(Vacancy vacancy)

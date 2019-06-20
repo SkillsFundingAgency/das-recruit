@@ -113,7 +113,8 @@ namespace Esfa.Recruit.Provider.Web
                    vacancy.ProviderContact != null ||
                    vacancy.Qualifications != null ||
                    vacancy.Skills != null ||
-                   !string.IsNullOrWhiteSpace(vacancy.Description);
+                   !string.IsNullOrWhiteSpace(vacancy.Description) ||
+                   !string.IsNullOrWhiteSpace(vacancy.ShortDescription);
         }
 
         public static PartOnePageInfoViewModel GetPartOnePageInfo(Vacancy vacancy)
