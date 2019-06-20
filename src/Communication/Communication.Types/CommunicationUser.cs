@@ -10,14 +10,12 @@ namespace Communication.Types
     {
         public string Email { get; }
         public string Name { get; }
-        public string UserType { get; }
-        public Participation Participation { get; }
+        public UserParticipation Participation { get; }
 
-        public CommunicationUser(string email, string name, string userType, Participation participation)
+        public CommunicationUser(string email, string name, UserParticipation participation)
         {
             Email = email;
             Name = name;
-            UserType = userType;
             Participation = participation;
         }
     }

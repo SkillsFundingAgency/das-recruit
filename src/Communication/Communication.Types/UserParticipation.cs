@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Communication.Types
+﻿namespace Communication.Types
 {
     /// <summary>
     /// for a particular communication message, this differentiates between a message that
@@ -8,7 +6,7 @@ namespace Communication.Types
     /// vs. where the user is being notified because they are interested in all communications
     /// for the whole organisation
     /// </summary>
-    public enum Participation
+    public enum UserParticipation
     {
         PrimaryUser,
         SecondaryUser
