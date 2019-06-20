@@ -16,7 +16,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
 {
-    public class QualificationsOrchestrator : EntityValidatingOrchestrator<Vacancy, QualificationsEditModel>
+    public class QualificationsOrchestrator : EntityValidatingOrchestrator<Vacancy, QualificationEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.Qualifications;
         private readonly IProviderVacancyClient _client;
@@ -35,13 +35,18 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
         {
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Qualifications_Get);
 
-            var allQualifications = await _vacancyClient.GetCandidateQualificationsAsync();
+            var qualifications = vacancy.Qualifications ?? new List<Qualification>();
 
             var vm = new QualificationsViewModel
             {
                 Title = vacancy.Title,
-                QualificationTypes = allQualifications,
-                Qualifications = vacancy.Qualifications.SortQualifications(allQualifications).ToViewModel().ToList()
+                Qualifications = qualifications.Select(q => new QualificationEditModel
+                { 
+                    Subject = q.Subject,
+                    QualificationType = q.QualificationType,
+                    Weighting = q.Weighting,
+                    Grade = q.Grade
+                }).ToList()
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
@@ -53,11 +58,26 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
             return vm;
         }
 
-        public async Task<QualificationsViewModel> GetQualificationsViewModelAsync(VacancyRouteModel vrm, QualificationsEditModel m)
+        public async Task<AddQualificationViewModel> GetAddQualificationViewModelAsync(VacancyRouteModel vrm)
         {
-            var vm = await GetQualificationsViewModelAsync(vrm);
+            var vacancyTask = Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Qualification_Add_Get);
+            var allQualificationsTask = _vacancyClient.GetCandidateQualificationsAsync();
 
-            vm.Qualifications = m.Qualifications;
+            await Task.WhenAll(vacancyTask, allQualificationsTask);
+
+            var vm = new AddQualificationViewModel
+            {
+                Title = vacancyTask.Result.Title,
+                QualificationTypes = allQualificationsTask.Result,
+            };
+
+            return vm;
+        }
+
+        public async Task<AddQualificationViewModel> GetAddQualificationViewModelAsync(VacancyRouteModel vrm, QualificationEditModel m)
+        {
+            var vm = await GetAddQualificationViewModelAsync(vrm);
+
             vm.QualificationType = m.QualificationType;
             vm.Subject = m.Subject;
             vm.Grade = m.Grade;
@@ -66,25 +86,25 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
             return vm;
         }
 
-        public async Task<OrchestratorResponse> PostQualificationsEditModelAsync(VacancyRouteModel vrm, QualificationsEditModel m, VacancyUser user)
+        public async Task<OrchestratorResponse> PostAddQualificationEditModelAsync(VacancyRouteModel vrm, QualificationEditModel m, VacancyUser user)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Qualifications_Post);
-            
-            if (m.Qualifications == null)
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Qualification_Add_Post);
+
+            if (vacancy.Qualifications == null)
+                vacancy.Qualifications = new List<Qualification>();
+
+            var qualification = new Qualification
             {
-                m.Qualifications = new List<QualificationEditModel>();
-            }
+                QualificationType = m.QualificationType,
+                Grade = m.Grade,
+                Subject = m.Subject,
+                Weighting = m.Weighting
+            };
 
-            HandleQualificationChange(m);
-
-            var qualifications = m.Qualifications.ToEntity();
+            vacancy.Qualifications.Add(qualification);
 
             var allQualifications = await _vacancyClient.GetCandidateQualificationsAsync();
-            vacancy.Qualifications = qualifications.SortQualifications(allQualifications).ToList();
-            m.Qualifications = vacancy.Qualifications.ToViewModel().ToList();
-
-            //if we are adding/removing a qualification then just validate and don't persist
-            var validateOnly = m.IsAddingQualification || m.IsRemovingQualification;
+            vacancy.Qualifications = vacancy.Qualifications.SortQualifications(allQualifications).ToList();
 
             return await ValidateAndExecute(vacancy,
                 v => 
@@ -93,19 +113,22 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
                     SyncErrorsAndModel(result.Errors, m);
                     return result;
                 },
-                v => validateOnly ? Task.CompletedTask : _vacancyClient.UpdateDraftVacancyAsync(v, user));
+                v => _vacancyClient.UpdateDraftVacancyAsync(v, user));
         }
 
-        protected override EntityToViewModelPropertyMappings<Vacancy, QualificationsEditModel> DefineMappings()
+        public async Task DeleteQualificationAsync(VacancyRouteModel vrm, int index, VacancyUser user)
         {
-            var mappings = new EntityToViewModelPropertyMappings<Vacancy, QualificationsEditModel>();
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Qualifications_Get);
 
-            mappings.Add(e => e.Qualifications, vm => vm.Qualifications);
+            if (vacancy.Qualifications == null)
+                return;
 
-            return mappings;
+            vacancy.Qualifications.RemoveAt(index);
+
+            await _vacancyClient.UpdateDraftVacancyAsync(vacancy, user);
         }
 
-        private void SyncErrorsAndModel(IList<EntityValidationError> errors, QualificationsEditModel m)
+        private void SyncErrorsAndModel(IList<EntityValidationError> errors, QualificationEditModel m)
         {
             var qualificationPropertyName = nameof(Vacancy.Qualifications);
 
@@ -116,14 +139,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
                 return;
             }
             
-            //Populate the inputs so we can edit the invalid qualification
-            var invalidQualification = m.Qualifications[qualificationIndex.Value];
-            m.QualificationType = invalidQualification.QualificationType;
-            m.Subject = invalidQualification.Subject;
-            m.Grade = invalidQualification.Grade;
-            m.Weighting = invalidQualification.Weighting;
-            m.Qualifications.Remove(invalidQualification);
-
             //Get all the errors for the qualification at the index position
             var qualificationErrors = errors.Where(e => e.PropertyName
                 .StartsWith($"{qualificationPropertyName}[{qualificationIndex}]"));
@@ -133,23 +148,15 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
             {
                 error.PropertyName = error.PropertyName.Substring(error.PropertyName.LastIndexOf('.') + 1);
             }
-            
+
             //Remove other qualification errors
             errors.Where(e => e.PropertyName.StartsWith($"{qualificationPropertyName}[")).ToList()
                 .ForEach(r => errors.Remove(r));
         }
 
-        private void HandleQualificationChange(QualificationsEditModel m)
+        protected override EntityToViewModelPropertyMappings<Vacancy, QualificationEditModel> DefineMappings()
         {
-            if (m.IsAddingQualification)
-            {
-                m.Qualifications.Add(m);
-            }
-
-            if (m.IsRemovingQualification)
-            {
-                m.Qualifications.RemoveAt(int.Parse(m.RemoveQualification));
-            }
+            return null;
         }
     }
 }
