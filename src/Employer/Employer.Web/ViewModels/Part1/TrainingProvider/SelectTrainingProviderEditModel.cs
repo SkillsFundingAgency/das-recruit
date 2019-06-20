@@ -1,6 +1,6 @@
 ﻿using Esfa.Recruit.Employer.Web.RouteModel;
 
-namespace Esfa.Recruit.Employer.Web.ViewModels.Part2.TrainingProvider
+namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.TrainingProvider
 {
     public class SelectTrainingProviderEditModel : VacancyRouteModel
     {
@@ -9,6 +9,8 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part2.TrainingProvider
         public string TrainingProviderSearch { get; set; }
 
         public TrainingProviderSelectionType SelectionType { get; set; }
+
+        public bool? IsTrainingProviderSelected { get; set; }
     }
 
     public enum TrainingProviderSelectionType

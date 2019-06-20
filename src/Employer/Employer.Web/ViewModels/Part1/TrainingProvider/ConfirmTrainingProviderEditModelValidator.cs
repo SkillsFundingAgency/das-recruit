@@ -1,7 +1,7 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using FluentValidation;
 
-namespace Esfa.Recruit.Employer.Web.ViewModels.Part2.TrainingProvider
+namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.TrainingProvider
 {
     public class ConfirmTrainingProviderEditModelValidator : AbstractValidator<ConfirmTrainingProviderEditModel>
     {
