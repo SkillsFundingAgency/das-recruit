@@ -10,7 +10,7 @@ namespace Communication.Types
         public string RequestType { get; internal set; }
         public string RecipientsResolver { get; internal set; }
         public string OriginatingService { get; internal set; }
-        public Recipient Recipient { get; internal set; }
+        public CommunicationUser Recipient { get; internal set; }
         public DeliveryChannel Channel { get; internal set; }
         public DeliveryFrequency Frequency { get; internal set; }
         public IEnumerable<CommunicationDataItem> DataItems { get; internal set; }
