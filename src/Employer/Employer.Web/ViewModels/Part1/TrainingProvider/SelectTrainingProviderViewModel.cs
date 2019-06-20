@@ -9,7 +9,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.TrainingProvider
         public string Ukprn { get; set; }
         public string TrainingProviderSearch { get; set; }
         public IEnumerable<string> TrainingProviders { get; set; }
-        public bool? SelectTrainingProvider { get; set; }
+        public bool? IsTrainingProviderSelected { get; set; }
         public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
         public PartOnePageInfoViewModel PageInfo { get; set; }
     }

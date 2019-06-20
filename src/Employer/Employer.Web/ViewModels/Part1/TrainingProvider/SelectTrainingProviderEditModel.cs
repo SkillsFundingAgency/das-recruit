@@ -10,7 +10,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.TrainingProvider
 
         public TrainingProviderSelectionType SelectionType { get; set; }
 
-        public bool? SelectTrainingProvider { get; set; }
+        public bool? IsTrainingProviderSelected { get; set; }
     }
 
     public enum TrainingProviderSelectionType

@@ -7,28 +7,28 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.TrainingProvider
     {
         public SelectTrainingProviderEditModelValidator()
         {
-            RuleFor(m => m.SelectTrainingProvider)
+            RuleFor(m => m.IsTrainingProviderSelected)
                 .NotNull()
-                .WithMessage("Please select an option to continue");
+                .WithMessage(ValidationMessages.TrainingProviderValidationMessages.IsTrainingProviderSelectedNotNull);
 
-            When(m => m.SelectTrainingProvider == true && 
+            When(m => m.IsTrainingProviderSelected == true && 
                       m.SelectionType == TrainingProviderSelectionType.Ukprn, () =>
             {
                 RuleFor(m => m.Ukprn)
                     .Cascade(CascadeMode.StopOnFirstFailure)
                     .NotEmpty()
-                    .WithMessage("You must provide a UKPRN")
+                    .WithMessage(ValidationMessages.TrainingProviderValidationMessages.UkprnNotEmpty)
                     .Matches(ValidationConstants.UkprnRegex.ToString())
-                    .WithMessage("You must provide a valid UKPRN");
+                    .WithMessage(ValidationMessages.TrainingProviderValidationMessages.UkprnIsValid);
             });
 
-            When(m => m.SelectTrainingProvider == true && 
+            When(m => m.IsTrainingProviderSelected == true && 
                       m.SelectionType == TrainingProviderSelectionType.TrainingProviderSearch, () =>
             {
                 RuleFor(m => m.TrainingProviderSearch)
                     .Cascade(CascadeMode.StopOnFirstFailure)
                     .NotEmpty()
-                    .WithMessage("Please select a training provider");
+                    .WithMessage(ValidationMessages.TrainingProviderValidationMessages.TrainingProviderSearchNotEmpty);
             });
         }
     }

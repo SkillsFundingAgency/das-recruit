@@ -22,7 +22,7 @@
             <div class="govuk-form-group">
                 <div class="govuk-radios govuk-radios--conditional" data-module="radios">
                     <div class="govuk-radios__item">
-                        <input asp-for="SelectTrainingProvider"
+                        <input asp-for="IsTrainingProviderSelected"
                                class="govuk-radios__input"
                                id="found_yes"
                                type="radio"
@@ -37,7 +37,9 @@
                             <noscript>
                                 <div class="govuk-form-group" id="non-js-search">
                                     <span class="govuk-hint">
-                                        Enter the training provider reference number (UKPRN). You will be able to get this from your training provider The UKPRN must only be 8 digits (For example, 12345678)
+                                        Enter the training provider reference number (UKPRN). 
+                                        You will be able to get this from your training provider. 
+                                        The UKPRN must only be 8 numbers (For example, 12345678)
                                     </span>
                                     <span esfa-validation-message-for="Ukprn" class="govuk-error-message"></span>
                                     <input asp-for="Ukprn" type="text" maxlength="8" class="govuk-input govuk-input--width-10" />
@@ -57,7 +59,7 @@
                         </p>
                     </div>
                     <div class="govuk-radios__item">
-                        <input asp-for="SelectTrainingProvider"
+                        <input asp-for="IsTrainingProviderSelected"
                                class="govuk-radios__input"
                                id="found_no"
                                type="radio"

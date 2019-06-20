@@ -25,16 +25,16 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         }
 
         [HttpGet("select-training-provider", Name = RouteNames.TrainingProvider_Select_Get)]
-        public async Task<IActionResult> SelectTrainingProvider(VacancyRouteModel vrm, [FromQuery] string wizard = "true", [FromQuery] string clear = "")
+        public async Task<IActionResult> SelectTrainingProvider(VacancyRouteModel vrm, [FromQuery] string wizard = "true", [FromQuery] string clear = "", [FromQuery] long? ukprn = null)
         {
-            var vm = await _orchestrator.GetSelectTrainingProviderViewModelAsync(vrm);
+            var vm = await _orchestrator.GetSelectTrainingProviderViewModelAsync(vrm, ukprn);
             vm.PageInfo.SetWizard(wizard);
 
             if (string.IsNullOrWhiteSpace(clear) == false)
             {
                 vm.Ukprn = string.Empty;
                 vm.TrainingProviderSearch = string.Empty;
-                vm.SelectTrainingProvider = true;
+                vm.IsTrainingProviderSelected = true;
             }
             
             return View(vm);
@@ -52,11 +52,11 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 
             var result = await _orchestrator.PostSelectTrainingProviderAsync(m, User.ToVacancyUser());
 
-            switch (result.Action)
+            switch (result.ResponseType)
             {
-                case PostSelectTrainingProviderResultAction.TrainingProviderContinue:
+                case SelectTrainingProviderResponseType.Continue:
                     return GetRedirectToNextPage(wizard);
-                case PostSelectTrainingProviderResultAction.TrainingProviderNotFound:
+                case SelectTrainingProviderResponseType.NotFound:
                     return await ProviderNotFound(m, wizard);
                 default:
                     return RedirectToRoute(RouteNames.TrainingProvider_Confirm_Get, new { ukprn = result.FoundProviderUkprn, wizard });

@@ -37,14 +37,14 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
 
             var m = new SelectTrainingProviderEditModel
             {
-                SelectTrainingProvider = false,
+                IsTrainingProviderSelected = false,
                 EmployerAccountId = EmployerAccountId,
                 VacancyId = VacancyId
             };
 
             var result = await orch.PostSelectTrainingProviderAsync(m, new VacancyUser());
 
-            result.Action.Should().Be(PostSelectTrainingProviderResultAction.TrainingProviderContinue);
+            result.ResponseType.Should().Be(SelectTrainingProviderResponseType.Continue);
             vacancy.TrainingProvider.Should().BeNull();
         }
 
@@ -65,7 +65,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
 
             var m = new SelectTrainingProviderEditModel
             {
-                SelectTrainingProvider = true,
+                IsTrainingProviderSelected = true,
                 SelectionType = TrainingProviderSelectionType.TrainingProviderSearch,
                 TrainingProviderSearch = trainingProviderSearch,
                 EmployerAccountId = EmployerAccountId,
@@ -74,7 +74,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
             
             var result = await orch.PostSelectTrainingProviderAsync(m, new VacancyUser());
 
-            result.Action.Should().Be(PostSelectTrainingProviderResultAction.TrainingProviderNotFound);
+            result.ResponseType.Should().Be(SelectTrainingProviderResponseType.NotFound);
         }
 
         [Fact]
@@ -92,7 +92,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
 
             var m = new SelectTrainingProviderEditModel
             {
-                SelectTrainingProvider = true,
+                IsTrainingProviderSelected = true,
                 SelectionType = TrainingProviderSelectionType.Ukprn,
                 Ukprn = "12345678",
                 EmployerAccountId = EmployerAccountId,
@@ -101,7 +101,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
 
             var result = await orch.PostSelectTrainingProviderAsync(m, new VacancyUser());
 
-            result.Action.Should().Be(PostSelectTrainingProviderResultAction.TrainingProviderNotFound);
+            result.ResponseType.Should().Be(SelectTrainingProviderResponseType.NotFound);
         }
 
         [Fact]
@@ -119,7 +119,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
 
             var m = new SelectTrainingProviderEditModel
             {
-                SelectTrainingProvider = true,
+                IsTrainingProviderSelected = true,
                 SelectionType = TrainingProviderSelectionType.TrainingProviderSearch,
                 TrainingProviderSearch = "MR EGG 88888888",
                 EmployerAccountId = EmployerAccountId,
@@ -128,7 +128,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
 
             var result = await orch.PostSelectTrainingProviderAsync(m, new VacancyUser());
 
-            result.Action.Should().Be(PostSelectTrainingProviderResultAction.TrainingProviderConfirm);
+            result.ResponseType.Should().Be(SelectTrainingProviderResponseType.Confirm);
             result.FoundProviderUkprn.Should().Be(88888888);
         }
 
@@ -147,7 +147,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
 
             var m = new SelectTrainingProviderEditModel
             {
-                SelectTrainingProvider = true,
+                IsTrainingProviderSelected = true,
                 SelectionType = TrainingProviderSelectionType.Ukprn,
                 Ukprn = "88888888",
                 EmployerAccountId = EmployerAccountId,
@@ -156,7 +156,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
 
             var result = await orch.PostSelectTrainingProviderAsync(m, new VacancyUser());
 
-            result.Action.Should().Be(PostSelectTrainingProviderResultAction.TrainingProviderConfirm);
+            result.ResponseType.Should().Be(SelectTrainingProviderResponseType.Confirm);
             result.FoundProviderUkprn.Should().Be(88888888);
         }
 
