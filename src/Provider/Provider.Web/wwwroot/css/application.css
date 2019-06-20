@@ -234,7 +234,7 @@ margin-bottom: 5px;
   }
 
   .highlight-summary {
-      border: 4px solid #28a197;
+      border: 5px solid #28a197;
   }
 }
 
@@ -280,6 +280,17 @@ margin-bottom: 5px;
 
 .info-summary-heading, .warning-summary-heading {
   margin-top: 0;
+}
+
+/*** Info summary header bar ***/
+.info-summary__header-bar{
+  background:#2e358b;
+  margin-bottom:0;
+  padding:20px;
+}
+.info-summary__header-bar h2 {
+  margin-bottom:0;
+  color: #fff;
 }
 
 /*** Additional error style ***/
