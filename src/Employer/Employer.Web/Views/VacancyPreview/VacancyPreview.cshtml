@@ -1,6 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Html
 @using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
 @using Esfa.Recruit.Shared.Web.Mappers
+@using Microsoft.AspNetCore.Routing
+@using Microsoft.AspNetCore.Http.Extensions
 
 @model VacancyPreviewViewModel
 @functions
@@ -30,7 +32,9 @@
         {
             return Html.RouteLink("Add", routeName, routeValues, new { @class = "button-secondary", data_automation = id });
         }
-        return Html.RouteLink("Change", routeName, routeValues, new { @class = "govuk-body govuk-link", data_automation = id });
+        //return Html.RouteLink("Change", routeName, routeValues, new { @class = "govuk-body govuk-link", data_automation = id});
+        var test = Html.RouteLink("Change", routeName, routeValues, new { @class = "govuk-body govuk-link", data_automation = id});
+        return HtmlRouteLinkExtensions.RouteLink(Url, "Change", routeName, routeValues, new { @class = "button-secondary", data_automation = id });
     }
 }
 <div class="govuk-grid-row">
