@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using SFA.DAS.Providers.Api.Client;
 
 namespace Esfa.Recruit.Provider.Web.Controllers
 {
@@ -24,11 +25,13 @@ namespace Esfa.Recruit.Provider.Web.Controllers
     {
         private readonly ILogger<ErrorController> _logger;
         private readonly ExternalLinksConfiguration _externalLinks;
+        private readonly IProviderApiClient _roatpClient;
 
-        public ErrorController(ILogger<ErrorController> logger, IOptions<ExternalLinksConfiguration> externalLinks)
+        public ErrorController(ILogger<ErrorController> logger, IOptions<ExternalLinksConfiguration> externalLinks, IProviderApiClient roatpClient)
         {
             _logger = logger;
             _externalLinks = externalLinks.Value;
+            _roatpClient = roatpClient;
         }
 
         [Route("error/{id?}")]
@@ -141,6 +144,28 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 return Redirect(_externalLinks.ProviderApprenticeshipSiteUrl);
             }
 
+            var ukprnClaim = User.FindFirst(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier);
+            if (!string.IsNullOrEmpty(ukprnClaim.Value))
+            {
+                var ukprn = long.Parse(ukprnClaim.Value);
+                bool ukprnIsNotListedInRoatp;
+                try
+                {
+                    var provider = _roatpClient.Get(ukprn);
+                    ukprnIsNotListedInRoatp = provider == null;
+                }
+                catch (Exception)
+                {
+                    ukprnIsNotListedInRoatp = true;
+                }
+
+                if (ukprnIsNotListedInRoatp)
+                {
+                    _logger.LogInformation($"Provider {ukprn} is not listed in RoATP for user {User.Identity.Name}.");
+                    return Redirect(_externalLinks.ProviderApprenticeshipSiteUrl);
+                }
+            }
+            
             Response.StatusCode = (int)HttpStatusCode.Unauthorized;
             return View(ViewNames.AccessDenied);
         }
