@@ -35,12 +35,13 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
         public async Task<TitleViewModel> GetTitleViewModelForNewVacancyAsync(string employerAccountId, long ukprn)
         {
             await ValidateEmployerAccountIdAsync(ukprn, employerAccountId);
-
+            var dashboard = await _providerVacancyClient.GetDashboardAsync(ukprn);
             var vm = new TitleViewModel
             {
                 EmployerAccountId = employerAccountId,
                 Ukprn = ukprn,
-                PageInfo = new PartOnePageInfoViewModel()
+                PageInfo = new PartOnePageInfoViewModel(),
+                HasAnyVacancies = dashboard.Vacancies.Any()
             };
             return vm;
         }
@@ -57,7 +58,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                     PageInfo = Utility.GetPartOnePageInfo(vacancy),
                     Ukprn = ukprn,
                     EmployerAccountId = vacancy.EmployerAccountId,
-                    HasCloneableVacancies = dashboard.CloneableVacancies.Any()
+                    HasAnyVacancies = dashboard.Vacancies.Any()
             };
 
             if (vacancy.Status == VacancyStatus.Referred)

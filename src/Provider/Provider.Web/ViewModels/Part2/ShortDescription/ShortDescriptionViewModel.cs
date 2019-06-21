@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Esfa.Recruit.Shared.Web.ViewModels;
 
-namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.ShortDescription
+namespace Esfa.Recruit.Provider.Web.ViewModels.Part2.ShortDescription
 {
     public class ShortDescriptionViewModel 
     {
@@ -16,6 +16,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.ShortDescription
             nameof(ShortDescription)
         };
 
-        public PartOnePageInfoViewModel PageInfo { get; set; }
+        public string Title { get; set; }
     }
 }

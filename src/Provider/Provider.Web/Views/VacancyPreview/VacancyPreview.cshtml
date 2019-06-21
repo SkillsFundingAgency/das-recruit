@@ -50,6 +50,7 @@
             <div asp-show="@Model.HasIncompleteMandatorySections">
                 <p class="govuk-body">You need to complete these sections:</p>
                 <ul class="govuk-list">
+                    <li asp-hide="@Model.HasShortDescription"><a asp-fragment="@Anchors.ShortDescriptionSection" class="govuk-link summary-link">Brief overview</a></li>
                     <li asp-hide="@Model.HasVacancyDescription"><a asp-fragment="@Anchors.VacancyDescriptionSection" class="govuk-link summary-link">What you will do in your working day</a></li>
                     <li asp-hide="@Model.HasTrainingDescription"><a asp-fragment="@Anchors.VacancyDescriptionSection" class="govuk-link summary-link">The training you will be getting</a></li>
                     <li asp-hide="@Model.HasOutcomeDescription"><a asp-fragment="@Anchors.VacancyDescriptionSection" class="govuk-link summary-link">What to expect at the end of your apprenticeship</a></li>
