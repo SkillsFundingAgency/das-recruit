@@ -1,8 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Html
 @using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
 @using Esfa.Recruit.Shared.Web.Mappers
-@using Microsoft.AspNetCore.Routing
-@using Microsoft.AspNetCore.Http.Extensions
+
 
 @model VacancyPreviewViewModel
 @functions
@@ -26,15 +25,13 @@
         }
     }
 
-    public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state, string id, object routeValues = null)
+    public IHtmlContent EditLink(string routeName, VacancyPreviewSectionState state, string screenReaderText, string id, object routeValues = null)
     {
         if (state == VacancyPreviewSectionState.Incomplete || state == VacancyPreviewSectionState.InvalidIncomplete)
         {
-            return Html.RouteLink("Add", routeName, routeValues, new { @class = "button-secondary", data_automation = id });
+            return VacancyPreviewHelper.ActionLink(Url, "Add", routeName, routeValues, screenReaderText, "button-secondary", id);
         }
-        //return Html.RouteLink("Change", routeName, routeValues, new { @class = "govuk-body govuk-link", data_automation = id});
-        var test = Html.RouteLink("Change", routeName, routeValues, new { @class = "govuk-body govuk-link", data_automation = id});
-        return HtmlRouteLinkExtensions.RouteLink(Url, "Change", routeName, routeValues, new { @class = "button-secondary", data_automation = id });
+        return VacancyPreviewHelper.ActionLink(Url, "Change", routeName, routeValues, screenReaderText, "govuk-body govuk-link", id);
     }
 }
 <div class="govuk-grid-row">
@@ -99,7 +96,7 @@
             </h3>
             <span esfa-validation-message-for="ShortDescription" class="govuk-error-message"></span>
             <p asp-show="@Model.HasShortDescription" class="govuk-body">@Model.ShortDescription</p>
-            @EditLink(RouteNames.ShortDescription_Get, Model.ShortDescriptionSectionState, "link-overview", new { wizard = false })
+            @EditLink(RouteNames.ShortDescription_Get, Model.ShortDescriptionSectionState, "brief overview","link-overview", new { wizard = false })
         </div>
     </div>
     <div class="govuk-grid-column-one-third">
@@ -110,7 +107,7 @@
             </h3>
             <span esfa-validation-message-for="ClosingDate" class="govuk-error-message"></span>
             <p asp-show="@Model.HasClosingDate" class="govuk-body">@Model.ClosingDate</p>
-            @EditLink(RouteNames.Training_Get, Model.ClosingDateSectionState, "link-closing-date", new { wizard = false })
+            @EditLink(RouteNames.Training_Get, Model.ClosingDateSectionState, "closing date","link-closing-date", new { wizard = false })
         </div>
     </div>
 </div>
@@ -134,7 +131,7 @@
                     <span esfa-validation-message-for="HoursPerWeek" class="govuk-error-message"></span>
                     <p asp-show="@Model.HasHoursPerWeek" class="govuk-body">Total hours per week: @Model.HoursPerWeek</p>
                 </div>
-                @EditLink(RouteNames.Wage_Get, Model.WorkingWeekSectionState, "link-working-week", new { wizard = false })
+                @EditLink(RouteNames.Wage_Get, Model.WorkingWeekSectionState, "working week","link-working-week", new { wizard = false })
             </li>
             <li class="@GetSectionClass(Model.WageTextSectionState)">
                 <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.YearlyWage">
@@ -145,7 +142,7 @@
                 <p asp-show="@Model.HasWageText" class="govuk-body">@Model.WageText</p>
                 <span esfa-validation-message-for="WageInfo" class="govuk-error-message"></span>
                 <p asp-show="@Model.HasWageInfo" class="govuk-body">@Model.WageInfo</p>
-                @EditLink(RouteNames.Wage_Get, Model.WageTextSectionState, "link-salary", new { wizard = false })
+                @EditLink(RouteNames.Wage_Get, Model.WageTextSectionState, "yearly wage","link-salary", new { wizard = false })
             </li>
             <li class="@GetSectionClass(Model.ExpectedDurationSectionState)">
                 <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.ExpectedDuration">
@@ -154,7 +151,7 @@
                 </h3>
                 <span esfa-validation-message-for="ExpectedDuration" class="govuk-error-message"></span>
                 <p class="govuk-body" asp-show="@Model.HasExpectedDuration">@Model.ExpectedDuration</p>
-                @EditLink(RouteNames.Wage_Get, Model.ExpectedDurationSectionState, "link-duration", new { wizard = false })
+                @EditLink(RouteNames.Wage_Get, Model.ExpectedDurationSectionState, "expected duration","link-duration", new { wizard = false })
 
             </li>
             <li class="@GetSectionClass(Model.PossibleStartDateSectionState)">
@@ -164,7 +161,7 @@
                 </h3>
                 <span esfa-validation-message-for="PossibleStartDate" class="govuk-error-message"></span>
                 <p asp-show="@Model.HasPossibleStartDate" class="govuk-body">@Model.PossibleStartDate</p>
-                @EditLink(RouteNames.Training_Get, Model.PossibleStartDateSectionState, "link-start-date", new { wizard = false })
+                @EditLink(RouteNames.Training_Get, Model.PossibleStartDateSectionState, "possible start date","link-start-date", new { wizard = false })
             </li>
             <li class="@GetSectionClass(Model.TrainingLevelSectionState)">
                 <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.TrainingLevel">
@@ -174,7 +171,7 @@
                 <span esfa-validation-message-for="HasProgramme" class="govuk-error-message"></span>
                 <span esfa-validation-message-for="TrainingLevel" class="govuk-error-message"></span>
                 <p asp-show="@Model.HasTrainingLevel" class="govuk-body">@Model.TrainingLevel Level Apprenticeship</p>
-                @EditLink(RouteNames.Training_Get, Model.TrainingLevelSectionState, "link-apprenticeship-level", new { wizard = false })
+                @EditLink(RouteNames.Training_Get, Model.TrainingLevelSectionState, "apprenticeship level","link-apprenticeship-level", new { wizard = false })
             </li>
             <li asp-show="@Model.CanShowReference">
                 <h3 class="govuk-heading-s govuk-!-margin-top-4">Reference number</h3>
@@ -187,7 +184,7 @@
                 </h3>
                 <span esfa-validation-message-for="NumberOfPositions" class="govuk-error-message"></span>
                 <p asp-show="@Model.HasNumberOfPositionsCaption" class="govuk-body">@Model.NumberOfPositionsCaption</p>
-                @EditLink(RouteNames.NumberOfPositions_Get, Model.NumberOfPositionsSectionState, "link-positions", new { wizard = false })
+                @EditLink(RouteNames.NumberOfPositions_Get, Model.NumberOfPositionsSectionState, "positions","link-positions", new { wizard = false })
             </li>
         </ul>
     </div>
@@ -215,7 +212,7 @@
             <span esfa-validation-message-for="OutcomeDescription" class="govuk-error-message"></span>
             <div asp-show="@Model.HasOutcomeDescription" class="govuk-body">@Html.Raw(Model.OutcomeDescription)</div>
 
-            @EditLink(RouteNames.VacancyDescription_Index_Get, Model.DescriptionsSectionState, "link-vacancy-description")
+            @EditLink(RouteNames.VacancyDescription_Index_Get, Model.DescriptionsSectionState, "full vacancy description","link-vacancy-description")
         </div>
     </div>
 </div>
@@ -239,7 +236,7 @@
             </h3>
             <span esfa-validation-message-for="Skills" class="govuk-error-message"></span>
             <p asp-show="@Model.HasSkills" class="govuk-body">@string.Join(", ", Model.Skills)</p>
-            @EditLink(RouteNames.Skills_Get, Model.SkillsSectionState, "link-skills")
+            @EditLink(RouteNames.Skills_Get, Model.SkillsSectionState, "desired skills and personal qualities","link-skills")
         </div>
         <div class="@GetSectionClass(Model.QualificationsSectionState)">
             <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.Qualifications">
@@ -253,7 +250,7 @@
                     @qualification<br />
                 }
             </p>
-            @EditLink(RouteNames.Qualifications_Get, Model.QualificationsSectionState, "link-qualifications")
+            @EditLink(RouteNames.Qualifications_Get, Model.QualificationsSectionState, "qualifications","link-qualifications")
         </div>
     </div>
     <div class="govuk-grid-column-one-half">
@@ -264,7 +261,7 @@
             </h3>
             <span esfa-validation-message-for="ThingsToConsider" class="govuk-error-message"></span>
             <p asp-show="@Model.HasThingsToConsider" class="govuk-body">@Model.ThingsToConsider</p>
-            @EditLink(RouteNames.Considerations_Get, Model.ThingsToConsiderSectionState, "link-things-to-consider")
+            @EditLink(RouteNames.Considerations_Get, Model.ThingsToConsiderSectionState, "things to consider","link-things-to-consider")
         </div>
     </div>
 </div>
@@ -287,7 +284,7 @@
             </h3>
             <span esfa-validation-message-for="EmployerDescription" class="govuk-error-message"></span>
             <p asp-show="@Model.HasEmployerDescription" class="govuk-body">@Model.EmployerDescription</p>
-            @EditLink(RouteNames.AboutEmployer_Get, Model.EmployerDescriptionSectionState, "link-description")
+            @EditLink(RouteNames.AboutEmployer_Get, Model.EmployerDescriptionSectionState, "employer description", "link-description")
         </div>
         <div class="@GetSectionClass(Model.EmployerNameSectionState)">
             <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.EmployerName">
@@ -296,7 +293,7 @@
             </h3>
             <span esfa-validation-message-for="EmployerName" class="govuk-error-message"></span>
             <p asp-show="@Model.HasEmployerName" class="govuk-body">@Model.EmployerName</p>
-            @EditLink(RouteNames.Employer_Get, Model.EmployerNameSectionState, "link-employer", new { wizard = false })
+            @EditLink(RouteNames.Employer_Get, Model.EmployerNameSectionState, "employer", "link-employer", new { wizard = false })
         </div>
         <div class="@GetSectionClass(Model.DisabilityConfidentSectionState)">
             <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.DisabilityConfident">
@@ -306,7 +303,7 @@
             <img asp-show="@Model.IsDisabilityConfident" src="~/img/disability-confident_545x172.png" class="disability-confident-logo" alt="A logo confirming that the employer is registered as disability confident" esfa-automation="disability-confident-logo" />
             <partial name="@PartialNames.DisabilityConfident" for="IsDisabilityConfident" />
             <p asp-show="@Model.IsNotDisabilityConfident" class="govuk-hint">This vacancy is not Disability Confident<br />This will not appear on the vacancy when it goes live</p>
-            @EditLink(RouteNames.Training_Get, Model.TrainingSectionState, "link-standard", new { wizard = false })
+            @EditLink(RouteNames.Training_Get, Model.TrainingSectionState, "disability confident", "link-standard", new { wizard = false })
         </div>
         <div class="@GetSectionClass(Model.EmployerWebsiteUrlSectionState)">
             <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.EmployerWebsiteUrl">
@@ -320,7 +317,7 @@
                     @Model.EmployerWebsiteUrl
                 </p>
             </div>
-            @EditLink(RouteNames.AboutEmployer_Get, Model.EmployerWebsiteUrlSectionState, "link-website")
+            @EditLink(RouteNames.AboutEmployer_Get, Model.EmployerWebsiteUrlSectionState, "website", "link-website")
         </div>
     </div>
     <div class="govuk-grid-column-one-third">
@@ -335,7 +332,7 @@
             <p asp-show="@Model.HasEmployerContactEmail" class="govuk-body">@Model.EmployerContactEmail</p>
             <span esfa-validation-message-for="EmployerContactTelephone" class="govuk-error-message"></span>
             <p asp-show="@Model.HasEmployerContactTelephone" class="govuk-body">@Model.EmployerContactTelephone</p>
-            @EditLink(RouteNames.EmployerContactDetails_Get, Model.EmployerContactSectionState, "link-employer-contact-details")
+            @EditLink(RouteNames.EmployerContactDetails_Get, Model.EmployerContactSectionState, "contact details","link-employer-contact-details")
         </div>
     </div>
 </div>
@@ -353,7 +350,7 @@
                     <li>@addrLine</li>
                 }
             </ul>
-            @EditLink(RouteNames.Location_Get, Model.EmployerAddressSectionState, "link-location", new { wizard = false })
+            @EditLink(RouteNames.Location_Get, Model.EmployerAddressSectionState, "location","link-location", new { wizard = false })
         </div>
     </div>
     <div class="govuk-grid-column-one-half">
@@ -379,7 +376,7 @@
             </h3>
             <span esfa-validation-message-for="ProviderName" class="govuk-error-message"></span>
             <p asp-show="@Model.HasProviderName" class="govuk-body">@Model.ProviderName</p>
-            @EditLink(RouteNames.TrainingProvider_Select_Get, Model.ProviderSectionState, "link-training-provider", new { wizard = false })
+            @EditLink(RouteNames.TrainingProvider_Select_Get, Model.ProviderSectionState, "training provider","link-training-provider", new { wizard = false })
         </div>
         <div class="@GetSectionClass(Model.TrainingSectionState)">
             <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.Training">
@@ -387,7 +384,7 @@
                 Apprenticeship @Model.TrainingType
             </h3>
             <p asp-show="@Model.HasTrainingTitle" class="govuk-body">@Model.TrainingTitle</p>
-            @EditLink(RouteNames.Training_Get, Model.TrainingSectionState, "link-standard", new { wizard = false })
+            @EditLink(RouteNames.Training_Get, Model.TrainingSectionState, "apprenticeship training","link-standard", new { wizard = false })
         </div>
     </div>
 </div>
@@ -403,14 +400,14 @@
         <div asp-show="@Model.HasNotSpecifiedApplicationMethod" class="@GetSectionClass(Model.ApplicationMethodSectionState)">
             <h2 id="@Anchors.ApplicationMethod" class="govuk-heading-s govuk-!-margin-top-4">How will the candidates apply for this vacancy?</h2>
             <span esfa-validation-message-for="ApplicationMethod" class="govuk-error-message"></span>
-            @EditLink(RouteNames.ApplicationProcess_Get, Model.ApplicationMethodSectionState, "link-application-method")
+            @EditLink(RouteNames.ApplicationProcess_Get, Model.ApplicationMethodSectionState, "application method","link-application-method")
         </div>
         <div asp-show="@Model.HasSpecifiedThroughFaaApplicationMethod" class="@GetSectionClass(Model.ApplicationMethodSectionState)">
             <p class="govuk-body">
                 <img asp-show="@Model.ApplicationMethodRequiresEdit" src="/img/red-cross.png" />
                 Candidates will apply through the <a href="@Model.FindAnApprenticeshipUrl" rel="noopener" class="govuk-link" target="_blank">Find an apprenticeship service</a>
             </p>
-            @EditLink(RouteNames.ApplicationProcess_Get, Model.ApplicationMethodSectionState, "link-application-method")
+            @EditLink(RouteNames.ApplicationProcess_Get, Model.ApplicationMethodSectionState, "application method","link-application-method")
         </div>
         <div asp-show="@Model.HasSpecifiedThroughExternalApplicationMethod">
             <div asp-show="@Model.HasApplicationUrl">
@@ -422,7 +419,7 @@
                     </h2>
                     <span esfa-validation-message-for="ApplicationUrl" class="govuk-error-message"></span>
                     <p class="govuk-body">@Model.ApplicationUrl</p>
-                    @EditLink(RouteNames.ApplicationProcess_Get, Model.ApplicationUrlSectionState, "link-application-link")
+                    @EditLink(RouteNames.ApplicationProcess_Get, Model.ApplicationUrlSectionState, "application link","link-application-link")
                 </div>
             </div>
             <div class="@GetSectionClass(Model.ApplicationInstructionsSectionState)">
@@ -432,7 +429,7 @@
                 </h2>
                 <span esfa-validation-message-for="ApplicationInstructions" class="govuk-error-message"></span>
                 <p class="govuk-body">@Model.ApplicationInstructions</p>
-                @EditLink(RouteNames.ApplicationProcess_Get, Model.ApplicationInstructionsSectionState, "link-application-instructions")
+                @EditLink(RouteNames.ApplicationProcess_Get, Model.ApplicationInstructionsSectionState, "application-instructions","link-application-instructions")
             </div>
         </div>
     </div>
