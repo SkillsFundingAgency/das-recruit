@@ -1,9 +1,6 @@
 using System.Collections.Generic;
-using Esfa.Recruit.Provider.Web.ViewModels;
-using Esfa.Recruit.Provider.Web.ViewModels.Part1.Employer;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.Location;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.NumberOfPositions;
-using Esfa.Recruit.Provider.Web.ViewModels.Part1.ShortDescription;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.Title;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.Training;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.Wage;
@@ -11,12 +8,11 @@ using Esfa.Recruit.Provider.Web.ViewModels.Part2.AboutEmployer;
 using Esfa.Recruit.Provider.Web.ViewModels.Part2.ApplicationProcess;
 using Esfa.Recruit.Provider.Web.ViewModels.Part2.Considerations;
 using Esfa.Recruit.Provider.Web.ViewModels.Part2.ProviderContactDetails;
+using Esfa.Recruit.Provider.Web.ViewModels.Part2.ShortDescription;
 using Esfa.Recruit.Provider.Web.ViewModels.Part2.VacancyDescription;
-using Esfa.Recruit.Provider.Web.Views;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
-using static Esfa.Recruit.Vacancies.Client.Domain.Entities.VacancyReview;
 
 namespace Esfa.Recruit.Provider.Web.Mappings
 {
