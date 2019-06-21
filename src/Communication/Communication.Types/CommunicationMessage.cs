@@ -6,16 +6,16 @@ namespace Communication.Types
     public sealed class CommunicationMessage
     {
         public Guid Id { get; }
-        public Guid RequestId { get; internal set; }
-        public string RequestType { get; internal set; }
-        public string RecipientsResolver { get; internal set; }
-        public string OriginatingService { get; internal set; }
-        public CommunicationUser Recipient { get; internal set; }
-        public DeliveryChannel Channel { get; internal set; }
-        public DeliveryFrequency Frequency { get; internal set; }
-        public IEnumerable<CommunicationDataItem> DataItems { get; internal set; }
-        public string TemplateId { get; internal set; }
-        public DateTime RequestDateTime { get; internal set; }
+        public Guid RequestId { get; set; }
+        public string RequestType { get; set; }
+        public string ParticipantsResolverName { get; set; }
+        public string OriginatingServiceName { get; set; }
+        public CommunicationUser Recipient { get; set; }
+        public DeliveryChannel Channel { get; set; }
+        public DeliveryFrequency Frequency { get; set; }
+        public IEnumerable<CommunicationDataItem> DataItems { get; set; }
+        public string TemplateId { get; set; }
+        public DateTime RequestDateTime { get; set; }
 
         public CommunicationMessage()
         {
