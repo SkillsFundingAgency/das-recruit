@@ -4,8 +4,10 @@
     <div class="govuk-grid-column-two-thirds">
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
         <partial name="@PartialNames.ReviewSummary" for="Review" />
-        <span class="govuk-caption-xl">@Model.Title</span>
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Short description of the vacancy</h1>
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
+            <span class="govuk-caption-xl">@Model.Title</span>
+            Short description of the vacancy
+        </h1>
     </div>
 </div>
 
