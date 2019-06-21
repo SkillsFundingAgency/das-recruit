@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Communication.Types
+namespace Communication.Types.Extensions
 {
-    internal static class DeliveryChannelPreferencesExtensions
+    public static class DeliveryChannelPreferencesExtensions
     {
-        internal static IEnumerable<DeliveryChannel> ToDeliveryChannels(this DeliveryChannelPreferences preferences)
+        public static IEnumerable<DeliveryChannel> ToDeliveryChannels(this DeliveryChannelPreferences preferences)
         {
             switch (preferences)
             {
