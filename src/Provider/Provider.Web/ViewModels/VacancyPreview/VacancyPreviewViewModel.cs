@@ -38,6 +38,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
         public bool CanShowReference { get; set; }
 
         public bool HasIncompleteVacancyDescription => !HasVacancyDescription;
+        public bool HasIncompleteShortDescription => !HasShortDescription;
         public bool CanShowDraftHeader { get; internal set; }
 
         public string InfoMessage { get; internal set; }
@@ -55,24 +56,19 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
         public bool HasIncompleteThingsToConsiderSection => ThingsToConsiderSectionState == VacancyPreviewSectionState.Incomplete || ThingsToConsiderSectionState == VacancyPreviewSectionState.InvalidIncomplete;
         public bool HasIncompleteEmployerWebsiteUrlSection => EmployerWebsiteUrlSectionState == VacancyPreviewSectionState.Incomplete || EmployerWebsiteUrlSectionState == VacancyPreviewSectionState.InvalidIncomplete;
         public bool HasIncompleteProviderContactSection => ProviderContactSectionState == VacancyPreviewSectionState.Incomplete || ProviderContactSectionState == VacancyPreviewSectionState.InvalidIncomplete;
-
-        public bool HasIncompleteMandatorySections => HasIncompleteVacancyDescription
+        public bool HasIncompleteMandatorySections => HasIncompleteShortDescription
+                                                      || HasIncompleteVacancyDescription
                                                         || HasIncompleteSkillsSection
                                                         || HasIncompleteQualificationsSection
                                                         || HasIncompleteEmployerDescriptionSection
                                                         || HasIncompleteTrainingProviderSection
                                                         || HasIncompleteApplicationProcessSection;
-
         public bool HasIncompleteOptionalSections => HasIncompleteThingsToConsiderSection
                                                     || HasIncompleteEmployerWebsiteUrlSection
                                                     || HasIncompleteProviderContactSection;
-
         public bool ShowIncompleteSections => (HasIncompleteMandatorySections || HasIncompleteOptionalSections) && !Review.HasBeenReviewed;
-
         public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
-
         public string SubmitButtonText => Review.HasBeenReviewed ? "Resubmit vacancy" : "Submit vacancy";
-
         public bool ApplicationInstructionsRequiresEdit => IsEditRequired(FieldIdentifiers.ApplicationInstructions);
         public bool ApplicationMethodRequiresEdit => IsEditRequired(FieldIdentifiers.ApplicationMethod);
         public bool ApplicationUrlRequiresEdit => IsEditRequired(FieldIdentifiers.ApplicationUrl);

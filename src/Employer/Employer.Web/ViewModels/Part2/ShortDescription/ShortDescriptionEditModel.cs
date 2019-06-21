@@ -1,6 +1,6 @@
-using Esfa.Recruit.Provider.Web.RouteModel;
+﻿using Esfa.Recruit.Employer.Web.RouteModel;
 
-namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.ShortDescription
+namespace Esfa.Recruit.Employer.Web.ViewModels.Part2.ShortDescription
 {
     public class ShortDescriptionEditModel : VacancyRouteModel
     {

@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Mappings;
 using Esfa.Recruit.Provider.Web.RouteModel;
-using Esfa.Recruit.Provider.Web.ViewModels.Part1.ShortDescription;
+using Esfa.Recruit.Provider.Web.ViewModels.Part2.ShortDescription;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
@@ -37,7 +37,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             {
                 VacancyId = vacancy.Id,
                 ShortDescription = vacancy.ShortDescription,
-                PageInfo = Utility.GetPartOnePageInfo(vacancy)
+                Title = vacancy.Title
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
