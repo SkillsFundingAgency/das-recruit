@@ -12,14 +12,14 @@ namespace Communication.Types
         /// This will be used to discover various plugins required to process the message
         public string OriginatingServiceName { get; }
         public List<Entity> Entities { get; }
-        public CommunicationRequest(string requestType, string participantsResolverName, string originatingService)
+        public CommunicationRequest(string requestType, string participantsResolverName, string originatingServiceName)
         {
             RequestId = Guid.NewGuid();
             RequestDateTime = DateTime.UtcNow;
 
             RequestType = requestType;
             ParticipantsResolverName = participantsResolverName;
-            OriginatingService = originatingService;
+            OriginatingServiceName = originatingServiceName;
 
             Entities = new List<Entity>();
         }
