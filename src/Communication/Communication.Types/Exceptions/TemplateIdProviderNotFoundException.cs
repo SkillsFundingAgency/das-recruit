@@ -5,6 +5,7 @@ namespace Communication.Types.Exceptions
     public class TemplateIdProviderNotFoundException : Exception
     {
         public TemplateIdProviderNotFoundException(string originatingServiceName) 
-            : base($"There is no template registered for {originatingServiceName}") { }
+            : base($"Unable to resolve template id provider for service {originatingServiceName}") 
+        { }
     }
 }
