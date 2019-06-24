@@ -1,5 +1,4 @@
-﻿using System.Web;
-using Microsoft.AspNetCore.Html;
+﻿using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -10,16 +9,18 @@ namespace Esfa.Recruit.Shared.Web.Extensions
     {
         public static IHtmlContent ActionLink(IUrlHelper urlHelper, string linkText, string routeName, object routeValues, string screenReaderText, string linkClass, string dataAutomationId)
         {
-            // create wrapper around text e.g. <span>linkText</span>
-            var tagBuilderInner = new TagBuilder("span");
-            tagBuilderInner.AddCssClass("govuk-visually-hidden");
-            tagBuilderInner.InnerHtml.Append(!string.IsNullOrEmpty(screenReaderText) ? HttpUtility.HtmlEncode(screenReaderText) : string.Empty);
-            // create wrapper around wrapper around text e.g. <a><span>linkText</span></a>
+            /*
+             *<a href="duration?edit=yes" class="govuk-link das-edit-link">Change
+             *  <span class="govuk-visually-hidden"> working week</span>
+             * </a>
+             */
+            var visuallyHiddenSpan = new TagBuilder("span");
+            visuallyHiddenSpan.AddCssClass("govuk-visually-hidden");
+            visuallyHiddenSpan.InnerHtml.Append(screenReaderText);
             var tagBuilderAtag = new TagBuilder("a");
             tagBuilderAtag.AddCssClass(linkClass);
-            tagBuilderAtag.InnerHtml.Append(!string.IsNullOrEmpty(linkText) ? HttpUtility.HtmlEncode(linkText) : string.Empty);
-            tagBuilderAtag.InnerHtml.AppendHtml(tagBuilderInner);
-            // add the other properties
+            tagBuilderAtag.InnerHtml.Append(linkText);
+            tagBuilderAtag.InnerHtml.AppendHtml(visuallyHiddenSpan);
             tagBuilderAtag.MergeAttribute("href", urlHelper.RouteUrl(routeName, routeValues));
             tagBuilderAtag.MergeAttribute("data-automation", dataAutomationId);
             return tagBuilderAtag;
