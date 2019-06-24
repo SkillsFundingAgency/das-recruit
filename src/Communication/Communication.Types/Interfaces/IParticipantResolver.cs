@@ -5,7 +5,7 @@ namespace Communication.Types.Interfaces
 {
     public interface IParticipantResolver
     {
-        string ResolverName { get; }
-        Task<IEnumerable<CommunicationUser>> GetParticipantsAsync(CommunicationRequest request);
+        string ResolverServiceName { get; }
+        Task<IEnumerable<CommunicationUser>> GetRecipientsAsync(CommunicationRequest request);
     }
 }
