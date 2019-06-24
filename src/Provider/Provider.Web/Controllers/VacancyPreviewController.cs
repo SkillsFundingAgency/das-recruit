@@ -12,6 +12,7 @@ using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Mappers;
+using Humanizer;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Provider.Web.Controllers
@@ -35,7 +36,8 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 viewModel.InfoMessage = TempData[TempDataKeys.VacancyPreviewInfoMessage].ToString();
 
             SetSectionStates(viewModel);
-
+            viewModel.IncompleteSectionCount = GetSectionStateCount(viewModel);
+            viewModel.IncompleteSectionText = "section".ToQuantity(viewModel.IncompleteSectionCount, ShowQuantityAs.None);
             return View(viewModel);
         }
 
@@ -86,7 +88,32 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             viewModel.TrainingSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Training }, true, vm => vm.TrainingType, vm => vm.TrainingTitle);
             viewModel.DisabilityConfidentSectionState = GetSectionState(viewModel, new[]{ FieldIdentifiers.DisabilityConfident}, true, vm => vm.IsDisabilityConfident);
         }
-        
+
+        private int GetSectionStateCount(VacancyPreviewViewModel viewModel)
+        {
+            var count = 0;
+            if (CheckIfSectionIsIncomplete(viewModel.ShortDescriptionSectionState))
+                count++;
+            if (CheckIfSectionIsIncomplete(viewModel.SkillsSectionState))
+                count++;
+            if (CheckIfSectionIsIncomplete(viewModel.DescriptionsSectionState))
+                count++;
+            if (CheckIfSectionIsIncomplete(viewModel.QualificationsSectionState))
+                count++;
+            if (CheckIfSectionIsIncomplete(viewModel.EmployerDescriptionSectionState))
+                count++;
+            if (CheckIfSectionIsIncomplete(viewModel.ProviderSectionState))
+                count++;
+            if (CheckIfSectionIsIncomplete(viewModel.TrainingSectionState))
+                count++;
+            if (CheckIfSectionIsIncomplete(viewModel.ApplicationMethodSectionState))
+                count++;
+            return count;
+        }
+        private bool CheckIfSectionIsIncomplete(VacancyPreviewSectionState viewModelTitleSectionState)
+        {
+            return viewModelTitleSectionState == VacancyPreviewSectionState.Incomplete;
+        }
         private VacancyPreviewSectionState GetSectionState(VacancyPreviewViewModel vm, IEnumerable<string> reviewFieldIndicators, bool requiresAll, params Expression<Func<VacancyPreviewViewModel, object>>[] sectionProperties)
         {
             if (IsSectionModelStateValid(sectionProperties) == false)

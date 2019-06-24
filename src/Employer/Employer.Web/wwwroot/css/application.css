@@ -247,6 +247,17 @@
     margin-top: 0;
   }
 
+  /*** Info summary header bar ***/
+  .info-summary__header-bar{
+    background:#2e358b;
+    margin-bottom:0;
+    padding:20px;
+  }
+  .info-summary__header-bar h2 {
+    margin-bottom:0;
+    color: #fff;
+  }
+
 /*** Additional error style ***/
 .error-summary .error-summary-list span {
     color: #b10e1e;
