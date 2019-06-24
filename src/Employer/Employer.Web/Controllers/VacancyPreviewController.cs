@@ -11,10 +11,10 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Employer.Web.RouteModel;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Mappers;
+using Humanizer;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
@@ -34,11 +34,12 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(vrm);
 
             SetSectionStates(viewModel);
-
+            viewModel.IncompleteSectionCount = GetSectionStateCount(viewModel);
+            viewModel.IncompleteSectionText = "section".ToQuantity(viewModel.IncompleteSectionCount, ShowQuantityAs.None);
             return View(viewModel);
         }
 
-        [HttpPost("preview", Name = RouteNames.Preview_Submit_Post)]
+       [HttpPost("preview", Name = RouteNames.Preview_Submit_Post)]
         public async Task<IActionResult> Submit(SubmitEditModel m)
         {
             var response = await _orchestrator.SubmitVacancyAsync(m, User.ToVacancyUser());
@@ -93,7 +94,34 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             viewModel.TrainingSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Training }, true, vm => vm.TrainingType, vm => vm.TrainingTitle);
             viewModel.DisabilityConfidentSectionState = GetSectionState(viewModel, new[]{ FieldIdentifiers.DisabilityConfident}, true, vm => vm.IsDisabilityConfident);
         }
-        
+
+        private int GetSectionStateCount(VacancyPreviewViewModel viewModel)
+        {
+            var count = 0;
+            if (CheckIfSectionIsIncomplete(viewModel.ShortDescriptionSectionState))
+                count++;
+            if (CheckIfSectionIsIncomplete(viewModel.SkillsSectionState))
+                count++;
+            if (CheckIfSectionIsIncomplete(viewModel.DescriptionsSectionState))
+                count++;
+            if (CheckIfSectionIsIncomplete(viewModel.QualificationsSectionState))
+                count++;
+            if (CheckIfSectionIsIncomplete(viewModel.EmployerDescriptionSectionState))
+                count++;
+            if (CheckIfSectionIsIncomplete(viewModel.ProviderSectionState))
+                count++;
+            if (CheckIfSectionIsIncomplete(viewModel.TrainingSectionState))
+                count++;
+            if (CheckIfSectionIsIncomplete(viewModel.ApplicationMethodSectionState))
+                count++;
+            return count;
+        }
+
+        private bool CheckIfSectionIsIncomplete(VacancyPreviewSectionState viewModelTitleSectionState)
+        {
+            return viewModelTitleSectionState == VacancyPreviewSectionState.Incomplete;
+        }
+
         private VacancyPreviewSectionState GetSectionState(VacancyPreviewViewModel vm, IEnumerable<string> reviewFieldIndicators, bool requiresAll, params Expression<Func<VacancyPreviewViewModel, object>>[] sectionProperties)
         {
             if (IsSectionModelStateValid(sectionProperties) == false)

@@ -44,7 +44,8 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
         public string InfoMessage { get; internal set; }
 
         public bool HasInfo => !string.IsNullOrEmpty(InfoMessage);
-
+        public int IncompleteSectionCount { get; set; }
+        public string IncompleteSectionText { get; set; }
 
 
         public bool HasIncompleteSkillsSection => SkillsSectionState == VacancyPreviewSectionState.Incomplete || SkillsSectionState == VacancyPreviewSectionState.InvalidIncomplete;

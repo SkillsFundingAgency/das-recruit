@@ -2,7 +2,6 @@
 using System.Linq;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.ViewModels;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
 {
@@ -92,8 +91,8 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
         {
             return Review.FieldIndicators.Any(f => f.ReviewFieldIdentifier == fieldIdentifier);
         }
-
-
+        public int IncompleteSectionCount { get; set; }
+        public string IncompleteSectionText { get; set; }
         public IList<string> OrderedFieldNames => new List<string>
         {
             nameof(ShortDescription),
