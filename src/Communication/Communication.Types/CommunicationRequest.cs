@@ -9,7 +9,8 @@ namespace Communication.Types
         public string RequestType { get; }
         public DateTime RequestDateTime { get; }
         public string ParticipantsResolverName { get; }
-        public string OriginatingService { get; }
+        /// This will be used to discover various plugins required to process the message
+        public string OriginatingServiceName { get; }
         public List<Entity> Entities { get; }
         public CommunicationRequest(string requestType, string participantsResolverName, string originatingService)
         {
