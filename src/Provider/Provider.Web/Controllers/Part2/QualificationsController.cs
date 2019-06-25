@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
 using System.Threading.Tasks;
-using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Provider.Web.Orchestrators.Part2;
 using Esfa.Recruit.Provider.Web.RouteModel;
-using Esfa.Recruit.Provider.Web.ViewModels.Part2.Qualifications;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.ViewModels.Qualifications;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +13,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2
     [Route(RoutePaths.AccountVacancyRoutePath)]
     public class QualificationsController : Controller
     {
+        private const string QualificationDeletedTempDataKey = "QualificationDeletedTempDataKey";
         private readonly QualificationsOrchestrator _orchestrator;
 
         public QualificationsController(QualificationsOrchestrator orchestrator)
@@ -27,15 +26,31 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2
         {
             var vm = await _orchestrator.GetQualificationsViewModelAsync(vrm);
 
-            TryUpdateQualificationsFromTempData(vm);
-            
+            if (vm.Qualifications.Any() == false)
+            {
+                TempData.Remove(QualificationDeletedTempDataKey);
+                return RedirectToRoute(RouteNames.Qualification_Add_Get);
+            }
+
+
+            if (TempData[QualificationDeletedTempDataKey] != null)
+                vm.InfoMessage = "Successfully removed qualification";
+
             return View(vm);
         }
 
-        [HttpPost("qualifications", Name = RouteNames.Qualifications_Post)]
-        public async Task<IActionResult> Qualifications(VacancyRouteModel vrm, QualificationsEditModel m)
+        [HttpGet("qualification-add", Name = RouteNames.Qualification_Add_Get)]
+        public async Task<IActionResult> AddQualification(VacancyRouteModel vrm)
         {
-            var response = await _orchestrator.PostQualificationsEditModelAsync(vrm, m, User.ToVacancyUser());
+            var vm = await _orchestrator.GetAddQualificationViewModelAsync(vrm);
+
+            return View(vm);
+        }
+
+        [HttpPost("qualification-add", Name = RouteNames.Qualification_Add_Post)]
+        public async Task<IActionResult> AddQualification(VacancyRouteModel vrm, QualificationEditModel m)
+        {
+            var response = await _orchestrator.PostAddQualificationEditModelAsync(vrm, m, User.ToVacancyUser());
 
             if (!response.Success)
             {
@@ -44,27 +59,21 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2
 
             if (!ModelState.IsValid)
             {
-                var vm = await _orchestrator.GetQualificationsViewModelAsync(vrm,m);
-                
+                var vm = await _orchestrator.GetAddQualificationViewModelAsync(vrm, m);
+
                 return View(vm);
             }
 
-            if (m.IsAddingQualification || m.IsRemovingQualification)
-            {
-                TempData.Put(TempDataKeys.Qualifications, m.Qualifications);
-                return RedirectToRoute(RouteNames.Qualifications_Get);
-            }
-            
-            return RedirectToRoute(RouteNames.Vacancy_Preview_Get);
+            return RedirectToRoute(RouteNames.Qualifications_Get);
         }
 
-        private void TryUpdateQualificationsFromTempData(QualificationsViewModel vm)
+        [HttpPost("qualification-delete", Name = RouteNames.Qualification_Delete_Post)]
+        public async Task<IActionResult> DeleteQualification(VacancyRouteModel vrm, [FromForm] int index)
         {
-            if (TempData.ContainsKey(TempDataKeys.Qualifications))
-            {
-                var tempDataQualifications = TempData.Get<List<QualificationEditModel>>(TempDataKeys.Qualifications);
-                vm.Qualifications = tempDataQualifications;
-            }
+            await _orchestrator.DeleteQualificationAsync(vrm, index, User.ToVacancyUser());
+
+            TempData[QualificationDeletedTempDataKey] = 1;
+            return RedirectToRoute(RouteNames.Qualifications_Get);
         }
     }
 }
