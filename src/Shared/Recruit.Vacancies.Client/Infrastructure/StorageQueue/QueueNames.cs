@@ -11,7 +11,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue
         public const string GenerateAllVacancyAnalyticsSummariesQueueName = "generate-all-vacancy-analytics-summaries-queue";
         public const string GenerateAllVacancyApplicationsQueueName = "generate-all-vacancy-applications-queue";
         public const string GeneratePublishedVacanciesQueueName = "generate-published-vacancies-queue";
-        public const string GenerateVacancyAnalyticsQueueName = "generate-vacancy-analytics-summary";
+        public const string GenerateVacancyAnalyticsQueueName = "generate-vacancy-analytics-summary-queue";
         public const string ApplicationSubmittedQueueName = "application-submitted-queue";
         public const string ApplicationWithdrawnQueueName = "application-withdrawn-queue";
         public const string CandidateDeleteQueueName = "candidate-delete-queue";
