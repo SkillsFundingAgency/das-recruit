@@ -32,7 +32,8 @@
     <PackageReference Include="NServiceBus" Version="7.1.7" />
     <PackageReference Include="NServiceBus.MSDependencyInjection" Version="0.1.4" />
 
-    <ProjectReference Include="..\..\Communication\Communication.Core\Communication.Core.csproj" />    
+    <ProjectReference Include="..\..\Communication\Communication.Core\Communication.Core.csproj" />
+    <ProjectReference Include="..\..\Communication\Communication.Types\Communication.Types.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="appSettings.json">

@@ -11,10 +11,10 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.TimerTriggers
     public class UpdateQaDashboardTimeTrigger
     {
         private readonly ILogger<UpdateQaDashboardTimeTrigger> _logger;
-        private readonly IQueueService _queue;
+        private readonly IRecruitQueueService _queue;
         private readonly ITimeProvider _timeProvider;
 
-        public UpdateQaDashboardTimeTrigger(ILogger<UpdateQaDashboardTimeTrigger> logger, IQueueService queue, ITimeProvider timeProvider)
+        public UpdateQaDashboardTimeTrigger(ILogger<UpdateQaDashboardTimeTrigger> logger, IRecruitQueueService queue, ITimeProvider timeProvider)
         {
             _logger = logger;
             _queue = queue;

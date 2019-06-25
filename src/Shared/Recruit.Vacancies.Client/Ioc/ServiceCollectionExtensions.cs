@@ -78,16 +78,16 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             RegisterProviderApiClientDep(services, configuration);
             RegisterTableStorageProviderDeps(services, configuration);
             RegisterRepositories(services, configuration);
-            RegisterStorageProviderDeps(services, configuration);
-            RegisterQueues(services);
+            RegisterOutOfProcessEventDelegatorDeps(services, configuration);
+            RegisterQueueStorageServices(services, configuration);
             AddValidation(services);
             AddRules(services);
             RegisterMediatR(services);
-            RegisterProviderRelationshipsClient(services, configuration);     
+            RegisterProviderRelationshipsClient(services, configuration);
         }
 
         private static void RegisterProviderRelationshipsClient(IServiceCollection services, IConfiguration configuration)
-        {            
+        {
             services.Configure<ProviderRelationshipApiConfiguration>(configuration.GetSection("ProviderRelationshipsApiConfiguration"));
             services.AddTransient<IProviderRelationshipsService, ProviderRelationshipsService>();
         }
@@ -202,7 +202,6 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddTransient<IVacancyReviewQuery, MongoDbVacancyReviewRepository>();
             services.AddTransient<IApplicationReviewQuery, MongoDbApplicationReviewRepository>();
 
-            //services.AddTransient<IQueryStore, MongoQueryStore>();
             services.AddTransient<IQueryStoreReader, QueryStoreClient>();
             services.AddTransient<IQueryStoreWriter, QueryStoreClient>();
 
@@ -210,23 +209,18 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddTransient<IReferenceDataWriter, MongoDbReferenceDataRepository>();
         }
 
-        private static void RegisterStorageProviderDeps(IServiceCollection services, IConfiguration configuration)
+        private static void RegisterOutOfProcessEventDelegatorDeps(IServiceCollection services, IConfiguration configuration)
         {
-            var storageConnectionString = configuration.GetConnectionString("QueueStorage");
-
-            services.Configure<StorageQueueConnectionDetails>(options =>
-            {
-                options.ConnectionString = storageConnectionString;
-            });
-
-            services.AddSingleton(kernal => kernal.GetService<IOptions<StorageQueueConnectionDetails>>().Value);
-
             services.AddTransient<IEventStore, StorageQueueEventStore>();
         }
 
-        private static void RegisterQueues(IServiceCollection services)
+        private static void RegisterQueueStorageServices(IServiceCollection services, IConfiguration configuration)
         {
-            services.AddTransient<IQueueService, StorageQueueService>();
+            var recruitStorageConnectionString = configuration.GetConnectionString("QueueStorage");
+            var communicationStorageConnectionString = configuration.GetConnectionString("CommunicationsStorage");
+
+            services.AddTransient<IRecruitQueueService>(_ => new RecruitStorageQueueService(recruitStorageConnectionString));
+            services.AddTransient<ICommunicationQueueService>(_ => new CommunicationStorageQueueService(communicationStorageConnectionString));
         }
 
         private static void RegisterTableStorageProviderDeps(IServiceCollection services, IConfiguration configuration)
@@ -242,7 +236,7 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             if (useTableStorageQueryStore)
                 services.AddTransient<IQueryStore, TableStorageQueryStore>();
             else
-                services.AddTransient<IQueryStore, MongoQueryStore>();            
+                services.AddTransient<IQueryStore, MongoQueryStore>();
         }
 
         private static void AddValidation(IServiceCollection services)

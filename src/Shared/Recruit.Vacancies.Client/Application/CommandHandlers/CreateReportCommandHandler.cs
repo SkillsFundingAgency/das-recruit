@@ -17,13 +17,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         private readonly ILogger<CreateReportCommandHandler> _logger;
         private readonly IReportRepository _repository;
         private readonly ITimeProvider _timeProvider;
-        private readonly IQueueService _queue;
+        private readonly IRecruitQueueService _queue;
 
         public CreateReportCommandHandler(
             ILogger<CreateReportCommandHandler> logger,
             IReportRepository repository,
             ITimeProvider timeProvider,
-            IQueueService queue)
+            IRecruitQueueService queue)
         {
             _logger = logger;
             _repository = repository;
@@ -49,7 +49,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             await _repository.CreateAsync(report);
 
-            var queueMessage = new ReportQueueMessage 
+            var queueMessage = new ReportQueueMessage
             {
                 ReportId = report.Id
             };

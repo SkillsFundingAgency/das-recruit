@@ -6,6 +6,6 @@ namespace Communication.Core
 {
     public interface ICommunicationProcessor
     {
-        Task<IEnumerable<CommunicationMessage>> CreateMessages(CommunicationRequest request);
+        Task<IEnumerable<CommunicationMessage>> CreateMessagesAsync(CommunicationRequest request);
     }
 }

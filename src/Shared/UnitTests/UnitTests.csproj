@@ -13,6 +13,7 @@
     <PackageReference Include="AutoFixture" Version="4.8.0" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Jobs\Recruit.Vacancies.Jobs\Recruit.Vacancies.Jobs.csproj" />
     <ProjectReference Include="..\Recruit.Vacancies.Client\Recruit.Vacancies.Client.csproj" />
     <ProjectReference Include="..\Recruit.Shared.Web\Recruit.Shared.Web.csproj" />
   </ItemGroup>

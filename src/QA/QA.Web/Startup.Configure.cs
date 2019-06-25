@@ -3,6 +3,7 @@ using Esfa.Recruit.Qa.Web.Configuration;
 using Esfa.Recruit.Qa.Web.Configuration.Routing;
 using Esfa.Recruit.Qa.Web.Security;
 using Esfa.Recruit.Shared.Web.Middleware;
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.WsFederation;
@@ -22,9 +23,11 @@ namespace Esfa.Recruit.Qa.Web
             applicationLifetime.ApplicationStopped.Register(() => logger.LogInformation("Host fully stopped. All requests processed."));
 
             app.UseStatusCodePagesWithReExecute("/error/{0}");
-            
+
             if (env.IsDevelopment())
             {
+                var configuration = (TelemetryConfiguration)app.ApplicationServices.GetService(typeof(TelemetryConfiguration));
+                configuration.DisableTelemetry = true;
                 app.UseDeveloperExceptionPage();
             }
             else
@@ -42,27 +45,27 @@ namespace Esfa.Recruit.Qa.Web
 
             app.UseCsp(options => options
                 .DefaultSources(s => s.Self())
-                .StyleSources(s => 
+                .StyleSources(s =>
                     s.Self()
                     //TinyMCE uses inline styles
                     .UnsafeInline()
                 )
-                .ScriptSources(s => 
+                .ScriptSources(s =>
                     s.Self()
                     .CustomSources("https://az416426.vo.msecnd.net/scripts/a/ai.0.js")
                 )
-                .FontSources(s => 
+                .FontSources(s =>
                     s.Self()
                     .CustomSources("data:")
                 )
-                .ConnectSources(s => 
+                .ConnectSources(s =>
                     s.Self()
                     .CustomSources("https://dc.services.visualstudio.com")
                 )
-                .ImageSources(s => 
+                .ImageSources(s =>
                     s.Self()
                     .CustomSources("https://maps.googleapis.com")
-                 )
+                )
                 .ReportUris(r => r.Uris("/ContentPolicyReport/Report")));
 
             //Registered before static files to always set header
@@ -101,17 +104,17 @@ namespace Esfa.Recruit.Qa.Web
             app.UseXRobotsTag(options => options.NoIndex().NoFollow());
 
             app.UseNoCacheHttpHeaders(); // Affectively forces the browser to always request dynamic pages
-            
+
             app.UseMvc();
         }
 
         private static string[] GetAllowableDestinations(AuthenticationConfiguration authConfig, ExternalLinksConfiguration linksConfig)
         {
             var destinations = new List<string>();
-            
+
             if (!string.IsNullOrWhiteSpace(authConfig?.MetaDataAddress))
                 destinations.Add(authConfig.MetaDataAddress);
-            
+
             if (!string.IsNullOrWhiteSpace(linksConfig?.StaffIdamsUrl))
                 destinations.Add(linksConfig.StaffIdamsUrl);
 

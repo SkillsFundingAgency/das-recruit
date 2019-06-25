@@ -17,13 +17,13 @@ namespace Communication.Core
             IEnumerable<IParticipantResolver> participantResolvers,
             IEnumerable<IUserPreferencesProvider> userPreferencesProviders,
             IEnumerable<IEntityDataItemProvider> entityDataItemProviders)
-        {            
-            foreach (var plugin in participantResolvers) _participantResolvers.Add(plugin.ResolverName, plugin);
-            foreach (var plugin in userPreferencesProviders) _userPreferencesProviders.Add(plugin.ProviderName, plugin);
-            foreach (var plugin in entityDataItemProviders) _entityDataItemProviders.Add(plugin.ProviderName, plugin);
+        {
+            foreach (var plugin in participantResolvers) _participantResolvers.Add(plugin.ResolverServiceName, plugin);
+            foreach (var plugin in userPreferencesProviders) _userPreferencesProviders.Add(plugin.ProviderServiceName, plugin);
+            foreach (var plugin in entityDataItemProviders) _entityDataItemProviders.Add(plugin.ProviderServiceName, plugin);
         }
 
-        public async Task<IEnumerable<CommunicationMessage>> CreateMessages(CommunicationRequest request)
+        public async Task<IEnumerable<CommunicationMessage>> CreateMessagesAsync(CommunicationRequest request)
         {
             var messages = new List<CommunicationMessage>();
 
@@ -33,10 +33,10 @@ namespace Communication.Core
 
         public static IEnumerable<Participant> GetOptedInParticipants(IEnumerable<Participant> participants)
         {
-            return 
-                participants.Where(p => 
-                    p.Preferences.Channels != DeliveryChannelPreferences.None 
-                    && !(p.Preferences.Scope == NotificationScope.Individual 
+            return
+                participants.Where(p =>
+                    p.Preferences.Channels != DeliveryChannelPreferences.None
+                    && !(p.Preferences.Scope == NotificationScope.Individual
                         && p.User.Participation == UserParticipation.SecondaryUser));
         }
     }
