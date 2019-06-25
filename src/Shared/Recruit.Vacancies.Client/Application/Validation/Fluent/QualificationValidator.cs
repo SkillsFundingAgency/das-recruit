@@ -22,7 +22,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
             RuleFor(x => x.Subject)
                 .NotEmpty()
-                    .WithMessage("Select a qualification subject")
+                    .WithMessage("Provide a subject")
                     .WithErrorCode("54")
                 .MaximumLength(50)
                     .WithMessage("The qualification must not exceed {MaxLength} characters")
@@ -34,10 +34,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
             RuleFor(x => x.Grade)
                 .NotEmpty()
-                    .WithMessage("Select a qualification grade")
+                    .WithMessage("Provide a grade")
                     .WithErrorCode("55")
                 .MaximumLength(30)
-                    .WithMessage("The grade must not exceed {MaxLength} characters")
+                    .WithMessage("The grade should be no longer than {MaxLength} characters")
                     .WithErrorCode("7")
                 .ValidFreeTextCharacters()
                     .WithMessage("Grade contains some invalid characters")
