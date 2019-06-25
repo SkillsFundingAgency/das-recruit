@@ -864,11 +864,11 @@
                 "value": "[parameters('GeocodePostcodeAnywhereKey')]"
               },
               {
-                "name": "DasSharedNServiceBusConfiguration.ConnectionString",
+                "name": "DasSharedNServiceBusConfiguration:ConnectionString",
                 "value": "[parameters('DasSharedNServiceBusConfiguration').ConnectionString]"
               },
               {
-                "name": "DasSharedNServiceBusConfiguration.NServiceBusLicense",
+                "name": "DasSharedNServiceBusConfiguration:NServiceBusLicense",
                 "value": "[parameters('DasSharedNServiceBusConfiguration').NServiceBusLicense]"
               }
             ]
