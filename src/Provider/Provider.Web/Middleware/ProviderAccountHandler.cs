@@ -4,12 +4,11 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
-using Esfa.Recruit.Vacancies.Client.Application.Providers;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Filters;
-using SFA.DAS.Providers.Api.Client;
 
 namespace Esfa.Recruit.Provider.Web.Middleware
 {
@@ -95,8 +94,15 @@ namespace Esfa.Recruit.Provider.Web.Middleware
             try
             {
                 var ukprnFromClaim = context.User.FindFirst(_ukprnClaimFinderPredicate).Value;
+
+                if (long.TryParse(ukprnFromClaim, out var ukprn) == false)
+                    return false;
+
+                if (ukprn == EsfaTestTrainingProvider.Ukprn)
+                    return true;
+
                 var allProviders = await _vacancyClient.GetAllTrainingProvidersAsync();
-                var provider = allProviders.SingleOrDefault(p => p.Ukprn == long.Parse(ukprnFromClaim));
+                var provider = allProviders.SingleOrDefault(p => p.Ukprn == ukprn);
                 return provider != null;
             }
             catch (Exception)

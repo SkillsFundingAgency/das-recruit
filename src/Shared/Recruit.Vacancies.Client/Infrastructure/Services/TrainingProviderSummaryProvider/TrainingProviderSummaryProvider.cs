@@ -30,10 +30,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
             return _cache.CacheAsideAsync(
                 CacheKeys.TrainingProviders,
                 _timeProvider.NextDay6am,
-                FindAllAsyncInternal);
+                FindAllInternalAsync);
         }
 
-        private async Task<IEnumerable<TrainingProviderSummary>> FindAllAsyncInternal()
+        private async Task<IEnumerable<TrainingProviderSummary>> FindAllInternalAsync()
         {
             var response = await _providerClient.FindAllAsync();
 
