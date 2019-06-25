@@ -7,7 +7,8 @@ using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
-using Esfa.Recruit.Vacancies.Client.Domain.Events;
+using Esfa.Recruit.Vacancies.Client.Application.Queues;
+using Esfa.Recruit.Vacancies.Client.Application.Queues.Messages;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
@@ -16,12 +17,16 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         private readonly IUserRepository _userRepository;
         private readonly ITimeProvider _timeProvider;
         private readonly IMessaging _messaging;
+        private readonly IQueueService _queueService;
 
-        public UserSignedInCommandHandler(IUserRepository userRepository, ITimeProvider timeProvider, IMessaging messaging)
+        public UserSignedInCommandHandler(
+            IUserRepository userRepository, ITimeProvider timeProvider, 
+            IMessaging messaging, IQueueService queueService)
         {
             _userRepository = userRepository;
             _timeProvider = timeProvider;
             _messaging = messaging;
+            _queueService = queueService;
         }
 
         public async Task Handle(UserSignedInCommand message, CancellationToken cancellationToken)
@@ -50,7 +55,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             await _userRepository.UpsertUserAsync(userEntity);
 
-            await _messaging.PublishEvent(new UserSignedInEvent { IdamsUserId = user.UserId } );
+            if (userType == UserType.Employer)
+                await _queueService.AddMessageAsync(new UpdateUserAccountQueueMessage { IdamsUserId = user.UserId });
         }
     }
 }
