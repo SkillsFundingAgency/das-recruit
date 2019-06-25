@@ -4,6 +4,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
@@ -16,22 +17,22 @@ namespace Esfa.Recruit.Provider.Web.Middleware
     {
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly IProviderVacancyClient _client;
-        private readonly IProviderApiClient _roatpClient;
+        private readonly IRecruitVacancyClient _vacancyClient;
 
         private readonly Predicate<Claim> _ukprnClaimFinderPredicate = c => c.Type.Equals(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier);
 
-        public ProviderAccountHandler(IHostingEnvironment hostingEnvironment, IProviderVacancyClient client, IProviderApiClient roatpClient)
+        public ProviderAccountHandler(IHostingEnvironment hostingEnvironment, IProviderVacancyClient client, IRecruitVacancyClient vacancyClient)
         {
             _hostingEnvironment = hostingEnvironment;
             _client = client;
-            _roatpClient = roatpClient;
+            _vacancyClient = vacancyClient;
         }
 
         protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, ProviderAccountRequirement requirement)
         {
             var authorized = HasServiceAuthorization(context) &&
                              HasUkprnAuthorization(context) &&
-                             HasRoatpAuthorization(context);
+                             await HasRoatpAuthorizationAsync(context);
 
             if (authorized)
             {
@@ -86,7 +87,7 @@ namespace Esfa.Recruit.Provider.Web.Middleware
             return false;
         }
 
-        private bool HasRoatpAuthorization(AuthorizationHandlerContext context)
+        private async Task<bool> HasRoatpAuthorizationAsync(AuthorizationHandlerContext context)
         {
             if (HasDoneOncePerAuthorizedSessionActions(context))
                 return true;
@@ -94,7 +95,8 @@ namespace Esfa.Recruit.Provider.Web.Middleware
             try
             {
                 var ukprnFromClaim = context.User.FindFirst(_ukprnClaimFinderPredicate).Value;
-                var provider = _roatpClient.Get(ukprnFromClaim);
+                var allProviders = await _vacancyClient.GetAllTrainingProvidersAsync();
+                var provider = allProviders.SingleOrDefault(p => p.Ukprn == long.Parse(ukprnFromClaim));
                 return provider != null;
             }
             catch (Exception)

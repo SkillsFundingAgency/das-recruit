@@ -42,6 +42,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProviderSummaryProvider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummariesProvider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Slack;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
@@ -144,6 +145,8 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddTransient<ISlackClient, SlackClient>();
             services.AddTransient<IGeocodeServiceFactory, GeocodeServiceFactory>();
             services.AddTransient<IGetVacancyTitlesProvider, VacancyApiTitlesProvider>();
+            services.AddTransient<ITrainingProviderService, TrainingProviderService>();
+            services.AddTransient<ITrainingProviderSummaryProvider, TrainingProviderSummaryProvider>();
 
             // Projection services
             services.AddTransient<IEmployerDashboardProjectionService, EmployerDashboardProjectionService>();
@@ -161,7 +164,6 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddTransient<IProfanityListProvider, ProfanityListProvider>();
             services.AddTransient<IBannedPhrasesProvider, BannedPhrasesProvider>();
             services.AddTransient<IBlockedEmployersProvider, BlockedEmployersProvider>();
-            services.AddTransient<ITrainingProviderService, TrainingProviderService>();
 
             // Query Data Providers
             services.AddTransient<IVacancySummariesProvider, VacancySummariesProvider>();

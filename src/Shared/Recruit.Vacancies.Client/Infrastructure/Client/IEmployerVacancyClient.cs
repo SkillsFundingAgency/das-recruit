@@ -25,6 +25,5 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<User> GetUsersDetailsAsync(string userId);
         Task SaveLevyDeclarationAsync(string userId, string employerAccountId);
         Task<TrainingProvider> GetTrainingProviderAsync(long ukprn);
-        Task<IEnumerable<TrainingProviderSuggestion>> GetAllTrainingProviders();
     }
 }

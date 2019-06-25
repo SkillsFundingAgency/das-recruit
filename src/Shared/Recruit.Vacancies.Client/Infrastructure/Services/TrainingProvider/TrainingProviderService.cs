@@ -2,8 +2,6 @@
 using SFA.DAS.Apprenticeships.Api.Types.Providers;
 using SFA.DAS.Providers.Api.Client;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
@@ -35,17 +33,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
             }
 
             return TrainingProviderMapper.MapFromApiProvider(provider);
-        }
-
-        public async Task<IEnumerable<TrainingProviderSuggestion>> FindAllAsync()
-        {
-            var response = await _providerClient.FindAllAsync();
-
-            return response.Select(r => new TrainingProviderSuggestion
-            {
-                Ukprn = r.Ukprn,
-                ProviderName = r.ProviderName
-            });
         }
     }
 }

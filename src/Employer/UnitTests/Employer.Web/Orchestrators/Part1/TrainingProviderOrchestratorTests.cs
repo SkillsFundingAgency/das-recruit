@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.TrainingProvider;
 using Esfa.Recruit.Shared.Web.Services;
@@ -166,29 +167,16 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
 
             var mockRecruitClient = new Mock<IRecruitVacancyClient>();
             mockRecruitClient.Setup(c => c.GetVacancyAsync(VacancyId)).ReturnsAsync(vacancy);
+            mockRecruitClient.Setup(c => c.GetAllTrainingProvidersAsync()).ReturnsAsync(new List<TrainingProviderSummary>
+            {
+                new TrainingProviderSummary{ProviderName = "MR EGG",Ukprn = 88888888},
+                new TrainingProviderSummary{ProviderName = "MRS EGG",Ukprn = 88888889}
+            });
 
             var mockLog = new Mock<ILogger<TrainingProviderOrchestrator>>();
             var mockReview = new Mock<IReviewSummaryService>();
 
-            var mockCache = new Mock<ICache>();
-            Func<Task<IEnumerable<TrainingProviderSuggestion>>> cacheFunc = () =>
-            {
-                var providers = new List<TrainingProviderSuggestion>
-                {
-                    new TrainingProviderSuggestion{ProviderName = "MR EGG",Ukprn = 88888888},
-                    new TrainingProviderSuggestion{ProviderName = "MRS EGG",Ukprn = 88888889}
-                };
-                return Task.FromResult(providers.AsEnumerable());
-            };
-            mockCache.Setup(c => c.CacheAsideAsync(CacheKeys.TrainingProviders, It.IsAny<DateTime>(), It.IsAny<Func<Task<IEnumerable<TrainingProviderSuggestion>>>>()))
-                .Returns(Task.FromResult(new List<TrainingProviderSuggestion>
-                {
-                    new TrainingProviderSuggestion{ProviderName = "MR EGG",Ukprn = 88888888},
-                    new TrainingProviderSuggestion{ProviderName = "MRS EGG",Ukprn = 88888889}
-                }.AsEnumerable()));
-            var timeProvider = new CurrentUtcTimeProvider();
-
-            return new TrainingProviderOrchestrator(mockClient.Object, mockRecruitClient.Object, mockLog.Object, mockReview.Object, mockCache.Object, timeProvider);
+            return new TrainingProviderOrchestrator(mockClient.Object, mockRecruitClient.Object, mockLog.Object, mockReview.Object);
         }
     }
 }
