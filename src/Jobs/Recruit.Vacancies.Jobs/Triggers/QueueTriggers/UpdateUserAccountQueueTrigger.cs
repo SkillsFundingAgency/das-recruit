@@ -26,7 +26,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers {
         }
 
         public async Task UpdateUserAccountAsync (
-            [QueueTrigger (QueueNames.UpdateUserAccountQueueName, Connection = "QueueStorage")] string payload, TextWriter log) 
+            [QueueTrigger (QueueNames.UpdateEmployerUserAccountQueueName, Connection = "QueueStorage")] string payload, TextWriter log) 
         {
             if (_jobsConfig.DisabledJobs.Contains(JobName))
             {
@@ -34,7 +34,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers {
                 return;
             }
 
-            var message = JsonConvert.DeserializeObject<UpdateUserAccountQueueMessage>(payload);
+            var message = JsonConvert.DeserializeObject<UpdateEmployerUserAccountQueueMessage>(payload);
 
             _logger.LogInformation("Starting update user account");
 

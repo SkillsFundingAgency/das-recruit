@@ -36,7 +36,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.NServiceBus.EventHandlers
             var shouldUpdateUser = await DoesUserExistsAsync(userIdamsId);
             if (shouldUpdateUser) 
             {
-                await _queueService.AddMessageAsync (new UpdateUserAccountQueueMessage { IdamsUserId = userIdamsId.ToString () });
+                await _queueService.AddMessageAsync (new UpdateEmployerUserAccountQueueMessage { IdamsUserId = userIdamsId.ToString () });
             }
         }
 
