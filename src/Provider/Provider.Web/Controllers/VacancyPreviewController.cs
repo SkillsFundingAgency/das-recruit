@@ -97,7 +97,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             if (CheckIfSectionIsIncomplete(viewModel.SkillsSectionState))
                 count++;
             if (CheckIfSectionIsIncomplete(viewModel.DescriptionsSectionState))
-                count++;
+                count+=3;
             if (CheckIfSectionIsIncomplete(viewModel.QualificationsSectionState))
                 count++;
             if (CheckIfSectionIsIncomplete(viewModel.EmployerDescriptionSectionState))
