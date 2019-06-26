@@ -24,7 +24,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue
             { typeof(UpdateQaDashboardQueueMessage), QueueNames.UpdateQaDashboardQueueName },
             { typeof(VacancyAnalyticsQueueMessage), QueueNames.GenerateVacancyAnalyticsQueueName },
             { typeof(VacancyStatusQueueMessage), QueueNames.VacancyStatusQueueName },
-            { typeof(UpdateUserAccountQueueMessage), QueueNames.UpdateUserAccountQueueName }
+            { typeof(UpdateEmployerUserAccountQueueMessage), QueueNames.UpdateEmployerUserAccountQueueName }
         };
 
         private readonly string _connectionString;

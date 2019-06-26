@@ -21,6 +21,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue
         public const string DeleteReportsQueueName = "delete-reports-queue";
         public const string VacancyStatusQueueName = "vacancy-status-queue";
         public const string UpdateBankHolidaysQueueName = "update-bank-holidays-queue";
-        public const string UpdateUserAccountQueueName = "update-user-account-queue";
+        public const string UpdateEmployerUserAccountQueueName = "update-employer-user-account-queue";
     }
 }

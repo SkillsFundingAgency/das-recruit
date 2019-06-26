@@ -16,16 +16,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
     {
         private readonly IUserRepository _userRepository;
         private readonly ITimeProvider _timeProvider;
-        private readonly IMessaging _messaging;
         private readonly IQueueService _queueService;
 
         public UserSignedInCommandHandler(
-            IUserRepository userRepository, ITimeProvider timeProvider, 
-            IMessaging messaging, IQueueService queueService)
+            IUserRepository userRepository, ITimeProvider timeProvider, IQueueService queueService)
         {
             _userRepository = userRepository;
             _timeProvider = timeProvider;
-            _messaging = messaging;
             _queueService = queueService;
         }
 
@@ -56,7 +53,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             await _userRepository.UpsertUserAsync(userEntity);
 
             if (userType == UserType.Employer)
-                await _queueService.AddMessageAsync(new UpdateUserAccountQueueMessage { IdamsUserId = user.UserId });
+                await _queueService.AddMessageAsync(new UpdateEmployerUserAccountQueueMessage { IdamsUserId = user.UserId });
         }
     }
 }
