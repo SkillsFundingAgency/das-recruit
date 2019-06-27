@@ -7,8 +7,6 @@
         Intermediate = 2,
         Advanced = 3,
         Higher = 4,
-        FoundationDegree = 5,
-        Degree = 6,
-        Masters = 7
+        Degree = 6
     }
 }
