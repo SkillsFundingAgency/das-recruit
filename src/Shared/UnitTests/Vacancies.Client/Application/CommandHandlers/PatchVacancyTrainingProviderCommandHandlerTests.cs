@@ -38,7 +38,6 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
             _handler = new PatchVacancyTrainingProviderCommandHandler(
                 Mock.Of<ILogger<PatchVacancyTrainingProviderCommandHandler>>(),
                 _mockRepository.Object,
-                Mock.Of<IMessaging>(),
                 _mockTrainingProvider.Object
             );
         }

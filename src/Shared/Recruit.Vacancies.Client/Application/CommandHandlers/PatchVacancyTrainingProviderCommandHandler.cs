@@ -1,8 +1,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using MediatR;
@@ -13,32 +13,15 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
     public class PatchVacancyTrainingProviderCommandHandler : IRequestHandler<PatchVacancyTrainingProviderCommand>
     {
         private readonly IVacancyRepository _repository;
-        private readonly IMessaging _messaging;
         private readonly ILogger<PatchVacancyTrainingProviderCommandHandler> _logger;
         private readonly ITrainingProviderService _trainingProviderService;
-
-        private readonly TrainingProvider _esfaTrainingProvider = new TrainingProvider
-        {
-            Ukprn = 10033670,
-            Name = "Education Skills Funding Agency",
-            Address = new Address
-            {
-                AddressLine1 = "Cheylesmore House",
-                AddressLine2 = "Quinton Road",
-                AddressLine3 = "Coventry",
-                AddressLine4 = "",
-                Postcode = "CV1 2WT"
-            }
-        };
 
         public PatchVacancyTrainingProviderCommandHandler(
             ILogger<PatchVacancyTrainingProviderCommandHandler> logger,
             IVacancyRepository repository,
-            IMessaging messaging,
             ITrainingProviderService trainingProviderService)
         {
             _repository = repository;
-            _messaging = messaging;
             _logger = logger;
             _trainingProviderService = trainingProviderService;
         }
@@ -63,9 +46,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             TrainingProvider tp;
 
-            if (vacancy.TrainingProvider.Ukprn.Value.Equals(_esfaTrainingProvider.Ukprn))
+            if (vacancy.TrainingProvider.Ukprn.Value.Equals(EsfaTestTrainingProvider.Ukprn))
             {
-                tp = _esfaTrainingProvider;
+                tp = GetEsfaTestTrainingProvider();
             }
             else
             {
@@ -84,6 +67,23 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         {
             vacancy.TrainingProvider.Name = tp.Name;
             vacancy.TrainingProvider.Address = tp.Address;
+        }
+
+        private TrainingProvider GetEsfaTestTrainingProvider()
+        {
+            return new TrainingProvider
+            {
+                Ukprn = EsfaTestTrainingProvider.Ukprn,
+                Name = EsfaTestTrainingProvider.Name,
+                Address = new Address
+                {
+                    AddressLine1 = EsfaTestTrainingProvider.AddressLine1,
+                    AddressLine2 = EsfaTestTrainingProvider.AddressLine2,
+                    AddressLine3 = EsfaTestTrainingProvider.AddressLine3,
+                    AddressLine4 = EsfaTestTrainingProvider.AddressLine4,
+                    Postcode = EsfaTestTrainingProvider.Postcode
+                }
+            };
         }
     }
 }
