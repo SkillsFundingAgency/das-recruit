@@ -2,6 +2,7 @@
 {
     public class SubmitVacancyResponse
     {
+        public bool HasProviderAgreement { get; set; }
         public bool HasLegalEntityAgreement { get; set; }
         public bool IsSubmitted { get; set; }
     }

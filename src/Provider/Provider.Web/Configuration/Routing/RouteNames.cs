@@ -70,6 +70,7 @@
         public const string Title_Post = "Title_Post";
         public const string NumberOfPositions_Get = "NumberOfPositions_Get";
         public const string NumberOfPositions_Post = "NumberOfPositions_Post";
+        public const string ProviderAgreement_HardStop_Get = "ProviderAgreement_HardStop_Get";
         public const string Training_Get = "Training_Get";
         public const string Training_Post = "Training_Post";
         public const string Vacancy_Preview_Get = "Vacancy_Preview_Get";
