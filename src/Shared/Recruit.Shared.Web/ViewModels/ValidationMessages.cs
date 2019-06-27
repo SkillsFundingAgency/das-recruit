@@ -19,14 +19,6 @@ namespace Esfa.Recruit.Shared.Web.ViewModels
             }
         }
 
-        public static class TrainingProviderValidationMessages
-        {
-            public static class TypeOfUkprn
-            {
-                public const string UkprnFormat = "UKPRN is not recognised";
-            }
-        }
-
         public static class WageValidationMessages
         {
             public static class TypeOfInteger

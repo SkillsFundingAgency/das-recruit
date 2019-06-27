@@ -45,7 +45,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
             vm.PageInfo.SetWizard(wizard);
             return View(vm);
         }
-        
+
         [HttpPost("legal-entity", Name = RouteNames.LegalEntity_Post)]
         public async Task<IActionResult> LegalEntity(LegalEntityEditModel m, [FromQuery] bool wizard)
         {
@@ -54,8 +54,8 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
             {
                 //something went wrong, the matching cookie was not found
                 //Redirect the user with validation error to allow them to continue
-                ModelState.AddModelError(nameof(LegalEntityEditModel.SelectedOrganisationId), 
-                    ValidationMessages.EmployerNameValidationMessages.EmployerNameRequired);
+                ModelState.AddModelError(nameof(LegalEntityEditModel.SelectedOrganisationId),
+                    ValidationMessages.EmployerSelectionValidationMessages.EmployerSelectionRequired);
             }
 
             if (!ModelState.IsValid)

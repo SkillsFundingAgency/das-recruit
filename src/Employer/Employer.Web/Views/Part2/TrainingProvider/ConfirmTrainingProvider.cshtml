@@ -2,20 +2,26 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-0">@Model.Title</h1>
-
-        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+        <h1 class="govuk-heading-xl">
+            <span class="govuk-caption-l">@Model.Title</span>
+            Save this training provider
+        </h1>
 
         <div class="verification-summary">
-            <h3 class="govuk-heading-s">@Model.ProviderName</h3>
-            <h3 class="govuk-heading-s">@Model.ProviderAddress</h3>
-            <h3 class="govuk-heading-s">UKPRN: @Model.Ukprn</h3>
+            <h2 class="govuk-heading-m">
+                @Model.ProviderName
+                <span class="govuk-caption-m">
+                    @Model.ProviderAddress
+                    <br />UKPRN: @Model.Ukprn
+                </span>
+            </h2>
         </div>
+
         <form asp-route="@RouteNames.TrainingProvider_Confirm_Post">
             <input asp-for="Ukprn" type="hidden" />
             <div class="govuk-form-group">
                 <input type="submit" value="Confirm training provider" esfa-automation="btn-continue" class="govuk-button" />
-                <a asp-route="@RouteNames.TrainingProvider_Select_Get" esfa-automation="link-change" class="govuk-link das-button-link">Change training provider</a>
+                <a asp-route="@RouteNames.TrainingProvider_Select_Get" asp-route-clear="true" esfa-automation="link-change" class="govuk-link das-button-link">Change training provider</a>
                 <a asp-route="@RouteNames.Vacancy_Preview_Get" esfa-automation="link-cancel" class="govuk-link das-button-link">Cancel</a>
             </div>
         </form>

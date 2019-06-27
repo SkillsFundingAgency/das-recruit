@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using Esfa.Recruit.Employer.Web.ViewModels.Part2.TrainingProvider;
 using Xunit;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.TrainingProvider
@@ -22,13 +23,31 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.TrainingProvid
                 Ukprn = inputUkprn
             };
 
-            var context = new ValidationContext(vm, null, null);
-            var result = new List<ValidationResult>();
+            var validator = new ConfirmTrainingProviderEditModelValidator();
 
-            var isValid = Validator.TryValidateObject(vm, context, result, true);
+            var result = validator.Validate(vm);
 
-            isValid.Should().BeFalse();
-            result.Single(r => r.MemberNames.Single() == "Ukprn").ErrorMessage.Should().Be("The UKPRN field is required.");
+            result.IsValid.Should().BeFalse();
+            result.Errors.Count.Should().Be(1);
+            result.Errors[0].PropertyName.Should().Be("Ukprn");
+            result.Errors[0].ErrorMessage.Should().Be("The UKPRN field is required");
+        }
+
+        [Fact]
+        public void ShouldErrorIfUkprnIsInvalid()
+        {
+            var vm = new ConfirmTrainingProviderEditModel {
+                Ukprn = "invalid ukprn"
+            };
+
+            var validator = new ConfirmTrainingProviderEditModelValidator();
+
+            var result = validator.Validate(vm);
+
+            result.IsValid.Should().BeFalse();
+            result.Errors.Count.Should().Be(1);
+            result.Errors[0].PropertyName.Should().Be("Ukprn");
+            result.Errors[0].ErrorMessage.Should().Be("UKPRN is not recognised");
         }
 
         [Fact]
@@ -39,12 +58,11 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.TrainingProvid
                 Ukprn = "12345678"
             };
 
-            var context = new ValidationContext(vm, null, null);
-            var result = new List<ValidationResult>();
+            var validator = new ConfirmTrainingProviderEditModelValidator();
 
-            var isValid = Validator.TryValidateObject(vm, context, result, true);
+            var result = validator.Validate(vm);
 
-            isValid.Should().BeTrue();
+            result.IsValid.Should().BeTrue();
         }
     }
 }

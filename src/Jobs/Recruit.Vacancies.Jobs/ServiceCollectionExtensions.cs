@@ -1,5 +1,6 @@
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.FAA;
 using Esfa.Recruit.Vacancies.Client.Ioc;
 using Esfa.Recruit.Vacancies.Jobs.AnalyticsSummaryProcessor;
 using Esfa.Recruit.Vacancies.Jobs.Configuration;
@@ -43,6 +44,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddScoped<UpdateQaDashboardQueueTrigger>();
             services.AddScoped<GenerateBlockedEmployersQueueTrigger>();
             services.AddScoped<GenerateVacancyAnalyticsSummaryQueueTrigger>();
+            services.AddTransient<IFaaService, FaaService>();
 #if DEBUG
             services.AddScoped<SpikeQueueTrigger>();
 #endif

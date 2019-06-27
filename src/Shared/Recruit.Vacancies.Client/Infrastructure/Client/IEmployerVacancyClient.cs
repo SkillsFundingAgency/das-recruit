@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
@@ -23,7 +24,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task SetApplicationReviewUnsuccessful(Guid applicationReviewId, string candidateFeedback, VacancyUser user);
         Task<User> GetUsersDetailsAsync(string userId);
         Task SaveLevyDeclarationAsync(string userId, string employerAccountId);
-        Task<bool> GetTrainingProviderExistsAsync(long ukprn);
         Task<TrainingProvider> GetTrainingProviderAsync(long ukprn);
+        Task<IEnumerable<TrainingProviderSuggestion>> GetAllTrainingProviders();
     }
 }

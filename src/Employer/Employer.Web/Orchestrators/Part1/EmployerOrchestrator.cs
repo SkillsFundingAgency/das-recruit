@@ -7,9 +7,7 @@ using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
-using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Extensions;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Shared.Web.Helpers;
 using System;
@@ -17,7 +15,7 @@ using Esfa.Recruit.Shared.Web.ViewModels;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
-    public class EmployerOrchestrator 
+    public class EmployerOrchestrator
     {
         private readonly IEmployerVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
@@ -56,6 +54,13 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 SearchTerm = searchTerm
             };
 
+            if (vacancy.LegalEntityId != 0 && (selectedLegalEntityId.HasValue == false || selectedLegalEntityId == 0))
+            {
+                selectedLegalEntityId = vacancy.LegalEntityId;
+            }
+
+            vm.IsPreviouslySelectedLegalEntityStillValid = selectedLegalEntityId.HasValue && legalEntities.Any(le => le.Id == selectedLegalEntityId);
+
             var filteredLegalEntities = legalEntities
                 .Where(le => string.IsNullOrEmpty(searchTerm) || le.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
                 .OrderBy(v => v.Name)
@@ -64,12 +69,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var filteredLegalEntitiesTotal = filteredLegalEntities.Count();
 
             var totalNumberOfPages = (int)Math.Ceiling((double)filteredLegalEntitiesTotal / MaxLegalEntitiesPerPage);
-            var indexOfSelectedLegalEntity = selectedLegalEntityId.HasValue ? filteredLegalEntities.FindIndex(le => le.Id == selectedLegalEntityId.Value) + 1 : NotFoundIndex;
+            var indexOfSelectedLegalEntity = selectedLegalEntityId.HasValue
+                                                ? filteredLegalEntities.FindIndex(le => le.Id == selectedLegalEntityId.Value) + 1
+                                                : NotFoundIndex;
 
-            if (indexOfSelectedLegalEntity > MaxLegalEntitiesPerPage && requestedPageNo.HasValue == false)
-                setPage = PagingHelper.GetPageNoOfSelectedItem(totalNumberOfPages, MaxLegalEntitiesPerPage, indexOfSelectedLegalEntity);
-            else
-                setPage = setPage > totalNumberOfPages ? 1 : setPage;
+            setPage = GetPageNo(requestedPageNo, setPage, totalNumberOfPages, indexOfSelectedLegalEntity);
 
             SetFilteredOrganisationsForPage(setPage, vm, filteredLegalEntities);
             SetPager(searchTerm, setPage, vm, filteredLegalEntitiesTotal);
@@ -96,12 +100,21 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             return vm;
         }
 
-        private void SetPager(string searchTerm, int setPage, EmployerViewModel vm, int filteredLegalEntitiesTotal)
+        private int GetPageNo(int? requestedPageNo, int page, int totalNumberOfPages, int indexOfSelectedLegalEntity)
+        {
+            if (indexOfSelectedLegalEntity > MaxLegalEntitiesPerPage && requestedPageNo.HasValue == false)
+                page = PagingHelper.GetPageNoOfSelectedItem(totalNumberOfPages, MaxLegalEntitiesPerPage, indexOfSelectedLegalEntity);
+            else
+                page = page > totalNumberOfPages ? 1 : page;
+            return page;
+        }
+
+        private void SetPager(string searchTerm, int page, EmployerViewModel vm, int filteredLegalEntitiesTotal)
         {
             var pager = new PagerViewModel(
                             filteredLegalEntitiesTotal,
                             MaxLegalEntitiesPerPage,
-                            setPage,
+                            page,
                             "Showing {0} to {1} of {2} organisations",
                             RouteNames.Employer_Get,
                             new Dictionary<string, string>
@@ -112,9 +125,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             vm.Pager = pager;
         }
 
-        private void SetFilteredOrganisationsForPage(int setPage, EmployerViewModel vm, List<OrganisationViewModel> filteredLegalEntities)
+        private void SetFilteredOrganisationsForPage(int page, EmployerViewModel vm, List<OrganisationViewModel> filteredLegalEntities)
         {
-            var skip = (setPage - 1) * MaxLegalEntitiesPerPage;
+            var skip = (page - 1) * MaxLegalEntitiesPerPage;
 
             vm.Organisations = filteredLegalEntities
                 .Skip(skip)
@@ -127,16 +140,15 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             if (info == null || !info.LegalEntities.Any())
             {
                 _logger.LogError("No legal entities found for {employerAccountId}", employerAccountId);
-                return new List<OrganisationViewModel>(); 
+                return new List<OrganisationViewModel>();
             }
 
             return info.LegalEntities.Select(ConvertToOrganisationViewModel).ToList();
         }
-        
+
         private OrganisationViewModel ConvertToOrganisationViewModel(LegalEntity data)
         {
             return new OrganisationViewModel { Id = data.LegalEntityId, Name = data.Name};
         }
-        
     }
 }

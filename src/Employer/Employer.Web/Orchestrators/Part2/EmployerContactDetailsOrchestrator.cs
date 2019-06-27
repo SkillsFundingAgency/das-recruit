@@ -35,7 +35,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                 Title = vacancy.Title,
                 EmployerContactName = vacancy.EmployerContact?.Name,
                 EmployerContactEmail = vacancy.EmployerContact?.Email,
-                EmployerContactPhone = vacancy.EmployerContact?.Phone
+                EmployerContactPhone = vacancy.EmployerContact?.Phone,
+                EmployerTitle = await GetEmployerTitleAsync(vacancy)
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
@@ -85,6 +86,14 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             mappings.Add(e => e.EmployerContact.Phone, vm => vm.EmployerContactPhone);
 
             return mappings;
+        }
+
+        private async Task<string> GetEmployerTitleAsync(Vacancy vacancy)
+        {
+            if (vacancy.IsAnonymous)
+                return vacancy.LegalEntityName;
+
+            return await _vacancyClient.GetEmployerNameAsync(vacancy);
         }
     }
 }

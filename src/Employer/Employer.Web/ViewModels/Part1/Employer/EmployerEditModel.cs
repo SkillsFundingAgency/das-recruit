@@ -6,7 +6,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer
 {
     public class EmployerEditModel : VacancyRouteModel
     {
-        [Required(ErrorMessage = ValidationMessages.EmployerNameValidationMessages.EmployerNameRequired)]
+        [Required(ErrorMessage = ValidationMessages.EmployerSelectionValidationMessages.EmployerSelectionRequired)]
         public long? SelectedOrganisationId { get; set; }
 
         public string SearchTerm { get; set; }

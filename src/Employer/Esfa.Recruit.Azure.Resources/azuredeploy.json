@@ -848,6 +848,10 @@
                 "value": "[parameters('FindAnApprenticeshipDetailPrefixUrl')]"
               },
               {
+                "name": "FaaConfiguration:StorageConnectionString",
+                "value": "[parameters('FaaConfiguration').StorageConnectionString]"
+              },
+              {
                 "name": "Geocode:PostcodeAnywhereKey",
                 "value": "[parameters('GeocodePostcodeAnywhereKey')]"
               }
