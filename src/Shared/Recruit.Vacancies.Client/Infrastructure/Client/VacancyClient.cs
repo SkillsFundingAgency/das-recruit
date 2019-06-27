@@ -41,6 +41,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly IEmployerService _employerService;
         private readonly IReportRepository _reportRepository;
         private readonly IReportService _reportService;
+        private readonly ITrainingProviderSummaryProvider _trainingProviderSummaryProvider;
 
         public VacancyClient(
             IVacancyRepository repository,
@@ -61,7 +62,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             ITrainingProviderService trainingProviderService,
             IEmployerService employerService,
             IReportRepository reportRepository,
-            IReportService reportService)
+            IReportService reportService,
+            ITrainingProviderSummaryProvider trainingProviderSummaryProvider)
         {
             _repository = repository;
             _reader = reader;
@@ -82,6 +84,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _employerService = employerService;
             _reportRepository = reportRepository;
             _reportService = reportService;
+            _trainingProviderSummaryProvider = trainingProviderSummaryProvider;
         }
 
         public Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user)
@@ -450,9 +453,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _trainingProviderService.GetProviderAsync(ukprn);
         }
 
-        public Task<IEnumerable<TrainingProviderSuggestion>> GetAllTrainingProviders()
+        public Task<IEnumerable<TrainingProviderSummary>> GetAllTrainingProvidersAsync()
         {
-            return _trainingProviderService.FindAllAsync();
+            return _trainingProviderSummaryProvider.FindAllAsync();
         }
 
         public Task<VacancyAnalyticsSummary> GetVacancyAnalyticsSummaryAsync(long vacancyReference)

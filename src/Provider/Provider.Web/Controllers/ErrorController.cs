@@ -10,12 +10,14 @@ using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels;
 using Esfa.Recruit.Provider.Web.ViewModels.Error;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using SFA.DAS.Providers.Api.Client;
 
 namespace Esfa.Recruit.Provider.Web.Controllers
 {
@@ -24,11 +26,13 @@ namespace Esfa.Recruit.Provider.Web.Controllers
     {
         private readonly ILogger<ErrorController> _logger;
         private readonly ExternalLinksConfiguration _externalLinks;
+        private readonly IRecruitVacancyClient _vacancyClient;
 
-        public ErrorController(ILogger<ErrorController> logger, IOptions<ExternalLinksConfiguration> externalLinks)
+        public ErrorController(ILogger<ErrorController> logger, IOptions<ExternalLinksConfiguration> externalLinks, IRecruitVacancyClient vacancyClient)
         {
             _logger = logger;
             _externalLinks = externalLinks.Value;
+            _vacancyClient = vacancyClient;
         }
 
         [Route("error/{id?}")]
@@ -141,6 +145,29 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 return Redirect(_externalLinks.ProviderApprenticeshipSiteUrl);
             }
 
+            var ukprnClaim = User.FindFirst(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier);
+            if (!string.IsNullOrEmpty(ukprnClaim.Value))
+            {
+                var ukprn = long.Parse(ukprnClaim.Value);
+                bool ukprnIsNotListedInRoatp;
+                try
+                {
+                    var allProviders = _vacancyClient.GetAllTrainingProvidersAsync().Result;
+                    var provider = allProviders.SingleOrDefault(p => p.Ukprn == ukprn);
+                    ukprnIsNotListedInRoatp = provider == null;
+                }
+                catch (Exception)
+                {
+                    ukprnIsNotListedInRoatp = true;
+                }
+
+                if (ukprnIsNotListedInRoatp)
+                {
+                    _logger.LogInformation($"Provider {ukprn} is not listed in RoATP for user {User.Identity.Name}.");
+                    return Redirect(_externalLinks.ProviderApprenticeshipSiteUrl);
+                }
+            }
+            
             Response.StatusCode = (int)HttpStatusCode.Unauthorized;
             return View(ViewNames.AccessDenied);
         }
