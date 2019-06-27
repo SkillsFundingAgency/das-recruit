@@ -57,6 +57,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<IGeocodeImageService>(_ => new GoogleMapsGeocodeImageService(configuration.GetValue<string>("GoogleMapsPrivateKey")));
             services.AddTransient<IReviewSummaryService, ReviewSummaryService>();
             services.AddTransient<IFaaService, FaaService>();
+            services.AddTransient<ILegalEntityAgreementService, LegalEntityAgreementService>();
         }
 
         private static void RegisterFluentValidators(IServiceCollection services)
@@ -75,6 +76,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<EmployerOrchestrator>();
             services.AddTransient<LegalEntityOrchestrator>();
             services.AddTransient<EmployerNameOrchestrator>();
+            services.AddTransient<LegalEntityAgreementOrchestrator>();
             services.AddTransient<LocationOrchestrator>();
             services.AddTransient<ProviderContactDetailsOrchestrator>();
             services.AddTransient<QualificationsOrchestrator>();

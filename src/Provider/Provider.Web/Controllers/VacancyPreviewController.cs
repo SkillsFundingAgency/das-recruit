@@ -52,7 +52,15 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             }
 
             if (ModelState.IsValid)
-                return RedirectToRoute(RouteNames.Submitted_Index_Get);
+            {
+                if (response.Data.IsSubmitted)
+                    return RedirectToRoute(RouteNames.Submitted_Index_Get);
+
+                if (response.Data.HasLegalEntityAgreement == false)
+                    return RedirectToRoute(RouteNames.LegalEntityAgreement_HardStop_Get);
+
+                throw new Exception("Unknown submit state");
+            }
 
             var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(m);
 
