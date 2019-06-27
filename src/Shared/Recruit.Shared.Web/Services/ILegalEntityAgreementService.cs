@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Esfa.Recruit.Employer.Web.Services
+namespace Esfa.Recruit.Shared.Web.Services
 {
     public interface ILegalEntityAgreementService
     {

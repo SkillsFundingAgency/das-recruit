@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 
-namespace Esfa.Recruit.Employer.Web.Services
+namespace Esfa.Recruit.Shared.Web.Services
 {
     public class LegalEntityAgreementService : ILegalEntityAgreementService
     {

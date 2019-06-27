@@ -8,7 +8,7 @@ using FluentAssertions;
 using Moq;
 using Xunit;
 
-namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Services
+namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.Services
 {
     public class LegalEntityAgreementServiceTests
     {
