@@ -45,6 +45,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly IReportService _reportService;
         private readonly IUserNotificationPreferencesRepository _userNotificationPreferencesRepository;
         private readonly AbstractValidator<UserNotificationPreferences> _userNotificationPreferencesValidator;
+        private readonly ITrainingProviderSummaryProvider _trainingProviderSummaryProvider;
 
         public VacancyClient(
             IVacancyRepository repository,
@@ -67,7 +68,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             IReportRepository reportRepository,
             IReportService reportService,
             IUserNotificationPreferencesRepository userNotificationPreferencesRepository,
-            AbstractValidator<UserNotificationPreferences> userNotificationPreferencesValidator)
+            AbstractValidator<UserNotificationPreferences> userNotificationPreferencesValidator),
+            IReportService reportService,
+            ITrainingProviderSummaryProvider trainingProviderSummaryProvider)
         {
             _repository = repository;
             _reader = reader;
@@ -90,6 +93,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _reportService = reportService;
             _userNotificationPreferencesRepository = userNotificationPreferencesRepository;
             _userNotificationPreferencesValidator = userNotificationPreferencesValidator;
+            _trainingProviderSummaryProvider = trainingProviderSummaryProvider;
         }
 
         public Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user)
@@ -458,9 +462,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _trainingProviderService.GetProviderAsync(ukprn);
         }
 
-        public Task<IEnumerable<TrainingProviderSuggestion>> GetAllTrainingProviders()
+        public Task<IEnumerable<TrainingProviderSummary>> GetAllTrainingProvidersAsync()
         {
-            return _trainingProviderService.FindAllAsync();
+            return _trainingProviderSummaryProvider.FindAllAsync();
         }
 
         public Task<VacancyAnalyticsSummary> GetVacancyAnalyticsSummaryAsync(long vacancyReference)
