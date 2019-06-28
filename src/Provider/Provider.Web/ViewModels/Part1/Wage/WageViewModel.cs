@@ -25,6 +25,9 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Wage
 
         public string WageAdditionalInformation { get; set; }
         public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
+        
+        public string TrainingTitle { get; set; }
+        public int TrainingDurationMonths { get; set; }
 
         public IList<string> OrderedFieldNames => new List<string>
         {
@@ -37,5 +40,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Wage
         };
 
         public PartOnePageInfoViewModel PageInfo { get; set; }
+
+        public bool ShowTraining => string.IsNullOrWhiteSpace(TrainingTitle) == false && TrainingDurationMonths > 0;
     }
 }
