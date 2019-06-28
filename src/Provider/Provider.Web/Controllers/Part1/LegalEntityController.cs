@@ -42,6 +42,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
                 return RedirectToRoute(RouteNames.EmployerName_Get, new {Wizard = wizard});
             }
 
+            vm.Pager.OtherRouteValues.Add(nameof(wizard), wizard);
             vm.PageInfo.SetWizard(wizard);
             return View(vm);
         }
@@ -62,6 +63,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
             {
                 var vm = await _orchestrator.GetLegalEntityViewModelAsync(m, User.GetUkprn(), m.SearchTerm, m.Page, info.LegalEntityId);
                 SetVacancyEmployerInfoCookie(vm.VacancyEmployerInfoModel);
+                vm.Pager.OtherRouteValues.Add(nameof(wizard), wizard.ToString());
                 vm.PageInfo.SetWizard(wizard);
                 return View(vm);
             }
