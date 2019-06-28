@@ -73,6 +73,16 @@
         "Tenant": ""
       }
     },
+    "PasAccountApiConfiguration": {
+      "type": "object",
+      "defaultValue": {
+        "ApiBaseUrl": "",
+        "ClientId": "",
+        "ClientSecret": "",
+        "IdentifierUri": "",
+        "Tenant": ""
+      }
+    },
     "ExternalLinks": {
       "type": "object",
       "defaultValue": {
@@ -81,7 +91,8 @@
         "StaffIdamsUrl": "",
         "ProviderApprenticeshipSiteUrl": "",
         "CommitmentsSiteUrl": "",
-        "ProviderCommitmentsSiteUrl": ""
+        "ProviderCommitmentsSiteUrl": "",
+        "SignProviderAgreementUrl": ""
       }
     },
     "Features": {
@@ -641,6 +652,10 @@
                 "value": "[parameters('ExternalLinks').ProviderCommitmentsSiteUrl]"
               },
               {
+                "name": "ExternalLinks:SignProviderAgreementUrl",
+                "value": "[parameters('ExternalLinks').SignProviderAgreementUrl]"
+              },
+              {
                 "name": "ASPNETCORE_ENVIRONMENT",
                 "value": "[toUpper(parameters('EnvironmentFullName'))]"
               },
@@ -663,6 +678,26 @@
               {
                 "name": "WhitelistedProviders",
                 "value": "[parameters('WhitelistedProvidersList')]"
+              },
+              {
+                "name": "PasAccountApiConfiguration:ApiBaseUrl",
+                "value": "[parameters('PasAccountApiConfiguration').ApiBaseUrl]"
+              },
+              {
+                "name": "PasAccountApiConfiguration:ClientId",
+                "value": "[parameters('PasAccountApiConfiguration').ClientId]"
+              },
+              {
+                "name": "PasAccountApiConfiguration:ClientSecret",
+                "value": "[parameters('PasAccountApiConfiguration').ClientSecret]"
+              },
+              {
+                "name": "PasAccountApiConfiguration:IdentifierUri",
+                "value": "[parameters('PasAccountApiConfiguration').IdentifierUri]"
+              },
+              {
+                "name": "PasAccountApiConfiguration:Tenant",
+                "value": "[parameters('PasAccountApiConfiguration').Tenant]"
               }
             ]
           },
