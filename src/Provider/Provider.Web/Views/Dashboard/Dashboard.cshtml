@@ -184,16 +184,16 @@
                 <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible" />
                 <a class="govuk-link  govuk-link--no-visited-state" asp-route="@RouteNames.ReportDashboard_Get">Reports</a>
             </h3>
-            <p>Create a report about applicants or vacancies</p>
+            <p class="govuk-body">Create a report about applicants or vacancies</p>
         </div>
         
         <esfaFeatureEnabled name="@FeatureNames.SetNotificationPreferences">
             <div class="govuk-grid-column-one-third">
                 <h3 class="govuk-heading-s">
                     <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible" />
-                    <div class="govuk-!-margin-bottom-5"><a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.ManageNotifications_Get">Manage your recruitment emails</a></div>
+                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.ManageNotifications_Get">Manage your recruitment emails</a>
                 </h3>
-                <p>Set up and manage the emails you’re sent about your vacancies and applications</p>
+                <p class="govuk-body">Set up and manage the emails you’re sent about your vacancies and applications</p>
             </div>
         </esfaFeatureEnabled>
 
