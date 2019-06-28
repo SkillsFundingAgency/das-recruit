@@ -75,7 +75,7 @@
                     <td class="govuk-table__cell">@vacancy.EmployerName</td>
                     <td class="govuk-table__cell">@vacancy.VacancyTitle</td>
                     <td class="govuk-table__cell"><span>VAC</span>@vacancy.VacancyReference</td>
-                    <td class="govuk-table__cell">@vacancy.SubmittedDate.ToLocalTime().AsGdsDateTime()</td>
+                    <td class="govuk-table__cell">@vacancy.SubmittedDate.ToUkTime().AsGdsDateTime()</td>
                     <td class="govuk-table__cell">@vacancy.ClosingDate.AsGdsDate()</td>
                     <td class="govuk-table__cell">
                         @assignmentInfoCaption <br />
@@ -114,7 +114,7 @@
                     <td class="govuk-table__cell">@vacancy.EmployerName</td>
                     <td class="govuk-table__cell">@vacancy.VacancyTitle</td>
                     <td class="govuk-table__cell"><span>VAC</span>@vacancy.VacancyReference</td>
-                    <td class="govuk-table__cell">@vacancy.SubmittedDate.ToLocalTime().AsGdsDateTime()</td>
+                    <td class="govuk-table__cell">@vacancy.SubmittedDate.ToUkTime().AsGdsDateTime()</td>
                     <td class="govuk-table__cell">@vacancy.ClosingDate.AsGdsDate()</td>
                     <td class="govuk-table__cell">
                         <span asp-show="@vacancy.ShowAssignmentInfoCaption">@assignmentInfoCaption<br /></span>

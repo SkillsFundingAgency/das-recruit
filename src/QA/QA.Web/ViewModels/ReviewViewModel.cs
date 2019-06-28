@@ -70,8 +70,8 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
 
         public bool IsAnonymous => EmployerNameOption == EmployerNameOption.Anonymous;
         public bool IsApproved => ManualOutcome.GetValueOrDefault() == ManualQaOutcome.Approved;
-        public string ReviewedDateDay => ReviewedDate.ToLocalTime().AsGdsDate();
-        public string ReviewedDateTime => ReviewedDate.ToLocalTime().AsGdsTime();
+        public string ReviewedDateDay => ReviewedDate.ToUkTime().AsGdsDate();
+        public string ReviewedDateTime => ReviewedDate.ToUkTime().AsGdsTime();
         public bool IsFirstSubmission => IsResubmission == false;
         public bool HasChangedFields => FieldIdentifiers.Any(f => f.FieldValueHasChanged);
         public bool HasSpecifiedThroughFaaApplicationMethod => ApplicationMethod == ApplicationMethod.ThroughFindAnApprenticeship;
@@ -81,7 +81,7 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public bool HasPreviouslySubmitted => VacancyReviewsApprovedCount > 0;
         public bool HasNotPreviouslySubmitted => HasPreviouslySubmitted == false;
         public bool HasOneAnonymousApproved => AnonymousApprovedCount == 1;
-        public string SubmittedDateTime => SubmittedDate.AsGdsDateTime();
+        public string SubmittedDateTime => SubmittedDate.ToUkTime().AsGdsDateTime();
         public bool IsNotDisabilityConfident => IsDisabilityConfident == false;
         public bool IsEmployerVacancy => OwnerType == OwnerType.Employer;
         public bool IsProviderVacancy => OwnerType == OwnerType.Provider;
