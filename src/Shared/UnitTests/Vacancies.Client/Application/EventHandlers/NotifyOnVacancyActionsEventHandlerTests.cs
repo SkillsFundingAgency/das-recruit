@@ -17,49 +17,69 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.EventHandlers
     [Trait("Category", "Unit")]
     public class NotifyOnVacancyActionsEventHandlerTests
     {
+        private readonly NotifyOnVacancyActionsEventHandler _handler;
+        private readonly Mock<INotifyVacancyUpdates> _mockNotifier;
+        private readonly Vacancy _existingVacancy;
+
         public NotifyOnVacancyActionsEventHandlerTests()
         {
-            
-        }
-
-        [Fact]
-        public async Task X()
-        {
             var newVacancyId = Guid.NewGuid();
-            var existingVacancy = GetTestVacancy();
+            _existingVacancy = GetTestVacancy();
             var currentTime = DateTime.UtcNow;
             var startDate = DateTime.Now.AddDays(20);
             var closingDate = DateTime.Now.AddDays(10);
-            Vacancy clone = null;
 
             var mockRepository = new Mock<IVacancyRepository>();
             var mockVacancyReviewRepository = new Mock<IVacancyReviewRepository>();
-            //var mockTimeProvider = new Mock<ITimeProvider>();
 
-            var mockNotifier = new Mock<INotifyVacancyUpdates>();
+            _mockNotifier = new Mock<INotifyVacancyUpdates>();
 
-            //mockTimeProvider.Setup(x => x.Now).Returns(currentTime);
-            mockRepository.Setup(x => x.GetVacancyAsync(existingVacancy.Id)).ReturnsAsync(existingVacancy);
-            mockRepository.Setup(x => x.CreateAsync(It.IsAny<Vacancy>()))
-                            .Callback<Vacancy>(arg => clone = arg)
-                            .Returns(Task.CompletedTask);
+            mockRepository.Setup(x => x.GetVacancyAsync(_existingVacancy.Id)).ReturnsAsync(_existingVacancy);
 
-            var handler = new NotifyOnVacancyActionsEventHandler(
+            _handler = new NotifyOnVacancyActionsEventHandler(
                 Mock.Of<ILogger<NotifyOnVacancyActionsEventHandler>>(),
-                mockNotifier.Object,
+                _mockNotifier.Object,
                 mockRepository.Object,
                 mockVacancyReviewRepository.Object
             );
-
-            var command = new LiveVacancyUpdatedEvent(
-                newVacancyId,
-                existingVacancy.VacancyReference.Value,
-                LiveUpdateKind.ClosingDate);
-
-            await handler.Handle(command, CancellationToken.None);
         }
 
-        private static Vacancy GetTestVacancy()
+        [Theory]
+        [InlineData(LiveUpdateKind.ClosingDate)]
+        [InlineData(LiveUpdateKind.StartDate)]
+        [InlineData(LiveUpdateKind.StartDate | LiveUpdateKind.ClosingDate)]
+        public async Task GivenLiveVacancyUpdatedEventWithDateChange_NotifyLiveVacancyChanged(LiveUpdateKind updateKind)
+        {
+            var @event = new LiveVacancyUpdatedEvent
+            {
+                VacancyId = _existingVacancy.Id,
+                VacancyReference = _existingVacancy.VacancyReference.Value,
+                UpdateKind = updateKind
+            };
+
+            await _handler.Handle(@event, CancellationToken.None);
+
+            _mockNotifier
+                .Verify(x => x.LiveVacancyChanged(_existingVacancy), Times.Once);
+        }
+
+        [Fact]
+        public async Task GivenLiveVacancyUpdatedEventWithNoDateChange_ThenDoNotNotifyLiveVacancyChanged()
+        {
+            var @event = new LiveVacancyUpdatedEvent
+            {
+                VacancyId = _existingVacancy.Id,
+                VacancyReference = _existingVacancy.VacancyReference.Value,
+                UpdateKind = LiveUpdateKind.None
+            };
+
+            await _handler.Handle(@event, CancellationToken.None);
+
+            _mockNotifier
+                .Verify(x => x.LiveVacancyChanged(_existingVacancy), Times.Never);
+        }
+
+        private Vacancy GetTestVacancy()
         {
             var fixture = new Fixture();
             var vacancy = fixture.Create<Vacancy>();
