@@ -87,7 +87,8 @@
     "Features": {
       "type": "object",
       "defaultValue": {
-        "AllowLevyPayingEmployersOnly": true
+        "AllowLevyPayingEmployersOnly": true,
+        "SetNotificationPreferences": false
       }
     },
     "LoggingRedisConnectionString": {
@@ -215,6 +216,9 @@
     },
     "ProviderKeyvaultCertificateName": {
       "type": "string"
+    },
+    "DasSharedNServiceBusConfiguration": {
+      "type" : "object"
     }
   },
   "variables": {
@@ -400,6 +404,10 @@
               {
                 "name": "Features:AllowLevyPayingEmployersOnly",
                 "value": "[parameters('Features').AllowLevyPayingEmployersOnly]"
+              },
+              {
+                "name": "Features:SetNotificationPreferences",
+                "value": "[parameters('Features').SetNotificationPreferences]"
               },
               {
                 "name": "ASPNETCORE_ENVIRONMENT",
@@ -641,6 +649,10 @@
                 "value": "[parameters('ExternalLinks').ProviderCommitmentsSiteUrl]"
               },
               {
+                "name": "Features:SetNotificationPreferences",
+                "value": "[parameters('Features').SetNotificationPreferences]"
+              },
+              {
                 "name": "ASPNETCORE_ENVIRONMENT",
                 "value": "[toUpper(parameters('EnvironmentFullName'))]"
               },
@@ -854,6 +866,14 @@
               {
                 "name": "Geocode:PostcodeAnywhereKey",
                 "value": "[parameters('GeocodePostcodeAnywhereKey')]"
+              },
+              {
+                "name": "DasSharedNServiceBusConfiguration:ConnectionString",
+                "value": "[parameters('DasSharedNServiceBusConfiguration').ConnectionString]"
+              },
+              {
+                "name": "DasSharedNServiceBusConfiguration:NServiceBusLicense",
+                "value": "[parameters('DasSharedNServiceBusConfiguration').NServiceBusLicense]"
               }
             ]
           },

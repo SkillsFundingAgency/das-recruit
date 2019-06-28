@@ -27,6 +27,10 @@
     <PackageReference Include="NLog.Extensions.Logging" Version="1.4.0" />
     <PackageReference Include="SFA.DAS.NLog.Targets.Redis" Version="1.1.5" />
     <PackageReference Include="System.Data.SqlClient" Version="4.6.0" />
+    <PackageReference Include="SFA.DAS.NServiceBus" Version="10.0.1" />
+    <PackageReference Include="SFA.DAS.EmployerAccounts.Messages" Version="1.6.1021" />
+    <PackageReference Include="NServiceBus" Version="7.1.7" />
+    <PackageReference Include="NServiceBus.MSDependencyInjection" Version="0.1.4" />
   </ItemGroup>
   <ItemGroup>
     <None Update="appSettings.json">

@@ -112,5 +112,13 @@
         public const string NonLevyInfo_Get = "NonLevyInfo_Get";
 
         public const string BlockedEmployer_Get = "BlockedEmployer_Get";
+
+        public const string ManageNotifications_Get = "ManageNotifications_Get";
+        public const string ManageNotifications_Post = "ManageNotifications_Post";
+
+        public const string ConfirmUnsubscribeNotifications_Get = "ConfirmUnsubscribeNotifications_Get";
+        public const string ConfirmUnsubscribeNotifications_Post = "ConfirmUnsubscribeNotifications_Post";
+        public const string NotificationsUpdatedAcknowledgement_Get = "NotificationsUpdatedAcknowledgement_Get";
+        public const string NotificationUnsubscribedAcknowledgement_Get = "NotificationUnsubscribedAcknowledgement_Get";
     }
 }

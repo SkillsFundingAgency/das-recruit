@@ -1,0 +1,30 @@
+@model Esfa.Recruit.Employer.Web.ViewModels.ManageNotifications.ManageNotificationsAcknowledgementViewModel
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-panel govuk-panel--confirmation">
+            <h1 class="govuk-panel__title">
+                You’ve successfully set up your recruitment emails
+            </h1>
+        </div>
+
+        <p asp-show="@Model.IsUserSubmittedVacanciesSelected">We'll send emails to <b>@Model.UserEmail</b> when your submitted vacancies:</p>
+        <p asp-hide="@Model.IsUserSubmittedVacanciesSelected">We'll send emails to <b>@Model.UserEmail</b> when vacancies:</p>
+
+        <ul class="govuk-list govuk-list--bullet">
+            <li asp-show="@Model.IsVacancyRejectedSelected">
+                are rejected after review
+            </li>
+
+            <li asp-show="@Model.IsVacancyClosingSoonSelected">
+                are closing soon
+            </li>
+            
+            <li asp-show="@Model.IsApplicationSubmittedSelected">
+                receive new applications (@Model.Frequency)
+            </li>
+        </ul>
+
+        <a asp-route="@RouteNames.Dashboard_Index_Get" class="govuk-button govuk-!-margin-bottom-6" esfa-automation="create-vacancy">Return to dashboard</a>
+    </div>
+</div>

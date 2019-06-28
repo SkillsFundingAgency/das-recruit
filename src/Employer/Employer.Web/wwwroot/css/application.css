@@ -124,6 +124,12 @@
     float:right;
 }
 
+@media (min-width: 641px) {
+  .float-right-desktop {
+      float:right;
+  }
+}
+
 .float-left {
     float:left;
 }
