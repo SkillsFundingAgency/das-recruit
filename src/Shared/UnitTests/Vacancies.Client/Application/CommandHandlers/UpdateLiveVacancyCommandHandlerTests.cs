@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application;
@@ -13,12 +9,11 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
-using Microsoft.AspNetCore.Mvc.RazorPages.Infrastructure;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
 
-namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.CommandHandlers
+namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
 {
     public class UpdateLiveVacancyCommandHandlerTests
     {
@@ -26,67 +21,54 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
         private Mock<IVacancyRepository> _mockRepository;
         private Mock<IMessaging> _mockMessaging;
         private Mock<ITimeProvider> _mockTimeProvider;
-
         private UpdateLiveVacancyCommandHandler _handler;
-
-        private DateTime _currentTime;
         private Guid _vacancyId = Guid.NewGuid();
-        private Vacancy _originalVacancy;
-        private Vacancy _updatedVacancy;
-        private UpdateLiveVacancyCommand _message;
 
-        [Fact]
-        public async Task ShouldPublishLiveVacancyClosingDateChangedEventWhenLiveClosingDateHasChanged()
+        [Theory]
+        [InlineData(LiveUpdateKind.ClosingDate)]
+        [InlineData(LiveUpdateKind.ClosingDate | LiveUpdateKind.StartDate)]
+        public async Task WhenLiveVacancyClosingDateHasChanged_ShouldPublishLiveVacancyClosingDateChangedEvent(LiveUpdateKind updateKind)
         {
-            var newClosingDate = DateTime.UtcNow.AddDays(100);
-            _originalVacancy.Status = VacancyStatus.Live;
-            _updatedVacancy.ClosingDate = newClosingDate;
+            var user = new VacancyUser();
+            var updatedVacancy = CreateVacancy();
 
-            await _handler.Handle(_message, CancellationToken.None);
+            var message = new UpdateLiveVacancyCommand(updatedVacancy, user, updateKind);
+
+            await _handler.Handle(message, CancellationToken.None);
 
             _mockMessaging
                 .Verify(x => x.PublishEvent(
                     It.Is<LiveVacancyClosingDateChangedEvent>(p =>
-                        p.NewClosingDate == newClosingDate
+                        p.NewClosingDate == updatedVacancy.ClosingDate.Value
                         && p.VacancyId == _vacancyId
-                        && p.VacancyReference == _updatedVacancy.VacancyReference
+                        && p.VacancyReference == updatedVacancy.VacancyReference
                     )));
         }
 
-        [Fact]
-        public async Task ShouldNotPublishLiveVacancyClosingDateChangedEventWhenClosingDateHasNotChanged()
+        [Theory]
+        [InlineData(LiveUpdateKind.StartDate)]
+        [InlineData(LiveUpdateKind.None)]
+        public async Task WhenClosingDateHasNotChanged_ShouldNotPublishLiveVacancyClosingDateChangedEvent(LiveUpdateKind updateKind)
         {
-            var newClosingDate = _originalVacancy.ClosingDate;
-            _originalVacancy.Status = VacancyStatus.Live;
-            _updatedVacancy.ClosingDate = newClosingDate;
+            var user = new VacancyUser();
+            var updatedVacancy = CreateVacancy();
 
-            await _handler.Handle(_message, CancellationToken.None);
+            var message = new UpdateLiveVacancyCommand(updatedVacancy, user, updateKind);
+
+            await _handler.Handle(message, CancellationToken.None);
 
             _mockMessaging.Verify(x => x.PublishEvent(It.IsAny<LiveVacancyClosingDateChangedEvent>()), Times.Never);
         }
 
         public UpdateLiveVacancyCommandHandlerTests()
         {
-            _currentTime = DateTime.UtcNow;
-            var user = new VacancyUser();
-
-            _originalVacancy = CreateVacancy();
-            _updatedVacancy = CreateVacancy();
-
-            _message = new UpdateLiveVacancyCommand(_updatedVacancy, user, LiveUpdateKind.ClosingDate);
-
             _mockLogger = new Mock<ILogger<UpdateLiveVacancyCommandHandler>>();
             _mockMessaging = new Mock<IMessaging>();
-
             _mockRepository = new Mock<IVacancyRepository>();
-            _mockRepository
-                .Setup(x => x.GetVacancyAsync(_vacancyId))
-                .ReturnsAsync(_originalVacancy);
-
             _mockTimeProvider = new Mock<ITimeProvider>();
             _mockTimeProvider
                 .Setup(x => x.Now)
-                .Returns(() => _currentTime);
+                .Returns(() => DateTime.UtcNow);
 
             _handler = new UpdateLiveVacancyCommandHandler(
                 _mockLogger.Object,

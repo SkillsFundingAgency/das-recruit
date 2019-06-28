@@ -8,20 +8,24 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
 
-namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructure.EventHandlers
+namespace Esfa.Recruit.UnitTests.Vacancies.Client.Infrastructure.EventHandlers
 {
     public class UpdateFaaOnLiveVacancyClosingDateChangedTests
     {
         private Mock<ILogger<UpdateFaaOnLiveVacancyClosingDateChanged>> _mockLogger;
         private Mock<IFaaService> _mockFaaService;
-
         private UpdateFaaOnLiveVacancyClosingDateChanged _handler;
-
 
         [Fact]
         public async Task ShouldSendMessageToFaa()
         {
-            var @event = new LiveVacancyClosingDateChangedEvent(Guid.NewGuid(), 299792458, DateTime.UtcNow);
+            var @event = new LiveVacancyClosingDateChangedEvent
+            {
+                VacancyId = Guid.NewGuid(),
+                VacancyReference = 299792458,
+                NewClosingDate = DateTime.UtcNow
+            };
+
             await _handler.Handle(@event, CancellationToken.None);
 
             _mockFaaService
