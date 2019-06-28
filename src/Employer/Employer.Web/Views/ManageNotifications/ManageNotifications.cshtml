@@ -98,7 +98,7 @@
             </div>
             <div class="govuk-form-group">
                 <p asp-show="@Model.HasAnySubscription" class="govuk-body">
-                    <a asp-route="@RouteNames.ConfirmUnsubscribeNotifications_Get">Unsubscribe from all recruitment emails</a>
+                    <a asp-route="@RouteNames.ConfirmUnsubscribeNotifications_Get" class="govuk-link">Unsubscribe from all recruitment emails</a>
                 </p>
                 <button class="govuk-button submit" type="submit">Save and continue</button>
                 <a asp-route="@RouteNames.Dashboard_Index_Get" class="govuk-link das-button-link">Return to dashboard</a>
