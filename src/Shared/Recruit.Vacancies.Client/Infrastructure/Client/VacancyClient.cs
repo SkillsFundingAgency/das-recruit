@@ -68,8 +68,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             IReportRepository reportRepository,
             IReportService reportService,
             IUserNotificationPreferencesRepository userNotificationPreferencesRepository,
-            AbstractValidator<UserNotificationPreferences> userNotificationPreferencesValidator),
-            IReportService reportService,
+            AbstractValidator<UserNotificationPreferences> userNotificationPreferencesValidator,
             ITrainingProviderSummaryProvider trainingProviderSummaryProvider)
         {
             _repository = repository;
