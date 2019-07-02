@@ -1,6 +1,4 @@
 using System.Collections.Generic;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo
 {
@@ -10,5 +8,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Ed
         {}
 
         public IEnumerable<EmployerInfo> Employers { get; set; }
+
+        public bool HasProviderAgreement { get; set; }
     }
 }

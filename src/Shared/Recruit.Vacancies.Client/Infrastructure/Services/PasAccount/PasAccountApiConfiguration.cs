@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.Http;
 
-namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProviderAgreement
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.PasAccount
 {
     public class PasAccountApiConfiguration : IAzureADClientConfiguration
     {

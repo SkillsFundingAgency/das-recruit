@@ -7,6 +7,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
     public interface IEditVacancyInfoProjectionService
     {
         Task UpdateEmployerVacancyDataAsync(string employerAccountId, IList<LegalEntity> legalEntities);
-        Task UpdateProviderVacancyDataAsync(long ukprn, IEnumerable<EmployerInfo> employers);
+        Task UpdateProviderVacancyDataAsync(long ukprn, IEnumerable<EmployerInfo> employers, bool hasAgreement);
     }
 }

@@ -58,6 +58,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<IReviewSummaryService, ReviewSummaryService>();
             services.AddTransient<IFaaService, FaaService>();
             services.AddTransient<ILegalEntityAgreementService, LegalEntityAgreementService>();
+            services.AddTransient<ITrainingProviderAgreementService, TrainingProviderAgreementService>();
         }
 
         private static void RegisterFluentValidators(IServiceCollection services)

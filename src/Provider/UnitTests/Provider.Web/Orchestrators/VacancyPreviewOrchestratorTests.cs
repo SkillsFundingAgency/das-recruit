@@ -13,6 +13,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.PasAccount;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -69,11 +70,11 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators
             legalEntityAgreement.Setup(l => l.HasLegalEntityAgreementAsync(employerAccountId, legalEntityId))
                 .ReturnsAsync(hasLegalEntityAgreement);
 
-            var trainingProviderAgreement = new Mock<ITrainingProviderAgreementProvider>();
-            trainingProviderAgreement.Setup(t => t.HasAgreementAsync(ukprn))
+            var agreementServiceMock = new Mock<ITrainingProviderAgreementService>();
+            agreementServiceMock.Setup(t => t.HasAgreementAsync(ukprn))
                 .ReturnsAsync(hasProviderAgreement);
 
-            var orch = new VacancyPreviewOrchestrator(client.Object, vacancyClient.Object, logger.Object, mapper, review.Object, legalEntityAgreement.Object, trainingProviderAgreement.Object);
+            var orch = new VacancyPreviewOrchestrator(client.Object, vacancyClient.Object, logger.Object, mapper, review.Object, legalEntityAgreement.Object, agreementServiceMock.Object);
 
             var m = new SubmitEditModel
             {

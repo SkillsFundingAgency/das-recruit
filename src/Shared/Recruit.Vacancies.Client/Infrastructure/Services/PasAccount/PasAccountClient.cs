@@ -2,21 +2,20 @@
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using SFA.DAS.Http;
 using SFA.DAS.Http.TokenGenerators;
 
-namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProviderAgreement
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.PasAccount
 {
-    public class TrainingProviderAgreementProvider : ITrainingProviderAgreementProvider
+    public class PasAccountClient : IPasAccountClient
     {
         private const string AgreementStatusAgreed = "Agreed";
 
         private readonly PasAccountApiConfiguration _config;
 
-        public TrainingProviderAgreementProvider(IOptions<PasAccountApiConfiguration> config)
+        public PasAccountClient(IOptions<PasAccountApiConfiguration> config)
         {
             _config = config.Value;
         }

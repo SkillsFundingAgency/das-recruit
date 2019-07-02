@@ -26,7 +26,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         private readonly DisplayVacancyViewModelMapper _vacancyDisplayMapper;
         private readonly IReviewSummaryService _reviewSummaryService;
         private readonly ILegalEntityAgreementService _legalEntityAgreementService;
-        private readonly ITrainingProviderAgreementProvider _trainingProviderAgreementProvider;
+        private readonly ITrainingProviderAgreementService _trainingProviderAgreementService;
 
         public VacancyPreviewOrchestrator(
             IProviderVacancyClient client,
@@ -35,14 +35,14 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             DisplayVacancyViewModelMapper vacancyDisplayMapper, 
             IReviewSummaryService reviewSummaryService,
             ILegalEntityAgreementService legalEntityAgreementService,
-            ITrainingProviderAgreementProvider trainingProviderAgreementProvider) : base(logger)
+            ITrainingProviderAgreementService trainingProviderAgreementService) : base(logger)
         {
             _client = client;
             _vacancyClient = vacancyClient;
             _vacancyDisplayMapper = vacancyDisplayMapper;
             _reviewSummaryService = reviewSummaryService;
             _legalEntityAgreementService = legalEntityAgreementService;
-            _trainingProviderAgreementProvider = trainingProviderAgreementProvider;
+            _trainingProviderAgreementService = trainingProviderAgreementService;
         }
 
         public async Task<VacancyPreviewViewModel> GetVacancyPreviewViewModelAsync(VacancyRouteModel vrm)
@@ -90,7 +90,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         private async Task<SubmitVacancyResponse> SubmitActionAsync(Vacancy vacancy, VacancyUser user)
         {
             var hasLegalEntityAgreementTask = _legalEntityAgreementService.HasLegalEntityAgreementAsync(vacancy.EmployerAccountId, vacancy.LegalEntityId);
-            var hasProviderAgreementTask = _trainingProviderAgreementProvider.HasAgreementAsync(vacancy.TrainingProvider.Ukprn.Value);
+            var hasProviderAgreementTask = _trainingProviderAgreementService.HasAgreementAsync(vacancy.TrainingProvider.Ukprn.Value);
 
             await Task.WhenAll(hasLegalEntityAgreementTask, hasProviderAgreementTask);
 

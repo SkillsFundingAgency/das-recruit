@@ -885,6 +885,26 @@
               {
                 "name": "Geocode:PostcodeAnywhereKey",
                 "value": "[parameters('GeocodePostcodeAnywhereKey')]"
+              },
+              {
+                "name": "PasAccountApiConfiguration:ApiBaseUrl",
+                "value": "[parameters('PasAccountApiConfiguration').ApiBaseUrl]"
+              },
+              {
+                "name": "PasAccountApiConfiguration:ClientId",
+                "value": "[parameters('PasAccountApiConfiguration').ClientId]"
+              },
+              {
+                "name": "PasAccountApiConfiguration:ClientSecret",
+                "value": "[parameters('PasAccountApiConfiguration').ClientSecret]"
+              },
+              {
+                "name": "PasAccountApiConfiguration:IdentifierUri",
+                "value": "[parameters('PasAccountApiConfiguration').IdentifierUri]"
+              },
+              {
+                "name": "PasAccountApiConfiguration:Tenant",
+                "value": "[parameters('PasAccountApiConfiguration').Tenant]"
               }
             ]
           },

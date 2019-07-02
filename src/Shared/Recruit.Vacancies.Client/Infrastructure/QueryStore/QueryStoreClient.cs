@@ -83,12 +83,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             return _queryStore.UpsertAsync(employerVacancyDataItem);
         }
 
-        public Task UpdateProviderVacancyDataAsync(long ukprn, IEnumerable<EmployerInfo> employers)
+        public Task UpdateProviderVacancyDataAsync(long ukprn, IEnumerable<EmployerInfo> employers, bool hasAgreement)
         {
             var providerVacancyDataItem = new ProviderEditVacancyInfo
             {
                 Id = QueryViewType.EditVacancyInfo.GetIdValue(ukprn),
                 Employers = employers,
+                HasProviderAgreement = hasAgreement,
                 LastUpdated = _timeProvider.Now
             };
 

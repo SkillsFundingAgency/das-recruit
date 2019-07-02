@@ -15,7 +15,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         Task UpdateEmployerDashboardAsync(string employerAccountId, IEnumerable<VacancySummary> vacancySummaries);
         Task UpdateProviderDashboardAsync(long ukprn, IEnumerable<VacancySummary> vacancySummaries);
         Task UpdateEmployerVacancyDataAsync(string employerAccountId, IEnumerable<LegalEntity> legalEntities);
-        Task UpdateProviderVacancyDataAsync(long ukprn, IEnumerable<EmployerInfo> employers);
+        Task UpdateProviderVacancyDataAsync(long ukprn, IEnumerable<EmployerInfo> employers, bool hasAgreement);
         Task UpdateLiveVacancyAsync(LiveVacancy vacancy);
         Task DeleteLiveVacancyAsync(long vacancyReference);
         Task<long> DeleteAllLiveVacancies();
