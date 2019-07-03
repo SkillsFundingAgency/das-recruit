@@ -47,7 +47,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
 
         private static IHostBuilder CreateHostBuilder()
         {
-            return 
+            return
                 new HostBuilder()
                     .UseEnvironment(RecruitEnvironment.EnvironmentName)
                     .ConfigureWebJobs(b =>

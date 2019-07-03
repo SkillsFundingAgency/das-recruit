@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
 using Microsoft.Extensions.Logging;
-using Recruit.Vacancies.Client.Infrastructure.Communications;
 using Communication.Types;
+using Esfa.Recruit.Vacancies.Client.Application.CommunicationPlugins;
 
 namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy
 {
@@ -41,8 +41,8 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy
 
         private CommunicationRequest GetReferredVacancyCommunicationRequest(long vacancyReference)
         {
-            var commsRequest = new CommunicationRequest("VacancyReferred", RecruitRecipients.VacancyOwner.ToString(), "RecruitV2");
-            commsRequest.AddEntity("VacancyReference", vacancyReference);
+            var commsRequest = new CommunicationRequest(CommunicationConstants.RequestType.VacancyReferred, CommunicationConstants.ServiceName, CommunicationConstants.ServiceName);
+            commsRequest.AddEntity(CommunicationConstants.EntityTypes.Vacancy, vacancyReference);
             return commsRequest;
         }
     }

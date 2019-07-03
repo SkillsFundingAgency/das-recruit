@@ -37,5 +37,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
                 new Context(nameof(GetAsync)));
             return result;
         }
+
+        public async Task UpdateAsync(CommunicationMessage commMsg)
+        {
+            var filter = Builders<CommunicationMessage>.Filter.Eq(v => v.Id, commMsg.Id);
+            var collection = GetCollection<CommunicationMessage>();
+            await RetryPolicy.ExecuteAsync(_ =>
+                collection.ReplaceOneAsync(filter, commMsg),
+                new Context(nameof(UpdateAsync)));
+        }
     }
 }
