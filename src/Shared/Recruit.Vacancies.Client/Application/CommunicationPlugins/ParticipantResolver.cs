@@ -6,20 +6,22 @@ using Communication.Types.Interfaces;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 
-namespace Esfa.Recruit.Vacancies.Client.CommunicationPlugins 
+namespace Esfa.Recruit.Vacancies.Client.Application.CommunicationPlugins 
 {
-    public class RecipientResolver : IParticipantResolver 
+    public class ParticipantResolver : IParticipantResolver 
     {
         private readonly IVacancyRepository _vacancyRepository;
         private readonly IUserRepository _userRepository;
-        public RecipientResolver (IVacancyRepository vacancyRepository, IUserRepository userRepository) 
+
+        public string ParticipantResolverName => CommunicationConstants.ServiceName;
+
+        public ParticipantResolver(IVacancyRepository vacancyRepository, IUserRepository userRepository) 
         {
             _userRepository = userRepository;
             _vacancyRepository = vacancyRepository;
         }
-        public string ResolverServiceName => CommunicationConstants.ServiceName;
 
-        public async Task<IEnumerable<CommunicationUser>> GetRecipientsAsync (CommunicationRequest request) 
+        public async Task<IEnumerable<CommunicationUser>> GetParticipantsAsync(CommunicationRequest request) 
         {
             var entityId = request.Entities.FirstOrDefault (e => e.EntityType == CommunicationConstants.EntityTypes.Vacancy).EntityId.ToString ();
             long.TryParse (entityId, out var vacancyReference);
