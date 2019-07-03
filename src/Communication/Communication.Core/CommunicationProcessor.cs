@@ -16,12 +16,12 @@ namespace Communication.Core
         private readonly Dictionary<string, ITemplateIdProvider> _templateIdProviders = new Dictionary<string, ITemplateIdProvider>();
 
         public CommunicationProcessor(
-            IEnumerable<IParticipantResolver> recipientResolvers,
+            IEnumerable<IParticipantResolver> participantResolvers,
             IEnumerable<IUserPreferencesProvider> userPreferencesProviders,
             IEnumerable<IEntityDataItemProvider> entityDataItemProviders,
             IEnumerable<ITemplateIdProvider> templateIdProviders)
         {            
-            foreach (var plugin in recipientResolvers) _participantResolvers.Add(plugin.ParticipantResolverName, plugin);
+            foreach (var plugin in participantResolvers) _participantResolvers.Add(plugin.ParticipantResolverName, plugin);
             foreach (var plugin in userPreferencesProviders) _userPreferencesProviders.Add(plugin.UserType, plugin);
             foreach (var plugin in entityDataItemProviders) _entityDataItemProviders.Add(plugin.EntityType, plugin);
             foreach (var plugin in templateIdProviders) _templateIdProviders.Add(plugin.ProviderServiceName, plugin);
