@@ -55,47 +55,6 @@
   }
 }
 
-/*** Overide GDS Styles to match DAS ***/
-body {
-font-family: nta, Arial, sans-serif;
--webkit-font-smoothing: antialiased;
--moz-osx-font-smoothing: grayscale;
-}
-
-.govuk-header {
-border-bottom: 0;
-}
-
-.govuk-header__container {
-position: relative;
-margin-bottom: 0;
-padding-top: 10px;
-border-bottom: 0;
-}
-
-.govuk-header__link--service-name {
-  font-size: 24px;
-  margin:7px 0 5px 0;
-  padding: 0 0 20px 0;
-}
-
-@media (min-width: 40.0625em) {
-  .govuk-header__link--service-name {
-    font-size: 32px;
-    margin:4px 0;
-  }
-}
-
-.govuk-header__logo {
-margin-bottom: 8px;
-}
-
-#global-header-bar {
-height:10px;
-max-width:100%;
-background: #6f777b
-}
-
 /*** Added as new GDS doesn't have js-hidden class **/
 .js-hidden {
   display: none;

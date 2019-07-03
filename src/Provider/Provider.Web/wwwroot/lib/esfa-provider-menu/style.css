@@ -1,3 +1,29 @@
+/*** Overide GDS Styles to match DAS ***/
+body {
+    font-family: nta, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.govuk-header {
+    border-bottom: 0;
+}
+
+.govuk-header__container {
+    position: relative;
+    margin-bottom: 0;
+    padding-top: 10px;
+    border-bottom: 0;
+}
+
+.govuk-header__link--service-name {
+    margin-left: 10px;
+}
+
+.govuk-header__logo {
+    margin-bottom: 8px;
+}
+
 /*** DAS Account Header ***/
 
 .das-account-header {
@@ -54,7 +80,7 @@
 }
 
 .das-account-header__title {
-    margin: 4px 0 5px -15px;
+    margin: 0 -15px;
     padding: 10px 15px;
     font-weight: 700
 }
@@ -66,10 +92,55 @@
     }
 }
 
+.das-header--no-border {
+    border: none
+}
+
+.das-header--no-border>.govuk-header__container {
+    border: none;
+    margin-bottom: 0
+}
+
+.das-header--employer>.govuk-header__container {
+    border-color: #6f72af
+}
+
+@media (min-width: 48.0625em) {
+    .das-header--has-user-nav .govuk-header__content {
+        width:33.33%
+    }
+}
+
+.das-header--provider-legacy {
+    border-bottom: 10px solid #6f777b
+}
+
+.das-header--provider-legacy .govuk-header__logo {
+    display: none
+}
+
+@media (min-width: 40.0625em) {
+    .das-header--provider-legacy .govuk-header__content {
+        padding-left:0
+    }
+}
+
+.das-header--provider-legacy .govuk-header__link--service-name {
+    font-size: 24px;
+    margin: 15px 0 25px
+}
+
+@media (min-width: 40.0625em) {
+    .das-header--provider-legacy .govuk-header__link--service-name {
+        font-size:32px;
+        margin: 12px 0 21px
+    }
+}
+
+
 /*** DAS Navigation ***/
 
 .das-navigation {
-    border-bottom: 1px solid #6f777b;
     color: #0b0c0c;
     font-family: "nta",Arial,sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -77,7 +148,8 @@
     font-weight: 400;
     font-size: 16px;
     font-size: 1rem;
-    line-height: 1.25
+    line-height: 1.25;
+    border-bottom: 1px solid #6f777b
 }
 
 @media print {
@@ -110,7 +182,8 @@
 .das-navigation__list {
     list-style: none;
     padding: 0;
-    margin: 0 -15px
+    margin: 0 -15px;
+    position: relative
 }
 
 .das-navigation__list:after {
@@ -119,17 +192,15 @@
     clear: both
 }
 
-@media (min-width: 40.0625em) {
-    .das-navigation__list-item {
-        float:left
-    }
+.das-navigation__list-item {
+    float: left
 }
 
 .das-navigation__link {
     display: block;
-    margin: 0 15px;
-    padding: 12px 0 5px 0;
-    color: #005ea5
+    padding: 10px 15px 8px;
+    color: #005ea5;
+    display: block
 }
 
 .das-navigation__link:focus {
@@ -137,30 +208,90 @@
     outline-offset: 0
 }
 
-@media (max-width: 40.0625em) {
-    .das-navigation__link {
-        font-size:14px;
-    }
+.das-navigation__link--current {
+    position: relative;
+    text-decoration: none;
+    font-weight: 700;
+    color: #0b0c0c
 }
 
-.das-navigation__link--current { 
-    color:#0b0c0c;
-    text-decoration:none;
-    font-weight:700;
+.das-navigation__link--current:after {
+    background: #005ea5;
+    bottom: -1px;
+    content: "";
+    display: block;
+    left: 0;
+    top: 0;
+    width: 5px;
+    position: absolute;
+    z-index: 0
 }
 
 @media (min-width: 40.0625em) {
-    .das-navigation__link--current {
-    border-bottom:5px solid #005ea5;
+    .das-navigation__link--current:after {
+        top:auto;
+        bottom: 0;
+        left: 15px;
+        right: 15px;
+        width: auto;
+        height: 5px
     }
 }
 
-.das-navigation__link--last {
-    border-bottom: none
+.das-navigation__priority-list {
+    background: #ccc;
+    list-style: none;
+    padding-left: 0;
+    clear: both
+}
+
+.das-navigation__priority-list>.das-navigation__list-item {
+    width: 100%;
+    border-top: 1px solid #ccc
+}
+
+.das-navigation__priority-button {
+    display: block;
+    padding: 10px 15px 8px;
+    padding-right: 35px;
+    color: #005ea5;
+    position: absolute;
+    top: 0;
+    right: 0
+}
+
+.das-navigation__priority-button:focus {
+    outline: 3px solid #ffbf47;
+    outline-offset: 0
+}
+
+.das-navigation__priority-button:after {
+    position: absolute;
+    right: 15px;
+    top: 17px;
+    border-color: transparent;
+    border-width: 10px;
+    border-style: solid;
+    width: 0;
+    height: 0;
+    content: "";
+    border-width: 10px 5.77367px 0 5.77367px;
+    border-color: #005ea5 transparent transparent transparent
+}
+
+.das-navigation__priority-button.open:after {
+    top: 15px;
+    border-color: transparent;
+    border-width: 10px;
+    border-style: solid;
+    width: 0;
+    height: 0;
+    content: "";
+    border-width: 0 5.77367px 10px 5.77367px;
+    border-color: transparent transparent #005ea5 transparent
 }
 
 /*** DAS User Navigation ***/
-
 .das-user-navigation {
     margin: 0 -15px
 }
@@ -179,23 +310,18 @@
 
 @media (min-width: 40.0625em) {
     .das-user-navigation__list-item {
-        float:left
+        float:left;
+        position: relative
     }
 }
 
 .das-user-navigation__link {
     color: #fff;
-    text-decoration: underline;
+    text-decoration: none;
     display: block;
-    padding: 5px 10px 0 15px;
-    font-size: 16px
-}
-
-@media (min-width: 40.0625em) {
-    .das-user-navigation__link {
-        margin: 4px 0 5px 0;
-        padding: 10px 15px 10px 0;
-    }
+    padding: 10px 15px;
+    font-size: 16px;
+    border: 1px solid transparent
 }
 
 .das-user-navigation__link:focus {
