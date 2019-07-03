@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
-using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Application.Queues;
 using Esfa.Recruit.Vacancies.Client.Application.Queues.Messages;
 
@@ -16,10 +15,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
     {
         private readonly IUserRepository _userRepository;
         private readonly ITimeProvider _timeProvider;
-        private readonly IQueueService _queueService;
+        private readonly IRecruitQueueService _queueService;
 
         public UserSignedInCommandHandler(
-            IUserRepository userRepository, ITimeProvider timeProvider, IQueueService queueService)
+            IUserRepository userRepository, ITimeProvider timeProvider, IRecruitQueueService queueService)
         {
             _userRepository = userRepository;
             _timeProvider = timeProvider;
