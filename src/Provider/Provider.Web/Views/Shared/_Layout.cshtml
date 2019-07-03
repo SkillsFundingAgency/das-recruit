@@ -92,32 +92,32 @@
         <p class="govuk-width-container">GOV.UK uses cookies to make the site simpler. <a href="https://www.gov.uk/help/cookies">Find out more about cookies</a></p>
     </div>
 
-    <header class="govuk-header" role="banner" data-module="header">
+    <header class="govuk-header das-header--no-border das-header--provider-legacy" role="banner" data-module="header">
         <div class="govuk-header__container govuk-width-container">
+
+            <div class="govuk-header__logo">
+
+            </div>
             <div class="govuk-header__content">
-                <div class="govuk-heading-l govuk-!-margin-top-1 govuk-!-margin-bottom-0">
-                    <a asp-route="@RouteNames.Dashboard_Account_Home" class="govuk-header__link govuk-header__link--service-name">
-                    Apprenticeships
-                    </a>
-                </div>
+                <a href="@RouteNames.Dashboard_Account_Home" class="govuk-header__link govuk-header__link--service-name">
+                Apprenticeships
+                </a>
             </div>
         </div>
     </header>
-
-    <div id="global-header-bar"></div>
 
     @if (Context.User.Identity.IsAuthenticated)
     {
         <div class="das-account-header das-account-header--provider">
             <div class="govuk-width-container">
-                <p class="das-account-header__title">Your training provider account</p>
+                <p class="das-account-header__title">Your provider account</p>
                 <nav class="das-user-navigation" id="user-nav">
                     <ul class="das-user-navigation__list" role="menu">
                         <li role="menuitem" class="das-user-navigation__list-item">
-                            <a asp-route="@RouteNames.Dashboard_Account_Home" class="das-user-navigation__link govuk-!-font-weight-bold">@Context.User.GetDisplayName()</a>
+                            <a asp-route="@RouteNames.Dashboard_Account_Home" class="das-user-navigation__link">@Context.User.GetDisplayName()</a>
                         </li>
                         <li role="menuitem" class="das-user-navigation__list-item">
-                            <a asp-route="@RouteNames.Dashboard_AccountsNotifications" class="das-user-navigation__link govuk-!-font-weight-bold">Notification settings</a>
+                            <a asp-route="@RouteNames.Dashboard_AccountsNotifications" class="das-user-navigation__link">Notification settings</a>
                         </li>
                         <li role="menuitem" class="das-user-navigation__list-item">
                             <a asp-route="@RouteNames.Logout_Get" class="das-user-navigation__link">Sign out</a>
@@ -127,8 +127,8 @@
             </div>
         </div>
 
-        <div asp-show="ParseHideNavFromViewBag()" class="govuk-width-container">
-            <nav class="das-navigation">
+        <nav asp-show="ParseHideNavFromViewBag()" class="das-navigation">
+            <div class="govuk-width-container">
                 <ul class="das-navigation__list">
                     <li class="das-navigation__list-item">
                         <a asp-route="@RouteNames.Dashboard_Account_Home" class="das-navigation__link">Home</a>
@@ -146,8 +146,8 @@
                         <a asp-route="@RouteNames.Dashboard_AccountsAgreements" asp-route-ukprn="@Context.User.GetUkprn()" class="das-navigation__link">Organisations and agreements</a>
                     </li>
                 </ul>
-            </nav>
-        </div>
+            </div>
+        </nav>
     }
 
     <div class="govuk-width-container">
@@ -202,7 +202,7 @@
         </div>
     </footer>
     <script src="/lib/govuk-frontend/dist/govuk-frontend-2.5.0.min.js"></script>
-    <script src="/lib/esfa-stacker/stacker.js"></script>
+    <script src="/lib/esfa-provider-menu/navigation.js"></script>
     <script asp-append-version="true" src="/javascripts/application.js"></script>
     @await RenderSectionAsync(RazorSections.FooterJS, required: false)
 </body>
