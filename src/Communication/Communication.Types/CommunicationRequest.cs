@@ -9,17 +9,16 @@ namespace Communication.Types
         public string RequestType { get; }
         public DateTime RequestDateTime { get; }
         public string ParticipantsResolverName { get; }
-        /// This will be used to discover various plugins required to process the message
-        public string OriginatingServiceName { get; }
+        public string TemplateProviderName { get; }
         public List<Entity> Entities { get; }
-        public CommunicationRequest(string requestType, string participantsResolverName, string originatingServiceName)
+        public CommunicationRequest(string requestType, string participantsResolverName, string templateProviderName)
         {
             RequestId = Guid.NewGuid();
             RequestDateTime = DateTime.UtcNow;
 
             RequestType = requestType;
             ParticipantsResolverName = participantsResolverName;
-            OriginatingServiceName = originatingServiceName;
+            TemplateProviderName = templateProviderName;
 
             Entities = new List<Entity>();
         }

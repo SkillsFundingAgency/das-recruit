@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using Communication.Types;
 using Communication.Types.Interfaces;
 
-namespace Esfa.Recruit.Vacancies.Client.CommunicationPlugins
+namespace Esfa.Recruit.Vacancies.Client.Application.CommunicationPlugins
 {
     public class CommunicationTemplateIdProvider : ITemplateIdProvider
     {

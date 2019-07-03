@@ -1,4 +1,4 @@
-namespace Esfa.Recruit.Vacancies.Client.CommunicationPlugins
+namespace Esfa.Recruit.Vacancies.Client.Application.CommunicationPlugins
 {
     public static class CommunicationConstants
     {
@@ -7,6 +7,11 @@ namespace Esfa.Recruit.Vacancies.Client.CommunicationPlugins
         public static class EntityTypes
         {
             public const string Vacancy = nameof(Vacancy);
+        }
+
+        public static class RequestType
+        {
+            public const string VacancyReferred = "VacancyReferred";
         }
     }
 }

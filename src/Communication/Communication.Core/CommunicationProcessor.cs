@@ -21,8 +21,8 @@ namespace Communication.Core
             IEnumerable<IEntityDataItemProvider> entityDataItemProviders,
             IEnumerable<ITemplateIdProvider> templateIdProviders)
         {            
-            foreach (var plugin in recipientResolvers) _participantResolvers.Add(plugin.ResolverServiceName, plugin);
-            foreach (var plugin in userPreferencesProviders) _userPreferencesProviders.Add(plugin.ProviderServiceName, plugin);
+            foreach (var plugin in recipientResolvers) _participantResolvers.Add(plugin.ParticipantResolverName, plugin);
+            foreach (var plugin in userPreferencesProviders) _userPreferencesProviders.Add(plugin.UserType, plugin);
             foreach (var plugin in entityDataItemProviders) _entityDataItemProviders.Add(plugin.EntityType, plugin);
             foreach (var plugin in templateIdProviders) _templateIdProviders.Add(plugin.ProviderServiceName, plugin);
         }
@@ -40,7 +40,7 @@ namespace Communication.Core
 
             var optedInParticipants = GetOptedInParticipants(participants);
 
-            var messages = CreateMessages(request, request.OriginatingServiceName, dataItems, optedInParticipants);
+            var messages = CreateMessages(request, request.TemplateProviderName, dataItems, optedInParticipants);
 
             await SetMessageTemplateIds(messages);
 
@@ -53,7 +53,7 @@ namespace Communication.Core
                 throw new UnknownRecipientResolverTypeException($"Unable to resolve recipient resolver named '{request.ParticipantsResolverName}'");
 
             var resolver = _participantResolvers[request.ParticipantsResolverName];
-            return resolver.GetRecipientsAsync(request);
+            return resolver.GetParticipantsAsync(request);
         }
 
         private async Task<IEnumerable<CommunicationDataItem>> GetEntityDataItemsAsync(CommunicationRequest request)
