@@ -13,10 +13,10 @@
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" />
     <PackageReference Include="NWebsec.AspNetCore.Middleware" Version="2.0.0" />
-    <PackageReference Include="NLog.Web.AspNetCore" Version="4.7.0" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="4.8.3" />
     <PackageReference Include="NWebsec.AspNetCore.Mvc.TagHelpers" Version="2.0.0" />
-    <PackageReference Include="SFA.DAS.NLog.Targets.Redis" Version="1.1.5" />
-    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.5.1" />
+    <PackageReference Include="SFA.DAS.NLog.Targets.Redis" Version="1.2.1" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.7.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\Recruit.Vacancies.Client\Recruit.Vacancies.Client.csproj" />
