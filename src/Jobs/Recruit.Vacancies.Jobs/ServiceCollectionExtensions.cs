@@ -1,5 +1,3 @@
-using System;
-using Communication.Core;
 using Communication.Types;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
@@ -20,6 +18,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Apprenticeships.Api.Client;
+using SFA.DAS.Http;
+using SFA.DAS.Http.TokenGenerators;
+using SFA.DAS.Notifications.Api.Client;
+using SFA.DAS.Notifications.Api.Client.Configuration;
 
 namespace Esfa.Recruit.Vacancies.Jobs
 {
@@ -80,16 +82,33 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddScoped<IDomainEventHandler<IEvent>, DeleteCandidateHandler>();
 
             RegisterCommunicationsService(services);
+            RegisterDasNotifications(services, configuration);
         }
 
         private static void RegisterCommunicationsService(IServiceCollection services)
         {
             // Relies on services.AddRecruitStorageClient(configuration); being called first
             services.AddTransient<ICommunicationRepository, MongoDbCommunicationRepository>();
-            services.AddTransient<ICommunicationProcessor, CommunicationProcessor>();
-            services.AddTransient<ICommunicationService, CommunicationService>();
 
             services.AddScoped<CommunicationRequestQueueTrigger>();
+
+            services.AddScoped<CommunicationMessageDispatcherQueueTrigger>();
+            services.AddScoped<CommunicationMessageDispatcher>();
+        }
+
+        private static void RegisterDasNotifications(IServiceCollection services, IConfiguration configuration)
+        {
+            var notificationsConfig = new NotificationsApiClientConfiguration();
+            configuration.GetSection(nameof(NotificationsApiClientConfiguration)).Bind(notificationsConfig);
+
+            var jwtToken = new JwtBearerTokenGenerator(notificationsConfig);
+
+            var httpClient = new HttpClientBuilder()
+                .WithBearerAuthorisationHeader(jwtToken)
+                .WithDefaultHeaders()
+                .Build();
+
+            services.AddTransient<INotificationsApi>(sp => new NotificationsApi(httpClient, notificationsConfig));
         }
     }
 }

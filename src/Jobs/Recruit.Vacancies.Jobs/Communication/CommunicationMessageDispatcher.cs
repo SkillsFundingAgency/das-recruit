@@ -1,0 +1,103 @@
+using System;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Communication.Types;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
+using Microsoft.Extensions.Logging;
+using Polly;
+using Polly.Retry;
+using SFA.DAS.Notifications.Api.Client;
+using SFA.DAS.Notifications.Api.Types;
+
+namespace Esfa.Recruit.Vacancies.Jobs.Communication
+{
+    public sealed class CommunicationMessageDispatcher
+    {
+        private readonly ILogger<CommunicationMessageDispatcher> _logger;
+        private readonly ICommunicationRepository _repository;
+        private readonly INotificationsApi _dasNotifyClient;
+        private readonly ITimeProvider _timeProvider;
+        private readonly RetryPolicy _retryPolicy;
+
+        public CommunicationMessageDispatcher(ILogger<CommunicationMessageDispatcher> logger, ICommunicationRepository repository,
+                                            INotificationsApi dasNotifyClient, ITimeProvider timeProvider)
+        {
+            _logger = logger;
+            _repository = repository;
+            _dasNotifyClient = dasNotifyClient;
+            _timeProvider = timeProvider;
+            _retryPolicy = GetRetryPolicy();
+        }
+
+        public async Task Run(CommunicationMessageIdentifier commMsgId)
+        {
+            _logger.LogInformation($"Retrieving {nameof(CommunicationMessage)}:{commMsgId.Id.ToString()} from CommunicationMessages Store");
+            var commMsg = await _repository.GetAsync(commMsgId.Id);
+
+            try
+            {
+                _logger.LogInformation($"Retrieving {nameof(CommunicationMessage)}:{commMsgId.Id.ToString()} from CommunicationMessages Store");
+
+                switch (commMsg.Channel)
+                {
+                    case DeliveryChannel.Sms:
+                        throw new NotSupportedException("Currently not supporting sending SMS via DAS Notifications.");
+                    case DeliveryChannel.Email:
+                    case DeliveryChannel.Default:
+                        await SendEmail(commMsg);
+                    break;
+                }
+
+                commMsg.Status = CommunicationMessageStatus.Sent;
+                commMsg.DispatchDateTime = _timeProvider.Now;
+                await _repository.UpdateAsync(commMsg);
+            }
+            catch (HttpRequestException ex)
+            {
+                _logger.LogError(ex, $"Failed to submit communication message {commMsg.Id} to DAS Notifications API.");
+                commMsg.Status = CommunicationMessageStatus.FailedDelivery;
+                commMsg.DispatchDateTime = _timeProvider.Now;
+                await _repository.UpdateAsync(commMsg);
+            }
+        }
+
+        public async Task SendEmail(CommunicationMessage request)
+        {
+            _logger.LogInformation($"Trying to send message of type {request.RequestType} to {request.Recipient.Email}");
+request.TemplateId = "UserRegistration";
+request.DataItems.Append(new CommunicationDataItem("AccessCode", "Gwilliam being trolled"));
+request.DataItems.Append(new CommunicationDataItem("CodeExpiry", "Gwilliam being trolled"));
+request.DataItems.Append(new CommunicationDataItem("ReturnUrl", "Gwilliam being trolled"));
+            var email = new Email
+            {
+                TemplateId = request.TemplateId,
+                RecipientsAddress = request.Recipient.Email,
+                Tokens = request.DataItems.ToDictionary(x => x.Key, x => x.Value),
+                SystemId = request.OriginatingServiceName, // any value is acceptable
+                // following are overwritten in the service but required to be populated
+                ReplyToAddress = "ThisWillBeReplacedBy@notify.com",
+                Subject = "This will be replaced by the template on Gov Notify"
+            };
+
+            await _retryPolicy.ExecuteAsync(context => _dasNotifyClient.SendEmail(email),
+                                            new Context(nameof(SendEmail)));
+            _logger.LogInformation($"Successfully sent message of type {request.RequestType} to {request.Recipient.Email}");
+        }
+
+        private RetryPolicy GetRetryPolicy()
+        {
+            return Policy
+                    .Handle<HttpRequestException>()
+                    .WaitAndRetryAsync(new[]
+                    {
+                        TimeSpan.FromSeconds(1),
+                        TimeSpan.FromSeconds(2),
+                        TimeSpan.FromSeconds(4)
+                    }, (exception, timeSpan, retryCount, context) =>
+                    {
+                        _logger.LogWarning($"Error calling DAS Notification API for - {context.OperationKey} Reason: {exception.Message}. Retrying in {timeSpan.Seconds} secs...attempt: {retryCount}");
+                    });
+        }
+    }
+}
