@@ -7,5 +7,6 @@ namespace Communication.Types
     {
         Task InsertAsync(CommunicationMessage msg);
         Task<CommunicationMessage> GetAsync(Guid msgId);
+        Task UpdateAsync(CommunicationMessage commMsg);
     }
 }

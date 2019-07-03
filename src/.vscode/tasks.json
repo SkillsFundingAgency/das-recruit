@@ -30,7 +30,7 @@
                 "/p:GenerateFullPaths=true"
             ],
             "problemMatcher": "$msCompile"
-        },  
+        },
         {
             "label": "build-communication",
             "group":{
@@ -45,7 +45,7 @@
                 "/p:GenerateFullPaths=true"
             ],
             "problemMatcher": "$msCompile"
-        }, 
+        },
         {
             "label": "build-emp-web",
             "group":{
@@ -60,7 +60,7 @@
                 "/p:GenerateFullPaths=true"
             ],
             "problemMatcher": "$msCompile"
-        }, 
+        },
         {
             "label": "build-prov-web",
             "group":{

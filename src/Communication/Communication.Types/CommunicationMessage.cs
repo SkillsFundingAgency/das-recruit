@@ -16,6 +16,8 @@ namespace Communication.Types
         public IEnumerable<CommunicationDataItem> DataItems { get; set; }
         public string TemplateId { get; set; }
         public DateTime RequestDateTime { get; set; }
+        public CommunicationMessageStatus Status { get; set; }
+        public DateTime? DispatchDateTime { get; set; }
 
         public CommunicationMessage()
         {

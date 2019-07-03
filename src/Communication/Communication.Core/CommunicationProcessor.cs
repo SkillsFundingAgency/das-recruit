@@ -20,7 +20,7 @@ namespace Communication.Core
             IEnumerable<IUserPreferencesProvider> userPreferencesProviders,
             IEnumerable<IEntityDataItemProvider> entityDataItemProviders,
             IEnumerable<ITemplateIdProvider> templateIdProviders)
-        {            
+        {
             foreach (var plugin in participantResolvers) _participantResolvers.Add(plugin.ParticipantResolverName, plugin);
             foreach (var plugin in userPreferencesProviders) _userPreferencesProviders.Add(plugin.UserType, plugin);
             foreach (var plugin in entityDataItemProviders) _entityDataItemProviders.Add(plugin.EntityType, plugin);
@@ -74,7 +74,7 @@ namespace Communication.Core
             return dataItems;
         }
 
-        private async Task<IEnumerable<Participant>> GetPreferencesForParticipantsAsync(string requestType, IEnumerable<CommunicationUser> users)        
+        private async Task<IEnumerable<Participant>> GetPreferencesForParticipantsAsync(string requestType, IEnumerable<CommunicationUser> users)
         {
             var participants = new List<Participant>();
 
@@ -110,9 +110,9 @@ namespace Communication.Core
         }
 
         public static IEnumerable<CommunicationMessage> CreateMessages(
-            CommunicationRequest request, 
-            string originatingService, 
-            IEnumerable<CommunicationDataItem> dataItems, 
+            CommunicationRequest request,
+            string originatingService,
+            IEnumerable<CommunicationDataItem> dataItems,
             IEnumerable<Participant> filteredParticipants)
         {
             var messages = filteredParticipants.SelectMany(p =>
@@ -129,7 +129,8 @@ namespace Communication.Core
                         DataItems = dataItems,
                         RequestType = request.GetType().Name,
                         Channel = channel,
-                        Frequency = p.Preferences.Frequency
+                        Frequency = p.Preferences.Frequency,
+                        Status = CommunicationMessageStatus.Unsent
                     }
                 );
             });
