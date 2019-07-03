@@ -44,7 +44,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommunicationPlugins
             {
                 Email = u.Email,
                 Name = u.Name,
-                UserType = "VacancyServices.Recruit.User", // ??? 
+                UserType = "VacancyServices.Recruit.User", 
                 Participation = u.IdamsUserId == primaryUserId ? UserParticipation.PrimaryUser : UserParticipation.SecondaryUser
             });
         }
