@@ -1,11 +1,10 @@
 using System.Threading.Tasks;
-using Esfa.Recruit.Vacancies.Client.Application.Queues;
 using Microsoft.WindowsAzure.Storage.Queue;
 using Newtonsoft.Json;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue
 {
-    public abstract class StorageQueueServiceBase : IQueueService
+    public abstract class StorageQueueServiceBase
     {
         protected abstract string ConnectionString { get; }
 
