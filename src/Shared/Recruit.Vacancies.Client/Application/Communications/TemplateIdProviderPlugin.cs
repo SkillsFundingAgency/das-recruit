@@ -2,9 +2,9 @@ using System.Threading.Tasks;
 using Communication.Types;
 using Communication.Types.Interfaces;
 
-namespace Esfa.Recruit.Vacancies.Client.Application.CommunicationPlugins
+namespace Esfa.Recruit.Vacancies.Client.Application.Communications
 {
-    public class CommunicationTemplateIdProvider : ITemplateIdProvider
+    public class TemplateIdProviderPlugin : ITemplateIdProvider
     {
         public string ProviderServiceName => CommunicationConstants.ServiceName;
 

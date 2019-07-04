@@ -1,6 +1,6 @@
 using Communication.Types;
 
-namespace Esfa.Recruit.Vacancies.Client.Application.CommunicationPlugins
+namespace Esfa.Recruit.Vacancies.Client.Application.Communications
 {
     public static class CommunicationExtensions
     {

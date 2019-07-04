@@ -4,7 +4,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
 using Microsoft.Extensions.Logging;
 using Communication.Types;
-using Esfa.Recruit.Vacancies.Client.Application.CommunicationPlugins;
+using Esfa.Recruit.Vacancies.Client.Application.Communications;
 
 namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy
 {
