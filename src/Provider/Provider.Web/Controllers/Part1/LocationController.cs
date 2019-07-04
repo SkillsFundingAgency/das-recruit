@@ -72,7 +72,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
             DeleteVacancyEmployerInfoCookie();
 
             return wizard
-                ? RedirectToRoute(RouteNames.Training_Get)
+                ? RedirectToRoute(RouteNames.Dates_Get)
                 : RedirectToRoute(RouteNames.Vacancy_Preview_Get, null, Anchors.AboutEmployerSection);
         }
 

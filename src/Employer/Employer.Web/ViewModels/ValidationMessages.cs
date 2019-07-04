@@ -16,6 +16,11 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
             public const string EmployerSelectionRequired = "You must select an organisation.";
         }
 
+        public static class TrainingFirstVacancyValidationMessages
+        {
+            public const string HasFoundTraining = "Please select an option to continue.";
+        }
+
         public static class TrainingProviderValidationMessages
         {
             public const string IsTrainingProviderSelectedNotNull = "Please select an option to continue";

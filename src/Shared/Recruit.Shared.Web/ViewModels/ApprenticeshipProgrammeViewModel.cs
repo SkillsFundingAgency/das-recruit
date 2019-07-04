@@ -1,4 +1,4 @@
-namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Training
+﻿namespace Esfa.Recruit.Shared.Web.ViewModels
 {
     public class ApprenticeshipProgrammeViewModel
     {

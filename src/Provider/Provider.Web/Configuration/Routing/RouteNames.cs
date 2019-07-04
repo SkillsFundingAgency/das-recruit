@@ -72,6 +72,8 @@
         public const string NumberOfPositions_Post = "NumberOfPositions_Post";
         public const string Training_Get = "Training_Get";
         public const string Training_Post = "Training_Post";
+        public const string Dates_Get = "Dates_Get";
+        public const string Dates_Post = "Dates_Post";
         public const string Vacancy_Preview_Get = "Vacancy_Preview_Get";
         public const string VacancyDescription_Index_Get = "VacancyDescription_Index_Get";
         public const string VacancyDescription_Index_Post = "VacancyDescription_Index_Post";
