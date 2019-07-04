@@ -2,8 +2,8 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Communication.Types;
+using Esfa.Recruit.Vacancies.Client.Application.Communications;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy;
 using FluentAssertions;
@@ -60,9 +60,11 @@ namespace Esfa.Recruit.UnitTests.Jobs.DomainEventHandlers
 
             await _sut.HandleAsync(@event);
 
-            _sentCommRequest.Entities
-                            .Any(cr => cr.EntityType.Equals("VacancyReference") && ((long)cr.EntityId == ReferredVacancyReferenceNumber))
-                            .Should().BeTrue();
+            _sentCommRequest
+                .Entities
+                .Any(cr => cr.EntityType.Equals(CommunicationConstants.EntityTypes.Vacancy) && ((long)cr.EntityId == ReferredVacancyReferenceNumber))
+                .Should()
+                .BeTrue();
         }
     }
 }
