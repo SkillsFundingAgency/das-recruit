@@ -42,9 +42,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommunicationPlugins
         {
             return user.Select(u => new CommunicationUser()
             {
+                UserId = u.IdamsUserId,
                 Email = u.Email,
                 Name = u.Name,
-                UserType = "VacancyServices.Recruit.User", 
+                UserType = CommunicationConstants.UserType, 
                 Participation = u.IdamsUserId == primaryUserId ? UserParticipation.PrimaryUser : UserParticipation.SecondaryUser
             });
         }

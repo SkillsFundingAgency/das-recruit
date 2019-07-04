@@ -6,6 +6,7 @@
     /// </summary>
     public class CommunicationUser
     {
+        public string UserId { get; set; }
         public string Email { get; set; }
         public string Name { get; set; }
         /// This will be used to resolve UserPreferencesProvider
