@@ -69,6 +69,12 @@
 
         public const string Training_Get = "Training_Get";
         public const string Training_Post = "Training_Post";
+        public const string Training_First_Time_Get = "Training_First_Time_Get";
+        public const string Training_First_Time_Post = "Training_First_Time_Post";
+        public const string Training_Help_Get = "Training_Help_Get";
+
+        public const string Dates_Get = "Dates_Get";
+        public const string Dates_Post = "Dates_Post";
 
         public const string Vacancy_Preview_Get = "Vacancy_Preview_Get";
         public const string Preview_Submit_Post = "Preview_Submit_Post";

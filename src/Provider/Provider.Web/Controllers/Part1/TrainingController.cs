@@ -19,17 +19,25 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
         }
 
         [HttpGet("training", Name = RouteNames.Training_Get)]
-        public async Task<IActionResult> Training(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
+        public async Task<IActionResult> Training(VacancyRouteModel vrm, [FromQuery] string wizard = "true", [FromQuery] string clear = "", [FromQuery] string hasTraining = "")
         {
-            var vm = await _orchestrator.GetTrainingViewModelAsync(vrm);
+            var vm = await _orchestrator.GetTrainingViewModelAsync(vrm, User.ToVacancyUser());
+
             vm.PageInfo.SetWizard(wizard);
+
+            if (string.IsNullOrWhiteSpace(clear) == false)
+            {
+                vm.SelectedProgrammeId = "";
+            }
+
             return View(vm);
         }
 
         [HttpPost("training", Name = RouteNames.Training_Post)]
         public async Task<IActionResult> Training(TrainingEditModel m, [FromQuery] bool wizard)
         {
-            var response = await _orchestrator.PostTrainingEditModelAsync(m, User.ToVacancyUser());
+            var user = User.ToVacancyUser();
+            var response = await _orchestrator.PostTrainingEditModelAsync(m, user);
             
             if (!response.Success)
             {
@@ -38,13 +46,13 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
 
             if (!ModelState.IsValid)
             {
-                var vm = await _orchestrator.GetTrainingViewModelAsync(m);
+                var vm = await _orchestrator.GetTrainingViewModelAsync(m, user);
                 vm.PageInfo.SetWizard(wizard);
                 return View(vm);
             }
 
             return wizard
-                ? RedirectToRoute(RouteNames.Wage_Get)
+                ? RedirectToRoute(RouteNames.NumberOfPositions_Get)
                 : RedirectToRoute(RouteNames.Vacancy_Preview_Get);
         }
     }
