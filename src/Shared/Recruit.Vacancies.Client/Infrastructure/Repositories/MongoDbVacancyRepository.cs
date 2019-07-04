@@ -25,6 +25,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         private const string IsDeletedFieldName = "isDeleted";
         private const string VacancyStatusFieldName = "status";
         private const string VacancyReferenceFieldName = "vacancyReference";
+        private const string CreatedByUserId = "createdByUser.userId";
+        private const string SubmittedByUserId = "submittedByUser.userId";
 
         public MongoDbVacancyRepository(ILoggerFactory loggerFactory, IOptions<MongoDbConnectionDetails> details) 
             : base(loggerFactory, MongoDbNames.RecruitDb, MongoDbCollectionNames.Vacancies, details)
@@ -85,6 +87,23 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
                 .Project<T>(GetProjection<T>())
                 .ToListAsync(), 
             new Context(nameof(GetVacanciesByEmployerAccountAsync)));
+
+            return result;
+        }
+
+        public async Task<IEnumerable<T>> GetVacanciesForUserAsync<T>(string userId)
+        {
+            var builder = Builders<T>.Filter;
+            var filter = builder.Eq(CreatedByUserId, userId) |
+                         builder.Eq(SubmittedByUserId, userId);
+
+            var collection = GetCollection<T>();
+
+            var result = await RetryPolicy.ExecuteAsync(_ =>
+                    collection.Find(filter)
+                        .Project<T>(GetProjection<T>())
+                        .ToListAsync(),
+                new Context(nameof(GetVacanciesForUserAsync)));
 
             return result;
         }

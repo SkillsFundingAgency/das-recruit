@@ -31,7 +31,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
                 Id = VacancyId,
                 EmployerAccountId = EmployerAccountId,
                 TrainingProvider = new TrainingProvider(),
-                Title = "specified for route validation"
+                Title = "specified for route validation",
+                ProgrammeId = "specified for route validation"
             };
 
             var orch = GetTrainingProviderOrchestrator(vacancy);
@@ -59,7 +60,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
                 Id = VacancyId,
                 EmployerAccountId = EmployerAccountId,
                 TrainingProvider = new TrainingProvider(),
-                Title = "specified for route validation"
+                Title = "specified for route validation",
+                ProgrammeId = "specified for route validation"
             };
 
             var orch = GetTrainingProviderOrchestrator(vacancy);
@@ -86,7 +88,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
                 Id = VacancyId,
                 EmployerAccountId = EmployerAccountId,
                 TrainingProvider = new TrainingProvider(),
-                Title = "specified for route validation"
+                Title = "specified for route validation",
+                ProgrammeId = "specified for route validation"
             };
 
             var orch = GetTrainingProviderOrchestrator(vacancy);
@@ -113,7 +116,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
                 Id = VacancyId,
                 EmployerAccountId = EmployerAccountId,
                 TrainingProvider = new TrainingProvider(),
-                Title = "specified for route validation"
+                Title = "specified for route validation",
+                ProgrammeId = "specified for route validation"
             };
 
             var orch = GetTrainingProviderOrchestrator(vacancy);
@@ -141,7 +145,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
                 Id = VacancyId,
                 EmployerAccountId = EmployerAccountId,
                 TrainingProvider = new TrainingProvider(),
-                Title = "specified for route validation"
+                Title = "specified for route validation",
+                ProgrammeId = "specified for route validation"
             };
 
             var orch = GetTrainingProviderOrchestrator(vacancy);

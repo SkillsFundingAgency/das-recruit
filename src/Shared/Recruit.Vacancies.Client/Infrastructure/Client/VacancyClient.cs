@@ -28,6 +28,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly IMessaging _messaging;
         private readonly IQueryStoreReader _reader;
         private readonly IVacancyRepository _repository;
+        private readonly IVacancyQuery _vacancyQuery;
         private readonly IEntityValidator<Vacancy, VacancyRuleSet> _validator;
         private readonly IApprenticeshipProgrammeProvider _apprenticeshipProgrammesProvider;
         private readonly IEmployerAccountProvider _employerAccountProvider;
@@ -50,6 +51,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public VacancyClient(
             IVacancyRepository repository,
+            IVacancyQuery vacancyQuery,
             IQueryStoreReader reader,
             IMessaging messaging,
             IEntityValidator<Vacancy, VacancyRuleSet> validator,
@@ -73,6 +75,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             ITrainingProviderSummaryProvider trainingProviderSummaryProvider)
         {
             _repository = repository;
+            _vacancyQuery = vacancyQuery;
             _reader = reader;
             _messaging = messaging;
             _validator = validator;
@@ -506,6 +509,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             {
                 IdamsUserId = idamsUserId
             });
+        }
+
+        public Task<IEnumerable<VacancyIdentifier>> GetVacanciesForUserAsync(string userId)
+        {
+            return _vacancyQuery.GetVacanciesForUserAsync<VacancyIdentifier>(userId);
         }
     }
 }
