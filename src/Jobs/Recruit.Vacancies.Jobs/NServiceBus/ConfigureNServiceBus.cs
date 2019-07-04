@@ -16,12 +16,6 @@ namespace Esfa.Recruit.Vacancies.Jobs.NServiceBus
         const string RecruitVacanciesJobs = "SFA.Recruit.Vacancies.Jobs";
         public static void AddDasNServiceBus(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddSingleton<DasSharedNServiceBusConfiguration>(x =>
-            {
-                var svc = x.GetService<IConfigurationReader>();
-                return svc.GetAsync<DasSharedNServiceBusConfiguration>("RecruitWebJobsSystem").Result;
-            });
-
             services
                 .AddSingleton(s =>
                 {
