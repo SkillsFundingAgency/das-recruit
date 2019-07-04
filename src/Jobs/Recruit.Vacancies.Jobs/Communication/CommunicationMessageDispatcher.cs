@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -51,24 +52,30 @@ namespace Esfa.Recruit.Vacancies.Jobs.Communication
 
                 commMsg.Status = CommunicationMessageStatus.Sent;
                 commMsg.DispatchDateTime = _timeProvider.Now;
-                await _repository.UpdateAsync(commMsg);
+                //await _repository.UpdateAsync(commMsg);
             }
             catch (HttpRequestException ex)
             {
                 _logger.LogError(ex, $"Failed to submit communication message {commMsg.Id} to DAS Notifications API.");
                 commMsg.Status = CommunicationMessageStatus.FailedDelivery;
                 commMsg.DispatchDateTime = _timeProvider.Now;
-                await _repository.UpdateAsync(commMsg);
+                //await _repository.UpdateAsync(commMsg);
             }
         }
 
         public async Task SendEmail(CommunicationMessage request)
         {
-            _logger.LogInformation($"Trying to send message of type {request.RequestType} to {request.Recipient.Email}");
 request.TemplateId = "UserRegistration";
-request.DataItems.Append(new CommunicationDataItem("AccessCode", "Gwilliam being trolled"));
-request.DataItems.Append(new CommunicationDataItem("CodeExpiry", "Gwilliam being trolled"));
-request.DataItems.Append(new CommunicationDataItem("ReturnUrl", "Gwilliam being trolled"));
+request.Recipient = new CommunicationUser() { Email = "" };
+request.OriginatingServiceName = "RAA V2";
+request.DataItems = new List<CommunicationDataItem>();
+request.DataItems.Append(new CommunicationDataItem("AccessCode", "x"));
+request.DataItems.Append(new CommunicationDataItem("CodeExpiry", "x"));
+request.DataItems.Append(new CommunicationDataItem("ReturnUrl", "x"));
+
+
+            _logger.LogInformation($"Trying to send message of type {request.RequestType} to {request.Recipient.Email}");
+
             var email = new Email
             {
                 TemplateId = request.TemplateId,
