@@ -22,6 +22,7 @@ using SFA.DAS.Http;
 using SFA.DAS.Http.TokenGenerators;
 using SFA.DAS.Notifications.Api.Client;
 using SFA.DAS.Notifications.Api.Client.Configuration;
+using Communication.Core;
 
 namespace Esfa.Recruit.Vacancies.Jobs
 {
@@ -81,17 +82,18 @@ namespace Esfa.Recruit.Vacancies.Jobs
             //Candidate
             services.AddScoped<IDomainEventHandler<IEvent>, DeleteCandidateHandler>();
 
-            RegisterCommunicationsService(services);
+            RegisterCommunicationsService(services, configuration);
             RegisterDasNotifications(services, configuration);
         }
 
-        private static void RegisterCommunicationsService(IServiceCollection services)
+        private static void RegisterCommunicationsService(IServiceCollection services, IConfiguration configuration)
         {
             // Relies on services.AddRecruitStorageClient(configuration); being called first
             services.AddTransient<ICommunicationRepository, MongoDbCommunicationRepository>();
 
             services.AddScoped<CommunicationRequestQueueTrigger>();
 
+            services.AddSingleton<IDispatchQueuePublisher>(_ => new DispatchQueuePublisher(configuration.GetConnectionString(("CommunicationsStorage"))));
             services.AddScoped<CommunicationMessageDispatcherQueueTrigger>();
             services.AddScoped<CommunicationMessageDispatcher>();
         }
