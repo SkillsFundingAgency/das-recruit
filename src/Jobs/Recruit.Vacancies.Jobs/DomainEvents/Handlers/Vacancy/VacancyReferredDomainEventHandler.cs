@@ -41,7 +41,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy
 
         private CommunicationRequest GetReferredVacancyCommunicationRequest(long vacancyReference)
         {
-            var commsRequest = new CommunicationRequest(CommunicationConstants.RequestType.VacancyReferred, CommunicationConstants.ServiceName, CommunicationConstants.ServiceName);
+            var commsRequest = new CommunicationRequest(CommunicationConstants.RequestType.VacancyRejected, CommunicationConstants.ServiceName, CommunicationConstants.ServiceName);
             commsRequest.AddEntity(CommunicationConstants.EntityTypes.Vacancy, vacancyReference);
             return commsRequest;
         }

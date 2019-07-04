@@ -4,16 +4,19 @@ using Communication.Types;
 using Communication.Types.Exceptions;
 using Communication.Types.Interfaces;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
+using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using static Esfa.Recruit.Vacancies.Client.Application.CommunicationPlugins.CommunicationConstants;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommunicationPlugins
 {
     public class VacancyEntityDataItemProvider : IEntityDataItemProvider
     {
+        private readonly IVacancyRepository _vacancyRepository;
         public string EntityType => CommunicationConstants.EntityTypes.Vacancy;
 
-        public VacancyEntityDataItemProvider(IVacancyService vacancyService)
+        public VacancyEntityDataItemProvider(IVacancyRepository vacancyRepository)
         {
-            
+            _vacancyRepository = vacancyRepository;
         }
 
         public async Task<IEnumerable<CommunicationDataItem>> GetDataItems(object entityId)
@@ -23,7 +26,14 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommunicationPlugins
                 throw new InvalidEntityIdException(EntityType, nameof(VacancyEntityDataItemProvider));
             }
 
-            return await Task.FromResult(new List<CommunicationDataItem>());
+            var vacancy = await _vacancyRepository.GetVacancyAsync(vacancyReference);
+
+            return new List<CommunicationDataItem>()
+            {
+                new CommunicationDataItem(VacancyDataItems.VacancyReference, vacancy.VacancyReference.ToString()),
+                new CommunicationDataItem(VacancyDataItems.VacancyTitle, vacancy.Title),
+                new CommunicationDataItem(VacancyDataItems.EmployerName, vacancy.EmployerName)
+            };
         }
     }
 }

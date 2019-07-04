@@ -9,7 +9,6 @@ namespace Communication.Types
     /// </summary>
     public enum NotificationScope
     {
-        Default,
         Individual,
         Organisation
     }
