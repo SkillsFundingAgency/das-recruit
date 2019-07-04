@@ -99,7 +99,6 @@ namespace Esfa.Recruit.Vacancies.Jobs
                         services.ConfigureJobServices(context.Configuration);
 
                         services.AddDasNServiceBus(context.Configuration);
-                        services.AddCommunication();
                     })
                     .UseConsoleLifetime();
         }
