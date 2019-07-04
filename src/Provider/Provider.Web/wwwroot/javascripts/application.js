@@ -149,7 +149,7 @@ characterCount = function (element, count) {
     $maxLengthTextElement = $element.closest(".govuk-form-group").find(".maxchar-text");
 
     if (maxLength) {
-        $maxLengthCountElement.text(absRemainder);
+        $maxLengthCountElement.text("You have " + absRemainder);
     }
     else {
         $maxLengthCountElement.hide();
