@@ -23,6 +23,8 @@ using SFA.DAS.Http.TokenGenerators;
 using SFA.DAS.Notifications.Api.Client;
 using SFA.DAS.Notifications.Api.Client.Configuration;
 using Communication.Core;
+using Communication.Types.Interfaces;
+using Esfa.Recruit.Vacancies.Client.Application.Communications;
 
 namespace Esfa.Recruit.Vacancies.Jobs
 {
@@ -96,6 +98,12 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddSingleton<IDispatchQueuePublisher>(_ => new DispatchQueuePublisher(configuration.GetConnectionString(("CommunicationsStorage"))));
             services.AddScoped<CommunicationMessageDispatcherQueueTrigger>();
             services.AddScoped<CommunicationMessageDispatcher>();
+
+            services.AddScoped<ICommunicationProcessor, CommunicationProcessor>();
+            services.AddScoped<IEntityDataItemProvider, VacancyEntityDataItemProviderPlugin>();
+            services.AddScoped<IParticipantResolver, ParticipantResolverPlugin>();
+            services.AddScoped<IUserPreferencesProvider, UserPreferencesProviderPlugin>();
+            services.AddScoped<ITemplateIdProvider, TemplateIdProviderPlugin>();
         }
 
         private static void RegisterDasNotifications(IServiceCollection services, IConfiguration configuration)

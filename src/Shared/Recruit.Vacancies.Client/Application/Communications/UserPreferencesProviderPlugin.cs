@@ -4,14 +4,14 @@ using Communication.Types.Interfaces;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 
-namespace Esfa.Recruit.Vacancies.Client.Application.CommunicationPlugins
+namespace Esfa.Recruit.Vacancies.Client.Application.Communications
 {
-    public class UserPreferencesProvider : IUserPreferencesProvider
+    public class UserPreferencesProviderPlugin : IUserPreferencesProvider
     {
         private readonly IUserNotificationPreferencesRepository _repository;
         public string UserType => CommunicationConstants.UserType;
 
-        public UserPreferencesProvider(IUserNotificationPreferencesRepository repository)
+        public UserPreferencesProviderPlugin(IUserNotificationPreferencesRepository repository)
         {
             _repository = repository;
         }

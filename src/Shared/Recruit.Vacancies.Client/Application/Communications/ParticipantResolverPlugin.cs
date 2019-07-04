@@ -6,16 +6,16 @@ using Communication.Types.Interfaces;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 
-namespace Esfa.Recruit.Vacancies.Client.Application.CommunicationPlugins 
+namespace Esfa.Recruit.Vacancies.Client.Application.Communications 
 {
-    public class ParticipantResolver : IParticipantResolver 
+    public class ParticipantResolverPlugin : IParticipantResolver 
     {
         private readonly IVacancyRepository _vacancyRepository;
         private readonly IUserRepository _userRepository;
 
         public string ParticipantResolverName => CommunicationConstants.ServiceName;
 
-        public ParticipantResolver(IVacancyRepository vacancyRepository, IUserRepository userRepository) 
+        public ParticipantResolverPlugin(IVacancyRepository vacancyRepository, IUserRepository userRepository) 
         {
             _userRepository = userRepository;
             _vacancyRepository = vacancyRepository;
