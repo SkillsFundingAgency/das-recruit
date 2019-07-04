@@ -99,11 +99,13 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddScoped<CommunicationMessageDispatcherQueueTrigger>();
             services.AddScoped<CommunicationMessageDispatcher>();
 
-            services.AddScoped<ICommunicationProcessor, CommunicationProcessor>();
-            services.AddScoped<IEntityDataItemProvider, VacancyEntityDataItemProviderPlugin>();
-            services.AddScoped<IParticipantResolver, ParticipantResolverPlugin>();
-            services.AddScoped<IUserPreferencesProvider, UserPreferencesProviderPlugin>();
-            services.AddScoped<ITemplateIdProvider, TemplateIdProviderPlugin>();
+            services.AddTransient<ICommunicationProcessor, CommunicationProcessor>();
+            services.AddTransient<ICommunicationService, CommunicationService>();
+
+            services.AddTransient<IEntityDataItemProvider, VacancyEntityDataItemProviderPlugin>();
+            services.AddTransient<IParticipantResolver, ParticipantResolverPlugin>();
+            services.AddTransient<IUserPreferencesProvider, UserPreferencesProviderPlugin>();
+            services.AddTransient<ITemplateIdProvider, TemplateIdProviderPlugin>();
         }
 
         private static void RegisterDasNotifications(IServiceCollection services, IConfiguration configuration)
