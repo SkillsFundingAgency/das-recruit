@@ -5,6 +5,7 @@ using Communication.Types;
 using Communication.Types.Extensions;
 using Communication.Types.Interfaces;
 using System.Linq;
+using System;
 
 namespace Communication.Core
 {
@@ -121,13 +122,13 @@ namespace Communication.Core
 
                 return channels.Select(channel => new CommunicationMessage
                     {
-                        RequestId = request.RequestId,
+                        Id = Guid.NewGuid(),
                         RequestDateTime = request.RequestDateTime,
                         ParticipantsResolverName = request.ParticipantsResolverName,
                         OriginatingServiceName = originatingService,
                         Recipient = p.User,
                         DataItems = dataItems,
-                        RequestType = request.GetType().Name,
+                        RequestType = request.RequestType,
                         Channel = channel,
                         Frequency = p.Preferences.Frequency,
                         Status = CommunicationMessageStatus.Unsent

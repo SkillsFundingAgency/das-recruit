@@ -36,6 +36,11 @@ namespace Esfa.Recruit.Vacancies.Jobs.Communication
             _logger.LogInformation($"Retrieving {nameof(CommunicationMessage)}:{commMsgId.Id.ToString()} from CommunicationMessages Store");
             var commMsg = await _repository.GetAsync(commMsgId.Id);
 
+            if (commMsg == null)
+            {
+                throw new ArgumentException($"Could not find communication message: {commMsgId.Id} in CommunicationsStore.");
+            }
+
             try
             {
                 _logger.LogInformation($"Retrieving {nameof(CommunicationMessage)}:{commMsgId.Id.ToString()} from CommunicationMessages Store");
@@ -52,7 +57,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.Communication
 
                 commMsg.Status = CommunicationMessageStatus.Sent;
                 commMsg.DispatchDateTime = _timeProvider.Now;
-                //await _repository.UpdateAsync(commMsg);
+                await _repository.UpdateAsync(commMsg);
             }
             catch (HttpRequestException ex)
             {

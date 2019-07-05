@@ -5,8 +5,7 @@ namespace Communication.Types
 {
     public sealed class CommunicationMessage
     {
-        public Guid Id { get; }
-        public Guid RequestId { get; set; }
+        public Guid Id { get; set; }
         public string RequestType { get; set; }
         public string ParticipantsResolverName { get; set; }
         public string OriginatingServiceName { get; set; }
@@ -18,10 +17,5 @@ namespace Communication.Types
         public DateTime RequestDateTime { get; set; }
         public CommunicationMessageStatus Status { get; set; }
         public DateTime? DispatchDateTime { get; set; }
-
-        public CommunicationMessage()
-        {
-            Id = Guid.NewGuid();
-        }
     }
 }
