@@ -89,7 +89,7 @@
                 @Model.Title
                 <span class="govuk-caption-xl">@Model.EmployerName</span>
             </h2>
-            <a esfa-automation="link-employer-name" asp-route="@RouteNames.Title_Get" asp-route-wizard="false" class="govuk-body govuk-link">Change</a>
+           @EditLink(RouteNames.Title_Get, Model.TitleSectionState, "employer-name", "link-employer-name", new { wizard = false })
         </div>
     </div>
 </div>
