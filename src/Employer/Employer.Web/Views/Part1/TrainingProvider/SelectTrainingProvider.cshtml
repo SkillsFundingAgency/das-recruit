@@ -17,7 +17,9 @@
         </h1>
         <form asp-route="@RouteNames.TrainingProvider_Select_Post" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
             <p class="govuk-body">
-                You will need to use a registered training provider who offers the apprenticeship training you choose.
+                You will need to use a registered training provider who offers
+                <span class="govuk-!-font-weight-bold">&quot;@Model.Programme.Name&quot;</span>
+                training.
             </p>
             <div class="govuk-form-group">
                 <div class="govuk-radios govuk-radios--conditional" data-module="radios">
