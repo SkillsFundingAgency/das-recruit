@@ -24,7 +24,7 @@ namespace Communication.Core
 
         public async Task ProcessRequest(CommunicationRequest req)
         {
-            var messages = (await _processor.CreateMessagesAsync(req)).ToList();
+            var messages = (await _processor.CreateMessagesAsync(req));
 
             await Task.WhenAll(messages.Select(m => _repository.InsertAsync(m)));
             var msgIds = messages.Select(m => new CommunicationMessageIdentifier { Id = m.Id });
