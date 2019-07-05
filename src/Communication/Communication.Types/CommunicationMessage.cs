@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Communication.Types
 {
-    public sealed class CommunicationMessage
+    public class CommunicationMessage
     {
         public Guid Id { get; set; }
         public string RequestType { get; set; }
