@@ -1,6 +1,6 @@
 ﻿namespace Communication.Types
 {
-    public struct CommunicationDataItem
+    public class CommunicationDataItem
     {
         public string Key { get; }
         public string Value { get; }
