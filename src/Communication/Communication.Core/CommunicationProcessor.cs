@@ -110,7 +110,7 @@ namespace Communication.Core
             }
         }
 
-        public static IEnumerable<CommunicationMessage> CreateMessages(
+        public IEnumerable<CommunicationMessage> CreateMessages(
             CommunicationRequest request,
             string originatingService,
             IEnumerable<CommunicationDataItem> dataItems,
@@ -136,7 +136,7 @@ namespace Communication.Core
                 );
             });
 
-            return messages;
+            return messages.ToArray();
         }
 
         public static IEnumerable<Participant> GetOptedInParticipants(IEnumerable<Participant> participants)
