@@ -21,8 +21,9 @@ namespace Esfa.Recruit.Shared.Web.Extensions
         {
 #pragma warning disable CS0618 // Type or member is obsolete
             { ProgrammeLevel.FoundationDegree, "Foundation Degree" },
-            { ProgrammeLevel.Masters, "Master's Degree" },            { WageType.FixedWage, "Fixed wage" },
+            { ProgrammeLevel.Masters, "Master's Degree" },
 #pragma warning restore CS0618 // Type or member is obsolete
+            { WageType.FixedWage, "Fixed wage" },
             { WageType.NationalMinimumWage, "National Minimum Wage" },
             { WageType.NationalMinimumWageForApprentices, "National Minimum Wage for apprentices" },
             { ManualQaOutcome.Referred, "Edits required" },
