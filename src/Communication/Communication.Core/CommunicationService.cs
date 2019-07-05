@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using Communication.Types;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 
 namespace Communication.Core
 {
@@ -23,7 +24,7 @@ namespace Communication.Core
 
         public async Task ProcessRequest(CommunicationRequest req)
         {
-            var messages = await _processor.CreateMessagesAsync(req);
+            var messages = (await _processor.CreateMessagesAsync(req)).ToList();
 
             await Task.WhenAll(messages.Select(m => _repository.InsertAsync(m)));
             var msgIds = messages.Select(m => new CommunicationMessageIdentifier { Id = m.Id });
