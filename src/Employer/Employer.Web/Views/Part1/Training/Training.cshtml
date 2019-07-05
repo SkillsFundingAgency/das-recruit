@@ -46,14 +46,17 @@
 @section FooterJS
     {
     <script asp-append-version="true" src="/lib/accessible-autocomplete/accessible-autocomplete.min.js"></script>
+    <script asp-append-version="true" src="/javascripts/esfa-training-suggestions/training-suggestions-service.js"></script>
     <script nws-csp-add-nonce="true">
-        var selectElement = document.querySelector('#@Html.IdFor(m => m.SelectedProgrammeId)');
+        var selectElementSelector = "#@Html.IdFor(m => m.SelectedProgrammeId)";
 
-        selectElement.options[0].text = "";
+        trainingSuggestionsService.init(selectElementSelector);
 
-        accessibleAutocomplete.enhanceSelectElement({
-            selectElement: selectElement,
-            displayMenu: "inline"
-        });
+        $(selectElementSelector).parents("form").on("submit",
+            function () {
+                if ($(selectElementSelector).val() === "") {
+                    $(selectElementSelector + '-select option[value=""]').prop('selected', true);
+                }
+            });
     </script>
 }
