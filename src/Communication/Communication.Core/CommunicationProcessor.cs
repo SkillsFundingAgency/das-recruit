@@ -57,7 +57,7 @@ namespace Communication.Core
             return resolver.GetParticipantsAsync(request);
         }
 
-        private async Task<IEnumerable<CommunicationDataItem>> GetEntityDataItemsAsync(CommunicationRequest request)
+        private async Task<List<CommunicationDataItem>> GetEntityDataItemsAsync(CommunicationRequest request)
         {
             var dataItems = new List<CommunicationDataItem>();
 
@@ -113,7 +113,7 @@ namespace Communication.Core
         public IEnumerable<CommunicationMessage> CreateMessages(
             CommunicationRequest request,
             string originatingService,
-            IEnumerable<CommunicationDataItem> dataItems,
+            List<CommunicationDataItem> dataItems,
             IEnumerable<Participant> filteredParticipants)
         {
             var messages = filteredParticipants.SelectMany(p =>
