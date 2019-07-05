@@ -12,7 +12,7 @@ namespace Communication.Types
         public CommunicationUser Recipient { get; set; }
         public DeliveryChannel Channel { get; set; }
         public DeliveryFrequency Frequency { get; set; }
-        public IEnumerable<CommunicationDataItem> DataItems { get; set; }
+        public List<CommunicationDataItem> DataItems { get; set; }
         public string TemplateId { get; set; }
         public DateTime RequestDateTime { get; set; }
         public CommunicationMessageStatus Status { get; set; }
