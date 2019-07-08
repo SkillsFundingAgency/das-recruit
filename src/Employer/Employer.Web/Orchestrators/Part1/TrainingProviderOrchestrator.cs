@@ -3,13 +3,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Mappings;
+using Esfa.Recruit.Employer.Web.Mappings.Extensions;
 using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.TrainingProvider;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
-using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -41,7 +41,15 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var vacancy = vacancyTask.Result;
             var trainingProviders = trainingProvidersTask.Result;
 
-            var vm = new SelectTrainingProviderViewModel { Title = vacancy.Title, TrainingProviders = trainingProviders.Select(t => FormatSuggestion(t.ProviderName, t.Ukprn)), PageInfo = Utility.GetPartOnePageInfo(vacancy) };
+            var programme = await _vacancyClient.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
+
+            var vm = new SelectTrainingProviderViewModel
+            {
+                Title = vacancy.Title,
+                TrainingProviders = trainingProviders.Select(t => FormatSuggestion(t.ProviderName, t.Ukprn)),
+                PageInfo = Utility.GetPartOnePageInfo(vacancy),
+                Programme = programme.ToViewModel()
+            };
 
             TrySetSelectedTrainingProvider(vm, trainingProviders, vacancy, ukprn);
             
