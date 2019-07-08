@@ -13,7 +13,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
 
         public static class RequestType
         {
-            public const string VacancyRejected = "VacancyRejected";
+            public const string VacancyRejected = nameof(VacancyRejected);
         }
 
         public static class VacancyDataItems

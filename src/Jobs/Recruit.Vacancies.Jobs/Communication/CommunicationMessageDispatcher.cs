@@ -38,7 +38,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.Communication
 
             if (commMsg == null)
             {
-                throw new ArgumentException($"Could not find communication message: {commMsgId.Id} in CommunicationsStore.");
+                throw new ArgumentException($"Could not find communication message: {commMsgId.Id} in CommunicationMessages Store.");
             }
 
             try
@@ -75,7 +75,6 @@ request.DataItems = new List<CommunicationDataItem>();
 request.DataItems.Add(new CommunicationDataItem("AccessCode", "x"));
 request.DataItems.Add(new CommunicationDataItem("CodeExpiry", "x"));
 request.DataItems.Add(new CommunicationDataItem("ReturnUrl", "x"));
-
 
             _logger.LogInformation($"Trying to send message of type {request.RequestType} to {request.Recipient.Email}");
 

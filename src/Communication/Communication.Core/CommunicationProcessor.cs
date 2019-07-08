@@ -45,7 +45,7 @@ namespace Communication.Core
 
             await SetMessageTemplateIds(messages);
 
-            return await Task.FromResult(messages);
+            return messages;
         }
 
         private Task<IEnumerable<CommunicationUser>> GetPotentialRecipientsAsync(CommunicationRequest request)
