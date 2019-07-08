@@ -43,16 +43,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
             var vm = new SelectTrainingProviderViewModel { Title = vacancy.Title, TrainingProviders = trainingProviders.Select(t => FormatSuggestion(t.ProviderName, t.Ukprn)), PageInfo = Utility.GetPartOnePageInfo(vacancy) };
 
-            if (vacancy.TrainingProvider != null)
-            {
-                SetModelUsingVacancyTrainingProvider(vm, vacancy);
-            }
-            else
-            {
-                if (ukprn.HasValue)
-                    SetModelUsingUkprn(vm, trainingProviders, ukprn.Value);
-            }
-
+            TrySetSelectedTrainingProvider(vm, trainingProviders, vacancy, ukprn);
+            
             if (vacancy.Status == VacancyStatus.Referred)
             {
                 vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
@@ -161,6 +153,18 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             }
 
             return await GetProviderAsync(model.Ukprn);
+        }
+
+        private void TrySetSelectedTrainingProvider(SelectTrainingProviderViewModel vm, IEnumerable<TrainingProviderSummary> trainingProviders, Vacancy vacancy, long? ukprn)
+        {
+            if (ukprn.HasValue)
+            {
+                SetModelUsingUkprn(vm, trainingProviders, ukprn.Value);
+                return;
+            }
+
+            if (vacancy.TrainingProvider != null)
+                SetModelUsingVacancyTrainingProvider(vm, vacancy);
         }
         
         private void SetModelUsingVacancyTrainingProvider(SelectTrainingProviderViewModel vm, Vacancy vacancy)
