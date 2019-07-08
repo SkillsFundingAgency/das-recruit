@@ -25,6 +25,8 @@ using SFA.DAS.Notifications.Api.Client.Configuration;
 using Communication.Core;
 using Communication.Types.Interfaces;
 using Esfa.Recruit.Vacancies.Client.Application.Communications;
+using Esfa.Recruit.Client.Application.Communications;
+using Esfa.Recruit.Vacancies.Client.Application.Communications.EntityDataItemProviderPlugins;
 
 namespace Esfa.Recruit.Vacancies.Jobs
 {
@@ -102,10 +104,13 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddTransient<ICommunicationProcessor, CommunicationProcessor>();
             services.AddTransient<ICommunicationService, CommunicationService>();
 
-            services.AddTransient<IEntityDataItemProvider, VacancyEntityDataItemProviderPlugin>();
+            services.AddTransient<IEntityDataItemProvider, VacancyPlugin>();
             services.AddTransient<IParticipantResolver, ParticipantResolverPlugin>();
             services.AddTransient<IUserPreferencesProvider, UserPreferencesProviderPlugin>();
             services.AddTransient<ITemplateIdProvider, TemplateIdProviderPlugin>();
+            services.AddTransient<IEntityDataItemProvider, ApprenticeshipServiceUrlPlugin>();
+
+            services.Configure<CommunicationsConfiguration>(configuration.GetSection("CommunicationsConfiguration"));
         }
 
         private static void RegisterDasNotifications(IServiceCollection services, IConfiguration configuration)

@@ -6,14 +6,14 @@ using Communication.Types.Interfaces;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using static Esfa.Recruit.Vacancies.Client.Application.Communications.CommunicationConstants;
 
-namespace Esfa.Recruit.Vacancies.Client.Application.Communications
+namespace Esfa.Recruit.Vacancies.Client.Application.Communications.EntityDataItemProviderPlugins
 {
-    public class VacancyEntityDataItemProviderPlugin : IEntityDataItemProvider
+    public class VacancyPlugin : IEntityDataItemProvider
     {
         private readonly IVacancyRepository _vacancyRepository;
         public string EntityType => CommunicationConstants.EntityTypes.Vacancy;
 
-        public VacancyEntityDataItemProviderPlugin(IVacancyRepository vacancyRepository)
+        public VacancyPlugin(IVacancyRepository vacancyRepository)
         {
             _vacancyRepository = vacancyRepository;
         }
@@ -22,16 +22,16 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
         {
             if(int.TryParse(entityId.ToString(), out var vacancyReference) == false)
             {
-                throw new InvalidEntityIdException(EntityType, nameof(VacancyEntityDataItemProviderPlugin));
+                throw new InvalidEntityIdException(EntityType, nameof(VacancyPlugin));
             }
 
             var vacancy = await _vacancyRepository.GetVacancyAsync(vacancyReference);
 
             return new List<CommunicationDataItem>()
             {
-                new CommunicationDataItem(VacancyDataItems.VacancyReference, vacancy.VacancyReference.ToString()),
-                new CommunicationDataItem(VacancyDataItems.VacancyTitle, vacancy.Title),
-                new CommunicationDataItem(VacancyDataItems.EmployerName, vacancy.EmployerName)
+                new CommunicationDataItem(DataItemKeys.Vacancy.VacancyReference, vacancy.VacancyReference.ToString()),
+                new CommunicationDataItem(DataItemKeys.Vacancy.VacancyTitle, vacancy.Title),
+                new CommunicationDataItem(DataItemKeys.Vacancy.EmployerName, vacancy.EmployerName)
             };
         }
     }

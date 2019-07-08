@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -15,6 +14,9 @@ namespace Esfa.Recruit.Vacancies.Jobs.Communication
 {
     public sealed class CommunicationMessageDispatcher
     {
+        private const string NotifySystemId = "VacancyServicesCommunications";
+        private const string UserNameTokenKey = "user-name";
+
         private readonly ILogger<CommunicationMessageDispatcher> _logger;
         private readonly ICommunicationRepository _repository;
         private readonly INotificationsApi _dasNotifyClient;
@@ -70,12 +72,6 @@ namespace Esfa.Recruit.Vacancies.Jobs.Communication
 
         public async Task SendEmail(CommunicationMessage request)
         {
-request.TemplateId = "UserRegistration";
-request.DataItems = new List<CommunicationDataItem>();
-request.DataItems.Add(new CommunicationDataItem("AccessCode", "x"));
-request.DataItems.Add(new CommunicationDataItem("CodeExpiry", "x"));
-request.DataItems.Add(new CommunicationDataItem("ReturnUrl", "x"));
-
             _logger.LogInformation($"Trying to send message of type {request.RequestType} to {request.Recipient.Email}");
 
             var email = new Email
@@ -83,11 +79,13 @@ request.DataItems.Add(new CommunicationDataItem("ReturnUrl", "x"));
                 TemplateId = request.TemplateId,
                 RecipientsAddress = request.Recipient.Email,
                 Tokens = request.DataItems.ToDictionary(x => x.Key, x => x.Value),
-                SystemId = request.OriginatingServiceName, // any value is acceptable
+                SystemId = NotifySystemId, // any value is acceptable
                 // following are overwritten in the service but required to be populated
                 ReplyToAddress = "ThisWillBeReplacedBy@notify.com",
                 Subject = "This will be replaced by the template on Gov Notify"
             };
+
+            email.Tokens.Add(UserNameTokenKey, request.Recipient.Name);
 
             await _retryPolicy.ExecuteAsync(context => _dasNotifyClient.SendEmail(email),
                                             new Context(nameof(SendEmail)));
