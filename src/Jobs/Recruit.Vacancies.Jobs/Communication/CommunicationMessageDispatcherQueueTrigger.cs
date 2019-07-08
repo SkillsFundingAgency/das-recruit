@@ -24,7 +24,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.Communication
             _messageDispatcher = messageDispatcher;
         }
 
-        public async Task ProcessCommunicationRequestAsync([QueueTrigger(CommunicationQueueNames.CommunicationMessageDispatcher, Connection = "CommunicationsStorage")] string message, TextWriter log)
+        public async Task ProcessCommunicationMessageAsync([QueueTrigger(CommunicationQueueNames.CommunicationMessageDispatcher, Connection = "CommunicationsStorage")] string message, TextWriter log)
         {
             if (_jobsConfig.DisabledJobs.Contains(JobName))
             {
