@@ -65,7 +65,8 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(m);
 
             SetSectionStates(viewModel);
-
+            viewModel.IncompleteSectionCount = GetSectionStateCount(viewModel);
+            viewModel.IncompleteSectionText = "section".ToQuantity(viewModel.IncompleteSectionCount, ShowQuantityAs.None);
             return View(ViewNames.VacancyPreview, viewModel);
         }
 
@@ -120,7 +121,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         }
         private bool CheckIfSectionIsIncomplete(VacancyPreviewSectionState viewModelTitleSectionState)
         {
-            return viewModelTitleSectionState == VacancyPreviewSectionState.Incomplete;
+            return viewModelTitleSectionState == VacancyPreviewSectionState.Incomplete || viewModelTitleSectionState == VacancyPreviewSectionState.InvalidIncomplete;
         }
         private VacancyPreviewSectionState GetSectionState(VacancyPreviewViewModel vm, IEnumerable<string> reviewFieldIndicators, bool requiresAll, params Expression<Func<VacancyPreviewViewModel, object>>[] sectionProperties)
         {

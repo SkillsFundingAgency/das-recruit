@@ -43,9 +43,11 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
-        <div class="info-summary__header-bar">
-            <h2 class="govuk-heading-m" asp-show="@Model.HasIncompleteMandatorySections">@Model.IncompleteSectionCount required @Model.IncompleteSectionText to complete</h2>
-            <h2 class="govuk-heading-m" asp-hide="@Model.HasIncompleteMandatorySections">You have completed all required sections</h2>
+        <div class="info-summary__header-bar" asp-show="@Model.HasIncompleteMandatorySections">
+            <h2 class="govuk-heading-m" >@Model.IncompleteSectionCount required @Model.IncompleteSectionText to complete</h2>
+        </div>
+        <div class="info-summary__header-bar govuk-!-margin-bottom-6" asp-hide="@Model.HasIncompleteMandatorySections">
+            <h2 class="govuk-heading-m">You have completed all required sections</h2>
         </div>
         <div asp-show="@Model.ShowIncompleteSections" class="info-summary govuk-!-margin-top-0" role="alert">
             <div asp-show="@Model.HasIncompleteMandatorySections">
@@ -63,7 +65,7 @@
                 </ul>
             </div>
             <div asp-show="@Model.HasIncompleteOptionalSections">
-                <p class="govuk-body">Sections you will need to complete:</p>
+                <p class="govuk-body">You may wish to complete these optional sections</p>
                 <ul class="govuk-list">
                     <li asp-show="@Model.HasIncompleteThingsToConsiderSection"><a asp-fragment="@Anchors.ThingsToConsider" class="govuk-link summary-link">Things to consider</a></li>
                     <li asp-show="@Model.HasIncompleteEmployerWebsiteUrlSection"><a asp-fragment="@Anchors.EmployerWebsiteUrl" class="govuk-link summary-link">Employer website</a></li>
@@ -89,7 +91,7 @@
                 @Model.Title
                 <span class="govuk-caption-xl">@Model.EmployerName</span>
             </h2>
-            <a esfa-automation="link-employer-name" asp-route="@RouteNames.Title_Get" asp-route-wizard="false" class="govuk-body govuk-link">Change</a>
+           @EditLink(RouteNames.Title_Get, Model.TitleSectionState, "employer-name", "link-employer-name", new { wizard = false })
         </div>
     </div>
 </div>
