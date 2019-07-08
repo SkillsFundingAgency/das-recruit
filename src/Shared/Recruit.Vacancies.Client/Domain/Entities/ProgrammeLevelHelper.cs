@@ -8,11 +8,11 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         {
             switch (value)
             {
-                case 5:
+                case 5: // Foundation Degree
                     value = (int)ProgrammeLevel.Higher;
                     break;
 
-                case 7:
+                case 7: // Masters
                     value = (int)ProgrammeLevel.Degree;
                     break;
             }
