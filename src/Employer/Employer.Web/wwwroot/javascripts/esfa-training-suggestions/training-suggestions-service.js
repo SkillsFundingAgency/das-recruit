@@ -1,8 +1,7 @@
 ﻿var trainingSuggestionsService = function () {
 
-    var init = function(selectElementSelector) {
-        var selectElement = document.querySelector(selectElementSelector);
-
+    var init = function(selectElement) {
+        
         accessibleAutocomplete.enhanceSelectElement({
             selectElement: selectElement,
             displayMenu: "inline",

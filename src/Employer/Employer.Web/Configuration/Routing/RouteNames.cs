@@ -69,6 +69,8 @@
         public const string Training_First_Time_Get = "Training_First_Time_Get";
         public const string Training_First_Time_Post = "Training_First_Time_Post";
         public const string Training_Help_Get = "Training_Help_Get";
+        public const string Training_Confirm_Get = "Training_Confirm_Get";
+        public const string Training_Confirm_Post = "Training_Confirm_Post";
 
         public const string Dates_Get = "Dates_Get";
         public const string Dates_Post = "Dates_Post";

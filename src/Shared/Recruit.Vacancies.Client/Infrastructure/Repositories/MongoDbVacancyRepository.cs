@@ -91,21 +91,19 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             return result;
         }
 
-        public async Task<IEnumerable<T>> GetVacanciesForUserAsync<T>(string userId)
+        public async Task<int> GetVacancyCountForUserAsync(string userId)
         {
-            var builder = Builders<T>.Filter;
+            var builder = Builders<Vacancy>.Filter;
             var filter = builder.Eq(CreatedByUserId, userId) |
                          builder.Eq(SubmittedByUserId, userId);
 
-            var collection = GetCollection<T>();
+            var collection = GetCollection<Vacancy>();
 
             var result = await RetryPolicy.ExecuteAsync(_ =>
-                    collection.Find(filter)
-                        .Project<T>(GetProjection<T>())
-                        .ToListAsync(),
-                new Context(nameof(GetVacanciesForUserAsync)));
+                    collection.CountDocumentsAsync(filter),
+                new Context(nameof(GetVacancyCountForUserAsync)));
 
-            return result;
+            return (int)result;
         }
 
         public async Task<IEnumerable<T>> GetVacanciesByProviderAccountAsync<T>(long ukprn)

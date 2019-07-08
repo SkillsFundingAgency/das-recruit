@@ -13,6 +13,7 @@
         public const string ManageReferredVacancyView = "Referred";
         public const string FullVacancyView = "FullVacancyView";
 
+        public const string Training = "Training";
         public const string SelectTrainingProvider = "SelectTrainingProvider";
 
         public const string VacancyPreview = "VacancyPreview";

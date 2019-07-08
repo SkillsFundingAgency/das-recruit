@@ -75,7 +75,7 @@
                         <div class="govuk-form-group">
                             <p class="govuk-body">
                                 You will need to add a training provider before submitting the vacancy. If you need help, you can
-                                <a href="@_externalLinks.Value.FindProviderUrl" target="_blank">find a training provider (opens in new tab)</a>
+                                <a href="@_externalLinks.Value.FindProviderUrl" target="_blank">Find a training provider (opens in new tab)</a>
                                 based on the apprenticeship training.
                             </p>
                         </div>
@@ -103,11 +103,13 @@
     <script asp-append-version="true" src="/lib/accessible-autocomplete/accessible-autocomplete.min.js"></script>
     <script asp-append-version="true" src="/javascripts/esfa-training-provider-suggestions/searchSuggestionsService.js"></script>
     <script nws-csp-add-nonce="true">
-        $("#js-search").removeClass("js-hidden");
-        $("#selection-type").val("@TrainingProviderSelectionType.TrainingProviderSearch");
+        $(function() {
+            $("#js-search").removeClass("js-hidden");
+            $("#selection-type").val("@TrainingProviderSelectionType.TrainingProviderSearch");
 
-        var providers = @(Html.Raw(JsonConvert.SerializeObject(Model.TrainingProviders)));
+            var providers = @(Html.Raw(JsonConvert.SerializeObject(Model.TrainingProviders)));
 
-        searchSuggestions.init($("#@Html.IdFor(m => m.TrainingProviderSearch)"), providers);
+            searchSuggestions.init($("#@Html.IdFor(m => m.TrainingProviderSearch)"), providers);
+        })
     </script>
 }
