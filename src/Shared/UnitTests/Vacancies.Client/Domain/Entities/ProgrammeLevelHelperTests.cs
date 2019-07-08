@@ -43,7 +43,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Domain.Entiti
             int intValueToConvert = (int)ProgrammeLevel.Degree + 2;
             Assert.Throws<ArgumentException>(() =>
             {
-                ProgrammeLevel result = ProgrammeLevelHelper.RemapFromInt(intValueToConvert);
+                ProgrammeLevelHelper.RemapFromInt(intValueToConvert);
             });
         }
 
