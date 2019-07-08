@@ -14,32 +14,26 @@
         return "Manage";
     }
 }
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        <div asp-show="Model.HasWarning" class="warning-summary govuk-!-margin-bottom-0">
-            <p>@Model.WarningMessage</p>
-        </div>
-        <div asp-show="Model.HasInfo" class="info-summary govuk-!-margin-bottom-0">
-            <p>@Model.InfoMessage</p>
-        </div>
-    </div>
-    <esfaFeatureEnabled name="@FeatureNames.SetNotificationPreferences">
-        <div class="govuk-grid-column-one-third">        
-            <div class="govuk-!-margin-bottom-5"><a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.ManageNotifications_Get">Manage your recruitment emails</a></div>
-        </div>
-    </esfaFeatureEnabled>
-</div>
 
 <partial asp-hide="@Model.HasVacancies" name="_NoVacanciesContent" />
 
 <div asp-show="Model.HasVacancies">
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
-
+        <div class="govuk-grid-column-two-thirds">
+            <div asp-show="Model.HasWarning" class="warning-summary govuk-!-margin-bottom-0">
+                <p>@Model.WarningMessage</p>
+            </div>
+            <div asp-show="Model.HasInfo" class="info-summary govuk-!-margin-bottom-0">
+                <p>@Model.InfoMessage</p>
+            </div>
             <h1 class="govuk-heading-l govuk-!-margin-bottom-6">Your vacancies</h1>
-
             <a asp-route="@RouteNames.CreateVacancyOptions_Get" class="govuk-button govuk-!-margin-bottom-6" esfa-automation="create-vacancy">Create vacancy</a>
         </div>
+        <esfaFeatureEnabled name="@FeatureNames.SetNotificationPreferences">
+            <div class="govuk-grid-column-one-third">
+                <div class="govuk-!-margin-bottom-5"><a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.ManageNotifications_Get">Manage your recruitment emails</a></div>
+            </div>
+        </esfaFeatureEnabled>
     </div>
 
     <div asp-hide="true" class="govuk-grid-row">
