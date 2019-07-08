@@ -517,9 +517,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             });
         }
 
-        public Task<IEnumerable<VacancyIdentifier>> GetVacanciesForUserAsync(string userId)
+        public Task<int> GetVacancyCountForUserAsync(string userId)
         {
-            return _vacancyQuery.GetVacanciesForUserAsync<VacancyIdentifier>(userId);
+            return _vacancyQuery.GetVacancyCountForUserAsync(userId);
         }
     }
 }

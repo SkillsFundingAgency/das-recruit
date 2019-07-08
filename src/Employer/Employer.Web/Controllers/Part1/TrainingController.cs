@@ -1,6 +1,9 @@
+using System.Linq;
 using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
+using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Training;
@@ -13,6 +16,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
     public class TrainingController : Controller
     {
         private readonly TrainingOrchestrator _orchestrator;
+        private const string InvalidTraining = "Please select a training programme";
 
         public TrainingController(TrainingOrchestrator orchestrator)
         {
@@ -20,19 +24,30 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         }
         
         [HttpGet("training", Name = RouteNames.Training_Get)]
-        public async Task<IActionResult> Training(VacancyRouteModel vrm, [FromQuery] string wizard = "true", [FromQuery] string clear = "", [FromQuery] string hasTraining = "")
+        public async Task<IActionResult> Training(VacancyRouteModel vrm, [FromQuery] string wizard = "true", [FromQuery] string clear = "", [FromQuery] string hasTraining = "", [FromQuery] string programmeId = "")
         {
+            var clearTraining = string.IsNullOrWhiteSpace(clear) == false;
+
             var vm = await _orchestrator.GetTrainingViewModelAsync(vrm, User.ToVacancyUser());
 
-            if (vm.IsUsersFirstVacancy && string.IsNullOrEmpty(hasTraining))
+            if (string.IsNullOrWhiteSpace(programmeId) == false &&
+                vm.Programmes.Any(p => p.Id == programmeId))
+            {
+                vm.SelectedProgrammeId = programmeId;
+            }
+
+            var userHasFoundTraining = string.IsNullOrEmpty(hasTraining) == false || 
+                                       clearTraining || 
+                                       string.IsNullOrEmpty(vm.SelectedProgrammeId) == false;
+
+            if (vm.IsUsersFirstVacancy &&
+                userHasFoundTraining == false)
                 return RedirectToRoute(RouteNames.Training_First_Time_Get);
 
-            vm.PageInfo.SetWizard(wizard);
-
-            if (string.IsNullOrWhiteSpace(clear) == false)
-            {
+            if (clearTraining)
                 vm.SelectedProgrammeId = "";
-            }
+
+            vm.PageInfo.SetWizard(wizard);
 
             return View(vm);
         }
@@ -40,25 +55,22 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         [HttpPost("training", Name = RouteNames.Training_Post)]
         public async Task<IActionResult> Training(TrainingEditModel m, [FromQuery] bool wizard)
         {
-            var user = User.ToVacancyUser();
-            var response = await _orchestrator.PostTrainingEditModelAsync(m, user);
-            
-            if (!response.Success)
+            var programme = await _orchestrator.GetProgrammeAsync(m.SelectedProgrammeId);
+
+            if (programme == null)
             {
-                response.AddErrorsToModelState(ModelState);
+                return await ProgrammeNotFound(m, wizard);
             }
 
             if (!ModelState.IsValid)
             {
-                var vm = await _orchestrator.GetTrainingViewModelAsync(m, user);
+                var vm = await _orchestrator.GetTrainingViewModelAsync(m, User.ToVacancyUser());
                 vm.PageInfo.SetWizard(wizard);
 
                 return View(vm);
             }
 
-            return wizard
-                ? RedirectToRoute(RouteNames.TrainingProvider_Select_Get)
-                : RedirectToRoute(RouteNames.Vacancy_Preview_Get);
+            return RedirectToRoute(RouteNames.Training_Confirm_Get, new {programmeId = m.SelectedProgrammeId, wizard});
         }
 
         [HttpGet("training-first-vacancy", Name = RouteNames.Training_First_Time_Get)]
@@ -88,6 +100,66 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         public IActionResult TrainingHelp(VacancyRouteModel vrm)
         {
             return View();
+        }
+
+        [HttpGet("training-confirm", Name = RouteNames.Training_Confirm_Get)]
+        public async Task<IActionResult> ConfirmTraining(VacancyRouteModel vrm, string programmeId, [FromQuery] bool wizard)
+        {
+            var vm = await _orchestrator.GetConfirmTrainingViewModelAsync(vrm, programmeId);
+
+            if (vm == null)
+            {
+                var m = new TrainingEditModel { SelectedProgrammeId = programmeId, EmployerAccountId = vrm.EmployerAccountId, VacancyId = vrm.VacancyId};
+                return await ProgrammeNotFound(m, wizard);
+            }
+
+            vm.PageInfo.SetWizard(wizard);
+
+            return View(vm);
+        }
+
+        [HttpPost("training-confirm", Name = RouteNames.Training_Confirm_Post)]
+        public async Task<IActionResult> ConfirmTraining(ConfirmTrainingEditModel m, [FromQuery] bool wizard)
+        {
+            var user = User.ToVacancyUser();
+
+            var programme = await _orchestrator.GetProgrammeAsync(m.ProgrammeId);
+
+            if(programme == null)
+            {
+                ModelState.AddModelError(nameof(TrainingEditModel.SelectedProgrammeId), InvalidTraining);
+                var vm = await _orchestrator.GetTrainingViewModelAsync(m, user);
+                vm.PageInfo.SetWizard(wizard);
+                return View(vm);
+            }
+
+            var response = await _orchestrator.PostConfirmTrainingEditModelAsync(m, user);
+
+            if (!response.Success)
+            {
+                response.AddErrorsToModelState(ModelState);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                var vm = await _orchestrator.GetTrainingViewModelAsync(m, user);
+                vm.PageInfo.SetWizard(wizard);
+
+                return View(vm);
+            }
+
+            return wizard
+                ? RedirectToRoute(RouteNames.TrainingProvider_Select_Get)
+                : RedirectToRoute(RouteNames.Vacancy_Preview_Get);            
+        }
+
+        private async Task<IActionResult> ProgrammeNotFound(TrainingEditModel m, bool wizard)
+        {
+            ModelState.AddModelError(nameof(TrainingEditModel.SelectedProgrammeId), InvalidTraining);
+
+            var vm = await _orchestrator.GetTrainingViewModelAsync(m, User.ToVacancyUser());
+            vm.PageInfo.SetWizard(wizard);
+            return View(ViewNames.Training, vm);
         }
     }
 }
