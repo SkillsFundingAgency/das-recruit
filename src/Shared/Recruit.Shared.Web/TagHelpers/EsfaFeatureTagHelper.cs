@@ -20,8 +20,11 @@ namespace Esfa.Recruit.Shared.Web.TagHelpers
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             if (_feature.IsFeatureEnabled(Name))
+            {
+                output.TagName = null;
                 return;
-
+            }
+            
             output.SuppressOutput();
         }
     }
@@ -43,8 +46,11 @@ namespace Esfa.Recruit.Shared.Web.TagHelpers
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             if (_feature.IsFeatureEnabled(Name) == false)
+            {
+                output.TagName = null;
                 return;
-
+            }
+            
             output.SuppressOutput();
         }
     }
