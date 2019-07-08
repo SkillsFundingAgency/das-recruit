@@ -5,22 +5,26 @@ namespace Communication.Types
 {
     public class CommunicationRequest
     {
-        public Guid RequestId { get; }
-        public string RequestType { get; }
-        public DateTime RequestDateTime { get; }
-        public string ParticipantsResolverName { get; }
-        public string TemplateProviderName { get; }
-        public List<Entity> Entities { get; }
-        public CommunicationRequest(string requestType, string participantsResolverName, string templateProviderName)
+        public Guid RequestId { get; set ;}
+        public string RequestType { get; set; }
+        public DateTime RequestDateTime { get; set; }
+        public string ParticipantsResolverName { get; set; }
+        public string TemplateProviderName { get; set; }
+        public List<Entity> Entities { get; set; }
+
+        public CommunicationRequest()
+        {
+            RequestDateTime = DateTime.UtcNow;
+            Entities = new List<Entity>();
+        }
+
+        public CommunicationRequest(string requestType, string participantsResolverName, string templateProviderName) : this()
         {
             RequestId = Guid.NewGuid();
-            RequestDateTime = DateTime.UtcNow;
 
             RequestType = requestType;
             ParticipantsResolverName = participantsResolverName;
             TemplateProviderName = templateProviderName;
-
-            Entities = new List<Entity>();
         }
 
         public void AddEntity(string entityType, object entityId)
