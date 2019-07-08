@@ -121,9 +121,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         }
         private bool CheckIfSectionIsIncomplete(VacancyPreviewSectionState viewModelTitleSectionState)
         {
-            if (viewModelTitleSectionState == VacancyPreviewSectionState.Incomplete)
-                return viewModelTitleSectionState == VacancyPreviewSectionState.Incomplete;
-            return viewModelTitleSectionState == VacancyPreviewSectionState.InvalidIncomplete;
+            return viewModelTitleSectionState == VacancyPreviewSectionState.Incomplete || viewModelTitleSectionState == VacancyPreviewSectionState.InvalidIncomplete;
         }
         private VacancyPreviewSectionState GetSectionState(VacancyPreviewViewModel vm, IEnumerable<string> reviewFieldIndicators, bool requiresAll, params Expression<Func<VacancyPreviewViewModel, object>>[] sectionProperties)
         {
