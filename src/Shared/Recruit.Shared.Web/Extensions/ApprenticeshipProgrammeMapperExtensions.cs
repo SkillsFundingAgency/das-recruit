@@ -15,12 +15,16 @@ namespace Esfa.Recruit.Shared.Web.Extensions
                 return Enumerable.Empty<ApprenticeshipProgrammeViewModel>();
             }
 
-            return programmes.Select(p =>
-                new ApprenticeshipProgrammeViewModel
-                {
-                    Id = p.Id,
-                    Name = $"{p.Title}, Level: {p.Level}, level {(int)p.Level} ({p.ApprenticeshipType.ToString()})"
-                }).OrderBy(p => p.Name);
+            return programmes.Select(ToViewModel).OrderBy(p => p.Name);
+        }
+
+        public static ApprenticeshipProgrammeViewModel ToViewModel(this IApprenticeshipProgramme programme)
+        {
+            return new ApprenticeshipProgrammeViewModel
+            {
+                Id = programme.Id,
+                Name = $"{programme.Title}, Level: {programme.Level}, level {(int)programme.Level} ({programme.ApprenticeshipType.ToString()})"
+            };
         }
     }
 }
