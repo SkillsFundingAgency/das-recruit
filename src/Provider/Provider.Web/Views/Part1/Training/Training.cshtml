@@ -48,15 +48,18 @@
     <script asp-append-version="true" src="/lib/accessible-autocomplete/accessible-autocomplete.min.js"></script>
     <script asp-append-version="true" src="/javascripts/esfa-training-suggestions/training-suggestions-service.js"></script>
     <script nws-csp-add-nonce="true">
-        var selectElementSelector = "#@Html.IdFor(m => m.SelectedProgrammeId)";
+        $(function() {
+            var selectElementSelector = "#@Html.IdFor(m => m.SelectedProgrammeId)";
+            var $selectElement = $(selectElementSelector);
 
-        trainingSuggestionsService.init(selectElementSelector);
+            trainingSuggestionsService.init($selectElement[0]);
 
-        $(selectElementSelector).parents("form").on("submit",
-            function () {
-                if ($(selectElementSelector).val() === "") {
-                    $(selectElementSelector + '-select option[value=""]').prop('selected', true);
-                }
-            });
+            $selectElement.parents("form").on("submit",
+                function () {
+                    if ($(selectElementSelector).val() === "") {
+                        $(selectElementSelector + '-select option[value=""]').prop('selected', true);
+                    }
+                });
+        });
     </script>
 }
