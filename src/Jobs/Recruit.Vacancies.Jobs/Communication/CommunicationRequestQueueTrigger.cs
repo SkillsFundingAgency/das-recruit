@@ -40,7 +40,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.Communication
                 var commReq = JsonConvert.DeserializeObject<CommunicationRequest>(message);
                 _logger.LogInformation($"Start {JobName} For Communication Request: {commReq.RequestType}:{commReq.RequestId}");
 
-                await _communicationService.ProcessRequest(commReq);
+                await _communicationService.ProcessRequestAsync(commReq);
 
                 _logger.LogInformation($"Finished {JobName} For Communication Request: {commReq.RequestType}:{commReq.RequestId}");
             }
