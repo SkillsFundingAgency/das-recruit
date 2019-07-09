@@ -9,6 +9,6 @@ namespace Communication.Types.Interfaces
         /// This should be a unique value across the services
         /// Example value: VacancyServices.Recruit.Vacancy
         string EntityType { get; }
-        Task<IEnumerable<CommunicationDataItem>> GetDataItems(object entityId);
+        Task<IEnumerable<CommunicationDataItem>> GetDataItemsAsync(object entityId);
     }
 }

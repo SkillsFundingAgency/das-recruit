@@ -19,7 +19,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications.EntityDataIte
             _vacancyRepository = vacancyRepository;
         }
 
-        public async Task<IEnumerable<CommunicationDataItem>> GetDataItems(object entityId)
+        public async Task<IEnumerable<CommunicationDataItem>> GetDataItemsAsync(object entityId)
         {
             if(int.TryParse(entityId.ToString(), out var vacancyReference) == false)
             {
