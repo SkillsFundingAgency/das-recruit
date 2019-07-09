@@ -43,6 +43,13 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             return Redirect(url);
         }
 
+        [HttpGet("manage-funding", Name = RouteNames.Dashboard_ManageFunding)]
+        public IActionResult ManageFunding(long ukprn)
+        {
+            var url = string.Format(_linkHelper.ManageFunding, ukprn);
+            return Redirect(url);
+        }
+
         [HttpGet("agreements", Name = RouteNames.Dashboard_AccountsAgreements)]
         public IActionResult AccountsAgreements(long ukprn)
         {

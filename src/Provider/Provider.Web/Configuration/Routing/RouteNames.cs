@@ -23,6 +23,7 @@
         public const string Dashboard_AccountsNotifications = "Dashboard_AccountsNotifications";
         public const string Dashboard_ManageApprentices = "Dashboard_ManageApprentices";
         public const string Dashboard_YourCohorts = "Dashboard_YourCohorts";
+        public const string Dashboard_ManageFunding = "Dashboard_ManageFunding";
         public const string Dashboard_AccountsAgreements = "Dashboard_AccountsAgreements";
         public const string Dashboard_Account_Home = "Dashboard_Account_Home";
         public const string Dashboard_DismissAlert_Post = "Dashboard_DismissAlert_Post";
@@ -46,7 +47,7 @@
         public const string EmployerName_Post = "EmployerName_Post";
         public const string Location_Get = "Location_Get";
         public const string Location_Post = "Location_Post";
-        public const string Location_Cancel = "Location_Cancel";        
+        public const string Location_Cancel = "Location_Cancel";
         public const string Logout_Get = "Logout_Get";
         public const string Preview_Submit_Post = "Preview_Submit_Post";
         public const string ProviderApplicationsReportCreate_Get = "ProviderApplicationsReportCreate_Get";
