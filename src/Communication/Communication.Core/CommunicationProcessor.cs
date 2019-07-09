@@ -67,7 +67,7 @@ namespace Communication.Core
                     throw new EntityDataItemProviderNotFoundException($"Unable to resolve entity data item provider for entity type '{entity.EntityType}'");
 
                 var entityDataItemProvider = _entityDataItemProviders[entity.EntityType];
-                var entityDataItems = await entityDataItemProvider.GetDataItems(entity.EntityId);
+                var entityDataItems = await entityDataItemProvider.GetDataItemsAsync(entity.EntityId);
 
                 dataItems.AddRange(entityDataItems);
             }

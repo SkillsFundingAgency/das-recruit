@@ -16,6 +16,8 @@ namespace UnitTests.Vacancies.Client.Application.Communications
         private readonly Fixture _fixture = new Fixture();
         private readonly Mock<IUserNotificationPreferencesRepository> _repositoryMock = new Mock<IUserNotificationPreferencesRepository>();
 
+        private UserPreferencesProviderPlugin GetSut() => new UserPreferencesProviderPlugin(_repositoryMock.Object);
+
         [Fact]
         public async Task WhenUserPreferenceIsNotSet_ShouldReturnNoneChannel()
         {
@@ -90,11 +92,6 @@ namespace UnitTests.Vacancies.Client.Application.Communications
             pref.Channels.Should().Be(DeliveryChannelPreferences.EmailOnly);
             pref.Frequency.Should().Be(DeliveryFrequency.Immediate);
             pref.Scope.Should().Be(Communication.Types.NotificationScope.Individual);
-        }
-
-        private UserPreferencesProviderPlugin GetSut()
-        {
-            return new UserPreferencesProviderPlugin(_repositoryMock.Object);
         }
     }
 }
