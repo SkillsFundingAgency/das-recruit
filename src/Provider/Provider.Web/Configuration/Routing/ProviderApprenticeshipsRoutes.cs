@@ -5,6 +5,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration.Routing
         public string ProviderApprenticeshipSiteAccountsHomeRoute { get; set; }
         public string ProviderApprenticeshipSiteManageApprenticesRoute { get; set; }
         public string ProviderApprenticeshipSiteYourCohortsRoute { get; set; }
+        public string ProviderApprenticeshipSiteManageFundingRoute { get; set; }
         public string ProviderApprenticeshipSiteOrganisationAgreementsRoute { get; set; }
         public string ProviderApprenticeshipSiteNotificationSettingsRoute { get; set; }
         public string ProviderApprenticeshipSiteHelp { get; set; }
