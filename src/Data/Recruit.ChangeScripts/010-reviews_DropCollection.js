@@ -1,5 +1,5 @@
-﻿var reviewsCollection = db.getCollection('reviews');
+﻿var reviewsCollection = db.getCollection("reviews");
 if (reviewsCollection) {
-    print('Dropping collection `reviews`');
+    print("Dropping collection `reviews`");
     reviewsCollection.drop();
 }
