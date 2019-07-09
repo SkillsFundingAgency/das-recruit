@@ -175,13 +175,10 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         private void LogUserClaims()
         {
             var sb = new StringBuilder();
-            sb.AppendLine($"{User.Identity.Name} claims:");
-
             foreach (var claim in User.Claims)
             {
                 sb.AppendLine($"{claim.Type}: {claim.Value}");
             }
-
             _logger.LogInformation(sb.ToString());
         }
 
