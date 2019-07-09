@@ -26,14 +26,17 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
             switch (requestType)
             {
                 case CommunicationConstants.RequestType.VacancyRejected:
-                    userPref = GetPreferencesForVacancyRejectedNotification(userPref, userPreference);
+                    SetPreferencesForVacancyRejectedNotification(ref userPref, userPreference);
+                    return userPref;
+                case CommunicationConstants.RequestType.ApplicationSubmitted:
+                    SetPreferencesForApplicationSubmittedNotification(ref userPref, userPreference);
                     return userPref;
                 default:
                     return userPref;
             }
         }
 
-        private static CommunicationUserPreference GetPreferencesForVacancyRejectedNotification(CommunicationUserPreference userPref, UserNotificationPreferences userPreference)
+        private static void SetPreferencesForVacancyRejectedNotification(ref CommunicationUserPreference userPref, UserNotificationPreferences userPreference)
         {
             if (userPreference.NotificationTypes.HasFlag(NotificationTypes.VacancyRejected))
             {
@@ -41,8 +44,16 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
                 userPref.Frequency = DeliveryFrequency.Immediate;
                 userPref.Scope = userPreference.NotificationScope.GetValueOrDefault().ConvertToCommunicationScope();
             }
+        }
 
-            return userPref;
+        private static void SetPreferencesForApplicationSubmittedNotification(ref CommunicationUserPreference userPref, UserNotificationPreferences userPreference)
+        {
+            if (userPreference.NotificationTypes.HasFlag(NotificationTypes.ApplicationSubmitted))
+            {
+                userPref.Channels = DeliveryChannelPreferences.EmailOnly;
+                userPref.Frequency = DeliveryFrequency.Immediate;
+                userPref.Scope = userPreference.NotificationScope.GetValueOrDefault().ConvertToCommunicationScope();
+            }
         }
     }
 }

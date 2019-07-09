@@ -15,6 +15,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
         public static class RequestType
         {
             public const string VacancyRejected = nameof(VacancyRejected);
+            public const string ApplicationSubmitted = nameof(ApplicationSubmitted);
         }
 
         public static class DataItemKeys
@@ -30,6 +31,12 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
             {
                 public const string ApprenticeshipServiceUrl = "apprenticeship-service-url";
             }
+        }
+
+        public static class TemplateIds
+        {
+            public const string VacancyRejected = "RecruitV2_VacancyRejected";
+            public const string ApplicationSubmitted = "RecruitV2_NewApplicationImmediate";
         }
     }
 }
