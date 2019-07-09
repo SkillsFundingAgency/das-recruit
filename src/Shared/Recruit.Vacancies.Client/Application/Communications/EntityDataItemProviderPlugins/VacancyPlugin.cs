@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Communication.Types;
 using Communication.Types.Exceptions;
 using Communication.Types.Interfaces;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using static Esfa.Recruit.Vacancies.Client.Application.Communications.CommunicationConstants;
 
@@ -27,11 +28,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications.EntityDataIte
 
             var vacancy = await _vacancyRepository.GetVacancyAsync(vacancyReference);
 
+            var employerName = vacancy.EmployerNameOption ==  EmployerNameOption.TradingName ? vacancy.EmployerName : vacancy.LegalEntityName;
+
             return new List<CommunicationDataItem>()
             {
                 new CommunicationDataItem(DataItemKeys.Vacancy.VacancyReference, vacancy.VacancyReference.ToString()),
                 new CommunicationDataItem(DataItemKeys.Vacancy.VacancyTitle, vacancy.Title),
-                new CommunicationDataItem(DataItemKeys.Vacancy.EmployerName, vacancy.EmployerName)
+                new CommunicationDataItem(DataItemKeys.Vacancy.EmployerName, employerName)
             };
         }
     }
