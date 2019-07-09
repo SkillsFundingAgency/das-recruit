@@ -36,7 +36,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
         public static class TemplateIds
         {
             public const string VacancyRejected = "RecruitV2_VacancyRejected";
-            public const string ApplicationSubmitted = "RecruitV2_NewApplicationImmediate";
+            public const string ApplicationSubmittedImmediate = "RecruitV2_NewApplicationImmediate";
         }
     }
 }

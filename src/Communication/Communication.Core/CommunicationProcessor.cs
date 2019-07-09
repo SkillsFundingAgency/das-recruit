@@ -83,7 +83,7 @@ namespace Communication.Core
             {
                 var provider = _userPreferencesProviders[user.UserType];
 
-                var recipientPreferenceForRequestType = await provider.GetUserPreference(requestType, user);
+                var recipientPreferenceForRequestType = await provider.GetUserPreferenceAsync(requestType, user);
 
                 var participant = new Participant() { User = user, Preferences = recipientPreferenceForRequestType };
 
