@@ -675,6 +675,26 @@
               {
                 "name": "WhitelistedProviders",
                 "value": "[parameters('WhitelistedProvidersList')]"
+              },
+              {
+                "name": "AccountApiConfiguration:ApiBaseUrl",
+                "value": "[parameters('AccountApiConfiguration').ApiBaseUrl]"
+              },
+              {
+                "name": "AccountApiConfiguration:ClientId",
+                "value": "[parameters('AccountApiConfiguration').ClientId]"
+              },
+              {
+                "name": "AccountApiConfiguration:ClientSecret",
+                "value": "[parameters('AccountApiConfiguration').ClientSecret]"
+              },
+              {
+                "name": "AccountApiConfiguration:IdentifierUri",
+                "value": "[parameters('AccountApiConfiguration').IdentifierUri]"
+              },
+              {
+                "name": "AccountApiConfiguration:Tenant",
+                "value": "[parameters('AccountApiConfiguration').Tenant]"
               }
             ]
           },
