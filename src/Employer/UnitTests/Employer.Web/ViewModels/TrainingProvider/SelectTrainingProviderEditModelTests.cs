@@ -61,7 +61,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.TrainingProvid
             result.IsValid.Should().BeFalse();
             result.Errors.Count.Should().Be(1);
             result.Errors[0].PropertyName.Should().Be(nameof(SelectTrainingProviderEditModel.Ukprn));
-            result.Errors[0].ErrorMessage.Should().Be("You must provide a valid UKPRN");
+            result.Errors[0].ErrorMessage.Should().Be("UKPRN is not recognised");
         }
 
         [Fact]
