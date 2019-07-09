@@ -16,7 +16,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
             _repository = repository;
         }
 
-        public async Task<CommunicationUserPreference> GetUserPreference(string requestType, CommunicationUser user)
+        public async Task<CommunicationUserPreference> GetUserPreferenceAsync(string requestType, CommunicationUser user)
         {
             var userPref = new CommunicationUserPreference() { Channels = DeliveryChannelPreferences.None };
 

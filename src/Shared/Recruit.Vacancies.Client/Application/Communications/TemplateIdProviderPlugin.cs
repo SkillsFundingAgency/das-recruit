@@ -18,7 +18,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
                     break;
                 case CommunicationConstants.RequestType.ApplicationSubmitted:
                     if (message.Frequency == DeliveryFrequency.Immediate)
-                        templateId = CommunicationConstants.TemplateIds.ApplicationSubmitted;
+                        templateId = CommunicationConstants.TemplateIds.ApplicationSubmittedImmediate;
                     break;
                 default:
                     break;
