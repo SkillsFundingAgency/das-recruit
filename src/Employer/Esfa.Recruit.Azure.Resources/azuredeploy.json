@@ -219,6 +219,9 @@
     },
     "DasSharedNServiceBusConfiguration": {
       "type" : "object"
+    },
+    "CommunicationsConfiguration": {
+      "type": "object"
     }
   },
   "variables": {
@@ -894,6 +897,14 @@
               {
                 "name": "DasSharedNServiceBusConfiguration:NServiceBusLicense",
                 "value": "[parameters('DasSharedNServiceBusConfiguration').NServiceBusLicense]"
+              },
+              {
+                "name": "CommunicationsConfiguration:EmployersApprenticeshipServiceUrl",
+                "value": "[parameters('CommunicationsConfiguration').EmployersApprenticeshipServiceUrl]"
+              },
+              {
+                "name": "CommunicationsConfiguration:ProvidersApprenticeshipServiceUrl",
+                "value": "[parameters('CommunicationsConfiguration').ProvidersApprenticeshipServiceUrl]"
               }
             ]
           },

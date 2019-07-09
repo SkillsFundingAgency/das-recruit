@@ -161,6 +161,10 @@
     "DasSharedNServiceBusConfiguration": {
       "ConnectionString":"",
       "NServiceBusLicense":""
+    },
+    "CommunicationsConfiguration": {
+      "EmployersApprenticeshipServiceUrl": "",
+      "ProvidersApprenticeshipServiceUrl": ""
     }
   }
 }
