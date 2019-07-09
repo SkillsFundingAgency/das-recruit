@@ -22,7 +22,7 @@ namespace Communication.Core
             _publisher = publisher;
         }
 
-        public async Task ProcessRequest(CommunicationRequest req)
+        public async Task ProcessRequestAsync(CommunicationRequest req)
         {
             var messages = await _processor.CreateMessagesAsync(req);
 
@@ -30,9 +30,17 @@ namespace Communication.Core
 
             await Task.WhenAll(messages.Select(m => _repository.InsertAsync(m)));
 
-            //_logger.LogInformation($"Generated {messages.Count()} messages for Communication Request: {req.RequestId.ToString()} - {req.RequestType}");
+            if (messages.Any(m => m.Frequency == DeliveryFrequency.Immediate))
+            {
+                await QueueImmediateDispatch(req, messages);
+            }
+        }
+
+        private Task QueueImmediateDispatch(CommunicationRequest req, IEnumerable<CommunicationMessage> messages)
+        {
+            _logger.LogInformation($"Queueing {messages.Count()} communication messages to dispatch. For Communication Request: {req.RequestId.ToString()} - {req.RequestType}");
             var msgIds = messages.Select(m => new CommunicationMessageIdentifier { Id = m.Id });
-            await Task.WhenAll(msgIds.Select(m => _publisher.AddMessageAsync(m)));
+            return Task.WhenAll(msgIds.Select(m => _publisher.AddMessageAsync(m)));
         }
     }
 }

@@ -5,6 +5,6 @@ namespace Communication.Core
 {
     public interface ICommunicationService
     {
-        Task ProcessRequest(CommunicationRequest req);
+        Task ProcessRequestAsync(CommunicationRequest req);
     }
 }

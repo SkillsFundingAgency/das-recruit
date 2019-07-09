@@ -41,7 +41,7 @@ namespace Communication.Core
 
             var optedInParticipants = GetOptedInParticipants(participants);
 
-            var messages = CreateMessages(request, request.TemplateProviderName, dataItems, optedInParticipants);
+            var messages = GenerateCommunicationMessages(request, request.TemplateProviderName, dataItems, optedInParticipants);
 
             await SetMessageTemplateIds(messages);
 
@@ -110,7 +110,7 @@ namespace Communication.Core
             }
         }
 
-        public IEnumerable<CommunicationMessage> CreateMessages(
+        private IEnumerable<CommunicationMessage> GenerateCommunicationMessages(
             CommunicationRequest request,
             string originatingService,
             List<CommunicationDataItem> dataItems,
