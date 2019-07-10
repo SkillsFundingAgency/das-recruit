@@ -169,16 +169,22 @@
       }
     },
     "DasSharedNServiceBusConfiguration": {
-      "ConnectionString":"",
-      "NServiceBusLicense":""
+      "value": {
+        "ConnectionString": "",
+        "NServiceBusLicense": ""
+      }
     },
     "CommunicationsConfiguration": {
-      "EmployersApprenticeshipServiceUrl": "",
-      "ProvidersApprenticeshipServiceUrl": ""
+      "value": {
+        "EmployersApprenticeshipServiceUrl": "",
+        "ProvidersApprenticeshipServiceUrl": ""
+      }
     },
     "NotificationsApiClientConfiguration":{
-      "ApiBaseUrl": "",
-      "ClientToken": ""
-    },
+      "value": {
+        "ApiBaseUrl": "",
+        "ClientToken": ""
+      }
+    }
   }
 }

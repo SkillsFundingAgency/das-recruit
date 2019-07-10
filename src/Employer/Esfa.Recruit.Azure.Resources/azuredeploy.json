@@ -92,7 +92,8 @@
         "ProviderApprenticeshipSiteUrl": "",
         "CommitmentsSiteUrl": "",
         "ProviderCommitmentsSiteUrl": "",
-        "SignProviderAgreementUrl": ""
+        "SignProviderAgreementUrl": "",
+        "ReservationsSiteUrl": ""
       }
     },
     "Features": {
@@ -121,7 +122,7 @@
     "UseTableStorageQueryStore": {
       "type": "bool",
       "defaultValue": false
-    },    
+    },
     "SharedAppServicePlanName": {
       "type": "string"
     },
@@ -664,6 +665,10 @@
               {
                 "name": "ExternalLinks:CommitmentsSiteUrl",
                 "value": "[parameters('ExternalLinks').ProviderCommitmentsSiteUrl]"
+              },
+              {
+                "name": "ExternalLinks:ReservationsSiteUrl",
+                "value": "[parameters('ExternalLinks').ReservationsSiteUrl]"
               },
               {
                 "name": "Features:SetNotificationPreferences",
