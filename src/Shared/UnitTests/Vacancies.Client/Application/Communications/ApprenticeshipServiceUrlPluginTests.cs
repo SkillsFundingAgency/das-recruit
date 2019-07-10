@@ -16,8 +16,8 @@ namespace UnitTests.Vacancies.Client.Application.Communications
     public class ApprenticeshipServiceUrlPluginTests
     {
         private readonly Fixture _fixture = new Fixture();
-        const string EmployerUrl = nameof(EmployerUrl);
-        const string ProviderUrl = nameof(ProviderUrl);
+        const string EmployerUrl = "https://www.google.com/";
+        const string ProviderUrl = "https://www.bing.com/";
 
         private readonly Mock<IOptions<CommunicationsConfiguration>> _mockOptions = new Mock<IOptions<CommunicationsConfiguration>>();
         private readonly Mock<IVacancyRepository> _mockRepository = new Mock<IVacancyRepository>();
@@ -30,13 +30,24 @@ namespace UnitTests.Vacancies.Client.Application.Communications
         }
 
         [Theory]
-        [InlineData(OwnerType.Employer, EmployerUrl)]
-        [InlineData(OwnerType.Provider, ProviderUrl)]
-        public async Task UrlShouldMatchOwnerType(OwnerType owner, string expectedUrl)
+        [InlineData(OwnerType.Employer)]
+        [InlineData(OwnerType.Provider)]
+        public async Task UrlShouldMatchOwnerType(OwnerType owner)
         {
+            var vacancy = new Vacancy
+            { 
+                OwnerType = owner,
+                EmployerAccountId = _fixture.Create<string>(),
+                TrainingProvider = new TrainingProvider { Ukprn = _fixture.Create<long>() }
+            };
+
+            var expectedUrl = owner == OwnerType.Employer 
+                ? $"{EmployerUrl}{vacancy.EmployerAccountId}" 
+                : $"{ProviderUrl}{vacancy.TrainingProvider.Ukprn}/vacancies";
+
             _mockRepository
                 .Setup(r => r.GetVacancyAsync(It.IsAny<long>()))
-                .ReturnsAsync(new Vacancy{ OwnerType = owner});
+                .ReturnsAsync(vacancy);
             
             var sut = GetSut();
 
