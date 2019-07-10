@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Communication.Types;
@@ -30,10 +31,20 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications.EntityDataIte
 
             var vacancy = await _vacancyRepository.GetVacancyAsync(vacancyReference);
 
-            var url = 
-                vacancy.OwnerType == OwnerType.Employer 
-                ? $"{_communicationsConfiguration.EmployersApprenticeshipServiceUrl}{vacancy.EmployerAccountId}" 
-                : _communicationsConfiguration.ProvidersApprenticeshipServiceUrl;
+            var url = string.Empty;
+
+            if (vacancy.OwnerType == OwnerType.Employer)
+            {
+                var baseUri = new Uri(_communicationsConfiguration.EmployersApprenticeshipServiceUrl);
+                var uri = new Uri(baseUri, vacancy.EmployerAccountId);
+                url = uri.ToString();
+            }
+            else
+            {
+                var baseUri = new Uri(_communicationsConfiguration.ProvidersApprenticeshipServiceUrl);
+                var uri = new Uri(baseUri, $"{vacancy.TrainingProvider.Ukprn}/vacancies");
+                url = uri.ToString();
+            }
 
             return new[] 
             { 
