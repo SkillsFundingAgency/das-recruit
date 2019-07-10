@@ -60,6 +60,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<IReviewSummaryService, ReviewSummaryService>();
             services.AddTransient<ILegalEntityAgreementService, LegalEntityAgreementService>();
             services.AddTransient<AlertViewModelService>();
+            services.AddTransient<ITrainingProviderAgreementService, TrainingProviderAgreementService>();
         }
 
         private static void RegisterFluentValidators(IServiceCollection services)
@@ -105,6 +106,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<VacanciesSearchSuggestionsOrchestrator>();
             services.AddTransient<ManageNotificationsOrchestrator>();
             services.AddTransient<DatesOrchestrator>();
+            services.AddTransient<ProviderAgreementOrchestrator>();
         }
 
         private static void RegisterMapperDeps(IServiceCollection services)
