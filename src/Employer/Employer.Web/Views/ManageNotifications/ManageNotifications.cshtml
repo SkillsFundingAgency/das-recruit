@@ -27,11 +27,13 @@
                                 <span class="govuk-visually-hidden">Get notifications when </span>Vacancies are rejected after review
                             </label>
                         </div>
-                        <div class="govuk-checkboxes__item">
-                            <input class="govuk-checkboxes__input" asp-for="IsVacancyClosingSoonSelected" id="notifications-closing" type="checkbox">
-                            <label class="govuk-label govuk-checkboxes__label" for="notifications-closing">
-                                <span class="govuk-visually-hidden">Get notifications when </span>Vacancies are closing soon
-                            </label>
+                        <div asp-hide="true">
+                            <div class="govuk-checkboxes__item">
+                                <input class="govuk-checkboxes__input" asp-for="IsVacancyClosingSoonSelected" id="notifications-closing" type="checkbox">
+                                <label class="govuk-label govuk-checkboxes__label" for="notifications-closing">
+                                    <span class="govuk-visually-hidden">Get notifications when </span>Vacancies are closing soon
+                                </label>
+                            </div>
                         </div>
                         <div class="govuk-checkboxes__item govuk-checkboxes--conditional">
                             <input class="govuk-checkboxes__input" asp-for="IsApplicationSubmittedSelected" id="notifications-new" type="checkbox" data-aria-controls="conditional-when-conditional">
@@ -39,35 +41,37 @@
                                 <span class="govuk-visually-hidden">Get notifications when </span>There are new applications
                             </label>
                         </div>
-                        <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-when-conditional">
-                            <fieldset class="govuk-fieldset" aria-describedby="when-conditional-hint">
-                                <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-                                    <h1 class="govuk-fieldset__heading">
-                                        How often do you want to be sent new application emails?
-                                    </h1>
-                                </legend>
-                                <span esfa-validation-message-for="NotificationFrequency" class="govuk-error-message"></span>
-                                <div class="govuk-radios" data-module="radios">
-                                    <div class="govuk-radios__item">
-                                        <input class="govuk-radios__input" value="@NotificationFrequency.Immediately" asp-for="NotificationFrequency" id="notification-frequency-immediately" type="radio">
-                                        <label class="govuk-label govuk-radios__label" for="notification-frequency-immediately">
-                                            @NotificationFrequency.Immediately
-                                        </label>
+                        <div asp-hide="true">
+                            <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-when-conditional">
+                                <fieldset class="govuk-fieldset" aria-describedby="when-conditional-hint">
+                                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                                        <h1 class="govuk-fieldset__heading">
+                                            How often do you want to be sent new application emails?
+                                        </h1>
+                                    </legend>
+                                    <span esfa-validation-message-for="NotificationFrequency" class="govuk-error-message"></span>
+                                    <div class="govuk-radios" data-module="radios">
+                                        <div class="govuk-radios__item">
+                                            <input class="govuk-radios__input" value="@NotificationFrequency.Immediately" asp-for="NotificationFrequency" id="notification-frequency-immediately" type="radio">
+                                            <label class="govuk-label govuk-radios__label" for="notification-frequency-immediately">
+                                                @NotificationFrequency.Immediately
+                                            </label>
+                                        </div>
+                                        <div class="govuk-radios__item">
+                                            <input class="govuk-radios__input" value="@NotificationFrequency.Daily" asp-for="NotificationFrequency" id="notification-frequency-daily" type="radio" >
+                                            <label class="govuk-label govuk-radios__label" for="notification-frequency-daily">
+                                                @NotificationFrequency.Daily
+                                            </label>
+                                        </div>
+                                        <div class="govuk-radios__item">
+                                            <input class="govuk-radios__input" value="@NotificationFrequency.Weekly" asp-for="NotificationFrequency" id="notification-frequency-weekly" type="radio">
+                                            <label class="govuk-label govuk-radios__label" for="notification-frequency-weekly">
+                                                @NotificationFrequency.Weekly
+                                            </label>
+                                        </div>
                                     </div>
-                                    <div class="govuk-radios__item">
-                                        <input class="govuk-radios__input" value="@NotificationFrequency.Daily" asp-for="NotificationFrequency" id="notification-frequency-daily" type="radio" >
-                                        <label class="govuk-label govuk-radios__label" for="notification-frequency-daily">
-                                            @NotificationFrequency.Daily
-                                        </label>
-                                    </div>
-                                    <div class="govuk-radios__item">
-                                        <input class="govuk-radios__input" value="@NotificationFrequency.Weekly" asp-for="NotificationFrequency" id="notification-frequency-weekly" type="radio">
-                                        <label class="govuk-label govuk-radios__label" for="notification-frequency-weekly">
-                                            @NotificationFrequency.Weekly
-                                        </label>
-                                    </div>
-                                </div>
-                            </fieldset>
+                                </fieldset>
+                            </div>
                         </div>
                     </div>
                 </fieldset>
