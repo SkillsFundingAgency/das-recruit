@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -13,7 +14,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
         private const string DateFormat = "yyyy-MM-dd";
         private const string DateTimeFormat = "yyyy-MM-dd HH:mm";
 
-        public void WriteCsvToStream(Stream stream, JArray rows, DateTime reportDate, Func<string,ReportDataType> dataTypeResolver)
+        public void WriteCsvToStream(
+            Stream stream,
+            JArray rows,
+            IEnumerable<KeyValuePair<string, string>> headers,
+            Func<string,ReportDataType> dataTypeResolver)
         {
             var streamWriter = new StreamWriter(stream, Encoding.UTF8);
             
@@ -21,11 +26,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             {
                 if (rows.Count == 0)
                 {
-                    WriteNoResults(csv, reportDate);
+                    WriteNoResults(csv, headers);
                 }
                 else
                 {
-                    WriteHeader(csv, reportDate, rows.First, rows.Count);
+                    WriteHeader(csv, rows.First, headers);
                     WriteValues(csv, rows, dataTypeResolver);
                 }
             }
@@ -43,49 +48,42 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             return csv;
         }
 
-        private void WriteNoResults(CsvWriter csv, DateTime reportDate)
+        private void WriteNoResults(CsvWriter csv, IEnumerable<KeyValuePair<string, string>> headers)
         {
-            WriteTotalHeader(csv, reportDate, 0, 2);
+            WriteTotalHeader(csv, headers);
         }
 
-        private void WriteTotalHeader(CsvWriter csv, DateTime reportDate, int total, int fieldCount)
+        private void WriteTotalHeader(
+            CsvWriter csv,
+            IEnumerable<KeyValuePair<string, string>> headers)
         {
+            headers = headers ?? new KeyValuePair<string, string>[0];
             csv.WriteField("PROTECT");
 
-            for (var i = 1; i < fieldCount; i++)
+            WriteEmptyRow(csv, 0);
+            WriteEmptyRow(csv, 0);
+            WriteEmptyRow(csv, 0);
+
+            if (headers.Any())
             {
-                csv.WriteField("");
+                foreach (var kvp in headers)
+                    csv.WriteField(kvp.Key);
+                WriteEmptyRow(csv, 0);
+
+                foreach (var kvp in headers)
+                    csv.WriteField(kvp.Value);
+                WriteEmptyRow(csv, 0);
             }
-            csv.NextRecord();
-
-            WriteEmptyRow(csv, fieldCount);
-            WriteEmptyRow(csv, fieldCount);
-
-            csv.WriteField("Date");
-            csv.WriteField("Total_Number_Of_Applications");
-
-            for (var i = 2; i < fieldCount; i++)
-            {
-                csv.WriteField("");
-            }
-            csv.NextRecord();
-
-            csv.WriteField(reportDate.ToString(DateTimeFormat));
-            csv.WriteField(total);
-
-            for (var i = 2; i < fieldCount; i++)
-            {
-                csv.WriteField("");
-            }
-
-            csv.NextRecord();
         }
 
-        private void WriteHeader(CsvWriter csv, DateTime reportDate, JToken row, int total)
+        private void WriteHeader(
+            CsvWriter csv,
+            JToken row,
+            IEnumerable<KeyValuePair<string, string>> headers)
         {
             var fieldCount = row.Children().Count();
 
-            WriteTotalHeader(csv, reportDate, total, fieldCount);
+            WriteTotalHeader(csv, headers);
 
             WriteEmptyRow(csv, fieldCount);
 
@@ -124,9 +122,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
                 case ReportDataType.DateType:
                     value = field.Value.Value<DateTime>().ToString(DateFormat);
                     break;
-                default:
+                case ReportDataType.DateTimeType:
+                    value = field.Value.Value<DateTime>().ToString(DateTimeFormat);
+                    break;
+                case ReportDataType.StringType:
                     value = field.Value.Value<string>();
                     break;
+                default:
+                    throw new NotImplementedException(format.ToString());
             }
 
             csv.WriteField(value);
