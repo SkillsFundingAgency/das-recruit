@@ -5,7 +5,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
 {
     public interface IReportStrategy
     {
-        Task<string> GetReportDataAsync(Dictionary<string, object> parameters);
+        Task<ReportStrategyResult> GetReportDataAsync(Dictionary<string, object> parameters);
         ReportDataType ResolveFormat(string fieldName);
     }
 }

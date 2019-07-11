@@ -161,5 +161,6 @@ setEditorMaxLength = function(element, tinyMceEditor) {
 
 $(function () {
     // Add cookie message
-	CookieBanner.addCookieMessage();
+    CookieBanner.addCookieMessage();
+    window.GOVUKFrontend.initAll();
 });

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.QA;
@@ -30,5 +31,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<VacancyReview> GetCurrentReferredVacancyReviewAsync(long vacancyReference);
         Task<List<VacancyReview>> GetVacancyReviewHistoryAsync(long vacancyReference);
         Task<int> GetAnonymousApprovedCountAsync(long legalEntityId);
+        Task<Guid> CreateApplicationsReportAsync(DateTime fromDate, DateTime toDate, VacancyUser user, string reportName);
+        Task<List<ReportSummary>> GetReportsAsync();
+        Task<Report> GetReportAsync(Guid reportId);
+        void WriteReportAsCsv(Stream stream, Report report);
+        Task IncrementReportDownloadCountAsync(Guid reportId);
     }
 }

@@ -3,6 +3,7 @@
     public enum ReportDataType
     {
         StringType,
-        DateType
+        DateType,
+        DateTimeType
     }
 }

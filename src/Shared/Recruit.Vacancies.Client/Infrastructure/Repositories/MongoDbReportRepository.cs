@@ -55,6 +55,22 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             return result;
         }
 
+        public async Task<List<T>> GetReportsForQaAsync<T>()
+        {
+            var builder = Builders<T>.Filter;
+            var filter = builder.Eq(OwnerTypeFieldName, ReportOwnerType.Qa.ToString());
+
+            var collection = GetCollection<T>();
+
+            var result = await RetryPolicy.ExecuteAsync(_ =>
+                    collection.Find(filter)
+                        .Project<T>(GetProjection<T>())
+                        .ToListAsync(),
+                new Context(nameof(GetReportsForProviderAsync)));
+
+            return result;
+        }
+
         public async Task<Report> GetReportAsync(Guid reportId)
         {
             var filter = Builders<Report>.Filter.Eq(r => r.Id, reportId);
