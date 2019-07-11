@@ -64,6 +64,9 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public string TrainingDescription { get; set; }
         public TrainingProvider TrainingProvider { get; set; }
         public Wage Wage { get; set; }
+        public ClosureReason? ClosureReason { get; set; }
+        public string ClosureExplanation { get; set; }
+        public TransferInfo TransferInfo { get; set; }
 
         public bool CanClose => Status == VacancyStatus.Live;
 
@@ -127,7 +130,5 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         /// Should the vacancy be geocoded using the outcode part of the postcode
         /// </summary>
         public bool GeocodeUsingOutcode => IsAnonymous;
-
-        
     }
 }
