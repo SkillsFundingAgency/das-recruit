@@ -68,7 +68,8 @@
         "StaffIdamsUrl": "",
         "ProviderApprenticeshipSiteUrl": "",
         "CommitmentsSiteUrl": "",
-        "SignProviderAgreementUrl": ""
+        "SignProviderAgreementUrl": "",
+        "ReservationsSiteUrl": ""
       }
     },
     "Features": {
@@ -94,7 +95,7 @@
     },
     "EmployerCustomHostname": {
       "value": ""
-    },  
+    },
     "ProviderCustomHostname": {
       "value": ""
     },
