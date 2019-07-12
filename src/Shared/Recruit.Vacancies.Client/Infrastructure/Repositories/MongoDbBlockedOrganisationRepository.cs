@@ -38,7 +38,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             return result;
         }
 
-        public async Task<List<BlockedOrganisation>> GetByOrganisationIdAsync<T>(string organisationId)
+        public async Task<List<BlockedOrganisation>> GetByOrganisationIdAsync(string organisationId)
         {
             var filter = Builders<BlockedOrganisation>.Filter.Eq(bo => bo.OrganisationId, organisationId);
             var collection = GetCollection<BlockedOrganisation>();
