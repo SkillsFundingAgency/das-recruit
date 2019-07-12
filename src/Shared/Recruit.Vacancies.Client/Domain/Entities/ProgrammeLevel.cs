@@ -8,10 +8,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         Intermediate = 2,
         Advanced = 3,
         Higher = 4,
-        [Obsolete("Use Higher")]
-        FoundationDegree = 5,
-        Degree = 6,
-        [Obsolete("Use Degree")]
-        Masters = 7
+        Degree = 6
     }
 }

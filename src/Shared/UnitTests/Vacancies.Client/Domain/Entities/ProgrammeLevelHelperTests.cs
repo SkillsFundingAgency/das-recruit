@@ -26,10 +26,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Domain.Entiti
         public void RemapFromInt_ShouldReturnCorrectEnum_WhenPassedAnIntWithCorrespondingValue()
         {
             var enumValues = Enum.GetValues(typeof(ProgrammeLevel))
-                .OfType<ProgrammeLevel>()
-#pragma warning disable CS0618 // Type or member is obsolete
-                .Except(new[] { ProgrammeLevel.FoundationDegree, ProgrammeLevel.Masters });
-#pragma warning restore CS0618 // Type or member is obsolete
+                .OfType<ProgrammeLevel>();
             foreach (ProgrammeLevel enumValue in enumValues)
             {
                 ProgrammeLevel result = ProgrammeLevelHelper.RemapFromInt((int)enumValue);
@@ -67,10 +64,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Domain.Entiti
         public void TryRemapFromInt_ShouldSucceedAndReturnEnum_WhenPassedAnIntWithCorrespondingValue()
         {
             var enumValues = Enum.GetValues(typeof(ProgrammeLevel))
-                .OfType<ProgrammeLevel>()
-#pragma warning disable CS0618 // Type or member is obsolete
-                .Except(new[] { ProgrammeLevel.FoundationDegree, ProgrammeLevel.Masters });
-#pragma warning restore CS0618 // Type or member is obsolete
+                .OfType<ProgrammeLevel>();
             foreach (ProgrammeLevel enumValue in enumValues)
             {
                 bool success = ProgrammeLevelHelper.TryRemapFromInt((int)enumValue, out ProgrammeLevel result);
