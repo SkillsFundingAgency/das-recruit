@@ -40,12 +40,14 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public string TrainingTitle { get; internal set; }
         public string TrainingType { get; internal set; }
         public string TrainingLevel { get; internal set; }
+        public string TransferredProviderName { get; internal set; }
+        public string TransferredOnDate { get; internal set; }
         public string VacancyDescription { get; internal set; }
         public string VacancyReferenceNumber { get; internal set; }
         public string WageInfo { get; internal set; }
         public string WageText { get; internal set; }
         public string WorkingWeekDescription { get; internal set; }
-
+        
         public bool HasClosingDate => !string.IsNullOrWhiteSpace(ClosingDate);
 
         public bool HasShortDescription => !string.IsNullOrWhiteSpace(ShortDescription);
@@ -106,5 +108,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public bool ShowGeneralApplicationProcessSectionTitle => ApplicationMethod == null || ApplicationMethod.Value != Esfa.Recruit.Vacancies.Client.Domain.Entities.ApplicationMethod.ThroughExternalApplicationSite;
 
         public bool IsNotDisabilityConfident => !IsDisabilityConfident;
+        public bool IsTransferred => string.IsNullOrWhiteSpace(TransferredProviderName) == false && string.IsNullOrWhiteSpace(TransferredOnDate) == false;
     }
 }

@@ -1,5 +1,5 @@
 ﻿@using Esfa.Recruit.Vacancies.Client.Domain.Entities
-@model DashboardViewModel
+@model Esfa.Recruit.Employer.Web.ViewModels.Dashboard.DashboardViewModel
 @{
     string GetLinkText(VacancySummaryViewModel vacancySummary)
     {
@@ -18,6 +18,12 @@
 <partial asp-hide="@Model.HasVacancies" name="_NoVacanciesContent" />
 
 <div asp-show="Model.HasVacancies">
+
+    @if (Model.ShowTransferredVacanciesAlert)
+    {
+        <partial name="_TransferredVacanciesAlert" for="TransferredVacanciesAlert" />
+    }
+
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <div asp-show="Model.HasWarning" class="warning-summary govuk-!-margin-bottom-0">
@@ -35,8 +41,7 @@
             </div>
         </esfaFeatureEnabled>
     </div>
-
-    <div asp-hide="true" class="govuk-grid-row">
+    <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
             <form method="get">
                 <div class="govuk-form-group">
@@ -55,6 +60,7 @@
                             <option value="@FilteringOptions.AllApplications">with applications</option>
                             <option value="@FilteringOptions.ClosingSoonWithNoApplications">closing soon with no applications</option>
                             <option value="@FilteringOptions.ClosingSoon">closing soon</option>
+                            <option value="@FilteringOptions.Transferred">transferred from provider</option>
                         </optgroup>
                     </select>
                     <button type="submit" id="filter-submit" class="das-button-filter das-button-secondary govuk-button govuk-!-margin-top-3">Filter</button>
@@ -62,7 +68,6 @@
             </form>
         </div>
     </div>
-
     <div asp-show="@Model.HasVacancies" class="govuk-grid-row">
         <div class="govuk-grid-column-full">
             <h3 class="govuk-heading-m">
@@ -76,43 +81,48 @@
             <div class="govuk-grid-column-full">
                 <table class="govuk-table responsive das-table--small">
                     <thead class="govuk-table__head">
-                    <tr class="govuk-table__row">
-                        <th class="govuk-table__header">Vacancy title</th>
-                        <th class="govuk-table__header">Vacancy ref</th>
-                        <th class="govuk-table__header">Applications</th>
-                        <th class="govuk-table__header">Closing</th>
-                        <th class="govuk-table__header">Status</th>
-                        <th class="govuk-table__header"></th>
-                    </tr>
+                        <tr class="govuk-table__row">
+                            <th class="govuk-table__header">Vacancy title</th>
+                            <th class="govuk-table__header">Vacancy ref</th>
+                            <th class="govuk-table__header">Applications</th>
+                            <th class="govuk-table__header">Closing</th>
+                            <th class="govuk-table__header">Status</th>
+                            <th class="govuk-table__header"></th>
+                        </tr>
                     </thead>
                     <tbody class="govuk-table__body">
-                    @foreach (var vacancy in Model.Vacancies)
-                    {
-                        <tr class="govuk-table__row">
-                            <td class="govuk-table__cell" data-label="Vacancy title">
-                                <div>@vacancy.Title</div>
-                            </td>
-                            <td class="govuk-table__cell" data-label="Vacancy ref">
-                                <span asp-show="@vacancy.HasVacancyReference"><span>VAC</span>@vacancy.VacancyReference</span>
-                                <span asp-show="@vacancy.HasNoVacancyReference">Not available</span>
-                            </td>
-                            <td asp-show="@vacancy.CanShowVacancyApplicationsCount" class="govuk-table__cell dashboard-applications" data-label="Applications">
-                                <span asp-show="@vacancy.HasNoApplications">0</span>
-                                <span asp-show="@vacancy.HasApplications">@vacancy.NoOfApplications</span>
-                                <span asp-show="@vacancy.HasNewApplications" class="govuk-!-font-weight-bold"> (@vacancy.NoOfNewApplications new)</span>
-                            </td>
-                            <td asp-hide="@vacancy.CanShowVacancyApplicationsCount" class="govuk-table__cell dashboard-applications" data-label="Applications">-</td>
-                            <td class="govuk-table__cell dashboard-closingdate" data-label="Closing date"><span>@vacancy.ClosingDate?.AsGdsDate()</span></td>
-                            <td class="govuk-table__cell dashboard-status" data-label="Status"><span class="tag tag-@vacancy.Status.ToString().ToLower()">@vacancy.Status.GetDisplayName()</span></td>
-                            <td class="govuk-table__cell dashboard-action" data-label="Action">
-                                <a asp-show="@vacancy.IsNotSubmittable" asp-route="@RouteNames.VacancyManage_Get" asp-route-vacancyId="@vacancy.Id" class="govuk-link">Manage</a>
-                                <a asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.DisplayVacancy_Get" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy)</a>
-                            </td>
-                        </tr>
-                    }
+                        @foreach (var vacancy in Model.Vacancies)
+                        {
+                            <tr class="govuk-table__row">
+                                <td class="govuk-table__cell" data-label="Vacancy title">
+                                    <div>
+                                        @vacancy.Title
+                                        <div asp-show="@vacancy.IsTransferred">
+                                            <span class="tag tag-transferred">Transferred</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="govuk-table__cell" data-label="Vacancy ref">
+                                    <span asp-show="@vacancy.HasVacancyReference"><span>VAC</span>@vacancy.VacancyReference</span>
+                                    <span asp-show="@vacancy.HasNoVacancyReference">Not available</span>
+                                </td>
+                                <td asp-show="@vacancy.CanShowVacancyApplicationsCount" class="govuk-table__cell dashboard-applications" data-label="Applications">
+                                    <span asp-show="@vacancy.HasNoApplications">0</span>
+                                    <span asp-show="@vacancy.HasApplications">@vacancy.NoOfApplications</span>
+                                    <span asp-show="@vacancy.HasNewApplications" class="govuk-!-font-weight-bold"> (@vacancy.NoOfNewApplications new)</span>
+                                </td>
+                                <td asp-hide="@vacancy.CanShowVacancyApplicationsCount" class="govuk-table__cell dashboard-applications" data-label="Applications">-</td>
+                                <td class="govuk-table__cell dashboard-closingdate" data-label="Closing date"><span>@vacancy.ClosingDate?.AsGdsDate()</span></td>
+                                <td class="govuk-table__cell dashboard-status" data-label="Status"><span class="tag tag-@vacancy.Status.ToString().ToLower()">@vacancy.Status.GetDisplayName()</span></td>
+                                <td class="govuk-table__cell dashboard-action" data-label="Action">
+                                    <a asp-show="@vacancy.IsNotSubmittable" asp-route="@RouteNames.VacancyManage_Get" asp-route-vacancyId="@vacancy.Id" class="govuk-link">Manage</a>
+                                    <a asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.DisplayVacancy_Get" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy)</a>
+                                </td>
+                            </tr>
+                        }
                     </tbody>
                 </table>
-                <partial name="@PartialNames.Pager" model="@Model.Pager"/>
+                <partial name="@PartialNames.Pager" model="@Model.Pager" />
             </div>
         </div>
     </div>

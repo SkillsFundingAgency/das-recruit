@@ -5,6 +5,7 @@ using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
+using Esfa.Recruit.Employer.Web.ViewModels.Dashboard;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.ViewModels;
@@ -21,16 +22,24 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         private readonly ITimeProvider _timeProvider;
         private const int ClosingSoonDays = 5;
         private readonly IEmployerVacancyClient _vacancyClient;
+        private readonly IRecruitVacancyClient _client;
 
-        public DashboardOrchestrator(IEmployerVacancyClient vacancyClient, ITimeProvider timeProvider)
+        public DashboardOrchestrator(IEmployerVacancyClient vacancyClient, ITimeProvider timeProvider, IRecruitVacancyClient client)
         {
             _vacancyClient = vacancyClient;
             _timeProvider = timeProvider;
+            _client = client;
         }
 
-        public async Task<DashboardViewModel> GetDashboardViewModelAsync(string employerAccountId, string filter, int page)
+        public async Task<DashboardViewModel> GetDashboardViewModelAsync(string employerAccountId, string filter, int page, VacancyUser user)
         {
-            var vacancies = await GetVacanciesAsync(employerAccountId);
+            var vacanciesTask = GetVacanciesAsync(employerAccountId);
+            var userDetailsTask = _client.GetUsersDetailsAsync(user.UserId);
+
+            await Task.WhenAll(vacanciesTask, userDetailsTask);
+
+            var vacancies = vacanciesTask.Result;
+            var userDetails = userDetailsTask.Result;
 
             var filteringOption = SanitizeFilter(filter);
 
@@ -58,16 +67,22 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 {
                     {"filter", filteringOption.ToString()}
                 });
-
+            
             var vm = new DashboardViewModel {
                 Vacancies = vacanciesVm,
                 Pager = pager,
                 Filter = filteringOption,
                 ResultsHeading = GetFilterHeading(filteredVacanciesTotal, filteringOption),
-                HasVacancies = vacancies.Any()
+                HasVacancies = vacancies.Any(),
+                TransferredVacanciesAlert = GetTransferredVacanciesAlertViewModel(vacancies, userDetails.TransferredVacanciesAlertDismissedOn)
             };
 
             return vm;
+        }
+
+        public Task DismissAlert(VacancyUser user, AlertType alertType)
+        {
+            return _client.UpdateUserAlertAsync(user.UserId, alertType, _timeProvider.Now);
         }
 
         private List<VacancySummary> GetFilteredVacancies(List<VacancySummary> vacancies, FilteringOptions filterStatus)
@@ -103,6 +118,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                         v.Status == VacancyStatus.Live &&
                         v.ApplicationMethod == ApplicationMethod.ThroughFindAnApprenticeship &&
                         v.NoOfApplications == 0);
+                    break;
+                case FilteringOptions.Transferred:
+                        filteredVacancies = vacancies.Where(v => v.TransferInfoTransferredDate.HasValue);
                     break;
             }
             return filteredVacancies.OrderByDescending(v => v.CreatedDate)
@@ -150,6 +168,26 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 default:
                     return $"{totalVacancies} {filterText} {"vacancy".ToQuantity(totalVacancies, ShowQuantityAs.None)}";
             }
+        }
+
+        private TransferredVacanciesAlertViewModel GetTransferredVacanciesAlertViewModel(IEnumerable<VacancySummary> vacancies, DateTime? userLastDismissedDate)
+        {
+            if (userLastDismissedDate.HasValue == false)
+                userLastDismissedDate = DateTime.MinValue;
+
+            var transferredVacancyProviders = vacancies.Where(v =>
+                    v.TransferInfoReason == TransferReason.EmployerRevokedPermission &&
+                    v.TransferInfoTransferredDate > userLastDismissedDate)
+                .Select(v => v.TransferInfoProviderName).ToList();
+
+            if (transferredVacancyProviders.Any() == false)
+                return null;
+            
+            return new TransferredVacanciesAlertViewModel
+            {
+                TransferredVacanciesCount = transferredVacancyProviders.Count,
+                TransferredVacanciesProviderNames = transferredVacancyProviders.GroupBy(p => p).Select(p => p.Key)
+            };
         }
     }
 }

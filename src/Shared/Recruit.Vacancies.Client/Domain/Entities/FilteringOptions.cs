@@ -12,6 +12,7 @@
         NewApplications,
         AllApplications,
         ClosingSoon,
-        ClosingSoonWithNoApplications
+        ClosingSoonWithNoApplications,
+        Transferred
     }
 }

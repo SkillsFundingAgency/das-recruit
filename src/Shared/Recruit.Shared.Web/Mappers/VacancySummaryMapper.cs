@@ -23,7 +23,8 @@ namespace Esfa.Recruit.Shared.Web.Mappers
                 ProgrammeId = vacancySummary.ProgrammeId,
                 TrainingLevel = vacancySummary.TrainingLevel,
                 TrainingTitle = vacancySummary.TrainingTitle,
-                TrainingType = vacancySummary.TrainingType
+                TrainingType = vacancySummary.TrainingType,
+                IsTransferred = vacancySummary.TransferInfoTransferredDate.HasValue
             };
 
             return summaryViewModel;

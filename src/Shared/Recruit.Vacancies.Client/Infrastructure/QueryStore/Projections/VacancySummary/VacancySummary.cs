@@ -24,6 +24,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections
         public string TrainingTitle { get; set; }
         public TrainingType TrainingType { get; set; }
         public ProgrammeLevel TrainingLevel { get; set; }
+        public long? TransferInfoUkprn { get; set; }
+        public string TransferInfoProviderName { get; set; }
+        public TransferReason? TransferInfoReason { get; set; }
+        public DateTime? TransferInfoTransferredDate { get; set; }
         public int NoOfNewApplications { get; set; }
         public int NoOfSuccessfulApplications { get; set; }
         public int NoOfUnsuccessfulApplications { get; set; }

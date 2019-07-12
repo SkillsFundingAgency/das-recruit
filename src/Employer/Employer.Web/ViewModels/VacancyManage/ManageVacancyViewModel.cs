@@ -23,6 +23,8 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
         public bool CanShowCloseVacancyLink { get; internal set; }
         public string VacancyClosedInfoMessage { get; internal set; }
         public string ApplicationReviewStatusHeaderInfoMessage { get; internal set; }
+        public string TransferredProviderName { get; internal set; }
+        public string TransferredOnDate { get; internal set; }
         public bool HasVacancyClosedInfoMessage => !string.IsNullOrEmpty(VacancyClosedInfoMessage);
         public bool CanShowApplicationReviewStatusHeader => !string.IsNullOrEmpty(ApplicationReviewStatusHeaderInfoMessage);
 
@@ -32,5 +34,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
         public bool HasAnalytics => AnalyticsSummary != null;
         public bool IsVacancyLive => Status == VacancyStatus.Live;
         public bool IsVacancyClosed => Status == VacancyStatus.Closed;
+        public bool IsTransferred => string.IsNullOrWhiteSpace(TransferredProviderName) == false && string.IsNullOrWhiteSpace(TransferredOnDate) == false;
     }
 }

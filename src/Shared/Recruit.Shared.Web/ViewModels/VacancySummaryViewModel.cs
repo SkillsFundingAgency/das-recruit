@@ -17,6 +17,7 @@ namespace Esfa.Recruit.Shared.Web.ViewModels
         public string TrainingTitle { get; set; }
         public TrainingType TrainingType { get; set; }
         public ProgrammeLevel TrainingLevel { get; set; }
+        public bool IsTransferred { get; set; }
         public int NoOfNewApplications { get; set; }
         public int NoOfSuccessfulApplications { get; set; }
         public int NoOfUnsuccessfulApplications { get; set; }
