@@ -58,6 +58,11 @@
                     "CollectionName": "userNotificationPreferences",
                     "OfferThroughput": 400,
                     "StoredProcedures": []
+                },
+                {
+                    "CollectionName": "blockedOrganisations",
+                    "OfferThroughput": 400,
+                    "StoredProcedures": []
                 }
             ]
         }
