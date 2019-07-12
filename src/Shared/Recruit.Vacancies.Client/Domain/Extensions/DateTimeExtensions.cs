@@ -1,4 +1,5 @@
 using System;
+using TimeZoneConverter;
 
 namespace Esfa.Recruit.Vacancies.Client.Domain.Extensions
 {
@@ -49,7 +50,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Extensions
 
         public static DateTime ToUkTime(this DateTime datetime)
         {
-            var ukTimezone = TimeZoneInfo.FindSystemTimeZoneById("GMT Standard Time");
+            var ukTimezone = TZConvert.GetTimeZoneInfo("GMT Standard Time");
             return TimeZoneInfo.ConvertTime(datetime, ukTimezone);
         }
     }
