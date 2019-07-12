@@ -84,11 +84,11 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             AddValidation(services);
             AddRules(services);
             RegisterMediatR(services);
-            RegisterProviderRelationshipsClient(services, configuration);     
+            RegisterProviderRelationshipsClient(services, configuration);
         }
 
         private static void RegisterProviderRelationshipsClient(IServiceCollection services, IConfiguration configuration)
-        {            
+        {
             services.Configure<ProviderRelationshipApiConfiguration>(configuration.GetSection("ProviderRelationshipsApiConfiguration"));
             services.AddTransient<IProviderRelationshipsService, ProviderRelationshipsService>();
         }
@@ -198,13 +198,14 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddTransient<IEmployerProfileRepository, MongoDbEmployerProfileRepository>();
             services.AddTransient<IReportRepository, MongoDbReportRepository>();
             services.AddTransient<IUserNotificationPreferencesRepository, MongoDbUserNotificationPreferencesRepository>();
+            services.AddTransient<IBlockedOrganisationRepository, MongoDbBlockedOrganisationRepository>();
 
             //Queries
             services.AddTransient<IVacancyQuery, MongoDbVacancyRepository>();
             services.AddTransient<IVacancyReviewQuery, MongoDbVacancyReviewRepository>();
             services.AddTransient<IApplicationReviewQuery, MongoDbApplicationReviewRepository>();
+            services.AddTransient<IBlockedOrganisationQuery, MongoDbBlockedOrganisationRepository>();
 
-            //services.AddTransient<IQueryStore, MongoQueryStore>();
             services.AddTransient<IQueryStoreReader, QueryStoreClient>();
             services.AddTransient<IQueryStoreWriter, QueryStoreClient>();
 
@@ -244,7 +245,7 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             if (useTableStorageQueryStore)
                 services.AddTransient<IQueryStore, TableStorageQueryStore>();
             else
-                services.AddTransient<IQueryStore, MongoQueryStore>();            
+                services.AddTransient<IQueryStore, MongoQueryStore>();
         }
 
         private static void AddValidation(IServiceCollection services)
