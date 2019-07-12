@@ -1,0 +1,15 @@
+﻿using System.Collections.Generic;
+using Esfa.Recruit.Shared.Web.Extensions;
+using Humanizer;
+
+namespace Esfa.Recruit.Employer.Web.ViewModels.Dashboard
+{
+    public class TransferredVacanciesAlertViewModel
+    {
+        public int TransferredVacanciesCount { get; internal set; }
+        public IEnumerable<string> TransferredVacanciesProviderNames { get; internal set; }
+
+        public string CountCaption => $"{"vacancy".ToQuantity(TransferredVacanciesCount)} {(TransferredVacanciesCount == 1 ? "has" : "have")} been transferred";
+        public string ProviderNamesCaption => TransferredVacanciesProviderNames.Humanize().RemoveOxfordComma();
+    }
+}

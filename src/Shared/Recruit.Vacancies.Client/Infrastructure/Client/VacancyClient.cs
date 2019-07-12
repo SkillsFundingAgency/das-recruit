@@ -515,5 +515,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         {
             return _vacancyQuery.GetVacancyCountForUserAsync(userId);
         }
+
+        public Task UpdateUserAlertAsync(string idamsUserId, AlertType alertType, DateTime dismissedOn)
+        {
+            return _messaging.SendCommandAsync(new UpdateUserAlertCommand
+            {
+                IdamsUserId = idamsUserId,
+                AlertType = alertType,
+                DismissedOn = dismissedOn
+            });
+        }
     }
 }

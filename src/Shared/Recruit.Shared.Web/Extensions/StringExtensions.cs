@@ -73,5 +73,10 @@ namespace Esfa.Recruit.Shared.Web.Extensions
 
             return null;
         }
+
+        public static string RemoveOxfordComma(this string text)
+        {
+            return text.Replace(", and ", " and ");
+        }
     }
 }

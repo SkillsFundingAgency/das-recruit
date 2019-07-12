@@ -36,9 +36,16 @@
 }
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
+        <div asp-show="@Model.IsTransferred">
+            <p class="govuk-inset-text">This vacancy was created by 
+                <span class="govuk-!-font-weight-bold">@Model.TransferredProviderName</span> 
+                and transferred to your account on @Model.TransferredOnDate
+            </p>
+        </div>
+
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }'/>
         <div class="info-summary__header-bar" asp-show="@Model.HasIncompleteMandatorySections">
-            <h2 class="govuk-heading-m" >@Model.IncompleteSectionCount required @Model.IncompleteSectionText to complete</h2>
+            <h2 class="govuk-heading-m">@Model.IncompleteSectionCount required @Model.IncompleteSectionText to complete</h2>
         </div>
         <div class="info-summary__header-bar govuk-!-margin-bottom-6" asp-hide="@Model.HasIncompleteMandatorySections">
             <h2 class="govuk-heading-m">You have completed all required sections</h2>

@@ -520,6 +520,10 @@ input.form-control, textarea.form-control {
     border-color: #0b0c0c;
   }
 
+  .tag-transferred {
+    border-color: #005ea5;
+  }
+
 /*** Responsive tables ***/
 table.responsive thead {
     display: none;
