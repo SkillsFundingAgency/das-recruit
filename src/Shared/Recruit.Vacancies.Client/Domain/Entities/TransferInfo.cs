@@ -7,7 +7,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public long Ukprn { get; set; }
         public string ProviderName { get; set; }
         public string LegalEntityName { get; set; }
-        public VacancyUser TransferredBy { get; set; }
+        public VacancyUser TransferredByUser { get; set; }
         public DateTime TransferredDate { get; set; }
     }
 }
