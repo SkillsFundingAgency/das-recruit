@@ -1,4 +1,4 @@
-﻿namespace Esfa.Recruit.Employer.Web.ViewModels.Dashboard
+﻿namespace Esfa.Recruit.Shared.Web.ViewModels
 {
     public class AlertDismissalEditModel
     {

@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Provider;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
 {
@@ -61,14 +62,25 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
 
         public async Task ReBuildDashboardAsync(long ukprn)
         {
-            var vacancySummaries = await _vacancySummariesQuery.GetProviderOwnedVacancySummariesByUkprnAsync(ukprn);
+            var vacancySummariesTasks = _vacancySummariesQuery.GetProviderOwnedVacancySummariesByUkprnAsync(ukprn);
+            var transferredVacanciesTasks = _vacancySummariesQuery.GetTransferredFromProviderAsync(ukprn);
+
+            await Task.WhenAll(vacancySummariesTasks, transferredVacanciesTasks);
+
+            var vacancySummaries = vacancySummariesTasks.Result;
+            var transferredVacancies = transferredVacanciesTasks.Result.Select(t => 
+                new ProviderDashboardTransferredVacancy
+                {
+                    LegalEntityName = t.LegalEntityName,
+                    TransferredDate = t.TransferredDate
+                });
 
             foreach (var summary in vacancySummaries)
             {
                 await UpdateWithTrainingProgrammeInfo(summary);
             }
 
-            await _queryStoreWriter.UpdateProviderDashboardAsync(ukprn, vacancySummaries.OrderByDescending(v => v.CreatedDate));
+            await _queryStoreWriter.UpdateProviderDashboardAsync(ukprn, vacancySummaries.OrderByDescending(v => v.CreatedDate), transferredVacancies);
 
             _logger.LogDebug("Update provider dashboard with {count} summary records for account: {ukprn}", vacancySummaries.Count, ukprn);
         }

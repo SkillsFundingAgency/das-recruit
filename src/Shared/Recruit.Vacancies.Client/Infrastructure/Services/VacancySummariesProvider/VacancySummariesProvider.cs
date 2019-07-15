@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
@@ -15,9 +14,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
 {
     internal sealed class VacancySummariesProvider : MongoDbCollectionBase, IVacancySummariesProvider
     {
-        private const string PathSpecifierFieldName = "path";
-
-        private const string PreserveNullAndEmptyArraysSpecifierFieldName = "preserveNullAndEmptyArrays";
+        private const string TransferInfoUkprn = "transferInfo.ukprn";
 
         public VacancySummariesProvider(ILoggerFactory loggerFactory, IOptions<MongoDbConnectionDetails> details)
             : base(loggerFactory, MongoDbNames.RecruitDb, MongoDbCollectionNames.Vacancies, details)
@@ -64,6 +61,21 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             return await RunAggPipelineQuery(aggPipeline);
         }
 
+        public async Task<IList<TransferInfo>> GetTransferredFromProviderAsync(long ukprn)
+        {
+            var filter = Builders<VacancyTransferInfo>.Filter.Eq(TransferInfoUkprn, ukprn.ToString());
+
+            var collection = GetCollection<VacancyTransferInfo>();
+
+            var result = await RetryPolicy.ExecuteAsync(_ =>
+                    collection.Find(filter)
+                        .Project<VacancyTransferInfo>(GetProjection<VacancyTransferInfo>())
+                        .ToListAsync(),
+                new Context(nameof(GetTransferredFromProviderAsync)));
+
+            return result.Select(v => v.TransferInfo).ToList();
+        }
+
         private async Task<IList<VacancySummary>> RunAggPipelineQuery(BsonDocument[] pipeline)
         {
             var mongoQuery = pipeline.ToJson();
@@ -81,6 +93,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             return vacancySummaries
                     .Select(VacancySummaryMapper.MapFromVacancySummaryAggQueryResponseDto)
                     .ToList();
+        }
+
+        private class VacancyTransferInfo
+        {
+            public TransferInfo TransferInfo { get; set; }
         }
     }
 }
