@@ -48,8 +48,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
                 SubmittedDate = review.SubmittedDate,
                 ApplicationReviewId = review.Id,
                 IsWithdrawn = review.IsWithdrawn,
-                FirstName = string.Empty,
-                LastName = string.Empty,
                 DisabilityStatus = ApplicationReviewDisabilityStatus.Unknown
             };
 
