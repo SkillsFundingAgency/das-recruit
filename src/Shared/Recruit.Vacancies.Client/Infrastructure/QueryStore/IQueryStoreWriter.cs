@@ -26,5 +26,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         Task<long> RemoveOldEmployerDashboards(DateTime oldestLastUpdatedDate);
         Task<long> RemoveOldProviderDashboards(DateTime oldestLastUpdatedDate);
         Task UpsertVacancyAnalyticSummaryAsync(VacancyAnalyticsSummary summary);
+        Task UpdateBlockedProviders(IEnumerable<long> blockedProviders);
+        Task UpdateBlockedEmployers(IEnumerable<string> blockedEmployers);
     }
 }

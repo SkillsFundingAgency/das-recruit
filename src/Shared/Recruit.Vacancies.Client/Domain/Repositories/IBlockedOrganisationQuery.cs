@@ -6,6 +6,8 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Repositories
 {
     public interface IBlockedOrganisationQuery
     {
-        Task<List<BlockedOrganisation>> GetByOrganisationIdAsync(string organisationId);
+        Task<BlockedOrganisation> GetByOrganisationIdAsync(string organisationId);
+        Task<List<string>> GetAllBlockedProvidersAsync();
+        Task<List<string>> GetAllBlockedEmployersAsync();
     }
 }

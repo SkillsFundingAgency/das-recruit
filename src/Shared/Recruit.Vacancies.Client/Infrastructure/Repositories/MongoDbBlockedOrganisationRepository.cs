@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.BlockedOrganisationsProvider;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using Polly;
 
@@ -14,7 +17,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
     internal sealed class MongoDbBlockedOrganisationRepository : MongoDbCollectionBase, IBlockedOrganisationRepository, IBlockedOrganisationQuery
     {
         public MongoDbBlockedOrganisationRepository(ILoggerFactory loggerFactory, IOptions<MongoDbConnectionDetails> details)
-            : base(loggerFactory, MongoDbNames.RecruitDb, MongoDbCollectionNames.ApplicationReviews, details)
+            : base(loggerFactory, MongoDbNames.RecruitDb, MongoDbCollectionNames.BlockedOrganisations, details)
         {
         }
 
@@ -26,29 +29,47 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
                 new Context(nameof(CreateAsync)));
         }
 
-        public async Task<BlockedOrganisation> GetAsync(Guid blockedOrganisationId)
+        public async Task<BlockedOrganisation> GetByOrganisationIdAsync(string organisationId)
         {
-            var filter = Builders<BlockedOrganisation>.Filter.Eq(r => r.Id, blockedOrganisationId);
+            var builder = Builders<BlockedOrganisation>.Filter;
+            var filter = builder.Eq(bo => bo.OrganisationId, organisationId);
             var collection = GetCollection<BlockedOrganisation>();
 
             var result = await RetryPolicy.ExecuteAsync(_ =>
-                collection.Find(filter).SingleOrDefaultAsync(),
-                new Context(nameof(GetAsync)));
+                collection.Find(filter).SortBy(bo => bo.UpdatedDate).FirstOrDefaultAsync(),
+            new Context(nameof(GetByOrganisationIdAsync)));
 
             return result;
         }
 
-        public async Task<List<BlockedOrganisation>> GetByOrganisationIdAsync(string organisationId)
+        public async Task<List<string>> GetAllBlockedProvidersAsync()
         {
-            var filter = Builders<BlockedOrganisation>.Filter.Eq(bo => bo.OrganisationId, organisationId);
             var collection = GetCollection<BlockedOrganisation>();
+            var result = await RetryPolicy.ExecuteAsync(async _ =>
+                                                        {
+                                                            var pipeline = BlockedOrganisationsAggQueryBuilder.GetBlockedProvidersAggregateQueryPipeline();
+                                                            var mongoQuery = pipeline.ToJson();
+                                                            var aggResults = await collection.AggregateAsync<BlockedOrganisationsAggQueryResponseDto>(pipeline);
+                                                            return await aggResults.ToListAsync();
+                                                        },
+                                                        new Context(nameof(GetAllBlockedProvidersAsync)));
 
-            var result = await RetryPolicy.ExecuteAsync(_ =>
-                collection.Find(filter)
-                .ToListAsync(),
-            new Context(nameof(GetByOrganisationIdAsync)));
+            return result.Select(bo => bo.BlockedOrganisationId).ToList();
+        }
 
-            return result;
+        public async Task<List<string>> GetAllBlockedEmployersAsync()
+        {
+            var collection = GetCollection<BlockedOrganisation>();
+            var result = await RetryPolicy.ExecuteAsync(async _ =>
+                                                        {
+                                                            var pipeline = BlockedOrganisationsAggQueryBuilder.GetBlockedEmployersAggregateQueryPipeline();
+                                                            var mongoQuery = pipeline.ToJson();
+                                                            var aggResults = await collection.AggregateAsync<BlockedOrganisationsAggQueryResponseDto>(pipeline);
+                                                            return await aggResults.ToListAsync();
+                                                        },
+                                                        new Context(nameof(GetAllBlockedProvidersAsync)));
+
+            return result.Select(bo => bo.BlockedOrganisationId).ToList();
         }
     }
 }

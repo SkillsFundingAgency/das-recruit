@@ -11,7 +11,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.QA;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyAnalytics;
-using Address = Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo.Address;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.BlockedOrganisations;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 {
@@ -115,7 +115,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             var providerInfo = await _queryStore.GetAsync<ProviderEditVacancyInfo>(QueryViewType.EditVacancyInfo.TypeName, key);
             return providerInfo?.Employers.FirstOrDefault(e => e.EmployerAccountId == employerAccountId);
         }
-        
+
         public Task<VacancyApplications> GetVacancyApplicationsAsync(string vacancyReference)
         {
             var key = QueryViewType.VacancyApplications.GetIdValue(vacancyReference);
@@ -193,6 +193,30 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         private string GetLiveVacancyId(long vacancyReference)
         {
             return QueryViewType.LiveVacancy.GetIdValue(vacancyReference.ToString());
+        }
+
+        public Task UpdateBlockedProviders(IEnumerable<long> blockedProviders)
+        {
+            var blockedProvidersDoc = new BlockedProviderOrganisations
+            {
+                Id = QueryViewType.BlockedProviderOrganisations.GetIdValue(),
+                Data = blockedProviders,
+                LastUpdated = _timeProvider.Now
+            };
+
+            return _queryStore.UpsertAsync(blockedProvidersDoc);
+        }
+
+        public Task UpdateBlockedEmployers(IEnumerable<string> blockedEmployers)
+        {
+            var blockedEmployersDoc = new BlockedEmployerOrganisations
+            {
+                Id = QueryViewType.BlockedEmployerOrganisations.GetIdValue(),
+                Data = blockedEmployers,
+                LastUpdated = _timeProvider.Now
+            };
+
+            return _queryStore.UpsertAsync(blockedEmployersDoc);
         }
     }
 }
