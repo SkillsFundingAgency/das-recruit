@@ -13,7 +13,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string CandidateName
-        { 
+        {
             get
             {
                 if (string.IsNullOrEmpty(FirstName))
@@ -28,7 +28,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
             set { _candidateName = value; }
         }
 
-        public DateTime DateOfBirth { get; set; }
+        public DateTime? DateOfBirth { get; set; }
         public Guid ApplicationReviewId { get; set; }
         public ApplicationReviewDisabilityStatus DisabilityStatus { get; set; }
         public bool IsWithdrawn { get; set; }

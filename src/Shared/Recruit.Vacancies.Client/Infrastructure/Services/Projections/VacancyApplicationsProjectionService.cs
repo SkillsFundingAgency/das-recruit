@@ -43,14 +43,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
         {
             var projection = new VacancyApplication
             {
-                CandidateId = review.Application.CandidateId,
+                CandidateId = review.CandidateId,
                 Status = review.Status,
                 SubmittedDate = review.SubmittedDate,
                 ApplicationReviewId = review.Id,
                 IsWithdrawn = review.IsWithdrawn,
                 FirstName = string.Empty,
                 LastName = string.Empty,
-                DateOfBirth = review.Application.BirthDate,
                 DisabilityStatus = ApplicationReviewDisabilityStatus.Unknown
             };
 
@@ -58,6 +57,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
             {
                 projection.FirstName = review.Application.FirstName;
                 projection.LastName = review.Application.LastName;
+                projection.DateOfBirth = review.Application.BirthDate;
                 projection.DisabilityStatus = review.Application.DisabilityStatus ?? ApplicationReviewDisabilityStatus.Unknown;
             }
 
