@@ -51,13 +51,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 Programme = programme.ToViewModel()
             };
 
-            if (vacancy.TrainingProvider != null)
-            {
-                Title = vacancy.Title,
-                TrainingProviders = trainingProviders.Select(t => FormatSuggestion(t.ProviderName, t.Ukprn)),
-                PageInfo = Utility.GetPartOnePageInfo(vacancy)
-            };
-            
             TrySetSelectedTrainingProvider(vm, trainingProviders, vacancy, ukprn);
             
             if (vacancy.Status == VacancyStatus.Referred)
