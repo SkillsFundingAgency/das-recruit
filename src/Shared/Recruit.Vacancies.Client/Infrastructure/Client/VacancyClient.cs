@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
@@ -15,11 +16,11 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVa
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyAnalytics;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using FluentValidation;
-using FluentValidation.Results;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
@@ -129,7 +130,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _employerService.GetEmployerDescriptionAsync(vacancy);
         }
 
-        public async Task<Guid> CreateVacancyAsync(string title, string employerAccountId, VacancyUser user)
+        public async Task<Guid> CreateVacancyAsync(string title, string employerAccountId, VacancyUser user, TrainingProvider provider = null, string programmeId = null)
         {
             var vacancyId = GenerateVacancyId();
 
@@ -142,6 +143,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 EmployerAccountId = employerAccountId,
                 Origin = SourceOrigin.EmployerWeb
             };
+            if (provider != null)
+                command.TrainingProvider = provider;
+
+            if (programmeId != null)
+                command.ProgrammeId = programmeId;
 
             await _messaging.SendCommandAsync(command);
 

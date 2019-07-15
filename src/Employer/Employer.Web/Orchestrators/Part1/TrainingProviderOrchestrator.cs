@@ -41,8 +41,13 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var vacancy = vacancyTask.Result;
             var trainingProviders = trainingProvidersTask.Result;
 
-            var vm = new SelectTrainingProviderViewModel { Title = vacancy.Title, TrainingProviders = trainingProviders.Select(t => FormatSuggestion(t.ProviderName, t.Ukprn)), PageInfo = Utility.GetPartOnePageInfo(vacancy) };
-
+            var vm = new SelectTrainingProviderViewModel
+            {
+                Title = vacancy.Title,
+                TrainingProviders = trainingProviders.Select(t => FormatSuggestion(t.ProviderName, t.Ukprn)),
+                PageInfo = Utility.GetPartOnePageInfo(vacancy)
+            };
+            
             TrySetSelectedTrainingProvider(vm, trainingProviders, vacancy, ukprn);
             
             if (vacancy.Status == VacancyStatus.Referred)

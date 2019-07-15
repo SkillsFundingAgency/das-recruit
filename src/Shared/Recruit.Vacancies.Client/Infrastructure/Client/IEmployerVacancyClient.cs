@@ -4,13 +4,12 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
     public interface IEmployerVacancyClient
     {
-        Task<Guid> CreateVacancyAsync(string title, string employerAccountId, VacancyUser user);
+        Task<Guid> CreateVacancyAsync(string title, string employerAccountId, VacancyUser user, TrainingProvider provider = null, string programmeId = null);
         Task GenerateDashboard(string employerAccountId);
         Task CloseVacancyAsync(Guid vacancyId, VacancyUser user);        
         Task SubmitVacancyAsync(Guid vacancyId, string employerDescription, VacancyUser user);

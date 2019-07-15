@@ -84,6 +84,13 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         public async Task<OrchestratorResponse<Guid>> PostTitleEditModelAsync(TitleEditModel m, VacancyUser user)
         {
+            TrainingProvider provider = null;
+            IApprenticeshipProgramme programme = null;
+            if(IsReferredFromMaHomeFavourites(m))
+            {
+                provider = await GetProvider(m.ReferredFromMAHome_UKPRN);
+                programme = await GetProgramme(m.ReferredFromMAHome_ProgrammeId);
+            }
             if (!m.VacancyId.HasValue) // Create if it's a new vacancy
             {
                 var newVacancy = new Vacancy
@@ -94,7 +101,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 return await ValidateAndExecute(
                     newVacancy, 
                     v => _vacancyClient.Validate(v, ValidationRules),
-                    async v => await _client.CreateVacancyAsync(m.Title, m.EmployerAccountId, user));
+                    async v => await _client.CreateVacancyAsync(m.Title, m.EmployerAccountId, user, provider, programme?.Id));
             }
 
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, 
@@ -113,11 +120,30 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             );
         }
 
+        private bool IsReferredFromMaHomeFavourites(TitleEditModel m)
+        {
+            return m.ReferredFromMAHome && (!string.IsNullOrWhiteSpace(m.ReferredFromMAHome_ProgrammeId) || !string.IsNullOrWhiteSpace(m.ReferredFromMAHome_UKPRN));
+        }
+
+        private async Task<TrainingProvider> GetProvider(string ukprn)
+        {
+            long.TryParse(ukprn, out long validUkprn);
+            if(validUkprn != 0)
+                return await _client.GetTrainingProviderAsync(validUkprn);
+            return null;
+        }
+
         protected override EntityToViewModelPropertyMappings<Vacancy, TitleEditModel> DefineMappings()
         {
             var mappings = new EntityToViewModelPropertyMappings<Vacancy, TitleEditModel>();
             mappings.Add(e => e.Title, vm => vm.Title);
             return mappings;
+        }
+
+        private async Task<IApprenticeshipProgramme> GetProgramme(string programmeId)
+        {
+            var programmesTask = await _vacancyClient.GetActiveApprenticeshipProgrammesAsync();
+            return programmesTask.SingleOrDefault(p => p.Id == programmeId);
         }
     }
 }

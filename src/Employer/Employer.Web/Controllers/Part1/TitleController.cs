@@ -1,4 +1,6 @@
+using System;
 using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
@@ -40,6 +42,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         [HttpPost(VacancyTitleRoute, Name = RouteNames.Title_Post)]
         public async Task<IActionResult> Title(TitleEditModel m, [FromQuery] bool wizard)
         {
+            m.ReferredFromMAHome = Convert.ToBoolean(TempData[TempDataKeys.ReferredFromMAHome]);
+            m.ReferredFromMAHome_UKPRN = Convert.ToString(TempData[TempDataKeys.ReferredFromMAHome_UKPRN]);
+            m.ReferredFromMAHome_ProgrammeId = Convert.ToString(TempData[TempDataKeys.ReferredFromMAHome_ApprenticeshipId]);
             var response = await _orchestrator.PostTitleEditModelAsync(m, User.ToVacancyUser());
 
             if (!response.Success)
