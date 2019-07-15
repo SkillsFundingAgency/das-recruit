@@ -9,7 +9,7 @@
     }
 
     var closedVacancies = db.vacancies.aggregate([
-        { $match : {"status" : "Closed"} },
+        { $match : {"status" : "Closed"}, closureReason: {$exists: 0} },
         { $project : {
             "vacancyReference": 1, 
             "closedByUser": 1, 
