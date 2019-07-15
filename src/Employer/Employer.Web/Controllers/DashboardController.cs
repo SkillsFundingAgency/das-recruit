@@ -5,7 +5,7 @@ using Esfa.Recruit.Employer.Web.Orchestrators;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Extensions;
-using Esfa.Recruit.Employer.Web.ViewModels.Dashboard;
+using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Hosting;
 

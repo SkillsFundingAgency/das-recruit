@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
