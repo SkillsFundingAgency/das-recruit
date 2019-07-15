@@ -34,7 +34,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             var vm = await _orchestrator.GetSelectTrainingProviderViewModelAsync(vrm, ukprn);
             vm.PageInfo.SetWizard(wizard);
 
-            if (vm.IsTrainingProviderSelected.GetValueOrDefault() && !string.IsNullOrWhiteSpace(vm.Ukprn))
+            if (vm.IsTrainingProviderSelected.GetValueOrDefault())
                 return GetRedirectToNextPage(Convert.ToBoolean(wizard));
 
             if (string.IsNullOrWhiteSpace(clear) == false)

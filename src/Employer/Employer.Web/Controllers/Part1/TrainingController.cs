@@ -30,6 +30,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 
             var vm = await _orchestrator.GetTrainingViewModelAsync(vrm, User.ToVacancyUser());
 
+            if(!string.IsNullOrWhiteSpace(vm.SelectedProgrammeId))
+                return RedirectToRoute(RouteNames.TrainingProvider_Select_Get, new { programmeId = vm.SelectedProgrammeId, wizard });
+
             if (string.IsNullOrWhiteSpace(programmeId) == false &&
                 vm.Programmes.Any(p => p.Id == programmeId))
             {
