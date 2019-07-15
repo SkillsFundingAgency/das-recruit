@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
@@ -32,6 +33,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         {
             var vm = await _orchestrator.GetSelectTrainingProviderViewModelAsync(vrm, ukprn);
             vm.PageInfo.SetWizard(wizard);
+
+            if (vm.IsTrainingProviderSelected.GetValueOrDefault() && !string.IsNullOrWhiteSpace(vm.Ukprn))
+                return GetRedirectToNextPage(Convert.ToBoolean(wizard));
 
             if (string.IsNullOrWhiteSpace(clear) == false)
             {
