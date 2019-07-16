@@ -9,5 +9,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public string LegalEntityName { get; set; }
         public VacancyUser TransferredByUser { get; set; }
         public DateTime TransferredDate { get; set; }
+        public TransferReason Reason { get; set; }
     }
 }
