@@ -15,6 +15,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
     internal sealed class VacancySummariesProvider : MongoDbCollectionBase, IVacancySummariesProvider
     {
         private const string TransferInfoUkprn = "transferInfo.ukprn";
+        private const string TransferInfoReason = "transferInfo.reason";
 
         public VacancySummariesProvider(ILoggerFactory loggerFactory, IOptions<MongoDbConnectionDetails> details)
             : base(loggerFactory, MongoDbNames.RecruitDb, MongoDbCollectionNames.Vacancies, details)
@@ -63,7 +64,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
 
         public async Task<IList<TransferInfo>> GetTransferredFromProviderAsync(long ukprn)
         {
-            var filter = Builders<VacancyTransferInfo>.Filter.Eq(TransferInfoUkprn, ukprn.ToString());
+            var builder = Builders<VacancyTransferInfo>.Filter;
+            var filter = builder.Eq(TransferInfoUkprn, ukprn.ToString()) &
+                         builder.Eq(TransferInfoReason, TransferReason.EmployerRevokedPermission.ToString());
 
             var collection = GetCollection<VacancyTransferInfo>();
 
