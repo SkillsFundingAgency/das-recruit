@@ -22,10 +22,14 @@
     {
         <partial name="_BlockedProviderAlert" for="BlockedProviderAlert" />
     }
-
-    @if (Model.ShowTransferredVacanciesAlert)
+    @if (Model.ShowEmployerRevokedTransferredVacanciesAlert)
     {
-        <partial name="_TransferredVacanciesAlert" for="TransferredVacanciesAlert" />
+        <partial name="_EmployerRevokedTransferredVacanciesAlert" for="EmployerRevokedTransferredVacanciesAlert" />
+    }
+
+    @if (Model.ShowBlockedProviderTransferredVacanciesAlert)
+    {
+        <partial name="_BlockedProviderTransferredVacanciesAlert" for="BlockedProviderTransferredVacanciesAlert" />
     }
 
     <div class="govuk-grid-row">

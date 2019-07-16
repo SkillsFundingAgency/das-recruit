@@ -73,7 +73,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 Filter = filteringOption,
                 ResultsHeading = GetFilterHeading(filteredVacanciesTotal, filteringOption),
                 HasVacancies = vacancies.Any(),
-                TransferredVacanciesAlert = GetTransferredVacanciesAlertViewModel(vacancies, userDetails.TransferredVacanciesAlertDismissedOn),
+                EmployerRevokedTransferredVacanciesAlert = GetTransferredVacanciesAlertViewModel(vacancies, TransferReason.EmployerRevokedPermission, userDetails.TransferredVacanciesAlertDismissedOn),
+                BlockedProviderTransferredVacanciesAlert = GetTransferredVacanciesAlertViewModel(vacancies, TransferReason.BlockedByQa, userDetails.BlockedProviderTransferredVacanciesAlertDismissedOn),
                 BlockedProviderAlert = GetBlockedProviderVacanciesAlertViewModel(vacancies, userDetails.BlockedProviderAlertDismissedOn)
             };
 
@@ -170,13 +171,13 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             }
         }
 
-        private TransferredVacanciesAlertViewModel GetTransferredVacanciesAlertViewModel(IEnumerable<VacancySummary> vacancies, DateTime? userLastDismissedDate)
+        private TransferredVacanciesAlertViewModel GetTransferredVacanciesAlertViewModel(IEnumerable<VacancySummary> vacancies, TransferReason reason, DateTime? userLastDismissedDate)
         {
             if (userLastDismissedDate.HasValue == false)
                 userLastDismissedDate = DateTime.MinValue;
 
             var transferredVacancyProviders = vacancies.Where(v =>
-                    v.TransferInfoReason == TransferReason.EmployerRevokedPermission &&
+                    v.TransferInfoReason == reason &&
                     v.TransferInfoTransferredDate > userLastDismissedDate)
                 .Select(v => v.TransferInfoProviderName).ToList();
 

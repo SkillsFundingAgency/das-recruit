@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Humanizer;
 
@@ -11,5 +12,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Dashboard
 
         public string CountCaption => $"{"vacancy".ToQuantity(TransferredVacanciesCount)} {(TransferredVacanciesCount == 1 ? "has" : "have")} been transferred";
         public string ProviderNamesCaption => TransferredVacanciesProviderNames.Humanize().RemoveOxfordComma();
+        public bool HasTransfersFromMultipleProviders => TransferredVacanciesProviderNames.Count() > 1;
     }
 }

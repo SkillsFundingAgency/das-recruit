@@ -72,7 +72,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
                 new ProviderDashboardTransferredVacancy
                 {
                     LegalEntityName = t.LegalEntityName,
-                    TransferredDate = t.TransferredDate
+                    TransferredDate = t.TransferredDate,
+                    Reason = t.Reason
                 });
 
             foreach (var summary in vacancySummaries)
