@@ -128,24 +128,22 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             if(programme == null)
             {
                 ModelState.AddModelError(nameof(TrainingEditModel.SelectedProgrammeId), InvalidTraining);
-                var vm = await _orchestrator.GetTrainingViewModelAsync(m, user);
-                vm.PageInfo.SetWizard(wizard);
-                return View(vm);
             }
-
-            var response = await _orchestrator.PostConfirmTrainingEditModelAsync(m, user);
-
-            if (!response.Success)
+            else
             {
-                response.AddErrorsToModelState(ModelState);
+                var response = await _orchestrator.PostConfirmTrainingEditModelAsync(m, user);
+
+                if (!response.Success)
+                {
+                    response.AddErrorsToModelState(ModelState);
+                }
             }
 
             if (!ModelState.IsValid)
             {
                 var vm = await _orchestrator.GetTrainingViewModelAsync(m, user);
                 vm.PageInfo.SetWizard(wizard);
-
-                return View(vm);
+                return View("training", vm);
             }
 
             return wizard
