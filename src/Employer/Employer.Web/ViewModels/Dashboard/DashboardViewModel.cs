@@ -17,9 +17,11 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Dashboard
         public FilteringOptions Filter { get; set; }
         public bool HasVacancies { get; internal set; }
         public TransferredVacanciesAlertViewModel TransferredVacanciesAlert { get; internal set; }
+        public BlockedProviderAlertViewModel BlockedProviderAlert { get; internal set; }
 
         public bool ShowResultsTable => Vacancies.Any();
         public bool IsFiltered => Filter != FilteringOptions.All;
         public bool ShowTransferredVacanciesAlert => TransferredVacanciesAlert != null;
+        public bool ShowBlockedProviderAlert => BlockedProviderAlert != null;
     }
 }
