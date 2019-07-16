@@ -2,6 +2,7 @@
 {
     public enum AlertType
     {
-        TransferredVacancies
+        TransferredVacancies,
+        BlockedProvider
     }
 }

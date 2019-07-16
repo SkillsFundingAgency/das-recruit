@@ -18,6 +18,10 @@
 <partial asp-hide="@Model.HasVacancies" name="_NoVacanciesContent" />
 
 <div asp-show="Model.HasVacancies">
+    @if (Model.ShowBlockedProviderAlert)
+    {
+        <partial name="_BlockedProviderAlert" for="BlockedProviderAlert" />
+    }
 
     @if (Model.ShowTransferredVacanciesAlert)
     {

@@ -18,6 +18,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections
         public DateTime? ClosingDate { get; set; }
         public int? Duration { get; set; }
         public DurationUnit DurationUnit { get; internal set; }
+        public DateTime? ClosedDate { get; set; }
+        public ClosureReason? ClosureReason { get; set; }
         public ApplicationMethod? ApplicationMethod { get; set; }
         public string ProgrammeId { get; set; }
         public DateTime? StartDate { get; set; }
@@ -28,6 +30,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections
         public string TransferInfoProviderName { get; set; }
         public TransferReason? TransferInfoReason { get; set; }
         public DateTime? TransferInfoTransferredDate { get; set; }
+        public string TrainingProviderName { get; set; }
         public int NoOfNewApplications { get; set; }
         public int NoOfSuccessfulApplications { get; set; }
         public int NoOfUnsuccessfulApplications { get; set; }

@@ -73,7 +73,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 Filter = filteringOption,
                 ResultsHeading = GetFilterHeading(filteredVacanciesTotal, filteringOption),
                 HasVacancies = vacancies.Any(),
-                TransferredVacanciesAlert = GetTransferredVacanciesAlertViewModel(vacancies, userDetails.TransferredVacanciesAlertDismissedOn)
+                TransferredVacanciesAlert = GetTransferredVacanciesAlertViewModel(vacancies, userDetails.TransferredVacanciesAlertDismissedOn),
+                BlockedProviderAlert = GetBlockedProviderVacanciesAlertViewModel(vacancies, userDetails.BlockedProviderAlertDismissedOn)
             };
 
             return vm;
@@ -186,6 +187,26 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             {
                 TransferredVacanciesCount = transferredVacancyProviders.Count,
                 TransferredVacanciesProviderNames = transferredVacancyProviders.GroupBy(p => p).Select(p => p.Key)
+            };
+        }
+
+        private BlockedProviderAlertViewModel GetBlockedProviderVacanciesAlertViewModel(IEnumerable<VacancySummary> vacancies, DateTime? userLastDismissedDate)
+        {
+            if (userLastDismissedDate.HasValue == false)
+                userLastDismissedDate = DateTime.MinValue;
+
+            var blockedProviderVacancies = vacancies.Where(v =>
+                v.Status == VacancyStatus.Closed &&
+                v.ClosureReason == ClosureReason.BlockedByQa &&
+                v.ClosedDate > userLastDismissedDate);
+
+            if (blockedProviderVacancies.Any() == false)
+                return null;
+
+            return new BlockedProviderAlertViewModel
+            {
+                ClosedVacancies = blockedProviderVacancies.Select(v => $"{v.Title} (VAC{v.VacancyReference})").ToList(),
+                BlockedProviderNames = blockedProviderVacancies.GroupBy(p => p.TrainingProviderName).Select(p => p.Key).ToList(),
             };
         }
     }

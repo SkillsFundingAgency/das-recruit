@@ -16,5 +16,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public IList<string> EmployerAccountIds { get; set; } = new List<string>();
         public long? Ukprn { get; set; }
         public DateTime? TransferredVacanciesAlertDismissedOn { get; set; }
+        public DateTime? BlockedProviderAlertDismissedOn { get; set; }
     }
 }
