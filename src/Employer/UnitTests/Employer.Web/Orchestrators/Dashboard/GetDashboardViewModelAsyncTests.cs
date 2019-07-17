@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Orchestrators;
+using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -83,7 +84,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Dashboard
             var recruitClientMock = new Mock<IRecruitVacancyClient>();
             recruitClientMock.Setup(c => c.GetUsersDetailsAsync(It.IsAny<string>())).ReturnsAsync(new User());
 
-            return new DashboardOrchestrator(clientMock.Object, timeProviderMock.Object, recruitClientMock.Object);
+            return new DashboardOrchestrator(clientMock.Object, timeProviderMock.Object, recruitClientMock.Object, new AlertViewModelService());
         }
     }
 }

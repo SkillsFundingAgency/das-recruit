@@ -1,0 +1,18 @@
+﻿@model Esfa.Recruit.Employer.Web.ViewModels.Dashboard.AlertsViewModel
+
+@if (Model.ShowWithdrawnVacanciesAlert)
+{
+    <partial name="_WithdrawnVacanciesAlert" for="WithdrawnVacanciesAlert" />
+}
+@if (Model.ShowBlockedProviderAlert)
+{
+    <partial name="_BlockedProviderAlert" for="BlockedProviderAlert" />
+}
+@if (Model.ShowEmployerRevokedTransferredVacanciesAlert)
+{
+    <partial name="_EmployerRevokedTransferredVacanciesAlert" for="EmployerRevokedTransferredVacanciesAlert" />
+}
+@if (Model.ShowBlockedProviderTransferredVacanciesAlert)
+{
+    <partial name="_BlockedProviderTransferredVacanciesAlert" for="BlockedProviderTransferredVacanciesAlert" />
+}
