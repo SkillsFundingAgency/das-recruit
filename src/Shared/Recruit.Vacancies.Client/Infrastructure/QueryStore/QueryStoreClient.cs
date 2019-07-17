@@ -73,7 +73,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             {
                 Id = QueryViewType.ProviderDashboard.GetIdValue(ukprn),
                 Vacancies = vacancySummaries,
-                TrasferredVacancies = transferredVacancies,
+                TransferredVacancies = transferredVacancies,
                 LastUpdated = _timeProvider.Now
             };
 

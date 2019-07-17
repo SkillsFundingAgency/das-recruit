@@ -12,7 +12,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Pr
 
         public IEnumerable<VacancySummary> Vacancies { get; set; }
 
-        public IEnumerable<ProviderDashboardTransferredVacancy> TrasferredVacancies { get; set; }
+        public IEnumerable<ProviderDashboardTransferredVacancy> TransferredVacancies { get; set; }
 
         public IEnumerable<VacancySummary> CloneableVacancies => Vacancies.Where(
             x => x.Status == VacancyStatus.Live ||
