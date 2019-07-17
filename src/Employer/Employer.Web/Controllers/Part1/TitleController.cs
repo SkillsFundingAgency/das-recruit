@@ -8,6 +8,7 @@ using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Title;
 using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.Mappers;
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 {
@@ -25,7 +26,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         [HttpGet("create-vacancy", Name = RouteNames.CreateVacancy_Get)]
         public async Task<IActionResult> Title([FromRoute] string employerAccountId)
         {
-            var vm = await _orchestrator.GetTitleViewModel(employerAccountId);            
+            var vm = await _orchestrator.GetTitleViewModel(employerAccountId);
+            vm.ReturnToMALinkText = Convert.ToBoolean(TempData.Peek(TempDataKeys.ReferredFromMAHome_FromSavedFavourites)) 
+                ? "Back to your saved favourites" : "Return to home";
             vm.PageInfo.SetWizard();
             return View(vm);
         }
@@ -42,11 +45,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         [HttpPost(VacancyTitleRoute, Name = RouteNames.Title_Post)]
         public async Task<IActionResult> Title(TitleEditModel m, [FromQuery] bool wizard)
         {
-            m.ReferredFromMAHome = Convert.ToBoolean(TempData[TempDataKeys.ReferredFromMAHome]);
-            m.ReferredFromMAHome_UKPRN = Convert.ToString(TempData[TempDataKeys.ReferredFromMAHome_UKPRN]);
-            m.ReferredFromMAHome_ProgrammeId = Convert.ToString(TempData[TempDataKeys.ReferredFromMAHome_ApprenticeshipId]);
+            m.ReferredFromMAHome_FromSavedFavourites = Convert.ToBoolean(TempData.Peek(TempDataKeys.ReferredFromMAHome_FromSavedFavourites));
+            m.ReferredFromMAHome_UKPRN = Convert.ToString(TempData.Peek(TempDataKeys.ReferredFromMAHome_UKPRN));
+            m.ReferredFromMAHome_ProgrammeId = Convert.ToString(TempData.Peek(TempDataKeys.ReferredFromMAHome_ApprenticeshipId));
             var response = await _orchestrator.PostTitleEditModelAsync(m, User.ToVacancyUser());
-
             if (!response.Success)
             {
                 response.AddErrorsToModelState(ModelState);
@@ -58,7 +60,15 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                 vm.PageInfo.SetWizard(wizard);
                 return View(vm);
             }
-
+            var currentVacancy = await _orchestrator.GetCurrentVacancy(m,response.Data);
+            if (m.ReferredFromMAHome_FromSavedFavourites)
+            {
+                if (currentVacancy.TrainingProvider != null && !string.IsNullOrWhiteSpace(currentVacancy.ProgrammeId))
+                    return RedirectToRoute(RouteNames.NumberOfPositions_Get, new { vacancyId = response.Data });
+                if (currentVacancy.TrainingProvider == null)
+                    return RedirectToRoute(RouteNames.TrainingProvider_Select_Get, new { vacancyId = response.Data });
+            }
+                
             return wizard
                 ? RedirectToRoute(RouteNames.Training_Get, new {vacancyId = response.Data})
                 : RedirectToRoute(RouteNames.Vacancy_Preview_Get);

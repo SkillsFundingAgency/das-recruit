@@ -1,4 +1,6 @@
+using System;
 using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
@@ -24,6 +26,16 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         {
             var vm = await _orchestrator.GetNumberOfPositionsViewModelAsync(vrm);
             vm.PageInfo.SetWizard(wizard);
+            vm.ReferredFromMAHome_FromSavedFavourites = Convert.ToBoolean(TempData.Peek(TempDataKeys.ReferredFromMAHome_FromSavedFavourites));
+            var referredFromMAHome_UKPRN = Convert.ToString(TempData.Peek(TempDataKeys.ReferredFromMAHome_UKPRN));
+            var referredFromMAHome_ProgrammeId = Convert.ToString(TempData.Peek(TempDataKeys.ReferredFromMAHome_ApprenticeshipId));
+            if (vm.ReferredFromMAHome_FromSavedFavourites)
+            {
+                if (!string.IsNullOrWhiteSpace(referredFromMAHome_UKPRN) && !string.IsNullOrWhiteSpace(referredFromMAHome_ProgrammeId))
+                    vm.BackLink = RouteNames.Title_Get;
+                if (string.IsNullOrWhiteSpace(referredFromMAHome_UKPRN) && !string.IsNullOrWhiteSpace(referredFromMAHome_ProgrammeId))
+                    vm.BackLink = RouteNames.TrainingProvider_Select_Get;
+            }
             return View(vm);
         }
 
