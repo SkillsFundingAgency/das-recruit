@@ -50,7 +50,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 NoOfVacanciesClosingSoon = vacancies.Count(v =>
                     v.ClosingDate <= _timeProvider.Today.AddDays(ClosingSoonDays) &&
                     v.Status == VacancyStatus.Live),
-                TransferredVacanciesAlert = GetTransferredVacanciesAlertViewModel(dashboard.TrasferredVacancies, userDetails.TransferredVacanciesAlertDismissedOn)
+                TransferredVacanciesAlert = GetTransferredVacanciesAlertViewModel(dashboard.TransferredVacancies, userDetails.TransferredVacanciesAlertDismissedOn)
             };
             return vm;
         }

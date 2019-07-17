@@ -10,7 +10,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Dashboard
     {
         public IEnumerable<string> LegalEntityNames { get; internal set; }
 
-        public string LegalEntityNamesCaptionRaw => LegalEntityNames.Humanize(s => $"<span class=\"govuk-!-font-weight-bold\">{HttpUtility.HtmlEncode(s)}</span>").RemoveOxfordComma();
+        public string LegalEntityNamesCaption => LegalEntityNames.Humanize().RemoveOxfordComma();
 
         public bool HasTransfersToMultipleEmployers => LegalEntityNames.Count() > 1;
     }
