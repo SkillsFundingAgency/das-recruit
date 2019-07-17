@@ -18,5 +18,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Title
             HasCloneableVacancies ? RouteNames.Vacancies_Get : RouteNames.CreateVacancyOptions_Get;
 
         public bool ShowReturnToMALink { get; set; }
+        public string ReturnToMALinkText { get; set; }
     }
 }

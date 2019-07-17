@@ -10,5 +10,6 @@
         public const string ReferredFromMAHome = "ReferredFromMAHome";
         public const string ReferredFromMAHome_UKPRN = "ReferredFromMAHome_UKPRN";
         public const string ReferredFromMAHome_ApprenticeshipId = "ReferredFromMAHome_ApprenticeshipId";
+        public const string ReferredFromMAHome_FromSavedFavourites = "ReferredFromMAHome_FromSavedFavourites";
     }
 }

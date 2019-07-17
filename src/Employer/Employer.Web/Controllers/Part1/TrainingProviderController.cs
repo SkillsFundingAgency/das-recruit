@@ -31,20 +31,30 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         [HttpGet("select-training-provider", Name = RouteNames.TrainingProvider_Select_Get)]
         public async Task<IActionResult> SelectTrainingProvider(VacancyRouteModel vrm, [FromQuery] string wizard = "true", [FromQuery] string clear = "", [FromQuery] long? ukprn = null)
         {
-            var vm = await _orchestrator.GetSelectTrainingProviderViewModelAsync(vrm, ukprn);
-            vm.PageInfo.SetWizard(wizard);
+           var vm = await _orchestrator.GetSelectTrainingProviderViewModelAsync(vrm, ukprn);
+           vm.PageInfo.SetWizard(wizard);
 
-            if (vm.IsTrainingProviderSelected.GetValueOrDefault())
-                return GetRedirectToNextPage(Convert.ToBoolean(wizard));
-
-            if (string.IsNullOrWhiteSpace(clear) == false)
-            {
-                vm.Ukprn = string.Empty;
-                vm.TrainingProviderSearch = string.Empty;
-                vm.IsTrainingProviderSelected = true;
-            }
-            
+           if (string.IsNullOrWhiteSpace(clear) == false)
+           {
+               vm.Ukprn = string.Empty;
+               vm.TrainingProviderSearch = string.Empty;
+               vm.IsTrainingProviderSelected = true;
+           }
+           vm.ReferredFromMAHome_FromSavedFavourites = ShowReferredFromMABackLink();
             return View(vm);
+        }
+
+        private bool ShowReferredFromMABackLink()
+        {
+            var referredFromMAHome_FromSavedFavourites = Convert.ToBoolean(TempData.Peek(TempDataKeys.ReferredFromMAHome_FromSavedFavourites));
+            var referredFromMAHome_UKPRN = Convert.ToString(TempData.Peek(TempDataKeys.ReferredFromMAHome_UKPRN));
+            var referredFromMAHome_ProgrammeId = Convert.ToString(TempData.Peek(TempDataKeys.ReferredFromMAHome_ApprenticeshipId));
+            if (referredFromMAHome_FromSavedFavourites)
+            {
+                return string.IsNullOrWhiteSpace(referredFromMAHome_UKPRN) &&
+                       !string.IsNullOrWhiteSpace(referredFromMAHome_ProgrammeId);
+            }
+            return false;
         }
 
         [HttpPost("select-training-provider", Name = RouteNames.TrainingProvider_Select_Post)]

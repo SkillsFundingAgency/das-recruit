@@ -8,7 +8,12 @@
 @model SelectTrainingProviderViewModel
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Training_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+        <div asp-show="@Model.ReferredFromMAHome_FromSavedFavourites">
+            <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Title_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+        </div>
+        <div asp-hide="@Model.ReferredFromMAHome_FromSavedFavourites">
+            <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Training_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+        </div>
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
         <partial name="@PartialNames.ReviewSummary" for="Review" />
         <h1 class="govuk-heading-xl">
@@ -39,8 +44,8 @@
                             <noscript>
                                 <div class="govuk-form-group" id="non-js-search">
                                     <span class="govuk-hint">
-                                        Enter the training provider reference number (UKPRN). 
-                                        You will be able to get this from your training provider. 
+                                        Enter the training provider reference number (UKPRN).
+                                        You will be able to get this from your training provider.
                                         The UKPRN must only be 8 numbers (For example, 12345678)
                                     </span>
                                     <span esfa-validation-message-for="Ukprn" class="govuk-error-message"></span>
