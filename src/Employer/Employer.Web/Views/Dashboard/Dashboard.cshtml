@@ -18,19 +18,8 @@
 <partial asp-hide="@Model.HasVacancies" name="_NoVacanciesContent" />
 
 <div asp-show="Model.HasVacancies">
-    @if (Model.ShowBlockedProviderAlert)
-    {
-        <partial name="_BlockedProviderAlert" for="BlockedProviderAlert" />
-    }
-    @if (Model.ShowEmployerRevokedTransferredVacanciesAlert)
-    {
-        <partial name="_EmployerRevokedTransferredVacanciesAlert" for="EmployerRevokedTransferredVacanciesAlert" />
-    }
-
-    @if (Model.ShowBlockedProviderTransferredVacanciesAlert)
-    {
-        <partial name="_BlockedProviderTransferredVacanciesAlert" for="BlockedProviderTransferredVacanciesAlert" />
-    }
+    
+    <partial name="_Alerts" for="Alerts" />
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">

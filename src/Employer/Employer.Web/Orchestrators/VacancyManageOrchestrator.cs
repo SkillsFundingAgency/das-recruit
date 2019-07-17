@@ -64,6 +64,12 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             viewModel.CanShowEditVacancyLink = vacancy.CanExtendStartAndClosingDates;
             viewModel.CanShowCloseVacancyLink = vacancy.CanClose;
 
+            if (vacancy.Status == VacancyStatus.Closed && vacancy.ClosureReason == ClosureReason.WithdrawnByQa)
+            {
+                viewModel.WithdrawnDate = vacancy.ClosedDate?.AsGdsDate();
+                viewModel.IsWithdrawn = true;
+            }
+
             var applications = new List<VacancyApplication>();
 
             if (vacancy.LiveDate >= _systemConfig.ShowAnalyticsForVacanciesApprovedAfterDate)

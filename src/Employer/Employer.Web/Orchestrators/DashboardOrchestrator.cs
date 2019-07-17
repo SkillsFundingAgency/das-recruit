@@ -4,6 +4,7 @@ using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
+using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.ViewModels.Dashboard;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Mappers;
@@ -22,12 +23,14 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         private const int ClosingSoonDays = 5;
         private readonly IEmployerVacancyClient _vacancyClient;
         private readonly IRecruitVacancyClient _client;
+        private readonly AlertViewModelService _alertViewModelService;
 
-        public DashboardOrchestrator(IEmployerVacancyClient vacancyClient, ITimeProvider timeProvider, IRecruitVacancyClient client)
+        public DashboardOrchestrator(IEmployerVacancyClient vacancyClient, ITimeProvider timeProvider, IRecruitVacancyClient client, AlertViewModelService alertViewModelService)
         {
             _vacancyClient = vacancyClient;
             _timeProvider = timeProvider;
             _client = client;
+            _alertViewModelService = alertViewModelService;
         }
 
         public async Task<DashboardViewModel> GetDashboardViewModelAsync(string employerAccountId, string filter, int page, VacancyUser user)
@@ -73,9 +76,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 Filter = filteringOption,
                 ResultsHeading = GetFilterHeading(filteredVacanciesTotal, filteringOption),
                 HasVacancies = vacancies.Any(),
-                EmployerRevokedTransferredVacanciesAlert = GetTransferredVacanciesAlertViewModel(vacancies, TransferReason.EmployerRevokedPermission, userDetails.TransferredVacanciesAlertDismissedOn),
-                BlockedProviderTransferredVacanciesAlert = GetTransferredVacanciesAlertViewModel(vacancies, TransferReason.BlockedByQa, userDetails.BlockedProviderTransferredVacanciesAlertDismissedOn),
-                BlockedProviderAlert = GetBlockedProviderVacanciesAlertViewModel(vacancies, userDetails.BlockedProviderAlertDismissedOn)
+                Alerts = GetAlerts(vacancies, userDetails)
             };
 
             return vm;
@@ -171,43 +172,14 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             }
         }
 
-        private TransferredVacanciesAlertViewModel GetTransferredVacanciesAlertViewModel(IEnumerable<VacancySummary> vacancies, TransferReason reason, DateTime? userLastDismissedDate)
+        private AlertsViewModel GetAlerts(IEnumerable<VacancySummary> vacancies, User userDetails)
         {
-            if (userLastDismissedDate.HasValue == false)
-                userLastDismissedDate = DateTime.MinValue;
-
-            var transferredVacancyProviders = vacancies.Where(v =>
-                    v.TransferInfoReason == reason &&
-                    v.TransferInfoTransferredDate > userLastDismissedDate)
-                .Select(v => v.TransferInfoProviderName).ToList();
-
-            if (transferredVacancyProviders.Any() == false)
-                return null;
-            
-            return new TransferredVacanciesAlertViewModel
+            return new AlertsViewModel
             {
-                TransferredVacanciesCount = transferredVacancyProviders.Count,
-                TransferredVacanciesProviderNames = transferredVacancyProviders.GroupBy(p => p).Select(p => p.Key)
-            };
-        }
-
-        private BlockedProviderAlertViewModel GetBlockedProviderVacanciesAlertViewModel(IEnumerable<VacancySummary> vacancies, DateTime? userLastDismissedDate)
-        {
-            if (userLastDismissedDate.HasValue == false)
-                userLastDismissedDate = DateTime.MinValue;
-
-            var blockedProviderVacancies = vacancies.Where(v =>
-                v.Status == VacancyStatus.Closed &&
-                v.ClosureReason == ClosureReason.BlockedByQa &&
-                v.ClosedDate > userLastDismissedDate);
-
-            if (blockedProviderVacancies.Any() == false)
-                return null;
-
-            return new BlockedProviderAlertViewModel
-            {
-                ClosedVacancies = blockedProviderVacancies.Select(v => $"{v.Title} (VAC{v.VacancyReference})").ToList(),
-                BlockedProviderNames = blockedProviderVacancies.GroupBy(p => p.TrainingProviderName).Select(p => p.Key).ToList(),
+                EmployerRevokedTransferredVacanciesAlert = _alertViewModelService.GetTransferredVacanciesAlert(vacancies, TransferReason.EmployerRevokedPermission, userDetails.TransferredVacanciesAlertDismissedOn),
+                BlockedProviderTransferredVacanciesAlert = _alertViewModelService.GetTransferredVacanciesAlert(vacancies, TransferReason.BlockedByQa, userDetails.BlockedProviderTransferredVacanciesAlertDismissedOn),
+                BlockedProviderAlert = _alertViewModelService.GetBlockedProviderVacanciesAlert(vacancies, userDetails.BlockedProviderAlertDismissedOn),
+                WithdrawnVacanciesAlert = _alertViewModelService.GetWithdrawnByQaVacanciesAlert(vacancies, userDetails.WithdrawnByQaVacanciesAlertDismissOn)
             };
         }
     }

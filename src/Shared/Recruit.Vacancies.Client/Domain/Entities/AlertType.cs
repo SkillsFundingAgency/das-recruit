@@ -4,6 +4,7 @@
     {
         TransferredVacancies,
         BlockedProvider,
-        BlockedProviderTransferredVacancies
+        BlockedProviderTransferredVacancies,
+        WithdrawnByQaVacancies
     }
 }
