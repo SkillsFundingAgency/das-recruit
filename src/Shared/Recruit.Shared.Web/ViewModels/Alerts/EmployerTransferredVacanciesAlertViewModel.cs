@@ -5,7 +5,7 @@ using Humanizer;
 
 namespace Esfa.Recruit.Shared.Web.ViewModels.Alerts
 {
-    public class TransferredVacanciesAlertViewModel
+    public class EmployerTransferredVacanciesAlertViewModel
     {
         public int TransferredVacanciesCount { get; internal set; }
         public IEnumerable<string> TransferredVacanciesProviderNames { get; internal set; }

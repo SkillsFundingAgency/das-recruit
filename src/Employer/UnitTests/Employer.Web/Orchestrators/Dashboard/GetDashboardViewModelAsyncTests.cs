@@ -1,15 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Orchestrators;
-using Esfa.Recruit.Employer.Web.Services;
+using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer;
 using FluentAssertions;
-using Microsoft.Extensions.Options;
 using Moq;
 using Xunit;
 
