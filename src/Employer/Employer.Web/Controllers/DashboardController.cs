@@ -20,7 +20,11 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         public async Task<IActionResult> Dashboard([FromRoute] string employerAccountId)
         {
             var vm = await _orchestrator.GetDashboardViewModelAsync(employerAccountId, User.ToVacancyUser());
-            return View(vm);
+        private bool ShowReferredFromMaBackLink()
+        {
+            var referredFromMaHomeFromSavedFavourites = Convert.ToBoolean(TempData.Peek(TempDataKeys.ReferredFromMAHome_FromSavedFavourites));
+            var referredFromMaHome = Convert.ToBoolean(TempData.Peek(TempDataKeys.ReferredFromMAHome));
+            return referredFromMaHomeFromSavedFavourites || referredFromMaHome;
         }
     }
 }
