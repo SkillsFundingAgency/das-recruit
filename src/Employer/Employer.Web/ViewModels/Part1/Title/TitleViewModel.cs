@@ -6,6 +6,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Title
 {
     public class TitleViewModel : TitleEditModel
     {
+        public string ReturnToMALink { get; set; }
         public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
         public IList<string> OrderedFieldNames => new List<string>
         {
