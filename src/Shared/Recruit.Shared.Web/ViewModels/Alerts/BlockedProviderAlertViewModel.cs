@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Web;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Humanizer;
 
-namespace Esfa.Recruit.Employer.Web.ViewModels.Dashboard
+namespace Esfa.Recruit.Shared.Web.ViewModels.Alerts
 {
     public class BlockedProviderAlertViewModel
     {

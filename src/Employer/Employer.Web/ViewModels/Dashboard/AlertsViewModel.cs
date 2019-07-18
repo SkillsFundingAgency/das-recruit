@@ -1,4 +1,6 @@
-﻿namespace Esfa.Recruit.Employer.Web.ViewModels.Dashboard
+﻿using Esfa.Recruit.Shared.Web.ViewModels.Alerts;
+
+namespace Esfa.Recruit.Employer.Web.ViewModels.Dashboard
 {
     public class AlertsViewModel
     {

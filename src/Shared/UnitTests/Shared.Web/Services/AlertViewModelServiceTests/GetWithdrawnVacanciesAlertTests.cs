@@ -6,7 +6,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using FluentAssertions;
 using Xunit;
 
-namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Services.AlertViewModelServiceTests
+namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.Services.AlertViewModelServiceTests
 {
     public class GetWithdrawnVacanciesAlertTests : AlertViewModelServiceTestBase
     {
