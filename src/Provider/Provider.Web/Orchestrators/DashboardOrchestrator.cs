@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.ViewModels;
 using Esfa.Recruit.Provider.Web.ViewModels.Dashboard;
+using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -18,12 +18,14 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         private readonly IProviderVacancyClient _vacancyClient;
         private readonly ITimeProvider _timeProvider;
         private readonly IRecruitVacancyClient _client;
+        private readonly AlertViewModelService _alertViewModelService;
 
-        public DashboardOrchestrator(IProviderVacancyClient vacancyClient, ITimeProvider timeProvider, IRecruitVacancyClient client)
+        public DashboardOrchestrator(IProviderVacancyClient vacancyClient, ITimeProvider timeProvider, IRecruitVacancyClient client, AlertViewModelService alertViewModelService)
         {
             _vacancyClient = vacancyClient;
             _timeProvider = timeProvider;
             _client = client;
+            _alertViewModelService = alertViewModelService;
         }
 
         public async Task<DashboardViewModel> GetDashboardViewModelAsync(VacancyUser user)
@@ -37,6 +39,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             var userDetails = userDetailsTask.Result;
 
             var vacancies = dashboard.Vacancies?.ToList() ?? new List<VacancySummary>();
+            var transferredVacancies = dashboard.TransferredVacancies?.ToList() ?? new List<ProviderDashboardTransferredVacancy>();
 
             var vm = new DashboardViewModel
             {
@@ -50,7 +53,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 NoOfVacanciesClosingSoon = vacancies.Count(v =>
                     v.ClosingDate <= _timeProvider.Today.AddDays(ClosingSoonDays) &&
                     v.Status == VacancyStatus.Live),
-                TransferredVacanciesAlert = GetTransferredVacanciesAlertViewModel(dashboard.TransferredVacancies, userDetails.TransferredVacanciesAlertDismissedOn)
+                Alerts = GetAlerts(vacancies, transferredVacancies, userDetails)
             };
             return vm;
         }
@@ -73,24 +76,12 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             return dashboard;
         }
 
-        private TransferredVacanciesAlertViewModel GetTransferredVacanciesAlertViewModel(IEnumerable<ProviderDashboardTransferredVacancy> transferredVacancies, DateTime? userLastDismissedDate)
+        private AlertsViewModel GetAlerts(IList<VacancySummary> vacancies, IList<ProviderDashboardTransferredVacancy> transferredVacancies, User userDetails)
         {
-            if (transferredVacancies == null)
-                return null;
-
-            if (userLastDismissedDate.HasValue == false)
-                userLastDismissedDate = DateTime.MinValue;
-
-            var usersTransferredVacancies = transferredVacancies
-                .Where(t => t.TransferredDate > userLastDismissedDate)
-                .Select(t => t.LegalEntityName);
-            
-            if (usersTransferredVacancies.Any() == false)
-                return null;
-
-            return new TransferredVacanciesAlertViewModel
+            return new AlertsViewModel
             {
-                LegalEntityNames = usersTransferredVacancies.GroupBy(l => l).Select(l => l.Key)
+                TransferredVacanciesAlert = _alertViewModelService.GetProviderTransferredVacanciesAlert(transferredVacancies, userDetails.TransferredVacanciesAlertDismissedOn),
+                WithdrawnByQaVacanciesAlert = _alertViewModelService.GetWithdrawnByQaVacanciesAlert(vacancies, userDetails.WithdrawnByQaVacanciesAlertDismissOn)
             };
         }
     }

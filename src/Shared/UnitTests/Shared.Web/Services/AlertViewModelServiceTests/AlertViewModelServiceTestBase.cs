@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.Services.AlertViewModelServiceTests
 {
@@ -11,10 +10,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.Services.AlertViewM
             if (string.IsNullOrWhiteSpace(userLastDismissedDateString))
                 return null;
 
-            DateTime? userLastDismissedDate = DateTime.Parse(userLastDismissedDateString);
-            userLastDismissedDate.Value.AddTicks(1);
-
-            return userLastDismissedDate;
+            return DateTime.Parse(userLastDismissedDateString);
         }
     }
 }

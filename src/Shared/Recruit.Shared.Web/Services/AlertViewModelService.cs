@@ -4,8 +4,9 @@ using System.Linq;
 using Esfa.Recruit.Shared.Web.ViewModels.Alerts;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Provider;
 
-namespace Esfa.Recruit.Employer.Web.Services
+namespace Esfa.Recruit.Shared.Web.Services
 {
     public class AlertViewModelService
     {
@@ -26,7 +27,7 @@ namespace Esfa.Recruit.Employer.Web.Services
             };
         }
 
-        public TransferredVacanciesAlertViewModel GetTransferredVacanciesAlert(IEnumerable<VacancySummary> vacancies, TransferReason reason, DateTime? userLastDismissedDate)
+        public EmployerTransferredVacanciesAlertViewModel GetTransferredVacanciesAlert(IEnumerable<VacancySummary> vacancies, TransferReason reason, DateTime? userLastDismissedDate)
         {
             if (userLastDismissedDate.HasValue == false)
                 userLastDismissedDate = DateTime.MinValue;
@@ -34,12 +35,13 @@ namespace Esfa.Recruit.Employer.Web.Services
             var transferredVacancyProviders = vacancies.Where(v =>
                     v.TransferInfoReason == reason &&
                     v.TransferInfoTransferredDate > userLastDismissedDate)
-                .Select(v => v.TransferInfoProviderName).ToList();
+                .Select(v => v.TransferInfoProviderName)
+                .ToList();
 
             if (transferredVacancyProviders.Any() == false)
                 return null;
 
-            return new TransferredVacanciesAlertViewModel
+            return new EmployerTransferredVacanciesAlertViewModel
             {
                 TransferredVacanciesCount = transferredVacancyProviders.Count,
                 TransferredVacanciesProviderNames = transferredVacancyProviders.GroupBy(p => p).Select(p => p.Key)
@@ -62,12 +64,35 @@ namespace Esfa.Recruit.Employer.Web.Services
             };
         }
 
-        private IEnumerable<VacancySummary> GetClosedVacancies(IEnumerable<VacancySummary> vacancies, DateTime? userLastDismissedDate, ClosureReason reason)
+        public ProviderTransferredVacanciesAlertViewModel GetProviderTransferredVacanciesAlert(IEnumerable<ProviderDashboardTransferredVacancy> transferredVacancies, DateTime? userLastDismissedDate)
+        {
+            if (transferredVacancies == null)
+                return null;
+
+            if (userLastDismissedDate.HasValue == false)
+                userLastDismissedDate = DateTime.MinValue;
+
+            var usersTransferredVacancies = transferredVacancies
+                .Where(t => t.TransferredDate > userLastDismissedDate)
+                .Select(t => t.LegalEntityName)
+                .ToList();
+
+            if (usersTransferredVacancies.Any() == false)
+                return null;
+
+            return new ProviderTransferredVacanciesAlertViewModel
+            {
+                LegalEntityNames = usersTransferredVacancies.GroupBy(l => l).Select(l => l.Key)
+            };
+        }
+
+        private IList<VacancySummary> GetClosedVacancies(IEnumerable<VacancySummary> vacancies, DateTime? userLastDismissedDate, ClosureReason reason)
         {
             return vacancies.Where(v =>
-                v.Status == VacancyStatus.Closed &&
-                v.ClosureReason == reason &&
-                v.ClosedDate > userLastDismissedDate);
+                    v.Status == VacancyStatus.Closed &&
+                    v.ClosureReason == reason &&
+                    v.ClosedDate > userLastDismissedDate)
+                .ToList();
         }
     }
 }
