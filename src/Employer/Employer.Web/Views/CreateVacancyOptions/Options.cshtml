@@ -2,7 +2,6 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <esfaFeatureDisabled name="@FeatureNames.AllowLevyPayingEmployersOnly">
-            @*<a asp-route="@Model.BackLink" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">@Model.BackLinkText</a>*@
             <a asp-show="@Model.ShowReturnToMALink" asp-route="@RouteNames.Dashboard_Account_Home" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Return to home</a>
             <a asp-hide="@Model.ShowReturnToMALink" asp-route="@RouteNames.Dashboard_Index_Get" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Return to your vacancies</a>
         </esfaFeatureDisabled>

@@ -16,7 +16,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 return RedirectToRoute(RouteNames.CreateVacancyOptions_Get);
             }
             TempData[TempDataKeys.ReferredFromMAHome_UKPRN] = ukprn;
-            TempData[TempDataKeys.ReferredFromMAHome_ApprenticeshipId] = programmeId;
+            TempData[TempDataKeys.ReferredFromMAHome_ProgrammeId] = programmeId;
             TempData[TempDataKeys.ReferredFromMAHome_FromSavedFavourites] = true;
             return RedirectToRoute(RouteNames.CreateVacancy_Get);
         }

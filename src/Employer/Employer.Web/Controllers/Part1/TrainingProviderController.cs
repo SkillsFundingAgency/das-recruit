@@ -48,13 +48,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         {
             var referredFromMAHome_FromSavedFavourites = Convert.ToBoolean(TempData.Peek(TempDataKeys.ReferredFromMAHome_FromSavedFavourites));
             var referredFromMAHome_UKPRN = Convert.ToString(TempData.Peek(TempDataKeys.ReferredFromMAHome_UKPRN));
-            var referredFromMAHome_ProgrammeId = Convert.ToString(TempData.Peek(TempDataKeys.ReferredFromMAHome_ApprenticeshipId));
-            if (referredFromMAHome_FromSavedFavourites)
-            {
-                return string.IsNullOrWhiteSpace(referredFromMAHome_UKPRN) &&
-                       !string.IsNullOrWhiteSpace(referredFromMAHome_ProgrammeId);
-            }
-            return false;
+            var referredFromMAHome_ProgrammeId = Convert.ToString(TempData.Peek(TempDataKeys.ReferredFromMAHome_ProgrammeId));
+            return referredFromMAHome_FromSavedFavourites && string.IsNullOrWhiteSpace(referredFromMAHome_UKPRN) && !string.IsNullOrWhiteSpace(referredFromMAHome_ProgrammeId);
         }
 
         [HttpPost("select-training-provider", Name = RouteNames.TrainingProvider_Select_Post)]

@@ -30,12 +30,11 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         {
             var vm = await _orchestrator.GetTitleViewModel(employerAccountId);
             vm.PageInfo.SetWizard();
-            vm.ReferredFromMAHome_FromSavedFavourites =
-                Convert.ToBoolean(TempData.Peek(TempDataKeys.ReferredFromMAHome_FromSavedFavourites)) && vm.PageInfo.IsWizard;
-            if (vm.ReferredFromMAHome_FromSavedFavourites)
+            vm = (TitleViewModel) GetReferredDataFromTempData(vm);
+            if (vm.ReferredFromMAHome_FromSavedFavourites && vm.PageInfo.IsWizard && !string.IsNullOrWhiteSpace(vm.ReferredFromMAHome_ProgrammeId))
             {
                 vm.ReturnToMALinkText = "Back to your saved favourites";
-                vm.ReturnToMALink = _linkHelper.EmployerFavouritesAccounts;
+                vm.ReturnToMALink = string.IsNullOrWhiteSpace(vm.ReferredFromMAHome_UKPRN) ? _linkHelper.EmployerFavouritesApprenticeshipList : _linkHelper.EmployerFavouritesTrainingProviders;
             }
             else
             {
@@ -57,10 +56,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         [HttpPost(VacancyTitleRoute, Name = RouteNames.Title_Post)]
         public async Task<IActionResult> Title(TitleEditModel m, [FromQuery] bool wizard)
         {
-            m.ReferredFromMAHome_FromSavedFavourites =
-                Convert.ToBoolean(TempData.Peek(TempDataKeys.ReferredFromMAHome_FromSavedFavourites));
-            m.ReferredFromMAHome_UKPRN = Convert.ToString(TempData.Peek(TempDataKeys.ReferredFromMAHome_UKPRN));
-            m.ReferredFromMAHome_ProgrammeId = Convert.ToString(TempData.Peek(TempDataKeys.ReferredFromMAHome_ApprenticeshipId));
+            m = GetReferredDataFromTempData(m);
             var response = await _orchestrator.PostTitleEditModelAsync(m, User.ToVacancyUser());
             if (!response.Success)
             {
@@ -85,6 +81,15 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             return wizard
                 ? RedirectToRoute(RouteNames.Training_Get, new {vacancyId = response.Data})
                 : RedirectToRoute(RouteNames.Vacancy_Preview_Get);
+        }
+
+        private TitleEditModel GetReferredDataFromTempData(TitleEditModel m)
+        {
+            m.ReferredFromMAHome_FromSavedFavourites =
+                Convert.ToBoolean(TempData.Peek(TempDataKeys.ReferredFromMAHome_FromSavedFavourites));
+            m.ReferredFromMAHome_UKPRN = Convert.ToString(TempData.Peek(TempDataKeys.ReferredFromMAHome_UKPRN));
+            m.ReferredFromMAHome_ProgrammeId = Convert.ToString(TempData.Peek(TempDataKeys.ReferredFromMAHome_ProgrammeId));
+            return m;
         }
     }
 }

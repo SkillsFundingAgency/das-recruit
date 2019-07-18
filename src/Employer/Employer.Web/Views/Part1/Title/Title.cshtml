@@ -38,7 +38,8 @@
             
             <esfaFeatureDisabled name="@FeatureNames.AllowLevyPayingEmployersOnly">
                 <a asp-hide="@Model.ReferredFromMAHome_FromSavedFavourites" asp-route="@RouteNames.Dashboard_Account_Home" class="govuk-link das-button-link">Cancel</a>
-                <a asp-show="@Model.ReferredFromMAHome_FromSavedFavourites" href="@_externalLinksHelper.EmployerFavouritesAccounts" class="govuk-link das-button-link" esfa-automation="cancel-link">Cancel</a></esfaFeatureDisabled>
+                <a asp-show="@Model.ReferredFromMAHome_FromSavedFavourites" href="@_externalLinksHelper.EmployerFavouritesAccounts" class="govuk-link das-button-link" esfa-automation="cancel-link">Cancel</a>
+                </esfaFeatureDisabled>
             <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link das-button-link">Cancel</a>
             <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.TitleSection" class="govuk-link das-button-link">Cancel</a>
         </form>
