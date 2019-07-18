@@ -222,6 +222,9 @@
     },
     "CommunicationsConfiguration": {
       "type": "object"
+    },
+    "NotificationsApiClientConfiguration":{
+      "type": "object"
     }
   },
   "variables": {
@@ -905,6 +908,14 @@
               {
                 "name": "CommunicationsConfiguration:ProvidersApprenticeshipServiceUrl",
                 "value": "[parameters('CommunicationsConfiguration').ProvidersApprenticeshipServiceUrl]"
+              },
+              {
+                "name": "NotificationsApiClientConfiguration:ApiBaseUrl",
+                "value": "[parameters('NotificationsApiClientConfiguration').ApiBaseUrl]"
+              },
+              {
+                "name": "NotificationsApiClientConfiguration:ClientToken",
+                "value": "[parameters('NotificationsApiClientConfiguration').ClientToken]"
               }
             ]
           },
