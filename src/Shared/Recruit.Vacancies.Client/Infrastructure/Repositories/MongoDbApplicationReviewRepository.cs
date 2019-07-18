@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
@@ -10,11 +9,17 @@ using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Polly;
+using System.Linq;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 {
     internal sealed class MongoDbApplicationReviewRepository : MongoDbCollectionBase, IApplicationReviewRepository, IApplicationReviewQuery
     {
+        private class WrappedVacancyReference
+        {
+            public long VacancyReference { get; set; }
+        }
+
         private const string VacancyReference = "vacancyReference";
         private const string CandidateId = "candidateId";
         private const string Id = "_id";
@@ -27,7 +32,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         public Task CreateAsync(ApplicationReview review)
         {
             var collection = GetCollection<ApplicationReview>();
-            return RetryPolicy.ExecuteAsync(_ => 
+            return RetryPolicy.ExecuteAsync(_ =>
                 collection.InsertOneAsync(review),
                 new Context(nameof(CreateAsync)));
         }
@@ -37,7 +42,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var filter = Builders<ApplicationReview>.Filter.Eq(r => r.Id, applicationReviewId);
             var collection = GetCollection<ApplicationReview>();
 
-            var result = await RetryPolicy.ExecuteAsync(_ => 
+            var result = await RetryPolicy.ExecuteAsync(_ =>
                 collection.Find(filter).SingleOrDefaultAsync(),
                 new Context(nameof(GetAsync)));
 
@@ -49,10 +54,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var builder = Builders<ApplicationReview>.Filter;
             var filter = builder.Eq(r => r.VacancyReference, vacancyReference) &
                          builder.Eq(r => r.CandidateId, candidateId);
-            
+
             var collection = GetCollection<ApplicationReview>();
 
-            var result = await RetryPolicy.ExecuteAsync(_ => 
+            var result = await RetryPolicy.ExecuteAsync(_ =>
                 collection.Find(filter).SingleOrDefaultAsync(),
                 new Context(nameof(GetAsync)));
 
@@ -64,7 +69,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var filter = Builders<ApplicationReview>.Filter.Eq(r => r.Id, applicationReview.Id);
             var collection = GetCollection<ApplicationReview>();
 
-            return RetryPolicy.ExecuteAsync(_ => 
+            return RetryPolicy.ExecuteAsync(_ =>
                 collection.ReplaceOneAsync(filter, applicationReview),
                 new Context(nameof(UpdateAsync)));
         }
@@ -73,8 +78,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         {
             var filter = Builders<T>.Filter.Eq(VacancyReference, vacancyReference);
             var collection = GetCollection<T>();
-            
-            var result = await RetryPolicy.ExecuteAsync(_ => 
+
+            var result = await RetryPolicy.ExecuteAsync(_ =>
                 collection.Find(filter)
                 .Project<T>(GetProjection<T>())
                 .ToListAsync(),
@@ -88,7 +93,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var filter = Builders<ApplicationReview>.Filter.Eq(CandidateId, candidateId);
             var collection = GetCollection<ApplicationReview>();
 
-            var result = await RetryPolicy.ExecuteAsync(_ => 
+            var result = await RetryPolicy.ExecuteAsync(_ =>
                 collection.Find(filter).ToListAsync(),
                 new Context(nameof(GetForCandidateAsync)));
 
@@ -100,7 +105,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var filter = Builders<ApplicationReview>.Filter.Eq(Id, applicationReviewId);
             var collection = GetCollection<ApplicationReview>();
 
-            return RetryPolicy.ExecuteAsync(_ => 
+            return RetryPolicy.ExecuteAsync(_ =>
                 collection.DeleteOneAsync(filter),
                 new Context(nameof(HardDelete)));
         }
@@ -111,12 +116,39 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 
             var collection = GetCollection<ApplicationReview>();
 
-            var result = await RetryPolicy.ExecuteAsync(_ =>
-                    collection.Distinct(v => v.VacancyReference, filter)
-                        .ToListAsync(),
-                new Context(nameof(GetForVacancyAsync)));
+            var result = await RetryPolicy.ExecuteAsync(async _ =>
+                                                        {
+                                                            var pipeline = GetDistinctVacancyReferencesPipeline();
+                                                            var aggResults = await collection.AggregateAsync<WrappedVacancyReference>(pipeline);
+                                                            return (await aggResults.ToListAsync()).Select(x => x.VacancyReference).ToList();
+                                                        },
+                                                        new Context(nameof(GetForVacancyAsync)));
 
             return result;
+        }
+
+        private BsonDocument[] GetDistinctVacancyReferencesPipeline()
+        {
+            const string FieldName = "vacancyReference";
+
+            return new []
+            {
+                new BsonDocument().Add("$group", new BsonDocument
+                {
+                    {
+                        "_id", new BsonDocument
+                        {
+                            { FieldName, $"${FieldName}" }
+                        }
+                    },
+                    { FieldName, new BsonDocument().Add("$first", $"${FieldName}") }
+                }),
+                new BsonDocument().Add("$project", new BsonDocument
+                {
+                    { "_id", 0 },
+                    { FieldName, 1 }
+                })
+            };
         }
     }
 }
