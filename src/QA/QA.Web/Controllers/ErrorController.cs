@@ -45,15 +45,7 @@ namespace Esfa.Recruit.Qa.Web.Controllers
 
             if (exceptionFeature != null)
             {
-                string routeWhereExceptionOccurred = exceptionFeature.Path;
                 var exception = exceptionFeature.Error;
-
-                if (exception is AggregateException aggregateException)
-                {
-                    var flattenedExceptions = aggregateException.Flatten();
-                    _logger.LogError(flattenedExceptions, "Aggregate exception on path: {route}", routeWhereExceptionOccurred);
-                    exception = flattenedExceptions.InnerExceptions.FirstOrDefault();
-                }
 
                 switch (exception)
                 {
