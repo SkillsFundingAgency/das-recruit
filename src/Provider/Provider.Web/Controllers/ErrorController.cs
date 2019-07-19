@@ -135,13 +135,11 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
         private IActionResult AccessDenied()
         {
-            LogUserClaims();
-
             var serviceClaims = User.FindAll(ProviderRecruitClaims.IdamsUserServiceTypeClaimTypeIdentifier);
 
             if (serviceClaims.Any(claim => claim.Value.Equals(ProviderRecruitClaims.ServiceClaimValue) == false))
             {
-                _logger.LogInformation($"User {User.Identity.Name} does not have service claim.");
+                _logger.LogInformation("User does not have service claim.");
                 return Redirect(_externalLinks.ProviderApprenticeshipSiteUrl);
             }
 
@@ -170,19 +168,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             
             Response.StatusCode = (int)HttpStatusCode.Unauthorized;
             return View(ViewNames.AccessDenied);
-        }
-
-        private void LogUserClaims()
-        {
-            var sb = new StringBuilder();
-            sb.AppendLine($"{User.Identity.Name} claims:");
-
-            foreach (var claim in User.Claims)
-            {
-                sb.AppendLine($"{claim.Type}: {claim.Value}");
-            }
-
-            _logger.LogInformation(sb.ToString());
         }
 
         private IActionResult PageNotFound()
