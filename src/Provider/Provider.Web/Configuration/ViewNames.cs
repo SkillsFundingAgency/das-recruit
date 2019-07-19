@@ -3,6 +3,7 @@
     public class ViewNames
     {
         public const string AccessDenied = "AccessDenied";
+        public const string ProviderAccessRevoked = "ProviderAccessRevoked";
         public const string ErrorView = "Error";
         public const string FullVacancyView = "FullVacancyView";
         public const string ManageApprovedVacancyView = "Approved";
