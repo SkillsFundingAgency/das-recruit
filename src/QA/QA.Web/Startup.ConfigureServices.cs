@@ -12,6 +12,7 @@ using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Ioc;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -90,6 +91,9 @@ namespace Esfa.Recruit.Qa.Web
                 var svc = x.GetService<IConfigurationReader>();
                 return svc.GetAsync<QaRecruitSystemConfiguration>("QaRecruitSystem").Result;
             });
+
+            services.Configure<RazorViewEngineOptions>(o =>
+                o.ViewLocationFormats.Add("/Views/Reports/{1}/{0}" + RazorViewEngine.ViewExtension));
         }
     }
 }
