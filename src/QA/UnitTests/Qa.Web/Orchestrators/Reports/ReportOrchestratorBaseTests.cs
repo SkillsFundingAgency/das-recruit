@@ -15,6 +15,7 @@ namespace UnitTests.Qa.Web.Orchestrators.Reports
     public class ReportOrchestratorBaseTests
     {
         private readonly Guid _reportId = Guid.NewGuid();
+        private Report Report;
 
         [Fact]
         public async Task GetReportAsync_ShouldThrowReportNotFoundExceptionWhenReportIsNotFound()
@@ -34,12 +35,17 @@ namespace UnitTests.Qa.Web.Orchestrators.Reports
         {
             var orch = GetOrchestrator();
 
+            Report.Owner = new ReportOwner
+            {
+                OwnerType = ReportOwnerType.Provider
+            };
+     
             var incorrectUkprn = 22222222;
             Func<Task<Report>> act = async () => await orch.GetTestReportAsync(_reportId);
 
             var err = await act.Should().ThrowAsync<AuthorisationException>();
 
-            err.WithMessage($"Ukprn: {incorrectUkprn} does not have access to report: {_reportId}");
+            err.WithMessage($"Unauthorised access to report: {_reportId}");
         }
 
         [Fact]
@@ -47,9 +53,9 @@ namespace UnitTests.Qa.Web.Orchestrators.Reports
         {
             var orch = GetOrchestrator();
 
-            var report = await orch.GetTestReportAsync(_reportId);
+            Report = await orch.GetTestReportAsync(_reportId);
 
-            report.Should().NotBeNull();
+            Report.Should().NotBeNull();
         }
 
         private TestReportOrchestrator GetOrchestrator()
@@ -61,11 +67,11 @@ namespace UnitTests.Qa.Web.Orchestrators.Reports
                 OwnerType = ReportOwnerType.Qa
             };
 
-            var report = new Report(_reportId, reportOwner, ReportStatus.New, "report name",
+            Report = new Report(_reportId, reportOwner, ReportStatus.New, "report name",
                 ReportType.QaApplications, null, null, DateTime.Now);
 
             var repo = new Mock<IQaVacancyClient>();
-            repo.Setup(r => r.GetReportAsync(_reportId)).ReturnsAsync(report);
+            repo.Setup(r => r.GetReportAsync(_reportId)).ReturnsAsync(Report);
 
             return new TestReportOrchestrator(logger.Object, repo.Object);
         }

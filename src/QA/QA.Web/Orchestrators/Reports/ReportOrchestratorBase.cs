@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
 using Microsoft.Extensions.Logging;
@@ -28,12 +29,10 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators.Reports
                 throw new ReportNotFoundException($"Cannot find report: {reportId}");
             }
 
-            if (report.Owner.OwnerType == ReportOwnerType.Qa)
-            {
-                return report;
-            }
+            if (report.Owner.OwnerType != ReportOwnerType.Qa)
+                throw new AuthorisationException($"Unauthorised access to report: {reportId}");
 
-            throw new ReportNotFoundException($"Report not found: {reportId}");
+            return report;
         }
     }
 }
