@@ -40,7 +40,6 @@ namespace UnitTests.Qa.Web.Orchestrators.Reports
                 OwnerType = ReportOwnerType.Provider
             };
      
-            var incorrectUkprn = 22222222;
             Func<Task<Report>> act = async () => await orch.GetTestReportAsync(_reportId);
 
             var err = await act.Should().ThrowAsync<AuthorisationException>();
