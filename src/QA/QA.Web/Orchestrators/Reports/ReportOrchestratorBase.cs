@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
 using Microsoft.Extensions.Logging;
@@ -33,7 +34,8 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators.Reports
                 return report;
             }
 
-            throw new ReportNotFoundException($"Report not found: {reportId}");
+            _logger.LogWarning("QA user does not have access to report: {reportId}", reportId);
+            throw new AuthorisationException($"QA user does not have access to report: {reportId}");
         }
     }
 }
