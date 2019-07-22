@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Microsoft.Azure.ServiceBus;
 using Microsoft.Extensions.Logging;
@@ -120,7 +121,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             var data = JsonConvert.SerializeObject(dotNetFriendlyResults);
             var headers = new List<KeyValuePair<string, string>>
             {
-                new KeyValuePair<string, string>("Date", _timeProvider.Now.ToLocalTime().ToString("dd/MM/yyyy hh:mm:ss"))
+                new KeyValuePair<string, string>("Date", _timeProvider.Now.ToUkTime().ToString("dd/MM/yyyy hh:mm:ss"))
             };
 
             return new ReportStrategyResult(headers, data);

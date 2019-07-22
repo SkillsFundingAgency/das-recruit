@@ -66,7 +66,7 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators.Reports
                     throw new Exception($"Cannot handle this date range type:{model.DateRange.ToString()}");
             }
 
-            var reportName = $"{fromDate.ToLocalTime().AsGdsDate()} to {toDateInclusive.ToLocalTime().AsGdsDate()}";
+            var reportName = $"{fromDate.ToUkTime()} to {toDateInclusive.ToUkTime()}";
 
             return _client.CreateApplicationsReportAsync(fromDate, toDateInclusive, user, reportName);
         }
