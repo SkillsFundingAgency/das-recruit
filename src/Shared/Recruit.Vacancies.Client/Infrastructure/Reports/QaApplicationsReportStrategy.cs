@@ -22,9 +22,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
 
         private class Column
         {
-            // TODO: PeteM - ClosureMethod + ClosedBy come from where?
-            public const string ClosureMethod = "Closure method";
-            public const string ClosedBy = "Closed by";
             public const string DateSubmitted = "Date submitted";
             public const string DisplayName = "Display name";
             public const string Employer = "Employer";
@@ -74,15 +71,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
                         }
                     }
                 }
-                ,'Reviewed by': { $ifNull: ['$reviewedByUser.name', null] }
+                ,'Reviewed by': { $ifNull: ['$reviewedByUser.userId', null] }
                 ,'Vacancy submitted by': { $ifNull: ['$vacancySnapshot.ownerType', null] }
                 ,'Employer': { $ifNull: ['$vacancySnapshot.legalEntityName', null] }
                 ,'Display name': { $ifNull: ['$vacancySnapshot.employerName', null] }
                 ,'Training provider': { $ifNull: ['$vacancySnapshot.trainingProvider.name', null] }
                 ,'Vacancy postcode': { $ifNull: ['$vacancySnapshot.employerLocation.postcode', null] }
                 ,'programmeId': { $ifNull: ['$vacancySnapshot.programmeId', null] }
-                ,'Closure method': { $ifNull: ['', null] }
-                ,'Closed by': { $ifNull: ['', null]}
             }}
         ]";
 
