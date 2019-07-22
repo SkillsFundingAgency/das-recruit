@@ -59,14 +59,14 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators.Reports
                     fromDate = _timeProvider.Today.AddDays(-30);
                     break;
                 case DateRangeType.Custom:
-                    fromDate = model.FromDate.AsDateTimeUk().Value.Date;
-                    toDateInclusive = model.ToDate.AsDateTimeUk().Value.Date.AddDays(1).AddTicks(-1);
+                    fromDate = model.FromDate.AsDateTimeUk().Value.Date.ToUniversalTime();
+                    toDateInclusive = model.ToDate.AsDateTimeUk().Value.Date.AddDays(1).AddTicks(-1).ToUniversalTime();
                     break;
                 default:
                     throw new Exception($"Cannot handle this date range type:{model.DateRange.ToString()}");
             }
 
-            var reportName = $"{fromDate.ToUkTime()} to {toDateInclusive.ToUkTime()}";
+            var reportName = $"{fromDate.ToUkTime().AsGdsDate()} to {toDateInclusive.ToUkTime().AsGdsDate()}";
 
             return _client.CreateApplicationsReportAsync(fromDate, toDateInclusive, user, reportName);
         }

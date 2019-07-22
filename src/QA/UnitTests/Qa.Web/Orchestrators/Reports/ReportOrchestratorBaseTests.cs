@@ -15,6 +15,7 @@ namespace UnitTests.Qa.Web.Orchestrators.Reports
     public class ReportOrchestratorBaseTests
     {
         private readonly Guid _reportId = Guid.NewGuid();
+        private Report _report;
 
         [Fact]
         public async Task GetReportAsync_ShouldThrowReportNotFoundExceptionWhenReportIsNotFound()
@@ -34,12 +35,15 @@ namespace UnitTests.Qa.Web.Orchestrators.Reports
         {
             var orch = GetOrchestrator();
 
-            var incorrectUkprn = 22222222;
+            _report.Owner = new ReportOwner
+            {
+                OwnerType = ReportOwnerType.Provider
+            };
             Func<Task<Report>> act = async () => await orch.GetTestReportAsync(_reportId);
 
             var err = await act.Should().ThrowAsync<AuthorisationException>();
 
-            err.WithMessage($"Ukprn: {incorrectUkprn} does not have access to report: {_reportId}");
+            err.WithMessage($"QA user does not have access to report: {_reportId}");
         }
 
         [Fact]
@@ -61,11 +65,11 @@ namespace UnitTests.Qa.Web.Orchestrators.Reports
                 OwnerType = ReportOwnerType.Qa
             };
 
-            var report = new Report(_reportId, reportOwner, ReportStatus.New, "report name",
+            _report = new Report(_reportId, reportOwner, ReportStatus.New, "report name",
                 ReportType.QaApplications, null, null, DateTime.Now);
 
             var repo = new Mock<IQaVacancyClient>();
-            repo.Setup(r => r.GetReportAsync(_reportId)).ReturnsAsync(report);
+            repo.Setup(r => r.GetReportAsync(_reportId)).ReturnsAsync(_report);
 
             return new TestReportOrchestrator(logger.Object, repo.Object);
         }

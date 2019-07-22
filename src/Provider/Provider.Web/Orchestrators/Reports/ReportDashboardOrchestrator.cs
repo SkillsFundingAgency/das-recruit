@@ -33,7 +33,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Reports
                     ReportId = r.Id,
                     ReportName = r.ReportName,
                     DownloadCount = r.DownloadCount,
-                    CreatedDate = r.RequestedOn.ToUkTime(),
+                    CreatedDate = r.RequestedOn.ToUkTime().AsGdsDateTime(),
                     CreatedBy = r.RequestedBy.Name,
                     Status = r.Status,
                     IsProcessing = r.IsProcessing
