@@ -44,8 +44,8 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators.Reports
 
         public Task<Guid> PostCreateViewModelAsync(ApplicationsReportCreateEditModel model, VacancyUser user)
         {
-            DateTime toDateInclusive = _timeProvider.NextDay.AddTicks(-1);
             DateTime fromDate;
+            DateTime toDate = _timeProvider.Today;
 
             switch (model.DateRange)
             {
@@ -59,14 +59,16 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators.Reports
                     fromDate = _timeProvider.Today.AddDays(-30);
                     break;
                 case DateRangeType.Custom:
-                    fromDate = model.FromDate.AsDateTimeUk().Value.Date.ToUniversalTime();
-                    toDateInclusive = model.ToDate.AsDateTimeUk().Value.Date.AddDays(1).AddTicks(-1).ToUniversalTime();
+                    fromDate = model.FromDate.AsDateTimeUk().Value.ToUniversalTime();
+                    toDate = model.ToDate.AsDateTimeUk().Value.ToUniversalTime();
                     break;
                 default:
-                    throw new Exception($"Cannot handle this date range type:{model.DateRange.ToString()}");
+                    throw new NotImplementedException($"Cannot handle this date range type:{model.DateRange.ToString()}");
             }
 
-            var reportName = $"{fromDate.ToUkTime().AsGdsDate()} to {toDateInclusive.ToUkTime().AsGdsDate()}";
+            var reportName = $"{fromDate.ToUkTime().AsGdsDate()} to {toDate.ToUkTime().AsGdsDate()}";
+
+            DateTime toDateInclusive = toDate.AddDays(1).AddTicks(-1);
 
             return _client.CreateApplicationsReportAsync(fromDate, toDateInclusive, user, reportName);
         }
