@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using AngleSharp.Css;
 using CsvHelper;
 using Newtonsoft.Json.Linq;
 
@@ -58,21 +59,21 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             IEnumerable<KeyValuePair<string, string>> headers)
         {
             headers = headers ?? new KeyValuePair<string, string>[0];
-            csv.WriteField("PROTECT");
+            csv.WriteField("OFFICIAL");
+            csv.NextRecord();
 
-            WriteEmptyRow(csv, 0);
-            WriteEmptyRow(csv, 0);
-            WriteEmptyRow(csv, 0);
+            csv.NextRecord();
+            csv.NextRecord();
 
             if (headers.Any())
             {
                 foreach (var kvp in headers)
                     csv.WriteField(kvp.Key);
-                WriteEmptyRow(csv, 0);
+                csv.NextRecord();
 
                 foreach (var kvp in headers)
                     csv.WriteField(kvp.Value);
-                WriteEmptyRow(csv, 0);
+                csv.NextRecord();
             }
         }
 
@@ -84,8 +85,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             var fieldCount = row.Children().Count();
 
             WriteTotalHeader(csv, headers);
-
-            WriteEmptyRow(csv, fieldCount);
+            csv.NextRecord();
 
             foreach (var field in row.Children())
             {
@@ -133,16 +133,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             }
 
             csv.WriteField(value);
-        }
-
-        private void WriteEmptyRow(CsvWriter csv, int fieldCount)
-        {
-            for (var i = 0; i < fieldCount; i++)
-            {
-                csv.WriteField("");
-            }
-            
-            csv.NextRecord();
         }
     }
 }
