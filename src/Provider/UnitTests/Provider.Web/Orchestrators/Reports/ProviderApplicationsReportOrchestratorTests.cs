@@ -14,8 +14,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Reports
 {
     public class ProviderApplicationsReportOrchestratorTests
     {
-        
-
         [Theory]
         [InlineData(DateRangeType.Last7Days, "2019-02-26Z", "2019-03-05Z")] //GMT
         [InlineData(DateRangeType.Last14Days, "2019-02-19Z", "2019-03-05Z")] //GMT

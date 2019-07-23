@@ -1,0 +1,164 @@
+﻿@using Esfa.Recruit.Qa.Web.ViewModels.Reports
+@model Esfa.Recruit.Qa.Web.ViewModels.Reports.ApplicationsReport.ApplicationsReportCreateViewModel
+@{
+    var exampleToDate = DateTime.Today;
+    var exampleFromDate = exampleToDate.AddMonths(-2);
+}
+<div class="govuk-grid-row govuk-!-margin-top-6">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
+        <h1 class="govuk-heading-xl">Choose the time period for the report</h1>
+        <form asp-route="@RouteNames.ApplicationsReportCreate_Post">
+            <h2 class="govuk-heading-s">Select the period</h2>
+            <div class="govuk-form-group">
+                <div esfa-validation-marker-for="DateRange" class="govuk-form-group">
+                    <span esfa-validation-message-for="DateRange" class="govuk-error-message"></span>
+                    <fieldset class="govuk-fieldset">
+                        <div class="govuk-radios govuk-radios--conditional" data-module="radios">
+                            <div class="govuk-radios__item">
+                                <input asp-for="DateRange"
+                                       value="@DateRangeType.Last7Days"
+                                       id="daterange-7"
+                                       class="govuk-radios__input"
+                                       type="radio">
+                                <label for="daterange-7" class="govuk-label govuk-radios__label">
+                                    last 7 days
+                                </label>
+                            </div>
+                            <div class="govuk-radios__item">
+                                <input asp-for="DateRange"
+                                       value="@DateRangeType.Last14Days"
+                                       id="daterange-14"
+                                       class="govuk-radios__input"
+                                       type="radio">
+                                <label for="daterange-14" class="govuk-label govuk-radios__label">
+                                    last 14 days
+                                </label>
+                            </div>
+                            <div class="govuk-radios__item">
+                                <input asp-for="DateRange"
+                                       value="@DateRangeType.Last30Days"
+                                       id="daterange-30"
+                                       class="govuk-radios__input"
+                                       type="radio">
+                                <label for="daterange-30" class="govuk-label govuk-radios__label">
+                                    last 30 days
+                                </label>
+                            </div>
+                            <div class="govuk-radios__divider">or</div>
+                            <div class="govuk-radios__item" data-target="custom-range-panel">
+                                <input asp-for="DateRange"
+                                       value="@DateRangeType.Custom"
+                                       id="daterange-custom"
+                                       class="govuk-radios__input"
+                                       type="radio"
+                                       data-aria-controls="custom-range-panel">
+                                <label for="daterange-custom" class="govuk-label govuk-radios__label">
+                                    a custom date range
+                                </label>
+                            </div>
+                            <div id="custom-range-panel" class="govuk-radios__conditional govuk-radios__conditional--hidden">
+                                <div class="govuk-form-group">
+                                    <div esfa-validation-marker-for="FromDate" class="govuk-form-group">
+                                        <label class="govuk-label govuk-!-font-weight-bold">
+                                            Date from
+                                        </label>
+                                        <span class="govuk-hint">
+                                            For example, @exampleFromDate.AsInputHintDisplayDate()
+                                        </span>
+                                        <span esfa-validation-message-for="FromDate" class="govuk-error-message"></span>
+                                        <div class="govuk-date-input">
+                                            <div class="govuk-date-input__item">
+                                                <div class="govuk-form-group">
+                                                    <label asp-for="FromDay" class="govuk-label govuk-date-input__label">
+                                                        Day
+                                                    </label>
+                                                    <input asp-for="FromDay"
+                                                           class="govuk-input govuk-date-input__input govuk-input--width-2"
+                                                           type="number"
+                                                           pattern="[0-9]*">
+                                                </div>
+                                            </div>
+                                            <div class="govuk-date-input__item">
+                                                <div class="govuk-form-group">
+                                                    <label asp-for="FromMonth" class="govuk-label govuk-date-input__label">
+                                                        Month
+                                                    </label>
+                                                    <input asp-for="FromMonth"
+                                                           class="govuk-input govuk-date-input__input govuk-input--width-2"
+                                                           type="number"
+                                                           pattern="[0-9]*">
+                                                </div>
+                                            </div>
+                                            <div class="govuk-date-input__item">
+                                                <div class="govuk-form-group">
+                                                    <label asp-for="FromYear" class="govuk-label govuk-date-input__label">
+                                                        Year
+                                                    </label>
+                                                    <input asp-for="FromYear"
+                                                           class="govuk-input govuk-date-input__input govuk-input--width-4"
+                                                           type="number"
+                                                           pattern="[0-9]*">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="govuk-form-group">
+                                    <div esfa-validation-marker-for="ToDate" class="govuk-form-group">
+                                        <label class="govuk-label govuk-!-font-weight-bold">
+                                            Date to
+                                        </label>
+                                        <span class="govuk-hint">
+                                            For example, @exampleToDate.AsInputHintDisplayDate()
+                                        </span>
+                                        <span esfa-validation-message-for="ToDate" class="govuk-error-message"></span>
+                                        <div class="govuk-date-input">
+                                            <div class="govuk-date-input__item">
+                                                <div class="govuk-form-group">
+                                                    <label asp-for="ToDay" class="govuk-label govuk-date-input__label">
+                                                        Day
+                                                    </label>
+                                                    <input asp-for="ToDay"
+                                                           class="govuk-input govuk-date-input__input govuk-input--width-2"
+                                                           type="number"
+                                                           pattern="[0-9]*">
+                                                </div>
+                                            </div>
+                                            <div class="govuk-date-input__item">
+                                                <div class="govuk-form-group">
+                                                    <label asp-for="ToMonth" class="govuk-label govuk-date-input__label">
+                                                        Month
+                                                    </label>
+                                                    <input asp-for="ToMonth"
+                                                           class="govuk-input govuk-date-input__input govuk-input--width-2"
+                                                           type="number"
+                                                           pattern="[0-9]*">
+                                                </div>
+                                            </div>
+                                            <div class="govuk-date-input__item">
+                                                <div class="govuk-form-group">
+                                                    <label asp-for="ToYear" class="govuk-label govuk-date-input__label">
+                                                        Year
+                                                    </label>
+                                                    <input asp-for="ToYear"
+                                                           class="govuk-input govuk-date-input__input govuk-input--width-4"
+                                                           type="number"
+                                                           pattern="[0-9]*">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+            <div class="govuk-form-group">
+                <button type="submit" class="govuk-button">Generate report</button>
+                <a asp-route="@RouteNames.ReportDashboard_Get" class="govuk-link das-button-link">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>

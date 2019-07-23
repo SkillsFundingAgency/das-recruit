@@ -69,6 +69,11 @@
   margin-bottom: 15px
 }
 
+/*** Validation Styles ***/
+.validation-summary-valid {
+    display: none;
+}
+
 /*** Info / Warning summary styles ***/
 
 .info-summary, .warning-summary{
@@ -288,6 +293,24 @@ mce-tinymce {
   font-size: 16px;
   border-radius: 4px;
   white-space: nowrap;
+}
+
+.das-tag {
+    background-color: #808080;
+    border-radius: 4px;
+    color: white;
+    display: inline-block;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 0.3em 0.4em 0.2em;
+    text-align: center;
+}
+
+.das-tag--new {
+    background: transparent;
+    border: 3px solid #005ea5;
+    color: #000000;
+    font-weight: 400;
 }
 
 /*** Review header styles ***/

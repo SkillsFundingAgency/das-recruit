@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services.NextVacancyReview;
+using Esfa.Recruit.Vacancies.Client.Application.Services.Reports;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
@@ -26,6 +28,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly IApprenticeshipProgrammeProvider _apprenticeshipProgrammesProvider;
         private readonly IMessaging _messaging;
         private readonly INextVacancyReviewService _nextVacancyReviewService;
+        private readonly IReportService _reportService;
+        private readonly IReportRepository _reportRepository;
 
         public QaVacancyClient(
                     IQueryStoreReader queryStoreReader,
@@ -35,7 +39,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                     IVacancyRepository vacancyRepository, 
                     IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider,
                     IMessaging messaging,
-                    INextVacancyReviewService nextVacancyReviewService)
+                    INextVacancyReviewService nextVacancyReviewService,
+                    IReportRepository reportRepository,
+                    IReportService reportService)
         {
             _queryStoreReader = queryStoreReader;
             _referenceDataReader = referenceDataReader;
@@ -45,6 +51,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _apprenticeshipProgrammesProvider = apprenticeshipProgrammesProvider;
             _messaging = messaging;
             _nextVacancyReviewService = nextVacancyReviewService;
+            _reportService = reportService;
+            _reportRepository = reportRepository;
         }
 
         public Task ApproveReferredReviewAsync(Guid reviewId, string shortDescription, string vacancyDescription, string trainingDescription, string outcomeDescription, string thingsToConsider, string employerDescription)
@@ -205,6 +213,50 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         public Task<int> GetAnonymousApprovedCountAsync(long legalEntityId)
         {
             return _vacancyReviewQuery.GetAnonymousApprovedCountAsync(legalEntityId);
+        }
+
+        public async Task<Guid> CreateApplicationsReportAsync(DateTime fromDate, DateTime toDate, VacancyUser user, string reportName)
+        {
+            var reportId = Guid.NewGuid();
+
+            var owner = new ReportOwner
+            {
+                OwnerType = ReportOwnerType.Qa
+            };
+
+            await _messaging.SendCommandAsync(new CreateReportCommand(
+                reportId,
+                owner,
+                ReportType.QaApplications,
+                new Dictionary<string, object> {
+                    { ReportParameterName.FromDate, fromDate},
+                    { ReportParameterName.ToDate, toDate}
+                },
+                user,
+                reportName)
+            );
+
+            return reportId;
+        }
+
+        public Task<List<ReportSummary>> GetReportsAsync()
+        {
+            return _reportRepository.GetReportsForQaAsync<ReportSummary>();
+        }
+
+        public Task<Report> GetReportAsync(Guid reportId)
+        {
+            return _reportRepository.GetReportAsync(reportId);
+        }
+
+        public void WriteReportAsCsv(Stream stream, Report report)
+        {
+            _reportService.WriteReportAsCsv(stream, report);
+        }
+
+        public Task IncrementReportDownloadCountAsync(Guid reportId)
+        {
+            return _reportRepository.IncrementReportDownloadCountAsync(reportId);
         }
     }
 }

@@ -63,7 +63,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Reports
                     toDate = model.ToDate.AsDateTimeUk().Value.ToUniversalTime();
                     break;
                 default:
-                    throw new Exception($"Cannot handle this date range type:{model.DateRange.ToString()}");
+                    throw new NotImplementedException($"Cannot handle this date range type:{model.DateRange.ToString()}");
             }
 
             var reportName = $"{fromDate.ToUkTime().AsGdsDate()} to {toDate.ToUkTime().AsGdsDate()}";
