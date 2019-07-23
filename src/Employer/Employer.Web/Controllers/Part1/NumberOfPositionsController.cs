@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
@@ -26,17 +27,17 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         {
             var vm = await _orchestrator.GetNumberOfPositionsViewModelAsync(vrm);
             vm.PageInfo.SetWizard(wizard);
-            vm.ReferredFromMAHome_FromSavedFavourites = Convert.ToBoolean(TempData.Peek(TempDataKeys.ReferredFromMAHome_FromSavedFavourites));
-            var referredFromMAHome_UKPRN = Convert.ToString(TempData.Peek(TempDataKeys.ReferredFromMAHome_UKPRN));
-            var referredFromMAHome_ProgrammeId = Convert.ToString(TempData.Peek(TempDataKeys.ReferredFromMAHome_ProgrammeId));
-            if (vm.ReferredFromMAHome_FromSavedFavourites)
-            {
-                if (!string.IsNullOrWhiteSpace(referredFromMAHome_UKPRN) && !string.IsNullOrWhiteSpace(referredFromMAHome_ProgrammeId))
-                    vm.BackLink = RouteNames.Title_Get;
-                if (string.IsNullOrWhiteSpace(referredFromMAHome_UKPRN) && !string.IsNullOrWhiteSpace(referredFromMAHome_ProgrammeId))
-                    vm.BackLink = RouteNames.TrainingProvider_Select_Get;
-            }
+            vm.BackLink = GetBackLink();
             return View(vm);
+        }
+
+        private string GetBackLink()
+        {
+            var referredFromMaHomeUkprn = Convert.ToString(TempData.Peek(TempDataKeys.ReferredFromMAHome_UKPRN));
+            var referredFromMaHomeProgrammeId = Convert.ToString(TempData.Peek(TempDataKeys.ReferredFromMAHome_ProgrammeId));
+            if (!string.IsNullOrWhiteSpace(referredFromMaHomeUkprn) && !string.IsNullOrWhiteSpace(referredFromMaHomeProgrammeId))
+                   return RouteNames.Title_Get;
+            return RouteNames.TrainingProvider_Select_Get;
         }
 
         [HttpPost("number-of-positions", Name = RouteNames.NumberOfPositions_Post)]
