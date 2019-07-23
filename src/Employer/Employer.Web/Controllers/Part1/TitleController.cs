@@ -29,17 +29,24 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             var vm = await _orchestrator.GetTitleViewModel(employerAccountId);
             vm.PageInfo.SetWizard();
             vm = (TitleViewModel) GetReferredDataFromTempData(vm);
-            if (vm.PageInfo.IsWizard && !string.IsNullOrWhiteSpace(vm.ReferredFromMAHome_ProgrammeId))
-            {
-                vm.ReturnToMALinkText = "Back to your saved favourites";
-                vm.ReturnToMALink = RouteNames.EmployerFavourites;
-            }
-            else
-            {
-                vm.ReturnToMALinkText = "Return to home";
-                vm.ReturnToMALink = RouteNames.Dashboard_Account_Home;
-            }
+            SetBackText(vm);
+            SetBackLink(vm);
             return View(vm);
+        }
+
+        private void SetBackText(TitleViewModel vm)
+        {
+            vm.ReturnToMALinkText =
+                vm.PageInfo.IsWizard && !string.IsNullOrWhiteSpace(vm.ReferredFromMAHome_ProgrammeId)
+                    ? "Back to your saved favourites"
+                    : "Return to home";
+        }
+
+        private void SetBackLink(TitleViewModel vm)
+        {
+            vm.ReturnToMALink = vm.PageInfo.IsWizard && !string.IsNullOrWhiteSpace(vm.ReferredFromMAHome_ProgrammeId)
+                ? RouteNames.EmployerFavourites
+                : RouteNames.Dashboard_Account_Home;
         }
 
         [HttpGet(VacancyTitleRoute, Name = RouteNames.Title_Get)]
