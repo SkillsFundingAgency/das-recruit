@@ -25,7 +25,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
             try
             {
                 var accounts = await _accountApiClient.GetUserAccounts(userId);
-
+                //await GetEmployerAccountExpressionOfInterestAsync(accounts.FirstOrDefault(acc => acc.AccountId));
                 return accounts.Select(acc => acc.HashedAccountId);
             }
             catch (Exception ex)
@@ -54,6 +54,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
         {
             try
             {
+                var testAccount = await GetEmployerAccountExpressionOfInterestAsync(long.Parse(accountId));
                 var accounts = await _accountApiClient.GetLegalEntitiesConnectedToAccount(accountId);
 
                 var legalEntitiesTasks = accounts.Select(r => _accountApiClient.GetLegalEntity(accountId, long.Parse(r.Id)));
@@ -85,5 +86,32 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
                 throw;
             }
         }
+
+        public async Task<FakeAccountDetailViewModel> GetEmployerAccountExpressionOfInterestAsync(long accountId)
+        {
+            try
+            {
+                AccountDetailViewModel account = await _accountApiClient.GetAccount(accountId);
+                foreach (var legalEntity in account.LegalEntities)
+                {
+                    var entity = await _accountApiClient.GetLegalEntity(account.HashedAccountId, long.Parse(legalEntity.Id));
+                }
+                var fakeAccount = (FakeAccountDetailViewModel) account;
+                fakeAccount.AccountAgreementType = "Non-Levy.EOI.1";
+                fakeAccount.ApprenticeshipEmployerType = "Non-Levy";
+                return fakeAccount;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Failed to retrieve account information for account Id: {accountId}");
+                throw;
+            }
+        }
+    }
+
+    class FakeAccountDetailViewModel : AccountDetailViewModel
+    {
+        public string ApprenticeshipEmployerType { get; set; }
+        public string AccountAgreementType { get; set; }
     }
 }
