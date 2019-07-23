@@ -1,20 +1,33 @@
-﻿using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+﻿using Esfa.Recruit.Vacancies.Client.Application.Providers;
+using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators.VacancyValidators;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using FluentValidation;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 {
     internal class TrainingProviderValidator : AbstractValidator<TrainingProvider>
     {
-        public TrainingProviderValidator(long ruleId)
+        private const int UkprnLength = 8;
+
+        public TrainingProviderValidator(long ruleId, ITrainingProviderSummaryProvider trainingProviderSummaryProvider, IBlockedOrganisationQuery blockedOrganisationRepo)
         {
             RuleFor(tp => tp.Ukprn.ToString())
                 .NotEmpty()
                     .WithMessage("You must enter a training provider")
-                    .WithErrorCode("101")
-                .Length(8)
+                    .WithErrorCode(ErrorCodes.TrainingProviderUkprnNotEmpty)
+                .Length(UkprnLength)
                     .WithMessage("The UKPRN is 8 digits")
-                    .WithErrorCode("99")
+                    .WithErrorCode(ErrorCodes.TrainingProviderUkprnMustBeCorrectLength)
                 .WithRuleId(ruleId);
+
+            When(tp => tp.Ukprn.ToString().Length == UkprnLength, () =>
+            {
+                RuleFor(tp => tp)
+                    .TrainingProviderMustExistInRoatp(trainingProviderSummaryProvider)
+                    .TrainingProviderMustNotBeBlocked(blockedOrganisationRepo)
+                    .WithRuleId(ruleId);
+            });
         }
     }
 }
