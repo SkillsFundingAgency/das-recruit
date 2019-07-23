@@ -1,6 +1,5 @@
 ﻿@using Esfa.Recruit.Shared.Web.Mappers
 @model Esfa.Recruit.Employer.Web.ViewModels.Part1.Title.TitleViewModel
-@inject ManageApprenticeshipsLinkHelper _externalLinksHelper;
 
 
 <div class="govuk-grid-row">
@@ -8,7 +7,7 @@
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames}' />
         <partial name="@PartialNames.ReviewSummary" for="Review" />
         <esfaFeatureDisabled name="@FeatureNames.AllowLevyPayingEmployersOnly">
-            <a asp-show="@Model.ShowReturnToMALink" href="@Model.ReturnToMALink" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">@Model.ReturnToMALinkText</a>
+            <a asp-show="@Model.ShowReturnToMALink" asp-route="@Model.ReturnToMALink" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">@Model.ReturnToMALinkText</a>
             <a asp-hide="@Model.ShowReturnToMALink" asp-route="@RouteNames.Dashboard_Index_Get" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Return to your vacancies</a>
         </esfaFeatureDisabled>
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Vacancy summary</h1>

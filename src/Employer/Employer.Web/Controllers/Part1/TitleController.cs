@@ -17,12 +17,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
     {
         private const string VacancyTitleRoute = "vacancies/{vacancyId:guid}/title";
         private readonly TitleOrchestrator _orchestrator;
-        private readonly ManageApprenticeshipsLinkHelper _linkHelper;
 
-        public TitleController(TitleOrchestrator orchestrator, ManageApprenticeshipsLinkHelper linkHelper)
+        public TitleController(TitleOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
-            _linkHelper = linkHelper;
         }
         
         [HttpGet("create-vacancy", Name = RouteNames.CreateVacancy_Get)]
@@ -31,10 +29,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             var vm = await _orchestrator.GetTitleViewModel(employerAccountId);
             vm.PageInfo.SetWizard();
             vm = (TitleViewModel) GetReferredDataFromTempData(vm);
-            if (vm.ReferredFromMAHome_FromSavedFavourites && vm.PageInfo.IsWizard && !string.IsNullOrWhiteSpace(vm.ReferredFromMAHome_ProgrammeId))
+            if (vm.PageInfo.IsWizard && !string.IsNullOrWhiteSpace(vm.ReferredFromMAHome_ProgrammeId))
             {
                 vm.ReturnToMALinkText = "Back to your saved favourites";
-                vm.ReturnToMALink = string.IsNullOrWhiteSpace(vm.ReferredFromMAHome_UKPRN) ? _linkHelper.EmployerFavouritesApprenticeshipList : _linkHelper.EmployerFavouritesTrainingProviders;
+                vm.ReturnToMALink = RouteNames.EmployerFavourites;
             }
             else
             {

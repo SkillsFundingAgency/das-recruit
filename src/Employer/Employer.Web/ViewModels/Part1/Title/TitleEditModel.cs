@@ -13,7 +13,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Title
         public string Title { get; set; }
         public string ReferredFromMAHome_UKPRN { get; set; }
         public string ReferredFromMAHome_ProgrammeId { get; set; }
-        public bool ReferredFromMAHome { get; set; }
         public bool ReferredFromMAHome_FromSavedFavourites;
     }
 }
