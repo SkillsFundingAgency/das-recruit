@@ -84,7 +84,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         private TitleEditModel GetReferredDataFromTempData(TitleEditModel m)
         {
             m.ReferredFromMAHome_FromSavedFavourites =
-                Convert.ToBoolean(TempData.Peek(TempDataKeys.ReferredFromMAHome_FromSavedFavourites));
+                !string.IsNullOrWhiteSpace(Convert.ToString(TempData.Peek(TempDataKeys.ReferredFromMAHome_UKPRN)))
+                || !string.IsNullOrWhiteSpace(Convert.ToString(TempData.Peek(TempDataKeys.ReferredFromMAHome_ProgrammeId)));
             m.ReferredFromMAHome_UKPRN = Convert.ToString(TempData.Peek(TempDataKeys.ReferredFromMAHome_UKPRN));
             m.ReferredFromMAHome_ProgrammeId = Convert.ToString(TempData.Peek(TempDataKeys.ReferredFromMAHome_ProgrammeId));
             return m;

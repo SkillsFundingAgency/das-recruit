@@ -23,7 +23,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         private const string InvalidUkprnMessageFormat = "The UKPRN {0} is not valid or the associated provider is not active";
         private const string InvalidSearchTerm = "Please enter a training provider name or UKPRN";
 
-        public TrainingProviderController(TrainingProviderOrchestrator orchestrator, IRecruitVacancyClient vacancyClient)
+        public TrainingProviderController(TrainingProviderOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
         }
@@ -46,7 +46,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 
         private bool ShowReferredFromMaBackLink()
         {
-            var referredFromMaHomeFromSavedFavourites = Convert.ToBoolean(TempData.Peek(TempDataKeys.ReferredFromMAHome_FromSavedFavourites));
+            var referredFromMaHomeFromSavedFavourites = !string.IsNullOrWhiteSpace(Convert.ToString(TempData.Peek(TempDataKeys.ReferredFromMAHome_UKPRN)))
+                                                                                                    || !string.IsNullOrWhiteSpace(Convert.ToString(TempData.Peek(TempDataKeys.ReferredFromMAHome_ProgrammeId)));
             var referredFromMaHomeUkprn = Convert.ToString(TempData.Peek(TempDataKeys.ReferredFromMAHome_UKPRN));
             var referredFromMaHomeProgrammeId = Convert.ToString(TempData.Peek(TempDataKeys.ReferredFromMAHome_ProgrammeId));
             return referredFromMaHomeFromSavedFavourites && string.IsNullOrWhiteSpace(referredFromMaHomeUkprn) && !string.IsNullOrWhiteSpace(referredFromMaHomeProgrammeId);

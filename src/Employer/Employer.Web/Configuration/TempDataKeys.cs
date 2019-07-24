@@ -10,6 +10,5 @@
         public const string ReferredFromMAHome = "ReferredFromMAHome";
         public const string ReferredFromMAHome_UKPRN = "ReferredFromMAHome_UKPRN";
         public const string ReferredFromMAHome_ProgrammeId = "ReferredFromMAHome_ProgrammeId";
-        public const string ReferredFromMAHome_FromSavedFavourites = "ReferredFromMAHome_FromSavedFavourites";
     }
 }
