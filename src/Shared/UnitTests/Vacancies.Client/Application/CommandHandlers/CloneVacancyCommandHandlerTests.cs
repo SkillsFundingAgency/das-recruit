@@ -1,4 +1,3 @@
-using Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation;
 using FluentAssertions;
 using Xunit;
 using Moq;
@@ -12,6 +11,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using System.Threading.Tasks;
 using System.Threading;
 using System;
+using System.Collections.Generic;
 using AutoFixture;
 
 namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
@@ -19,6 +19,13 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
     [Trait("Category", "Unit")]
     public class CloneVacancyCommandHandlerTests
     {
+        private enum CloneAssertType
+        {
+            Cloned,
+            IsNull,
+            Ignore
+        }
+
         [Fact]
         public async Task CheckClonedVacancyHasCorrectFieldsSet()
         {
@@ -57,9 +64,98 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
 
             await handler.Handle(command, new CancellationToken());
 
+            AssertKnownProperties(existingVacancy, clone);
+
             AssertUpdatedProperties(existingVacancy, currentTime, clone, command, startDate, closingDate);
-            AssertNulledOutProperties(clone);
-            AssertUnchangedProperties(existingVacancy, clone);
+        }
+
+        private static void AssertKnownProperties(Vacancy original, Vacancy clone)
+        {
+            var propertyAssertions = new Dictionary<string, Action<Vacancy, Vacancy, string>>
+            {
+                {nameof(Vacancy.Id), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Ignore)},
+                {nameof(Vacancy.EmployerAccountId), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
+                {nameof(Vacancy.VacancyReference), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.IsNull)},
+                {nameof(Vacancy.Status), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Ignore)},
+                {nameof(Vacancy.OwnerType), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
+                {nameof(Vacancy.SourceOrigin), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Ignore)},
+                {nameof(Vacancy.SourceType), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Ignore)},
+                {nameof(Vacancy.SourceVacancyReference), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Ignore)},
+                {nameof(Vacancy.ClosedDate), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.IsNull)},
+                {nameof(Vacancy.ClosedByUser), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.IsNull)},
+                {nameof(Vacancy.CreatedDate), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Ignore)},
+                {nameof(Vacancy.CreatedByUser), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Ignore)},
+                {nameof(Vacancy.SubmittedDate), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.IsNull)},
+                {nameof(Vacancy.SubmittedByUser), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.IsNull)},
+                {nameof(Vacancy.ApprovedDate), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.IsNull)},
+                {nameof(Vacancy.LiveDate), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.IsNull)},
+                {nameof(Vacancy.LastUpdatedDate), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Ignore)},
+                {nameof(Vacancy.LastUpdatedByUser), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Ignore)},
+                {nameof(Vacancy.IsDeleted), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Ignore)},
+                {nameof(Vacancy.DeletedDate), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.IsNull)},
+                {nameof(Vacancy.DeletedByUser), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.IsNull)},
+                {nameof(Vacancy.AnonymousReason), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
+                {nameof(Vacancy.ApplicationInstructions), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
+                {nameof(Vacancy.ApplicationMethod), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
+                {nameof(Vacancy.ApplicationUrl), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
+                {nameof(Vacancy.ClosingDate), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Ignore)},
+                {nameof(Vacancy.Description), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
+                {nameof(Vacancy.DisabilityConfident), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
+                {nameof(Vacancy.EmployerContact), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
+                {nameof(Vacancy.EmployerDescription), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
+                {nameof(Vacancy.EmployerLocation), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
+                {nameof(Vacancy.EmployerName), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
+                {nameof(Vacancy.EmployerNameOption), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
+                {nameof(Vacancy.LegalEntityName), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
+                {nameof(Vacancy.EmployerWebsiteUrl), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
+                {nameof(Vacancy.GeoCodeMethod), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
+                {nameof(Vacancy.LegalEntityId), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
+                {nameof(Vacancy.NumberOfPositions), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
+                {nameof(Vacancy.OutcomeDescription), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
+                {nameof(Vacancy.ProviderContact), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
+                {nameof(Vacancy.ProgrammeId), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
+                {nameof(Vacancy.Qualifications), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
+                {nameof(Vacancy.ShortDescription), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
+                {nameof(Vacancy.Skills), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
+                {nameof(Vacancy.StartDate), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Ignore)},
+                {nameof(Vacancy.ThingsToConsider), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
+                {nameof(Vacancy.Title), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
+                {nameof(Vacancy.TrainingDescription), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
+                {nameof(Vacancy.TrainingProvider), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
+                {nameof(Vacancy.Wage), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
+            };
+
+            foreach (var property in typeof(Vacancy).GetProperties())
+            {
+                if (property.GetSetMethod() == null)
+                    continue;
+
+                if (propertyAssertions.ContainsKey(property.Name) == false)
+                {
+                    Assert.True(false, $"Unknown clone property '{property.Name}'. Do we want to clone this property?");
+                }
+
+                var propertyAssert = propertyAssertions[property.Name];
+                propertyAssert(original, clone, property.Name);
+            }
+        }
+
+        private static void AssertProperty(Vacancy original, Vacancy clone, string propertyName, CloneAssertType assertType)
+        {
+            var originalValue = typeof(Vacancy).GetProperty(propertyName).GetValue(original);
+            var cloneValue = typeof(Vacancy).GetProperty(propertyName).GetValue(clone);
+
+            switch (assertType)
+            {
+                case CloneAssertType.Cloned:
+                    originalValue.Should().BeEquivalentTo(cloneValue, "{0} should be the same", propertyName);
+                    break;
+                case CloneAssertType.IsNull:
+                    cloneValue.Should().BeNull($"{0} should be null", propertyName);
+                    break;
+                case CloneAssertType.Ignore:
+                    break;
+            }
         }
 
         private static void AssertUpdatedProperties(Vacancy existingVacancy, DateTime currentTime, Vacancy clone, 
@@ -78,56 +174,6 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
             clone.IsDeleted.Should().Be(false, "{0} should be updated", nameof(clone.IsDeleted));
             clone.StartDate.Should().Be(startDate, "{0} should be updated", nameof(clone.StartDate));
             clone.ClosingDate.Should().Be(closingDate, "{0} should be updated", nameof(clone.ClosingDate));
-        }
-
-        private static void AssertNulledOutProperties(Vacancy clone)
-        {
-            // Check roperties that should have been set to null
-            clone.VacancyReference.Should().BeNull();
-            clone.ApprovedDate.Should().BeNull();
-            clone.ClosedDate.Should().BeNull();
-            clone.DeletedByUser.Should().BeNull();
-            clone.DeletedDate.Should().BeNull();
-            clone.LiveDate.Should().BeNull();
-            clone.SubmittedByUser.Should().BeNull();
-            clone.SubmittedDate.Should().BeNull();
-        }
-
-        private static void AssertUnchangedProperties(Vacancy existingVacancy, Vacancy clone)
-        {
-            // Check all properties that should have the same value as the original
-            existingVacancy.Should().BeEquivalentTo(clone, options => options
-                                            .Excluding(v => v.Id)
-                                            .Excluding(v => v.CreatedByUser)
-                                            .Excluding(v => v.CreatedDate)
-                                            .Excluding(v => v.LastUpdatedByUser)
-                                            .Excluding(v => v.LastUpdatedDate)
-                                            .Excluding(v => v.SourceOrigin)
-                                            .Excluding(v => v.SourceType)
-                                            .Excluding(v => v.SourceVacancyReference)
-                                            .Excluding(v => v.Status)
-                                            .Excluding(v => v.IsDeleted)
-                                            .Excluding(v => v.VacancyReference)
-                                            .Excluding(v => v.ApprovedDate)
-                                            .Excluding(v => v.ClosedDate)
-                                            .Excluding(v => v.DeletedByUser)
-                                            .Excluding(v => v.DeletedDate)
-                                            .Excluding(v => v.LiveDate)
-                                            .Excluding(v => v.SubmittedByUser)
-                                            .Excluding(v => v.SubmittedDate)
-                                            .Excluding(v => v.CanClose)
-                                            .Excluding(v => v.CanDelete)
-                                            .Excluding(v => v.CanEdit)
-                                            .Excluding(v => v.CanSubmit)
-                                            .Excluding(v => v.CanApprove)
-                                            .Excluding(v => v.CanRefer)
-                                            .Excluding(v => v.CanMakeLive)
-                                            .Excluding(v => v.CanSendForReview)
-                                            .Excluding(v => v.IsDisabilityConfident)
-                                            .Excluding(v => v.CanClone)
-                                            .Excluding(v => v.StartDate)
-                                            .Excluding(v => v.ClosingDate)
-                        );
         }
 
         private static Vacancy GetTestVacancy()

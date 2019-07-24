@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Communication.Core;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Configuration;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore;
@@ -46,7 +47,8 @@ namespace Esfa.Recruit.Vacancies.Jobs
 
         private static IHostBuilder CreateHostBuilder()
         {
-            return new HostBuilder()
+            return
+                new HostBuilder()
                     .UseEnvironment(RecruitEnvironment.EnvironmentName)
                     .ConfigureWebJobs(b =>
                     {

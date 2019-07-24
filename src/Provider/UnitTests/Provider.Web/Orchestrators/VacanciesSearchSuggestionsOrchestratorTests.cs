@@ -22,14 +22,14 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators
 
         private VacancySummary[] _testVacancies = new[] 
         {
-            new VacancySummary(){Title="The quick brown", EmployerName="20th Century Fox", VacancyReference=1000000101},
-            new VacancySummary(){Title="fox jumped over", EmployerName="20th Century Fox", VacancyReference=1000000102},
-            new VacancySummary(){Title="the lazy dog", EmployerName="Black & Brown Ltd", CreatedDate=DateTime.Now, VacancyReference=1000000103},
-            new VacancySummary(){Title="The quick brown", EmployerName="Black & Brown Ltd", VacancyReference=1000000104},
-            new VacancySummary(){Title="the lazy fox", EmployerName="Black & Brown Ltd", CreatedDate=DateTime.Now.AddDays(-1), VacancyReference=1000000105},
-            new VacancySummary(){Title="fox is brown", EmployerName=null, VacancyReference=1000000106},
-            new VacancySummary(){Title="The quick brown fox", EmployerName="Fox 20th Century", VacancyReference=1000000107},
-            new VacancySummary(){Title="in this century", EmployerName="The quick Brown ltd", VacancyReference=1000000108}
+            new VacancySummary(){Title="The quick brown", LegalEntityName="20th Century Fox", VacancyReference=1000000101},
+            new VacancySummary(){Title="fox jumped over", LegalEntityName="20th Century Fox", VacancyReference=1000000102},
+            new VacancySummary(){Title="the lazy dog", LegalEntityName="Black & Brown Ltd", CreatedDate=DateTime.Now, VacancyReference=1000000103},
+            new VacancySummary(){Title="The quick brown", LegalEntityName="Black & Brown Ltd", VacancyReference=1000000104},
+            new VacancySummary(){Title="the lazy fox", LegalEntityName="Black & Brown Ltd", CreatedDate=DateTime.Now.AddDays(-1), VacancyReference=1000000105},
+            new VacancySummary(){Title="fox is brown", LegalEntityName=null, VacancyReference=1000000106},
+            new VacancySummary(){Title="The quick brown fox", LegalEntityName="Fox 20th Century", VacancyReference=1000000107},
+            new VacancySummary(){Title="in this century", LegalEntityName="The quick Brown ltd", VacancyReference=1000000108}
         };
 
         [Fact]
@@ -49,7 +49,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators
         }
 
         [Fact]
-        public async Task ShouldIgnoreNullEmployerName()
+        public async Task ShouldIgnoreNullLegalEntityName()
         {
             var orch = GetSut(_testVacancies);
             var result = await orch.GetSearchSuggestionsAsync("fox", Ukprn);
@@ -95,24 +95,24 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators
         }
         
         [Fact]
-        public async Task WhenTermMatchesMoreThan50Title_ThenEmployerNameWillBeFilteredOut()
+        public async Task WhenTermMatchesMoreThan50Title_ThenLegalEntityNameWillBeFilteredOut()
         {
-            var employerName = "20th Century Fox";
+            var LegalEntityName = "20th Century Fox";
             var searchTerm = "fox";
-            var orch = GetSut(GenerateVacancySummaries(100, employerName, searchTerm));
+            var orch = GetSut(GenerateVacancySummaries(100, LegalEntityName, searchTerm));
             var result = await orch.GetSearchSuggestionsAsync(searchTerm, Ukprn);
             result.Count().Should().Be(VacanciesSearchSuggestionsOrchestrator.MaxRowsInResult);
-            result.Any(s => s.Equals(employerName)).Should().BeFalse();
+            result.Any(s => s.Equals(LegalEntityName)).Should().BeFalse();
         }
 
         [Fact]
         public async Task WhenTermMatchesVacancyReference_ThenListVacancyReferences()
         {            
-            var employerName = "Exotic Vacations limited";
-            var orch = GetSut(GenerateVacancySummaries(100, employerName, "vac"));
+            var LegalEntityName = "Exotic Vacations limited";
+            var orch = GetSut(GenerateVacancySummaries(100, LegalEntityName, "vac"));
             var result = await orch.GetSearchSuggestionsAsync("vac1", Ukprn);
             result.Count().Should().Be(VacanciesSearchSuggestionsOrchestrator.MaxRowsInResult);
-            result.Any(s => s.Equals(employerName)).Should().BeFalse();
+            result.Any(s => s.Equals(LegalEntityName)).Should().BeFalse();
             result.All(s => Regex.IsMatch(s, VacancyReferenceRegex)).Should().BeTrue();
             result.First().Should().Be("VAC1000000151");
             result.Last().Should().Be("VAC1000000200");
@@ -138,13 +138,13 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators
             return new VacanciesSearchSuggestionsOrchestrator(_mockClient.Object);
         }
 
-        private IEnumerable<VacancySummary> GenerateVacancySummaries(int count, string employerName, string term)
+        private IEnumerable<VacancySummary> GenerateVacancySummaries(int count, string LegalEntityName, string term)
         {
             return Enumerable.Range(1, count)
                 .Select(r => new VacancySummary() 
                 { 
                     Title = $"{term} {Guid.NewGuid()}",
-                    EmployerName = $"{employerName} {Guid.NewGuid()}", VacancyReference = 1000000100 + r,
+                    LegalEntityName = $"{LegalEntityName} {Guid.NewGuid()}", VacancyReference = 1000000100 + r,
                     CreatedDate = DateTime.Now.AddSeconds(r) 
                 });
         }

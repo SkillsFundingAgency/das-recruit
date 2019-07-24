@@ -219,6 +219,12 @@
     },
     "DasSharedNServiceBusConfiguration": {
       "type" : "object"
+    },
+    "CommunicationsConfiguration": {
+      "type": "object"
+    },
+    "NotificationsApiClientConfiguration":{
+      "type": "object"
     }
   },
   "variables": {
@@ -894,6 +900,22 @@
               {
                 "name": "DasSharedNServiceBusConfiguration:NServiceBusLicense",
                 "value": "[parameters('DasSharedNServiceBusConfiguration').NServiceBusLicense]"
+              },
+              {
+                "name": "CommunicationsConfiguration:EmployersApprenticeshipServiceUrl",
+                "value": "[parameters('CommunicationsConfiguration').EmployersApprenticeshipServiceUrl]"
+              },
+              {
+                "name": "CommunicationsConfiguration:ProvidersApprenticeshipServiceUrl",
+                "value": "[parameters('CommunicationsConfiguration').ProvidersApprenticeshipServiceUrl]"
+              },
+              {
+                "name": "NotificationsApiClientConfiguration:ApiBaseUrl",
+                "value": "[parameters('NotificationsApiClientConfiguration').ApiBaseUrl]"
+              },
+              {
+                "name": "NotificationsApiClientConfiguration:ClientToken",
+                "value": "[parameters('NotificationsApiClientConfiguration').ClientToken]"
               }
             ]
           },
@@ -911,6 +933,11 @@
               },
               {
                 "name": "QueueStorage",
+                "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
+                "type": "Custom"
+              },
+              {
+                "name": "CommunicationsStorage",
                 "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
                 "type": "Custom"
               },

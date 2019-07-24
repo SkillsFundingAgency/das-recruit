@@ -47,11 +47,18 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     { "title", 1 },
                     { "status", 1 },
                     { "appStatus", $"${ApplicationReviewLookupAliasName}.status" },
+                    { "legalEntityId", 1 },
                     { "legalEntityName", 1 },
+                    { "employerAccountId", 1 },
+                    { "employerName", 1 },
+                    { "ukprn", $"$trainingProvider.ukprn" },
                     { "createdDate", 1 },
                     { "closingDate", 1 },
+                    { "startDate", 1 },
                     { "applicationMethod", 1 },
-                    { "programmeId", 1 }
+                    { "programmeId", 1 },
+                    { "duration", "$wage.duration" },
+                    { "durationUnit", "$wage.durationUnit" }
                 }
             }
         };
@@ -65,11 +72,18 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     { "vacancyReference", 1 },
                     { "title", 1 },
                     { "status", 1 },
+                    { "legalEntityId", 1 },
                     { "legalEntityName", 1 },
+                    { "employerAccountId", 1 },
+                    { "employerName", 1 },
+                    { "ukprn", 1 },
                     { "createdDate", 1 },
                     { "closingDate", 1 },
+                    { "startDate", 1 },
                     { "applicationMethod", 1 },
-                    { "programmeId", 1 }
+                    { "programmeId", 1 },
+                    { "duration", 1 },
+                    { "durationUnit", 1 }
                 }
                 .Add("isNew", new BsonDocument()
                                 .Add("$cond", new BsonDocument().Add("if", new BsonDocument().Add("$eq", _newApplicationReviewStatusClause))
@@ -104,11 +118,18 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                             { "vacancyReference", "$vacancyReference" },
                             { "title", "$title" },
                             { "status", "$status" },
+                            { "legalEntityId", "$legalEntityId" },
                             { "legalEntityName", "$legalEntityName" },
+                            { "employerAccountId", "$employerAccountId" },
+                            { "employerName", "$employerName" },
+                            { "ukprn", $"$ukprn" },
                             { "createdDate", "$createdDate" },
                             { "closingDate", "$closingDate" },
+                            { "startDate", "$startDate" },
                             { "applicationMethod", "$applicationMethod" },
-                            { "programmeId", "$programmeId" }
+                            { "programmeId", "$programmeId" },
+                            { "duration", "$duration" },
+                            { "durationUnit", "$durationUnit" }
                         }
                     },
                     { "noOfNewApplications", new BsonDocument().Add("$sum", "$isNew") },

@@ -1,8 +1,11 @@
+using Communication.Types;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.FAA;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories;
 using Esfa.Recruit.Vacancies.Client.Ioc;
 using Esfa.Recruit.Vacancies.Jobs.AnalyticsSummaryProcessor;
+using Esfa.Recruit.Vacancies.Jobs.Communication;
 using Esfa.Recruit.Vacancies.Jobs.Configuration;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Application;
@@ -15,6 +18,15 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Apprenticeships.Api.Client;
+using SFA.DAS.Http;
+using SFA.DAS.Http.TokenGenerators;
+using SFA.DAS.Notifications.Api.Client;
+using SFA.DAS.Notifications.Api.Client.Configuration;
+using Communication.Core;
+using Communication.Types.Interfaces;
+using Esfa.Recruit.Vacancies.Client.Application.Communications;
+using Esfa.Recruit.Client.Application.Communications;
+using Esfa.Recruit.Vacancies.Client.Application.Communications.EntityDataItemProviderPlugins;
 
 namespace Esfa.Recruit.Vacancies.Jobs
 {
@@ -53,6 +65,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
 
             // Vacancy
             services.AddScoped<IDomainEventHandler<IEvent>, DraftVacancyUpdatedHandler>();
+            services.AddScoped<IDomainEventHandler<IEvent>, VacancyReferredDomainEventHandler>();
             services.AddScoped<IDomainEventHandler<IEvent>, VacancySubmittedHandler>();
 
             // VacancyReview
@@ -72,6 +85,47 @@ namespace Esfa.Recruit.Vacancies.Jobs
 
             //Candidate
             services.AddScoped<IDomainEventHandler<IEvent>, DeleteCandidateHandler>();
+
+            RegisterCommunicationsService(services, configuration);
+            RegisterDasNotifications(services, configuration);
+        }
+
+        private static void RegisterCommunicationsService(IServiceCollection services, IConfiguration configuration)
+        {
+            // Relies on services.AddRecruitStorageClient(configuration); being called first
+            services.AddTransient<ICommunicationRepository, MongoDbCommunicationRepository>();
+
+            services.AddScoped<CommunicationRequestQueueTrigger>();
+
+            services.AddSingleton<IDispatchQueuePublisher>(_ => new DispatchQueuePublisher(configuration.GetConnectionString(("CommunicationsStorage"))));
+            services.AddScoped<CommunicationMessageDispatcherQueueTrigger>();
+            services.AddScoped<CommunicationMessageDispatcher>();
+
+            services.AddTransient<ICommunicationProcessor, CommunicationProcessor>();
+            services.AddTransient<ICommunicationService, CommunicationService>();
+
+            services.AddTransient<IEntityDataItemProvider, VacancyPlugin>();
+            services.AddTransient<IParticipantResolver, ParticipantResolverPlugin>();
+            services.AddTransient<IUserPreferencesProvider, UserPreferencesProviderPlugin>();
+            services.AddTransient<ITemplateIdProvider, TemplateIdProviderPlugin>();
+            services.AddTransient<IEntityDataItemProvider, ApprenticeshipServiceUrlPlugin>();
+
+            services.Configure<CommunicationsConfiguration>(configuration.GetSection("CommunicationsConfiguration"));
+        }
+
+        private static void RegisterDasNotifications(IServiceCollection services, IConfiguration configuration)
+        {
+            var notificationsConfig = new NotificationsApiClientConfiguration();
+            configuration.GetSection(nameof(NotificationsApiClientConfiguration)).Bind(notificationsConfig);
+
+            var jwtToken = new JwtBearerTokenGenerator(notificationsConfig);
+
+            var httpClient = new HttpClientBuilder()
+                .WithBearerAuthorisationHeader(jwtToken)
+                .WithDefaultHeaders()
+                .Build();
+
+            services.AddTransient<INotificationsApi>(sp => new NotificationsApi(httpClient, notificationsConfig));
         }
     }
 }

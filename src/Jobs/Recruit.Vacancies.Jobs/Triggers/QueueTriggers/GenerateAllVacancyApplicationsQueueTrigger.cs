@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections;
@@ -42,13 +43,15 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
                 {
                     _logger.LogInformation($"Start {JobName}");
 
-                    var allVacancyReferences = await _query.GetAllVacancyReferencesAsync();
+                    var allVacancyReferences = (await _query.GetAllVacancyReferencesAsync()).ToList();
+
+                    _logger.LogInformation($"Regenerating {allVacancyReferences.Count()} VacancyApplications queryStore documents for:\n{string.Join(Environment.NewLine, allVacancyReferences)}");
 
                     foreach (var vacancyReference in allVacancyReferences)
                     {
                         await _projectionService.UpdateVacancyApplicationsAsync(vacancyReference);
                     }
-                    
+
                     _logger.LogInformation($"Finished {JobName}");
                 }
             }

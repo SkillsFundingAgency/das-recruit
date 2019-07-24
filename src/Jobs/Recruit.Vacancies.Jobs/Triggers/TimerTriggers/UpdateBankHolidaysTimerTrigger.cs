@@ -11,10 +11,10 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.TimerTriggers
     public class UpdateBankHolidaysTimerTrigger
     {
         private readonly ILogger<UpdateBankHolidaysTimerTrigger> _logger;
-        private readonly IQueueService _queue;
+        private readonly IRecruitQueueService _queue;
         private readonly ITimeProvider _timeProvider;
 
-        public UpdateBankHolidaysTimerTrigger(ILogger<UpdateBankHolidaysTimerTrigger> logger, IQueueService queue, ITimeProvider timeProvider)
+        public UpdateBankHolidaysTimerTrigger(ILogger<UpdateBankHolidaysTimerTrigger> logger, IRecruitQueueService queue, ITimeProvider timeProvider)
         {
             _logger = logger;
             _queue = queue;

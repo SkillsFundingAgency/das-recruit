@@ -18,7 +18,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
         public ReferVacancyCommandHandler(
             ILogger<ReferVacancyCommandHandler> logger,
-            IVacancyRepository repository, 
+            IVacancyRepository repository,
             IMessaging messaging)
         {
             _logger = logger;
@@ -37,9 +37,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 _logger.LogWarning($"Unable to refer vacancy {{vacancyReference}} due to vacancy having a status of {vacancy.Status}.", vacancy.VacancyReference);
                 return;
             }
-            
+
             vacancy.Status = VacancyStatus.Referred;
-            
+
             await _repository.UpdateAsync(vacancy);
 
             await _messaging.PublishEvent(new VacancyReferredEvent

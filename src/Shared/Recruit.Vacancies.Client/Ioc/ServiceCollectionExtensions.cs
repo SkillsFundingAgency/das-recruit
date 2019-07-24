@@ -79,8 +79,8 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             RegisterProviderApiClientDep(services, configuration);
             RegisterTableStorageProviderDeps(services, configuration);
             RegisterRepositories(services, configuration);
-            RegisterStorageProviderDeps(services, configuration);
-            RegisterQueues(services);
+            RegisterOutOfProcessEventDelegatorDeps(services, configuration);
+            RegisterQueueStorageServices(services, configuration);
             AddValidation(services);
             AddRules(services);
             RegisterMediatR(services);
@@ -217,23 +217,18 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddTransient<IReferenceDataWriter, MongoDbReferenceDataRepository>();
         }
 
-        private static void RegisterStorageProviderDeps(IServiceCollection services, IConfiguration configuration)
+        private static void RegisterOutOfProcessEventDelegatorDeps(IServiceCollection services, IConfiguration configuration)
         {
-            var storageConnectionString = configuration.GetConnectionString("QueueStorage");
-
-            services.Configure<StorageQueueConnectionDetails>(options =>
-            {
-                options.ConnectionString = storageConnectionString;
-            });
-
-            services.AddSingleton(kernal => kernal.GetService<IOptions<StorageQueueConnectionDetails>>().Value);
-
             services.AddTransient<IEventStore, StorageQueueEventStore>();
         }
 
-        private static void RegisterQueues(IServiceCollection services)
+        private static void RegisterQueueStorageServices(IServiceCollection services, IConfiguration configuration)
         {
-            services.AddTransient<IQueueService, StorageQueueService>();
+            var recruitStorageConnectionString = configuration.GetConnectionString("QueueStorage");
+            var communicationStorageConnectionString = configuration.GetConnectionString("CommunicationsStorage");
+
+            services.AddTransient<IRecruitQueueService>(_ => new RecruitStorageQueueService(recruitStorageConnectionString));
+            services.AddTransient<ICommunicationQueueService>(_ => new CommunicationStorageQueueService(communicationStorageConnectionString));
         }
 
         private static void RegisterTableStorageProviderDeps(IServiceCollection services, IConfiguration configuration)

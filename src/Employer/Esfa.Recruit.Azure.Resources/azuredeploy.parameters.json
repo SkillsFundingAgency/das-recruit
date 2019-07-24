@@ -161,6 +161,14 @@
     "DasSharedNServiceBusConfiguration": {
       "ConnectionString":"",
       "NServiceBusLicense":""
-    }
+    },
+    "CommunicationsConfiguration": {
+      "EmployersApprenticeshipServiceUrl": "",
+      "ProvidersApprenticeshipServiceUrl": ""
+    },
+    "NotificationsApiClientConfiguration":{
+      "ApiBaseUrl": "",
+      "ClientToken": ""
+    },
   }
 }

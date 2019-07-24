@@ -44,12 +44,12 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
             try
             {
                 var eventItem = JsonConvert.DeserializeObject<EventItem>(message);
-                
+
                 await ExecuteHandler(eventItem.EventType, eventItem.Data);
             }
             catch (JsonException ex)
             {
-                _logger.LogError(ex, "Unable to deserialise event: {eventBody}", message);
+                _logger.LogError(ex, "Unable to deserialize event: {eventBody}", message);
                 throw;
             }
         }
@@ -71,7 +71,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
                                 .GetInterfaces()
                                 .First(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IDomainEventHandler<>))
                                 .GenericTypeArguments[0].Name;
-                
+
                 lookup.Add(eventName, handler);
             }
 

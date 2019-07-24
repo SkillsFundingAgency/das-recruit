@@ -8,7 +8,6 @@ using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Queues;
 using Esfa.Recruit.Vacancies.Client.Application.Queues.Messages;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Moq;
 using Xunit;
@@ -17,10 +16,9 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
 {
     public class UserSignedInCommandHandlerTests
     {
-
         private readonly Mock<IUserRepository> _mockUserRepository = new Mock<IUserRepository>();
         private readonly Mock<ITimeProvider> _mockTimeProvider = new Mock<ITimeProvider>();
-        private readonly Mock<IQueueService> _mockQueueService = new Mock<IQueueService>();
+        private readonly Mock<IRecruitQueueService> _mockQueueService = new Mock<IRecruitQueueService>();
         private readonly Fixture _fixture = new Fixture();
 
         [Fact]

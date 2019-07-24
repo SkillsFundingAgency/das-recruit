@@ -30,7 +30,22 @@
                 "/p:GenerateFullPaths=true"
             ],
             "problemMatcher": "$msCompile"
-        },  
+        },
+        {
+            "label": "build-communication",
+            "group":{
+                "kind": "build",
+                "isDefault": true
+            },
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/Communication/Communication.sln",
+                "/p:GenerateFullPaths=true"
+            ],
+            "problemMatcher": "$msCompile"
+        },
         {
             "label": "build-emp-web",
             "group":{
@@ -45,7 +60,7 @@
                 "/p:GenerateFullPaths=true"
             ],
             "problemMatcher": "$msCompile"
-        }, 
+        },
         {
             "label": "build-prov-web",
             "group":{
