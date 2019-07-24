@@ -30,7 +30,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             vm.PageInfo.SetWizard();
             vm = (TitleViewModel) GetReferredDataFromTempData(vm);
             SetBackText(vm);
-            SetBackLink(vm);
+            SetBackLinkRoute(vm);
             return View(vm);
         }
 
@@ -42,7 +42,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                     : "Return to home";
         }
 
-        private void SetBackLink(TitleViewModel vm)
+        private void SetBackLinkRoute(TitleViewModel vm)
         {
             vm.ReturnToMALink = vm.PageInfo.IsWizard && !string.IsNullOrWhiteSpace(vm.ReferredFromMAHome_ProgrammeId)
                 ? RouteNames.EmployerFavourites
@@ -74,15 +74,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                 vm.PageInfo.SetWizard(wizard);
                 return View(vm);
             }
-            var currentVacancy = await _orchestrator.GetCurrentVacancy(m,response.Data);
             if (m.ReferredFromMAHome_FromSavedFavourites)
-            {
-                if (currentVacancy.TrainingProvider != null && !string.IsNullOrWhiteSpace(currentVacancy.ProgrammeId))
-                    return RedirectToRoute(RouteNames.NumberOfPositions_Get, new { vacancyId = response.Data });
-                if (currentVacancy.TrainingProvider == null)
-                    return RedirectToRoute(RouteNames.TrainingProvider_Select_Get, new { vacancyId = response.Data });
-            }
-                
+                return RedirectToRoute(RouteNames.DisplayVacancy_Get, new { vacancyId = response.Data });
             return wizard
                 ? RedirectToRoute(RouteNames.Training_Get, new {vacancyId = response.Data})
                 : RedirectToRoute(RouteNames.Vacancy_Preview_Get);

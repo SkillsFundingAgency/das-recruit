@@ -40,16 +40,16 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                vm.TrainingProviderSearch = string.Empty;
                vm.IsTrainingProviderSelected = true;
            }
-           vm.ReferredFromMAHome_FromSavedFavourites = ShowReferredFromMABackLink();
+           vm.ShowReferredBackLink = ShowReferredFromMaBackLink();
             return View(vm);
         }
 
-        private bool ShowReferredFromMABackLink()
+        private bool ShowReferredFromMaBackLink()
         {
-            var referredFromMAHome_FromSavedFavourites = Convert.ToBoolean(TempData.Peek(TempDataKeys.ReferredFromMAHome_FromSavedFavourites));
-            var referredFromMAHome_UKPRN = Convert.ToString(TempData.Peek(TempDataKeys.ReferredFromMAHome_UKPRN));
-            var referredFromMAHome_ProgrammeId = Convert.ToString(TempData.Peek(TempDataKeys.ReferredFromMAHome_ProgrammeId));
-            return referredFromMAHome_FromSavedFavourites && string.IsNullOrWhiteSpace(referredFromMAHome_UKPRN) && !string.IsNullOrWhiteSpace(referredFromMAHome_ProgrammeId);
+            var referredFromMaHomeFromSavedFavourites = Convert.ToBoolean(TempData.Peek(TempDataKeys.ReferredFromMAHome_FromSavedFavourites));
+            var referredFromMaHomeUkprn = Convert.ToString(TempData.Peek(TempDataKeys.ReferredFromMAHome_UKPRN));
+            var referredFromMaHomeProgrammeId = Convert.ToString(TempData.Peek(TempDataKeys.ReferredFromMAHome_ProgrammeId));
+            return referredFromMaHomeFromSavedFavourites && string.IsNullOrWhiteSpace(referredFromMaHomeUkprn) && !string.IsNullOrWhiteSpace(referredFromMaHomeProgrammeId);
         }
 
         [HttpPost("select-training-provider", Name = RouteNames.TrainingProvider_Select_Post)]
