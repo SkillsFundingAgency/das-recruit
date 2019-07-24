@@ -76,6 +76,8 @@ namespace Esfa.Recruit.Employer.Web
                 RouteNames.Training_Help_Get,
                 RouteNames.Training_First_Time_Post,
                 RouteNames.Training_First_Time_Get,
+                RouteNames.Training_Confirm_Post,
+                RouteNames.Training_Confirm_Get,
                 RouteNames.Training_Post,
                 RouteNames.Training_Get
             });

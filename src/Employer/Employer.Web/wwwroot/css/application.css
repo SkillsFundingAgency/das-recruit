@@ -271,7 +271,7 @@
 
 /*** Verification summary ***/
 .verification-summary {
-    border: 4px solid #00823B;
+    background-color: #f4f4f4;
     margin-top: 15px;
     margin-bottom: 15px;
     padding: 15px 10px
@@ -279,7 +279,7 @@
 
 @media (min-width: 641px) {
     .verification-summary {
-        border: 5px solid #00823B;
+        background-color: #f4f4f4;
         margin-top: 30px;
         margin-bottom: 30px;
         padding: 20px 15px 15px
