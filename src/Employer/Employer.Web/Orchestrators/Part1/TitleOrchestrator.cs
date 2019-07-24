@@ -150,14 +150,5 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var programmesTask = await _vacancyClient.GetActiveApprenticeshipProgrammesAsync();
             return programmesTask.SingleOrDefault(p => p.Id == programmeId);
         }
-
-        public async Task<Vacancy> GetCurrentVacancy(TitleEditModel m, Guid vacancyId)
-        {
-            return await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient,
-                new VacancyRouteModel
-                {
-                    EmployerAccountId = m.EmployerAccountId, VacancyId = vacancyId
-                }, RouteNames.Title_Post);
-        }
     }
 }
