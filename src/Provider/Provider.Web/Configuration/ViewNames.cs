@@ -17,5 +17,6 @@
         public const string VacancyPreview = "VacancyPreview";
         public const string CloseVacancyView = "Close";
         public const string ProviderBlocked = "ProviderBlocked";
+        public const string Training = "Training";
     }
 }

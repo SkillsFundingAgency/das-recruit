@@ -2,6 +2,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Mappings;
+using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Training;
 using Esfa.Recruit.Shared.Web.Extensions;
@@ -67,19 +68,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             return vm;
         }
 
-        public async Task<OrchestratorResponse> PostTrainingEditModelAsync(TrainingEditModel m, VacancyUser user)
-        {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, m, RouteNames.Training_Post);
-
-            vacancy.ProgrammeId = m.SelectedProgrammeId;
-            
-            return await ValidateAndExecute(
-                vacancy, 
-                v => _vacancyClient.Validate(v, ValidationRules),
-                v => _vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
-            );
-        }
-
         public async Task<TrainingFirstVacancyViewModel> GetTrainingFirstVacancyViewModelAsync(VacancyRouteModel vrm)
         {
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Training_First_Time_Get);
@@ -87,11 +75,54 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             return new TrainingFirstVacancyViewModel();
         }
 
+        public async Task<ConfirmTrainingViewModel> GetConfirmTrainingViewModelAsync(VacancyRouteModel vrm, string programmeId)
+        {
+            var vacancyTask = Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Training_Confirm_Get);
+            var programmesTask = _vacancyClient.GetActiveApprenticeshipProgrammesAsync();
+
+            await Task.WhenAll(vacancyTask, programmesTask);
+
+            var programme = programmesTask.Result.SingleOrDefault(p => p.Id == programmeId);
+
+            if (programme == null)
+                return null;
+
+            return new ConfirmTrainingViewModel
+            {
+                ProgrammeId = programme.Id,
+                Level = programme.Level,
+                TrainingTitle = programme.Title,
+                DurationMonths = programme.Duration,
+                ProgrammeType = programme.ApprenticeshipType.GetDisplayName(),
+                PageInfo = Utility.GetPartOnePageInfo(vacancyTask.Result)
+            };
+        }
+
+        public async Task<OrchestratorResponse> PostConfirmTrainingEditModelAsync(ConfirmTrainingEditModel m, VacancyUser user)
+        {
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, m, RouteNames.Training_Confirm_Post);
+            
+            vacancy.ProgrammeId = m.ProgrammeId;
+
+            return await ValidateAndExecute(
+                vacancy, 
+                v => _vacancyClient.Validate(v, ValidationRules),
+                v => _vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
+            );
+        }
+
+        public async Task<IApprenticeshipProgramme> GetProgrammeAsync(string programmeId)
+        {
+            var programmes = await _vacancyClient.GetActiveApprenticeshipProgrammesAsync();
+
+            return programmes.SingleOrDefault(p => p.Id == programmeId);
+        }
+
         private async Task<bool> IsUsersFirstVacancy(string userId)
         {
-            var userVacancies = await _client.GetVacanciesForUserAsync(userId);
+            var userVacancies = await _client.GetVacancyCountForUserAsync(userId);
 
-            return userVacancies.Count() == 1;
+            return userVacancies == 1;
         }
 
         protected override EntityToViewModelPropertyMappings<Vacancy, TrainingEditModel> DefineMappings()
