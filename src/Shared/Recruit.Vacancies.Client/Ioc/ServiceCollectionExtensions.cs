@@ -150,6 +150,7 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddTransient<IGetVacancyTitlesProvider, VacancyApiTitlesProvider>();
             services.AddTransient<ITrainingProviderService, TrainingProviderService>();
             services.AddTransient<ITrainingProviderSummaryProvider, TrainingProviderSummaryProvider>();
+            services.AddTransient<IFaaService, FaaService>();
 
             // Projection services
             services.AddTransient<IEmployerDashboardProjectionService, EmployerDashboardProjectionService>();

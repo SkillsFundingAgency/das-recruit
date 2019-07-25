@@ -564,6 +564,10 @@
               {
                 "name": "UseTableStorageQueryStore",
                 "value": "[parameters('UseTableStorageQueryStore')]"
+              },
+              {
+                "name": "FaaConfiguration:StorageConnectionString",
+                "value": "[parameters('FaaConfiguration').StorageConnectionString]"
               }
             ]
           },

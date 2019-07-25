@@ -1,0 +1,14 @@
+﻿@model Esfa.Recruit.Qa.Web.ViewModels.WithdrawVacancy.AlreadyClosedViewModel
+
+<div class="govuk-grid-row govuk-!-margin-top-6">
+    <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-xl">Vacancy VAC@(Model.VacancyReference) is already closed</h1>
+
+        <p class="govuk-body">@Model.Title (VAC@(Model.VacancyReference)) for @Model.LegalEntityName was closed on the @Model.ClosedDate</p>
+        
+        <p class="govuk-body">
+            <a asp-route="@RouteNames.WithdrawVacancy_FindVacancy_Get" class="govuk-button">Search again</a>
+        </p>
+    </div>
+</div>
