@@ -12,6 +12,7 @@ namespace Esfa.Recruit.Shared.Web.ViewModels
         public DateTime? CreatedDate { get; set; }
         public VacancyStatus Status { get; set; }
         public DateTime? ClosingDate { get; set; }
+        public DateTime? ClosedDate { get; set; }
         public ApplicationMethod? ApplicationMethod { get; set; }
         public string ProgrammeId { get; set; }
         public string TrainingTitle { get; set; }

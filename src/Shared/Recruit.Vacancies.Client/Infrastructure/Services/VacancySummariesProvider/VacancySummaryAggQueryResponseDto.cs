@@ -25,6 +25,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         public VacancyStatus Status { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? ClosingDate { get; set; }
+        public DateTime? ClosedDate { get; set; }
         public ApplicationMethod? ApplicationMethod { get; set; }
         public string ProgrammeId { get; set; }
         public int? Duration { get; set; }

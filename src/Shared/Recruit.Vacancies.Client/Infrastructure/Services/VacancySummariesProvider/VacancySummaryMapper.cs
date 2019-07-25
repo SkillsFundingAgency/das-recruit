@@ -23,6 +23,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 DurationUnit = vacSummaryDetail.DurationUnit,
                 Status = vacSummaryDetail.Status,
                 ClosingDate = vacSummaryDetail.ClosingDate,
+                ClosedDate = vacSummaryDetail.ClosedDate,
                 ApplicationMethod = vacSummaryDetail.ApplicationMethod,
                 ProgrammeId = vacSummaryDetail.ProgrammeId,
                 StartDate = vacSummaryDetail.StartDate,

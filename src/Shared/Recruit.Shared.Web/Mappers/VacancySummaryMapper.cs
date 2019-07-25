@@ -1,4 +1,5 @@
 ﻿using Esfa.Recruit.Shared.Web.ViewModels;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 
 namespace Esfa.Recruit.Shared.Web.Mappers
@@ -18,7 +19,8 @@ namespace Esfa.Recruit.Shared.Web.Mappers
                 NoOfNewApplications = vacancySummary.NoOfNewApplications,
                 NoOfSuccessfulApplications = vacancySummary.NoOfSuccessfulApplications,
                 NoOfUnsuccessfulApplications = vacancySummary.NoOfUnsuccessfulApplications,
-                ClosingDate = vacancySummary.ClosingDate,
+                ClosedDate = vacancySummary.ClosedDate,
+                ClosingDate = vacancySummary.Status == VacancyStatus.Closed ? vacancySummary.ClosedDate : vacancySummary.ClosingDate,
                 ApplicationMethod = vacancySummary.ApplicationMethod,
                 ProgrammeId = vacancySummary.ProgrammeId,
                 TrainingLevel = vacancySummary.TrainingLevel,
