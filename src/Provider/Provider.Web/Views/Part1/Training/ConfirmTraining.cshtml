@@ -17,6 +17,18 @@
                     <br>
                 </span>
             </h2>
+
+            <div asp-show="@Model.ShowTrainingEffectiveToDate" class="govuk-warning-text">
+                <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                <strong class="govuk-warning-text__text">
+                    <span class="govuk-warning-text__assistive">Warning</span>
+                    <span id="selected-training" class="govuk-!-font-weight-bold">
+                        This apprenticeship training closes to new starters from
+                        @Model.TrainingEffectiveToDate.
+                    </span>
+                </strong>
+            </div>
+
             <p class="govuk-body govuk-!-margin-bottom-0">
                 <a asp-route="@RouteNames.Training_Get" asp-route-wizard="@Model.PageInfo.IsWizard" asp-route-programmeid="@Model.ProgrammeId" class="govuk-link">Change apprenticeship training</a>
             </p>
