@@ -22,6 +22,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         {
             TempData[TempDataKeys.ReferredFromMa] = true;
 
+            if(string.IsNullOrWhiteSpace(ukprn) && string.IsNullOrWhiteSpace(programmeId))
+                return RedirectToRoute(RouteNames.CreateVacancyOptions_Get);
+
             var providerTask = _employerVacancyOrchestrator.GetProviderUkprn(ukprn);
             var programmeTask = _employerVacancyOrchestrator.GetProgrammeId(programmeId);
 
@@ -33,9 +36,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             ManageTempData(provider, programme);
 
             if (provider == null && programme == null)
-            {
                 return RedirectToRoute(RouteNames.CreateVacancyOptions_Get);
-            }
+            
             return RedirectToRoute(RouteNames.CreateVacancy_Get);
         }
 
