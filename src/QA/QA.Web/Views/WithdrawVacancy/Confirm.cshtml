@@ -1,0 +1,28 @@
+﻿@model Esfa.Recruit.Qa.Web.ViewModels.WithdrawVacancy.ConfirmViewModel
+
+<div class="govuk-grid-row govuk-!-margin-top-6">
+    <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-xl">Confirm the vacancy you want to close</h1>
+        
+        <div class="verification-summary">
+            <h2 class="govuk-heading-l">VAC@(Model.VacancyReference) - @Model.Title</h2>
+
+            <p class="govuk-caption-m">
+                Status: @Model.Status<br />
+                Employer: @Model.LegalEntityName <strong asp-show="@Model.IsEmployerOwned">(owner)</strong><br />
+                Training Provider: @Model.TrainingProvider <string asp-show="@Model.IsProviderOwned">(owner)</string><br />
+            </p>
+            
+            <p class="govuk-body govuk-!-margin-bottom-0">
+                <a asp-route="@RouteNames.WithdrawVacancy_FindVacancy_Get">Search again</a>
+            </p>
+        </div>
+
+        <p class="govuk-body">
+            <a asp-route="@RouteNames.WithdrawVacancy_Acknowledge_Get" class="govuk-button">Confirm and continue</a>
+            <a asp-route="@RouteNames.WithdrawVacancy_FindVacancy_Get" class="govuk-link das-button-link">Cancel</a>
+        </p>
+        
+    </div>
+</div>

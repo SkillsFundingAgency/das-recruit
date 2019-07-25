@@ -1,0 +1,24 @@
+﻿@model Esfa.Recruit.Qa.Web.ViewModels.WithdrawVacancy.ClosedViewModel
+
+<div class="govuk-grid-row govuk-!-margin-top-6">
+    <div class="govuk-grid-column-two-thirds">
+        
+        <div class="govuk-panel govuk-panel--confirmation">
+            <h1 class="govuk-panel__title">
+                Vacancy closed
+            </h1>
+            <div class="govuk-panel__body">
+                <p>VAC@(Model.VacancyReference)</p>
+            </div>
+        </div>
+     
+        <p class="govuk-body">
+            We will email @Model.OwnerName and let them know about this change.
+        </p>
+
+        <p class="govuk-body">
+            <a asp-route="@RouteNames.Dashboard_Index_Get" class="govuk-button">Back to dashboard</a>
+            <a asp-route="@RouteNames.WithdrawVacancy_FindVacancy_Get" class="govuk-button button-secondary">Close another vacancy</a>
+        </p>
+    </div>
+</div>
