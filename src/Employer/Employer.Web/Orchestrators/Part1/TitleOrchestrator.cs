@@ -37,7 +37,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var vm = new TitleViewModel
             {
                 PageInfo = new PartOnePageInfoViewModel(),
-                ShowReturnToMALink = dashboard == null || !dashboard.CloneableVacancies.Any()
+                ShowReturnToDashboardLink = dashboard == null || !dashboard.CloneableVacancies.Any()
             };
             return vm;
         }
@@ -89,8 +89,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             IApprenticeshipProgramme programme = null;
             if (IsReferredFromMaHomeFavourites(m))
             {
-                provider = await GetProvider(m.ReferredFromMAHome_UKPRN);
-                programme = await GetProgramme(m.ReferredFromMAHome_ProgrammeId);
+                provider = await GetProvider(m.ReferredFromMa_Ukprn);
+                programme = await GetProgramme(m.ReferredFromMa_ProgrammeId);
             }
 
             if (!m.VacancyId.HasValue) // Create if it's a new vacancy
@@ -127,15 +127,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         private bool IsReferredFromMaHomeFavourites(TitleEditModel m)
         {
-            return m.ReferredFromMAHome_FromSavedFavourites && (!string.IsNullOrWhiteSpace(m.ReferredFromMAHome_ProgrammeId) || !string.IsNullOrWhiteSpace(m.ReferredFromMAHome_UKPRN));
-        }
-
-        private async Task<TrainingProvider> GetProvider(string ukprn)
-        {
-            long.TryParse(ukprn, out long validUkprn);
-            if(validUkprn != 0)
-                return await _client.GetTrainingProviderAsync(validUkprn);
-            return null;
+            return m.ReferredFromMa_FromSavedFavourites && (!string.IsNullOrWhiteSpace(m.ReferredFromMa_ProgrammeId) || !string.IsNullOrWhiteSpace(m.ReferredFromMa_Ukprn));
         }
 
         protected override EntityToViewModelPropertyMappings<Vacancy, TitleEditModel> DefineMappings()
@@ -143,6 +135,14 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var mappings = new EntityToViewModelPropertyMappings<Vacancy, TitleEditModel>();
             mappings.Add(e => e.Title, vm => vm.Title);
             return mappings;
+        }
+
+        private async Task<TrainingProvider> GetProvider(string ukprn)
+        {
+            long.TryParse(ukprn, out long validUkprn);
+            if (validUkprn != 0)
+                return await _client.GetTrainingProviderAsync(validUkprn);
+            return null;
         }
 
         private async Task<IApprenticeshipProgramme> GetProgramme(string programmeId)

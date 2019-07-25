@@ -24,7 +24,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         {
             var vm = await _orchestrator.GetCreateOptionsViewModelAsync(employerAccountId);
 
-            vm.ShowReturnToMALink = Convert.ToBoolean(TempData.Peek(TempDataKeys.ReferredFromMAHome));
+            vm.ShowReturnToMALink = Convert.ToBoolean(TempData.Peek(TempDataKeys.ReferredFromMa));
 
             if (vm.HasClonableVacancies == false)
                 return RedirectToRoute(RouteNames.CreateVacancy_Get);

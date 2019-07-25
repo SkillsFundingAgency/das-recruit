@@ -32,8 +32,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 
         private string GetBackLink()
         {
-            var referredFromMaHomeUkprn = Convert.ToString(TempData.Peek(TempDataKeys.ReferredFromMAHome_UKPRN));
-            var referredFromMaHomeProgrammeId = Convert.ToString(TempData.Peek(TempDataKeys.ReferredFromMAHome_ProgrammeId));
+            var referredFromMaHomeUkprn = Convert.ToString(TempData.Peek(TempDataKeys.ReferredFromMaUkprn));
+            var referredFromMaHomeProgrammeId = Convert.ToString(TempData.Peek(TempDataKeys.ReferredFromMaProgrammeId));
             if (!string.IsNullOrWhiteSpace(referredFromMaHomeUkprn) && !string.IsNullOrWhiteSpace(referredFromMaHomeProgrammeId))
                    return RouteNames.Title_Get;
             return RouteNames.TrainingProvider_Select_Get;

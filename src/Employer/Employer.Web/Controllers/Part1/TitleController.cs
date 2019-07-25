@@ -30,23 +30,26 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             vm.PageInfo.SetWizard();
             vm = (TitleViewModel) GetReferredDataFromTempData(vm);
             SetBackText(vm);
-            SetBackLinkRoute(vm);
+            vm.ReturnToMALink = SetBackLinkRoute(vm);
             return View(vm);
         }
 
         private void SetBackText(TitleViewModel vm)
         {
             vm.ReturnToMALinkText =
-                vm.PageInfo.IsWizard && !string.IsNullOrWhiteSpace(vm.ReferredFromMAHome_ProgrammeId)
+                vm.PageInfo.IsWizard && !string.IsNullOrWhiteSpace(vm.ReferredFromMa_ProgrammeId)
                     ? "Back to your saved favourites"
                     : "Return to home";
         }
 
-        private void SetBackLinkRoute(TitleViewModel vm)
+        private string SetBackLinkRoute(TitleViewModel vm)
         {
-            vm.ReturnToMALink = vm.PageInfo.IsWizard && !string.IsNullOrWhiteSpace(vm.ReferredFromMAHome_ProgrammeId)
-                ? RouteNames.EmployerFavourites
-                : RouteNames.Dashboard_Account_Home;
+            var referredFromMa = Convert.ToBoolean(TempData.Peek(TempDataKeys.ReferredFromMa));
+            if (referredFromMa)
+                return string.IsNullOrWhiteSpace(vm.ReferredFromMa_ProgrammeId)
+                    ? RouteNames.Dashboard_Account_Home
+                    : RouteNames.EmployerFavourites;
+            return RouteNames.Dashboard_Index_Get;
         }
 
         [HttpGet(VacancyTitleRoute, Name = RouteNames.Title_Get)]
@@ -54,6 +57,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         {
             var vm = await _orchestrator.GetTitleViewModelAsync(vrm);
             vm.PageInfo.SetWizard(wizard);
+            vm.ReturnToMALink = SetBackLinkRoute(vm);
             return View(vm);
         }
 
@@ -74,7 +78,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                 vm.PageInfo.SetWizard(wizard);
                 return View(vm);
             }
-            if (m.ReferredFromMAHome_FromSavedFavourites)
+            if (m.ReferredFromMa_FromSavedFavourites)
                 return RedirectToRoute(RouteNames.DisplayVacancy_Get, new { vacancyId = response.Data });
             return wizard
                 ? RedirectToRoute(RouteNames.Training_Get, new {vacancyId = response.Data})
@@ -83,11 +87,11 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 
         private TitleEditModel GetReferredDataFromTempData(TitleEditModel m)
         {
-            m.ReferredFromMAHome_FromSavedFavourites =
-                !string.IsNullOrWhiteSpace(Convert.ToString(TempData.Peek(TempDataKeys.ReferredFromMAHome_UKPRN)))
-                || !string.IsNullOrWhiteSpace(Convert.ToString(TempData.Peek(TempDataKeys.ReferredFromMAHome_ProgrammeId)));
-            m.ReferredFromMAHome_UKPRN = Convert.ToString(TempData.Peek(TempDataKeys.ReferredFromMAHome_UKPRN));
-            m.ReferredFromMAHome_ProgrammeId = Convert.ToString(TempData.Peek(TempDataKeys.ReferredFromMAHome_ProgrammeId));
+            m.ReferredFromMa_FromSavedFavourites =
+                !string.IsNullOrWhiteSpace(Convert.ToString(TempData.Peek(TempDataKeys.ReferredFromMaUkprn)))
+                || !string.IsNullOrWhiteSpace(Convert.ToString(TempData.Peek(TempDataKeys.ReferredFromMaProgrammeId)));
+            m.ReferredFromMa_Ukprn = Convert.ToString(TempData.Peek(TempDataKeys.ReferredFromMaUkprn));
+            m.ReferredFromMa_ProgrammeId = Convert.ToString(TempData.Peek(TempDataKeys.ReferredFromMaProgrammeId));
             return m;
         }
     }
