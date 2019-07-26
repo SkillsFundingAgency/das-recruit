@@ -44,6 +44,16 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithErrorCode("6")
                 .WithRuleId(ruleId);
 
+            When(x => x.QualificationType != null && x.QualificationType.Contains("GCSE"), () =>
+            {
+                RuleFor(x => x.Grade)
+                    .Matches("^[0-9]$")
+
+                        .WithMessage("GCSEs must include the 1-9 grading system")
+                        .WithErrorCode("115")
+                    .WithRuleId(ruleId);
+            });
+
             RuleFor(x => x.Weighting)
                 .NotEmpty()
                     .WithMessage("Select if this is a desired or an essential qualification")
