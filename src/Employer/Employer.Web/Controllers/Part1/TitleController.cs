@@ -17,12 +17,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
     {
         private const string VacancyTitleRoute = "vacancies/{vacancyId:guid}/title";
         private readonly TitleOrchestrator _orchestrator;
-        private readonly ManageApprenticeshipsLinkHelper _linkHelper;
 
-        public TitleController(TitleOrchestrator orchestrator, ManageApprenticeshipsLinkHelper linkHelper)
+        public TitleController(TitleOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
-            _linkHelper = linkHelper;
         }
         
         [HttpGet("create-vacancy", Name = RouteNames.CreateVacancy_Get)]
