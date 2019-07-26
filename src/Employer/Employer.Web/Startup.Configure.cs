@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Middleware;
+using Microsoft.ApplicationInsights.Extensibility;
 
 namespace Esfa.Recruit.Employer.Web
 {
@@ -31,6 +32,8 @@ namespace Esfa.Recruit.Employer.Web
             
             if (env.IsDevelopment())
             {
+                var configuration = (TelemetryConfiguration)app.ApplicationServices.GetService(typeof(TelemetryConfiguration));
+                configuration.DisableTelemetry = true;
                 app.UseDeveloperExceptionPage();
             }
             else
