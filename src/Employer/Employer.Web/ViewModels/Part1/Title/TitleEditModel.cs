@@ -11,8 +11,9 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Title
         [FromRoute]
         public Guid? VacancyId { get; set; }
         public string Title { get; set; }
-        public string ReferredFromMa_Ukprn { get; set; }
-        public string ReferredFromMa_ProgrammeId { get; set; }
-        public bool ReferredFromMa_FromSavedFavourites { get; set; }
+        public string ReferredUkprn { get; set; }
+        public string ReferredProgrammeId { get; set; }
+        public bool ReferredFromSavedFavourites { get; set; }
+        public bool IsReferredFromSavedFavourites => ReferredFromSavedFavourites && (!string.IsNullOrWhiteSpace(ReferredProgrammeId) || !string.IsNullOrWhiteSpace(ReferredUkprn));
     }
 }

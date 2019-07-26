@@ -46,10 +46,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 
         private bool ShowReferredFromMaBackLink()
         {
-            var referredFromMaHomeFromSavedFavourites = !string.IsNullOrWhiteSpace(Convert.ToString(TempData.Peek(TempDataKeys.ReferredFromMaUkprn)))
-                                                                                                    || !string.IsNullOrWhiteSpace(Convert.ToString(TempData.Peek(TempDataKeys.ReferredFromMaProgrammeId)));
-            var referredFromMaHomeUkprn = Convert.ToString(TempData.Peek(TempDataKeys.ReferredFromMaUkprn));
-            var referredFromMaHomeProgrammeId = Convert.ToString(TempData.Peek(TempDataKeys.ReferredFromMaProgrammeId));
+            var referredFromMaHomeFromSavedFavourites = !string.IsNullOrWhiteSpace(Convert.ToString(TempData.Peek(TempDataKeys.ReferredUkprn)))
+                                                                                                    || !string.IsNullOrWhiteSpace(Convert.ToString(TempData.Peek(TempDataKeys.ReferredProgrammeId)));
+            var referredFromMaHomeUkprn = Convert.ToString(TempData.Peek(TempDataKeys.ReferredUkprn));
+            var referredFromMaHomeProgrammeId = Convert.ToString(TempData.Peek(TempDataKeys.ReferredProgrammeId));
             return referredFromMaHomeFromSavedFavourites && string.IsNullOrWhiteSpace(referredFromMaHomeUkprn) && !string.IsNullOrWhiteSpace(referredFromMaHomeProgrammeId);
         }
 

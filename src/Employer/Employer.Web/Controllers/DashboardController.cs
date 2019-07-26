@@ -22,8 +22,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             var vm = await _orchestrator.GetDashboardViewModelAsync(employerAccountId, User.ToVacancyUser());
         private bool ShowReferredFromMaBackLink()
         {
-            var referredFromMaHomeFromSavedFavourites = !string.IsNullOrWhiteSpace(Convert.ToString(TempData.Peek(TempDataKeys.ReferredFromMaUkprn))) 
-                                                        || !string.IsNullOrWhiteSpace(Convert.ToString(TempData.Peek(TempDataKeys.ReferredFromMaProgrammeId)));
+            var referredFromMaHomeFromSavedFavourites = !string.IsNullOrWhiteSpace(Convert.ToString(TempData.Peek(TempDataKeys.ReferredUkprn))) 
+                                                        || !string.IsNullOrWhiteSpace(Convert.ToString(TempData.Peek(TempDataKeys.ReferredProgrammeId)));
             var referredFromMaHome = Convert.ToBoolean(TempData.Peek(TempDataKeys.ReferredFromMa));
             return referredFromMaHomeFromSavedFavourites || referredFromMaHome;
         }

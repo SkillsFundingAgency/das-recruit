@@ -1,5 +1,4 @@
-﻿using System;
-using Esfa.Recruit.Employer.Web.Configuration;
+﻿using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -85,12 +84,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         }
 
         [HttpGet(RoutePaths.AccountLevelServices + "/apprenticeships", Name = RouteNames.EmployerFavourites)]
-        public IActionResult EmployerFavouritesTrainingProviders(string employerAccountId)
+        public IActionResult EmployerFavouritesTrainingProviders(string employerAccountId, string referredUkprn, string referredProgrammeId)
         {
-            var referredFromMaHomeUkprn = Convert.ToString(TempData.Peek(TempDataKeys.ReferredFromMaUkprn));
-            var referredFromMaHomeProgrammeId = Convert.ToString(TempData.Peek(TempDataKeys.ReferredFromMaProgrammeId));
-            var url = string.IsNullOrWhiteSpace(referredFromMaHomeUkprn)
-                ? string.Format(_linkHelper.EmployerFavouritesApprenticeshipList, employerAccountId) : string.Format(_linkHelper.EmployerFavouritesTrainingProviders, employerAccountId, referredFromMaHomeProgrammeId);
+            var url = string.IsNullOrWhiteSpace(referredUkprn)
+                ? string.Format(_linkHelper.EmployerFavouritesApprenticeshipList, employerAccountId) : string.Format(_linkHelper.EmployerFavouritesTrainingProviders, employerAccountId, referredProgrammeId);
             return Redirect(url);
         }
     }

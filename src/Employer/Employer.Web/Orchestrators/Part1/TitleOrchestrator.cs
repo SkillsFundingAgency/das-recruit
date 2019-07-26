@@ -87,10 +87,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         {
             TrainingProvider provider = null;
             IApprenticeshipProgramme programme = null;
-            if (IsReferredFromMaHomeFavourites(m))
+            if (m.IsReferredFromSavedFavourites)
             {
-                provider = await GetProvider(m.ReferredFromMa_Ukprn);
-                programme = await GetProgramme(m.ReferredFromMa_ProgrammeId);
+                provider = await GetProvider(m.ReferredUkprn);
+                programme = await GetProgramme(m.ReferredProgrammeId);
             }
 
             if (!m.VacancyId.HasValue) // Create if it's a new vacancy
@@ -123,11 +123,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                     return v.Id;
                 }
             );
-        }
-
-        private bool IsReferredFromMaHomeFavourites(TitleEditModel m)
-        {
-            return m.ReferredFromMa_FromSavedFavourites && (!string.IsNullOrWhiteSpace(m.ReferredFromMa_ProgrammeId) || !string.IsNullOrWhiteSpace(m.ReferredFromMa_Ukprn));
         }
 
         protected override EntityToViewModelPropertyMappings<Vacancy, TitleEditModel> DefineMappings()

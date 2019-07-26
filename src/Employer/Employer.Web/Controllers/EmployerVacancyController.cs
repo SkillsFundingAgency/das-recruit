@@ -44,17 +44,17 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         private void ManageTempData(TrainingProviderSummary provider, IApprenticeshipProgramme programme)
         {
             if (provider != null)
-                TempData[TempDataKeys.ReferredFromMaUkprn] = provider.Ukprn;
+                TempData[TempDataKeys.ReferredUkprn] = provider.Ukprn;
             else
             {
-                TempData.Remove(TempDataKeys.ReferredFromMaUkprn);
+                TempData.Remove(TempDataKeys.ReferredUkprn);
             }
             
             if (programme != null)
-                TempData[TempDataKeys.ReferredFromMaProgrammeId] = programme.Id;
+                TempData[TempDataKeys.ReferredProgrammeId] = programme.Id;
             else
             {
-                TempData.Remove(TempDataKeys.ReferredFromMaProgrammeId);
+                TempData.Remove(TempDataKeys.ReferredProgrammeId);
             }
         }
 
