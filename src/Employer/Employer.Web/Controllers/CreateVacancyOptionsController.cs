@@ -23,12 +23,11 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         public async Task<IActionResult> Options([FromRoute]string employerAccountId)
         {
             var vm = await _orchestrator.GetCreateOptionsViewModelAsync(employerAccountId);
-
-            vm.ShowReturnToMALink = Convert.ToBoolean(TempData.Peek(TempDataKeys.ReferredFromMa));
-
+            var showReturnToMaLink = Convert.ToBoolean(TempData.Peek(TempDataKeys.ReferredFromMa));
+            vm.BackLink = showReturnToMaLink ? RouteNames.Dashboard_Account_Home : RouteNames.Dashboard_Index_Get;
+            vm.BackLinkText = showReturnToMaLink ? "Return to home" : "Return to your vacancies";
             if (vm.HasClonableVacancies == false)
                 return RedirectToRoute(RouteNames.CreateVacancy_Get);
-            
             return View(vm);
         }
 
