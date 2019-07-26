@@ -122,7 +122,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         {
             var userVacancies = await _client.GetVacancyCountForUserAsync(userId);
 
-            return userVacancies == 1;
+            return userVacancies <= 1;
         }
 
         protected override EntityToViewModelPropertyMappings<Vacancy, TrainingEditModel> DefineMappings()
