@@ -20,7 +20,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
     {
         private readonly ProviderRelationshipApiConfiguration _configuration;
         private readonly ILogger<ProviderRelationshipApiConfiguration> _logger;
-        private readonly IEmployerAccountProvider _employerAccountProvider;  
+        private readonly IEmployerAccountProvider _employerAccountProvider;
 
         public ProviderRelationshipsService(IOptions<ProviderRelationshipApiConfiguration> configuration,
             ILogger<ProviderRelationshipApiConfiguration> logger,
@@ -35,7 +35,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
         {
             ProviderPermissions providerPermissions = null;
             var httpClient = CreateHttpClient(_configuration);
-            var queryData = new { Ukprn = ukprn, Operation = "Recruitment" };            
+            var queryData = new { Ukprn = ukprn, Operation = "Recruitment" };
             var uri = new Uri(AddQueryString("accountproviderlegalentities", queryData), UriKind.RelativeOrAbsolute);
 
             try
@@ -45,7 +45,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
                 {
                     _logger.LogError("An invalid response received when trying to get provider relationships");
                     return new EmployerInfo[]{};
-                }                
+                }
                 var content  = await response.Content.ReadAsStringAsync();
                 providerPermissions = JsonConvert.DeserializeObject<ProviderPermissions>(content);
             }
@@ -68,16 +68,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
             var permittedEmployerAccounts = providerPermissions.AccountProviderLegalEntities.GroupBy(p => p.AccountId);
 
             foreach(var permittedEmployer in permittedEmployerAccounts)
-            {                
+            {
                 var accountId = await _employerAccountProvider.GetEmployerAccountPublicHashedIdAsync(permittedEmployer.Key);
-                
-                var employerInfo = new EmployerInfo() 
-                { 
-                    EmployerAccountId = accountId, 
+
+                var employerInfo = new EmployerInfo()
+                {
+                    EmployerAccountId = accountId,
                     Name = permittedEmployer.First().AccountName, //should be same in all the items hense read from first
-                    LegalEntities = new List<LegalEntity>() 
+                    LegalEntities = new List<LegalEntity>()
                 };
-                
+
                 var legalEntityViewModels = await _employerAccountProvider.GetLegalEntitiesConnectedToAccountAsync(accountId);
 
                 foreach(var permittedLegalEntity in permittedEmployer)
@@ -87,7 +87,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
                     {
                         var legalEntity = LegalEntityMapper.MapFromAccountApiLegalEntity(matchingLegalEntity);
                         employerInfo.LegalEntities.Add(legalEntity);
-                    }                    
+                    }
                 }
 
                 employerInfos.Add(employerInfo);
@@ -97,12 +97,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
 
         private static HttpClient CreateHttpClient(ProviderRelationshipApiConfiguration configuration)
         {
-            
+
             var httpClient = new HttpClientBuilder()
                 .WithDefaultHeaders()
                 .WithBearerAuthorisationHeader(new AzureADBearerTokenGenerator(configuration))
                 .Build();
-            
+
             httpClient.BaseAddress = new Uri(configuration.ApiBaseUrl);
 
             return httpClient;

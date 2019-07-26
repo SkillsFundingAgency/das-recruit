@@ -16,6 +16,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue
             { typeof(DeleteReportsQueueMessage), QueueNames.DeleteReportsQueueName },
             { typeof(EventItem), QueueNames.DomainEventsQueueName },
             { typeof(ReportQueueMessage), QueueNames.ReportQueueName },
+            { typeof(TransferVacanciesFromProviderQueueMessage), QueueNames.TransferVacanciesFromProviderQueueName },
+            { typeof(TransferVacancyToLegalEntityQueueMessage), QueueNames.TransferVacanciesToLegalEntityQueueName },
             { typeof(UpdateApprenticeshipProgrammesQueueMessage), QueueNames.UpdateApprenticeProgrammesQueueName },
             { typeof(UpdateBankHolidaysQueueMessage), QueueNames.UpdateBankHolidaysQueueName },
             { typeof(UpdateBlockedEmployersQueueMessage), QueueNames.GenerateBlockedEmployersQueueName },

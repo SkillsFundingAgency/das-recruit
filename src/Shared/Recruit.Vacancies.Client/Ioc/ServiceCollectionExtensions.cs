@@ -120,6 +120,8 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddTransient<INotifyVacancyReviewUpdates, SlackNotifyVacancyReviewUpdates>();
             services.AddTransient<INotifyVacancyUpdates, SlackNotifyVacancyUpdates>();
             services.AddTransient<IVacancyService, VacancyService>();
+            services.AddTransient<IVacancyTransferService, VacancyTransferService>();
+            services.AddTransient<IVacancyReviewTransferService, VacancyReviewTransferService>();
             services.AddTransient<INextVacancyReviewService, NextVacancyReviewService>();
             services.AddTransient<IVacancyComparerService, VacancyComparerService>();
             services.AddTransient<IGetTitlePopularity, TitlePopularityService>();
