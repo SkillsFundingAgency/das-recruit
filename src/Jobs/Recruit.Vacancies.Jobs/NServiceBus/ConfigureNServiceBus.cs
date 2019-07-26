@@ -1,5 +1,3 @@
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
-using Esfa.Recruit.Vacancies.Jobs.NServiceBus;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,7 +11,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.NServiceBus
 {
     public static class ConfigureNServiceBus
     {
-        const string RecruitVacanciesJobs = "SFA.Recruit.Vacancies.Jobs";
+        private const string RecruitVacanciesJobs = "SFA.Recruit.Vacancies.Jobs";
         public static void AddDasNServiceBus(this IServiceCollection services, IConfiguration configuration)
         {
             services

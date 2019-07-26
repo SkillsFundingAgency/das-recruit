@@ -2,7 +2,7 @@
 {
     public enum TransferReason
     {
-        EmployerRevokedPermission,
+        EmployerRevokedProviderPermission,
         BlockedByQa
     }
 }

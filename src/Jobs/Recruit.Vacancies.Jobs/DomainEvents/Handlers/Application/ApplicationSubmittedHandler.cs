@@ -9,15 +9,15 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Application
 {
-    public class ApplicationSubmittedHandler : DomainEventHandler,  IDomainEventHandler<ApplicationSubmittedEvent>
+    public class ApplicationSubmittedHandler : DomainEventHandler, IDomainEventHandler<ApplicationSubmittedEvent>
     {
         private readonly ILogger<ApplicationSubmittedHandler> _logger;
         private readonly IJobsVacancyClient _client;
         private readonly ICommunicationQueueService _communicationQueueService;
         public ApplicationSubmittedHandler(
-            ILogger<ApplicationSubmittedHandler> logger, 
+            ILogger<ApplicationSubmittedHandler> logger,
             IJobsVacancyClient client,
-            ICommunicationQueueService communicationQueueService) 
+            ICommunicationQueueService communicationQueueService)
             : base(logger)
         {
             _logger = logger;

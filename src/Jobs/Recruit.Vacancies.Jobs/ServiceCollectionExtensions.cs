@@ -29,6 +29,9 @@ using Communication.Types.Interfaces;
 using Esfa.Recruit.Vacancies.Client.Application.Communications;
 using Esfa.Recruit.Client.Application.Communications;
 using Esfa.Recruit.Vacancies.Client.Application.Communications.EntityDataItemProviderPlugins;
+using System;
+using System.Collections.Generic;
+using SFA.DAS.Encoding;
 
 namespace Esfa.Recruit.Vacancies.Jobs
 {
@@ -58,9 +61,15 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddScoped<UpdateQaDashboardQueueTrigger>();
             services.AddScoped<GenerateBlockedEmployersQueueTrigger>();
             services.AddScoped<GenerateVacancyAnalyticsSummaryQueueTrigger>();
+            services.AddScoped<TransferVacanciesFromProviderQueueTrigger>();
+            services.AddScoped<TransferVacancyToLegalEntityQueueTrigger>();
+            services.AddTransient<IFaaService, FaaService>();
 #if DEBUG
             services.AddScoped<SpikeQueueTrigger>();
 #endif
+
+            services.AddScoped<TransferVacanciesFromProviderJob>();
+            services.AddScoped<TransferVacancyToLegalEntityJob>();
 
             // Domain Event Queue Handlers
 
@@ -92,6 +101,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
 
             RegisterCommunicationsService(services, configuration);
             RegisterDasNotifications(services, configuration);
+            RegisterDasEncodingService(services, configuration);
         }
 
         private static void RegisterCommunicationsService(IServiceCollection services, IConfiguration configuration)
@@ -130,6 +140,13 @@ namespace Esfa.Recruit.Vacancies.Jobs
                 .Build();
 
             services.AddTransient<INotificationsApi>(sp => new NotificationsApi(httpClient, notificationsConfig));
+        }
+
+        private static void RegisterDasEncodingService(IServiceCollection services, IConfiguration configuration)
+        {
+            var dasEncodingConfig = new EncodingConfig { Encodings = new List<Encoding>() };
+            configuration.GetSection(nameof(dasEncodingConfig.Encodings)).Bind(dasEncodingConfig.Encodings);
+            services.AddSingleton<IEncodingService>(_ => new EncodingService(dasEncodingConfig));
         }
     }
 }
