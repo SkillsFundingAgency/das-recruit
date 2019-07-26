@@ -18,5 +18,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Repositories
         Task<IEnumerable<long>> GetDistinctVacancyOwningProviderAccountsAsync();
         Task<IEnumerable<long>> GetAllVacancyReferencesAsync();
         Task<IEnumerable<ProviderVacancySummary>> GetVacanciesAssociatedToProvider(long ukprn);
+        Task<IEnumerable<Vacancy>> GetProviderOwnedVacanciesForLegalEntityAsync(long ukprn, long legalEntityId);
+        Task<long> GetNoOfProviderOwnedVacanciesForLegalEntityAsync(long ukprn, long legalEntityId);
     }
 }

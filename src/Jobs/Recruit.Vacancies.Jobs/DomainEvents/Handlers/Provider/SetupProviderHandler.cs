@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider
 {
-    public class SetupProviderHandler : DomainEventHandler,  IDomainEventHandler<SetupProviderEvent>
+    public class SetupProviderHandler : DomainEventHandler, IDomainEventHandler<SetupProviderEvent>
     {
         private readonly ILogger<SetupProviderHandler> _logger;
         private readonly IEditVacancyInfoProjectionService _projectionService;
@@ -17,7 +17,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider
         private readonly IEmployerVacancyClient _client;
         private readonly IPasAccountClient _pasAccountClient;
 
-        public SetupProviderHandler(ILogger<SetupProviderHandler> logger, 
+        public SetupProviderHandler(ILogger<SetupProviderHandler> logger,
             IEditVacancyInfoProjectionService projectionService,
             IProviderRelationshipsService providerRelationshipService,
             IEmployerVacancyClient client,
@@ -61,6 +61,6 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider
             }
         }
 
-        
+
     }
 }
