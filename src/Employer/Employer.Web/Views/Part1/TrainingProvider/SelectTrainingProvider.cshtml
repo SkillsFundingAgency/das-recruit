@@ -8,12 +8,7 @@
 @model SelectTrainingProviderViewModel
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <div asp-show="@Model.ShowReferredBackLink">
-            <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Title_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
-        </div>
-        <div asp-hide="@Model.ShowReferredBackLink">
-            <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Training_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
-        </div>
+        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@Model.BackLink" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
         <partial name="@PartialNames.ReviewSummary" for="Review" />
         <h1 class="govuk-heading-xl">

@@ -111,9 +111,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                 ukprn = m.ReferredUkprn = Convert.ToString(TempData.Peek(TempDataKeys.ReferredUkprn + m.VacancyId));
                 programmeId = m.ReferredProgrammeId = Convert.ToString(TempData.Peek(TempDataKeys.ReferredProgrammeId + m.VacancyId));
             }
-            m.ReferredFromSavedFavourites =
-                !string.IsNullOrWhiteSpace(ukprn)
-                || !string.IsNullOrWhiteSpace(programmeId);
+            m.ReferredFromSavedFavourites = !string.IsNullOrWhiteSpace(ukprn) || !string.IsNullOrWhiteSpace(programmeId);
         }
     }
 }

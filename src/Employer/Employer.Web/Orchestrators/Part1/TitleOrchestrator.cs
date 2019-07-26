@@ -87,7 +87,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         {
             TrainingProvider provider = null;
             IApprenticeshipProgramme programme = null;
-            if (m.IsReferredFromSavedFavourites)
+            if (m.ReferredFromSavedFavourites)
             {
                 provider = await GetProvider(m.ReferredUkprn);
                 programme = await GetProgramme(m.ReferredProgrammeId);
