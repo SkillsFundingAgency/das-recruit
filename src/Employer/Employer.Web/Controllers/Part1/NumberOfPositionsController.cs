@@ -26,15 +26,15 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         {
             var vm = await _orchestrator.GetNumberOfPositionsViewModelAsync(vrm);
             vm.PageInfo.SetWizard(wizard);
-            vm.BackLink = GetBackLink();
+            vm.BackLink = GetBackLink(vrm.VacancyId);
             return View(vm);
         }
 
-        private string GetBackLink()
+        private string GetBackLink(Guid vacancyId)
         {
-            var referredFromMaHomeUkprn = Convert.ToString(TempData.Peek(TempDataKeys.ReferredUkprn));
-            var referredFromMaHomeProgrammeId = Convert.ToString(TempData.Peek(TempDataKeys.ReferredProgrammeId));
-            if (!string.IsNullOrWhiteSpace(referredFromMaHomeUkprn) && !string.IsNullOrWhiteSpace(referredFromMaHomeProgrammeId))
+            var referredUkprn = Convert.ToString(TempData.Peek(TempDataKeys.ReferredUkprn + vacancyId));
+            var referredProgrammeId = Convert.ToString(TempData.Peek(TempDataKeys.ReferredProgrammeId + vacancyId));
+            if (!string.IsNullOrWhiteSpace(referredUkprn) && !string.IsNullOrWhiteSpace(referredProgrammeId))
                    return RouteNames.Title_Get;
             return RouteNames.TrainingProvider_Select_Get;
         }
