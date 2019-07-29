@@ -31,13 +31,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             _employerVacancyClient = employerVacancyClient;
         }
 
-        public async Task<TitleViewModel> GetTitleViewModel(string employerAccountId)
+        public TitleViewModel GetTitleViewModel()
         {
-            var dashboard = await _employerVacancyClient.GetDashboardAsync(employerAccountId);
             var vm = new TitleViewModel
             {
-                PageInfo = new PartOnePageInfoViewModel(),
-                ShowReturnToDashboardLink = dashboard == null || !dashboard.CloneableVacancies.Any()
+                PageInfo = new PartOnePageInfoViewModel()
             };
             return vm;
         }

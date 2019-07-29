@@ -15,6 +15,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         }
         public async Task<TrainingProviderSummary> GetProviderUkprn(string ukprn)
         {
+            if (string.IsNullOrWhiteSpace(ukprn))
+                return null;
             long.TryParse(ukprn, out long validUkprn);
             var providers = await _vacancyClient.GetAllTrainingProvidersAsync();
             return providers.SingleOrDefault(p => p.Ukprn == validUkprn);
@@ -22,6 +24,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public async Task<IApprenticeshipProgramme> GetProgrammeId(string programmeId)
         {
+            if (string.IsNullOrWhiteSpace(programmeId))
+                return null;
             var programmes = await _vacancyClient.GetActiveApprenticeshipProgrammesAsync();
             return programmes.SingleOrDefault(p => p.Id == programmeId);
         }

@@ -26,17 +26,16 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         [HttpGet("create-vacancy", Name = RouteNames.CreateVacancy_Get)]
         public async Task<IActionResult> Title([FromRoute] string employerAccountId)
         {
-            var vm = await _orchestrator.GetTitleViewModel(employerAccountId);
+            var vm = await _orchestrator.GetTitleViewModel();
             vm.PageInfo.SetWizard();
-            GetReferredDataFromTempData(vm);
-            vm.ReturnToMALinkText = SetBackText(vm);
-            vm.ReturnToMALink = SetBackLinkRoute(vm);
+            vm.BackLinkText = SetBackText(vm);
+            vm.BackLinkRoute = SetBackLinkRoute(vm);
             return View(vm);
         }
 
         private string SetBackText(TitleViewModel vm)
         {
-            return !string.IsNullOrWhiteSpace(vm.ReferredProgrammeId)
+            return !string.IsNullOrWhiteSpace(GetReferredProgrammeId(vm.VacancyId))
                     ? "Back to your saved favourites"
                     : "Return to home";
         }
@@ -45,7 +44,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         {
             var referredFromMa = Convert.ToBoolean(TempData.Peek(TempDataKeys.ReferredFromMa));
             if (referredFromMa)
-                return string.IsNullOrWhiteSpace(vm.ReferredProgrammeId)
+                return string.IsNullOrWhiteSpace(GetReferredProgrammeId(vm.VacancyId))
                     ? Url.RouteUrl(RouteNames.Dashboard_Account_Home)
                     : GenerateEmployerFavouriteUrl(vm);
             return Url.RouteUrl(RouteNames.Dashboard_Index_Get);
@@ -54,7 +53,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         private string GenerateEmployerFavouriteUrl(TitleViewModel vm)
         {
             return Url.RouteUrl(RouteNames.EmployerFavourites,
-                new {referredUkprn = vm.ReferredUkprn, referredProgrammeId = vm.ReferredProgrammeId});
+                new {referredUkprn = GetReferredProviderUkprn(vm.VacancyId), referredProgrammeId = GetReferredProgrammeId(vm.VacancyId)});
         }
 
         [HttpGet(VacancyTitleRoute, Name = RouteNames.Title_Get)]
@@ -62,8 +61,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         {
             var vm = await _orchestrator.GetTitleViewModelAsync(vrm);
             vm.PageInfo.SetWizard(wizard);
-            vm.ReturnToMALink = SetBackLinkRoute(vm);
-            vm.ReturnToMALinkText = SetBackText(vm);
+            vm.BackLinkRoute = SetBackLinkRoute(vm);
+            vm.BackLinkText = SetBackText(vm);
             return View(vm);
         }
 
@@ -98,20 +97,27 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 
         private void GetReferredDataFromTempData(TitleEditModel m)
         {
-            string ukprn;
-            string programmeId;
             m.ReferredFromMa = Convert.ToBoolean(TempData.Peek(TempDataKeys.ReferredFromMa));
-            if (m.VacancyId == null)
+            m.ReferredUkprn = GetReferredProviderUkprn(m.VacancyId);
+            m.ReferredProgrammeId = GetReferredProgrammeId(m.VacancyId);
+        }
+
+        private string GetReferredProgrammeId(Guid? vacancyId)
+        {
+            if (vacancyId == null)
             {
-                ukprn = m.ReferredUkprn = Convert.ToString(TempData.Peek(TempDataKeys.ReferredUkprn));
-                programmeId = m.ReferredProgrammeId = Convert.ToString(TempData.Peek(TempDataKeys.ReferredProgrammeId));
+                return Convert.ToString(TempData.Peek(TempDataKeys.ReferredProgrammeId));
             }
-            else
+            return Convert.ToString(TempData.Peek(TempDataKeys.ReferredProgrammeId + vacancyId));
+        }
+
+        private string GetReferredProviderUkprn(Guid? vacancyId)
+        {
+            if (vacancyId == null)
             {
-                ukprn = m.ReferredUkprn = Convert.ToString(TempData.Peek(TempDataKeys.ReferredUkprn + m.VacancyId));
-                programmeId = m.ReferredProgrammeId = Convert.ToString(TempData.Peek(TempDataKeys.ReferredProgrammeId + m.VacancyId));
+                return Convert.ToString(TempData.Peek(TempDataKeys.ReferredUkprn));
             }
-            m.ReferredFromSavedFavourites = !string.IsNullOrWhiteSpace(ukprn) || !string.IsNullOrWhiteSpace(programmeId);
+            return Convert.ToString(TempData.Peek(TempDataKeys.ReferredUkprn + vacancyId));
         }
     }
 }

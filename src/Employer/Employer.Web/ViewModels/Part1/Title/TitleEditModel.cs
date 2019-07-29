@@ -14,6 +14,8 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Title
         public string ReferredUkprn { get; set; }
         public bool ReferredFromMa { get; set; }
         public string ReferredProgrammeId { get; set; }
-        public bool ReferredFromSavedFavourites { get; set; }
+        public bool ReferredFromSavedFavourites => ReferredFromMa &
+                                                   (!string.IsNullOrEmpty(ReferredUkprn) ||
+                                                    !string.IsNullOrEmpty(ReferredProgrammeId));
     }
 }

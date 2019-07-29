@@ -26,7 +26,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         {
             var vm = await _orchestrator.GetNumberOfPositionsViewModelAsync(vrm);
             vm.PageInfo.SetWizard(wizard);
-            vm.BackLink = GetBackLink(vrm.VacancyId);
+            vm.BackLinkRoute = GetBackLink(vrm.VacancyId);
             return View(vm);
         }
 

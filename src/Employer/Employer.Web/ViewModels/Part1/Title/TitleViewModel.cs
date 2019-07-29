@@ -1,11 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Shared.Web.ViewModels;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Title
 {
-    public class TitleViewModel : TitleEditModel
+    public class TitleViewModel
     {
+        [FromRoute]
+        public string EmployerAccountId { get; set; }
+        [FromRoute]
+        public Guid? VacancyId { get; set; }
+        public string Title { get; set; }
         public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
         public IList<string> OrderedFieldNames => new List<string>
         {
@@ -21,5 +28,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Title
         public bool ShowReturnToDashboardLink { get; set; }
         public string ReturnToMALinkText { get; set; }
         public string ReturnToMALink { get; set; }
+        public string BackLinkText { get; set; }
+        public string BackLinkRoute { get; set; }
     }
 }
