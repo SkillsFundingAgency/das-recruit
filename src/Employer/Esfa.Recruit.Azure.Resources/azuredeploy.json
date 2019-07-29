@@ -231,8 +231,11 @@
     "CommunicationsConfiguration": {
       "type": "object"
     },
-    "NotificationsApiClientConfiguration":{
+    "NotificationsApiClientConfiguration": {
       "type": "object"
+    },
+    "DasEncodings": {
+      "type": "array"
     }
   },
   "variables": {
@@ -972,6 +975,10 @@
               {
                 "name": "PasAccountApiConfiguration:Tenant",
                 "value": "[parameters('PasAccountApiConfiguration').Tenant]"
+              },
+              {
+                "name": "Encodings",
+                "value": "[parameters('DasEncodings')]"
               }
             ]
           },
