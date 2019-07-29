@@ -48,6 +48,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             return _queryStore.GetAsync<VacancyAnalyticsSummary>(QueryViewType.VacancyAnalyticsSummary.TypeName, key);
         }
 
+        public Task<BlockedProviderOrganisations> GetBlockedProviders()
+        {
+            var key = QueryViewType.BlockedProviderOrganisations.GetIdValue();
+
+            return _queryStore.GetAsync<BlockedProviderOrganisations>(key);
+        }
+
         public Task UpdateEmployerDashboardAsync(string employerAccountId, IEnumerable<VacancySummary> vacancySummaries)
         {
             var dashboardItem = new EmployerDashboard
@@ -218,6 +225,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             };
 
             return _queryStore.UpsertAsync(blockedEmployersDoc);
+        }
+
+        public Task<BlockedProviderOrganisations> GetBlockedProvidersAsync()
+        {
+            return _queryStore.GetAsync<BlockedProviderOrganisations>(QueryViewType.BlockedProviderOrganisations.GetIdValue());
         }
     }
 }
