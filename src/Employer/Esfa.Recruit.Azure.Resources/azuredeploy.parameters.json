@@ -181,11 +181,15 @@
         "ProvidersApprenticeshipServiceUrl": ""
       }
     },
-    "NotificationsApiClientConfiguration":{
+    "NotificationsApiClientConfiguration": {
       "value": {
         "ApiBaseUrl": "",
         "ClientToken": ""
       }
+    },
+    "DasEncodings": {
+      "value": [
+      ]
     }
   }
 }
