@@ -25,8 +25,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
             var blockedProviders = await _repo.GetAllBlockedProvidersAsync();
 
             _logger.LogInformation($"Found {blockedProviders.Count} currently blocked providers to populate queryStore {nameof(BlockedProviderOrganisations)} document.");
-            var blockedProvidersCasted = blockedProviders.Select(bp => long.Parse(bp));
-            await _queryStoreWriter.UpdateBlockedProviders(blockedProvidersCasted);
+            await _queryStoreWriter.UpdateBlockedProviders(blockedProviders);
         }
 
         public async Task RebuildBlockedEmployerOrganisations()

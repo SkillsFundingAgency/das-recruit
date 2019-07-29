@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.BlockedOrganisations
 {
@@ -7,6 +8,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Bl
         public BlockedEmployerOrganisations() : base(QueryViewType.BlockedEmployerOrganisations.TypeName)
         {}
 
-        public IEnumerable<string> Data { get; set; }
+        public IEnumerable<BlockedOrganisationSummary> Data { get; set; }
     }
 }

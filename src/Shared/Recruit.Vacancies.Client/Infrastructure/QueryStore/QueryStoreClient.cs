@@ -12,6 +12,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacanc
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyAnalytics;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.BlockedOrganisations;
+using Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 {
@@ -195,7 +196,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             return QueryViewType.LiveVacancy.GetIdValue(vacancyReference.ToString());
         }
 
-        public Task UpdateBlockedProviders(IEnumerable<long> blockedProviders)
+        public Task UpdateBlockedProviders(IEnumerable<BlockedOrganisationSummary> blockedProviders)
         {
             var blockedProvidersDoc = new BlockedProviderOrganisations
             {
@@ -207,7 +208,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             return _queryStore.UpsertAsync(blockedProvidersDoc);
         }
 
-        public Task UpdateBlockedEmployers(IEnumerable<string> blockedEmployers)
+        public Task UpdateBlockedEmployers(IEnumerable<BlockedOrganisationSummary> blockedEmployers)
         {
             var blockedEmployersDoc = new BlockedEmployerOrganisations
             {

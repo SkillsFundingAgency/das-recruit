@@ -7,6 +7,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.QA;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyAnalytics;
+using Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 {
@@ -26,7 +27,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         Task<long> RemoveOldEmployerDashboards(DateTime oldestLastUpdatedDate);
         Task<long> RemoveOldProviderDashboards(DateTime oldestLastUpdatedDate);
         Task UpsertVacancyAnalyticSummaryAsync(VacancyAnalyticsSummary summary);
-        Task UpdateBlockedProviders(IEnumerable<long> blockedProviders);
-        Task UpdateBlockedEmployers(IEnumerable<string> blockedEmployers);
+        Task UpdateBlockedProviders(IEnumerable<BlockedOrganisationSummary> blockedProviders);
+        Task UpdateBlockedEmployers(IEnumerable<BlockedOrganisationSummary> blockedEmployers);
     }
 }

@@ -11,6 +11,7 @@ using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Polly;
+using Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 {
@@ -42,34 +43,34 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             return result;
         }
 
-        public async Task<List<string>> GetAllBlockedProvidersAsync()
+        public async Task<List<BlockedOrganisationSummary>> GetAllBlockedProvidersAsync()
         {
             var collection = GetCollection<BlockedOrganisation>();
             var result = await RetryPolicy.ExecuteAsync(async _ =>
                                                         {
                                                             var pipeline = BlockedOrganisationsAggQueryBuilder.GetBlockedProvidersAggregateQueryPipeline();
                                                             var mongoQuery = pipeline.ToJson();
-                                                            var aggResults = await collection.AggregateAsync<BlockedOrganisationsAggQueryResponseDto>(pipeline);
+                                                            var aggResults = await collection.AggregateAsync<BlockedOrganisationSummary>(pipeline);
                                                             return await aggResults.ToListAsync();
                                                         },
                                                         new Context(nameof(GetAllBlockedProvidersAsync)));
 
-            return result.Select(bo => bo.BlockedOrganisationId).ToList();
+            return result.ToList();
         }
 
-        public async Task<List<string>> GetAllBlockedEmployersAsync()
+        public async Task<List<BlockedOrganisationSummary>> GetAllBlockedEmployersAsync()
         {
             var collection = GetCollection<BlockedOrganisation>();
             var result = await RetryPolicy.ExecuteAsync(async _ =>
                                                         {
                                                             var pipeline = BlockedOrganisationsAggQueryBuilder.GetBlockedEmployersAggregateQueryPipeline();
                                                             var mongoQuery = pipeline.ToJson();
-                                                            var aggResults = await collection.AggregateAsync<BlockedOrganisationsAggQueryResponseDto>(pipeline);
+                                                            var aggResults = await collection.AggregateAsync<BlockedOrganisationSummary>(pipeline);
                                                             return await aggResults.ToListAsync();
                                                         },
                                                         new Context(nameof(GetAllBlockedProvidersAsync)));
 
-            return result.Select(bo => bo.BlockedOrganisationId).ToList();
+            return result.ToList();
         }
     }
 }

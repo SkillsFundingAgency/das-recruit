@@ -30,6 +30,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.BlockedOrganisat
                     },
                     { "organisationId", new BsonDocument().Add("$first", "$organisationId") },
                     { "updatedDate", new BsonDocument().Add("$first", "$updatedDate") },
+                    { "updatedByUser", new BsonDocument().Add("$first", "$updatedByUser.name") },
                     { "organisationType", new BsonDocument().Add("$first", "$organisationType") },
                     { "blockedStatus", new BsonDocument().Add("$first", "$blockedStatus") },
                 }
@@ -76,7 +77,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.BlockedOrganisat
                 new BsonDocument
                 {
                     { "_id", 0 },
-                    { "blockedOrganisationId", "$organisationId" }
+                    { "blockedOrganisationId", "$organisationId" },
+                    { "blockedDate", "$updatedDate" },
+                    { "blockedByUser", "$updatedByUser" }
                 }
             }
         };
