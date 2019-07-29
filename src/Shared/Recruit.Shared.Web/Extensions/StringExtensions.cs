@@ -73,5 +73,11 @@ namespace Esfa.Recruit.Shared.Web.Extensions
 
             return null;
         }
+
+        public static bool IsEqualWithoutSymbols(this string source, string target)
+        {
+            if (target == null) return false;
+            return String.Compare(source, target, CultureInfo.CurrentCulture, CompareOptions.IgnoreCase | CompareOptions.IgnoreSymbols) == 0;
+        }
     }
 }

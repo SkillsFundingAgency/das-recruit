@@ -50,7 +50,7 @@
     </div>
 </div>
 
-<h2 asp-show="@Model.DisplayInProgressVacancies" class="govuk-heading-m govuk-!-margin-bottom-0">In-progress vacancies</h2>
+<h2 asp-show="@Model.IsUserAdmin" class="govuk-heading-m govuk-!-margin-bottom-0">In-progress vacancies</h2>
 
 <span asp-show="@Model.DisplayNoInProgressVacanciesMessage" class="govuk-body">There are no vacancy reviews currently in progress</span>
 
@@ -139,3 +139,12 @@
         <p class="govuk-body">Create and download reports for your vacancies for any period of time.</p>
     </div>
 </div>
+<div asp-show="@Model.IsUserAdmin" class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">
+        <h3 class="govuk-heading-s">
+            <a class="govuk-link  govuk-link--no-visited-state" asp-route="@RouteNames.RemoveTrainingProvider_Get">Remove training provider</a>
+        </h3>
+        <p class="govuk-body">Remove a training provider</p>
+    </div>
+</div>
+

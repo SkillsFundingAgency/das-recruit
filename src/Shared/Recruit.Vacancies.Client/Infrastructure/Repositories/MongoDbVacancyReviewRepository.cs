@@ -25,8 +25,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         {
             var filterBuilder = Builders<VacancyReview>.Filter;
 
-            var filter = !filterBuilder.Eq(r => r.Status, ReviewStatus.New)
-                         & filterBuilder.Eq(r => r.VacancyReference, vacancyReference);
+            var filter = filterBuilder.Eq(r => r.VacancyReference, vacancyReference);
             var results = await GetVacancyReviewsAsync(filter);
             return results.OrderByDescending(r => r.CreatedDate).FirstOrDefault();
         }

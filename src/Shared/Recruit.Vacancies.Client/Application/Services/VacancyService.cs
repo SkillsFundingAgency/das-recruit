@@ -56,13 +56,14 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
             });
         }
 
-        public async Task CloseVacancyImmediately(Guid vacancyId, VacancyUser user)
+        public async Task CloseVacancyImmediately(Guid vacancyId, VacancyUser user, ClosureReason closureReason)
         {
             _logger.LogInformation("Closing vacancy {vacancyId} by user {userEmail}.", vacancyId, user.Email);
 
             var vacancy = await _vacancyRepository.GetVacancyAsync(vacancyId);
 
             vacancy.ClosedByUser = user;
+            vacancy.ClosureReason = closureReason;
 
             await CloseVacancyAsync(vacancy);
         }

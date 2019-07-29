@@ -4,6 +4,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
     {
         Approved,
         Referred,
-        Transferred
+        Transferred,
+        Withdrawn
     }
 }

@@ -5,6 +5,7 @@ using Esfa.Recruit.Qa.Web.Orchestrators.Reports;
 using Esfa.Recruit.Qa.Web.Security;
 using Esfa.Recruit.QA.Web.Configuration;
 using Esfa.Recruit.QA.Web.Filters;
+using Esfa.Recruit.QA.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.RuleTemplates;
@@ -73,6 +74,8 @@ namespace Esfa.Recruit.Qa.Web
             services.AddScoped<ReviewOrchestrator>();
             services.AddScoped<ReportDashboardOrchestrator>();
             services.AddScoped<ApplicationsReportOrchestrator>();
+            services.AddScoped<ManageProviderOrchestrator>();
+            
             services.AddScoped<ReportConfirmationOrchestrator>();
             services.AddTransient<UserAuthorizationService>();
 
