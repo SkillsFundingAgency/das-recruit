@@ -132,10 +132,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         private async Task<TrainingProvider> GetProvider(string ukprn)
         {
-            long.TryParse(ukprn, out long validUkprn);
-            if (validUkprn != 0)
-                return await _client.GetTrainingProviderAsync(validUkprn);
-            return null;
+            if(long.TryParse(ukprn, out long validUkprn) == false)
+                return null;
+            return await _client.GetTrainingProviderAsync(validUkprn);
         }
 
         private async Task<IApprenticeshipProgramme> GetProgramme(string programmeId)

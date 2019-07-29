@@ -41,15 +41,17 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                vm.IsTrainingProviderSelected = true;
            }
            
-           vm.BackLinkRoute = ShowReferredFromMaBackLink(vrm.VacancyId) ? RouteNames.Title_Get : RouteNames.Training_Get;
+           vm.BackLinkRoute = GetBackLinkRoute(vrm.VacancyId);
            return View(vm);
         }
 
-        private bool ShowReferredFromMaBackLink(Guid vacancyId)
+        private string GetBackLinkRoute(Guid vacancyId)
         {
-            var referredUkprn = Convert.ToString(TempData.Peek(TempDataKeys.ReferredUkprn + vacancyId));
-            var referredProgrammeId = Convert.ToString(TempData.Peek(TempDataKeys.ReferredProgrammeId + vacancyId));
-            return !string.IsNullOrWhiteSpace(referredUkprn) || !string.IsNullOrWhiteSpace(referredProgrammeId);
+            var referredUkprn = Convert.ToString(TempData.Peek(string.Format(TempDataKeys.ReferredUkprn, vacancyId)));
+            var referredProgrammeId = Convert.ToString(TempData.Peek(string.Format(TempDataKeys.ReferredProgrammeId, vacancyId)));
+            if (!string.IsNullOrWhiteSpace(referredUkprn) || !string.IsNullOrWhiteSpace(referredProgrammeId))
+                return RouteNames.Title_Get;
+            return RouteNames.Training_Get;
         }
 
         [HttpPost("select-training-provider", Name = RouteNames.TrainingProvider_Select_Post)]

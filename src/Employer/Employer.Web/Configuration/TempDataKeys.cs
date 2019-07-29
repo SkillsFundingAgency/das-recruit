@@ -8,7 +8,7 @@
         public const string ApplicationReviewStatusInfoMessage = "ApplicationReviewStatus_InfoMessage";
         public const string VacancyClosedMessage = "VacancyClosedMessage";
         public const string ReferredFromMa = "ReferredFromMa";
-        public const string ReferredUkprn = "ReferredUkprn_";
-        public const string ReferredProgrammeId = "ReferredProgrammeId_";
+        public const string ReferredUkprn = "ReferredUkprn_{0}";
+        public const string ReferredProgrammeId = "ReferredProgrammeId_{0}";
     }
 }

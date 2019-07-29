@@ -15,9 +15,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         }
         public async Task<TrainingProviderSummary> GetProviderUkprn(string ukprn)
         {
-            if (string.IsNullOrWhiteSpace(ukprn))
+            if (long.TryParse(ukprn, out long validUkprn) == false)
                 return null;
-            long.TryParse(ukprn, out long validUkprn);
             var providers = await _vacancyClient.GetAllTrainingProvidersAsync();
             return providers.SingleOrDefault(p => p.Ukprn == validUkprn);
         }
