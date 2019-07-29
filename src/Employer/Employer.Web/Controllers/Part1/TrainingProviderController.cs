@@ -41,7 +41,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                vm.IsTrainingProviderSelected = true;
            }
            
-           vm.BackLink = ShowReferredFromMaBackLink(vrm.VacancyId) ? RouteNames.Title_Get : RouteNames.Training_Get;
+           vm.BackLinkRoute = ShowReferredFromMaBackLink(vrm.VacancyId) ? RouteNames.Title_Get : RouteNames.Training_Get;
            return View(vm);
         }
 
