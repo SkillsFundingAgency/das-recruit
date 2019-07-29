@@ -3,7 +3,7 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <a asp-route="@RouteNames.Training_Get" asp-route-programmeid="@Model.ProgrammeId" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+        <a asp-route="@RouteNames.Training_Get" asp-route-programmeid="@Model.ProgrammeId" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
         <h1 class="govuk-heading-xl">Confirm apprenticeship training</h1>
         <div class="verification-summary">
             <h2 class="govuk-heading-m">
