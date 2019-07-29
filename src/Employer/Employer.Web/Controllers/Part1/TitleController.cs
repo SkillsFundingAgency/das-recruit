@@ -24,9 +24,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         }
         
         [HttpGet("create-vacancy", Name = RouteNames.CreateVacancy_Get)]
-        public async Task<IActionResult> Title([FromRoute] string employerAccountId)
+        public IActionResult Title()
         {
-            var vm = await _orchestrator.GetTitleViewModel();
+            var vm = _orchestrator.GetTitleViewModel();
             vm.PageInfo.SetWizard();
             vm.BackLinkText = SetBackText(vm);
             vm.BackLinkRoute = SetBackLinkRoute(vm);
