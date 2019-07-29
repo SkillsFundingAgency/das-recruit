@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
@@ -16,7 +15,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVa
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyAnalytics;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections;
 using FluentValidation;
