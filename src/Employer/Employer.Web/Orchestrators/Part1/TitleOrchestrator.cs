@@ -85,19 +85,17 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         {
             TrainingProvider provider = null;
             IApprenticeshipProgramme programme = null;
-            if (m.ReferredFromSavedFavourites)
-            {
-                provider = await GetProvider(m.ReferredUkprn);
-                programme = await GetProgramme(m.ReferredProgrammeId);
-            }
-
             if (!m.VacancyId.HasValue) // Create if it's a new vacancy
             {
                 var newVacancy = new Vacancy
                 {
                     Title = m.Title
                 };
-
+                if (m.ReferredFromSavedFavourites)
+                {
+                    provider = await GetProvider(m.ReferredUkprn);
+                    programme = await GetProgramme(m.ReferredProgrammeId);
+                }
                 return await ValidateAndExecute(
                     newVacancy, 
                     v => _vacancyClient.Validate(v, ValidationRules),
