@@ -22,7 +22,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
             _timeProvider = timeProvider;
         }
 
-        public async Task CloseVacancyReview(long vacancyReference, bool hasProviderBeenBlocked)
+        public async Task CloseVacancyReview(long vacancyReference, TransferReason transferReason)
         {
             var review = await _vacancyReviewQuery.GetLatestReviewByReferenceAsync(vacancyReference);
 
@@ -30,7 +30,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
             {
                 if (review.Status == ReviewStatus.New || review.Status == ReviewStatus.PendingReview)
                 {
-                    review.ManualOutcome = review.VacancySnapshot.OwnerType == OwnerType.Provider && hasProviderBeenBlocked
+                    review.ManualOutcome = review.VacancySnapshot.OwnerType == OwnerType.Provider && transferReason == TransferReason.BlockedByQa
                                             ? ManualQaOutcome.Withdrawn
                                             : ManualQaOutcome.Transferred;
                 }

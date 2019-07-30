@@ -15,7 +15,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
             _timeProvider = timeProvider;
         }
 
-        public Task TransferVacancyToLegalEntityAsync(Vacancy vacancy, VacancyUser initiatingUser, bool isProviderBlocked)
+        public Task TransferVacancyToLegalEntityAsync(Vacancy vacancy, VacancyUser initiatingUser, TransferReason transferReason)
         {
             var originalStatus = vacancy.Status;
 
@@ -46,7 +46,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
                 LegalEntityName = vacancy.LegalEntityName,
                 TransferredByUser = initiatingUser,
                 TransferredDate = _timeProvider.Today,
-                Reason = isProviderBlocked ? TransferReason.BlockedByQa : TransferReason.EmployerRevokedProviderPermission
+                Reason = transferReason
             };
 
             vacancy.OwnerType = OwnerType.Employer;

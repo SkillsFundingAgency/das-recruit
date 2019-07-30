@@ -33,7 +33,7 @@ namespace Esfa.Recruit.UnitTests.Jobs
             _mockVacancyRepository.Setup(x => x.GetVacancyAsync(It.IsAny<long>()))
                                 .ReturnsAsync(new Vacancy { VacancyReference = VacancyReference });
 
-            await _sut.Run(VacancyReference, userRef, UserEmail, UserName);
+            await _sut.Run(VacancyReference, userRef, UserEmail, UserName, TransferReason.EmployerRevokedProviderPermission);
 
             _mockMessaging.Verify(x => x.SendCommandAsync(It.IsAny<TransferVacancyToLegalEntityCommand>()), Times.Once);
         }
@@ -45,7 +45,7 @@ namespace Esfa.Recruit.UnitTests.Jobs
             _mockVacancyRepository.Setup(x => x.GetVacancyAsync(It.IsAny<long>()))
                                 .Returns(Task.FromResult<Vacancy>(null));
 
-            await _sut.Run(VacancyReference, userRef, UserEmail, UserName);
+            await _sut.Run(VacancyReference, userRef, UserEmail, UserName, TransferReason.EmployerRevokedProviderPermission);
 
             _mockMessaging.Verify(x => x.SendCommandAsync(It.IsAny<TransferVacancyToLegalEntityCommand>()), Times.Never);
         }

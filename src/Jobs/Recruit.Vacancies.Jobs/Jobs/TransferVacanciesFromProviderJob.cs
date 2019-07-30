@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Queues;
 using Esfa.Recruit.Vacancies.Client.Application.Queues.Messages;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 
 namespace Esfa.Recruit.Vacancies.Jobs
@@ -18,7 +19,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
             _queueService = queueService;
         }
 
-        public async Task Run(long ukprn, long legalEntityId, Guid userRef, string userEmail, string userName)
+        public async Task Run(long ukprn, long legalEntityId, Guid userRef, string userEmail, string userName, TransferReason transferReason)
         {
             var vacancies = await _vacanciesQuery.GetProviderOwnedVacanciesForLegalEntityAsync(ukprn, legalEntityId);
 
@@ -27,7 +28,8 @@ namespace Esfa.Recruit.Vacancies.Jobs
                 VacancyReference = vac.VacancyReference.Value,
                 UserRef = userRef,
                 UserEmailAddress = userEmail,
-                UserName = userName
+                UserName = userName,
+                TransferReason = transferReason
             }));
 
             await Task.WhenAll(tasks);
