@@ -48,7 +48,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             {
                 RuleFor(x => x.Grade)
                     .Matches("^[1-9]$")
-
                         .WithMessage("GCSEs must include the 1-9 grading system")
                         .WithErrorCode("115")
                     .WithRuleId(ruleId);
