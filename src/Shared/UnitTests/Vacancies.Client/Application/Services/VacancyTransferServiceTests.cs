@@ -25,15 +25,32 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
         }
 
         [Fact]
-        public async Task GivenProviderOwnedVacancyToTransfer_ThenSetTransferInfoOfVacancy()
+        public async Task GivenProviderOwnedVacancyToTransfer_WhenProviderIsNotBlocked_ThenSetTransferInfoOfVacancy()
         {
             var vacancy = GetTestProviderOwnedVacancy(VacancyStatus.Live);
             var vacancyUser = _autoFixture.Create<VacancyUser>();
 
-            await _sut.TransferVacancyToLegalEntityAsync(vacancy, vacancyUser);
+            await _sut.TransferVacancyToLegalEntityAsync(vacancy, vacancyUser, isProviderBlocked: false);
 
             vacancy.TransferInfo.Should().NotBeNull();
             vacancy.TransferInfo.Reason.Should().Be(TransferReason.EmployerRevokedProviderPermission);
+            vacancy.TransferInfo.Ukprn.Should().Be(vacancy.TrainingProvider.Ukprn);
+            vacancy.TransferInfo.ProviderName.Should().Be(vacancy.TrainingProvider.Name);
+            vacancy.TransferInfo.LegalEntityName.Should().Be(vacancy.LegalEntityName);
+            vacancy.TransferInfo.TransferredDate.Should().Be(DateTime.Parse(TodaysDate));
+            vacancy.TransferInfo.TransferredByUser.Should().Be(vacancyUser);
+        }
+
+        [Fact]
+        public async Task GivenProviderOwnedVacancyToTransfer_WhenProviderIsBlocked_ThenSetTransferInfoOfVacancy()
+        {
+            var vacancy = GetTestProviderOwnedVacancy(VacancyStatus.Live);
+            var vacancyUser = _autoFixture.Create<VacancyUser>();
+
+            await _sut.TransferVacancyToLegalEntityAsync(vacancy, vacancyUser, isProviderBlocked: true);
+
+            vacancy.TransferInfo.Should().NotBeNull();
+            vacancy.TransferInfo.Reason.Should().Be(TransferReason.BlockedByQa);
             vacancy.TransferInfo.Ukprn.Should().Be(vacancy.TrainingProvider.Ukprn);
             vacancy.TransferInfo.ProviderName.Should().Be(vacancy.TrainingProvider.Name);
             vacancy.TransferInfo.LegalEntityName.Should().Be(vacancy.LegalEntityName);
@@ -47,7 +64,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
             var vacancy = GetTestProviderOwnedVacancy(VacancyStatus.Live);
             var vacancyUser = _autoFixture.Create<VacancyUser>();
 
-            await _sut.TransferVacancyToLegalEntityAsync(vacancy, vacancyUser);
+            await _sut.TransferVacancyToLegalEntityAsync(vacancy, vacancyUser, isProviderBlocked: false);
 
             vacancy.OwnerType.Should().NotBe(OwnerType.Provider);
         }
@@ -58,7 +75,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
             var vacancy = GetTestProviderOwnedVacancy(VacancyStatus.Live);
             var vacancyUser = _autoFixture.Create<VacancyUser>();
 
-            await _sut.TransferVacancyToLegalEntityAsync(vacancy, vacancyUser);
+            await _sut.TransferVacancyToLegalEntityAsync(vacancy, vacancyUser, isProviderBlocked: false);
 
             vacancy.SubmittedByUser.Should().BeNull();
         }
@@ -69,7 +86,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
             var vacancy = GetTestProviderOwnedVacancy(VacancyStatus.Live);
             var vacancyUser = _autoFixture.Create<VacancyUser>();
 
-            await _sut.TransferVacancyToLegalEntityAsync(vacancy, vacancyUser);
+            await _sut.TransferVacancyToLegalEntityAsync(vacancy, vacancyUser, isProviderBlocked: false);
 
             vacancy.ProviderContact.Should().BeNull();
             vacancy.EmployerContact.Should().BeNull();
@@ -81,7 +98,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
             var vacancy = GetTestProviderOwnedVacancy(VacancyStatus.Live);
             var vacancyUser = _autoFixture.Create<VacancyUser>();
 
-            await _sut.TransferVacancyToLegalEntityAsync(vacancy, vacancyUser);
+            await _sut.TransferVacancyToLegalEntityAsync(vacancy, vacancyUser, isProviderBlocked: false);
 
             vacancy.Status.Should().Be(VacancyStatus.Closed);
         }
@@ -92,9 +109,20 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
             var vacancy = GetTestProviderOwnedVacancy(VacancyStatus.Live);
             var vacancyUser = _autoFixture.Create<VacancyUser>();
 
-            await _sut.TransferVacancyToLegalEntityAsync(vacancy, vacancyUser);
+            await _sut.TransferVacancyToLegalEntityAsync(vacancy, vacancyUser, isProviderBlocked: false);
 
             vacancy.ClosureReason.Should().Be(ClosureReason.TransferredByEmployer);
+        }
+
+        [Fact]
+        public async Task GivenLiveProviderOwnedVacancyToTransfer_ThenSetClosedByUserOfVacancy()
+        {
+            var vacancy = GetTestProviderOwnedVacancy(VacancyStatus.Live);
+            var vacancyUser = _autoFixture.Create<VacancyUser>();
+
+            await _sut.TransferVacancyToLegalEntityAsync(vacancy, vacancyUser, isProviderBlocked: false);
+
+            vacancy.ClosedByUser.Should().Be(vacancyUser);
         }
 
         [Fact]
@@ -103,9 +131,22 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
             var vacancy = GetTestProviderOwnedVacancy(VacancyStatus.Submitted);
             var vacancyUser = _autoFixture.Create<VacancyUser>();
 
-            await _sut.TransferVacancyToLegalEntityAsync(vacancy, vacancyUser);
+            await _sut.TransferVacancyToLegalEntityAsync(vacancy, vacancyUser, isProviderBlocked: false);
 
             vacancy.Status.Should().Be(VacancyStatus.Draft);
+        }
+
+        [Fact]
+        public async Task GivenApprovedProviderOwnedVacancyToTransfer_ThenSetClosedStatusOfVacancy()
+        {
+            var vacancy = GetTestProviderOwnedVacancy(VacancyStatus.Approved);
+            vacancy.ApprovedDate = DateTime.UtcNow;
+            var vacancyUser = _autoFixture.Create<VacancyUser>();
+
+            await _sut.TransferVacancyToLegalEntityAsync(vacancy, vacancyUser, isProviderBlocked: false);
+
+            vacancy.Status.Should().Be(VacancyStatus.Closed);
+            vacancy.ApprovedDate.Should().BeNull();
         }
 
         [Theory]
@@ -117,7 +158,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
             var vacancy = GetTestProviderOwnedVacancy(statusArg);
             var vacancyUser = _autoFixture.Create<VacancyUser>();
 
-            await _sut.TransferVacancyToLegalEntityAsync(vacancy, vacancyUser);
+            await _sut.TransferVacancyToLegalEntityAsync(vacancy, vacancyUser, isProviderBlocked: false);
 
             vacancy.Status.Should().Be(statusArg);
         }
