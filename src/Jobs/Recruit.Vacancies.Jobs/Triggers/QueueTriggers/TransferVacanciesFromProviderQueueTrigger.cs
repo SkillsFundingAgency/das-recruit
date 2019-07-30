@@ -30,7 +30,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
             _runner = runner;
         }
 
-        public async Task VacancyStatusAsync([QueueTrigger(QueueNames.TransferVacanciesFromProviderQueueName, Connection = "QueueStorage")] string message, TextWriter log)
+        public async Task TransferVacanciesFromProvider([QueueTrigger(QueueNames.TransferVacanciesFromProviderQueueName, Connection = "QueueStorage")] string message, TextWriter log)
         {
             if (_jobsConfig.DisabledJobs.Contains(TriggerName))
             {
@@ -40,19 +40,19 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
 
             if (!string.IsNullOrEmpty(message))
             {
-                _logger.LogInformation("Starting queueing vacancies to transfer from provider checking.");
+                _logger.LogInformation("Starting queueing vacancies to transfer from provider.");
 
                 try
                 {
                     var queueMessage = JsonConvert.DeserializeObject<TransferVacanciesFromProviderQueueMessage>(message);
 
-                    await _runner.Run(queueMessage.Ukprn, queueMessage.LegalEntityId, queueMessage.UserRef, queueMessage.UserEmailAddress, queueMessage.UserName);
+                    await _runner.Run(queueMessage.Ukprn, queueMessage.LegalEntityId, queueMessage.UserRef, queueMessage.UserEmailAddress, queueMessage.UserName, queueMessage.TransferReason);
 
-                    _logger.LogInformation("Finished vacancy status checking.");
+                    _logger.LogInformation("Finished queueing vacancies to transfer from provider.");
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Unable to check vacancy statuses.");
+                    _logger.LogError(ex, $"Unable to run {TriggerName}.");
                     throw;
                 }
             }

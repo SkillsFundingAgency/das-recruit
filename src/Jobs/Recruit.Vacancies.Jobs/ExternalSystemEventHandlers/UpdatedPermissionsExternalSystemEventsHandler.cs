@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Queues;
 using Esfa.Recruit.Vacancies.Client.Application.Queues.Messages;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
@@ -75,7 +76,8 @@ namespace Esfa.Recruit.Vacancies.Jobs.ExternalSystemEventHandlers
                         LegalEntityId = legalEntity.LegalEntityId,
                         UserRef = message.UserRef,
                         UserEmailAddress = "",
-                        UserName = "" // concat (awaiting events update in provider relationships)
+                        UserName = "", // concat (awaiting events update in provider relationships),
+                        TransferReason = TransferReason.EmployerRevokedProviderPermission
                     });
 
                     await _messaging.SendCommandAsync(new SetupProviderCommand(message.Ukprn));
