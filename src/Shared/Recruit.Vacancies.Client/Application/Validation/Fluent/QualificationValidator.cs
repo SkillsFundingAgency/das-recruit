@@ -1,21 +1,60 @@
 ﻿using System.Collections.Generic;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using FluentValidation;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 {
-    internal class QualificationValidator : AbstractValidator<Qualification>
+    /// <summary>
+    /// Registers validation with a specific rule ID.
+    /// This is used by the <see cref="FluentVacancyValidator"/> to conditionally validate every
+    /// <see cref="Qualification"/> in a vacancy.
+    /// </summary>
+    internal class VacancyQualificationsValidator : QualificationValidatorBase
     {
-        public QualificationValidator(long ruleId, IList<string> qualifications)
+        public VacancyQualificationsValidator(long ruleId, IQualificationsProvider qualificationsProvider)
+            : base(ruleId, qualificationsProvider)
         {
-            qualifications = qualifications ?? new List<string>();
+        }
+    }
+
+    /// <summary>
+    /// Unconditionally validates a <see cref="Qualification"/>.
+    /// <seealso cref="VacancyQualificationsValidator"/>
+    /// </summary>
+    internal class QualificationValidator : QualificationValidatorBase
+    {
+        public QualificationValidator(IQualificationsProvider qualificationsProvider)
+            : base(qualificationsProvider)
+        {
+        }
+    }
+
+
+    /// <summary>
+    /// Validates a <see cref="Qualification"/>.
+    /// Descendant classes should call the appropriate constructor to indicate whether
+    /// or not a RuleId should be added to each rule.
+    /// </summary>
+    internal class QualificationValidatorBase : AbstractValidator<Qualification>
+    {
+        private readonly IList<string> _qualifications;
+
+        public QualificationValidatorBase(IQualificationsProvider qualificationsProvider)
+            : this(0, qualificationsProvider)
+        {
+        }
+
+        public QualificationValidatorBase(long ruleId, IQualificationsProvider qualificationsProvider)
+        {
+            _qualifications = qualificationsProvider.GetQualificationsAsync().Result ?? new List<string>();
             
             RuleFor(x => x.QualificationType)
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty()
                     .WithMessage("Select a qualification")
                     .WithErrorCode("53")
-                .Must(qualifications.Contains)
+                .Must(_qualifications.Contains)
                     .WithMessage("Invalid qualification type")
                     .WithErrorCode("57")
                 .WithRuleId(ruleId);
@@ -50,14 +89,15 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .Matches("[1-9]")
                         .WithMessage("GCSEs must include the 1-9 grading system")
                         .WithErrorCode("115")
-                    .WithRuleId(ruleId);
+                        .WithRuleId(ruleId);
             });
 
             RuleFor(x => x.Weighting)
                 .NotEmpty()
                     .WithMessage("Select if this is a desired or an essential qualification")
                     .WithErrorCode("56")
-                .WithRuleId(ruleId);
+                    .WithRuleId(ruleId);
         }
+
     }
 }

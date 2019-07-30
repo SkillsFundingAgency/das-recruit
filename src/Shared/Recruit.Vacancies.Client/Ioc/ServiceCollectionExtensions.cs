@@ -256,6 +256,7 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddSingleton<AbstractValidator<VacancyReview>, VacancyReviewValidator>();
 
             services.AddSingleton<AbstractValidator<UserNotificationPreferences>, UserNotificationPreferencesValidator>();
+            services.AddSingleton<AbstractValidator<Qualification>, QualificationValidator>();
         }
 
         private static void AddRules(IServiceCollection services)
