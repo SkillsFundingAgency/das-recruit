@@ -1,8 +1,6 @@
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
-using Esfa.Recruit.Vacancies.Client.Application.Mappers;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -14,30 +12,23 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class TransferVacancyToLegalEntityCommandHandler : IRequestHandler<TransferVacancyToLegalEntityCommand>
+    public class TransferProviderVacancyToLegalEntityCommandHandler : IRequestHandler<TransferVacancyToLegalEntityCommand>
     {
-        private readonly ILogger<TransferVacancyToLegalEntityCommandHandler> _logger;
+        private readonly ILogger<TransferProviderVacancyToLegalEntityCommandHandler> _logger;
         private readonly IVacancyRepository _vacancyRepository;
-
-        private readonly IUserRepository _userRepository;
-        private readonly IBlockedOrganisationQuery _blockedOrganisationQuery;
         private readonly IVacancyTransferService _vacancyTransferService;
         private readonly IVacancyReviewTransferService _vacancyReviewTransferService;
         private readonly ITimeProvider _timeProvider;
         private readonly IMessaging _messaging;
 
-        public TransferVacancyToLegalEntityCommandHandler(ILogger<TransferVacancyToLegalEntityCommandHandler> logger,
+        public TransferProviderVacancyToLegalEntityCommandHandler(ILogger<TransferProviderVacancyToLegalEntityCommandHandler> logger,
                                                             IVacancyRepository vacancyRepository,
-                                                            IUserRepository userRepository,
-                                                            IBlockedOrganisationQuery blockedOrganisationQuery,
                                                             IVacancyTransferService vacancyTransferService,
                                                             IVacancyReviewTransferService vacancyReviewTransferService,
                                                             ITimeProvider timeProvider, IMessaging messaging)
         {
             _logger = logger;
             _vacancyRepository = vacancyRepository;
-            _userRepository = userRepository;
-            _blockedOrganisationQuery = blockedOrganisationQuery;
             _vacancyTransferService = vacancyTransferService;
             _vacancyReviewTransferService = vacancyReviewTransferService;
             _timeProvider = timeProvider;
@@ -46,57 +37,34 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
         public async Task Handle(TransferVacancyToLegalEntityCommand message, CancellationToken cancellationToken)
         {
-            var vacancyTask = _vacancyRepository.GetVacancyAsync(message.VacancyReference);
-            var userTask = _userRepository.GetAsync(message.UserRef.ToString());
-
-            await Task.WhenAll(vacancyTask, userTask);
-
-            var user = userTask.Result;
-            var vacancy = vacancyTask.Result;
+            var vacancy = await _vacancyRepository.GetVacancyAsync(message.VacancyReference);
 
             if (vacancy.OwnerType == OwnerType.Provider)
             {
-                if (user == null)
+                var vacancyUser = new VacancyUser
                 {
-                    user = await SaveUnknownUser(message);
-                }
+                    UserId = message.UserRef.ToString(),
+                    Email = message.UserEmailAddress,
+                    Name = message.UserName
+                };
 
-                await ProcessTransferringVacancy(vacancy, user);
+                await ProcessTransferringVacancy(vacancy, vacancyUser, message.TransferReason);
             }
         }
 
-        private async Task<User> SaveUnknownUser(TransferVacancyToLegalEntityCommand message)
+        private async Task ProcessTransferringVacancy(Vacancy vacancy, VacancyUser user, TransferReason transferReason)
         {
-            var user = new User
-            {
-                Id = Guid.NewGuid(),
-                IdamsUserId = message.UserRef.ToString(),
-                UserType = UserType.Employer,
-                Email = message.UserEmailAddress,
-                Name = message.UserName,
-                CreatedDate = _timeProvider.Now
-            };
-
-            await _userRepository.UpsertUserAsync(user);
-
-            return user;
-        }
-
-        private async Task ProcessTransferringVacancy(Vacancy vacancy, User user)
-        {
+            _logger.LogInformation($"Starting transfer of vacancy {vacancy.VacancyReference.Value} to Legal Entity. Transfer reason: {transferReason.ToString()}");
             var originalStatus = vacancy.Status;
-            var vacancyUser = VacancyUserMapper.MapFromUser(user);
-            var blockedOrganisationEntry = await _blockedOrganisationQuery.GetByOrganisationIdAsync(vacancy.TrainingProvider.Ukprn.Value.ToString());
-            var isProviderBlocked = blockedOrganisationEntry != null && blockedOrganisationEntry.BlockedStatus == BlockedStatus.Blocked;
 
-            await _vacancyTransferService.TransferVacancyToLegalEntityAsync(vacancy, vacancyUser, isProviderBlocked);
+            await _vacancyTransferService.TransferVacancyToLegalEntityAsync(vacancy, user, transferReason);
 
             await _vacancyRepository.UpdateAsync(vacancy);
 
             switch (originalStatus)
             {
                 case VacancyStatus.Submitted:
-                    await _vacancyReviewTransferService.CloseVacancyReview(vacancy.VacancyReference.GetValueOrDefault(), isProviderBlocked);
+                    await _vacancyReviewTransferService.CloseVacancyReview(vacancy.VacancyReference.GetValueOrDefault(), transferReason);
                     break;
                 case VacancyStatus.Approved:
                 case VacancyStatus.Live:
@@ -115,6 +83,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 VacancyId = vacancy.Id,
                 VacancyReference = vacancy.VacancyReference.GetValueOrDefault()
             });
+
+            _logger.LogInformation($"Finished transfer of vacancy {vacancy.VacancyReference.Value} to Legal Entity. Transfer reason: {transferReason.ToString()}");
         }
     }
 }

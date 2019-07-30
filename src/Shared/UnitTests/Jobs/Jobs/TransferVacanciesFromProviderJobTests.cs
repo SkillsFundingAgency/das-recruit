@@ -31,7 +31,7 @@ namespace Esfa.Recruit.UnitTests.Jobs
             _mockVacancyQuery.Setup(x => x.GetProviderOwnedVacanciesForLegalEntityAsync(It.IsAny<long>(), It.IsAny<long>()))
                                 .ReturnsAsync(Enumerable.Empty<Vacancy>());
 
-            await _sut.Run(1, 1, Guid.NewGuid(), string.Empty, string.Empty);
+            await _sut.Run(1, 1, Guid.NewGuid(), string.Empty, string.Empty, TransferReason.EmployerRevokedProviderPermission);
 
             _mockRecruitQueueService.Verify(x => x.AddMessageAsync(It.IsAny<TransferVacancyToLegalEntityQueueMessage>()), Times.Never);
         }
@@ -46,7 +46,7 @@ namespace Esfa.Recruit.UnitTests.Jobs
             _mockVacancyQuery.Setup(x => x.GetProviderOwnedVacanciesForLegalEntityAsync(It.IsAny<long>(), It.IsAny<long>()))
                                 .ReturnsAsync(new Fixture().CreateMany<Vacancy>(NoOfMatchingVacancies));
 
-            await _sut.Run(1, 1, userRef, UserEmail, UserName);
+            await _sut.Run(1, 1, userRef, UserEmail, UserName, TransferReason.EmployerRevokedProviderPermission);
 
             _mockRecruitQueueService.Verify(x => x.AddMessageAsync(It.IsAny<TransferVacancyToLegalEntityQueueMessage>()), Times.Exactly(NoOfMatchingVacancies));
         }

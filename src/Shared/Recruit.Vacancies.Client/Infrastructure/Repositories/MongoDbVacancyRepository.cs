@@ -94,7 +94,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         {
             var builder = Builders<Vacancy>.Filter;
             var filter = builder.Eq(CreatedByUserId, userId) |
-                         builder.Eq(SubmittedByUserId, userId);
+                        builder.Eq(SubmittedByUserId, userId);
 
             var collection = GetCollection<Vacancy>();
 
@@ -144,9 +144,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 
             //Anonymous vacancies only have outcode geocoded
             var filter = builder.Eq(v => v.EmployerLocation.Postcode, postcode) &
-                         builder.Ne(v => v.EmployerLocation.Latitude, null) &
-                         builder.Ne(v => v.EmployerLocation.Longitude, null) &
-                         builder.Ne(v => v.EmployerNameOption, EmployerNameOption.Anonymous);
+                        builder.Ne(v => v.EmployerLocation.Latitude, null) &
+                        builder.Ne(v => v.EmployerLocation.Longitude, null) &
+                        builder.Ne(v => v.EmployerNameOption, EmployerNameOption.Anonymous);
 
             var collection = GetCollection<Vacancy>();
             var result = await RetryPolicy.ExecuteAsync(_ =>
@@ -260,8 +260,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         {
             var builder = Builders<Vacancy>.Filter;
             var filter = builder.Eq(v => v.OwnerType, OwnerType.Provider) &
-                         builder.Eq(v => v.TrainingProvider.Ukprn, ukprn) &
-                         builder.Eq(v => v.LegalEntityId, legalEntityId);
+                        builder.Eq(v => v.TrainingProvider.Ukprn, ukprn) &
+                        builder.Eq(v => v.LegalEntityId, legalEntityId);
             return filter;
         }
     }
