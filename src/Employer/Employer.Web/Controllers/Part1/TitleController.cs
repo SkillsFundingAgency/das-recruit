@@ -91,10 +91,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             {
                 if(m.VacancyId == null)
                 {
-                    string referredUkprn = string.Format(TempDataKeys.ReferredUkprn, response.Data);
-                    TempData[referredUkprn] = TempData[TempDataKeys.ReferredUkprn];
-                    string referredProgrammeId = string.Format(TempDataKeys.ReferredProgrammeId, response.Data);
-                    TempData[referredProgrammeId] = TempData[TempDataKeys.ReferredProgrammeId];
+                    TempData[TempDataKeys.ReferredUkprn + response.Data] = TempData[TempDataKeys.ReferredUkprn];
+                    TempData[TempDataKeys.ReferredProgrammeId + response.Data] = TempData[TempDataKeys.ReferredProgrammeId];
                 }
                 return RedirectToRoute(RouteNames.DisplayVacancy_Get, new { vacancyId = response.Data });
             }
@@ -112,12 +110,12 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 
         private string GetReferredProgrammeId(Guid? vacancyId)
         {
-            return Convert.ToString(vacancyId == null ? TempData.Peek(TempDataKeys.ReferredProgrammeId) : TempData.Peek(string.Format(TempDataKeys.ReferredProgrammeId, vacancyId)));
+            return Convert.ToString(vacancyId == null ? TempData.Peek(TempDataKeys.ReferredProgrammeId) : TempData.Peek(TempDataKeys.ReferredProgrammeId + vacancyId));
         }
 
         private string GetReferredProviderUkprn(Guid? vacancyId)
         {
-            return Convert.ToString(vacancyId == null ? TempData.Peek(TempDataKeys.ReferredUkprn) : TempData.Peek(string.Format(TempDataKeys.ReferredUkprn, vacancyId)));
+            return Convert.ToString(vacancyId == null ? TempData.Peek(TempDataKeys.ReferredUkprn) : TempData.Peek(TempDataKeys.ReferredUkprn + vacancyId));
         }
     }
 }
