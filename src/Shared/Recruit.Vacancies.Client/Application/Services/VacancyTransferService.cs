@@ -15,7 +15,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
             _timeProvider = timeProvider;
         }
 
-        public Task TransferVacancyToLegalEntityAsync(Vacancy vacancy, VacancyUser initiatingUser)
+        public Task TransferVacancyToLegalEntityAsync(Vacancy vacancy, VacancyUser initiatingUser, bool isProviderBlocked)
         {
             var originalStatus = vacancy.Status;
 
@@ -29,9 +29,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
                     vacancy.Status = VacancyStatus.Draft;
                     break;
                 case VacancyStatus.Live:
+                    CloseVacancy(vacancy, initiatingUser);
+                    break;
                 case VacancyStatus.Approved:
-                    vacancy.Status = VacancyStatus.Closed;
-                    vacancy.ClosureReason = ClosureReason.TransferredByEmployer;
+                    vacancy.ApprovedDate = null;
+                    CloseVacancy(vacancy, initiatingUser);
                     break;
                 default:
                     throw new ArgumentException(string.Format(ExceptionMessages.UnrecognisedStatusToTransferVacancyFrom, originalStatus.ToString(), vacancy.VacancyReference));
@@ -44,7 +46,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
                 LegalEntityName = vacancy.LegalEntityName,
                 TransferredByUser = initiatingUser,
                 TransferredDate = _timeProvider.Today,
-                Reason = TransferReason.EmployerRevokedProviderPermission
+                Reason = isProviderBlocked ? TransferReason.BlockedByQa : TransferReason.EmployerRevokedProviderPermission
             };
 
             vacancy.OwnerType = OwnerType.Employer;
@@ -52,6 +54,14 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
             vacancy.SubmittedByUser = null;
 
             return Task.CompletedTask;
+        }
+
+        private void CloseVacancy(Vacancy vacancy, VacancyUser initiatingUser)
+        {
+            vacancy.Status = VacancyStatus.Closed;
+            vacancy.ClosedDate = _timeProvider.Now;
+            vacancy.ClosedByUser = initiatingUser;
+            vacancy.ClosureReason = ClosureReason.TransferredByEmployer;
         }
     }
 }

@@ -86,16 +86,16 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         {
             var originalStatus = vacancy.Status;
             var vacancyUser = VacancyUserMapper.MapFromUser(user);
+            var blockedOrganisationEntry = await _blockedOrganisationQuery.GetByOrganisationIdAsync(vacancy.TrainingProvider.Ukprn.Value.ToString());
+            var isProviderBlocked = blockedOrganisationEntry != null && blockedOrganisationEntry.BlockedStatus == BlockedStatus.Blocked;
 
-            await _vacancyTransferService.TransferVacancyToLegalEntityAsync(vacancy, vacancyUser);
+            await _vacancyTransferService.TransferVacancyToLegalEntityAsync(vacancy, vacancyUser, isProviderBlocked);
 
             await _vacancyRepository.UpdateAsync(vacancy);
 
             switch (originalStatus)
             {
                 case VacancyStatus.Submitted:
-                    var blockedOrganisationEntry = await _blockedOrganisationQuery.GetByOrganisationIdAsync(vacancy.TrainingProvider.Ukprn.Value.ToString());
-                    var isProviderBlocked = blockedOrganisationEntry != null && blockedOrganisationEntry.BlockedStatus == BlockedStatus.Blocked;
                     await _vacancyReviewTransferService.CloseVacancyReview(vacancy.VacancyReference.GetValueOrDefault(), isProviderBlocked);
                     break;
                 case VacancyStatus.Approved:
