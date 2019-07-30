@@ -93,6 +93,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                 {
                     TempData[TempDataKeys.ReferredUkprn + response.Data] = TempData[TempDataKeys.ReferredUkprn];
                     TempData[TempDataKeys.ReferredProgrammeId + response.Data] = TempData[TempDataKeys.ReferredProgrammeId];
+                    TempData.Remove(TempDataKeys.ReferredUkprn);
+                    TempData.Remove(TempDataKeys.ReferredProgrammeId);
                 }
                 return RedirectToRoute(RouteNames.DisplayVacancy_Get, new { vacancyId = response.Data });
             }
