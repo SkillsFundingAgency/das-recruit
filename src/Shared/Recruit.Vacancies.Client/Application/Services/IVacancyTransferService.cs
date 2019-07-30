@@ -5,6 +5,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
 {
     public interface IVacancyTransferService
     {
-        Task TransferVacancyToLegalEntityAsync(Vacancy vacancy, VacancyUser initiatingUser);
+        Task TransferVacancyToLegalEntityAsync(Vacancy vacancy, VacancyUser initiatingUser, bool isProviderBlocked);
     }
 }
