@@ -47,7 +47,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             When(x => x.QualificationType != null && x.QualificationType.Contains("GCSE"), () =>
             {
                 RuleFor(x => x.Grade)
-                    .Matches("^[0-9]$")
+                    .Matches("^[1-9]$")
 
                         .WithMessage("GCSEs must include the 1-9 grading system")
                         .WithErrorCode("115")
