@@ -89,14 +89,14 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .Matches("[1-9]")
                         .WithMessage("GCSEs must include the 1-9 grading system")
                         .WithErrorCode("115")
-                        .WithRuleId(ruleId);
+                    .WithRuleId(ruleId);
             });
 
             RuleFor(x => x.Weighting)
                 .NotEmpty()
                     .WithMessage("Select if this is a desired or an essential qualification")
                     .WithErrorCode("56")
-                    .WithRuleId(ruleId);
+                .WithRuleId(ruleId);
         }
 
     }
