@@ -24,7 +24,12 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
 
-        public TrainingProviderOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<TrainingProviderOrchestrator> logger, IReviewSummaryService reviewSummaryService) : base(logger)
+        public TrainingProviderOrchestrator(
+            IEmployerVacancyClient client, 
+            IRecruitVacancyClient vacancyClient, 
+            ILogger<TrainingProviderOrchestrator> logger, 
+            IReviewSummaryService reviewSummaryService
+            ) : base(logger)
         {
             _client = client;
             _vacancyClient = vacancyClient;
@@ -62,7 +67,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             return vm;
         }
 
-        public async Task<PostSelectTrainingProviderResult> PostSelectTrainingProviderAsync(SelectTrainingProviderEditModel m, VacancyUser user)
+        public async Task<OrchestratorResponse<PostSelectTrainingProviderResult>> PostSelectTrainingProviderAsync(SelectTrainingProviderEditModel m, VacancyUser user)
         {
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, m, RouteNames.TrainingProvider_Select_Post);
 
@@ -74,19 +79,25 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                     await _vacancyClient.UpdateDraftVacancyAsync(vacancy, user);
                 }
 
-                return new PostSelectTrainingProviderResult { ResponseType = SelectTrainingProviderResponseType.Continue };
+                return new OrchestratorResponse<PostSelectTrainingProviderResult>(new PostSelectTrainingProviderResult());
             }
 
-            var provider = await GetProviderFromModelAsync(m);
+            var providerSummary = await GetProviderFromModelAsync(m);
 
-            if (provider == null)
-                return new PostSelectTrainingProviderResult { ResponseType = SelectTrainingProviderResponseType.NotFound };
+            TrainingProvider provider = null;
+            if (providerSummary != null)
+                provider = await _client.GetTrainingProviderAsync(providerSummary.Ukprn);
 
-            return new PostSelectTrainingProviderResult
-            {
-                ResponseType = SelectTrainingProviderResponseType.Confirm,
-                FoundProviderUkprn = provider.Ukprn
-            };
+            vacancy.TrainingProvider = provider;
+
+            return await ValidateAndExecute(
+                vacancy,
+                v => _vacancyClient.Validate(v, ValidationRules),
+                v => Task.FromResult(new PostSelectTrainingProviderResult
+                    {
+                        FoundTrainingProviderUkprn = v.TrainingProvider?.Ukprn
+                    })
+            );
         }
 
         public async Task<SelectTrainingProviderViewModel> GetSelectTrainingProviderViewModelAsync(SelectTrainingProviderEditModel m)

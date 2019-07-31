@@ -4,6 +4,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Microsoft.Extensions.Logging;
 using Moq;
 
@@ -15,6 +16,8 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation
         protected readonly Mock<IApprenticeshipProgrammeProvider> MockApprenticeshipProgrammeProvider;
         protected readonly Mock<IQualificationsProvider> MockQualificationsProvider;
         protected readonly IHtmlSanitizerService SanitizerService;
+        protected readonly Mock<ITrainingProviderSummaryProvider> MockTrainingProviderSummaryProvider;
+        protected readonly Mock<IBlockedOrganisationQuery> MockBlockedOrganisationRepo;
 
         protected VacancyValidationTestsBase()
         {
@@ -22,6 +25,8 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation
             MockApprenticeshipProgrammeProvider = new Mock<IApprenticeshipProgrammeProvider>();
             MockQualificationsProvider = new Mock<IQualificationsProvider>();
             SanitizerService = new HtmlSanitizerService(new Mock<ILogger<HtmlSanitizerService>>().Object);
+            MockTrainingProviderSummaryProvider = new Mock<ITrainingProviderSummaryProvider>();
+            MockBlockedOrganisationRepo = new Mock<IBlockedOrganisationQuery>();
         }
 
         protected IEntityValidator<Vacancy, VacancyRuleSet> Validator
@@ -29,7 +34,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation
             get
             {
                 var timeProvider = new CurrentUtcTimeProvider();
-                var fluentValidator = new FluentVacancyValidator(timeProvider, MockMinimumWageService.Object, MockApprenticeshipProgrammeProvider.Object, MockQualificationsProvider.Object, SanitizerService);
+                var fluentValidator = new FluentVacancyValidator(timeProvider, MockMinimumWageService.Object, MockApprenticeshipProgrammeProvider.Object, MockQualificationsProvider.Object, SanitizerService, MockTrainingProviderSummaryProvider.Object, MockBlockedOrganisationRepo.Object);
                 return new EntityValidator<Vacancy, VacancyRuleSet>(fluentValidator);
             }
         }
