@@ -25,7 +25,7 @@
         public const string Dashboard_YourCohorts = "Dashboard_YourCohorts";
         public const string Dashboard_AccountsAgreements = "Dashboard_AccountsAgreements";
         public const string Dashboard_Account_Home = "Dashboard_Account_Home";
-        public const string Dashboard_DismissAlert = "Dashboard_DismissAlert";
+        public const string Dashboard_DismissAlert_Post = "Dashboard_DismissAlert_Post";
         public const string Dashboard_Help = "Dashboard_Help";
         public const string Dashboard_Feedback = "Dashboard_Feedback";
         public const string Dashboard_Privacy = "Dashboard_Privacy";

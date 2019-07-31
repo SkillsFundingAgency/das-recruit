@@ -7,7 +7,7 @@ namespace Esfa.Recruit.Shared.Web.ViewModels.Alerts
 {
     public class ProviderTransferredVacanciesAlertViewModel
     {
-        public IEnumerable<string> LegalEntityNames { get; internal set; }
+        public List<string> LegalEntityNames { get; internal set; }
 
         public string LegalEntityNamesCaption => LegalEntityNames.Humanize().RemoveOxfordComma();
 

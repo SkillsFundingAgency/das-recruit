@@ -65,7 +65,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         public async Task<IList<TransferInfo>> GetTransferredFromProviderAsync(long ukprn)
         {
             var builder = Builders<VacancyTransferInfo>.Filter;
-            var filter = builder.Eq(TransferInfoUkprn, ukprn.ToString()) &
+            var filter = builder.Eq(TransferInfoUkprn, ukprn) &
                          builder.Eq(TransferInfoReason, TransferReason.EmployerRevokedPermission.ToString());
 
             var collection = GetCollection<VacancyTransferInfo>();

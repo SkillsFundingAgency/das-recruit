@@ -44,7 +44,7 @@ namespace Esfa.Recruit.Shared.Web.Services
             return new EmployerTransferredVacanciesAlertViewModel
             {
                 TransferredVacanciesCount = transferredVacancyProviders.Count,
-                TransferredVacanciesProviderNames = transferredVacancyProviders.GroupBy(p => p).Select(p => p.Key)
+                TransferredVacanciesProviderNames = transferredVacancyProviders.Distinct().ToList()
             };
         }
 
@@ -82,7 +82,7 @@ namespace Esfa.Recruit.Shared.Web.Services
 
             return new ProviderTransferredVacanciesAlertViewModel
             {
-                LegalEntityNames = usersTransferredVacancies.GroupBy(l => l).Select(l => l.Key)
+                LegalEntityNames = usersTransferredVacancies.Distinct().ToList()
             };
         }
 

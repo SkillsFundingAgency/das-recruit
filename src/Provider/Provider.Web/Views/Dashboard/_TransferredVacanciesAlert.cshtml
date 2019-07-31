@@ -9,15 +9,15 @@
                 </span>
                 <span asp-hide="@Model.HasTransfersToMultipleEmployers">
                     has switched off your permission to create and manage vacancies on their behalf.
-                    Any vacancies created for this employer have been transferred to them
+                    Any vacancies created for this employer have been transferred to them.
                 </span>
                 <span asp-show="@Model.HasTransfersToMultipleEmployers">
                     have switched off your permission to create and manage vacancies on their behalf.
-                    Any vacancies created for these employers have been transferred to them
+                    Any vacancies created for these employers have been transferred to them.
                 </span>
             </p>
             
-            <form asp-route="@RouteNames.Dashboard_DismissAlert">
+            <form asp-route="@RouteNames.Dashboard_DismissAlert_Post">
                 <p class="govuk-body govuk-!-margin-bottom-0">
                     <input name="@nameof(AlertDismissalEditModel.AlertType)" value="@AlertType.TransferredVacancies" type="hidden" />
                     <button type="submit" class="button-fake-link govuk-link govuk-link--no-visited-state">Dismiss this notification</button>
