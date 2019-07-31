@@ -183,6 +183,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 ProviderName = (string)TempData[TempDataKeys.ProviderName],
             };
 
+            TempData.Keep();
             return View(ViewNames.ProviderAccessRevoked, vm);
         }
 

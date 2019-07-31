@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Esfa.Recruit.Provider.Web.Controllers
 {
     [Route(RoutePaths.AccountRoutePath)]
-	public class ExternalLinksController : Controller
+    public class ExternalLinksController : Controller
     {
         private readonly ProviderApprenticeshipsLinkHelper _linkHelper;
 
