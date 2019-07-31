@@ -93,22 +93,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
             }
         }
 
-        public async Task<FakeAccountDetailViewModel> GetEmployerAccountExpressionOfInterestAsync(string accountId)
+        public async Task<LegalEntityViewModel> GetEmployerAccountExpressionOfInterestAsync(string accountId)
         {
             try
             {
                 var account = await _accountApiClient.GetAccount(accountId);
                 foreach (var legalEntity in account.LegalEntities)
                 {
-                    var entity = (FakeLegalEntityViewModel) await _accountApiClient.GetLegalEntity(account.HashedAccountId, long.Parse(legalEntity.Id));
-                    entity.AccountAgreementType = "Non-Levy.EOI.1";
-                    entity.ApprenticeshipEmployerType = "Non-Levy";
-                    if(entity.AccountAgreementType!=AgreementType)
-                        throw new NoEOIAgreementException($"Legal entity {entity.AccountLegalEntityId} with Employer account '{accountId}' is blocked");
+                    var entity = await _accountApiClient.GetLegalEntity(account.HashedAccountId, long.Parse(legalEntity.Id));
+                    //if(entity.!=AgreementType)
+                    //    throw new NoEOIAgreementException($"Legal entity {entity.AccountLegalEntityId} with Employer account '{accountId}' is blocked");
                 }
-                var fakeAccount = (FakeAccountDetailViewModel) account;
-                fakeAccount.AccountAgreementType = "Non-Levy.EOI.1";
-                fakeAccount.ApprenticeshipEmployerType = "Non-Levy";
                 throw new NoEOIAgreementException($"Employer account '{accountId}' is blocked");
             }
             catch (Exception ex)
@@ -117,17 +112,5 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
                 throw;
             }
         }
-    }
-
-    class FakeAccountDetailViewModel : AccountDetailViewModel
-    {
-        public string ApprenticeshipEmployerType { get; set; }
-        public string AccountAgreementType { get; set; }
-    }
-
-    class FakeLegalEntityViewModel : LegalEntityViewModel
-    {
-        public string ApprenticeshipEmployerType { get; set; }
-        public string AccountAgreementType { get; set; }
     }
 }
