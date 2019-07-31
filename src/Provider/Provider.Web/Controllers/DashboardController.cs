@@ -26,7 +26,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             return View(vm);
         }
 
-        [HttpPost("dismiss-alert", Name = RouteNames.Dashboard_DismissAlert)]
+        [HttpPost("dismiss-alert", Name = RouteNames.Dashboard_DismissAlert_Post)]
         public async Task<IActionResult> DismissAlert([FromRoute] string employerAccountId, AlertDismissalEditModel model)
         {
             if (Enum.TryParse(typeof(AlertType), model.AlertType, out var alertTypeEnum))

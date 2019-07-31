@@ -8,7 +8,7 @@ namespace Esfa.Recruit.Shared.Web.ViewModels.Alerts
     public class EmployerTransferredVacanciesAlertViewModel
     {
         public int TransferredVacanciesCount { get; internal set; }
-        public IEnumerable<string> TransferredVacanciesProviderNames { get; internal set; }
+        public List<string> TransferredVacanciesProviderNames { get; internal set; }
 
         public string CountCaption => $"{"vacancy".ToQuantity(TransferredVacanciesCount)} {(TransferredVacanciesCount == 1 ? "has" : "have")} been transferred";
         public string ProviderNamesCaption => TransferredVacanciesProviderNames.Humanize().RemoveOxfordComma();
