@@ -6,6 +6,18 @@ using FluentValidation;
 namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 {
     /// <summary>
+    /// Unconditionally validates a <see cref="Qualification"/>.
+    /// <seealso cref="VacancyQualificationsValidator"/>
+    /// </summary>
+    internal class QualificationValidator : QualificationValidatorBase
+    {
+        public QualificationValidator(IQualificationsProvider qualificationsProvider)
+            : base(qualificationsProvider)
+        {
+        }
+    }
+
+    /// <summary>
     /// Registers validation with a specific rule ID.
     /// This is used by the <see cref="FluentVacancyValidator"/> to conditionally validate every
     /// <see cref="Qualification"/> in a vacancy.
@@ -18,18 +30,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         }
     }
 
-    /// <summary>
-    /// Unconditionally validates a <see cref="Qualification"/>.
-    /// <seealso cref="VacancyQualificationsValidator"/>
-    /// </summary>
-    internal class QualificationValidator : QualificationValidatorBase
-    {
-        public QualificationValidator(IQualificationsProvider qualificationsProvider)
-            : base(qualificationsProvider)
-        {
-        }
-    }
-
 
     /// <summary>
     /// Validates a <see cref="Qualification"/>.
@@ -38,7 +38,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
     /// </summary>
     internal class QualificationValidatorBase : AbstractValidator<Qualification>
     {
-        private readonly IList<string> _qualifications;
+        private readonly IList<string> _qualificationTypes;
 
         public QualificationValidatorBase(IQualificationsProvider qualificationsProvider)
             : this(0, qualificationsProvider)
@@ -47,14 +47,14 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
         public QualificationValidatorBase(long ruleId, IQualificationsProvider qualificationsProvider)
         {
-            _qualifications = qualificationsProvider.GetQualificationsAsync().Result ?? new List<string>();
+            _qualificationTypes = qualificationsProvider.GetQualificationsAsync().Result ?? new List<string>();
             
             RuleFor(x => x.QualificationType)
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty()
                     .WithMessage("Select a qualification")
                     .WithErrorCode("53")
-                .Must(_qualifications.Contains)
+                .Must(_qualificationTypes.Contains)
                     .WithMessage("Invalid qualification type")
                     .WithErrorCode("57")
                 .WithRuleId(ruleId);
