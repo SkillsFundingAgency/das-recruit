@@ -26,7 +26,7 @@
 
     <div asp-show="@Model.HasAnyVacancies">
         
-        <partial name="_Alerts" for="Alerts"/>
+        <partial name="@PartialNames.Alerts" for="Alerts"/>
     
         <div class="govuk-grid-row" asp-show="@Model.HasAnyVacancies">
             <div class="govuk-grid-column-one-half">
