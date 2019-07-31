@@ -25,7 +25,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
             var user = new User
             {
                 IdamsUserId = userId,
-                TransferredVacanciesAlertDismissedOn = null
+                TransferredVacanciesEmployerRevokedPermissionAlertDismissedOn = null
             };
             
             var clientMock = new Mock<IRecruitVacancyClient>();
@@ -39,7 +39,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
             var message = new UpdateUserAlertCommand
             {
                 IdamsUserId = userId,
-                AlertType = AlertType.TransferredVacancies,
+                AlertType = AlertType.TransferredVacanciesEmployerRevokedPermission,
                 DismissedOn = dismissedOn
             };
 
@@ -47,7 +47,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
 
             userRepositoryMock.Verify(r => r.UpsertUserAsync(user), Times.Once);
 
-            user.TransferredVacanciesAlertDismissedOn.Should().Be(dismissedOn);
+            user.TransferredVacanciesEmployerRevokedPermissionAlertDismissedOn.Should().Be(dismissedOn);
         }
     }
 }

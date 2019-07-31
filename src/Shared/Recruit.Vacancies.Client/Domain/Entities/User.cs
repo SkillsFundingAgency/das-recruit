@@ -15,9 +15,9 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public IList<string> AccountsDeclaredAsLevyPayers { get; set; } = new List<string>();
         public IList<string> EmployerAccountIds { get; set; } = new List<string>();
         public long? Ukprn { get; set; }
-        public DateTime? TransferredVacanciesAlertDismissedOn { get; set; }
-        public DateTime? BlockedProviderAlertDismissedOn { get; set; }
-        public DateTime? BlockedProviderTransferredVacanciesAlertDismissedOn { get; set; }
-        public DateTime? WithdrawnByQaVacanciesAlertDismissedOn { get; set; }
+        public DateTime? TransferredVacanciesEmployerRevokedPermissionAlertDismissedOn { get; set; }
+        public DateTime? ClosedVacanciesBlockedProviderAlertDismissedOn { get; set; }
+        public DateTime? TransferredVacanciesBlockedProviderAlertDismissedOn { get; set; }
+        public DateTime? ClosedVacanciesWithdrawnByQaAlertDismissedOn { get; set; }
     }
 }

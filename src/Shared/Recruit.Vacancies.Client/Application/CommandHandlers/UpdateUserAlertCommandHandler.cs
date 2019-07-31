@@ -25,17 +25,17 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             switch (message.AlertType)
             {
-                case AlertType.TransferredVacancies:
-                    user.TransferredVacanciesAlertDismissedOn = message.DismissedOn;
+                case AlertType.TransferredVacanciesEmployerRevokedPermission:
+                    user.TransferredVacanciesEmployerRevokedPermissionAlertDismissedOn = message.DismissedOn;
                     break;
-                case AlertType.BlockedProvider:
-                    user.BlockedProviderAlertDismissedOn = message.DismissedOn;
+                case AlertType.ClosedVacanciesBlockedProvider:
+                    user.ClosedVacanciesBlockedProviderAlertDismissedOn = message.DismissedOn;
                     break;
-                case AlertType.BlockedProviderTransferredVacancies:
-                    user.BlockedProviderTransferredVacanciesAlertDismissedOn = message.DismissedOn;
+                case AlertType.TransferredVacanciesBlockedProvider:
+                    user.TransferredVacanciesBlockedProviderAlertDismissedOn = message.DismissedOn;
                     break;
-                case AlertType.WithdrawnByQaVacancies:
-                    user.WithdrawnByQaVacanciesAlertDismissedOn = message.DismissedOn;
+                case AlertType.ClosedVacanciesWithdrawnByQa:
+                    user.ClosedVacanciesWithdrawnByQaAlertDismissedOn = message.DismissedOn;
                     break;
                 default:
                     throw new InvalidEnumArgumentException($"Cannot handle this alert dismissal {message.AlertType}");
