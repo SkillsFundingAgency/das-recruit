@@ -91,16 +91,16 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 {
                     Title = m.Title
                 };
-                if (m.ReferredFromSavedFavourites)
-                {
-                    provider = await GetProvider(m.ReferredUkprn);
-                    programme = await GetProgramme(m.ReferredProgrammeId);
-                }
                 return await ValidateAndExecute(
                     newVacancy, 
                     v => _vacancyClient.Validate(v, ValidationRules),
                     async v =>
                     {
+                        if (m.ReferredFromSavedFavourites)
+                        {
+                            provider = await GetProvider(m.ReferredUkprn);
+                            programme = await GetProgramme(m.ReferredProgrammeId);
+                        }
                         return await _client.CreateVacancyAsync(m.Title, m.EmployerAccountId, user, provider, programme?.Id);
                     });
             }
