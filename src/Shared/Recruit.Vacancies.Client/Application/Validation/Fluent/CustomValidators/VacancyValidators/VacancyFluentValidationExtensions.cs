@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using FluentValidation;
 using FluentValidation.Internal;
 using FluentValidation.Results;
@@ -75,7 +73,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
         {
             return ruleBuilder.CustomAsync(async (trainingProvider, context, cancellationToken) =>
             {
-                if (trainingProvider.Ukprn != null && 
+                if (trainingProvider.Ukprn.HasValue && 
                     await trainingProviderSummaryProvider.GetAsync(trainingProvider.Ukprn.Value) != null)
                 return;
 

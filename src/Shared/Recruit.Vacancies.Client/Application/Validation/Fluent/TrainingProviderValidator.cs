@@ -17,7 +17,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithMessage("You must enter a training provider")
                     .WithErrorCode(ErrorCodes.TrainingProviderUkprnNotEmpty)
                 .Length(UkprnLength)
-                    .WithMessage("The UKPRN is 8 digits")
+                    .WithMessage($"The UKPRN is {UkprnLength} digits")
                     .WithErrorCode(ErrorCodes.TrainingProviderUkprnMustBeCorrectLength)
                 .WithRuleId(ruleId);
 
