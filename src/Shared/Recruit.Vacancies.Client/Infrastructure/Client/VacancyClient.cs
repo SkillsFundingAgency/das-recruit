@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Communication.Types;
 using Esfa.Recruit.Vacancies.Client.Application;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
@@ -48,6 +49,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly IUserNotificationPreferencesRepository _userNotificationPreferencesRepository;
         private readonly AbstractValidator<UserNotificationPreferences> _userNotificationPreferencesValidator;
         private readonly ITrainingProviderSummaryProvider _trainingProviderSummaryProvider;
+        private readonly AbstractValidator<Qualification> _qualificationValidator;
 
         public VacancyClient(
             IVacancyRepository repository,
@@ -72,7 +74,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             IReportService reportService,
             IUserNotificationPreferencesRepository userNotificationPreferencesRepository,
             AbstractValidator<UserNotificationPreferences> userNotificationPreferencesValidator,
-            ITrainingProviderSummaryProvider trainingProviderSummaryProvider)
+            ITrainingProviderSummaryProvider trainingProviderSummaryProvider,
+            AbstractValidator<Qualification> qualificationValidator)
         {
             _repository = repository;
             _vacancyQuery = vacancyQuery;
@@ -97,6 +100,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _userNotificationPreferencesRepository = userNotificationPreferencesRepository;
             _userNotificationPreferencesValidator = userNotificationPreferencesValidator;
             _trainingProviderSummaryProvider = trainingProviderSummaryProvider;
+            _qualificationValidator = qualificationValidator;
         }
 
         public Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user)
@@ -489,18 +493,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         public EntityValidationResult ValidateUserNotificationPreferences(UserNotificationPreferences preferences)
         {
             var fluentResult = _userNotificationPreferencesValidator.Validate(preferences);
-
-            var newResult = new EntityValidationResult();
-
-            if (fluentResult.IsValid == false && fluentResult.Errors.Count > 0)
-            {
-                foreach(var fluentError in fluentResult.Errors)
-                {
-                    newResult.Errors.Add(new EntityValidationError(long.Parse(fluentError.ErrorCode), fluentError.PropertyName, fluentError.ErrorMessage, fluentError.ErrorCode));
-                }
-            }
-
-            return newResult;
+            return EntityValidationResult.FromFluentValidationResult(fluentResult);
         }
 
         public Task UpdateUserAccountAsync(string idamsUserId)
@@ -524,6 +517,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 AlertType = alertType,
                 DismissedOn = dismissedOn
             });
+        }
+
+        public EntityValidationResult ValidateQualification(Qualification qualification)
+        {
+            ValidationResult fluentResult = _qualificationValidator.Validate(qualification);
+            return EntityValidationResult.FromFluentValidationResult(fluentResult);
         }
     }
 }

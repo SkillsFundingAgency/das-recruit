@@ -5,6 +5,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
+using Esfa.Recruit.Vacancies.Client.Application.Validation;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
@@ -24,5 +25,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task SaveLevyDeclarationAsync(string userId, string employerAccountId);
         Task<TrainingProvider> GetTrainingProviderAsync(long ukprn);
         Task<int> GetVacancyCountForUserAsync(string userId);
+        EntityValidationResult ValidateQualification(Qualification qualification);
     }
 }
