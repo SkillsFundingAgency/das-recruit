@@ -176,10 +176,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         {
             return new AlertsViewModel
             {
-                EmployerRevokedTransferredVacanciesAlert = _alertViewModelService.GetTransferredVacanciesAlert(vacancies, TransferReason.EmployerRevokedPermission, userDetails.TransferredVacanciesAlertDismissedOn),
-                BlockedProviderTransferredVacanciesAlert = _alertViewModelService.GetTransferredVacanciesAlert(vacancies, TransferReason.BlockedByQa, userDetails.BlockedProviderTransferredVacanciesAlertDismissedOn),
-                BlockedProviderAlert = _alertViewModelService.GetBlockedProviderVacanciesAlert(vacancies, userDetails.BlockedProviderAlertDismissedOn),
-                WithdrawnByQaVacanciesAlert = _alertViewModelService.GetWithdrawnByQaVacanciesAlert(vacancies, userDetails.WithdrawnByQaVacanciesAlertDismissedOn)
+                EmployerRevokedTransferredVacanciesAlert = _alertViewModelService.GetTransferredVacanciesAlert(vacancies, TransferReason.EmployerRevokedPermission, userDetails.TransferredVacanciesEmployerRevokedPermissionAlertDismissedOn),
+                BlockedProviderTransferredVacanciesAlert = _alertViewModelService.GetTransferredVacanciesAlert(vacancies, TransferReason.BlockedByQa, userDetails.TransferredVacanciesBlockedProviderAlertDismissedOn),
+                BlockedProviderAlert = _alertViewModelService.GetBlockedProviderVacanciesAlert(vacancies, userDetails.ClosedVacanciesBlockedProviderAlertDismissedOn),
+                WithdrawnByQaVacanciesAlert = _alertViewModelService.GetWithdrawnByQaVacanciesAlert(vacancies, userDetails.ClosedVacanciesWithdrawnByQaAlertDismissedOn)
             };
         }
     }

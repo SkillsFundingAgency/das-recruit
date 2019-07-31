@@ -80,8 +80,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         {
             return new AlertsViewModel
             {
-                TransferredVacanciesAlert = _alertViewModelService.GetProviderTransferredVacanciesAlert(transferredVacancies, userDetails.TransferredVacanciesAlertDismissedOn),
-                WithdrawnByQaVacanciesAlert = _alertViewModelService.GetWithdrawnByQaVacanciesAlert(vacancies, userDetails.WithdrawnByQaVacanciesAlertDismissedOn)
+                TransferredVacanciesAlert = _alertViewModelService.GetProviderTransferredVacanciesAlert(transferredVacancies, userDetails.TransferredVacanciesEmployerRevokedPermissionAlertDismissedOn),
+                WithdrawnByQaVacanciesAlert = _alertViewModelService.GetWithdrawnByQaVacanciesAlert(vacancies, userDetails.ClosedVacanciesWithdrawnByQaAlertDismissedOn)
             };
         }
     }

@@ -44,22 +44,22 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.Services.AlertViewM
             var vm = sut.GetWithdrawnByQaVacanciesAlert(vacancies, null);
 
             vm.ClosedVacancies.Count.Should().Be(5);
-            vm.ClosedVacancies[0].Should().Be("first vacancy (VAC11111111)");
-            vm.ClosedVacancies[1].Should().Be("second vacancy (VAC22222222)");
-            vm.ClosedVacancies[2].Should().Be("third vacancy (VAC33333333)");
-            vm.ClosedVacancies[3].Should().Be("fourth vacancy (VAC44444444)");
-            vm.ClosedVacancies[4].Should().Be("fifth vacancy (VAC55555555)");
+            vm.ClosedVacancies[0].Should().Be("A vacancy (VAC55555555)");
+            vm.ClosedVacancies[1].Should().Be("B vacancy (VAC11111111)");
+            vm.ClosedVacancies[2].Should().Be("C vacancy (VAC44444444)");
+            vm.ClosedVacancies[3].Should().Be("D vacancy (VAC22222222)");
+            vm.ClosedVacancies[4].Should().Be("E vacancy (VAC33333333)");
         }
 
         private IEnumerable<VacancySummary> GetVacancies()
         {
             return new List<VacancySummary>
             {
-                CreateVacancy(DateTime.Parse("2019-07-14"), "first vacancy", 11111111),
-                CreateVacancy(DateTime.Parse("2019-07-15"), "second vacancy", 22222222),
-                CreateVacancy(DateTime.Parse("2019-07-16"), "third vacancy", 33333333),
-                CreateVacancy(DateTime.Parse("2019-07-17"), "fourth vacancy", 44444444),
-                CreateVacancy(DateTime.Parse("2019-07-18"), "fifth vacancy", 55555555)
+                CreateVacancy(DateTime.Parse("2019-07-14"), "B vacancy", 11111111),
+                CreateVacancy(DateTime.Parse("2019-07-15"), "D vacancy", 22222222),
+                CreateVacancy(DateTime.Parse("2019-07-16"), "E vacancy", 33333333),
+                CreateVacancy(DateTime.Parse("2019-07-17"), "C vacancy", 44444444),
+                CreateVacancy(DateTime.Parse("2019-07-18"), "A vacancy", 55555555)
             };
         }
 

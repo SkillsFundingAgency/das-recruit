@@ -2,9 +2,9 @@
 {
     public enum AlertType
     {
-        TransferredVacancies,
-        BlockedProvider,
-        BlockedProviderTransferredVacancies,
-        WithdrawnByQaVacancies
+        TransferredVacanciesBlockedProvider,
+        TransferredVacanciesEmployerRevokedPermission,
+        ClosedVacanciesBlockedProvider,
+        ClosedVacanciesWithdrawnByQa
     }
 }
