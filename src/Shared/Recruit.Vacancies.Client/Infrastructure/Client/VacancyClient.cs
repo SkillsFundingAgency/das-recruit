@@ -18,6 +18,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacanc
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections;
 using FluentValidation;
+using FluentValidation.Results;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
