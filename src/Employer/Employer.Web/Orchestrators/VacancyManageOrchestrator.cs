@@ -67,7 +67,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             if (vacancy.Status == VacancyStatus.Closed && vacancy.ClosureReason == ClosureReason.WithdrawnByQa)
             {
                 viewModel.WithdrawnDate = vacancy.ClosedDate?.AsGdsDate();
-                viewModel.IsWithdrawn = true;
             }
 
             var applications = new List<VacancyApplication>();

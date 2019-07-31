@@ -16,7 +16,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
         public bool IsDisabilityConfident { get; internal set; }
         public bool IsApplyThroughFaaVacancy { get; internal set; }
         public bool IsApplyThroughExternalApplicationSiteVacancy => !IsApplyThroughFaaVacancy;
-        public bool IsWithdrawn { get; set; }
+        public bool IsWithdrawn => string.IsNullOrEmpty(WithdrawnDate) == false;
         public VacancyApplicationsViewModel Applications { get; internal set; }
         public bool HasApplications => Applications.Applications.Any();
         public bool HasNoApplications => Applications.Applications == null || Applications.Applications?.Any() == false;

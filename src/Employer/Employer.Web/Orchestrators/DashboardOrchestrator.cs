@@ -179,7 +179,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 EmployerRevokedTransferredVacanciesAlert = _alertViewModelService.GetTransferredVacanciesAlert(vacancies, TransferReason.EmployerRevokedPermission, userDetails.TransferredVacanciesAlertDismissedOn),
                 BlockedProviderTransferredVacanciesAlert = _alertViewModelService.GetTransferredVacanciesAlert(vacancies, TransferReason.BlockedByQa, userDetails.BlockedProviderTransferredVacanciesAlertDismissedOn),
                 BlockedProviderAlert = _alertViewModelService.GetBlockedProviderVacanciesAlert(vacancies, userDetails.BlockedProviderAlertDismissedOn),
-                WithdrawnByQaVacanciesAlert = _alertViewModelService.GetWithdrawnByQaVacanciesAlert(vacancies, userDetails.WithdrawnByQaVacanciesAlertDismissOn)
+                WithdrawnByQaVacanciesAlert = _alertViewModelService.GetWithdrawnByQaVacanciesAlert(vacancies, userDetails.WithdrawnByQaVacanciesAlertDismissedOn)
             };
         }
     }

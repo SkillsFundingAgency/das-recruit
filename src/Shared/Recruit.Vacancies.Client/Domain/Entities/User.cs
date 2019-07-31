@@ -18,6 +18,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public DateTime? TransferredVacanciesAlertDismissedOn { get; set; }
         public DateTime? BlockedProviderAlertDismissedOn { get; set; }
         public DateTime? BlockedProviderTransferredVacanciesAlertDismissedOn { get; set; }
-        public DateTime? WithdrawnByQaVacanciesAlertDismissOn { get; set; }
+        public DateTime? WithdrawnByQaVacanciesAlertDismissedOn { get; set; }
     }
 }

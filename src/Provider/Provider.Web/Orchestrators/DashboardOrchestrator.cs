@@ -81,7 +81,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             return new AlertsViewModel
             {
                 TransferredVacanciesAlert = _alertViewModelService.GetProviderTransferredVacanciesAlert(transferredVacancies, userDetails.TransferredVacanciesAlertDismissedOn),
-                WithdrawnByQaVacanciesAlert = _alertViewModelService.GetWithdrawnByQaVacanciesAlert(vacancies, userDetails.WithdrawnByQaVacanciesAlertDismissOn)
+                WithdrawnByQaVacanciesAlert = _alertViewModelService.GetWithdrawnByQaVacanciesAlert(vacancies, userDetails.WithdrawnByQaVacanciesAlertDismissedOn)
             };
         }
     }

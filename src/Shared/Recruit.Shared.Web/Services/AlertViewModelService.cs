@@ -20,10 +20,16 @@ namespace Esfa.Recruit.Shared.Web.Services
             if (blockedProviderVacancies.Any() == false)
                 return null;
 
+            var blockedProviderNames = blockedProviderVacancies
+                .Select(v => v.TrainingProviderName)
+                .Distinct()
+                .OrderBy(v => v)
+                .ToList();
+
             return new BlockedProviderAlertViewModel
             {
                 ClosedVacancies = blockedProviderVacancies.Select(v => $"{v.Title} (VAC{v.VacancyReference})").ToList(),
-                BlockedProviderNames = blockedProviderVacancies.GroupBy(p => p.TrainingProviderName).Select(p => p.Key).ToList(),
+                BlockedProviderNames = blockedProviderNames
             };
         }
 
@@ -32,19 +38,24 @@ namespace Esfa.Recruit.Shared.Web.Services
             if (userLastDismissedDate.HasValue == false)
                 userLastDismissedDate = DateTime.MinValue;
 
-            var transferredVacancyProviders = vacancies.Where(v =>
+            var transferredVacancies = vacancies.Where(v =>
                     v.TransferInfoReason == reason &&
                     v.TransferInfoTransferredDate > userLastDismissedDate)
-                .Select(v => v.TransferInfoProviderName)
                 .ToList();
 
-            if (transferredVacancyProviders.Any() == false)
+            if (transferredVacancies.Any() == false)
                 return null;
+
+            var transferredVacanciesProviderNames = transferredVacancies
+                .Select(v => v.TransferInfoProviderName)
+                .Distinct()
+                .OrderBy(p => p)
+                .ToList();
 
             return new EmployerTransferredVacanciesAlertViewModel
             {
-                TransferredVacanciesCount = transferredVacancyProviders.Count,
-                TransferredVacanciesProviderNames = transferredVacancyProviders.Distinct().ToList()
+                TransferredVacanciesCount = transferredVacancies.Count,
+                TransferredVacanciesProviderNames = transferredVacanciesProviderNames
             };
         }
 
@@ -92,6 +103,7 @@ namespace Esfa.Recruit.Shared.Web.Services
                     v.Status == VacancyStatus.Closed &&
                     v.ClosureReason == reason &&
                     v.ClosedDate > userLastDismissedDate)
+                .OrderBy(v => v.Title)
                 .ToList();
         }
     }

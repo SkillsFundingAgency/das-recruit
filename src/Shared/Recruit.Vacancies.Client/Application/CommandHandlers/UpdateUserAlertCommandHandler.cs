@@ -35,7 +35,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                     user.BlockedProviderTransferredVacanciesAlertDismissedOn = message.DismissedOn;
                     break;
                 case AlertType.WithdrawnByQaVacancies:
-                    user.WithdrawnByQaVacanciesAlertDismissOn = message.DismissedOn;
+                    user.WithdrawnByQaVacanciesAlertDismissedOn = message.DismissedOn;
                     break;
                 default:
                     throw new InvalidEnumArgumentException($"Cannot handle this alert dismissal {message.AlertType}");
