@@ -6,10 +6,10 @@
         <div class="warning-summary">
             <p class="govuk-body">
                 <span asp-hide="@Model.HasMultipleClosedVacancies">
-                    1 vacancy has issues and has been closed. It can no longer be found on the Find an apprentice service.
+                    1 vacancy has issues and has been closed. It can no longer be found on the Find an Apprenticeship service.
                 </span>
                 <span asp-show="@Model.HasMultipleClosedVacancies">
-                    @Model.ClosedVacanciesCount vacancies have issues and have been closed. They can no longer be found on the Find an apprentice service.
+                    @Model.ClosedVacanciesCount vacancies have issues and have been closed. They can no longer be found on the Find an Apprenticeship service.
                 </span>
             </p>
 
