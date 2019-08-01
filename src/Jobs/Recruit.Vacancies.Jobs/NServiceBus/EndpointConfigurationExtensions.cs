@@ -9,7 +9,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.NServiceBus
         private static readonly string[] _recognisedEventMessageNamespaces = new string[]
         {
             "SFA.DAS.EmployerAccounts.Messages.Events",
-            "SFA.DAS.ProviderRelationships.Messages"
+            "SFA.DAS.ProviderRelationships.Messages.Events"
         };
 
         public static EndpointConfiguration UseServiceCollection(this EndpointConfiguration config, IServiceCollection services)

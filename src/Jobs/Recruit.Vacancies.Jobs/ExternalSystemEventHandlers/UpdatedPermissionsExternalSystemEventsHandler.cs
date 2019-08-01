@@ -75,8 +75,8 @@ namespace Esfa.Recruit.Vacancies.Jobs.ExternalSystemEventHandlers
                         Ukprn = message.Ukprn,
                         LegalEntityId = legalEntity.LegalEntityId,
                         UserRef = message.UserRef,
-                        UserEmailAddress = "",
-                        UserName = "", // concat (awaiting events update in provider relationships),
+                        UserEmailAddress = message.UserEmailAddress,
+                        UserName = $"{message.UserFirstName} {message.UserLastName}",
                         TransferReason = TransferReason.EmployerRevokedProviderPermission
                     });
 
