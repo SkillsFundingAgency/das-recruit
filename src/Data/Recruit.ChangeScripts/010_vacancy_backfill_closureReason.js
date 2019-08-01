@@ -3,9 +3,9 @@
     const autoClosure = "Auto";
     const manualClosure = "Manual";
 
-    function setClosureReason(vac, closureReason) {
+    function setClosureReason(vac) {
         print(`updating ${vac.vacancyReference}`);
-        db.vacancies.updateOne({ "_id": vac._id }, { $set: { "closureReason": closureReason} });
+        db.vacancies.updateOne({ "_id": vac._id }, { $set: { "closureReason": vac.closureReason} });
     }
 
     var closedVacancies = db.vacancies.aggregate([
