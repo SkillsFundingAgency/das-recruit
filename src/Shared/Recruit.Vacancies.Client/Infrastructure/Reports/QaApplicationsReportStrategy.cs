@@ -121,7 +121,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             var data = JsonConvert.SerializeObject(dotNetFriendlyResults);
             var headers = new List<KeyValuePair<string, string>>
             {
-                new KeyValuePair<string, string>("Date", _timeProvider.Now.ToUkTime().ToString("dd/MM/yyyy hh:mm:ss"))
+                new KeyValuePair<string, string>("Date", _timeProvider.Now.ToUkTime().ToString("dd/MM/yyyy HH:mm:ss"))
             };
 
             return new ReportStrategyResult(headers, data);
