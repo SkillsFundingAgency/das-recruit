@@ -56,7 +56,14 @@
 
             $selectElement.parents("form").on("submit",
                 function () {
-                    if ($(selectElementSelector).val() === "") {
+                    var searchedValue = $(selectElementSelector).val();
+                    var $originalSelectElementOptions = $(selectElementSelector + '-select option');
+
+                    var $selectedOption = $originalSelectElementOptions.filter(function (i, optionElement) {
+                        return optionElement.text === searchedValue;
+                    });
+
+                    if ($selectedOption.length === 0) {
                         $(selectElementSelector + '-select option[value=""]').prop('selected', true);
                     }
                 });
