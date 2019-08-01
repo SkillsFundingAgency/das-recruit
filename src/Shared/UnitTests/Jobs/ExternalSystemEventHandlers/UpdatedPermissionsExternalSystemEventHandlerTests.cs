@@ -26,6 +26,9 @@ namespace Esfa.Recruit.UnitTests.Jobs.ExternalSystemEventHandlers
 {
     public class UpdatedPermissionsExternalSystemEventHandlerTests
     {
+        private const string UserEmailAddress = "JohnSmith@test.com";
+        private const string UserFirstName = "John";
+        private const string UserLastName = "Smith";
         private const long EmployerAccountId = 12345;
         private const string EmployerAccountIdEncoded = "ABC123";
         private const long AccountLegalEntityId = 1231;
@@ -77,7 +80,7 @@ namespace Esfa.Recruit.UnitTests.Jobs.ExternalSystemEventHandlers
         public async Task GivenEventWithDefaultGuidUserRef_ThenVerifyNoDependenciesAreCalled()
         {
             var grantedOperations = new HashSet<Operation> { Operation.Recruitment };
-            await _sut.Handle(new UpdatedPermissionsEvent(EmployerAccountId, AccountLegalEntityId, AccountProviderId, AccountProviderLegalEntityId, Ukprn, Guid.Empty, grantedOperations, DateTime.UtcNow), null);
+            await _sut.Handle(new UpdatedPermissionsEvent(EmployerAccountId, AccountLegalEntityId, AccountProviderId, AccountProviderLegalEntityId, Ukprn, Guid.Empty, string.Empty, string.Empty, string.Empty, grantedOperations, DateTime.UtcNow), null);
 
             _mockRecruitQueueService.VerifyNoOtherCalls();
             _mockMessaging.VerifyNoOtherCalls();
@@ -90,7 +93,7 @@ namespace Esfa.Recruit.UnitTests.Jobs.ExternalSystemEventHandlers
         public async Task GivenEventWithGrantedRecruitmentPermission_ThenVerifyNoDependenciesAreCalled()
         {
             var grantedOperations = new HashSet<Operation> { Operation.Recruitment };
-            await _sut.Handle(new UpdatedPermissionsEvent(EmployerAccountId, AccountLegalEntityId, AccountProviderId, AccountProviderLegalEntityId, Ukprn, Guid.NewGuid(), grantedOperations, DateTime.UtcNow), null);
+            await _sut.Handle(new UpdatedPermissionsEvent(EmployerAccountId, AccountLegalEntityId, AccountProviderId, AccountProviderLegalEntityId, Ukprn, Guid.NewGuid(), UserEmailAddress, UserFirstName, UserLastName, grantedOperations, DateTime.UtcNow), null);
 
             _mockRecruitQueueService.VerifyNoOtherCalls();
             _mockMessaging.VerifyNoOtherCalls();
@@ -103,7 +106,7 @@ namespace Esfa.Recruit.UnitTests.Jobs.ExternalSystemEventHandlers
         public async Task GivenEventWithGrantedRecruitmentPermissionAndMore_ThenVerifyNoDependenciesAreCalled()
         {
             var grantedOperations = new HashSet<Operation> { Operation.Recruitment, Operation.CreateCohort };
-            await _sut.Handle(new UpdatedPermissionsEvent(EmployerAccountId, AccountLegalEntityId, AccountProviderId, AccountProviderLegalEntityId, Ukprn, Guid.NewGuid(), grantedOperations, DateTime.UtcNow), null);
+            await _sut.Handle(new UpdatedPermissionsEvent(EmployerAccountId, AccountLegalEntityId, AccountProviderId, AccountProviderLegalEntityId, Ukprn, Guid.NewGuid(), UserEmailAddress, UserFirstName, UserLastName, grantedOperations, DateTime.UtcNow), null);
 
             _mockRecruitQueueService.VerifyNoOtherCalls();
             _mockMessaging.VerifyNoOtherCalls();
@@ -121,7 +124,7 @@ namespace Esfa.Recruit.UnitTests.Jobs.ExternalSystemEventHandlers
                                         .ReturnsAsync(_dummyLegalEntities);
 
             var exception = await Assert.ThrowsAsync<Exception>(() =>
-                            _sut.Handle(new UpdatedPermissionsEvent(EmployerAccountId, AccountLegalEntityId, AccountProviderId, AccountProviderLegalEntityId, Ukprn, Guid.NewGuid(), grantedOperations, DateTime.UtcNow), null));
+                            _sut.Handle(new UpdatedPermissionsEvent(EmployerAccountId, AccountLegalEntityId, AccountProviderId, AccountProviderLegalEntityId, Ukprn, Guid.NewGuid(), UserEmailAddress, UserFirstName, UserLastName, grantedOperations, DateTime.UtcNow), null));
 
             exception.Message.Should().Be($"Could not find matching Account Legal Entity Id {AccountLegalEntityId} for Employer Account {EmployerAccountId}");
             _mockEncoder.Verify(x => x.Encode(EmployerAccountId, EncodingType.AccountId), Times.Once);
@@ -144,7 +147,7 @@ namespace Esfa.Recruit.UnitTests.Jobs.ExternalSystemEventHandlers
 
             _mockVacancyQuery.Setup(x => x.GetNoOfProviderOwnedVacanciesForLegalEntityAsync(Ukprn, RecruitLegalEntityId)).ReturnsAsync(0);
 
-            await _sut.Handle(new UpdatedPermissionsEvent(EmployerAccountId, AccountLegalEntityId, AccountProviderId, AccountProviderLegalEntityId, Ukprn, Guid.NewGuid(), grantedOperations, DateTime.UtcNow), null);
+            await _sut.Handle(new UpdatedPermissionsEvent(EmployerAccountId, AccountLegalEntityId, AccountProviderId, AccountProviderLegalEntityId, Ukprn, Guid.NewGuid(), UserEmailAddress, UserFirstName, UserLastName, grantedOperations, DateTime.UtcNow), null);
 
             _mockEncoder.Verify(x => x.Encode(EmployerAccountId, EncodingType.AccountId), Times.Once);
             _mockEmployerAccountProvider.Verify(x => x.GetLegalEntitiesConnectedToAccountAsync(EmployerAccountIdEncoded), Times.Once);
@@ -169,7 +172,7 @@ namespace Esfa.Recruit.UnitTests.Jobs.ExternalSystemEventHandlers
 
             _mockVacancyQuery.Setup(x => x.GetNoOfProviderOwnedVacanciesForLegalEntityAsync(Ukprn, RecruitLegalEntityId)).ReturnsAsync(1);
 
-            await _sut.Handle(new UpdatedPermissionsEvent(EmployerAccountId, AccountLegalEntityId, AccountProviderId, AccountProviderLegalEntityId, Ukprn, Guid.NewGuid(), grantedOperations, DateTime.UtcNow), null);
+            await _sut.Handle(new UpdatedPermissionsEvent(EmployerAccountId, AccountLegalEntityId, AccountProviderId, AccountProviderLegalEntityId, Ukprn, Guid.NewGuid(), UserEmailAddress, UserFirstName, UserLastName, grantedOperations, DateTime.UtcNow), null);
 
             _mockEncoder.Verify(x => x.Encode(EmployerAccountId, EncodingType.AccountId), Times.Once);
             _mockEmployerAccountProvider.Verify(x => x.GetLegalEntitiesConnectedToAccountAsync(EmployerAccountIdEncoded), Times.Once);

@@ -23,8 +23,9 @@ namespace Esfa.Recruit.Vacancies.Jobs.NServiceBus
                     configuration.GetSection(nameof(DasSharedNServiceBusConfiguration)).Bind(serviceBusConfiguration);
 
                     var endpointConfiguration = new EndpointConfiguration(RecruitVacanciesJobs)
-                        .UseAzureServiceBusTransport(false,
-                            () => serviceBusConfiguration.ConnectionString, r => { })
+                        .UseAzureServiceBusTransport(isDevelopment: false,
+                                                    connectionStringBuilder: () => serviceBusConfiguration.ConnectionString,
+                                                    routing: r => { })
                         .UseErrorQueue()
                         .UseInstallers()
                         .UseLicense(serviceBusConfiguration.NServiceBusLicense)
