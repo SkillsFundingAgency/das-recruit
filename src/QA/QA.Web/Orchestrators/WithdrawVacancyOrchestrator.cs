@@ -26,7 +26,12 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
 
         public async Task<PostFindVacancyEditModelResult> PostFindVacancyEditModelAsync(FindVacancyEditModel m)
         {
-            var vacancy = await GetVacancyAsync(m.VacancyReference.ToUpper().Replace("VAC", ""));
+            var vacancyReference = m.VacancyReference.ToUpper().Replace("VAC", "");
+
+            Vacancy vacancy = null;
+
+            if (long.TryParse(vacancyReference, out var vacancyReferenceNumber))
+                vacancy = await GetVacancyAsync(vacancyReferenceNumber);
 
             if(vacancy != null && vacancy.CanClose)
                 return new PostFindVacancyEditModelResult { ResultType = PostFindVacancyEditModelResultType.CanClose, VacancyReference = vacancy.VacancyReference };
@@ -46,7 +51,7 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             return vm;
         }
 
-        public async Task<AlreadyClosedViewModel> GetAlreadyClosedViewModelAsync(string vacancyReference)
+        public async Task<AlreadyClosedViewModel> GetAlreadyClosedViewModelAsync(long vacancyReference)
         {
             var vacancy = await GetVacancyAsync(vacancyReference);
 
@@ -62,7 +67,7 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             };
         }
 
-        public async Task<ConfirmViewModel> GetConfirmViewModelAsync(string vacancyReference)
+        public async Task<ConfirmViewModel> GetConfirmViewModelAsync(long vacancyReference)
         {
             var vacancy = await GetVacancyAsync(vacancyReference);
 
@@ -80,26 +85,26 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             };
         }
 
-        public async Task<AcknowledgeViewModel> GetAcknowledgeViewModelAsync(string vacancyReference)
+        public async Task<ConsentViewModel> GetConsentViewModelAsync(long vacancyReference)
         {
             var vacancy = await GetVacancyAsync(vacancyReference);
 
             if (vacancy == null || vacancy.CanClose == false)
                 return null;
 
-            return new AcknowledgeViewModel
+            return new ConsentViewModel
             {
                 VacancyReference = vacancy.VacancyReference.Value,
                 OwnerName = GetOwnerName(vacancy)
             };
         }
 
-        public async Task<bool> PostAcknowledgeEditModelAsync(AcknowledgeEditModel m, VacancyUser user)
+        public async Task<bool> PostConsentEditModelAsync(ConsentEditModel m, long vacancyReference, VacancyUser user)
         {
             if (m.Acknowledged == false)
                 return false;
 
-            var vacancy = await GetVacancyAsync(m.VacancyReference);
+            var vacancy = await GetVacancyAsync(vacancyReference);
 
             if (vacancy == null || vacancy.CanClose == false)
                 return false;
@@ -109,28 +114,25 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             return true;
         }
 
-        public async Task<ClosedViewModel> GetClosedViewModelAsync(string vacancyReference)
+        public async Task<AcknowledgementViewModel> GetAcknowledgementViewModelAsync(long vacancyReference)
         {
             var vacancy = await GetVacancyAsync(vacancyReference);
 
             if (vacancy == null || vacancy.CanClose)
                 return null;
 
-            return new ClosedViewModel
+            return new AcknowledgementViewModel
             {
                 VacancyReference = vacancy.VacancyReference.Value,
                 OwnerName = GetOwnerName(vacancy)
             };
         }
 
-        private async Task<Vacancy> GetVacancyAsync(string vacancyReference)
+        private async Task<Vacancy> GetVacancyAsync(long vacancyReference)
         {
-            if (long.TryParse(vacancyReference, out var vacancyReferenceNumber) == false)
-                return null;
-
             try
             {
-                return await _vacancyClient.GetVacancyAsync(vacancyReferenceNumber);
+                return await _vacancyClient.GetVacancyAsync(vacancyReference);
             }
             catch (VacancyNotFoundException)
             {
@@ -147,7 +149,7 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
                 case OwnerType.Provider:
                     return vacancy.TrainingProvider.Name;
                 default:
-                    throw new InvalidEnumArgumentException($"{vacancy.OwnerType.ToString()} is not handled");
+                    throw new NotImplementedException($"{vacancy.OwnerType.ToString()} is not handled");
             }
         }
     }

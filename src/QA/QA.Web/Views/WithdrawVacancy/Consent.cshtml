@@ -1,4 +1,4 @@
-﻿@model Esfa.Recruit.Qa.Web.ViewModels.WithdrawVacancy.AcknowledgeViewModel
+﻿@model Esfa.Recruit.Qa.Web.ViewModels.WithdrawVacancy.ConsentViewModel
 
 <div class="govuk-grid-row govuk-!-margin-top-6">
     <div class="govuk-grid-column-two-thirds">
@@ -14,7 +14,7 @@
             <li>email <strong>@Model.OwnerName (owner)</strong> and let them know that we have closed the vacancy</li>
         </ul>
         
-        <form asp-route="@RouteNames.WithdrawVacancy_Acknowledge_Post">
+        <form asp-route="@RouteNames.WithdrawVacancy_Consent_Post">
             
             <div class="govuk-form-group">
                 <p class="govuk-body">

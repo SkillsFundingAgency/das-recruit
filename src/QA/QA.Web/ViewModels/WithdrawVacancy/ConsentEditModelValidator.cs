@@ -2,9 +2,9 @@
 
 namespace Esfa.Recruit.Qa.Web.ViewModels.WithdrawVacancy
 {
-    public class AcknowledgeEditModelValidator : AbstractValidator<AcknowledgeEditModel>
+    public class ConsentEditModelValidator : AbstractValidator<ConsentEditModel>
     {
-        public AcknowledgeEditModelValidator()
+        public ConsentEditModelValidator()
         {
             RuleFor(x => x.Acknowledged)
                 .Equal(true)

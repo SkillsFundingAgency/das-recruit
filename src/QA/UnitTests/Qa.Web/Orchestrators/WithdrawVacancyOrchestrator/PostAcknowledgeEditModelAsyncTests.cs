@@ -27,15 +27,14 @@ namespace UnitTests.Qa.Web.Orchestrators.WithdrawVacancyOrchestrator
 
             var orch = new Esfa.Recruit.Qa.Web.Orchestrators.WithdrawVacancyOrchestrator(mockClient.Object);
 
-            var m = new AcknowledgeEditModel
+            var m = new ConsentEditModel
             {
-                Acknowledged = false,
-                VacancyReference = VacancyReference.ToString()
+                Acknowledged = false
             };
 
             var user = new VacancyUser();
 
-            var result = await orch.PostAcknowledgeEditModelAsync(m, user);
+            var result = await orch.PostConsentEditModelAsync(m, VacancyReference, user);
 
             result.Should().BeFalse();
 
@@ -57,15 +56,14 @@ namespace UnitTests.Qa.Web.Orchestrators.WithdrawVacancyOrchestrator
 
             var orch = new Esfa.Recruit.Qa.Web.Orchestrators.WithdrawVacancyOrchestrator(mockClient.Object);
 
-            var m = new AcknowledgeEditModel
+            var m = new ConsentEditModel
             {
-                Acknowledged = true,
-                VacancyReference = VacancyReference.ToString()
+                Acknowledged = true
             };
 
             var user = new VacancyUser();
 
-            var result = await orch.PostAcknowledgeEditModelAsync(m, user);
+            var result = await orch.PostConsentEditModelAsync(m, VacancyReference, user);
 
             result.Should().BeFalse();
 
@@ -84,15 +82,14 @@ namespace UnitTests.Qa.Web.Orchestrators.WithdrawVacancyOrchestrator
 
             var orch = new Esfa.Recruit.Qa.Web.Orchestrators.WithdrawVacancyOrchestrator(mockClient.Object);
 
-            var m = new AcknowledgeEditModel
+            var m = new ConsentEditModel
             {
-                Acknowledged = true,
-                VacancyReference = VacancyReference.ToString()
+                Acknowledged = true
             };
 
             var user = new VacancyUser();
 
-            var result = await orch.PostAcknowledgeEditModelAsync(m, user);
+            var result = await orch.PostConsentEditModelAsync(m, VacancyReference, user);
 
             result.Should().BeTrue();
 

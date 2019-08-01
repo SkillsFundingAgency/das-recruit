@@ -4,5 +4,6 @@
     {
         public const string DashboardMessage = "Dashboard_Message";
         public const string BlockProviderUkprnKey = "BlockProviderUkprnKey";
+        public const string WithdrawVacancyReference = "WithdrawVacancyReference";
     }
 }

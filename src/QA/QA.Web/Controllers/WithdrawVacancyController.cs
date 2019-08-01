@@ -1,5 +1,6 @@
-﻿using System.ComponentModel;
+﻿using System;
 using System.Threading.Tasks;
+using Esfa.Recruit.Qa.Web.Configuration;
 using Esfa.Recruit.Qa.Web.Configuration.Routing;
 using Esfa.Recruit.Qa.Web.Extensions;
 using Esfa.Recruit.Qa.Web.Models.WithdrawVacancy;
@@ -37,17 +38,19 @@ namespace Esfa.Recruit.Qa.Web.Controllers
             {
                 var result = await _orchestrator.PostFindVacancyEditModelAsync(m);
 
+                TempData[TempDataKeys.WithdrawVacancyReference] = result.VacancyReference;
+
                 switch (result.ResultType)
                 {
                     case PostFindVacancyEditModelResultType.AlreadyClosed:
-                        return RedirectToRoute(RouteNames.WithdrawVacancy_AlreadyClosed_Get, new {vacancyReference = result.VacancyReference});
+                        return RedirectToRoute(RouteNames.WithdrawVacancy_AlreadyClosed_Get, result.VacancyReference.Value);
                     case PostFindVacancyEditModelResultType.CanClose:
-                        return RedirectToRoute(RouteNames.WithdrawVacancy_Confirm_Get, new {vacancyReference = result.VacancyReference});
+                        return RedirectToRoute(RouteNames.WithdrawVacancy_Confirm_Get, result.VacancyReference.Value);
                     case PostFindVacancyEditModelResultType.NotFound:
                         ModelState.AddModelError(nameof(FindVacancyViewModel.VacancyReference), $"Cannot find a live vacancy with vacancy reference '{m.VacancyReference}'");
                         break;
                     default:
-                        throw new InvalidEnumArgumentException($"{result.ResultType.ToString()} is not handled");
+                        throw new NotImplementedException($"{result.ResultType.ToString()} is not handled");
                 }
             }
 
@@ -55,10 +58,15 @@ namespace Esfa.Recruit.Qa.Web.Controllers
             return View(vm);
         }
 
-        [HttpGet("{vacancyReference}/already-closed", Name = RouteNames.WithdrawVacancy_AlreadyClosed_Get)]
-        public async Task<IActionResult> AlreadyClosed([FromRoute] string vacancyReference)
+        [HttpGet("already-closed", Name = RouteNames.WithdrawVacancy_AlreadyClosed_Get)]
+        public async Task<IActionResult> AlreadyClosed()
         {
-            var vm = await _orchestrator.GetAlreadyClosedViewModelAsync(vacancyReference);
+            var vacancyReference = GetVacancyReference();
+
+            AlreadyClosedViewModel vm = null;
+
+            if (vacancyReference.HasValue)
+                vm = await _orchestrator.GetAlreadyClosedViewModelAsync(vacancyReference.Value);
 
             if (vm == null)
                 return RedirectToRoute(RouteNames.WithdrawVacancy_FindVacancy_Get);
@@ -66,10 +74,15 @@ namespace Esfa.Recruit.Qa.Web.Controllers
             return View(vm);
         }
 
-        [HttpGet("{vacancyReference}/confirm", Name = RouteNames.WithdrawVacancy_Confirm_Get)]
-        public async Task<IActionResult> Confirm([FromRoute] string vacancyReference)
+        [HttpGet("confirm", Name = RouteNames.WithdrawVacancy_Confirm_Get)]
+        public async Task<IActionResult> Confirm()
         {
-            var vm = await _orchestrator.GetConfirmViewModelAsync(vacancyReference);
+            var vacancyReference = GetVacancyReference();
+
+            ConfirmViewModel vm = null;
+
+            if(vacancyReference.HasValue)
+                vm = await _orchestrator.GetConfirmViewModelAsync(vacancyReference.Value);
 
             if (vm == null)
                 return RedirectToRoute(RouteNames.WithdrawVacancy_FindVacancy_Get);
@@ -77,10 +90,15 @@ namespace Esfa.Recruit.Qa.Web.Controllers
             return View(vm);
         }
 
-        [HttpGet("{vacancyReference}/acknowledge", Name = RouteNames.WithdrawVacancy_Acknowledge_Get)]
-        public async Task<IActionResult> Acknowledge([FromRoute] string vacancyReference)
+        [HttpGet("consent", Name = RouteNames.WithdrawVacancy_Consent_Get)]
+        public async Task<IActionResult> Consent()
         {
-            var vm = await _orchestrator.GetAcknowledgeViewModelAsync(vacancyReference);
+            var vacancyReference = GetVacancyReference();
+
+            ConsentViewModel vm = null;
+
+            if (vacancyReference.HasValue)
+                vm = await _orchestrator.GetConsentViewModelAsync(vacancyReference.Value);
 
             if (vm == null)
                 return RedirectToRoute(RouteNames.WithdrawVacancy_FindVacancy_Get);
@@ -88,32 +106,51 @@ namespace Esfa.Recruit.Qa.Web.Controllers
             return View(vm);
         }
 
-        [HttpPost("{vacancyReference}/acknowledge", Name = RouteNames.WithdrawVacancy_Acknowledge_Post)]
-        public async Task<IActionResult> Acknowledge(AcknowledgeEditModel m)
+        [HttpPost("consent", Name = RouteNames.WithdrawVacancy_Consent_Post)]
+        public async Task<IActionResult> Consent(ConsentEditModel m)
         {
+            var vacancyReference = GetVacancyReference();
+
+            if(vacancyReference.HasValue == false)
+                return RedirectToRoute(RouteNames.WithdrawVacancy_FindVacancy_Get);
+
             if (ModelState.IsValid)
             {
-                var success = await _orchestrator.PostAcknowledgeEditModelAsync(m, User.GetVacancyUser());
+                var success = await _orchestrator.PostConsentEditModelAsync(m, vacancyReference.Value, User.GetVacancyUser());
 
                 if (success)
-                    return RedirectToRoute(RouteNames.WithdrawVacancy_Closed_Get);
+                    return RedirectToRoute(RouteNames.WithdrawVacancy_Acknowledgement_Get);
 
                 return RedirectToRoute(RouteNames.WithdrawVacancy_FindVacancy_Get);
             }
 
-            var vm = await _orchestrator.GetAcknowledgeViewModelAsync(m.VacancyReference);
+            var vm = await _orchestrator.GetConsentViewModelAsync(vacancyReference.Value);
             return View(vm);
         }
 
-        [HttpGet("{vacancyReference}/closed", Name = RouteNames.WithdrawVacancy_Closed_Get)]
-        public async Task<IActionResult> Closed([FromRoute] string vacancyReference)
+        [HttpGet("acknowledgement", Name = RouteNames.WithdrawVacancy_Acknowledgement_Get)]
+        public async Task<IActionResult> Acknowledgement()
         {
-            var vm = await _orchestrator.GetClosedViewModelAsync(vacancyReference);
+            var vacancyReference = GetVacancyReference();
+
+            AcknowledgementViewModel vm = null;
+
+            if (vacancyReference.HasValue)
+                vm = await _orchestrator.GetAcknowledgementViewModelAsync(vacancyReference.Value);
 
             if (vm == null)
                 return RedirectToRoute(RouteNames.WithdrawVacancy_FindVacancy_Get);
 
+            TempData.Remove(TempDataKeys.WithdrawVacancyReference);
+
             return View(vm);
+        }
+
+        private long? GetVacancyReference()
+        {
+            if (long.TryParse(TempData.Peek(TempDataKeys.WithdrawVacancyReference)?.ToString(), out long vacancyReferenceNumber))
+                return vacancyReferenceNumber;
+            return null;
         }
     }
 }

@@ -8,7 +8,7 @@ namespace Esfa.Recruit.Qa.Web.ViewModels.WithdrawVacancy
         {
             RuleFor(x => x.VacancyReference)
                 .NotEmpty()
-                .WithMessage("Please enter vacancy reference number to continue");
+                .WithMessage("Please enter a vacancy reference number to continue");
         }
     }
 }
