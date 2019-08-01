@@ -259,7 +259,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         private FilterDefinition<Vacancy> GetProviderOwnedVacanciesForLegalEntityFilter(long ukprn, long legalEntityId)
         {
             var builder = Builders<Vacancy>.Filter;
-            var filter = builder.Eq(v => v.OwnerType, OwnerType.Provider) &
+            var filter = builder.Eq(v => v.IsDeleted, false) &
+                        builder.Eq(v => v.OwnerType, OwnerType.Provider) &
                         builder.Eq(v => v.TrainingProvider.Ukprn, ukprn) &
                         builder.Eq(v => v.LegalEntityId, legalEntityId);
             return filter;
