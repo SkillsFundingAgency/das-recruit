@@ -93,18 +93,20 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
             }
         }
 
-        public async Task<LegalEntityViewModel> GetEmployerAccountExpressionOfInterestAsync(string accountId)
+        public async Task GetEmployerAccountExpressionOfInterestAsync(string accountId)
         {
             try
             {
                 var account = await _accountApiClient.GetAccount(accountId);
-                foreach (var legalEntity in account.LegalEntities)
+                foreach (var entity in account.LegalEntities)
                 {
-                    var entity = await _accountApiClient.GetLegalEntity(account.HashedAccountId, long.Parse(legalEntity.Id));
-                    //if(entity.!=AgreementType)
-                    //    throw new NoEOIAgreementException($"Legal entity {entity.AccountLegalEntityId} with Employer account '{accountId}' is blocked");
+                    var legalEntity = await _accountApiClient.GetLegalEntity(account.HashedAccountId, long.Parse(entity.Id));
+                    foreach (var agreement in legalEntity.Agreements)
+                    {
+                        if(agreement.AgreementType != SFA.DAS.Common.Domain.Types.AgreementType.NonLevyExpressionOfInterest)
+                            throw new NoEOIAgreementException($"Legal entity {legalEntity.LegalEntityId} with Employer account '{accountId}' is blocked");
+                    }
                 }
-                throw new NoEOIAgreementException($"Employer account '{accountId}' is blocked");
             }
             catch (Exception ex)
             {
