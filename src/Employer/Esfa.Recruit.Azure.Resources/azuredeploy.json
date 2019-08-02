@@ -110,11 +110,7 @@
     "UseTableStorageQueryStore": {
       "type": "bool",
       "defaultValue": false
-    },
-    "WhitelistedProvidersList":{
-      "type": "string",
-      "defaultValue": ""
-    },
+    },    
     "SharedAppServicePlanName": {
       "type": "string"
     },
