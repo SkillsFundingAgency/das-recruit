@@ -60,6 +60,8 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         /// </summary>
         public bool CanUnassign => Status == ReviewStatus.UnderReview && ReviewedByUser != null;
 
+        public bool IsPending => Status == ReviewStatus.New || Status == ReviewStatus.PendingReview;
+
         public RuleSetOutcome AutomatedQaOutcome { get; set; }
         public IEnumerable<RuleOutcomeIndicator> AutomatedQaOutcomeIndicators { get; set; } = new List<RuleOutcomeIndicator>();        
     }

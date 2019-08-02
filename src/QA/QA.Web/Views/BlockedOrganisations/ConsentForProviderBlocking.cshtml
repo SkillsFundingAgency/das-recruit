@@ -1,0 +1,42 @@
+@using Esfa.Recruit.QA.Web.ViewModels.ManageProvider;
+@model ConsentForProviderBlockingViewModel;
+<div class="govuk-grid-row">
+    <div class="govuk-column-two-thirds govuk-body">
+        <h1 class="govuk-heading-xl">Remove @Model.Name from the recruitment service</h1>
+        <p>Removing a training provider will do the following:</p>
+        <ul class="list list-bullet">
+            <li asp-show="@Model.ShowPermissionsMessage">no longer be able to recruit on behalf of @Model.PermissionCount employers</li>
+            <li asp-show="@Model.ShowPermissionsMessage">not be able to create or manage vacancies on the behalf of @Model.PermissionCount employers</li>
+            <li>any vacancies created by @Model.Name will be transferred to the employer</li>
+            <li>no longer be able to access the recruitment service. Can still access the rest of the account</li>
+            <li>live vacancies using @Model.Name as the training provider will close</li>
+        </ul>
+        <form asp-route="@RouteNames.BlockProvider_Consent_Post">
+            <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-label govuk-!-font-weight-bold"></legend>
+                    <span esfa-validation-message-for="HasConsent" class="govuk-error-message"></span>
+                    <div class="govuk-checkboxes" data-module="checkboxes">
+                        <div class="govuk-checkboxes__item">
+                            <input asp-for="HasConsent" class="govuk-checkboxes__input" data-aria-controls="consent-conditional" id="consent" type="checkbox" value="true" >
+                            <label asp-for="HasConsent" class="govuk-label govuk-checkboxes__label">I understand the above and wish to remove this training provider</label>
+                        </div>
+                        <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="consent-conditional">
+                            <div class="govuk-form-group">
+                                <label class="govuk-label" asp-for="Reason">
+                                    Why do you want to remove this training provider?
+                                </label>
+                                <span esfa-validation-message-for="Reason" class="govuk-error-message"></span>
+                                <textarea asp-for="Reason" data-val-length-max="200" class="govuk-textarea govuk-!-width-three-quarters" rows="5" type="text"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="govuk-button warning-button">Remove training provider</button>
+                <a asp-route="@RouteNames.BlockedOrganisations_Get" class="govuk-link das-button-link">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>

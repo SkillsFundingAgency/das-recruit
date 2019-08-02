@@ -5,7 +5,7 @@ namespace Esfa.Recruit.Qa.Web.Configuration.Routing
         public const string VacancyReviewsRoutePath = "reviews/{reviewId:guid}";
         public const string AccessDeniedPath = "/error/403";
         public const string ExceptionHandlingPath = "/error/handle";
-
+        public const string BlockedOrganisations = "/blockedorganisations";
         //Reports 
         public const string ReportsRoutePath = "/reports";
         public const string ApplicationsReportRoutePath = ReportsRoutePath + "/applications";

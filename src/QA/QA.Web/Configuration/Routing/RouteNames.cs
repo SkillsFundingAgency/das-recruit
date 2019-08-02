@@ -15,5 +15,14 @@
         public const string Vacancy_Review_Unassign_Get = "Vacancy_Review_Unassign_Get";
         public const string Vacancy_Review_Unassign_Post = "Vacancy_Review_Unassign_Post";
         public const string Vacancy_Readonly_Review_Get = "Vacancy_Readonly_Review_Get";
+        public const string BlockedOrganisations_Get = "BlockedOrganisations_Get";
+        public const string BlockProvider_Find_Get = "BlockProvider_Find_Get";
+        public const string BlockProvider_Find_Post = "BlockProvider_Find_Post";
+        public const string BlockProvider_Confirm_Get = "BlockProvider_Confirm_Get";
+        public const string BlockProvider_Confirm_Post = "BlockProvider_Confirm_Post";
+        public const string BlockProvider_Consent_Get = "BlockProvider_Consent_Get";
+        public const string BlockProvider_Consent_Post = "BlockProvider_Consent_Post";
+        public const string BlockProvider_Acknowledgement_Get = "BlockProvider_Acknowledgement_Get";
+        public const string BlockProvider_AlreadyBlocked_Get = "BlockProvider_AlreadyBlocked_Get";
     }
 }

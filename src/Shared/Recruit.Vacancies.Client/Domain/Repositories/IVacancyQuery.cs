@@ -2,6 +2,7 @@
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Domain.Models;
 
 namespace Esfa.Recruit.Vacancies.Client.Domain.Repositories
 {
@@ -16,5 +17,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Repositories
         Task<IEnumerable<string>> GetDistinctVacancyOwningEmployerAccountsAsync();
         Task<IEnumerable<long>> GetDistinctVacancyOwningProviderAccountsAsync();
         Task<IEnumerable<long>> GetAllVacancyReferencesAsync();
+        Task<IEnumerable<ProviderVacancySummary>> GetVacanciesAssociatedToProvider(long ukprn);
     }
 }

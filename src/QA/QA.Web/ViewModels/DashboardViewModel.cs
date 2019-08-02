@@ -20,9 +20,9 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public bool DisplayNoSearchResultsMessage => DisplayLastSearchTerm && !SearchResults.Any();
         public bool DisplaySearchResults => DisplayLastSearchTerm && SearchResults.Any();
         public bool HasDashboardMessage => string.IsNullOrWhiteSpace(DashboardMessage) == false;
-        public bool DisplayInProgressVacancies { get; set; }
+        public bool IsUserAdmin { get; set; }
         public List<VacancyReviewSearchResultViewModel> InProgressVacancies { get; set; } = new List<VacancyReviewSearchResultViewModel>();
-        public bool DisplayNoInProgressVacanciesMessage => DisplayInProgressVacancies && !InProgressVacancies.Any();
-        public bool DisplayInProgressResults => DisplayInProgressVacancies && InProgressVacancies.Any();
+        public bool DisplayNoInProgressVacanciesMessage => IsUserAdmin && !InProgressVacancies.Any();
+        public bool DisplayInProgressResults => IsUserAdmin && InProgressVacancies.Any();
     }
 }

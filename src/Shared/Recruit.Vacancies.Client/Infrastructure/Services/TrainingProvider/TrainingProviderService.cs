@@ -28,8 +28,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Failed to retrieve provider information for UKPRN: {ukprn}");
-                throw;
+                _logger.LogInformation(ex, $"Failed to retrieve provider information for UKPRN: {ukprn}");
+                return null;
             }
 
             return TrainingProviderMapper.MapFromApiProvider(provider);

@@ -115,7 +115,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             if (!TryGetVacancyReference(searchTerm, out var vacancyReference)) return result;
 
             var review = await _vacancyReviewQuery.GetLatestReviewByReferenceAsync(vacancyReference);
-            if (review != null) result.Add(review);
+            if (review != null && review.Status != ReviewStatus.New) result.Add(review);
             
             return result;
         }

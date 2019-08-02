@@ -7,7 +7,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
     public interface IVacancyService
     {
         Task CloseExpiredVacancy(Guid vacancyId);
-        Task CloseVacancyImmediately(Guid vacancyId, VacancyUser user);
+        Task CloseVacancyImmediately(Guid vacancyId, VacancyUser user, ClosureReason closureReason);
         Task PerformRulesCheckAsync(Guid reviewId);
     }
 }
