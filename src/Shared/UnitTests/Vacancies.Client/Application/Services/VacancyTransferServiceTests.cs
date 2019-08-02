@@ -30,10 +30,10 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
             var vacancy = GetTestProviderOwnedVacancy(VacancyStatus.Live);
             var vacancyUser = _autoFixture.Create<VacancyUser>();
 
-            await _sut.TransferVacancyToLegalEntityAsync(vacancy, vacancyUser, TransferReason.EmployerRevokedProviderPermission);
+            await _sut.TransferVacancyToLegalEntityAsync(vacancy, vacancyUser, TransferReason.EmployerRevokedPermission);
 
             vacancy.TransferInfo.Should().NotBeNull();
-            vacancy.TransferInfo.Reason.Should().Be(TransferReason.EmployerRevokedProviderPermission);
+            vacancy.TransferInfo.Reason.Should().Be(TransferReason.EmployerRevokedPermission);
             vacancy.TransferInfo.Ukprn.Should().Be(vacancy.TrainingProvider.Ukprn);
             vacancy.TransferInfo.ProviderName.Should().Be(vacancy.TrainingProvider.Name);
             vacancy.TransferInfo.LegalEntityName.Should().Be(vacancy.LegalEntityName);
@@ -64,7 +64,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
             var vacancy = GetTestProviderOwnedVacancy(VacancyStatus.Live);
             var vacancyUser = _autoFixture.Create<VacancyUser>();
 
-            await _sut.TransferVacancyToLegalEntityAsync(vacancy, vacancyUser, TransferReason.EmployerRevokedProviderPermission);
+            await _sut.TransferVacancyToLegalEntityAsync(vacancy, vacancyUser, TransferReason.EmployerRevokedPermission);
 
             vacancy.OwnerType.Should().NotBe(OwnerType.Provider);
         }
@@ -75,7 +75,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
             var vacancy = GetTestProviderOwnedVacancy(VacancyStatus.Live);
             var vacancyUser = _autoFixture.Create<VacancyUser>();
 
-            await _sut.TransferVacancyToLegalEntityAsync(vacancy, vacancyUser, TransferReason.EmployerRevokedProviderPermission);
+            await _sut.TransferVacancyToLegalEntityAsync(vacancy, vacancyUser, TransferReason.EmployerRevokedPermission);
 
             vacancy.SubmittedByUser.Should().BeNull();
         }
@@ -86,7 +86,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
             var vacancy = GetTestProviderOwnedVacancy(VacancyStatus.Live);
             var vacancyUser = _autoFixture.Create<VacancyUser>();
 
-            await _sut.TransferVacancyToLegalEntityAsync(vacancy, vacancyUser, TransferReason.EmployerRevokedProviderPermission);
+            await _sut.TransferVacancyToLegalEntityAsync(vacancy, vacancyUser, TransferReason.EmployerRevokedPermission);
 
             vacancy.ProviderContact.Should().BeNull();
             vacancy.EmployerContact.Should().BeNull();
@@ -98,7 +98,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
             var vacancy = GetTestProviderOwnedVacancy(VacancyStatus.Live);
             var vacancyUser = _autoFixture.Create<VacancyUser>();
 
-            await _sut.TransferVacancyToLegalEntityAsync(vacancy, vacancyUser, TransferReason.EmployerRevokedProviderPermission);
+            await _sut.TransferVacancyToLegalEntityAsync(vacancy, vacancyUser, TransferReason.EmployerRevokedPermission);
 
             vacancy.Status.Should().Be(VacancyStatus.Closed);
         }
@@ -109,7 +109,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
             var vacancy = GetTestProviderOwnedVacancy(VacancyStatus.Live);
             var vacancyUser = _autoFixture.Create<VacancyUser>();
 
-            await _sut.TransferVacancyToLegalEntityAsync(vacancy, vacancyUser, TransferReason.EmployerRevokedProviderPermission);
+            await _sut.TransferVacancyToLegalEntityAsync(vacancy, vacancyUser, TransferReason.EmployerRevokedPermission);
 
             vacancy.ClosureReason.Should().Be(ClosureReason.TransferredByEmployer);
         }
@@ -120,7 +120,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
             var vacancy = GetTestProviderOwnedVacancy(VacancyStatus.Live);
             var vacancyUser = _autoFixture.Create<VacancyUser>();
 
-            await _sut.TransferVacancyToLegalEntityAsync(vacancy, vacancyUser, TransferReason.EmployerRevokedProviderPermission);
+            await _sut.TransferVacancyToLegalEntityAsync(vacancy, vacancyUser, TransferReason.EmployerRevokedPermission);
 
             vacancy.ClosedByUser.Should().Be(vacancyUser);
         }
@@ -131,7 +131,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
             var vacancy = GetTestProviderOwnedVacancy(VacancyStatus.Submitted);
             var vacancyUser = _autoFixture.Create<VacancyUser>();
 
-            await _sut.TransferVacancyToLegalEntityAsync(vacancy, vacancyUser, TransferReason.EmployerRevokedProviderPermission);
+            await _sut.TransferVacancyToLegalEntityAsync(vacancy, vacancyUser, TransferReason.EmployerRevokedPermission);
 
             vacancy.Status.Should().Be(VacancyStatus.Draft);
         }
@@ -143,7 +143,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
             vacancy.ApprovedDate = DateTime.UtcNow;
             var vacancyUser = _autoFixture.Create<VacancyUser>();
 
-            await _sut.TransferVacancyToLegalEntityAsync(vacancy, vacancyUser, TransferReason.EmployerRevokedProviderPermission);
+            await _sut.TransferVacancyToLegalEntityAsync(vacancy, vacancyUser, TransferReason.EmployerRevokedPermission);
 
             vacancy.Status.Should().Be(VacancyStatus.Closed);
             vacancy.ApprovedDate.Should().BeNull();
@@ -158,7 +158,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
             var vacancy = GetTestProviderOwnedVacancy(statusArg);
             var vacancyUser = _autoFixture.Create<VacancyUser>();
 
-            await _sut.TransferVacancyToLegalEntityAsync(vacancy, vacancyUser, TransferReason.EmployerRevokedProviderPermission);
+            await _sut.TransferVacancyToLegalEntityAsync(vacancy, vacancyUser, TransferReason.EmployerRevokedPermission);
 
             vacancy.Status.Should().Be(statusArg);
         }
