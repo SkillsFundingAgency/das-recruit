@@ -63,7 +63,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
 
         [Theory]
         [InlineData(TransferReason.BlockedByQa)]
-        [InlineData(TransferReason.EmployerRevokedProviderPermission)]
+        [InlineData(TransferReason.EmployerRevokedPermission)]
         public async Task GivenExistingSubmittedProviderOwnedVacancy_ThenProcessTransferAndVerifyVacancyReviewClosure(TransferReason transferReason)
         {
             var existingVacancy = GetTestProviderOwnedVacancy();
@@ -84,7 +84,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
 
         [Theory]
         [InlineData(TransferReason.BlockedByQa)]
-        [InlineData(TransferReason.EmployerRevokedProviderPermission)]
+        [InlineData(TransferReason.EmployerRevokedPermission)]
         public async Task GivenExistingLiveProviderOwnedVacancy_ThenProcessTransferAndVerifyVacancyClosedEventRaised(TransferReason transferReason)
         {
             var existingVacancy = GetTestProviderOwnedVacancy();

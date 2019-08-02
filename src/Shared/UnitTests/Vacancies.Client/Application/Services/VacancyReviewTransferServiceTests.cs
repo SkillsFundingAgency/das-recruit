@@ -43,7 +43,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
             _mockVacancyReviewQuery.Setup(x => x.GetLatestReviewByReferenceAsync(vacancyReview.VacancyReference))
                                     .ReturnsAsync(vacancyReview);
 
-            await _sut.CloseVacancyReview(vacancyReview.VacancyReference, TransferReason.EmployerRevokedProviderPermission);
+            await _sut.CloseVacancyReview(vacancyReview.VacancyReference, TransferReason.EmployerRevokedPermission);
 
             vacancyReview.ManualOutcome.Should().Be(ManualQaOutcome.Transferred);
             _mockVacancyReviewRepository.Verify(x => x.UpdateAsync(vacancyReview), Times.Once);
@@ -59,7 +59,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
             _mockVacancyReviewQuery.Setup(x => x.GetLatestReviewByReferenceAsync(vacancyReview.VacancyReference))
                                     .ReturnsAsync(vacancyReview);
 
-            await _sut.CloseVacancyReview(vacancyReview.VacancyReference, TransferReason.EmployerRevokedProviderPermission);
+            await _sut.CloseVacancyReview(vacancyReview.VacancyReference, TransferReason.EmployerRevokedPermission);
 
             _mockVacancyReviewRepository.Verify(x => x.UpdateAsync(vacancyReview), Times.Never);
         }
@@ -75,7 +75,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
             _mockVacancyReviewQuery.Setup(x => x.GetLatestReviewByReferenceAsync(vacancyReview.VacancyReference))
                                     .ReturnsAsync(vacancyReview);
 
-            await _sut.CloseVacancyReview(vacancyReview.VacancyReference, TransferReason.EmployerRevokedProviderPermission);
+            await _sut.CloseVacancyReview(vacancyReview.VacancyReference, TransferReason.EmployerRevokedPermission);
 
             vacancyReview.ManualOutcome.Should().BeNull();
             _mockVacancyReviewRepository.Verify(x => x.UpdateAsync(vacancyReview), Times.Once);
@@ -95,7 +95,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
             _mockVacancyReviewQuery.Setup(x => x.GetLatestReviewByReferenceAsync(vacancyReview.VacancyReference))
                                     .ReturnsAsync(vacancyReview);
 
-            await _sut.CloseVacancyReview(vacancyReview.VacancyReference, TransferReason.EmployerRevokedProviderPermission);
+            await _sut.CloseVacancyReview(vacancyReview.VacancyReference, TransferReason.EmployerRevokedPermission);
 
             vacancyReview.Status.Should().Be(ReviewStatus.Closed);
             vacancyReview.ClosedDate.Should().Be(_mockTimeProvider.Object.Now);
