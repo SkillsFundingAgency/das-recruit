@@ -375,3 +375,56 @@ mce-tinymce {
       #global-outage-message p {
         font-size: 16px;
         line-height: 1.25; } }
+
+/*** Verification summary ***/
+.verification-summary {
+  background-color: #f4f4f4;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  padding: 15px 10px
+}
+
+@media (min-width: 641px) {
+  .verification-summary {
+      background-color: #f4f4f4;
+      margin-top: 30px;
+      margin-bottom: 30px;
+      padding: 20px 15px 15px
+  }
+}
+
+.verification-summary .error-summary-heading {
+  margin-top: 0
+}
+
+.verification-summary p {
+  margin-bottom: 10px
+}
+
+.verification-summary .verification-summary-list {
+  padding-left: 0
+}
+
+@media (min-width: 641px) {
+  .verification-summary .verification-summary-list li {
+      margin-bottom: 5px
+  }
+}
+
+.verification-summary .verification-summary-list a {
+  color: #b10e1e;
+  font-weight: 700;
+  text-decoration: underline
+}
+
+.verification-summary .govuk-heading-s {
+  margin-top: 0px;
+  margin-bottom: 0px;
+  color: #6F777B;
+  font-weight: 400;
+}
+
+.warning-button {
+  background-color: #b10e1e;
+  box-shadow: 0 2px 0 #000000;
+}

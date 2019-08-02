@@ -33,8 +33,8 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             var reviews = await _vacancyClient.GetDashboardAsync();
             var vm = MapToViewModel(reviews);
 
-            vm.DisplayInProgressVacancies = await _userAuthorizationService.IsTeamLeadAsync(user);
-            if (vm.DisplayInProgressVacancies)
+            vm.IsUserAdmin = await _userAuthorizationService.IsTeamLeadAsync(user);
+            if (vm.IsUserAdmin)
             {
                 var inProgressSummaries = await _vacancyClient.GetVacancyReviewsInProgressAsync();
 
