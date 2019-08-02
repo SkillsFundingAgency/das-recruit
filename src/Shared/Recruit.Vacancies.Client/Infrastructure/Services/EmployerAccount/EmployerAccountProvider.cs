@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.EAS.Account.Api.Client;
@@ -14,7 +13,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
     {
         private readonly ILogger<EmployerAccountProvider> _logger;
         private readonly IAccountApiClient _accountApiClient;
-        private const string AgreementType = "Non-Levy.EOI.1";
 
         public EmployerAccountProvider(ILogger<EmployerAccountProvider> logger, IAccountApiClient accountApiClient)
         {
@@ -27,12 +25,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
             try
             {
                 var accounts = await _accountApiClient.GetUserAccounts(userId);
-                var accountId= accounts.Select(acc => acc.HashedAccountId).FirstOrDefault();
-                if (accountId != null)
-                {
-                    await GetEmployerAccountExpressionOfInterestAsync(accountId);
-                }
-
+                
                 return accounts.Select(acc => acc.HashedAccountId);
             }
             catch (Exception ex)
@@ -93,7 +86,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
             }
         }
 
-        public async Task GetEmployerAccountExpressionOfInterestAsync(string accountId)
+        public async Task<bool> GetEmployerAccountEOIAsync(string accountId)
         {
             try
             {
@@ -103,10 +96,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
                     var legalEntity = await _accountApiClient.GetLegalEntity(account.HashedAccountId, long.Parse(entity.Id));
                     foreach (var agreement in legalEntity.Agreements)
                     {
-                        if(agreement.AgreementType != SFA.DAS.Common.Domain.Types.AgreementType.NonLevyExpressionOfInterest)
-                            throw new NoEOIAgreementException($"Legal entity {legalEntity.LegalEntityId} with Employer account '{accountId}' is blocked");
+                        return agreement.AgreementType == SFA.DAS.Common.Domain.Types.AgreementType.Levy;
                     }
                 }
+                return true;
             }
             catch (Exception ex)
             {

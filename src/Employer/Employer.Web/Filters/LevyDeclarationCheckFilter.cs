@@ -102,6 +102,11 @@ namespace Esfa.Recruit.Employer.Web.Filters
             return controllerName ==  nameof(LevyDeclarationController);
         }
 
+        private async Task<bool> GetEmployerEOI(string employerAccountId)
+        {
+            return await _recruitVacancyClient.GetEmployerEOIAsync(employerAccountId);
+        }
+
         private bool HasValidLevyCookie(ActionExecutingContext context, string employerAccountId)
         {
             var cookieUserAccountValue = _levyCookieWriter.GetCookieFromRequest(context.HttpContext);
