@@ -679,10 +679,6 @@
                 "value": "[parameters('FaaConfiguration').StorageConnectionString]"
               },
               {
-                "name": "WhitelistedProviders",
-                "value": "[parameters('WhitelistedProvidersList')]"
-              },
-              {
                 "name": "AccountApiConfiguration:ApiBaseUrl",
                 "value": "[parameters('AccountApiConfiguration').ApiBaseUrl]"
               },
