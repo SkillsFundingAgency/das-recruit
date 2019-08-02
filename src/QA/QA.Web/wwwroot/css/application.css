@@ -69,6 +69,35 @@
   margin-bottom: 15px
 }
 
+
+.button-secondary {
+    background-color:#BFC1C3;
+    box-shadow:none;
+    color:#0B0C0C !important;
+    display:inline-block;
+    padding:7px 15px;
+    text-decoration:none;
+}
+
+.button-secondary:hover {
+    background-color:#BFC1C3;
+}
+
+.button-secondary:active {
+    top: 2px;
+    box-shadow: none;
+}
+
+.button-secondary:focus {
+    outline: 3px solid #ffbf47;
+    outline-offset: 0
+}
+
+.delete-button, .delete-button:visited, .delete-button:hover {
+    background-color: #b10e1e;
+    box-shadow: 0 2px 0 #000000;
+}
+
 /*** Validation Styles ***/
 .validation-summary-valid {
     display: none;

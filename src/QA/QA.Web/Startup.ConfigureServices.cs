@@ -77,6 +77,7 @@ namespace Esfa.Recruit.Qa.Web
             services.AddScoped<BlockedOrganisationsOrchestrator>();
             
             services.AddScoped<ReportConfirmationOrchestrator>();
+            services.AddScoped<WithdrawVacancyOrchestrator>();
             services.AddTransient<UserAuthorizationService>();
 
             services.AddTransient<IGeocodeImageService>(_ => new GoogleMapsGeocodeImageService(_configuration.GetValue<string>("GoogleMapsPrivateKey")));

@@ -24,5 +24,12 @@
         public const string BlockProvider_Consent_Post = "BlockProvider_Consent_Post";
         public const string BlockProvider_Acknowledgement_Get = "BlockProvider_Acknowledgement_Get";
         public const string BlockProvider_AlreadyBlocked_Get = "BlockProvider_AlreadyBlocked_Get";
+        public const string WithdrawVacancy_FindVacancy_Get = "WithdrawVacancy_FindVacancy_Get";
+        public const string WithdrawVacancy_FindVacancy_Post = "WithdrawVacancy_FindVacancy_Post";
+        public const string WithdrawVacancy_AlreadyClosed_Get = "WithdrawVacancy_AlreadyClosed_Get";
+        public const string WithdrawVacancy_Confirm_Get = "WithdrawVacancy_Confirm_Get";
+        public const string WithdrawVacancy_Consent_Get = "WithdrawVacancy_Consent_Get";
+        public const string WithdrawVacancy_Consent_Post = "WithdrawVacancy_Consent_Post";
+        public const string WithdrawVacancy_Acknowledgement_Get = "WithdrawVacancy_Acknowledgement_Get";
     }
 }
