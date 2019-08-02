@@ -77,7 +77,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.ExternalSystemEventHandlers
                         UserRef = message.UserRef,
                         UserEmailAddress = message.UserEmailAddress,
                         UserName = $"{message.UserFirstName} {message.UserLastName}",
-                        TransferReason = TransferReason.EmployerRevokedProviderPermission
+                        TransferReason = TransferReason.EmployerRevokedPermission
                     });
 
                     await _messaging.SendCommandAsync(new SetupProviderCommand(message.Ukprn));
