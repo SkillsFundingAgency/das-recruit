@@ -11,12 +11,12 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <form asp-route="@RouteNames.Dashboard_Next_Vacancy_Post">
-            <button class="govuk-button govuk-!-margin-top-6" type="submit">Review Vacancy</button>
+            <button class="govuk-button" type="submit">Review Vacancy</button>
         </form>
     </div>
     <div class="govuk-grid-column-one-third">
         <form asp-route="@RouteNames.Dashboard_Index_Get" method="get">
-            <div class="search-field govuk-!-margin-top-6">
+            <div class="search-field">
                 <div class="search-input">
                     <input asp-for="SearchTerm" placeholder="Search vacancies" class="govuk-input" maxlength="200"/>
                 </div>
@@ -130,25 +130,25 @@
     </div>
 </div>
 
-<hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible" />
+<hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-third">
-        <h3 class="govuk-heading-s">
-            <a class="govuk-link  govuk-link--no-visited-state" asp-route="@RouteNames.ReportDashboard_Get">Reports</a>
+        <h3 class="govuk-heading-s govuk-!-margin-bottom-0">
+            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.ReportDashboard_Get">Reports</a>
         </h3>
         <p class="govuk-body">Create and download reports for your vacancies for any period of time.</p>
     </div>
 
     <div asp-show="@Model.IsUserAdmin" class="govuk-grid-column-one-third">
-        <h3 class="govuk-heading-s">
-            <a class="govuk-link  govuk-link--no-visited-state" asp-route="@RouteNames.BlockedOrganisations_Get">Remove training provider</a>
+        <h3 class="govuk-heading-s govuk-!-margin-bottom-0">
+            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.BlockedOrganisations_Get">Remove training provider</a>
         </h3>
         <p class="govuk-body">Remove a training provider</p>
     </div>
 
     <div asp-show="@Model.IsUserAdmin" class="govuk-grid-column-one-third">
-        <h3 class="govuk-heading-s">
-            <a class="govuk-link  govuk-link--no-visited-state" asp-route="@RouteNames.WithdrawVacancy_FindVacancy_Get">Close a vacancy</a>
+        <h3 class="govuk-heading-s govuk-!-margin-bottom-0">
+            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.WithdrawVacancy_FindVacancy_Get">Close a vacancy</a>
         </h3>
         <p class="govuk-body">Find and close a live vacancy and prevent it being found on Find an apprentice.</p>
     </div>

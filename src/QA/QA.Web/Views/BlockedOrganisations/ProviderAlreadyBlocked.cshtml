@@ -1,13 +1,13 @@
 @using Esfa.Recruit.QA.Web.ViewModels.ManageProvider;
 @model ProviderAlreadyBlockedViewModel;
 <div class="govuk-grid-row">
-    <div class="govuk-column-two-thirds">
+    <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-xl">You have already removed @Model.Name (@Model.Ukprn)
         </h1>
     </div>
 </div>
 <div class="govuk-grid-row">
-    <div class="govuk-column-two-thirds">
+    <div class="govuk-grid-column-two-thirds">
         <a asp-route="@RouteNames.BlockProvider_Find_Get" class="govuk-button">Search again</a>
         <a asp-route="@RouteNames.BlockedOrganisations_Get" class="govuk-link das-button-link">Cancel</a>
     </div>

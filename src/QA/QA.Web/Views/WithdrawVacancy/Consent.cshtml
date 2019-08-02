@@ -1,6 +1,6 @@
 ﻿@model Esfa.Recruit.Qa.Web.ViewModels.WithdrawVacancy.ConsentViewModel
 
-<div class="govuk-grid-row govuk-!-margin-top-6">
+<div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' asp-show="@ViewData.ModelState.IsValid == false" />
@@ -27,7 +27,7 @@
             </div>
 
             <p class="govuk-body">
-                <button type="submit" class="govuk-button delete-button">Close vacancy</button>
+                <button type="submit" class="govuk-button govuk-button--warning">Close vacancy</button>
                 <a asp-route="@RouteNames.WithdrawVacancy_FindVacancy_Get" class="govuk-link das-button-link">Cancel</a>
             </p>
         </form>

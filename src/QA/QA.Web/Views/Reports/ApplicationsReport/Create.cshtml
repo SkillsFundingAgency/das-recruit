@@ -4,7 +4,7 @@
     var exampleToDate = DateTime.Today;
     var exampleFromDate = exampleToDate.AddMonths(-2);
 }
-<div class="govuk-grid-row govuk-!-margin-top-6">
+<div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
         <h1 class="govuk-heading-xl">Choose the time period for the report</h1>
