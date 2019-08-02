@@ -1,8 +1,9 @@
 @using Esfa.Recruit.QA.Web.ViewModels.ManageProvider;
 
 @model FindTrainingProviderViewModel
+
 <div class="govuk-grid-row">
-    <div class="govuk-column-two-thirds">
+    <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-xl">Which training provider would you like to remove?</h1>
         <p class="govuk-body">Removing a training provider will prevent them from using the recruitment service.</p>
         <form asp-route="@RouteNames.BlockProvider_Find_Post">

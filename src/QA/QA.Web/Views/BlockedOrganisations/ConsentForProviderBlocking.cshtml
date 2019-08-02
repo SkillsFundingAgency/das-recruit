@@ -1,10 +1,10 @@
 @using Esfa.Recruit.QA.Web.ViewModels.ManageProvider;
 @model ConsentForProviderBlockingViewModel;
 <div class="govuk-grid-row">
-    <div class="govuk-column-two-thirds govuk-body">
+    <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-xl">Remove @Model.Name from the recruitment service</h1>
-        <p>Removing a training provider will do the following:</p>
-        <ul class="list list-bullet">
+        <p class="govuk-body">Removing a training provider will do the following:</p>
+        <ul class="govuk-list govuk-list--bullet">
             <li asp-show="@Model.ShowPermissionsMessage">no longer be able to recruit on behalf of @Model.PermissionCount employers</li>
             <li asp-show="@Model.ShowPermissionsMessage">not be able to create or manage vacancies on the behalf of @Model.PermissionCount employers</li>
             <li>any vacancies created by @Model.Name will be transferred to the employer</li>
@@ -33,8 +33,8 @@
                     </div>
                 </fieldset>
             </div>
-            <div class="form-group">
-                <button type="submit" class="govuk-button warning-button">Remove training provider</button>
+            <div class="govuk-form-group">
+                <button type="submit" class="govuk-button govuk-button--warning">Remove training provider</button>
                 <a asp-route="@RouteNames.BlockedOrganisations_Get" class="govuk-link das-button-link">Cancel</a>
             </div>
         </form>

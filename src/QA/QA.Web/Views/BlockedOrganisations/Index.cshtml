@@ -1,23 +1,25 @@
 @using Esfa.Recruit.QA.Web.ViewModels.ManageProvider
 @model BlockedOrganisationsViewModel
-<div asp-hide="Model.HasBlockedOrganisations" class="grid-row">
-    <div class="column-two-thirds">
-        <p><a asp-route="@RouteNames.Dashboard_Index_Get" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Return to dashboard</a></p>
+<div asp-hide="Model.HasBlockedOrganisations" class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <p class="govuk-body"><a asp-route="@RouteNames.Dashboard_Index_Get" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Return to dashboard</a></p>
         <h1 class="govuk-heading-xl">Remove a training provider from the recruitment service</h1>
         <p class="govuk-body">You can remove a training provider and prevent them using the recruitment service. They will no longer be able to recruit on behalf of employers.</p>
         <a asp-route="@RouteNames.BlockProvider_Find_Get" class="govuk-button">Find training provider</a>
     </div>
 </div>
 
-<div asp-show="Model.HasBlockedOrganisations" class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        <p><a asp-route="@RouteNames.Dashboard_Index_Get" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Return to dashboard</a></p>
-        <h1 class="govuk-heading-xl">Removed training providers</h1>
-        <p>
-            <a asp-route="@RouteNames.BlockProvider_Find_Get" class="govuk-button">Find a provider</a>
-        </p>
+<div asp-show="Model.HasBlockedOrganisations">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <p class="govuk-body"><a asp-route="@RouteNames.Dashboard_Index_Get" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Return to dashboard</a></p>
+            <h1 class="govuk-heading-xl">Removed training providers</h1>
+            <p class="govuk-body">
+                <a asp-route="@RouteNames.BlockProvider_Find_Get" class="govuk-button">Find a provider</a>
+            </p>
+        </div>
     </div>
-
+    
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
             <h2 class="govuk-heading-m govuk-!-margin-bottom-0"> training providers removed from the recruitment service</h2>

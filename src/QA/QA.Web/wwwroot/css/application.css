@@ -453,7 +453,17 @@ mce-tinymce {
   font-weight: 400;
 }
 
-.warning-button {
-  background-color: #b10e1e;
-  box-shadow: 0 2px 0 #000000;
+.govuk-button--warning {
+  background-color: #d4351c;
+  -webkit-box-shadow: 0 2px 0 #55150b;
+  box-shadow: 0 2px 0 #55150b
+}
+.govuk-button--warning:hover {
+  background-color: #aa2a16
+}
+.govuk-button--warning:hover[disabled] {
+  background-color: #d4351c
+}
+.govuk-button--warning,.govuk-button--warning:link,.govuk-button--warning:visited,.govuk-button--warning:active,.govuk-button--warning:hover {
+  color: #fff
 }
