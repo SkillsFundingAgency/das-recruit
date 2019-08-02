@@ -51,6 +51,8 @@ namespace Esfa.Recruit.Vacancies.Jobs.ExternalSystemEventHandlers
                 return;
             }
 
+            _logger.LogInformation($"Attempting to process {nameof(UpdatedPermissionsEvent)} : {{@eventMessage}}", message);
+
             if (message.UserRef == Guid.Empty)
             {
                 _logger.LogInformation($"Not handling Provider {nameof(Operation.Recruitment)} Permission being revoked as it is a consequence of Provider being blocked by QA on Recruit.");
