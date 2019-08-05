@@ -65,11 +65,12 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
         }
 
         [Fact]
-        public async Task GivenUnderPendingReviewVacancyReview_AndeDueToProviderPermissionRevokeTransfer_ThenVacancyReviewIsClosedWithoutManualOutcome()
+        public async Task GivenUnderPendingReviewVacancyReview_AndeDueToProviderPermissionRevokeTransfer_ThenVacancyReviewIsNotClosed()
         {
             var vacancyReview = _autoFixture.Build<VacancyReview>()
                                             .Without(x => x.AutomatedQaOutcome)
                                             .Without(x => x.ManualOutcome)
+                                            .Without(x => x.ClosedDate)
                                             .With(x => x.Status, ReviewStatus.UnderReview)
                                             .Create();
             _mockVacancyReviewQuery.Setup(x => x.GetLatestReviewByReferenceAsync(vacancyReview.VacancyReference))
@@ -78,13 +79,14 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
             await _sut.CloseVacancyReview(vacancyReview.VacancyReference, TransferReason.EmployerRevokedPermission);
 
             vacancyReview.ManualOutcome.Should().BeNull();
-            _mockVacancyReviewRepository.Verify(x => x.UpdateAsync(vacancyReview), Times.Once);
+            vacancyReview.Status.Should().Be(ReviewStatus.UnderReview);
+            vacancyReview.ClosedDate.Should().BeNull();
+            _mockVacancyReviewRepository.Verify(x => x.UpdateAsync(vacancyReview), Times.Never);
         }
 
         [Theory]
         [InlineData(ReviewStatus.New)]
         [InlineData(ReviewStatus.PendingReview)]
-        [InlineData(ReviewStatus.UnderReview)]
         public async Task GivenToBeReviewedVacancyReview_AndDueToProviderPermissionRevokeTransfer_ThenSetClosedStatusOfVacancyReview(ReviewStatus vacancyReviewStatus)
         {
             var vacancyReview = _autoFixture.Build<VacancyReview>()

@@ -76,7 +76,6 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
             await _sut.Handle(command, CancellationToken.None);
 
             _mockVacancyRepository.Verify(x => x.GetVacancyAsync(It.IsAny<long>()), Times.Once);
-            _mockVacancyRepository.Verify(x => x.UpdateAsync(existingVacancy), Times.Once);
             _mockVacancyReviewTransferService.Verify(x => x.CloseVacancyReview(existingVacancy.VacancyReference.Value, transferReason), Times.Once);
             _mockMessaging.Verify(x => x.PublishEvent(It.IsAny<VacancyClosedEvent>()), Times.Never);
             _mockMessaging.Verify(x => x.PublishEvent(It.IsAny<VacancyTransferredEvent>()), Times.Once);
@@ -97,7 +96,6 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
             await _sut.Handle(command, CancellationToken.None);
 
             _mockVacancyRepository.Verify(x => x.GetVacancyAsync(It.IsAny<long>()), Times.Once);
-            _mockVacancyRepository.Verify(x => x.UpdateAsync(existingVacancy), Times.Once);
             _mockVacancyReviewTransferService.Verify(x => x.CloseVacancyReview(existingVacancy.VacancyReference.Value, transferReason), Times.Never);
             _mockMessaging.Verify(x => x.PublishEvent(It.IsAny<VacancyClosedEvent>()), Times.Once);
             _mockMessaging.Verify(x => x.PublishEvent(It.IsAny<VacancyTransferredEvent>()), Times.Once);

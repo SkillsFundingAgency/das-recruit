@@ -33,21 +33,16 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
                     review.ManualOutcome = review.VacancySnapshot.OwnerType == OwnerType.Provider && transferReason == TransferReason.BlockedByQa
                                             ? ManualQaOutcome.Withdrawn
                                             : ManualQaOutcome.Transferred;
+                    review.Status = ReviewStatus.Closed;
+                    review.ClosedDate = _timeProvider.Now;
+
+                    await _vacancyReviewRepository.UpdateAsync(review);
                 }
                 else if (review.Status == ReviewStatus.UnderReview)
                 {
                     _logger.LogWarning($"Latest review for vacancy {review.VacancyReference} that has been transferred is currently being reviewed.");
                 }
-
-                SetVacancyReviewClosed(review);
-                await _vacancyReviewRepository.UpdateAsync(review);
             }
-        }
-
-        private void SetVacancyReviewClosed(VacancyReview review)
-        {
-            review.Status = ReviewStatus.Closed;
-            review.ClosedDate = _timeProvider.Now;
         }
     }
 }
