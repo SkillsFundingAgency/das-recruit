@@ -33,41 +33,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
             _vacancyReviewRepository = vacancyReviewRepository;
         }
 
-        public async Task CloseExpiredVacancy(Guid vacancyId)
-        {
-            _logger.LogInformation("Closing vacancy {vacancyId}.", vacancyId);
-
-            var vacancy = await _vacancyRepository.GetVacancyAsync(vacancyId);
-
-            await CloseVacancyAsync(vacancy);
-        }
-
-        private async Task CloseVacancyAsync(Vacancy vacancy)
-        {
-            vacancy.ClosedDate = _timeProvider.Now;
-            vacancy.Status = VacancyStatus.Closed;
-
-            await _vacancyRepository.UpdateAsync(vacancy);
-
-            await _messaging.PublishEvent(new VacancyClosedEvent
-            {
-                VacancyReference = vacancy.VacancyReference.Value,
-                VacancyId = vacancy.Id
-            });
-        }
-
-        public async Task CloseVacancyImmediately(Guid vacancyId, VacancyUser user, ClosureReason closureReason)
-        {
-            _logger.LogInformation("Closing vacancy {vacancyId} by user {userEmail}.", vacancyId, user.Email);
-
-            var vacancy = await _vacancyRepository.GetVacancyAsync(vacancyId);
-
-            vacancy.ClosedByUser = user;
-            vacancy.ClosureReason = closureReason;
-
-            await CloseVacancyAsync(vacancy);
-        }
-
         public async Task PerformRulesCheckAsync(Guid reviewId)
         {
             var review = await _vacancyReviewRepository.GetAsync(reviewId);

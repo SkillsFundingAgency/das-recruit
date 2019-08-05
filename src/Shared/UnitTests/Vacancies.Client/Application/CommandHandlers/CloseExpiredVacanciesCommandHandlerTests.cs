@@ -9,6 +9,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -38,15 +39,15 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
             mockTimeProvider.Setup(t => t.Today).Returns(DateTime.Parse("2019-03-24"));
 
             var mockVacancyService = new Mock<IVacancyService>();
+            var mockMessaging = new Mock<IMessaging>();
 
-            var handler = new CloseExpiredVacanciesCommandHandler(mockLogger.Object, mockQuery.Object, mockTimeProvider.Object, mockVacancyService.Object);
+            var handler = new CloseExpiredVacanciesCommandHandler(mockLogger.Object, mockQuery.Object, mockTimeProvider.Object, mockVacancyService.Object, mockMessaging.Object);
 
             var command = new CloseExpiredVacanciesCommand();
 
             await handler.Handle(command, new CancellationToken());
 
-            mockVacancyService.Verify(s => s.CloseExpiredVacancy(It.IsAny<Guid>()), Times.Once);
-            mockVacancyService.Verify(s => s.CloseExpiredVacancy(It.Is<Guid>(g => g == Guid.Parse("4913c8fb-4f5b-4069-9301-858e405c1651"))), Times.Once);
+            mockMessaging.Verify(m => m.SendCommandAsync(It.Is<CloseVacancyCommand>(c => c.ClosureReason == ClosureReason.Auto && c.User == null)));
         }
     }
 }

@@ -5,6 +5,9 @@ using Entities = Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Microsoft.Extensions.Logging;
+using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
+using Esfa.Recruit.Vacancies.Client.Application.Commands;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy
 {
@@ -16,13 +19,15 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy
         private readonly ITimeProvider _timeProvider;
         private readonly IVacancyService _vacancyService;
         private readonly ILogger<ProviderBlockedOnVacancyDomainEventHandler> _logger;
+        private readonly IMessaging _messaging;
         public ProviderBlockedOnVacancyDomainEventHandler(
             IVacancyRepository vacancyRepository,
             IVacancyReviewQuery vacancyReviewQuery,
             IVacancyReviewRepository vacancyReviewRepository,
             ITimeProvider timeProvider,
             IVacancyService vacancyService,
-            ILogger<ProviderBlockedOnVacancyDomainEventHandler> logger) : base(logger)
+            ILogger<ProviderBlockedOnVacancyDomainEventHandler> logger,            
+            IMessaging messaging) : base(logger)
         {
             _logger = logger;
             _vacancyRepository = vacancyRepository;
@@ -30,6 +35,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy
             _vacancyReviewRepository = vacancyReviewRepository;
             _timeProvider = timeProvider;
             _vacancyService = vacancyService;
+            _messaging = messaging;
         }
 
         public async Task HandleAsync(string eventPayload)
@@ -66,8 +72,6 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy
                     await ClosePendingReview(review);
                     isVacancyUpdated = true;
                     vacancy.Status = Entities.VacancyStatus.Draft;
-                    vacancy.LastUpdatedByUser = eventData.QaVacancyUser;
-                    vacancy.LastUpdatedDate = eventData.BlockedDate;
                 }
                 else
                 {
@@ -83,7 +87,10 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy
             if(vacancy.Status == Entities.VacancyStatus.Live)
             {
                 _logger.LogInformation($"Closing live vacancy {eventData.VacancyId} as the provider {eventData.Ukprn} is blocked");
-                await _vacancyService.CloseVacancyImmediately(eventData.VacancyId, eventData.QaVacancyUser, Entities.ClosureReason.BlockedByQa);
+                await _messaging.SendCommandAsync(new CloseVacancyCommand(
+                    eventData.VacancyId,
+                    eventData.QaVacancyUser,
+                    ClosureReason.BlockedByQa));
             }
         }
 

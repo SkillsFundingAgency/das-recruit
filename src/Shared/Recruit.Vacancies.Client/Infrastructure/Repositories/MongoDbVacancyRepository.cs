@@ -13,6 +13,7 @@ using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Polly;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
+using MongoDB.Bson;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 {
@@ -207,15 +208,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         public async Task<IEnumerable<ProviderVacancySummary>> GetVacanciesAssociatedToProvider(long ukprn)
         {
             var builder = Builders<Vacancy>.Filter;
-            var filter = builder.Eq(ProviderUkprnFieldName, ukprn) &
-                        builder.Ne(IsDeletedFieldName, true);
-                
+            var filter = 
+                builder.Eq(ProviderUkprnFieldName, ukprn) &
+                builder.Ne(IsDeletedFieldName, true);
+            
             var collection = GetCollection<Vacancy>();
 
             var result = await RetryPolicy.ExecuteAsync(_ => 
                 collection
-                    .Aggregate()
-                    .Match(filter)
+                    .Find(filter)
                     .Project(x => new ProviderVacancySummary 
                     {
                         Id = x.Id,

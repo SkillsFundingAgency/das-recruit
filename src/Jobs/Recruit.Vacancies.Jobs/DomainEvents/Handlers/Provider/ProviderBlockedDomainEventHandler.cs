@@ -56,9 +56,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider
             tasks.AddRange(RequestEmployerCommunications(vacancies));
 
             //TODO update employer and provider dashboard
-
-            //TODO update providereditinfo... delete Employers list ???
-
+            
             await Task.WhenAll(tasks);
         }
 

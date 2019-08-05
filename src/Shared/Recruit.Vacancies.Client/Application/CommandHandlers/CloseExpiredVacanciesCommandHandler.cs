@@ -5,6 +5,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -17,17 +18,20 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         private readonly IVacancyQuery _query;
         private readonly ITimeProvider _timeProvider;
         private readonly IVacancyService _vacancyService;
+        private readonly IMessaging _messaging;
 
         public CloseExpiredVacanciesCommandHandler(
             ILogger<CloseExpiredVacanciesCommandHandler> logger,
             IVacancyQuery query,
             ITimeProvider timeProvider,
-            IVacancyService vacancyService)
+            IVacancyService vacancyService,
+            IMessaging messaging)
         {
             _logger = logger;
             _query = query;
             _timeProvider = timeProvider;
             _vacancyService = vacancyService;
+            _messaging = messaging;
         }
 
         public async Task Handle(CloseExpiredVacanciesCommand message, CancellationToken cancellationToken)
@@ -38,7 +42,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             foreach (var vacancy in vacancies.Where(x => x.ClosingDate < _timeProvider.Today))
             {
                 _logger.LogInformation($"Closing vacancy {vacancy.VacancyReference} with closing date of {vacancy.ClosingDate}");
-                await _vacancyService.CloseExpiredVacancy(vacancy.Id);
+
+                await _messaging.SendCommandAsync(new CloseVacancyCommand(vacancy.Id, null, ClosureReason.Auto));
+
                 numberClosed++;
             }
 

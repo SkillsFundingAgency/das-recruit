@@ -7,7 +7,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Commands
 {
     public class CloseVacancyCommand : ICommand, IRequest
     {
-        public Guid VacancyId { get; set; }
+        public CloseVacancyCommand(Guid vacancyId, VacancyUser user, ClosureReason reason)
+        {
+            VacancyId = vacancyId;
+            User = user;
+            ClosureReason = reason;
+        }
+        public Guid VacancyId { get; internal set; }
         public VacancyUser User { get; internal set; }
         public ClosureReason ClosureReason { get; set; }
     }

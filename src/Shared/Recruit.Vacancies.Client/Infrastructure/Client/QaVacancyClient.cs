@@ -262,11 +262,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         public async Task CloseVacancyAsync(Guid vacancyId, VacancyUser user)
         {
             var command = new CloseVacancyCommand
-            {
-                VacancyId = vacancyId,
-                User = user,
-                ClosureReason = ClosureReason.WithdrawnByQa
-            };
+            ( 
+                vacancyId,
+                user,
+                ClosureReason.WithdrawnByQa
+            );
 
             await _messaging.SendCommandAsync(command);
         }
