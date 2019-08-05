@@ -4,6 +4,7 @@ using AutoFixture;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using FluentAssertions;
 using Moq;
 using Xunit;
@@ -15,13 +16,15 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
         private readonly Fixture _autoFixture = new Fixture();
         private const string TodaysDate = "2019-03-24";
         private readonly Mock<ITimeProvider> _mockTimeProvider;
+        private readonly Mock<IVacancyRepository> _mockVacancyRepository;
         private VacancyTransferService _sut;
 
         public VacancyTransferServiceTests()
         {
             _mockTimeProvider = new Mock<ITimeProvider>();
             _mockTimeProvider.Setup(t => t.Today).Returns(DateTime.Parse(TodaysDate));
-            _sut = new VacancyTransferService(_mockTimeProvider.Object);
+            _mockVacancyRepository = new Mock<IVacancyRepository>();
+            _sut = new VacancyTransferService(_mockTimeProvider.Object, _mockVacancyRepository.Object);
         }
 
         [Fact]

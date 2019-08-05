@@ -59,8 +59,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             await _vacancyTransferService.TransferVacancyToLegalEntityAsync(vacancy, user, transferReason);
 
-            await _vacancyRepository.UpdateAsync(vacancy);
-
             switch (originalStatus)
             {
                 case VacancyStatus.Submitted:
