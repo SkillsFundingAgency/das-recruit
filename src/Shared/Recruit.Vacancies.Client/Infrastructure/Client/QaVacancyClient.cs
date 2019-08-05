@@ -62,13 +62,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public Task ReferVacancyReviewAsync(Guid reviewId, string manualQaComment, List<ManualQaFieldIndicator> manualQaFieldIndicators, List<Guid> selectedAutomatedQaRuleOutcomeIds)
         {
-            return _messaging.SendCommandAsync(new ReferVacancyReviewCommand
-            {
-                ReviewId = reviewId,
-                ManualQaComment = manualQaComment,
-                ManualQaFieldIndicators = manualQaFieldIndicators,
-                SelectedAutomatedQaRuleOutcomeIds = selectedAutomatedQaRuleOutcomeIds
-            });
+            return _messaging.SendCommandAsync(new ReferVacancyReviewCommand(reviewId, manualQaComment, manualQaFieldIndicators, selectedAutomatedQaRuleOutcomeIds));
         }
 
         public Task<IApprenticeshipProgramme> GetApprenticeshipProgrammeAsync(string programmeId)
