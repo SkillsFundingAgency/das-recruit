@@ -36,7 +36,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                     IReferenceDataReader referenceDataReader,
                     IVacancyReviewRepository vacancyReviewRepository,
                     IVacancyReviewQuery vacancyReviewQuery,
-                    IVacancyRepository vacancyRepository, 
+                    IVacancyRepository vacancyRepository,
                     IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider,
                     IMessaging messaging,
                     INextVacancyReviewService nextVacancyReviewService,
@@ -71,13 +71,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public Task ApproveVacancyReviewAsync(Guid reviewId, string manualQaComment, List<ManualQaFieldIndicator> manualQaFieldIndicators, List<Guid> selectedAutomatedQaRuleOutcomeIds)
         {
-            return _messaging.SendCommandAsync(new ApproveVacancyReviewCommand
-            {
-                ReviewId = reviewId,
-                ManualQaComment = manualQaComment,
-                ManualQaFieldIndicators = manualQaFieldIndicators,
-                SelectedAutomatedQaRuleOutcomeIds = selectedAutomatedQaRuleOutcomeIds
-            });
+            return _messaging.SendCommandAsync(new ApproveVacancyReviewCommand(reviewId, manualQaComment, manualQaFieldIndicators, selectedAutomatedQaRuleOutcomeIds));
         }
 
         public Task ReferVacancyReviewAsync(Guid reviewId, string manualQaComment, List<ManualQaFieldIndicator> manualQaFieldIndicators, List<Guid> selectedAutomatedQaRuleOutcomeIds)
