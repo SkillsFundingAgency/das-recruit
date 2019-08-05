@@ -3,16 +3,19 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Services
 {
     public class VacancyTransferService : IVacancyTransferService
     {
         private readonly ITimeProvider _timeProvider;
+        private readonly IVacancyRepository _vacancyRepository;
 
-        public VacancyTransferService(ITimeProvider timeProvider)
+        public VacancyTransferService(ITimeProvider timeProvider, IVacancyRepository vacancyRepository)
         {
             _timeProvider = timeProvider;
+            _vacancyRepository = vacancyRepository;
         }
 
         public Task TransferVacancyToLegalEntityAsync(Vacancy vacancy, VacancyUser initiatingUser, TransferReason transferReason)
@@ -53,7 +56,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
             vacancy.ProviderContact = null;
             vacancy.SubmittedByUser = null;
 
-            return Task.CompletedTask;
+            return _vacancyRepository.UpdateAsync(vacancy);
         }
 
         private void CloseVacancy(Vacancy vacancy, VacancyUser initiatingUser)
