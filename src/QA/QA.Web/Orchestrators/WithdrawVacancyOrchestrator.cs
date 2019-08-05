@@ -3,8 +3,10 @@ using System.ComponentModel;
 using System.Threading.Tasks;
 using Esfa.Recruit.Qa.Web.Models.WithdrawVacancy;
 using Esfa.Recruit.Qa.Web.ViewModels.WithdrawVacancy;
+using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
+using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
 
@@ -13,10 +15,12 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
     public class WithdrawVacancyOrchestrator
     {
         private readonly IQaVacancyClient _vacancyClient;
+        private readonly IMessaging _messaging;
 
-        public WithdrawVacancyOrchestrator(IQaVacancyClient vacancyClient)
+        public WithdrawVacancyOrchestrator(IQaVacancyClient vacancyClient, IMessaging messaging)
         {
             _vacancyClient = vacancyClient;
+            _messaging = messaging;
         }
 
         public FindVacancyViewModel GetFindVacancyViewModel()
@@ -109,7 +113,14 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             if (vacancy == null || vacancy.CanClose == false)
                 return false;
 
-            await _vacancyClient.CloseVacancyAsync(vacancy.Id, user);
+            var command = new CloseVacancyCommand
+            ( 
+                vacancy.Id,
+                user,
+                ClosureReason.WithdrawnByQa
+            );
+
+            await _messaging.SendCommandAsync(command);
 
             return true;
         }

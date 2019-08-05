@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Qa.Web.ViewModels.WithdrawVacancy;
+using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using FluentAssertions;
 using Moq;
@@ -13,19 +15,20 @@ namespace UnitTests.Qa.Web.Orchestrators.WithdrawVacancyOrchestrator
     {
         private const long VacancyReference = 12345678;
 
+        private readonly Mock<IQaVacancyClient> _mockClient = new Mock<IQaVacancyClient>();
+        private readonly Mock<IMessaging> _mockMessaging = new Mock<IMessaging>();
+        
         [Fact]
         public async Task ShouldNotCloseVacancyIfNotAcknowledged()
         {
-            var mockClient = new Mock<IQaVacancyClient>();
-
-            mockClient.Setup(c => c.GetVacancyAsync(VacancyReference))
+            _mockClient.Setup(c => c.GetVacancyAsync(VacancyReference))
                 .ReturnsAsync(new Vacancy
                 {
                     Status = VacancyStatus.Closed,
                     Id = Guid.NewGuid()
                 });
 
-            var orch = new Esfa.Recruit.Qa.Web.Orchestrators.WithdrawVacancyOrchestrator(mockClient.Object);
+            var orch = new Esfa.Recruit.Qa.Web.Orchestrators.WithdrawVacancyOrchestrator(_mockClient.Object, _mockMessaging.Object);
 
             var m = new ConsentEditModel
             {
@@ -38,7 +41,7 @@ namespace UnitTests.Qa.Web.Orchestrators.WithdrawVacancyOrchestrator
 
             result.Should().BeFalse();
 
-            mockClient.Verify(c => c.CloseVacancyAsync(It.IsAny<Guid>(), It.IsAny<VacancyUser>()), Times.Never);
+            _mockMessaging.Verify(c => c.SendCommandAsync(It.IsAny<ICommand>()), Times.Never);
         }
 
         [Theory]
@@ -49,12 +52,10 @@ namespace UnitTests.Qa.Web.Orchestrators.WithdrawVacancyOrchestrator
         [InlineData(VacancyStatus.Closed)]
         public async Task ShouldNotCloseIfVacancyIsInWrongState(VacancyStatus status)
         {
-            var mockClient = new Mock<IQaVacancyClient>();
-
-            mockClient.Setup(c => c.GetVacancyAsync(VacancyReference))
+            _mockClient.Setup(c => c.GetVacancyAsync(VacancyReference))
                 .ReturnsAsync(new Vacancy { Status = status, Id = Guid.NewGuid()});
 
-            var orch = new Esfa.Recruit.Qa.Web.Orchestrators.WithdrawVacancyOrchestrator(mockClient.Object);
+            var orch = new Esfa.Recruit.Qa.Web.Orchestrators.WithdrawVacancyOrchestrator(_mockClient.Object, _mockMessaging.Object);
 
             var m = new ConsentEditModel
             {
@@ -67,7 +68,7 @@ namespace UnitTests.Qa.Web.Orchestrators.WithdrawVacancyOrchestrator
 
             result.Should().BeFalse();
 
-            mockClient.Verify(c => c.CloseVacancyAsync(It.IsAny<Guid>(), It.IsAny<VacancyUser>()), Times.Never);
+            _mockMessaging.Verify(c => c.SendCommandAsync(It.IsAny<ICommand>()), Times.Never);
         }
 
         [Fact]
@@ -75,12 +76,10 @@ namespace UnitTests.Qa.Web.Orchestrators.WithdrawVacancyOrchestrator
         {
             var vacancyId = Guid.NewGuid();
 
-            var mockClient = new Mock<IQaVacancyClient>();
-
-            mockClient.Setup(c => c.GetVacancyAsync(VacancyReference))
+            _mockClient.Setup(c => c.GetVacancyAsync(VacancyReference))
                 .ReturnsAsync(new Vacancy { Status = VacancyStatus.Live, Id = vacancyId });
 
-            var orch = new Esfa.Recruit.Qa.Web.Orchestrators.WithdrawVacancyOrchestrator(mockClient.Object);
+            var orch = new Esfa.Recruit.Qa.Web.Orchestrators.WithdrawVacancyOrchestrator(_mockClient.Object, _mockMessaging.Object);
 
             var m = new ConsentEditModel
             {
@@ -93,7 +92,7 @@ namespace UnitTests.Qa.Web.Orchestrators.WithdrawVacancyOrchestrator
 
             result.Should().BeTrue();
 
-            mockClient.Verify(c => c.CloseVacancyAsync(vacancyId, user), Times.Once);
+            _mockMessaging.Verify(c => c.SendCommandAsync(It.Is<CloseVacancyCommand>(p => p.ClosureReason == ClosureReason.WithdrawnByQa)), Times.Once);
         }
     }
 }
