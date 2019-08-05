@@ -19,7 +19,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
         public string YourCohorts => $"{_externalLinks.ProviderApprenticeshipSiteUrl}{_pasRoutes.ProviderApprenticeshipSiteYourCohortsRoute}";
         public string Agreements => $"{_externalLinks.ProviderApprenticeshipSiteUrl}{_pasRoutes.ProviderApprenticeshipSiteOrganisationAgreementsRoute}";
         public string Help => $"{_externalLinks.ProviderApprenticeshipSiteUrl}{_pasRoutes.ProviderApprenticeshipSiteHelp}";
-        public string Feedback => $"{_externalLinks.ProviderApprenticeshipSiteUrl}{_pasRoutes.ProviderApprenticeshipSiteFeedback}";
+        public string Feedback => $"{_externalLinks.ProviderApprenticeshipSiteFeedbackUrl}";
         public string Privacy => $"{_externalLinks.ProviderApprenticeshipSiteUrl}{_pasRoutes.ProviderApprenticeshipSitePrivacy}";
         public string TermsAndConditions => $"{_externalLinks.ProviderApprenticeshipSiteUrl}{_pasRoutes.ProviderApprenticeshipSiteTermsAndConditions}";
     }

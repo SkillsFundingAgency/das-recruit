@@ -134,16 +134,16 @@
                         <a asp-route="@RouteNames.Dashboard_Account_Home" class="das-navigation__link">Home</a>
                     </li>
                     <li class="das-navigation__list-item">
-                        <a asp-route="@RouteNames.Dashboard_YourCohorts" class="das-navigation__link">Your cohorts</a>
+                        <a asp-route="@RouteNames.Dashboard_YourCohorts" asp-route-ukprn="@Context.User.GetUkprn()" class="das-navigation__link">Your cohorts</a>
                     </li>
                     <li class="das-navigation__list-item">
-                        <a asp-route="@RouteNames.Dashboard_ManageApprentices" class="das-navigation__link">Manage your apprentices</a>
+                        <a asp-route="@RouteNames.Dashboard_ManageApprentices" asp-route-ukprn="@Context.User.GetUkprn()" class="das-navigation__link">Manage your apprentices</a>
                     </li>
                     <li class="das-navigation__list-item">
                         <a asp-route="@RouteNames.Vacancies_Get" class="das-navigation__link das-navigation__link--current">Recruit apprentices</a>
                     </li>
                     <li class="das-navigation__list-item">
-                        <a asp-route="@RouteNames.Dashboard_AccountsAgreements" class="das-navigation__link">Organisations and agreements</a>
+                        <a asp-route="@RouteNames.Dashboard_AccountsAgreements" asp-route-ukprn="@Context.User.GetUkprn()" class="das-navigation__link">Organisations and agreements</a>
                     </li>
                 </ul>
             </nav>

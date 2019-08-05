@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Provider.Web.Controllers
 {
-    [Route(RoutePaths.AccountRoutePath)]
     public class ExternalLinksController : Controller
     {
         private readonly ProviderApprenticeshipsLinkHelper _linkHelper;
@@ -22,6 +21,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             return Redirect(_linkHelper.AccountHome);
         }
 
+        [AllowAnonymous]
         [HttpGet("notification-settings", Name = RouteNames.Dashboard_AccountsNotifications)]
         public IActionResult AccountsNotifications()
         {
@@ -50,24 +50,28 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             return Redirect(url);
         }
 
+        [AllowAnonymous]
         [HttpGet("help", Name = RouteNames.Dashboard_Help)]
         public IActionResult Help()
         {
             return Redirect(_linkHelper.Help);
         }
 
+        [AllowAnonymous]
         [HttpGet("feedback", Name = RouteNames.Dashboard_Feedback)]
         public IActionResult Feedback()
         {
             return Redirect(_linkHelper.Feedback);
         }
 
+        [AllowAnonymous]
         [HttpGet("privacy", Name = RouteNames.Dashboard_Privacy)]
         public IActionResult PrivacyAndCookies()
         {
             return Redirect(_linkHelper.Privacy);
         }
 
+        [AllowAnonymous]
         [HttpGet("terms", Name = RouteNames.Dashboard_TermsAndConditions)]
         public IActionResult TermsAndConditions()
         {

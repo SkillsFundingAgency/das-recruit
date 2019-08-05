@@ -18,6 +18,7 @@ using Esfa.Recruit.Provider.Web.Orchestrators.Reports;
 using Esfa.Recruit.Provider.Web.ViewModels.Reports.ProviderApplicationsReport;
 using Esfa.Recruit.Vacancies.Client.Ioc;
 using FluentValidation;
+using Esfa.Recruit.Provider.Web.Configuration.Routing;
 
 namespace Esfa.Recruit.Provider.Web.Configuration
 {
@@ -30,6 +31,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             //Configuration
             services.Configure<ApplicationInsightsConfiguration>(configuration.GetSection("ApplicationInsights"));
             services.Configure<ExternalLinksConfiguration>(configuration.GetSection("ExternalLinks"));
+            services.Configure<ProviderApprenticeshipsRoutes>(configuration.GetSection(nameof(ProviderApprenticeshipsRoutes)));
             services.Configure<AuthenticationConfiguration>(configuration.GetSection("Authentication"));
             services.Configure<GoogleAnalyticsConfiguration>(configuration.GetSection("GoogleAnalytics"));
             services.Configure<PostcodeAnywhereConfiguration>(configuration.GetSection("PostcodeAnywhere"));
@@ -49,8 +51,8 @@ namespace Esfa.Recruit.Provider.Web.Configuration
 
             RegisterDynamicConfigurationDeps(services);
 
-            RegisterFluentValidators(services);           
-        }        
+            RegisterFluentValidators(services);
+        }
 
         private static void RegisterServiceDeps(IServiceCollection services, IConfiguration configuration)
         {
