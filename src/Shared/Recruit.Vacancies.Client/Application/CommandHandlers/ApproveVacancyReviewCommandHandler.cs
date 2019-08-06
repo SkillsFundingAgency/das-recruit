@@ -65,7 +65,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             await _vacancyReviewRepository.UpdateAsync(review);
 
-            if (vacancy.Status != VacancyStatus.Draft) // it has been referred back as part of vacancy transfer (i.e. It was in Submitted state prior to transfer)
+            if (IsReviewOutdated(review, vacancy) == false)
             {
                 await RaiseVacancyEventSoVacancyIsPublished(message, review);
             }
@@ -78,6 +78,14 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             {
                 throw new ValidationException(validationResult.Errors);
             }
+        }
+
+        private bool IsReviewOutdated(VacancyReview review, Vacancy vacancy)
+        {
+            var hasVacancyBeenSubmittedSinceReviewWasCreated = vacancy.SubmittedDate > review.CreatedDate;
+            var hasVacancyBeenTransferredSinceReviewWasCreated = review.VacancySnapshot.TransferInfo == null && vacancy.TransferInfo != null;
+
+            return hasVacancyBeenSubmittedSinceReviewWasCreated || hasVacancyBeenTransferredSinceReviewWasCreated;
         }
 
         private Task RaiseVacancyEventSoVacancyIsPublished(ApproveVacancyReviewCommand message, VacancyReview review)
