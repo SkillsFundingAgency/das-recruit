@@ -17,6 +17,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
         private const string TodaysDate = "2019-03-24";
         private readonly Mock<ITimeProvider> _mockTimeProvider;
         private readonly Mock<IVacancyRepository> _mockVacancyRepository;
+        private readonly Mock<IVacancyReviewQuery> _mockVacancyReviewQuery;
         private VacancyTransferService _sut;
 
         public VacancyTransferServiceTests()
@@ -24,7 +25,8 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
             _mockTimeProvider = new Mock<ITimeProvider>();
             _mockTimeProvider.Setup(t => t.Today).Returns(DateTime.Parse(TodaysDate));
             _mockVacancyRepository = new Mock<IVacancyRepository>();
-            _sut = new VacancyTransferService(_mockTimeProvider.Object, _mockVacancyRepository.Object);
+            _mockVacancyReviewQuery = new Mock<IVacancyReviewQuery>();
+            _sut = new VacancyTransferService(_mockTimeProvider.Object, _mockVacancyRepository.Object, _mockVacancyReviewQuery.Object);
         }
 
         [Fact]
@@ -128,15 +130,33 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
             vacancy.ClosedByUser.Should().Be(vacancyUser);
         }
 
-        [Fact]
-        public async Task GivenSubmittedProviderOwnedVacancyToTransfer_ThenSetDraftStatusOfVacancy()
+        [Theory]
+        [InlineData(ReviewStatus.New)]
+        [InlineData(ReviewStatus.PendingReview)]
+        [InlineData(ReviewStatus.Closed)]
+        public async Task GivenSubmittedProviderOwnedVacancyToTransfer_AndReviewIsNotUnderReview_ThenSetDraftStatusOfVacancy(ReviewStatus reviewStatus)
         {
             var vacancy = GetTestProviderOwnedVacancy(VacancyStatus.Submitted);
             var vacancyUser = _autoFixture.Create<VacancyUser>();
+            _mockVacancyReviewQuery.Setup(x => x.GetLatestReviewByReferenceAsync(vacancy.VacancyReference.Value))
+                                    .ReturnsAsync(new VacancyReview { Status = reviewStatus });
 
             await _sut.TransferVacancyToLegalEntityAsync(vacancy, vacancyUser, TransferReason.EmployerRevokedPermission);
 
             vacancy.Status.Should().Be(VacancyStatus.Draft);
+        }
+
+        [Fact]
+        public async Task GivenSubmittedProviderOwnedVacancyToTransfer_AndReviewIsUnderReview_ThenLeaveStatusOfVacancyAsSubmitted()
+        {
+            var vacancy = GetTestProviderOwnedVacancy(VacancyStatus.Submitted);
+            var vacancyUser = _autoFixture.Create<VacancyUser>();
+            _mockVacancyReviewQuery.Setup(x => x.GetLatestReviewByReferenceAsync(vacancy.VacancyReference.Value))
+                                    .ReturnsAsync(new VacancyReview { Status = ReviewStatus.UnderReview });
+
+            await _sut.TransferVacancyToLegalEntityAsync(vacancy, vacancyUser, TransferReason.EmployerRevokedPermission);
+
+            vacancy.Status.Should().Be(VacancyStatus.Submitted);
         }
 
         [Fact]
