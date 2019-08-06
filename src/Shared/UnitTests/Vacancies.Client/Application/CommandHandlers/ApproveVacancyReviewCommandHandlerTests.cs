@@ -21,6 +21,8 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
     public class ApproveVacancyReviewCommandHandlerTests
     {
         private readonly Guid _existingReviewId;
+
+        private readonly Fixture _autoFixture = new Fixture();
         private readonly Mock<IVacancyReviewRepository> _mockVacancyReviewRepository;
         private readonly Mock<IVacancyRepository> _mockVacancyRepository;
         private readonly Mock<ITimeProvider> _mockTimeProvider;
@@ -38,7 +40,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
             _mockValidator = new VacancyReviewValidator();
 
             _mockTimeProvider = new Mock<ITimeProvider>();
-            _mockTimeProvider.Setup(t => t.Today).Returns(DateTime.Parse("2019-03-24"));
+            _mockTimeProvider.Setup(t => t.Now).Returns(DateTime.UtcNow);
 
             _sut = new ApproveVacancyReviewCommandHandler(Mock.Of<ILogger<ApproveVacancyReviewCommandHandler>>(), _mockVacancyReviewRepository.Object,
                                                         _mockVacancyRepository.Object, _mockMessaging.Object, _mockValidator, _mockTimeProvider.Object);
@@ -61,18 +63,24 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
         }
 
         [Fact]
-        public async Task GivenApprovedVacancyReviewCommand_AndVacancyIsDraft_ThenDoNotRaiseVacancyApprovedEvent()
+        public async Task GivenApprovedVacancyReviewCommand_AndVacancyReviewIsOlderThanVacancySubmittedDate_ThenDoNotRaiseVacancyApprovedEvent()
         {
             var newVacancyId = Guid.NewGuid();
-            var existingVacancy = GetTestVacancy(VacancyStatus.Draft);
+            var existingVacancy = _autoFixture.Build<Vacancy>()
+                                                .With(x => x.SubmittedDate, _mockTimeProvider.Object.Now)
+                                                .Create();
 
-            _mockVacancyRepository.Setup(x => x.GetVacancyAsync(existingVacancy.VacancyReference.Value)).ReturnsAsync(existingVacancy);
+            _mockVacancyRepository.Setup(x => x.GetVacancyAsync(existingVacancy.VacancyReference.Value))
+                                    .ReturnsAsync(existingVacancy);
 
-            _mockVacancyReviewRepository.Setup(x => x.GetAsync(_existingReviewId)).ReturnsAsync(new VacancyReview
+            _mockVacancyReviewRepository.Setup(x => x.GetAsync(_existingReviewId))
+                                        .ReturnsAsync(new VacancyReview
             {
                 Id = _existingReviewId,
+                CreatedDate = _mockTimeProvider.Object.Now.AddHours(-5),
                 Status = ReviewStatus.UnderReview,
-                VacancyReference = existingVacancy.VacancyReference.Value
+                VacancyReference = existingVacancy.VacancyReference.Value,
+                VacancySnapshot = new Vacancy()
             });
 
             var command = new ApproveVacancyReviewCommand(_existingReviewId, "comment", new List<ManualQaFieldIndicator>() {}, new List<Guid>());
@@ -83,12 +91,31 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
             _mockMessaging.Verify(x => x.PublishEvent(It.IsAny<VacancyReviewApprovedEvent>()), Times.Never);
         }
 
-        private static Vacancy GetTestVacancy(VacancyStatus status)
+        [Fact]
+        public async Task GivenApprovedVacancyReviewCommand_AndVacancyHasBeenTransferredSinceReviewWasCreated_ThenDoNotRaiseVacancyApprovedEvent()
         {
-            var fixture = new Fixture();
-            var vacancy = fixture.Create<Vacancy>();
-            vacancy.Status = status;
-            return vacancy;
+            var newVacancyId = Guid.NewGuid();
+            var existingVacancy = _autoFixture.Build<Vacancy>()
+                                                .With(x => x.TransferInfo, _autoFixture.Create<TransferInfo>())
+                                                .Create();
+
+            _mockVacancyRepository.Setup(x => x.GetVacancyAsync(existingVacancy.VacancyReference.Value)).ReturnsAsync(existingVacancy);
+
+            _mockVacancyReviewRepository.Setup(x => x.GetAsync(_existingReviewId)).ReturnsAsync(new VacancyReview
+            {
+                Id = _existingReviewId,
+                CreatedDate = _mockTimeProvider.Object.Now.AddHours(-5),
+                Status = ReviewStatus.UnderReview,
+                VacancyReference = existingVacancy.VacancyReference.Value,
+                VacancySnapshot = new Vacancy()
+            });
+
+            var command = new ApproveVacancyReviewCommand(_existingReviewId, "comment", new List<ManualQaFieldIndicator>() {}, new List<Guid>());
+
+            await _sut.Handle(command, CancellationToken.None);
+
+            _mockVacancyReviewRepository.Verify(x => x.UpdateAsync(It.Is<VacancyReview>(r => r.Id == _existingReviewId)), Times.Once);
+            _mockMessaging.Verify(x => x.PublishEvent(It.IsAny<VacancyReviewApprovedEvent>()), Times.Never);
         }
     }
 }
