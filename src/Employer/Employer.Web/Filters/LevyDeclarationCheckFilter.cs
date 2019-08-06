@@ -133,9 +133,7 @@ namespace Esfa.Recruit.Employer.Web.Filters
 
                 if (!valuesMatch)
                 {
-                    _logger.LogTrace($"Current user doesn't match user in Levy Cookie: Current: {currentUserAccountValue}, Cookie: {cookieUserAccountValue}");
-                    
-                    // Delete cookie if it's not for current user.
+                    _logger.LogDebug($"Current user doesn't match user in Levy Cookie: Current: {currentUserAccountValue}, Cookie: {cookieUserAccountValue}");
                     _levyCookieWriter.DeleteCookie(context.HttpContext.Response);
                 }
                 return valuesMatch;
@@ -154,9 +152,7 @@ namespace Esfa.Recruit.Employer.Web.Filters
 
                 if (!hasMatchingUserAccountValue)
                 {
-                    _logger.LogTrace($"Current user doesn't match user in EOI Cookie: Current: {currentUserAccountValue}, Cookie: {cookieUserAccountValue}");
-
-                    // Delete cookie if it's not for current user.
+                    _logger.LogDebug($"Current user doesn't match user in EOI Cookie: Current: {currentUserAccountValue}, Cookie: {cookieUserAccountValue}");
                     _eoiCookieWriter.DeleteCookie(context.HttpContext.Response);
                 }
                 return hasMatchingUserAccountValue;

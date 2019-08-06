@@ -94,11 +94,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
                 foreach (var entity in account.LegalEntities)
                 {
                     var legalEntity = await _accountApiClient.GetLegalEntity(account.HashedAccountId, long.Parse(entity.Id));
-                    foreach (var agreement in legalEntity.Agreements)
-                    {
-                        if (agreement.AgreementType != SFA.DAS.Common.Domain.Types.AgreementType.NonLevyExpressionOfInterest)
-                            return false;
-                    }
+                    return legalEntity.Agreements.All(ag =>
+                        ag.AgreementType != SFA.DAS.Common.Domain.Types.AgreementType.NonLevyExpressionOfInterest);
+                    //foreach (var agreement in legalEntity.Agreements)
+                    //{
+                    //    if (agreement.AgreementType != SFA.DAS.Common.Domain.Types.AgreementType.NonLevyExpressionOfInterest)
+                    //        return false;
+                    //}
                 }
                 return true;
             }
