@@ -9,6 +9,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
+using System;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
@@ -65,9 +66,29 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             await _vacancyReviewRepository.UpdateAsync(review);
 
-            if (IsReviewOutdated(review, vacancy) == false)
+            if (GetHasVacancyBeenTransferredSinceReviewWasCreated(review, vacancy) == false)
             {
                 await RaiseVacancyEventSoVacancyIsPublished(message, review);
+            }
+            else
+            {
+                vacancy.Status = VacancyStatus.Closed;
+                vacancy.ClosedDate = _timeProvider.Now;
+                vacancy.ClosedByUser = vacancy.TransferInfo.TransferredByUser;
+                vacancy.ClosureReason = GetClosureReasonBasedOnTransferInfo(vacancy.TransferInfo);
+                await _vacancyRepository.UpdateAsync(vacancy);
+            }
+        }
+
+        private ClosureReason GetClosureReasonBasedOnTransferInfo(TransferInfo transferInfo)
+        {
+            if (transferInfo.Reason == TransferReason.EmployerRevokedPermission)
+            {
+                return ClosureReason.TransferredByEmployer;
+            }
+            else
+            {
+                return ClosureReason.BlockedByQa;
             }
         }
 
@@ -80,12 +101,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             }
         }
 
-        private bool IsReviewOutdated(VacancyReview review, Vacancy vacancy)
+        private bool GetHasVacancyBeenTransferredSinceReviewWasCreated(VacancyReview review, Vacancy vacancy)
         {
-            var hasVacancyBeenSubmittedSinceReviewWasCreated = vacancy.SubmittedDate > review.CreatedDate;
             var hasVacancyBeenTransferredSinceReviewWasCreated = review.VacancySnapshot.TransferInfo == null && vacancy.TransferInfo != null;
-
-            return hasVacancyBeenSubmittedSinceReviewWasCreated || hasVacancyBeenTransferredSinceReviewWasCreated;
+            return hasVacancyBeenTransferredSinceReviewWasCreated;
         }
 
         private Task RaiseVacancyEventSoVacancyIsPublished(ApproveVacancyReviewCommand message, VacancyReview review)

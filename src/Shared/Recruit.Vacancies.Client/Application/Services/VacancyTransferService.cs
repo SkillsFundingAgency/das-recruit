@@ -11,14 +11,16 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
     {
         private readonly ITimeProvider _timeProvider;
         private readonly IVacancyRepository _vacancyRepository;
+        private readonly IVacancyReviewQuery _vacancyReviewQuery;
 
-        public VacancyTransferService(ITimeProvider timeProvider, IVacancyRepository vacancyRepository)
+        public VacancyTransferService(ITimeProvider timeProvider, IVacancyRepository vacancyRepository, IVacancyReviewQuery vacancyReviewQuery)
         {
             _timeProvider = timeProvider;
             _vacancyRepository = vacancyRepository;
+            _vacancyReviewQuery = vacancyReviewQuery;
         }
 
-        public Task TransferVacancyToLegalEntityAsync(Vacancy vacancy, VacancyUser initiatingUser, TransferReason transferReason)
+        public async Task TransferVacancyToLegalEntityAsync(Vacancy vacancy, VacancyUser initiatingUser, TransferReason transferReason)
         {
             var originalStatus = vacancy.Status;
 
@@ -29,7 +31,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
                 case VacancyStatus.Closed:
                     break;
                 case VacancyStatus.Submitted:
-                    vacancy.Status = VacancyStatus.Draft;
+                    var vr = await _vacancyReviewQuery.GetLatestReviewByReferenceAsync(vacancy.VacancyReference.Value);
+                    if (vr.Status != ReviewStatus.UnderReview)
+                    {
+                        vacancy.Status = VacancyStatus.Draft;
+                    }
                     break;
                 case VacancyStatus.Live:
                     CloseVacancy(vacancy, initiatingUser);
@@ -56,7 +62,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
             vacancy.ProviderContact = null;
             vacancy.SubmittedByUser = null;
 
-            return _vacancyRepository.UpdateAsync(vacancy);
+            await _vacancyRepository.UpdateAsync(vacancy);
         }
 
         private void CloseVacancy(Vacancy vacancy, VacancyUser initiatingUser)
