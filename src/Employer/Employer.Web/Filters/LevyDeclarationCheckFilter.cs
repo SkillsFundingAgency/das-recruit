@@ -47,7 +47,7 @@ namespace Esfa.Recruit.Employer.Web.Filters
             {
                 await next();
             }
-            else if (await HasEmployerEOI(employerAccountId))
+            else if (await HasEmployerEoi(employerAccountId))
             {
                 _eoiCookieWriter.WriteCookie(context.HttpContext.Response, userId, employerAccountId);
                 context.Result = new RedirectToRouteResult(RouteNames.Dashboard_Index_Get, new { employerAccountId });
@@ -117,7 +117,7 @@ namespace Esfa.Recruit.Employer.Web.Filters
             return controllerName ==  nameof(LevyDeclarationController);
         }
 
-        private async Task<bool> HasEmployerEOI(string employerAccountId)
+        private async Task<bool> HasEmployerEoi(string employerAccountId)
         {
             return await _recruitVacancyClient.GetEmployerEOIAsync(employerAccountId);
         }
@@ -150,16 +150,16 @@ namespace Esfa.Recruit.Employer.Web.Filters
             if (!string.IsNullOrWhiteSpace(cookieUserAccountValue))
             {
                 var currentUserAccountValue = $"{context.HttpContext.User.GetUserId()}-{employerAccountId}";
-                var valuesMatch = cookieUserAccountValue == currentUserAccountValue;
+                var hasMatchingUserAccountValue = cookieUserAccountValue == currentUserAccountValue;
 
-                if (!valuesMatch)
+                if (!hasMatchingUserAccountValue)
                 {
                     _logger.LogTrace($"Current user doesn't match user in EOI Cookie: Current: {currentUserAccountValue}, Cookie: {cookieUserAccountValue}");
 
                     // Delete cookie if it's not for current user.
                     _eoiCookieWriter.DeleteCookie(context.HttpContext.Response);
                 }
-                return valuesMatch;
+                return hasMatchingUserAccountValue;
             }
             return false;
         }
