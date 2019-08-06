@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Controllers;
 using Esfa.Recruit.Employer.Web.Extensions;
@@ -48,15 +47,11 @@ namespace Esfa.Recruit.Employer.Web.Filters
             {
                 await next();
             }
-            else
+            else if (await HasEmployerEOI(employerAccountId))
             {
-                if (await HasEmployerEOI(employerAccountId))
-                {
-                    _eoiCookieWriter.WriteCookie(context.HttpContext.Response, userId, employerAccountId);
-                    context.Result = new RedirectToRouteResult(RouteNames.Dashboard_Index_Get, new { employerAccountId });
-                    return;
-                }
-              //  await next();
+                _eoiCookieWriter.WriteCookie(context.HttpContext.Response, userId, employerAccountId);
+                context.Result = new RedirectToRouteResult(RouteNames.Dashboard_Index_Get, new { employerAccountId });
+                return;
             }
             
             var hasValidCookie = HasValidLevyCookie(context, employerAccountId);
