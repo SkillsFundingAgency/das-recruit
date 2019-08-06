@@ -96,7 +96,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
                     var legalEntity = await _accountApiClient.GetLegalEntity(account.HashedAccountId, long.Parse(entity.Id));
                     foreach (var agreement in legalEntity.Agreements)
                     {
-                        return agreement.AgreementType == SFA.DAS.Common.Domain.Types.AgreementType.Levy;
+                        if (agreement.AgreementType != SFA.DAS.Common.Domain.Types.AgreementType.NonLevyExpressionOfInterest)
+                            return false;
                     }
                 }
                 return true;

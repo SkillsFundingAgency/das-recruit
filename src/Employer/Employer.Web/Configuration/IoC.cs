@@ -64,6 +64,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddTransient<IReviewSummaryService, ReviewSummaryService>();
             services.AddTransient<ILegalEntityAgreementService, LegalEntityAgreementService>();
             services.AddTransient<LevyDeclarationCookieWriter>();
+            services.AddTransient<EoiAgreementCookieWriter>();
             services.AddTransient<AlertViewModelService>();
         }
 
