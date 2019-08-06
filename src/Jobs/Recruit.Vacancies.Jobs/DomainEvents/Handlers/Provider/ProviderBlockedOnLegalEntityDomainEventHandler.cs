@@ -1,23 +1,50 @@
+using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider
 {
     public class ProviderBlockedOnLegalEntityDomainEventHandler : DomainEventHandler, IDomainEventHandler<ProviderBlockedOnLegalEntityEvent>
     {
-        ILogger<ProviderBlockedOnLegalEntityDomainEventHandler> _logger;
-        public ProviderBlockedOnLegalEntityDomainEventHandler(ILogger<ProviderBlockedOnLegalEntityDomainEventHandler> logger) : base(logger)
+        private readonly IEmployerAccountProvider _employerAccountProvider;
+        private readonly IProviderRelationshipsService _providerRelationshipsService;
+        private readonly ILogger<ProviderBlockedOnLegalEntityDomainEventHandler> _logger;
+        public ProviderBlockedOnLegalEntityDomainEventHandler(
+            IEmployerAccountProvider employerAccountProvider,
+            IProviderRelationshipsService providerRelationshipsService,
+            ILogger<ProviderBlockedOnLegalEntityDomainEventHandler> logger) : base(logger)
         {
             _logger = logger;
+            _employerAccountProvider = employerAccountProvider;
+            _providerRelationshipsService = providerRelationshipsService;
         }
 
-        public Task HandleAsync(string eventPayload)
+        public async Task HandleAsync(string eventPayload)
         {
             var eventData = DeserializeEvent<ProviderBlockedOnLegalEntityEvent>(eventPayload);
-            //TODO 
-            // call provider permissions api to revoke permission for each legal entity
-            return Task.CompletedTask;
+            
+            _logger.LogInformation($"Attempting to revoke provider {eventData.Ukprn} permission on account {eventData.EmployerAccountId} for legal entity {eventData.LegalEntityId}.");
+
+            var accountLegalEntityPublicHashedId = await GetAccountLegalEntityPublicHashId(eventData);
+            if(string.IsNullOrWhiteSpace(accountLegalEntityPublicHashedId))
+            {
+                _logger.LogError($"The legal entity {eventData.LegalEntityId} for the account {eventData.EmployerAccountId} was not found.");
+                return;
+            }
+
+            await _providerRelationshipsService.RevokeProviderPermissionToRecruitAsync(eventData.Ukprn, accountLegalEntityPublicHashedId);
+
+            _logger.LogInformation($"Successfully revoked provider {eventData.Ukprn} permission on account {eventData.EmployerAccountId} for legal entity {eventData.LegalEntityId}.");
+        }
+
+        private async Task<string> GetAccountLegalEntityPublicHashId(ProviderBlockedOnLegalEntityEvent eventData)
+        {
+            var legalEntities = await _employerAccountProvider.GetLegalEntitiesConnectedToAccountAsync(eventData.EmployerAccountId);
+
+            return legalEntities.FirstOrDefault(l => l.LegalEntityId == eventData.LegalEntityId).AccountLegalEntityPublicHashedId;
         }
     }
 }

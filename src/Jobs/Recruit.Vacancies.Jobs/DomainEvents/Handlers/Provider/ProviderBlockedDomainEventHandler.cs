@@ -34,7 +34,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider
         {
             var eventData = DeserializeEvent<ProviderBlockedEvent>(eventPayload);
 
-            _logger.LogInformation($"Begining to queue required updates as provider {eventData.Ukprn} was blocked");
+            _logger.LogInformation($"Begining to queue required updates after provider {eventData.Ukprn} was blocked");
 
             var tasks = new List<Task>();
 
@@ -49,17 +49,17 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider
                 tasks.AddRange(RaiseEventsToRevokePermission(providerInfo.Employers, eventData.Ukprn));
             }
 
-            tasks.AddRange(RaiseEventsToUpdateVacancies(vacancies, eventData.QaVacancyUser));
+            tasks.AddRange(RaiseEventsToUpdateVacancies(vacancies, eventData.QaVacancyUser, eventData.Ukprn));
 
-            tasks.Add(RequestProviderCommunication(eventData.ProviderName));
+            // tasks.Add(RequestProviderCommunication(eventData.ProviderName));
 
-            tasks.AddRange(RequestEmployerCommunications(vacancies));
+            // tasks.AddRange(RequestEmployerCommunications(vacancies));
 
             //TODO update employer and provider dashboard
 
-            //TODO update providereditinfo... delete Employers list ???
-
             await Task.WhenAll(tasks);
+
+            _logger.LogInformation($"Finished queuing required updates after provider {eventData.Ukprn} was blocked");
         }
 
         private List<Task> RaiseEventsToRevokePermission(IEnumerable<EmployerInfo> employers, long ukprn)
@@ -69,6 +69,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider
             {
                 foreach (var legalEntity in employer.LegalEntities)
                 {
+                    _logger.LogInformation($"Queuing to revoke provider {ukprn} permission on account {employer.EmployerAccountId} for legal entity {legalEntity.LegalEntityId}.");
                     var providerBlockedOnLegalEntityEvent = new ProviderBlockedOnLegalEntityEvent()
                     {
                         Ukprn = ukprn,
@@ -82,12 +83,13 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider
             return tasks;
         }
 
-        private List<Task> RaiseEventsToUpdateVacancies(IEnumerable<ProviderVacancySummary> vacancies, VacancyUser qaVacancyUser)
+        private List<Task> RaiseEventsToUpdateVacancies(IEnumerable<ProviderVacancySummary> vacancies, VacancyUser qaVacancyUser, long ukprn)
         {
             var tasks = new List<Task>();
 
             foreach (var vacancy in vacancies)
             {
+                _logger.LogInformation($"Queuing updating of vacancy {vacancy.VacancyReference} owned by {vacancy.VacancyOwner} as the provider {ukprn} is blocked.");
                 var providerBlockedOnVacancyEvent = new ProviderBlockedOnVacancyEvent()
                 {
                     VacancyId = vacancy.Id,
