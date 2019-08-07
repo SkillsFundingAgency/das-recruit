@@ -86,7 +86,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
             }
         }
 
-        public async Task<bool> GetEmployerAccountEOIAsync(string accountId)
+        public async Task<bool> GetEmployerHasSignedEoiAgreements(string accountId)
         {
             try
             {
@@ -97,7 +97,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
                     return legalEntity.Agreements.All(ag =>
                         ag.AgreementType == SFA.DAS.Common.Domain.Types.AgreementType.NonLevyExpressionOfInterest);
                 }
-                return true;
+                return false;
             }
             catch (Exception ex)
             {

@@ -246,7 +246,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public Task<bool> GetEmployerEOIAsync(string employeraccountId)
         {
-            return _employerAccountProvider.GetEmployerAccountEOIAsync(employeraccountId);
+            return _employerAccountProvider.GetEmployerHasSignedEoiAgreements(employeraccountId);
         }
 
         public Task<List<string>> GetCandidateSkillsAsync()
