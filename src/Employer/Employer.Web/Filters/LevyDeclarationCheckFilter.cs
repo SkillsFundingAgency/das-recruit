@@ -46,6 +46,7 @@ namespace Esfa.Recruit.Employer.Web.Filters
             if (hasValidEoiCookie)
             {
                 await next();
+                return;
             }
             else if (await HasEmployerEoi(employerAccountId))
             {
