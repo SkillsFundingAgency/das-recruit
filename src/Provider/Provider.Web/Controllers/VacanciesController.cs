@@ -41,8 +41,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             return View(vm);
         }
 
-        //TODO: PeteM - Add a dismiss, perhaps move it to its own controller?
-
         private void SaveFiltersInCookie(string filter, string search)
         {
             var value = JsonConvert.SerializeObject(new FilterCookie(filter, search));
