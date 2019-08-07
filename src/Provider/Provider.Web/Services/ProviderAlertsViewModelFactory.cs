@@ -28,16 +28,14 @@ namespace Esfa.Recruit.Provider.Web.Services
 
         public AlertsViewModel Create(ProviderDashboard providerDashboard, User user)
         {
-            if (providerDashboard == null)
-                throw new ArgumentNullException(nameof(providerDashboard));
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
 
             var transferredVacanciesAlert = _alertViewModelService.GetProviderTransferredVacanciesAlert(
-                providerDashboard.TransferredVacancies ?? Array.Empty<ProviderDashboardTransferredVacancy>(),
+                providerDashboard?.TransferredVacancies ?? Array.Empty<ProviderDashboardTransferredVacancy>(),
                 user.TransferredVacanciesEmployerRevokedPermissionAlertDismissedOn);
             var withdrawnByQaVacanciesAlert = _alertViewModelService.GetWithdrawnByQaVacanciesAlert(
-                providerDashboard.Vacancies ?? Array.Empty<VacancySummary>(),
+                providerDashboard?.Vacancies ?? Array.Empty<VacancySummary>(),
                 user.ClosedVacanciesWithdrawnByQaAlertDismissedOn);
 
             return new AlertsViewModel(transferredVacanciesAlert, withdrawnByQaVacanciesAlert);
