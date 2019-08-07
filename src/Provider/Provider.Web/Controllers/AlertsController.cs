@@ -27,7 +27,7 @@ namespace Provider.Web.Controllers
                 await _orchestrator.DismissAlert(User.ToVacancyUser(), (AlertType)alertTypeEnum);
             }
 
-            if (!string.IsNullOrEmpty(model.ReturnUrl))
+            if (!string.IsNullOrWhiteSpace(model.ReturnUrl))
                 return Redirect(model.ReturnUrl);
 
             return RedirectToRoute(RouteNames.Dashboard_Get);
