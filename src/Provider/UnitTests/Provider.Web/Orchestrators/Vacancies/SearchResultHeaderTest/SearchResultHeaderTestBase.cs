@@ -13,11 +13,13 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies.SearchResu
 {
     public class SearchResultHeaderTestBase
     {
+        protected VacancyUser User;
+
         protected VacanciesOrchestrator GetSut(IEnumerable<VacancySummary> vacancySummaries)
         {
             var clientMock = new Mock<IProviderVacancyClient>();
             var timeProviderMock = new Mock<ITimeProvider>();
-            clientMock.Setup(c => c.GetDashboardAsync(It.IsAny<long>()))
+            clientMock.Setup(c => c.GetDashboardAsync(It.IsAny<long>(), false))
                 .ReturnsAsync(new ProviderDashboard {
                     Vacancies = vacancySummaries
                 });
@@ -37,5 +39,17 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies.SearchResu
                         CreatedDate = DateTime.Now
                     });
         }
+
+        public SearchResultHeaderTestBase()
+        {
+            User = new VacancyUser
+            {
+                Email = "me@home.com",
+                Name = "Keith Chegwin",
+                Ukprn = 12345678,
+                UserId = "Cheggers"
+            };
+        }
+
     }
 }

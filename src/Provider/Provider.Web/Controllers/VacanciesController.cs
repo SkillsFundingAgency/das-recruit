@@ -31,7 +31,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             if(string.IsNullOrWhiteSpace(filter) == false || string.IsNullOrWhiteSpace(searchTerm) == false)
                 SaveFiltersInCookie(filter, searchTerm);
 
-            var vm = await _orchestrator.GetVacanciesViewModelAsync(User.GetUkprn(), filter, page, searchTerm);
+            var vm = await _orchestrator.GetVacanciesViewModelAsync(User.ToVacancyUser(), filter, page, searchTerm);
             if (TempData.ContainsKey(TempDataKeys.VacanciesErrorMessage))
                 vm.WarningMessage = TempData[TempDataKeys.VacanciesErrorMessage].ToString();
 
@@ -40,6 +40,8 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
             return View(vm);
         }
+
+        //TODO: PeteM - Add a dismiss, perhaps move it to its own controller?
 
         private void SaveFiltersInCookie(string filter, string search)
         {

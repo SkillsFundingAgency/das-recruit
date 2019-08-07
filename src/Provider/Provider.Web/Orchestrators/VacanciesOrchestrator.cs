@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
+using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Provider.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Mappers;
@@ -29,9 +31,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         }
 
         public async Task<VacanciesViewModel> GetVacanciesViewModelAsync(
-            long ukprn, string filter, int page, string searchTerm)
+            VacancyUser user, string filter, int page, string searchTerm)
         {
-            var vacancies = await GetVacanciesAsync(ukprn);
+            var vacancies = await GetVacanciesAsync(user.Ukprn.Value);
 
             var filteringOption = SanitizeFilter(filter);
 
@@ -121,7 +123,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
         private async Task<List<VacancySummary>> GetVacanciesAsync(long ukprn)
         {
-            var dashboard = await _client.GetDashboardAsync(ukprn);
+            var dashboard = await _client.GetDashboardAsync(ukprn, createIfNonExistent: true);
 
             if (dashboard == null)
             {

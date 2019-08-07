@@ -134,7 +134,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators
                 Vacancies = vacancies
             };
             
-            _mockClient.Setup(c => c.GetDashboardAsync(It.IsAny<long>())).ReturnsAsync(dashboard);
+            _mockClient.Setup(c => c.GetDashboardAsync(It.IsAny<long>(), false)).ReturnsAsync(dashboard);
             return new VacanciesSearchSuggestionsOrchestrator(_mockClient.Object);
         }
 

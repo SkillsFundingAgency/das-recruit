@@ -8,6 +8,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
     public class VacanciesViewModel
     {
         public IList<VacancySummaryViewModel> Vacancies { get; set; }
+        public AlertsViewModel Alerts { get; internal set; }
         public string WarningMessage { get; internal set; }
         public string InfoMessage { get; internal set; }
         public PagerViewModel Pager { get; internal set; }

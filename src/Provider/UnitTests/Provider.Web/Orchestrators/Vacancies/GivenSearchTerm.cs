@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Orchestrators;
@@ -16,6 +15,8 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies
 {
     public class GivenSearchTerm
     {
+        private VacancyUser User;
+
         private VacancySummary[] _testVacancies = new[] 
         {
             new VacancySummary(){Title="The quick brown", LegalEntityName="20th Century Fox", VacancyReference=1000000101, Status = VacancyStatus.Closed},
@@ -37,7 +38,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies
         {
             var expectedReferences = references.Split(',');
             var sut = GetSut(); 
-            var result = await sut.GetVacanciesViewModelAsync(1234, status, 1, searchTerm);
+            var result = await sut.GetVacanciesViewModelAsync(User, status, 1, searchTerm);
             result.Vacancies.Any().Should().BeTrue();
             result.Vacancies.Count.Should().Be(expectedReferences.Count());
             result.Vacancies
@@ -53,7 +54,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies
         public async Task ThenReturnNoResults(string status, string searchTerm)
         {
             var sut = GetSut(); 
-            var result = await sut.GetVacanciesViewModelAsync(1234, status, 1, searchTerm);
+            var result = await sut.GetVacanciesViewModelAsync(User, status, 1, searchTerm);
             result.Vacancies.Any().Should().BeFalse();
         }
 
@@ -61,11 +62,23 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies
         {
             var clientMock = new Mock<IProviderVacancyClient>();
             var timeProviderMock = new Mock<ITimeProvider>();
-            clientMock.Setup(c => c.GetDashboardAsync(It.IsAny<long>()))
+            clientMock.Setup(c => c.GetDashboardAsync(User.Ukprn.Value, true))
                 .ReturnsAsync(new ProviderDashboard {
                     Vacancies = _testVacancies
                 });
             return new VacanciesOrchestrator(clientMock.Object, timeProviderMock.Object);
         }
+
+        public GivenSearchTerm()
+        {
+            User = new VacancyUser
+            {
+                Email = "me@home.com",
+                UserId = "BMonkhouse",
+                Name = "Bob Monkhouse",
+                Ukprn = 12345678
+            };
+        }
+
     }
 }

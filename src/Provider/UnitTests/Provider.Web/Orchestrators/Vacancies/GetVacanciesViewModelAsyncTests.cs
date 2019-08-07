@@ -14,11 +14,11 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Vacancies
 {
     public class GetVacanciesViewModelAsyncTests
     {
+        private VacancyUser User;
+
         [Fact]
         public async Task WhenHaveOver25Vacancies_ShouldShowPager()
         {
-            const long ukprn = 12345678;
-
             var vacancies = new List<VacancySummary>();
             for (var i = 1; i <= 27; i++)
             {
@@ -31,14 +31,14 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Vacancies
 
             var clientMock = new Mock<IProviderVacancyClient>();
             var timeProviderMock = new Mock<ITimeProvider>();
-            clientMock.Setup(c => c.GetDashboardAsync(ukprn))
+            clientMock.Setup(c => c.GetDashboardAsync(User.Ukprn.Value, true))
                 .Returns(Task.FromResult(new ProviderDashboard {
                     Vacancies = vacancies
                 }));
 
             var orch = new VacanciesOrchestrator(clientMock.Object, timeProviderMock.Object);
 
-            var vm = await orch.GetVacanciesViewModelAsync(ukprn, "Submitted", 2, string.Empty);
+            var vm = await orch.GetVacanciesViewModelAsync(User, "Submitted", 2, string.Empty);
 
             vm.ShowResultsTable.Should().BeTrue();
             vm.HasAnyVacancies.Should().BeTrue();
@@ -53,8 +53,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Vacancies
         [Fact]
         public async Task WhenHave25OrUnderVacancies_ShouldNotShowPager()
         {
-            const long ukprn = 12345678;
-
             var vacancies = new List<VacancySummary>();
             for (var i = 1; i <= 25; i++)
             {
@@ -66,14 +64,14 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Vacancies
 
             var clientMock = new Mock<IProviderVacancyClient>();
             var timeProviderMock = new Mock<ITimeProvider>();
-            clientMock.Setup(c => c.GetDashboardAsync(ukprn))
+            clientMock.Setup(c => c.GetDashboardAsync(User.Ukprn.Value, true))
                 .Returns(Task.FromResult(new ProviderDashboard {
                     Vacancies = vacancies
                 }));
 
             var orch = new VacanciesOrchestrator(clientMock.Object, timeProviderMock.Object);
 
-            var vm = await orch.GetVacanciesViewModelAsync(ukprn, "Submitted", 2, string.Empty);
+            var vm = await orch.GetVacanciesViewModelAsync(User, "Submitted", 2, string.Empty);
 
             vm.ShowResultsTable.Should().BeTrue();
             vm.HasAnyVacancies.Should().BeTrue();
@@ -81,6 +79,17 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Vacancies
             vm.Pager.ShowPager.Should().BeFalse();
 
             vm.Vacancies.Count.Should().Be(25);
+        }
+
+        public GetVacanciesViewModelAsyncTests()
+        {
+            User = new VacancyUser
+            {
+                Email = "F.Sinatra@gmail.com",
+                Name = "Frank Sinatra",
+                Ukprn = 54321,
+                UserId = "FSinatra"
+            };
         }
     }
 }
