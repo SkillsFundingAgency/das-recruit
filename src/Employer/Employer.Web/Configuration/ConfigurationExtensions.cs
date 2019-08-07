@@ -81,7 +81,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
 
                 if (featureToggle.IsFeatureEnabled(FeatureNames.AllowLevyPayingEmployersOnly))
                 {
-                    opts.Filters.Add(typeof(LevyDeclarationCheckFilter), 50);
+                    opts.Filters.Add(typeof(LevyDeclarationCheckFilter), 0);
                 }
                 
                 if (EnvironmentNames.IsProductionEnvironment(hostingEnvironment))

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Communication.Types;
 using Esfa.Recruit.Vacancies.Client.Application;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
@@ -243,6 +242,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         public Task<IEnumerable<string>> GetEmployerIdentifiersAsync(string userId)
         {
             return _employerAccountProvider.GetEmployerIdentifiersAsync(userId);
+        }
+
+        public Task<bool> GetEmployerEOIAsync(string employeraccountId)
+        {
+            return _employerAccountProvider.GetEmployerHasSignedEoiAgreements(employeraccountId);
         }
 
         public Task<List<string>> GetCandidateSkillsAsync()
