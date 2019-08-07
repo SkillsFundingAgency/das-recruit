@@ -19,7 +19,8 @@
             
             <form asp-route="@RouteNames.Alerts_Dismiss_Post">
                 <p class="govuk-body govuk-!-margin-bottom-0">
-                    <input name="@nameof(AlertDismissalEditModel.ReturnUrl)" value="@ViewContext.HttpContext.Request.Path@ViewContext.HttpContext.Request.QueryString" type="hidden" />
+                    @{ string returnUrl = ViewContext.HttpContext.Request.Path + ViewContext.HttpContext.Request.QueryString; }
+                    <input name="@nameof(AlertDismissalEditModel.ReturnUrl)" value="@returnUrl" type="hidden" />
                     <input name="@nameof(AlertDismissalEditModel.AlertType)" value="@AlertType.TransferredVacanciesEmployerRevokedPermission" type="hidden" />
                     <button type="submit" class="button-fake-link govuk-link govuk-link--no-visited-state">Dismiss this notification</button>
                 </p>
