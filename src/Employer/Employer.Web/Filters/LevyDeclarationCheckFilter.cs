@@ -91,7 +91,6 @@ namespace Esfa.Recruit.Employer.Web.Filters
 
                 await next();
             }
-            await next();
         }
 
         private async Task<bool> HasStoredDeclaration(string employerAccountId, string userId)
