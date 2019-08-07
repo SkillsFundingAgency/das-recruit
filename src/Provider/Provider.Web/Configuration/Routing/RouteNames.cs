@@ -73,6 +73,7 @@
         public const string Training_Confirm_Post = "Training_Confirm_Post";
         public const string NumberOfPositions_Get = "NumberOfPositions_Get";
         public const string NumberOfPositions_Post = "NumberOfPositions_Post";
+        public const string ProviderAgreement_HardStop_Get = "ProviderAgreement_HardStop_Get";
         public const string Training_Get = "Training_Get";
         public const string Training_Post = "Training_Post";
         public const string Dates_Get = "Dates_Get";

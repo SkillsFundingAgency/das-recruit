@@ -8,5 +8,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Ed
         {}
 
         public IEnumerable<EmployerInfo> Employers { get; set; }
+
+        public bool HasProviderAgreement { get; set; }
     }
 }

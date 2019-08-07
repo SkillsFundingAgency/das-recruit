@@ -39,6 +39,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.FAA;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.PasAccount;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
@@ -108,6 +109,7 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.Configure<VacancyApiConfiguration>(configuration.GetSection("VacancyApiConfiguration"));
             services.Configure<SlackConfiguration>(configuration.GetSection("Slack"));
             services.Configure<NextVacancyReviewServiceConfiguration>(o => o.VacancyReviewAssignationTimeoutMinutes = configuration.GetValue<int>("VacancyReviewAssignationTimeoutMinutes"));
+            services.Configure<PasAccountApiConfiguration>(configuration.GetSection("PasAccountApiConfiguration"));
 
             // Domain services
             services.AddTransient<ITimeProvider, CurrentUtcTimeProvider>();
@@ -151,6 +153,7 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddTransient<ITrainingProviderService, TrainingProviderService>();
             services.AddTransient<ITrainingProviderSummaryProvider, TrainingProviderSummaryProvider>();
             services.AddTransient<IFaaService, FaaService>();
+            services.AddTransient<IPasAccountClient, PasAccountClient>();
 
             // Projection services
             services.AddTransient<IEmployerDashboardProjectionService, EmployerDashboardProjectionService>();

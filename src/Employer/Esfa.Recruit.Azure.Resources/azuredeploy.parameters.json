@@ -52,13 +52,23 @@
         "Tenant": ""
       }
     },
+    "PasAccountApiConfiguration": {
+      "value": {
+        "ApiBaseUrl": "",
+        "ClientId": "",
+        "ClientSecret": "",
+        "IdentifierUri": "",
+        "Tenant": ""
+      }
+    },
     "ExternalLinks": {
       "value": {
         "ManageApprenticeshipSiteUrl": "",
         "EmployerIdamsSiteUrl": "",
         "StaffIdamsUrl": "",
         "ProviderApprenticeshipSiteUrl": "",
-        "CommitmentsSiteUrl": ""
+        "CommitmentsSiteUrl": "",
+        "SignProviderAgreementUrl": ""
       }
     },
     "Features": {

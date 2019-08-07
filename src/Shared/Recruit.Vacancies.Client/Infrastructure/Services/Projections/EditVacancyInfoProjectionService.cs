@@ -25,11 +25,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
             _logger.LogDebug($"Legal Entities inserted: {legalEntities.Count} for Employer: {employerAccountId}");
         }
 
-        public async Task UpdateProviderVacancyDataAsync(long ukprn, IEnumerable<EmployerInfo> employers)
+        public async Task UpdateProviderVacancyDataAsync(long ukprn, IEnumerable<EmployerInfo> employers, bool hasAgreement)
         {
-            await _queryStoreWriter.UpdateProviderVacancyDataAsync(ukprn, employers);
+            await _queryStoreWriter.UpdateProviderVacancyDataAsync(ukprn, employers, hasAgreement);
 
-            _logger.LogDebug($"Employers inserted: {employers.Count()} for Provider: {ukprn}");
+            _logger.LogDebug($"Employers inserted: {employers.Count()} for Provider: {ukprn} has agreement:{hasAgreement}");
         }
 
     }
