@@ -108,6 +108,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<VacanciesSearchSuggestionsOrchestrator>();
             services.AddTransient<ManageNotificationsOrchestrator>();
             services.AddTransient<DatesOrchestrator>();
+            services.AddTransient<AlertsOrchestrator>();
             services.AddTransient<ProviderAgreementOrchestrator>();
         }
 

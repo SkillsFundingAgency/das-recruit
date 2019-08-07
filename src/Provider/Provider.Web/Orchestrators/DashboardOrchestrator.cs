@@ -64,12 +64,5 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             };
             return vm;
         }
-
-        public Task DismissAlert(VacancyUser user, AlertType alertType)
-        {
-            return _client.UpdateUserAlertAsync(user.UserId, alertType, _timeProvider.Now);
-        }
-
-
     }
 }
