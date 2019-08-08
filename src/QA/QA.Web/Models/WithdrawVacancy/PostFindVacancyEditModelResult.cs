@@ -4,7 +4,8 @@
     {
         NotFound,
         AlreadyClosed,
-        CanClose
+        CanClose,
+        NotLive
     }
 
     public class PostFindVacancyEditModelResult

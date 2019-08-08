@@ -27,6 +27,7 @@ namespace Esfa.Recruit.Qa.Web.Controllers
         public IActionResult FindVacancy()
         {
             var vm = _orchestrator.GetFindVacancyViewModel();
+            vm.VacancyReference = TempData[TempDataKeys.WithdrawVacancyReference]?.ToString();
 
             return View(vm);
         }
@@ -34,21 +35,29 @@ namespace Esfa.Recruit.Qa.Web.Controllers
         [HttpPost(Name = RouteNames.WithdrawVacancy_FindVacancy_Post)]
         public async Task<IActionResult> FindVacancy(FindVacancyEditModel m)
         {
+            string userInputVacancyReference = m.VacancyReference;
+            TempData[TempDataKeys.WithdrawVacancyReference] = userInputVacancyReference;
+
             if (ModelState.IsValid)
             {
                 var result = await _orchestrator.PostFindVacancyEditModelAsync(m);
-
-                TempData[TempDataKeys.WithdrawVacancyReference] = result.VacancyReference;
 
                 switch (result.ResultType)
                 {
                     case PostFindVacancyEditModelResultType.AlreadyClosed:
                         return RedirectToRoute(RouteNames.WithdrawVacancy_AlreadyClosed_Get, result.VacancyReference.Value);
+
                     case PostFindVacancyEditModelResultType.CanClose:
                         return RedirectToRoute(RouteNames.WithdrawVacancy_Confirm_Get, result.VacancyReference.Value);
+
                     case PostFindVacancyEditModelResultType.NotFound:
-                        ModelState.AddModelError(nameof(FindVacancyViewModel.VacancyReference), $"Cannot find a live vacancy with vacancy reference '{m.VacancyReference}'");
+                        ModelState.AddModelError(nameof(FindVacancyViewModel.VacancyReference), $"There are no live vacancies with the reference '{m.VacancyReference}'");
                         break;
+
+                    case PostFindVacancyEditModelResultType.NotLive:
+                        ModelState.AddModelError(nameof(FindVacancyViewModel.VacancyReference), $"There are no live vacancies with the reference 'VAC{result.VacancyReference}'");
+                        break;
+
                     default:
                         throw new NotImplementedException($"{result.ResultType.ToString()} is not handled");
                 }
@@ -148,8 +157,14 @@ namespace Esfa.Recruit.Qa.Web.Controllers
 
         private long? GetVacancyReference()
         {
-            if (long.TryParse(TempData.Peek(TempDataKeys.WithdrawVacancyReference)?.ToString(), out long vacancyReferenceNumber))
+            string userInputVacancyReference = (string)TempData.Peek(TempDataKeys.WithdrawVacancyReference);
+
+            if (userInputVacancyReference != null)
+                userInputVacancyReference = userInputVacancyReference.ToUpperInvariant().Replace("VAC", "");
+
+            if (long.TryParse(userInputVacancyReference, out long vacancyReferenceNumber))
                 return vacancyReferenceNumber;
+
             return null;
         }
     }
