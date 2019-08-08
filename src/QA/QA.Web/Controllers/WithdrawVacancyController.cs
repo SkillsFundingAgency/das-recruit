@@ -47,7 +47,10 @@ namespace Esfa.Recruit.Qa.Web.Controllers
                     case PostFindVacancyEditModelResultType.CanClose:
                         return RedirectToRoute(RouteNames.WithdrawVacancy_Confirm_Get, result.VacancyReference.Value);
                     case PostFindVacancyEditModelResultType.NotFound:
-                        ModelState.AddModelError(nameof(FindVacancyViewModel.VacancyReference), $"Cannot find a live vacancy with vacancy reference '{m.VacancyReference}'");
+                        ModelState.AddModelError(nameof(FindVacancyViewModel.VacancyReference), $"There are no live vacancies with the reference '{m.VacancyReference}'");
+                        break;
+                    case PostFindVacancyEditModelResultType.CannotClose:
+                        ModelState.AddModelError(nameof(FindVacancyViewModel.VacancyReference), $"There are no live vacancies with the reference 'VAC{result.VacancyReference}'");
                         break;
                     default:
                         throw new NotImplementedException($"{result.ResultType.ToString()} is not handled");
