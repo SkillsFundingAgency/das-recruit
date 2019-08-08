@@ -42,8 +42,6 @@ namespace Esfa.Recruit.Qa.Web.Controllers
             {
                 var result = await _orchestrator.PostFindVacancyEditModelAsync(m);
 
-                long? retrievedVacancyReference = result.VacancyReference;
-
                 switch (result.ResultType)
                 {
                     case PostFindVacancyEditModelResultType.AlreadyClosed:
@@ -160,8 +158,6 @@ namespace Esfa.Recruit.Qa.Web.Controllers
         private long? GetVacancyReference()
         {
             string userInputVacancyReference = (string)TempData.Peek(TempDataKeys.WithdrawVacancyReference);
-            //Store the initial input value in case the user goes back to the previous screen
-            TempData[TempDataKeys.WithdrawVacancyReference] = userInputVacancyReference;
 
             if (userInputVacancyReference != null)
                 userInputVacancyReference = userInputVacancyReference.ToUpperInvariant().Replace("VAC", "");
