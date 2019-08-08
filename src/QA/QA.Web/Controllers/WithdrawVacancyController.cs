@@ -27,7 +27,7 @@ namespace Esfa.Recruit.Qa.Web.Controllers
         public IActionResult FindVacancy()
         {
             var vm = _orchestrator.GetFindVacancyViewModel();
-            vm.VacancyReference = TempData.Peek(TempDataKeys.WithdrawVacancyReference)?.ToString();
+            vm.VacancyReference = TempData[TempDataKeys.WithdrawVacancyReference]?.ToString();
 
             return View(vm);
         }
