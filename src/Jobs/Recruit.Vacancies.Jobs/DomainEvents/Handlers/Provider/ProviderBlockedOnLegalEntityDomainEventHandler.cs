@@ -26,9 +26,9 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider
         {
             var eventData = DeserializeEvent<ProviderBlockedOnLegalEntityEvent>(eventPayload);
             
-            _logger.LogInformation($"Attempting to revoke provider {eventData.Ukprn} permission on account {eventData.EmployerAccountId} for legal entity {eventData.LegalEntityId}.");
-
             var accountLegalEntityPublicHashedId = await GetAccountLegalEntityPublicHashId(eventData);
+            _logger.LogInformation($"Attempting to revoke provider {eventData.Ukprn} permission on account {eventData.EmployerAccountId} with public hash {accountLegalEntityPublicHashedId} for legal entity {eventData.LegalEntityId}.");
+
             if(string.IsNullOrWhiteSpace(accountLegalEntityPublicHashedId))
             {
                 _logger.LogError($"The legal entity {eventData.LegalEntityId} for the account {eventData.EmployerAccountId} was not found.");

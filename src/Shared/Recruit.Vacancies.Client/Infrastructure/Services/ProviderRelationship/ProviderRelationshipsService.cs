@@ -33,44 +33,48 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
         public async Task<IEnumerable<EmployerInfo>> GetLegalEntitiesForProviderAsync(long ukprn)
         {
             ProviderPermissions providerPermissions = null;
-            var httpClient = CreateHttpClient(_configuration);
-            var queryData = new { Ukprn = ukprn, Operation = "Recruitment" };
-            var uri = new Uri(AddQueryString("accountproviderlegalentities", queryData), UriKind.RelativeOrAbsolute);
-
-            try
+            using (var httpClient = CreateHttpClient(_configuration))
             {
-                var response = await httpClient.GetAsync(uri);
-                if (!response.IsSuccessStatusCode)
+                var queryData = new { Ukprn = ukprn, Operation = "Recruitment" };
+                var uri = new Uri(AddQueryString("accountproviderlegalentities", queryData), UriKind.RelativeOrAbsolute);
+
+                try
                 {
-                    _logger.LogError("An invalid response received when trying to get provider relationships");
-                    return new EmployerInfo[]{};
+                    var response = await httpClient.GetAsync(uri);
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        _logger.LogError("An invalid response received when trying to get provider relationships");
+                        return new EmployerInfo[]{};
+                    }                
+                    var content  = await response.Content.ReadAsStringAsync();
+                    providerPermissions = JsonConvert.DeserializeObject<ProviderPermissions>(content);
                 }
-                var content  = await response.Content.ReadAsStringAsync();
-                providerPermissions = JsonConvert.DeserializeObject<ProviderPermissions>(content);
-            }
-            catch (HttpRequestException ex)
-            {
-                _logger.LogError(ex, "Error trying to retrieve legal entities.", null);
-            }
-            catch (JsonReaderException ex)
-            {
-                _logger.LogError(ex, $"Couldn't deserialise {nameof(ProviderPermissions)}.", null);
-            }
+                catch (HttpRequestException ex)
+                {
+                    _logger.LogError(ex, "Error trying to retrieve legal entities.", null);
+                }
+                catch (JsonReaderException ex)
+                {
+                    _logger.LogError(ex, $"Couldn't deserialise {nameof(ProviderPermissions)}.", null);
+                }
 
-            return await GetEmployerInfosAsync(providerPermissions);
+                return await GetEmployerInfosAsync(providerPermissions);
+            }
         }
 
         public async Task RevokeProviderPermissionToRecruitAsync(long ukprn, string accountLegalEntityPublicHashedId)
         {
-            var httpClient = CreateHttpClient(_configuration);
-            var stringContent = GetStringContent(ukprn, accountLegalEntityPublicHashedId);
-            var uri = new Uri(new Uri(_configuration.ApiBaseUrl), "permissions/revoke");
-
-            var response = await httpClient.PostAsync(uri, stringContent);
-
-            if(!response.IsSuccessStatusCode)
+            using (var httpClient = CreateHttpClient(_configuration))
             {
-                throw new Exception($"Failed to revode  provider {ukprn} permission for account legal entity {accountLegalEntityPublicHashedId} ");
+                var stringContent = GetStringContent(ukprn, accountLegalEntityPublicHashedId);
+                var uri = new Uri(new Uri(_configuration.ApiBaseUrl), "permissions/revoke");
+
+                var response = await httpClient.PostAsync(uri, stringContent);
+
+                if(!response.IsSuccessStatusCode)
+                {
+                    throw new Exception($"Failed to revoke provider {ukprn} permission for account legal entity {accountLegalEntityPublicHashedId} ");
+                }
             }
         }
 

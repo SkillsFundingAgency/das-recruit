@@ -92,6 +92,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider
                 _logger.LogInformation($"Queuing updating of vacancy {vacancy.VacancyReference} owned by {vacancy.VacancyOwner} as the provider {ukprn} is blocked.");
                 var providerBlockedOnVacancyEvent = new ProviderBlockedOnVacancyEvent()
                 {
+                    Ukprn = ukprn,
                     VacancyId = vacancy.Id,
                     QaVacancyUser = qaVacancyUser,
                     VacancyReference = vacancy.VacancyReference
