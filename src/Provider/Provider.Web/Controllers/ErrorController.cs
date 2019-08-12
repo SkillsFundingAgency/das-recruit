@@ -104,11 +104,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                     return PageNotFound();
                 }
 
-                if (exception is BlockedProviderException)
-                {
-                    return RedirectToRoute(RouteNames.BlockedProvider_Get, new { Ukprn = ukprn });
-                }
-
                 if (exception is MissingPermissionsException mpEx)
                 {
                     _logger.LogInformation(mpEx.Message);
@@ -191,14 +186,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         {
             Response.StatusCode = (int)HttpStatusCode.NotFound;
             return View(ViewNames.PageNotFound);
-        }
-
-        [HttpGet("error/provider/{ukprn}", Name = RouteNames.BlockedProvider_Get)]
-        public IActionResult BlockedProvider(string ukprn)
-        {
-            _logger.LogInformation($"Handling redirection of blocked provider: {ukprn}.");
-            Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-            return View(ViewNames.ProviderBlocked);
         }
 
         private void AddDashboardMessage(string message)
