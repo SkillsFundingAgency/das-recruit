@@ -2,7 +2,6 @@
 {
     public static class RouteNames
     {
-        public const string BlockedProvider_Get= "BlockedProvider_Get";
         public const string AboutEmployer_Get = "AboutEmployer_Get";
         public const string AboutEmployer_Post = "AboutEmployer_Post";
         public const string ApplicationProcess_Get = "ApplicationProcess_Get";
