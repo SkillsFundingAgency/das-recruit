@@ -111,6 +111,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
                     if (matchingLegalEntity != null)
                     {
                         var legalEntity = LegalEntityMapper.MapFromAccountApiLegalEntity(matchingLegalEntity);
+                        legalEntity.AccountLegalEntityPublicHashedId = permittedLegalEntity.AccountLegalEntityPublicHashedId;
                         employerInfo.LegalEntities.Add(legalEntity);
                     }
                 }

@@ -74,7 +74,8 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider
                     {
                         Ukprn = ukprn,
                         EmployerAccountId = employer.EmployerAccountId,
-                        LegalEntityId = legalEntity.LegalEntityId
+                        LegalEntityId = legalEntity.LegalEntityId,
+                        AccountLegalEntityPublicHashedId = legalEntity.AccountLegalEntityPublicHashedId
                     };
 
                     tasks.Add(_messaging.PublishEvent(providerBlockedOnLegalEntityEvent));
