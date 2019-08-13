@@ -47,7 +47,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             if (!vacancy.CanClose)
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForClosing, vacancy.Title));
 
-            await _client.CloseVacancyAsync(vacancy.Id, user);
+            await _vacancyClient.CloseVacancyAsync(vacancy.Id, user, ClosureReason.Manual);
 
             return new OrchestratorResponse<VacancyInfo>(new VacancyInfo {
                 Id = vacancy.Id,
