@@ -38,6 +38,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
             _logger.LogInformation("Closing vacancy {vacancyId}.", vacancyId);
 
             var vacancy = await _vacancyRepository.GetVacancyAsync(vacancyId);
+            vacancy.ClosureReason = ClosureReason.Auto;
 
             await CloseVacancyAsync(vacancy);
         }
