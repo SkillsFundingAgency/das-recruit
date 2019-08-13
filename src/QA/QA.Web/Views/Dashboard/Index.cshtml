@@ -138,25 +138,18 @@
         </h3>
         <p class="govuk-body">Create and download reports for your vacancies for any period of time.</p>
     </div>
+    <div asp-show="@Model.IsUserAdmin" class="govuk-grid-column-one-third">
+        <h3 class="govuk-heading-s govuk-!-margin-bottom-0">
+            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.BlockedOrganisations_Get">Remove training provider</a>
+        </h3>
+        <p class="govuk-body">Remove a training provider</p>
+    </div>
     
-    <div asp-hide="true"><!-- Temporarily hide this for public beta release -->
-
-
-        <div asp-show="@Model.IsUserAdmin" class="govuk-grid-column-one-third">
-            <h3 class="govuk-heading-s govuk-!-margin-bottom-0">
-                <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.BlockedOrganisations_Get">Remove training provider</a>
-            </h3>
-            <p class="govuk-body">Remove a training provider</p>
-        </div>
-        
-        <div asp-show="@Model.IsUserAdmin" class="govuk-grid-column-one-third">
-            <h3 class="govuk-heading-s govuk-!-margin-bottom-0">
-                <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.WithdrawVacancy_FindVacancy_Get">Close a vacancy</a>
-            </h3>
-            <p class="govuk-body">Find and close a live vacancy and prevent it being found on Find an apprentice.</p>
-        </div>
-
-
+    <div asp-show="@Model.IsUserAdmin" class="govuk-grid-column-one-third">
+        <h3 class="govuk-heading-s govuk-!-margin-bottom-0">
+            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.WithdrawVacancy_FindVacancy_Get">Close a vacancy</a>
+        </h3>
+        <p class="govuk-body">Find and close a live vacancy and prevent it being found on Find an apprentice.</p>
     </div>
 </div>
 
