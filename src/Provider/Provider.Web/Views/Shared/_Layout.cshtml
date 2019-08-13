@@ -137,7 +137,7 @@
                         <a asp-route="@RouteNames.Dashboard_YourCohorts" asp-route-ukprn="@Context.User.GetUkprn()" class="das-navigation__link">Your cohorts</a>
                     </li>
                     <li class="das-navigation__list-item">
-                        <a asp-route="@RouteNames.Dashboard_ManageFunding" class="das-navigation__link">Manage funding</a>
+                        <a asp-route="@RouteNames.Dashboard_ManageFunding" asp-route-ukprn="@Context.User.GetUkprn()" class="das-navigation__link">Manage funding</a>
                     </li>
                     <li class="das-navigation__list-item">
                         <a asp-route="@RouteNames.Dashboard_ManageApprentices" asp-route-ukprn="@Context.User.GetUkprn()" class="das-navigation__link">Manage your apprentices</a>
