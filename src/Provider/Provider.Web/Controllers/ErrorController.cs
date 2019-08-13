@@ -95,7 +95,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 }
 
                 if (exception is AuthorisationException)
-                {   
+                {
                     return AccessDenied();
                 }
 
@@ -135,6 +135,11 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
         private IActionResult AccessDenied()
         {
+            if (TempData.ContainsKey(TempDataKeys.IsBlockedProvider) && (bool)TempData.Peek(TempDataKeys.IsBlockedProvider))
+            {
+                return ProviderAccessRevoked();
+            }
+
             var serviceClaims = User.FindAll(ProviderRecruitClaims.IdamsUserServiceTypeClaimTypeIdentifier);
 
             if (serviceClaims.Any(claim => claim.Value.Equals(ProviderRecruitClaims.ServiceClaimValue) == false))
@@ -165,16 +170,28 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                     return Redirect(_externalLinks.ProviderApprenticeshipSiteUrl);
                 }
             }
-            
+
             Response.StatusCode = (int)HttpStatusCode.Unauthorized;
             return View(ViewNames.AccessDenied);
+        }
+
+        private IActionResult ProviderAccessRevoked()
+        {
+            var vm = new ProviderAccessRevokedViewModel
+            {
+                Ukprn = (string)TempData[TempDataKeys.ProviderIdentifier],
+                ProviderName = (string)TempData[TempDataKeys.ProviderName],
+            };
+
+            TempData.Keep();
+            return View(ViewNames.ProviderAccessRevoked, vm);
         }
 
         private IActionResult PageNotFound()
         {
             Response.StatusCode = (int)HttpStatusCode.NotFound;
             return View(ViewNames.PageNotFound);
-        }       
+        }
 
         [HttpGet("error/provider/{ukprn}", Name = RouteNames.BlockedProvider_Get)]
         public IActionResult BlockedProvider(string ukprn)

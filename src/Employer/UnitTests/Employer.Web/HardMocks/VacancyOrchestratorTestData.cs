@@ -18,7 +18,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.HardMocks
                 ProgrammeId = "has a value",
                 Wage = new Wage { WageType = WageType.FixedWage },
                 LegalEntityName = "legal name",
-                EmployerNameOption = EmployerNameOption.RegisteredName
+                EmployerNameOption = EmployerNameOption.RegisteredName,
+                StartDate = DateTime.Now
             };
         }
 

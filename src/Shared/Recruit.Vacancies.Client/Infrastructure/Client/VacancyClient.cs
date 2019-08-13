@@ -28,6 +28,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly IMessaging _messaging;
         private readonly IQueryStoreReader _reader;
         private readonly IVacancyRepository _repository;
+        private readonly IVacancyQuery _vacancyQuery;
         private readonly IEntityValidator<Vacancy, VacancyRuleSet> _validator;
         private readonly IApprenticeshipProgrammeProvider _apprenticeshipProgrammesProvider;
         private readonly IEmployerAccountProvider _employerAccountProvider;
@@ -47,9 +48,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly IUserNotificationPreferencesRepository _userNotificationPreferencesRepository;
         private readonly AbstractValidator<UserNotificationPreferences> _userNotificationPreferencesValidator;
         private readonly ITrainingProviderSummaryProvider _trainingProviderSummaryProvider;
+        private readonly AbstractValidator<Qualification> _qualificationValidator;
 
         public VacancyClient(
             IVacancyRepository repository,
+            IVacancyQuery vacancyQuery,
             IQueryStoreReader reader,
             IMessaging messaging,
             IEntityValidator<Vacancy, VacancyRuleSet> validator,
@@ -70,9 +73,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             IReportService reportService,
             IUserNotificationPreferencesRepository userNotificationPreferencesRepository,
             AbstractValidator<UserNotificationPreferences> userNotificationPreferencesValidator,
-            ITrainingProviderSummaryProvider trainingProviderSummaryProvider)
+            ITrainingProviderSummaryProvider trainingProviderSummaryProvider,
+            AbstractValidator<Qualification> qualificationValidator)
         {
             _repository = repository;
+            _vacancyQuery = vacancyQuery;
             _reader = reader;
             _messaging = messaging;
             _validator = validator;
@@ -94,6 +99,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _userNotificationPreferencesRepository = userNotificationPreferencesRepository;
             _userNotificationPreferencesValidator = userNotificationPreferencesValidator;
             _trainingProviderSummaryProvider = trainingProviderSummaryProvider;
+            _qualificationValidator = qualificationValidator;
         }
 
         public Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user)
@@ -236,6 +242,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         public Task<IEnumerable<string>> GetEmployerIdentifiersAsync(string userId)
         {
             return _employerAccountProvider.GetEmployerIdentifiersAsync(userId);
+        }
+
+        public Task<bool> GetEmployerEOIAsync(string employeraccountId)
+        {
+            return _employerAccountProvider.GetEmployerHasSignedEoiAgreements(employeraccountId);
         }
 
         public Task<List<string>> GetCandidateSkillsAsync()
@@ -486,18 +497,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         public EntityValidationResult ValidateUserNotificationPreferences(UserNotificationPreferences preferences)
         {
             var fluentResult = _userNotificationPreferencesValidator.Validate(preferences);
-
-            var newResult = new EntityValidationResult();
-
-            if (fluentResult.IsValid == false && fluentResult.Errors.Count > 0)
-            {
-                foreach(var fluentError in fluentResult.Errors)
-                {
-                    newResult.Errors.Add(new EntityValidationError(long.Parse(fluentError.ErrorCode), fluentError.PropertyName, fluentError.ErrorMessage, fluentError.ErrorCode));
-                }
-            }
-
-            return newResult;
+            return EntityValidationResult.FromFluentValidationResult(fluentResult);
         }
 
         public Task UpdateUserAccountAsync(string idamsUserId)
@@ -506,6 +506,27 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             {
                 IdamsUserId = idamsUserId
             });
+        }
+
+        public Task<int> GetVacancyCountForUserAsync(string userId)
+        {
+            return _vacancyQuery.GetVacancyCountForUserAsync(userId);
+        }
+
+        public Task UpdateUserAlertAsync(string idamsUserId, AlertType alertType, DateTime dismissedOn)
+        {
+            return _messaging.SendCommandAsync(new UpdateUserAlertCommand
+            {
+                IdamsUserId = idamsUserId,
+                AlertType = alertType,
+                DismissedOn = dismissedOn
+            });
+        }
+
+        public EntityValidationResult ValidateQualification(Qualification qualification)
+        {
+            ValidationResult fluentResult = _qualificationValidator.Validate(qualification);
+            return EntityValidationResult.FromFluentValidationResult(fluentResult);
         }
     }
 }

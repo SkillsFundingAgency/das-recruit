@@ -36,5 +36,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         EntityValidationResult ValidateUserNotificationPreferences(UserNotificationPreferences preferences);
         Task<IEnumerable<string>> GetEmployerIdentifiersAsync(string userId);
         Task<IEnumerable<TrainingProviderSummary>> GetAllTrainingProvidersAsync();
+        Task UpdateUserAlertAsync(string idamsUserId, AlertType alertType, DateTime dismissedOn);
+        EntityValidationResult ValidateQualification(Qualification qualification);
+        Task<bool> GetEmployerEOIAsync(string employeraccountId);
     }
 }

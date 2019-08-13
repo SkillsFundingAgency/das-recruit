@@ -1,0 +1,35 @@
+﻿@model Esfa.Recruit.Qa.Web.ViewModels.WithdrawVacancy.ConsentViewModel
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' asp-show="@ViewData.ModelState.IsValid == false" />
+
+        <h1 class="govuk-heading-xl">Close vacancy VAC@(Model.VacancyReference)</h1>
+
+        <p class="govuk-body">Closing the vacancy will do the following:</p>
+
+        <ul class="govuk-list govuk-list--bullet">
+            <li>close and remove this vacancy from the Find an apprentice service</li>
+            <li>email <strong>@Model.OwnerName (owner)</strong> and let them know that we have closed the vacancy</li>
+        </ul>
+        
+        <form asp-route="@RouteNames.WithdrawVacancy_Consent_Post">
+            
+            <div class="govuk-form-group">
+                <p class="govuk-body">
+                    <span esfa-validation-message-for="Acknowledged" class="govuk-error-message"></span>
+                    <div class="govuk-checkboxes__item">
+                        <input asp-for="Acknowledged" class="govuk-checkboxes__input" type="checkbox" value="true">
+                        <label class="govuk-label govuk-checkboxes__label" asp-for="Acknowledged">I understand the above and wish to close this vacancy</label>
+                    </div>
+                </p>
+            </div>
+
+            <p class="govuk-body">
+                <button type="submit" class="govuk-button govuk-button--warning">Close vacancy</button>
+                <a asp-route="@RouteNames.WithdrawVacancy_FindVacancy_Get" class="govuk-link das-button-link">Cancel</a>
+            </p>
+        </form>
+    </div>
+</div>

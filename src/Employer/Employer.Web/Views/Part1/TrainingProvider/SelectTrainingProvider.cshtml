@@ -8,7 +8,7 @@
 @model SelectTrainingProviderViewModel
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Title_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Training_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
         <partial name="@PartialNames.ReviewSummary" for="Review" />
         <h1 class="govuk-heading-xl">
@@ -17,7 +17,9 @@
         </h1>
         <form asp-route="@RouteNames.TrainingProvider_Select_Post" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
             <p class="govuk-body">
-                You will need to use a registered training provider who offers the apprenticeship training you choose.
+                You will need to use a registered training provider who offers
+                <span class="govuk-!-font-weight-bold">&quot;@Model.Programme.Name&quot;</span>
+                training.
             </p>
             <div class="govuk-form-group">
                 <div class="govuk-radios govuk-radios--conditional" data-module="radios">
@@ -47,7 +49,7 @@
                             </noscript>
                             <div class="govuk-form-group js-hidden" id="js-search">
                                 <span class="govuk-hint">
-                                    Enter the training provider or reference number (UKPRN). <br>
+                                    Enter the training provider name or reference number (UKPRN).<br>
                                     UKPRN is 8 numbers. For example 12345678.
                                 </span>
                                 <span esfa-validation-message-for="TrainingProviderSearch" class="govuk-error-message"></span>
@@ -73,7 +75,7 @@
                         <div class="govuk-form-group">
                             <p class="govuk-body">
                                 You will need to add a training provider before submitting the vacancy. If you need help, you can
-                                <a href="@_externalLinks.Value.FindProviderUrl" class="govuk-link" target="_blank">find a training provider (opens in new tab)</a>
+                                <a href="@_externalLinks.Value.FindProviderUrl" class="govuk-link" target="_blank">Find a training provider (opens in new tab)</a>
                                 based on the apprenticeship training.
                             </p>
                         </div>
@@ -101,11 +103,13 @@
     <script asp-append-version="true" src="/lib/accessible-autocomplete/accessible-autocomplete.min.js"></script>
     <script asp-append-version="true" src="/javascripts/esfa-training-provider-suggestions/searchSuggestionsService.js"></script>
     <script nws-csp-add-nonce="true">
-        $("#js-search").removeClass("js-hidden");
-        $("#selection-type").val("@TrainingProviderSelectionType.TrainingProviderSearch");
+        $(function() {
+            $("#js-search").removeClass("js-hidden");
+            $("#selection-type").val("@TrainingProviderSelectionType.TrainingProviderSearch");
 
-        var providers = @(Html.Raw(JsonConvert.SerializeObject(Model.TrainingProviders)));
+            var providers = @(Html.Raw(JsonConvert.SerializeObject(Model.TrainingProviders)));
 
-        searchSuggestions.init($("#@Html.IdFor(m => m.TrainingProviderSearch)"), providers);
+            searchSuggestions.init($("#@Html.IdFor(m => m.TrainingProviderSearch)"), providers);
+        })
     </script>
 }

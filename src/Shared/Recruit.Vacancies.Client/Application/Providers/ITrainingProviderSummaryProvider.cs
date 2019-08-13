@@ -7,5 +7,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Providers
     public interface ITrainingProviderSummaryProvider
     {
         Task<IEnumerable<TrainingProviderSummary>> FindAllAsync();
+        Task<TrainingProviderSummary> GetAsync(long ukprn);
     }
 }

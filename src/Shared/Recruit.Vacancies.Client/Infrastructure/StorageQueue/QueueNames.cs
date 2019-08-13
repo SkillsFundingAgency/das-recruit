@@ -6,6 +6,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue
         public const string GenerateSingleEmployerDashboardQueueName = "generate-employer-dashboard-queue";
         public const string GenerateSingleProviderDashboardQueueName = "generate-provider-dashboard-queue";
         public const string GenerateBlockedEmployersQueueName = "generate-blocked-employers-data-queue";
+        public const string GenerateAllBlockedOrganisationsQueueName = "generate-all-blocked-organisations-queue";
         public const string GenerateAllEmployerDashboardQueueName = "generate-all-employer-dashboards-queue";
         public const string GenerateAllProviderDashboardQueueName = "generate-all-provider-dashboards-queue";
         public const string GenerateAllVacancyAnalyticsSummariesQueueName = "generate-all-vacancy-analytics-summaries-queue";

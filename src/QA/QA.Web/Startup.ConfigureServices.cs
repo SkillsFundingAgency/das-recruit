@@ -1,9 +1,11 @@
 ﻿using Esfa.Recruit.Qa.Web.Configuration;
 using Esfa.Recruit.Qa.Web.Mappings;
 using Esfa.Recruit.Qa.Web.Orchestrators;
+using Esfa.Recruit.Qa.Web.Orchestrators.Reports;
 using Esfa.Recruit.Qa.Web.Security;
 using Esfa.Recruit.QA.Web.Configuration;
 using Esfa.Recruit.QA.Web.Filters;
+using Esfa.Recruit.QA.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.RuleTemplates;
@@ -11,6 +13,7 @@ using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Ioc;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -69,6 +72,12 @@ namespace Esfa.Recruit.Qa.Web
             services.AddRecruitStorageClient(_configuration);
             services.AddScoped<DashboardOrchestrator>();
             services.AddScoped<ReviewOrchestrator>();
+            services.AddScoped<ReportDashboardOrchestrator>();
+            services.AddScoped<ApplicationsReportOrchestrator>();
+            services.AddScoped<BlockedOrganisationsOrchestrator>();
+            
+            services.AddScoped<ReportConfirmationOrchestrator>();
+            services.AddScoped<WithdrawVacancyOrchestrator>();
             services.AddTransient<UserAuthorizationService>();
 
             services.AddTransient<IGeocodeImageService>(_ => new GoogleMapsGeocodeImageService(_configuration.GetValue<string>("GoogleMapsPrivateKey")));
@@ -84,6 +93,11 @@ namespace Esfa.Recruit.Qa.Web
             {
                 var svc = x.GetService<IConfigurationReader>();
                 return svc.GetAsync<QaRecruitSystemConfiguration>("QaRecruitSystem").Result;
+            });
+
+            services.Configure<RazorViewEngineOptions>(o =>
+            {
+                o.ViewLocationFormats.Add("/Views/Reports/{1}/{0}" + RazorViewEngine.ViewExtension);
             });
         }
     }

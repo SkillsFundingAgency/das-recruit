@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -80,7 +81,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             _logger = logger;
         }
 
-        public Task<string> GetReportDataAsync(Dictionary<string,object> parameters)
+        public Task<ReportStrategyResult> GetReportDataAsync(Dictionary<string,object> parameters)
         {
             var ukprn = long.Parse(parameters[ReportParameterName.Ukprn].ToString());
             var fromDate = (DateTime) parameters[ReportParameterName.FromDate];
@@ -102,7 +103,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             }
         }
 
-        private async Task<string> GetProviderApplicationsAsync(long ukprn, DateTime fromDate, DateTime toDate)
+        private async Task<ReportStrategyResult> GetProviderApplicationsAsync(long ukprn, DateTime fromDate, DateTime toDate)
         {
             var collection = GetCollection<BsonDocument>();
 
@@ -122,9 +123,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             _logger.LogInformation($"Report parameters ukprn:{ukprn} fromDate:{fromDate} toDate:{toDate} returned {results.Count} results");
 
             var dotNetFriendlyResults = results.Select(BsonTypeMapper.MapToDotNetValue);
-            var result = JsonConvert.SerializeObject(dotNetFriendlyResults);
-            
-            return result;
+            var data = JsonConvert.SerializeObject(dotNetFriendlyResults);
+
+            var headers = new List<KeyValuePair<string, string>>
+            {
+                new KeyValuePair<string, string>("Date", _timeProvider.Now.ToUkTime().ToString("dd/MM/yyyy HH:mm:ss")),
+                new KeyValuePair<string, string>("Total_Number_Of_Applications", results.Count.ToString())
+            };
+            return new ReportStrategyResult(headers, data);
         }
 
         private async Task ProcessResultsAsync(List<BsonDocument> results)

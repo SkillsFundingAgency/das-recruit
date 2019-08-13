@@ -85,6 +85,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             clone.LiveDate = null;
             clone.SubmittedByUser = null;
             clone.SubmittedDate = null;
+            clone.ClosureReason = null;
+            clone.ClosureExplanation = null;
+            clone.TransferInfo = null;
 
             return clone;
         }

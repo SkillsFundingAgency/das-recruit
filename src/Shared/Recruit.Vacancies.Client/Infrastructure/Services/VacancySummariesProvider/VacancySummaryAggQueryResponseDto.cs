@@ -25,6 +25,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         public VacancyStatus Status { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? ClosingDate { get; set; }
+        public DateTime? ClosedDate { get; set; }
+        public ClosureReason? ClosureReason { get; set; }
         public ApplicationMethod? ApplicationMethod { get; set; }
         public string ProgrammeId { get; set; }
         public int? Duration { get; set; }
@@ -32,5 +34,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         public string TrainingTitle { get; set; }
         public TrainingType TrainingType { get; set; }
         public ProgrammeLevel TrainingLevel { get; set; }
+        public long? TransferInfoUkprn { get; set; }
+        public string TransferInfoProviderName { get; set; }
+        public DateTime? TransferInfoTransferredDate { get; set; }
+        public TransferReason? TransferInfoReason { get; set; }
+        public string TrainingProviderName { get; set; }
     }
 }

@@ -1,0 +1,27 @@
+@using Esfa.Recruit.QA.Web.ViewModels.ManageProvider;
+@model ConfirmTrainingProviderBlockingViewModel;
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">Confirm the training provider you are removing</h1>
+        <div class="verification-summary">
+            <h2 class="govuk-heading-m">
+                @Model.Name
+            </h2>
+            <p class="govuk-body govuk-!-margin-bottom-0">
+                @Model.Address
+            </p>
+            <p class="govuk-body govuk-!-margin-top-0">UKPRN: @Model.Ukprn</p>
+            <div asp-show="@Model.ShowPermissionsMessage">
+                <p class="govuk-body">@Model.PermissionCount employers have given @Model.Name permission to recruit apprentices. Removing this provider will mean they will no longer be able to create or manage vacancies on behalf of employers.</p>
+            </div>
+            <p class="govuk-body">
+                <a asp-route="@RouteNames.BlockProvider_Find_Get" class="govuk-link">Search again</a>
+            </p>
+        </div>
+        <form asp-route="@RouteNames.BlockProvider_Confirm_Post">
+            <input type="hidden" asp-for="Ukprn">
+            <button type="submit" class="govuk-button">Confirm and continue</button>
+            <a asp-route="@RouteNames.BlockProvider_Find_Get" class="govuk-link das-button-link">Cancel</a>
+        </form>
+    </div>
+</div>

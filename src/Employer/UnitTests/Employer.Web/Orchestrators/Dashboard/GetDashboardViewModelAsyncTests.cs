@@ -1,14 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Orchestrators;
+using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer;
 using FluentAssertions;
-using Microsoft.Extensions.Options;
 using Moq;
 using Xunit;
 
@@ -33,7 +32,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Dashboard
 
             var orch = GetOrchestrator(vacancies);
 
-            var vm = await orch.GetDashboardViewModelAsync(EmployerAccountId, "Submitted", 2);
+            var vm = await orch.GetDashboardViewModelAsync(EmployerAccountId, "Submitted", 2, new VacancyUser());
 
             vm.ShowResultsTable.Should().BeTrue();
             vm.HasVacancies.Should().BeTrue();
@@ -59,7 +58,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Dashboard
 
             var orch = GetOrchestrator(vacancies);
 
-            var vm = await orch.GetDashboardViewModelAsync(EmployerAccountId, "Submitted", 2);
+            var vm = await orch.GetDashboardViewModelAsync(EmployerAccountId, "Submitted", 2, new VacancyUser());
 
             vm.ShowResultsTable.Should().BeTrue();
             vm.HasVacancies.Should().BeTrue();
@@ -79,8 +78,11 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Dashboard
                 {
                     Vacancies = vacancies
                 }));
+            
+            var recruitClientMock = new Mock<IRecruitVacancyClient>();
+            recruitClientMock.Setup(c => c.GetUsersDetailsAsync(It.IsAny<string>())).ReturnsAsync(new User());
 
-            return new DashboardOrchestrator(clientMock.Object, timeProviderMock.Object);
+            return new DashboardOrchestrator(clientMock.Object, timeProviderMock.Object, recruitClientMock.Object, new AlertViewModelService());
         }
     }
 }

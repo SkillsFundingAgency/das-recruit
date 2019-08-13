@@ -3,13 +3,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Mappings;
+using Esfa.Recruit.Employer.Web.Mappings.Extensions;
 using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.TrainingProvider;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
-using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -24,7 +24,12 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
 
-        public TrainingProviderOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<TrainingProviderOrchestrator> logger, IReviewSummaryService reviewSummaryService) : base(logger)
+        public TrainingProviderOrchestrator(
+            IEmployerVacancyClient client, 
+            IRecruitVacancyClient vacancyClient, 
+            ILogger<TrainingProviderOrchestrator> logger, 
+            IReviewSummaryService reviewSummaryService
+            ) : base(logger)
         {
             _client = client;
             _vacancyClient = vacancyClient;
@@ -41,7 +46,15 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var vacancy = vacancyTask.Result;
             var trainingProviders = trainingProvidersTask.Result;
 
-            var vm = new SelectTrainingProviderViewModel { Title = vacancy.Title, TrainingProviders = trainingProviders.Select(t => FormatSuggestion(t.ProviderName, t.Ukprn)), PageInfo = Utility.GetPartOnePageInfo(vacancy) };
+            var programme = await _vacancyClient.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
+
+            var vm = new SelectTrainingProviderViewModel
+            {
+                Title = vacancy.Title,
+                TrainingProviders = trainingProviders.Select(t => FormatSuggestion(t.ProviderName, t.Ukprn)),
+                PageInfo = Utility.GetPartOnePageInfo(vacancy),
+                Programme = programme.ToViewModel()
+            };
 
             TrySetSelectedTrainingProvider(vm, trainingProviders, vacancy, ukprn);
             
@@ -54,7 +67,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             return vm;
         }
 
-        public async Task<PostSelectTrainingProviderResult> PostSelectTrainingProviderAsync(SelectTrainingProviderEditModel m, VacancyUser user)
+        public async Task<OrchestratorResponse<PostSelectTrainingProviderResult>> PostSelectTrainingProviderAsync(SelectTrainingProviderEditModel m, VacancyUser user)
         {
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, m, RouteNames.TrainingProvider_Select_Post);
 
@@ -66,19 +79,25 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                     await _vacancyClient.UpdateDraftVacancyAsync(vacancy, user);
                 }
 
-                return new PostSelectTrainingProviderResult { ResponseType = SelectTrainingProviderResponseType.Continue };
+                return new OrchestratorResponse<PostSelectTrainingProviderResult>(new PostSelectTrainingProviderResult());
             }
 
-            var provider = await GetProviderFromModelAsync(m);
+            var providerSummary = await GetProviderFromModelAsync(m);
 
-            if (provider == null)
-                return new PostSelectTrainingProviderResult { ResponseType = SelectTrainingProviderResponseType.NotFound };
+            TrainingProvider provider = null;
+            if (providerSummary != null)
+                provider = await _client.GetTrainingProviderAsync(providerSummary.Ukprn);
 
-            return new PostSelectTrainingProviderResult
-            {
-                ResponseType = SelectTrainingProviderResponseType.Confirm,
-                FoundProviderUkprn = provider.Ukprn
-            };
+            vacancy.TrainingProvider = provider;
+
+            return await ValidateAndExecute(
+                vacancy,
+                v => _vacancyClient.Validate(v, ValidationRules),
+                v => Task.FromResult(new PostSelectTrainingProviderResult
+                    {
+                        FoundTrainingProviderUkprn = v.TrainingProvider?.Ukprn
+                    })
+            );
         }
 
         public async Task<SelectTrainingProviderViewModel> GetSelectTrainingProviderViewModelAsync(SelectTrainingProviderEditModel m)

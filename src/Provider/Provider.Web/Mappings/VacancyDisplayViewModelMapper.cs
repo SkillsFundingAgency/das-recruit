@@ -24,7 +24,6 @@ namespace Esfa.Recruit.Provider.Web.Mappings
         public DisplayVacancyViewModelMapper(
                 IGeocodeImageService mapService,
                 IOptions<ExternalLinksConfiguration> externalLinksOptions,
-                IEmployerVacancyClient client,
                 IRecruitVacancyClient vacancyClient)
         {
             _mapService = mapService;

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BlockedEmployers
 {

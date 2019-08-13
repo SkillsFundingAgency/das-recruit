@@ -14,6 +14,7 @@
         public const string Dashboard_Index_Get = "Dashboard_Index_Get";
         public const string Dashboard_ChangePassword = "Dashboard_ChangePassword";
         public const string Dashboard_ChangeEmail = "Dashboard_ChangeEmail";
+        public const string Dashboard_DismissAlert_Post = "Dashboard_DismissAlert_Post";
 
         public const string Dashboard_AccountsRename = "Dashboard_AccountsRename";
         public const string Dashboard_AccountsFinance = "Dashboard_AccountsFinance";
@@ -66,6 +67,14 @@
 
         public const string Training_Get = "Training_Get";
         public const string Training_Post = "Training_Post";
+        public const string Training_First_Time_Get = "Training_First_Time_Get";
+        public const string Training_First_Time_Post = "Training_First_Time_Post";
+        public const string Training_Help_Get = "Training_Help_Get";
+        public const string Training_Confirm_Get = "Training_Confirm_Get";
+        public const string Training_Confirm_Post = "Training_Confirm_Post";
+
+        public const string Dates_Get = "Dates_Get";
+        public const string Dates_Post = "Dates_Post";
 
         public const string Vacancy_Preview_Get = "Vacancy_Preview_Get";
         public const string Preview_Submit_Post = "Preview_Submit_Post";

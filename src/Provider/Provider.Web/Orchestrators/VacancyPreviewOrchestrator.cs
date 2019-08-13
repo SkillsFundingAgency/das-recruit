@@ -8,6 +8,7 @@ using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
@@ -25,6 +26,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         private readonly DisplayVacancyViewModelMapper _vacancyDisplayMapper;
         private readonly IReviewSummaryService _reviewSummaryService;
         private readonly ILegalEntityAgreementService _legalEntityAgreementService;
+        private readonly ITrainingProviderAgreementService _trainingProviderAgreementService;
 
         public VacancyPreviewOrchestrator(
             IProviderVacancyClient client,
@@ -32,13 +34,15 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             ILogger<VacancyPreviewOrchestrator> logger,
             DisplayVacancyViewModelMapper vacancyDisplayMapper, 
             IReviewSummaryService reviewSummaryService,
-            ILegalEntityAgreementService legalEntityAgreementService) : base(logger)
+            ILegalEntityAgreementService legalEntityAgreementService,
+            ITrainingProviderAgreementService trainingProviderAgreementService) : base(logger)
         {
             _client = client;
             _vacancyClient = vacancyClient;
             _vacancyDisplayMapper = vacancyDisplayMapper;
             _reviewSummaryService = reviewSummaryService;
             _legalEntityAgreementService = legalEntityAgreementService;
+            _trainingProviderAgreementService = trainingProviderAgreementService;
         }
 
         public async Task<VacancyPreviewViewModel> GetVacancyPreviewViewModelAsync(VacancyRouteModel vrm)
@@ -85,19 +89,24 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
         private async Task<SubmitVacancyResponse> SubmitActionAsync(Vacancy vacancy, VacancyUser user)
         {
+            var hasLegalEntityAgreementTask = _legalEntityAgreementService.HasLegalEntityAgreementAsync(vacancy.EmployerAccountId, vacancy.LegalEntityId);
+            var hasProviderAgreementTask = _trainingProviderAgreementService.HasAgreementAsync(vacancy.TrainingProvider.Ukprn.Value);
+
+            await Task.WhenAll(hasLegalEntityAgreementTask, hasProviderAgreementTask);
+
             var response = new SubmitVacancyResponse
             {
-                HasLegalEntityAgreement = await _legalEntityAgreementService.HasLegalEntityAgreementAsync(vacancy.EmployerAccountId, vacancy.LegalEntityId),
+                HasLegalEntityAgreement = hasLegalEntityAgreementTask.Result,
+                HasProviderAgreement = hasProviderAgreementTask.Result,
                 IsSubmitted = false
             };
 
-            if (response.HasLegalEntityAgreement == false)
-                return response;
-
-            await _client.SubmitVacancyAsync(vacancy.Id, user);
-
-            response.IsSubmitted = true;
-
+            if (response.HasLegalEntityAgreement && response.HasProviderAgreement)
+            {
+                await _client.SubmitVacancyAsync(vacancy.Id, user);
+                response.IsSubmitted = true;
+            }
+            
             return response;
         }
 

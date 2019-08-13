@@ -1,0 +1,49 @@
+@using Esfa.Recruit.QA.Web.ViewModels.ManageProvider
+@model BlockedOrganisationsViewModel
+<div asp-hide="Model.HasBlockedOrganisations" class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <p class="govuk-body"><a asp-route="@RouteNames.Dashboard_Index_Get" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Return to dashboard</a></p>
+        <h1 class="govuk-heading-xl">Remove a training provider from the recruitment service</h1>
+        <p class="govuk-body">You can remove a training provider and prevent them using the recruitment service. They will no longer be able to recruit on behalf of employers.</p>
+        <a asp-route="@RouteNames.BlockProvider_Find_Get" class="govuk-button">Find training provider</a>
+    </div>
+</div>
+
+<div asp-show="Model.HasBlockedOrganisations">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <p class="govuk-body"><a asp-route="@RouteNames.Dashboard_Index_Get" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Return to dashboard</a></p>
+            <h1 class="govuk-heading-xl">Removed training providers</h1>
+            <p class="govuk-body">
+                <a asp-route="@RouteNames.BlockProvider_Find_Get" class="govuk-button">Find a provider</a>
+            </p>
+        </div>
+    </div>
+    
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <h2 class="govuk-heading-m govuk-!-margin-bottom-0"> training providers removed from the recruitment service</h2>
+            <table class="govuk-table">
+                <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th class="govuk-table__header">Provider</th>
+                        <th class="govuk-table__header">Postcode</th>
+                        <th class="govuk-table__header">Removed on</th>
+                        <th class="govuk-table__header">Removed by</th>
+                    </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+                @foreach (var organisation in Model.BlockedOrganisations)
+                {
+                    <tr class="govuk-table__row">
+                        <td class="govuk-table__cell">@organisation.OrganisationName</td>
+                        <td class="govuk-table__cell">@organisation.Postcode</td>
+                        <td class="govuk-table__cell">@organisation.BlockedOn</td>
+                        <td class="govuk-table__cell">@organisation.BlockedBy</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

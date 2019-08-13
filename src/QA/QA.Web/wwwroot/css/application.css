@@ -69,6 +69,40 @@
   margin-bottom: 15px
 }
 
+
+.button-secondary {
+    background-color:#BFC1C3;
+    box-shadow:none;
+    color:#0B0C0C !important;
+    display:inline-block;
+    padding:7px 15px;
+    text-decoration:none;
+}
+
+.button-secondary:hover {
+    background-color:#BFC1C3;
+}
+
+.button-secondary:active {
+    top: 2px;
+    box-shadow: none;
+}
+
+.button-secondary:focus {
+    outline: 3px solid #ffbf47;
+    outline-offset: 0
+}
+
+.delete-button, .delete-button:visited, .delete-button:hover {
+    background-color: #b10e1e;
+    box-shadow: 0 2px 0 #000000;
+}
+
+/*** Validation Styles ***/
+.validation-summary-valid {
+    display: none;
+}
+
 /*** Info / Warning summary styles ***/
 
 .info-summary, .warning-summary{
@@ -290,6 +324,24 @@ mce-tinymce {
   white-space: nowrap;
 }
 
+.das-tag {
+    background-color: #808080;
+    border-radius: 4px;
+    color: white;
+    display: inline-block;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 0.3em 0.4em 0.2em;
+    text-align: center;
+}
+
+.das-tag--new {
+    background: transparent;
+    border: 3px solid #005ea5;
+    color: #000000;
+    font-weight: 400;
+}
+
 /*** Review header styles ***/
 
 .review-header-table {
@@ -352,3 +404,66 @@ mce-tinymce {
       #global-outage-message p {
         font-size: 16px;
         line-height: 1.25; } }
+
+/*** Verification summary ***/
+.verification-summary {
+  background-color: #f4f4f4;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  padding: 15px 10px
+}
+
+@media (min-width: 641px) {
+  .verification-summary {
+      background-color: #f4f4f4;
+      margin-top: 30px;
+      margin-bottom: 30px;
+      padding: 20px 15px 15px
+  }
+}
+
+.verification-summary .error-summary-heading {
+  margin-top: 0
+}
+
+.verification-summary p {
+  margin-bottom: 10px
+}
+
+.verification-summary .verification-summary-list {
+  padding-left: 0
+}
+
+@media (min-width: 641px) {
+  .verification-summary .verification-summary-list li {
+      margin-bottom: 5px
+  }
+}
+
+.verification-summary .verification-summary-list a {
+  color: #b10e1e;
+  font-weight: 700;
+  text-decoration: underline
+}
+
+.verification-summary .govuk-heading-s {
+  margin-top: 0px;
+  margin-bottom: 0px;
+  color: #6F777B;
+  font-weight: 400;
+}
+
+.govuk-button--warning {
+  background-color: #d4351c;
+  -webkit-box-shadow: 0 2px 0 #55150b;
+  box-shadow: 0 2px 0 #55150b
+}
+.govuk-button--warning:hover {
+  background-color: #aa2a16
+}
+.govuk-button--warning:hover[disabled] {
+  background-color: #d4351c
+}
+.govuk-button--warning,.govuk-button--warning:link,.govuk-button--warning:visited,.govuk-button--warning:active,.govuk-button--warning:hover {
+  color: #fff
+}

@@ -16,5 +16,9 @@ namespace Esfa.Recruit.Provider.Web.Views
         public const string VacancyApplicationsTable = "_VacancyApplicationsTablePartial";
         public const string NonEditableVacancyDisplay = "_NonEditableVacancyDisplayPartial";
         public const string VacancySummaryDisplay = "_VacancySummaryDisplayPartial";
+
+        public const string Alerts = "_Alerts";
+        public const string WithdrawnByQaVacanciesAlert = "_WithdrawnByQaVacanciesAlert";
+        public const string TransferredVacanciesAlert = "_TransferredVacanciesAlert";
     }
 }

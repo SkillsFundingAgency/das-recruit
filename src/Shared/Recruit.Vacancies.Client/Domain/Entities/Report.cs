@@ -5,7 +5,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
 {
     public class Report
     {
-        public Report(Guid id, ReportOwner owner, ReportStatus status, string reportName, 
+        public Report(Guid id, ReportOwner owner, ReportStatus status, string reportName,
             ReportType reportType, Dictionary<string, object> parameters, VacancyUser requestedBy,
             DateTime requestedOn)
         {
@@ -32,5 +32,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public DateTime? GeneratedOn { get; set; }
         public int DownloadCount { get; set; }
         public string Data { get; set; }
+        public IEnumerable<KeyValuePair<string, string>> Headers { get; set; }
     }
 }

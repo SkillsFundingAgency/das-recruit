@@ -25,6 +25,7 @@
         public const string Dashboard_YourCohorts = "Dashboard_YourCohorts";
         public const string Dashboard_AccountsAgreements = "Dashboard_AccountsAgreements";
         public const string Dashboard_Account_Home = "Dashboard_Account_Home";
+        public const string Dashboard_DismissAlert_Post = "Dashboard_DismissAlert_Post";
         public const string Dashboard_Help = "Dashboard_Help";
         public const string Dashboard_Feedback = "Dashboard_Feedback";
         public const string Dashboard_Privacy = "Dashboard_Privacy";
@@ -68,10 +69,15 @@
         public const string SubmitVacancyChanges_Post = "SubmitVacancyChanges_Post";
         public const string Title_Get = "Title_Get";
         public const string Title_Post = "Title_Post";
+        public const string Training_Confirm_Get = "Training_Confirm_Get";
+        public const string Training_Confirm_Post = "Training_Confirm_Post";
         public const string NumberOfPositions_Get = "NumberOfPositions_Get";
         public const string NumberOfPositions_Post = "NumberOfPositions_Post";
+        public const string ProviderAgreement_HardStop_Get = "ProviderAgreement_HardStop_Get";
         public const string Training_Get = "Training_Get";
         public const string Training_Post = "Training_Post";
+        public const string Dates_Get = "Dates_Get";
+        public const string Dates_Post = "Dates_Post";
         public const string Vacancy_Preview_Get = "Vacancy_Preview_Get";
         public const string VacancyDescription_Index_Get = "VacancyDescription_Index_Get";
         public const string VacancyDescription_Index_Post = "VacancyDescription_Index_Post";

@@ -29,8 +29,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Reports
                 throw new ReportNotFoundException($"Cannot find report: {reportId}");
             }
 
-            if (report.Owner.OwnerType == ReportOwnerType.Provider &&
-                report.Owner.Ukprn == ukprn)
+            if (report.Owner.OwnerType == ReportOwnerType.Provider && report.Owner.Ukprn == ukprn)
             {
                 return report;
             }

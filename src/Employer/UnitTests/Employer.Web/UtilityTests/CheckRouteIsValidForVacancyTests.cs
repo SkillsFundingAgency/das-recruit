@@ -28,6 +28,36 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
         [Theory]
         [InlineData(RouteNames.Title_Get, false)]
         [InlineData(RouteNames.Title_Post, false)]
+        [InlineData(RouteNames.Training_Get, false)]
+        [InlineData(RouteNames.Training_Post, false)]
+        [InlineData(RouteNames.Training_Confirm_Get, false)]
+        [InlineData(RouteNames.Training_Confirm_Post, false)]
+        [InlineData(RouteNames.Training_First_Time_Get, false)]
+        [InlineData(RouteNames.Training_First_Time_Post, false)]
+        [InlineData(RouteNames.Training_Help_Get, false)]
+        [InlineData("any other route", true)]
+        public void ShouldRedirectToTraining(string route, bool shouldRedirect)
+        {
+            var vacancy = new Vacancy
+            {
+                EmployerAccountId = "EMPLOYER ACCOUNT ID",
+                Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
+                Title = "has a value"
+            };
+
+            CheckRouteIsValidForVacancyTest(vacancy, route, shouldRedirect, RouteNames.Training_Get);
+        }
+
+        [Theory]
+        [InlineData(RouteNames.Title_Get, false)]
+        [InlineData(RouteNames.Title_Post, false)]
+        [InlineData(RouteNames.Training_Get, false)]
+        [InlineData(RouteNames.Training_Post, false)]
+        [InlineData(RouteNames.Training_Confirm_Get, false)]
+        [InlineData(RouteNames.Training_Confirm_Post, false)]
+        [InlineData(RouteNames.Training_First_Time_Get, false)]
+        [InlineData(RouteNames.Training_First_Time_Post, false)]
+        [InlineData(RouteNames.Training_Help_Get, false)]
         [InlineData(RouteNames.TrainingProvider_Select_Get, false)]
         [InlineData(RouteNames.TrainingProvider_Select_Post, false)]
         [InlineData(RouteNames.TrainingProvider_Confirm_Get, false)]
@@ -42,6 +72,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
                 EmployerAccountId = "EMPLOYER ACCOUNT ID",
                 Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
                 Title = "has a value",
+                ProgrammeId = "has a value",
                 TrainingProvider = null,
                 NumberOfPositions = null
             };
@@ -52,6 +83,42 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
         [Theory]
         [InlineData(RouteNames.Title_Get, false)]
         [InlineData(RouteNames.Title_Post, false)]
+        [InlineData(RouteNames.Training_Get, false)]
+        [InlineData(RouteNames.Training_Post, false)]
+        [InlineData(RouteNames.Training_Confirm_Get, false)]
+        [InlineData(RouteNames.Training_Confirm_Post, false)]
+        [InlineData(RouteNames.Training_First_Time_Get, false)]
+        [InlineData(RouteNames.Training_First_Time_Post, false)]
+        [InlineData(RouteNames.Training_Help_Get, false)]
+        [InlineData(RouteNames.NumberOfPositions_Get, false)]
+        [InlineData(RouteNames.NumberOfPositions_Post, false)]
+        [InlineData(RouteNames.Employer_Get, false)]
+        [InlineData(RouteNames.Employer_Post, false)]
+        [InlineData("any other route", true)]
+        public void ShouldRedirectToEmployer(string route, bool shouldRedirect)
+        {
+            var vacancy = new Vacancy
+            {
+                EmployerAccountId = "EMPLOYER ACCOUNT ID",
+                Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
+                Title = "has a value",
+                ProgrammeId = "has a value",
+                NumberOfPositions = 3
+            };
+
+            CheckRouteIsValidForVacancyTest(vacancy, route, shouldRedirect, RouteNames.Employer_Get);
+        }
+
+        [Theory]
+        [InlineData(RouteNames.Title_Get, false)]
+        [InlineData(RouteNames.Title_Post, false)]
+        [InlineData(RouteNames.Training_Get, false)]
+        [InlineData(RouteNames.Training_Post, false)]
+        [InlineData(RouteNames.Training_Confirm_Get, false)]
+        [InlineData(RouteNames.Training_Confirm_Post, false)]
+        [InlineData(RouteNames.Training_First_Time_Get, false)]
+        [InlineData(RouteNames.Training_First_Time_Post, false)]
+        [InlineData(RouteNames.Training_Help_Get, false)]
         [InlineData(RouteNames.TrainingProvider_Select_Get, false)]
         [InlineData(RouteNames.TrainingProvider_Select_Post, false)]
         [InlineData(RouteNames.TrainingProvider_Confirm_Get, false)]
@@ -65,8 +132,9 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
                 EmployerAccountId = "EMPLOYER ACCOUNT ID",
                 Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
                 Title = "has a value",
+                ProgrammeId = "has a value",
                 TrainingProvider = new TrainingProvider(),
-                NumberOfPositions = null
+                NumberOfPositions = null,
             };
 
             CheckRouteIsValidForVacancyTest(vacancy, route, shouldRedirect, RouteNames.NumberOfPositions_Get);
@@ -75,27 +143,13 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
         [Theory]
         [InlineData(RouteNames.Title_Get, false)]
         [InlineData(RouteNames.Title_Post, false)]
-        [InlineData(RouteNames.NumberOfPositions_Get, false)]
-        [InlineData(RouteNames.NumberOfPositions_Post, false)]
-        [InlineData(RouteNames.Employer_Get, false)]
-        [InlineData(RouteNames.Employer_Post, false)]
-        [InlineData("any other route", true)]
-        public void ShouldRedirectToEmployer(string route, bool shouldRedirect)
-        {
-            var vacancy = new Vacancy
-            {
-                EmployerAccountId = "EMPLOYER ACCOUNT ID",
-                Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
-                Title = "has a value",
-                NumberOfPositions = 3
-            };
-
-            CheckRouteIsValidForVacancyTest(vacancy, route, shouldRedirect, RouteNames.Employer_Get);
-        }
-
-        [Theory]
-        [InlineData(RouteNames.Title_Get, false)]
-        [InlineData(RouteNames.Title_Post, false)]
+        [InlineData(RouteNames.Training_Get, false)]
+        [InlineData(RouteNames.Training_Post, false)]
+        [InlineData(RouteNames.Training_Confirm_Get, false)]
+        [InlineData(RouteNames.Training_Confirm_Post, false)]
+        [InlineData(RouteNames.Training_First_Time_Get, false)]
+        [InlineData(RouteNames.Training_First_Time_Post, false)]
+        [InlineData(RouteNames.Training_Help_Get, false)]
         [InlineData(RouteNames.NumberOfPositions_Get, false)]
         [InlineData(RouteNames.NumberOfPositions_Post, false)]
         [InlineData(RouteNames.Employer_Get, false)]
@@ -105,28 +159,34 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
         [InlineData(RouteNames.Location_Get, false)]
         [InlineData(RouteNames.Location_Post, false)]
         [InlineData(RouteNames.LegalEntityAgreement_SoftStop_Get, false)]
-        [InlineData(RouteNames.Training_Get, false)]
-        [InlineData(RouteNames.Training_Post, false)]
         [InlineData("any other route", true)]
-        public void ShouldRedirectToTraining(string route, bool shouldRedirect)
+        public void ShouldRedirectToDates(string route, bool shouldRedirect)
         {
             var vacancy = new Vacancy
             {
                 EmployerAccountId = "EMPLOYER ACCOUNT ID",
                 Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
                 Title = "has a value",
+                ProgrammeId = "has a value",
                 NumberOfPositions = 3,
-                LegalEntityName = "Legal name",
+                LegalEntityName = "legal name",
                 EmployerNameOption = EmployerNameOption.RegisteredName,
                 EmployerLocation = new Address { Postcode = "has a value" }
             };
 
-            CheckRouteIsValidForVacancyTest(vacancy, route, shouldRedirect, RouteNames.Training_Get);
+            CheckRouteIsValidForVacancyTest(vacancy, route, shouldRedirect, RouteNames.Dates_Get);
         }
 
         [Theory]
         [InlineData(RouteNames.Title_Get, false)]
         [InlineData(RouteNames.Title_Post, false)]
+        [InlineData(RouteNames.Training_Get, false)]
+        [InlineData(RouteNames.Training_Post, false)]
+        [InlineData(RouteNames.Training_Confirm_Get, false)]
+        [InlineData(RouteNames.Training_Confirm_Post, false)]
+        [InlineData(RouteNames.Training_First_Time_Get, false)]
+        [InlineData(RouteNames.Training_First_Time_Post, false)]
+        [InlineData(RouteNames.Training_Help_Get, false)]
         [InlineData(RouteNames.NumberOfPositions_Get, false)]
         [InlineData(RouteNames.NumberOfPositions_Post, false)]
         [InlineData(RouteNames.Employer_Get, false)]
@@ -136,8 +196,6 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
         [InlineData(RouteNames.Location_Get, false)]
         [InlineData(RouteNames.Location_Post, false)]
         [InlineData(RouteNames.LegalEntityAgreement_SoftStop_Get, false)]
-        [InlineData(RouteNames.Training_Get, false)]
-        [InlineData(RouteNames.Training_Post, false)]
         [InlineData(RouteNames.Wage_Get, false)]
         [InlineData(RouteNames.Wage_Post, false)]
         [InlineData("any other route", true)]
@@ -148,11 +206,12 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
                 EmployerAccountId = "EMPLOYER ACCOUNT ID",
                 Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
                 Title = "has a value",
+                ProgrammeId = "has a value",
                 NumberOfPositions = 3,
                 LegalEntityName = "legal name",
                 EmployerNameOption = EmployerNameOption.RegisteredName,
                 EmployerLocation = new Address { Postcode = "has a value" },
-                ProgrammeId = "has a value"
+                StartDate = DateTime.Now
             };
 
             CheckRouteIsValidForVacancyTest(vacancy, route, shouldRedirect, RouteNames.Wage_Get);
@@ -167,11 +226,12 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
                 EmployerAccountId = "EMPLOYER ACCOUNT ID",
                 Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
                 Title = "has a value",
+                ProgrammeId = "has a value",
                 NumberOfPositions = 3,
                 LegalEntityName = "legal name",
                 EmployerNameOption = EmployerNameOption.RegisteredName,
                 EmployerLocation = new Address { Postcode = "has a value" },
-                ProgrammeId = "has a value",
+                StartDate = DateTime.Now,
                 Wage = new Wage { WageType = WageType.FixedWage}
             };
 
@@ -186,10 +246,10 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
                 EmployerAccountId = "EMPLOYER ACCOUNT ID",
                 Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
                 Title = "has a value",
+                ProgrammeId = "has a value",
                 NumberOfPositions = 3,
                 EmployerNameOption = EmployerNameOption.RegisteredName,
                 EmployerLocation = new Address { Postcode = "has a value" },
-                ProgrammeId = "has a value",
                 Wage = new Wage { WageType = WageType.FixedWage}
             };
 
@@ -204,10 +264,10 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
                 EmployerAccountId = "EMPLOYER ACCOUNT ID",
                 Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
                 Title = "has a value",
+                ProgrammeId = "has a value",
                 NumberOfPositions = 3,
                 LegalEntityName = "legal name",
                 EmployerLocation = new Address { Postcode = "has a value" },
-                ProgrammeId = "has a value",
                 Wage = new Wage { WageType = WageType.FixedWage}
             };
 
@@ -222,10 +282,10 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
                 EmployerAccountId = "EMPLOYER ACCOUNT ID",
                 Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
                 Title = "has a value",
+                ProgrammeId = "has a value",
                 NumberOfPositions = 3,
                 LegalEntityName = "legal name",
                 EmployerNameOption = EmployerNameOption.RegisteredName,
-                ProgrammeId = "has a value",
                 Wage = new Wage { WageType = WageType.FixedWage}
             };
 

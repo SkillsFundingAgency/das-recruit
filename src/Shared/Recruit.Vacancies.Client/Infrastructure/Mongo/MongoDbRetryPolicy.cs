@@ -10,14 +10,25 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
     {
         public static RetryPolicy GetRetryPolicy(ILogger logger)
         {
-            return Policy
-                .Handle<MongoException>()
+            return AddWaitAndRetry(Policy.Handle<MongoException>(), logger);
+        }
+
+        public static RetryPolicy GetConnectionRetryPolicy(ILogger logger)
+        {
+            return AddWaitAndRetry(Policy.Handle<MongoConnectionClosedException>(), logger);
+
+        }
+
+        private static RetryPolicy AddWaitAndRetry(PolicyBuilder policyBuilder, ILogger logger)
+        {
+            return policyBuilder
                 .WaitAndRetryAsync(new[]
                 {
                     TimeSpan.FromSeconds(1),
                     TimeSpan.FromSeconds(2),
                     TimeSpan.FromSeconds(4)
-                }, (exception, timeSpan, retryCount, context) => {
+                }, (exception, timeSpan, retryCount, context) =>
+                {
                     logger.LogWarning($"Error executing Mongo Command for method {context.OperationKey} Reason: {exception.Message}. Retrying in {timeSpan.Seconds} secs...attempt: {retryCount}");
                 });
         }

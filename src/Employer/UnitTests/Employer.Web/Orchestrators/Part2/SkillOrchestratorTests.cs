@@ -200,7 +200,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
                     WageType = WageType.NationalMinimumWage
                 },
                 LegalEntityName = "legal name",
-                EmployerNameOption = EmployerNameOption.RegisteredName
+                EmployerNameOption = EmployerNameOption.RegisteredName,
+                StartDate = DateTime.Now
             };
         }
 

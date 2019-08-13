@@ -10,6 +10,8 @@ using Esfa.Recruit.Vacancies.Jobs.Configuration;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Application;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Candidate;
+using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Employer;
+using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.VacancyReview;
 using Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers;
@@ -56,7 +58,6 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddScoped<UpdateQaDashboardQueueTrigger>();
             services.AddScoped<GenerateBlockedEmployersQueueTrigger>();
             services.AddScoped<GenerateVacancyAnalyticsSummaryQueueTrigger>();
-            services.AddTransient<IFaaService, FaaService>();
 #if DEBUG
             services.AddScoped<SpikeQueueTrigger>();
 #endif
@@ -67,6 +68,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddScoped<IDomainEventHandler<IEvent>, DraftVacancyUpdatedHandler>();
             services.AddScoped<IDomainEventHandler<IEvent>, VacancyReferredDomainEventHandler>();
             services.AddScoped<IDomainEventHandler<IEvent>, VacancySubmittedHandler>();
+            services.AddScoped<IDomainEventHandler<IEvent>, ProviderBlockedOnVacancyDomainEventHandler>();
 
             // VacancyReview
             services.AddScoped<IDomainEventHandler<IEvent>, VacancyReviewApprovedHandler>();
@@ -78,10 +80,12 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddScoped<IDomainEventHandler<IEvent>, ApplicationWithdrawnHandler>();
 
             // Employer
-            services.AddScoped<IDomainEventHandler<IEvent>, DomainEvents.Handlers.Employer.SetupEmployerHandler>();
+            services.AddScoped<IDomainEventHandler<IEvent>, SetupEmployerHandler>();
 
             // Provider
-            services.AddScoped<IDomainEventHandler<IEvent>, DomainEvents.Handlers.Provider.SetupProviderHandler>();
+            services.AddScoped<IDomainEventHandler<IEvent>, SetupProviderHandler>();
+            services.AddScoped<IDomainEventHandler<IEvent>, ProviderBlockedDomainEventHandler>();
+            services.AddScoped<IDomainEventHandler<IEvent>, ProviderBlockedOnLegalEntityDomainEventHandler>();
 
             //Candidate
             services.AddScoped<IDomainEventHandler<IEvent>, DeleteCandidateHandler>();

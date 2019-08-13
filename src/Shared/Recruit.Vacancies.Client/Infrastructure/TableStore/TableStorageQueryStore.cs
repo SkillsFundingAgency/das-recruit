@@ -19,7 +19,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore
         private const int DeleteBatchSize = 100;
         private const string PartitionKeyFieldName = nameof(TableEntity.PartitionKey);
         private readonly JsonSerializerSettings _jsonWriter = new JsonSerializerSettings
-        {            
+        {
             NullValueHandling = NullValueHandling.Ignore,
             Converters = new JsonConverterCollection() { new Newtonsoft.Json.Converters.StringEnumConverter() }
         };
@@ -39,6 +39,21 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore
         public async Task<T> GetAsync<T>(string typeName, string key) where T : QueryProjectionBase
         {
             var retrieveOperation = TableOperation.Retrieve<QueryEntity>(typeName, key);
+            var result = await RetryPolicy.ExecuteAsync(context => CloudTable.ExecuteAsync(retrieveOperation), new Context(nameof(IQueryStore.GetAsync)));
+            var queryEntity = (QueryEntity)result.Result;
+
+            if (queryEntity != null)
+            {
+                var actualItem = JsonConvert.DeserializeObject<T>(queryEntity.JsonData);
+                return actualItem;
+            }
+
+            return null;
+        }
+
+        public async Task<T> GetAsync<T>(string key) where T : QueryProjectionBase
+        {
+            var retrieveOperation = TableOperation.Retrieve<QueryEntity>(key, key);
             var result = await RetryPolicy.ExecuteAsync(context => CloudTable.ExecuteAsync(retrieveOperation), new Context(nameof(IQueryStore.GetAsync)));
             var queryEntity = (QueryEntity)result.Result;
 
@@ -108,13 +123,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore
         private async Task<long> DeleteInBatchesAsync(TableQuery<QueryEntity> query)
         {
             long deletedCount = 0;
-            
+
             TableQuerySegment<QueryEntity> segment = null;
 
             while (segment == null || segment.ContinuationToken != null)
             {
                 segment = await RetryPolicy.ExecuteAsync(_ =>
-                    CloudTable.ExecuteQuerySegmentedAsync(query.Take(DeleteBatchSize), 
+                    CloudTable.ExecuteQuerySegmentedAsync(query.Take(DeleteBatchSize),
                     segment?.ContinuationToken),
                     new Context($"{nameof(DeleteInBatchesAsync)}-ExecuteQuerySegmentedAsync"));
 
@@ -127,8 +142,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore
 
                 if (batch.Count == 0)
                     continue;
-                
-                var result = await RetryPolicy.ExecuteAsync(_ => 
+
+                var result = await RetryPolicy.ExecuteAsync(_ =>
                         CloudTable.ExecuteBatchAsync(batch),
                     new Context($"{nameof(DeleteInBatchesAsync)}-ExecuteBatchAsync"));
 

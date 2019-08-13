@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Communication.Core;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Configuration;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore;

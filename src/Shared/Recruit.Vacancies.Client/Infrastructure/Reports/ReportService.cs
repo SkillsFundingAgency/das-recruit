@@ -58,7 +58,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
                 _logger.LogInformation("Report: {reportId} in progress.", reportId);
 
                 var reportStrategy = _reportStrategyAccessor(report.ReportType);
-                var data = await reportStrategy.GetReportDataAsync(report.Parameters);
+                var reportStrategyResult = await reportStrategy.GetReportDataAsync(report.Parameters);
 
                 report = await _reportRepository.GetReportAsync(reportId);
                 if (report.Status == ReportStatus.Generated)
@@ -66,7 +66,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
                     _logger.LogInformation("Report: {reportId} already generated in the meantime. Ignoring.", reportId);
                     return;
                 }
-                report.Data = data;
+                report.Headers = reportStrategyResult.Headers;
+                report.Data = reportStrategyResult.Data;
                 report.Status = ReportStatus.Generated;
                 report.GeneratedOn = _timeProvider.Now;
 
@@ -93,7 +94,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
 
             var results = JArray.Parse(report.Data);
 
-            _csvBuilder.WriteCsvToStream(stream, results, report.RequestedOn.ToUkTime(), reportStrategy.ResolveFormat);
+            _csvBuilder.WriteCsvToStream(stream, results, report.Headers, reportStrategy.ResolveFormat);
         }
     }
 }

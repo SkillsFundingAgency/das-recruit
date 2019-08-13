@@ -60,10 +60,11 @@ namespace Esfa.Recruit.Employer.Web.Configuration
         private static void RegisterServiceDeps(IServiceCollection services, IConfiguration configuration)
         {
             services.AddTransient<IGeocodeImageService>(_ => new GoogleMapsGeocodeImageService(configuration.GetValue<string>("GoogleMapsPrivateKey")));
-            services.AddTransient<IFaaService, FaaService>();
             services.AddTransient<IReviewSummaryService, ReviewSummaryService>();
             services.AddTransient<ILegalEntityAgreementService, LegalEntityAgreementService>();
             services.AddTransient<LevyDeclarationCookieWriter>();
+            services.AddTransient<EoiAgreementCookieWriter>();
+            services.AddTransient<AlertViewModelService>();
         }
 
         private static void RegisterFluentValidators(IServiceCollection services)
@@ -105,6 +106,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddTransient<EditVacancyDatesOrchestrator>();
             services.AddTransient<LevyDeclarationOrchestrator>();
             services.AddTransient<ManageNotificationsOrchestrator>();
+            services.AddTransient<DatesOrchestrator>();
         }
 
         private static void RegisterMapperDeps(IServiceCollection services)

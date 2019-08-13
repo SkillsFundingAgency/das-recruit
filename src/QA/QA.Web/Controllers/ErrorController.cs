@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.Linq;
 using System.Net;
 using Esfa.Recruit.Qa.Web.Configuration;
 using Esfa.Recruit.Qa.Web.Configuration.Routing;
@@ -29,6 +31,8 @@ namespace Esfa.Recruit.Qa.Web.Controllers
             {
                 case 403:
                     return AccessDenied();
+                case 404:
+                    return NotFound();
             }
 
             return View(new ErrorViewModel { StatusCode = id, RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
@@ -49,11 +53,15 @@ namespace Esfa.Recruit.Qa.Web.Controllers
                         _logger.LogError(exception, "Exception on path: {route}", exceptionFeature.Path);
                         Response.StatusCode = (int)HttpStatusCode.NotFound;
                         return View(ViewNames.ErrorView, GetViewModel(HttpStatusCode.NotFound));
+
+                    case ReportNotFoundException _:
                     case VacancyNotFoundException _:
                         return PageNotFound();
+
                     case UnassignedVacancyReviewException _:
                         TempData.Add(TempDataKeys.DashboardMessage, exception.Message);
                         return RedirectToRoute(RouteNames.Dashboard_Index_Get);
+
                     default:
                         break;
                 }

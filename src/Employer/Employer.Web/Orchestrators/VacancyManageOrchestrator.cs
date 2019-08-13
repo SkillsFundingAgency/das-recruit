@@ -59,8 +59,15 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             viewModel.PossibleStartDate = vacancy.StartDate?.AsGdsDate();
             viewModel.IsDisabilityConfident = vacancy.IsDisabilityConfident;
             viewModel.IsApplyThroughFaaVacancy = vacancy.ApplicationMethod == ApplicationMethod.ThroughFindAnApprenticeship;
+            viewModel.TransferredProviderName = vacancy.TransferInfo?.ProviderName;
+            viewModel.TransferredOnDate = vacancy.TransferInfo?.TransferredDate.AsGdsDate();
             viewModel.CanShowEditVacancyLink = vacancy.CanExtendStartAndClosingDates;
             viewModel.CanShowCloseVacancyLink = vacancy.CanClose;
+
+            if (vacancy.Status == VacancyStatus.Closed && vacancy.ClosureReason == ClosureReason.WithdrawnByQa)
+            {
+                viewModel.WithdrawnDate = vacancy.ClosedDate?.AsGdsDate();
+            }
 
             var applications = new List<VacancyApplication>();
 

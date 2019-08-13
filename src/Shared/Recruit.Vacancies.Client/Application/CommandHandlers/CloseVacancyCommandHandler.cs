@@ -17,7 +17,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
         public Task Handle(CloseVacancyCommand message, CancellationToken cancellationToken)
         {
-            return _vacancyService.CloseVacancyImmediately(message.VacancyId, message.User);
+            return _vacancyService.CloseVacancyImmediately(message.VacancyId, message.User, message.ClosureReason);
         }
     }
 }

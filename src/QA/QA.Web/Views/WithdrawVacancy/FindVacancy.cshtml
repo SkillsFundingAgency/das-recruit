@@ -1,0 +1,26 @@
+﻿@model Esfa.Recruit.Qa.Web.ViewModels.WithdrawVacancy.FindVacancyViewModel
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <a asp-route="@RouteNames.Dashboard_Index_Get" class="govuk-back-link govuk-!-margin-bottom-6">Return to dashboard</a>
+
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' asp-show="@ViewData.ModelState.IsValid == false" />
+
+        <h1 class="govuk-heading-xl">Find and close a live vacancy</h1>
+
+        <p class="govuk-body">Closed vacancies will no longer be found on the Find an apprentice service. An email will be sent to the person that created the vacancy to let them know.</p>
+        <form asp-route="@RouteNames.WithdrawVacancy_FindVacancy_Post">
+            <div class="form-group">
+                <label class="govuk-label" asp-for="VacancyReference">Enter vacancy reference number</label>
+                <span class="govuk-hint">For example: 'VAC1000180'</span>
+                <span esfa-validation-message-for="VacancyReference" class="govuk-error-message"></span>
+                <input asp-for="VacancyReference" class="govuk-input govuk-input--width-10" type="text" maxlength="15">
+            </div>
+            <div class="form-group govuk-!-margin-top-6">
+                <button type="submit" class="govuk-button">Find vacancy</button>
+            </div>
+        </form>
+
+    </div>
+</div>

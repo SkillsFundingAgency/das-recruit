@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
+using Esfa.Recruit.Employer.Web.ViewModels.Dashboard;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Mappers;
+using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -21,16 +22,26 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         private readonly ITimeProvider _timeProvider;
         private const int ClosingSoonDays = 5;
         private readonly IEmployerVacancyClient _vacancyClient;
+        private readonly IRecruitVacancyClient _client;
+        private readonly AlertViewModelService _alertViewModelService;
 
-        public DashboardOrchestrator(IEmployerVacancyClient vacancyClient, ITimeProvider timeProvider)
+        public DashboardOrchestrator(IEmployerVacancyClient vacancyClient, ITimeProvider timeProvider, IRecruitVacancyClient client, AlertViewModelService alertViewModelService)
         {
             _vacancyClient = vacancyClient;
             _timeProvider = timeProvider;
+            _client = client;
+            _alertViewModelService = alertViewModelService;
         }
 
-        public async Task<DashboardViewModel> GetDashboardViewModelAsync(string employerAccountId, string filter, int page)
+        public async Task<DashboardViewModel> GetDashboardViewModelAsync(string employerAccountId, string filter, int page, VacancyUser user)
         {
-            var vacancies = await GetVacanciesAsync(employerAccountId);
+            var vacanciesTask = GetVacanciesAsync(employerAccountId);
+            var userDetailsTask = _client.GetUsersDetailsAsync(user.UserId);
+
+            await Task.WhenAll(vacanciesTask, userDetailsTask);
+
+            var vacancies = vacanciesTask.Result;
+            var userDetails = userDetailsTask.Result;
 
             var filteringOption = SanitizeFilter(filter);
 
@@ -58,16 +69,22 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 {
                     {"filter", filteringOption.ToString()}
                 });
-
+            
             var vm = new DashboardViewModel {
                 Vacancies = vacanciesVm,
                 Pager = pager,
                 Filter = filteringOption,
                 ResultsHeading = GetFilterHeading(filteredVacanciesTotal, filteringOption),
-                HasVacancies = vacancies.Any()
+                HasVacancies = vacancies.Any(),
+                Alerts = GetAlerts(vacancies, userDetails)
             };
 
             return vm;
+        }
+
+        public Task DismissAlert(VacancyUser user, AlertType alertType)
+        {
+            return _client.UpdateUserAlertAsync(user.UserId, alertType, _timeProvider.Now);
         }
 
         private List<VacancySummary> GetFilteredVacancies(List<VacancySummary> vacancies, FilteringOptions filterStatus)
@@ -103,6 +120,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                         v.Status == VacancyStatus.Live &&
                         v.ApplicationMethod == ApplicationMethod.ThroughFindAnApprenticeship &&
                         v.NoOfApplications == 0);
+                    break;
+                case FilteringOptions.Transferred:
+                        filteredVacancies = vacancies.Where(v => v.TransferInfoTransferredDate.HasValue);
                     break;
             }
             return filteredVacancies.OrderByDescending(v => v.CreatedDate)
@@ -150,6 +170,17 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 default:
                     return $"{totalVacancies} {filterText} {"vacancy".ToQuantity(totalVacancies, ShowQuantityAs.None)}";
             }
+        }
+
+        private AlertsViewModel GetAlerts(IEnumerable<VacancySummary> vacancies, User userDetails)
+        {
+            return new AlertsViewModel
+            {
+                EmployerRevokedTransferredVacanciesAlert = _alertViewModelService.GetTransferredVacanciesAlert(vacancies, TransferReason.EmployerRevokedPermission, userDetails.TransferredVacanciesEmployerRevokedPermissionAlertDismissedOn),
+                BlockedProviderTransferredVacanciesAlert = _alertViewModelService.GetTransferredVacanciesAlert(vacancies, TransferReason.BlockedByQa, userDetails.TransferredVacanciesBlockedProviderAlertDismissedOn),
+                BlockedProviderAlert = _alertViewModelService.GetBlockedProviderVacanciesAlert(vacancies, userDetails.ClosedVacanciesBlockedProviderAlertDismissedOn),
+                WithdrawnByQaVacanciesAlert = _alertViewModelService.GetWithdrawnByQaVacanciesAlert(vacancies, userDetails.ClosedVacanciesWithdrawnByQaAlertDismissedOn)
+            };
         }
     }
 }
