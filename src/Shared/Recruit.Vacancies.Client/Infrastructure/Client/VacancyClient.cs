@@ -350,12 +350,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             await _messaging.SendCommandAsync(command);
         }
 
-        public async Task CloseVacancyAsync(Guid vacancyId, VacancyUser user)
+        public async Task CloseVacancyAsync(Guid vacancyId, VacancyUser user, ClosureReason reason)
         {
             var command = new CloseVacancyCommand
             {
                 VacancyId = vacancyId,
-                User = user
+                User = user,
+                ClosureReason = reason
             };
 
             await _messaging.SendCommandAsync(command);
