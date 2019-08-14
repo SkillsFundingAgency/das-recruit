@@ -23,7 +23,7 @@ namespace Esfa.Recruit.Qa.Web.Controllers
         {
             _logger = logger;
         }
-        
+
         [Route("error/{id?}")]
         public IActionResult Error(int id)
         {
@@ -32,7 +32,7 @@ namespace Esfa.Recruit.Qa.Web.Controllers
                 case 403:
                     return AccessDenied();
                 case 404:
-                    return NotFound();
+                    return PageNotFound();
             }
 
             return View(new ErrorViewModel { StatusCode = id, RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
