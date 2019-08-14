@@ -6,5 +6,6 @@
         public string Name { get; set; }
         public Address Address { get; set; }
         public bool HasLegalEntityAgreement { get; set; }
+        public string AccountLegalEntityPublicHashedId { get; set; }
     }
 }
