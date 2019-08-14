@@ -35,7 +35,7 @@ namespace Esfa.Recruit.Qa.Web.Controllers
         [HttpPost(Name = RouteNames.WithdrawVacancy_FindVacancy_Post)]
         public async Task<IActionResult> FindVacancy(FindVacancyEditModel m)
         {
-            string userInputVacancyReference = m?.VacancyReference;
+            string userInputVacancyReference = m.VacancyReference;
             TempData[TempDataKeys.WithdrawVacancyReference] = userInputVacancyReference;
 
             if (ModelState.IsValid)
@@ -54,7 +54,7 @@ namespace Esfa.Recruit.Qa.Web.Controllers
                         ModelState.AddModelError(nameof(FindVacancyViewModel.VacancyReference), $"There are no live vacancies with the reference '{m.VacancyReference}'");
                         break;
 
-                    case PostFindVacancyEditModelResultType.CannotClose:
+                    case PostFindVacancyEditModelResultType.NotLive:
                         ModelState.AddModelError(nameof(FindVacancyViewModel.VacancyReference), $"There are no live vacancies with the reference 'VAC{result.VacancyReference}'");
                         break;
 
