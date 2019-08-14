@@ -178,7 +178,8 @@
                 </h3>
                 <span esfa-validation-message-for="HasProgramme" class="govuk-error-message"></span>
                 <span esfa-validation-message-for="TrainingLevel" class="govuk-error-message"></span>
-                <p asp-show="@Model.HasTrainingLevel" class="govuk-body">@Model.TrainingLevel Level Apprenticeship</p>
+                <p asp-show="@Model.HasTrainingLevel" class="govuk-body">@Model.TrainingLevel <br/>
+                    @Model.Level.ToDescription()</p>
                 @EditLink(RouteNames.Training_Get, Model.TrainingLevelSectionState, "apprenticeship level", "link-apprenticeship-level", new { wizard = false })
             </li>
             <li asp-show="@Model.CanShowReference">
@@ -375,7 +376,9 @@
                 <img asp-show="@Model.TrainingRequiresEdit" src="/img/red-cross.png" />
                 Apprenticeship @Model.TrainingType
             </h3>
-            <p asp-show="@Model.HasTrainingTitle" class="govuk-body">@Model.TrainingTitle</p>
+            <p asp-show="@Model.HasTrainingTitle" class="govuk-body">
+                @Model.TrainingTitle <br /> @Model.Level.ToDescription()
+            </p>
             @EditLink(RouteNames.Training_Get, Model.TrainingSectionState, "apprenticeship training","link-standard", new { wizard = false })
         </div>
     </div>
