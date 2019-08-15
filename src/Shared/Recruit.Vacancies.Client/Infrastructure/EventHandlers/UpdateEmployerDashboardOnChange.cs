@@ -23,7 +23,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
                                             INotificationHandler<ApplicationReviewedEvent>,
                                             INotificationHandler<SetupEmployerEvent>,
                                             INotificationHandler<VacancyReferredEvent>,
-                                            INotificationHandler<VacancyTransferredEvent>
+                                            INotificationHandler<VacancyTransferredEvent>,
+                                            INotificationHandler<VacancyReviewWithdrawnEvent>
     {
         private readonly IEmployerDashboardProjectionService _dashboardService;
         private readonly IVacancyRepository _vacancyRepository;
@@ -105,6 +106,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
 
             _logger.LogInformation("Handling {eventType} for accountId: {employerAccountId} and vacancyReference: {vacancyReference}", notification.GetType().Name, vacancy.EmployerAccountId, notification.VacancyReference);
             await _dashboardService.ReBuildDashboardAsync(vacancy.EmployerAccountId);
+        }
+
+        public Task Handle(VacancyReviewWithdrawnEvent notification, CancellationToken cancellationToken)
+        {
+            return Handle(notification);
         }
 
         private Task Handle(IEmployerEvent notification)
