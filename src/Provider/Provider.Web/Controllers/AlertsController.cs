@@ -22,7 +22,7 @@ namespace Provider.Web.Controllers
         [HttpPost("dismiss-alert", Name = RouteNames.Alerts_Dismiss_Post)]
         public async Task<IActionResult> DismissAlert([FromRoute] string employerAccountId, AlertDismissalEditModel model)
         {
-            if (Enum.TryParse(typeof(AlertType), model.AlertType, out var alertTypeEnum))
+            if (Enum.TryParse<AlertType>(model.AlertType, out var alertTypeEnum))
             {
                 await _orchestrator.DismissAlert(User.ToVacancyUser(), (AlertType)alertTypeEnum);
             }
