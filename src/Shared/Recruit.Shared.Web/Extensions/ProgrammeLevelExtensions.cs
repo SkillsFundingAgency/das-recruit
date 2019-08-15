@@ -9,13 +9,13 @@ namespace Esfa.Recruit.Shared.Web.Extensions
             switch (level)
             {
                 case ProgrammeLevel.Intermediate:
-                    return "Level:2 (equivalent to GCSEs at grades A* to C)";
+                    return "Level 2 (equivalent to GCSEs at grades A* to C)";
                 case ProgrammeLevel.Advanced:
-                    return "Level:3 (equivalent to A levels at grades A to E)";
+                    return "Level 3 (equivalent to A levels at grades A to E)";
                 case ProgrammeLevel.Higher:
-                    return "Level:4 (equivalent to certificate of higher education)";
+                    return "Level 4 (equivalent to certificate of higher education)";
                 case ProgrammeLevel.Degree:
-                    return "Level:6 (equivalent to bachelor’s degree)";
+                    return "Level 6 (equivalent to bachelor’s degree)";
                 default:
                     return "";
             }
