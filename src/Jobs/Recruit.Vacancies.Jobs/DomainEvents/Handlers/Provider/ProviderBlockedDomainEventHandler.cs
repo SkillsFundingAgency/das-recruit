@@ -55,8 +55,6 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider
 
             // tasks.AddRange(RequestEmployerCommunications(vacancies));
 
-            //TODO update employer and provider dashboard
-
             await Task.WhenAll(tasks);
 
             _logger.LogInformation($"Finished queuing required updates after provider {eventData.Ukprn} was blocked");
