@@ -9,7 +9,8 @@ using Microsoft.Extensions.Logging;
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
 {
     public class UpdateQaDashboardOnReview : INotificationHandler<VacancyReviewApprovedEvent>,
-                                             INotificationHandler<VacancyReviewReferredEvent>
+                                             INotificationHandler<VacancyReviewReferredEvent>,
+                                             INotificationHandler<VacancyReviewWithdrawnEvent>
     {
         private readonly ILogger<UpdateQaDashboardOnReview> _logger;
         private readonly IQaDashboardProjectionService _qaDashboardService;
@@ -31,6 +32,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
         }
 
         public Task Handle(VacancyReviewReferredEvent notification, CancellationToken cancellationToken)
+        {
+            return Handle(notification);
+        }
+
+        public Task Handle(VacancyReviewWithdrawnEvent notification, CancellationToken cancellationToken)
         {
             return Handle(notification);
         }

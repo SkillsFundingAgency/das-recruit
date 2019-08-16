@@ -26,22 +26,19 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
         {
             var review = await _vacancyReviewQuery.GetLatestReviewByReferenceAsync(vacancyReference);
 
-            if (review.Status != ReviewStatus.Closed)
+            if (review.IsPending)
             {
-                if (review.Status == ReviewStatus.New || review.Status == ReviewStatus.PendingReview)
-                {
-                    review.ManualOutcome = review.VacancySnapshot.OwnerType == OwnerType.Provider && transferReason == TransferReason.BlockedByQa
-                                            ? ManualQaOutcome.Withdrawn
-                                            : ManualQaOutcome.Transferred;
-                    review.Status = ReviewStatus.Closed;
-                    review.ClosedDate = _timeProvider.Now;
+                review.ManualOutcome = review.VacancySnapshot.OwnerType == OwnerType.Provider && transferReason == TransferReason.BlockedByQa
+                                        ? ManualQaOutcome.Withdrawn
+                                        : ManualQaOutcome.Transferred;
+                review.Status = ReviewStatus.Closed;
+                review.ClosedDate = _timeProvider.Now;
 
-                    await _vacancyReviewRepository.UpdateAsync(review);
-                }
-                else if (review.Status == ReviewStatus.UnderReview)
-                {
-                    _logger.LogWarning($"Latest review for vacancy {review.VacancyReference} that has been transferred is currently being reviewed.");
-                }
+                await _vacancyReviewRepository.UpdateAsync(review);
+            }
+            else if (review.Status == ReviewStatus.UnderReview)
+            {
+                _logger.LogWarning($"Latest review for vacancy {review.VacancyReference} that has been transferred is currently being reviewed.");
             }
         }
     }

@@ -32,12 +32,5 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider
 
             _logger.LogInformation($"Successfully revoked provider {eventData.Ukprn} permission on account {eventData.EmployerAccountId} for legal entity {eventData.LegalEntityId}.");
         }
-
-        private async Task<string> GetAccountLegalEntityPublicHashId(ProviderBlockedOnLegalEntityEvent eventData)
-        {
-            var legalEntities = await _employerAccountProvider.GetLegalEntitiesConnectedToAccountAsync(eventData.EmployerAccountId);
-
-            return legalEntities.FirstOrDefault(l => l.LegalEntityId == eventData.LegalEntityId).AccountLegalEntityPublicHashedId;
-        }
     }
 }
