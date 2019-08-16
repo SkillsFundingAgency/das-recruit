@@ -447,13 +447,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.OutcomeDescription)
                 .NotEmpty()
-                    .WithMessage("You must provide information on what to expect at the end of your apprenticeship")
+                    .WithMessage("You must provide information on what is the expected career progression after this apprenticeship?")
                     .WithErrorCode("55")
                 .MaximumLength(1000)
-                    .WithMessage("What to expect at the end of your apprenticeship description must not exceed {MaxLength} characters")
+                    .WithMessage("What is the expected career progression after this apprenticeship description must not exceed {MaxLength} characters")
                     .WithErrorCode("7")
                 .ValidHtmlCharacters(_htmlSanitizerService)
-                    .WithMessage("What to expect at the end of your apprenticeship description contains some invalid characters")
+                    .WithMessage("What is the expected career progression after this apprenticeship description contains some invalid characters")
                     .WithErrorCode("6")
                 .RunCondition(VacancyRuleSet.OutcomeDescription)
                 .WithRuleId(VacancyRuleSet.OutcomeDescription);
