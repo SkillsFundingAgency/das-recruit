@@ -2,6 +2,7 @@
 {
     public static class RouteNames
     {
+        public const string Alerts_Dismiss_Post = "Alerts_Dismiss_Post";
         public const string AboutEmployer_Get = "AboutEmployer_Get";
         public const string AboutEmployer_Post = "AboutEmployer_Post";
         public const string ApplicationProcess_Get = "ApplicationProcess_Get";
@@ -25,7 +26,6 @@
         public const string Dashboard_ManageFunding = "Dashboard_ManageFunding";
         public const string Dashboard_AccountsAgreements = "Dashboard_AccountsAgreements";
         public const string Dashboard_Account_Home = "Dashboard_Account_Home";
-        public const string Dashboard_DismissAlert_Post = "Dashboard_DismissAlert_Post";
         public const string Dashboard_Help = "Dashboard_Help";
         public const string Dashboard_Feedback = "Dashboard_Feedback";
         public const string Dashboard_Privacy = "Dashboard_Privacy";

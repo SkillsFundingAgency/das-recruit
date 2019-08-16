@@ -3,5 +3,6 @@
     public class AlertDismissalEditModel
     {
         public string AlertType { get; set; }
+        public string ReturnUrl { get; set; }
     }
 }

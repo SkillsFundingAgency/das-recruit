@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Esfa.Recruit.Provider.Web.Services;
 using Esfa.Recruit.Provider.Web.ViewModels;
-using Esfa.Recruit.Provider.Web.ViewModels.Dashboard;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -19,18 +19,25 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         private readonly ITimeProvider _timeProvider;
         private readonly IRecruitVacancyClient _client;
         private readonly AlertViewModelService _alertViewModelService;
+        private readonly IProviderAlertsViewModelFactory _providerAlertsViewModelFactory;
 
-        public DashboardOrchestrator(IProviderVacancyClient vacancyClient, ITimeProvider timeProvider, IRecruitVacancyClient client, AlertViewModelService alertViewModelService)
+        public DashboardOrchestrator(
+            IProviderVacancyClient vacancyClient,
+            ITimeProvider timeProvider,
+            IRecruitVacancyClient client,
+            AlertViewModelService alertViewModelService,
+            IProviderAlertsViewModelFactory providerAlertsViewModelFactory)
         {
             _vacancyClient = vacancyClient;
             _timeProvider = timeProvider;
             _client = client;
             _alertViewModelService = alertViewModelService;
+            _providerAlertsViewModelFactory = providerAlertsViewModelFactory;
         }
 
         public async Task<DashboardViewModel> GetDashboardViewModelAsync(VacancyUser user)
         {
-            var dashboardTask = GetDashboardAsync(user.Ukprn.Value);
+            var dashboardTask = _vacancyClient.GetDashboardAsync(user.Ukprn.Value, createIfNonExistent: true);
             var userDetailsTask = _client.GetUsersDetailsAsync(user.UserId);
 
             await Task.WhenAll(dashboardTask, userDetailsTask);
@@ -53,36 +60,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 NoOfVacanciesClosingSoon = vacancies.Count(v =>
                     v.ClosingDate <= _timeProvider.Today.AddDays(ClosingSoonDays) &&
                     v.Status == VacancyStatus.Live),
-                Alerts = GetAlerts(vacancies, transferredVacancies, userDetails)
+                Alerts = _providerAlertsViewModelFactory.Create(dashboard, userDetails)
             };
             return vm;
-        }
-
-        public Task DismissAlert(VacancyUser user, AlertType alertType)
-        {
-            return _client.UpdateUserAlertAsync(user.UserId, alertType, _timeProvider.Now);
-        }
-
-        private async Task<ProviderDashboard> GetDashboardAsync(long ukprn)
-        {
-            var dashboard = await _vacancyClient.GetDashboardAsync(ukprn);
-
-            if (dashboard == null)
-            {
-                await _vacancyClient.GenerateDashboard(ukprn);
-                dashboard = await _vacancyClient.GetDashboardAsync(ukprn);
-            }
-
-            return dashboard;
-        }
-
-        private AlertsViewModel GetAlerts(IList<VacancySummary> vacancies, IList<ProviderDashboardTransferredVacancy> transferredVacancies, User userDetails)
-        {
-            return new AlertsViewModel
-            {
-                TransferredVacanciesAlert = _alertViewModelService.GetProviderTransferredVacanciesAlert(transferredVacancies, userDetails.TransferredVacanciesEmployerRevokedPermissionAlertDismissedOn),
-                WithdrawnByQaVacanciesAlert = _alertViewModelService.GetWithdrawnByQaVacanciesAlert(vacancies, userDetails.ClosedVacanciesWithdrawnByQaAlertDismissedOn)
-            };
         }
     }
 }

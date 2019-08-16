@@ -31,9 +31,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return vacancyId;
         }
 
-        public Task<ProviderDashboard> GetDashboardAsync(long ukprn)
+        public async Task<ProviderDashboard> GetDashboardAsync(long ukprn, bool createIfNonExistent = false)
         {
-            return _reader.GetProviderDashboardAsync(ukprn);
+            ProviderDashboard result = await _reader.GetProviderDashboardAsync(ukprn);
+            if (result == null && createIfNonExistent)
+            {
+                await GenerateDashboard(ukprn);
+                result = await _reader.GetProviderDashboardAsync(ukprn);
+            }
+            return result;
         }
 
         public Task GenerateDashboard(long ukprn)
