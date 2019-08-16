@@ -30,7 +30,7 @@
     <PackageReference Include="SFA.DAS.NLog.Targets.Redis" Version="1.1.5" />
     <PackageReference Include="SFA.DAS.Notifications.Api.Client" Version="2.2.1" />
     <PackageReference Include="SFA.DAS.Notifications.Api.Types" Version="2.2.1" />
-    <PackageReference Include="SFA.DAS.ProviderRelationships.Messages" Version="3.1.22" />
+    <PackageReference Include="SFA.DAS.ProviderRelationships.Messages" Version="3.2.1" />
     <PackageReference Include="System.Data.SqlClient" Version="4.6.0" />
     <PackageReference Include="SFA.DAS.NServiceBus" Version="10.0.1" />
     <PackageReference Include="SFA.DAS.EmployerAccounts.Messages" Version="1.6.1021" />
