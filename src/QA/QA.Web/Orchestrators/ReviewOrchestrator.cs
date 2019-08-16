@@ -47,7 +47,6 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
         public async Task<ReviewViewModel> GetReviewViewModelAsync(Guid reviewId, VacancyUser user)
         {
             var review = await _vacancyClient.GetVacancyReviewAsync(reviewId);
-
             if (review == null)
                 throw new NotFoundException($"Unable to find review with id: {reviewId}");
 

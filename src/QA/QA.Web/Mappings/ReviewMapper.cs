@@ -196,6 +196,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 vm.TrainingTitle = programme.Title;
                 vm.TrainingType = programme.ApprenticeshipType.GetDisplayName();
                 vm.TrainingLevel = programme.Level.GetDisplayName();
+                vm.Level = programme.Level;
                 vm.ExpectedDuration = (vacancy.Wage.DurationUnit.HasValue && vacancy.Wage.Duration.HasValue)
                     ? vacancy.Wage.DurationUnit.Value.GetDisplayName().ToQuantity(vacancy.Wage.Duration.Value)
                     : null;

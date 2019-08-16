@@ -47,19 +47,24 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
         public async Task<VacancyPreviewViewModel> GetVacancyPreviewViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Vacancy_Preview_Get);
-            
-            var vm = new VacancyPreviewViewModel();
-            await _vacancyDisplayMapper.MapFromVacancyAsync(vm, vacancy);
-            
-            vm.HasProgramme = vacancy.ProgrammeId != null;
-            vm.HasWage = vacancy.Wage != null;
-            vm.CanShowReference = vacancy.Status != VacancyStatus.Draft;
-            vm.CanShowDraftHeader = vacancy.Status == VacancyStatus.Draft;
+            //var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Vacancy_Preview_Get);
+            var vacancyTask = Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Vacancy_Preview_Get);
+            var programmesTask = _vacancyClient.GetActiveApprenticeshipProgrammesAsync();
 
-            if (vacancy.Status == VacancyStatus.Referred)
+            await Task.WhenAll(vacancyTask, programmesTask);
+
+            var programme = programmesTask.Result.SingleOrDefault(p => p.Id == vacancyTask.Result.ProgrammeId);
+            var vm = new VacancyPreviewViewModel();
+            await _vacancyDisplayMapper.MapFromVacancyAsync(vm, vacancyTask.Result);
+            
+            vm.HasProgramme = vacancyTask.Result.ProgrammeId != null;
+            vm.HasWage = vacancyTask.Result.Wage != null;
+            vm.CanShowReference = vacancyTask.Result.Status != VacancyStatus.Draft;
+            vm.CanShowDraftHeader = vacancyTask.Result.Status == VacancyStatus.Draft;
+            if (programme != null) vm.Level = programme.Level;
+            if (vacancyTask.Result.Status == VacancyStatus.Referred)
             {
-                vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value, 
+                vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancyTask.Result.VacancyReference.Value, 
                     ReviewFieldMappingLookups.GetPreviewReviewFieldIndicators());
             }
             

@@ -152,7 +152,8 @@
                     <li>
                         <div class="@Model.TrainingLevelClass" id="@FieldIdentifiers.TrainingLevel">
                             <h3 class="govuk-heading-s">Apprenticeship level</h3>
-                            <p class="govuk-body">@Model.TrainingLevel Level Apprenticeship</p>
+                            <p class="govuk-body">@Model.TrainingLevel <br/>
+                                @Model.Level.ToDescription()</p>
                             <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
                                                   asp-value="@FieldIdentifiers.TrainingLevel"
                                                   asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
@@ -354,7 +355,9 @@
                 </div>
                 <div class="@Model.TrainingClass" id="@FieldIdentifiers.Training">
                     <h3 class="govuk-heading-s">Apprenticeship @Model.TrainingType</h3>
-                    <p class="govuk-body">@Model.TrainingTitle</p>
+                    <p class="govuk-body">
+                        @Model.TrainingTitle <br /> @Model.Level.ToDescription()
+                    </p>
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
                                           asp-value="@FieldIdentifiers.Training"
                                           asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
