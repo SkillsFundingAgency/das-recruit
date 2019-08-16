@@ -7,28 +7,28 @@
 
         <h1 class="govuk-heading-xl">
             <span class="govuk-caption-l">@Model.Title</span>
-            Full description of the vacancy
+            Description of the apprenticeship
         </h1>
 
         <form asp-route="@RouteNames.VacancyDescription_Index_Post">
             <div esfa-validation-marker-for="VacancyDescription" class="govuk-form-group">
-                <label asp-for="VacancyDescription" class="govuk-label govuk-!-font-weight-bold">Describe a typical working day and duties</label>
-                <span class="govuk-hint">What does the apprenticeship involve?</span>
+                <label asp-for="VacancyDescription" class="govuk-label govuk-!-font-weight-bold">What will the apprentice be doing?</label>
+                <span class="govuk-hint">Describe what an average day or week will be like and what tasks they could be doing.</span>
                 <span esfa-validation-message-for="VacancyDescription" class="govuk-error-message"></span>
                 <textarea asp-for="VacancyDescription" class="govuk-textarea html-editor" rows="5" data-val-length-max="500"></textarea>
                 <span class="govuk-body maxchar-count">500</span>
                 <span class="govuk-body maxchar-text"> characters remaining</span>
             </div>
             <div esfa-validation-marker-for="TrainingDescription" class="govuk-form-group">
-                <label asp-for="TrainingDescription" class="govuk-label govuk-!-font-weight-bold">What training will your apprentice get?</label>
-                <span class="govuk-hint">This should include training at work and off the job</span>
+                <label asp-for="TrainingDescription" class="govuk-label govuk-!-font-weight-bold">What training will the apprentice take and what qualification will the apprentice get at the end?</label>
+                <span class="govuk-hint">You may want to have a look at the <a class="govuk-link" target="_blank" href="https://www.gov.uk/what-different-qualification-levels-mean/list-of-qualification-levels">types of qualifications available (opens in new tab).</a></span>
                 <span esfa-validation-message-for="TrainingDescription" class="govuk-error-message"></span>
                 <textarea asp-for="TrainingDescription" class="govuk-textarea html-editor" rows="5" data-val-length-max="500"></textarea>
                 <span class="govuk-body maxchar-count">500</span>
                 <span class="govuk-body maxchar-text"> characters remaining</span>
             </div>
             <div esfa-validation-marker-for="OutcomeDescription" class="govuk-form-group">
-                <label asp-for="OutcomeDescription" class="govuk-label govuk-!-font-weight-bold">What can the apprentice expect at the end of the apprenticeship?</label>
+                <label asp-for="OutcomeDescription" class="govuk-label govuk-!-font-weight-bold">What is the expected career progression after this apprenticeship?</label>
                 <span class="govuk-hint">You may want to mention specific routes they could take once qualified</span>
                 <span esfa-validation-message-for="OutcomeDescription" class="govuk-error-message"></span>
                 <textarea asp-for="OutcomeDescription" class="govuk-textarea html-editor" rows="5" data-val-length-max="500"></textarea>
