@@ -11,6 +11,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVa
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
 using Esfa.Recruit.Vacancies.Jobs.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using NServiceBus;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderRelationships.Messages.Events;
@@ -27,24 +28,37 @@ namespace Esfa.Recruit.Vacancies.Jobs.ExternalSystemEventHandlers
         private readonly RecruitWebJobsSystemConfiguration _jobsConfig;
         private readonly IVacancyQuery _vacancyQuery;
         private readonly IMessaging _messaging;
+        private readonly EncodingConfig _encodingConfig;
         private string ExternalSystemEventHandlerName => GetType().Name;
 
         public UpdatedPermissionsExternalSystemEventsHandler(ILogger<UpdatedPermissionsExternalSystemEventsHandler> logger, RecruitWebJobsSystemConfiguration jobsConfig,
                                                 IRecruitQueueService recruitQueueService,
                                                 IEmployerAccountProvider employerAccountProvider, IEncodingService encoder, IVacancyQuery vacancyQuery,
-                                                IMessaging messaging)
+                                                IMessaging messaging, EncodingConfig encodingConfig)
         {
             _logger = logger;
             _jobsConfig = jobsConfig;
             _recruitQueueService = recruitQueueService;
             _employerAccountProvider = employerAccountProvider;
-            _encoder = encoder;
+            //_encoder = encoder;
+            _encoder = new EncodingService(encodingConfig);
             _vacancyQuery = vacancyQuery;
             _messaging = messaging;
+            _encodingConfig = encodingConfig;
+        }
+
+        private void LogEncodingConfiguration()
+        {
+            foreach (var encoding in _encodingConfig.Encodings)
+            {
+                _logger.LogInformation($"Found Encoding Config: {encoding.EncodingType.ToString()}, with salt length {encoding.Salt.Length}, alphabet length {encoding.Alphabet.Length} and minHashLength {encoding.MinHashLength}");
+            }
         }
 
         public async Task Handle(UpdatedPermissionsEvent message, IMessageHandlerContext context)
         {
+            LogEncodingConfiguration();
+
             if (_jobsConfig.DisabledJobs.Contains(ExternalSystemEventHandlerName))
             {
                 _logger.LogDebug($"{ExternalSystemEventHandlerName} is disabled, skipping ...");

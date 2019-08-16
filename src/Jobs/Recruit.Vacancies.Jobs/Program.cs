@@ -95,7 +95,8 @@ namespace Esfa.Recruit.Vacancies.Jobs
                             options.MaxPollingInterval = TimeSpan.FromSeconds(10);
                         });
 
-                        services.ConfigureJobServices(context.Configuration);
+                        var logger = NLog.LogManager.GetCurrentClassLogger();
+                        services.ConfigureJobServices(context.Configuration, logger);
 
                         services.AddDasNServiceBus(context.Configuration);
                     })
