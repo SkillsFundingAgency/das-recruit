@@ -14,9 +14,6 @@
     <Folder Include="Sequence\" />
   </ItemGroup>
   <ItemGroup>
-    <None Update="Data\BlockedEmployers.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="Data\CandidateSkills.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

@@ -14,11 +14,11 @@ namespace Esfa.Recruit.Employer.Web.Controllers
     public class LevyDeclarationController : Controller
     {
         private readonly LevyDeclarationOrchestrator _orchestrator;
-        private readonly LevyDeclarationCookieWriter _levyCookieWriter;
+        private readonly ILevyDeclarationCookieWriter _levyCookieWriter;
 
         public LevyDeclarationController(
             LevyDeclarationOrchestrator orchestrator,
-            LevyDeclarationCookieWriter levyCookieWriter)
+            ILevyDeclarationCookieWriter levyCookieWriter)
         {
             _orchestrator = orchestrator;
             _levyCookieWriter = levyCookieWriter;
@@ -52,7 +52,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
         private void SetLevyDeclarationCookie(ClaimsPrincipal user, string employerAccountId)
         {
-            _levyCookieWriter.WriteCookie(Response, user.GetUserId(), employerAccountId);
+            _levyCookieWriter.WriteCookie(Response, user.GetUserId(), employerAccountId, hasLevyDeclaration: true);
         }
     }
 }

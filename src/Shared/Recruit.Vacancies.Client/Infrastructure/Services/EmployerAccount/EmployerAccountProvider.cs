@@ -86,22 +86,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
             }
         }
 
-        public async Task<bool> GetEmployerHasSignedEoiAgreements(string accountId)
+        public async Task<AccountDetailViewModel> GetEmployerAccountDetailsAsync(string employerAccountId)
         {
             try
             {
-                var account = await _accountApiClient.GetAccount(accountId);
-                foreach (var entity in account.LegalEntities)
-                {
-                    var legalEntity = await _accountApiClient.GetLegalEntity(account.HashedAccountId, long.Parse(entity.Id));
-                    return legalEntity.Agreements.All(ag =>
-                        ag.AgreementType == SFA.DAS.Common.Domain.Types.AgreementType.NonLevyExpressionOfInterest);
-                }
-                return false;
+                var account = await _accountApiClient.GetAccount(employerAccountId);
+                return account;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Failed to retrieve account information for account Id: {accountId}");
+                _logger.LogError(ex, $"Failed to retrieve account information for account Id: {employerAccountId}");
                 throw;
             }
         }

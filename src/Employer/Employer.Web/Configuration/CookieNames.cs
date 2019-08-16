@@ -13,5 +13,6 @@ namespace Esfa.Recruit.Employer.Web.Configuration
         public const string EmployerEoi = "recruit-eoi";
         public const string VacancyEmployerInfo = "vacancy-employer-info";
         public const string DashboardFilter = "dashboard-filter";
+        public const string EmployerAccountType = "employer-account-type";
     }
 }

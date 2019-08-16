@@ -20,6 +20,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using FluentValidation;
 using FluentValidation.Results;
+using SFA.DAS.EAS.Account.Api.Types;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
@@ -244,9 +245,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _employerAccountProvider.GetEmployerIdentifiersAsync(userId);
         }
 
-        public Task<bool> GetEmployerEOIAsync(string employeraccountId)
+        public Task<AccountDetailViewModel> GetEmployerAccountDetailsAsync(string employeraccountId)
         {
-            return _employerAccountProvider.GetEmployerHasSignedEoiAgreements(employeraccountId);
+            return _employerAccountProvider.GetEmployerAccountDetailsAsync(employeraccountId);
         }
 
         public Task<List<string>> GetCandidateSkillsAsync()
