@@ -19,7 +19,7 @@ namespace UnitTests.Qa.Web.Orchestrators.WithdrawVacancyOrchestrator
         [InlineData(VacancyStatus.Submitted)]
         [InlineData(VacancyStatus.Referred)]
         [InlineData(VacancyStatus.Approved)]
-        public async Task ShouldReturnNotFoundIfVacancyIsInWrongState(VacancyStatus status)
+        public async Task ShouldReturnNotLiveIfVacancyExistsAndIsNotLive(VacancyStatus status)
         {
             var mockClient = new Mock<IQaVacancyClient>();
 
@@ -35,7 +35,7 @@ namespace UnitTests.Qa.Web.Orchestrators.WithdrawVacancyOrchestrator
 
             var result = await orch.PostFindVacancyEditModelAsync(m);
 
-            result.ResultType.Should().Be(PostFindVacancyEditModelResultType.NotFound);
+            result.ResultType.Should().Be(PostFindVacancyEditModelResultType.NotLive);
         }
 
         [Fact]

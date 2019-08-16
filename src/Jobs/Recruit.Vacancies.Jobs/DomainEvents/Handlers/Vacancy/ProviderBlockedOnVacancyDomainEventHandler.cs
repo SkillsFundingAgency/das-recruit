@@ -66,8 +66,6 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy
                     await ClosePendingReview(review);
                     isVacancyUpdated = true;
                     vacancy.Status = Entities.VacancyStatus.Draft;
-                    vacancy.LastUpdatedByUser = eventData.QaVacancyUser;
-                    vacancy.LastUpdatedDate = eventData.BlockedDate;
                 }
                 else
                 {

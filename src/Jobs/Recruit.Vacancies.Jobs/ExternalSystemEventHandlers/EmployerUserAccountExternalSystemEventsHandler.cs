@@ -6,18 +6,18 @@ using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using NServiceBus;
 using SFA.DAS.EmployerAccounts.Messages.Events;
 
-namespace Esfa.Recruit.Vacancies.Jobs.NServiceBus.EventHandlers
+namespace Esfa.Recruit.Vacancies.Jobs.ExternalSystemEventHandlers
 {
-    public class UserAccountEventsHandler : IHandleMessages<UserJoinedEvent>, IHandleMessages<AccountUserRemovedEvent>
+    public class EmployerUserAccountExternalSystemEventsHandler : IHandleMessages<UserJoinedEvent>, IHandleMessages<AccountUserRemovedEvent>
     {
         private readonly IRecruitQueueService _queueService;
         private readonly IUserRepository _userRepository;
-        private readonly IUserNotificationPreferencesRepository _userNotificationPrefereneRepository;
+        private readonly IUserNotificationPreferencesRepository _userNotificationPreferenceRepository;
 
-        public UserAccountEventsHandler (IRecruitQueueService queueService, IUserRepository userRepository, IUserNotificationPreferencesRepository userNotificationPrefereneRepository)
+        public EmployerUserAccountExternalSystemEventsHandler(IRecruitQueueService queueService, IUserRepository userRepository, IUserNotificationPreferencesRepository userNotificationPreferenceRepository)
         {
             _userRepository = userRepository;
-            _userNotificationPrefereneRepository = userNotificationPrefereneRepository;
+            _userNotificationPreferenceRepository = userNotificationPreferenceRepository;
             _queueService = queueService;
         }
 

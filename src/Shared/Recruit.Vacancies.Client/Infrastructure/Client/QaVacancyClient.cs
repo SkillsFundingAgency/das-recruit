@@ -36,7 +36,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                     IReferenceDataReader referenceDataReader,
                     IVacancyReviewRepository vacancyReviewRepository,
                     IVacancyReviewQuery vacancyReviewQuery,
-                    IVacancyRepository vacancyRepository, 
+                    IVacancyRepository vacancyRepository,
                     IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider,
                     IMessaging messaging,
                     INextVacancyReviewService nextVacancyReviewService,
@@ -55,40 +55,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _reportRepository = reportRepository;
         }
 
-        public Task ApproveReferredReviewAsync(Guid reviewId, string shortDescription, string vacancyDescription, string trainingDescription, string outcomeDescription, string thingsToConsider, string employerDescription)
-        {
-            return _messaging.SendCommandAsync(new ApproveReferredVacancyReviewCommand
-            {
-                ReviewId = reviewId,
-                ShortDescription = shortDescription,
-                VacancyDescription = vacancyDescription,
-                TrainingDescription = trainingDescription,
-                OutcomeDescription = outcomeDescription,
-                ThingsToConsider = thingsToConsider,
-                EmployerDescription = employerDescription
-            });
-        }
-
         public Task ApproveVacancyReviewAsync(Guid reviewId, string manualQaComment, List<ManualQaFieldIndicator> manualQaFieldIndicators, List<Guid> selectedAutomatedQaRuleOutcomeIds)
         {
-            return _messaging.SendCommandAsync(new ApproveVacancyReviewCommand
-            {
-                ReviewId = reviewId,
-                ManualQaComment = manualQaComment,
-                ManualQaFieldIndicators = manualQaFieldIndicators,
-                SelectedAutomatedQaRuleOutcomeIds = selectedAutomatedQaRuleOutcomeIds
-            });
+            return _messaging.SendCommandAsync(new ApproveVacancyReviewCommand(reviewId, manualQaComment, manualQaFieldIndicators, selectedAutomatedQaRuleOutcomeIds));
         }
 
         public Task ReferVacancyReviewAsync(Guid reviewId, string manualQaComment, List<ManualQaFieldIndicator> manualQaFieldIndicators, List<Guid> selectedAutomatedQaRuleOutcomeIds)
         {
-            return _messaging.SendCommandAsync(new ReferVacancyReviewCommand
-            {
-                ReviewId = reviewId,
-                ManualQaComment = manualQaComment,
-                ManualQaFieldIndicators = manualQaFieldIndicators,
-                SelectedAutomatedQaRuleOutcomeIds = selectedAutomatedQaRuleOutcomeIds
-            });
+            return _messaging.SendCommandAsync(new ReferVacancyReviewCommand(reviewId, manualQaComment, manualQaFieldIndicators, selectedAutomatedQaRuleOutcomeIds));
         }
 
         public Task<IApprenticeshipProgramme> GetApprenticeshipProgrammeAsync(string programmeId)
@@ -116,7 +90,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
             var review = await _vacancyReviewQuery.GetLatestReviewByReferenceAsync(vacancyReference);
             if (review != null && review.Status != ReviewStatus.New) result.Add(review);
-            
+
             return result;
         }
 
@@ -124,7 +98,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         {
             vacancyReference = 0;
             if (string.IsNullOrEmpty(value)) return false;
-            
+
             var regex = new Regex(@"^(VAC)?(\d{10})$", RegexOptions.IgnoreCase);
             var result = regex.Match(value);
             if (result.Success)
@@ -175,9 +149,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         {
             return _vacancyReviewQuery.GetApprovedFirstTimeCountAsync(submittedByUserId);
         }
-        
+
         public Task<List<VacancyReview>> GetAssignedVacancyReviewsForUserAsync(string userId)
-        {            
+        {
             return _vacancyReviewQuery.GetAssignedForUserAsync(userId, _nextVacancyReviewService.GetExpiredAssignationDateTime());
         }
 

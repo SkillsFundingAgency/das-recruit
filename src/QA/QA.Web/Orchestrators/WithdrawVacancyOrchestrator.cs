@@ -39,6 +39,9 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             if(vacancy != null && vacancy.Status == VacancyStatus.Closed)
                 return new PostFindVacancyEditModelResult { ResultType = PostFindVacancyEditModelResultType.AlreadyClosed, VacancyReference = vacancy.VacancyReference };
 
+            if (vacancy != null && vacancy.Status != VacancyStatus.Live)
+                return new PostFindVacancyEditModelResult { ResultType = PostFindVacancyEditModelResultType.NotLive, VacancyReference = vacancy.VacancyReference };
+
             return new PostFindVacancyEditModelResult {ResultType = PostFindVacancyEditModelResultType.NotFound};
         }
 

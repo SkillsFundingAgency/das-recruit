@@ -14,7 +14,7 @@ using Xunit;
 
 namespace Esfa.Recruit.UnitTests.Jobs.DomainEventHandlers
 {
-    public class VacancyReferredEventHandlerTests
+    public class VacancyReferredDomainEventHandlerTests
     {
         private const long ReferredVacancyReferenceNumber = 11111111;
         private readonly Guid _exampleVacancyId = Guid.NewGuid();
@@ -22,7 +22,7 @@ namespace Esfa.Recruit.UnitTests.Jobs.DomainEventHandlers
         private readonly Mock<ICommunicationQueueService> _mockCommunicationQueueService;
         private CommunicationRequest _sentCommRequest;
 
-        public VacancyReferredEventHandlerTests()
+        public VacancyReferredDomainEventHandlerTests()
         {
             _mockCommunicationQueueService = new Mock<ICommunicationQueueService>();
             _mockCommunicationQueueService.Setup(x => x.AddMessageAsync(It.IsAny<CommunicationRequest>()))
