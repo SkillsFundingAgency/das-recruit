@@ -31,7 +31,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy
 
             var vacancy = await _vacancyRepository.GetVacancyAsync(eventData.VacancyId);
 
-            if (vacancy.OwnerType == Entities.OwnerType.Employer)
+            if (vacancy.OwnerType == Entities.OwnerType.Provider)
             {
                 await _messaging.SendCommandAsync(
                     new TransferProviderVacancyCommand(
