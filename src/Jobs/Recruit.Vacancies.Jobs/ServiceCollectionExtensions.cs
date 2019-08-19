@@ -29,16 +29,14 @@ using Communication.Types.Interfaces;
 using Esfa.Recruit.Vacancies.Client.Application.Communications;
 using Esfa.Recruit.Client.Application.Communications;
 using Esfa.Recruit.Vacancies.Client.Application.Communications.EntityDataItemProviderPlugins;
-using System;
 using System.Collections.Generic;
 using SFA.DAS.Encoding;
-using NLog;
 
 namespace Esfa.Recruit.Vacancies.Jobs
 {
     internal static class ServiceCollectionExtensions
     {
-        public static void ConfigureJobServices(this IServiceCollection services, IConfiguration configuration, NLog.Logger logger)
+        public static void ConfigureJobServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddSingleton<IApprenticeshipProgrammeApiClient, ApprenticeshipProgrammeApiClient>();
             services.AddScoped(x => new AccountsReader(x.GetService<ILogger<AccountsReader>>(), configuration.GetConnectionString("EmployerFinanceSqlDbConnectionString"), configuration.GetConnectionString("EmployerAccountsSqlDbConnectionString")));
@@ -102,7 +100,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
 
             RegisterCommunicationsService(services, configuration);
             RegisterDasNotifications(services, configuration);
-            RegisterDasEncodingService(services, configuration, logger);
+            RegisterDasEncodingService(services, configuration);
         }
 
         private static void RegisterCommunicationsService(IServiceCollection services, IConfiguration configuration)
@@ -143,24 +141,12 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddTransient<INotificationsApi>(sp => new NotificationsApi(httpClient, notificationsConfig));
         }
 
-        private static void RegisterDasEncodingService(IServiceCollection services, IConfiguration configuration, NLog.Logger logger)
+        private static void RegisterDasEncodingService(IServiceCollection services, IConfiguration configuration)
         {
             var dasEncodingConfig = new EncodingConfig { Encodings = new List<Encoding>() };
             configuration.GetSection(nameof(dasEncodingConfig.Encodings)).Bind(dasEncodingConfig.Encodings);
             services.AddSingleton<EncodingConfig>(dasEncodingConfig);
-            //var name = nameof(EncodingConfig.Encodings);
-            //services.Configure()
-            //services.Configure<EncodingConfiguration>(configuration.GetSection("Encodings"));
             services.AddSingleton<IEncodingService, EncodingService>();
-            //LogOutConfigurationFound(logger, dasEncodingConfig);
-        }
-
-        private static void LogOutConfigurationFound(Logger logger, EncodingConfig dasEncodingConfig)
-        {
-            foreach (var encoding in dasEncodingConfig.Encodings)
-            {
-                logger.Log(NLog.LogLevel.Info, $"Found Encoding Config: {encoding.EncodingType.ToString()}, with salt length {encoding.Salt.Length}, alphabet length {encoding.Alphabet.Length} and minHashLength {encoding.MinHashLength}");
-            }
         }
     }
 }

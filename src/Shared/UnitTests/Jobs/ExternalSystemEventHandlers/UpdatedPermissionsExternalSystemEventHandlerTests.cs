@@ -3,19 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
-using Communication.Types;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Queues;
 using Esfa.Recruit.Vacancies.Client.Application.Queues.Messages;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
 using Esfa.Recruit.Vacancies.Jobs.Configuration;
 using Esfa.Recruit.Vacancies.Jobs.ExternalSystemEventHandlers;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Moq;
 using SFA.DAS.EAS.Account.Api.Types;
 using SFA.DAS.Encoding;
@@ -31,7 +28,7 @@ namespace Esfa.Recruit.UnitTests.Jobs.ExternalSystemEventHandlers
         private const string UserFirstName = "John";
         private const string UserLastName = "Smith";
         private const long EmployerAccountId = 12345;
-        private const string EmployerAccountIdEncoded = "MYVGYG";//"ABC123";
+        private const string EmployerAccountIdEncoded = "ABC123";
         private const long AccountLegalEntityId = 1231;
         private const long AccountProviderId = 321;
         private const long AccountProviderLegalEntityId = 1223;
@@ -57,36 +54,10 @@ namespace Esfa.Recruit.UnitTests.Jobs.ExternalSystemEventHandlers
             _mockEncoder = new Mock<IEncodingService>();
             _mockVacancyQuery = new Mock<IVacancyQuery>();
             _mockMessaging = new Mock<IMessaging>();
-            var mockEncodingConfig = new Mock<IOptions<EncodingConfig>>();
-            mockEncodingConfig.Setup(x => x.Value).Returns(new EncodingConfig
-            {
-                Encodings = new List<Encoding>()
-                {
-                    new Encoding
-                    {
-                        EncodingType = EncodingType.AccountId,
-                        Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456",
-                        MinHashLength = 6,
-                        Salt = "zyxwvutsrqponm"
-                    }
-                }
-            });
 
             _sut = new UpdatedPermissionsExternalSystemEventsHandler(Mock.Of<ILogger<UpdatedPermissionsExternalSystemEventsHandler>>(), _jobsConfig,
                                                         _mockRecruitQueueService.Object, _mockEmployerAccountProvider.Object,
-                                                        _mockEncoder.Object, _mockVacancyQuery.Object, _mockMessaging.Object, new EncodingConfig
-            {
-                Encodings = new List<Encoding>()
-                {
-                    new Encoding
-                    {
-                        EncodingType = EncodingType.AccountId,
-                        Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456",
-                        MinHashLength = 6,
-                        Salt = "zyxwvutsrqponm"
-                    }
-                }
-            });
+                                                        _mockEncoder.Object, _mockVacancyQuery.Object, _mockMessaging.Object);
         }
 
         [Fact]
@@ -99,7 +70,7 @@ namespace Esfa.Recruit.UnitTests.Jobs.ExternalSystemEventHandlers
             _mockRecruitQueueService.VerifyNoOtherCalls();
             _mockMessaging.VerifyNoOtherCalls();
             _mockEmployerAccountProvider.VerifyNoOtherCalls();
-            //_mockEncoder.VerifyNoOtherCalls();
+            _mockEncoder.VerifyNoOtherCalls();
             _mockVacancyQuery.VerifyNoOtherCalls();
         }
 
@@ -112,7 +83,7 @@ namespace Esfa.Recruit.UnitTests.Jobs.ExternalSystemEventHandlers
             _mockRecruitQueueService.VerifyNoOtherCalls();
             _mockMessaging.VerifyNoOtherCalls();
             _mockEmployerAccountProvider.VerifyNoOtherCalls();
-            //_mockEncoder.VerifyNoOtherCalls();
+            _mockEncoder.VerifyNoOtherCalls();
             _mockVacancyQuery.VerifyNoOtherCalls();
         }
 
@@ -125,7 +96,7 @@ namespace Esfa.Recruit.UnitTests.Jobs.ExternalSystemEventHandlers
             _mockRecruitQueueService.VerifyNoOtherCalls();
             _mockMessaging.VerifyNoOtherCalls();
             _mockEmployerAccountProvider.VerifyNoOtherCalls();
-            //_mockEncoder.VerifyNoOtherCalls();
+            _mockEncoder.VerifyNoOtherCalls();
             _mockVacancyQuery.VerifyNoOtherCalls();
         }
 
@@ -138,7 +109,7 @@ namespace Esfa.Recruit.UnitTests.Jobs.ExternalSystemEventHandlers
             _mockRecruitQueueService.VerifyNoOtherCalls();
             _mockMessaging.VerifyNoOtherCalls();
             _mockEmployerAccountProvider.VerifyNoOtherCalls();
-            //_mockEncoder.VerifyNoOtherCalls();
+            _mockEncoder.VerifyNoOtherCalls();
             _mockVacancyQuery.VerifyNoOtherCalls();
         }
 
@@ -146,7 +117,7 @@ namespace Esfa.Recruit.UnitTests.Jobs.ExternalSystemEventHandlers
         public async Task GivenNotExistingLegalEntityId_ThenExceptionIsThrown()
         {
             var grantedOperations = new HashSet<Operation> { Operation.CreateCohort };
-            //_mockEncoder.Setup(x => x.Encode(EmployerAccountId, EncodingType.AccountId)).Returns(EmployerAccountIdEncoded);
+            _mockEncoder.Setup(x => x.Encode(EmployerAccountId, EncodingType.AccountId)).Returns(EmployerAccountIdEncoded);
             _mockEmployerAccountProvider.Setup(x => x.GetLegalEntitiesConnectedToAccountAsync(EmployerAccountIdEncoded))
                                         .ReturnsAsync(_dummyLegalEntities);
 
@@ -154,7 +125,7 @@ namespace Esfa.Recruit.UnitTests.Jobs.ExternalSystemEventHandlers
                             _sut.Handle(new UpdatedPermissionsEvent(EmployerAccountId, AccountLegalEntityId, AccountProviderId, AccountProviderLegalEntityId, Ukprn, Guid.NewGuid(), UserEmailAddress, UserFirstName, UserLastName, grantedOperations, DateTime.UtcNow), null));
 
             exception.Message.Should().Be($"Could not find matching Account Legal Entity Id {AccountLegalEntityId} for Employer Account {EmployerAccountId}");
-            //_mockEncoder.Verify(x => x.Encode(EmployerAccountId, EncodingType.AccountId), Times.Once);
+            _mockEncoder.Verify(x => x.Encode(EmployerAccountId, EncodingType.AccountId), Times.Once);
             _mockEmployerAccountProvider.Verify(x => x.GetLegalEntitiesConnectedToAccountAsync(EmployerAccountIdEncoded), Times.Once);
         }
 
@@ -168,7 +139,7 @@ namespace Esfa.Recruit.UnitTests.Jobs.ExternalSystemEventHandlers
                                                             .Create();
 
             var grantedOperations = new HashSet<Operation> { Operation.CreateCohort };
-            //_mockEncoder.Setup(x => x.Encode(EmployerAccountId, EncodingType.AccountId)).Returns(EmployerAccountIdEncoded);
+            _mockEncoder.Setup(x => x.Encode(EmployerAccountId, EncodingType.AccountId)).Returns(EmployerAccountIdEncoded);
             _mockEmployerAccountProvider.Setup(x => x.GetLegalEntitiesConnectedToAccountAsync(EmployerAccountIdEncoded))
                                         .ReturnsAsync(_dummyLegalEntities.Append(matchingLegalEntityViewModel));
 
@@ -176,7 +147,7 @@ namespace Esfa.Recruit.UnitTests.Jobs.ExternalSystemEventHandlers
 
             await _sut.Handle(new UpdatedPermissionsEvent(EmployerAccountId, AccountLegalEntityId, AccountProviderId, AccountProviderLegalEntityId, Ukprn, Guid.NewGuid(), UserEmailAddress, UserFirstName, UserLastName, grantedOperations, DateTime.UtcNow), null);
 
-            //_mockEncoder.Verify(x => x.Encode(EmployerAccountId, EncodingType.AccountId), Times.Once);
+            _mockEncoder.Verify(x => x.Encode(EmployerAccountId, EncodingType.AccountId), Times.Once);
             _mockEmployerAccountProvider.Verify(x => x.GetLegalEntitiesConnectedToAccountAsync(EmployerAccountIdEncoded), Times.Once);
             _mockVacancyQuery.Verify(x => x.GetNoOfProviderOwnedVacanciesForLegalEntityAsync(Ukprn, RecruitLegalEntityId), Times.Once);
             _mockRecruitQueueService.VerifyNoOtherCalls();
@@ -201,7 +172,7 @@ namespace Esfa.Recruit.UnitTests.Jobs.ExternalSystemEventHandlers
 
             await _sut.Handle(new UpdatedPermissionsEvent(EmployerAccountId, AccountLegalEntityId, AccountProviderId, AccountProviderLegalEntityId, Ukprn, Guid.NewGuid(), UserEmailAddress, UserFirstName, UserLastName, grantedOperations, DateTime.UtcNow), null);
 
-            //_mockEncoder.Verify(x => x.Encode(EmployerAccountId, EncodingType.AccountId), Times.Once);
+            _mockEncoder.Verify(x => x.Encode(EmployerAccountId, EncodingType.AccountId), Times.Once);
             _mockEmployerAccountProvider.Verify(x => x.GetLegalEntitiesConnectedToAccountAsync(EmployerAccountIdEncoded), Times.Once);
             _mockVacancyQuery.Verify(x => x.GetNoOfProviderOwnedVacanciesForLegalEntityAsync(Ukprn, RecruitLegalEntityId), Times.Once);
             _mockRecruitQueueService.Verify(x => x.AddMessageAsync(It.IsAny<TransferVacanciesFromProviderQueueMessage>()), Times.Once);
