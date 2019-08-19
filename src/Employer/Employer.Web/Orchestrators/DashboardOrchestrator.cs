@@ -33,7 +33,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             _alertViewModelService = alertViewModelService;
         }
 
-        public async Task<DashboardViewModel> GetDashboardViewModelAsync(string employerAccountId, string filter, int page, VacancyUser user)
+        public async Task<DashboardViewModel> GetDashboardViewModelAsync(string employerAccountId, string filter, int page, VacancyUser user, string searchTerm)
         {
             var vacanciesTask = GetVacanciesAsync(employerAccountId);
             var userDetailsTask = _client.GetUsersDetailsAsync(user.UserId);
@@ -45,7 +45,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             var filteringOption = SanitizeFilter(filter);
 
-            var filteredVacancies = GetFilteredVacancies(vacancies, filteringOption);
+            var filteredVacancies = GetFilteredVacancies(vacancies, filteringOption, searchTerm);
 
             var filteredVacanciesTotal = filteredVacancies.Count();
 
@@ -87,7 +87,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return _client.UpdateUserAlertAsync(user.UserId, alertType, _timeProvider.Now);
         }
 
-        private List<VacancySummary> GetFilteredVacancies(List<VacancySummary> vacancies, FilteringOptions filterStatus)
+        private List<VacancySummary> GetFilteredVacancies(List<VacancySummary> vacancies, FilteringOptions filterStatus, string searchTerm)
         {
             IEnumerable<VacancySummary> filteredVacancies = new List<VacancySummary>();
             switch (filterStatus)
@@ -125,7 +125,12 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                         filteredVacancies = vacancies.Where(v => v.TransferInfoTransferredDate.HasValue);
                     break;
             }
-            return filteredVacancies.OrderByDescending(v => v.CreatedDate)
+            return filteredVacancies
+                .Where(v => string.IsNullOrWhiteSpace(searchTerm)
+                            || (v.Title.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+                            || (string.IsNullOrWhiteSpace(v.LegalEntityName) == false && v.LegalEntityName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+                            || (v.VacancyReference.HasValue && $"VAC{v.VacancyReference}".Contains(searchTerm, StringComparison.OrdinalIgnoreCase)))
+                .OrderByDescending(v => v.CreatedDate)
                 .ToList();
         }
 

@@ -8,6 +8,7 @@ using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Hosting;
+using Newtonsoft.Json;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
@@ -24,15 +25,15 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         }
 
         [HttpGet("", Name = RouteNames.Dashboard_Index_Get)]
-        public async Task<IActionResult> Dashboard([FromRoute] string employerAccountId, [FromQuery] string filter, [FromQuery] int page = 1)
+        public async Task<IActionResult> Dashboard([FromRoute] string employerAccountId, [FromQuery] string filter, [FromQuery] int page = 1, [FromQuery] string searchTerm = "")
         {
-            if (string.IsNullOrWhiteSpace(filter))
-                filter = Request.Cookies.GetCookie(CookieNames.DashboardFilter);
+            if (string.IsNullOrWhiteSpace(filter) && string.IsNullOrWhiteSpace(searchTerm))
+                TryGetFiltersFromCookie(out filter, out searchTerm);
 
-            if (string.IsNullOrWhiteSpace(filter) == false)
-                Response.Cookies.SetSessionCookie(_hostingEnvironment, CookieNames.DashboardFilter, filter);
+            if (string.IsNullOrWhiteSpace(filter) == false || string.IsNullOrWhiteSpace(searchTerm) == false)
+                SaveFiltersInCookie(filter, searchTerm);
 
-            var vm = await _orchestrator.GetDashboardViewModelAsync(employerAccountId, filter, page, User.ToVacancyUser());
+            var vm = await _orchestrator.GetDashboardViewModelAsync(employerAccountId, filter, page, User.ToVacancyUser(), searchTerm);
 
             if (TempData.ContainsKey(TempDataKeys.DashboardErrorMessage))
                 vm.WarningMessage = TempData[TempDataKeys.DashboardErrorMessage].ToString();
@@ -41,6 +42,34 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 vm.InfoMessage = TempData[TempDataKeys.DashboardInfoMessage].ToString();
 
             return View(vm);
+        }
+
+        private void SaveFiltersInCookie(string filter, string search)
+        {
+            var value = JsonConvert.SerializeObject(new FilterCookie(filter, search));
+            Response.Cookies.SetSessionCookie(_hostingEnvironment, CookieNames.VacanciesFilter, value);
+        }
+
+        private void TryGetFiltersFromCookie(out string filter, out string search)
+        {
+            filter = string.Empty;
+            search = string.Empty;
+            var cookieValue = Request.Cookies.GetCookie(CookieNames.VacanciesFilter);
+            if (string.IsNullOrWhiteSpace(cookieValue)) return;
+            var values = JsonConvert.DeserializeObject<FilterCookie>(cookieValue);
+            filter = values.Filter;
+            search = values.SearchTerm;
+        }
+
+        private class FilterCookie
+        {
+            public string Filter { get; }
+            public string SearchTerm { get; }
+            public FilterCookie(string filter, string searchTerm)
+            {
+                Filter = filter;
+                SearchTerm = searchTerm;
+            }
         }
 
         [HttpPost("dismiss-alert", Name = RouteNames.Dashboard_DismissAlert_Post)]
