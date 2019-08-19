@@ -5,8 +5,11 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using System.Threading;
 using System.Threading.Tasks;
+using Communication.Types;
+using Esfa.Recruit.Vacancies.Client.Application.Communications;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.EventHandlers
 {
@@ -14,32 +17,42 @@ namespace Esfa.Recruit.Vacancies.Client.Application.EventHandlers
                                                         INotificationHandler<LiveVacancyUpdatedEvent>
     {
         private readonly INotifyVacancyUpdates _vacancyStatusNotifier;
-        private readonly IVacancyReviewRepository _vacancyReviewRepository;
         private readonly IVacancyRepository _vacancyRepository;
         private readonly ILogger<NotifyOnVacancyActionsEventHandler> _logger;
+        private readonly ICommunicationQueueService _communicationQueueService;
 
-        public NotifyOnVacancyActionsEventHandler(ILogger<NotifyOnVacancyActionsEventHandler> logger, INotifyVacancyUpdates vacancyStatusNotifier, IVacancyRepository vacancyRepository, IVacancyReviewRepository vacancyReviewRepository)
+        public NotifyOnVacancyActionsEventHandler(
+            ILogger<NotifyOnVacancyActionsEventHandler> logger, 
+            INotifyVacancyUpdates vacancyStatusNotifier, 
+            IVacancyRepository vacancyRepository, 
+            ICommunicationQueueService communicationQueueService)
         {
             _vacancyStatusNotifier = vacancyStatusNotifier;
-            _vacancyReviewRepository = vacancyReviewRepository;
             _vacancyRepository = vacancyRepository;
             _logger = logger;
+            _communicationQueueService = communicationQueueService;
         }
 
         public async Task Handle(VacancyClosedEvent notification, CancellationToken cancellationToken)
         {
+            var vacancy = await _vacancyRepository.GetVacancyAsync(notification.VacancyId);
+
+            if (vacancy.ClosureReason == ClosureReason.WithdrawnByQa)
+            {
+                var commsRequest = GetVacancyWithdrawnByQaCommunicationRequest(vacancy.VacancyReference.Value);
+                await _communicationQueueService.AddMessageAsync(commsRequest);
+            }
+
             try
             {
-                var vacancy = await _vacancyRepository.GetVacancyAsync(notification.VacancyId);
-
-                if (vacancy.Status == VacancyStatus.Closed && vacancy.ClosedByUser != null)
+                if (vacancy.ClosureReason == ClosureReason.Manual)
                 {
                     await _vacancyStatusNotifier.VacancyManuallyClosed(vacancy);
                 }
             }
             catch (NotificationException ex)
             {
-                _logger.LogError(ex, $"Unable to send notification for {nameof(VacancyClosedEvent)} and VacancyReference: {{vacancyReference}}", notification.VacancyReference);
+                _logger.LogError(ex, $"Unable to send notifications for {nameof(VacancyClosedEvent)} and VacancyReference: {{vacancyReference}}", notification.VacancyReference);
             }
         }
 
@@ -64,6 +77,14 @@ namespace Esfa.Recruit.Vacancies.Client.Application.EventHandlers
             {
                 _logger.LogError(ex, $"Unable to send notification for {nameof(LiveVacancyUpdatedEvent)} and VacancyReference: {{vacancyReference}}", notification.VacancyReference);
             }
+        }
+
+        private CommunicationRequest GetVacancyWithdrawnByQaCommunicationRequest(long vacancyReference)
+        {
+            var commsRequest = new CommunicationRequest(
+                CommunicationConstants.RequestType.VacancyWithdrawnByQa, CommunicationConstants.ServiceName, CommunicationConstants.ServiceName);
+            commsRequest.AddEntity(CommunicationConstants.EntityTypes.Vacancy, vacancyReference);
+            return commsRequest;
         }
     }
 }

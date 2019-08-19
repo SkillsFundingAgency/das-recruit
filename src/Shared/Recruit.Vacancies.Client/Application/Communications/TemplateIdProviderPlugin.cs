@@ -14,11 +14,14 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
             switch(message.RequestType)
             {
                 case CommunicationConstants.RequestType.VacancyRejected:
-                    templateId =  CommunicationConstants.TemplateIds.VacancyRejected;
+                    templateId = CommunicationConstants.TemplateIds.VacancyRejected;
                     break;
                 case CommunicationConstants.RequestType.ApplicationSubmitted:
                     if (message.Frequency == DeliveryFrequency.Immediate)
                         templateId = CommunicationConstants.TemplateIds.ApplicationSubmittedImmediate;
+                    break;
+                case CommunicationConstants.RequestType.VacancyWithdrawnByQa:
+                    templateId = CommunicationConstants.TemplateIds.VacancyWithdrawnByQa;
                     break;
                 default:
                     break;

@@ -3,6 +3,7 @@ using Communication.Types;
 using Communication.Types.Interfaces;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using NotificationScope = Communication.Types.NotificationScope;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Communications
 {
@@ -31,6 +32,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
                 case CommunicationConstants.RequestType.ApplicationSubmitted:
                     SetPreferencesForApplicationSubmittedNotification(ref userPref, userPreference);
                     return userPref;
+                case CommunicationConstants.RequestType.VacancyWithdrawnByQa:
+                    SetPreferencesForMandatoryOrganisationEmailNotification(ref userPref);
+                    return userPref;
                 default:
                     return userPref;
             }
@@ -54,6 +58,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
                 userPref.Frequency = DeliveryFrequency.Immediate;
                 userPref.Scope = userPreference.NotificationScope.GetValueOrDefault().ConvertToCommunicationScope();
             }
+        }
+
+        private static void SetPreferencesForMandatoryOrganisationEmailNotification(ref CommunicationUserPreference userPref)
+        {
+            userPref.Channels = DeliveryChannelPreferences.EmailOnly;
+            userPref.Frequency = DeliveryFrequency.Immediate;
+            userPref.Scope = NotificationScope.Organisation;
         }
     }
 }
