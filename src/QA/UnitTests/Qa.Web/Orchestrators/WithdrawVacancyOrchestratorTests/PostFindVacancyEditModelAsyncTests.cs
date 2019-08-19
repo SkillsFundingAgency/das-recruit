@@ -4,15 +4,24 @@ using Esfa.Recruit.Qa.Web.ViewModels.WithdrawVacancy;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
+using Esfa.Recruit.Qa.Web.Orchestrators;
 using FluentAssertions;
 using Moq;
 using Xunit;
+using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 
-namespace UnitTests.Qa.Web.Orchestrators.WithdrawVacancyOrchestrator
+namespace UnitTests.Qa.Web.Orchestrators.WithdrawVacancyOrchestratorTests
 {
     public class PostFindVacancyEditModelAsyncTests
     {
         private const long VacancyReference = 12345678;
+        private readonly Mock<IMessaging> _messagingMock = new Mock<IMessaging>();
+        private readonly Mock<IQaVacancyClient> _clientMock = new Mock<IQaVacancyClient>();
+        private readonly WithdrawVacancyOrchestrator _sut;
+        public PostFindVacancyEditModelAsyncTests()
+        {
+            _sut = new WithdrawVacancyOrchestrator(_clientMock.Object, _messagingMock.Object);
+        }
 
         [Theory]
         [InlineData(VacancyStatus.Draft)]
@@ -21,12 +30,10 @@ namespace UnitTests.Qa.Web.Orchestrators.WithdrawVacancyOrchestrator
         [InlineData(VacancyStatus.Approved)]
         public async Task ShouldReturnNotLiveIfVacancyExistsAndIsNotLive(VacancyStatus status)
         {
-            var mockClient = new Mock<IQaVacancyClient>();
-
-            mockClient.Setup(c => c.GetVacancyAsync(VacancyReference))
+            _clientMock.Setup(c => c.GetVacancyAsync(VacancyReference))
                 .ReturnsAsync(new Vacancy {Status = status});
 
-            var orch = new Esfa.Recruit.Qa.Web.Orchestrators.WithdrawVacancyOrchestrator(mockClient.Object);
+            var orch = _sut;
 
             var m = new FindVacancyEditModel
             {
@@ -41,12 +48,10 @@ namespace UnitTests.Qa.Web.Orchestrators.WithdrawVacancyOrchestrator
         [Fact]
         public async Task ShouldReturnNotFoundIfVacancyDoesNotExist()
         {
-            var mockClient = new Mock<IQaVacancyClient>();
-
-            mockClient.Setup(c => c.GetVacancyAsync(VacancyReference))
+            _clientMock.Setup(c => c.GetVacancyAsync(VacancyReference))
                 .ThrowsAsync(new VacancyNotFoundException("not found"));
 
-            var orch = new Esfa.Recruit.Qa.Web.Orchestrators.WithdrawVacancyOrchestrator(mockClient.Object);
+            var orch = _sut;
 
             var m = new FindVacancyEditModel
             {
@@ -61,12 +66,10 @@ namespace UnitTests.Qa.Web.Orchestrators.WithdrawVacancyOrchestrator
         [Fact]
         public async Task ShouldReturnAlreadyClosedIfVacancyIsClosed()
         {
-            var mockClient = new Mock<IQaVacancyClient>();
-
-            mockClient.Setup(c => c.GetVacancyAsync(VacancyReference))
+            _clientMock.Setup(c => c.GetVacancyAsync(VacancyReference))
                 .ReturnsAsync(new Vacancy { Status = VacancyStatus.Closed });
 
-            var orch = new Esfa.Recruit.Qa.Web.Orchestrators.WithdrawVacancyOrchestrator(mockClient.Object);
+            var orch = _sut;
 
             var m = new FindVacancyEditModel
             {
@@ -81,12 +84,10 @@ namespace UnitTests.Qa.Web.Orchestrators.WithdrawVacancyOrchestrator
         [Fact]
         public async Task ShouldReturnCanCloseIfVacancyCanBeClosed()
         {
-            var mockClient = new Mock<IQaVacancyClient>();
-
-            mockClient.Setup(c => c.GetVacancyAsync(VacancyReference))
+            _clientMock.Setup(c => c.GetVacancyAsync(VacancyReference))
                 .ReturnsAsync(new Vacancy { Status = VacancyStatus.Live });
 
-            var orch = new Esfa.Recruit.Qa.Web.Orchestrators.WithdrawVacancyOrchestrator(mockClient.Object);
+            var orch = _sut;
 
             var m = new FindVacancyEditModel
             {

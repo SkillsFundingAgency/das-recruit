@@ -16,6 +16,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
         {
             public const string VacancyRejected = nameof(VacancyRejected);
             public const string ApplicationSubmitted = nameof(ApplicationSubmitted);
+            public const string VacancyWithdrawnByQa = nameof(VacancyWithdrawnByQa);
         }
 
         public static class DataItemKeys
@@ -37,6 +38,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
         {
             public const string VacancyRejected = "RecruitV2_VacancyRejected";
             public const string ApplicationSubmittedImmediate = "RecruitV2_NewApplicationImmediate";
+            public const string VacancyWithdrawnByQa = "RecruitV2_VacancyWithdrawnByQa";
         }
     }
 }

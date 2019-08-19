@@ -232,10 +232,5 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         {
             return _reportRepository.IncrementReportDownloadCountAsync(reportId);
         }
-
-        public Task CloseVacancyAsync(Guid vacancyId, VacancyUser user)
-        {
-            return _messaging.SendCommandAsync(new CloseVacancyCommand(vacancyId, user, ClosureReason.WithdrawnByQa));
-        }
     }
 }
