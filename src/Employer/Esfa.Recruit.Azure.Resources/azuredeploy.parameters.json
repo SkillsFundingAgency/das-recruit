@@ -78,6 +78,9 @@
         "SetNotificationPreferences": false
       }
     },
+    "ConfigurationStorageConnectionString": {
+      "value": ""
+    },
     "LoggingRedisConnectionString": {
       "value": ""
     },

@@ -16,7 +16,9 @@
             // For more information about the 'console' field, see https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md#console-terminal-window
             "console": "internalConsole",
             "env": {
-                "ASPNETCORE_ENVIRONMENT": "Development"
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "APPSETTING_ASPNETCORE_ENVIRONMENT": "Development",
+                "CUSTOMCONNSTR_ConfigurationStorageConnectionString": "UseDevelopmentStorage=true;"
             },
             "stopAtEntry": false,
             "internalConsoleOptions": "openOnSessionStart"

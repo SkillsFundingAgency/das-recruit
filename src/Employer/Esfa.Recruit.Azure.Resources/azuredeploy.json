@@ -103,6 +103,9 @@
         "SetNotificationPreferences": false
       }
     },
+    "ConfigurationStorageConnectionString": {
+      "type": "securestring"
+    },
     "LoggingRedisConnectionString": {
       "type": "securestring",
       "defaultValue": ""
@@ -984,6 +987,11 @@
           },
           "appServiceConnectionStrings": {
             "value": [
+              {
+                "name": "ConfigurationStorageConnectionString",
+                "connectionString": "[parameters('ConfigurationStorageConnectionString')]",
+                "type": "Custom"
+              },
               {
                 "name": "Redis",
                 "connectionString": "[parameters('LoggingRedisConnectionString')]",

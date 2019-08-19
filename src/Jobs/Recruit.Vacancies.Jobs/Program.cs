@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
+using SFA.DAS.Configuration.AzureTableStorage;
 [assembly: UserSecretsId("recruit-webjob")]
 
 namespace Esfa.Recruit.Vacancies.Jobs
@@ -57,15 +58,23 @@ namespace Esfa.Recruit.Vacancies.Jobs
                             .AddAzureStorage()
                             .AddTimers();
                     })
-                    .ConfigureAppConfiguration(b =>
+                    .ConfigureAppConfiguration((hostBuilderContext, configBuilder)=>
                     {
-                        b.AddJsonFile("appSettings.json", optional: false)
+                        configBuilder.AddJsonFile("appSettings.json", optional: false)
                             .AddJsonFile($"appSettings.{RecruitEnvironment.EnvironmentName}.json", true)
-                            .AddEnvironmentVariables();
+                            .AddEnvironmentVariables()
+                            .AddAzureTableStorage(
+                            options => {
+                                options.ConfigurationKeys = new[] { "SFA.DAS.Encoding" };
+                                options.EnvironmentNameEnvironmentVariableName = "APPSETTING_ASPNETCORE_Environment";
+                                options.StorageConnectionStringEnvironmentVariableName = "CUSTOMCONNSTR_ConfigurationStorageConnectionString";
+                                options.PreFixConfigurationKeys = false;
+                            }
+                        );
 
                         if (RecruitEnvironment.IsDevelopment)
                         {
-                            b.AddUserSecrets<Program>();
+                            configBuilder.AddUserSecrets<Program>();
                         }
                     })
                     .ConfigureLogging((context, b) =>
@@ -86,6 +95,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
                     })
                     .ConfigureServices((context, services) =>
                     {
+                        services.AddOptions();
                         services.AddSingleton<IQueueProcessorFactory, CustomQueueProcessorFactory>();
                         services.Configure<QueuesOptions>(options =>
                         {
@@ -97,8 +107,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
                             options.MaxPollingInterval = TimeSpan.FromSeconds(10);
                         });
 
-                        var logger = NLog.LogManager.GetCurrentClassLogger();
-                        services.ConfigureJobServices(context.Configuration, logger);
+                        services.ConfigureJobServices(context.Configuration);
 
                         services.AddDasNServiceBus(context.Configuration);
                     })
