@@ -16,6 +16,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.FAA;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructure.EventHandlers
 {
@@ -28,7 +29,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         private Mock<IReferenceDataReader> _mockReferenceDataReader;
         private Mock<ITimeProvider> _mockTimeProvider;
         private Mock<IFaaService> _mockFaaService;
-
+        private Mock<ICommunicationQueueService> _mockCommunicationQueueService;
         private DateTime _currentTime;
         private VacancyClosedEvent _event;
         private Vacancy _vacancy;
@@ -126,13 +127,16 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
                 .Setup(x => x.Now)
                 .Returns(() => _currentTime);
 
+            _mockCommunicationQueueService = new Mock<ICommunicationQueueService>();
+
             _handler = new VacancyClosedEventHandler(
                 _mockLogger.Object,
                 _mockQueryStore.Object,
                 _mockVacancyRepository.Object,
                 _mockReferenceDataReader.Object,
                 _mockTimeProvider.Object,
-                _mockFaaService.Object);
+                _mockFaaService.Object,
+                _mockCommunicationQueueService.Object);
         }
     }
 }

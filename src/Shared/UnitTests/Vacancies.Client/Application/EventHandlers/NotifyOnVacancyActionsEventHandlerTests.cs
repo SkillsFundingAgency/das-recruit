@@ -8,7 +8,6 @@ using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
@@ -31,7 +30,6 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.EventHandlers
             var closingDate = DateTime.Now.AddDays(10);
 
             var mockRepository = new Mock<IVacancyRepository>();
-            var mockCommunicationQueueService = new Mock<ICommunicationQueueService>();
 
             _mockNotifier = new Mock<INotifyVacancyUpdates>();
 
@@ -40,8 +38,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.EventHandlers
             _handler = new NotifyOnVacancyActionsEventHandler(
                 Mock.Of<ILogger<NotifyOnVacancyActionsEventHandler>>(),
                 _mockNotifier.Object,
-                mockRepository.Object,
-                mockCommunicationQueueService.Object
+                mockRepository.Object
             );
         }
 
