@@ -16,7 +16,6 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Dashboard
     public class GetDashboardViewModelAsyncTests
     {
         const string EmployerAccountId = "ABCDE";
-        private const string SearchTerm = "5";
 
         [Fact]
         public async Task WhenHaveOver25Vacancies_ShouldShowPager()
@@ -33,7 +32,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Dashboard
 
             var orch = GetOrchestrator(vacancies);
 
-            var vm = await orch.GetDashboardViewModelAsync(EmployerAccountId, "Submitted", 2, new VacancyUser(), SearchTerm);
+            var vm = await orch.GetDashboardViewModelAsync(EmployerAccountId, "Submitted", 2, new VacancyUser(), string.Empty);
 
             vm.ShowResultsTable.Should().BeTrue();
             vm.HasVacancies.Should().BeTrue();
@@ -59,7 +58,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Dashboard
 
             var orch = GetOrchestrator(vacancies);
 
-            var vm = await orch.GetDashboardViewModelAsync(EmployerAccountId, "Submitted", 2, new VacancyUser(), SearchTerm);
+            var vm = await orch.GetDashboardViewModelAsync(EmployerAccountId, "Submitted", 2, new VacancyUser(), string.Empty);
 
             vm.ShowResultsTable.Should().BeTrue();
             vm.HasVacancies.Should().BeTrue();
