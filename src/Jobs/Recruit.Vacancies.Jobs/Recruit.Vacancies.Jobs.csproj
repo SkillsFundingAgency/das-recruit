@@ -7,7 +7,7 @@
     <RootNamespace>Esfa.Recruit.Vacancies.Jobs</RootNamespace>
   </PropertyGroup>
   <PropertyGroup>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <AssemblyName>Esfa.Recruit.Vacancies.Jobs</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
