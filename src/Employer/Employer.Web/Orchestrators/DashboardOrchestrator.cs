@@ -74,7 +74,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 Vacancies = vacanciesVm,
                 Pager = pager,
                 Filter = filteringOption,
-                ResultsHeading = GetFilterHeading(filteredVacanciesTotal, filteringOption),
+                ResultsHeading = GetFilterHeading(filteredVacanciesTotal, filteringOption, searchTerm),
                 HasVacancies = vacancies.Any(),
                 Alerts = GetAlerts(vacancies, userDetails)
             };
@@ -159,22 +159,16 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return FilteringOptions.All;
         }
 
-        private string GetFilterHeading(int totalVacancies, FilteringOptions filteringOption)
+        private string GetFilterHeading(int totalVacancies, FilteringOptions filteringOption, string searchTerm)
         {
-            var filterText = filteringOption.GetDisplayName().ToLowerInvariant();
-            switch (filteringOption)
-            {
-                case FilteringOptions.ClosingSoon:
-                case FilteringOptions.ClosingSoonWithNoApplications:
-                    return $"{totalVacancies} {"live vacancy".ToQuantity(totalVacancies, ShowQuantityAs.None)} {filterText}";
-                case FilteringOptions.AllApplications:
-                case FilteringOptions.NewApplications:
-                    return $"{totalVacancies} {"vacancy".ToQuantity(totalVacancies, ShowQuantityAs.None)} {filterText}";
-                case FilteringOptions.All:
-                    return $"All {totalVacancies} vacancies";
-                default:
-                    return $"{totalVacancies} {filterText} {"vacancy".ToQuantity(totalVacancies, ShowQuantityAs.None)}";
-            }
+            var filterText = filteringOption == FilteringOptions.All ? string.Empty : $" {filteringOption.GetDisplayName().ToLowerInvariant()}";
+            var vacancyText = filteringOption == FilteringOptions.ClosingSoon || filteringOption == FilteringOptions.ClosingSoonWithNoApplications ?
+                " live vacancy" : " vacancy";
+            var vacancyStatusPrefix = $"{totalVacancies}{filterText}{vacancyText}".ToQuantity(totalVacancies, ShowQuantityAs.None);
+
+            var searchSuffix = string.IsNullOrWhiteSpace(searchTerm) ? string.Empty : $" with '{searchTerm}'";
+
+            return $"{vacancyStatusPrefix}{searchSuffix}";
         }
 
         private AlertsViewModel GetAlerts(IEnumerable<VacancySummary> vacancies, User userDetails)
