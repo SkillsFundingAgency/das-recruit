@@ -107,6 +107,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddTransient<LevyDeclarationOrchestrator>();
             services.AddTransient<ManageNotificationsOrchestrator>();
             services.AddTransient<DatesOrchestrator>();
+            services.AddTransient<VacanciesSearchSuggestionsOrchestrator>();
         }
 
         private static void RegisterMapperDeps(IServiceCollection services)

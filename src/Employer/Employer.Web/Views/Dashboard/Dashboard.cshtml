@@ -1,6 +1,7 @@
 ﻿@using Esfa.Recruit.Vacancies.Client.Domain.Entities
 @model Esfa.Recruit.Employer.Web.ViewModels.Dashboard.DashboardViewModel
 @{
+    var vacanciesSearchSuggestionsEndpointUrl = @Url.RouteUrl(RouteNames.VacanciesSearchSuggestions_Get, null, Context.Request.Scheme);
     string GetLinkText(VacancySummaryViewModel vacancySummary)
     {
         switch (vacancySummary.Status)
@@ -18,7 +19,7 @@
 <partial asp-hide="@Model.HasVacancies" name="_NoVacanciesContent" />
 
 <div asp-show="Model.HasVacancies">
-    
+
     <partial name="@PartialNames.Alerts" for="Alerts" />
 
     <div class="govuk-grid-row">
@@ -64,7 +65,7 @@
                 </div>
             </form>
         </div>
-           
+
         <div class="govuk-grid-column-two-thirds">
             <form asp-route="@RouteNames.Dashboard_Index_Get" method="get" autocomplete="off">
                 <div class="govuk-form-group">
@@ -148,17 +149,20 @@
 
 @section FooterJS
 {
-<script nws-csp-add-nonce="true">
-    var filterId = "#@Html.IdFor(m => m.Filter)";
-    $(function() {
-        $("#filter-submit").hide();
+    <script src="/lib/jquery-ui/dist/jquery-ui.min.js"></script>
+    <script asp-append-version="true" src="/lib/esfa-search-suggestions/searchSuggestionsService.js"></script>
+    <script nws-csp-add-nonce="true">
+        searchSuggestions.init("#search-input", "@vacanciesSearchSuggestionsEndpointUrl");
+        var filterId = "#@Html.IdFor(m => m.Filter)";
+        $(function() {
+            $("#filter-submit").hide();
 
-        $(filterId).on("change",
-            function() {
-                var $filterForm = $(this).parents("form");
-                $filterForm.areYouSure({ 'silent': true });
-                $filterForm.submit();
-            });
-    });
-</script>
+            $(filterId).on("change",
+                function() {
+                    var $filterForm = $(this).parents("form");
+                    $filterForm.areYouSure({ 'silent': true });
+                    $filterForm.submit();
+                });
+        });
+    </script>
 }
