@@ -8,13 +8,11 @@ using Esfa.Recruit.Vacancies.Jobs.NServiceBus;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Azure.WebJobs.Host.Queues;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.UserSecrets;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 using SFA.DAS.Configuration.AzureTableStorage;
-[assembly: UserSecretsId("recruit-webjob")]
 
 namespace Esfa.Recruit.Vacancies.Jobs
 {
