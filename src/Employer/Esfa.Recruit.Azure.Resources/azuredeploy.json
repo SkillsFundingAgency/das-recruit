@@ -477,6 +477,11 @@
                 "name": "TableStorage",
                 "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
                 "type": "Custom"
+              },
+              {
+                "name": "CommunicationsStorage",
+                "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
+                "type": "Custom"
               }
             ]
           },
