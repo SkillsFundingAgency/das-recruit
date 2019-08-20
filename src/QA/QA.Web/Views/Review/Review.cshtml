@@ -177,7 +177,7 @@
             <div class="govuk-grid-column-two-thirds vacancy-descriptions">
                 <div class="@Model.VacancyDescriptionClass" id="@FieldIdentifiers.VacancyDescription">
 
-                    <h3 class="govuk-heading-s">What will you do in your working day</h3>
+                    <h3 class="govuk-heading-s">What will the apprentice be doing?</h3>
                     <div class="govuk-body">@Html.Raw(Model.VacancyDescription)</div>
 
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
@@ -186,7 +186,7 @@
                 </div>
                 <div class="@Model.TrainingDescriptionClass" id="@FieldIdentifiers.TrainingDescription">
 
-                    <h3 class="govuk-heading-s">The training you will be getting</h3>
+                    <h3 class="govuk-heading-s">What training will the apprentice take and what qualification will the apprentice get at the end?</h3>
                     <div class="govuk-body">@Html.Raw(Model.TrainingDescription)</div>
 
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
@@ -195,7 +195,7 @@
                 </div>
                 <div class="@Model.OutcomeDescriptionClass" id="@FieldIdentifiers.OutcomeDescription">
 
-                    <h3 class="govuk-heading-s">What to expect at the end of your apprenticeship</h3>
+                    <h3 class="govuk-heading-s">What is the expected career progression after this apprenticeship?</h3>
                     <div class="govuk-body">@Html.Raw(Model.OutcomeDescription)</div>
 
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"

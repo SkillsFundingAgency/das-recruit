@@ -79,6 +79,9 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
 
         public bool HasOutcomeDescription => !string.IsNullOrWhiteSpace(OutcomeDescription);
 
+        public bool HasVacancyTrainingOutcomeDescriptions =>
+            HasVacancyDescription && HasTrainingDescription && HasOutcomeDescription;
+
         public bool HasSkills => Skills != null && Skills.Any();
 
         public bool HasQualifications => Qualifications != null && Qualifications.Any();
