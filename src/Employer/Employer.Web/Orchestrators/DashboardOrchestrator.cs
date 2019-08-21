@@ -67,13 +67,15 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 RouteNames.Dashboard_Index_Get,
                 new Dictionary<string, string>
                 {
-                    {"filter", filteringOption.ToString()}
+                    {"filter", filteringOption.ToString()},
+                    {"searchTerm", searchTerm}
                 });
             
             var vm = new DashboardViewModel {
                 Vacancies = vacanciesVm,
                 Pager = pager,
                 Filter = filteringOption,
+                SearchTerm = searchTerm,
                 ResultsHeading = GetFilterHeading(filteredVacanciesTotal, filteringOption, searchTerm),
                 HasVacancies = vacancies.Any(),
                 Alerts = GetAlerts(vacancies, userDetails)

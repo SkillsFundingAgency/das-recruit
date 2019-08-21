@@ -17,7 +17,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Dashboard
         public FilteringOptions Filter { get; set; }
         public bool HasVacancies { get; internal set; }
         public AlertsViewModel Alerts { get; set; }
-
+        public string SearchTerm { get; set; }
         public bool ShowResultsTable => Vacancies.Any();
         public bool IsFiltered => Filter != FilteringOptions.All;
     }
