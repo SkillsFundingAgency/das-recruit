@@ -54,7 +54,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
                 ProviderName = vacancy.TrainingProvider.Name,
                 LegalEntityName = vacancy.LegalEntityName,
                 TransferredByUser = initiatingUser,
-                TransferredDate = _timeProvider.Today,
+                TransferredDate = _timeProvider.Now,
                 Reason = transferReason
             };
 

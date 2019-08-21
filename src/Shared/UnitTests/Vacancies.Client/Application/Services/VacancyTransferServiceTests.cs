@@ -23,7 +23,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
         public VacancyTransferServiceTests()
         {
             _mockTimeProvider = new Mock<ITimeProvider>();
-            _mockTimeProvider.Setup(t => t.Today).Returns(DateTime.Parse(TodaysDate));
+            _mockTimeProvider.Setup(t => t.Now).Returns(DateTime.Parse(TodaysDate));
             _mockVacancyRepository = new Mock<IVacancyRepository>();
             _mockVacancyReviewQuery = new Mock<IVacancyReviewQuery>();
             _sut = new VacancyTransferService(_mockTimeProvider.Object, _mockVacancyRepository.Object, _mockVacancyReviewQuery.Object);
