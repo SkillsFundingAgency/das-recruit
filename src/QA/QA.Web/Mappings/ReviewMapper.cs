@@ -23,20 +23,20 @@ namespace Esfa.Recruit.Qa.Web.Mappings
         private const int MapImageHeight = 256;
         private readonly ILogger<ReviewMapper> _logger;
         private readonly IQaVacancyClient _vacancyClient;
-        private readonly IGeocodeImageService _mapService;        
+        private readonly IGeocodeImageService _mapService;
         private readonly Lazy<IList<string>> _qualifications;
         private readonly IRuleMessageTemplateRunner _ruleTemplateRunner;
         private readonly IReviewSummaryService _reviewSummaryService;
 
         public ReviewMapper(ILogger<ReviewMapper> logger,
                     IQaVacancyClient vacancyClient,
-                    IGeocodeImageService mapService,                    
+                    IGeocodeImageService mapService,
                     IRuleMessageTemplateRunner ruleTemplateRunner,
                     IReviewSummaryService reviewSummaryService)
         {
             _logger = logger;
             _vacancyClient = vacancyClient;
-            _mapService = mapService;            
+            _mapService = mapService;
             _qualifications = new Lazy<IList<string>>(() => _vacancyClient.GetCandidateQualificationsAsync().Result.QualificationTypes);
             _ruleTemplateRunner = ruleTemplateRunner;
             _reviewSummaryService = reviewSummaryService;
@@ -108,8 +108,8 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.Skills, Text = "Skills" },
                 new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.Qualifications, Text = "Qualifications" },
                 new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.ThingsToConsider, Text = "Things to consider" },
-                new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.EmployerDescription, Text = "Employer description" }, 
-                new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.EmployerName, Text = "Employer name" }, 
+                new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.EmployerDescription, Text = "Employer description" },
+                new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.EmployerName, Text = "Employer name" },
                 new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.DisabilityConfident, Text = "Disability confident" },
                 new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.EmployerWebsiteUrl, Text = "Employer website" },
                 new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.EmployerContact, Text = "Contact details" },
@@ -132,21 +132,21 @@ namespace Esfa.Recruit.Qa.Web.Mappings
             var programmeTask = _vacancyClient.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
 
             var reviewHistoryTask = _vacancyClient.GetVacancyReviewHistoryAsync(review.VacancyReference);
-            
+
             var approvedCountTask = _vacancyClient.GetApprovedCountAsync(vacancy.SubmittedByUser.UserId);
 
             var approvedFirstTimeCountTask = _vacancyClient.GetApprovedFirstTimeCountAsync(vacancy.SubmittedByUser.UserId);
 
-            var reviewSummaryTask = _reviewSummaryService.GetReviewSummaryViewModelAsync(review.Id, 
+            var reviewSummaryTask = _reviewSummaryService.GetReviewSummaryViewModelAsync(review.Id,
                     ReviewFieldMappingLookups.GetPreviewReviewFieldIndicators());
 
             var anonymousApprovedCountTask = vacancy.IsAnonymous ? _vacancyClient.GetAnonymousApprovedCountAsync(vacancy.LegalEntityId) : Task.FromResult(0);
 
             await Task.WhenAll(
-                currentVacancy,programmeTask, 
-                approvedCountTask, 
-                approvedFirstTimeCountTask, 
-                reviewHistoryTask, 
+                currentVacancy,programmeTask,
+                approvedCountTask,
+                approvedFirstTimeCountTask,
+                reviewHistoryTask,
                 reviewSummaryTask,
                 anonymousApprovedCountTask);
 
@@ -220,14 +220,14 @@ namespace Esfa.Recruit.Qa.Web.Mappings
 
                 vm.ManualOutcome = review.ManualOutcome;
 
-                var currentVacancyResult = currentVacancy.Result;               
+                var currentVacancyResult = currentVacancy.Result;
+
                 if (review.Status == ReviewStatus.Closed)
                 {
                     vm.PageTitle = GetPageTitle(historiesVm, review.Id, review.ManualOutcome, currentVacancyResult);
-
                 }
-                
-                vm.AutomatedQaResults = GetAutomatedQaResultViewModel(review);                
+
+                vm.AutomatedQaResults = GetAutomatedQaResultViewModel(review);
                 vm.IsVacancyDeleted = currentVacancyResult.IsDeleted;
             }
             catch (NullReferenceException ex)
@@ -237,10 +237,10 @@ namespace Esfa.Recruit.Qa.Web.Mappings
             }
 
             return vm;
-        }        
+        }
 
         private string GetPageTitle(ReviewHistoriesViewModel historiesVm, Guid reviewId, ManualQaOutcome? reviewManualOutcome,Vacancy vacancy)
-        {                                   
+        {
             var outcome = reviewManualOutcome.GetValueOrDefault().ToString().ToLower();
             bool hasReviews = historiesVm.Items.First().ReviewId == reviewId;
             if (vacancy.IsDeleted && vacancy.Status == VacancyStatus.Referred)
@@ -252,7 +252,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
             {
                 var timeFrame = hasReviews ? "Latest" : "Historical";
                 return $"{timeFrame} review -  {outcome} (read only)";
-            }                                        
+            }
         }
 
         private async Task<IEnumerable<FieldIdentifierViewModel>> GetFieldIdentifiersViewModel(VacancyReview currentReview)
@@ -296,7 +296,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
             }).OrderBy(f => f.FieldIdentifier).ToList();
         }
 
-        
+
 
         private ReviewHistoriesViewModel GetReviewHistoriesViewModel(IEnumerable<VacancyReview> vacancyReviews)
         {
