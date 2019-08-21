@@ -19,7 +19,7 @@ namespace Esfa.Recruit.Shared.Web.ViewModels
             }
         }
 
-        public static class WageValidationMessages
+        public static class DurationValidationMessages
         {
             public static class TypeOfInteger
             {
@@ -30,7 +30,10 @@ namespace Esfa.Recruit.Shared.Web.ViewModels
             {
                 public const string WeeklyHours = "Hours per week must be a number";
             }
+        }
 
+        public static class WageValidationMessages
+        {
             public static class TypeOfMoney
             {
                 public const string FixedWageYearlyAmount = "Fixed wage must be a number";

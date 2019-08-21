@@ -117,6 +117,10 @@ namespace Esfa.Recruit.Employer.Web
             if (vacancy.StartDate == null)
                 return validRoutes;
 
+            validRoutes.AddRange(new[] { RouteNames.Duration_Post, RouteNames.Duration_Get });
+            if (vacancy.Wage?.Duration == null)
+                return validRoutes;
+
             validRoutes.AddRange(new[] { RouteNames.Wage_Post, RouteNames.Wage_Get});
             if (vacancy.Wage?.WageType == null)
                 return validRoutes;

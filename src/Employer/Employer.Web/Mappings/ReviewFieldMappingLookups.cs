@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Dates;
+using Esfa.Recruit.Employer.Web.ViewModels.Part1.Duration;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Location;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.NumberOfPositions;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Title;
@@ -158,25 +159,38 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             return new ReviewFieldMappingLookupsForPage(vms, mappings);
         }
 
+        public static ReviewFieldMappingLookupsForPage GetDurationReviewFieldIndicators()
+        {
+            var vms = new List<ReviewFieldIndicatorViewModel>
+            {
+                new ReviewFieldIndicatorViewModel(FieldIdentifiers.ExpectedDuration, nameof(DurationEditModel.Duration)),
+                new ReviewFieldIndicatorViewModel(FieldIdentifiers.WorkingWeek, nameof(DurationEditModel.WorkingWeekDescription)),
+            };
+
+            var mappings = new Dictionary<string, IEnumerable<string>>
+            {
+                { FieldIdResolver.ToFieldId(v => v.Wage.WeeklyHours), new []{ FieldIdentifiers.WorkingWeek} },
+                { FieldIdResolver.ToFieldId(v => v.Wage.WorkingWeekDescription), new []{ FieldIdentifiers.WorkingWeek} },
+                { FieldIdResolver.ToFieldId(v => v.Wage.Duration), new []{ FieldIdentifiers.ExpectedDuration }},
+                { FieldIdResolver.ToFieldId(v => v.Wage.DurationUnit), new []{ FieldIdentifiers.ExpectedDuration }}
+            };
+
+            return new ReviewFieldMappingLookupsForPage(vms, mappings);
+        }
+
         public static ReviewFieldMappingLookupsForPage GetWageReviewFieldIndicators()
         {
             var vms = new List<ReviewFieldIndicatorViewModel>
             {
-                new ReviewFieldIndicatorViewModel(FieldIdentifiers.ExpectedDuration, nameof(WageEditModel.Duration)),
-                new ReviewFieldIndicatorViewModel(FieldIdentifiers.WorkingWeek, nameof(WageEditModel.WorkingWeekDescription)),
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.Wage, Anchors.WageTypeHeading),
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.WageAdditionalInfo, nameof(WageEditModel.WageAdditionalInformation))
             };
 
             var mappings =  new Dictionary<string, IEnumerable<string>>
             {
-                { FieldIdResolver.ToFieldId(v => v.Wage.WeeklyHours), new []{ FieldIdentifiers.WorkingWeek} },
-                { FieldIdResolver.ToFieldId(v => v.Wage.WorkingWeekDescription), new []{ FieldIdentifiers.WorkingWeek} },
                 { FieldIdResolver.ToFieldId(v => v.Wage.WageAdditionalInformation), new []{ FieldIdentifiers.WageAdditionalInfo }},
                 { FieldIdResolver.ToFieldId(v => v.Wage.WageType),  new[]{ FieldIdentifiers.Wage}},
-                { FieldIdResolver.ToFieldId(v => v.Wage.FixedWageYearlyAmount), new []{ FieldIdentifiers.Wage }},
-                { FieldIdResolver.ToFieldId(v => v.Wage.Duration), new []{ FieldIdentifiers.ExpectedDuration }},
-                { FieldIdResolver.ToFieldId(v => v.Wage.DurationUnit), new []{ FieldIdentifiers.ExpectedDuration }},
+                { FieldIdResolver.ToFieldId(v => v.Wage.FixedWageYearlyAmount), new []{ FieldIdentifiers.Wage }}
             };
 
             return new ReviewFieldMappingLookupsForPage(vms, mappings);
