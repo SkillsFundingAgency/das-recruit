@@ -86,6 +86,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
                 CommunicationConstants.ServiceName);
 
             communicationRequest.AddEntity(CommunicationConstants.EntityTypes.Vacancy, vacancyReference);
+            communicationRequest.AddEntity(CommunicationConstants.EntityTypes.ApprenticeshipService, vacancyReference);
             return communicationRequest;
         }
 

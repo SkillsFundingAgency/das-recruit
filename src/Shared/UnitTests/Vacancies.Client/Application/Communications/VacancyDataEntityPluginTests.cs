@@ -11,11 +11,11 @@ using static Esfa.Recruit.Vacancies.Client.Application.Communications.Communicat
 
 namespace UnitTests.Vacancies.Client.Application.Communications
 {
-    public class VacancyPluginTests
+    public class VacancyDataEntityPluginTests
     {
         private readonly Mock<IVacancyRepository> _mockRepository = new Mock<IVacancyRepository>();
         private readonly Fixture _fixture = new Fixture();
-        private VacancyPlugin GetSut() => new VacancyPlugin(_mockRepository.Object);
+        private VacancyDataEntityPlugin GetSut() => new VacancyDataEntityPlugin(_mockRepository.Object);
 
         [Theory]
         [InlineData(EmployerNameOption.TradingName)]

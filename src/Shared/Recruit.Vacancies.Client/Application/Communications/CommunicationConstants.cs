@@ -6,10 +6,12 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
 
         public const string UserType = "VacancyServices.Recruit.User";
 
+        public const string HelpdeskPhoneNumber = "08000 150 600";
+
         public static class EntityTypes
         {
             public const string Vacancy = nameof(Vacancy);
-            public const string ApprenticeshipServiceUrl = nameof(ApprenticeshipServiceUrl);
+            public const string ApprenticeshipService = nameof(ApprenticeshipService);
         }
 
         public static class RequestType
@@ -31,6 +33,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
             public static class ApprenticeshipService
             {
                 public const string ApprenticeshipServiceUrl = "apprenticeship-service-url";
+                public const string HelpdeskPhoneNumber = "helpdesk-number";
             }
         }
 
