@@ -1,6 +1,6 @@
 ﻿{
   "_id": "BannedPhrases",
-  "lastUpdatedDate": "2018-10-11T00:00:00.000Z",
+  "lastUpdatedDate": "2019-08-21T00:00:00.000Z",
   "bannedPhrases": [
     "driving licence",
     "permanent",
@@ -30,6 +30,11 @@
     "head",
     "jump",
     "school",
-    "schools"
+    "schools",
+	"feet",
+	"hands",
+	"trainee",
+	"nude",
+	"nudes"
   ]
 }
