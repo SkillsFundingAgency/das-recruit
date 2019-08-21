@@ -47,14 +47,14 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         private void SaveFiltersInCookie(string filter, string search)
         {
             var value = JsonConvert.SerializeObject(new FilterCookie(filter, search));
-            Response.Cookies.SetSessionCookie(_hostingEnvironment, CookieNames.VacanciesFilter, value);
+            Response.Cookies.SetSessionCookie(_hostingEnvironment, CookieNames.DashboardFilter, value);
         }
 
         private void TryGetFiltersFromCookie(out string filter, out string search)
         {
             filter = string.Empty;
             search = string.Empty;
-            var cookieValue = Request.Cookies.GetCookie(CookieNames.VacanciesFilter);
+            var cookieValue = Request.Cookies.GetCookie(CookieNames.DashboardFilter);
             if (string.IsNullOrWhiteSpace(cookieValue)) return;
             var values = JsonConvert.DeserializeObject<FilterCookie>(cookieValue);
             filter = values.Filter;
