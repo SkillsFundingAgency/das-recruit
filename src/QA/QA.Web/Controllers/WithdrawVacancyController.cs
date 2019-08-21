@@ -24,23 +24,24 @@ namespace Esfa.Recruit.Qa.Web.Controllers
         }
 
         [HttpGet(Name = RouteNames.WithdrawVacancy_FindVacancy_Get)]
-        public IActionResult FindVacancy()
+        public IActionResult FindVacancy(string searchAgain = null)
         {
             var vm = _orchestrator.GetFindVacancyViewModel();
-            vm.VacancyReference = TempData[TempDataKeys.WithdrawVacancyReference]?.ToString();
 
+            if (!string.IsNullOrWhiteSpace(searchAgain) && GetVacancyReference().HasValue)
+                vm.VacancyReference = $"VAC{GetVacancyReference()}";
+            
             return View(vm);
         }
 
         [HttpPost(Name = RouteNames.WithdrawVacancy_FindVacancy_Post)]
         public async Task<IActionResult> FindVacancy(FindVacancyEditModel m)
         {
-            string userInputVacancyReference = m.VacancyReference;
-            TempData[TempDataKeys.WithdrawVacancyReference] = userInputVacancyReference;
-
             if (ModelState.IsValid)
             {
                 var result = await _orchestrator.PostFindVacancyEditModelAsync(m);
+
+                TempData[TempDataKeys.WithdrawVacancyReference] = result.VacancyReference;
 
                 switch (result.ResultType)
                 {
@@ -157,14 +158,8 @@ namespace Esfa.Recruit.Qa.Web.Controllers
 
         private long? GetVacancyReference()
         {
-            string userInputVacancyReference = (string)TempData.Peek(TempDataKeys.WithdrawVacancyReference);
-
-            if (userInputVacancyReference != null)
-                userInputVacancyReference = userInputVacancyReference.ToUpperInvariant().Replace("VAC", "");
-
-            if (long.TryParse(userInputVacancyReference, out long vacancyReferenceNumber))
+            if (long.TryParse(TempData.Peek(TempDataKeys.WithdrawVacancyReference)?.ToString(), out long vacancyReferenceNumber))
                 return vacancyReferenceNumber;
-
             return null;
         }
     }
