@@ -27,24 +27,24 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
             switch (requestType)
             {
                 case CommunicationConstants.RequestType.VacancyRejected:
-                    SetPreferencesForVacancyRejectedNotification(ref userPref, userPreference);
+                    SetPreferencesForVacancyRejectedNotification(userPref, userPreference);
                     return userPref;
                 case CommunicationConstants.RequestType.ApplicationSubmitted:
-                    SetPreferencesForApplicationSubmittedNotification(ref userPref, userPreference);
+                    SetPreferencesForApplicationSubmittedNotification(userPref, userPreference);
                     return userPref;
                 case CommunicationConstants.RequestType.VacancyWithdrawnByQa:
                 case CommunicationConstants.RequestType.ProviderBlockedProviderNotification:
                 case CommunicationConstants.RequestType.ProviderBlockedEmployerNotificationForTransferredVacancies:
                 case CommunicationConstants.RequestType.ProviderBlockedEmployerNotificationForLiveVacancies:
                 case CommunicationConstants.RequestType.ProviderBlockedEmployerNotificationForPermissionOnly:
-                    SetPreferencesForMandatoryOrganisationEmailNotification(ref userPref);
+                    SetPreferencesForMandatoryOrganisationEmailNotification(userPref);
                     return userPref;
                 default:
                     throw new NotImplementedException($"User preferences not implemented for request {requestType}");
             }
         }
 
-        private static void SetPreferencesForVacancyRejectedNotification(ref CommunicationUserPreference userPref, UserNotificationPreferences userPreference)
+        private void SetPreferencesForVacancyRejectedNotification(CommunicationUserPreference userPref, UserNotificationPreferences userPreference)
         {
             if (userPreference == null) return;
             if (userPreference.NotificationTypes.HasFlag(NotificationTypes.VacancyRejected))
@@ -55,7 +55,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
             }
         }
 
-        private static void SetPreferencesForApplicationSubmittedNotification(ref CommunicationUserPreference userPref, UserNotificationPreferences userPreference)
+        private void SetPreferencesForApplicationSubmittedNotification(CommunicationUserPreference userPref, UserNotificationPreferences userPreference)
         {
             if (userPreference == null) return;
             if (userPreference.NotificationTypes.HasFlag(NotificationTypes.ApplicationSubmitted))
@@ -66,7 +66,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
             }
         }
 
-        private static void SetPreferencesForMandatoryOrganisationEmailNotification(ref CommunicationUserPreference userPref)
+        private void SetPreferencesForMandatoryOrganisationEmailNotification(CommunicationUserPreference userPref)
         {
             userPref.Channels = DeliveryChannelPreferences.EmailOnly;
             userPref.Frequency = DeliveryFrequency.Immediate;
