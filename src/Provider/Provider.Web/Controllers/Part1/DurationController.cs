@@ -3,33 +3,34 @@ using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 using Esfa.Recruit.Provider.Web.RouteModel;
-using Esfa.Recruit.Provider.Web.ViewModels.Part1.Dates;
+using Esfa.Recruit.Provider.Web.ViewModels.Part1.Duration;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Provider.Web.Controllers.Part1
-{    
+{
     [Route(RoutePaths.AccountVacancyRoutePath)]
-    public class DatesController : Controller
+    public class DurationController : Controller
     {
-        private readonly DatesOrchestrator _orchestrator;
-        public DatesController(DatesOrchestrator orchestrator)
+        private readonly DurationOrchestrator _orchestrator;
+
+        public DurationController(DurationOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
         }
-
-        [HttpGet("dates", Name = RouteNames.Dates_Get)]
-        public async Task<IActionResult> Dates(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
+        
+        [HttpGet("duration", Name = RouteNames.Duration_Get)]
+        public async Task<IActionResult> Duration(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
         {
-            var vm = await _orchestrator.GetDatesViewModelAsync(vrm);
+            var vm = await _orchestrator.GetDurationViewModelAsync(vrm);
             vm.PageInfo.SetWizard(wizard);
             return View(vm);
         }
 
-        [HttpPost("dates", Name = RouteNames.Dates_Post)]
-        public async Task<IActionResult> Dates(DatesEditModel m, [FromQuery] bool wizard)
+        [HttpPost("duration", Name = RouteNames.Duration_Post)]
+        public async Task<IActionResult> Duration(DurationEditModel m, [FromQuery] bool wizard)
         {
-            var response = await _orchestrator.PostDatesEditModelAsync(m, User.ToVacancyUser());
+            var response = await _orchestrator.PostDurationEditModelAsync(m, User.ToVacancyUser());
             
             if (!response.Success)
             {
@@ -38,13 +39,13 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
 
             if (!ModelState.IsValid)
             {
-                var vm = await _orchestrator.GetDatesViewModelAsync(m);
+                var vm = await _orchestrator.GetDurationViewModelAsync(m);
                 vm.PageInfo.SetWizard(wizard);
                 return View(vm);
             }
 
             return wizard
-                ? RedirectToRoute(RouteNames.Duration_Get)
+                ? RedirectToRoute(RouteNames.Wage_Get)
                 : RedirectToRoute(RouteNames.Vacancy_Preview_Get);
         }
     }
