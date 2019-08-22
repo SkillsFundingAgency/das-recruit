@@ -56,9 +56,16 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             search = string.Empty;
             var cookieValue = Request.Cookies.GetCookie(CookieNames.DashboardFilter);
             if (string.IsNullOrWhiteSpace(cookieValue)) return;
-            var values = JsonConvert.DeserializeObject<FilterCookie>(cookieValue);
-            filter = values.Filter;
-            search = values.SearchTerm;
+            try
+            {
+                var values = JsonConvert.DeserializeObject<FilterCookie>(cookieValue);
+                filter = values.Filter;
+                search = values.SearchTerm;
+            }
+            catch (JsonException)
+            {
+                //As the cookie value was initially set as string, we need to handle the deserialization in a try/catch block.
+            }
         }
 
         private class FilterCookie
