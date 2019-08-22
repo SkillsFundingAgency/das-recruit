@@ -1,6 +1,6 @@
 ﻿namespace Communication.Types
 {
-    public struct CommunicationUserPreference
+    public class CommunicationUserPreference
     {
         public DeliveryChannelPreferences Channels { get; set; }
         public DeliveryFrequency Frequency { get; set; }
