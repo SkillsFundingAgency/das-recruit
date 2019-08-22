@@ -259,9 +259,9 @@ margin-bottom: 5px;
 }
 
 /*** Additional error style ***/
-.error-summary .error-summary-list span {
-  color: #b10e1e;
-  font-weight: bold;
+.govuk-error-summary__list span {
+    color: #b10e1e;
+    font-weight: 700;
 }
 
 /***  Inline form ***/
