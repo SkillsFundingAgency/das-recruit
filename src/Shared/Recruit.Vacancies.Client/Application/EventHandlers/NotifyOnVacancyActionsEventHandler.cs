@@ -5,11 +5,8 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using System.Threading;
 using System.Threading.Tasks;
-using Communication.Types;
-using Esfa.Recruit.Vacancies.Client.Application.Communications;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.EventHandlers
 {

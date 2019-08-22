@@ -11,12 +11,12 @@ using Microsoft.Extensions.Options;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Communications.EntityDataItemProviderPlugins
 {
-    public class ApprenticeshipServiceUrlPlugin : IEntityDataItemProvider
+    public class ApprenticeshipServiceDataEntityPlugin : IEntityDataItemProvider
     {
         private readonly CommunicationsConfiguration _communicationsConfiguration;
         private readonly IVacancyRepository _vacancyRepository;
-        public string EntityType => CommunicationConstants.EntityTypes.ApprenticeshipServiceUrl;
-        public ApprenticeshipServiceUrlPlugin(IVacancyRepository vacancyRepository, IOptions<CommunicationsConfiguration> communicationsConfiguration)
+        public string EntityType => CommunicationConstants.EntityTypes.ApprenticeshipService;
+        public ApprenticeshipServiceDataEntityPlugin(IVacancyRepository vacancyRepository, IOptions<CommunicationsConfiguration> communicationsConfiguration)
         {
             _vacancyRepository = vacancyRepository;
             _communicationsConfiguration = communicationsConfiguration.Value;
@@ -24,15 +24,25 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications.EntityDataIte
 
         public async Task<IEnumerable<CommunicationDataItem>> GetDataItemsAsync(object entityId)
         {
-            if(int.TryParse(entityId.ToString(), out var vacancyReference) == false)
+            if (long.TryParse(entityId.ToString(), out var vacancyReference) == false)
             {
-                throw new InvalidEntityIdException(EntityType, nameof(ApprenticeshipServiceUrlPlugin));
+                throw new InvalidEntityIdException(EntityType, nameof(ApprenticeshipServiceDataEntityPlugin));
             }
 
             var vacancy = await _vacancyRepository.GetVacancyAsync(vacancyReference);
 
-            var url = string.Empty;
+            
+            return new [] { GetApplicationUrlDataItem(vacancy), GetHelpdeskNumberDataItem() };
+        }
 
+        private CommunicationDataItem GetHelpdeskNumberDataItem()
+        {
+            return new CommunicationDataItem(CommunicationConstants.DataItemKeys.ApprenticeshipService.HelpdeskPhoneNumber, CommunicationConstants.HelpdeskPhoneNumber);
+        }
+
+        private CommunicationDataItem GetApplicationUrlDataItem(Vacancy vacancy)
+        {
+            var url = string.Empty;
             if (vacancy.OwnerType == OwnerType.Employer)
             {
                 var baseUri = new Uri(_communicationsConfiguration.EmployersApprenticeshipServiceUrl);
@@ -46,10 +56,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications.EntityDataIte
                 url = uri.ToString();
             }
 
-            return new[] 
-            { 
-                new CommunicationDataItem(CommunicationConstants.DataItemKeys.ApprenticeshipService.ApprenticeshipServiceUrl, url)
-            };
+            return new CommunicationDataItem(CommunicationConstants.DataItemKeys.ApprenticeshipService.ApprenticeshipServiceUrl, url);
         }
     }
 }

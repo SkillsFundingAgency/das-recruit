@@ -117,11 +117,11 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddTransient<ICommunicationProcessor, CommunicationProcessor>();
             services.AddTransient<ICommunicationService, CommunicationService>();
 
-            services.AddTransient<IEntityDataItemProvider, VacancyPlugin>();
+            services.AddTransient<IEntityDataItemProvider, VacancyDataEntityPlugin>();
             services.AddTransient<IParticipantResolver, ParticipantResolverPlugin>();
             services.AddTransient<IUserPreferencesProvider, UserPreferencesProviderPlugin>();
             services.AddTransient<ITemplateIdProvider, TemplateIdProviderPlugin>();
-            services.AddTransient<IEntityDataItemProvider, ApprenticeshipServiceUrlPlugin>();
+            services.AddTransient<IEntityDataItemProvider, ApprenticeshipServiceDataEntityPlugin>();
 
             services.Configure<CommunicationsConfiguration>(configuration.GetSection("CommunicationsConfiguration"));
         }

@@ -9,12 +9,12 @@ using static Esfa.Recruit.Vacancies.Client.Application.Communications.Communicat
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Communications.EntityDataItemProviderPlugins
 {
-    public class VacancyPlugin : IEntityDataItemProvider
+    public class VacancyDataEntityPlugin : IEntityDataItemProvider
     {
         private readonly IVacancyRepository _vacancyRepository;
         public string EntityType => CommunicationConstants.EntityTypes.Vacancy;
 
-        public VacancyPlugin(IVacancyRepository vacancyRepository)
+        public VacancyDataEntityPlugin(IVacancyRepository vacancyRepository)
         {
             _vacancyRepository = vacancyRepository;
         }
@@ -23,7 +23,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications.EntityDataIte
         {
             if(int.TryParse(entityId.ToString(), out var vacancyReference) == false)
             {
-                throw new InvalidEntityIdException(EntityType, nameof(VacancyPlugin));
+                throw new InvalidEntityIdException(EntityType, nameof(VacancyDataEntityPlugin));
             }
 
             var vacancy = await _vacancyRepository.GetVacancyAsync(vacancyReference);
