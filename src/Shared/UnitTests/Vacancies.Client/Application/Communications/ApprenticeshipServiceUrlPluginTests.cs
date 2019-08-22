@@ -56,8 +56,8 @@ namespace UnitTests.Vacancies.Client.Application.Communications
 
             dataItems.Count().Should().Be(2);
 
-            dataItems.First(d => d.Key == DataItemKeys.ApprenticeshipService.ApprenticeshipServiceUrl).Value.Should().Be(expectedUrl);
-            dataItems.First(d => d.Key == DataItemKeys.ApprenticeshipService.HelpdeskPhoneNumber).Value.Should().Be(CommunicationConstants.HelpdeskPhoneNumber);
+            dataItems.Single(d => d.Key == DataItemKeys.ApprenticeshipService.ApprenticeshipServiceUrl).Value.Should().Be(expectedUrl);
+            dataItems.Single(d => d.Key == DataItemKeys.ApprenticeshipService.HelpdeskPhoneNumber).Value.Should().Be(CommunicationConstants.HelpdeskPhoneNumber);
         }
 
     }
