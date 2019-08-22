@@ -6,7 +6,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
 
         public const string UserType = "VacancyServices.Recruit.User";
 
-        public const string HelpdeskPhoneNumber = "08000 150 600";
+        public const string HelpdeskPhoneNumber = Esfa.Recruit.Vacancies.Client.Application.Constants.HelpdeskPhoneNumber;
 
         public static class EntityTypes
         {
