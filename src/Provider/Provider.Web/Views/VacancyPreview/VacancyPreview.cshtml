@@ -125,6 +125,17 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-third">
         <ul class="govuk-list">
+            <li class="@GetSectionClass(Model.WageTextSectionState)">
+                <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.YearlyWage">
+                    <img asp-show="@Model.WageRequiresEdit" src="/img/red-cross.png" />
+                    Annual wage
+                </h3>
+                <span esfa-validation-message-for="WageText" class="govuk-error-message"></span>
+                <p asp-show="@Model.HasWageText" class="govuk-body">@Model.WageText</p>
+                <span esfa-validation-message-for="WageInfo" class="govuk-error-message"></span>
+                <p asp-show="@Model.HasWageInfo" class="govuk-body">@Model.WageInfo</p>
+                @EditLink(RouteNames.Wage_Get, Model.WageTextSectionState, "yearly wage", "link-salary", new { wizard = false })
+            </li>
             <li class="@GetSectionClass(Model.WorkingWeekSectionState)">
                 <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.WorkingWeek">
                     <img asp-show="@Model.WorkingWeekRequiresEdit" src="/img/red-cross.png" />
@@ -138,17 +149,6 @@
                     <p asp-show="@Model.HasHoursPerWeek" class="govuk-body">Total hours per week: @Model.HoursPerWeek</p>
                 </div>
                 @EditLink(RouteNames.Wage_Get, Model.WorkingWeekSectionState, "working week", "link-working-week", new { wizard = false })
-            </li>
-            <li class="@GetSectionClass(Model.WageTextSectionState)">
-                <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.YearlyWage">
-                    <img asp-show="@Model.WageRequiresEdit" src="/img/red-cross.png" />
-                    Yearly wage
-                </h3>
-                <span esfa-validation-message-for="WageText" class="govuk-error-message"></span>
-                <p asp-show="@Model.HasWageText" class="govuk-body">@Model.WageText</p>
-                <span esfa-validation-message-for="WageInfo" class="govuk-error-message"></span>
-                <p asp-show="@Model.HasWageInfo" class="govuk-body">@Model.WageInfo</p>
-                @EditLink(RouteNames.Wage_Get, Model.WageTextSectionState, "yearly wage", "link-salary", new { wizard = false })
             </li>
             <li class="@GetSectionClass(Model.ExpectedDurationSectionState)">
                 <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.ExpectedDuration">
@@ -176,23 +176,25 @@
                 </h3>
                 <span esfa-validation-message-for="HasProgramme" class="govuk-error-message"></span>
                 <span esfa-validation-message-for="TrainingLevel" class="govuk-error-message"></span>
-                <p asp-show="@Model.HasTrainingLevel" class="govuk-body">@Model.TrainingLevel <br/>
-                    @Model.Level.ToDescription()</p>
-                @EditLink(RouteNames.Training_Get, Model.TrainingLevelSectionState, "apprenticeship level", "link-apprenticeship-level", new { wizard = false })
-            </li>
-            <li asp-show="@Model.CanShowReference">
-                <h3 class="govuk-heading-s govuk-!-margin-top-4">Reference number</h3>
-                <p class="govuk-body">@Model.VacancyReferenceNumber</p>
-            </li>
-            <li class="@GetSectionClass(Model.NumberOfPositionsSectionState)">
-                <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.NumberOfPositions">
-                    <img asp-show="@Model.NumberOfPositionsRequiresEdit" src="/img/red-cross.png" />
-                    Positions
-                </h3>
-                <span esfa-validation-message-for="NumberOfPositions" class="govuk-error-message"></span>
-                <p asp-show="@Model.HasNumberOfPositionsCaption" class="govuk-body">@Model.NumberOfPositionsCaption</p>
-                @EditLink(RouteNames.NumberOfPositions_Get, Model.NumberOfPositionsSectionState, "positions", "link-positions", new { wizard = false })
-            </li>
+                <p asp-show="@Model.HasTrainingLevel" class="govuk-body">
+                    @Model.TrainingLevel <br />
+                @Model.Level.ToDescription()
+            </p>
+            @EditLink(RouteNames.Training_Get, Model.TrainingLevelSectionState, "apprenticeship level", "link-apprenticeship-level", new { wizard = false })
+        </li>
+        <li asp-show="@Model.CanShowReference">
+            <h3 class="govuk-heading-s govuk-!-margin-top-4">Reference number</h3>
+            <p class="govuk-body">@Model.VacancyReferenceNumber</p>
+        </li>
+        <li class="@GetSectionClass(Model.NumberOfPositionsSectionState)">
+            <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.NumberOfPositions">
+                <img asp-show="@Model.NumberOfPositionsRequiresEdit" src="/img/red-cross.png" />
+                Positions
+            </h3>
+            <span esfa-validation-message-for="NumberOfPositions" class="govuk-error-message"></span>
+            <p asp-show="@Model.HasNumberOfPositionsCaption" class="govuk-body">@Model.NumberOfPositionsCaption</p>
+            @EditLink(RouteNames.NumberOfPositions_Get, Model.NumberOfPositionsSectionState, "positions", "link-positions", new { wizard = false })
+        </li>
         </ul>
     </div>
     <div class="govuk-grid-column-two-thirds vacancy-descriptions" id="@Anchors.VacancyDescriptionSection">
