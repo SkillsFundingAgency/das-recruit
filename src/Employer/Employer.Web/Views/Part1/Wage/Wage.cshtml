@@ -1,6 +1,9 @@
 ﻿@using Esfa.Recruit.Shared.Web.Mappers
 @using Esfa.Recruit.Vacancies.Client.Domain.Entities
+@using Microsoft.Extensions.Options
 @model Esfa.Recruit.Employer.Web.ViewModels.Part1.Wage.WageViewModel
+@inject IOptions<ExternalLinksConfiguration> externalLinks
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         
@@ -16,37 +19,60 @@
             
             <div esfa-validation-marker-for="WageType" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
-                    <span class="govuk-hint">The pay will only show as a yearly figure on your vacancy advertisement</span>
+                    <span class="govuk-body">Pay will show as a yearly figure on your vacancy.</span>
+                    <a href="@externalLinks.Value.NationalMinimumWageRates" rel="noopener" target="_blank">National Minimum Wage for apprentices.</a>
+
                     <span esfa-validation-message-for="WageType" class="govuk-error-message"></span>
                     <div class="govuk-radios govuk-radios--conditional" data-module="radios">
                         <div class="govuk-radios__item">
-                            <input asp-for="WageType" value="@WageType.FixedWage" type="radio" class="govuk-radios__input" id="wage-type-fixed" data-aria-controls="custom-wage-fixed-panel">
-                            <label for="wage-type-fixed" class="govuk-label govuk-radios__label">Fixed wage</label>
+                            <input asp-for="WageType" value="@WageType.NationalMinimumWage" type="radio" class="govuk-radios__input" id="wage-type-national-minimum-wage"  data-aria-controls="wage-type-national-minimum-wage-panel">
+                            <label for="wage-type-national-minimum-wage" class="govuk-label govuk-radios__label">National Minimum Wage</label>
+                        </div>
+                        <div id="wage-type-national-minimum-wage-panel" class="govuk-radios__conditional govuk-radios__conditional--hidden">
+                            <div class="govuk-form-group">
+                                <p class="govuk-body">
+                                    <span class="govuk-hint">As of @Model.MinimumWageStartFrom, National Minimum Wage is set at an hourly rate from @Model.NationalMinimumWageLowerBound to @Model.NationalMinimumWageUpperBound depending on the candidates age.<br><br>
+                                        On the vacancy this will be displayed as a yearly figure of @Model.NationalMinimumWageYearly</span>
+                                </p>
+                            </div>
                         </div>
 
+                        <div class="govuk-radios__item">
+                            <input asp-for="WageType" value="@WageType.NationalMinimumWageForApprentices" type="radio" class="govuk-radios__input" id="wage-type-national-minimum-wage-for-apprentices"  data-aria-controls="wage-type-national-minimum-wage-for-apprentices-panel">
+                            <label for="wage-type-national-minimum-wage-for-apprentices" class="govuk-label govuk-radios__label">National Minimum Wage for apprentices</label>
+                        </div>
+                        <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="wage-type-national-minimum-wage-for-apprentices-panel">
+                            <div class="govuk-form-group">
+                                <p class="govuk-body">
+                                    <span class="govuk-hint">
+                                        As of @Model.MinimumWageStartFrom, National Minimum Wage for apprentices is set at an hourly rate of @Model.ApprenticeshipMinimumWage.<br><br>
+                                        On the vacancy this will be displayed as a yearly figure of @Model.ApprenticeshipMinimumWageYearly
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="govuk-radios__item">
+                            <input asp-for="WageType" value="@WageType.FixedWage" type="radio" class="govuk-radios__input" id="wage-type-fixed" data-aria-controls="custom-wage-fixed-panel">
+                            <label for="wage-type-fixed" class="govuk-label govuk-radios__label">Set wage yourself</label>
+                        </div>
                         <div id="custom-wage-fixed-panel" class="govuk-radios__conditional govuk-radios__conditional--hidden">
                             <fieldset class="govuk-fieldset">
-                                <p class="govuk-hint">
-                                    The wage should not be less than the
-                                    <a href="https://www.gov.uk/national-minimum-wage-rates" rel="noopener" target="_blank">National Minimum Wage</a> for apprentices
-                                </p>
                                 <div esfa-validation-marker-for="FixedWageYearlyAmount" class="govuk-form-group">
                                     <span esfa-validation-message-for="FixedWageYearlyAmount" class="govuk-error-message"></span>
-                                    <span>£</span>
-                                    <label asp-for="FixedWageYearlyAmount" class="govuk-visually-hidden">Minimum yearly wage amount</label>
-                                    <input asp-for="FixedWageYearlyAmount" class="govuk-input govuk-!-width-one-quarter" type="text" >
+                                    <label asp-for="FixedWageYearlyAmount" class="govuk-visually-hidden">Yearly wage</label>
+                                    <p class="govuk-body govuk-hint">
+                                        This must be more than the <a href="@externalLinks.Value.NationalMinimumWageRates" rel="noopener" target="_blank">National Minimum Wage for apprentices.</a>
+                                    </p>
+
+                                    <p class="govuk-body govuk-hint">
+                                        As of @Model.MinimumWageStartFrom, National Minimum Wage for apprentices is set at an hourly rate of @Model.ApprenticeshipMinimumWage, Based on working hours of @Model.WeeklyHours hours per week, you will need to set a yearly figure of at least 
+                                        <span class="govuk-!-font-weight-bold">@Model.ApprenticeshipMinimumWageYearly</span>
+                                    </p>
+                                    <input asp-for="FixedWageYearlyAmount" class="govuk-input govuk-!-width-one-quarter" type="text">
                                     <span class="govuk-body">yearly</span>
                                 </div>
                             </fieldset>
-                        </div>
-
-                        <div class="govuk-radios__item">
-                            <input asp-for="WageType" value="@WageType.NationalMinimumWage" type="radio" class="govuk-radios__input" id="wage-type-national-minimum-wage" >
-                            <label for="wage-type-national-minimum-wage" class="govuk-label govuk-radios__label">National Minimum Wage</label>
-                        </div>
-                        <div class="govuk-radios__item">
-                            <input asp-for="WageType" value="@WageType.NationalMinimumWageForApprentices" type="radio" class="govuk-radios__input" id="wage-type-national-minimum-wage-for-apprentices" >
-                            <label for="wage-type-national-minimum-wage-for-apprentices" class="govuk-label govuk-radios__label">National Minimum Wage for apprentices</label>
                         </div>
                     </div>
                 </fieldset>
@@ -54,8 +80,8 @@
 
             <div class="govuk-character-count">
                 <div esfa-validation-marker-for="WageAdditionalInformation" class="govuk-form-group">
-                    <label asp-for="WageAdditionalInformation" class="govuk-label govuk-!-font-weight-bold">Additional information about pay (optional)</label>
-                    <span class="govuk-hint">For example, subject to experience, bonus scheme, performance increases or non contractual benefits</span>
+                    <label asp-for="WageAdditionalInformation" class="govuk-label govuk-!-font-weight-bold">Extra information about pay (optional)</label>
+                    <span class="govuk-hint">For example bonus schemes, performance increases or benefits</span>
                     <span esfa-validation-message-for="WageAdditionalInformation" class="govuk-error-message"></span>
                     <textarea asp-for="WageAdditionalInformation" class="govuk-textarea character-count" rows="5" data-val-length-max="250"></textarea>
                     <span class="govuk-body maxchar-count">250</span>

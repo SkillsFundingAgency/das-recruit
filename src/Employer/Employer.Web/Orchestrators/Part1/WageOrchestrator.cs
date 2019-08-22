@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Mappings;
@@ -6,6 +7,7 @@ using Esfa.Recruit.Employer.Web.ViewModels.Part1.Wage;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
@@ -20,24 +22,35 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         private readonly IEmployerVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
+        private readonly IMinimumWageProvider _minimumWageProvider;
 
-        public WageOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<WageOrchestrator> logger, IReviewSummaryService reviewSummaryService) : base(logger)
+        public WageOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<WageOrchestrator> logger, IReviewSummaryService reviewSummaryService, IMinimumWageProvider minimumWageProvider) : base(logger)
         {
             _client = client;
             _vacancyClient = vacancyClient;
             _reviewSummaryService = reviewSummaryService;
+            _minimumWageProvider = minimumWageProvider;
         }
 
         public async Task<WageViewModel> GetWageViewModelAsync(VacancyRouteModel vrm)
         {
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Wage_Get);
 
+            var wagePeriod = _minimumWageProvider.GetWagePeriod(vacancy.StartDate.Value);
+            
             var vm = new WageViewModel
             {
                 WageType = vacancy.Wage?.WageType,
                 FixedWageYearlyAmount = vacancy.Wage?.FixedWageYearlyAmount?.AsMoney(),
                 WageAdditionalInformation = vacancy.Wage?.WageAdditionalInformation,
-                PageInfo = Utility.GetPartOnePageInfo(vacancy),
+                MinimumWageStartFrom = wagePeriod.ValidFrom.ToMonthNameYearString(),
+                NationalMinimumWageLowerBound = wagePeriod.NationalMinimumWageLowerBound.ToString("C"),
+                NationalMinimumWageUpperBound = wagePeriod.NationalMinimumWageUpperBound.ToString("C"),
+                NationalMinimumWageYearly = GetMinimumWageYearlyText(WageType.NationalMinimumWage, vacancy.Wage?.WeeklyHours, vacancy.StartDate.Value),
+                ApprenticeshipMinimumWage = wagePeriod.ApprenticeshipMinimumWage.ToString("C"),
+                ApprenticeshipMinimumWageYearly = GetMinimumWageYearlyText(WageType.NationalMinimumWageForApprentices, vacancy.Wage?.WeeklyHours, vacancy.StartDate.Value),
+                WeeklyHours = vacancy.Wage.WeeklyHours.Value,
+                PageInfo = Utility.GetPartOnePageInfo(vacancy)
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
@@ -76,6 +89,17 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 v => _vacancyClient.Validate(v, ValidationRules),
                 v => _vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
             );
+        }
+
+        private string GetMinimumWageYearlyText(WageType wageType, decimal? weeklyHours, DateTime startDate)
+        {
+            var wage = new Wage
+            {
+                WageType = wageType,
+                WeeklyHours = weeklyHours
+            };
+
+            return wage.ToText(startDate);
         }
 
         protected override EntityToViewModelPropertyMappings<Vacancy, WageEditModel> DefineMappings()

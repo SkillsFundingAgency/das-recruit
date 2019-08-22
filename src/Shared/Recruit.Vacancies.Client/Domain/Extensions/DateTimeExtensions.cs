@@ -34,6 +34,11 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Extensions
             return date.Year == DateTime.MinValue.Year ? "Current" : date.ToString("MMM yyyy");
         }
 
+        public static string ToMonthNameYearString(this DateTime date)
+        {
+            return date.Year == DateTime.MinValue.Year ? "Current" : date.ToString("MMMM yyyy");
+        }
+
         public static string GetShortTimeElapsed(this DateTime? value, DateTime currentTime)
         {
             if (value == null) return string.Empty;
