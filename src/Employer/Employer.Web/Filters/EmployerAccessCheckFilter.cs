@@ -114,8 +114,8 @@ namespace Esfa.Recruit.Employer.Web.Filters
             if (!GetCookieValueForUserAndEmployer(context.HttpContext, 
                 userId: userId,
                 employerAccountId: employerAccountId,
-                _employerAccountTypeCookieWriter.GetCookieFromRequest,
-                out result))
+                readValue: _employerAccountTypeCookieWriter.GetCookieFromRequest,
+                result: out result))
             {
                 AccountDetailViewModel accountDetails = await _recruitVacancyClient.GetEmployerAccountDetailsAsync(employerAccountId);
                 result = accountDetails.ApprenticeshipEmployerType;
