@@ -61,7 +61,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
             if (userPreference.NotificationTypes.HasFlag(NotificationTypes.ApplicationSubmitted))
             {
                 userPref.Channels = DeliveryChannelPreferences.EmailOnly;
-                userPref.Frequency = DeliveryFrequency.Immediate;
+                userPref.Frequency = GetDeliveryFrequencyPreferenceFromUserFrequencyPreference(userPreference.NotificationFrequency);
                 userPref.Scope = userPreference.NotificationScope.GetValueOrDefault().ConvertToCommunicationScope();
             }
         }
@@ -71,6 +71,24 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
             userPref.Channels = DeliveryChannelPreferences.EmailOnly;
             userPref.Frequency = DeliveryFrequency.Immediate;
             userPref.Scope = NotificationScope.Organisation;
+        }
+
+        private DeliveryFrequency GetDeliveryFrequencyPreferenceFromUserFrequencyPreference(NotificationFrequency? notificationFrequency)
+        {
+            if (notificationFrequency.HasValue == false)
+                return DeliveryFrequency.Default;
+
+            switch (notificationFrequency)
+            {
+                case NotificationFrequency.Immediately:
+                    return DeliveryFrequency.Immediate;
+                case NotificationFrequency.Daily:
+                    return DeliveryFrequency.Daily;
+                case NotificationFrequency.Weekly:
+                    return DeliveryFrequency.Weekly;
+                default:
+                    return DeliveryFrequency.Default;
+            }
         }
     }
 }
