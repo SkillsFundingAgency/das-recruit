@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Esfa.Recruit.Shared.Web.ViewModels;
 
-namespace Esfa.Recruit.Employer.Web.ViewModels
+namespace Esfa.Recruit.Employer.Web.ViewModels.Part2.VacancyDescription
 {
     public class VacancyDescriptionViewModel
     {

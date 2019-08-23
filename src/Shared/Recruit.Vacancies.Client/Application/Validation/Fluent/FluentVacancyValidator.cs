@@ -447,7 +447,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.OutcomeDescription)
                 .NotEmpty()
-                    .WithMessage("You must provide information on what is the expected career progression after this apprenticeship?")
+                    .WithMessage("You must provide information on what to expect at the end of the apprenticeship")
                     .WithErrorCode("55")
                 .MaximumLength(1000)
                     .WithMessage("What is the expected career progression after this apprenticeship description must not exceed {MaxLength} characters")
