@@ -2,6 +2,7 @@
 {
     public static class RouteNames
     {
+        public const string VacanciesSearchSuggestions_Get = "VacanciesSearchSuggestions_Get";
         public const string AboutEmployer_Get = "AboutEmployer_Get";
         public const string AboutEmployer_Post = "AboutEmployer_Post";
         
