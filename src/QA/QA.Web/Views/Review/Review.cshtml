@@ -353,17 +353,6 @@
                                           asp-value="@FieldIdentifiers.Provider"
                                           asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                 </div>
-                <div class="@Model.TrainingClass" id="@FieldIdentifiers.Training">
-                    <h3 class="govuk-heading-s">Apprenticeship @Model.TrainingType</h3>
-                    <p class="govuk-body">
-                        @Model.TrainingTitle <br /> @Model.Level.ToDescription()
-                    </p>
-                    <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
-                                          asp-value="@FieldIdentifiers.Training"
-                                          asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
-                </div>
-            </div>
-            <div class="govuk-grid-column-one-third">
                 <div asp-show="@Model.IsProviderVacancy" class="@Model.ProviderContactClass" id="@FieldIdentifiers.ProviderContact">
                     <h3 class="govuk-heading-s">Contact details (optional)</h3>
                     <p class="govuk-body">@Model.ProviderContactName</p>
@@ -371,6 +360,17 @@
                     <p class="govuk-body">@Model.ProviderContactTelephone</p>
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
                                           asp-value="@FieldIdentifiers.ProviderContact"
+                                          asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
+                </div>
+            </div>
+            <div class="govuk-grid-column-one-third">
+                <div class="@Model.TrainingClass" id="@FieldIdentifiers.Training">
+                    <h3 class="govuk-heading-s">Apprenticeship @Model.TrainingType</h3>
+                    <p class="govuk-body">
+                        @Model.TrainingTitle <br /> @Model.Level.ToDescription()
+                    </p>
+                    <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
+                                          asp-value="@FieldIdentifiers.Training"
                                           asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                 </div>
             </div>

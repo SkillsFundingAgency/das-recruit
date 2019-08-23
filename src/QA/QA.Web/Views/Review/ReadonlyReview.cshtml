@@ -20,7 +20,7 @@
             </div>
         </div>
     </div>
-    
+
     <div asp-hide="@Model.IsApproved" class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <partial name="_ReviewSummaryPartial" for="Review" />
@@ -51,7 +51,7 @@
         </div>
     </div>
     <div class="govuk-grid-row" id="@Anchors.ApprenticeshipSummarySection">
-        <div class="govuk-grid-column-full" >
+        <div class="govuk-grid-column-full">
             <h2 class="govuk-heading-l">Apprenticeship summary</h2>
         </div>
     </div>
@@ -85,17 +85,17 @@
                     </div>
                 </li>
                 <li>
-                    <div  id="@Anchors.TrainingLevel">
+                    <div id="@Anchors.TrainingLevel">
                         <h3 class="govuk-heading-s">Apprenticeship level</h3>
                         <p class="govuk-body">@Model.TrainingLevel <br /> @Model.Level.ToDescription()</p>
                     </div>
                 </li>
-                <li>                    
+                <li>
                     <h3 class="govuk-heading-s">Reference number</h3>
                     <p class="govuk-body">@Model.VacancyReferenceNumber</p>
                 </li>
                 <li>
-                    <div  id="@Anchors.NumberOfPositions">
+                    <div id="@Anchors.NumberOfPositions">
                         <h3 class="govuk-heading-s">Positions</h3>
                         <p class="govuk-body">@Model.NumberOfPositionsCaption</p>
                     </div>
@@ -169,7 +169,7 @@
             <div id="@Anchors.EmployerName">
                 <h3 class="govuk-heading-s">Employer</h3>
                 <p class="govuk-body">@Model.EmployerName</p>
-                
+
                 <div asp-show="@Model.IsAnonymous" class="govuk-inset-text">
                     <h3 class="govuk-heading-s">Reason for being anonymous (does not show on vacancy)</h3>
                     <p>@Model.AnonymousReason</p>
@@ -221,24 +221,23 @@
             <h2 class="govuk-heading-l">Training</h2>
         </div>
     </div>
-
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <div id="@Anchors.Provider">
                 <h3 class="govuk-heading-s">Training provider</h3>
                 <p class="govuk-body">@Model.ProviderName</p>
             </div>
-            <div id="@Anchors.Training">
-                <h3 class="govuk-heading-s">Apprenticeship @Model.TrainingType</h3>
-                <p class="govuk-body">@Model.TrainingTitle <br /> @Model.Level.ToDescription()</p>
-            </div>
-        </div>
-        <div class="govuk-grid-column-one-third">
             <div asp-show="@Model.IsProviderVacancy" id="@Anchors.ProviderContact">
                 <h3 class="govuk-heading-s">Contact details (optional)</h3>
                 <p class="govuk-body">@Model.ProviderContactName</p>
                 <p class="govuk-body">@Model.ProviderContactEmail</p>
                 <p class="govuk-body">@Model.ProviderContactTelephone</p>
+            </div>
+        </div>
+        <div class="govuk-grid-column-one-third">
+            <div id="@Anchors.Training">
+                <h3 class="govuk-heading-s">Apprenticeship @Model.TrainingType</h3>
+                <p class="govuk-body">@Model.TrainingTitle <br /> @Model.Level.ToDescription()</p>
             </div>
         </div>
     </div>
@@ -253,7 +252,7 @@
         </div>
     </div>
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full"  id="@Anchors.ApplicationMethod">
+        <div class="govuk-grid-column-full" id="@Anchors.ApplicationMethod">
             <p class="govuk-body" asp-show="@Model.HasSpecifiedThroughFaaApplicationMethod">
                 Candidates will apply through the Find an apprenticeship service
             </p>
@@ -261,11 +260,11 @@
                 Candidates will apply through the employer's website
             </p>
 
-            <div asp-show="@Model.HasApplicationUrl"  id="@Anchors.ApplicationUrl">
+            <div asp-show="@Model.HasApplicationUrl" id="@Anchors.ApplicationUrl">
                 <h2 class="govuk-heading-s">Employer's application website</h2>
                 <p class="govuk-body">@Model.ApplicationUrl</p>
             </div>
-            <div asp-show="@Model.HasApplicationInstructions"  id="@Anchors.ApplicationInstructions">
+            <div asp-show="@Model.HasApplicationInstructions" id="@Anchors.ApplicationInstructions">
                 <h2 class="govuk-heading-s">Employer's application instructions (optional)</h2>
                 <p class="govuk-body">@Model.ApplicationInstructions</p>
             </div>
@@ -285,7 +284,7 @@
             <ul class="govuk-list govuk-!-margin-bottom-6">
                 @foreach (var automatedQaResult in Model.AutomatedQaResults.Where(r => r.Checked))
                 {
-                <li>@automatedQaResult.Text</li>
+                    <li>@automatedQaResult.Text</li>
                 }
             </ul>
             <p class="govuk-body">@Model.ReviewerComment</p>
