@@ -88,7 +88,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             }
             else
             {
-                return ClosureReason.BlockedByQa;
+                return ClosureReason.TransferredByQa;
             }
         }
 
