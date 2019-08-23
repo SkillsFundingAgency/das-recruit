@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -49,7 +50,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider
                 tasks.AddRange(RaiseEventsToRevokePermission(providerInfo.Employers, eventData.Ukprn));
             }
 
-            tasks.AddRange(RaiseEventsToUpdateVacancies(vacancies, eventData.QaVacancyUser, eventData.Ukprn));
+            tasks.AddRange(RaiseEventsToUpdateVacancies(vacancies, eventData.QaVacancyUser, eventData.Ukprn, eventData.BlockedDate));
 
             // tasks.Add(RequestProviderCommunication(eventData.ProviderName));
 
@@ -82,7 +83,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider
             return tasks;
         }
 
-        private List<Task> RaiseEventsToUpdateVacancies(IEnumerable<ProviderVacancySummary> vacancies, VacancyUser qaVacancyUser, long ukprn)
+        private List<Task> RaiseEventsToUpdateVacancies(IEnumerable<ProviderVacancySummary> vacancies, VacancyUser qaVacancyUser, long ukprn, DateTime blockedDate)
         {
             var tasks = new List<Task>();
 
@@ -94,7 +95,8 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider
                     Ukprn = ukprn,
                     VacancyId = vacancy.Id,
                     QaVacancyUser = qaVacancyUser,
-                    VacancyReference = vacancy.VacancyReference
+                    VacancyReference = vacancy.VacancyReference,
+                    BlockedDate = blockedDate
                 };
 
                 tasks.Add(_messaging.PublishEvent(providerBlockedOnVacancyEvent));
