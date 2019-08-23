@@ -140,8 +140,8 @@ namespace Esfa.Recruit.Employer.Web.Filters
                 context.HttpContext,
                 userId: userId,
                 employerAccountId: employerAccountId,
-                _levyCookieWriter.GetCookieFromRequest,
-                out string hasLevyDeclarationAsString))
+                readValue: _levyCookieWriter.GetCookieFromRequest,
+                result: out string hasLevyDeclarationAsString))
             {
                 hasLevyDeclaration = bool.Parse(hasLevyDeclarationAsString);
             }
@@ -180,8 +180,8 @@ namespace Esfa.Recruit.Employer.Web.Filters
                 context.HttpContext,
                 userId: userId,
                 employerAccountId: employerAccountId,
-                _eoiCookieWriter.GetCookieFromRequest,
-                out string hasEoiAsString))
+                readValue: _eoiCookieWriter.GetCookieFromRequest,
+                result: out string hasEoiAsString))
             {
                 hasEoi = bool.Parse(hasEoiAsString);
             }
