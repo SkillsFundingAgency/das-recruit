@@ -10,6 +10,7 @@ using Esfa.Recruit.Employer.Web.Exceptions;
 using Esfa.Recruit.Employer.Web.Filters;
 using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +21,6 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 using Moq;
-using SFA.DAS.EAS.Account.Api.Types;
 using Xunit;
 using DomainUser = Esfa.Recruit.Vacancies.Client.Domain.Entities.User;
 
@@ -43,7 +43,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Filters
         private RouteData _routeData;
         private ClaimsPrincipal _user;
         private DomainUser _domainUser;
-        private AccountDetailViewModel _account;
+        private EmployerAccountDetails _account;
         private string _employerAccountTypeCookieValue;
 
         private const string LevyEmployerAccountTypeCookieValue = "USERID/EMPLOYERID/LEVY";
@@ -359,7 +359,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Filters
                 .Setup(x => x.GetUsersDetailsAsync("USERID"))
                 .ReturnsAsync(_domainUser);
 
-            _account = new AccountDetailViewModel
+            _account = new EmployerAccountDetails
             {
                 AccountAgreementType = AccountAgreementType.Inconsistent
             };

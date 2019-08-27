@@ -86,12 +86,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
             }
         }
 
-        public async Task<AccountDetailViewModel> GetEmployerAccountDetailsAsync(string employerAccountId)
+        public async Task<EmployerAccountDetails> GetEmployerAccountDetailsAsync(string employerAccountId)
         {
             try
             {
                 var account = await _accountApiClient.GetAccount(employerAccountId);
-                return account;
+                return new EmployerAccountDetails(
+                    accountAgreementType: (AccountAgreementType)account.AccountAgreementType,
+                    apprenticeshipEmployerType: account.ApprenticeshipEmployerType);
             }
             catch (Exception ex)
             {

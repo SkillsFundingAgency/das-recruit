@@ -8,11 +8,11 @@ using Esfa.Recruit.Employer.Web.Exceptions;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.EAS.Account.Api.Types;
 
 namespace Esfa.Recruit.Employer.Web.Filters
 {
@@ -117,7 +117,7 @@ namespace Esfa.Recruit.Employer.Web.Filters
                 readValue: _employerAccountTypeCookieWriter.GetCookieFromRequest,
                 result: out result))
             {
-                AccountDetailViewModel accountDetails = await _recruitVacancyClient.GetEmployerAccountDetailsAsync(employerAccountId);
+                EmployerAccountDetails accountDetails = await _recruitVacancyClient.GetEmployerAccountDetailsAsync(employerAccountId);
                 result = accountDetails.ApprenticeshipEmployerType;
 
                 if (!_allowedAccountTypes.Any(x => string.Compare(accountDetails.ApprenticeshipEmployerType, x, true) == 0))

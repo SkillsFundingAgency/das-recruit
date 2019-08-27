@@ -245,7 +245,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _employerAccountProvider.GetEmployerIdentifiersAsync(userId);
         }
 
-        public Task<AccountDetailViewModel> GetEmployerAccountDetailsAsync(string employeraccountId)
+        public Task<EmployerAccountDetails> GetEmployerAccountDetailsAsync(string employeraccountId)
         {
             return _employerAccountProvider.GetEmployerAccountDetailsAsync(employeraccountId);
         }

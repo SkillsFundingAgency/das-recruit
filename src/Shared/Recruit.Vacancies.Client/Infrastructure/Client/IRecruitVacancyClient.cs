@@ -6,6 +6,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyAnalytics;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
 using SFA.DAS.EAS.Account.Api.Types;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
@@ -39,7 +40,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<IEnumerable<TrainingProviderSummary>> GetAllTrainingProvidersAsync();
         Task UpdateUserAlertAsync(string idamsUserId, AlertType alertType, DateTime dismissedOn);
         EntityValidationResult ValidateQualification(Qualification qualification);
-        Task<AccountDetailViewModel> GetEmployerAccountDetailsAsync(string employerAccountId);
+        Task<EmployerAccountDetails> GetEmployerAccountDetailsAsync(string employerAccountId);
         Task CloseVacancyAsync(Guid vacancyId, VacancyUser user, ClosureReason reason);
 
     }
