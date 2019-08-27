@@ -21,13 +21,15 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         private readonly IMessaging _messaging;
         private readonly AbstractValidator<VacancyReview> _vacancyReviewValidator;
         private readonly ITimeProvider _timeProvider;
+        private readonly IBlockedOrganisationQuery _blockedOrganisationQuery;
 
         public ApproveVacancyReviewCommandHandler(ILogger<ApproveVacancyReviewCommandHandler> logger,
                                         IVacancyReviewRepository vacancyReviewRepository,
                                         IVacancyRepository vacancyRepository,
                                         IMessaging messaging,
                                         AbstractValidator<VacancyReview> vacancyReviewValidator,
-                                        ITimeProvider timeProvider)
+                                        ITimeProvider timeProvider,
+                                        IBlockedOrganisationQuery blockedOrganisationQuery)
         {
             _logger = logger;
             _vacancyRepository = vacancyRepository;
@@ -35,6 +37,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _messaging = messaging;
             _vacancyReviewValidator = vacancyReviewValidator;
             _timeProvider = timeProvider;
+            _blockedOrganisationQuery = blockedOrganisationQuery;
         }
 
         public async Task Handle(ApproveVacancyReviewCommand message, CancellationToken cancellationToken)
@@ -66,30 +69,29 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             await _vacancyReviewRepository.UpdateAsync(review);
 
-            if (GetHasVacancyBeenTransferredSinceReviewWasCreated(review, vacancy) == false)
+            var closureReason = await TryGetReasonToCloseVacancy(review, vacancy);
+
+            if (closureReason != null)
             {
-                await RaiseVacancyEventSoVacancyIsPublished(message, review);
+                await CloseVacancyAsync(vacancy, closureReason.Value);
+                return;
             }
-            else
-            {
-                vacancy.Status = VacancyStatus.Closed;
-                vacancy.ClosedDate = _timeProvider.Now;
-                vacancy.ClosedByUser = vacancy.TransferInfo.TransferredByUser;
-                vacancy.ClosureReason = GetClosureReasonBasedOnTransferInfo(vacancy.TransferInfo);
-                await _vacancyRepository.UpdateAsync(vacancy);
-            }
+
+            await PublishVacancyReviewApprovedEventAsync(message, review);    
         }
 
-        private ClosureReason GetClosureReasonBasedOnTransferInfo(TransferInfo transferInfo)
+        private async Task<ClosureReason?> TryGetReasonToCloseVacancy(VacancyReview review, Vacancy vacancy)
         {
-            if (transferInfo.Reason == TransferReason.EmployerRevokedPermission)
+            if (HasVacancyBeenTransferredSinceReviewWasCreated(review, vacancy))
             {
-                return ClosureReason.TransferredByEmployer;
+                return vacancy.TransferInfo.Reason == TransferReason.EmployerRevokedPermission ? 
+                    ClosureReason.TransferredByEmployer : ClosureReason.TransferredByQa;
             }
-            else
-            {
-                return ClosureReason.TransferredByQa;
-            }
+
+            if(await HasProviderBeenBlockedSinceReviewWasCreatedAsync(vacancy))
+                return ClosureReason.BlockedByQa;
+
+            return null;
         }
 
         private void Validate(VacancyReview review)
@@ -101,13 +103,27 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             }
         }
 
-        private bool GetHasVacancyBeenTransferredSinceReviewWasCreated(VacancyReview review, Vacancy vacancy)
+        private bool HasVacancyBeenTransferredSinceReviewWasCreated(VacancyReview review, Vacancy vacancy)
         {
-            var hasVacancyBeenTransferredSinceReviewWasCreated = review.VacancySnapshot.TransferInfo == null && vacancy.TransferInfo != null;
-            return hasVacancyBeenTransferredSinceReviewWasCreated;
+            return review.VacancySnapshot.TransferInfo == null && vacancy.TransferInfo != null;
         }
 
-        private Task RaiseVacancyEventSoVacancyIsPublished(ApproveVacancyReviewCommand message, VacancyReview review)
+        private async Task<bool> HasProviderBeenBlockedSinceReviewWasCreatedAsync(Vacancy vacancy)
+        {
+            var blockedProvider = await _blockedOrganisationQuery.GetByOrganisationIdAsync(vacancy.TrainingProvider.Ukprn.ToString());
+            return blockedProvider?.BlockedStatus == BlockedStatus.Blocked;
+        }
+
+        private Task CloseVacancyAsync(Vacancy vacancy, ClosureReason closureReason)
+        {
+            vacancy.Status = VacancyStatus.Closed;
+            vacancy.ClosedDate = _timeProvider.Now;
+            vacancy.ClosedByUser = vacancy.TransferInfo?.TransferredByUser;
+            vacancy.ClosureReason = closureReason;
+            return _vacancyRepository.UpdateAsync(vacancy);
+        }
+
+        private Task PublishVacancyReviewApprovedEventAsync(ApproveVacancyReviewCommand message, VacancyReview review)
         {
             return _messaging.PublishEvent(new VacancyReviewApprovedEvent
             {
