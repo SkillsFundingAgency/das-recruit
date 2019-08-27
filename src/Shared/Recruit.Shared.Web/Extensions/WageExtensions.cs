@@ -1,5 +1,6 @@
 ﻿using System;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using SFA.DAS.VacancyServices.Wage;
 using WageType = Esfa.Recruit.Vacancies.Client.Domain.Entities.WageType;
 

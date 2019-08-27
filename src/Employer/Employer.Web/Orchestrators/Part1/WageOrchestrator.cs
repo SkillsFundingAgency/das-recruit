@@ -13,6 +13,8 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.VacancyServices.Wage;
+using WageType = Esfa.Recruit.Vacancies.Client.Domain.Entities.WageType;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
@@ -44,11 +46,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 FixedWageYearlyAmount = vacancy.Wage?.FixedWageYearlyAmount?.AsMoney(),
                 WageAdditionalInformation = vacancy.Wage?.WageAdditionalInformation,
                 MinimumWageStartFrom = wagePeriod.ValidFrom.ToMonthNameYearString(),
-                NationalMinimumWageLowerBound = wagePeriod.NationalMinimumWageLowerBound.ToString("C"),
-                NationalMinimumWageUpperBound = wagePeriod.NationalMinimumWageUpperBound.ToString("C"),
-                NationalMinimumWageYearly = GetMinimumWageYearlyText(WageType.NationalMinimumWage, vacancy.Wage?.WeeklyHours, vacancy.StartDate.Value),
-                ApprenticeshipMinimumWage = wagePeriod.ApprenticeshipMinimumWage.ToString("C"),
-                ApprenticeshipMinimumWageYearly = GetMinimumWageYearlyText(WageType.NationalMinimumWageForApprentices, vacancy.Wage?.WeeklyHours, vacancy.StartDate.Value),
+                NationalMinimumWageLowerBoundHourly = wagePeriod.NationalMinimumWageLowerBound.ToString("C"),
+                NationalMinimumWageUpperBoundHourly = wagePeriod.NationalMinimumWageUpperBound.ToString("C"),
+                NationalMinimumWageYearly = GetMinimumWageYearlyText(SFA.DAS.VacancyServices.Wage.WageType.NationalMinimum, vacancy.Wage?.WeeklyHours, vacancy.StartDate.Value),
+                ApprenticeshipMinimumWageHourly = wagePeriod.ApprenticeshipMinimumWage.ToString("C"),
+                ApprenticeshipMinimumWageYearly = GetMinimumWageYearlyText(SFA.DAS.VacancyServices.Wage.WageType.ApprenticeshipMinimum, vacancy.Wage?.WeeklyHours, vacancy.StartDate.Value),
                 WeeklyHours = vacancy.Wage.WeeklyHours.Value,
                 PageInfo = Utility.GetPartOnePageInfo(vacancy)
             };
@@ -91,15 +93,13 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             );
         }
 
-        private string GetMinimumWageYearlyText(WageType wageType, decimal? weeklyHours, DateTime startDate)
+        private string GetMinimumWageYearlyText(SFA.DAS.VacancyServices.Wage.WageType wageType, decimal? weeklyHours, DateTime startDate)
         {
-            var wage = new Wage
+            return WagePresenter.GetDisplayText(wageType, WageUnit.Annually, new WageDetails
             {
-                WageType = wageType,
-                WeeklyHours = weeklyHours
-            };
-
-            return wage.ToText(startDate);
+                HoursPerWeek = weeklyHours,
+                StartDate = startDate
+            }).AsWholeMoneyAmount();
         }
 
         protected override EntityToViewModelPropertyMappings<Vacancy, WageEditModel> DefineMappings()

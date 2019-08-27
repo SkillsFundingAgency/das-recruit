@@ -16,10 +16,10 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Wage
         public string WageAdditionalInformation { get; set; }
 
         public string MinimumWageStartFrom { get; set; }
-        public string NationalMinimumWageLowerBound { get; set; }
-        public string NationalMinimumWageUpperBound { get; set; }
+        public string NationalMinimumWageLowerBoundHourly { get; set; }
+        public string NationalMinimumWageUpperBoundHourly { get; set; }
         public string NationalMinimumWageYearly { get; set; }
-        public string ApprenticeshipMinimumWage { get; set; }
+        public string ApprenticeshipMinimumWageHourly { get; set; }
         public string ApprenticeshipMinimumWageYearly { get; set; }
         public decimal WeeklyHours { get; set; }
 

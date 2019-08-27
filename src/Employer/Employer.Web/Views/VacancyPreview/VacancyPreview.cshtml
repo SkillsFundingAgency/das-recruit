@@ -43,7 +43,7 @@
             </p>
         </div>
 
-        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }'/>
+        <partial asp-hide="@Model.HideValidationSummary" name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }'/>
         <div class="info-summary__header-bar" asp-show="@Model.HasIncompleteMandatorySections">
             <h2 class="govuk-heading-m">@Model.IncompleteSectionCount required @Model.IncompleteSectionText to complete</h2>
         </div>
@@ -51,6 +51,19 @@
             <h2 class="govuk-heading-m">You have completed all required sections</h2>
         </div>
         <div asp-show="@Model.ShowIncompleteSections" class="info-summary govuk-!-margin-top-0" role="alert">
+            <div asp-show="Model.HasSoftValidationErrors">
+                <p class="govuk-body">
+                    Sections you will need to update:
+                </p>
+                <ul class=" govuk-list govuk-error-summary__list govuk-!-margin-bottom-4">
+                    @foreach (var softError in Model.SoftValidationErrors.Errors.OrderBy(x => Model.OrderedFieldNames.IndexOf(x.PropertyName)))
+                    {
+                        var softErrorVm = new ErrorListItemViewModel(softError.PropertyName, softError.ErrorMessage);
+                        <partial name="@RecruitPartialNames.ErrorListItem" model="@softErrorVm" />
+                    }
+                </ul>
+            </div>
+
             <div asp-show="@Model.HasIncompleteMandatorySections">
                 <p class="govuk-body">Sections you will need to complete:</p>
                 <ul class="govuk-list">
