@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Communication.Types;
+using Esfa.Recruit.Vacancies.Client.Application.Communications;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
@@ -8,6 +10,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
 using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider
@@ -17,17 +20,20 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider
         private readonly IQueryStoreReader _queryStoreReader;
         private readonly IVacancyQuery _vacancyQuery;
         private readonly IMessaging _messaging;
+        private readonly ICommunicationQueueService _communicationQueueService;
         ILogger<ProviderBlockedDomainEventHandler> _logger;
 
         public ProviderBlockedDomainEventHandler(
             IQueryStoreReader queryStoreReader,
             IVacancyQuery vacancyQuery,
             IMessaging messaging,
+            ICommunicationQueueService communicationQueueService,
             ILogger<ProviderBlockedDomainEventHandler> logger) : base(logger)
         {
             _queryStoreReader = queryStoreReader;
             _vacancyQuery = vacancyQuery;
             _messaging = messaging;
+            _communicationQueueService = communicationQueueService;
             _logger = logger;
         }
 
@@ -52,7 +58,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider
 
             tasks.AddRange(RaiseEventsToUpdateVacancies(vacancies, eventData.QaVacancyUser, eventData.Ukprn, eventData.BlockedDate));
 
-            // tasks.Add(RequestProviderCommunication(eventData.ProviderName));
+            tasks.Add(RequestProviderCommunicationAsync(eventData.Ukprn));
 
             // tasks.AddRange(RequestEmployerCommunications(vacancies));
 
@@ -105,21 +111,16 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider
             return tasks;
         }
 
-        private Task RequestProviderCommunication(string providerName)
+        private Task RequestProviderCommunicationAsync(long ukprn)
         {
-            //TODO 
-            // - raise communication request 
-            // - add DataItems collection to CommunicationRequest object
-            // - add provider's name in the data items collection (no Entities are required)
+            var communicationRequest = new CommunicationRequest(
+                CommunicationConstants.RequestType.ProviderBlockedProvider, 
+                CommunicationConstants.ParticipantResolverNames.ProviderParticipantsResolverName, 
+                CommunicationConstants.ServiceName);
+            communicationRequest.AddEntity(CommunicationConstants.EntityTypes.Provider, ukprn);
+            communicationRequest.AddEntity(CommunicationConstants.EntityTypes.ApprenticeshipServiceConfig, null);
 
-            //TODO Communications
-            // - modify Comm Processor to add data items from the comm request 
-            //      and make sure it works having no data entites 
-            // - Modify user preferences to always return email channel with immediate effect for this comm request
-            // - create templates in gov notify
-            // - add configs to employer config
-            // - update template id provider
-            return Task.CompletedTask;
+            return _communicationQueueService.AddMessageAsync(communicationRequest);
         }
 
         private List<Task> RequestEmployerCommunications(IEnumerable<ProviderVacancySummary> vacancies)

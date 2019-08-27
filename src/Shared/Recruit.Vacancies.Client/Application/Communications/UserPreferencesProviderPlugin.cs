@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Communication.Types;
 using Communication.Types.Interfaces;
@@ -35,8 +36,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
                 case CommunicationConstants.RequestType.VacancyWithdrawnByQa:
                     SetPreferencesForMandatoryOrganisationEmailNotification(ref userPref);
                     return userPref;
-                default:
+                case CommunicationConstants.RequestType.ProviderBlockedProvider:
+                    SetPreferencesForMandatoryOrganisationEmailNotification(ref userPref);
                     return userPref;
+                default:
+                    throw new NotImplementedException($"User preferences not implemented for request {requestType}");
             }
         }
 

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AutoFixture;
 using Communication.Types;
 using Esfa.Recruit.Vacancies.Client.Application.Communications;
+using Esfa.Recruit.Vacancies.Client.Application.Communications.ParticipantResolverPlugins;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using FluentAssertions;
@@ -18,7 +19,7 @@ namespace UnitTests.Vacancies.Client.Application.Communications
         private static Fixture _fixture = new Fixture();
         private Mock<IVacancyRepository> _mockVacancyRepository = new Mock<IVacancyRepository>();
         private Mock<IUserRepository> _mockUserRepository = new Mock<IUserRepository>();
-        private Mock<ILogger<ParticipantResolverPlugin>> _mockLogger = new Mock<ILogger<ParticipantResolverPlugin>>();
+        private Mock<ILogger<VacancyParticipantsResolverPlugin>> _mockLogger = new Mock<ILogger<VacancyParticipantsResolverPlugin>>();
 
 
         private User GetUser(OwnerType owner) => _fixture.Build<User>().With(u => u.Name, owner.ToString()).Create();
@@ -101,9 +102,9 @@ namespace UnitTests.Vacancies.Client.Application.Communications
             participants.Single(p => p.UserId != PrimaryUserId).Participation.Should().Be(UserParticipation.SecondaryUser);
         }
 
-        private ParticipantResolverPlugin GetSut()
+        private VacancyParticipantsResolverPlugin GetSut()
         {
-            return new ParticipantResolverPlugin(
+            return new VacancyParticipantsResolverPlugin(
                 _mockVacancyRepository.Object, _mockUserRepository.Object, _mockLogger.Object);
         }
     }
