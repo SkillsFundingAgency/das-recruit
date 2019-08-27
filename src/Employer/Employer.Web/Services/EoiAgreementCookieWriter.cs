@@ -41,9 +41,9 @@ namespace Esfa.Recruit.Employer.Web.Services
             return content;
         }
 
-        public void WriteCookie(HttpResponse response, string userId, string employerAccountId, bool eoiIsPresent)
+        public void WriteCookie(HttpResponse response, string userId, string employerAccountId, bool hasEoi)
         {
-            var protectedValue = _dataProtector.Protect(userId + "/" + employerAccountId + "/" + eoiIsPresent);
+            var protectedValue = _dataProtector.Protect(userId + "/" + employerAccountId + "/" + hasEoi);
 
             response.Cookies.Append(CookieNames.EmployerEoi, protectedValue, EsfaCookieOptions.GetDefaultHttpCookieOption(_hostingEnvironment));
         }

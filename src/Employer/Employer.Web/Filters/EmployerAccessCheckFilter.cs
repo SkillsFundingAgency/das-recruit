@@ -29,7 +29,7 @@ namespace Esfa.Recruit.Employer.Web.Filters
     /// 
     /// Expected results:
     /// A: Employers with a levy declaration cannot go to any levy pages - redirect to dashboard
-    /// B: Levy employers with no declaratino should be redirected to the levy page
+    /// B: Levy employers with no declaration should be redirected to the levy page
     /// C: Non-levy employers with no EOI should be blocked
     /// </remarks>
     public class EmployerAccessCheckFilter : IAsyncActionFilter, IOrderedFilter
