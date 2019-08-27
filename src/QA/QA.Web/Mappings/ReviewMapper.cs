@@ -97,7 +97,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.ShortDescription, Text = "Brief overview" },
                 new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.ClosingDate, Text = "Closing date" },
                 new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.WorkingWeek, Text = "Working week" },
-                new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.Wage, Text = "Yearly wage" },
+                new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.Wage, Text = "Annual wage" },
                 new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.ExpectedDuration, Text = "Expected duration" },
                 new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.PossibleStartDate, Text = "Possible start" },
                 new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.TrainingLevel, Text = "Apprenticeship level" },

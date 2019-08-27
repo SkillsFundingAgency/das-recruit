@@ -112,22 +112,22 @@
             <div class="govuk-grid-column-one-third">
                 <ul class="govuk-list">
                     <li>
+                        <div class="@Model.WageClass" id="@FieldIdentifiers.Wage">
+                            <h3 class="govuk-heading-s">Annual wage</h3>
+                            <p class="govuk-body">@Model.WageText</p>
+                            <p class="govuk-body">@Model.WageInfo</p>
+                            <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
+                                                  asp-value="@FieldIdentifiers.Wage"
+                                                  asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
+                        </div>
+                    </li>
+                    <li>
                         <div class="@Model.WorkingWeekClass" id="@FieldIdentifiers.WorkingWeek">
                             <h3 class="govuk-heading-s">Working week</h3>
                             <p class="govuk-body">@Model.WorkingWeekDescription</p>
                             <p class="govuk-body">Total hours per week: @Model.HoursPerWeek</p>
                             <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
                                                   asp-value="@FieldIdentifiers.WorkingWeek"
-                                                  asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="@Model.WageClass" id="@FieldIdentifiers.Wage">
-                            <h3 class="govuk-heading-s">Yearly wage</h3>
-                            <p class="govuk-body">@Model.WageText</p>
-                            <p class="govuk-body">@Model.WageInfo</p>
-                            <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
-                                                  asp-value="@FieldIdentifiers.Wage"
                                                   asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                         </div>
                     </li>
@@ -152,26 +152,28 @@
                     <li>
                         <div class="@Model.TrainingLevelClass" id="@FieldIdentifiers.TrainingLevel">
                             <h3 class="govuk-heading-s">Apprenticeship level</h3>
-                            <p class="govuk-body">@Model.TrainingLevel <br/>
-                                @Model.Level.ToDescription()</p>
-                            <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
-                                                  asp-value="@FieldIdentifiers.TrainingLevel"
-                                                  asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
-                        </div>
-                    </li>
-                    <li>
-                        <h3 class="govuk-heading-s">Reference number</h3>
-                        <p class="govuk-body">@Model.VacancyReferenceNumber</p>
-                    </li>
-                    <li>
-                        <div class="@Model.NumberOfPositionsClass" id="@FieldIdentifiers.NumberOfPositions">
-                            <h3 class="govuk-heading-s">Positions</h3>
-                            <p class="govuk-body">@Model.NumberOfPositionsCaption</p>
-                            <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
-                                                  asp-value="@FieldIdentifiers.NumberOfPositions"
-                                                  asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
-                        </div>
-                    </li>
+                            <p class="govuk-body">
+                                @Model.TrainingLevel <br />
+                            @Model.Level.ToDescription()
+                        </p>
+                        <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
+                                              asp-value="@FieldIdentifiers.TrainingLevel"
+                                              asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
+                    </div>
+                </li>
+                <li>
+                    <h3 class="govuk-heading-s">Reference number</h3>
+                    <p class="govuk-body">@Model.VacancyReferenceNumber</p>
+                </li>
+                <li>
+                    <div class="@Model.NumberOfPositionsClass" id="@FieldIdentifiers.NumberOfPositions">
+                        <h3 class="govuk-heading-s">Positions</h3>
+                        <p class="govuk-body">@Model.NumberOfPositionsCaption</p>
+                        <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
+                                              asp-value="@FieldIdentifiers.NumberOfPositions"
+                                              asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
+                    </div>
+                </li>
                 </ul>
             </div>
             <div class="govuk-grid-column-two-thirds vacancy-descriptions">
