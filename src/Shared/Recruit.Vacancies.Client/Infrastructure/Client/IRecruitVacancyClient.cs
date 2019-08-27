@@ -40,7 +40,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<IEnumerable<TrainingProviderSummary>> GetAllTrainingProvidersAsync();
         Task UpdateUserAlertAsync(string idamsUserId, AlertType alertType, DateTime dismissedOn);
         EntityValidationResult ValidateQualification(Qualification qualification);
-        Task<EmployerAccountDetails> GetEmployerAccountDetailsAsync(string employerAccountId);
         Task CloseVacancyAsync(Guid vacancyId, VacancyUser user, ClosureReason reason);
 
     }

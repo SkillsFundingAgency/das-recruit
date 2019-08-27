@@ -31,6 +31,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Filters
         private EmployerAccessCheckFilter _sut;
         private Mock<ILevyDeclarationCookieWriter> _levyDeclarationCookieWriter;
         private Mock<IRecruitVacancyClient> _recruitVacancyClient;
+        private Mock<IEmployerAccountProvider> _employerAccountProvider;
         private Mock<IEoiAgreementCookieWriter> _eoiAgreementCookieWriter;
         private Mock<IEmployerAccountTypeCookieWriter> _employerAccountTypeCookieWriter;
         private Mock<HttpContext> _httpContext;
@@ -345,6 +346,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Filters
 
             _levyDeclarationCookieWriter = new Mock<ILevyDeclarationCookieWriter>();
             _recruitVacancyClient = new Mock<IRecruitVacancyClient>();
+            _employerAccountProvider = new Mock<IEmployerAccountProvider>();
             _eoiAgreementCookieWriter = new Mock<IEoiAgreementCookieWriter>();
 
             _employerAccountTypeCookieWriter = new Mock<IEmployerAccountTypeCookieWriter>();
@@ -363,7 +365,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Filters
             {
                 AccountAgreementType = AccountAgreementType.Inconsistent
             };
-            _recruitVacancyClient
+            _employerAccountProvider
                     .Setup(x => x.GetEmployerAccountDetailsAsync("EMPLOYERID"))
                     .ReturnsAsync(_account);
 
@@ -371,6 +373,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Filters
                 Mock.Of<ILogger<EmployerAccessCheckFilter>>(),
                 _levyDeclarationCookieWriter.Object,
                 _recruitVacancyClient.Object,
+                _employerAccountProvider.Object,
                 _eoiAgreementCookieWriter.Object,
                 _employerAccountTypeCookieWriter.Object);
         }

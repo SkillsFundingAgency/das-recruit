@@ -39,18 +39,21 @@ namespace Esfa.Recruit.Employer.Web.Filters
         private readonly IEoiAgreementCookieWriter _eoiCookieWriter;
         private readonly IEmployerAccountTypeCookieWriter _employerAccountTypeCookieWriter;
         private readonly IRecruitVacancyClient _recruitVacancyClient;
+        private readonly IEmployerAccountProvider _employerAccountProvider;
         private readonly string[] _allowedAccountTypes = new string[] { "levy", "nonlevy" };
 
         public EmployerAccessCheckFilter(
             ILogger<EmployerAccessCheckFilter> logger,
             ILevyDeclarationCookieWriter levyCookieWriter,
             IRecruitVacancyClient recruitVacancyClient,
+            IEmployerAccountProvider employerAccountProvider,
             IEoiAgreementCookieWriter eoiCookieWriter,
             IEmployerAccountTypeCookieWriter employerAccountTypeCookieWriter)
         {
             _logger = logger;
             _levyCookieWriter = levyCookieWriter;
             _recruitVacancyClient = recruitVacancyClient;
+            _employerAccountProvider = employerAccountProvider;
             _eoiCookieWriter = eoiCookieWriter;
             _employerAccountTypeCookieWriter = employerAccountTypeCookieWriter;
         }
@@ -117,7 +120,7 @@ namespace Esfa.Recruit.Employer.Web.Filters
                 readValue: _employerAccountTypeCookieWriter.GetCookieFromRequest,
                 result: out result))
             {
-                EmployerAccountDetails accountDetails = await _recruitVacancyClient.GetEmployerAccountDetailsAsync(employerAccountId);
+                EmployerAccountDetails accountDetails = await _employerAccountProvider.GetEmployerAccountDetailsAsync(employerAccountId);
                 result = accountDetails.ApprenticeshipEmployerType;
 
                 if (!_allowedAccountTypes.Any(x => string.Compare(accountDetails.ApprenticeshipEmployerType, x, true) == 0))
@@ -232,7 +235,7 @@ namespace Esfa.Recruit.Employer.Web.Filters
 
         private async Task<bool> GetEmployerHasEoi(string employerAccountId)
         {
-            var account = await _recruitVacancyClient.GetEmployerAccountDetailsAsync(employerAccountId);
+            var account = await _employerAccountProvider.GetEmployerAccountDetailsAsync(employerAccountId);
             return account.AccountAgreementType == AccountAgreementType.NonLevyExpressionOfInterest;
         }
 
