@@ -31,7 +31,9 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy
 
             var vacancy = await _vacancyRepository.GetVacancyAsync(eventData.VacancyId);
 
-            if (vacancy.OwnerType == Entities.OwnerType.Provider)
+            var hasToBeTransferred = vacancy.OwnerType == Entities.OwnerType.Provider;
+
+            if (hasToBeTransferred)
             {
                 await _messaging.SendCommandAsync(
                     new TransferProviderVacancyCommand(
@@ -49,7 +51,9 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy
 
             if (vacancy.Status == Entities.VacancyStatus.Live)
             {
-                await _messaging.SendCommandAsync(new CloseVacancyCommand(vacancy.Id, eventData.QaVacancyUser, Entities.ClosureReason.BlockedByQa));
+                var closureReason = hasToBeTransferred ? Entities.ClosureReason.TransferredByQa : Entities.ClosureReason.BlockedByQa;
+
+                await _messaging.SendCommandAsync(new CloseVacancyCommand(vacancy.Id, eventData.QaVacancyUser, closureReason));
             }
         }
     }

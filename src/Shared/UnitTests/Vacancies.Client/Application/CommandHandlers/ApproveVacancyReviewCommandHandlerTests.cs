@@ -27,6 +27,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
         private readonly Mock<IVacancyRepository> _mockVacancyRepository;
         private readonly Mock<ITimeProvider> _mockTimeProvider;
         private readonly Mock<IMessaging> _mockMessaging;
+        private readonly Mock<IBlockedOrganisationQuery> _mockBlockedOrganisationQuery;
         private readonly VacancyReviewValidator _mockValidator;
         private readonly ApproveVacancyReviewCommandHandler _sut;
 
@@ -42,8 +43,10 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
             _mockTimeProvider = new Mock<ITimeProvider>();
             _mockTimeProvider.Setup(t => t.Now).Returns(DateTime.UtcNow);
 
+            _mockBlockedOrganisationQuery = new Mock<IBlockedOrganisationQuery>();
+
             _sut = new ApproveVacancyReviewCommandHandler(Mock.Of<ILogger<ApproveVacancyReviewCommandHandler>>(), _mockVacancyReviewRepository.Object,
-                                                        _mockVacancyRepository.Object, _mockMessaging.Object, _mockValidator, _mockTimeProvider.Object);
+                                                        _mockVacancyRepository.Object, _mockMessaging.Object, _mockValidator, _mockTimeProvider.Object, _mockBlockedOrganisationQuery.Object);
         }
 
         [Theory]
@@ -62,12 +65,18 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
             _mockMessaging.Verify(x => x.PublishEvent(It.IsAny<VacancyReviewApprovedEvent>()), Times.Never);
         }
 
-        [Fact]
-        public async Task GivenApprovedVacancyReviewCommand_AndVacancyHasBeenTransferredSinceReviewWasCreated_ThenDoNotRaiseVacancyApprovedEventAndCloseVacancy()
+        [Theory]
+        [InlineData(TransferReason.EmployerRevokedPermission, ClosureReason.TransferredByEmployer)]
+        [InlineData(TransferReason.BlockedByQa, ClosureReason.TransferredByQa)]
+        public async Task GivenApprovedVacancyReviewCommand_AndVacancyHasBeenTransferredSinceReviewWasCreated_ThenDoNotRaiseVacancyApprovedEventAndCloseVacancy(TransferReason transferReason, ClosureReason expectedClosureReason)
         {
-            var newVacancyId = Guid.NewGuid();
+            var transferInfo = new TransferInfo
+            {
+                Reason = transferReason
+            };
+            
             var existingVacancy = _autoFixture.Build<Vacancy>()
-                                                .With(x => x.TransferInfo, _autoFixture.Create<TransferInfo>())
+                                                .With(x => x.TransferInfo, transferInfo)
                                                 .Create();
 
             _mockVacancyRepository.Setup(x => x.GetVacancyAsync(existingVacancy.VacancyReference.Value)).ReturnsAsync(existingVacancy);
@@ -89,6 +98,43 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
             _mockMessaging.Verify(x => x.PublishEvent(It.IsAny<VacancyReviewApprovedEvent>()), Times.Never);
 
             existingVacancy.Status.Should().Be(VacancyStatus.Closed);
+            existingVacancy.ClosureReason.Should().Be(expectedClosureReason);
+            _mockVacancyRepository.Verify(x => x.UpdateAsync(existingVacancy), Times.Once);
+        }
+
+        [Fact]
+        public async Task GivenApprovedVacancyReviewCommand_AndProviderHasBeenBlockedSinceReviewWasCreated_ThenDoNotRaiseVacancyApprovedEventAndCloseVacancy()
+        {
+            long blockedProviderUkprn = 12345678;
+
+            var existingVacancy = _autoFixture.Build<Vacancy>()
+                                                .Without(x => x.TransferInfo)
+                                                .With(x => x.TrainingProvider, new TrainingProvider { Ukprn = blockedProviderUkprn })
+                                                .Create();
+
+            _mockVacancyRepository.Setup(x => x.GetVacancyAsync(existingVacancy.VacancyReference.Value)).ReturnsAsync(existingVacancy);
+
+            _mockVacancyReviewRepository.Setup(x => x.GetAsync(_existingReviewId)).ReturnsAsync(new VacancyReview
+            {
+                Id = _existingReviewId,
+                CreatedDate = _mockTimeProvider.Object.Now.AddHours(-5),
+                Status = ReviewStatus.UnderReview,
+                VacancyReference = existingVacancy.VacancyReference.Value,
+                VacancySnapshot = new Vacancy()
+            });
+            
+            _mockBlockedOrganisationQuery.Setup(b => b.GetByOrganisationIdAsync(blockedProviderUkprn.ToString()))
+                .ReturnsAsync(new BlockedOrganisation {BlockedStatus = BlockedStatus.Blocked});
+
+            var command = new ApproveVacancyReviewCommand(_existingReviewId, "comment", new List<ManualQaFieldIndicator>() { }, new List<Guid>());
+
+            await _sut.Handle(command, CancellationToken.None);
+
+            _mockVacancyReviewRepository.Verify(x => x.UpdateAsync(It.Is<VacancyReview>(r => r.Id == _existingReviewId)), Times.Once);
+            _mockMessaging.Verify(x => x.PublishEvent(It.IsAny<VacancyReviewApprovedEvent>()), Times.Never);
+
+            existingVacancy.Status.Should().Be(VacancyStatus.Closed);
+            existingVacancy.ClosureReason.Should().Be(ClosureReason.BlockedByQa);
             _mockVacancyRepository.Verify(x => x.UpdateAsync(existingVacancy), Times.Once);
         }
     }
