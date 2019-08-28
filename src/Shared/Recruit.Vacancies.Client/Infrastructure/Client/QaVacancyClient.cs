@@ -81,20 +81,29 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return dashboard;
         }
 
-        public async Task<List<VacancyReview>> GetSearchResultsAsync(string searchTerm)
+        public async Task<VacancyReview> GetSearchResultAsync(string searchTerm)
         {
             //The return type is a list to allow adding results from other searches to be implemented in future
             var result = new List<VacancyReview>();
 
-            if (!TryGetVacancyReference(searchTerm, out var vacancyReference)) return result;
+            if (TryGetVacancyReference(searchTerm, out var vacancyReference) == false) return null;
 
             var review = await _vacancyReviewQuery.GetLatestReviewByReferenceAsync(vacancyReference);
-            if (review != null && review.Status != ReviewStatus.New) result.Add(review);
 
-            return result;
+            if (review != null)
+            {
+                var canDisplayReview = review.Status != ReviewStatus.New && (review.ManualOutcome == null || review.ManualOutcome != ManualQaOutcome.Transferred);
+
+                if (canDisplayReview)
+                {
+                    return review;
+                }
+            }
+
+            return null;
         }
 
-        private static bool TryGetVacancyReference(string value, out long vacancyReference)
+        private bool TryGetVacancyReference(string value, out long vacancyReference)
         {
             vacancyReference = 0;
             if (string.IsNullOrEmpty(value)) return false;

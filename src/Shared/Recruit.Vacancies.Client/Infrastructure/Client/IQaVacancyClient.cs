@@ -17,7 +17,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<VacancyReview> GetVacancyReviewAsync(Guid reviewId);
         Task ReferVacancyReviewAsync(Guid reviewId, string manualQaComment, List<ManualQaFieldIndicator> manualQaFieldIndicators, List<Guid> automatedQaRuleOutcomeIds);
         Task<Qualifications> GetCandidateQualificationsAsync();
-        Task<List<VacancyReview>> GetSearchResultsAsync(string searchTerm);
+        Task<VacancyReview> GetSearchResultAsync(string searchTerm);
         Task<int> GetApprovedCountAsync(string submittedByUserId);
         Task<List<VacancyReview>> GetVacancyReviewsInProgressAsync();
         Task<int> GetApprovedFirstTimeCountAsync(string submittedByUserId);

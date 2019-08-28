@@ -10,6 +10,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.QA;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
+using System.Collections.Generic;
 
 namespace Esfa.Recruit.Qa.Web.Orchestrators
 {
@@ -46,8 +47,9 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             if(string.IsNullOrEmpty(searchTerm)) return vm;
 
             vm.LastSearchTerm = searchTerm;
-            var searchResults = await _vacancyClient.GetSearchResultsAsync(searchTerm);
-            var searchResultsVmTasks = searchResults.Select(v => MapToViewModelAsync(v, vacancyUser)).ToList();
+            var matchedVacancyReview = await _vacancyClient.GetSearchResultAsync(searchTerm);
+            var searchResults = matchedVacancyReview != null ? new List<VacancyReview>(){ matchedVacancyReview } : new List<VacancyReview>();
+            var searchResultsVmTasks = searchResults.Select(v => MapToViewModelAsync(v, vacancyUser));
             var searchResultsVm = await Task.WhenAll(searchResultsVmTasks);
             vm.SearchResults = searchResultsVm.ToList();
             return vm;
