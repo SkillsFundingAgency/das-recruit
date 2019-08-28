@@ -4,6 +4,7 @@ using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Humanizer;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
 {
@@ -99,8 +100,20 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
         {
             return Review.FieldIndicators.Any(f => f.ReviewFieldIdentifier == fieldIdentifier);
         }
-        public int IncompleteSectionCount { get; set; }
-        public string IncompleteSectionText { get; set; }
+
+        public int IncompleteRequiredSectionCount => new []
+                {
+                    ShortDescriptionSectionState,
+                    SkillsSectionState,
+                    DescriptionsSectionState,
+                    QualificationsSectionState,
+                    EmployerDescriptionSectionState,
+                    ProviderSectionState,
+                    TrainingSectionState,
+                    ApplicationMethodSectionState
+                }.Count(s => s == VacancyPreviewSectionState.Incomplete || s == VacancyPreviewSectionState.InvalidIncomplete);
+
+        public string IncompleteRequiredSectionText => "section".ToQuantity(IncompleteRequiredSectionCount, ShowQuantityAs.None);
         public ProgrammeLevel Level { get; set; }
 
         public IList<string> OrderedFieldNames => new List<string>

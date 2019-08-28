@@ -2,7 +2,9 @@
 using System.Linq;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.ViewModels;
+using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Humanizer;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
 {
@@ -32,7 +34,10 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
         public VacancyPreviewSectionState WageTextSectionState { get; internal set; }
         public VacancyPreviewSectionState DescriptionsSectionState { get; internal set; }
         public VacancyPreviewSectionState WorkingWeekSectionState { get; internal set; }
-        
+
+        public EntityValidationResult SoftValidationErrors { get; internal set; }
+        public bool HideValidationSummary { get; internal set; }
+
         public bool HasWage { get; internal set; }
         public bool HasProgramme { get; internal set; }
 
@@ -45,9 +50,19 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
         public string InfoMessage { get; internal set; }
 
         public bool HasInfo => !string.IsNullOrEmpty(InfoMessage);
-        public int IncompleteSectionCount { get; set; }
-        public string IncompleteSectionText { get; set; }
 
+        public int IncompleteRequiredSectionCount => new[]
+        {
+            ShortDescriptionSectionState,
+            SkillsSectionState,
+            DescriptionsSectionState,
+            QualificationsSectionState,
+            EmployerDescriptionSectionState,
+            TrainingSectionState,
+            ApplicationMethodSectionState
+        }.Count(s => s == VacancyPreviewSectionState.Incomplete || s == VacancyPreviewSectionState.InvalidIncomplete);
+
+        public string IncompleteRequiredSectionText => "section".ToQuantity(IncompleteRequiredSectionCount, ShowQuantityAs.None);
 
         public bool HasIncompleteSkillsSection => SkillsSectionState == VacancyPreviewSectionState.Incomplete || SkillsSectionState == VacancyPreviewSectionState.InvalidIncomplete;
         public bool HasIncompleteQualificationsSection => QualificationsSectionState == VacancyPreviewSectionState.Incomplete || QualificationsSectionState == VacancyPreviewSectionState.InvalidIncomplete;
@@ -68,7 +83,9 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
         public bool HasIncompleteOptionalSections => HasIncompleteThingsToConsiderSection
                                                     || HasIncompleteEmployerWebsiteUrlSection
                                                     || HasIncompleteProviderContactSection;
-        public bool ShowIncompleteSections => (HasIncompleteMandatorySections || HasIncompleteOptionalSections) && !Review.HasBeenReviewed;
+        public bool HasSoftValidationErrors => SoftValidationErrors?.HasErrors == true;
+
+        public bool ShowIncompleteSections => ((HasIncompleteMandatorySections || HasIncompleteOptionalSections) && !Review.HasBeenReviewed) || HasSoftValidationErrors;
         public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
         public string SubmitButtonText => Review.HasBeenReviewed ? "Resubmit vacancy" : "Submit vacancy";
         public bool ApplicationInstructionsRequiresEdit => IsEditRequired(FieldIdentifiers.ApplicationInstructions);
@@ -102,7 +119,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
         {
             return Review.FieldIndicators.Any(f => f.ReviewFieldIdentifier == fieldIdentifier);
         }
-
 
         public IList<string> OrderedFieldNames => new List<string>
         {
