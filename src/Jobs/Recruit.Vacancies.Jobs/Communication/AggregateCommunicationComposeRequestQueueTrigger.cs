@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 
 namespace Esfa.Recruit.Vacancies.Jobs.Communication
 {
-    public class CommunicationRequestQueueTrigger
+    public class AggregateCommunicationComposeRequestQueueTrigger
     {
         private readonly ILogger<CommunicationRequestQueueTrigger> _logger;
         private readonly RecruitWebJobsSystemConfiguration _jobsConfig;
@@ -18,7 +18,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.Communication
 
         private string JobName => GetType().Name;
 
-        public CommunicationRequestQueueTrigger(ILogger<CommunicationRequestQueueTrigger> logger,
+        public AggregateCommunicationComposeRequestQueueTrigger(ILogger<CommunicationRequestQueueTrigger> logger,
             RecruitWebJobsSystemConfiguration jobsConfig,
             ICommunicationService communicationService)
         {
@@ -27,7 +27,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.Communication
             _communicationService = communicationService;
         }
 
-        public async Task ProcessCommunicationRequestAsync([QueueTrigger(CommunicationQueueNames.CommunicationRequests, Connection = "CommunicationsStorage")] string message, TextWriter log)
+        public async Task ProcessAggregateCommunicationComposeRequestAsync([QueueTrigger(CommunicationQueueNames.AggregateCommunicationComposeRequests, Connection = "CommunicationsStorage")] string message, TextWriter log)
         {
             if (_jobsConfig.DisabledJobs.Contains(JobName))
             {
@@ -37,12 +37,12 @@ namespace Esfa.Recruit.Vacancies.Jobs.Communication
 
             try
             {
-                var commReq = JsonConvert.DeserializeObject<CommunicationRequest>(message);
-                _logger.LogInformation($"Start {JobName} For Communication Request: {commReq.RequestType}:{commReq.RequestId}");
+                var req = JsonConvert.DeserializeObject<AggregateCommunicationComposeRequest>(message);
+                _logger.LogInformation($"Start {JobName} For Aggregate Communication Compose Request: {req.AggregateCommunicationRequest.RequestType}:{req.UserId}");
 
-                await _communicationService.ProcessCommunicationRequestAsync(commReq);
+                await _communicationService.ProcessAggregateCommunicationComposeRequestAsync(req);
 
-                _logger.LogInformation($"Finished {JobName} For Communication Request: {commReq.RequestType}:{commReq.RequestId}");
+                _logger.LogInformation($"Finished {JobName} For Aggregate Communication Compose Request: {req.AggregateCommunicationRequest.RequestType}:{req.UserId}");
             }
             catch (JsonException ex)
             {

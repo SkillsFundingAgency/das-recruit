@@ -6,13 +6,22 @@
     /// </summary>
     public class CommunicationUser
     {
-        public string UserId { get; set; }
-        public string Email { get; set; }
-        public string Name { get; set; }
+        public string UserId { get; }
+        public string Email { get; }
+        public string Name { get; }
         /// This will be used to resolve UserPreferencesProvider
         /// This has to be a unique value across systems
         /// example values: VacancyServices.Recruit.Employer, VacancyServices.Faa.Candidates
-        public string UserType { get; set; }
-        public UserParticipation Participation { get; set; }
+        public string UserType { get; }
+        public UserParticipation Participation { get; }
+
+        public CommunicationUser(string userId, string email, string name, string userType, UserParticipation participation)
+        {
+            UserId = userId;
+            Email = email;
+            Name = name;
+            UserType = userType;
+            Participation = participation;
+        }
     }
 }

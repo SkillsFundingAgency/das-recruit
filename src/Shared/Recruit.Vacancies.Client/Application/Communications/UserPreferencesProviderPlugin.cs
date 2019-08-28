@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Communication.Types;
 using Communication.Types.Interfaces;
+using Esfa.Recruit.Vacancies.Client.Application.Communications.ParticipantResolverPlugins;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using NotificationScope = Communication.Types.NotificationScope;
@@ -61,7 +62,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
             if (userPreference.NotificationTypes.HasFlag(NotificationTypes.ApplicationSubmitted))
             {
                 userPref.Channels = DeliveryChannelPreferences.EmailOnly;
-                userPref.Frequency = GetDeliveryFrequencyPreferenceFromUserFrequencyPreference(userPreference.NotificationFrequency);
+                userPref.Frequency = userPreference.NotificationFrequency.GetDeliveryFrequencyPreferenceFromUserFrequencyPreference();
                 userPref.Scope = userPreference.NotificationScope.GetValueOrDefault().ConvertToCommunicationScope();
             }
         }
@@ -71,24 +72,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
             userPref.Channels = DeliveryChannelPreferences.EmailOnly;
             userPref.Frequency = DeliveryFrequency.Immediate;
             userPref.Scope = NotificationScope.Organisation;
-        }
-
-        private DeliveryFrequency GetDeliveryFrequencyPreferenceFromUserFrequencyPreference(NotificationFrequency? notificationFrequency)
-        {
-            if (notificationFrequency.HasValue == false)
-                return DeliveryFrequency.Default;
-
-            switch (notificationFrequency)
-            {
-                case NotificationFrequency.Immediately:
-                    return DeliveryFrequency.Immediate;
-                case NotificationFrequency.Daily:
-                    return DeliveryFrequency.Daily;
-                case NotificationFrequency.Weekly:
-                    return DeliveryFrequency.Weekly;
-                default:
-                    return DeliveryFrequency.Default;
-            }
         }
     }
 }

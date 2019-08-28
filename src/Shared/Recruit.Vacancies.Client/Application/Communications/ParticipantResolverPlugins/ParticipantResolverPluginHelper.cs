@@ -9,14 +9,33 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications.ParticipantRe
     {
         public static IEnumerable<CommunicationUser> ConvertToCommunicationUsers(List<User> users, string primaryUserIdamsId)
         {
-            return users.Select(u => new CommunicationUser()
+            return users.Select(u =>
+                new CommunicationUser(
+                    userId: u.IdamsUserId,
+                    email: u.Email,
+                    name: u.Name,
+                    userType: CommunicationConstants.UserType,
+                    participation: u.IdamsUserId == primaryUserIdamsId ? UserParticipation.PrimaryUser : UserParticipation.SecondaryUser
+                )
+            );
+        }
+
+        public static DeliveryFrequency GetDeliveryFrequencyPreferenceFromUserFrequencyPreference(this NotificationFrequency? notificationFrequency)
+        {
+            if (notificationFrequency.HasValue == false)
+                return DeliveryFrequency.Default;
+
+            switch (notificationFrequency)
             {
-                UserId = u.IdamsUserId,
-                Email = u.Email,
-                Name = u.Name,
-                UserType = CommunicationConstants.UserType, 
-                Participation = u.IdamsUserId == primaryUserIdamsId ? UserParticipation.PrimaryUser : UserParticipation.SecondaryUser
-            });
+                case NotificationFrequency.Immediately:
+                    return DeliveryFrequency.Immediate;
+                case NotificationFrequency.Daily:
+                    return DeliveryFrequency.Daily;
+                case NotificationFrequency.Weekly:
+                    return DeliveryFrequency.Weekly;
+                default:
+                    return DeliveryFrequency.Default;
+            }
         }
     }
 }

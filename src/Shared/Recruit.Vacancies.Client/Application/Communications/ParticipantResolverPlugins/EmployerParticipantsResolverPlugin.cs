@@ -32,5 +32,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications.ParticipantRe
             var users = await _userRepository.GetEmployerUsersAsync(employerAccountId);
             return ParticipantResolverPluginHelper.ConvertToCommunicationUsers(users, null);
         }
+
+        public Task<IEnumerable<CommunicationMessage>> ValidateParticipantAsync(IEnumerable<CommunicationMessage> messages)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

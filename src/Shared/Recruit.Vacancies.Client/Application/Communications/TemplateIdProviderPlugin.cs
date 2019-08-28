@@ -9,7 +9,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
     {
         public string ProviderServiceName => CommunicationConstants.ServiceName;
 
-        public Task<string> GetTemplateId(CommunicationMessage message)
+        public Task<string> GetTemplateId(CommunicationMessage message, bool isAggregate = false)
         {
             var templateId = string.Empty;
             switch(message.RequestType)
@@ -18,8 +18,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
                     templateId = CommunicationConstants.TemplateIds.VacancyRejected;
                     break;
                 case CommunicationConstants.RequestType.ApplicationSubmitted:
-                    if (message.Frequency == DeliveryFrequency.Immediate)
-                        templateId = CommunicationConstants.TemplateIds.ApplicationSubmittedImmediate;
+                    templateId = CommunicationConstants.TemplateIds.ApplicationSubmittedImmediate;
                     break;
                 case CommunicationConstants.RequestType.VacancyWithdrawnByQa:
                     templateId = CommunicationConstants.TemplateIds.VacancyWithdrawnByQa;
