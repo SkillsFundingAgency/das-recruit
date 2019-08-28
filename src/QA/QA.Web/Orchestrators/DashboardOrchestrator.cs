@@ -44,14 +44,17 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
                 vm.InProgressVacancies = inProgressVacanciesVm.ToList();
             }
 
-            if(string.IsNullOrEmpty(searchTerm)) return vm;
+            if (string.IsNullOrEmpty(searchTerm)) return vm;
 
             vm.LastSearchTerm = searchTerm;
             var matchedVacancyReview = await _vacancyClient.GetSearchResultAsync(searchTerm);
-            var searchResults = matchedVacancyReview != null ? new List<VacancyReview>(){ matchedVacancyReview } : new List<VacancyReview>();
-            var searchResultsVmTasks = searchResults.Select(v => MapToViewModelAsync(v, vacancyUser));
-            var searchResultsVm = await Task.WhenAll(searchResultsVmTasks);
-            vm.SearchResults = searchResultsVm.ToList();
+
+            if (matchedVacancyReview != null)
+            {
+                var matchVacancyReviewSearchVm = await MapToViewModelAsync(matchedVacancyReview, vacancyUser);
+                vm.SearchResult = matchVacancyReviewSearchVm;
+            }
+
             return vm;
         }
 

@@ -107,24 +107,21 @@
                 </tr>
             </thead>
             <tbody class="govuk-table__body">
-            @foreach (var vacancy in Model.SearchResults)
-            {
-                var assignmentInfoCaption = vacancy.GetAssignmentInfoCaption();
                 <tr class="govuk-table__row">
-                    <td class="govuk-table__cell">@vacancy.EmployerName</td>
-                    <td class="govuk-table__cell">@vacancy.VacancyTitle</td>
-                    <td class="govuk-table__cell"><span>VAC</span>@vacancy.VacancyReference</td>
-                    <td class="govuk-table__cell">@vacancy.SubmittedDate.ToUkTime().AsGdsDateTime()</td>
-                    <td class="govuk-table__cell">@vacancy.ClosingDate.AsGdsDate()</td>
+                    <td class="govuk-table__cell">@Model.SearchResult.EmployerName</td>
+                    <td class="govuk-table__cell">@Model.SearchResult.VacancyTitle</td>
+                    <td class="govuk-table__cell"><span>VAC</span>@Model.SearchResult.VacancyReference</td>
+                    <td class="govuk-table__cell">@Model.SearchResult.SubmittedDate.ToUkTime().AsGdsDateTime()</td>
+                    <td class="govuk-table__cell">@Model.SearchResult.ClosingDate.AsGdsDate()</td>
                     <td class="govuk-table__cell">
-                        <span asp-show="@vacancy.ShowAssignmentInfoCaption">@assignmentInfoCaption<br /></span>
-                        <a asp-show="@vacancy.CanShowReviewLink" asp-route="@RouteNames.Vacancy_Review_Get" asp-route-reviewId="@vacancy.ReviewId" class="govuk-link">Review</a>
-                        <p asp-show="@vacancy.IsVacancyDeleted">This vacancy has been deleted.</p>
-                        <span asp-show="@vacancy.ShowReviewer">@vacancy.ClosedReviewAssignmentCaption</span>
-                        <a asp-show="@vacancy.IsClosed" asp-route="@RouteNames.Vacancy_Readonly_Review_Get" asp-route-reviewId="@vacancy.ReviewId" class="govuk-link">View (read only)</a>
+                        <span asp-show="@Model.SearchResult.ShowAssignmentInfoCaption">@Model.SearchResult.GetAssignmentInfoCaption()<br /></span>
+                        <a asp-show="@Model.SearchResult.CanShowReviewLink" asp-route="@RouteNames.Vacancy_Review_Get" asp-route-reviewId="@Model.SearchResult.ReviewId" class="govuk-link">Review</a>
+                        <p asp-show="@Model.SearchResult.IsVacancyDeleted">This vacancy has been deleted.</p>
+                        <span asp-show="@Model.SearchResult.ShowReviewer">@Model.SearchResult.ClosedReviewAssignmentCaption</span>
+                        <a asp-show="@Model.SearchResult.IsClosed" asp-route="@RouteNames.Vacancy_Readonly_Review_Get" asp-route-reviewId="@Model.SearchResult.ReviewId" class="govuk-link">View (read only)</a>
                     </td>
                 </tr>
-            }
+
             </tbody>
         </table>
     </div>
@@ -144,7 +141,7 @@
         </h3>
         <p class="govuk-body">Remove a training provider</p>
     </div>
-    
+
     <div asp-show="@Model.IsUserAdmin" class="govuk-grid-column-one-third">
         <h3 class="govuk-heading-s govuk-!-margin-bottom-0">
             <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.WithdrawVacancy_FindVacancy_Get">Close a vacancy</a>

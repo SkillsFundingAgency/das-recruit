@@ -8,17 +8,18 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public int TotalVacanciesForReview { get; set; }
         public int TotalVacanciesBrokenSla { get; set; }
         public int TotalVacanciesResubmitted { get; set; }
-        
+
         public string DashboardMessage { get; set; }
 
         public string SearchTerm { get; set; }
 
         public string LastSearchTerm { get; set; }
 
-        public List<VacancyReviewSearchResultViewModel> SearchResults { get; set; } = new List<VacancyReviewSearchResultViewModel>();
+        public VacancyReviewSearchResultViewModel SearchResult { get; set; }
+        public bool HasSearchResult => SearchResult != null;
         public bool DisplayLastSearchTerm => !string.IsNullOrEmpty(LastSearchTerm);
-        public bool DisplayNoSearchResultsMessage => DisplayLastSearchTerm && !SearchResults.Any();
-        public bool DisplaySearchResults => DisplayLastSearchTerm && SearchResults.Any();
+        public bool DisplayNoSearchResultsMessage => DisplayLastSearchTerm && HasSearchResult == false;
+        public bool DisplaySearchResults => DisplayLastSearchTerm && HasSearchResult;
         public bool HasDashboardMessage => string.IsNullOrWhiteSpace(DashboardMessage) == false;
         public bool IsUserAdmin { get; set; }
         public List<VacancyReviewSearchResultViewModel> InProgressVacancies { get; set; } = new List<VacancyReviewSearchResultViewModel>();
