@@ -82,11 +82,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
         {
             var communicationRequest = new CommunicationRequest(
                 CommunicationConstants.RequestType.VacancyWithdrawnByQa, 
-                CommunicationConstants.ServiceName, 
+                CommunicationConstants.ParticipantResolverNames.VacancyParticipantsResolverName, 
                 CommunicationConstants.ServiceName);
 
             communicationRequest.AddEntity(CommunicationConstants.EntityTypes.Vacancy, vacancyReference);
-            communicationRequest.AddEntity(CommunicationConstants.EntityTypes.ApprenticeshipService, vacancyReference);
+            communicationRequest.AddEntity(CommunicationConstants.EntityTypes.ApprenticeshipServiceUrl, vacancyReference);
             return communicationRequest;
         }
 

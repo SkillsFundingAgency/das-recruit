@@ -14,7 +14,7 @@ using static Esfa.Recruit.Vacancies.Client.Application.Communications.Communicat
 
 namespace UnitTests.Vacancies.Client.Application.Communications
 {
-    public class ApprenticeshipServiceDataEntityPluginTests
+    public class ApprenticeshipServiceUrlDataEntityPluginTests
     {
         private readonly Fixture _fixture = new Fixture();
         const string EmployerUrl = "https://www.google.com/";
@@ -23,9 +23,9 @@ namespace UnitTests.Vacancies.Client.Application.Communications
         private readonly Mock<IOptions<CommunicationsConfiguration>> _mockOptions = new Mock<IOptions<CommunicationsConfiguration>>();
         private readonly Mock<IVacancyRepository> _mockRepository = new Mock<IVacancyRepository>();
 
-        private ApprenticeshipServiceDataEntityPlugin GetSut() => new ApprenticeshipServiceDataEntityPlugin(_mockRepository.Object, _mockOptions.Object);
+        private ApprenticeshipServiceUrlDataEntityPlugin GetSut() => new ApprenticeshipServiceUrlDataEntityPlugin(_mockRepository.Object, _mockOptions.Object);
 
-        public ApprenticeshipServiceDataEntityPluginTests()
+        public ApprenticeshipServiceUrlDataEntityPluginTests()
         {
             _mockOptions.Setup(m => m.Value).Returns(new CommunicationsConfiguration{EmployersApprenticeshipServiceUrl = EmployerUrl, ProvidersApprenticeshipServiceUrl = ProviderUrl});
         }
@@ -54,10 +54,9 @@ namespace UnitTests.Vacancies.Client.Application.Communications
 
             var dataItems = await sut.GetDataItemsAsync(_fixture.Create<long>());
 
-            dataItems.Count().Should().Be(2);
+            dataItems.Count().Should().Be(1);
 
             dataItems.Single(d => d.Key == DataItemKeys.ApprenticeshipService.ApprenticeshipServiceUrl).Value.Should().Be(expectedUrl);
-            dataItems.Single(d => d.Key == DataItemKeys.ApprenticeshipService.HelpdeskPhoneNumber).Value.Should().Be(CommunicationConstants.HelpdeskPhoneNumber);
         }
 
     }

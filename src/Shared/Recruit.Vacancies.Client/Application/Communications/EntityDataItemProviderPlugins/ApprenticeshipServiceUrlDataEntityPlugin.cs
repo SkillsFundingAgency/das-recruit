@@ -11,12 +11,12 @@ using Microsoft.Extensions.Options;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Communications.EntityDataItemProviderPlugins
 {
-    public class ApprenticeshipServiceDataEntityPlugin : IEntityDataItemProvider
+    public class ApprenticeshipServiceUrlDataEntityPlugin : IEntityDataItemProvider
     {
         private readonly CommunicationsConfiguration _communicationsConfiguration;
         private readonly IVacancyRepository _vacancyRepository;
-        public string EntityType => CommunicationConstants.EntityTypes.ApprenticeshipService;
-        public ApprenticeshipServiceDataEntityPlugin(IVacancyRepository vacancyRepository, IOptions<CommunicationsConfiguration> communicationsConfiguration)
+        public string EntityType => CommunicationConstants.EntityTypes.ApprenticeshipServiceUrl;
+        public ApprenticeshipServiceUrlDataEntityPlugin(IVacancyRepository vacancyRepository, IOptions<CommunicationsConfiguration> communicationsConfiguration)
         {
             _vacancyRepository = vacancyRepository;
             _communicationsConfiguration = communicationsConfiguration.Value;
@@ -26,18 +26,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications.EntityDataIte
         {
             if (long.TryParse(entityId.ToString(), out var vacancyReference) == false)
             {
-                throw new InvalidEntityIdException(EntityType, nameof(ApprenticeshipServiceDataEntityPlugin));
+                throw new InvalidEntityIdException(EntityType, nameof(ApprenticeshipServiceUrlDataEntityPlugin));
             }
 
             var vacancy = await _vacancyRepository.GetVacancyAsync(vacancyReference);
 
             
-            return new [] { GetApplicationUrlDataItem(vacancy), GetHelpdeskNumberDataItem() };
-        }
-
-        private CommunicationDataItem GetHelpdeskNumberDataItem()
-        {
-            return new CommunicationDataItem(CommunicationConstants.DataItemKeys.ApprenticeshipService.HelpdeskPhoneNumber, CommunicationConstants.HelpdeskPhoneNumber);
+            return new [] { GetApplicationUrlDataItem(vacancy) };
         }
 
         private CommunicationDataItem GetApplicationUrlDataItem(Vacancy vacancy)

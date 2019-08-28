@@ -22,13 +22,13 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy
         public async Task HandleAsync(string eventPayload)
         {
             var @event = DeserializeEvent<VacancyReferredEvent>(eventPayload);
-            var commsRequest = GetReferredVacancyCommunicationRequest(@event.VacancyReference);
+            var communicationRequest = GetReferredVacancyCommunicationRequest(@event.VacancyReference);
 
             try
             {
                 _logger.LogInformation($"Processing {nameof(VacancyReferredEvent)} for vacancy: {{VacancyId}}", @event.VacancyId);
 
-                await _queue.AddMessageAsync(commsRequest);
+                await _queue.AddMessageAsync(communicationRequest);
 
                 _logger.LogInformation($"Finished Processing {nameof(VacancyReferredEvent)} for vacancy: {{VacancyId}}", @event.VacancyId);
             }
@@ -41,11 +41,13 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy
 
         private CommunicationRequest GetReferredVacancyCommunicationRequest(long vacancyReference)
         {
-            var commsRequest = new CommunicationRequest(
-                CommunicationConstants.RequestType.VacancyRejected, CommunicationConstants.ServiceName, CommunicationConstants.ServiceName);
-            commsRequest.AddEntity(CommunicationConstants.EntityTypes.Vacancy, vacancyReference);
-            commsRequest.AddEntity(CommunicationConstants.EntityTypes.ApprenticeshipService, vacancyReference);
-            return commsRequest;
+            var communicationRequest = new CommunicationRequest(
+                CommunicationConstants.RequestType.VacancyRejected, 
+                CommunicationConstants.ParticipantResolverNames.VacancyParticipantsResolverName, 
+                CommunicationConstants.ServiceName);
+            communicationRequest.AddEntity(CommunicationConstants.EntityTypes.Vacancy, vacancyReference);
+            communicationRequest.AddEntity(CommunicationConstants.EntityTypes.ApprenticeshipServiceUrl, vacancyReference);
+            return communicationRequest;
         }
     }
 }

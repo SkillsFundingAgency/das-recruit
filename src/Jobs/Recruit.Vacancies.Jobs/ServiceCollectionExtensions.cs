@@ -31,6 +31,7 @@ using Esfa.Recruit.Client.Application.Communications;
 using Esfa.Recruit.Vacancies.Client.Application.Communications.EntityDataItemProviderPlugins;
 using System.Collections.Generic;
 using SFA.DAS.Encoding;
+using Esfa.Recruit.Vacancies.Client.Application.Communications.ParticipantResolverPlugins;
 
 namespace Esfa.Recruit.Vacancies.Jobs
 {
@@ -118,10 +119,13 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddTransient<ICommunicationService, CommunicationService>();
 
             services.AddTransient<IEntityDataItemProvider, VacancyDataEntityPlugin>();
-            services.AddTransient<IParticipantResolver, ParticipantResolverPlugin>();
+            services.AddTransient<IParticipantResolver, VacancyParticipantsResolverPlugin>();
+            services.AddTransient<IParticipantResolver, ProviderParticipantsResolverPlugin>();
             services.AddTransient<IUserPreferencesProvider, UserPreferencesProviderPlugin>();
             services.AddTransient<ITemplateIdProvider, TemplateIdProviderPlugin>();
-            services.AddTransient<IEntityDataItemProvider, ApprenticeshipServiceDataEntityPlugin>();
+            services.AddTransient<IEntityDataItemProvider, ApprenticeshipServiceUrlDataEntityPlugin>();
+            services.AddTransient<IEntityDataItemProvider, ApprenticeshipServiceConfigDataEntityPlugin>();
+            services.AddTransient<IEntityDataItemProvider, ProviderDataEntityPlugin>();
 
             services.Configure<CommunicationsConfiguration>(configuration.GetSection("CommunicationsConfiguration"));
         }

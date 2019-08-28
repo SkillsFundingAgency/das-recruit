@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,20 +8,20 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Microsoft.Extensions.Logging;
 
-namespace Esfa.Recruit.Vacancies.Client.Application.Communications 
+namespace Esfa.Recruit.Vacancies.Client.Application.Communications.ParticipantResolverPlugins
 {
-    public class ParticipantResolverPlugin : IParticipantResolver 
+    public class VacancyParticipantsResolverPlugin : IParticipantResolver 
     {
         private readonly IVacancyRepository _vacancyRepository;
         private readonly IUserRepository _userRepository;
-        private readonly ILogger<ParticipantResolverPlugin> _logger;
+        private readonly ILogger<VacancyParticipantsResolverPlugin> _logger;
 
-        public string ParticipantResolverName => CommunicationConstants.ServiceName;
+        public string ParticipantResolverName => CommunicationConstants.ParticipantResolverNames.VacancyParticipantsResolverName;
 
-        public ParticipantResolverPlugin(
+        public VacancyParticipantsResolverPlugin(
             IVacancyRepository vacancyRepository, 
             IUserRepository userRepository,
-            ILogger<ParticipantResolverPlugin> logger) 
+            ILogger<VacancyParticipantsResolverPlugin> logger) 
         {
             _userRepository = userRepository;
             _vacancyRepository = vacancyRepository;
@@ -30,8 +31,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
         public async Task<IEnumerable<CommunicationUser>> GetParticipantsAsync(CommunicationRequest request) 
         {
             _logger.LogDebug($"Resolving participants for RequestType: '{request.RequestType}'");
+            
             var entityId = request.Entities.Single(e => e.EntityType == CommunicationConstants.EntityTypes.Vacancy).EntityId.ToString();
-            long.TryParse(entityId, out var vacancyReference);
+            if(long.TryParse(entityId, out var vacancyReference) == false)
+            {
+                return Array.Empty<CommunicationUser>();
+            }
+
             var vacancy = await _vacancyRepository.GetVacancyAsync(vacancyReference);
             List<User> users = null;
             if (vacancy.OwnerType == OwnerType.Employer) 
@@ -42,19 +48,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
             {
                 users = await _userRepository.GetProviderUsers(vacancy.TrainingProvider.Ukprn.GetValueOrDefault());
             }
-            return ConvertToCommunicationUser(users, vacancy.SubmittedByUser.UserId);
-        }
-
-        private IEnumerable<CommunicationUser> ConvertToCommunicationUser(List<User> user, string primaryUserId)
-        {
-            return user.Select(u => new CommunicationUser()
-            {
-                UserId = u.IdamsUserId,
-                Email = u.Email,
-                Name = u.Name,
-                UserType = CommunicationConstants.UserType, 
-                Participation = u.IdamsUserId == primaryUserId ? UserParticipation.PrimaryUser : UserParticipation.SecondaryUser
-            });
+            return ParticipantResolverPluginHelper.ConvertToCommunicationUsers(users, vacancy.SubmittedByUser.UserId);
         }
     }
 }

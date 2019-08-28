@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Communication.Types;
 using Communication.Types.Interfaces;
@@ -23,8 +24,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
                 case CommunicationConstants.RequestType.VacancyWithdrawnByQa:
                     templateId = CommunicationConstants.TemplateIds.VacancyWithdrawnByQa;
                     break;
-                default:
+                case CommunicationConstants.RequestType.ProviderBlockedProvider:
+                    templateId = CommunicationConstants.TemplateIds.ProviderBlockedProvider;
                     break;
+                default:
+                    throw new NotImplementedException($"Template for request type {message.RequestType} is not defined.");
             }
             return Task.FromResult(templateId);
         }
