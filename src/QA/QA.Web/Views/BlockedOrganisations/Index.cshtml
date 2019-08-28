@@ -22,7 +22,8 @@
     
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
-            <h2 class="govuk-heading-m govuk-!-margin-bottom-0"> training providers removed from the recruitment service</h2>
+            <h2 asp-hide="Model.HasOneBlockedProviders" class="govuk-heading-m govuk-!-margin-bottom-0">@Model.BlockedOrganisations.Count training providers removed from the recruitment service</h2>
+            <h2 asp-show="Model.HasOneBlockedProviders" class="govuk-heading-m govuk-!-margin-bottom-0">1 training provider removed from the recruitment service</h2>
             <table class="govuk-table">
                 <thead class="govuk-table__head">
                     <tr class="govuk-table__row">
