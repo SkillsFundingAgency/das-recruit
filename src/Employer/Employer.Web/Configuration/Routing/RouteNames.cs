@@ -77,6 +77,9 @@
         public const string Dates_Get = "Dates_Get";
         public const string Dates_Post = "Dates_Post";
 
+        public const string Duration_Get = "Duration_Get";
+        public const string Duration_Post = "Duration_Post";
+
         public const string Vacancy_Preview_Get = "Vacancy_Preview_Get";
         public const string Preview_Submit_Post = "Preview_Submit_Post";
         

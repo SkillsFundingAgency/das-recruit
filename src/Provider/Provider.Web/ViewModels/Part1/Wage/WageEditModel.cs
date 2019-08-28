@@ -7,16 +7,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Wage
 {
     public class WageEditModel : VacancyRouteModel
     {
-        [TypeOfInteger(ErrorMessage = ErrMsg.TypeOfInteger.Duration)]
-        public string Duration { get; set; }
-
-        public DurationUnit DurationUnit { get; set; }
-
-        public string WorkingWeekDescription { get; set; }
-
-        [TypeOfDecimal(2, ErrorMessage = ErrMsg.TypeOfDecimal.WeeklyHours)]
-        public string WeeklyHours { get; set; }
-
         public WageType? WageType { get; set; }
 
         [TypeOfMoney(ErrorMessage = ErrMsg.TypeOfMoney.FixedWageYearlyAmount)]

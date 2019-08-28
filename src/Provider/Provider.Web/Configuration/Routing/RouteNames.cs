@@ -85,6 +85,8 @@
         public const string VacancyEditDates_Get = "VacancyEditDates_Get";
         public const string VacancyEditDates_Post = "VacancyEditDates_Post";
         public const string VacancyManage_Get = "VacancyManage_Get";
+        public const string Duration_Get = "Duration_Get";
+        public const string Duration_Post = "Duration_Post";
         public const string Wage_Get = "Wage_Get";
         public const string Wage_Post = "Wage_Post";
         public const string ApplicationReview_Get = "ApplicationReview_Get";

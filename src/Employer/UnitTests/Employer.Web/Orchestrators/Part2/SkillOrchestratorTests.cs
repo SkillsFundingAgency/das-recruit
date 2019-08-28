@@ -197,6 +197,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
                 ProgrammeId = "2",
                 Wage = new Wage
                 {
+                    Duration = 1,
                     WageType = WageType.NationalMinimumWage
                 },
                 LegalEntityName = "legal name",

@@ -16,7 +16,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
     public class WageOrchestrator : EntityValidatingOrchestrator<Vacancy, WageEditModel>
     {
-        private const VacancyRuleSet ValidationRules = VacancyRuleSet.Duration | VacancyRuleSet.WorkingWeekDescription | VacancyRuleSet.WeeklyHours | VacancyRuleSet.Wage | VacancyRuleSet.MinimumWage;
+        private const VacancyRuleSet ValidationRules = VacancyRuleSet.Wage | VacancyRuleSet.MinimumWage;
         private readonly IEmployerVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
@@ -32,20 +32,12 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         {
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Wage_Get);
 
-            var training = await _vacancyClient.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
-
             var vm = new WageViewModel
             {
-                Duration = vacancy.Wage?.Duration?.ToString(),
-                DurationUnit = vacancy.Wage?.DurationUnit ?? DurationUnit.Month,
-                WorkingWeekDescription = vacancy.Wage?.WorkingWeekDescription,
-                WeeklyHours = $"{vacancy.Wage?.WeeklyHours:0.##}",
                 WageType = vacancy.Wage?.WageType,
                 FixedWageYearlyAmount = vacancy.Wage?.FixedWageYearlyAmount?.AsMoney(),
                 WageAdditionalInformation = vacancy.Wage?.WageAdditionalInformation,
                 PageInfo = Utility.GetPartOnePageInfo(vacancy),
-                TrainingTitle = training?.Title,
-                TrainingDurationMonths = training?.Duration ?? 0
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
@@ -61,10 +53,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         {
             var vm = await GetWageViewModelAsync((VacancyRouteModel)m);
 
-            vm.Duration = m.Duration;
-            vm.DurationUnit = m.DurationUnit;
-            vm.WorkingWeekDescription = m.WorkingWeekDescription;
-            vm.WeeklyHours = m.WeeklyHours;
             vm.WageType = m.WageType;
             vm.FixedWageYearlyAmount = m.FixedWageYearlyAmount;
             vm.WageAdditionalInformation = m.WageAdditionalInformation;
@@ -76,17 +64,13 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         {
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, m, RouteNames.Wage_Post);
             
-            vacancy.Wage = new Wage
-            {
-                Duration = int.TryParse(m.Duration, out int duration) == true ? duration : default(int?),
-                DurationUnit = m.DurationUnit,
-                WorkingWeekDescription = m.WorkingWeekDescription,
-                WeeklyHours = m.WeeklyHours.AsDecimal(2),
-                WageType = m.WageType,
-                FixedWageYearlyAmount = (m.WageType == WageType.FixedWage) ? m.FixedWageYearlyAmount?.AsMoney() : null,
-                WageAdditionalInformation = m.WageAdditionalInformation
-            };
+            if(vacancy.Wage == null)
+                vacancy.Wage = new Wage();
 
+            vacancy.Wage.WageType = m.WageType;
+            vacancy.Wage.FixedWageYearlyAmount = (m.WageType == WageType.FixedWage) ? m.FixedWageYearlyAmount?.AsMoney() : null;
+            vacancy.Wage.WageAdditionalInformation = m.WageAdditionalInformation;
+            
             return await ValidateAndExecute(
                 vacancy, 
                 v => _vacancyClient.Validate(v, ValidationRules),
@@ -98,10 +82,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         {
             var mappings = new EntityToViewModelPropertyMappings<Vacancy, WageEditModel>();
 
-            mappings.Add(e => e.Wage.Duration, vm => vm.Duration);
-            mappings.Add(e => e.Wage.DurationUnit, vm => vm.DurationUnit);
-            mappings.Add(e => e.Wage.WorkingWeekDescription, vm => vm.WorkingWeekDescription);
-            mappings.Add(e => e.Wage.WeeklyHours, vm => vm.WeeklyHours);
             mappings.Add(e => e.Wage.WageType, vm => vm.WageType);
             mappings.Add(e => e.Wage.FixedWageYearlyAmount, vm => vm.FixedWageYearlyAmount);
             mappings.Add(e => e.Wage.WageAdditionalInformation, vm => vm.WageAdditionalInformation);

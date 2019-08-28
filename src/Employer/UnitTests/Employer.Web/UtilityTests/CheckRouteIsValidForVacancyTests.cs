@@ -196,6 +196,48 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
         [InlineData(RouteNames.Location_Get, false)]
         [InlineData(RouteNames.Location_Post, false)]
         [InlineData(RouteNames.LegalEntityAgreement_SoftStop_Get, false)]
+        [InlineData(RouteNames.Duration_Get, false)]
+        [InlineData(RouteNames.Duration_Post, false)]
+        [InlineData("any other route", true)]
+        public void ShouldRedirectToDuration(string route, bool shouldRedirect)
+        {
+            var vacancy = new Vacancy
+            {
+                EmployerAccountId = "EMPLOYER ACCOUNT ID",
+                Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
+                Title = "has a value",
+                ProgrammeId = "has a value",
+                NumberOfPositions = 3,
+                LegalEntityName = "legal name",
+                EmployerNameOption = EmployerNameOption.RegisteredName,
+                EmployerLocation = new Address { Postcode = "has a value" },
+                StartDate = DateTime.Now
+            };
+
+            CheckRouteIsValidForVacancyTest(vacancy, route, shouldRedirect, RouteNames.Duration_Get);
+        }
+
+        [Theory]
+        [InlineData(RouteNames.Title_Get, false)]
+        [InlineData(RouteNames.Title_Post, false)]
+        [InlineData(RouteNames.Training_Get, false)]
+        [InlineData(RouteNames.Training_Post, false)]
+        [InlineData(RouteNames.Training_Confirm_Get, false)]
+        [InlineData(RouteNames.Training_Confirm_Post, false)]
+        [InlineData(RouteNames.Training_First_Time_Get, false)]
+        [InlineData(RouteNames.Training_First_Time_Post, false)]
+        [InlineData(RouteNames.Training_Help_Get, false)]
+        [InlineData(RouteNames.NumberOfPositions_Get, false)]
+        [InlineData(RouteNames.NumberOfPositions_Post, false)]
+        [InlineData(RouteNames.Employer_Get, false)]
+        [InlineData(RouteNames.Employer_Post, false)]
+        [InlineData(RouteNames.EmployerName_Get, false)]
+        [InlineData(RouteNames.EmployerName_Post, false)]
+        [InlineData(RouteNames.Location_Get, false)]
+        [InlineData(RouteNames.Location_Post, false)]
+        [InlineData(RouteNames.LegalEntityAgreement_SoftStop_Get, false)]
+        [InlineData(RouteNames.Duration_Get, false)]
+        [InlineData(RouteNames.Duration_Post, false)]
         [InlineData(RouteNames.Wage_Get, false)]
         [InlineData(RouteNames.Wage_Post, false)]
         [InlineData("any other route", true)]
@@ -211,7 +253,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
                 LegalEntityName = "legal name",
                 EmployerNameOption = EmployerNameOption.RegisteredName,
                 EmployerLocation = new Address { Postcode = "has a value" },
-                StartDate = DateTime.Now
+                StartDate = DateTime.Now,
+                Wage = new Wage { Duration = 1 }
             };
 
             CheckRouteIsValidForVacancyTest(vacancy, route, shouldRedirect, RouteNames.Wage_Get);
@@ -232,7 +275,11 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
                 EmployerNameOption = EmployerNameOption.RegisteredName,
                 EmployerLocation = new Address { Postcode = "has a value" },
                 StartDate = DateTime.Now,
-                Wage = new Wage { WageType = WageType.FixedWage}
+                Wage = new Wage
+                {
+                    Duration = 1,
+                    WageType = WageType.FixedWage
+                }
             };
 
             CheckRouteIsValidForVacancyTest(vacancy, route, shouldRedirect, null);

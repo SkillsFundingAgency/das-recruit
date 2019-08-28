@@ -110,6 +110,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<DatesOrchestrator>();
             services.AddTransient<AlertsOrchestrator>();
             services.AddTransient<ProviderAgreementOrchestrator>();
+            services.AddTransient<DurationOrchestrator>();
         }
 
         private static void RegisterMapperDeps(IServiceCollection services)
