@@ -30,7 +30,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications.ParticipantRe
                 return Array.Empty<CommunicationUser>();
             }
             var users = await _userRepository.GetProviderUsers(ukprn);
-            return ParticipantResolverPluginHelper.ConvertToCommunicationUser(users, null);
+            return ParticipantResolverPluginHelper.ConvertToCommunicationUsers(users, null);
         }
     }
 }

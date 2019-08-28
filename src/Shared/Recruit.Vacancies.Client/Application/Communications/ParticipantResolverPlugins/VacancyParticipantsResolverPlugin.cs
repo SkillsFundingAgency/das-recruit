@@ -48,7 +48,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications.ParticipantRe
             {
                 users = await _userRepository.GetProviderUsers(vacancy.TrainingProvider.Ukprn.GetValueOrDefault());
             }
-            return ParticipantResolverPluginHelper.ConvertToCommunicationUser(users, vacancy.SubmittedByUser.UserId);
+            return ParticipantResolverPluginHelper.ConvertToCommunicationUsers(users, vacancy.SubmittedByUser.UserId);
         }
     }
 }

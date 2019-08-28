@@ -7,9 +7,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications.ParticipantRe
 {
     public static class ParticipantResolverPluginHelper
     {
-        public static IEnumerable<CommunicationUser> ConvertToCommunicationUser(List<User> user, string primaryUserIdamsId)
+        public static IEnumerable<CommunicationUser> ConvertToCommunicationUsers(List<User> users, string primaryUserIdamsId)
         {
-            return user.Select(u => new CommunicationUser()
+            return users.Select(u => new CommunicationUser()
             {
                 UserId = u.IdamsUserId,
                 Email = u.Email,
