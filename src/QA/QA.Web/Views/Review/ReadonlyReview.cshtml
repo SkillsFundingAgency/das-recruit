@@ -59,17 +59,17 @@
         <div class="govuk-grid-column-one-third">
             <ul class="govuk-list">
                 <li>
+                    <div id="@Anchors.YearlyWage">
+                        <h3 class="govuk-heading-s">Annual wage</h3>
+                        <p class="govuk-body">@Model.WageText</p>
+                        <p class="govuk-body">@Model.WageInfo</p>
+                    </div>
+                </li>
+                <li>
                     <div id="@Anchors.WorkingWeek">
                         <h3 class="govuk-heading-s">Working week</h3>
                         <p class="govuk-body">@Model.WorkingWeekDescription</p>
                         <p class="govuk-body">Total hours per week: @Model.HoursPerWeek</p>
-                    </div>
-                </li>
-                <li>
-                    <div id="@Anchors.YearlyWage">
-                        <h3 class="govuk-heading-s">Yearly wage</h3>
-                        <p class="govuk-body">@Model.WageText</p>
-                        <p class="govuk-body">@Model.WageInfo</p>
                     </div>
                 </li>
                 <li>
