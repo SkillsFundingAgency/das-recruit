@@ -14,6 +14,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications.ParticipantRe
     {
         private readonly IVacancyRepository _vacancyRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IUserNotificationPreferencesRepository _userPreferenceRepository;
         private readonly ILogger<VacancyParticipantsResolverPlugin> _logger;
 
         public string ParticipantResolverName => CommunicationConstants.ParticipantResolverNames.VacancyParticipantsResolverName;
@@ -21,9 +22,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications.ParticipantRe
         public VacancyParticipantsResolverPlugin(
             IVacancyRepository vacancyRepository,
             IUserRepository userRepository,
+            IUserNotificationPreferencesRepository userPreferenceRepository,
             ILogger<VacancyParticipantsResolverPlugin> logger)
         {
             _userRepository = userRepository;
+            _userPreferenceRepository = userPreferenceRepository;
             _vacancyRepository = vacancyRepository;
             _logger = logger;
         }

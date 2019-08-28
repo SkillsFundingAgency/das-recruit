@@ -7,5 +7,6 @@ namespace Communication.Types.Interfaces
     {
         string ParticipantResolverName { get; }
         Task<IEnumerable<CommunicationUser>> GetParticipantsAsync(CommunicationRequest request);
+        Task<IEnumerable<CommunicationMessage>> ValidateParticipantAsync(IEnumerable<CommunicationMessage> messages);
     }
 }

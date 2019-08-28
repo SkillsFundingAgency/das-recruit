@@ -12,10 +12,11 @@ namespace Communication.Core
 {
     public class CommunicationProcessor : ICommunicationProcessor
     {
-        private readonly Dictionary<string, IParticipantResolver> _participantResolvers = new Dictionary<string, IParticipantResolver>();
-        private readonly Dictionary<string, IUserPreferencesProvider> _userPreferencesProviders = new Dictionary<string, IUserPreferencesProvider>();
-        private readonly Dictionary<string, IEntityDataItemProvider> _entityDataItemProviders = new Dictionary<string, IEntityDataItemProvider>();
-        private readonly Dictionary<string, ITemplateIdProvider> _templateIdProviders = new Dictionary<string, ITemplateIdProvider>();
+        private readonly IDictionary<string, IParticipantResolver> _participantResolvers = new Dictionary<string, IParticipantResolver>();
+        private readonly IDictionary<string, IUserPreferencesProvider> _userPreferencesProviders = new Dictionary<string, IUserPreferencesProvider>();
+        private readonly IDictionary<string, IEntityDataItemProvider> _entityDataItemProviders = new Dictionary<string, IEntityDataItemProvider>();
+        private readonly IDictionary<string, ITemplateIdProvider> _templateIdProviders = new Dictionary<string, ITemplateIdProvider>();
+        private readonly IDictionary<string, ICompositeDataItemProvider> _compositeDataItemProviders = new Dictionary<string, ICompositeDataItemProvider>();
         private readonly ILogger<CommunicationProcessor> _logger;
 
         public CommunicationProcessor(
@@ -23,12 +24,14 @@ namespace Communication.Core
             IEnumerable<IUserPreferencesProvider> userPreferencesProviders,
             IEnumerable<IEntityDataItemProvider> entityDataItemProviders,
             IEnumerable<ITemplateIdProvider> templateIdProviders,
+            IEnumerable<ICompositeDataItemProvider> compositeDataItemProviders,
             ILogger<CommunicationProcessor> logger)
         {
             foreach (var plugin in participantResolvers) _participantResolvers.Add(plugin.ParticipantResolverName, plugin);
             foreach (var plugin in userPreferencesProviders) _userPreferencesProviders.Add(plugin.UserType, plugin);
             foreach (var plugin in entityDataItemProviders) _entityDataItemProviders.Add(plugin.EntityType, plugin);
             foreach (var plugin in templateIdProviders) _templateIdProviders.Add(plugin.ProviderServiceName, plugin);
+            foreach (var plugin in compositeDataItemProviders) _compositeDataItemProviders.Add(plugin.ProviderName, plugin);
             _logger = logger;
         }
 
@@ -52,7 +55,7 @@ namespace Communication.Core
             var messages = GenerateCommunicationMessages(request, request.TemplateProviderName, dataItems, optedInParticipants);
             _logger.LogInformation($"{messages.Count()} messages generated for request id: '{request.RequestId}'");
 
-            await SetMessageTemplateIds(messages);
+            await SetMessageTemplateIdsAsync(messages);
 
             return messages;
         }
@@ -104,7 +107,7 @@ namespace Communication.Core
             return participants;
         }
 
-        private async Task SetMessageTemplateIds(IEnumerable<CommunicationMessage> messages)
+        private async Task SetMessageTemplateIdsAsync(IEnumerable<CommunicationMessage> messages)
         {
             foreach (var message in messages)
             {
@@ -112,7 +115,7 @@ namespace Communication.Core
                     throw new TemplateIdProviderNotFoundException(message.OriginatingServiceName);
 
                 var templateIdProvider = _templateIdProviders[message.OriginatingServiceName];
-                var templateId = await templateIdProvider.GetTemplateId(message);
+                var templateId = await templateIdProvider.GetTemplateIdAsync(message);
 
                 if (string.IsNullOrWhiteSpace(templateId))
                     throw new TemplateIdNotFoundException(message);
@@ -157,6 +160,81 @@ namespace Communication.Core
                     p.Preferences.Channels != DeliveryChannelPreferences.None
                     && !(p.Preferences.Scope == NotificationScope.Individual
                         && p.User.Participation == UserParticipation.SecondaryUser));
+        }
+
+        public async Task<CommunicationMessage> CreateAggregateMessageAsync(AggregateCommunicationRequest request, IEnumerable<CommunicationMessage> messages)
+        {
+            var recipient = GetUserFromAggregateMessage(messages);
+
+            var participant = (await GetPreferencesForParticipantsAsync(request.RequestType, new[] {recipient})).Single();
+
+            if (participant.Preferences.Channels == DeliveryChannelPreferences.None)
+                return null;
+
+            var validMessages = await GetValidatedAggregateMessagesAsync(messages);
+
+            if (!validMessages.Any())
+                return null;
+
+            var message = await GenerateMessageForAggregateMessagesAsync(request, validMessages);
+
+            return message;
+        }
+
+        private CommunicationUser GetUserFromAggregateMessage(IEnumerable<CommunicationMessage> messages)
+        {
+            var templateMessage = GetTemplateMessageFromMessagesToBeAggregated(messages);
+
+            return new CommunicationUser(templateMessage.Recipient.UserId, templateMessage.Recipient.Email, templateMessage.Recipient.Name, templateMessage.Recipient.UserType, UserParticipation.PrimaryUser);
+        }
+
+        private CommunicationMessage GetTemplateMessageFromMessagesToBeAggregated(IEnumerable<CommunicationMessage> messages) => messages.First();
+
+        private async Task<IEnumerable<CommunicationMessage>> GetValidatedAggregateMessagesAsync(IEnumerable<CommunicationMessage> messages)
+        {
+            var recipientsResolverName = messages.First().ParticipantsResolverName;
+
+            if (!_participantResolvers.ContainsKey(recipientsResolverName))
+                throw new UnknownRecipientResolverTypeException($"Unable to resolve recipient resolver named '{recipientsResolverName}'");
+
+            var recipientsResolver = _participantResolvers[recipientsResolverName];
+
+            var validatedMessages = await recipientsResolver.ValidateParticipantAsync(messages);
+
+            return validatedMessages;
+        }
+
+        private async Task<CommunicationMessage> GenerateMessageForAggregateMessagesAsync(AggregateCommunicationRequest request, IEnumerable<CommunicationMessage> messages)
+        {
+            var templateMessage = GetTemplateMessageFromMessagesToBeAggregated(messages);
+
+            var aggregatedMessage = new CommunicationMessage
+            {
+                Id = request.RequestId,
+                RequestDateTime = request.RequestDateTime,
+                ParticipantsResolverName = templateMessage.ParticipantsResolverName,
+                OriginatingServiceName = templateMessage.OriginatingServiceName,
+                Recipient = new CommunicationUser(templateMessage.Recipient.UserId, templateMessage.Recipient.Email, templateMessage.Recipient.Name, templateMessage.Recipient.UserType, UserParticipation.PrimaryUser),
+                RequestType = request.RequestType,
+                Channel = templateMessage.Channel,
+                Frequency = DeliveryFrequency.Immediate,
+                TemplateId = templateMessage.TemplateId
+            };
+
+            //note: tries all providers until one handles the request - this is inefficient
+            //doesn't need to loop if we can work out the composite beforehand from request type
+            foreach (var provider in _compositeDataItemProviders.Values)
+            {
+                var consolidatedMessageData = await provider.GetConsolidatedMessageDataItemsAsync(aggregatedMessage, messages);
+
+                if (consolidatedMessageData != null && consolidatedMessageData.Any())
+                {
+                    aggregatedMessage.DataItems = consolidatedMessageData.ToList();
+                    break;
+                }
+            }
+
+            return aggregatedMessage;
         }
     }
 }

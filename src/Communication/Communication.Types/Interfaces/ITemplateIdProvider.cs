@@ -8,6 +8,6 @@ namespace Communication.Types.Interfaces
         /// This has to be unique value across all the possible services
         /// Example value: VacancyServices.Recruit.Employer
         string ProviderServiceName { get; }
-        Task<string> GetTemplateId(CommunicationMessage message);
+        Task<string> GetTemplateId(CommunicationMessage message, bool isAggregate = false);
     }
 }

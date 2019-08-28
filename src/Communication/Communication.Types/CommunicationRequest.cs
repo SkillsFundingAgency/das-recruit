@@ -21,7 +21,6 @@ namespace Communication.Types
         public CommunicationRequest(string requestType, string participantsResolverName, string templateProviderName) : this()
         {
             RequestId = Guid.NewGuid();
-
             RequestType = requestType;
             ParticipantsResolverName = participantsResolverName;
             TemplateProviderName = templateProviderName;

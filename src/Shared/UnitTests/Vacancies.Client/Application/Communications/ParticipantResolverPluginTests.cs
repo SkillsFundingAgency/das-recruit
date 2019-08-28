@@ -19,8 +19,8 @@ namespace UnitTests.Vacancies.Client.Application.Communications
         private static Fixture _fixture = new Fixture();
         private Mock<IVacancyRepository> _mockVacancyRepository = new Mock<IVacancyRepository>();
         private Mock<IUserRepository> _mockUserRepository = new Mock<IUserRepository>();
+        private Mock<IUserNotificationPreferencesRepository> _mockUserNotificationPreferenceRepository = new Mock<IUserNotificationPreferencesRepository>();
         private Mock<ILogger<VacancyParticipantsResolverPlugin>> _mockLogger = new Mock<ILogger<VacancyParticipantsResolverPlugin>>();
-
 
         private User GetUser(OwnerType owner) => _fixture.Build<User>().With(u => u.Name, owner.ToString()).Create();
 
@@ -61,7 +61,7 @@ namespace UnitTests.Vacancies.Client.Application.Communications
         {
             var vacancy = _fixture
                 .Build<Vacancy>()
-                .With(v => v.OwnerType,  OwnerType.Provider)
+                .With(v => v.OwnerType, OwnerType.Provider)
                 .With(v => v.SubmittedByUser, _fixture.Create<VacancyUser>())
                 .Create();
 
@@ -105,7 +105,7 @@ namespace UnitTests.Vacancies.Client.Application.Communications
         private VacancyParticipantsResolverPlugin GetSut()
         {
             return new VacancyParticipantsResolverPlugin(
-                _mockVacancyRepository.Object, _mockUserRepository.Object, _mockLogger.Object);
+                _mockVacancyRepository.Object, _mockUserRepository.Object, _mockUserNotificationPreferenceRepository.Object, _mockLogger.Object);
         }
     }
 }

@@ -108,7 +108,9 @@ namespace Esfa.Recruit.Vacancies.Jobs
 
             services.AddScoped<CommunicationRequestQueueTrigger>();
 
-            services.AddSingleton<IDispatchQueuePublisher>(_ => new DispatchQueuePublisher(configuration.GetConnectionString(("CommunicationsStorage"))));
+            var communicationStorageConnString = configuration.GetConnectionString("CommunicationsStorage");
+            services.AddSingleton<IDispatchQueuePublisher>(_ => new DispatchQueuePublisher(communicationStorageConnString));
+            services.AddSingleton<IAggregateCommunicationComposeQueuePublisher>(_ => new AggregateCommunicationComposeQueuePublisher(communicationStorageConnString));
             services.AddScoped<CommunicationMessageDispatcherQueueTrigger>();
             services.AddScoped<CommunicationMessageDispatcher>();
 
