@@ -1,14 +1,18 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace Esfa.Recruit.Provider.Web.Middleware
 {
@@ -17,34 +21,72 @@ namespace Esfa.Recruit.Provider.Web.Middleware
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly IProviderVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
-
+        private readonly IBlockedOrganisationQuery _blockedOrganisationsRepo;
+        private readonly ITempDataProvider _tempDataProvider;
         private readonly Predicate<Claim> _ukprnClaimFinderPredicate = c => c.Type.Equals(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier);
+        private readonly IDictionary<string, object> _dict = new Dictionary<string, object>();
 
-        public ProviderAccountHandler(IHostingEnvironment hostingEnvironment, IProviderVacancyClient client, IRecruitVacancyClient vacancyClient)
+        public ProviderAccountHandler(IHostingEnvironment hostingEnvironment, IProviderVacancyClient client, IRecruitVacancyClient vacancyClient, IBlockedOrganisationQuery blockedOrganisationsRepo, ITempDataProvider tempDataProvider)
         {
             _hostingEnvironment = hostingEnvironment;
             _client = client;
             _vacancyClient = vacancyClient;
+            _blockedOrganisationsRepo = blockedOrganisationsRepo;
+            _tempDataProvider = tempDataProvider;
         }
 
         protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, ProviderAccountRequirement requirement)
         {
-            var authorized = HasServiceAuthorization(context) &&
-                             HasUkprnAuthorization(context) &&
-                             await HasRoatpAuthorizationAsync(context);
+            var hasIdentityServerAuthorization = HasServiceAuthorization(context) &&
+                                                HasUkprnAuthorization(context);
 
-            if (authorized)
+            if (context.User.HasClaim(_ukprnClaimFinderPredicate))
             {
-                if (HasDoneOncePerAuthorizedSessionActions(context) == false)
-                {
-                    //Run actions that must be done only once per authorized session
-                    await SetupProvider(context);
+                var ukprnFromClaim = context.User.FindFirst(_ukprnClaimFinderPredicate).Value;
 
-                    SetOncePerAuthorizedSessionActionsCompleted(context);
+                var isOnRoatp = await HasRoatpAuthorizationAsync(context, ukprnFromClaim);
+
+                if (hasIdentityServerAuthorization && isOnRoatp)
+                {
+                    if (HasDoneOncePerAuthorizedSessionActions(context) == false)
+                    {
+                        var isProviderBlocked = await HasBeenBlockedOnRecruit(context, ukprnFromClaim);
+
+                        if (isProviderBlocked == false)
+                        {
+                            //Run actions that must be done only once per authorized session
+                            await SetupProvider(context);
+
+                            SetOncePerAuthorizedSessionActionsCompleted(context);
+                        }
+                        else
+                        {
+                            context.Fail();
+                        }
+                    }
+
+                    if (context.HasFailed)
+                    {
+                        var mvcContext = (AuthorizationFilterContext)context.Resource;
+                        _tempDataProvider.SaveTempData(mvcContext.HttpContext, _dict);
+                    }
+                    else
+                    {
+                        context.Succeed(requirement);
+                    }
                 }
-                
-                context.Succeed(requirement);
             }
+        }
+
+        private async Task<bool> HasBeenBlockedOnRecruit(AuthorizationHandlerContext context, string ukprnFromClaim)
+        {
+            var bo = await _blockedOrganisationsRepo.GetByOrganisationIdAsync(ukprnFromClaim);
+            var isBlocked = (bo == null || bo.BlockedStatus == BlockedStatus.Unblocked) == false;
+
+            var mvcContext = (AuthorizationFilterContext)context.Resource;
+            _dict.Add(TempDataKeys.IsBlockedProvider, isBlocked);
+
+            return isBlocked;
         }
 
         private bool HasServiceAuthorization(AuthorizationHandlerContext context)
@@ -73,6 +115,7 @@ namespace Esfa.Recruit.Provider.Web.Middleware
                     if (!string.IsNullOrEmpty(ukprnFromUrl) && ukprnFromUrl.Equals(ukprnFromClaim))
                     {
                         mvcContext.HttpContext.Items.Add(ContextItemKeys.ProviderIdentifier, ukprnFromClaim);
+                        _dict.Add(TempDataKeys.ProviderIdentifier, ukprnFromClaim);
 
                         return true;
                     }
@@ -86,15 +129,13 @@ namespace Esfa.Recruit.Provider.Web.Middleware
             return false;
         }
 
-        private async Task<bool> HasRoatpAuthorizationAsync(AuthorizationHandlerContext context)
+        private async Task<bool> HasRoatpAuthorizationAsync(AuthorizationHandlerContext context, string ukprnFromClaim)
         {
             if (HasDoneOncePerAuthorizedSessionActions(context))
                 return true;
 
             try
             {
-                var ukprnFromClaim = context.User.FindFirst(_ukprnClaimFinderPredicate).Value;
-
                 if (long.TryParse(ukprnFromClaim, out var ukprn) == false)
                     return false;
 
@@ -103,17 +144,19 @@ namespace Esfa.Recruit.Provider.Web.Middleware
 
                 var allProviders = await _vacancyClient.GetAllTrainingProvidersAsync();
                 var provider = allProviders.SingleOrDefault(p => p.Ukprn == ukprn);
+                _dict.Add(TempDataKeys.ProviderName, provider.ProviderName);
+
                 return provider != null;
             }
             catch (Exception)
             {
                 return false;
-            } 
+            }
         }
-        
+
         private async Task SetupProvider(AuthorizationHandlerContext context)
         {
-            if (context.Resource is AuthorizationFilterContext mvcContext && 
+            if (context.Resource is AuthorizationFilterContext mvcContext &&
                 mvcContext.RouteData.Values.ContainsKey(RouteValues.Ukprn))
             {
                 var ukprn = context.User.FindFirst(_ukprnClaimFinderPredicate).Value;

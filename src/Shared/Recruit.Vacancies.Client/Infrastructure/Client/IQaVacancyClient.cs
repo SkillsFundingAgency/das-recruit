@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.QA;
@@ -15,7 +16,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task ApproveVacancyReviewAsync(Guid reviewId, string manualQaComment, List<ManualQaFieldIndicator> manualQaFieldIndicators, List<Guid> automatedQaRuleOutcomeIds);
         Task<VacancyReview> GetVacancyReviewAsync(Guid reviewId);
         Task ReferVacancyReviewAsync(Guid reviewId, string manualQaComment, List<ManualQaFieldIndicator> manualQaFieldIndicators, List<Guid> automatedQaRuleOutcomeIds);
-        Task ApproveReferredReviewAsync(Guid reviewId, string shortDescription, string vacancyDescription, string trainingDescription, string outcomeDescription, string thingsToConsider, string employerDescription);
         Task<Qualifications> GetCandidateQualificationsAsync();
         Task<List<VacancyReview>> GetSearchResultsAsync(string searchTerm);
         Task<int> GetApprovedCountAsync(string submittedByUserId);
@@ -30,5 +30,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<VacancyReview> GetCurrentReferredVacancyReviewAsync(long vacancyReference);
         Task<List<VacancyReview>> GetVacancyReviewHistoryAsync(long vacancyReference);
         Task<int> GetAnonymousApprovedCountAsync(long legalEntityId);
+        Task<Guid> CreateApplicationsReportAsync(DateTime fromDate, DateTime toDate, VacancyUser user, string reportName);
+        Task<List<ReportSummary>> GetReportsAsync();
+        Task<Report> GetReportAsync(Guid reportId);
+        void WriteReportAsCsv(Stream stream, Report report);
+        Task IncrementReportDownloadCountAsync(Guid reportId);
     }
 }

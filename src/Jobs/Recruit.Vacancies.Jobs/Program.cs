@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Communication.Core;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Configuration;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore;
@@ -13,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
+using SFA.DAS.Configuration.AzureTableStorage;
 
 namespace Esfa.Recruit.Vacancies.Jobs
 {
@@ -56,15 +56,23 @@ namespace Esfa.Recruit.Vacancies.Jobs
                             .AddAzureStorage()
                             .AddTimers();
                     })
-                    .ConfigureAppConfiguration(b =>
+                    .ConfigureAppConfiguration((hostBuilderContext, configBuilder)=>
                     {
-                        b.AddJsonFile("appSettings.json", optional: false)
+                        configBuilder.AddJsonFile("appSettings.json", optional: false)
                             .AddJsonFile($"appSettings.{RecruitEnvironment.EnvironmentName}.json", true)
-                            .AddEnvironmentVariables();
+                            .AddEnvironmentVariables()
+                            .AddAzureTableStorage(
+                            options => {
+                                options.ConfigurationKeys = new[] { "SFA.DAS.Encoding" };
+                                options.EnvironmentNameEnvironmentVariableName = "APPSETTING_ASPNETCORE_Environment";
+                                options.StorageConnectionStringEnvironmentVariableName = "CUSTOMCONNSTR_ConfigurationStorageConnectionString";
+                                options.PreFixConfigurationKeys = false;
+                            }
+                        );
 
                         if (RecruitEnvironment.IsDevelopment)
                         {
-                            b.AddUserSecrets<Program>();
+                            configBuilder.AddUserSecrets<Program>();
                         }
                     })
                     .ConfigureLogging((context, b) =>
@@ -85,6 +93,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
                     })
                     .ConfigureServices((context, services) =>
                     {
+                        services.AddOptions();
                         services.AddSingleton<IQueueProcessorFactory, CustomQueueProcessorFactory>();
                         services.Configure<QueuesOptions>(options =>
                         {

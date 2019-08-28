@@ -142,7 +142,7 @@ characterCount = function (element, count) {
         count = text.length;
         count += (text.match(/\n/g) || []).length;
     }
-    
+
     var maxLength = $element.attr("data-val-length-max"),
     absRemainder = Math.abs(maxLength - count),
     $maxLengthCountElement = $element.closest(".govuk-form-group").find(".maxchar-count"),
@@ -155,7 +155,7 @@ characterCount = function (element, count) {
         $maxLengthCountElement.hide();
         return;
     }
-        
+
     if (count > maxLength) {
         $maxLengthCountElement.parent().addClass("has-error");
         $maxLengthTextElement.text(absRemainder === 1 ? " character over the limit" : " characters over the limit");
@@ -196,7 +196,7 @@ $(window).on("load", function(e) {
     // If there is an error summary, set focus to the summary
     if ($('.error-summary').length) {
       $('.error-summary').focus();
-    } 
+    }
 });
 
 function handleAnchorClicks() {
@@ -205,7 +205,7 @@ function handleAnchorClicks() {
         var $menu = $("#floating-menu-holder .account-information");
 
         $(".summary-link").on("click", function (e) {
-            
+
             var hash = $(this)[0].hash;
             var $element = $(hash);
             $element.focus();
@@ -258,7 +258,7 @@ function initializeHtmlEditors() {
         content_style: ".mce-content-body {font-size:19px;font-family:nta,Arial,sans-serif;}",
         setup: function (tinyMceEditor) {
             var element = tinyMceEditor.getElement();
-            
+
             tinyMceEditor.on('keyup',
                 function (e) {
                     setEditorMaxLength(element, tinyMceEditor);
@@ -291,10 +291,9 @@ $(function () {
 	CookieBanner.addCookieMessage();
     //Legacy menu script
     sfa.navigation.init();
-    $('ul#global-nav-links').collapsableNav();
     // Dirty forms handling
     $('form').areYouSure();
     //handle anchor clicks to account for floating menu
     handleAnchorClicks();
-    window.GOVUKFrontend.initAll()
+    window.GOVUKFrontend.initAll();
 });

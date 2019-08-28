@@ -1,0 +1,22 @@
+﻿@model Esfa.Recruit.Provider.Web.ViewModels.Error.ProviderAccessRevokedViewModel
+@{
+    ViewBag.Title = "Access revoked";
+    ViewBag.ShowNav = false;
+}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">You no longer have access to the recruitment service</h1>
+
+        <div class="govuk-warning-text">
+            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+            <strong class="govuk-warning-text__text">
+                <span class="govuk-warning-text__assistive">Warning</span>
+                @Model.ProviderName is removed from the recruitment service. All vacancies you created have been transferred to the employers.
+            </strong>
+        </div>
+
+        <p class="govuk-body">If you wish to discuss this further you can contact our helpdesk on:</p>
+        <partial name="@RecruitPartialNames.ContactDetailsListPartial" />
+        <p><a asp-route="@RouteNames.Dashboard_Account_Home" class="govuk-button">Return to homepage</a></p>
+    </div>
+</div>

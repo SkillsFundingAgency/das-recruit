@@ -10,13 +10,15 @@
             "request": "launch",
             "preLaunchTask": "build-jobs",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceRoot}/Jobs/Recruit.Vacancies.Jobs/bin/Debug/netcoreapp2.1/Esfa.Recruit.Vacancies.Jobs.dll",
+            "program": "${workspaceRoot}/Jobs/Recruit.Vacancies.Jobs/bin/Debug/netcoreapp2.2/Esfa.Recruit.Vacancies.Jobs.dll",
             "args": [],
             "cwd": "${workspaceFolder}/Jobs/Recruit.Vacancies.Jobs",
             // For more information about the 'console' field, see https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md#console-terminal-window
             "console": "internalConsole",
             "env": {
-                "ASPNETCORE_ENVIRONMENT": "Development"
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "APPSETTING_ASPNETCORE_ENVIRONMENT": "Development",
+                "CUSTOMCONNSTR_ConfigurationStorageConnectionString": "UseDevelopmentStorage=true;"
             },
             "stopAtEntry": false,
             "internalConsoleOptions": "openOnSessionStart"

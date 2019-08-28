@@ -31,17 +31,21 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         public async Task<WageViewModel> GetWageViewModelAsync(VacancyRouteModel vrm)
         {
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Wage_Get);
-            
+
+            var training = await _vacancyClient.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
+
             var vm = new WageViewModel
             {
                 Duration = vacancy.Wage?.Duration?.ToString(),
-                DurationUnit = vacancy.Wage?.DurationUnit ?? DurationUnit.Year,
+                DurationUnit = vacancy.Wage?.DurationUnit ?? DurationUnit.Month,
                 WorkingWeekDescription = vacancy.Wage?.WorkingWeekDescription,
                 WeeklyHours = $"{vacancy.Wage?.WeeklyHours:0.##}",
                 WageType = vacancy.Wage?.WageType,
                 FixedWageYearlyAmount = vacancy.Wage?.FixedWageYearlyAmount?.AsMoney(),
                 WageAdditionalInformation = vacancy.Wage?.WageAdditionalInformation,
-                PageInfo = Utility.GetPartOnePageInfo(vacancy)
+                PageInfo = Utility.GetPartOnePageInfo(vacancy),
+                TrainingTitle = training?.Title,
+                TrainingDurationMonths = training?.Duration ?? 0
             };
 
             if (vacancy.Status == VacancyStatus.Referred)

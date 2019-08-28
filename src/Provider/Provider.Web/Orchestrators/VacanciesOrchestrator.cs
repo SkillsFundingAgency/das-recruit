@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
+using Esfa.Recruit.Provider.Web.Extensions;
+using Esfa.Recruit.Provider.Web.Services;
 using Esfa.Recruit.Provider.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Mappers;
@@ -17,21 +20,39 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 {
     public class VacanciesOrchestrator
     {
-        private const int VacanciesPerPage = 25;
-        private readonly IProviderVacancyClient _client;
-        private readonly ITimeProvider _timeProvider;
         private const int ClosingSoonDays = 5;
+        private const int VacanciesPerPage = 25;
+        private readonly IProviderVacancyClient _providerVacancyClient;
+        private readonly IRecruitVacancyClient _recruitVacancyClient;
+        private readonly ITimeProvider _timeProvider;
+        private readonly IProviderAlertsViewModelFactory _providerAlertsViewModelFactory;
 
-        public VacanciesOrchestrator(IProviderVacancyClient client, ITimeProvider timeProvider)
+        public VacanciesOrchestrator(
+            IProviderVacancyClient providerVacancyClient,
+            IRecruitVacancyClient recruitVacancyClient,
+            ITimeProvider timeProvider,
+            IProviderAlertsViewModelFactory providerAlertsViewModelFactory)
         {
-            _client = client;
+            _providerVacancyClient = providerVacancyClient;
+            _recruitVacancyClient = recruitVacancyClient;
             _timeProvider = timeProvider;
+            _providerAlertsViewModelFactory = providerAlertsViewModelFactory;
         }
 
         public async Task<VacanciesViewModel> GetVacanciesViewModelAsync(
-            long ukprn, string filter, int page, string searchTerm)
+            VacancyUser user, string filter, int page, string searchTerm)
         {
-            var vacancies = await GetVacanciesAsync(ukprn);
+            var getDashboardTask = _providerVacancyClient.GetDashboardAsync(user.Ukprn.Value, createIfNonExistent: true);
+            var getUserDetailsTask = _recruitVacancyClient.GetUsersDetailsAsync(user.UserId);
+
+            await Task.WhenAll(getDashboardTask, getUserDetailsTask);
+
+            var dashboard = getDashboardTask.Result;
+            var userDetails = getUserDetailsTask.Result;
+
+            var alerts = _providerAlertsViewModelFactory.Create(dashboard, userDetails);
+
+            var vacancies = new List<VacancySummary>(dashboard?.Vacancies ?? Array.Empty<VacancySummary>());
 
             var filteringOption = SanitizeFilter(filter);
 
@@ -68,7 +89,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 Filter = filteringOption,
                 SearchTerm = searchTerm,
                 ResultsHeading = GetFilterHeading(filteredVacanciesTotal, filteringOption, searchTerm),
-                HasAnyVacancies = vacancies.Any()
+                HasAnyVacancies = vacancies.Any(),
+                Alerts = alerts
             };
 
             return vm;
@@ -117,19 +139,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 .OrderByDescending(v => v.CreatedDate)
 
                 .ToList(); 
-        }
-
-        private async Task<List<VacancySummary>> GetVacanciesAsync(long ukprn)
-        {
-            var dashboard = await _client.GetDashboardAsync(ukprn);
-
-            if (dashboard == null)
-            {
-                await _client.GenerateDashboard(ukprn);
-                dashboard = await _client.GetDashboardAsync(ukprn);
-            }
-
-            return dashboard?.Vacancies?.ToList() ?? new List<VacancySummary>();
         }
 
         private int SanitizePage(int page, int totalVacancies)

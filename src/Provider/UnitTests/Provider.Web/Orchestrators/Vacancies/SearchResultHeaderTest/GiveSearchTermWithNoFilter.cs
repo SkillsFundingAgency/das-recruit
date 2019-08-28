@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using FluentAssertions;
-using Moq;
 using Xunit;
 
 namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies.SearchResultHeaderTest
@@ -14,7 +13,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies.SearchResu
         {
             var expectedMessage = "0 vacancies with 'nurse'";
             var sut = GetSut(new List<VacancySummary>());
-            var vm = await sut.GetVacanciesViewModelAsync(It.IsAny<long>(), "All", 1, "nurse");
+            var vm = await sut.GetVacanciesViewModelAsync(User, "All", 1, "nurse");
             vm.ResultsHeading.Should().Be(expectedMessage);
         }
 
@@ -23,7 +22,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies.SearchResu
         {
             var expectedMessage = "1 vacancy with 'nurse'";
             var sut = GetSut(GenerateVacancySummaries(1, "nurse", string.Empty));
-            var vm = await sut.GetVacanciesViewModelAsync(It.IsAny<long>(), "All", 1, "nurse");
+            var vm = await sut.GetVacanciesViewModelAsync(User, "All", 1, "nurse");
             vm.ResultsHeading.Should().Be(expectedMessage);
         }
 
@@ -32,7 +31,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies.SearchResu
         {
             var expectedMessage = "2 vacancies with 'nurse'";
             var sut = GetSut(GenerateVacancySummaries(2, "nurse", string.Empty));
-            var vm = await sut.GetVacanciesViewModelAsync(It.IsAny<long>(), "All", 1, "nurse");
+            var vm = await sut.GetVacanciesViewModelAsync(User, "All", 1, "nurse");
             vm.ResultsHeading.Should().Be(expectedMessage);
         }
     }

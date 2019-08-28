@@ -13,5 +13,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
         internal const string EmployerProfiles = "employerProfiles";
         internal const string Reports = "reports";
         internal const string UserNotificationPreferences = "userNotificationPreferences";
+        internal const string BlockedOrganisations = "blockedOrganisations";
     }
 }

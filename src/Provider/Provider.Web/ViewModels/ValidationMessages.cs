@@ -16,5 +16,10 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         {
             public const string SelectionRequired = "You must select a work address";
         }
+
+        public static class TrainingFirstVacancyValidationMessages
+        {
+            public const string HasFoundTraining = "Please select an option to continue.";
+        }
     }
 }

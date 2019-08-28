@@ -25,7 +25,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
         public EmployerDashboardProjectionService(
             IVacancyQuery vacancyQuery,
             IVacancySummariesProvider vacancySummariesQuery,
-            IQueryStoreWriter queryStoreWriter, 
+            IQueryStoreWriter queryStoreWriter,
             ILogger<EmployerDashboardProjectionService> logger,
             IApprenticeshipProgrammeProvider apprenticeshipProgrammeProvider,
             ITimeProvider timeProvider)

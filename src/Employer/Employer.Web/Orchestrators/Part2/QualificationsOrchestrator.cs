@@ -109,7 +109,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             return await ValidateAndExecute(vacancy,
                 v => 
                 {
-                    var result = _vacancyClient.Validate(v, ValidationRules);
+                    var result = _vacancyClient.ValidateQualification(qualification);
                     SyncErrorsAndModel(result.Errors, m);
                     return result;
                 },

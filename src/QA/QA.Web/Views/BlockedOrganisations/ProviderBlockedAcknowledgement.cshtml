@@ -1,0 +1,26 @@
+@model Esfa.Recruit.QA.Web.ViewModels.ManageProvider.ProviderBlockedAcknowledgementViewModel
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-panel govuk-panel--confirmation">
+            <h1 class="govuk-panel__title">
+                Removed training provider
+            </h1>
+            <div class="govuk-panel__body">
+                <p class="govuk-body">
+                    <div>@Model.Name</div>
+                    <strong class="govuk-!-font-weight-bold">UKPRN:@Model.Ukprn</strong>
+                </p>
+            </div>
+        </div>
+
+        <p class="govuk-body">
+            It may take up to 24 hours for this training provider to be removed.
+        </p>
+        <p class="govuk-body">
+            We will email the employers and let them know about this change.
+        </p>
+
+        <a asp-route="@RouteNames.BlockedOrganisations_Get" class="govuk-button">Back to permissions dashboard</a>
+
+    </div>
+</div>

@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Orchestrators;
+using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer;
 using FluentAssertions;
-using Microsoft.Extensions.Options;
 using Moq;
 using Xunit;
 
@@ -33,7 +33,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Dashboard
 
             var orch = GetOrchestrator(vacancies);
 
-            var vm = await orch.GetDashboardViewModelAsync(EmployerAccountId, "Submitted", 2);
+            var vm = await orch.GetDashboardViewModelAsync(EmployerAccountId, "Submitted", 2, new VacancyUser(), string.Empty);
 
             vm.ShowResultsTable.Should().BeTrue();
             vm.HasVacancies.Should().BeTrue();
@@ -59,7 +59,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Dashboard
 
             var orch = GetOrchestrator(vacancies);
 
-            var vm = await orch.GetDashboardViewModelAsync(EmployerAccountId, "Submitted", 2);
+            var vm = await orch.GetDashboardViewModelAsync(EmployerAccountId, "Submitted", 2, new VacancyUser(), string.Empty);
 
             vm.ShowResultsTable.Should().BeTrue();
             vm.HasVacancies.Should().BeTrue();
@@ -68,6 +68,51 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Dashboard
 
             vm.Vacancies.Count.Should().Be(25);
         }
+
+        [Fact]
+        public async Task SearchFilterResults_ShouldReturnSingleVacancy()
+        {
+            var searchTerm = "VacancyTitle_22";
+            var vacancies = new List<VacancySummary>();
+            for (var i = 1; i <= 25; i++)
+            {
+                vacancies.Add(new VacancySummary
+                {
+                    Title = "VacancyTitle_" + i,
+                    Status = VacancyStatus.Submitted
+                });
+            }
+
+            var orch = GetOrchestrator(vacancies);
+            var vm = await orch.GetDashboardViewModelAsync(EmployerAccountId, "Submitted", 2, new VacancyUser(), searchTerm);
+            vm.ShowResultsTable.Should().BeTrue();
+            vm.HasVacancies.Should().BeTrue();
+            vm.Vacancies.Count.Should().Be(1);
+            vm.Vacancies.FirstOrDefault().Title.Should().BeEquivalentTo(searchTerm);
+        }
+
+        [Fact] 
+        public async Task SearchFilterResults_ShouldReturnAllMatchingVacancies()
+        {
+            var searchTerm = "VacancyTitle_";
+            var vacancies = new List<VacancySummary>();
+            for (var i = 1; i <= 25; i++)
+            {
+                vacancies.Add(new VacancySummary
+                {
+                    Title = "VacancyTitle_" + i,
+                    Status = VacancyStatus.Submitted
+                });
+            }
+
+            var orch = GetOrchestrator(vacancies);
+            var vm = await orch.GetDashboardViewModelAsync(EmployerAccountId, "Submitted", 2, new VacancyUser(), searchTerm);
+            vm.ShowResultsTable.Should().BeTrue();
+            vm.HasVacancies.Should().BeTrue();
+            vm.Vacancies.Count.Should().Be(vacancies.Count);
+            vm.Vacancies.All(x => x.Title.Contains(searchTerm));
+        }
+
 
         private DashboardOrchestrator GetOrchestrator(List<VacancySummary> vacancies)
         {
@@ -79,8 +124,11 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Dashboard
                 {
                     Vacancies = vacancies
                 }));
+            
+            var recruitClientMock = new Mock<IRecruitVacancyClient>();
+            recruitClientMock.Setup(c => c.GetUsersDetailsAsync(It.IsAny<string>())).ReturnsAsync(new User());
 
-            return new DashboardOrchestrator(clientMock.Object, timeProviderMock.Object);
+            return new DashboardOrchestrator(clientMock.Object, timeProviderMock.Object, recruitClientMock.Object, new AlertViewModelService());
         }
     }
 }

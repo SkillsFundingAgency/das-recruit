@@ -39,5 +39,7 @@
         public static QueryViewType QaDashboard => new QueryViewType(nameof(QaDashboard), "QaDashboard");
         public static QueryViewType ClosedVacancy => new QueryViewType(nameof(ClosedVacancy), "ClosedVacancy_{0}");
         public static QueryViewType VacancyAnalyticsSummary => new QueryViewType(nameof(VacancyAnalyticsSummary), "VacancyAnalyticsSummary_{0}");
+        public static QueryViewType BlockedEmployerOrganisations => new QueryViewType(nameof(BlockedEmployerOrganisations), "BlockedEmployerOrganisations");
+        public static QueryViewType BlockedProviderOrganisations => new QueryViewType(nameof(BlockedProviderOrganisations), "BlockedProviderOrganisations");
     }
 }

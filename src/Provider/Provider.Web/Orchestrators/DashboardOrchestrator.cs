@@ -1,29 +1,52 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Esfa.Recruit.Provider.Web.Services;
 using Esfa.Recruit.Provider.Web.ViewModels;
+using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Provider;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators
 {
     public class DashboardOrchestrator
     {
         private const int ClosingSoonDays = 5;
-        private readonly IProviderVacancyClient _client;
+        private readonly IProviderVacancyClient _vacancyClient;
         private readonly ITimeProvider _timeProvider;
+        private readonly IRecruitVacancyClient _client;
+        private readonly AlertViewModelService _alertViewModelService;
+        private readonly IProviderAlertsViewModelFactory _providerAlertsViewModelFactory;
 
-        public DashboardOrchestrator(IProviderVacancyClient client, ITimeProvider timeProvider)
+        public DashboardOrchestrator(
+            IProviderVacancyClient vacancyClient,
+            ITimeProvider timeProvider,
+            IRecruitVacancyClient client,
+            AlertViewModelService alertViewModelService,
+            IProviderAlertsViewModelFactory providerAlertsViewModelFactory)
         {
-            _client = client;
+            _vacancyClient = vacancyClient;
             _timeProvider = timeProvider;
+            _client = client;
+            _alertViewModelService = alertViewModelService;
+            _providerAlertsViewModelFactory = providerAlertsViewModelFactory;
         }
 
-        public async Task<DashboardViewModel> GetDashboardViewModelAsync(long ukprn)
+        public async Task<DashboardViewModel> GetDashboardViewModelAsync(VacancyUser user)
         {
-            List<VacancySummary> vacancies = await GetVacanciesAsync(ukprn);
+            var dashboardTask = _vacancyClient.GetDashboardAsync(user.Ukprn.Value, createIfNonExistent: true);
+            var userDetailsTask = _client.GetUsersDetailsAsync(user.UserId);
+
+            await Task.WhenAll(dashboardTask, userDetailsTask);
+
+            var dashboard = dashboardTask.Result;
+            var userDetails = userDetailsTask.Result;
+
+            var vacancies = dashboard.Vacancies?.ToList() ?? new List<VacancySummary>();
+            var transferredVacancies = dashboard.TransferredVacancies?.ToList() ?? new List<ProviderDashboardTransferredVacancy>();
 
             var vm = new DashboardViewModel
             {
@@ -36,22 +59,10 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                     v.NoOfApplications == 0),
                 NoOfVacanciesClosingSoon = vacancies.Count(v =>
                     v.ClosingDate <= _timeProvider.Today.AddDays(ClosingSoonDays) &&
-                    v.Status == VacancyStatus.Live)
+                    v.Status == VacancyStatus.Live),
+                Alerts = _providerAlertsViewModelFactory.Create(dashboard, userDetails)
             };
             return vm;
         }
-
-        private async Task<List<VacancySummary>> GetVacanciesAsync(long ukprn)
-        {
-            var dashboard = await _client.GetDashboardAsync(ukprn);
-
-            if (dashboard == null)
-            {
-                await _client.GenerateDashboard(ukprn);
-                dashboard = await _client.GetDashboardAsync(ukprn);
-            }
-
-            return dashboard?.Vacancies?.ToList() ?? new List<VacancySummary>();
-        }      
     }
 }

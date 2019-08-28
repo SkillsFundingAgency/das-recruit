@@ -34,5 +34,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyManage
         public bool HasAnalytics => AnalyticsSummary != null;
         public bool IsVacancyLive => Status == VacancyStatus.Live;
         public bool IsVacancyClosed => Status == VacancyStatus.Closed;
+        public string WithdrawnDate { get; internal set; }
+        public bool IsWithdrawn => !string.IsNullOrEmpty(WithdrawnDate);
     }
 }

@@ -2,6 +2,7 @@
 using System.Linq;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.ViewModels;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
 {
@@ -96,7 +97,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
         public bool VacancyDescriptionRequiresEdit => IsEditRequired(FieldIdentifiers.VacancyDescription);
         public bool WageRequiresEdit => IsEditRequired(FieldIdentifiers.Wage);
         public bool WorkingWeekRequiresEdit => IsEditRequired(FieldIdentifiers.WorkingWeek);
-
+        public ProgrammeLevel Level { get; set; }
         private bool IsEditRequired(string fieldIdentifier)
         {
             return Review.FieldIndicators.Any(f => f.ReviewFieldIdentifier == fieldIdentifier);

@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services.NextVacancyReview;
+using Esfa.Recruit.Vacancies.Client.Application.Services.Reports;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
@@ -26,16 +28,20 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly IApprenticeshipProgrammeProvider _apprenticeshipProgrammesProvider;
         private readonly IMessaging _messaging;
         private readonly INextVacancyReviewService _nextVacancyReviewService;
+        private readonly IReportService _reportService;
+        private readonly IReportRepository _reportRepository;
 
         public QaVacancyClient(
                     IQueryStoreReader queryStoreReader,
                     IReferenceDataReader referenceDataReader,
                     IVacancyReviewRepository vacancyReviewRepository,
                     IVacancyReviewQuery vacancyReviewQuery,
-                    IVacancyRepository vacancyRepository, 
+                    IVacancyRepository vacancyRepository,
                     IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider,
                     IMessaging messaging,
-                    INextVacancyReviewService nextVacancyReviewService)
+                    INextVacancyReviewService nextVacancyReviewService,
+                    IReportRepository reportRepository,
+                    IReportService reportService)
         {
             _queryStoreReader = queryStoreReader;
             _referenceDataReader = referenceDataReader;
@@ -45,42 +51,18 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _apprenticeshipProgrammesProvider = apprenticeshipProgrammesProvider;
             _messaging = messaging;
             _nextVacancyReviewService = nextVacancyReviewService;
-        }
-
-        public Task ApproveReferredReviewAsync(Guid reviewId, string shortDescription, string vacancyDescription, string trainingDescription, string outcomeDescription, string thingsToConsider, string employerDescription)
-        {
-            return _messaging.SendCommandAsync(new ApproveReferredVacancyReviewCommand
-            {
-                ReviewId = reviewId,
-                ShortDescription = shortDescription,
-                VacancyDescription = vacancyDescription,
-                TrainingDescription = trainingDescription,
-                OutcomeDescription = outcomeDescription,
-                ThingsToConsider = thingsToConsider,
-                EmployerDescription = employerDescription
-            });
+            _reportService = reportService;
+            _reportRepository = reportRepository;
         }
 
         public Task ApproveVacancyReviewAsync(Guid reviewId, string manualQaComment, List<ManualQaFieldIndicator> manualQaFieldIndicators, List<Guid> selectedAutomatedQaRuleOutcomeIds)
         {
-            return _messaging.SendCommandAsync(new ApproveVacancyReviewCommand
-            {
-                ReviewId = reviewId,
-                ManualQaComment = manualQaComment,
-                ManualQaFieldIndicators = manualQaFieldIndicators,
-                SelectedAutomatedQaRuleOutcomeIds = selectedAutomatedQaRuleOutcomeIds
-            });
+            return _messaging.SendCommandAsync(new ApproveVacancyReviewCommand(reviewId, manualQaComment, manualQaFieldIndicators, selectedAutomatedQaRuleOutcomeIds));
         }
 
         public Task ReferVacancyReviewAsync(Guid reviewId, string manualQaComment, List<ManualQaFieldIndicator> manualQaFieldIndicators, List<Guid> selectedAutomatedQaRuleOutcomeIds)
         {
-            return _messaging.SendCommandAsync(new ReferVacancyReviewCommand
-            {
-                ReviewId = reviewId,
-                ManualQaComment = manualQaComment,
-                ManualQaFieldIndicators = manualQaFieldIndicators,
-                SelectedAutomatedQaRuleOutcomeIds = selectedAutomatedQaRuleOutcomeIds
-            });
+            return _messaging.SendCommandAsync(new ReferVacancyReviewCommand(reviewId, manualQaComment, manualQaFieldIndicators, selectedAutomatedQaRuleOutcomeIds));
         }
 
         public Task<IApprenticeshipProgramme> GetApprenticeshipProgrammeAsync(string programmeId)
@@ -107,8 +89,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             if (!TryGetVacancyReference(searchTerm, out var vacancyReference)) return result;
 
             var review = await _vacancyReviewQuery.GetLatestReviewByReferenceAsync(vacancyReference);
-            if (review != null) result.Add(review);
-            
+            if (review != null && review.Status != ReviewStatus.New) result.Add(review);
+
             return result;
         }
 
@@ -116,7 +98,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         {
             vacancyReference = 0;
             if (string.IsNullOrEmpty(value)) return false;
-            
+
             var regex = new Regex(@"^(VAC)?(\d{10})$", RegexOptions.IgnoreCase);
             var result = regex.Match(value);
             if (result.Success)
@@ -167,9 +149,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         {
             return _vacancyReviewQuery.GetApprovedFirstTimeCountAsync(submittedByUserId);
         }
-        
+
         public Task<List<VacancyReview>> GetAssignedVacancyReviewsForUserAsync(string userId)
-        {            
+        {
             return _vacancyReviewQuery.GetAssignedForUserAsync(userId, _nextVacancyReviewService.GetExpiredAssignationDateTime());
         }
 
@@ -205,6 +187,50 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         public Task<int> GetAnonymousApprovedCountAsync(long legalEntityId)
         {
             return _vacancyReviewQuery.GetAnonymousApprovedCountAsync(legalEntityId);
+        }
+
+        public async Task<Guid> CreateApplicationsReportAsync(DateTime fromDate, DateTime toDate, VacancyUser user, string reportName)
+        {
+            var reportId = Guid.NewGuid();
+
+            var owner = new ReportOwner
+            {
+                OwnerType = ReportOwnerType.Qa
+            };
+
+            await _messaging.SendCommandAsync(new CreateReportCommand(
+                reportId,
+                owner,
+                ReportType.QaApplications,
+                new Dictionary<string, object> {
+                    { ReportParameterName.FromDate, fromDate},
+                    { ReportParameterName.ToDate, toDate}
+                },
+                user,
+                reportName)
+            );
+
+            return reportId;
+        }
+
+        public Task<List<ReportSummary>> GetReportsAsync()
+        {
+            return _reportRepository.GetReportsForQaAsync<ReportSummary>();
+        }
+
+        public Task<Report> GetReportAsync(Guid reportId)
+        {
+            return _reportRepository.GetReportAsync(reportId);
+        }
+
+        public void WriteReportAsCsv(Stream stream, Report report)
+        {
+            _reportService.WriteReportAsCsv(stream, report);
+        }
+
+        public Task IncrementReportDownloadCountAsync(Guid reportId)
+        {
+            return _reportRepository.IncrementReportDownloadCountAsync(reportId);
         }
     }
 }

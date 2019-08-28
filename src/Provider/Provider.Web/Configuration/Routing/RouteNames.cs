@@ -2,7 +2,7 @@
 {
     public static class RouteNames
     {
-        public const string BlockedProvider_Get= "BlockedProvider_Get";
+        public const string Alerts_Dismiss_Post = "Alerts_Dismiss_Post";
         public const string AboutEmployer_Get = "AboutEmployer_Get";
         public const string AboutEmployer_Post = "AboutEmployer_Post";
         public const string ApplicationProcess_Get = "ApplicationProcess_Get";
@@ -23,6 +23,7 @@
         public const string Dashboard_AccountsNotifications = "Dashboard_AccountsNotifications";
         public const string Dashboard_ManageApprentices = "Dashboard_ManageApprentices";
         public const string Dashboard_YourCohorts = "Dashboard_YourCohorts";
+        public const string Dashboard_ManageFunding = "Dashboard_ManageFunding";
         public const string Dashboard_AccountsAgreements = "Dashboard_AccountsAgreements";
         public const string Dashboard_Account_Home = "Dashboard_Account_Home";
         public const string Dashboard_Help = "Dashboard_Help";
@@ -45,7 +46,7 @@
         public const string EmployerName_Post = "EmployerName_Post";
         public const string Location_Get = "Location_Get";
         public const string Location_Post = "Location_Post";
-        public const string Location_Cancel = "Location_Cancel";        
+        public const string Location_Cancel = "Location_Cancel";
         public const string Logout_Get = "Logout_Get";
         public const string Preview_Submit_Post = "Preview_Submit_Post";
         public const string ProviderApplicationsReportCreate_Get = "ProviderApplicationsReportCreate_Get";
@@ -68,10 +69,15 @@
         public const string SubmitVacancyChanges_Post = "SubmitVacancyChanges_Post";
         public const string Title_Get = "Title_Get";
         public const string Title_Post = "Title_Post";
+        public const string Training_Confirm_Get = "Training_Confirm_Get";
+        public const string Training_Confirm_Post = "Training_Confirm_Post";
         public const string NumberOfPositions_Get = "NumberOfPositions_Get";
         public const string NumberOfPositions_Post = "NumberOfPositions_Post";
+        public const string ProviderAgreement_HardStop_Get = "ProviderAgreement_HardStop_Get";
         public const string Training_Get = "Training_Get";
         public const string Training_Post = "Training_Post";
+        public const string Dates_Get = "Dates_Get";
+        public const string Dates_Post = "Dates_Post";
         public const string Vacancy_Preview_Get = "Vacancy_Preview_Get";
         public const string VacancyDescription_Index_Get = "VacancyDescription_Index_Get";
         public const string VacancyDescription_Index_Post = "VacancyDescription_Index_Post";

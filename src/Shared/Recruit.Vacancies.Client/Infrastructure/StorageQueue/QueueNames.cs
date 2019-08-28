@@ -6,6 +6,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue
         public const string GenerateSingleEmployerDashboardQueueName = "generate-employer-dashboard-queue";
         public const string GenerateSingleProviderDashboardQueueName = "generate-provider-dashboard-queue";
         public const string GenerateBlockedEmployersQueueName = "generate-blocked-employers-data-queue";
+        public const string GenerateAllBlockedOrganisationsQueueName = "generate-all-blocked-organisations-queue";
         public const string GenerateAllEmployerDashboardQueueName = "generate-all-employer-dashboards-queue";
         public const string GenerateAllProviderDashboardQueueName = "generate-all-provider-dashboards-queue";
         public const string GenerateAllVacancyAnalyticsSummariesQueueName = "generate-all-vacancy-analytics-summaries-queue";
@@ -19,6 +20,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue
         public const string UpdateApprenticeProgrammesQueueName = "update-apprenticeship-programmes-queue";
         public const string UpdateQaDashboardQueueName = "update-qa-dashboard-queue";
         public const string DeleteReportsQueueName = "delete-reports-queue";
+        public const string TransferVacanciesFromProviderQueueName = "transfer-vacancies-from-provider-queue";
+        public const string TransferVacanciesToLegalEntityQueueName = "transfer-vacancy-to-legalentity-queue";
         public const string VacancyStatusQueueName = "vacancy-status-queue";
         public const string UpdateBankHolidaysQueueName = "update-bank-holidays-queue";
         public const string UpdateEmployerUserAccountQueueName = "update-employer-user-account-queue";

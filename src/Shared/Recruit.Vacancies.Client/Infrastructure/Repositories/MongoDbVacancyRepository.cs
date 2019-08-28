@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Polly;
+using Esfa.Recruit.Vacancies.Client.Domain.Models;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 {
@@ -23,6 +24,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         private const string IsDeletedFieldName = "isDeleted";
         private const string VacancyStatusFieldName = "status";
         private const string VacancyReferenceFieldName = "vacancyReference";
+        private const string CreatedByUserId = "createdByUser.userId";
+        private const string SubmittedByUserId = "submittedByUser.userId";
 
         public MongoDbVacancyRepository(ILoggerFactory loggerFactory, IOptions<MongoDbConnectionDetails> details)
             : base(loggerFactory, MongoDbNames.RecruitDb, MongoDbCollectionNames.Vacancies, details)
@@ -87,6 +90,21 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             return result;
         }
 
+        public async Task<int> GetVacancyCountForUserAsync(string userId)
+        {
+            var builder = Builders<Vacancy>.Filter;
+            var filter = builder.Eq(CreatedByUserId, userId) |
+                        builder.Eq(SubmittedByUserId, userId);
+
+            var collection = GetCollection<Vacancy>();
+
+            var result = await RetryPolicy.ExecuteAsync(_ =>
+                    collection.CountDocumentsAsync(filter),
+                new Context(nameof(GetVacancyCountForUserAsync)));
+
+            return (int)result;
+        }
+
         public async Task<IEnumerable<T>> GetVacanciesByProviderAccountAsync<T>(long ukprn)
         {
             var builder = Builders<T>.Filter;
@@ -126,9 +144,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 
             //Anonymous vacancies only have outcode geocoded
             var filter = builder.Eq(v => v.EmployerLocation.Postcode, postcode) &
-                         builder.Ne(v => v.EmployerLocation.Latitude, null) &
-                         builder.Ne(v => v.EmployerLocation.Longitude, null) &
-                         builder.Ne(v => v.EmployerNameOption, EmployerNameOption.Anonymous);
+                        builder.Ne(v => v.EmployerLocation.Latitude, null) &
+                        builder.Ne(v => v.EmployerLocation.Longitude, null) &
+                        builder.Ne(v => v.EmployerNameOption, EmployerNameOption.Anonymous);
 
             var collection = GetCollection<Vacancy>();
             var result = await RetryPolicy.ExecuteAsync(_ =>
@@ -184,6 +202,68 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
                 new Context(nameof(GetAllVacancyReferencesAsync)));
 
             return result.Where(r => r.HasValue).Select(r => r.Value);
+        }
+
+        public async Task<IEnumerable<ProviderVacancySummary>> GetVacanciesAssociatedToProvider(long ukprn)
+        {
+            var builder = Builders<Vacancy>.Filter;
+            var filter = 
+                builder.Eq(ProviderUkprnFieldName, ukprn) &
+                builder.Ne(IsDeletedFieldName, true);
+
+            var collection = GetCollection<Vacancy>();
+
+            var result = await RetryPolicy.ExecuteAsync(_ =>
+                collection
+                    .Find(filter)
+                    .Project(x => new ProviderVacancySummary
+                    {
+                        Id = x.Id,
+                        VacancyOwner = x.OwnerType,
+                        VacancyReference = x.VacancyReference.GetValueOrDefault()
+                    })
+                    .ToListAsync(),
+                new Context(nameof(GetVacanciesAssociatedToProvider)));
+
+            return result;
+        }
+
+        public async Task<IEnumerable<Vacancy>> GetProviderOwnedVacanciesForLegalEntityAsync(long ukprn, long legalEntityId)
+        {
+            var filter = GetProviderOwnedVacanciesForLegalEntityFilter(ukprn, legalEntityId);
+
+            var collection = GetCollection<Vacancy>();
+
+            var result = await RetryPolicy.ExecuteAsync(_ =>
+                collection.Aggregate()
+                            .Match(filter)
+                            .ToListAsync(),
+                new Context(nameof(GetProviderOwnedVacanciesForLegalEntityAsync)));
+
+            return result;
+        }
+
+        public async Task<long> GetNoOfProviderOwnedVacanciesForLegalEntityAsync(long ukprn, long legalEntityId)
+        {
+            var filter = GetProviderOwnedVacanciesForLegalEntityFilter(ukprn, legalEntityId);
+
+            var collection = GetCollection<Vacancy>();
+
+            var result = await RetryPolicy.ExecuteAsync(_ =>
+                collection.CountDocumentsAsync(filter),
+                new Context(nameof(GetNoOfProviderOwnedVacanciesForLegalEntityAsync)));
+
+            return result;
+        }
+
+        private FilterDefinition<Vacancy> GetProviderOwnedVacanciesForLegalEntityFilter(long ukprn, long legalEntityId)
+        {
+            var builder = Builders<Vacancy>.Filter;
+            var filter = builder.Eq(v => v.IsDeleted, false) &
+                        builder.Eq(v => v.OwnerType, OwnerType.Provider) &
+                        builder.Eq(v => v.TrainingProvider.Ukprn, ukprn) &
+                        builder.Eq(v => v.LegalEntityId, legalEntityId);
+            return filter;
         }
     }
 }

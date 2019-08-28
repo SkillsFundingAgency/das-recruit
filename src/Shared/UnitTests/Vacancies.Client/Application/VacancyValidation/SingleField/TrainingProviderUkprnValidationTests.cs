@@ -1,6 +1,7 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using FluentAssertions;
+using Moq;
 using Xunit;
 
 namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.SingleField
@@ -15,10 +16,51 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
                 TrainingProvider = new TrainingProvider { Ukprn = 12345678 }
             };
 
+            MockTrainingProviderSummaryProvider.Setup(p => p.GetAsync(12345678)).ReturnsAsync(new TrainingProviderSummary());
+
             var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProvider);
 
             result.HasErrors.Should().BeFalse();
             result.Errors.Should().HaveCount(0);
+        }
+
+        [Fact]
+        public void ErrorIfTrainingProviderIsNotInRoatp()
+        {
+            var vacancy = new Vacancy
+            {
+                TrainingProvider = new TrainingProvider { Ukprn = 12345678 }
+            };
+
+            var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProvider);
+
+            result.HasErrors.Should().BeTrue();
+            result.Errors.Should().HaveCount(1);
+            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.TrainingProvider));
+            result.Errors[0].ErrorCode.Should().Be(ErrorCodes.TrainingProviderMustExist);
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.TrainingProvider);
+        }
+
+        [Fact]
+        public void ErrorIfTrainingProviderIsBlocked()
+        {
+            var vacancy = new Vacancy
+            {
+                TrainingProvider = new TrainingProvider { Ukprn = 12345678 }
+            };
+
+            MockTrainingProviderSummaryProvider.Setup(p => p.GetAsync(12345678)).ReturnsAsync(new TrainingProviderSummary());
+
+            MockBlockedOrganisationRepo.Setup(b => b.GetByOrganisationIdAsync("12345678"))
+                .ReturnsAsync(new BlockedOrganisation {BlockedStatus = BlockedStatus.Blocked});
+
+            var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProvider);
+
+            result.HasErrors.Should().BeTrue();
+            result.Errors.Should().HaveCount(1);
+            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.TrainingProvider));
+            result.Errors[0].ErrorCode.Should().Be(ErrorCodes.TrainingProviderMustNotBeBlocked);
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.TrainingProvider);
         }
 
         [Fact]
@@ -32,6 +74,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
             var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProvider);
 
             result.HasErrors.Should().BeTrue();
+            result.Errors.Should().HaveCount(1);
             result.Errors[0].PropertyName.Should().Be(nameof(vacancy.TrainingProvider));
             result.Errors[0].ErrorCode.Should().Be("101");
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.TrainingProvider);
@@ -67,6 +110,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
             var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProvider);
 
             result.HasErrors.Should().BeTrue();
+            result.Errors.Should().HaveCount(1);
             result.Errors[0].PropertyName.Should().Be(nameof(vacancy.TrainingProvider));
             result.Errors[0].ErrorCode.Should().Be("99");
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.TrainingProvider);

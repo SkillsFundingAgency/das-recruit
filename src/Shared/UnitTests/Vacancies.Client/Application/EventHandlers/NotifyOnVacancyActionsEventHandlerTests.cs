@@ -30,7 +30,6 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.EventHandlers
             var closingDate = DateTime.Now.AddDays(10);
 
             var mockRepository = new Mock<IVacancyRepository>();
-            var mockVacancyReviewRepository = new Mock<IVacancyReviewRepository>();
 
             _mockNotifier = new Mock<INotifyVacancyUpdates>();
 
@@ -39,8 +38,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.EventHandlers
             _handler = new NotifyOnVacancyActionsEventHandler(
                 Mock.Of<ILogger<NotifyOnVacancyActionsEventHandler>>(),
                 _mockNotifier.Object,
-                mockRepository.Object,
-                mockVacancyReviewRepository.Object
+                mockRepository.Object
             );
         }
 

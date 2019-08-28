@@ -10,6 +10,8 @@ using Esfa.Recruit.Vacancies.Jobs.Configuration;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Application;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Candidate;
+using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Employer;
+using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.VacancyReview;
 using Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers;
@@ -27,6 +29,8 @@ using Communication.Types.Interfaces;
 using Esfa.Recruit.Vacancies.Client.Application.Communications;
 using Esfa.Recruit.Client.Application.Communications;
 using Esfa.Recruit.Vacancies.Client.Application.Communications.EntityDataItemProviderPlugins;
+using System.Collections.Generic;
+using SFA.DAS.Encoding;
 
 namespace Esfa.Recruit.Vacancies.Jobs
 {
@@ -56,10 +60,15 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddScoped<UpdateQaDashboardQueueTrigger>();
             services.AddScoped<GenerateBlockedEmployersQueueTrigger>();
             services.AddScoped<GenerateVacancyAnalyticsSummaryQueueTrigger>();
+            services.AddScoped<TransferVacanciesFromProviderQueueTrigger>();
+            services.AddScoped<TransferVacancyToLegalEntityQueueTrigger>();
             services.AddTransient<IFaaService, FaaService>();
 #if DEBUG
             services.AddScoped<SpikeQueueTrigger>();
 #endif
+
+            services.AddScoped<TransferVacanciesFromProviderJob>();
+            services.AddScoped<TransferVacancyToLegalEntityJob>();
 
             // Domain Event Queue Handlers
 
@@ -67,6 +76,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddScoped<IDomainEventHandler<IEvent>, DraftVacancyUpdatedHandler>();
             services.AddScoped<IDomainEventHandler<IEvent>, VacancyReferredDomainEventHandler>();
             services.AddScoped<IDomainEventHandler<IEvent>, VacancySubmittedHandler>();
+            services.AddScoped<IDomainEventHandler<IEvent>, ProviderBlockedOnVacancyDomainEventHandler>();
 
             // VacancyReview
             services.AddScoped<IDomainEventHandler<IEvent>, VacancyReviewApprovedHandler>();
@@ -78,16 +88,19 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddScoped<IDomainEventHandler<IEvent>, ApplicationWithdrawnHandler>();
 
             // Employer
-            services.AddScoped<IDomainEventHandler<IEvent>, DomainEvents.Handlers.Employer.SetupEmployerHandler>();
+            services.AddScoped<IDomainEventHandler<IEvent>, SetupEmployerHandler>();
 
             // Provider
-            services.AddScoped<IDomainEventHandler<IEvent>, DomainEvents.Handlers.Provider.SetupProviderHandler>();
+            services.AddScoped<IDomainEventHandler<IEvent>, SetupProviderHandler>();
+            services.AddScoped<IDomainEventHandler<IEvent>, ProviderBlockedDomainEventHandler>();
+            services.AddScoped<IDomainEventHandler<IEvent>, ProviderBlockedOnLegalEntityDomainEventHandler>();
 
             //Candidate
             services.AddScoped<IDomainEventHandler<IEvent>, DeleteCandidateHandler>();
 
             RegisterCommunicationsService(services, configuration);
             RegisterDasNotifications(services, configuration);
+            RegisterDasEncodingService(services, configuration);
         }
 
         private static void RegisterCommunicationsService(IServiceCollection services, IConfiguration configuration)
@@ -104,11 +117,11 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddTransient<ICommunicationProcessor, CommunicationProcessor>();
             services.AddTransient<ICommunicationService, CommunicationService>();
 
-            services.AddTransient<IEntityDataItemProvider, VacancyPlugin>();
+            services.AddTransient<IEntityDataItemProvider, VacancyDataEntityPlugin>();
             services.AddTransient<IParticipantResolver, ParticipantResolverPlugin>();
             services.AddTransient<IUserPreferencesProvider, UserPreferencesProviderPlugin>();
             services.AddTransient<ITemplateIdProvider, TemplateIdProviderPlugin>();
-            services.AddTransient<IEntityDataItemProvider, ApprenticeshipServiceUrlPlugin>();
+            services.AddTransient<IEntityDataItemProvider, ApprenticeshipServiceDataEntityPlugin>();
 
             services.Configure<CommunicationsConfiguration>(configuration.GetSection("CommunicationsConfiguration"));
         }
@@ -126,6 +139,14 @@ namespace Esfa.Recruit.Vacancies.Jobs
                 .Build();
 
             services.AddTransient<INotificationsApi>(sp => new NotificationsApi(httpClient, notificationsConfig));
+        }
+
+        private static void RegisterDasEncodingService(IServiceCollection services, IConfiguration configuration)
+        {
+            var dasEncodingConfig = new EncodingConfig { Encodings = new List<Encoding>() };
+            configuration.GetSection(nameof(dasEncodingConfig.Encodings)).Bind(dasEncodingConfig.Encodings);
+            services.AddSingleton<EncodingConfig>(dasEncodingConfig);
+            services.AddSingleton<IEncodingService, EncodingService>();
         }
     }
 }

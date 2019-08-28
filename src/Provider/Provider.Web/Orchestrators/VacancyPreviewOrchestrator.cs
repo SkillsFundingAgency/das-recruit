@@ -8,6 +8,7 @@ using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
@@ -25,6 +26,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         private readonly DisplayVacancyViewModelMapper _vacancyDisplayMapper;
         private readonly IReviewSummaryService _reviewSummaryService;
         private readonly ILegalEntityAgreementService _legalEntityAgreementService;
+        private readonly ITrainingProviderAgreementService _trainingProviderAgreementService;
 
         public VacancyPreviewOrchestrator(
             IProviderVacancyClient client,
@@ -32,30 +34,37 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             ILogger<VacancyPreviewOrchestrator> logger,
             DisplayVacancyViewModelMapper vacancyDisplayMapper, 
             IReviewSummaryService reviewSummaryService,
-            ILegalEntityAgreementService legalEntityAgreementService) : base(logger)
+            ILegalEntityAgreementService legalEntityAgreementService,
+            ITrainingProviderAgreementService trainingProviderAgreementService) : base(logger)
         {
             _client = client;
             _vacancyClient = vacancyClient;
             _vacancyDisplayMapper = vacancyDisplayMapper;
             _reviewSummaryService = reviewSummaryService;
             _legalEntityAgreementService = legalEntityAgreementService;
+            _trainingProviderAgreementService = trainingProviderAgreementService;
         }
 
         public async Task<VacancyPreviewViewModel> GetVacancyPreviewViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Vacancy_Preview_Get);
-            
-            var vm = new VacancyPreviewViewModel();
-            await _vacancyDisplayMapper.MapFromVacancyAsync(vm, vacancy);
-            
-            vm.HasProgramme = vacancy.ProgrammeId != null;
-            vm.HasWage = vacancy.Wage != null;
-            vm.CanShowReference = vacancy.Status != VacancyStatus.Draft;
-            vm.CanShowDraftHeader = vacancy.Status == VacancyStatus.Draft;
+            //var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Vacancy_Preview_Get);
+            var vacancyTask = Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Vacancy_Preview_Get);
+            var programmesTask = _vacancyClient.GetActiveApprenticeshipProgrammesAsync();
 
-            if (vacancy.Status == VacancyStatus.Referred)
+            await Task.WhenAll(vacancyTask, programmesTask);
+
+            var programme = programmesTask.Result.SingleOrDefault(p => p.Id == vacancyTask.Result.ProgrammeId);
+            var vm = new VacancyPreviewViewModel();
+            await _vacancyDisplayMapper.MapFromVacancyAsync(vm, vacancyTask.Result);
+            
+            vm.HasProgramme = vacancyTask.Result.ProgrammeId != null;
+            vm.HasWage = vacancyTask.Result.Wage != null;
+            vm.CanShowReference = vacancyTask.Result.Status != VacancyStatus.Draft;
+            vm.CanShowDraftHeader = vacancyTask.Result.Status == VacancyStatus.Draft;
+            if (programme != null) vm.Level = programme.Level;
+            if (vacancyTask.Result.Status == VacancyStatus.Referred)
             {
-                vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value, 
+                vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancyTask.Result.VacancyReference.Value, 
                     ReviewFieldMappingLookups.GetPreviewReviewFieldIndicators());
             }
             
@@ -85,19 +94,24 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
         private async Task<SubmitVacancyResponse> SubmitActionAsync(Vacancy vacancy, VacancyUser user)
         {
+            var hasLegalEntityAgreementTask = _legalEntityAgreementService.HasLegalEntityAgreementAsync(vacancy.EmployerAccountId, vacancy.LegalEntityId);
+            var hasProviderAgreementTask = _trainingProviderAgreementService.HasAgreementAsync(vacancy.TrainingProvider.Ukprn.Value);
+
+            await Task.WhenAll(hasLegalEntityAgreementTask, hasProviderAgreementTask);
+
             var response = new SubmitVacancyResponse
             {
-                HasLegalEntityAgreement = await _legalEntityAgreementService.HasLegalEntityAgreementAsync(vacancy.EmployerAccountId, vacancy.LegalEntityId),
+                HasLegalEntityAgreement = hasLegalEntityAgreementTask.Result,
+                HasProviderAgreement = hasProviderAgreementTask.Result,
                 IsSubmitted = false
             };
 
-            if (response.HasLegalEntityAgreement == false)
-                return response;
-
-            await _client.SubmitVacancyAsync(vacancy.Id, user);
-
-            response.IsSubmitted = true;
-
+            if (response.HasLegalEntityAgreement && response.HasProviderAgreement)
+            {
+                await _client.SubmitVacancyAsync(vacancy.Id, user);
+                response.IsSubmitted = true;
+            }
+            
             return response;
         }
 

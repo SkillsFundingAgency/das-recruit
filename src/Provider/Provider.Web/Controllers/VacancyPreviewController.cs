@@ -56,6 +56,9 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 if (response.Data.IsSubmitted)
                     return RedirectToRoute(RouteNames.Submitted_Index_Get);
 
+                if(response.Data.HasProviderAgreement == false)
+                    return RedirectToRoute(RouteNames.ProviderAgreement_HardStop_Get);
+
                 if (response.Data.HasLegalEntityAgreement == false)
                     return RedirectToRoute(RouteNames.LegalEntityAgreement_HardStop_Get);
 
@@ -106,7 +109,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             if (CheckIfSectionIsIncomplete(viewModel.SkillsSectionState))
                 count++;
             if (CheckIfSectionIsIncomplete(viewModel.DescriptionsSectionState))
-                count+=3;
+                count++;
             if (CheckIfSectionIsIncomplete(viewModel.QualificationsSectionState))
                 count++;
             if (CheckIfSectionIsIncomplete(viewModel.EmployerDescriptionSectionState))

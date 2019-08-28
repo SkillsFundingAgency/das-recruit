@@ -1,0 +1,34 @@
+@using Esfa.Recruit.QA.Web.ViewModels.ManageProvider;
+
+@model FindTrainingProviderViewModel
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">Which training provider would you like to remove?</h1>
+        <p class="govuk-body">Removing a training provider will prevent them from using the recruitment service.</p>
+        <form asp-route="@RouteNames.BlockProvider_Find_Post">
+            <div class="govuk-form-group">
+                <label class="govuk-label" asp-for="Ukprn">
+                    Provider UKPRN
+                </label>
+                <span class="govuk-hint">For example, ‘10002343’.</span>
+                <span esfa-validation-message-for="Ukprn" class="govuk-error-message"></span>
+                <input asp-for="Ukprn" type="text" maxlength="8" class="govuk-input govuk-input--width-10">
+            </div>
+            <div class="govuk-form-group">
+                <label class="govuk-label" asp-for="Postcode">
+                    Provider postcode
+                    <span class="govuk-hint">
+                    For example, ‘CV1 2RT’.
+                    </span>
+                </label>
+                <span esfa-validation-message-for="Postcode" class="govuk-error-message"></span>
+                <input asp-for="Postcode" type="text" maxlength="8" class="govuk-input govuk-input--width-10">
+            </div>
+            <div class="govuk-form-group">
+                <button type="submit" class="govuk-button">Find provider</button>
+                <a asp-route="@RouteNames.BlockedOrganisations_Get" class="govuk-link das-button-link">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>

@@ -8,6 +8,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 {
     public interface IQueryStore
     {
+        Task<T> GetAsync<T>(string key) where T : QueryProjectionBase;
         Task<T> GetAsync<T>(string typeName, string key) where T : QueryProjectionBase;
 
         Task UpsertAsync<T>(T item) where T : QueryProjectionBase;

@@ -70,7 +70,7 @@ namespace Esfa.Recruit.Provider.Web
                     .CustomSources("https://maps.googleapis.com",
                                     "https://www.google-analytics.com",
                                     "data:")
-                 )
+                )
                 .ReportUris(r => r.Uris("/ContentPolicyReport/Report")));
 
             //Registered before static files to always set header
@@ -110,8 +110,14 @@ namespace Esfa.Recruit.Provider.Web
             if (!string.IsNullOrWhiteSpace(linksConfig?.ProviderApprenticeshipSiteUrl))
                 destinations.Add(linksConfig.ProviderApprenticeshipSiteUrl);
 
+            if (!string.IsNullOrWhiteSpace(linksConfig?.ProviderApprenticeshipSiteFeedbackUrl))
+                destinations.Add(linksConfig.ProviderApprenticeshipSiteFeedbackUrl);
+
             if (!string.IsNullOrWhiteSpace(linksConfig?.CommitmentsSiteUrl))
                 destinations.Add(linksConfig.CommitmentsSiteUrl);
+
+            if (!string.IsNullOrWhiteSpace(linksConfig?.ReservationsSiteUrl))
+                destinations.Add(linksConfig.ReservationsSiteUrl);
 
             return destinations.ToArray();
         }

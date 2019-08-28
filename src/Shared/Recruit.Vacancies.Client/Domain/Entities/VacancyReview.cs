@@ -16,12 +16,12 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public DateTime? CreatedDate { get; set; }
 
         /// <summary>
-        /// Date when review was assigned 
+        /// Date when review was assigned
         /// </summary>
         public DateTime? ReviewedDate { get; set; }
 
         public VacancyUser ReviewedByUser { get; set; }
-        
+
         /// <summary>
         /// Date when the review status was set to closed
         /// </summary>
@@ -40,10 +40,9 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public Vacancy VacancySnapshot { get; set; }
 
         /// <summary>
-        /// List of field identifiers, updated by the user before resubmitting the vacancy for review 
+        /// List of field identifiers, updated by the user before resubmitting the vacancy for review
         /// </summary>
         public List<string> UpdatedFieldIdentifiers { get; set; }
-
 
         /// <summary>
         /// We can only approve reviews that are under review.
@@ -60,7 +59,9 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         /// </summary>
         public bool CanUnassign => Status == ReviewStatus.UnderReview && ReviewedByUser != null;
 
+        public bool IsPending => Status == ReviewStatus.New || Status == ReviewStatus.PendingReview;
+
         public RuleSetOutcome AutomatedQaOutcome { get; set; }
-        public IEnumerable<RuleOutcomeIndicator> AutomatedQaOutcomeIndicators { get; set; } = new List<RuleOutcomeIndicator>();        
+        public IEnumerable<RuleOutcomeIndicator> AutomatedQaOutcomeIndicators { get; set; } = new List<RuleOutcomeIndicator>();
     }
 }

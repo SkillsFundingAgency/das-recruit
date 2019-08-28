@@ -10,36 +10,37 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.EventHandlers
 {
-    public class NotifyOnVacancyActionsEventHandler : INotificationHandler<VacancyClosedEvent>,
+    public class NotifyOnVacancyActionsEventHandler :   INotificationHandler<VacancyClosedEvent>,
                                                         INotificationHandler<LiveVacancyUpdatedEvent>
     {
         private readonly INotifyVacancyUpdates _vacancyStatusNotifier;
-        private readonly IVacancyReviewRepository _vacancyReviewRepository;
         private readonly IVacancyRepository _vacancyRepository;
         private readonly ILogger<NotifyOnVacancyActionsEventHandler> _logger;
 
-        public NotifyOnVacancyActionsEventHandler(ILogger<NotifyOnVacancyActionsEventHandler> logger, INotifyVacancyUpdates vacancyStatusNotifier, IVacancyRepository vacancyRepository, IVacancyReviewRepository vacancyReviewRepository)
+        public NotifyOnVacancyActionsEventHandler(
+            ILogger<NotifyOnVacancyActionsEventHandler> logger, 
+            INotifyVacancyUpdates vacancyStatusNotifier, 
+            IVacancyRepository vacancyRepository)
         {
             _vacancyStatusNotifier = vacancyStatusNotifier;
-            _vacancyReviewRepository = vacancyReviewRepository;
             _vacancyRepository = vacancyRepository;
             _logger = logger;
         }
 
         public async Task Handle(VacancyClosedEvent notification, CancellationToken cancellationToken)
         {
+            var vacancy = await _vacancyRepository.GetVacancyAsync(notification.VacancyId);
+
             try
             {
-                var vacancy = await _vacancyRepository.GetVacancyAsync(notification.VacancyId);
-
-                if (vacancy.Status == VacancyStatus.Closed && vacancy.ClosedByUser != null)
+                if (vacancy.ClosureReason == ClosureReason.Manual)
                 {
                     await _vacancyStatusNotifier.VacancyManuallyClosed(vacancy);
                 }
             }
             catch (NotificationException ex)
             {
-                _logger.LogError(ex, $"Unable to send notification for {nameof(VacancyClosedEvent)} and VacancyReference: {{vacancyReference}}", notification.VacancyReference);
+                _logger.LogError(ex, $"Unable to send notifications for {nameof(VacancyClosedEvent)} and VacancyReference: {{vacancyReference}}", notification.VacancyReference);
             }
         }
 

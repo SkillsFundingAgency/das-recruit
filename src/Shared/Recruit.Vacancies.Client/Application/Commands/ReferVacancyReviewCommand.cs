@@ -8,9 +8,17 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Commands
 {
     public class ReferVacancyReviewCommand : ICommand, IRequest
     {
-        public Guid ReviewId { get; set; }
-        public string ManualQaComment { get; internal set; }
-        public List<ManualQaFieldIndicator> ManualQaFieldIndicators { get; internal set; }
-        public List<Guid> SelectedAutomatedQaRuleOutcomeIds { get; internal set; }
+        public Guid ReviewId { get; }
+        public string ManualQaComment { get; }
+        public List<ManualQaFieldIndicator> ManualQaFieldIndicators { get; }
+        public List<Guid> SelectedAutomatedQaRuleOutcomeIds { get; }
+
+        public ReferVacancyReviewCommand(Guid reviewId, string manualQaComment, List<ManualQaFieldIndicator> manualQaFieldIndicators, List<Guid> selectedAutomatedQaRuleOutcomeIds)
+        {
+            ReviewId = reviewId;
+            ManualQaComment = manualQaComment;
+            ManualQaFieldIndicators = manualQaFieldIndicators;
+            SelectedAutomatedQaRuleOutcomeIds = selectedAutomatedQaRuleOutcomeIds;
+        }
     }
 }

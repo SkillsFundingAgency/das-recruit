@@ -11,15 +11,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
 {
     public class TrainingProviderSummaryProvider : ITrainingProviderSummaryProvider
     {
-        private readonly ILogger<TrainingProviderSummaryProvider> _logger;
         private readonly IProviderApiClient _providerClient;
         private readonly ICache _cache;
         private readonly ITimeProvider _timeProvider;
 
 
-        public TrainingProviderSummaryProvider(ILogger<TrainingProviderSummaryProvider> logger, IProviderApiClient providerClient, ICache cache, ITimeProvider timeProvider)
+        public TrainingProviderSummaryProvider(IProviderApiClient providerClient, ICache cache, ITimeProvider timeProvider)
         {
-            _logger = logger;
             _providerClient = providerClient;
             _cache = cache;
             _timeProvider = timeProvider;
@@ -31,6 +29,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
                 CacheKeys.TrainingProviders,
                 _timeProvider.NextDay6am,
                 FindAllInternalAsync);
+        }
+
+        public async Task<TrainingProviderSummary> GetAsync(long ukprn)
+        {
+            return (await FindAllAsync()).SingleOrDefault(p => p.Ukprn == ukprn);
         }
 
         private async Task<IEnumerable<TrainingProviderSummary>> FindAllInternalAsync()

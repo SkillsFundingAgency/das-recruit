@@ -31,7 +31,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             if(string.IsNullOrWhiteSpace(filter) == false || string.IsNullOrWhiteSpace(searchTerm) == false)
                 SaveFiltersInCookie(filter, searchTerm);
 
-            var vm = await _orchestrator.GetVacanciesViewModelAsync(User.GetUkprn(), filter, page, searchTerm);
+            var vm = await _orchestrator.GetVacanciesViewModelAsync(User.ToVacancyUser(), filter, page, searchTerm);
             if (TempData.ContainsKey(TempDataKeys.VacanciesErrorMessage))
                 vm.WarningMessage = TempData[TempDataKeys.VacanciesErrorMessage].ToString();
 

@@ -87,7 +87,7 @@
                 <li>
                     <div  id="@Anchors.TrainingLevel">
                         <h3 class="govuk-heading-s">Apprenticeship level</h3>
-                        <p class="govuk-body">@Model.TrainingLevel Level Apprenticeship</p>
+                        <p class="govuk-body">@Model.TrainingLevel <br /> @Model.Level.ToDescription()</p>
                     </div>
                 </li>
                 <li>                    
@@ -218,7 +218,7 @@
     </div>
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
-            <h2 class="govuk-heading-l">Training provider</h2>
+            <h2 class="govuk-heading-l">Training</h2>
         </div>
     </div>
 
@@ -230,7 +230,7 @@
             </div>
             <div id="@Anchors.Training">
                 <h3 class="govuk-heading-s">Apprenticeship @Model.TrainingType</h3>
-                <p class="govuk-body">@Model.TrainingTitle</p>
+                <p class="govuk-body">@Model.TrainingTitle <br /> @Model.Level.ToDescription()</p>
             </div>
         </div>
         <div class="govuk-grid-column-one-third">

@@ -6,7 +6,7 @@
     <form asp-route="@RouteNames.Vacancy_Review_Post">
         <partial name="_ReviewHeader" />
         <div class="govuk-grid-row">
-            <div class="govuk-grid-column-full">                
+            <div class="govuk-grid-column-full">
                 <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' asp-show="@ViewData.ModelState.IsValid == false"/>
             </div>
         </div>
@@ -48,7 +48,7 @@
                             <div class="govuk-form-group">
                                 <div class="govuk-checkboxes">
                                     <div class="govuk-checkboxes__item">
-                                        <input name="@nameof(Model.SelectedAutomatedQaResults)" 
+                                        <input name="@nameof(Model.SelectedAutomatedQaResults)"
                                             id="automatedqaresults-@automatedQaResult.OutcomeId"
                                             type="checkbox"
                                             checked="@(automatedQaResult.Checked ? "checked" : null)"
@@ -152,7 +152,8 @@
                     <li>
                         <div class="@Model.TrainingLevelClass" id="@FieldIdentifiers.TrainingLevel">
                             <h3 class="govuk-heading-s">Apprenticeship level</h3>
-                            <p class="govuk-body">@Model.TrainingLevel Level Apprenticeship</p>
+                            <p class="govuk-body">@Model.TrainingLevel <br/>
+                                @Model.Level.ToDescription()</p>
                             <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
                                                   asp-value="@FieldIdentifiers.TrainingLevel"
                                                   asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
@@ -176,7 +177,7 @@
             <div class="govuk-grid-column-two-thirds vacancy-descriptions">
                 <div class="@Model.VacancyDescriptionClass" id="@FieldIdentifiers.VacancyDescription">
 
-                    <h3 class="govuk-heading-s">What will you do in your working day</h3>
+                    <h3 class="govuk-heading-s">What will the apprentice be doing?</h3>
                     <div class="govuk-body">@Html.Raw(Model.VacancyDescription)</div>
 
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
@@ -185,7 +186,7 @@
                 </div>
                 <div class="@Model.TrainingDescriptionClass" id="@FieldIdentifiers.TrainingDescription">
 
-                    <h3 class="govuk-heading-s">The training you will be getting</h3>
+                    <h3 class="govuk-heading-s">What training will the apprentice take and what qualification will the apprentice get at the end?</h3>
                     <div class="govuk-body">@Html.Raw(Model.TrainingDescription)</div>
 
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
@@ -194,7 +195,7 @@
                 </div>
                 <div class="@Model.OutcomeDescriptionClass" id="@FieldIdentifiers.OutcomeDescription">
 
-                    <h3 class="govuk-heading-s">What to expect at the end of your apprenticeship</h3>
+                    <h3 class="govuk-heading-s">What is the expected career progression after this apprenticeship?</h3>
                     <div class="govuk-body">@Html.Raw(Model.OutcomeDescription)</div>
 
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
@@ -268,7 +269,7 @@
                                           asp-value="@FieldIdentifiers.EmployerDescription"
                                           asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                 </div>
-                <div class="@Model.EmployerNameClass" id="@FieldIdentifiers.EmployerName">                    
+                <div class="@Model.EmployerNameClass" id="@FieldIdentifiers.EmployerName">
                     <h3 class="govuk-heading-s">Employer</h3>
                     <p class="govuk-body">@Model.EmployerName</p>
 
@@ -339,7 +340,7 @@
         </div>
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-full">
-                <h2 class="govuk-heading-l">Training provider</h2>
+                <h2 class="govuk-heading-l">Training</h2>
             </div>
         </div>
 
@@ -354,7 +355,9 @@
                 </div>
                 <div class="@Model.TrainingClass" id="@FieldIdentifiers.Training">
                     <h3 class="govuk-heading-s">Apprenticeship @Model.TrainingType</h3>
-                    <p class="govuk-body">@Model.TrainingTitle</p>
+                    <p class="govuk-body">
+                        @Model.TrainingTitle <br /> @Model.Level.ToDescription()
+                    </p>
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
                                           asp-value="@FieldIdentifiers.Training"
                                           asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
@@ -460,7 +463,7 @@
             toggleSubmitButton();
             rebuildAutomatedQaReviewersComment();
         });
-        
+
         function toggleSubmitButton() {
             var isRefer = $(".field-identifier-checkbox:checked,.automatedqaresults-checkbox:checked").length > 0;
             var submitButtonText = isRefer ? "Refer" : "Approve";
@@ -470,7 +473,7 @@
         function rebuildAutomatedQaReviewersComment() {
             var $comments = $("#automatedqarules-selected-comments");
             $comments.empty();
-            
+
             $(".automatedqaresults-checkbox:checked").each(function (_, el) {
                 var $automatedQaText = $("<li></li>").text($(el).data("text"));
                 $comments.append($automatedQaText);

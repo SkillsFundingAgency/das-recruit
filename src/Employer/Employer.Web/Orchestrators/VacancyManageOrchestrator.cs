@@ -15,8 +15,6 @@ using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyAnalytics;
 using Esfa.Recruit.Shared.Web.FeatureToggle;
-using Esfa.Recruit.Employer.Web.Configuration;
-using Esfa.Recruit.Shared.Web.Configuration;
 using Employer.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Helpers;
 
@@ -27,14 +25,12 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         private const VacancyRuleSet ValdationRules = VacancyRuleSet.ClosingDate | VacancyRuleSet.StartDate | VacancyRuleSet.TrainingProgramme | VacancyRuleSet.StartDateEndDate | VacancyRuleSet.TrainingExpiryDate | VacancyRuleSet.MinimumWage;
         private readonly DisplayVacancyViewModelMapper _vacancyDisplayMapper;
         private readonly IRecruitVacancyClient _client;
-        private readonly IFeature _featureToggle;
         private readonly EmployerRecruitSystemConfiguration _systemConfig;
 
-        public VacancyManageOrchestrator(ILogger<VacancyManageOrchestrator> logger, DisplayVacancyViewModelMapper vacancyDisplayMapper, IRecruitVacancyClient vacancyClient, IFeature featureToggle, EmployerRecruitSystemConfiguration systemConfig) : base(logger)
+        public VacancyManageOrchestrator(ILogger<VacancyManageOrchestrator> logger, DisplayVacancyViewModelMapper vacancyDisplayMapper, IRecruitVacancyClient vacancyClient, EmployerRecruitSystemConfiguration systemConfig) : base(logger)
         {
             _vacancyDisplayMapper = vacancyDisplayMapper;
             _client = vacancyClient;
-            _featureToggle = featureToggle;
             _systemConfig = systemConfig;
         }
 
@@ -59,8 +55,16 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             viewModel.PossibleStartDate = vacancy.StartDate?.AsGdsDate();
             viewModel.IsDisabilityConfident = vacancy.IsDisabilityConfident;
             viewModel.IsApplyThroughFaaVacancy = vacancy.ApplicationMethod == ApplicationMethod.ThroughFindAnApprenticeship;
+            viewModel.TransferredProviderName = vacancy.TransferInfo?.ProviderName;
+            viewModel.TransferredOnDate = vacancy.TransferInfo?.TransferredDate.AsGdsDate();
             viewModel.CanShowEditVacancyLink = vacancy.CanExtendStartAndClosingDates;
             viewModel.CanShowCloseVacancyLink = vacancy.CanClose;
+            viewModel.IsClosedBlockedByQa = vacancy.Status == VacancyStatus.Closed && vacancy.ClosureReason == ClosureReason.BlockedByQa;
+
+            if (vacancy.Status == VacancyStatus.Closed && vacancy.ClosureReason == ClosureReason.WithdrawnByQa)
+            {
+                viewModel.WithdrawnDate = vacancy.ClosedDate?.AsGdsDate();
+            }
 
             var applications = new List<VacancyApplication>();
 

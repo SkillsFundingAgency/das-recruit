@@ -19,7 +19,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         [HttpGet("", Name = RouteNames.Dashboard_Get)]
         public async Task<IActionResult> Dashboard()
         {
-            var vm = await _orchestrator.GetDashboardViewModelAsync(User.GetUkprn());
+            var vm = await _orchestrator.GetDashboardViewModelAsync(User.ToVacancyUser());
             return View(vm);
         }
     }

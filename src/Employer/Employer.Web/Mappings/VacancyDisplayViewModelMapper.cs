@@ -71,6 +71,9 @@ namespace Esfa.Recruit.Employer.Web.Mappings
                                         : string.Empty;
             vm.IsDisabilityConfident = vacancy.IsDisabilityConfident;
 
+            vm.TransferredProviderName = vacancy.TransferInfo?.ProviderName;
+            vm.TransferredOnDate = vacancy.TransferInfo?.TransferredDate.AsGdsDate();
+
             if (vacancy.EmployerLocation != null)
             {
                 if (vacancy.EmployerLocation != null)

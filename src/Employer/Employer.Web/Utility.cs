@@ -71,11 +71,24 @@ namespace Esfa.Recruit.Employer.Web
             if (string.IsNullOrWhiteSpace(vacancy.Title))
                 return validRoutes;
 
+            validRoutes.AddRange(new[]
+            {
+                RouteNames.Training_Help_Get,
+                RouteNames.Training_First_Time_Post,
+                RouteNames.Training_First_Time_Get,
+                RouteNames.Training_Confirm_Post,
+                RouteNames.Training_Confirm_Get,
+                RouteNames.Training_Post,
+                RouteNames.Training_Get
+            });
+            if (string.IsNullOrWhiteSpace(vacancy.ProgrammeId))
+                return validRoutes;
+
             validRoutes.AddRange(new[] {
                 RouteNames.TrainingProvider_Confirm_Post, RouteNames.TrainingProvider_Confirm_Get, RouteNames.TrainingProvider_Select_Post, RouteNames.TrainingProvider_Select_Get,
                 RouteNames.NumberOfPositions_Post, RouteNames.NumberOfPositions_Get });
 
-            if(vacancy.TrainingProvider == null && string.IsNullOrWhiteSpace(vacancy.NumberOfPositions?.ToString()))
+            if (vacancy.TrainingProvider == null && string.IsNullOrWhiteSpace(vacancy.NumberOfPositions?.ToString()))
             {
                 //Move Training Provider Get to last valid route for resuming
                 validRoutes.Remove(RouteNames.TrainingProvider_Select_Get);
@@ -100,8 +113,8 @@ namespace Esfa.Recruit.Employer.Web
                 || string.IsNullOrWhiteSpace(vacancy.EmployerLocation?.Postcode))
                 return validRoutes;
 
-            validRoutes.AddRange(new[] {RouteNames.Training_Post, RouteNames.Training_Get});
-            if (string.IsNullOrWhiteSpace(vacancy.ProgrammeId))
+            validRoutes.AddRange(new[] { RouteNames.Dates_Post, RouteNames.Dates_Get });
+            if (vacancy.StartDate == null)
                 return validRoutes;
 
             validRoutes.AddRange(new[] { RouteNames.Wage_Post, RouteNames.Wage_Get});

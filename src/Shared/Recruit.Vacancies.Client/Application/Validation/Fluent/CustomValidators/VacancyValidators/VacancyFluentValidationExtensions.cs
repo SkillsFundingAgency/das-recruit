@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using FluentValidation;
 using FluentValidation.Internal;
 using FluentValidation.Results;
@@ -49,11 +49,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
             });
         }
 
-        internal static IRuleBuilderInitial<Vacancy, Vacancy> TrainingMustBeActiveForStartDate(this IRuleBuilder<Vacancy, Vacancy> ruleBuilder, Lazy<IEnumerable<IApprenticeshipProgramme>> programmes)
+        internal static IRuleBuilderInitial<Vacancy, Vacancy> TrainingMustBeActiveForStartDate(this IRuleBuilder<Vacancy, Vacancy> ruleBuilder, IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider)
         {
-            return ruleBuilder.Custom((vacancy, context) =>
+            return ruleBuilder.CustomAsync(async (vacancy, context, cancellationToken) =>
             {
-                var matchingProgramme = programmes.Value.SingleOrDefault(x => x.Id.Equals(vacancy.ProgrammeId, StringComparison.InvariantCultureIgnoreCase));
+                var allProgrammes = await apprenticeshipProgrammesProvider.GetApprenticeshipProgrammesAsync();
+
+                var matchingProgramme = allProgrammes.SingleOrDefault(x => x.Id.Equals(vacancy.ProgrammeId, StringComparison.InvariantCultureIgnoreCase));
 
                 if (matchingProgramme.EffectiveTo != null && matchingProgramme.EffectiveTo < vacancy.StartDate)
                 {
@@ -64,6 +66,43 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
                     };
                     context.AddFailure(failure);
                 }
+            });
+        }
+
+        internal static IRuleBuilderInitial<TrainingProvider, TrainingProvider> TrainingProviderMustExistInRoatp(this IRuleBuilder<TrainingProvider, TrainingProvider> ruleBuilder, ITrainingProviderSummaryProvider trainingProviderSummaryProvider)
+        {
+            return ruleBuilder.CustomAsync(async (trainingProvider, context, cancellationToken) =>
+            {
+                if (trainingProvider.Ukprn.HasValue && 
+                    await trainingProviderSummaryProvider.GetAsync(trainingProvider.Ukprn.Value) != null)
+                return;
+
+                var failure = new ValidationFailure(nameof(Vacancy.TrainingProvider), "The UKPRN is not valid or the associated provider is not active")
+                {
+                    ErrorCode = ErrorCodes.TrainingProviderMustExist,
+                    CustomState = VacancyRuleSet.TrainingProvider
+                };
+                context.AddFailure(failure);
+            });
+        }
+
+        internal static IRuleBuilderInitial<TrainingProvider, TrainingProvider> TrainingProviderMustNotBeBlocked(this IRuleBuilder<TrainingProvider, TrainingProvider> ruleBuilder, IBlockedOrganisationQuery blockedOrganisationRep)
+        {
+            return ruleBuilder.CustomAsync(async (trainingProvider, context, cancellationToken) =>
+            {
+                if (trainingProvider.Ukprn != null)
+                {
+                    var organisation = await blockedOrganisationRep.GetByOrganisationIdAsync(trainingProvider.Ukprn.Value.ToString());
+                    if(organisation == null || organisation.BlockedStatus != BlockedStatus.Blocked)
+                        return;
+                }
+                
+                var failure = new ValidationFailure(nameof(Vacancy.TrainingProvider), $"{trainingProvider.Name} can no longer be used as a training provider")
+                {
+                    ErrorCode = ErrorCodes.TrainingProviderMustNotBeBlocked,
+                    CustomState = VacancyRuleSet.TrainingProvider
+                };
+                context.AddFailure(failure);
             });
         }
 

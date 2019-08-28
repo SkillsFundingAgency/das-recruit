@@ -38,12 +38,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
             _logger.LogInformation("Closing vacancy {vacancyId}.", vacancyId);
 
             var vacancy = await _vacancyRepository.GetVacancyAsync(vacancyId);
+            vacancy.ClosureReason = ClosureReason.Auto;
 
-            await CloseVacancyAsync(vacancy);
-        }
-
-        private async Task CloseVacancyAsync(Vacancy vacancy)
-        {
             vacancy.ClosedDate = _timeProvider.Now;
             vacancy.Status = VacancyStatus.Closed;
 
@@ -54,17 +50,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
                 VacancyReference = vacancy.VacancyReference.Value,
                 VacancyId = vacancy.Id
             });
-        }
-
-        public async Task CloseVacancyImmediately(Guid vacancyId, VacancyUser user)
-        {
-            _logger.LogInformation("Closing vacancy {vacancyId} by user {userEmail}.", vacancyId, user.Email);
-
-            var vacancy = await _vacancyRepository.GetVacancyAsync(vacancyId);
-
-            vacancy.ClosedByUser = user;
-
-            await CloseVacancyAsync(vacancy);
         }
 
         public async Task PerformRulesCheckAsync(Guid reviewId)

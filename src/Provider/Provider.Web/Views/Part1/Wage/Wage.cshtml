@@ -4,7 +4,7 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         
-        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Training_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dates_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
 
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }'/>
 
@@ -15,10 +15,19 @@
         <form asp-route="@RouteNames.Wage_Post" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
             <div esfa-validation-marker-for="Duration" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
-                    <label asp-for="Duration" class="govuk-label govuk-!-font-weight-bold">How long is the apprenticeship expected to last?<span class="govuk-visually-hidden"> (enter a numeric value and then select Month(s) or Year(s) in the next field)</span></label>
-                    <span class="govuk-hint">This must be a minimum of 12 months</span>
+                    <label asp-for="Duration" class="govuk-label govuk-!-font-weight-bold">
+                        How long is the whole apprenticeship, including work and training?
+                        <span class="govuk-visually-hidden"> (enter a numeric value and then select Month(s) or Year(s) in the next field)</span>
+                    </label>
+                    <span class="govuk-hint">
+                        The apprenticeship must last at least 12 months
+                    </span>
+                    <span asp-show="@Model.ShowTraining" class="govuk-hint">
+                        For @Model.TrainingTitle, Typical length is @Model.TrainingDurationMonths months
+                    </span>
+
                     <span esfa-validation-message-for="Duration" class="govuk-error-message"></span>
-                    <input asp-for="Duration" class="govuk-input govuk-input--width-2" type="number" min="1" >
+                    <input asp-for="Duration" class="govuk-input govuk-input--width-2" type="number" min="1">
                     <select asp-for="DurationUnit" class="govuk-select duration-unit-select">
                         <option value="@DurationUnit.Month">Month(s)</option>
                         <option value="@DurationUnit.Year">Year(s)</option>

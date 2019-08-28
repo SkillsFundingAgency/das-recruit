@@ -1,0 +1,20 @@
+﻿@using Microsoft.Extensions.Options
+@inject IOptions<ExternalLinksConfiguration> externalLinks
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <a asp-route="@RouteNames.Vacancy_Preview_Get" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+
+        <h1 class="govuk-heading-xl">Agreement not signed</h1>
+        <div class="govuk-warning-text">
+            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+            <strong class="govuk-warning-text__text">
+                <span class="govuk-warning-text__assistive">Warning</span>
+                You need to sign an Education and Skills Funding Agency apprenticeship agreement before you can post vacancies.
+            </strong>
+        </div>
+        <p class="govuk-body">The vacancy has been saved as a draft, once you’ve signed the agreement, you can submit it from the vacancies dashboard.</p>
+        
+        <p class="govuk-body"><a href="@externalLinks.Value.SignProviderAgreementUrl" class="govuk-button">Sign agreement</a></p>
+    </div>
+</div>

@@ -194,7 +194,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part2
                 ProgrammeId = "2",
                 Wage = new Wage {
                     WageType = WageType.NationalMinimumWage
-                }
+                },
+                StartDate = DateTime.Now
             };
         }
 

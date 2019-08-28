@@ -18,12 +18,13 @@ namespace Esfa.Recruit.Shared.Web.Mappers
                 NoOfNewApplications = vacancySummary.NoOfNewApplications,
                 NoOfSuccessfulApplications = vacancySummary.NoOfSuccessfulApplications,
                 NoOfUnsuccessfulApplications = vacancySummary.NoOfUnsuccessfulApplications,
-                ClosingDate = vacancySummary.ClosingDate,
+                ClosingDate = vacancySummary.ClosedDate ?? vacancySummary.ClosingDate,
                 ApplicationMethod = vacancySummary.ApplicationMethod,
                 ProgrammeId = vacancySummary.ProgrammeId,
                 TrainingLevel = vacancySummary.TrainingLevel,
                 TrainingTitle = vacancySummary.TrainingTitle,
-                TrainingType = vacancySummary.TrainingType
+                TrainingType = vacancySummary.TrainingType,
+                IsTransferred = vacancySummary.TransferInfoTransferredDate.HasValue
             };
 
             return summaryViewModel;

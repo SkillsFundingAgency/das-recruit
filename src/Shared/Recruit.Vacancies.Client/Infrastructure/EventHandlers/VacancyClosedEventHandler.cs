@@ -13,6 +13,10 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacanc
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.FAA;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Communication.Types;
+using Esfa.Recruit.Vacancies.Client.Application.Communications;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
 {
@@ -24,11 +28,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
         private readonly IReferenceDataReader _referenceDataReader;
         private readonly ITimeProvider _timeProvider;
         private readonly IFaaService _faaService;
+        private readonly ICommunicationQueueService _communicationQueueService;
 
         public VacancyClosedEventHandler(
             ILogger<VacancyClosedEventHandler> logger, IQueryStoreWriter queryStore,
             IVacancyRepository repository, IReferenceDataReader referenceDataReader, ITimeProvider timeProvider,
-            IFaaService faaService)
+            IFaaService faaService, ICommunicationQueueService communicationQueueService)
         {
             _logger = logger;
             _queryStore = queryStore;
@@ -36,6 +41,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
             _referenceDataReader = referenceDataReader;
             _timeProvider = timeProvider;
             _faaService = faaService;
+            _communicationQueueService = communicationQueueService;
         }
 
         public async Task Handle(VacancyClosedEvent notification, CancellationToken cancellationToken)
@@ -63,6 +69,26 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
             var programme = programmeTask.Result.Data.Single(p => p.Id == vacancy.ProgrammeId);
 
             await _queryStore.UpdateClosedVacancyAsync(vacancy.ToVacancyProjectionBase<ClosedVacancy>(programme, () => QueryViewType.ClosedVacancy.GetIdValue(vacancy.VacancyReference.ToString()), _timeProvider));
+
+            if (vacancy.ClosureReason == ClosureReason.WithdrawnByQa)
+            {
+                _logger.LogInformation($"Queuing up withdrawn notification message for vacancy {vacancy.VacancyReference}");
+                var communicationRequest = GetVacancyWithdrawnByQaCommunicationRequest(vacancy.VacancyReference.Value);
+                await _communicationQueueService.AddMessageAsync(communicationRequest);
+            }
         }
+
+        private CommunicationRequest GetVacancyWithdrawnByQaCommunicationRequest(long vacancyReference)
+        {
+            var communicationRequest = new CommunicationRequest(
+                CommunicationConstants.RequestType.VacancyWithdrawnByQa, 
+                CommunicationConstants.ServiceName, 
+                CommunicationConstants.ServiceName);
+
+            communicationRequest.AddEntity(CommunicationConstants.EntityTypes.Vacancy, vacancyReference);
+            communicationRequest.AddEntity(CommunicationConstants.EntityTypes.ApprenticeshipService, vacancyReference);
+            return communicationRequest;
+        }
+
     }
 }

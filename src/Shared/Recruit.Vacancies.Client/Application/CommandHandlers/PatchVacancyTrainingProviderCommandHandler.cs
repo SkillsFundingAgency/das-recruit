@@ -65,6 +65,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
         private void PatchVacancyTrainingProvider(Esfa.Recruit.Vacancies.Client.Domain.Entities.Vacancy vacancy, Esfa.Recruit.Vacancies.Client.Domain.Entities.TrainingProvider tp)
         {
+            if (tp == null) 
+            {
+                _logger.LogError($"Unable to patch training provider for vacancy {vacancy.VacancyReference}");
+                return;
+            }
             vacancy.TrainingProvider.Name = tp.Name;
             vacancy.TrainingProvider.Address = tp.Address;
         }

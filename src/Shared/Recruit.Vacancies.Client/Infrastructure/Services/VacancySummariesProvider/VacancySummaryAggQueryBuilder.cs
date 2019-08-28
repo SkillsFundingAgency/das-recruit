@@ -55,10 +55,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     { "createdDate", 1 },
                     { "closingDate", 1 },
                     { "startDate", 1 },
+                    { "closedDate", 1 },
+                    { "closureReason", 1 },
                     { "applicationMethod", 1 },
                     { "programmeId", 1 },
                     { "duration", "$wage.duration" },
-                    { "durationUnit", "$wage.durationUnit" }
+                    { "durationUnit", "$wage.durationUnit" },
+                    { "transferInfoUkprn", "$transferInfo.ukprn" },
+                    { "transferInfoProviderName", "$transferInfo.providerName" },
+                    { "transferInfoTransferredDate", "$transferInfo.transferredDate" },
+                    { "transferInfoReason", "$transferInfo.reason" },
+                    { "trainingProviderName", "$trainingProvider.name" }
                 }
             }
         };
@@ -80,10 +87,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     { "createdDate", 1 },
                     { "closingDate", 1 },
                     { "startDate", 1 },
+                    { "closedDate", 1 },
+                    { "closureReason", 1 },
                     { "applicationMethod", 1 },
                     { "programmeId", 1 },
                     { "duration", 1 },
-                    { "durationUnit", 1 }
+                    { "durationUnit", 1 },
+                    { "transferInfoUkprn", 1 },
+                    { "transferInfoProviderName", 1 },
+                    { "transferInfoTransferredDate", 1 },
+                    { "transferInfoReason", 1 },
+                    { "trainingProviderName", 1 }
                 }
                 .Add("isNew", new BsonDocument()
                                 .Add("$cond", new BsonDocument().Add("if", new BsonDocument().Add("$eq", _newApplicationReviewStatusClause))
@@ -126,10 +140,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                             { "createdDate", "$createdDate" },
                             { "closingDate", "$closingDate" },
                             { "startDate", "$startDate" },
+                            { "closedDate", "$closedDate" },
+                            { "closureReason", "$closureReason" },
                             { "applicationMethod", "$applicationMethod" },
                             { "programmeId", "$programmeId" },
                             { "duration", "$duration" },
-                            { "durationUnit", "$durationUnit" }
+                            { "durationUnit", "$durationUnit" },
+                            { "transferInfoUkprn", "$transferInfoUkprn" },
+                            { "transferInfoProviderName", "$transferInfoProviderName" },
+                            { "transferInfoTransferredDate", "$transferInfoTransferredDate" },
+                            { "transferInfoReason", "$transferInfoReason" },
+                            { "trainingProviderName", "$trainingProviderName" }
                         }
                     },
                     { "noOfNewApplications", new BsonDocument().Add("$sum", "$isNew") },

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Esfa.Recruit.Employer.Web.ViewModels;
+using Esfa.Recruit.Employer.Web.ViewModels.Part1.Dates;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Location;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.NumberOfPositions;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Title;
@@ -7,6 +8,7 @@ using Esfa.Recruit.Employer.Web.ViewModels.Part1.Training;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.TrainingProvider;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Wage;
 using Esfa.Recruit.Employer.Web.ViewModels.Part2.ShortDescription;
+using Esfa.Recruit.Employer.Web.ViewModels.Part2.VacancyDescription;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
@@ -125,18 +127,31 @@ namespace Esfa.Recruit.Employer.Web.Mappings
         {
             var vms = new List<ReviewFieldIndicatorViewModel>
             {
-                new ReviewFieldIndicatorViewModel(FieldIdentifiers.ClosingDate, nameof(TrainingEditModel.ClosingDay)),
-                new ReviewFieldIndicatorViewModel(FieldIdentifiers.PossibleStartDate, nameof(TrainingEditModel.StartDay)),
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.Training, nameof(TrainingEditModel.SelectedProgrammeId)),
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.TrainingLevel, nameof(TrainingEditModel.SelectedProgrammeId)),
-                new ReviewFieldIndicatorViewModel(FieldIdentifiers.DisabilityConfident, nameof(TrainingEditModel.IsDisabilityConfident))
             };
 
             var mappings =  new Dictionary<string, IEnumerable<string>>
             {
+                { FieldIdResolver.ToFieldId(v => v.ProgrammeId), new []{ FieldIdentifiers.TrainingLevel, FieldIdentifiers.Training} },
+            };
+
+            return new ReviewFieldMappingLookupsForPage(vms, mappings);
+        }
+
+        public static ReviewFieldMappingLookupsForPage GetDatesReviewFieldIndicators()
+        {
+            var vms = new List<ReviewFieldIndicatorViewModel>
+            {
+                new ReviewFieldIndicatorViewModel(FieldIdentifiers.ClosingDate, nameof(DatesEditModel.ClosingDay)),
+                new ReviewFieldIndicatorViewModel(FieldIdentifiers.PossibleStartDate, nameof(DatesEditModel.StartDay)),
+                new ReviewFieldIndicatorViewModel(FieldIdentifiers.DisabilityConfident, nameof(DatesEditModel.IsDisabilityConfident))
+            };
+
+            var mappings = new Dictionary<string, IEnumerable<string>>
+            {
                 { FieldIdResolver.ToFieldId(v => v.ClosingDate), new []{ FieldIdentifiers.ClosingDate} },
                 { FieldIdResolver.ToFieldId(v => v.StartDate), new []{ FieldIdentifiers.PossibleStartDate} },
-                { FieldIdResolver.ToFieldId(v => v.ProgrammeId), new []{ FieldIdentifiers.TrainingLevel, FieldIdentifiers.Training} },
                 { FieldIdResolver.ToFieldId(v => v.DisabilityConfident), new []{ FieldIdentifiers.DisabilityConfident} }
             };
 

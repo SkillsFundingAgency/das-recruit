@@ -5,6 +5,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
+using Esfa.Recruit.Vacancies.Client.Application.Validation;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
@@ -12,7 +13,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
     {
         Task<Guid> CreateVacancyAsync(string title, string employerAccountId, VacancyUser user);
         Task GenerateDashboard(string employerAccountId);
-        Task CloseVacancyAsync(Guid vacancyId, VacancyUser user);        
         Task SubmitVacancyAsync(Guid vacancyId, string employerDescription, VacancyUser user);
         Task DeleteVacancyAsync(Guid vacancyId, VacancyUser user);
         Task<EmployerDashboard> GetDashboardAsync(string employerAccountId);
@@ -23,5 +23,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task SetApplicationReviewUnsuccessful(Guid applicationReviewId, string candidateFeedback, VacancyUser user);        
         Task SaveLevyDeclarationAsync(string userId, string employerAccountId);
         Task<TrainingProvider> GetTrainingProviderAsync(long ukprn);
+        Task<int> GetVacancyCountForUserAsync(string userId);
+        EntityValidationResult ValidateQualification(Qualification qualification);
     }
 }
