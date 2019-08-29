@@ -30,6 +30,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly INextVacancyReviewService _nextVacancyReviewService;
         private readonly IReportService _reportService;
         private readonly IReportRepository _reportRepository;
+        private ManualQaOutcome[] _displayableReviewOutcomes = new ManualQaOutcome[] { ManualQaOutcome.Approved, ManualQaOutcome.Referred };
 
         public QaVacancyClient(
                     IQueryStoreReader queryStoreReader,
@@ -185,7 +186,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         {
             var allVacancyReviews = await _vacancyReviewQuery.GetForVacancyAsync(vacancyReference);
 
-            return allVacancyReviews.Where(r => r.Status == ReviewStatus.Closed)
+            return allVacancyReviews.Where(r => r.Status == ReviewStatus.Closed && _displayableReviewOutcomes.Contains(r.ManualOutcome.Value))
                 .OrderByDescending(r => r.ReviewedDate)
                 .ToList();
         }

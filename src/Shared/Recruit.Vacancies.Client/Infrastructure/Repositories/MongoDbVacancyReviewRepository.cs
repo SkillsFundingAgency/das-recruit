@@ -15,6 +15,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
     internal sealed class MongoDbVacancyReviewRepository : MongoDbCollectionBase, IVacancyReviewRepository, IVacancyReviewQuery
     {
         private const string StatusFieldName = "status";
+        private const string ManualOutcomeFieldName = "manualOutcome";
 
         public MongoDbVacancyReviewRepository(ILoggerFactory loggerFactory, IOptions<MongoDbConnectionDetails> details)
             : base(loggerFactory, MongoDbNames.RecruitDb, MongoDbCollectionNames.VacancyReviews, details)
@@ -25,7 +26,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         {
             var filterBuilder = Builders<VacancyReview>.Filter;
 
-            var filter = filterBuilder.Eq(r => r.VacancyReference, vacancyReference);
+            var filter = filterBuilder.Eq(r => r.VacancyReference, vacancyReference) &
+                        (filterBuilder.Exists(ManualOutcomeFieldName, false) |
+                        filterBuilder.Nin(ManualOutcomeFieldName, new string[] { ManualQaOutcome.Transferred.ToString(), ManualQaOutcome.Withdrawn.ToString() }));
             var results = await GetVacancyReviewsAsync(filter);
             return results.OrderByDescending(r => r.CreatedDate).FirstOrDefault();
         }
