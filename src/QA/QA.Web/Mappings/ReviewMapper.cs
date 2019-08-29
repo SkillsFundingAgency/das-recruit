@@ -296,8 +296,6 @@ namespace Esfa.Recruit.Qa.Web.Mappings
             }).OrderBy(f => f.FieldIdentifier).ToList();
         }
 
-
-
         private ReviewHistoriesViewModel GetReviewHistoriesViewModel(IEnumerable<VacancyReview> vacancyReviews)
         {
             return new ReviewHistoriesViewModel
