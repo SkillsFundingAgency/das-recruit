@@ -70,9 +70,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 
             DeleteVacancyEmployerInfoCookie();
 
-            return wizard
+            IActionResult result = wizard
                 ? RedirectToRoute(RouteNames.Dates_Get)
                 : RedirectToRoute(RouteNames.Vacancy_Preview_Get);
+            return result;
         }
 
         [HttpGet("location-cancel", Name = RouteNames.Location_Cancel)]

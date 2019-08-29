@@ -25,7 +25,7 @@
         {
             if (HasCompletedPartOne == false)
             {
-                IsWizard = true && !HasStartedPartTwo;
+                IsWizard = true;
                 return;
             }
 

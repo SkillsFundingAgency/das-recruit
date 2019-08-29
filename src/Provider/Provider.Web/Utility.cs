@@ -50,7 +50,7 @@ namespace Esfa.Recruit.Provider.Web
 
         public static void CheckRouteIsValidForVacancy(Vacancy vacancy, string currentRouteName, VacancyRouteModel vrm)
         {
-            var validRoutes = GetValidRoutesForVacancy(vacancy);
+            var validRoutes = GetPermittedRoutesForVacancy(vacancy);
 
             if (validRoutes == null || validRoutes.Contains(currentRouteName))
             {
@@ -63,7 +63,16 @@ namespace Esfa.Recruit.Provider.Web
                 redirectRoute, vrm);
         }
 
-        public static IList<string> GetValidRoutesForVacancy(Vacancy vacancy)
+        /// <summary>
+        /// Returns a list of routes the user may access based on the current
+        /// state of the vacancy.
+        /// </summary>
+        /// <param name="vacancy"></param>
+        /// <returns>
+        ///  - null if section 1 of the wizard is complete
+        ///  - otherwise a list of accessible routes, where the last entry is the page to start the user on when editing the vacancy
+        /// </returns>
+        public static IList<string> GetPermittedRoutesForVacancy(Vacancy vacancy)
         {
             var validRoutes = new List<string>();
 
@@ -81,8 +90,11 @@ namespace Esfa.Recruit.Provider.Web
             if (string.IsNullOrWhiteSpace(vacancy.ProgrammeId))
                 return validRoutes;
 
-            validRoutes.AddRange(new[] { RouteNames.NumberOfPositions_Post, RouteNames.NumberOfPositions_Get });
-            if (string.IsNullOrWhiteSpace(vacancy.NumberOfPositions?.ToString()))
+            validRoutes.AddRange(new[] {
+                RouteNames.NumberOfPositions_Post,
+                RouteNames.NumberOfPositions_Get });
+
+            if (!vacancy.NumberOfPositions.HasValue)
                 return validRoutes;
 
            validRoutes.AddRange(new[] 
@@ -116,7 +128,7 @@ namespace Esfa.Recruit.Provider.Web
 
         public static bool VacancyHasCompletedPartOne(Vacancy vacancy)
         {
-            return GetValidRoutesForVacancy(vacancy) == null;
+            return GetPermittedRoutesForVacancy(vacancy) == null;
         }
 
         public static bool VacancyHasStartedPartTwo(Vacancy vacancy)
