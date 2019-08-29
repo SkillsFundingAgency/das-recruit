@@ -79,8 +79,8 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
 
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(1);
-            result.Errors[0].PropertyName.Should().Be(string.Empty);
-            result.Errors[0].ErrorCode.Should().Be("26");
+            result.Errors[0].PropertyName.Should().Be(nameof(Vacancy.StartDate));
+            result.Errors[0].ErrorCode.Should().Be(ErrorCodes.TrainingExpiryDate);
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.TrainingExpiryDate);
         }
     }

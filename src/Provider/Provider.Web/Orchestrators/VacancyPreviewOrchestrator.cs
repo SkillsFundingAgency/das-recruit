@@ -20,7 +20,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
     public class VacancyPreviewOrchestrator : EntityValidatingOrchestrator<Vacancy, VacancyPreviewViewModel>
     {
         private const VacancyRuleSet SubmitValidationRules = VacancyRuleSet.All;
-        private const VacancyRuleSet SoftValidationRules = VacancyRuleSet.MinimumWage;
+        private const VacancyRuleSet SoftValidationRules = VacancyRuleSet.MinimumWage | VacancyRuleSet.TrainingExpiryDate;
 
         private readonly IProviderVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;

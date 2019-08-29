@@ -69,10 +69,12 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
 
                 if (matchingProgramme.EffectiveTo != null && matchingProgramme.EffectiveTo < vacancy.StartDate)
                 {
-                    var failure = new ValidationFailure(string.Empty, $"The {matchingProgramme.Title} {matchingProgramme.ApprenticeshipType} is no longer available on the date selected. Choose other apprenticeship training or change the start date.")
+                    var message = $"The start date must be before {matchingProgramme.EffectiveTo.Value.AsGdsDate()} when the apprenticeship training closes to new starters.";
+                    var failure = new ValidationFailure(string.Empty, message)
                     {
-                        ErrorCode = "26",
-                        CustomState = VacancyRuleSet.TrainingExpiryDate
+                        ErrorCode = ErrorCodes.TrainingExpiryDate,
+                        CustomState = VacancyRuleSet.TrainingExpiryDate,
+                        PropertyName = nameof(Vacancy.StartDate)
                     };
                     context.AddFailure(failure);
                 }
