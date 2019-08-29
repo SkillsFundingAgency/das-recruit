@@ -113,7 +113,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 return RedirectToRoute(RouteNames.Vacancy_Preview_Get);
             }
 
-            var resumeRouteName = Utility.GetValidRoutesForVacancy(vacancy).Last();
+            var resumeRouteName = Utility.GetPermittedRoutesForVacancy(vacancy).Last();
 
             return RedirectToRoute(resumeRouteName);
         }

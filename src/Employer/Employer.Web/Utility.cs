@@ -50,7 +50,7 @@ namespace Esfa.Recruit.Employer.Web
 
         public static void CheckRouteIsValidForVacancy(Vacancy vacancy, string currentRouteName)
         {
-            var validRoutes = GetValidRoutesForVacancy(vacancy);
+            var validRoutes = GetPermittedRoutesForVacancy(vacancy);
 
             if (validRoutes == null || validRoutes.Contains(currentRouteName))
             {
@@ -63,7 +63,16 @@ namespace Esfa.Recruit.Employer.Web
                 redirectRoute, new VacancyRouteModel{ EmployerAccountId = vacancy.EmployerAccountId, VacancyId = vacancy.Id });
         }
 
-        public static IList<string> GetValidRoutesForVacancy(Vacancy vacancy)
+        /// <summary>
+        /// Returns a list of routes the user may access based on the current
+        /// state of the vacancy.
+        /// </summary>
+        /// <param name="vacancy"></param>
+        /// <returns>
+        ///  - null if section 1 of the wizard is complete
+        ///  - otherwise a list of accessible routes, where the last entry is the page to start the user on when editing the vacancy
+        /// </returns>
+        public static IList<string> GetPermittedRoutesForVacancy(Vacancy vacancy)
         {
             var validRoutes = new List<string>();
 
@@ -85,8 +94,13 @@ namespace Esfa.Recruit.Employer.Web
                 return validRoutes;
 
             validRoutes.AddRange(new[] {
-                RouteNames.TrainingProvider_Confirm_Post, RouteNames.TrainingProvider_Confirm_Get, RouteNames.TrainingProvider_Select_Post, RouteNames.TrainingProvider_Select_Get,
-                RouteNames.NumberOfPositions_Post, RouteNames.NumberOfPositions_Get });
+                RouteNames.TrainingProvider_Confirm_Post,
+                RouteNames.TrainingProvider_Confirm_Get,
+                RouteNames.TrainingProvider_Select_Post,
+                RouteNames.TrainingProvider_Select_Get,
+                RouteNames.NumberOfPositions_Post,
+                RouteNames.NumberOfPositions_Get
+                });
 
             if (vacancy.TrainingProvider == null && string.IsNullOrWhiteSpace(vacancy.NumberOfPositions?.ToString()))
             {
@@ -94,8 +108,8 @@ namespace Esfa.Recruit.Employer.Web
                 validRoutes.Remove(RouteNames.TrainingProvider_Select_Get);
                 validRoutes.Add(RouteNames.TrainingProvider_Select_Get);
             }
-            
-            if (string.IsNullOrWhiteSpace(vacancy.NumberOfPositions?.ToString()))
+
+            if (!vacancy.NumberOfPositions.HasValue)
                 return validRoutes;
 
             validRoutes.AddRange(new[] 
@@ -108,6 +122,7 @@ namespace Esfa.Recruit.Employer.Web
                 RouteNames.Employer_Post, 
                 RouteNames.Employer_Get
             });
+
             if (string.IsNullOrWhiteSpace(vacancy.LegalEntityName) 
                 || vacancy.EmployerNameOption == null 
                 || string.IsNullOrWhiteSpace(vacancy.EmployerLocation?.Postcode))
@@ -130,7 +145,7 @@ namespace Esfa.Recruit.Employer.Web
 
         public static bool VacancyHasCompletedPartOne(Vacancy vacancy)
         {
-            return GetValidRoutesForVacancy(vacancy) == null;
+            return GetPermittedRoutesForVacancy(vacancy) == null;
         }
 
         public static bool VacancyHasStartedPartTwo(Vacancy vacancy)
