@@ -1,3 +1,5 @@
+using Humanizer;
+
 namespace Esfa.Recruit.QA.Web.ViewModels.ManageProvider
 {
     public class ConsentForProviderBlockingViewModel
@@ -7,7 +9,6 @@ namespace Esfa.Recruit.QA.Web.ViewModels.ManageProvider
         public string Reason { get; set; }
         public bool HasConsent { get; set; }
         public bool ShowPermissionsMessage => PermissionCount > 0;
-        public bool HasMoreThanOnePermission => PermissionCount > 1;
-
+        public string EmployerText => "employer".ToQuantity(PermissionCount);
     }
 }
