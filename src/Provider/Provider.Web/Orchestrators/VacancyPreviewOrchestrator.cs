@@ -19,7 +19,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 {
     public class VacancyPreviewOrchestrator : EntityValidatingOrchestrator<Vacancy, VacancyPreviewViewModel>
     {
-        private const VacancyRuleSet ValidationRules = VacancyRuleSet.All;
+        private const VacancyRuleSet SubmitValidationRules = VacancyRuleSet.All;
         private const VacancyRuleSet SoftValidationRules = VacancyRuleSet.MinimumWage;
 
         private readonly IProviderVacancyClient _client;
@@ -74,7 +74,14 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             
             return vm;
         }
-        
+
+        private EntityValidationResult ValidateVacancy(Vacancy vacancy, VacancyRuleSet rules)
+        {
+            var result = _vacancyClient.Validate(vacancy, rules);
+            FlattenErrors(result.Errors);
+            return result;
+        }
+
         public async Task<OrchestratorResponse<SubmitVacancyResponse>> SubmitVacancyAsync(SubmitEditModel m, VacancyUser user)
         {
             var vacancy = await Utility.GetAuthorisedVacancyAsync(_client, _vacancyClient, m, RouteNames.Preview_Submit_Post);
@@ -86,12 +93,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             
             return await ValidateAndExecute(
                 vacancy,
-                v =>
-                {
-                    var result = _vacancyClient.Validate(v, ValidationRules);
-                    FlattenErrors(result.Errors);
-                    return result;
-                },
+                v => ValidateVacancy(v, SubmitValidationRules),
                 v => SubmitActionAsync(v, user)
                 );
         }
@@ -130,8 +132,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
         private EntityValidationResult GetSoftValidationErrors(Vacancy vacancy)
         {
-            var result = _vacancyClient.Validate(vacancy, SoftValidationRules);
-            FlattenErrors(result.Errors);
+            var result = ValidateVacancy(vacancy, SoftValidationRules);
             MapValidationPropertiesToViewModel(result);
             return result;
         }

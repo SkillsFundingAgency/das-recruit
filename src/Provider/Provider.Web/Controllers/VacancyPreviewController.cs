@@ -37,7 +37,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             AddSoftValidationErrorsToModelState(viewModel);
             SetSectionStates(viewModel);
 
-            viewModel.HideValidationSummary = true;
+            viewModel.CanHideValidationSummary = true;
 
             return View(viewModel);
         }
