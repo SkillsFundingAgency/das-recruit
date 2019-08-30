@@ -9,7 +9,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
     {
         public string ProviderServiceName => CommunicationConstants.ServiceName;
 
-        public Task<string> GetTemplateId(CommunicationMessage message, bool isAggregate = false)
+        public Task<string> GetTemplateIdAsync(CommunicationMessage message)
         {
             var templateId = string.Empty;
             switch(message.RequestType)

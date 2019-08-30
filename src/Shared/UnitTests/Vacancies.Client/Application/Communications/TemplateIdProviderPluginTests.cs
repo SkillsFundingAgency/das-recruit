@@ -17,14 +17,14 @@ namespace UnitTests.Vacancies.Client.Application.Communications
         public async Task ReturnRespectiveTemplateId(string requestType, DeliveryFrequency frequency, string expectedTemplateId)
         {
             var plugin = new TemplateIdProviderPlugin();
-            
+
             var message = new CommunicationMessage()
             {
                 RequestType = requestType,
                 Frequency = frequency
             };
 
-            var templateId = await plugin.GetTemplateId(message);
+            var templateId = await plugin.GetTemplateIdAsync(message);
 
             templateId.Should().Be(expectedTemplateId);
         }

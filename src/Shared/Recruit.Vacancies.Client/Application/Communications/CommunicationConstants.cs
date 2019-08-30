@@ -44,6 +44,12 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
                 public const string EmployerName = "employer-name";
             }
 
+            public static class Application
+            {
+                public const string ApplicationsSubmittedAggregateHeader = "applications-submitted-aggregate-header";
+                public const string ApplicationsSubmittedAggregateBodySnippets = "applications-submitted-aggregate-body-snippets";
+            }
+
             public static class ApprenticeshipService
             {
                 public const string ApprenticeshipServiceUrl = "apprenticeship-service-url";
