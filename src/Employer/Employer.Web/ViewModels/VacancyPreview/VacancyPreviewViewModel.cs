@@ -35,7 +35,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
         public VacancyPreviewSectionState WorkingWeekSectionState { get; internal set; }
 
         public EntityValidationResult SoftValidationErrors { get; internal set; }
-        public bool HideValidationSummary { get; internal set; }
+        public bool CanHideValidationSummary { get; internal set; }
 
         public bool HasWage { get; internal set; }
         public bool HasProgramme { get; internal set; }

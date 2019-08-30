@@ -20,7 +20,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
     public class VacancyPreviewOrchestrator : EntityValidatingOrchestrator<Vacancy, VacancyPreviewViewModel>
     {
-        private const VacancyRuleSet ValidationRules = VacancyRuleSet.All;
+        private const VacancyRuleSet SubmitValidationRules = VacancyRuleSet.All;
         private const VacancyRuleSet SoftValidationRules = VacancyRuleSet.MinimumWage;
 
         private readonly IEmployerVacancyClient _client;
@@ -91,14 +91,16 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             return await ValidateAndExecute(
                 vacancy,
-                v =>
-                {
-                    var result = _vacancyClient.Validate(v, ValidationRules);
-                    FlattenErrors(result.Errors);
-                    return result;
-                },
+                v => ValidateVacancy(v, SubmitValidationRules),
                 v => SubmitActionAsync(v, user)
                 );
+        }
+
+        private EntityValidationResult ValidateVacancy(Vacancy vacancy, VacancyRuleSet rules)
+        {
+            var result = _vacancyClient.Validate(vacancy, rules);
+            FlattenErrors(result.Errors);
+            return result;
         }
 
         private async Task<SubmitVacancyResponse> SubmitActionAsync(Vacancy vacancy, VacancyUser user)
@@ -130,8 +132,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         private EntityValidationResult GetSoftValidationErrors(Vacancy vacancy)
         {
-            var result = _vacancyClient.Validate(vacancy, SoftValidationRules);
-            FlattenErrors(result.Errors);
+            var result = ValidateVacancy(vacancy, SoftValidationRules);
             MapValidationPropertiesToViewModel(result);
             return result;
         }

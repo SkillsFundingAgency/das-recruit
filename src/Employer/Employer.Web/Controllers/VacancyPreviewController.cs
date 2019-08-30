@@ -36,7 +36,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             SetSectionStates(viewModel);
             SetSectionCount(viewModel);
 
-            viewModel.HideValidationSummary = true;
+            viewModel.CanHideValidationSummary = true;
             
             return View(viewModel);
         }
