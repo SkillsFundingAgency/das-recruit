@@ -21,6 +21,7 @@
   <ItemGroup>
     <PackageReference Include="CsvHelper" Version="12.1.2" />
     <PackageReference Include="HtmlSanitizer" Version="4.0.210" />
+    <PackageReference Include="Humanizer.Core.uk" Version="2.6.2" />
     <PackageReference Include="MediatR" Version="4.0.1" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="4.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.1.1" />
