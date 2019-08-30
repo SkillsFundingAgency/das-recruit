@@ -5,6 +5,5 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         Approved,
         Referred,
         Transferred,
-        Withdrawn
     }
 }
