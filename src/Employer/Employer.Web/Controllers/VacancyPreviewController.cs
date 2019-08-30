@@ -14,7 +14,6 @@ using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Mappers;
-using Humanizer;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
@@ -34,7 +33,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(vrm);
             AddSoftValidationErrorsToModelState(viewModel);
             SetSectionStates(viewModel);
-            SetSectionCount(viewModel);
 
             viewModel.CanHideValidationSummary = true;
             
@@ -65,7 +63,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(m);
             viewModel.SoftValidationErrors = null;
             SetSectionStates(viewModel);
-            SetSectionCount(viewModel);
 
             return View(ViewNames.VacancyPreview, viewModel);
         }
@@ -96,33 +93,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             viewModel.ProviderSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Provider }, true, vm => vm.ProviderName);
             viewModel.TrainingSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Training }, true, vm => vm.TrainingType, vm => vm.TrainingTitle);
             viewModel.DisabilityConfidentSectionState = GetSectionState(viewModel, new[]{ FieldIdentifiers.DisabilityConfident}, true, vm => vm.IsDisabilityConfident);
-        }
-
-        private int GetSectionStateCount(VacancyPreviewViewModel viewModel)
-        {
-            var count = 0;
-            if (CheckIfSectionIsIncomplete(viewModel.ShortDescriptionSectionState))
-                count++;
-            if (CheckIfSectionIsIncomplete(viewModel.SkillsSectionState))
-                count++;
-            if (CheckIfSectionIsIncomplete(viewModel.DescriptionsSectionState))
-                count++;
-            if (CheckIfSectionIsIncomplete(viewModel.QualificationsSectionState))
-                count++;
-            if (CheckIfSectionIsIncomplete(viewModel.EmployerDescriptionSectionState))
-                count++;
-            if (CheckIfSectionIsIncomplete(viewModel.ProviderSectionState))
-                count++;
-            if (CheckIfSectionIsIncomplete(viewModel.TrainingSectionState))
-                count++;
-            if (CheckIfSectionIsIncomplete(viewModel.ApplicationMethodSectionState))
-                count++;
-            return count;
-        }
-
-        private bool CheckIfSectionIsIncomplete(VacancyPreviewSectionState viewModelTitleSectionState)
-        {
-            return viewModelTitleSectionState == VacancyPreviewSectionState.Incomplete || viewModelTitleSectionState == VacancyPreviewSectionState.InvalidIncomplete;
         }
 
         private VacancyPreviewSectionState GetSectionState(VacancyPreviewViewModel vm, IEnumerable<string> reviewFieldIndicators, bool requiresAll, params Expression<Func<VacancyPreviewViewModel, object>>[] sectionProperties)
@@ -211,12 +181,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             return reviewFieldIndicators != null && reviewFieldIndicators.Any(reviewFieldIndicator =>
                        vm.Review.FieldIndicators.Select(r => r.ReviewFieldIdentifier)
                            .Contains(reviewFieldIndicator));
-        }
-
-        private void SetSectionCount(VacancyPreviewViewModel viewModel)
-        {
-            viewModel.IncompleteSectionCount = GetSectionStateCount(viewModel);
-            viewModel.IncompleteSectionText = "section".ToQuantity(viewModel.IncompleteSectionCount, ShowQuantityAs.None);
         }
 
         private void AddSoftValidationErrorsToModelState(VacancyPreviewViewModel viewModel)

@@ -8,7 +8,6 @@ using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
-using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
@@ -20,7 +19,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 {
     public class VacancyPreviewOrchestrator : EntityValidatingOrchestrator<Vacancy, VacancyPreviewViewModel>
     {
-        private const VacancyRuleSet ValidationRules = VacancyRuleSet.All;
+        private const VacancyRuleSet SubmitValidationRules = VacancyRuleSet.All;
+        private const VacancyRuleSet SoftValidationRules = VacancyRuleSet.MinimumWage;
+
         private readonly IProviderVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly DisplayVacancyViewModelMapper _vacancyDisplayMapper;
@@ -47,30 +48,40 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
         public async Task<VacancyPreviewViewModel> GetVacancyPreviewViewModelAsync(VacancyRouteModel vrm)
         {
-            //var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Vacancy_Preview_Get);
             var vacancyTask = Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Vacancy_Preview_Get);
             var programmesTask = _vacancyClient.GetActiveApprenticeshipProgrammesAsync();
 
             await Task.WhenAll(vacancyTask, programmesTask);
 
-            var programme = programmesTask.Result.SingleOrDefault(p => p.Id == vacancyTask.Result.ProgrammeId);
+            var vacancy = vacancyTask.Result;
+            var programme = programmesTask.Result.SingleOrDefault(p => p.Id == vacancy.ProgrammeId);
             var vm = new VacancyPreviewViewModel();
-            await _vacancyDisplayMapper.MapFromVacancyAsync(vm, vacancyTask.Result);
+            await _vacancyDisplayMapper.MapFromVacancyAsync(vm, vacancy);
             
-            vm.HasProgramme = vacancyTask.Result.ProgrammeId != null;
-            vm.HasWage = vacancyTask.Result.Wage != null;
-            vm.CanShowReference = vacancyTask.Result.Status != VacancyStatus.Draft;
-            vm.CanShowDraftHeader = vacancyTask.Result.Status == VacancyStatus.Draft;
+            vm.HasProgramme = vacancy.ProgrammeId != null;
+            vm.HasWage = vacancy.Wage != null;
+            vm.CanShowReference = vacancy.Status != VacancyStatus.Draft;
+            vm.CanShowDraftHeader = vacancy.Status == VacancyStatus.Draft;
+            vm.SoftValidationErrors = GetSoftValidationErrors(vacancy);
+
             if (programme != null) vm.Level = programme.Level;
-            if (vacancyTask.Result.Status == VacancyStatus.Referred)
+
+            if (vacancy.Status == VacancyStatus.Referred)
             {
-                vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancyTask.Result.VacancyReference.Value, 
+                vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value, 
                     ReviewFieldMappingLookups.GetPreviewReviewFieldIndicators());
             }
             
             return vm;
         }
-        
+
+        private EntityValidationResult ValidateVacancy(Vacancy vacancy, VacancyRuleSet rules)
+        {
+            var result = _vacancyClient.Validate(vacancy, rules);
+            FlattenErrors(result.Errors);
+            return result;
+        }
+
         public async Task<OrchestratorResponse<SubmitVacancyResponse>> SubmitVacancyAsync(SubmitEditModel m, VacancyUser user)
         {
             var vacancy = await Utility.GetAuthorisedVacancyAsync(_client, _vacancyClient, m, RouteNames.Preview_Submit_Post);
@@ -82,12 +93,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             
             return await ValidateAndExecute(
                 vacancy,
-                v =>
-                {
-                    var result = _vacancyClient.Validate(v, ValidationRules);
-                    SyncErrorsAndModel(result.Errors);
-                    return result;
-                },
+                v => ValidateVacancy(v, SubmitValidationRules),
                 v => SubmitActionAsync(v, user)
                 );
         }
@@ -115,13 +121,20 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             return response;
         }
 
-        private void SyncErrorsAndModel(IList<EntityValidationError> errors)
+        private void FlattenErrors(IList<EntityValidationError> errors)
         {
-            //Flatten Qualification errors to its ViewModel parent instead. 'Qualifications[1].Grade' > 'Qualifications'
+            //Flatten Qualification errors to its ViewModel parent instead. 'Qualifications[1].Grade' becomes 'Qualifications'
             foreach (var error in errors.Where(e => e.PropertyName.StartsWith(nameof(Vacancy.Qualifications))))
             {
                 error.PropertyName = nameof(VacancyPreviewViewModel.Qualifications);
             }
+        }
+
+        private EntityValidationResult GetSoftValidationErrors(Vacancy vacancy)
+        {
+            var result = ValidateVacancy(vacancy, SoftValidationRules);
+            MapValidationPropertiesToViewModel(result);
+            return result;
         }
 
         protected override EntityToViewModelPropertyMappings<Vacancy, VacancyPreviewViewModel> DefineMappings()
@@ -131,6 +144,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             mappings.Add(e => e.ShortDescription, vm => vm.ShortDescription);
             mappings.Add(e => e.ClosingDate, vm => vm.ClosingDate);
             mappings.Add(e => e.Wage, vm => vm.HasWage);
+            mappings.Add(e => e.Wage.FixedWageYearlyAmount, vm => vm.WageText);
             mappings.Add(e => e.Wage.WeeklyHours, vm => vm.HoursPerWeek);
             mappings.Add(e => e.Wage.WorkingWeekDescription, vm => vm.WorkingWeekDescription);
             mappings.Add(e => e.Wage.WageType, vm => vm.WageText);
