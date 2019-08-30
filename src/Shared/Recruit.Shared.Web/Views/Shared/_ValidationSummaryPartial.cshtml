@@ -10,20 +10,11 @@
     <div class="govuk-error-summary__body">
         <ul class="govuk-list govuk-error-summary__list">
             @foreach (var stateItem in Model.ModelState.Where(msi => msi.Value.ValidationState == ModelValidationState.Invalid)
-                                                        .OrderBy(x => Model.OrderedFieldNames.IndexOf(x.Key)))
+                                                       .OrderBy(x => Model.OrderedFieldNames.IndexOf(x.Key)))
             {
-                var elementName = ViewData.TemplateInfo.GetFullHtmlFieldName(stateItem.Key) ?? stateItem.Key;
-                var firstErrorPerField = stateItem.Value.Errors.FirstOrDefault()?.ErrorMessage;
-            <li>
-                @if (!string.IsNullOrEmpty(stateItem.Key))
-                {
-                <a href="#error-message-@elementName" data-focuses="error-message-@elementName" class="summary-link">@firstErrorPerField</a>
-                }
-                else
-                {
-                <span>@firstErrorPerField</span>
-                }
-            </li>
+                var errorVm = new ErrorListItemViewModel(ViewData.TemplateInfo.GetFullHtmlFieldName(stateItem.Key) ?? stateItem.Key,
+                    stateItem.Value.Errors.FirstOrDefault()?.ErrorMessage);
+                <partial name="@RecruitPartialNames.ErrorListItem" model="@errorVm" />
             }
         </ul>
     </div>

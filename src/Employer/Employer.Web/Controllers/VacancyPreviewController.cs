@@ -32,9 +32,12 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         public async Task<IActionResult> VacancyPreview(VacancyRouteModel vrm)
         {
             var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(vrm);
+            AddSoftValidationErrorsToModelState(viewModel);
             SetSectionStates(viewModel);
-            viewModel.IncompleteSectionCount = GetSectionStateCount(viewModel);
-            viewModel.IncompleteSectionText = "section".ToQuantity(viewModel.IncompleteSectionCount, ShowQuantityAs.None);
+            SetSectionCount(viewModel);
+
+            viewModel.CanHideValidationSummary = true;
+            
             return View(viewModel);
         }
 
@@ -60,9 +63,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             }
 
             var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(m);
+            viewModel.SoftValidationErrors = null;
             SetSectionStates(viewModel);
-            viewModel.IncompleteSectionCount = GetSectionStateCount(viewModel);
-            viewModel.IncompleteSectionText = "section".ToQuantity(viewModel.IncompleteSectionCount, ShowQuantityAs.None);
+            SetSectionCount(viewModel);
+
             return View(ViewNames.VacancyPreview, viewModel);
         }
 
@@ -72,8 +76,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             viewModel.ShortDescriptionSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.ShortDescription }, true, vm => vm.ShortDescription);
             viewModel.ClosingDateSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.ClosingDate }, true, vm => vm.ClosingDate);
             viewModel.WorkingWeekSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.WorkingWeek }, true, vm => vm.HoursPerWeek, vm => vm.WorkingWeekDescription);
-            viewModel.WageTextSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Wage }, true, vm => vm.HasWage, vm => vm.PossibleStartDate);
-            viewModel.ExpectedDurationSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.ExpectedDuration }, true, vm => vm.HasWage, vm => vm.ExpectedDuration);
+            viewModel.WageTextSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Wage }, true, vm => vm.HasWage, vm => vm.WageText);
+            viewModel.ExpectedDurationSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.ExpectedDuration }, true, vm => vm.ExpectedDuration);
             viewModel.PossibleStartDateSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.PossibleStartDate }, true, vm => vm.PossibleStartDate);
             viewModel.TrainingLevelSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.TrainingLevel }, true, vm => vm.HasProgramme, vm => vm.TrainingLevel);
             viewModel.NumberOfPositionsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.NumberOfPositions }, true, vm => vm.NumberOfPositions);
@@ -207,6 +211,23 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             return reviewFieldIndicators != null && reviewFieldIndicators.Any(reviewFieldIndicator =>
                        vm.Review.FieldIndicators.Select(r => r.ReviewFieldIdentifier)
                            .Contains(reviewFieldIndicator));
+        }
+
+        private void SetSectionCount(VacancyPreviewViewModel viewModel)
+        {
+            viewModel.IncompleteSectionCount = GetSectionStateCount(viewModel);
+            viewModel.IncompleteSectionText = "section".ToQuantity(viewModel.IncompleteSectionCount, ShowQuantityAs.None);
+        }
+
+        private void AddSoftValidationErrorsToModelState(VacancyPreviewViewModel viewModel)
+        {
+            if (!viewModel.SoftValidationErrors.HasErrors)
+                return;
+
+            foreach (var error in viewModel.SoftValidationErrors.Errors)
+            {
+                ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+            }
         }
     }
 }

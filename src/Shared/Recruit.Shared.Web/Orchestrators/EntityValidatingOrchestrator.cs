@@ -10,26 +10,16 @@ namespace Esfa.Recruit.Shared.Web.Orchestrators
     public abstract class EntityValidatingOrchestrator<TEntity, TEditModel>
     {
         protected readonly ILogger Logger;
-        private EntityToViewModelPropertyMappings<TEntity, TEditModel> _mappings;
-        private IDictionary<string, string> _mappingDictionary;
 
         protected EntityValidatingOrchestrator(ILogger logger)
         {
             Logger = logger;
-        }
-
-        private void BuildMappings()
-        {
-            _mappings = DefineMappings();
-            _mappingDictionary = BuildMappingDictionary();
         }
         
         protected abstract EntityToViewModelPropertyMappings<TEntity, TEditModel> DefineMappings();
 
         protected async Task<OrchestratorResponse> ValidateAndExecute(TEntity entity, Func<TEntity, EntityValidationResult> validationFunc, Func<TEntity, Task> action)
         {
-            BuildMappings();
-            
             var validationResult = validationFunc.Invoke(entity);
 
             if (validationResult.HasErrors)
@@ -45,8 +35,6 @@ namespace Esfa.Recruit.Shared.Web.Orchestrators
 
         protected async Task<OrchestratorResponse<T>>ValidateAndExecute<T>(TEntity entity, Func<TEntity, EntityValidationResult> validationFunc, Func<TEntity, Task<T>> action)
         {
-            BuildMappings();
-            
             var validationResult = validationFunc.Invoke(entity);
 
             if (validationResult.HasErrors)
@@ -60,11 +48,13 @@ namespace Esfa.Recruit.Shared.Web.Orchestrators
             return new OrchestratorResponse<T>(result);
         }
 
-        private void MapValidationPropertiesToViewModel(EntityValidationResult validationResult)
+        protected void MapValidationPropertiesToViewModel(EntityValidationResult validationResult)
         {
-            foreach(var error in validationResult.Errors)
+            var mappingDictionary = BuildMappingDictionary();
+
+            foreach (var error in validationResult.Errors)
             {
-                if (_mappingDictionary.TryGetValue(error.PropertyName, out string replacementProperty))
+                if (mappingDictionary.TryGetValue(error.PropertyName, out string replacementProperty))
                 {
                     error.PropertyName = replacementProperty;
                 }
@@ -73,19 +63,21 @@ namespace Esfa.Recruit.Shared.Web.Orchestrators
 
         private IDictionary<string, string> BuildMappingDictionary()
         {
-            if (_mappings == null)
+            var mappings = DefineMappings();
+
+            if (mappings == null)
                 return new Dictionary<string, string>(0);
 
-            var mappings = new Dictionary<string, string>(_mappings.Count);
+            var mappingDictionary = new Dictionary<string, string>(mappings.Count);
 
-            foreach (var item in _mappings)
+            foreach (var item in mappings)
             {
                 var entityProperty = item.Item1.GetPropertyName();
                 var viewModelProperty = item.Item2.GetPropertyName();
-                mappings.Add(entityProperty, viewModelProperty);
+                mappingDictionary.Add(entityProperty, viewModelProperty);
             }
 
-            return mappings;
+            return mappingDictionary;
         }
     }
 }

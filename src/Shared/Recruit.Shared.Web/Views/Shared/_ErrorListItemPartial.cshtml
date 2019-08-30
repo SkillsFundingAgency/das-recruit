@@ -1,0 +1,13 @@
+﻿@model ErrorListItemViewModel
+
+<li>
+    @if (!string.IsNullOrEmpty(Model.ElementId))
+    {
+        <a href="#error-message-@Model.ElementId" data-focuses="error-message-@Model.ElementId" class="summary-link">@Model.Message</a>
+    }
+    else
+    {
+        <span>@Model.Message</span>
+    }
+</li>
+          

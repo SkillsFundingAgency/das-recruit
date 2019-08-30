@@ -2,6 +2,7 @@
 using System.Linq;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.ViewModels;
+using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
@@ -32,7 +33,10 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
         public VacancyPreviewSectionState WageTextSectionState { get; internal set; }
         public VacancyPreviewSectionState DescriptionsSectionState { get; internal set; }
         public VacancyPreviewSectionState WorkingWeekSectionState { get; internal set; }
-        
+
+        public EntityValidationResult SoftValidationErrors { get; internal set; }
+        public bool CanHideValidationSummary { get; internal set; }
+
         public bool HasWage { get; internal set; }
         public bool HasProgramme { get; internal set; }
 
@@ -58,7 +62,10 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
         public bool HasIncompleteOptionalSections => HasIncompleteThingsToConsiderSection
                                                     || HasIncompleteEmployerWebsiteUrlSection
                                                     || HasIncompleteContactSection;
-        public bool ShowIncompleteSections => (HasIncompleteMandatorySections || HasIncompleteOptionalSections) && !Review.HasBeenReviewed;
+
+        public bool HasSoftValidationErrors => SoftValidationErrors?.HasErrors == true;
+
+        public bool ShowIncompleteSections => ((HasIncompleteMandatorySections || HasIncompleteOptionalSections) && !Review.HasBeenReviewed) || HasSoftValidationErrors;
         public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
         public string SubmitButtonText => Review.HasBeenReviewed ? "Resubmit vacancy" : "Submit vacancy";
         public bool ApplicationInstructionsRequiresEdit => IsEditRequired(FieldIdentifiers.ApplicationInstructions);
@@ -95,6 +102,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
         public int IncompleteSectionCount { get; set; }
         public string IncompleteSectionText { get; set; }
         public ProgrammeLevel Level { get; set; }
+
         public IList<string> OrderedFieldNames => new List<string>
         {
             nameof(ShortDescription),

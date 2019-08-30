@@ -2,10 +2,13 @@
 using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using FluentValidation;
 using FluentValidation.Internal;
 using FluentValidation.Results;
+using SFA.DAS.VacancyServices.Wage;
+using WageType = SFA.DAS.VacancyServices.Wage.WageType;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators.VacancyValidators
 {
@@ -35,14 +38,21 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
 
                 if (vacancy.Wage.FixedWageYearlyAmount == null || vacancy.Wage.FixedWageYearlyAmount / 52 / vacancy.Wage.WeeklyHours < wagePeriod.ApprenticeshipMinimumWage)
                 {
+                    var minimumYearlyWageForApprentices = WagePresenter.GetDisplayText(WageType.ApprenticeshipMinimum, WageUnit.Annually, new WageDetails
+                    {
+                        HoursPerWeek = vacancy.Wage.WeeklyHours,
+                        StartDate = vacancy.StartDate.Value
+                    }).AsWholeMoneyAmount();
+
                     var errorMessage = (vacancy.Status == VacancyStatus.Live) ?
                         $"National Minimum Wage is changing from {wagePeriod.ValidFrom:d MMM yyyy}. So the fixed wage you entered before will no longer be valid. Change the date to before {wagePeriod.ValidFrom:d MMM yyyy} or to change the wage, create a new vacancy." :
-                        $"The wage should not be less than the new National Minimum Wage for apprentices effective from {wagePeriod.ValidFrom:d MMM yyyy}";
+                        $"The yearly wage must be at least {minimumYearlyWageForApprentices}";
 
                     var failure = new ValidationFailure(string.Empty, errorMessage)
                     {
                         ErrorCode = "49",
-                        CustomState = VacancyRuleSet.MinimumWage
+                        CustomState = VacancyRuleSet.MinimumWage,
+                        PropertyName = $"{nameof(Wage)}.{nameof(Wage.FixedWageYearlyAmount)}"  
                     };
                     context.AddFailure(failure);
                 }
