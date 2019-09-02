@@ -28,8 +28,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
 
             if (review.IsPending)
             {
-                review.ManualOutcome = review.VacancySnapshot.OwnerType == OwnerType.Provider && transferReason == TransferReason.BlockedByQa
-                                        ? ManualQaOutcome.Withdrawn
+                review.ManualOutcome = transferReason == TransferReason.BlockedByQa
+                                        ? ManualQaOutcome.Blocked
                                         : ManualQaOutcome.Transferred;
                 review.Status = ReviewStatus.Closed;
                 review.ClosedDate = _timeProvider.Now;

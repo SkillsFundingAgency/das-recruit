@@ -34,7 +34,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
         [Theory]
         [InlineData(ReviewStatus.New)]
         [InlineData(ReviewStatus.PendingReview)]
-        public async Task GivenVacancyReview_AndDueToProviderPermissionRevokeTransfer_ThenSetClosedStatusOfVacancyReview(ReviewStatus reviewStatus)
+        public async Task GivenVacancyReview_AndDueToProviderPermissionRevokeTransfer_ThenSetClosedStatusOfVacancyReviewAndQaOutcomeOfTransferred(ReviewStatus reviewStatus)
         {
             var vacancyReview = _autoFixture.Build<VacancyReview>()
                                             .Without(x => x.AutomatedQaOutcome)
@@ -46,6 +46,25 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
             await _sut.CloseVacancyReview(vacancyReview.VacancyReference, TransferReason.EmployerRevokedPermission);
 
             vacancyReview.ManualOutcome.Should().Be(ManualQaOutcome.Transferred);
+            _mockVacancyReviewRepository.Verify(x => x.UpdateAsync(vacancyReview), Times.Once);
+        }
+
+
+        [Theory]
+        [InlineData(ReviewStatus.New)]
+        [InlineData(ReviewStatus.PendingReview)]
+        public async Task GivenOwnedVacancyReview_AndDueToProviderBlockedByQa_ThenSetClosedStatusOfVacancyReviewAndQaOutcomeOfBlocked(ReviewStatus reviewStatus)
+        {
+            var vacancyReview = _autoFixture.Build<VacancyReview>()
+                                            .Without(x => x.AutomatedQaOutcome)
+                                            .With(x => x.Status, reviewStatus)
+                                            .Create();
+            _mockVacancyReviewQuery.Setup(x => x.GetLatestReviewByReferenceAsync(vacancyReview.VacancyReference))
+                                    .ReturnsAsync(vacancyReview);
+
+            await _sut.CloseVacancyReview(vacancyReview.VacancyReference, TransferReason.BlockedByQa);
+
+            vacancyReview.ManualOutcome.Should().Be(ManualQaOutcome.Blocked);
             _mockVacancyReviewRepository.Verify(x => x.UpdateAsync(vacancyReview), Times.Once);
         }
 

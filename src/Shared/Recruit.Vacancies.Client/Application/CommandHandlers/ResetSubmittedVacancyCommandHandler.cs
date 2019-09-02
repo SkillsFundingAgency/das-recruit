@@ -77,7 +77,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         private Task ClosePendingReview(VacancyReview review)
         {
             _logger.LogInformation($"Closing pending review {review.Id} as the provider is blocked");
-            review.ManualOutcome = ManualQaOutcome.Withdrawn;
+            review.ManualOutcome = ManualQaOutcome.Blocked;
             review.Status = ReviewStatus.Closed;
             review.ClosedDate = _timeProvider.Now;
             return _vacancyReviewRepository.UpdateAsync(review);
