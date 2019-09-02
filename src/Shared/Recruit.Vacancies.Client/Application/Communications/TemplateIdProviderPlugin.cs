@@ -18,7 +18,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
                     templateId = CommunicationConstants.TemplateIds.VacancyRejected;
                     break;
                 case CommunicationConstants.RequestType.ApplicationSubmitted:
-                    templateId = CommunicationConstants.TemplateIds.ApplicationSubmittedImmediate;
+                    if (message.Frequency == DeliveryFrequency.Daily || message.Frequency == DeliveryFrequency.Weekly)
+                        templateId = CommunicationConstants.TemplateIds.ApplicationsSubmittedDigest;
+                    else
+                        templateId = CommunicationConstants.TemplateIds.ApplicationSubmittedImmediate;
                     break;
                 case CommunicationConstants.RequestType.VacancyWithdrawnByQa:
                     templateId = CommunicationConstants.TemplateIds.VacancyWithdrawnByQa;
