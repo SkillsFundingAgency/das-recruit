@@ -28,7 +28,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 
             var filter = filterBuilder.Eq(r => r.VacancyReference, vacancyReference) &
                         (filterBuilder.Exists(ManualOutcomeFieldName, false) |
-                        filterBuilder.Nin(ManualOutcomeFieldName, new string[] { ManualQaOutcome.Transferred.ToString(), ManualQaOutcome.Withdrawn.ToString() }));
+                        filterBuilder.Nin(ManualOutcomeFieldName, new string[] { ManualQaOutcome.Transferred.ToString(), ManualQaOutcome.Blocked.ToString() }));
             var results = await GetVacancyReviewsAsync(filter);
             return results.OrderByDescending(r => r.CreatedDate).FirstOrDefault();
         }
