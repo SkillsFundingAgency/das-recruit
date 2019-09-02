@@ -72,6 +72,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
         {
             public const string VacancyRejected = "RecruitV2_VacancyRejected";
             public const string ApplicationSubmittedImmediate = "RecruitV2_NewApplicationImmediate";
+            public const string ApplicationsSubmittedDigest = "RecruitV2_NewApplicationsDigest";
             public const string VacancyWithdrawnByQa = "RecruitV2_VacancyWithdrawnByQa";
             public const string ProviderBlockedProviderNotification = "RecruitV2_ProviderBlocked_ProviderNotification";
             public const string ProviderBlockedEmployerNotificationForTransferredVacancies = "RecruitV2_ProviderBlocked_EmployerNotification_ForTransferredVacancies";

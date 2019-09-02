@@ -11,9 +11,12 @@ namespace UnitTests.Vacancies.Client.Application.Communications
     {
         [Theory]
         [InlineData(RequestType.VacancyRejected, DeliveryFrequency.Default, TemplateIds.VacancyRejected)]
+        [InlineData(RequestType.ApplicationSubmitted, DeliveryFrequency.Default, TemplateIds.ApplicationSubmittedImmediate)]
         [InlineData(RequestType.ApplicationSubmitted, DeliveryFrequency.Immediate, TemplateIds.ApplicationSubmittedImmediate)]
         [InlineData(RequestType.ProviderBlockedProviderNotification, DeliveryFrequency.Immediate, TemplateIds.ProviderBlockedProviderNotification)]
         [InlineData(RequestType.ApplicationSubmitted, DeliveryFrequency.Daily, "")]
+        [InlineData(RequestType.ApplicationSubmitted, DeliveryFrequency.Daily, TemplateIds.ApplicationsSubmittedDigest)]
+        [InlineData(RequestType.ApplicationSubmitted, DeliveryFrequency.Weekly, TemplateIds.ApplicationsSubmittedDigest)]
         public async Task ReturnRespectiveTemplateId(string requestType, DeliveryFrequency frequency, string expectedTemplateId)
         {
             var plugin = new TemplateIdProviderPlugin();
