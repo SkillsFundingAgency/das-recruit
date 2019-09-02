@@ -1,24 +1,26 @@
 # Table of Contents
-* [Data Seeder Tool](#user-content-seedDataWriterTool)
-* [Writing Change Migration Scripts](#user-content-authoringChangeMigrationScripts)
-* [Archiving Chnage Migration Scripts](#archivingChangeMigrationScripts)
-* [Running Change Migration Scripts](#user-content-runningChangeMigrationScripts)
+* [Data Seeder Tool](#seedDataWriterTool)
+* [Writing Change Migration Scripts](#authoringChangeMigrationScripts)
+* [Archiving Change Migration Scripts](#archivingChangeMigrationScripts)
+* [Running Change Migration Scripts](#runningChangeMigrationScripts)
 
 &nbsp;
 
-# :leaves: Seed Data Writer Tool :rocket: <a name="seedDataWriterTool">&nbsp;</a>
+<a id="seedDataWriterTool"></a>
+# :leaves: Seed Data Writer Tool :rocket:
 
 ## Introduction
 
 This output of the `Console.RecruitSeedDataWriter` project can be used to load initial data into the Recruit document database used by the following applications:
-- Employer Recruit
-- QA Recruit
-- Provider Recruit (TBC)
+- [Employer Recruit](https://github.com/SkillsFundingAgency/das-recruit/tree/master/src/Employer/Employer.Web)
+- [Provider Recruit](https://github.com/SkillsFundingAgency/das-recruit/tree/master/src/Provider/Provider.Web)
+- [QA Recruit](https://github.com/SkillsFundingAgency/das-recruit/tree/master/src/QA/QA.Web)
+- [Recruit API](https://github.com/SkillsFundingAgency/das-recruit-api)
 - Vacancy API 1.0 (TBC)
 
 ## Project Setup
 
-The basic principle behind this repository is to store a copy of the reference data that needs to be loaded into the Recruit database (any other document database can be targetted).
+The basic principle behind this repository is to store a copy of the reference data that needs to be loaded into the Recruit database (any other Mongo API supported document database can be targetted).
 
 ## Prerequisites
 
@@ -37,7 +39,8 @@ The project can be published by running `dotnet publish` in the project director
 
 &nbsp;
 
-# Writing change migration scripts :leaves: :scroll: <a name="authoringChangeMigrationScripts"></a>
+<a id="authoringChangeMigrationScripts"></a>
+# Writing change migration scripts :leaves: :scroll:
 
 ## Prerequisites
 
@@ -57,13 +60,15 @@ The project can be published by running `dotnet publish` in the project director
 
 &nbsp;
 
-# Archiving change migration scripts :leaves: :scroll: <a name="archivingChangeMigrationScripts"></a>
+<a id="archivingChangeMigrationScripts"></a>
+# Archiving change migration scripts :leaves: :scroll:
 
 Any scripts that are no longer required to be run during release should be moved to the `archived` folder. The filename should be prefixed with the date that the script is no longer to be used in the format of `yyyy-mm-dd_`.
 
 &nbsp;
 
-# Running change migration scripts locally in Mongo shell :leaves: :shell: <a name="runningChangeMigrationScripts"></a>
+<a id="runningChangeMigrationScripts"></a>
+# Running change migration scripts locally in Mongo shell :leaves: :shell:
 
 ## Prerequisites
 
@@ -76,5 +81,5 @@ Any scripts that are no longer required to be run during release should be moved
 ## Instructions
 
 1. From the Mongo shell you can navigate to the directory that holds the **_documentMigration.js_** and child scripts using `cd("../../../dev/das-recruit/src/Data/Recruit.ChangeScipts")` assuming you have cloned the repository into the dev folder of your root dir. You can use `pwd()` to print your working directory to help you navigate.
-2. Enter the command `load("documentMigration.js")` and press `Enter`
+2. Enter the command `load("documentMigration.js")` and press <kbd>Enter</kbd>
 3. You should see output relating to the changes included in the change migration script(s).
