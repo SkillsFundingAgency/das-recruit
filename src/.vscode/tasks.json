@@ -181,6 +181,17 @@
                 "${workspaceFolder}/Employer/IntegrationTests/IntegrationTests.csproj",
                 "/p:GenerateFullPaths=true"
             ]
+        },
+        {
+            "label": "jobs-tests",
+            "group": "test",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "test",
+                "${workspaceFolder}/Jobs/Recruit.Vacancies.Jobs.Tests/Recruit.Vacancies.Jobs.Tests.csproj",
+                "/p:GenerateFullPaths=true"
+            ]
         }
     ]
 }
