@@ -18,7 +18,7 @@
         <form asp-route="@RouteNames.Dashboard_Index_Get" method="get">
             <div class="search-field">
                 <div class="search-input">
-                    <input asp-for="SearchTerm" placeholder="Search vacancies" class="govuk-input" maxlength="200"/>
+                    <input asp-for="SearchTerm" placeholder="Search vacancies" class="govuk-input" maxlength="200" />
                 </div>
                 <div class="search-submit">
                     <button class="" type="submit">Search</button>
@@ -68,26 +68,25 @@
                 </tr>
             </thead>
             <tbody class="govuk-table__body">
-            @foreach (var vacancy in Model.InProgressVacancies)
-            {
-                var assignmentInfoCaption = vacancy.GetAssignmentInfoCaption();
-                <tr class="govuk-table__row">
-                    <td class="govuk-table__cell">@vacancy.EmployerName</td>
-                    <td class="govuk-table__cell">@vacancy.VacancyTitle</td>
-                    <td class="govuk-table__cell"><span>VAC</span>@vacancy.VacancyReference</td>
-                    <td class="govuk-table__cell">@vacancy.SubmittedDate.ToUkTime().AsGdsDateTime()</td>
-                    <td class="govuk-table__cell">@vacancy.ClosingDate.AsGdsDate()</td>
-                    <td class="govuk-table__cell">
-                        @assignmentInfoCaption <br />
-                        <a asp-route="@RouteNames.Vacancy_Review_Unassign_Get" asp-route-reviewId="@vacancy.ReviewId" class="govuk-link">Unassign</a>
-                    </td>
-                </tr>
-            }
+                @foreach (var vacancy in Model.InProgressVacancies)
+                {
+                    var assignmentInfoCaption = vacancy.GetAssignmentInfoCaption();
+                    <tr class="govuk-table__row">
+                        <td class="govuk-table__cell">@vacancy.EmployerName</td>
+                        <td class="govuk-table__cell">@vacancy.VacancyTitle</td>
+                        <td class="govuk-table__cell"><span>VAC</span>@vacancy.VacancyReference</td>
+                        <td class="govuk-table__cell">@vacancy.SubmittedDate.ToUkTime().AsGdsDateTime()</td>
+                        <td class="govuk-table__cell">@vacancy.ClosingDate.AsGdsDate()</td>
+                        <td class="govuk-table__cell">
+                            @assignmentInfoCaption <br />
+                            <a asp-route="@RouteNames.Vacancy_Review_Unassign_Get" asp-route-reviewId="@vacancy.ReviewId" class="govuk-link">Unassign</a>
+                        </td>
+                    </tr>
+                }
             </tbody>
         </table>
     </div>
 </div>
-
 
 <h2 asp-show="@Model.DisplayLastSearchTerm" class="govuk-heading-m govuk-!-margin-bottom-0">Search results for [@Model.LastSearchTerm]</h2>
 
@@ -121,28 +120,26 @@
                         <a asp-show="@Model.SearchResult.IsClosed" asp-route="@RouteNames.Vacancy_Readonly_Review_Get" asp-route-reviewId="@Model.SearchResult.ReviewId" class="govuk-link">View (read only)</a>
                     </td>
                 </tr>
-
             </tbody>
         </table>
     </div>
 </div>
 
-<hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
-<div class="govuk-grid-row">
+<div asp-show="@Model.IsUserAdmin" class="govuk-grid-row">
+    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
     <div class="govuk-grid-column-one-third">
         <h3 class="govuk-heading-s govuk-!-margin-bottom-0">
             <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.ReportDashboard_Get">Reports</a>
         </h3>
         <p class="govuk-body">Create and download reports for your vacancies for any period of time.</p>
     </div>
-    <div asp-show="@Model.IsUserAdmin" class="govuk-grid-column-one-third">
+    <div class="govuk-grid-column-one-third">
         <h3 class="govuk-heading-s govuk-!-margin-bottom-0">
             <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.BlockedOrganisations_Get">Remove training provider</a>
         </h3>
         <p class="govuk-body">Remove a training provider</p>
     </div>
-
-    <div asp-show="@Model.IsUserAdmin" class="govuk-grid-column-one-third">
+    <div class="govuk-grid-column-one-third">
         <h3 class="govuk-heading-s govuk-!-margin-bottom-0">
             <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.WithdrawVacancy_FindVacancy_Get">Close a vacancy</a>
         </h3>
