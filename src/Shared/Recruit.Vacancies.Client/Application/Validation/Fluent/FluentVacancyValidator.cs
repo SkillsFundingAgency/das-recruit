@@ -289,7 +289,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
                         return true;
                     })
-                    .WithMessage("Expected duration must be at least 12 months (52 weeks)")
+                    .WithMessage("Expected duration must be at least 12 months")
                     .WithErrorCode("36")
                     .RunCondition(VacancyRuleSet.Duration)
                     .WithRuleId(VacancyRuleSet.Duration);
