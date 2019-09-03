@@ -6,12 +6,14 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
+using Esfa.Recruit.Provider.Web.Exceptions;
 using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Mappers;
+using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Provider.Web.Controllers
@@ -65,6 +67,9 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
                 throw new Exception("Unknown submit state");
             }
+
+            if(response.Errors.Errors.Any(e => e.ErrorCode == ErrorCodes.TrainingProviderMustHaveEmployerPermission))
+                throw new MissingPermissionsException(string.Format(RecruitWebExceptionMessages.ProviderMissingPermission, m.Ukprn));
 
             var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(m);
 
