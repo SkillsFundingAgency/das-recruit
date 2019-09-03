@@ -50,27 +50,34 @@
             <div esfa-validation-marker-for="StartDate" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-!-font-weight-bold">When do you expect the apprentice to start?<span class="govuk-visually-hidden"> (in numeric format DD MM YYYY)</span></legend>
-                    <span class="govuk-hint">For example, @exampleStartingDate.AsInputHintDisplayDate()</span>
 
                     <span esfa-validation-message-for="StartDate" class="govuk-error-message"></span>
 
+                    <p asp-show="@Model.CanShowTrainingHint" class="govuk-hint">
+                        The start date must be before the @Model.TrainingDescription closes to new starters on @Model.TrainingEffectiveToDate
+                    </p>
+                    <p asp-show="@Model.CanShowTrainingErrorHint" class="govuk-hint">
+                        You may want to <a asp-route="@RouteNames.Training_Get" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link">find different apprenticeship training</a>.
+                    </p>
+
+                    <span class="govuk-hint">For example, @exampleStartingDate.AsInputHintDisplayDate()</span>
                     <div class="govuk-date-input">
                         <div class="govuk-date-input__item">
                             <div class="govuk-form-group">
                                 <label asp-for="StartDay" class="govuk-label govuk-date-input__label">Day</label>
-                                <input asp-for="StartDay" class="govuk-input govuk-date-input__input govuk-input--width-2" type="number" min="1" max="31" >
+                                <input asp-for="StartDay" class="govuk-input govuk-date-input__input govuk-input--width-2" type="number" min="1" max="31">
                             </div>
                         </div>
                         <div class="govuk-date-input__item">
                             <div class="govuk-form-group">
                                 <label asp-for="StartMonth" class="govuk-label govuk-date-input__label">Month</label>
-                                <input asp-for="StartMonth" class="govuk-input govuk-date-input__input govuk-input--width-2" type="number" min="1" max="12" >
+                                <input asp-for="StartMonth" class="govuk-input govuk-date-input__input govuk-input--width-2" type="number" min="1" max="12">
                             </div>
                         </div>
                         <div class="govuk-date-input__item">
                             <div class="govuk-form-group">
                                 <label asp-for="StartYear" class="govuk-label govuk-date-input__label">Year</label>
-                                <input asp-for="StartYear" class="govuk-input govuk-date-input__input govuk-input--width-4" type="number" min="@Model.CurrentYear" >
+                                <input asp-for="StartYear" class="govuk-input govuk-date-input__input govuk-input--width-4" type="number" min="@Model.CurrentYear">
                             </div>
                         </div>
                     </div>
