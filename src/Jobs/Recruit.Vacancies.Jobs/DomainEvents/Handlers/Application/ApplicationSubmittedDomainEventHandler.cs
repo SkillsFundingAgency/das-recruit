@@ -9,13 +9,14 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Application
 {
-    public class ApplicationSubmittedHandler : DomainEventHandler, IDomainEventHandler<ApplicationSubmittedEvent>
+    public class ApplicationSubmittedDomainEventHandler : DomainEventHandler, IDomainEventHandler<ApplicationSubmittedEvent>
     {
-        private readonly ILogger<ApplicationSubmittedHandler> _logger;
+        private readonly ILogger<ApplicationSubmittedDomainEventHandler> _logger;
         private readonly IJobsVacancyClient _client;
         private readonly ICommunicationQueueService _communicationQueueService;
-        public ApplicationSubmittedHandler(
-            ILogger<ApplicationSubmittedHandler> logger,
+
+        public ApplicationSubmittedDomainEventHandler(
+            ILogger<ApplicationSubmittedDomainEventHandler> logger,
             IJobsVacancyClient client,
             ICommunicationQueueService communicationQueueService)
             : base(logger)
@@ -28,7 +29,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Application
         public async Task HandleAsync(string eventPayload)
         {
             var @event = DeserializeEvent<ApplicationSubmittedEvent>(eventPayload);
-            var communicationRequest = GetReferredVacancyCommunicationRequest(@event.Application.VacancyReference);
+            var communicationRequest = GetApplicationSubmittedCommunicationRequest(@event.Application.VacancyReference);
 
             try
             {
@@ -47,17 +48,16 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Application
             }
         }
 
-        private CommunicationRequest GetReferredVacancyCommunicationRequest(long vacancyReference)
+        private CommunicationRequest GetApplicationSubmittedCommunicationRequest(long vacancyReference)
         {
             var communicationRequest = new CommunicationRequest(
-                CommunicationConstants.RequestType.ApplicationSubmitted, 
-                CommunicationConstants.ParticipantResolverNames.VacancyParticipantsResolverName, 
+                CommunicationConstants.RequestType.ApplicationSubmitted,
+                CommunicationConstants.ParticipantResolverNames.VacancyParticipantsResolverName,
                 CommunicationConstants.ServiceName);
             communicationRequest.AddEntity(CommunicationConstants.EntityTypes.Vacancy, vacancyReference);
             communicationRequest.AddEntity(CommunicationConstants.EntityTypes.ApprenticeshipServiceUrl, vacancyReference);
             return communicationRequest;
         }
-
     }
 }
 
