@@ -9,13 +9,13 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Communications.ParticipantResolverPlugins
 {
-    public class ProviderParticipantsResolverPlugin : IParticipantResolver
+    public class EmployerParticipantsResolverPlugin : IParticipantResolver
     {
-        private readonly IUserRepository _userRepository;
-        private readonly ILogger<ProviderParticipantsResolverPlugin> _logger;
-        public string ParticipantResolverName => CommunicationConstants.ParticipantResolverNames.ProviderParticipantsResolverName;
+        public string ParticipantResolverName => CommunicationConstants.ParticipantResolverNames.EmployerParticipantsResolverName;
 
-        public ProviderParticipantsResolverPlugin(IUserRepository userRepository, ILogger<ProviderParticipantsResolverPlugin> logger)
+        private readonly IUserRepository _userRepository;
+        private readonly ILogger<EmployerParticipantsResolverPlugin> _logger;
+        public EmployerParticipantsResolverPlugin(IUserRepository userRepository, ILogger<EmployerParticipantsResolverPlugin> logger)
         {
             _userRepository = userRepository;
             _logger = logger;
@@ -24,12 +24,12 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications.ParticipantRe
         public async Task<IEnumerable<CommunicationUser>> GetParticipantsAsync(CommunicationRequest request)
         {
             _logger.LogInformation($"Resolving participants for RequestType: '{request.RequestType}'");
-            var entityId = request.Entities.Single(e => e.EntityType == CommunicationConstants.EntityTypes.Provider).EntityId.ToString();
-            if(long.TryParse(entityId, out var ukprn) == false)
+            var employerAccountId = request.Entities.Single(e => e.EntityType == CommunicationConstants.EntityTypes.Employer).EntityId.ToString();
+            if(string.IsNullOrWhiteSpace(employerAccountId))
             {
                 return Array.Empty<CommunicationUser>();
             }
-            var users = await _userRepository.GetProviderUsersAsync(ukprn);
+            var users = await _userRepository.GetEmployerUsersAsync(employerAccountId);
             return ParticipantResolverPluginHelper.ConvertToCommunicationUsers(users, null);
         }
     }

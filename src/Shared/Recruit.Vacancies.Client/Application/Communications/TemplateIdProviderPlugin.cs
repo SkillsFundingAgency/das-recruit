@@ -24,8 +24,17 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
                 case CommunicationConstants.RequestType.VacancyWithdrawnByQa:
                     templateId = CommunicationConstants.TemplateIds.VacancyWithdrawnByQa;
                     break;
-                case CommunicationConstants.RequestType.ProviderBlockedProvider:
-                    templateId = CommunicationConstants.TemplateIds.ProviderBlockedProvider;
+                case CommunicationConstants.RequestType.ProviderBlockedProviderNotification:
+                    templateId = CommunicationConstants.TemplateIds.ProviderBlockedProviderNotification;
+                    break;
+                case CommunicationConstants.RequestType.ProviderBlockedEmployerNotificationForTransferredVacancies:
+                    templateId = CommunicationConstants.TemplateIds.ProviderBlockedEmployerNotificationForTransferredVacancies;
+                    break;
+                case CommunicationConstants.RequestType.ProviderBlockedEmployerNotificationForLiveVacancies:
+                    templateId = CommunicationConstants.TemplateIds.ProviderBlockedEmployerNotificationForLiveVacancies;
+                    break;
+                case CommunicationConstants.RequestType.ProviderBlockedEmployerNotificationForPermissionOnly:
+                    templateId = CommunicationConstants.TemplateIds.ProviderBlockedEmployerNotificationForPermissionsOnly;
                     break;
                 default:
                     throw new NotImplementedException($"Template for request type {message.RequestType} is not defined.");

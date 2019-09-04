@@ -118,14 +118,16 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddTransient<ICommunicationProcessor, CommunicationProcessor>();
             services.AddTransient<ICommunicationService, CommunicationService>();
 
-            services.AddTransient<IEntityDataItemProvider, VacancyDataEntityPlugin>();
             services.AddTransient<IParticipantResolver, VacancyParticipantsResolverPlugin>();
             services.AddTransient<IParticipantResolver, ProviderParticipantsResolverPlugin>();
+            services.AddTransient<IParticipantResolver, EmployerParticipantsResolverPlugin>();
             services.AddTransient<IUserPreferencesProvider, UserPreferencesProviderPlugin>();
             services.AddTransient<ITemplateIdProvider, TemplateIdProviderPlugin>();
+            services.AddTransient<IEntityDataItemProvider, VacancyDataEntityPlugin>();
             services.AddTransient<IEntityDataItemProvider, ApprenticeshipServiceUrlDataEntityPlugin>();
             services.AddTransient<IEntityDataItemProvider, ApprenticeshipServiceConfigDataEntityPlugin>();
             services.AddTransient<IEntityDataItemProvider, ProviderDataEntityPlugin>();
+            services.AddTransient<IEntityDataItemProvider, EmployerDataEntityPlugin>();
 
             services.Configure<CommunicationsConfiguration>(configuration.GetSection("CommunicationsConfiguration"));
         }

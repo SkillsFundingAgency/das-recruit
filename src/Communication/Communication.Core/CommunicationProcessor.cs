@@ -72,6 +72,8 @@ namespace Communication.Core
                 dataItems.AddRange(entityDataItems);
             }
 
+            dataItems.AddRange(request.DataItems);
+
             return dataItems;
         }
 

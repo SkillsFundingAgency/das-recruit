@@ -12,6 +12,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
         {
             public const string ProviderParticipantsResolverName = nameof(ProviderParticipantsResolverName);
             public const string VacancyParticipantsResolverName = nameof(VacancyParticipantsResolverName);
+            public const string EmployerParticipantsResolverName = nameof(EmployerParticipantsResolverName);
         }
 
         public static class EntityTypes
@@ -19,6 +20,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
             public const string Vacancy = nameof(Vacancy);
             public const string ApprenticeshipServiceUrl = nameof(ApprenticeshipServiceUrl);
             public const string Provider = nameof(Provider);
+            public const string Employer = nameof(Employer);
             public const string ApprenticeshipServiceConfig = nameof(ApprenticeshipServiceConfig);
         }
 
@@ -27,7 +29,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
             public const string VacancyRejected = nameof(VacancyRejected);
             public const string ApplicationSubmitted = nameof(ApplicationSubmitted);
             public const string VacancyWithdrawnByQa = nameof(VacancyWithdrawnByQa);
-            public const string ProviderBlockedProvider = nameof(ProviderBlockedProvider);
+            public const string ProviderBlockedProviderNotification = nameof(ProviderBlockedProviderNotification);
+            public const string ProviderBlockedEmployerNotificationForTransferredVacancies = nameof(ProviderBlockedEmployerNotificationForTransferredVacancies);
+            public const string ProviderBlockedEmployerNotificationForLiveVacancies = nameof(ProviderBlockedEmployerNotificationForLiveVacancies);
+            public const string ProviderBlockedEmployerNotificationForPermissionOnly = nameof(ProviderBlockedEmployerNotificationForPermissionOnly);
         }
 
         public static class DataItemKeys
@@ -36,7 +41,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
             {
                 public const string VacancyReference = "vacancy-reference";
                 public const string VacancyTitle = "vacancy-title";
-                public const string EmployerName = "employer-name";
+                public const string EmployerName = "employer-name";                
             }
 
             public static class ApprenticeshipService
@@ -49,6 +54,12 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
             {
                 public const string ProviderName = "provider-name";
             }
+
+            public static class Employer
+            {
+                public const string EmployerAccountId = nameof(EmployerAccountId);
+                public const string VacanciesTransferredCount = "vacancies-transferred-count";
+            }
         }
 
         public static class TemplateIds
@@ -56,8 +67,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
             public const string VacancyRejected = "RecruitV2_VacancyRejected";
             public const string ApplicationSubmittedImmediate = "RecruitV2_NewApplicationImmediate";
             public const string VacancyWithdrawnByQa = "RecruitV2_VacancyWithdrawnByQa";
-            public const string ProviderBlockedEmployer = "RecruitV2_ProviderBlocked_Employer";
-            public const string ProviderBlockedProvider = "RecruitV2_ProviderBlocked_Provider";
+            public const string ProviderBlockedProviderNotification = "RecruitV2_ProviderBlocked_ProviderNotification";
+            public const string ProviderBlockedEmployerNotificationForTransferredVacancies = "RecruitV2_ProviderBlocked_EmployerNotification_ForTransferredVacancies";
+            public const string ProviderBlockedEmployerNotificationForLiveVacancies = "RecruitV2_ProviderBlocked_EmployerNotification_ForLiveVacancies";
+            public const string ProviderBlockedEmployerNotificationForPermissionsOnly = "RecruitV2_ProviderBlocked_EmployerNotification_ForPermissionsOnly";
         }
     }
 }

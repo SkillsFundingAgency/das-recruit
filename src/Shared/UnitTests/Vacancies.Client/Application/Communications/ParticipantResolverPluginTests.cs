@@ -31,7 +31,7 @@ namespace UnitTests.Vacancies.Client.Application.Communications
         public ParticipantResolverPluginTests()
         {
             _mockUserRepository.Setup(u => u.GetEmployerUsersAsync(It.IsAny<string>())).ReturnsAsync(new List<User> {GetUser(OwnerType.Employer), GetUser(OwnerType.Employer), GetUser(OwnerType.Employer)});
-            _mockUserRepository.Setup(u => u.GetProviderUsers(It.IsAny<long>())).ReturnsAsync(new List<User> {GetUser(OwnerType.Provider), GetPrimaryUser(OwnerType.Provider)});
+            _mockUserRepository.Setup(u => u.GetProviderUsersAsync(It.IsAny<long>())).ReturnsAsync(new List<User> {GetUser(OwnerType.Provider), GetPrimaryUser(OwnerType.Provider)});
         }
 
         [Fact]

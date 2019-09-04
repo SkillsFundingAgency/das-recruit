@@ -10,12 +10,12 @@ namespace Communication.Types
         public DateTime RequestDateTime { get; set; }
         public string ParticipantsResolverName { get; set; }
         public string TemplateProviderName { get; set; }
-        public List<Entity> Entities { get; set; }
+        public List<Entity> Entities { get; set; } = new List<Entity>();
+        public List<CommunicationDataItem> DataItems { get; set; } = new List<CommunicationDataItem>();
 
         public CommunicationRequest()
         {
             RequestDateTime = DateTime.UtcNow;
-            Entities = new List<Entity>();
         }
 
         public CommunicationRequest(string requestType, string participantsResolverName, string templateProviderName) : this()

@@ -47,13 +47,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
                 new Context(nameof(GetEmployerUsersAsync)));
         }
 
-        public Task<List<User>> GetProviderUsers(long ukprn)
+        public Task<List<User>> GetProviderUsersAsync(long ukprn)
         {
             var filter = Builders<User>.Filter.Eq(u => u.Ukprn, ukprn);
             var collection = GetCollection<User>();
             return RetryPolicy.ExecuteAsync(_ => 
                 collection.Find(filter).ToListAsync(),
-                new Context(nameof(GetProviderUsers)));
+                new Context(nameof(GetProviderUsersAsync)));
         }
     }
 }

@@ -220,7 +220,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
                     {
                         Id = x.Id,
                         VacancyOwner = x.OwnerType,
-                        VacancyReference = x.VacancyReference.GetValueOrDefault()
+                        VacancyReference = x.VacancyReference.GetValueOrDefault(),
+                        Status = x.Status,
+                        EmployerAccountId = x.EmployerAccountId
                     })
                     .ToListAsync(),
                 new Context(nameof(GetVacanciesAssociatedToProvider)));
