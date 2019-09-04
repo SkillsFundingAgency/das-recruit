@@ -15,7 +15,6 @@ using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.VacancyReview;
 using Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers;
-using Esfa.Recruit.Vacancies.Jobs.UpdateBlockedEmployers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -40,7 +39,6 @@ namespace Esfa.Recruit.Vacancies.Jobs
         public static void ConfigureJobServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddSingleton<IApprenticeshipProgrammeApiClient, ApprenticeshipProgrammeApiClient>();
-            services.AddScoped(x => new AccountsReader(x.GetService<ILogger<AccountsReader>>(), configuration.GetConnectionString("EmployerFinanceSqlDbConnectionString"), configuration.GetConnectionString("EmployerAccountsSqlDbConnectionString")));
             services.AddScoped(x => new AnalyticsEventStore(x.GetService<ILogger<AnalyticsEventStore>>(), configuration.GetConnectionString("VacancyAnalyticEventsSqlDbConnectionString")));
 
             services.AddRecruitStorageClient(configuration);
@@ -59,7 +57,6 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddScoped<GeneratePublishedVacanciesQueueTrigger>();
             services.AddScoped<UpdateBankHolidayQueueTrigger>();
             services.AddScoped<UpdateQaDashboardQueueTrigger>();
-            services.AddScoped<GenerateBlockedEmployersQueueTrigger>();
             services.AddScoped<GenerateVacancyAnalyticsSummaryQueueTrigger>();
             services.AddScoped<TransferVacanciesFromProviderQueueTrigger>();
             services.AddScoped<TransferVacancyToLegalEntityQueueTrigger>();

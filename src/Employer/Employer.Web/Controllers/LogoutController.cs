@@ -1,29 +1,35 @@
-﻿using Esfa.Recruit.Employer.Web.Configuration;
-using Esfa.Recruit.Employer.Web.Configuration.Routing;
-using Microsoft.AspNetCore.Authentication;
+﻿using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Extensions;
-using Microsoft.AspNetCore.Hosting;
+using Esfa.Recruit.Employer.Web.Services;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
     [Route(RoutePaths.Services)]
     public class LogoutController : Controller
     {
-        private readonly IHostingEnvironment _hostingEnvironment;
-        private readonly ExternalLinksConfiguration _externalLinks;
+        private readonly ILevyDeclarationCookieWriter _levyDeclarationCookieWriter;
+        private readonly IEoiAgreementCookieWriter _eoiAgreementCookieWriter;
+        private readonly IEmployerAccountTypeCookieWriter _employerAccountTypeCookieWriter;
 
-        public LogoutController(IHostingEnvironment hostingEnvironment, IOptions<ExternalLinksConfiguration> externalLinksOptions)
+        public LogoutController(
+            ILevyDeclarationCookieWriter levyDeclarationCookieWriter,
+            IEoiAgreementCookieWriter eoiAgreementCookieWriter,
+            IEmployerAccountTypeCookieWriter employerAccountTypeCookieWriter)
         {
-            _hostingEnvironment = hostingEnvironment;
-            _externalLinks = externalLinksOptions.Value;
+            _levyDeclarationCookieWriter = levyDeclarationCookieWriter;
+            _eoiAgreementCookieWriter = eoiAgreementCookieWriter;
+            _employerAccountTypeCookieWriter = employerAccountTypeCookieWriter;
         }
 
         [HttpGet, Route("logout", Name = RouteNames.Logout_Get)]
         public async Task Logout()
         {
+            _levyDeclarationCookieWriter.DeleteCookie(Response);
+            _eoiAgreementCookieWriter.DeleteCookie(Response);
+            _employerAccountTypeCookieWriter.DeleteCookie(Response);
+
             await HttpContext.SignOutEmployerWebAsync();
         }
     }

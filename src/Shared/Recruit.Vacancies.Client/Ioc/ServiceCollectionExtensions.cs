@@ -28,7 +28,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BankHolidays;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BannedPhrases;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BlockedEmployers;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Profanities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Qualifications;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Skills;
@@ -173,7 +172,6 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddTransient<ICandidateSkillsProvider, CandidateSkillsProvider>();
             services.AddTransient<IProfanityListProvider, ProfanityListProvider>();
             services.AddTransient<IBannedPhrasesProvider, BannedPhrasesProvider>();
-            services.AddTransient<IBlockedEmployersProvider, BlockedEmployersProvider>();
 
             // Query Data Providers
             services.AddTransient<IVacancySummariesProvider, VacancySummariesProvider>();

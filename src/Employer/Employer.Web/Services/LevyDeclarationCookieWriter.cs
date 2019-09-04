@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Employer.Web.Services
 {
-    public class LevyDeclarationCookieWriter
+    public class LevyDeclarationCookieWriter : ILevyDeclarationCookieWriter
     {
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly IDataProtector _dataProtector;
@@ -41,9 +41,9 @@ namespace Esfa.Recruit.Employer.Web.Services
             return content;
         }
 
-        public void WriteCookie(HttpResponse response, string userId, string employerAccountId)
+        public void WriteCookie(HttpResponse response, string userId, string employerAccountId, bool hasLevyDeclaration)
         {
-            var protectedValue = _dataProtector.Protect($"{userId}-{employerAccountId}");
+            var protectedValue = _dataProtector.Protect(userId + "/" + employerAccountId + "/" + hasLevyDeclaration);
 
             response.Cookies.Append(CookieNames.LevyEmployerIndicator, protectedValue, EsfaCookieOptions.GetDefaultHttpCookieOption(_hostingEnvironment));
         }

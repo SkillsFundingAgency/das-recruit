@@ -2,7 +2,6 @@
 {
     public static class CacheKeys
     {
-        public const string BlockedEmployers = "blockedEmployers";
         public const string ApprenticeshipProgrammes = "apprenticeshipProgrammes";
         public const string Qualifications = "qualifications";
         public const string Skills = "skills";

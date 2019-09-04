@@ -11,6 +11,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
         Task<IEnumerable<LegalEntity>> GetEmployerLegalEntitiesAsync(string accountId);
         Task<string> GetEmployerAccountPublicHashedIdAsync(long accountId);
         Task<IEnumerable<LegalEntityViewModel>> GetLegalEntitiesConnectedToAccountAsync(string accountId);
-        Task<bool> GetEmployerHasSignedEoiAgreements(string accountId);
+        Task<EmployerAccountDetails> GetEmployerAccountDetailsAsync(string employerAccountId);
     }
 }

@@ -79,16 +79,8 @@ namespace Esfa.Recruit.Employer.Web.Configuration
 
                 opts.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
 
-                if (featureToggle.IsFeatureEnabled(FeatureNames.AllowLevyPayingEmployersOnly))
-                {
-                    opts.Filters.Add(typeof(LevyDeclarationCheckFilter), 0);
-                }
+                opts.Filters.Add(typeof(EmployerAccessCheckFilter), 0);
                 
-                if (EnvironmentNames.IsProductionEnvironment(hostingEnvironment))
-                {
-                    opts.Filters.AddService<CheckEmployerBlockedFilter>();
-                }
-
                 opts.Filters.AddService<PlannedOutageResultFilter>();
 
                 opts.AddTrimModelBinderProvider(loggerFactory);

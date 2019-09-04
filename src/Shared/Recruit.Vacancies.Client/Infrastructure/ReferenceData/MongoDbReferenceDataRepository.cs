@@ -75,8 +75,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData
                 { typeof(Quals.Qualifications), "QualificationTypes" },
                 { typeof(Programmes.ApprenticeshipProgrammes), "ApprenticeshipProgrammes" },
                 { typeof(Profanities.ProfanityList), "Profanities" },
-                { typeof(BannedPhrases.BannedPhraseList), "BannedPhrases" },
-                { typeof(BlockedEmployers.BlockedEmployers), "BlockedEmployers" }
+                { typeof(BannedPhrases.BannedPhraseList), "BannedPhrases" }
             };
         }
     }
