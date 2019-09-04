@@ -20,7 +20,7 @@ using SFA.DAS.ProviderRelationships.Messages.Events;
 using SFA.DAS.ProviderRelationships.Types.Models;
 using Xunit;
 
-namespace Esfa.Recruit.UnitTests.Jobs.ExternalSystemEventHandlers
+namespace Esfa.Recruit.Vacancies.Jobs.Tests.ExternalSystemEventHandlers
 {
     public class UpdatedPermissionsExternalSystemEventHandlerTests
     {

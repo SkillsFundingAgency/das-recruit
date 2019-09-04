@@ -6,11 +6,10 @@ using Esfa.Recruit.Vacancies.Client.Application.Queues;
 using Esfa.Recruit.Vacancies.Client.Application.Queues.Messages;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
-using Esfa.Recruit.Vacancies.Jobs;
 using Moq;
 using Xunit;
 
-namespace Esfa.Recruit.UnitTests.Jobs
+namespace Esfa.Recruit.Vacancies.Jobs.Tests.Jobs
 {
     public class TransferVacanciesFromProviderJobTests
     {

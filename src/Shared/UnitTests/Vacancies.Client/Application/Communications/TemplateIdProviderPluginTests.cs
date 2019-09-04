@@ -12,7 +12,7 @@ namespace UnitTests.Vacancies.Client.Application.Communications
         [Theory]
         [InlineData(RequestType.VacancyRejected, DeliveryFrequency.Default, TemplateIds.VacancyRejected)]
         [InlineData(RequestType.ApplicationSubmitted, DeliveryFrequency.Immediate, TemplateIds.ApplicationSubmittedImmediate)]
-        [InlineData(RequestType.ProviderBlockedProvider, DeliveryFrequency.Immediate, TemplateIds.ProviderBlockedProvider)]
+        [InlineData(RequestType.ProviderBlockedProviderNotification, DeliveryFrequency.Immediate, TemplateIds.ProviderBlockedProviderNotification)]
         [InlineData(RequestType.ApplicationSubmitted, DeliveryFrequency.Daily, "")]
         public async Task ReturnRespectiveTemplateId(string requestType, DeliveryFrequency frequency, string expectedTemplateId)
         {

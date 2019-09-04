@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Communication.Types;
 using Esfa.Recruit.Vacancies.Client.Application.Communications;
@@ -60,7 +61,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider
 
             tasks.Add(RequestProviderCommunicationAsync(eventData.Ukprn));
 
-            // tasks.AddRange(RequestEmployerCommunications(vacancies));
+            tasks.AddRange(RequestEmployerCommunications(vacancies, providerInfo.Employers, eventData.Ukprn));
 
             await Task.WhenAll(tasks);
 
@@ -72,6 +73,8 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider
             var tasks = new List<Task>();
             foreach (var employer in employers)
             {
+                if(employer.LegalEntities == null) continue;
+
                 foreach (var legalEntity in employer.LegalEntities)
                 {
                     _logger.LogInformation($"Queuing to revoke provider {ukprn} permission on account {employer.EmployerAccountId} for legal entity {legalEntity.LegalEntityId}.");
@@ -114,7 +117,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider
         private Task RequestProviderCommunicationAsync(long ukprn)
         {
             var communicationRequest = new CommunicationRequest(
-                CommunicationConstants.RequestType.ProviderBlockedProvider, 
+                CommunicationConstants.RequestType.ProviderBlockedProviderNotification, 
                 CommunicationConstants.ParticipantResolverNames.ProviderParticipantsResolverName, 
                 CommunicationConstants.ServiceName);
             communicationRequest.AddEntity(CommunicationConstants.EntityTypes.Provider, ukprn);
@@ -123,20 +126,79 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider
             return _communicationQueueService.AddMessageAsync(communicationRequest);
         }
 
-        private List<Task> RequestEmployerCommunications(IEnumerable<ProviderVacancySummary> vacancies)
+        private List<Task> RequestEmployerCommunications(IEnumerable<ProviderVacancySummary> vacancies, IEnumerable<EmployerInfo> employers, long ukprn)
         {
             var tasks = new List<Task>();
 
-            //TODO 
-            // - find all the vacancies OWNED by the provider
-            // - get unique list of employers from the vacancy list
-            // - Raise one communication request for each employer
-            //      Add entity data item for BlockedProvider entity, the value will consist of the ukprn, employer account id and blocked date
+            tasks.AddRange(GenerateCommunicationRequestsForTransferredVacancies(vacancies, ukprn));
+            tasks.AddRange(GenerateCommunicationRequestsForEmployersLiveVacancies(vacancies, ukprn));
+            tasks.AddRange(GenerateCommunicationRequestsForEmployersWithPermissionsOnly(vacancies, employers, ukprn));
 
-            //TODO Communications
-            // - Create new (or extend) user provider plugin that works directly off employer account id
-            // - Create new data item plugin for the request type that will return the count of vacancies that were transferred
-            //      look for vacancies associated to the employer and provider with TransferInfo marked with blocked timestamp
+            return tasks;
+        }
+
+        private List<Task> GenerateCommunicationRequestsForTransferredVacancies(IEnumerable<ProviderVacancySummary> vacancies, long ukprn)
+        {
+            var tasks = new List<Task>();
+
+            var employerAccountsWithTransfers = vacancies.Where(v => v.VacancyOwner == OwnerType.Provider).GroupBy(v => v.EmployerAccountId);
+
+            foreach(var employerAccount in employerAccountsWithTransfers)
+            {
+                var communicationRequest = new CommunicationRequest(
+                    CommunicationConstants.RequestType.ProviderBlockedEmployerNotificationForTransferredVacancies, 
+                    CommunicationConstants.ParticipantResolverNames.EmployerParticipantsResolverName, 
+                    CommunicationConstants.ServiceName);
+                communicationRequest.DataItems.Add(new CommunicationDataItem(CommunicationConstants.DataItemKeys.Employer.VacanciesTransferredCount, employerAccount.Count().ToString()));
+                communicationRequest.AddEntity(CommunicationConstants.EntityTypes.Provider, ukprn);
+                communicationRequest.AddEntity(CommunicationConstants.EntityTypes.Employer, employerAccount.Key);
+                communicationRequest.AddEntity(CommunicationConstants.EntityTypes.ApprenticeshipServiceConfig, null);
+
+                tasks.Add(_communicationQueueService.AddMessageAsync(communicationRequest));
+            }
+            return tasks;
+        }
+
+        private List<Task> GenerateCommunicationRequestsForEmployersLiveVacancies(IEnumerable<ProviderVacancySummary> vacancies, long ukprn)
+        {
+            var tasks = new List<Task>();
+
+            var employerAccountWithLiveVacancies = vacancies.Where(v => v.VacancyOwner == OwnerType.Employer && v.Status == VacancyStatus.Live).Select(v => v.EmployerAccountId).Distinct();
+
+            foreach(var employerAccountId in employerAccountWithLiveVacancies)
+            {
+                var communicationRequest = new CommunicationRequest(
+                    CommunicationConstants.RequestType.ProviderBlockedEmployerNotificationForLiveVacancies, 
+                    CommunicationConstants.ParticipantResolverNames.EmployerParticipantsResolverName, 
+                    CommunicationConstants.ServiceName);
+                communicationRequest.AddEntity(CommunicationConstants.EntityTypes.Provider, ukprn);
+                communicationRequest.AddEntity(CommunicationConstants.EntityTypes.Employer, employerAccountId);
+                communicationRequest.AddEntity(CommunicationConstants.EntityTypes.ApprenticeshipServiceConfig, null);
+
+                tasks.Add(_communicationQueueService.AddMessageAsync(communicationRequest));
+            }
+
+            return tasks;
+        }
+
+        private List<Task> GenerateCommunicationRequestsForEmployersWithPermissionsOnly(IEnumerable<ProviderVacancySummary> vacancies, IEnumerable<EmployerInfo> employers, long ukprn)
+        {
+            var tasks = new List<Task>();
+            var distinctListOfEmployersWithVacancy = vacancies.Select(v => v.EmployerAccountId).Distinct();
+            var employerIdsWithPermissionOnly = employers.Where(e => distinctListOfEmployersWithVacancy.Contains(e.EmployerAccountId) == false).Select(e => e.EmployerAccountId);
+
+            foreach(var employerAccountId in employerIdsWithPermissionOnly)
+            {
+                var communicationRequest = new CommunicationRequest(
+                    CommunicationConstants.RequestType.ProviderBlockedEmployerNotificationForPermissionOnly, 
+                    CommunicationConstants.ParticipantResolverNames.EmployerParticipantsResolverName, 
+                    CommunicationConstants.ServiceName);
+                communicationRequest.AddEntity(CommunicationConstants.EntityTypes.Provider, ukprn);
+                communicationRequest.AddEntity(CommunicationConstants.EntityTypes.Employer, employerAccountId);
+                communicationRequest.AddEntity(CommunicationConstants.EntityTypes.ApprenticeshipServiceConfig, null);
+
+                tasks.Add(_communicationQueueService.AddMessageAsync(communicationRequest));
+            }
 
             return tasks;
         }

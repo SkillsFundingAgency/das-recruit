@@ -34,9 +34,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
                     SetPreferencesForApplicationSubmittedNotification(ref userPref, userPreference);
                     return userPref;
                 case CommunicationConstants.RequestType.VacancyWithdrawnByQa:
-                    SetPreferencesForMandatoryOrganisationEmailNotification(ref userPref);
-                    return userPref;
-                case CommunicationConstants.RequestType.ProviderBlockedProvider:
+                case CommunicationConstants.RequestType.ProviderBlockedProviderNotification:
+                case CommunicationConstants.RequestType.ProviderBlockedEmployerNotificationForTransferredVacancies:
+                case CommunicationConstants.RequestType.ProviderBlockedEmployerNotificationForLiveVacancies:
+                case CommunicationConstants.RequestType.ProviderBlockedEmployerNotificationForPermissionOnly:
                     SetPreferencesForMandatoryOrganisationEmailNotification(ref userPref);
                     return userPref;
                 default:
