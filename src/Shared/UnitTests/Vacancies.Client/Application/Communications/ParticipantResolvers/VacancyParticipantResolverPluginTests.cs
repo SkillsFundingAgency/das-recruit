@@ -12,9 +12,9 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
 
-namespace UnitTests.Vacancies.Client.Application.Communications
+namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Communications
 {
-    public class ParticipantResolverPluginTests
+    public class VacancyParticipantResolverPluginTests
     {
         private static Fixture _fixture = new Fixture();
         private Mock<IVacancyRepository> _mockVacancyRepository = new Mock<IVacancyRepository>();
@@ -28,7 +28,7 @@ namespace UnitTests.Vacancies.Client.Application.Communications
 
         private string PrimaryUserId = _fixture.Create<string>();
 
-        public ParticipantResolverPluginTests()
+        public VacancyParticipantResolverPluginTests()
         {
             _mockUserRepository.Setup(u => u.GetEmployerUsersAsync(It.IsAny<string>())).ReturnsAsync(new List<User> {GetUser(OwnerType.Employer), GetUser(OwnerType.Employer), GetUser(OwnerType.Employer)});
             _mockUserRepository.Setup(u => u.GetProviderUsersAsync(It.IsAny<long>())).ReturnsAsync(new List<User> {GetUser(OwnerType.Provider), GetPrimaryUser(OwnerType.Provider)});
