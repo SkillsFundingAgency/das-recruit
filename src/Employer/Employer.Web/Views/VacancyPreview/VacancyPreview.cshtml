@@ -407,7 +407,8 @@
                 Apprenticeship @Model.TrainingType
             </h3>
             <p asp-show="@Model.HasTrainingTitle" class="govuk-body">
-                @Model.TrainingTitle <br /> @Model.Level.ToDescription()
+                @Model.TrainingTitle<br />
+                @Model.EducationLevelName
             </p>
             @EditLink(RouteNames.Training_Get, Model.TrainingSectionState, "apprenticeship training","link-standard", new { wizard = false })
         </div>
