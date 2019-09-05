@@ -43,7 +43,9 @@ namespace Esfa.Recruit.QA.Web.Controllers
             {
                 return View(new FindTrainingProviderViewModel() { Ukprn = model.Ukprn, Postcode = model.Postcode });
             }
-            var isBlocked = await _orchestrator.IsProviderAlreadyBlocked(model.Ukprn.GetValueOrDefault());
+
+            long.TryParse(model.Ukprn, out var ukprn);
+            var isBlocked = await _orchestrator.IsProviderAlreadyBlocked(ukprn);
 
             TempData[TempDataKeys.BlockProviderUkprnKey] = model.Ukprn;
 

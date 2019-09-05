@@ -50,7 +50,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .NotEmpty()
                     .WithMessage("You must provide a postcode")
                     .WithErrorCode("8")
-                .PostCode()
+                .ValidPostCode()
                     .When(x => !string.IsNullOrEmpty(x.Postcode), ApplyConditionTo.CurrentValidator)
                     .WithMessage("'{PropertyName}' is not in a valid format")
                     .WithErrorCode("9")
