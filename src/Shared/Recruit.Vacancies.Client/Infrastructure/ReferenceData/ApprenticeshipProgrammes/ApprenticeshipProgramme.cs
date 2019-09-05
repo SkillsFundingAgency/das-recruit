@@ -20,5 +20,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
         public int Duration { get; set; }
 
         public bool IsActive { get; set; }
+
+        public int? EducationLevelNumber { get; set; }
     }
 }

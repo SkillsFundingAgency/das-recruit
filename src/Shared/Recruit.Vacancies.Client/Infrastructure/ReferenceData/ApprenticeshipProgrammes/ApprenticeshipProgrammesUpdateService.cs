@@ -38,11 +38,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
         {
             var standardsTask = GetStandards();
             var frameworksTask = GetFrameworks();
-            var tasks = new List<Task>{ standardsTask, frameworksTask };
 
             try
             {
-                Task.WaitAll(tasks.ToArray());
+                Task.WaitAll(standardsTask, frameworksTask);
 
                 var standardsFromApi = standardsTask.Result.ToList();
                 var frameworksFromApi = frameworksTask.Result.ToList();

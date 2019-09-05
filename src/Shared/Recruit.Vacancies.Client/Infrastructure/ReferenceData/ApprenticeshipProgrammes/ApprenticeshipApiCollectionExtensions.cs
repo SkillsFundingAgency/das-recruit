@@ -22,6 +22,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
                 EffectiveFrom = x.EffectiveFrom,
                 EffectiveTo = x.EffectiveTo,
                 Level = ProgrammeLevelHelper.RemapFromInt(x.Level),
+                EducationLevelNumber = x.Level,
                 Duration = x.Duration
             });
         }
@@ -40,6 +41,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
                 EffectiveFrom = x.EffectiveFrom,
                 EffectiveTo = x.EffectiveTo,
                 Level = ProgrammeLevelHelper.RemapFromInt(x.Level),
+                EducationLevelNumber = x.Level,
                 Duration = x.Duration
             });
         }
