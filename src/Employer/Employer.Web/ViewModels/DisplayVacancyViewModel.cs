@@ -12,6 +12,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public bool CanDelete { get; internal set; }
         public bool CanSubmit { get; internal set; }
         public string ClosingDate { get; internal set; }
+        public string EducationLevelName { get; internal set; }
         public string EmployerContactName { get; internal set; }
         public string EmployerContactEmail { get; internal set; }
         public string EmployerContactTelephone { get; internal set; }

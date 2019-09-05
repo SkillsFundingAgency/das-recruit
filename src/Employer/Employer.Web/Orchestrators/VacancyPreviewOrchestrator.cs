@@ -7,6 +7,7 @@ using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Preview;
 using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
+using Esfa.Recruit.Shared.Web.Helpers;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
@@ -62,6 +63,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             vm.CanShowReference = vacancy.Status != VacancyStatus.Draft;
             vm.CanShowDraftHeader = vacancy.Status == VacancyStatus.Draft;
             vm.SoftValidationErrors = GetSoftValidationErrors(vacancy);
+            vm.EducationLevelName = EducationLevelNumberHelper.GetEducationLevelName(programme.EducationLevelNumber);
 
             if (programme != null) vm.Level = programme.Level;
 
