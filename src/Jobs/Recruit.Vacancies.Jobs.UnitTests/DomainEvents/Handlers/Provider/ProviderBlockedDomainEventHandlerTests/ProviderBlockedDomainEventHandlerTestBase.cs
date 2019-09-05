@@ -12,7 +12,7 @@ using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider;
 using Microsoft.Extensions.Logging;
 using Moq;
 
-namespace Esfa.Recruit.Vacancies.Jobs.Tests.DomainEvents.Handlers.Provider.ProviderBlockedDomainEventHandlerTests
+namespace Esfa.Recruit.Vacancies.Jobs.UnitTests.DomainEvents.Handlers.Provider.ProviderBlockedDomainEventHandlerTests
 {
     public abstract class ProviderBlockedDomainEventHandlerTestBase
     {

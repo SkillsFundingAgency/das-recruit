@@ -7,7 +7,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Moq;
 using Xunit;
 
-namespace Esfa.Recruit.Vacancies.Jobs.Tests.Jobs
+namespace Esfa.Recruit.Vacancies.Jobs.UnitTests.Jobs
 {
     public class TransferVacancyToLegalEntityJobTests
     {

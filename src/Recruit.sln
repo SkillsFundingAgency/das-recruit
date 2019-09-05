@@ -43,7 +43,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Communication.Types", "Comm
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Communication.UnitTests", "Communication\Communication.UnitTests\Communication.UnitTests.csproj", "{988F6AF8-9D1F-43B1-A2DA-9D50E227FE29}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Recruit.Vacancies.Jobs.Tests", "Jobs\Recruit.Vacancies.Jobs.Tests\Recruit.Vacancies.Jobs.Tests.csproj", "{C842F94B-3762-4DC1-9048-EB34BECFB3FA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Recruit.Vacancies.Jobs.UnitTests", "Jobs\Recruit.Vacancies.Jobs.UnitTests\Recruit.Vacancies.Jobs.UnitTests.csproj", "{C842F94B-3762-4DC1-9048-EB34BECFB3FA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
