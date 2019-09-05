@@ -116,6 +116,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddScoped<CommunicationMessageDispatcher>();
 
             services.AddTransient<ICommunicationProcessor, CommunicationProcessor>();
+            services.AddTransient<IAggregateCommunicationProcessor, AggregateCommunicationProcessor>();
             services.AddTransient<ICommunicationService, CommunicationService>();
 
             services.AddTransient<IParticipantResolver, VacancyParticipantsResolverPlugin>();

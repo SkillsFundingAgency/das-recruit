@@ -1,7 +1,5 @@
-using System;
 using System.Threading.Tasks;
 using Communication.Types;
-using Communication.Types.Interfaces;
 
 namespace Communication.Core
 {
@@ -9,6 +7,9 @@ namespace Communication.Core
     {
         Task ProcessCommunicationRequestAsync(CommunicationRequest request);
         Task ProcessAggregateCommunicationRequestAsync(AggregateCommunicationRequest request);
+        /// <summary>
+        /// This will process the set of messages for an individual user
+        /// </summary>
         Task ProcessAggregateCommunicationComposeRequestAsync(AggregateCommunicationComposeRequest request);
     }
 }

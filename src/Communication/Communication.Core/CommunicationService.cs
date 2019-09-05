@@ -11,15 +11,17 @@ namespace Communication.Core
     {
         private readonly ILogger<CommunicationService> _logger;
         private readonly ICommunicationProcessor _processor;
+        private readonly IAggregateCommunicationProcessor _aggregateProcessor;
         private readonly ICommunicationRepository _repository;
         private readonly IAggregateCommunicationComposeQueuePublisher _composerQueue;
         private readonly IDispatchQueuePublisher _publisher;
 
-        public CommunicationService(ILogger<CommunicationService> logger, ICommunicationProcessor processor,
+        public CommunicationService(ILogger<CommunicationService> logger, ICommunicationProcessor processor, IAggregateCommunicationProcessor aggregateCommunicationProcessor,
                                     ICommunicationRepository repository, IAggregateCommunicationComposeQueuePublisher composerQueue, IDispatchQueuePublisher publisher)
         {
             _logger = logger;
             _processor = processor;
+            _aggregateProcessor = aggregateCommunicationProcessor;
             _repository = repository;
             _composerQueue = composerQueue;
             _publisher = publisher;
@@ -66,13 +68,10 @@ namespace Communication.Core
             await Task.WhenAll(tasks);
         }
 
-        /// <summary>
-        /// This will process the set of messages for an individual user
-        /// </summary>
         public async Task ProcessAggregateCommunicationComposeRequestAsync(AggregateCommunicationComposeRequest request)
         {
             var originallyScheduledCommunicationMessages = await _repository.GetManyAsync(request.MessageIds);
-            var aggregatedMessage = await _processor.CreateAggregateMessageAsync(request.AggregateCommunicationRequest, originallyScheduledCommunicationMessages);
+            var aggregatedMessage = await _aggregateProcessor.CreateAggregateMessageAsync(request.AggregateCommunicationRequest, originallyScheduledCommunicationMessages);
 
             if (aggregatedMessage != null)
             {
