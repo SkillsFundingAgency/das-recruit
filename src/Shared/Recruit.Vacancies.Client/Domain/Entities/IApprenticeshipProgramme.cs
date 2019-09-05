@@ -12,5 +12,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         ProgrammeLevel Level { get; }
         int Duration { get; }
         bool IsActive { get; set; }
+        int? EducationLevelNumber { get; set; }
     }
 }
