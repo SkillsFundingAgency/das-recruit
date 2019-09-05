@@ -12,6 +12,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
+using Esfa.Recruit.Shared.Web.Helpers;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1 
 {
@@ -86,7 +87,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 DurationMonths = programme.Duration,
                 ProgrammeType = programme.ApprenticeshipType.GetDisplayName(),
                 PageInfo = Utility.GetPartOnePageInfo(vacancyTask.Result),
-                TrainingEffectiveToDate = programme.EffectiveTo?.AsGdsDate()
+                TrainingEffectiveToDate = programme.EffectiveTo?.AsGdsDate(),
+                EducationLevelName = EducationLevelNumberHelper.GetEducationLevelName(programme.EducationLevelNumber)
             };
         }
 
