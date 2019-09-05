@@ -17,9 +17,14 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             return ruleBuilder.SetValidator(new HtmlValidator(sanitizer));
         }
 
-        internal static IRuleBuilderOptions<T, string> PostCode<T>(this IRuleBuilder<T, string> ruleBuilder)
+        public static IRuleBuilderOptions<T, string> ValidPostCode<T>(this IRuleBuilder<T, string> ruleBuilder)
         {
             return ruleBuilder.SetValidator(new PostCodeValidator());
+        }
+
+        public static IRuleBuilderOptions<T, string> ValidUkprn<T>(this IRuleBuilder<T, string> rule)
+        {
+            return rule.SetValidator(new UkprnValidator());
         }
 
         internal static bool BeValidWebUrl(string arg)
