@@ -383,6 +383,18 @@
             <span esfa-validation-message-for="ProviderName" class="govuk-error-message"></span>
             <p asp-show="@Model.HasProviderName" class="govuk-body">@Model.ProviderName</p>
         </div>
+        <div class="@GetSectionClass(Model.TrainingSectionState)">
+            <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.Training">
+                <img asp-show="@Model.TrainingRequiresEdit" src="/img/red-cross.png" />
+                Apprenticeship @Model.TrainingType
+            </h3>
+            <p asp-show="@Model.HasTrainingTitle" class="govuk-body">
+                @Model.TrainingTitle <br /> @Model.Level.ToDescription()
+            </p>
+            @EditLink(RouteNames.Training_Get, Model.TrainingSectionState, "apprenticeship training", "link-standard", new { wizard = false })
+        </div>
+    </div>
+    <div class="govuk-grid-column-one-third">
         <div class="@GetSectionClass(Model.ProviderContactSectionState)">
             <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.ProviderContact">
                 <img asp-show="@Model.ProviderContactRequiresEdit" src="/img/red-cross.png" />
@@ -395,18 +407,6 @@
             <span esfa-validation-message-for="ProviderContactTelephone" class="govuk-error-message"></span>
             <p asp-show="@Model.HasProviderContactTelephone" class="govuk-body">@Model.ProviderContactTelephone</p>
             @EditLink(RouteNames.ProviderContactDetails_Get, Model.ProviderContactSectionState, "provider contact details", "link-provider-contact-details")
-        </div>
-    </div>
-    <div class="govuk-grid-column-one-third">
-        <div class="@GetSectionClass(Model.TrainingSectionState)">
-            <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.Training">
-                <img asp-show="@Model.TrainingRequiresEdit" src="/img/red-cross.png" />
-                Apprenticeship @Model.TrainingType
-            </h3>
-            <p asp-show="@Model.HasTrainingTitle" class="govuk-body">
-                @Model.TrainingTitle <br /> @Model.Level.ToDescription()
-            </p>
-            @EditLink(RouteNames.Training_Get, Model.TrainingSectionState, "apprenticeship training", "link-standard", new { wizard = false })
         </div>
     </div>
 </div>
