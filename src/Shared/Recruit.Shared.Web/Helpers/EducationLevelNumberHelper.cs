@@ -15,10 +15,10 @@
                         return "Level 3 (A level)";
 
                     case 4:
-                        return "Level 4 (Higher national Certificate)";
+                        return "Level 4 (Higher national certificate)";
 
                     case 5:
-                        return "Level 5 (Higher national Diploma)";
+                        return "Level 5 (Higher national diploma)";
 
                     case 6:
                         return "Level 6 (Degree with honours)";
