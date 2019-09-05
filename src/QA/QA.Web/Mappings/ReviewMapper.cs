@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Qa.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.Helpers;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.RuleTemplates;
@@ -164,6 +165,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 vm.ApplicationMethod = vacancy.ApplicationMethod.Value;
                 vm.ApplicationUrl = vacancy.ApplicationUrl;
                 vm.ClosingDate = vacancy.ClosingDate?.AsGdsDate();
+                vm.EducationLevelName = EducationLevelNumberHelper.GetEducationLevelName(programme.EducationLevelNumber);
                 vm.EmployerContactName = vacancy.EmployerContact?.Name;
                 vm.EmployerContactEmail = vacancy.EmployerContact?.Email;
                 vm.EmployerContactTelephone = vacancy.EmployerContact?.Phone;

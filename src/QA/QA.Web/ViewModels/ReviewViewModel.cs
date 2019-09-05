@@ -20,6 +20,7 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public string ApplicationInstructions { get; internal set; }
         public ApplicationMethod ApplicationMethod { get; internal set; }
         public string ApplicationUrl { get; internal set; }
+        public string EducationLevelName { get; internal set; }
         public string EmployerContactName { get; internal set; }
         public string EmployerContactEmail { get; internal set; }
         public string EmployerContactTelephone { get; internal set; }

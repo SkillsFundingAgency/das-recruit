@@ -5,6 +5,7 @@ using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Training;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.Helpers;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
@@ -94,7 +95,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 DurationMonths = programme.Duration,
                 ProgrammeType = programme.ApprenticeshipType.GetDisplayName(),
                 PageInfo = Utility.GetPartOnePageInfo(vacancyTask.Result),
-                TrainingEffectiveToDate = programme.EffectiveTo?.AsGdsDate()
+                TrainingEffectiveToDate = programme.EffectiveTo?.AsGdsDate(),
+                EducationLevelName = EducationLevelNumberHelper.GetEducationLevelName(programme.EducationLevelNumber)
             };
         }
 

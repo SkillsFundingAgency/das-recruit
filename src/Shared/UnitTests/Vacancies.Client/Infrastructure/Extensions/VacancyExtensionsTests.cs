@@ -20,7 +20,8 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         private ApprenticeshipProgramme _programme = new ApprenticeshipProgramme 
         {
             Level = ProgrammeLevel.Advanced,
-            ApprenticeshipType = TrainingType.Standard
+            ApprenticeshipType = TrainingType.Standard,
+            EducationLevelNumber = 7
         };
 
         [Fact]
@@ -120,6 +121,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             p.ProgrammeId.Should().Be(v.ProgrammeId);
             p.ProgrammeLevel.Should().Be(_programme.Level.ToString());
             p.ProgrammeType.Should().Be(_programme.ApprenticeshipType.ToString());
+            p.EducationLevelNumber.Should().Be(_programme.EducationLevelNumber);
             p.ShortDescription.Should().Be(v.ShortDescription);
             p.StartDate.Should().Be(v.StartDate.Value);
             p.ThingsToConsider.Should().Be(v.ThingsToConsider);

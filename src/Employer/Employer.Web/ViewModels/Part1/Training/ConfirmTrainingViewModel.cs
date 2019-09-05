@@ -12,7 +12,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Training
         public string ProgrammeId { get; set; }
         public PartOnePageInfoViewModel PageInfo { get; set; }
         public string TrainingEffectiveToDate { get; set; }
-
         public bool ShowTrainingEffectiveToDate => string.IsNullOrWhiteSpace(TrainingEffectiveToDate) == false;
+        public string EducationLevelName { get; set; }
     }
 }

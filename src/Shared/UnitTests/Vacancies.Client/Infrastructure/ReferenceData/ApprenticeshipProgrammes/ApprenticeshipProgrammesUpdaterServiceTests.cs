@@ -1,7 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services.ReferenceData;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
@@ -104,6 +104,37 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Infrastructure.ReferenceData.A
                                                             _mockFrameworksClient.Object,
                                                             _mockReferenceDataWriter.Object,
                                                             mockReferenceDataReader.Object);
+        }
+
+        [Theory]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(4)]
+        [InlineData(5)]
+        [InlineData(6)]
+        [InlineData(7)]
+        public async Task WhenRemappingFromStandards_ShouldSetEducationLevelNumber(int level)
+        {
+            _standardOne.Level = level;
+            _frameworkOne.Level = level;
+
+            _mockStandardsClient
+                .Setup(x => x.GetAllAsync())
+                .ReturnsAsync(new[] { _standardOne });
+
+            _mockFrameworksClient
+                .Setup(x => x.GetAllAsync())
+                .ReturnsAsync(new[] { _frameworkOne });
+
+            ApprenticeshipProgrammesReferenceData updatedData = null;
+            _mockReferenceDataWriter
+                .Setup(x => x.UpsertReferenceData(It.IsAny<ApprenticeshipProgrammesReferenceData>()))
+                .Callback<ApprenticeshipProgrammesReferenceData>(x => updatedData = x)
+                .Returns(Task.CompletedTask);
+
+            await _sut.UpdateApprenticeshipProgrammesAsync();
+
+            Assert.True(updatedData.Data.All(x => x.EducationLevelNumber == level));
         }
 
         [Fact]
