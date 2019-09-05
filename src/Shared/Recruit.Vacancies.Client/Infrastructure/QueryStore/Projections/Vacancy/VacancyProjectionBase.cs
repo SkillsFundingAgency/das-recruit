@@ -43,5 +43,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
         public TrainingProvider TrainingProvider { get; set; }
         public long VacancyReference { get; set; }
         public Wage Wage { get; set; }
+        public int? EducationLevelNumber { get; set; }
     }
 }

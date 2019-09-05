@@ -59,6 +59,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
             projectedVacancy.TrainingProvider = vacancy.TrainingProvider.ToProjection();
             projectedVacancy.VacancyReference = vacancy.VacancyReference.GetValueOrDefault();
             projectedVacancy.Wage = vacancy.Wage.ToProjection();
+            projectedVacancy.EducationLevelNumber = programme.EducationLevelNumber;
 
             return projectedVacancy;
         }
