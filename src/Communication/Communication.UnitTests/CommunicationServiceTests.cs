@@ -12,6 +12,7 @@ namespace Communication.UnitTests
     public class CommunicationServiceTests
     {
         private readonly Mock<ICommunicationProcessor> _mockProcessor;
+        private readonly Mock<IAggregateCommunicationProcessor> _mockAggregateProcessor;
         private readonly Mock<ICommunicationRepository> _mockRepository;
         private readonly Mock<IAggregateCommunicationComposeQueuePublisher> _mockComposeQueuePublisher;
         private readonly Mock<IDispatchQueuePublisher> _mockDispatchQueuePublisher;
@@ -22,10 +23,11 @@ namespace Communication.UnitTests
         public CommunicationServiceTests()
         {
             _mockProcessor = new Mock<ICommunicationProcessor>();
+            _mockAggregateProcessor = new Mock<IAggregateCommunicationProcessor>();
             _mockRepository = new Mock<ICommunicationRepository>();
             _mockComposeQueuePublisher = new Mock<IAggregateCommunicationComposeQueuePublisher>();
             _mockDispatchQueuePublisher = new Mock<IDispatchQueuePublisher>();
-            _sut = new CommunicationService(Mock.Of<ILogger<CommunicationService>>(), _mockProcessor.Object,
+            _sut = new CommunicationService(Mock.Of<ILogger<CommunicationService>>(), _mockProcessor.Object, _mockAggregateProcessor.Object,
                                             _mockRepository.Object, _mockComposeQueuePublisher.Object, _mockDispatchQueuePublisher.Object);
         }
 
