@@ -3,7 +3,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.Part2.Qualifications
 {
-    public class AddQualificationViewModel
+    public class QualificationViewModel
     {
         public string Title { get; internal set; }
 
@@ -13,6 +13,8 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part2.Qualifications
         public string Subject { get; set; }
         public string Grade { get; set; }
         public QualificationWeighting? Weighting { get; set; }
+        public int? EditIndex { get; set; }
+        public string CancelRoute { get; set; }
 
         public IList<string> OrderedFieldNames => new List<string>
         {

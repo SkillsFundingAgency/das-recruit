@@ -32,25 +32,32 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2
                 return RedirectToRoute(RouteNames.Qualification_Add_Get);
             }
 
-
             if (TempData[QualificationDeletedTempDataKey] != null)
                 vm.InfoMessage = "Successfully removed qualification";
 
             return View(vm);
         }
 
-        [HttpGet("qualification-add", Name = RouteNames.Qualification_Add_Get)]
-        public async Task<IActionResult> AddQualification(VacancyRouteModel vrm)
+        [HttpGet("qualifications/add", Name = RouteNames.Qualification_Add_Get)]
+        public async Task<IActionResult> Qualification(VacancyRouteModel vrm)
         {
-            var vm = await _orchestrator.GetAddQualificationViewModelAsync(vrm);
+            var vm = await _orchestrator.GetQualificationViewModelForAddAsync(vrm);
 
             return View(vm);
         }
 
-        [HttpPost("qualification-add", Name = RouteNames.Qualification_Add_Post)]
-        public async Task<IActionResult> AddQualification(VacancyRouteModel vrm, QualificationEditModel m)
+        [HttpGet("qualifications/{index:int}", Name = RouteNames.Qualification_Edit_Get)]
+        public async Task<IActionResult> Qualification(VacancyRouteModel vrm, int index)
         {
-            var response = await _orchestrator.PostAddQualificationEditModelAsync(vrm, m, User.ToVacancyUser());
+            var vm = await _orchestrator.GetQualificationViewModelForEditAsync(vrm, index);
+
+            return View(vm);
+        }
+
+        [HttpPost("qualifications/add", Name = RouteNames.Qualification_Add_Post)]
+        public async Task<IActionResult> Qualification(VacancyRouteModel vrm, QualificationEditModel m)
+        {
+            var response = await _orchestrator.PostQualificationEditModelForAddAsync(vrm, m, User.ToVacancyUser());
 
             if (!response.Success)
             {
@@ -59,7 +66,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2
 
             if (!ModelState.IsValid)
             {
-                var vm = await _orchestrator.GetAddQualificationViewModelAsync(vrm, m);
+                var vm = await _orchestrator.GetQualificationViewModelForAddAsync(vrm, m);
 
                 return View(vm);
             }
@@ -67,7 +74,27 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2
             return RedirectToRoute(RouteNames.Qualifications_Get);
         }
 
-        [HttpPost("qualification-delete", Name = RouteNames.Qualification_Delete_Post)]
+        [HttpPost("qualifications/{index:int}", Name = RouteNames.Qualification_Edit_Post)]
+        public async Task<IActionResult> Qualification(VacancyRouteModel vrm, QualificationEditModel m, [FromRoute] int index)
+        {
+            var response = await _orchestrator.PostQualificationEditModelForEditAsync(vrm, m, User.ToVacancyUser(), index);
+
+            if (!response.Success)
+            {
+                response.AddErrorsToModelState(ModelState);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                var vm = await _orchestrator.GetQualificationViewModelForEditAsync(vrm, m, index);
+
+                return View(vm);
+            }
+
+            return RedirectToRoute(RouteNames.Qualifications_Get);
+        }
+
+        [HttpPost("qualifications/delete", Name = RouteNames.Qualification_Delete_Post)]
         public async Task<IActionResult> DeleteQualification(VacancyRouteModel vrm, [FromForm] int index)
         {
             await _orchestrator.DeleteQualificationAsync(vrm, index, User.ToVacancyUser());

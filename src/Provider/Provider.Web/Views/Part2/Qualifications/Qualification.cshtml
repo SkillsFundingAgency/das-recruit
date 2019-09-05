@@ -1,7 +1,7 @@
-﻿@using Esfa.Recruit.Employer.Web.ViewModels.Part2.Qualifications
+﻿@using Esfa.Recruit.Provider.Web.ViewModels.Part2.Qualifications
 @using Esfa.Recruit.Shared.Web.Mappers
 @using Esfa.Recruit.Vacancies.Client.Domain.Entities
-@model AddQualificationViewModel
+@model QualificationViewModel
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
 
@@ -12,33 +12,30 @@
             What qualifications would you like the applicant to have?
         </h1>
 
-        <form asp-route="@RouteNames.Qualification_Add_Post">
-            
+        <form method="post">
+            <input asp-for="EditIndex" type="hidden" />
+
             <div esfa-validation-marker-for="QualificationType" class="govuk-form-group">
                 <label asp-for="QualificationType" class="govuk-label" id="@Anchors.QualificationsHeading">Add qualifications applicants should have</label>
                 <span esfa-validation-message-for="QualificationType" class="govuk-error-message"></span>
                 <select asp-for="QualificationType" class="govuk-select">
                     <option value="">Select from list</option>
-
                     @foreach (var qualificationType in Model.QualificationTypes)
                     {
                         <option value="@qualificationType" selected="@(Model.QualificationType == @qualificationType)">@qualificationType</option>
                     }
                 </select>
             </div>
-
             <div esfa-validation-marker-for="Subject" class="govuk-form-group">
                 <label asp-for="Subject" class="govuk-label">Subject</label>
                 <span esfa-validation-message-for="Subject" class="govuk-error-message"></span>
                 <input asp-for="Subject" value="@Model.Subject" type="text" class="govuk-input govuk-input--width-20" maxlength="50">
             </div>
-
             <div esfa-validation-marker-for="Grade" class="govuk-form-group">
                 <label asp-for="Grade" class="govuk-label">Grade</label>
                 <span esfa-validation-message-for="Grade" class="govuk-error-message"></span>
                 <input asp-for="Grade" value="@Model.Grade" type="text" class="govuk-input govuk-input--width-20" maxlength="30">
             </div>
-
             <div esfa-validation-marker-for="Weighting" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
                     <legend>
@@ -48,23 +45,24 @@
                     <div class="govuk-radios govuk-radios--inline">
                         <div class="govuk-radios__item">
                             <input asp-for="Weighting" class="govuk-radios__input" id="WeightingYes" esfa-automation="radio-weighting-yes" type="radio" value="@QualificationWeighting.Essential" data-display="@QualificationWeighting.Essential.GetDisplayName()">
-                            <label class="govuk-label govuk-radios__label" for="WeightingYes">Essential 
+                            <label class="govuk-label govuk-radios__label" for="WeightingYes">
+                                Essential
                                 <span class="govuk-hint">The applicant must have this qualification to be considered</span>
                             </label>
                         </div>
                         <div class="govuk-radios__item">
                             <input asp-for="Weighting" class="govuk-radios__input" id="WeightingNo" esfa-automation="radio-weighting-no" type="radio" value="@QualificationWeighting.Desired" data-display="@QualificationWeighting.Desired.GetDisplayName()">
-                            <label class="govuk-label govuk-radios__label" for="WeightingNo">Desirable
+                            <label class="govuk-label govuk-radios__label" for="WeightingNo">
+                                Desirable
                                 <span class="govuk-hint">This qualification would be nice to have, but is not required</span>
                             </label>
                         </div>
                     </div>
                 </fieldset>
             </div>
-
             <div class="govuk-form-group">
                 <button type="submit" esfa-automation="btn-continue" class="govuk-button save-button">Save and continue</button>
-                <a asp-route="@RouteNames.Vacancy_Preview_Get" esfa-automation="link-cancel" class="govuk-link das-button-link">Cancel</a>
+                <a asp-route="@Model.CancelRoute" esfa-automation="link-cancel" class="govuk-link das-button-link">Cancel</a>
             </div>
         </form>
     </div>
