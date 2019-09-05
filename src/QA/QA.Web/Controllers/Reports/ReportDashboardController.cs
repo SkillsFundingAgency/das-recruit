@@ -3,10 +3,13 @@ using System.IO;
 using System.Threading.Tasks;
 using Esfa.Recruit.Qa.Web.Configuration.Routing;
 using Esfa.Recruit.Qa.Web.Orchestrators.Reports;
+using Esfa.Recruit.Qa.Web.Security;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Qa.Web.Controllers.Reports
 {
+    [Authorize(Policy = AuthorizationPolicyNames.TeamLeadUserPolicyName)]
     public class ReportDashboardController : Controller
     {
         private readonly ReportDashboardOrchestrator _orchestrator;

@@ -3,11 +3,14 @@ using Esfa.Recruit.Qa.Web.Configuration.Routing;
 using Esfa.Recruit.Qa.Web.Extensions;
 using Esfa.Recruit.Qa.Web.Orchestrators.Reports;
 using Esfa.Recruit.Qa.Web.RouteModel;
+using Esfa.Recruit.Qa.Web.Security;
 using Esfa.Recruit.Qa.Web.ViewModels.Reports.ApplicationsReport;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Qa.Web.Controllers.Reports
 {
+    [Authorize(Policy = AuthorizationPolicyNames.TeamLeadUserPolicyName)]
     [Route(RoutePaths.ApplicationsReportRoutePath)]
     public class ApplicationsReportController : Controller
     {
