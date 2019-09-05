@@ -12,7 +12,7 @@ using Moq;
 using Newtonsoft.Json;
 using Xunit;
 
-namespace Esfa.Recruit.Vacancies.Jobs.Tests.DomainEvents.Handlers
+namespace Esfa.Recruit.Vacancies.Jobs.UnitTests.DomainEvents.Handlers
 {
     public class VacancyReferredDomainEventHandlerTests
     {

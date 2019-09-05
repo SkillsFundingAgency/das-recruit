@@ -11,7 +11,7 @@ using Moq;
 using Newtonsoft.Json;
 using Xunit;
 
-namespace Esfa.Recruit.Vacancies.Jobs.Tests.DomainEvents.Handlers.Provider.ProviderBlockedDomainEventHandlerTests
+namespace Esfa.Recruit.Vacancies.Jobs.UnitTests.DomainEvents.Handlers.Provider.ProviderBlockedDomainEventHandlerTests
 {
     public class HandleAsyncTests : ProviderBlockedDomainEventHandlerTestBase
     {
@@ -65,11 +65,17 @@ namespace Esfa.Recruit.Vacancies.Jobs.Tests.DomainEvents.Handlers.Provider.Provi
         {
             MockMessaging.Verify(m => m.PublishEvent(It.Is<ProviderBlockedOnVacancyEvent>(v => 
                 v.Ukprn == _ukprn && 
-                v.VacancyId == vacancies.Single().Id && 
+                v.VacancyId == vacancies.First().Id && 
                 v.BlockedDate == _blockedDate
             )));
 
-            MockMessaging.Verify(m => m.PublishEvent(It.IsAny<ProviderBlockedOnVacancyEvent>()), Times.Once);
+            MockMessaging.Verify(m => m.PublishEvent(It.Is<ProviderBlockedOnVacancyEvent>(v => 
+                v.Ukprn == _ukprn && 
+                v.VacancyId == vacancies.Last().Id && 
+                v.BlockedDate == _blockedDate
+            )));
+
+            MockMessaging.Verify(m => m.PublishEvent(It.IsAny<ProviderBlockedOnVacancyEvent>()), Times.Exactly(2));
         }
 
         [Fact]
