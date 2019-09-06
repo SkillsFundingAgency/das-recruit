@@ -2,7 +2,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using Esfa.Recruit.Client.Application.Communications;
-using Esfa.Recruit.Vacancies.Client.Application.Communications;
 using Esfa.Recruit.Vacancies.Client.Application.Communications.EntityDataItemProviderPlugins;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
@@ -12,7 +11,7 @@ using Moq;
 using Xunit;
 using static Esfa.Recruit.Vacancies.Client.Application.Communications.CommunicationConstants;
 
-namespace UnitTests.Vacancies.Client.Application.Communications
+namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Communications
 {
     public class ApprenticeshipServiceUrlDataEntityPluginTests
     {
@@ -36,20 +35,20 @@ namespace UnitTests.Vacancies.Client.Application.Communications
         public async Task UrlShouldMatchOwnerType(OwnerType owner)
         {
             var vacancy = new Vacancy
-            { 
+            {
                 OwnerType = owner,
                 EmployerAccountId = _fixture.Create<string>(),
                 TrainingProvider = new TrainingProvider { Ukprn = _fixture.Create<long>() }
             };
 
-            var expectedUrl = owner == OwnerType.Employer 
-                ? $"{EmployerUrl}{vacancy.EmployerAccountId}" 
+            var expectedUrl = owner == OwnerType.Employer
+                ? $"{EmployerUrl}{vacancy.EmployerAccountId}"
                 : $"{ProviderUrl}{vacancy.TrainingProvider.Ukprn}/vacancies";
 
             _mockRepository
                 .Setup(r => r.GetVacancyAsync(It.IsAny<long>()))
                 .ReturnsAsync(vacancy);
-            
+
             var sut = GetSut();
 
             var dataItems = await sut.GetDataItemsAsync(_fixture.Create<long>());

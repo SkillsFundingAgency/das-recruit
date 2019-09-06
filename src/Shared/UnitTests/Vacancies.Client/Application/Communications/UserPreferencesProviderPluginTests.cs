@@ -10,7 +10,7 @@ using Moq;
 using Xunit;
 using static Esfa.Recruit.Vacancies.Client.Application.Communications.CommunicationConstants;
 
-namespace UnitTests.Vacancies.Client.Application.Communications
+namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Communications
 {
     public class UserPreferencesProviderPluginTests
     {

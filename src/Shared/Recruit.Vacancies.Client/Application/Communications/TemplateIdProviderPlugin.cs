@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Communication.Types;
 using Communication.Types.Interfaces;
@@ -7,6 +8,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
 {
     public class TemplateIdProviderPlugin : ITemplateIdProvider
     {
+        private readonly DeliveryFrequency[] _digestDeliveryFrequencies = new [] { DeliveryFrequency.Daily, DeliveryFrequency.Weekly };
+
         public string ProviderServiceName => CommunicationConstants.ServiceName;
 
         public Task<string> GetTemplateIdAsync(CommunicationMessage message)
@@ -18,7 +21,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
                     templateId = CommunicationConstants.TemplateIds.VacancyRejected;
                     break;
                 case CommunicationConstants.RequestType.ApplicationSubmitted:
-                    if (message.Frequency == DeliveryFrequency.Daily || message.Frequency == DeliveryFrequency.Weekly)
+                    if (_digestDeliveryFrequencies.Contains(message.Frequency))
                         templateId = CommunicationConstants.TemplateIds.ApplicationsSubmittedDigest;
                     else
                         templateId = CommunicationConstants.TemplateIds.ApplicationSubmittedImmediate;
