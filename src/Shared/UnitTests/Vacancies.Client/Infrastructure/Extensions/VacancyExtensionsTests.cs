@@ -19,7 +19,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         private DateTime _now = DateTime.UtcNow;
         private ApprenticeshipProgramme _programme = new ApprenticeshipProgramme 
         {
-            Level = ProgrammeLevel.Advanced,
+            Level = ApprenticeshipLevel.Advanced,
             ApprenticeshipType = TrainingType.Standard,
             EducationLevelNumber = 7
         };

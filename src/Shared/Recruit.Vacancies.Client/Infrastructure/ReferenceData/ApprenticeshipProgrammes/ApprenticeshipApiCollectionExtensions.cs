@@ -21,7 +21,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
                 IsActive = IsStandardActive(x),
                 EffectiveFrom = x.EffectiveFrom,
                 EffectiveTo = x.EffectiveTo,
-                Level = ProgrammeLevelHelper.RemapFromInt(x.Level),
+                Level = ApprenticeshipLevelHelper.RemapFromInt(x.Level),
                 EducationLevelNumber = x.Level,
                 Duration = x.Duration
             });
@@ -40,7 +40,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
                 IsActive = IsFrameworkActive(x),
                 EffectiveFrom = x.EffectiveFrom,
                 EffectiveTo = x.EffectiveTo,
-                Level = ProgrammeLevelHelper.RemapFromInt(x.Level),
+                Level = ApprenticeshipLevelHelper.RemapFromInt(x.Level),
                 EducationLevelNumber = x.Level,
                 Duration = x.Duration
             });
