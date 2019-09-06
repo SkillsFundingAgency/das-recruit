@@ -6,6 +6,7 @@ using Communication.Types.Extensions;
 using Communication.Types.Interfaces;
 using System.Linq;
 using System;
+using Microsoft.Extensions.Logging;
 
 namespace Communication.Core
 {
@@ -15,33 +16,41 @@ namespace Communication.Core
         private readonly Dictionary<string, IUserPreferencesProvider> _userPreferencesProviders = new Dictionary<string, IUserPreferencesProvider>();
         private readonly Dictionary<string, IEntityDataItemProvider> _entityDataItemProviders = new Dictionary<string, IEntityDataItemProvider>();
         private readonly Dictionary<string, ITemplateIdProvider> _templateIdProviders = new Dictionary<string, ITemplateIdProvider>();
+        private readonly ILogger<CommunicationProcessor> _logger;
 
         public CommunicationProcessor(
             IEnumerable<IParticipantResolver> participantResolvers,
             IEnumerable<IUserPreferencesProvider> userPreferencesProviders,
             IEnumerable<IEntityDataItemProvider> entityDataItemProviders,
-            IEnumerable<ITemplateIdProvider> templateIdProviders)
+            IEnumerable<ITemplateIdProvider> templateIdProviders,
+            ILogger<CommunicationProcessor> logger)
         {
             foreach (var plugin in participantResolvers) _participantResolvers.Add(plugin.ParticipantResolverName, plugin);
             foreach (var plugin in userPreferencesProviders) _userPreferencesProviders.Add(plugin.UserType, plugin);
             foreach (var plugin in entityDataItemProviders) _entityDataItemProviders.Add(plugin.EntityType, plugin);
             foreach (var plugin in templateIdProviders) _templateIdProviders.Add(plugin.ProviderServiceName, plugin);
+            _logger = logger;
         }
 
         public async Task<IEnumerable<CommunicationMessage>> CreateMessagesAsync(CommunicationRequest request)
         {
+            _logger.LogInformation($"Starting to create messages for request id: '{request.RequestId}' of type: '{request.RequestType}'");
             var recipientsTask = GetPotentialRecipientsAsync(request);
             var dataItemsTask = GetEntityDataItemsAsync(request);
             await Task.WhenAll(recipientsTask, dataItemsTask);
 
             var recipients = recipientsTask.Result;
             var dataItems = dataItemsTask.Result;
+            _logger.LogInformation($"{dataItems.Count} data items found for request id: '{request.RequestId}'");
 
             var participants = await GetPreferencesForParticipantsAsync(request.RequestType, recipients);
+            _logger.LogInformation($"Retrived {participants.Count()} participants for request id: '{request.RequestId}'");
 
             var optedInParticipants = GetOptedInParticipants(participants);
+            _logger.LogInformation($"{optedInParticipants.Count()} participants have opted in for request id: '{request.RequestId}'");
 
             var messages = GenerateCommunicationMessages(request, request.TemplateProviderName, dataItems, optedInParticipants);
+            _logger.LogInformation($"{messages.Count()} messages generated for request id: '{request.RequestId}'");
 
             await SetMessageTemplateIds(messages);
 
