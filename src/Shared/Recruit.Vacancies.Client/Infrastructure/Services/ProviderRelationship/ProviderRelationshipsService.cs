@@ -37,13 +37,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
             return await GetEmployerInfosAsync(providerPermissions);
         }
 
+        public async Task<int> GetNumberOfPermittedLegalEntitesForEmployerAsync(long ukprn, string accountPublicHashedId)
+        {
+            var permittedLegalEntities = await GetProviderPermissionsforEmployer(ukprn, accountPublicHashedId);
+
+            return permittedLegalEntities.Count();
+        }
+
         public async Task<bool> HasProviderGotEmployersPermissionAsync(long ukprn, string accountPublicHashedId, long legalEntityId)
         {
-            var providerPermissions = await GetProviderPermissionsAsync(ukprn);
-
-            var permittedLegalEntities = providerPermissions.AccountProviderLegalEntities
-                .Where(l => l.AccountPublicHashedId == accountPublicHashedId)
-                .ToList();
+            var permittedLegalEntities = await GetProviderPermissionsforEmployer(ukprn, accountPublicHashedId);
 
             if (permittedLegalEntities.Any() == false)
                 return false;
@@ -58,6 +61,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
                 .Any(l => l.LegalEntityId == legalEntityId);
 
             return hasPermission;
+        }
+
+        private async Task<List<LegalEntityDto>> GetProviderPermissionsforEmployer(long ukprn, string accountPublicHashedId)
+        {
+            var providerPermissions = await GetProviderPermissionsAsync(ukprn);
+
+            var permittedLegalEntities = providerPermissions.AccountProviderLegalEntities
+                .Where(l => l.AccountPublicHashedId == accountPublicHashedId)
+                .ToList();
+
+            return permittedLegalEntities;
         }
 
         private async Task<ProviderPermissions> GetProviderPermissionsAsync(long ukprn)
