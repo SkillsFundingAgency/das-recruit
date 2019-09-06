@@ -61,7 +61,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var builder = Builders<CommunicationMessage>.Filter;
             var filter = builder.Eq(cm => cm.RequestType, requestType) &
                         builder.Eq(cm => cm.Frequency, frequency) &
-                        builder.Eq(cm => cm.Status, CommunicationMessageStatus.Unsent) &
+                        builder.Eq(cm => cm.Status, CommunicationMessageStatus.Pending) &
                         builder.Gte(cm => cm.RequestDateTime, from);
                         builder.Lte(cm => cm.RequestDateTime, to);
             var collection = GetCollection<CommunicationMessage>();
@@ -71,7 +71,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             return await result.ToListAsync();
         }
 
-        public Task UpdateScheduledMessagesAsSentAsync(IEnumerable<Guid> msgIds)
+        public Task UpdateScheduledMessagesAsSentAsync(IEnumerable<Guid> msgIds, Guid aggregatedMessageId)
         {
             var builder = Builders<CommunicationMessage>.Filter;
             var filter = builder.Ne(cm => cm.Frequency, DeliveryFrequency.Immediate) &
@@ -79,7 +79,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var collection = GetCollection<CommunicationMessage>();
 
             var updateDef = new UpdateDefinitionBuilder<CommunicationMessage>()
-                                .Set(cm => cm.Status, CommunicationMessageStatus.Sent);
+                                .Set(cm => cm.Status, CommunicationMessageStatus.Sent)
+                                .Set(cm => cm.AggregatedMessageId, aggregatedMessageId);
 
             return RetryPolicy.ExecuteAsync(_ =>
                 collection.UpdateManyAsync(filter, updateDef),

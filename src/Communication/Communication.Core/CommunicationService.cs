@@ -55,11 +55,12 @@ namespace Communication.Core
 
             foreach (var userMessages in groupedUserMessages)
             {
+                var acr = new AggregateCommunicationRequest(Guid.NewGuid(), request.RequestType, request.Frequency, request.RequestDateTime, request.FromDateTime, request.ToDateTime);
                 var tsk = _composerQueue.AddMessageAsync(new AggregateCommunicationComposeRequest
                 {
                     UserId = userMessages.Key,
                     MessageIds = userMessages.Select(cm => cm.Id),
-                    AggregateCommunicationRequest = request
+                    AggregateCommunicationRequest = acr
                 });
 
                 tasks.Add(tsk);
@@ -76,7 +77,7 @@ namespace Communication.Core
             if (aggregatedMessage != null)
             {
                 await _repository.InsertAsync(aggregatedMessage);
-                await MarkOriginallyScheduledMessagesAsSentAsync(request.MessageIds);
+                await MarkOriginallyScheduledMessagesAsSentAsync(request.MessageIds, aggregatedMessage.Id);
                 await QueueImmediateDispatchAsync(aggregatedMessage);
             }
             else
@@ -87,9 +88,9 @@ namespace Communication.Core
             }
         }
 
-        private Task MarkOriginallyScheduledMessagesAsSentAsync(IEnumerable<Guid> oldMsgIds)
+        private Task MarkOriginallyScheduledMessagesAsSentAsync(IEnumerable<Guid> oldMsgIds, Guid aggregatedMessageId)
         {
-            return _repository.UpdateScheduledMessagesAsSentAsync(oldMsgIds);
+            return _repository.UpdateScheduledMessagesAsSentAsync(oldMsgIds, aggregatedMessageId);
         }
 
         private Task QueueImmediateDispatchAsync(CommunicationMessage message)

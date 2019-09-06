@@ -11,6 +11,6 @@ namespace Communication.Types
         Task<IEnumerable<CommunicationMessage>> GetManyAsync(IEnumerable<Guid> msgIds);
         Task UpdateAsync(CommunicationMessage commMsg);
         Task<IEnumerable<CommunicationMessage>> GetScheduledMessagesSinceAsync(string requestType, DeliveryFrequency frequency, DateTime from, DateTime to);
-        Task UpdateScheduledMessagesAsSentAsync(IEnumerable<Guid> msgIds);
+        Task UpdateScheduledMessagesAsSentAsync(IEnumerable<Guid> msgIds, Guid aggregatedMessageId);
     }
 }

@@ -145,7 +145,7 @@ namespace Communication.Core
                         RequestType = request.RequestType,
                         Channel = channel,
                         Frequency = p.Preferences.Frequency,
-                        Status = CommunicationMessageStatus.Unsent
+                        Status = CommunicationMessageStatus.Pending
                     }
                 );
             });
