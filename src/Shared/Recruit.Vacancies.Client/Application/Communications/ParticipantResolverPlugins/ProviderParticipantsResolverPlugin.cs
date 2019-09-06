@@ -27,7 +27,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications.ParticipantRe
             var entityId = request.Entities.Single(e => e.EntityType == CommunicationConstants.EntityTypes.Provider).EntityId.ToString();
             if(long.TryParse(entityId, out var ukprn) == false)
             {
-                _logger.LogInformation($"{entityId} is invalid ukprn for RequestType: '{request.RequestType}' and request id: {request.RequestId}");
+                _logger.LogInformation($"entity id: {entityId} is invalid ukprn for RequestType: '{request.RequestType}' and request id: {request.RequestId}");
                 return Array.Empty<CommunicationUser>();
             }
             var users = await _userRepository.GetProviderUsersAsync(ukprn);
