@@ -134,7 +134,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Infrastructure.ReferenceData.A
 
             await _sut.UpdateApprenticeshipProgrammesAsync();
 
-            Assert.True(updatedData.Data.All(x => x.EducationLevelNumber == level));
+            updatedData.Data.All(x => x.EducationLevelNumber == level).Should().BeTrue();
         }
 
         [Fact]
