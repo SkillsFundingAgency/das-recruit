@@ -6,8 +6,6 @@ namespace Esfa.Recruit.Qa.Web.ViewModels.Reports.ApplicationsReport
 {
     public class ApplicationsReportCreateEditModelValidator : AbstractValidator<ApplicationsReportCreateEditModel>
     {
-        const string EnterADateWithinThreeMonthsFromTheStartDate = "Enter a date within three months from the start date";
-
         public ApplicationsReportCreateEditModelValidator(ITimeProvider timeProvider)
         {
             RuleFor(x => x.DateRange)
@@ -20,31 +18,26 @@ namespace Esfa.Recruit.Qa.Web.ViewModels.Reports.ApplicationsReport
                     .Must(date => date.AsDateTimeUk() != null)
                     .WithMessage("Date from format should be dd/mm/yyyy");
 
-                When(x => x.FromDate.AsDateTimeUk() != null, () =>
-                {
-                    RuleFor(x => x.ToDate)
-                        .Must(date => date.AsDateTimeUk() != null)
-                        .WithMessage(EnterADateWithinThreeMonthsFromTheStartDate);
-
-                });
+                RuleFor(x => x.ToDate)
+                    .Must(date => date.AsDateTimeUk() != null)
+                    .WithMessage("Date to format should be dd/mm/yyyy");
             });
 
             When(x => x.DateRange == DateRangeType.Custom &&
                       x.FromDate.AsDateTimeUk() != null &&
                       x.ToDate.AsDateTimeUk() != null, () =>
-                      {
-                          RuleFor(x => x.FromDate)
-                              .Cascade(CascadeMode.StopOnFirstFailure)
-                              .Must((model, _) => model.FromDate.AsDateTimeUk() < model.ToDate.AsDateTimeUk())
-                              .WithMessage("Date from must be less than Date to");
+            {
+                RuleFor(x => x.ToDate)
+                    .Cascade(CascadeMode.StopOnFirstFailure)
+                    .Must(date => date.AsDateTimeUk() < timeProvider.NextDay)
+                    .WithMessage("Date to cannot be in the future")
+                    .Must((model, x) => model.ToDate.AsDateTimeUk() < model.FromDate.AsDateTimeUk().Value.AddMonths(3))
+                    .WithMessage("Enter a date within three months from the start date");
 
-                          RuleFor(x => x.ToDate)
-                              .Cascade(CascadeMode.StopOnFirstFailure)
-                              .Must(date => date.AsDateTimeUk() < timeProvider.NextDay)
-                              .WithMessage("Date to cannot be in the future")
-                              .Must((model, x) => model.ToDate.AsDateTimeUk() < model.FromDate.AsDateTimeUk().Value.AddMonths(3))
-                              .WithMessage(EnterADateWithinThreeMonthsFromTheStartDate);
-                      });
+                RuleFor(x => x.FromDate)
+                    .Must((model, _) => model.FromDate.AsDateTimeUk() < model.ToDate.AsDateTimeUk())
+                    .WithMessage("Date from must be ealier than Date to");
+            });
         }
     }
 }
