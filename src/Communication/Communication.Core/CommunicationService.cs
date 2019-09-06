@@ -9,6 +9,7 @@ namespace Communication.Core
 {
     public class CommunicationService : ICommunicationService
     {
+        private readonly DeliveryFrequency[] _digestDeliveryFrequencies = new [] { DeliveryFrequency.Daily, DeliveryFrequency.Weekly };
         private readonly ILogger<CommunicationService> _logger;
         private readonly ICommunicationProcessor _processor;
         private readonly IAggregateCommunicationProcessor _aggregateProcessor;
@@ -45,6 +46,9 @@ namespace Communication.Core
 
         public async Task ProcessAggregateCommunicationRequestAsync(AggregateCommunicationRequest request)
         {
+            if (_digestDeliveryFrequencies.Contains(request.Frequency) == false)
+                throw new NotSupportedException(CommunicationErrorMessages.InvalidAggregateCommunicationRequestedFrequencyMessage);
+
             var scheduledMessages = await _repository.GetScheduledMessagesSinceAsync(request.RequestType, request.Frequency, request.FromDateTime, request.ToDateTime);
 
             var groupedUserMessages = scheduledMessages.GroupBy(cm => cm.Recipient.UserId);
@@ -56,12 +60,11 @@ namespace Communication.Core
             foreach (var userMessages in groupedUserMessages)
             {
                 var acr = new AggregateCommunicationRequest(Guid.NewGuid(), request.RequestType, request.Frequency, request.RequestDateTime, request.FromDateTime, request.ToDateTime);
-                var tsk = _composerQueue.AddMessageAsync(new AggregateCommunicationComposeRequest
-                {
-                    UserId = userMessages.Key,
-                    MessageIds = userMessages.Select(cm => cm.Id),
-                    AggregateCommunicationRequest = acr
-                });
+                var tsk = _composerQueue.AddMessageAsync(new AggregateCommunicationComposeRequest(
+                    userId: userMessages.Key,
+                    messageIds: userMessages.Select(cm => cm.Id),
+                    aggregateCommunicationRequest: acr
+                ));
 
                 tasks.Add(tsk);
             }
@@ -95,12 +98,12 @@ namespace Communication.Core
 
         private Task QueueImmediateDispatchAsync(CommunicationMessage message)
         {
-            return _publisher.AddMessageAsync( new CommunicationMessageIdentifier { Id = message.Id });
+            return _publisher.AddMessageAsync( new CommunicationMessageIdentifier(message.Id));
         }
 
         private Task QueueImmediateDispatchManyAsync(IEnumerable<CommunicationMessage> messages)
         {
-            var msgIds = messages.Select(m => new CommunicationMessageIdentifier { Id = m.Id });
+            var msgIds = messages.Select(m => new CommunicationMessageIdentifier(m.Id));
             return Task.WhenAll(msgIds.Select(m => _publisher.AddMessageAsync(m)));
         }
     }

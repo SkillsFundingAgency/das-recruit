@@ -7,49 +7,24 @@ using System.Linq;
 
 namespace Communication.Core
 {
-    public class AggregateCommunicationProcessor : IAggregateCommunicationProcessor
+    public class AggregateCommunicationProcessor : CommunicationProcessorBase, IAggregateCommunicationProcessor
     {
         private readonly IDictionary<string, IParticipantResolver> _participantResolvers = new Dictionary<string, IParticipantResolver>();
-        private readonly IDictionary<string, IUserPreferencesProvider> _userPreferencesProviders = new Dictionary<string, IUserPreferencesProvider>();
-        private readonly IDictionary<string, IEntityDataItemProvider> _entityDataItemProviders = new Dictionary<string, IEntityDataItemProvider>();
-        private readonly IDictionary<string, ITemplateIdProvider> _templateIdProviders = new Dictionary<string, ITemplateIdProvider>();
         private readonly IDictionary<string, ICompositeDataItemProvider> _compositeDataItemProviders = new Dictionary<string, ICompositeDataItemProvider>();
 
         public AggregateCommunicationProcessor(
             IEnumerable<IParticipantResolver> participantResolvers,
             IEnumerable<IUserPreferencesProvider> userPreferencesProviders,
-            IEnumerable<IEntityDataItemProvider> entityDataItemProviders,
-            IEnumerable<ITemplateIdProvider> templateIdProviders,
-            IEnumerable<ICompositeDataItemProvider> compositeDataItemProviders)
+            IEnumerable<ICompositeDataItemProvider> compositeDataItemProviders) : base(userPreferencesProviders)
         {
             foreach (var plugin in participantResolvers) _participantResolvers.Add(plugin.ParticipantResolverName, plugin);
-            foreach (var plugin in userPreferencesProviders) _userPreferencesProviders.Add(plugin.UserType, plugin);
-            foreach (var plugin in entityDataItemProviders) _entityDataItemProviders.Add(plugin.EntityType, plugin);
-            foreach (var plugin in templateIdProviders) _templateIdProviders.Add(plugin.ProviderServiceName, plugin);
-
             foreach (var plugin in compositeDataItemProviders) _compositeDataItemProviders.Add(plugin.ProviderName, plugin);
-        }
-
-        private async Task<IEnumerable<Participant>> GetPreferencesForParticipantsAsync(string requestType, IEnumerable<CommunicationUser> users)
-        {
-            var participants = new List<Participant>();
-
-            foreach (var user in users)
-            {
-                var provider = _userPreferencesProviders[user.UserType];
-
-                var recipientPreferenceForRequestType = await provider.GetUserPreferenceAsync(requestType, user);
-
-                var participant = new Participant() { User = user, Preferences = recipientPreferenceForRequestType };
-
-                participants.Add(participant);
-            }
-
-            return participants;
         }
 
         public async Task<CommunicationMessage> CreateAggregateMessageAsync(AggregateCommunicationRequest request, IEnumerable<CommunicationMessage> messages)
         {
+            if (messages.Any() == false) return null;
+
             var recipient = GetUserFromAggregateMessage(messages);
 
             var participant = (await GetPreferencesForParticipantsAsync(request.RequestType, new[] {recipient})).Single();

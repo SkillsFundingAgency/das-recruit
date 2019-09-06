@@ -9,7 +9,7 @@ using Moq;
 using Xunit;
 using static Esfa.Recruit.Vacancies.Client.Application.Communications.CommunicationConstants;
 
-namespace UnitTests.Vacancies.Client.Application.Communications
+namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Communications
 {
     public class VacancyDataEntityPluginTests
     {
@@ -28,7 +28,7 @@ namespace UnitTests.Vacancies.Client.Application.Communications
                 .With(r => r.EmployerNameOption, employerNameOption)
                 .Create();
             _mockRepository
-                .Setup(r => r.GetVacancyAsync(It.IsAny<long>()))                
+                .Setup(r => r.GetVacancyAsync(It.IsAny<long>()))
                 .ReturnsAsync(vacancy);
 
             var expectedEmployerName = employerNameOption == EmployerNameOption.TradingName ? vacancy.EmployerName : vacancy.LegalEntityName;
