@@ -74,6 +74,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             if (closureReason != null)
             {
                 await CloseVacancyAsync(vacancy, closureReason.Value);
+                await _messaging.PublishEvent(new VacancyClosedEvent
+                {
+                    VacancyReference = vacancy.VacancyReference.GetValueOrDefault(),
+                    VacancyId = vacancy.Id
+                });
                 return;
             }
 

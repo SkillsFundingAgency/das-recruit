@@ -46,6 +46,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
 
         public async Task Handle(VacancyClosedEvent notification, CancellationToken cancellationToken)
         {
+            var vacancy = await _repository.GetVacancyAsync(notification.VacancyId);
+            if(vacancy.ClosureReason == ClosureReason.BlockedByQa)
+            {
+                _logger.LogInformation("Vacancy closing due to provider being blocked by QA.", notification.VacancyReference);
+                return;
+            }
             _logger.LogInformation("Deleting LiveVacancy {vacancyReference} from query store.", notification.VacancyReference);
             await NotifyFaaVacancyHasClosed(notification);
             await _queryStore.DeleteLiveVacancyAsync(notification.VacancyReference);
