@@ -2,8 +2,8 @@ namespace Communication.Types
 {
     public enum CommunicationMessageStatus
     {
-        Unsent,
+        Pending,
         Sent,
-        FailedDelivery
+        NotSent
     }
 }

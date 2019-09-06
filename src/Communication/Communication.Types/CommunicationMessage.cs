@@ -16,6 +16,8 @@ namespace Communication.Types
         public string TemplateId { get; set; }
         public DateTime RequestDateTime { get; set; }
         public CommunicationMessageStatus Status { get; set; }
+        public DispatchOutcome? DispatchOutcome { get; set; }
         public DateTime? DispatchDateTime { get; set; }
+        public Guid? AggregatedMessageId { get; set; }
     }
 }

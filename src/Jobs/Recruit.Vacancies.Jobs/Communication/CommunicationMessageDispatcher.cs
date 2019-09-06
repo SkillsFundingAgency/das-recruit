@@ -58,14 +58,16 @@ namespace Esfa.Recruit.Vacancies.Jobs.Communication
                 }
 
                 commMsg.Status = CommunicationMessageStatus.Sent;
+                commMsg.DispatchOutcome = DispatchOutcome.Succeeded;
                 commMsg.DispatchDateTime = _timeProvider.Now;
                 await _repository.UpdateAsync(commMsg);
             }
             catch (HttpRequestException ex)
             {
                 _logger.LogError(ex, $"Failed to submit communication message {commMsg.Id} to DAS Notifications API.");
-                commMsg.Status = CommunicationMessageStatus.FailedDelivery;
+                commMsg.Status = CommunicationMessageStatus.NotSent;
                 commMsg.DispatchDateTime = _timeProvider.Now;
+                commMsg.DispatchOutcome = DispatchOutcome.Failed;
                 await _repository.UpdateAsync(commMsg);
             }
         }
