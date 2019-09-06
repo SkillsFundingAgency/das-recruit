@@ -44,7 +44,7 @@ namespace Communication.Core
             _logger.LogInformation($"{dataItems.Count} data items found for request id: '{request.RequestId}'");
 
             var participants = await GetPreferencesForParticipantsAsync(request.RequestType, recipients);
-            _logger.LogInformation($"Retrived {participants.Count()} participants for request id: '{request.RequestId}'");
+            _logger.LogInformation($"Retrieved {participants.Count()} participants for request id: '{request.RequestId}'");
 
             var optedInParticipants = GetOptedInParticipants(participants);
             _logger.LogInformation($"{optedInParticipants.Count()} participants have opted in for request id: '{request.RequestId}'");
