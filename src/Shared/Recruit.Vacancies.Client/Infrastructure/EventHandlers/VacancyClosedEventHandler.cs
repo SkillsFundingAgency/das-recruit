@@ -47,18 +47,21 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
         public async Task Handle(VacancyClosedEvent notification, CancellationToken cancellationToken)
         {
             var vacancy = await _repository.GetVacancyAsync(notification.VacancyId);
-            var vacancyClosedByBlockingProvider = vacancy.ClosureReason == ClosureReason.BlockedByQa || 
-                                            vacancy.ClosureReason == ClosureReason.TransferredByQa || 
-                                            vacancy.ClosureReason == ClosureReason.TransferredByEmployer;
-            if (vacancyClosedByBlockingProvider)
+            var naturallyClosedVacancy = vacancy.ClosureReason == ClosureReason.Auto ||
+                                                  vacancy.ClosureReason == ClosureReason.Manual;
+            if (naturallyClosedVacancy)
             {
-                _logger.LogInformation("Vacancy closing due to provider being blocked by QA.", notification.VacancyReference);
-                return;
+                _logger.LogInformation("Deleting LiveVacancy {vacancyReference} from query store.",
+                    notification.VacancyReference);
+                await NotifyFaaVacancyHasClosed(notification);
+                await _queryStore.DeleteLiveVacancyAsync(notification.VacancyReference);
+                await CreateClosedVacancyProjection(notification.VacancyId);
             }
-            _logger.LogInformation("Deleting LiveVacancy {vacancyReference} from query store.", notification.VacancyReference);
-            await NotifyFaaVacancyHasClosed(notification);
-            await _queryStore.DeleteLiveVacancyAsync(notification.VacancyReference);
-            await CreateClosedVacancyProjection(notification.VacancyId);
+            else
+            {
+                _logger.LogInformation("Vacancy closing due to provider being blocked by QA.",
+                    notification.VacancyReference);
+            }
         }
 
         private Task NotifyFaaVacancyHasClosed(VacancyClosedEvent notification)
