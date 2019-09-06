@@ -8,6 +8,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Queues;
 using Esfa.Recruit.Vacancies.Client.Application.Queues.Messages;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
 using Esfa.Recruit.Vacancies.Jobs.Configuration;
 using Esfa.Recruit.Vacancies.Jobs.ExternalSystemEventHandlers;
@@ -43,6 +44,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.UnitTests.ExternalSystemEventHandlers
         private readonly Mock<IEncodingService> _mockEncoder;
         private readonly Mock<IVacancyQuery> _mockVacancyQuery;
         private readonly Mock<IMessaging> _mockMessaging;
+        private readonly Mock<IQueryStoreReader> _mockQueryStoreReader;
         private readonly UpdatedPermissionsExternalSystemEventsHandler _sut;
 
         public UpdatedPermissionsExternalSystemEventHandlerTests()
@@ -54,10 +56,11 @@ namespace Esfa.Recruit.Vacancies.Jobs.UnitTests.ExternalSystemEventHandlers
             _mockEncoder = new Mock<IEncodingService>();
             _mockVacancyQuery = new Mock<IVacancyQuery>();
             _mockMessaging = new Mock<IMessaging>();
+            _mockQueryStoreReader = new Mock<IQueryStoreReader>();
 
             _sut = new UpdatedPermissionsExternalSystemEventsHandler(Mock.Of<ILogger<UpdatedPermissionsExternalSystemEventsHandler>>(), _jobsConfig,
                                                         _mockRecruitQueueService.Object, _mockEmployerAccountProvider.Object,
-                                                        _mockEncoder.Object, _mockVacancyQuery.Object, _mockMessaging.Object);
+                                                        _mockEncoder.Object, _mockVacancyQuery.Object, _mockMessaging.Object, _mockQueryStoreReader.Object);
         }
 
         [Fact]
@@ -130,7 +133,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.UnitTests.ExternalSystemEventHandlers
         }
 
         [Fact]
-        public async Task GivenMatchingExistingLegalEntityIdAndNoAssociatedVacancies_ThenVerifyTransferProcessIsNotQueued()
+        public async Task GivenMatchingExistingLegalEntityId_ThenVerifyTransferProcessIsQueued()
         {
             var matchingLegalEntityViewModel = _autoFixture.Build<LegalEntityViewModel>()
                                                             .With(l => l.DasAccountId, EmployerAccountIdEncoded)
@@ -143,38 +146,10 @@ namespace Esfa.Recruit.Vacancies.Jobs.UnitTests.ExternalSystemEventHandlers
             _mockEmployerAccountProvider.Setup(x => x.GetLegalEntitiesConnectedToAccountAsync(EmployerAccountIdEncoded))
                                         .ReturnsAsync(_dummyLegalEntities.Append(matchingLegalEntityViewModel));
 
-            _mockVacancyQuery.Setup(x => x.GetNoOfProviderOwnedVacanciesForLegalEntityAsync(Ukprn, RecruitLegalEntityId)).ReturnsAsync(0);
-
             await _sut.Handle(new UpdatedPermissionsEvent(EmployerAccountId, AccountLegalEntityId, AccountProviderId, AccountProviderLegalEntityId, Ukprn, Guid.NewGuid(), UserEmailAddress, UserFirstName, UserLastName, grantedOperations, DateTime.UtcNow), null);
 
             _mockEncoder.Verify(x => x.Encode(EmployerAccountId, EncodingType.AccountId), Times.Once);
             _mockEmployerAccountProvider.Verify(x => x.GetLegalEntitiesConnectedToAccountAsync(EmployerAccountIdEncoded), Times.Once);
-            _mockVacancyQuery.Verify(x => x.GetNoOfProviderOwnedVacanciesForLegalEntityAsync(Ukprn, RecruitLegalEntityId), Times.Once);
-            _mockRecruitQueueService.VerifyNoOtherCalls();
-            _mockMessaging.VerifyNoOtherCalls();
-        }
-
-        [Fact]
-        public async Task GivenMatchingExistingLegalEntityIdAndAssociatedVacancies_ThenVerifyTransferProcessIsQueued()
-        {
-            var matchingLegalEntityViewModel = _autoFixture.Build<LegalEntityViewModel>()
-                                                            .With(l => l.DasAccountId, EmployerAccountIdEncoded)
-                                                            .With(l => l.AccountLegalEntityId, AccountLegalEntityId)
-                                                            .With(l => l.LegalEntityId, RecruitLegalEntityId)
-                                                            .Create();
-
-            var grantedOperations = new HashSet<Operation> { Operation.CreateCohort };
-            _mockEncoder.Setup(x => x.Encode(EmployerAccountId, EncodingType.AccountId)).Returns(EmployerAccountIdEncoded);
-            _mockEmployerAccountProvider.Setup(x => x.GetLegalEntitiesConnectedToAccountAsync(EmployerAccountIdEncoded))
-                                        .ReturnsAsync(_dummyLegalEntities.Append(matchingLegalEntityViewModel));
-
-            _mockVacancyQuery.Setup(x => x.GetNoOfProviderOwnedVacanciesForLegalEntityAsync(Ukprn, RecruitLegalEntityId)).ReturnsAsync(1);
-
-            await _sut.Handle(new UpdatedPermissionsEvent(EmployerAccountId, AccountLegalEntityId, AccountProviderId, AccountProviderLegalEntityId, Ukprn, Guid.NewGuid(), UserEmailAddress, UserFirstName, UserLastName, grantedOperations, DateTime.UtcNow), null);
-
-            _mockEncoder.Verify(x => x.Encode(EmployerAccountId, EncodingType.AccountId), Times.Once);
-            _mockEmployerAccountProvider.Verify(x => x.GetLegalEntitiesConnectedToAccountAsync(EmployerAccountIdEncoded), Times.Once);
-            _mockVacancyQuery.Verify(x => x.GetNoOfProviderOwnedVacanciesForLegalEntityAsync(Ukprn, RecruitLegalEntityId), Times.Once);
             _mockRecruitQueueService.Verify(x => x.AddMessageAsync(It.IsAny<TransferVacanciesFromProviderQueueMessage>()), Times.Once);
             _mockMessaging.Verify(x => x.SendCommandAsync(It.Is<SetupProviderCommand>(c => c.Ukprn == Ukprn)), Times.Once);
         }
