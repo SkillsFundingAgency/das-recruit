@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
@@ -32,13 +31,35 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         private Mock<ICommunicationQueueService> _mockCommunicationQueueService;
         private DateTime _currentTime;
         private VacancyClosedEvent _event;
-        private Vacancy _vacancy;
+        private Vacancy _vacancy = new Vacancy
+        {
+            Id = Guid.NewGuid(),
+            LegalEntityId = 299792458,
+            ProgrammeId = "42",
+            EmployerLocation = new Address(),
+            Qualifications = new List<Qualification>(),
+            TrainingProvider = new TrainingProvider
+            {
+                Ukprn = 1618
+            },
+            VacancyReference = 1234567,
+            Wage = new Wage
+            {
+                Duration = 12,
+                DurationUnit = DurationUnit.Month,
+                FixedWageYearlyAmount = 32000,
+                WageType = WageType.FixedWage,
+                WeeklyHours = 37
+            }
+        };
         private ApprenticeshipProgrammes _apprenticeshipProgrammes;
 
 
         [Fact]
         public async Task Handle_ShouldNotifyFAA()
         {
+            _vacancy.ClosureReason = ClosureReason.Auto;
+
             await _handler.Handle(_event, CancellationToken.None);
 
             _mockFaaService.Verify(x => x.PublishVacancyStatusSummaryAsync(
@@ -52,7 +73,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         public async Task Handle_ShouldDeleteLiveVacancyFromQueryStoreThenRecreate()
         {
             int sequence = 1;
-
+            _vacancy.ClosureReason = ClosureReason.Manual;
             _mockQueryStore
                 .Setup(x => x.DeleteLiveVacancyAsync(_vacancy.VacancyReference.Value))
                 .Callback(() => Assert.Equal(1, sequence++))
@@ -68,30 +89,18 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             Assert.Equal(3, sequence);
         }
 
+        [Fact]
+        public async Task Handle_VacancyClosedDueToProviderBeingBlocked()
+        {
+            _vacancy.ClosureReason = ClosureReason.BlockedByQa;
+            _mockFaaService.Verify(x=>x.PublishVacancyStatusSummaryAsync(It.IsAny<FaaVacancyStatusSummary>()),Times.Never);
+            _mockQueryStore.Verify(x=>x.DeleteLiveVacancyAsync(It.IsAny<long>()),Times.Never);
+            _mockQueryStore.Verify(x => x.UpdateClosedVacancyAsync(It.IsAny<Projections.ClosedVacancy>()), Times.Never);
+        }
+
         public VacancyClosedEventHandlerTests()
         {
             _currentTime = DateTime.UtcNow;
-            _vacancy = new Vacancy
-            {
-                Id = Guid.NewGuid(),
-                LegalEntityId = 299792458,
-                ProgrammeId = "42",
-                EmployerLocation = new Address(),
-                Qualifications = new List<Qualification>(),
-                TrainingProvider = new TrainingProvider
-                {
-                    Ukprn = 1618
-                },
-                VacancyReference = 1234567,
-                Wage = new Wage
-                {
-                    Duration = 12,
-                    DurationUnit = DurationUnit.Month,
-                    FixedWageYearlyAmount = 32000,
-                    WageType = WageType.FixedWage,
-                    WeeklyHours = 37,
-                }
-            };
             _event = new VacancyClosedEvent
             {
                 VacancyId = _vacancy.Id,
