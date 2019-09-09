@@ -11,7 +11,7 @@ namespace Recruit.Vacancies.Client.Application.Communications.CompositeDataItemP
 {
     public class ApplicationsSubmittedCompositeDataItemPlugin : ICompositeDataItemProvider
     {
-        public string ProviderName => GetType().Name;
+        public string ProviderName => CommunicationConstants.RequestType.ApplicationSubmitted;
 
         public Task<IEnumerable<CommunicationDataItem>> GetConsolidatedMessageDataItemsAsync(CommunicationMessage aggregateMessage, IEnumerable<CommunicationMessage> messages)
         {
