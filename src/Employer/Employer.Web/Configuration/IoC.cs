@@ -115,6 +115,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddTransient<DurationOrchestrator>();
             services.AddTransient<DashboardOrchestrator>();
             services.AddTransient<AlertsOrchestrator>();
+            services.AddTransient<CloneVacancyOrchestrator>();
         }
 
         private static void RegisterMapperDeps(IServiceCollection services)
