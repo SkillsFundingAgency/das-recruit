@@ -96,9 +96,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         }
 
         public bool IsNewDatesRequired(Vacancy vacancy)
-        {
-            return vacancy.Status == VacancyStatus.Closed || vacancy.ClosingDate < _timeProvider.Now.Date;
-        }
+            => vacancy.ClosingDate < _timeProvider.Now.Date;
 
         public async Task<Guid> PostCloneVacancyWithSameDates(CloneVacancyDatesQuestionEditModel model, VacancyUser user)
         {
