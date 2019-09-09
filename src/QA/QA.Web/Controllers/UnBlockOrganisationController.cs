@@ -12,11 +12,11 @@ namespace Esfa.Recruit.QA.Web.Controllers
 {
     [Authorize(Policy = AuthorizationPolicyNames.TeamLeadUserPolicyName)]
     [Route(RoutePaths.BlockedOrganisations)]
-    public class BlockedOrganisationsController : Controller
+    public class UnBlockOrganisationController : Controller
     {
         private readonly BlockedOrganisationsOrchestrator _orchestrator;
 
-        public BlockedOrganisationsController(BlockedOrganisationsOrchestrator orchestrator)
+        public UnBlockOrganisationController(BlockedOrganisationsOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
         }
