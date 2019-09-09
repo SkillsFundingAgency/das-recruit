@@ -107,17 +107,13 @@ namespace Communication.Core
                 TemplateId = templateMessage.TemplateId
             };
 
-            //note: tries all providers until one handles the request - this is inefficient
-            //doesn't need to loop if we can work out the composite beforehand from request type
-            foreach (var provider in _compositeDataItemProviders.Values)
-            {
-                var consolidatedMessageData = await provider.GetConsolidatedMessageDataItemsAsync(aggregatedMessage, messages);
+            var compositeDataItemProvider = _compositeDataItemProviders[templateMessage.RequestType];
 
-                if (consolidatedMessageData != null && consolidatedMessageData.Any())
-                {
-                    aggregatedMessage.DataItems = consolidatedMessageData.ToList();
-                    break;
-                }
+            var consolidatedMessageData = await compositeDataItemProvider.GetConsolidatedMessageDataItemsAsync(aggregatedMessage, messages);
+
+            if (consolidatedMessageData != null && consolidatedMessageData.Any())
+            {
+                aggregatedMessage.DataItems = consolidatedMessageData.ToList();
             }
 
             return aggregatedMessage;
