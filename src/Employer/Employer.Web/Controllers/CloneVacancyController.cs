@@ -49,7 +49,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             if (model.HasConfirmedClone == true)
             {
                 var newVacancyId = await _orchestrator.PostCloneVacancyWithSameDates(model, User.ToVacancyUser());
-                TempData.Add(TempDataKeys.VacancyPreviewInfoMessage, InfoMessages.VacancyCloned);
+                TempData.Add(TempDataKeys.VacancyClonedInfoMessage, InfoMessages.VacancyCloned);
                 return RedirectToRoute(RouteNames.Vacancy_Preview_Get, new { VacancyId = newVacancyId });
             }
             else
@@ -81,7 +81,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 return View(vm);
             }
 
-            TempData.Add(TempDataKeys.VacancyPreviewInfoMessage, InfoMessages.VacancyCloned);
+            TempData.Add(TempDataKeys.VacancyClonedInfoMessage, InfoMessages.VacancyCloned);
             return RedirectToRoute(RouteNames.Vacancy_Preview_Get, new { VacancyId = response.Data });
         }
     }

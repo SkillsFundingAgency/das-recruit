@@ -39,6 +39,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             var vm = new CloneVacancyDatesQuestionViewModel
             {
+                VacancyReference = vacancy.VacancyReference.GetValueOrDefault(),
                 StartDate = vacancy.StartDate?.AsGdsDate(),
                 ClosingDate = vacancy.ClosingDate?.AsGdsDate()
             };
@@ -55,6 +56,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             {
                 return new CloneVacancyWithNewDatesViewModel
                 {
+                    VacancyReference = vacancy.VacancyReference.GetValueOrDefault(),
                     IsNewDatesForced = isNewDatesForced,
                     Title = ChangeBothDatesTitle,
                 };
@@ -63,6 +65,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             {
                 return new CloneVacancyWithNewDatesViewModel
                 {
+                    VacancyReference = vacancy.VacancyReference.GetValueOrDefault(),
                     IsNewDatesForced = isNewDatesForced,
                     Title = ChangeEitherDatesTitle,
                     ClosingDay = $"{vacancy.ClosingDate.Value.Day:00}",

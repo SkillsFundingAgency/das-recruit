@@ -10,6 +10,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public ApplicationMethod? ApplicationMethod { get; internal set; }
         public string ApplicationUrl { get; internal set; }
         public bool CanDelete { get; internal set; }
+        public bool CanShowVacancyClonedStatusHeader => !string.IsNullOrEmpty(VacancyClonedInfoMessage);
         public bool CanSubmit { get; internal set; }
         public string ClosingDate { get; internal set; }
         public string EducationLevelName { get; internal set; }
@@ -43,6 +44,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public string TrainingLevel { get; internal set; }
         public string TransferredProviderName { get; internal set; }
         public string TransferredOnDate { get; internal set; }
+        public string VacancyClonedInfoMessage { get; internal set; }
         public string VacancyDescription { get; internal set; }
         public string VacancyReferenceNumber { get; internal set; }
         public string WageInfo { get; internal set; }

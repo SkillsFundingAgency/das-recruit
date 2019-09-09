@@ -52,5 +52,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.CloneVacancy
 
         public bool IsNewDatesForced { get; internal set; }
         public int CurrentYear { get; set; }
+        public long VacancyReference { get; set; }
     }
 }

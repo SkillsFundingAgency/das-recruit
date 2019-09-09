@@ -1,0 +1,43 @@
+@model Esfa.Recruit.Employer.Web.ViewModels.CloneVacancy.CloneVacancyDatesQuestionViewModel
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name=@PartialNames.ValidationSummary model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
+        <span class="govuk-caption-xl">Clone vacancy @("VAC" + Model.VacancyReference)</span>
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
+            Does the new vacancy have the same closing date and start date?
+        </h1>
+        <p class="govuk-body">
+            <span class="govuk-!-font-weight-bold">Possible start date</span>
+            <br>@Model.StartDate
+        </p>
+        <p class="govuk-body">
+            <span class="govuk-!-font-weight-bold">Closing date</span>
+            <br>@Model.ClosingDate
+        </p>
+        <form asp-route="@RouteNames.CloneVacancyDatesQuestion_Post">
+            <div esfa-validation-marker-for="HasConfirmedClone" class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
+                    <span esfa-validation-message-for="HasConfirmedClone" class="govuk-error-message"></span>
+                    <div class="govuk-radios govuk-radios--inline">
+                        <div class="govuk-radios__item">
+                            <input asp-for="@Model.HasConfirmedClone" class="govuk-radios__input" id="change-dates-yes"  type="radio" value="true">
+                            <label class="govuk-label govuk-radios__label" for="change-dates-yes">
+                                Yes
+                            </label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input asp-for="@Model.HasConfirmedClone" class="govuk-radios__input" id="change-dates-no" type="radio" value="false">
+                            <label class="govuk-label govuk-radios__label" for="change-dates-no">
+                                No
+                            </label>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="govuk-form-group">
+                <button type="submit" class="govuk-button  save-button" esfa-automation="continue-button">Continue</button>
+                <a asp-route="@RouteNames.VacancyManage_Get" class="govuk-link das-button-link" esfa-automation="cancel-link">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
