@@ -81,6 +81,7 @@
     <div class="govuk-grid-column-full">
         <ul class="govuk-list action-links">
             <li asp-show="@Model.CanShowEditVacancyLink"><a asp-route="@RouteNames.VacancyEdit_Get" class="govuk-link">Edit vacancy</a></li>
+            <li asp-show="@Model.CanClone"><a asp-route="@RouteNames.VacancyEdit_Get" class="govuk-link">Clone vacancy</a></li>
             <li asp-show="@Model.CanShowCloseVacancyLink"><a asp-route="@RouteNames.CloseVacancy_Get" class="govuk-link">Close vacancy</a></li>
             <li><a asp-route="@RouteNames.DisplayFullVacancy_Get" target="_blank" class="govuk-link">View vacancy</a></li>
         </ul>

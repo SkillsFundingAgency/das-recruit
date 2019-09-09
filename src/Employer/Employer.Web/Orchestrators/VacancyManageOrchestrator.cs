@@ -60,6 +60,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             viewModel.CanShowEditVacancyLink = vacancy.CanExtendStartAndClosingDates;
             viewModel.CanShowCloseVacancyLink = vacancy.CanClose;
             viewModel.IsClosedBlockedByQa = vacancy.Status == VacancyStatus.Closed && vacancy.ClosureReason == ClosureReason.BlockedByQa;
+            viewModel.CanClone = vacancy.CanClone;
 
             if (vacancy.Status == VacancyStatus.Closed && vacancy.ClosureReason == ClosureReason.WithdrawnByQa)
             {
