@@ -23,7 +23,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
             var userPref = new CommunicationUserPreference() { Channels = DeliveryChannelPreferences.None };
 
             var userPreference = await _repository.GetAsync(user.UserId);
-            if (userPreference == null) return userPref;
 
             switch (requestType)
             {
@@ -47,6 +46,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
 
         private static void SetPreferencesForVacancyRejectedNotification(ref CommunicationUserPreference userPref, UserNotificationPreferences userPreference)
         {
+            if (userPreference == null) return;
             if (userPreference.NotificationTypes.HasFlag(NotificationTypes.VacancyRejected))
             {
                 userPref.Channels = DeliveryChannelPreferences.EmailOnly;
@@ -57,6 +57,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
 
         private static void SetPreferencesForApplicationSubmittedNotification(ref CommunicationUserPreference userPref, UserNotificationPreferences userPreference)
         {
+            if (userPreference == null) return;
             if (userPreference.NotificationTypes.HasFlag(NotificationTypes.ApplicationSubmitted))
             {
                 userPref.Channels = DeliveryChannelPreferences.EmailOnly;
