@@ -39,7 +39,7 @@ namespace Esfa.Recruit.QA.Web.Orchestrators
         public async Task<bool> IsProviderAlreadyBlocked(long ukprn)
         {
             var blockedOrganisation = await _blockedOrganisationQuery.GetByOrganisationIdAsync(ukprn.ToString());
-            return blockedOrganisation != null;
+            return blockedOrganisation?.BlockedStatus == BlockedStatus.Blocked;
         }
 
         public Task UnBlockProviderAsync(long ukprn, VacancyUser user)
