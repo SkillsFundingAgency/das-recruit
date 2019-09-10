@@ -104,7 +104,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.UnitTests.DomainEvents.Handlers.Provider.P
                 c.RequestType == CommunicationConstants.RequestType.ProviderBlockedEmployerNotificationForTransferredVacancies &&
                 c.ParticipantsResolverName == CommunicationConstants.ParticipantResolverNames.EmployerParticipantsResolverName && 
                 c.TemplateProviderName == CommunicationConstants.ServiceName && 
-                c.DataItems.Any(d => d.Key == CommunicationConstants.DataItemKeys.Employer.VacanciesTransferredCount && d.Value == "1") && 
+                c.DataItems.Any(d => d.Key == CommunicationConstants.DataItemKeys.Employer.VacanciesTransferredCountText && d.Value.StartsWith('1')) && 
                 c.Entities.Any(e => e.EntityType == CommunicationConstants.EntityTypes.Employer && e.EntityId.ToString() == _employerAccount1) &&
                 c.Entities.Any(e => e.EntityType == CommunicationConstants.EntityTypes.Provider && (long)e.EntityId == _ukprn)
                 )));

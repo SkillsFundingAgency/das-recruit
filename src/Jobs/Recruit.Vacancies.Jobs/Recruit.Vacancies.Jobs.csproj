@@ -38,6 +38,7 @@
     <PackageReference Include="SFA.DAS.EmployerAccounts.Messages" Version="1.6.1021" />
     <PackageReference Include="NServiceBus" Version="7.1.7" />
     <PackageReference Include="NServiceBus.MSDependencyInjection" Version="0.1.4" />
+    <PackageReference Include="Humanizer.Core.uk" Version="2.6.2" />
 
     <ProjectReference Include="..\..\Communication\Communication.Core\Communication.Core.csproj" />
     <ProjectReference Include="..\..\Communication\Communication.Types\Communication.Types.csproj" />
