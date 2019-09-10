@@ -48,10 +48,10 @@ namespace Esfa.Recruit.QA.Web.Orchestrators
             return _messaging.SendCommandAsync(command);
         }
 
-        public async Task<UnBlockTrainingProviderViewModel> GetBlockedOrganisationViewModel(long ukprn)
+        public async Task<UnBlockTrainingProviderEditModel> GetBlockedOrganisationViewModel(long ukprn)
         {
             var provider = await _trainingProviderService.GetProviderAsync(ukprn);
-            return new UnBlockTrainingProviderViewModel { Ukprn = ukprn, ProviderName = provider.Name };
+            return new UnBlockTrainingProviderEditModel { Ukprn = ukprn, ProviderName = provider.Name };
         }
     }
 }

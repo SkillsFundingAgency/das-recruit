@@ -30,20 +30,25 @@ namespace Esfa.Recruit.QA.Web.Controllers
         }
 
         [HttpPost("", Name = RouteNames.UnBlockProvider_Confirm_Post)]
-        public async Task<IActionResult> RestoreAccess(UnBlockTrainingProviderViewModel model)
+        public async Task<IActionResult> RestoreAccess(UnBlockTrainingProviderEditModel model)
         {
             if (ModelState.IsValid == false)
             {
-                return View(new UnBlockTrainingProviderViewModel() { Ukprn = model.Ukprn, ProviderName = model.ProviderName });
+                return View(new UnBlockTrainingProviderEditModel() { Ukprn = model.Ukprn, ProviderName = model.ProviderName });
             }
             TempData[TempDataKeys.BlockProviderUkprnKey] = model.Ukprn;
             var isBlocked = await _orchestrator.IsProviderAlreadyBlocked(model.Ukprn);
             if (!isBlocked)
             {
-                return View(new UnBlockTrainingProviderViewModel() { Ukprn = model.Ukprn, ProviderName = model.ProviderName });
+                return View(new UnBlockTrainingProviderEditModel() { Ukprn = model.Ukprn, ProviderName = model.ProviderName });
             }
-            await _orchestrator.UnBlockProviderAsync(model.Ukprn, User.GetVacancyUser());
-            return RedirectToRoute(RouteNames.UnBlockProvider_Acknowledgement_Get);
+
+            if (model.CanRestoreAccess)
+            {
+                await _orchestrator.UnBlockProviderAsync(model.Ukprn, User.GetVacancyUser());
+                return RedirectToRoute(RouteNames.UnBlockProvider_Acknowledgement_Get);
+            }
+            return RedirectToRoute(RouteNames.BlockedOrganisations_Get);
         }
 
         [HttpGet("unblocking-acknowledgement", Name = RouteNames.UnBlockProvider_Acknowledgement_Get)]

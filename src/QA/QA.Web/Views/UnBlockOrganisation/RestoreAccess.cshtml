@@ -1,5 +1,5 @@
 @using Esfa.Recruit.QA.Web.ViewModels.ManageProvider
-@model UnBlockTrainingProviderViewModel
+@model UnBlockTrainingProviderEditModel
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-xl">Restore access for @Model.ProviderName</h1>
@@ -16,6 +16,8 @@
         </p>
         <h2 class="govuk-heading-s">Are you sure you want to restore access for this training provider?</h2>
         <form asp-route="@RouteNames.UnBlockProvider_Confirm_Post">
+            <input type="hidden" asp-for="Ukprn">
+            <input type="hidden" asp-for="ProviderName">
             <div esfa-validation-marker-for="RestoreAccess" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
                     <span esfa-validation-message-for="RestoreAccess" class="govuk-error-message"></span>
