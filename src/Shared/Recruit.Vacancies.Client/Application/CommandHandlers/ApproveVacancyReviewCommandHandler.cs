@@ -9,7 +9,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
-using System;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
@@ -22,6 +22,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         private readonly AbstractValidator<VacancyReview> _vacancyReviewValidator;
         private readonly ITimeProvider _timeProvider;
         private readonly IBlockedOrganisationQuery _blockedOrganisationQuery;
+        private readonly IEmployerDashboardProjectionService _dashboardService;
 
         public ApproveVacancyReviewCommandHandler(ILogger<ApproveVacancyReviewCommandHandler> logger,
                                         IVacancyReviewRepository vacancyReviewRepository,
@@ -29,7 +30,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                                         IMessaging messaging,
                                         AbstractValidator<VacancyReview> vacancyReviewValidator,
                                         ITimeProvider timeProvider,
-                                        IBlockedOrganisationQuery blockedOrganisationQuery)
+                                        IBlockedOrganisationQuery blockedOrganisationQuery, IEmployerDashboardProjectionService dashboardService)
         {
             _logger = logger;
             _vacancyRepository = vacancyRepository;
@@ -38,6 +39,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _vacancyReviewValidator = vacancyReviewValidator;
             _timeProvider = timeProvider;
             _blockedOrganisationQuery = blockedOrganisationQuery;
+            _dashboardService = dashboardService;
         }
 
         public async Task Handle(ApproveVacancyReviewCommand message, CancellationToken cancellationToken)
@@ -74,11 +76,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             if (closureReason != null)
             {
                 await CloseVacancyAsync(vacancy, closureReason.Value);
-                await _messaging.PublishEvent(new VacancyClosedEvent
-                {
-                    VacancyReference = vacancy.VacancyReference.GetValueOrDefault(),
-                    VacancyId = vacancy.Id
-                });
+                await _dashboardService.ReBuildDashboardAsync(vacancy.EmployerAccountId);
                 return;
             }
 

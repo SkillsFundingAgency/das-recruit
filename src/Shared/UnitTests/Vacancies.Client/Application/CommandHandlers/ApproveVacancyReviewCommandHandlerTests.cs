@@ -1,22 +1,23 @@
-using Xunit;
-using Moq;
-using Microsoft.Extensions.Logging;
-using Esfa.Recruit.Vacancies.Client.Application.CommandHandlers;
-using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
-using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
-using Esfa.Recruit.Vacancies.Client.Application.Providers;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Application.Commands;
-using System.Threading.Tasks;
-using System.Threading;
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using AutoFixture;
-using Esfa.Recruit.Vacancies.Client.Domain.Events;
+using Esfa.Recruit.Vacancies.Client.Application.CommandHandlers;
+using Esfa.Recruit.Vacancies.Client.Application.Commands;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Events;
+using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
+using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
+using Moq;
+using Xunit;
 
-namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
+namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.CommandHandlers
 {
     [Trait("Category", "Unit")]
     public class ApproveVacancyReviewCommandHandlerTests
@@ -28,8 +29,8 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
         private readonly Mock<ITimeProvider> _mockTimeProvider;
         private readonly Mock<IMessaging> _mockMessaging;
         private readonly Mock<IBlockedOrganisationQuery> _mockBlockedOrganisationQuery;
-        private readonly VacancyReviewValidator _mockValidator;
         private readonly ApproveVacancyReviewCommandHandler _sut;
+        private readonly Mock<IEmployerDashboardProjectionService> _dashboardService;
 
         public ApproveVacancyReviewCommandHandlerTests()
         {
@@ -38,15 +39,17 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
             _mockVacancyRepository = new Mock<IVacancyRepository>();
 
             _mockMessaging = new Mock<IMessaging>();
-            _mockValidator = new VacancyReviewValidator();
+            var mockValidator = new VacancyReviewValidator();
 
             _mockTimeProvider = new Mock<ITimeProvider>();
             _mockTimeProvider.Setup(t => t.Now).Returns(DateTime.UtcNow);
 
             _mockBlockedOrganisationQuery = new Mock<IBlockedOrganisationQuery>();
 
+            _dashboardService = new Mock<IEmployerDashboardProjectionService>();
             _sut = new ApproveVacancyReviewCommandHandler(Mock.Of<ILogger<ApproveVacancyReviewCommandHandler>>(), _mockVacancyReviewRepository.Object,
-                                                        _mockVacancyRepository.Object, _mockMessaging.Object, _mockValidator, _mockTimeProvider.Object, _mockBlockedOrganisationQuery.Object);
+                                                        _mockVacancyRepository.Object, _mockMessaging.Object, mockValidator, _mockTimeProvider.Object, 
+                                                        _mockBlockedOrganisationQuery.Object, _dashboardService.Object);
         }
 
         [Theory]
@@ -57,7 +60,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
         {
             _mockVacancyReviewRepository.Setup(x => x.GetAsync(_existingReviewId)).ReturnsAsync(new VacancyReview { Status = reviewStatus});
 
-            var command = new ApproveVacancyReviewCommand(_existingReviewId, "comment", new List<ManualQaFieldIndicator>() {}, new List<Guid>());
+            var command = new ApproveVacancyReviewCommand(_existingReviewId, "comment", new List<ManualQaFieldIndicator>(), new List<Guid>());
 
             await _sut.Handle(command, CancellationToken.None);
 
@@ -90,7 +93,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
                 VacancySnapshot = new Vacancy()
             });
 
-            var command = new ApproveVacancyReviewCommand(_existingReviewId, "comment", new List<ManualQaFieldIndicator>() {}, new List<Guid>());
+            var command = new ApproveVacancyReviewCommand(_existingReviewId, "comment", new List<ManualQaFieldIndicator>(), new List<Guid>());
 
             await _sut.Handle(command, CancellationToken.None);
 
@@ -126,7 +129,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
             _mockBlockedOrganisationQuery.Setup(b => b.GetByOrganisationIdAsync(blockedProviderUkprn.ToString()))
                 .ReturnsAsync(new BlockedOrganisation {BlockedStatus = BlockedStatus.Blocked});
 
-            var command = new ApproveVacancyReviewCommand(_existingReviewId, "comment", new List<ManualQaFieldIndicator>() { }, new List<Guid>());
+            var command = new ApproveVacancyReviewCommand(_existingReviewId, "comment", new List<ManualQaFieldIndicator>(), new List<Guid>());
 
             await _sut.Handle(command, CancellationToken.None);
 
@@ -136,6 +139,37 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
             existingVacancy.Status.Should().Be(VacancyStatus.Closed);
             existingVacancy.ClosureReason.Should().Be(ClosureReason.BlockedByQa);
             _mockVacancyRepository.Verify(x => x.UpdateAsync(existingVacancy), Times.Once);
+        }
+
+        [Fact]
+        public async Task GivenApprovedVacancyReviewCommand_AndProviderHasBeenBlockedSinceReviewWasCreated_ThenRaiseUpdateEmployerDashboardEvent()
+        {
+            long blockedProviderUkprn = 12345678;
+
+            var existingVacancy = _autoFixture.Build<Vacancy>()
+                                                .Without(x => x.TransferInfo)
+                                                .With(x => x.TrainingProvider, new TrainingProvider { Ukprn = blockedProviderUkprn })
+                                                .Create();
+
+            _mockVacancyRepository.Setup(x => x.GetVacancyAsync(existingVacancy.VacancyReference.Value)).ReturnsAsync(existingVacancy);
+
+            _mockVacancyReviewRepository.Setup(x => x.GetAsync(_existingReviewId)).ReturnsAsync(new VacancyReview
+            {
+                Id = _existingReviewId,
+                CreatedDate = _mockTimeProvider.Object.Now.AddHours(-5),
+                Status = ReviewStatus.UnderReview,
+                VacancyReference = existingVacancy.VacancyReference.Value,
+                VacancySnapshot = new Vacancy()
+            });
+
+            _mockBlockedOrganisationQuery.Setup(b => b.GetByOrganisationIdAsync(blockedProviderUkprn.ToString()))
+                .ReturnsAsync(new BlockedOrganisation { BlockedStatus = BlockedStatus.Blocked });
+
+            var command = new ApproveVacancyReviewCommand(_existingReviewId, "comment", new List<ManualQaFieldIndicator>(), new List<Guid>());
+
+            await _sut.Handle(command, CancellationToken.None);
+            _dashboardService.Verify(x=>x.ReBuildDashboardAsync(It.IsAny<string>()),Times.Once);
+            
         }
     }
 }
