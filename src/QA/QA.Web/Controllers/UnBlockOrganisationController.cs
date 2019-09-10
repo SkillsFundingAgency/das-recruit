@@ -11,113 +11,46 @@ using Esfa.Recruit.Qa.Web.Extensions;
 namespace Esfa.Recruit.QA.Web.Controllers
 {
     [Authorize(Policy = AuthorizationPolicyNames.TeamLeadUserPolicyName)]
-    [Route(RoutePaths.BlockedOrganisations)]
+    [Route(RoutePaths.UnBlockOrganisationRoutePath)]
     public class UnBlockOrganisationController : Controller
     {
-        private readonly BlockedOrganisationsOrchestrator _orchestrator;
+        private readonly UnBlockOrganisationOrchestrator _orchestrator;
 
-        public UnBlockOrganisationController(BlockedOrganisationsOrchestrator orchestrator)
+        public UnBlockOrganisationController(UnBlockOrganisationOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
         }
 
-        [HttpGet("", Name = RouteNames.BlockedOrganisations_Get)]
-        public async Task<IActionResult> Index()
+        [HttpGet("", Name = RouteNames.UnBlockProvider_Confirm_Get)]
+        public async Task<IActionResult> RestoreAccess(string organisationId)
         {
-            var vm = await _orchestrator.GetBlockedOrganisationsViewModel();
+            if (long.TryParse(organisationId, out var ukprn) == false) return BadRequest();
+            var vm = await _orchestrator.GetBlockedOrganisationViewModel(ukprn);
             return View(vm);
         }
 
-        [HttpGet("find-training-provider", Name = RouteNames.BlockProvider_Find_Get)]
-        public IActionResult FindTrainingProvider()
-        {
-            if(TempData.ContainsKey(TempDataKeys.BlockProviderUkprnKey)) TempData.Remove(TempDataKeys.BlockProviderUkprnKey);
-            return View(new FindTrainingProviderViewModel());
-        }
-
-        [HttpPost("find-training-provider", Name = RouteNames.BlockProvider_Find_Post)]
-        public async Task<IActionResult> FindTrainingProvider(FindTrainingProviderEditModel model)
+        [HttpPost("", Name = RouteNames.UnBlockProvider_Confirm_Post)]
+        public async Task<IActionResult> RestoreAccess(UnBlockTrainingProviderViewModel model)
         {
             if (ModelState.IsValid == false)
             {
-                return View(new FindTrainingProviderViewModel() { Ukprn = model.Ukprn, Postcode = model.Postcode });
+                return View(new UnBlockTrainingProviderViewModel() { Ukprn = model.Ukprn, ProviderName = model.ProviderName });
             }
-
-            long.TryParse(model.Ukprn, out var ukprn);
-            var isBlocked = await _orchestrator.IsProviderAlreadyBlocked(ukprn);
-
             TempData[TempDataKeys.BlockProviderUkprnKey] = model.Ukprn;
-
-            if(isBlocked)
+            var isBlocked = await _orchestrator.IsProviderAlreadyBlocked(model.Ukprn);
+            if (!isBlocked)
             {
-                return RedirectToRoute(RouteNames.BlockProvider_AlreadyBlocked_Get);
+                return View(new UnBlockTrainingProviderViewModel() { Ukprn = model.Ukprn, ProviderName = model.ProviderName });
             }
-
-            return RedirectToRoute(RouteNames.BlockProvider_Confirm_Get);
+            await _orchestrator.UnBlockProviderAsync(model.Ukprn, User.GetVacancyUser());
+            return RedirectToRoute(RouteNames.UnBlockProvider_Acknowledgement_Get);
         }
 
-        [HttpGet("already-blocked", Name = RouteNames.BlockProvider_AlreadyBlocked_Get)]
-        public async Task<IActionResult> ProviderAlreadyBlocked()
+        [HttpGet("unblocking-acknowledgement", Name = RouteNames.UnBlockProvider_Acknowledgement_Get)]
+        public async Task<IActionResult> ProviderUnBlockedAcknowledgement()
         {
             var data = TempData.Peek(TempDataKeys.BlockProviderUkprnKey)?.ToString();
-            if(long.TryParse(data, out var ukprn) == false) return BadRequest();
-            TempData.Remove(TempDataKeys.BlockProviderUkprnKey);
-
-            var vm = await _orchestrator.GetProviderAlreadyBlockedViewModelAsync(ukprn);
-            return View(vm);
-        }
-
-        [HttpGet("confirm-blocking", Name = RouteNames.BlockProvider_Confirm_Get)]
-        public async Task<IActionResult> ConfirmTrainingProviderBlocking()
-        {
-            var data = TempData.Peek(TempDataKeys.BlockProviderUkprnKey)?.ToString();
-            if(long.TryParse(data, out var ukprn) == false) return BadRequest();
-
-            var vm = await _orchestrator.GetConfirmTrainingProviderBlockingViewModelAsync(ukprn);
-            return View(vm);
-        }
-
-        [HttpPost("confirm-blocking", Name = RouteNames.BlockProvider_Confirm_Post)]
-        public IActionResult ConfirmTrainingProviderBlocking_Post()
-        {
-            var data = TempData.Peek(TempDataKeys.BlockProviderUkprnKey)?.ToString();
-            if(long.TryParse(data, out var ukprn) == false) return BadRequest();
-
-            return RedirectToRoute(RouteNames.BlockProvider_Consent_Get);
-        }
-
-        [HttpGet("consent-blocking", Name = RouteNames.BlockProvider_Consent_Get)]
-        public async Task<IActionResult> ConsentForProviderBlocking()
-        {
-            var data = TempData.Peek(TempDataKeys.BlockProviderUkprnKey)?.ToString();
-            if(long.TryParse(data, out var ukprn) == false) return BadRequest();
-
-            var vm = await _orchestrator.GetConsentForProviderBlockingViewModelAsync(ukprn);
-            return View(vm);
-        }
-
-        [HttpPost("consent-blocking", Name = RouteNames.BlockProvider_Consent_Post)]
-        public async Task<IActionResult> ConsentForProviderBlocking(ConsentForProviderBlockingEditModel model)
-        {
-            var data = TempData.Peek(TempDataKeys.BlockProviderUkprnKey)?.ToString();
-            if(long.TryParse(data, out var ukprn) == false) return BadRequest();
-
-            if (ModelState.IsValid == false)
-            {
-                var vm = await _orchestrator.GetConsentForProviderBlockingViewModelAsync(ukprn);
-                return View(vm);
-            }
-            
-            await _orchestrator.BlockProviderAsync(ukprn, model.Reason, User.GetVacancyUser());
-
-            return RedirectToRoute(RouteNames.BlockProvider_Acknowledgement_Get);
-        }
-
-        [HttpGet("blocking-acknowledgement", Name = RouteNames.BlockProvider_Acknowledgement_Get)]
-        public async Task<IActionResult> ProviderBlockedAcknowledgement()
-        {
-            var data = TempData.Peek(TempDataKeys.BlockProviderUkprnKey)?.ToString();
-            if(long.TryParse(data, out var ukprn) == false) return BadRequest();
+            if (long.TryParse(data, out var ukprn) == false) return BadRequest();
             TempData.Remove(TempDataKeys.BlockProviderUkprnKey);
 
             var vm = await _orchestrator.GetAcknowledgementViewModelAsync(ukprn);

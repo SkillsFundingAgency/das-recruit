@@ -43,7 +43,9 @@
                         <td class="govuk-table__cell">@organisation.BlockedOn</td>
                         <td class="govuk-table__cell">@organisation.BlockedBy</td>
                         <td class="govuk-table__cell">
-                            <a asp-route="@RouteNames.UnBlockProvider_Confirm_Get" class="govuk-link">Restore access</a>
+                            <a asp-route="@RouteNames.UnBlockProvider_Confirm_Get" class="govuk-link" asp-route-organisationId="@organisation.OrganisationId">
+                                Restore access
+                            </a>
                         </td>
                     </tr>
                 }

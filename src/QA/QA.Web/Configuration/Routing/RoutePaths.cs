@@ -7,6 +7,7 @@ namespace Esfa.Recruit.Qa.Web.Configuration.Routing
         public const string ExceptionHandlingPath = "/error/handle";
         public const string BlockedOrganisations = "/blockedorganisations";
         public const string WithdrawVacancyPath = "/withdraw";
+        public const string UnBlockOrganisationRoutePath = "/restoreaccess";
 
         //Reports 
         public const string ReportsRoutePath = "/reports";
