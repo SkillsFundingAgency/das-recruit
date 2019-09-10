@@ -31,6 +31,8 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
         private readonly Mock<IBlockedOrganisationQuery> _mockBlockedOrganisationQuery;
         private readonly ApproveVacancyReviewCommandHandler _sut;
         private readonly Mock<IEmployerDashboardProjectionService> _dashboardService;
+        private const long BlockedProviderUkprn = 12345678;
+        private const string EmployerAccountId = "EMPLOYERACCOUNTID";
 
         public ApproveVacancyReviewCommandHandlerTests()
         {
@@ -108,11 +110,9 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
         [Fact]
         public async Task GivenApprovedVacancyReviewCommand_AndProviderHasBeenBlockedSinceReviewWasCreated_ThenDoNotRaiseVacancyApprovedEventAndCloseVacancy()
         {
-            long blockedProviderUkprn = 12345678;
-
             var existingVacancy = _autoFixture.Build<Vacancy>()
                                                 .Without(x => x.TransferInfo)
-                                                .With(x => x.TrainingProvider, new TrainingProvider { Ukprn = blockedProviderUkprn })
+                                                .With(x => x.TrainingProvider, new TrainingProvider { Ukprn = BlockedProviderUkprn })
                                                 .Create();
 
             _mockVacancyRepository.Setup(x => x.GetVacancyAsync(existingVacancy.VacancyReference.Value)).ReturnsAsync(existingVacancy);
@@ -126,7 +126,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
                 VacancySnapshot = new Vacancy()
             });
             
-            _mockBlockedOrganisationQuery.Setup(b => b.GetByOrganisationIdAsync(blockedProviderUkprn.ToString()))
+            _mockBlockedOrganisationQuery.Setup(b => b.GetByOrganisationIdAsync(BlockedProviderUkprn.ToString()))
                 .ReturnsAsync(new BlockedOrganisation {BlockedStatus = BlockedStatus.Blocked});
 
             var command = new ApproveVacancyReviewCommand(_existingReviewId, "comment", new List<ManualQaFieldIndicator>(), new List<Guid>());
@@ -144,11 +144,10 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
         [Fact]
         public async Task GivenApprovedVacancyReviewCommand_AndProviderHasBeenBlockedSinceReviewWasCreated_ThenRaiseUpdateEmployerDashboardEvent()
         {
-            long blockedProviderUkprn = 12345678;
-
             var existingVacancy = _autoFixture.Build<Vacancy>()
+                .With(x=>x.EmployerAccountId, EmployerAccountId)
                                                 .Without(x => x.TransferInfo)
-                                                .With(x => x.TrainingProvider, new TrainingProvider { Ukprn = blockedProviderUkprn })
+                                                .With(x => x.TrainingProvider, new TrainingProvider { Ukprn = BlockedProviderUkprn })
                                                 .Create();
 
             _mockVacancyRepository.Setup(x => x.GetVacancyAsync(existingVacancy.VacancyReference.Value)).ReturnsAsync(existingVacancy);
@@ -162,13 +161,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
                 VacancySnapshot = new Vacancy()
             });
 
-            _mockBlockedOrganisationQuery.Setup(b => b.GetByOrganisationIdAsync(blockedProviderUkprn.ToString()))
+            _mockBlockedOrganisationQuery.Setup(b => b.GetByOrganisationIdAsync(BlockedProviderUkprn.ToString()))
                 .ReturnsAsync(new BlockedOrganisation { BlockedStatus = BlockedStatus.Blocked });
 
             var command = new ApproveVacancyReviewCommand(_existingReviewId, "comment", new List<ManualQaFieldIndicator>(), new List<Guid>());
 
             await _sut.Handle(command, CancellationToken.None);
-            _dashboardService.Verify(x=>x.ReBuildDashboardAsync(It.IsAny<string>()),Times.Once);
+            _dashboardService.Verify(x=>x.ReBuildDashboardAsync(EmployerAccountId),Times.Once);
             
         }
     }
