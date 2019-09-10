@@ -165,7 +165,8 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 vm.ApplicationMethod = vacancy.ApplicationMethod.Value;
                 vm.ApplicationUrl = vacancy.ApplicationUrl;
                 vm.ClosingDate = vacancy.ClosingDate?.AsGdsDate();
-                vm.EducationLevelName = EducationLevelNumberHelper.GetEducationLevelName(programme.EducationLevelNumber);
+                vm.EducationLevelName =
+                    EducationLevelNumberHelper.GetEducationLevelNameOrDefault(programme.EducationLevelNumber, programme.Level);
                 vm.EmployerContactName = vacancy.EmployerContact?.Name;
                 vm.EmployerContactEmail = vacancy.EmployerContact?.Email;
                 vm.EmployerContactTelephone = vacancy.EmployerContact?.Phone;

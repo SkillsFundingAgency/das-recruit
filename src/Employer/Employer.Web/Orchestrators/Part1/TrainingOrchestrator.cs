@@ -40,7 +40,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
             var vacancy = vacancyTask.Result;
             var programmes = programmesTask.Result;
-            
+
             var vm = new TrainingViewModel
             {
                 VacancyId = vacancy.Id,
@@ -96,7 +96,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 ProgrammeType = programme.ApprenticeshipType.GetDisplayName(),
                 PageInfo = Utility.GetPartOnePageInfo(vacancyTask.Result),
                 TrainingEffectiveToDate = programme.EffectiveTo?.AsGdsDate(),
-                EducationLevelName = EducationLevelNumberHelper.GetEducationLevelName(programme.EducationLevelNumber)
+                EducationLevelName =
+                    EducationLevelNumberHelper.GetEducationLevelNameOrDefault(programme.EducationLevelNumber, programme.Level)
             };
         }
 
