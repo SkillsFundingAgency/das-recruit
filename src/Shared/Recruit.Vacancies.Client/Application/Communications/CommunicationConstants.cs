@@ -41,7 +41,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
             {
                 public const string VacancyReference = "vacancy-reference";
                 public const string VacancyTitle = "vacancy-title";
-                public const string EmployerName = "employer-name";                
+                public const string EmployerName = "employer-name";
             }
 
             public static class ApprenticeshipService
@@ -58,7 +58,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
             public static class Employer
             {
                 public const string EmployerAccountId = nameof(EmployerAccountId);
-                public const string VacanciesTransferredCount = "vacancies-transferred-count";
+                public const string VacanciesTransferredCountText = "vacancies-transferred-count-text";
             }
         }
 

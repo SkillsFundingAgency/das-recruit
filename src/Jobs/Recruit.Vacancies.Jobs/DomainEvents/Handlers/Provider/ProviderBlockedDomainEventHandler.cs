@@ -12,6 +12,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
+using Humanizer;
 using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider
@@ -143,15 +144,17 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider
 
             var employerAccountsWithTransfers = vacancies.Where(v => v.VacancyOwner == OwnerType.Provider).GroupBy(v => v.EmployerAccountId);
 
-            foreach(var employerAccount in employerAccountsWithTransfers)
+            foreach(var employerAccountGroup in employerAccountsWithTransfers)
             {
                 var communicationRequest = new CommunicationRequest(
                     CommunicationConstants.RequestType.ProviderBlockedEmployerNotificationForTransferredVacancies, 
                     CommunicationConstants.ParticipantResolverNames.EmployerParticipantsResolverName, 
                     CommunicationConstants.ServiceName);
-                communicationRequest.DataItems.Add(new CommunicationDataItem(CommunicationConstants.DataItemKeys.Employer.VacanciesTransferredCount, employerAccount.Count().ToString()));
+                var noOfVacancies = employerAccountGroup.Count();
+                var text = "vacancy".ToQuantity(noOfVacancies) + (noOfVacancies == 1 ? " has been transferred" : " have been transferred");
+                communicationRequest.DataItems.Add(new CommunicationDataItem(CommunicationConstants.DataItemKeys.Employer.VacanciesTransferredCountText, text));
                 communicationRequest.AddEntity(CommunicationConstants.EntityTypes.Provider, ukprn);
-                communicationRequest.AddEntity(CommunicationConstants.EntityTypes.Employer, employerAccount.Key);
+                communicationRequest.AddEntity(CommunicationConstants.EntityTypes.Employer, employerAccountGroup.Key);
                 communicationRequest.AddEntity(CommunicationConstants.EntityTypes.ApprenticeshipServiceConfig, null);
 
                 tasks.Add(_communicationQueueService.AddMessageAsync(communicationRequest));
