@@ -11,7 +11,7 @@
 
         <p class="govuk-body">Closed vacancies will no longer be found on the Find an apprenticeship service. An email will be sent to the person that created the vacancy to let them know.</p>
         <form asp-route="@RouteNames.WithdrawVacancy_FindVacancy_Post">
-            <div class="form-group">
+            <div esfa-validation-marker-for="VacancyReference" class="form-group">
                 <label class="govuk-label" asp-for="VacancyReference">Enter vacancy reference number</label>
                 <span class="govuk-hint">For example: 'VAC1000000180'</span>
                 <span esfa-validation-message-for="VacancyReference" class="govuk-error-message"></span>

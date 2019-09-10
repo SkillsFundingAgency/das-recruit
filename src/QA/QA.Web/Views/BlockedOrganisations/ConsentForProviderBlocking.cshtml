@@ -13,7 +13,7 @@
             <li>live vacancies using @Model.Name as the training provider will close</li>
         </ul>
         <form asp-route="@RouteNames.BlockProvider_Consent_Post">
-            <div class="govuk-form-group">
+            <div esfa-validation-marker-for="HasConsent" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-label govuk-!-font-weight-bold"></legend>
                     <span esfa-validation-message-for="HasConsent" class="govuk-error-message"></span>
@@ -23,7 +23,7 @@
                             <label asp-for="HasConsent" class="govuk-label govuk-checkboxes__label">I understand the above and wish to remove this training provider</label>
                         </div>
                         <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="consent-conditional">
-                            <div class="govuk-form-group">
+                            <div esfa-validation-marker-for="Reason" class="govuk-form-group">
                                 <label class="govuk-label" asp-for="Reason">
                                     Why do you want to remove this training provider?
                                 </label>
