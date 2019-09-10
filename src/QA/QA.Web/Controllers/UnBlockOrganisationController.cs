@@ -36,7 +36,7 @@ namespace Esfa.Recruit.QA.Web.Controllers
             {
                 return View(new UnBlockTrainingProviderEditModel() { Ukprn = model.Ukprn, ProviderName = model.ProviderName });
             }
-            TempData[TempDataKeys.BlockProviderUkprnKey] = model.Ukprn;
+            TempData[TempDataKeys.UnBlockedProviderUkprnKey] = model.Ukprn;
             var isBlocked = await _orchestrator.IsProviderAlreadyBlocked(model.Ukprn);
             if (!isBlocked)
             {
@@ -54,9 +54,9 @@ namespace Esfa.Recruit.QA.Web.Controllers
         [HttpGet("unblocking-acknowledgement", Name = RouteNames.UnBlockProvider_Acknowledgement_Get)]
         public async Task<IActionResult> ProviderUnBlockedAcknowledgement()
         {
-            var data = TempData.Peek(TempDataKeys.BlockProviderUkprnKey)?.ToString();
+            var data = TempData.Peek(TempDataKeys.UnBlockedProviderUkprnKey)?.ToString();
             if (long.TryParse(data, out var ukprn) == false) return BadRequest();
-            TempData.Remove(TempDataKeys.BlockProviderUkprnKey);
+            TempData.Remove(TempDataKeys.UnBlockedProviderUkprnKey);
 
             var vm = await _orchestrator.GetAcknowledgementViewModelAsync(ukprn);
             return View(vm);
