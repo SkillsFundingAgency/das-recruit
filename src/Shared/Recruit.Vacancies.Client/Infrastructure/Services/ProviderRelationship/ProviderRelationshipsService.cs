@@ -34,21 +34,18 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
         {
             var providerPermissions = await GetProviderPermissionsAsync(ukprn);
 
-            if (providerPermissions == null)
-                return Array.Empty<EmployerInfo>();
-
             return await GetEmployerInfosAsync(providerPermissions);
         }
 
-        public async Task<bool> ProviderHasPermissionAsync(long ukprn, string accountPublicHashedId, long legalEntityId)
+        public async Task<bool> HasProviderGotEmployersPermissionAsync(long ukprn, string accountPublicHashedId, long legalEntityId)
         {
             var providerPermissions = await GetProviderPermissionsAsync(ukprn);
 
-            var permittedLegalEntities = providerPermissions?.AccountProviderLegalEntities
+            var permittedLegalEntities = providerPermissions.AccountProviderLegalEntities
                 .Where(l => l.AccountPublicHashedId == accountPublicHashedId)
                 .ToList();
 
-            if (permittedLegalEntities == null || permittedLegalEntities.Any() == false)
+            if (permittedLegalEntities.Any() == false)
                 return false;
 
             var accountId = await _employerAccountProvider.GetEmployerAccountPublicHashedIdAsync(permittedLegalEntities.First().AccountId);
@@ -73,14 +70,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
                 try
                 {
                     var response = await httpClient.GetAsync(uri);
-                    if (!response.IsSuccessStatusCode)
+                    if (response.IsSuccessStatusCode)
                     {
-                        _logger.LogError("An invalid response received when trying to get provider relationships");
-                        return null;
+                        var content = await response.Content.ReadAsStringAsync();
+                        var providerPermissions = JsonConvert.DeserializeObject<ProviderPermissions>(content);
+                        return providerPermissions;
                     }
-                    var content = await response.Content.ReadAsStringAsync();
-                    var providerPermissions = JsonConvert.DeserializeObject<ProviderPermissions>(content);
-                    return providerPermissions;
+
+                    _logger.LogError($"An invalid response received when trying to get provider relationships. Status:{response.StatusCode} Reason:{response.ReasonPhrase}");
                 }
                 catch (HttpRequestException ex)
                 {
@@ -91,7 +88,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
                     _logger.LogError(ex, $"Couldn't deserialise {nameof(ProviderPermissions)}.", null);
                 }
 
-                return null;
+                return new ProviderPermissions { AccountProviderLegalEntities = Enumerable.Empty<LegalEntityDto>() };
             }
         }
 

@@ -85,7 +85,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
             return ruleBuilder.CustomAsync(async (trainingProvider, context, cancellationToken) =>
             {
                 if (trainingProvider.Ukprn.HasValue && 
-                    await trainingProviderSummaryProvider.GetAsync(trainingProvider.Ukprn.Value) != null)
+                    (await trainingProviderSummaryProvider.GetAsync(trainingProvider.Ukprn.Value)) != null)
                 return;
 
                 var failure = new ValidationFailure(nameof(Vacancy.TrainingProvider), "The UKPRN is not valid or the associated provider is not active")
@@ -124,7 +124,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
                 if (vacancy.OwnerType != OwnerType.Provider)
                     return;
 
-                var hasPermission = await providerRelationshipService.ProviderHasPermissionAsync(vacancy.TrainingProvider.Ukprn.Value, vacancy.EmployerAccountId, vacancy.LegalEntityId);
+                var hasPermission = await providerRelationshipService.HasProviderGotEmployersPermissionAsync(vacancy.TrainingProvider.Ukprn.Value, vacancy.EmployerAccountId, vacancy.LegalEntityId);
 
                 if (hasPermission)
                     return;

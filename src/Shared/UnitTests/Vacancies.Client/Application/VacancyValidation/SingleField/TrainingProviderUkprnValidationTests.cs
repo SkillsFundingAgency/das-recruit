@@ -133,9 +133,9 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
                 LegalEntityId = legalEntityId
             };
 
-            MockTrainingProviderSummaryProvider.Setup(p => p.GetAsync(12345678)).ReturnsAsync(new TrainingProviderSummary());
+            MockTrainingProviderSummaryProvider.Setup(p => p.GetAsync(ukprn)).ReturnsAsync(new TrainingProviderSummary());
 
-            MockProviderRelationshipsService.Setup(p => p.ProviderHasPermissionAsync(ukprn, employerAccountId, legalEntityId))
+            MockProviderRelationshipsService.Setup(p => p.HasProviderGotEmployersPermissionAsync(ukprn, employerAccountId, legalEntityId))
                 .ReturnsAsync(false);
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProvider);
@@ -164,7 +164,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
 
             MockTrainingProviderSummaryProvider.Setup(p => p.GetAsync(ukprn)).ReturnsAsync(new TrainingProviderSummary());
 
-            MockProviderRelationshipsService.Setup(p => p.ProviderHasPermissionAsync(ukprn, employerAccountId, legalEntityId))
+            MockProviderRelationshipsService.Setup(p => p.HasProviderGotEmployersPermissionAsync(ukprn, employerAccountId, legalEntityId))
                 .ReturnsAsync(true);
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProvider);
