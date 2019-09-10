@@ -11,6 +11,7 @@ namespace Esfa.Recruit.QA.Web.ViewModels.ManageProvider.Validations
                 .WithMessage("Please tick the box to continue");
             RuleFor(m => m.Reason)
                 .NotEmpty()
+                .When(m => m.HasConsent)
                 .WithMessage("Please enter a reason");
         }
     }

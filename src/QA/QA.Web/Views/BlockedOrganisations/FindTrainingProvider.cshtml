@@ -8,7 +8,7 @@
         <h1 class="govuk-heading-xl">Which training provider would you like to remove?</h1>
         <p class="govuk-body">Removing a training provider will prevent them from using the recruitment service.</p>
         <form asp-route="@RouteNames.BlockProvider_Find_Post">
-            <div class="govuk-form-group">
+            <div esfa-validation-marker-for="Ukprn" class="govuk-form-group">
                 <label class="govuk-label" asp-for="Ukprn">
                     Provider UKPRN
                 </label>
@@ -16,7 +16,7 @@
                 <span esfa-validation-message-for="Ukprn" class="govuk-error-message"></span>
                 <input asp-for="Ukprn" type="text" maxlength="8" class="govuk-input govuk-input--width-10">
             </div>
-            <div class="govuk-form-group">
+            <div esfa-validation-marker-for="Postcode" class="govuk-form-group">
                 <label class="govuk-label" asp-for="Postcode">
                     Provider postcode
                     <span class="govuk-hint">
