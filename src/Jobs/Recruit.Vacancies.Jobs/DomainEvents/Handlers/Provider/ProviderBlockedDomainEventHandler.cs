@@ -146,17 +146,8 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider
 
             foreach(var employerAccountGroup in employerAccountsWithTransfers)
             {
-                var communicationRequest = new CommunicationRequest(
-                    CommunicationConstants.RequestType.ProviderBlockedEmployerNotificationForTransferredVacancies, 
-                    CommunicationConstants.ParticipantResolverNames.EmployerParticipantsResolverName, 
-                    CommunicationConstants.ServiceName);
                 var noOfVacancies = employerAccountGroup.Count();
-                var text = "vacancy".ToQuantity(noOfVacancies) + (noOfVacancies == 1 ? " has been transferred" : " have been transferred");
-                communicationRequest.DataItems.Add(new CommunicationDataItem(CommunicationConstants.DataItemKeys.Employer.VacanciesTransferredCountText, text));
-                communicationRequest.AddEntity(CommunicationConstants.EntityTypes.Provider, ukprn);
-                communicationRequest.AddEntity(CommunicationConstants.EntityTypes.Employer, employerAccountGroup.Key);
-                communicationRequest.AddEntity(CommunicationConstants.EntityTypes.ApprenticeshipServiceConfig, null);
-
+                var communicationRequest = CommunicationRequestFactory.GetProviderBlockedEmployerNotificationForTransferredVacanciesRequest(ukprn, employerAccountGroup.Key, noOfVacancies);
                 tasks.Add(_communicationQueueService.AddMessageAsync(communicationRequest));
             }
             return tasks;
@@ -170,14 +161,8 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider
 
             foreach(var employerAccountId in employerAccountWithLiveVacancies)
             {
-                var communicationRequest = new CommunicationRequest(
-                    CommunicationConstants.RequestType.ProviderBlockedEmployerNotificationForLiveVacancies, 
-                    CommunicationConstants.ParticipantResolverNames.EmployerParticipantsResolverName, 
-                    CommunicationConstants.ServiceName);
-                communicationRequest.AddEntity(CommunicationConstants.EntityTypes.Provider, ukprn);
-                communicationRequest.AddEntity(CommunicationConstants.EntityTypes.Employer, employerAccountId);
-                communicationRequest.AddEntity(CommunicationConstants.EntityTypes.ApprenticeshipServiceConfig, null);
-
+                var communicationRequest = CommunicationRequestFactory.GetProviderBlockedEmployerNotificationForLiveVacanciesRequest(ukprn, employerAccountId);
+                
                 tasks.Add(_communicationQueueService.AddMessageAsync(communicationRequest));
             }
 
@@ -192,13 +177,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider
 
             foreach(var employerAccountId in employerIdsWithPermissionOnly)
             {
-                var communicationRequest = new CommunicationRequest(
-                    CommunicationConstants.RequestType.ProviderBlockedEmployerNotificationForPermissionOnly, 
-                    CommunicationConstants.ParticipantResolverNames.EmployerParticipantsResolverName, 
-                    CommunicationConstants.ServiceName);
-                communicationRequest.AddEntity(CommunicationConstants.EntityTypes.Provider, ukprn);
-                communicationRequest.AddEntity(CommunicationConstants.EntityTypes.Employer, employerAccountId);
-                communicationRequest.AddEntity(CommunicationConstants.EntityTypes.ApprenticeshipServiceConfig, null);
+                var communicationRequest = CommunicationRequestFactory.GetProviderBlockedEmployerNotificationForPermissionOnlyRequest(ukprn, employerAccountId);
 
                 tasks.Add(_communicationQueueService.AddMessageAsync(communicationRequest));
             }

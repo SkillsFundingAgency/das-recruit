@@ -4,8 +4,10 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Qa.Web.Exceptions;
 using Esfa.Recruit.Qa.Web.Mappings;
 using Esfa.Recruit.Qa.Web.ViewModels;
+using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
+using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using UnassignedVacancyReviewException = Esfa.Recruit.Qa.Web.Exceptions.UnassignedVacancyReviewException;
 
@@ -15,11 +17,13 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
     {
         private readonly IQaVacancyClient _vacancyClient;
         private readonly ReviewMapper _mapper;
+        private readonly IMessaging _messaging;
 
-        public ReviewOrchestrator(IQaVacancyClient vacancyClient, ReviewMapper mapper)
+        public ReviewOrchestrator(IQaVacancyClient vacancyClient, ReviewMapper mapper, IMessaging messaging)
         {
             _vacancyClient = vacancyClient;
             _mapper = mapper;
+            _messaging = messaging;
         }
 
         public async Task<Guid?> SubmitReviewAsync(ReviewEditModel m, VacancyUser user)
@@ -36,7 +40,8 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             }
             else
             {
-                await _vacancyClient.ApproveVacancyReviewAsync(m.ReviewId, m.ReviewerComment, manualQaFieldIndicators, selectedAutomatedQaRuleOutcomeIds);
+                await _messaging.SendCommandAsync(
+                    new ApproveVacancyReviewCommand(m.ReviewId, m.ReviewerComment, manualQaFieldIndicators, selectedAutomatedQaRuleOutcomeIds));
             }
 
             var nextVacancyReviewId = await AssignNextVacancyReviewAsync(user);

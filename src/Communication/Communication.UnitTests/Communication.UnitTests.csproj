@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Communication.Core\Communication.Core.csproj" />
+    <ProjectReference Include="..\..\Shared\Recruit.Vacancies.Client\Recruit.Vacancies.Client.csproj" />
   </ItemGroup>
 
 </Project>
