@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Esfa.Recruit.Shared.Web.Helpers;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
@@ -20,10 +21,13 @@ namespace Esfa.Recruit.Shared.Web.Extensions
 
         public static ApprenticeshipProgrammeViewModel ToViewModel(this IApprenticeshipProgramme programme)
         {
+            string educationLevelName =
+                EducationLevelNumberHelper.GetEducationLevelNameOrDefault(programme.EducationLevelNumber, programme.Level);
+
             return new ApprenticeshipProgrammeViewModel
             {
                 Id = programme.Id,
-                Name = $"{programme.Title}, Level: {programme.Level}, level {(int)programme.Level} ({programme.ApprenticeshipType.ToString()})"
+                Name = $"{programme.Title}, {educationLevelName}"
             };
         }
     }

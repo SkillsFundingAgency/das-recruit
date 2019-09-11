@@ -1,8 +1,11 @@
-﻿namespace Esfa.Recruit.Shared.Web.Helpers
+﻿using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using MongoDB.Driver;
+
+namespace Esfa.Recruit.Shared.Web.Helpers
 {
     public static class EducationLevelNumberHelper
     {
-        public static string GetEducationLevelName(int? educationLevelNumber)
+        private static string GetEducationLevelName(int? educationLevelNumber)
         {
             if (educationLevelNumber.HasValue)
             {
@@ -29,5 +32,8 @@
             }
             return null;
         }
+
+        public static string GetEducationLevelNameOrDefault(int? educationLevelNumber, ProgrammeLevel level)
+            => GetEducationLevelName(educationLevelNumber) ?? $"Level {(int)level} ({level})";
     }
 }

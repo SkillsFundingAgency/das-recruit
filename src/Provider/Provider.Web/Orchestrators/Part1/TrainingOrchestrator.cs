@@ -88,7 +88,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 ProgrammeType = programme.ApprenticeshipType.GetDisplayName(),
                 PageInfo = Utility.GetPartOnePageInfo(vacancyTask.Result),
                 TrainingEffectiveToDate = programme.EffectiveTo?.AsGdsDate(),
-                EducationLevelName = EducationLevelNumberHelper.GetEducationLevelName(programme.EducationLevelNumber)
+                EducationLevelName =
+                    EducationLevelNumberHelper.GetEducationLevelNameOrDefault(programme.EducationLevelNumber, programme.Level)
             };
         }
 

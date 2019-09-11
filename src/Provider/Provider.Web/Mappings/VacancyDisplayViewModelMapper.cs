@@ -44,7 +44,8 @@ namespace Esfa.Recruit.Provider.Web.Mappings
             vm.CanDelete = vacancy.CanDelete;
             vm.CanSubmit = vacancy.CanSubmit;
             vm.ClosingDate = (vacancy.ClosedDate ?? vacancy.ClosingDate)?.AsGdsDate();
-            vm.EducationLevelName = EducationLevelNumberHelper.GetEducationLevelName(programme.EducationLevelNumber);
+            vm.EducationLevelName =
+                EducationLevelNumberHelper.GetEducationLevelNameOrDefault(programme.EducationLevelNumber, programme.Level);
             vm.EmployerDescription = vacancy.EmployerDescription;
             vm.EmployerName = await _vacancyClient.GetEmployerNameAsync(vacancy);
             vm.EmployerWebsiteUrl = vacancy.EmployerWebsiteUrl;
