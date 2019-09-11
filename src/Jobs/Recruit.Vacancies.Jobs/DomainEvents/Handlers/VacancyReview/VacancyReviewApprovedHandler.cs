@@ -1,6 +1,8 @@
 using System;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
+using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.Extensions.Logging;
 
@@ -9,12 +11,13 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.VacancyReview
     public class VacancyReviewApprovedHandler : DomainEventHandler, IDomainEventHandler<VacancyReviewApprovedEvent>
     {
         private readonly ILogger<VacancyReviewApprovedHandler> _logger;
-        private readonly IJobsVacancyClient _client;
+        private readonly IMessaging _messaging;
 
-        public VacancyReviewApprovedHandler(ILogger<VacancyReviewApprovedHandler> logger, IJobsVacancyClient client) : base(logger)
+        public VacancyReviewApprovedHandler(ILogger<VacancyReviewApprovedHandler> logger, IMessaging messaging) 
+            : base(logger)
         {
             _logger = logger;
-            _client = client;
+            _messaging = messaging;
         }
 
         public async Task HandleAsync(string eventPayload)
@@ -25,7 +28,10 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.VacancyReview
             {
                 _logger.LogInformation($"Processing {nameof(VacancyReviewApprovedEvent)} for review: {{ReviewId}} vacancy: {{VacancyReference}}", @event.ReviewId, @event.VacancyReference);
                 
-                await _client.ApproveVacancy(@event.VacancyReference);
+                await _messaging.SendCommandAsync(new ApproveVacancyCommand
+                {
+                    VacancyReference = @event.VacancyReference
+                });
 
                 _logger.LogInformation($"Finished Processing {nameof(VacancyReviewApprovedEvent)} for review: {{ReviewId}} vacancy: {{VacancyReference}}", @event.ReviewId, @event.VacancyReference);
             }

@@ -379,14 +379,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             await _messaging.SendCommandAsync(command);
         }
 
-        public async Task ApproveVacancy(long vacancyReference)
-        {
-            await _messaging.SendCommandAsync(new ApproveVacancyCommand
-            {
-                VacancyReference = vacancyReference
-            });
-        }
-
         public Task ReferVacancyAsync(long vacancyReference)
         {
             return _messaging.SendCommandAsync(new ReferVacancyCommand
