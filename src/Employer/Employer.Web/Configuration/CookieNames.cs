@@ -14,5 +14,6 @@ namespace Esfa.Recruit.Employer.Web.Configuration
         public const string VacancyEmployerInfo = "vacancy-employer-info";
         public const string DashboardFilter = "dashboard-filter";
         public const string EmployerAccountType = "employer-account-type";
+        public const string HasSeenCloningMethodIsChangingMessage = "has-seen-cloning-method-is-changing-message";
     }
 }

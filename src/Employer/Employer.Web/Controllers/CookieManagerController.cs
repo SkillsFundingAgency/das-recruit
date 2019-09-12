@@ -3,6 +3,7 @@ using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
@@ -20,12 +21,25 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         }
 
         [HttpPost("dismiss-outage-message", Name = RouteNames.DismissOutageMessage_Post)]
-        public IActionResult DismissOutageMessage([FromForm]string returnUrl)
+        public IActionResult DismissOutageMessage([FromForm]string returnUrl) => 
+            DismissMessage(
+                returnUrl: returnUrl,
+                cookieName: CookieNames.SeenOutageMessage,
+                cookieOptions: EsfaCookieOptions.GetSingleDayLifetimeHttpCookieOption(_hostingEnvironment, _timeProvider));
+
+        [HttpPost("dismiss-cloning-method-changing-message", Name = RouteNames.DismissCloningMethodChangingMessage_Post)]
+        public IActionResult DismissCloningMethodChangingMessage([FromForm]string returnUrl) =>
+            DismissMessage(
+                returnUrl: returnUrl,
+                cookieName: CookieNames.HasSeenCloningMethodIsChangingMessage,
+                cookieOptions: EsfaCookieOptions.GetTenYearHttpCookieOption(_hostingEnvironment));
+
+        private IActionResult DismissMessage(string returnUrl, string cookieName, CookieOptions cookieOptions)
         {
             const string SeenCookieValue = "1";
 
-            if (!Request.Cookies.ContainsKey(CookieNames.SeenOutageMessage))
-                Response.Cookies.Append(CookieNames.SeenOutageMessage, SeenCookieValue, EsfaCookieOptions.GetSingleDayLifetimeHttpCookieOption(_hostingEnvironment, _timeProvider));
+            if (!Request.Cookies.ContainsKey(cookieName))
+                Response.Cookies.Append(cookieName, SeenCookieValue, cookieOptions);
 
             if (IsValidReturnUrl(returnUrl))
                 return Redirect(returnUrl);
