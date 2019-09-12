@@ -8,14 +8,6 @@ namespace Esfa.Recruit.UnitTests.Employer.Web.Orchestrators.CloneVacancyOrchestr
     public class IsNewDatesRequiredTests : CloneVacancyOrchestratorTestBase
     {
         [Fact]
-        public void WhenStatusIsClosed_ThenReturnTrue()
-        {
-            var sut = GetSut(SourceVacancy);
-            var vacancy = new Vacancy{Status = VacancyStatus.Closed};
-            sut.IsNewDatesRequired(vacancy).Should().BeTrue();
-        }
-
-        [Fact]
         public void WhenStatusIsLiveAndDatesAreInFuture_ThenReturnFalse()
         {
             var sut = GetSut(SourceVacancy);

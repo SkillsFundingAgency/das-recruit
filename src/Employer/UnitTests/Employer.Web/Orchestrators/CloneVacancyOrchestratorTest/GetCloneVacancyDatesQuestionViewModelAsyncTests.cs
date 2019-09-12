@@ -11,17 +11,6 @@ namespace Esfa.Recruit.UnitTests.Employer.Web.Orchestrators.CloneVacancyOrchestr
     public class GetCloneVacancyDatesQuestionViewModelAsyncTests : CloneVacancyOrchestratorTestBase
     {
         [Fact]
-        public async Task WhenStatusIsClosed_ThenThrowInvalidStateException()
-        {
-            var vacancy = SourceVacancy;
-            vacancy.Status = VacancyStatus.Closed;
-
-            var sut = GetSut(vacancy);
-
-            await Assert.ThrowsAsync<InvalidStateException>(() => sut.GetCloneVacancyDatesQuestionViewModelAsync(VRM));
-        }
-
-        [Fact]
         public async Task WhenClosingDateIsInPast_ThenThrowInvalidStateException()
         {
             var vacancy = SourceVacancy;
