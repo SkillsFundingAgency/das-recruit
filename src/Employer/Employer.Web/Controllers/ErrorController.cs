@@ -1,6 +1,7 @@
 ﻿using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Exceptions;
+using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Error;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
@@ -96,6 +97,11 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                     return RedirectToRoute(RouteNames.BlockedEmployer_Get, new { EmployerAccountId = employerAccountId });
                 }
 
+                if(exception is ApplicationWithdrawnException withdrawnException)
+                {
+                    return ApplicationWithdrawn(employerAccountId.ToString(), withdrawnException);
+                }
+
                 _logger.LogError(exception, "Unhandled exception on path: {route}", routeWhereExceptionOccurred);
             }
 
@@ -113,6 +119,19 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         {
             Response.StatusCode = (int)HttpStatusCode.NotFound;
             return View(ViewNames.PageNotFound);
+        }
+
+        private IActionResult ApplicationWithdrawn(string employerAccountId, ApplicationWithdrawnException exception)
+        {
+            _logger.LogInformation(exception.Message);
+            Response.StatusCode = (int)HttpStatusCode.NotFound;
+            var returnLink = Url.RouteUrl(RouteNames.VacancyManage_Get, new VacancyRouteModel
+            {
+                EmployerAccountId = employerAccountId,
+                VacancyId = exception.VacancyId
+            });
+
+            return View(ViewNames.ApplicationWithdrawn, returnLink);
         }
 
         // Blocked employer url required for analytics reasons
