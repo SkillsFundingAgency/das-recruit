@@ -116,68 +116,65 @@
                 </div>
             </div>
         </div>
-        <div class="govuk-grid-column-one-third">
-            <div class="das-card @GetCardStatus(Model.NoOfNewApplications)">
-                <div class="das-card--content">
-                    <h3 class="govuk-heading-m das-card--heading">
-                        <span class="das-card--stat">@Model.NoOfNewApplications</span>
-                        <a asp-show="@Model.HasNewApplications" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.NewApplications" class="govuk-link">
-                            New @Model.ApplicationTextLive
-                        </a>
-                        <span asp-hide="@Model.HasNewApplications">New @Model.ApplicationTextLive</span>
-                    </h3>
-                    <span class="govuk-body das-card--description">Applications from Find an apprenticeship service.</span>
-                    <ul class="das-card--tasks govuk-list" asp-show="@Model.ShowAllApplications">
-                        <li>
-                            <a class="govuk-link ga-track-anchor-click" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.AllApplications" data-ga-event-category="link - click">
-                                View all applications
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+    </form>
+    <div asp-show="@Model.HasVacancies" class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <h3 class="govuk-heading-m">
+                @Model.ResultsHeading <a asp-show="@Model.IsFiltered" asp-route="@RouteNames.Dashboard_Index_Get" asp-route-filter="All" class="govuk-!-font-weight-regular govuk-link govuk-!-font-size-19">Show all vacancies</a>
+            </h3>
+            <p asp-hide="@Model.ShowResultsTable" class="govuk-body">No vacancies match the criteria</p>
         </div>
-        <div class="govuk-grid-column-one-third">
-            <div class="das-card @GetCardStatus(Model.VacancyCountClosed)">
-                <div class="das-card--content">
-                    <h3 class="govuk-heading-m das-card--heading">
-                        <span class="das-card--stat">@Model.VacancyCountClosed</span>
-                        <a asp-show="@Model.HasClosedVacancy" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Closed" class="govuk-link">
-                            @FilteringOptions.Closed @Model.VacancyTextClosed
-                        </a>
-                        <span asp-hide="@Model.HasClosedVacancy">@FilteringOptions.Closed @Model.VacancyTextClosed</span>
-                    </h3>
-                    <span class="govuk-body das-card--description">Vacancies that have passed the closing date. You can clone these vacancies to republish them.</span>
-                </div>
+    </div>
+    <div asp-show="@Model.ShowResultsTable">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                <table class="govuk-table responsive das-table--small">
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th class="govuk-table__header">Vacancy title</th>
+                            <th class="govuk-table__header">Vacancy ref</th>
+                            <th class="govuk-table__header">Applications</th>
+                            <th class="govuk-table__header">Closing</th>
+                            <th class="govuk-table__header">Status</th>
+                            <th class="govuk-table__header"></th>
+                        </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                        @foreach (var vacancy in Model.Vacancies)
+                        {
+                            <tr class="govuk-table__row">
+                                <td class="govuk-table__cell" data-label="Vacancy title">
+                                    <div>
+                                        @vacancy.Title
+                                        <div asp-show="@vacancy.IsTransferred">
+                                            <span class="tag tag-transferred">Transferred</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="govuk-table__cell" data-label="Vacancy ref">
+                                    <span asp-show="@vacancy.HasVacancyReference"><span>VAC</span>@vacancy.VacancyReference</span>
+                                    <span asp-show="@vacancy.HasNoVacancyReference">Not available</span>
+                                </td>
+                                <td asp-show="@vacancy.CanShowVacancyApplicationsCount" class="govuk-table__cell dashboard-applications" data-label="Applications">
+                                    <span asp-show="@vacancy.HasNoApplications">0</span>
+                                    <span asp-show="@vacancy.HasApplications">@vacancy.NoOfApplications</span>
+                                    <span asp-show="@vacancy.HasNewApplications" class="govuk-!-font-weight-bold"> (@vacancy.NoOfNewApplications new)</span>
+                                </td>
+                                <td asp-hide="@vacancy.CanShowVacancyApplicationsCount" class="govuk-table__cell dashboard-applications" data-label="Applications">-</td>
+                                <td class="govuk-table__cell dashboard-closingdate" data-label="Closing date"><span>@vacancy.ClosingDate?.AsGdsDate()</span></td>
+                                <td class="govuk-table__cell dashboard-status" data-label="Status"><span class="tag tag-@vacancy.Status.ToString().ToLower()">@vacancy.Status.GetDisplayName()</span></td>
+                                <td class="govuk-table__cell dashboard-action" data-label="Action">
+                                    <a asp-show="@vacancy.IsNotSubmittable" asp-route="@RouteNames.VacancyManage_Get" asp-route-vacancyId="@vacancy.Id" class="govuk-link">Manage</a>
+                                    <a asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.DisplayVacancy_Get" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy)</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <partial name="@PartialNames.Pager" model="@Model.Pager" />
             </div>
         </div>
     </div>
-    <div class="govuk-grid-row">
-        <div asp-show="@Model.HasOneVacancy" class="govuk-grid-column-full">
-            <a asp-route="@RouteNames.VacancyManage_Get" asp-route-vacancyId="@Model.CurrentVacancyId" class="govuk-link govuk-!-font-size-24 govuk-!-font-weight-bold govuk-link--no-visited-state" name="button">
-                View your vacancy
-            </a>
-        </div>
-        <div asp-hide="@Model.HasOneVacancy" class="govuk-grid-column-full">
-            <a asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.All" class="govuk-link govuk-!-font-size-24 govuk-!-font-weight-bold govuk-link--no-visited-state" name="button">
-                View all your vacancies (@Model.Vacancies.Count)
-            </a>
-        </div>
-
-        <div class="govuk-grid-column-full">
-            <hr class="govuk-grid-column-full govuk-section-break govuk-section-break--xl govuk-section-break--visible" />
-        </div>
-
-        <esfaFeatureEnabled name="@FeatureNames.SetNotificationPreferences">
-            <div class="govuk-grid-column-one-third">
-                <h3 class="govuk-heading-s">
-                        
-                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.ManageNotifications_Get">Manage your recruitment emails</a>
-                </h3>
-                <p class="govuk-body">Set up and manage the emails you’re sent about your vacancies and applications</p>
-            </div>
-        </esfaFeatureEnabled>
-        </div>
 </div>
 
 @section FooterJS
