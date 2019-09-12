@@ -22,13 +22,18 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 }
             },
             {
+                '$match': { 
+                    '$or': [
+                    { 'candidateApplicationReview.isWithdrawn': {'$exists' : false} }, 
+                    { 'candidateApplicationReview.isWithdrawn': false }] }
+            },
+            {
                 '$project': {
                     'vacancyGuid': '$_id',
                     'vacancyReference': 1,
                     'title': 1,
                     'status': 1,
                     'appStatus': '$candidateApplicationReview.status',
-                    'appIsWithdrawn': '$candidateApplicationReview.isWithdrawn',
                     'legalEntityId': 1,
                     'legalEntityName': 1,
                     'employerAccountId': 1,
@@ -77,36 +82,21 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     'trainingProviderName': 1,
                     'isNew': {
                         '$cond': {
-                            'if': {
-                                '$and': [
-                                    {'$eq': [ '$appStatus', 'New']},
-                                    {'$eq': [ '$appIsWithdrawn', false]}
-                                ]
-                            },
+                            'if': {'$eq': [ '$appStatus', 'New']},
                             'then': 1,
                             'else': 0
                         }
                     },
                     'isSuccessful': {
                         '$cond': {
-                            'if': {
-                                '$and': [
-                                    {'$eq': [ '$appStatus', 'Successful']},
-                                    {'$eq': [ '$appIsWithdrawn', false]}
-                                ]
-                            },
+                            'if': {'$eq': [ '$appStatus', 'Successful']},
                             'then': 1,
                             'else': 0
                         }
                     },
                     'isUnsuccessful': {
                         '$cond': {
-                            'if': {
-                                '$and': [
-                                    {'$eq': [ '$appStatus', 'Unsuccessful']},
-                                    {'$eq': [ '$appIsWithdrawn', false]}
-                                ]
-                            },
+                            'if': {'$eq': [ '$appStatus', 'Unsuccessful']},
                             'then': 1,
                             'else': 0
                         }
