@@ -13,19 +13,19 @@ using Newtonsoft.Json;
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
     [Route(RoutePaths.AccountRoutePath)]
-    public class DashboardController : Controller
+    public class VacanciesController : Controller
     {
-        private readonly DashboardOrchestrator _orchestrator;
+        private readonly VacanciesOrchestrator _orchestrator;
         private readonly IHostingEnvironment _hostingEnvironment;
 
-        public DashboardController(DashboardOrchestrator orchestrator, IHostingEnvironment hostingEnvironment)
+        public VacanciesController(VacanciesOrchestrator orchestrator, IHostingEnvironment hostingEnvironment)
         {
             _orchestrator = orchestrator;
             _hostingEnvironment = hostingEnvironment;
         }
 
-        [HttpGet("", Name = RouteNames.Dashboard_Index_Get)]
-        public async Task<IActionResult> Dashboard([FromRoute] string employerAccountId, [FromQuery] string filter, [FromQuery] int page = 1, [FromQuery] string searchTerm = "")
+        [HttpGet("", Name = RouteNames.Vacancies_Get)]
+        public async Task<IActionResult> Vacancies([FromRoute] string employerAccountId, [FromQuery] string filter, [FromQuery] int page = 1, [FromQuery] string searchTerm = "")
         {
             if (string.IsNullOrWhiteSpace(filter) && string.IsNullOrWhiteSpace(searchTerm))
                 TryGetFiltersFromCookie(out filter, out searchTerm);
@@ -87,7 +87,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 await _orchestrator.DismissAlert(User.ToVacancyUser(), alertTypeEnum);
             }
 
-            return RedirectToRoute(RouteNames.Dashboard_Index_Get);
+            return RedirectToRoute(RouteNames.Dashboard_Get);
         }
     }
 }

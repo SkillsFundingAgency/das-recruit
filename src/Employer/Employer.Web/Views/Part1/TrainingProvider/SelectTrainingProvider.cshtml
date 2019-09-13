@@ -86,7 +86,7 @@
                 <input type="hidden" name="@nameof(SelectTrainingProviderEditModel.SelectionType)" id="selection-type" value="@TrainingProviderSelectionType.Ukprn" />
                 <input type="submit" value="Continue" esfa-automation="btn-continue" class="govuk-button" />
 
-                <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Index_Get" class="govuk-link das-button-link" esfa-automation="cancel-link">Cancel</a>
+                <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link das-button-link" esfa-automation="cancel-link">Cancel</a>
                 <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.TrainingProviderSection" class="govuk-link das-button-link" esfa-automation="cancel-link">Cancel</a>
             </div>
         </form>

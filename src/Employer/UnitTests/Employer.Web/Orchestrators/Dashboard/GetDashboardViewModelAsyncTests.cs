@@ -114,7 +114,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Dashboard
         }
 
 
-        private DashboardOrchestrator GetOrchestrator(List<VacancySummary> vacancies)
+        private VacanciesOrchestrator GetOrchestrator(List<VacancySummary> vacancies)
         {
             var timeProviderMock = new Mock<ITimeProvider>();
 
@@ -128,7 +128,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Dashboard
             var recruitClientMock = new Mock<IRecruitVacancyClient>();
             recruitClientMock.Setup(c => c.GetUsersDetailsAsync(It.IsAny<string>())).ReturnsAsync(new User());
 
-            return new DashboardOrchestrator(clientMock.Object, timeProviderMock.Object, recruitClientMock.Object, new AlertViewModelService());
+            return new VacanciesOrchestrator(clientMock.Object, timeProviderMock.Object, recruitClientMock.Object, new AlertViewModelService());
         }
     }
 }

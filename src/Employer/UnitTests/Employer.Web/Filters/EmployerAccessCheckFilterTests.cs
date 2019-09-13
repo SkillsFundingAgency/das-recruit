@@ -209,7 +209,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Filters
             _next.Verify(x => x(), Times.Never);
             _actionExecutingContext.Result.Should()
                 .Match<RedirectToRouteResult>(x =>
-                    x.RouteName == RouteNames.Dashboard_Index_Get
+                    x.RouteName == RouteNames.Dashboard_Get
                     && (string)x.RouteValues["employerAccountId"] == "EMPLOYERID"
                 );
         }
@@ -254,7 +254,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Filters
             _next.Verify(x => x(), Times.Never);
             _actionExecutingContext.Result.Should()
                 .Match<RedirectToRouteResult>(x =>
-                    x.RouteName == RouteNames.Dashboard_Index_Get
+                    x.RouteName == RouteNames.Dashboard_Get
                     && (string)x.RouteValues["employerAccountId"] == "EMPLOYERID"
                 );
         }
@@ -266,7 +266,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Filters
             _levyDeclarationCookieWriter
                 .Setup(x => x.GetCookieFromRequest(It.IsAny<HttpContext>()))
                 .Returns("USERID/EMPLOYERID/True");
-            _controllerActionDescriptor.ControllerTypeInfo = typeof(DashboardController).GetTypeInfo();
+            _controllerActionDescriptor.ControllerTypeInfo = typeof(VacanciesController).GetTypeInfo();
 
             await _sut.OnActionExecutionAsync(_actionExecutingContext, _next.Object);
 
@@ -298,7 +298,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Filters
             _next.Verify(x => x(), Times.Never);
             _actionExecutingContext.Result.Should()
                 .Match<RedirectToRouteResult>(x =>
-                    x.RouteName == RouteNames.Dashboard_Index_Get
+                    x.RouteName == RouteNames.Dashboard_Get
                     && (string)x.RouteValues["employerAccountId"] == "EMPLOYERID"
                 );
         }
@@ -328,7 +328,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Filters
             _httpContext.SetupGet(x => x.User).Returns(_user);
 
             _controllerActionDescriptor = new ControllerActionDescriptor();
-            _controllerActionDescriptor.ControllerTypeInfo = typeof(DashboardController).GetTypeInfo();
+            _controllerActionDescriptor.ControllerTypeInfo = typeof(VacanciesController).GetTypeInfo();
 
             _actionContext = new ActionContext(
                 _httpContext.Object,

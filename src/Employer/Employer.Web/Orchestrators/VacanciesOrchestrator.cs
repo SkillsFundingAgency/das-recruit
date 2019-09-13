@@ -4,7 +4,6 @@ using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
-using Esfa.Recruit.Employer.Web.ViewModels.Dashboard;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.Services;
@@ -13,10 +12,12 @@ using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using Humanizer;
+using Esfa.Recruit.Employer.Web.ViewModels.Vacancies;
+using Esfa.Recruit.Employer.Web.ViewModels;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
-    public class DashboardOrchestrator
+    public class VacanciesOrchestrator
     {
         private const int VacanciesPerPage = 25;
         private readonly ITimeProvider _timeProvider;
@@ -25,7 +26,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         private readonly IRecruitVacancyClient _client;
         private readonly AlertViewModelService _alertViewModelService;
 
-        public DashboardOrchestrator(IEmployerVacancyClient vacancyClient, ITimeProvider timeProvider, IRecruitVacancyClient client, AlertViewModelService alertViewModelService)
+        public VacanciesOrchestrator(IEmployerVacancyClient vacancyClient, ITimeProvider timeProvider, IRecruitVacancyClient client, AlertViewModelService alertViewModelService)
         {
             _vacancyClient = vacancyClient;
             _timeProvider = timeProvider;
@@ -33,7 +34,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             _alertViewModelService = alertViewModelService;
         }
 
-        public async Task<DashboardViewModel> GetDashboardViewModelAsync(string employerAccountId, string filter, int page, VacancyUser user, string searchTerm)
+        public async Task<VacanciesViewModel> GetDashboardViewModelAsync(string employerAccountId, string filter, int page, VacancyUser user, string searchTerm)
         {
             var vacanciesTask = GetVacanciesAsync(employerAccountId);
             var userDetailsTask = _client.GetUsersDetailsAsync(user.UserId);
@@ -64,14 +65,15 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 VacanciesPerPage,
                 page,
                 "Showing {0} to {1} of {2} vacancies",
-                RouteNames.Dashboard_Index_Get,
+                RouteNames.Vacancies_Get,
                 new Dictionary<string, string>
                 {
                     {"filter", filteringOption.ToString()},
                     {"searchTerm", searchTerm}
                 });
             
-            var vm = new DashboardViewModel {
+            var vm = new VacanciesViewModel
+            {
                 Vacancies = vacanciesVm,
                 Pager = pager,
                 Filter = filteringOption,

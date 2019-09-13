@@ -163,7 +163,7 @@ namespace Esfa.Recruit.Employer.Web.Filters
             // Don't allow Levy pages if Levy is already declared
             if (requestIsForALevyPage)
             {
-                context.Result = new RedirectToRouteResult(RouteNames.Dashboard_Index_Get, new { employerAccountId });
+                context.Result = new RedirectToRouteResult(RouteNames.Dashboard_Get, new { employerAccountId });
                 return true;
             }
 
@@ -196,7 +196,7 @@ namespace Esfa.Recruit.Employer.Web.Filters
                 // Why redirect to the dashboard?
                 if (hasEoi)
                 {
-                    context.Result = new RedirectToRouteResult(RouteNames.Dashboard_Index_Get, new { employerAccountId });
+                    context.Result = new RedirectToRouteResult(RouteNames.Dashboard_Get, new { employerAccountId });
                     return true;
                 }
             }

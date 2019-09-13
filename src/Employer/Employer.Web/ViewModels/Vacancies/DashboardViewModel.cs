@@ -3,9 +3,9 @@ using System.Linq;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
-namespace Esfa.Recruit.Employer.Web.ViewModels.Dashboard
+namespace Esfa.Recruit.Employer.Web.ViewModels.Vacancies
 {
-    public class DashboardViewModel
+    public class VacanciesViewModel
     {
         public IList<VacancySummaryViewModel> Vacancies { get; internal set; }
         public string WarningMessage { get; internal set; }

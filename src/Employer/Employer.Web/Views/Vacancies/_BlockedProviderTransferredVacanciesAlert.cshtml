@@ -5,7 +5,7 @@
     <div class="govuk-grid-column-full">
         <div class="info-summary">
             <p class="govuk-body">
-                <a asp-route="@RouteNames.Dashboard_Index_Get" asp-route-filter="@FilteringOptions.Transferred" class="govuk-link">@Model.CountCaption</a> from
+                <a asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Transferred" class="govuk-link">@Model.CountCaption</a> from
                 <span class="govuk-!-font-weight-bold">@Model.ProviderNamesCaption</span>
                 <span asp-hide="@Model.HasTransfersFromMultipleProviders">because it is no longer able to manage or recruit apprentices.</span>
                 <span asp-show="@Model.HasTransfersFromMultipleProviders">because they are no longer able to manage or recruit apprentices.</span>
