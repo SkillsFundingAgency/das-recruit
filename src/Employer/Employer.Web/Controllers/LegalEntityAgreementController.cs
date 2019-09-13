@@ -41,7 +41,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             if(vm.HasLegalEntityAgreement == false)
                 return View(vm);
 
-            return RedirectToRoute(RouteNames.Dashboard_Index_Get);
+            return RedirectToRoute(RouteNames.Dashboard_Get);
         }
     }
 }

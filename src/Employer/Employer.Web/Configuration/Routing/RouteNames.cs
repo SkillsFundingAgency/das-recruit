@@ -12,6 +12,8 @@
         public const string Considerations_Get = "Considerations_Get";
         public const string Considerations_Post = "Considerations_Post";
 
+        public const string Dashboard_Get = "Dashboard_Get";
+
         public const string Dashboard_Index_Get = "Dashboard_Index_Get";
         public const string Dashboard_ChangePassword = "Dashboard_ChangePassword";
         public const string Dashboard_ChangeEmail = "Dashboard_ChangeEmail";
