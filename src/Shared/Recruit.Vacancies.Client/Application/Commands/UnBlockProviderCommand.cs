@@ -5,16 +5,16 @@ using MediatR;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Commands
 {
-    public class UnBlockProviderCommand : ICommand, IRequest
+    public class UnblockProviderCommand : ICommand, IRequest
     {
         public long Ukprn { get; private set; }
         public VacancyUser QaVacancyUser { get; private set; }
-        public DateTime UnBlockedDate { get; private set; }
-        public UnBlockProviderCommand(long ukprn, VacancyUser qaVacancyUser, DateTime unBlockedDate)
+        public DateTime UnblockedDate { get; private set; }
+        public UnblockProviderCommand(long ukprn, VacancyUser qaVacancyUser, DateTime unblockedDate)
         {
             Ukprn = ukprn;
             QaVacancyUser = qaVacancyUser;
-            UnBlockedDate = unBlockedDate;
+            UnblockedDate = unblockedDate;
         }
     }
 }

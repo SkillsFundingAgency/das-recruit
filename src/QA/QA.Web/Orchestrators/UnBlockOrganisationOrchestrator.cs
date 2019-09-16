@@ -44,7 +44,7 @@ namespace Esfa.Recruit.QA.Web.Orchestrators
 
         public Task UnblockProviderAsync(long ukprn, VacancyUser user)
         {
-            var command = new UnBlockProviderCommand(ukprn, user, _timeProvider.Now);
+            var command = new UnblockProviderCommand(ukprn, user, _timeProvider.Now);
             return _messaging.SendCommandAsync(command);
         }
 

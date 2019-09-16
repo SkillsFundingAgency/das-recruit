@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class UnBlockProviderCommandHandler : IRequestHandler<UnBlockProviderCommand>
+    public class UnBlockProviderCommandHandler : IRequestHandler<UnblockProviderCommand>
     {
         private readonly ILogger<UnBlockProviderCommandHandler> _logger;
         private readonly IBlockedOrganisationQuery _blockedOrganisationQuery;
@@ -28,7 +28,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _messaging = messaging;
         }
         
-        public async Task Handle(UnBlockProviderCommand message, CancellationToken cancellationToken)
+        public async Task Handle(UnblockProviderCommand message, CancellationToken cancellationToken)
         {
             var blockedOrg = await _blockedOrganisationQuery.GetByOrganisationIdAsync(message.Ukprn.ToString());
             if (blockedOrg?.BlockedStatus == BlockedStatus.Blocked)
@@ -39,13 +39,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 await _messaging.PublishEvent(new ProviderBlockedEvent()
                 {
                     Ukprn = message.Ukprn,
-                    BlockedDate = message.UnBlockedDate,
+                    BlockedDate = message.UnblockedDate,
                     QaVacancyUser = message.QaVacancyUser
                 });
             }
         }
 
-        private static BlockedOrganisation ConvertToBlockedOrganisation(UnBlockProviderCommand message)
+        private static BlockedOrganisation ConvertToBlockedOrganisation(UnblockProviderCommand message)
         {
             return new BlockedOrganisation()
             {
@@ -53,7 +53,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 OrganisationType = OrganisationType.Provider,
                 OrganisationId = message.Ukprn.ToString(),
                 UpdatedByUser = message.QaVacancyUser,
-                UpdatedDate = message.UnBlockedDate,
+                UpdatedDate = message.UnblockedDate
             };
         }
     }
