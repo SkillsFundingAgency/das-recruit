@@ -9,13 +9,13 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 
 namespace Esfa.Recruit.QA.Web.Orchestrators
 {
-    public class UnBlockOrganisationOrchestrator
+    public class UnblockOrganisationOrchestrator
     {
         private readonly IBlockedOrganisationQuery _blockedOrganisationQuery;
         private readonly IMessaging _messaging;
         private readonly ITimeProvider _timeProvider;
         private readonly ITrainingProviderService _trainingProviderService;
-        public UnBlockOrganisationOrchestrator(
+        public UnblockOrganisationOrchestrator(
             IBlockedOrganisationQuery blockedOrganisationQuery,
             IMessaging messaging, ITimeProvider timeProvider, ITrainingProviderService trainingProviderService)
         {
@@ -25,11 +25,11 @@ namespace Esfa.Recruit.QA.Web.Orchestrators
             _trainingProviderService = trainingProviderService;
         }
 
-        public async Task<ProviderUnBlockedAcknowledgementViewModel> GetAcknowledgementViewModelAsync(long ukprn)
+        public async Task<ProviderUnblockedAcknowledgementViewModel> GetAcknowledgementViewModelAsync(long ukprn)
         {
             var providerDetail = await _trainingProviderService.GetProviderAsync(ukprn);
 
-            return new ProviderUnBlockedAcknowledgementViewModel
+            return new ProviderUnblockedAcknowledgementViewModel
             {
                 Name = providerDetail.Name,
                 Ukprn = ukprn
@@ -42,16 +42,25 @@ namespace Esfa.Recruit.QA.Web.Orchestrators
             return blockedOrganisation?.BlockedStatus == BlockedStatus.Blocked;
         }
 
-        public Task UnBlockProviderAsync(long ukprn, VacancyUser user)
+        public Task UnblockProviderAsync(long ukprn, VacancyUser user)
         {
             var command = new UnBlockProviderCommand(ukprn, user, _timeProvider.Now);
             return _messaging.SendCommandAsync(command);
         }
 
-        public async Task<UnBlockTrainingProviderEditModel> GetBlockedOrganisationViewModel(long ukprn)
+        public async Task<ConfirmTrainingProviderUnblockingEditModel> GetConfirmTrainingProviderUnblockingViewModel(long ukprn)
         {
             var provider = await _trainingProviderService.GetProviderAsync(ukprn);
-            return new UnBlockTrainingProviderEditModel { Ukprn = ukprn, ProviderName = provider.Name };
+            return ConvertToConfirmViewModel(provider);
+        }
+
+        private ConfirmTrainingProviderUnblockingEditModel ConvertToConfirmViewModel(TrainingProvider provider)
+        {
+            return new ConfirmTrainingProviderUnblockingEditModel
+            {
+                Ukprn = provider.Ukprn.GetValueOrDefault(),
+                ProviderName = provider.Name
+            };
         }
     }
 }

@@ -1,6 +1,6 @@
 namespace Esfa.Recruit.QA.Web.ViewModels.ManageProvider
 {
-    public class UnBlockTrainingProviderEditModel
+    public class ConfirmTrainingProviderUnblockingEditModel
     {
         public long Ukprn { get; set; }
         public string ProviderName { get; set; }
