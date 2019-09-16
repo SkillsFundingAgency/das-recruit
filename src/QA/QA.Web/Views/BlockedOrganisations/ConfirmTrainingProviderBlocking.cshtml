@@ -12,7 +12,7 @@
             </p>
             <p class="govuk-body govuk-!-margin-top-0">UKPRN: @Model.Ukprn</p>
             <div asp-show="@Model.ShowPermissionsMessage">
-                <p class="govuk-body">@Model.EmployerText given @Model.Name permission to recruit apprentices. Removing this provider will mean they will no longer be able to create or manage vacancies on behalf of employers.</p>
+                <p class="govuk-body">@Model.EmployerText given @Model.Name permission to recruit apprentices.</p>
             </div>
             <p class="govuk-body">
                 <a asp-route="@RouteNames.BlockProvider_Find_Get" class="govuk-link">Search again</a>
