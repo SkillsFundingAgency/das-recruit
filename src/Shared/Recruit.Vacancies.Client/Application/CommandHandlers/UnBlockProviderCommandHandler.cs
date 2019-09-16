@@ -10,14 +10,14 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class UnBlockProviderCommandHandler : IRequestHandler<UnblockProviderCommand>
+    public class UnblockProviderCommandHandler : IRequestHandler<UnblockProviderCommand>
     {
-        private readonly ILogger<UnBlockProviderCommandHandler> _logger;
+        private readonly ILogger<UnblockProviderCommandHandler> _logger;
         private readonly IBlockedOrganisationQuery _blockedOrganisationQuery;
         private readonly IBlockedOrganisationRepository _blockedOrganisationRepository;
         private readonly IMessaging _messaging;
-        public UnBlockProviderCommandHandler(
-            ILogger<UnBlockProviderCommandHandler> logger,
+        public UnblockProviderCommandHandler(
+            ILogger<UnblockProviderCommandHandler> logger,
             IBlockedOrganisationQuery blockedOrganisationQuery,
             IBlockedOrganisationRepository blockedOrganisationRepository,
             IMessaging messaging)
