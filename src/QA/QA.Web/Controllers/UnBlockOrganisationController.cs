@@ -37,6 +37,7 @@ namespace Esfa.Recruit.QA.Web.Controllers
                 return View(new ConfirmTrainingProviderUnblockingEditModel() { Ukprn = model.Ukprn, ProviderName = model.ProviderName });
             }
             var isBlocked = await _orchestrator.IsProviderAlreadyBlocked(model.Ukprn);
+
             if (isBlocked && model.CanRestoreAccess)
             {
                 TempData[TempDataKeys.UnBlockedProviderUkprnKey] = model.Ukprn;
