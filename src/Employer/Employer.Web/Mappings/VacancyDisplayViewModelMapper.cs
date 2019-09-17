@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.Helpers;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -43,6 +44,8 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             vm.CanDelete = vacancy.CanDelete;
             vm.CanSubmit = vacancy.CanSubmit;
             vm.ClosingDate = (vacancy.ClosedDate ?? vacancy.ClosingDate)?.AsGdsDate();
+            vm.EducationLevelName =
+                EducationLevelNumberHelper.GetEducationLevelNameOrDefault(programme.EducationLevelNumber, programme.Level);
             vm.EmployerContactName = vacancy.EmployerContact?.Name;
             vm.EmployerContactEmail = vacancy.EmployerContact?.Email;
             vm.EmployerContactTelephone = vacancy.EmployerContact?.Phone;
