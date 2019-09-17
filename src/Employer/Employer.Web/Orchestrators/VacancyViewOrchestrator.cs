@@ -12,6 +12,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacanc
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
+using Esfa.Recruit.Shared.Web.Helpers;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
@@ -42,23 +43,32 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         /// <returns></returns>
         public async Task<DisplayVacancyViewModel> GetFullVacancyDisplayViewModelAsync(Vacancy vacancy)
         {
+            var programme = await _client.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
             switch (vacancy.Status)
             {
                 case VacancyStatus.Approved:
                     var approvedViewModel = new ApprovedVacancyViewModel();
+                    approvedViewModel.EducationLevelName =
+                        EducationLevelNumberHelper.GetEducationLevelNameOrDefault(programme.EducationLevelNumber, programme.Level);
                     await _vacancyDisplayMapper.MapFromVacancyAsync(approvedViewModel, vacancy);
                     approvedViewModel.ApprovedDate = vacancy.ApprovedDate.Value.AsGdsDate();
                     return approvedViewModel;
                 case VacancyStatus.Live:
                     var liveViewModel = new LiveVacancyViewModel();
+                    liveViewModel.EducationLevelName =
+                        EducationLevelNumberHelper.GetEducationLevelNameOrDefault(programme.EducationLevelNumber, programme.Level);
                     await _vacancyDisplayMapper.MapFromVacancyAsync(liveViewModel, vacancy);
                     return liveViewModel;
                 case VacancyStatus.Closed:
                     var closedViewModel = new ClosedVacancyViewModel();
+                    closedViewModel.EducationLevelName =
+                        EducationLevelNumberHelper.GetEducationLevelNameOrDefault(programme.EducationLevelNumber, programme.Level);
                     await _vacancyDisplayMapper.MapFromVacancyAsync(closedViewModel, vacancy);
                     return closedViewModel;
                 case VacancyStatus.Submitted:
                     var submittedViewModel = new SubmittedVacancyViewModel();
+                    submittedViewModel.EducationLevelName =
+                        EducationLevelNumberHelper.GetEducationLevelNameOrDefault(programme.EducationLevelNumber, programme.Level);
                     await _vacancyDisplayMapper.MapFromVacancyAsync(submittedViewModel, vacancy);
                     submittedViewModel.SubmittedDate = vacancy.SubmittedDate.Value.AsGdsDate();
                     return submittedViewModel;
