@@ -10,6 +10,7 @@ using Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.TrainingProvider;
 using Esfa.Recruit.Shared.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Mappers;
+using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.RuleTemplates;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Shared.Web.ViewModels.Validations.Fluent;
@@ -66,6 +67,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddTransient<IEoiAgreementCookieWriter, EoiAgreementCookieWriter>();
             services.AddTransient<IEmployerAccountTypeCookieWriter, EmployerAccountTypeCookieWriter>();
             services.AddTransient<AlertViewModelService>();
+            services.AddTransient<IEmployerAlertsViewModelFactory, EmployerAlertsViewModelFactory>();
         }
 
         private static void RegisterFluentValidators(IServiceCollection services)
@@ -110,6 +112,8 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddTransient<DatesOrchestrator>();
             services.AddTransient<VacanciesSearchSuggestionsOrchestrator>();
             services.AddTransient<DurationOrchestrator>();
+            services.AddTransient<DashboardOrchestrator>();
+            services.AddTransient<AlertsOrchestrator>();
         }
 
         private static void RegisterMapperDeps(IServiceCollection services)

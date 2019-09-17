@@ -1,27 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Orchestrators;
-using Esfa.Recruit.Employer.Web.Services;
-using Esfa.Recruit.Employer.Web.ViewModels;
+using Esfa.Recruit.Provider.Web.Orchestrators;
+using Esfa.Recruit.Provider.Web.Services;
+using Esfa.Recruit.Provider.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Provider;
 using FluentAssertions;
 using Moq;
 using Xunit;
 
-namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Dashboard
+namespace Esfa.Recruit.Provider.UnitTests.Employer.Web.Orchestrators.Dashboard
 {
     public class GetDashboardViewModelAsyncTests
     {
-        private const string employerAccountId = "XXXXXX";
+        private const long Ukprn = 12345678;
         private const string UserId = "user id";
 
         private readonly DateTime _today = DateTime.Parse("2019-09-18");
-        private readonly VacancyUser _user = new VacancyUser { UserId = UserId };
+        private readonly VacancyUser _user = new VacancyUser {UserId = UserId,  Ukprn = Ukprn };
 
         [Fact]
         public async Task WhenHasVacancies_ShouldReturnViewModelAsync()
@@ -38,9 +38,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Dashboard
 
             var orch = GetSut(vacancies);
 
-            var actualDashboard = await orch.GetDashboardViewModelAsync(employerAccountId, _user);
+            var actualDashboard = await orch.GetDashboardViewModelAsync(_user);
 
-            actualDashboard.EmployerAccountId.Should().Be(employerAccountId);
             actualDashboard.Vacancies.Should().Equal(vacancies);
             actualDashboard.HasAnyVacancies.Should().BeTrue();
             actualDashboard.NoOfVacanciesClosingSoonWithNoApplications.Should().Be(2);
@@ -55,9 +54,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Dashboard
                 
             var orch = GetSut(vacancies);
 
-            var actualDashboard = await orch.GetDashboardViewModelAsync(employerAccountId, _user);
+            var actualDashboard = await orch.GetDashboardViewModelAsync(_user);
 
-            actualDashboard.EmployerAccountId.Should().Be(employerAccountId);
             actualDashboard.Vacancies.Should().Equal(vacancies);
             actualDashboard.HasAnyVacancies.Should().BeFalse();
             actualDashboard.NoOfVacanciesClosingSoonWithNoApplications.Should().Be(0);
@@ -70,13 +68,13 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Dashboard
             var timeProviderMock = new Mock<ITimeProvider>();
             timeProviderMock.Setup(t => t.Today).Returns(_today);
 
-            var dashboardProjection = new EmployerDashboard
+            var dashboardProjection = new ProviderDashboard
             {
                 Vacancies = vacancies
             };
 
-            var vacancyClientMock = new Mock<IEmployerVacancyClient>();
-            vacancyClientMock.Setup(c => c.GetDashboardAsync(employerAccountId, true))
+            var vacancyClientMock = new Mock<IProviderVacancyClient>();
+            vacancyClientMock.Setup(c => c.GetDashboardAsync(Ukprn, true))
                 .ReturnsAsync(dashboardProjection);
 
             var userDetails = new User();
@@ -85,9 +83,9 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Dashboard
             clientMock.Setup(c => c.GetUsersDetailsAsync(UserId))
                 .ReturnsAsync(userDetails);
 
-            var alertsViewModel = new AlertsViewModel(null, null, null, null);
-            var alertsFactoryMock = new Mock<IEmployerAlertsViewModelFactory>();
-            alertsFactoryMock.Setup(a => a.Create(vacancies, userDetails))
+            var alertsViewModel = new AlertsViewModel(null, null);
+            var alertsFactoryMock = new Mock<IProviderAlertsViewModelFactory>();
+            alertsFactoryMock.Setup(a => a.Create(dashboardProjection, userDetails))
                 .Returns(alertsViewModel);
 
             var orch = new DashboardOrchestrator(vacancyClientMock.Object, timeProviderMock.Object, clientMock.Object, alertsFactoryMock.Object);

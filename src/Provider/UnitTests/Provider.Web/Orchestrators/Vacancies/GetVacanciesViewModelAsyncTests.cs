@@ -50,7 +50,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Vacancies
             var vm = await orch.GetVacanciesViewModelAsync(_user, "Submitted", 2, string.Empty);
 
             vm.ShowResultsTable.Should().BeTrue();
-            vm.HasAnyVacancies.Should().BeTrue();
             
             vm.Pager.ShowPager.Should().BeTrue();
 
@@ -87,7 +86,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Vacancies
             var vm = await orch.GetVacanciesViewModelAsync(_user, "Submitted", 2, string.Empty);
 
             vm.ShowResultsTable.Should().BeTrue();
-            vm.HasAnyVacancies.Should().BeTrue();
 
             vm.Pager.ShowPager.Should().BeFalse();
 

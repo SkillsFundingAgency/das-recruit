@@ -15,7 +15,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Vacancies
         public PagerViewModel Pager { get; internal set; }
         public string ResultsHeading { get; internal set; }
         public FilteringOptions Filter { get; set; }
-        public bool HasVacancies { get; internal set; }
         public AlertsViewModel Alerts { get; set; }
         public string SearchTerm { get; set; }
         public bool ShowResultsTable => Vacancies.Any();

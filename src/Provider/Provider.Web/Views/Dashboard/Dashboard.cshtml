@@ -11,18 +11,18 @@
 }
 
     <div asp-hide="@Model.HasAnyVacancies">
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-one-half">
-            <h1 class="govuk-heading-xl">Recruitment</h1>
-            <p class="govuk-body">Your dashboard is empty, start by creating your first vacancy</p>
-            <p class="govuk-body">Vacancies will be approved or rejected within 24 hours.</p>
-        </div>
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-one-half">
+                <h1 class="govuk-heading-xl">Recruitment</h1>
+                <p class="govuk-body">Your dashboard is empty, start by creating your first vacancy</p>
+                <p class="govuk-body">Vacancies will be approved or rejected within 24 hours.</p>
+            </div>
 
-        <div class="govuk-grid-column-one-half ">
-            <a asp-route="@RouteNames.Employer_Get" class="govuk-button float-right clear govuk-!-margin-top-2 govuk-!-margin-bottom-4" esfa-automation="create-vacancy">Create vacancy</a>
-        </div>
-    </div>    
-</div>
+            <div class="govuk-grid-column-one-half ">
+                <a asp-route="@RouteNames.Employer_Get" class="govuk-button float-right clear govuk-!-margin-top-2 govuk-!-margin-bottom-4" esfa-automation="create-vacancy">Create vacancy</a>
+            </div>
+        </div>    
+    </div>
 
     <div asp-show="@Model.HasAnyVacancies">
         

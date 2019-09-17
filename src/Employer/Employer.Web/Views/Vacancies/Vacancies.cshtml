@@ -16,133 +16,139 @@
     }
 }
 
-<partial asp-hide="@Model.HasVacancies" name="_NoVacanciesContent" />
+<partial name="@PartialNames.Alerts" for="Alerts" />
 
-<div asp-show="Model.HasVacancies">
-
-    <partial name="@PartialNames.Alerts" for="Alerts" />
-
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <div asp-show="Model.HasWarning" class="warning-summary govuk-!-margin-bottom-0">
-                <p>@Model.WarningMessage</p>
-            </div>
-            <div asp-show="Model.HasInfo" class="info-summary govuk-!-margin-bottom-0">
-                <p>@Model.InfoMessage</p>
-            </div>
-            <h1 class="govuk-heading-l govuk-!-margin-bottom-6">Your vacancies</h1>
-            <a asp-route="@RouteNames.CreateVacancyOptions_Get" class="govuk-button govuk-!-margin-bottom-6" esfa-automation="create-vacancy">Create vacancy</a>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <div asp-show="Model.HasWarning" class="warning-summary govuk-!-margin-bottom-0">
+            <p>@Model.WarningMessage</p>
         </div>
-        <esfaFeatureEnabled name="@FeatureNames.SetNotificationPreferences">
-            <div class="govuk-grid-column-one-third">
-                <div class="govuk-!-margin-bottom-5"><a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.ManageNotifications_Get">Manage your recruitment emails</a></div>
-            </div>
-        </esfaFeatureEnabled>
-    </div>
-    <form method="get" autocomplete="off">
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-one-third">
-                <div class="govuk-form-group">
-                    <label asp-for="Filter" class="govuk-label">Filter vacancies by</label>
-                    <select asp-for="Filter" class="govuk-select">
-                        <optgroup label="Status">
-                            <option value="@FilteringOptions.All">all vacancies</option>
-                            <option value="@FilteringOptions.Live">live vacancies</option>
-                            <option value="@FilteringOptions.Referred">rejected vacancies</option>
-                            <option value="@FilteringOptions.Submitted">vacancies pending review</option>
-                            <option value="@FilteringOptions.Draft">draft vacancies</option>
-                            <option value="@FilteringOptions.Closed">closed vacancies</option>
-                        </optgroup>
-                        <optgroup label="Other">
-                            <option value="@FilteringOptions.NewApplications">with new applications</option>
-                            <option value="@FilteringOptions.AllApplications">with applications</option>
-                            <option value="@FilteringOptions.ClosingSoonWithNoApplications">closing soon with no applications</option>
-                            <option value="@FilteringOptions.ClosingSoon">closing soon</option>
-                            <option value="@FilteringOptions.Transferred">transferred from provider</option>
-                        </optgroup>
-                    </select>
-                    <button type="submit" id="filter-submit" class="das-button-filter das-button-secondary govuk-button govuk-!-margin-top-3">Filter</button>
-                </div>
-            </div>
-            <div class="govuk-grid-column-two-thirds">
-                <div class="govuk-form-group">
-                    <fieldset class="govuk-fieldset">
-                        <div class="form-group search-field">
-                            <div class="search-input-with-button">
-                                <label class="govuk-label" for="search">
-                                    Search vacancies
-                                </label>
-                                <input id="search-input" asp-for="SearchTerm" placeholder="Search by title, reference number or employer" class="govuk-input search-input" maxlength="200">
-                            </div>
-                            <div class="search-submit">
-                                <!-- hide button for no js version -->
-                                <button type="submit" id="search-submit-button" class="js-hidden">Search</button>
-                            </div>
-                        </div>
-                    </fieldset>
-                </div>
-            </div>
-        </div>
-    </form>
-    <div asp-show="@Model.HasVacancies" class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
-            <h3 class="govuk-heading-m">
-                @Model.ResultsHeading <a asp-show="@Model.IsFiltered" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="All" class="govuk-!-font-weight-regular govuk-component__link govuk-!-font-size-19">Show all vacancies</a>
-            </h3>
-            <p asp-hide="@Model.ShowResultsTable" class="govuk-body">No vacancies match the criteria</p>
-        </div>
-    </div>
-    <div asp-show="@Model.ShowResultsTable">
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-full">
-                <table class="govuk-table responsive das-table--small">
-                    <thead class="govuk-table__head">
-                        <tr class="govuk-table__row">
-                            <th class="govuk-table__header">Vacancy title</th>
-                            <th class="govuk-table__header">Vacancy ref</th>
-                            <th class="govuk-table__header">Applications</th>
-                            <th class="govuk-table__header">Closing</th>
-                            <th class="govuk-table__header">Status</th>
-                            <th class="govuk-table__header"></th>
-                        </tr>
-                    </thead>
-                    <tbody class="govuk-table__body">
-                        @foreach (var vacancy in Model.Vacancies)
-                        {
-                            <tr class="govuk-table__row">
-                                <td class="govuk-table__cell" data-label="Vacancy title">
-                                    <div>
-                                        @vacancy.Title
-                                        <div asp-show="@vacancy.IsTransferred">
-                                            <span class="tag tag-transferred">Transferred</span>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="govuk-table__cell" data-label="Vacancy ref">
-                                    <span asp-show="@vacancy.HasVacancyReference"><span>VAC</span>@vacancy.VacancyReference</span>
-                                    <span asp-show="@vacancy.HasNoVacancyReference">Not available</span>
-                                </td>
-                                <td asp-show="@vacancy.CanShowVacancyApplicationsCount" class="govuk-table__cell dashboard-applications" data-label="Applications">
-                                    <span asp-show="@vacancy.HasNoApplications">0</span>
-                                    <span asp-show="@vacancy.HasApplications">@vacancy.NoOfApplications</span>
-                                    <span asp-show="@vacancy.HasNewApplications" class="govuk-!-font-weight-bold"> (@vacancy.NoOfNewApplications new)</span>
-                                </td>
-                                <td asp-hide="@vacancy.CanShowVacancyApplicationsCount" class="govuk-table__cell dashboard-applications" data-label="Applications">-</td>
-                                <td class="govuk-table__cell dashboard-closingdate" data-label="Closing date"><span>@vacancy.ClosingDate?.AsGdsDate()</span></td>
-                                <td class="govuk-table__cell dashboard-status" data-label="Status"><span class="tag tag-@vacancy.Status.ToString().ToLower()">@vacancy.Status.GetDisplayName()</span></td>
-                                <td class="govuk-table__cell dashboard-action" data-label="Action">
-                                    <a asp-show="@vacancy.IsNotSubmittable" asp-route="@RouteNames.VacancyManage_Get" asp-route-vacancyId="@vacancy.Id" class="govuk-link">Manage</a>
-                                    <a asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.DisplayVacancy_Get" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy)</a>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-                <partial name="@PartialNames.Pager" model="@Model.Pager" />
-            </div>
+        <div asp-show="Model.HasInfo" class="info-summary govuk-!-margin-bottom-0">
+            <p>@Model.InfoMessage</p>
         </div>
     </div>
 </div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <a asp-route="@RouteNames.Dashboard_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Return to dashboard</a>
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-half">
+        <h1 class="govuk-heading-l govuk-!-margin-bottom-6">Your vacancies</h1>
+    </div>
+
+    <div class="govuk-grid-column-one-half ">
+        <a asp-route="@RouteNames.CreateVacancyOptions_Get" class="govuk-button float-right clear govuk-!-margin-bottom-6" esfa-automation="create-vacancy">Create vacancy</a>
+    </div>
+</div>
+
+<form method="get" autocomplete="off">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-third">
+            <div class="govuk-form-group">
+                <label asp-for="Filter" class="govuk-label">Filter vacancies by</label>
+                <select asp-for="Filter" class="govuk-select">
+                    <optgroup label="Status">
+                        <option value="@FilteringOptions.All">all vacancies</option>
+                        <option value="@FilteringOptions.Live">live vacancies</option>
+                        <option value="@FilteringOptions.Referred">rejected vacancies</option>
+                        <option value="@FilteringOptions.Submitted">vacancies pending review</option>
+                        <option value="@FilteringOptions.Draft">draft vacancies</option>
+                        <option value="@FilteringOptions.Closed">closed vacancies</option>
+                    </optgroup>
+                    <optgroup label="Other">
+                        <option value="@FilteringOptions.NewApplications">with new applications</option>
+                        <option value="@FilteringOptions.AllApplications">with applications</option>
+                        <option value="@FilteringOptions.ClosingSoonWithNoApplications">closing soon with no applications</option>
+                        <option value="@FilteringOptions.ClosingSoon">closing soon</option>
+                        <option value="@FilteringOptions.Transferred">transferred from provider</option>
+                    </optgroup>
+                </select>
+                <button type="submit" id="filter-submit" class="das-button-filter das-button-secondary govuk-button govuk-!-margin-top-3">Filter</button>
+            </div>
+        </div>
+        <div class="govuk-grid-column-two-thirds">
+            <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
+                    <div class="form-group search-field">
+                        <div class="search-input-with-button">
+                            <label class="govuk-label" for="search">
+                                Search vacancies
+                            </label>
+                            <input id="search-input" asp-for="SearchTerm" placeholder="Search by title, reference number or employer" class="govuk-input search-input" maxlength="200">
+                        </div>
+                        <div class="search-submit">
+                            <!-- hide button for no js version -->
+                            <button type="submit" id="search-submit-button" class="js-hidden">Search</button>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+    </div>
+</form>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <h3 class="govuk-heading-m">
+            @Model.ResultsHeading <a asp-show="@Model.IsFiltered" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="All" class="govuk-!-font-weight-regular govuk-component__link govuk-!-font-size-19">Show all vacancies</a>
+        </h3>
+        <p asp-hide="@Model.ShowResultsTable" class="govuk-body">No vacancies match the criteria</p>
+    </div>
+</div>
+<div asp-show="@Model.ShowResultsTable">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <table class="govuk-table responsive das-table--small">
+                <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th class="govuk-table__header">Vacancy title</th>
+                        <th class="govuk-table__header">Vacancy ref</th>
+                        <th class="govuk-table__header">Applications</th>
+                        <th class="govuk-table__header">Closing</th>
+                        <th class="govuk-table__header">Status</th>
+                        <th class="govuk-table__header"></th>
+                    </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+                    @foreach (var vacancy in Model.Vacancies)
+                    {
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell" data-label="Vacancy title">
+                                <div>
+                                    @vacancy.Title
+                                    <div asp-show="@vacancy.IsTransferred">
+                                        <span class="tag tag-transferred">Transferred</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="govuk-table__cell" data-label="Vacancy ref">
+                                <span asp-show="@vacancy.HasVacancyReference"><span>VAC</span>@vacancy.VacancyReference</span>
+                                <span asp-show="@vacancy.HasNoVacancyReference">Not available</span>
+                            </td>
+                            <td asp-show="@vacancy.CanShowVacancyApplicationsCount" class="govuk-table__cell dashboard-applications" data-label="Applications">
+                                <span asp-show="@vacancy.HasNoApplications">0</span>
+                                <span asp-show="@vacancy.HasApplications">@vacancy.NoOfApplications</span>
+                                <span asp-show="@vacancy.HasNewApplications" class="govuk-!-font-weight-bold"> (@vacancy.NoOfNewApplications new)</span>
+                            </td>
+                            <td asp-hide="@vacancy.CanShowVacancyApplicationsCount" class="govuk-table__cell dashboard-applications" data-label="Applications">-</td>
+                            <td class="govuk-table__cell dashboard-closingdate" data-label="Closing date"><span>@vacancy.ClosingDate?.AsGdsDate()</span></td>
+                            <td class="govuk-table__cell dashboard-status" data-label="Status"><span class="tag tag-@vacancy.Status.ToString().ToLower()">@vacancy.Status.GetDisplayName()</span></td>
+                            <td class="govuk-table__cell dashboard-action" data-label="Action">
+                                <a asp-show="@vacancy.IsNotSubmittable" asp-route="@RouteNames.VacancyManage_Get" asp-route-vacancyId="@vacancy.Id" class="govuk-link">Manage</a>
+                                <a asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.DisplayVacancy_Get" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy)</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <partial name="@PartialNames.Pager" model="@Model.Pager" />
+        </div>
+    </div>
+</div>
+
 
 @section FooterJS
 {

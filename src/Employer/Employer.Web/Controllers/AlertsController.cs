@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Esfa.Recruit.Provider.Web.Configuration.Routing;
-using Esfa.Recruit.Provider.Web.Extensions;
+using Esfa.Recruit.Employer.Web.Configuration.Routing;
+using Esfa.Recruit.Employer.Web.Extensions;
+using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Esfa.Recruit.Provider.Web.Controllers
+namespace Esfa.Recruit.Employer.Web.Controllers
 {
     [Route(RoutePaths.AccountRoutePath)]
     public class AlertsController : Controller

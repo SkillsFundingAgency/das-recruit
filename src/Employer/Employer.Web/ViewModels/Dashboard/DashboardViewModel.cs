@@ -5,10 +5,11 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using Humanizer;
 
-namespace Esfa.Recruit.Provider.Web.ViewModels
+namespace Esfa.Recruit.Employer.Web.ViewModels
 {
     public class DashboardViewModel
     {
+        public string EmployerAccountId { get; set; }
         public IList<VacancySummary> Vacancies { get; set; }
         public AlertsViewModel Alerts { get; internal set; }
 

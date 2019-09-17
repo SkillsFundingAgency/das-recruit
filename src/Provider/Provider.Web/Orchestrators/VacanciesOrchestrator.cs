@@ -89,7 +89,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 Filter = filteringOption,
                 SearchTerm = searchTerm,
                 ResultsHeading = GetFilterHeading(filteredVacanciesTotal, filteringOption, searchTerm),
-                HasAnyVacancies = vacancies.Any(),
                 Alerts = alerts
             };
 

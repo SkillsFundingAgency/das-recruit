@@ -12,7 +12,7 @@ using Newtonsoft.Json;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
-    [Route(RoutePaths.AccountRoutePath)]
+    [Route(RoutePaths.VacanciesRoutePath)]
     public class VacanciesController : Controller
     {
         private readonly VacanciesOrchestrator _orchestrator;
@@ -33,7 +33,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             if (string.IsNullOrWhiteSpace(filter) == false || string.IsNullOrWhiteSpace(searchTerm) == false)
                 SaveFiltersInCookie(filter, searchTerm);
 
-            var vm = await _orchestrator.GetDashboardViewModelAsync(employerAccountId, filter, page, User.ToVacancyUser(), searchTerm);
+            var vm = await _orchestrator.GetVacanciesViewModelAsync(employerAccountId, filter, page, User.ToVacancyUser(), searchTerm);
 
             if (TempData.ContainsKey(TempDataKeys.DashboardErrorMessage))
                 vm.WarningMessage = TempData[TempDataKeys.DashboardErrorMessage].ToString();
@@ -77,17 +77,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 Filter = filter;
                 SearchTerm = searchTerm;
             }
-        }
-
-        [HttpPost("dismiss-alert", Name = RouteNames.Dashboard_DismissAlert_Post)]
-        public async Task<IActionResult> DismissAlert([FromRoute] string employerAccountId, AlertDismissalEditModel model)
-        {
-            if (Enum.TryParse<AlertType>(model.AlertType, out var alertTypeEnum))
-            {
-                await _orchestrator.DismissAlert(User.ToVacancyUser(), alertTypeEnum);
-            }
-
-            return RedirectToRoute(RouteNames.Dashboard_Get);
         }
     }
 }

@@ -1,39 +1,40 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Esfa.Recruit.Provider.Web.Services;
-using Esfa.Recruit.Provider.Web.ViewModels;
+using Esfa.Recruit.Employer.Web.Services;
+using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Provider;
 
-namespace Esfa.Recruit.Provider.Web.Orchestrators
+namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
     public class DashboardOrchestrator
     {
         private const int ClosingSoonDays = 5;
-        private readonly IProviderVacancyClient _vacancyClient;
+        private readonly IEmployerVacancyClient _vacancyClient;
         private readonly ITimeProvider _timeProvider;
         private readonly IRecruitVacancyClient _client;
-        private readonly IProviderAlertsViewModelFactory _providerAlertsViewModelFactory;
+        private readonly IEmployerAlertsViewModelFactory _alertsViewModelFactory;
 
         public DashboardOrchestrator(
-            IProviderVacancyClient vacancyClient,
+            IEmployerVacancyClient vacancyClient,
             ITimeProvider timeProvider,
             IRecruitVacancyClient client,
-            IProviderAlertsViewModelFactory providerAlertsViewModelFactory)
+            IEmployerAlertsViewModelFactory alertsViewModelFactory)
         {
             _vacancyClient = vacancyClient;
             _timeProvider = timeProvider;
             _client = client;
-            _providerAlertsViewModelFactory = providerAlertsViewModelFactory;
+            _alertsViewModelFactory = alertsViewModelFactory;            
         }
 
-        public async Task<DashboardViewModel> GetDashboardViewModelAsync(VacancyUser user)
+        public async Task<DashboardViewModel> GetDashboardViewModelAsync(string employerAccountId, VacancyUser user)
         {
-            var dashboardTask = _vacancyClient.GetDashboardAsync(user.Ukprn.Value, createIfNonExistent: true);
+            var dashboardTask = _vacancyClient.GetDashboardAsync(employerAccountId, createIfNonExistent: true);
             var userDetailsTask = _client.GetUsersDetailsAsync(user.UserId);
 
             await Task.WhenAll(dashboardTask, userDetailsTask);
@@ -45,6 +46,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
             var vm = new DashboardViewModel
             {
+                EmployerAccountId = employerAccountId,
                 Vacancies = vacancies,
                 NoOfVacanciesClosingSoonWithNoApplications = vacancies.Count(v =>
                     v.ClosingDate <= _timeProvider.Today.AddDays(ClosingSoonDays) &&
@@ -54,7 +56,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 NoOfVacanciesClosingSoon = vacancies.Count(v =>
                     v.ClosingDate <= _timeProvider.Today.AddDays(ClosingSoonDays) &&
                     v.Status == VacancyStatus.Live),
-                Alerts = _providerAlertsViewModelFactory.Create(dashboard, userDetails)
+                Alerts = _alertsViewModelFactory.Create(vacancies, userDetails)
             };
             return vm;
         }
