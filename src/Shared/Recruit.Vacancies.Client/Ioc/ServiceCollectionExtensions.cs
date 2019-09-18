@@ -248,7 +248,10 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             if (useTableStorageQueryStore)
                 services.AddTransient<IQueryStore, TableStorageQueryStore>();
             else
+            {
                 services.AddTransient<IQueryStore, MongoQueryStore>();
+                services.AddTransient<IQueryStoreHouseKeepingService, MongoQueryStore>();
+            }
         }
 
         private static void AddValidation(IServiceCollection services)
