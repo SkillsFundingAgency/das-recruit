@@ -35,7 +35,7 @@ namespace Esfa.Recruit.Shared.Web.Services
             return hasLegalEntityAgreement;
         }
 
-        public async Task<LegalEntity> GetLegalEntityAsync(string employerAccountId, long legalEntityId)
+        private async Task<LegalEntity> GetLegalEntityAsync(string employerAccountId, long legalEntityId)
         {
             var employerData = await _client.GetEditVacancyInfoAsync(employerAccountId);
 
