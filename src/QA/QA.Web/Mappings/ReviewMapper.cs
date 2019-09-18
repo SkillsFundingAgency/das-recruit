@@ -218,7 +218,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 vm.FieldIdentifiers = await GetFieldIdentifiersViewModel(review);
                 vm.ReviewerComment = review.ManualQaComment;
                 vm.ReviewHistories = historiesVm;
-                vm.IsResubmission = historiesVm.HasHistories && currentVacancyResult.Status == VacancyStatus.Submitted;
+                vm.IsResubmission = review.SubmissionCount > 1;
 
                 vm.ReviewerName = review.ReviewedByUser.Name;
                 vm.ReviewedDate = review.ReviewedDate.GetValueOrDefault();
