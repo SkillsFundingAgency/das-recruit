@@ -26,18 +26,19 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         public async Task<LegalEntityAgreementSoftStopViewModel> GetLegalEntityAgreementSoftStopViewModelAsync(
             VacancyRouteModel vrm, long? selectedLegalEntityId)
         {
-            var vacancy = 
-                await Utility.GetAuthorisedVacancyForEditAsync(
+            var vacancy = await
+                Utility.GetAuthorisedVacancyForEditAsync(
                     _client, _vacancyClient, vrm, RouteNames.LegalEntityAgreement_SoftStop_Get);
 
             var legalEntityId = selectedLegalEntityId.HasValue ? selectedLegalEntityId.Value : vacancy.LegalEntityId;
+            var legalEntity = await _legalEntityAgreementService.GetLegalEntityAsync(vrm.EmployerAccountId, legalEntityId);
             
             return new LegalEntityAgreementSoftStopViewModel
             {                
                 HasLegalEntityAgreement = 
                     await _legalEntityAgreementService.HasLegalEntityAgreementAsync(
                         vacancy.EmployerAccountId, legalEntityId),
-                LegalEntityName = vacancy.EmployerName,
+                LegalEntityName = legalEntity.Name,
                 PageInfo = Utility.GetPartOnePageInfo(vacancy)
             };
         }
