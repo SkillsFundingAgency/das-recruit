@@ -15,19 +15,19 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider
         private readonly IEditVacancyInfoProjectionService _projectionService;
         private readonly IProviderRelationshipsService _providerRelationshipService;
         private readonly IEmployerVacancyClient _client;
-        private readonly IPasAccountClient _pasAccountClient;
+        private readonly IPasAccountProvider _pasAccountProvider;
 
         public SetupProviderHandler(ILogger<SetupProviderHandler> logger,
             IEditVacancyInfoProjectionService projectionService,
             IProviderRelationshipsService providerRelationshipService,
             IEmployerVacancyClient client,
-            IPasAccountClient pasAccountClient) : base(logger)
+            IPasAccountProvider pasAccountProvider) : base(logger)
         {
             _logger = logger;
             _projectionService = projectionService;
             _providerRelationshipService = providerRelationshipService;
             _client = client;
-            _pasAccountClient = pasAccountClient;
+            _pasAccountProvider = pasAccountProvider;
         }
 
         public async Task HandleAsync(string eventPayload)
@@ -39,7 +39,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider
                 _logger.LogInformation($"Processing {nameof(SetupProviderEvent)} for Ukprn: {{Ukprn}}", eventData.Ukprn);
 
                 var employerInfosTask = _providerRelationshipService.GetLegalEntitiesForProviderAsync(eventData.Ukprn);
-                var providerAgreementTask = _pasAccountClient.HasAgreementAsync(eventData.Ukprn);
+                var providerAgreementTask = _pasAccountProvider.HasAgreementAsync(eventData.Ukprn);
 
                 await Task.WhenAll(employerInfosTask, providerAgreementTask);
 
@@ -60,7 +60,5 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider
                 throw;
             }
         }
-
-
     }
 }

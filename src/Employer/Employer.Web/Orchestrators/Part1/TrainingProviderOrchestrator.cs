@@ -10,9 +10,12 @@ using Esfa.Recruit.Employer.Web.ViewModels.Part1.TrainingProvider;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
@@ -23,23 +26,29 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         private readonly IEmployerVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
+        private readonly ITrainingProviderSummaryProvider _trainingProviderSummaryProvider;
+        private readonly ITrainingProviderService _trainingProviderService;
 
         public TrainingProviderOrchestrator(
-            IEmployerVacancyClient client, 
-            IRecruitVacancyClient vacancyClient, 
-            ILogger<TrainingProviderOrchestrator> logger, 
-            IReviewSummaryService reviewSummaryService
+            IEmployerVacancyClient client,
+            IRecruitVacancyClient vacancyClient,
+            ILogger<TrainingProviderOrchestrator> logger,
+            IReviewSummaryService reviewSummaryService,
+            ITrainingProviderSummaryProvider trainingProviderSummarayProvider,
+            ITrainingProviderService trainingProviderService
             ) : base(logger)
         {
             _client = client;
             _vacancyClient = vacancyClient;
             _reviewSummaryService = reviewSummaryService;
+            _trainingProviderSummaryProvider = trainingProviderSummarayProvider;
+            _trainingProviderService = trainingProviderService;
         }
 
         public async Task<SelectTrainingProviderViewModel> GetSelectTrainingProviderViewModelAsync(VacancyRouteModel vrm, long? ukprn = null)
         {
             var vacancyTask = Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.TrainingProvider_Select_Get);
-            var trainingProvidersTask = _vacancyClient.GetAllTrainingProvidersAsync();
+            var trainingProvidersTask = _trainingProviderSummaryProvider.FindAllAsync();
 
             await Task.WhenAll(vacancyTask, trainingProvidersTask);
 
@@ -86,7 +95,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
             TrainingProvider provider = null;
             if (providerSummary != null)
-                provider = await _client.GetTrainingProviderAsync(providerSummary.Ukprn);
+                provider = await _trainingProviderService.GetProviderAsync(providerSummary.Ukprn);
 
             vacancy.TrainingProvider = provider;
 
@@ -111,7 +120,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         public async Task<ConfirmTrainingProviderViewModel> GetConfirmViewModelAsync(VacancyRouteModel vrm, long ukprn)
         {
             var vacancyTask = Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.TrainingProvider_Confirm_Get);
-            var providerTask = _client.GetTrainingProviderAsync(ukprn);
+            var providerTask = _trainingProviderService.GetProviderAsync(ukprn);
 
             await Task.WhenAll(vacancyTask, providerTask);
 
@@ -133,7 +142,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         public async Task<OrchestratorResponse> PostConfirmEditModelAsync(ConfirmTrainingProviderEditModel m, VacancyUser user)
         {
             var vacancyTask = Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, m, RouteNames.TrainingProvider_Confirm_Post);
-            var providerTask = _client.GetTrainingProviderAsync(long.Parse(m.Ukprn));
+            var providerTask = _trainingProviderService.GetProviderAsync(long.Parse(m.Ukprn));
 
             await Task.WhenAll(vacancyTask, providerTask);
 
@@ -154,15 +163,17 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             if (long.TryParse(ukprn, out var ukprnAsLong) == false)
                 return null;
 
-            var allProviders = await _vacancyClient.GetAllTrainingProvidersAsync();
-            return allProviders.SingleOrDefault(p => p.Ukprn == ukprnAsLong);
+            return await _trainingProviderSummaryProvider.GetAsync(ukprnAsLong);
         }
 
         private async Task<TrainingProviderSummary> GetProviderFromModelAsync(SelectTrainingProviderEditModel model)
         {
             if (model.SelectionType == TrainingProviderSelectionType.TrainingProviderSearch)
             {
-                var allProviders = await _vacancyClient.GetAllTrainingProvidersAsync();
+                if (model.TrainingProviderSearch.EndsWith(EsfaTestTrainingProvider.Ukprn.ToString()))
+                    return await GetProviderAsync(EsfaTestTrainingProvider.Ukprn.ToString());
+
+                var allProviders = await _trainingProviderSummaryProvider.FindAllAsync();
 
                 var matches = allProviders.Where(p =>
                     FormatSuggestion(p.ProviderName, p.Ukprn).Contains(model.TrainingProviderSearch))

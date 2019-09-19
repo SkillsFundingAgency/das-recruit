@@ -154,7 +154,7 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddTransient<ITrainingProviderService, TrainingProviderService>();
             services.AddTransient<ITrainingProviderSummaryProvider, TrainingProviderSummaryProvider>();
             services.AddTransient<IFaaService, FaaService>();
-            services.AddTransient<IPasAccountClient, PasAccountClient>();
+            services.AddTransient<IPasAccountProvider, PasAccountProvider>();
 
             // Projection services
             services.AddTransient<IEmployerDashboardProjectionService, EmployerDashboardProjectionService>();

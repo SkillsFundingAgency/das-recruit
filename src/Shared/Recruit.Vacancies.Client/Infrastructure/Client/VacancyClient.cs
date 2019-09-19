@@ -17,7 +17,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacanc
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using FluentValidation;
 using FluentValidation.Results;
 
@@ -41,13 +40,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly IEmployerProfileRepository _employerProfileRepository;
         private readonly IUserRepository _userRepository;
         private readonly IQualificationsProvider _qualificationsProvider;
-        private readonly ITrainingProviderService _trainingProviderService;
         private readonly IEmployerService _employerService;
         private readonly IReportRepository _reportRepository;
         private readonly IReportService _reportService;
         private readonly IUserNotificationPreferencesRepository _userNotificationPreferencesRepository;
         private readonly AbstractValidator<UserNotificationPreferences> _userNotificationPreferencesValidator;
-        private readonly ITrainingProviderSummaryProvider _trainingProviderSummaryProvider;
         private readonly AbstractValidator<Qualification> _qualificationValidator;
 
         public VacancyClient(
@@ -67,13 +64,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             IEmployerProfileRepository employerProfileRepository,
             IUserRepository userRepository,
             IQualificationsProvider qualificationsProvider,
-            ITrainingProviderService trainingProviderService,
             IEmployerService employerService,
             IReportRepository reportRepository,
             IReportService reportService,
             IUserNotificationPreferencesRepository userNotificationPreferencesRepository,
             AbstractValidator<UserNotificationPreferences> userNotificationPreferencesValidator,
-            ITrainingProviderSummaryProvider trainingProviderSummaryProvider,
             AbstractValidator<Qualification> qualificationValidator)
         {
             _repository = repository;
@@ -92,13 +87,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _employerProfileRepository = employerProfileRepository;
             _userRepository = userRepository;
             _qualificationsProvider = qualificationsProvider;
-            _trainingProviderService = trainingProviderService;
             _employerService = employerService;
             _reportRepository = reportRepository;
             _reportService = reportService;
             _userNotificationPreferencesRepository = userNotificationPreferencesRepository;
             _userNotificationPreferencesValidator = userNotificationPreferencesValidator;
-            _trainingProviderSummaryProvider = trainingProviderSummaryProvider;
             _qualificationValidator = qualificationValidator;
         }
 
@@ -451,16 +444,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 UserId = userId,
                 EmployerAccountId = employerAccountId
             });
-        }
-
-        public Task<TrainingProvider> GetTrainingProviderAsync(long ukprn)
-        {
-            return _trainingProviderService.GetProviderAsync(ukprn);
-        }
-
-        public Task<IEnumerable<TrainingProviderSummary>> GetAllTrainingProvidersAsync()
-        {
-            return _trainingProviderSummaryProvider.FindAllAsync();
         }
 
         public Task<VacancyAnalyticsSummary> GetVacancyAnalyticsSummaryAsync(long vacancyReference)

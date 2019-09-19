@@ -6,16 +6,16 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 {
     public class ProviderAgreementOrchestrator : Controller
     {
-        private readonly IPasAccountClient _pasAccountClient;
+        private readonly IPasAccountProvider _pasAccountProvider;
 
-        public ProviderAgreementOrchestrator(IPasAccountClient pasAccountClient)
+        public ProviderAgreementOrchestrator(IPasAccountProvider pasAccountProvider)
         {
-            _pasAccountClient = pasAccountClient;
+            _pasAccountProvider = pasAccountProvider;
         }
 
         public Task<bool> HasAgreementAsync(long ukprn)
         {
-            return _pasAccountClient.HasAgreementAsync(ukprn);
+            return _pasAccountProvider.HasAgreementAsync(ukprn);
         }
     }
 }
