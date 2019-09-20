@@ -1,4 +1,7 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
+using Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators.VacancyValidators;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -16,6 +19,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         private readonly IHtmlSanitizerService _htmlSanitizerService;
         private readonly ITrainingProviderSummaryProvider _trainingProviderSummaryProvider;
         private readonly IBlockedOrganisationQuery _blockedOrganisationRepo;
+        private readonly IProfanityListProvider _profanityListProvider;
 
         public FluentVacancyValidator(
             ITimeProvider timeProvider, 
@@ -24,7 +28,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             IQualificationsProvider qualificationsProvider, 
             IHtmlSanitizerService htmlSanitizerService, 
             ITrainingProviderSummaryProvider trainingProviderSummaryProvider, 
-            IBlockedOrganisationQuery blockedOrganisationRepo)
+            IBlockedOrganisationQuery blockedOrganisationRepo, 
+            IProfanityListProvider profanityListProvider)
         {
             _timeProvider = timeProvider;
             _minimumWageService = minimumWageService;
@@ -33,6 +38,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             _htmlSanitizerService = htmlSanitizerService;
             _trainingProviderSummaryProvider = trainingProviderSummaryProvider;
             _blockedOrganisationRepo = blockedOrganisationRepo;
+            _profanityListProvider = profanityListProvider;
 
             SingleFieldValidations();
 
@@ -97,8 +103,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
         private void ValidateTitle()
         {
-            RuleFor(x => x.Title)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+         RuleFor(x => x.Title)
+             .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty()
                     .WithMessage("Enter the title of this vacancy")
                     .WithErrorCode("1")
@@ -111,7 +117,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .Matches(ValidationConstants.ContainsApprenticeOrApprenticeshipRegex)
                     .WithMessage("Title must contain the word 'apprentice' or 'apprenticeship'")
                     .WithErrorCode("200")
-                .RunCondition(VacancyRuleSet.Title)
+             .ProfanityCheck(_profanityListProvider)
+             .WithMessage("Title must not contain a banned word or phrase.")
+             .WithErrorCode("4")
+             .RunCondition(VacancyRuleSet.Title)
                 .WithRuleId(VacancyRuleSet.Title);
         }
 
