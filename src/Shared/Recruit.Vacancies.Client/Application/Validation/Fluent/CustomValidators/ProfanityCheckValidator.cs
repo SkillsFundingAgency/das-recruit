@@ -9,7 +9,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
         private readonly IProfanityListProvider _profanityListProvider;
 
         public ProfanityCheckValidator(IProfanityListProvider profanityListProvider) 
-            : base("'{PropertyValue}' must not contain a banned word or phrase.")
+            : base("{PropertyName} must not contain a banned word or phrase.")
         {
             _profanityListProvider = profanityListProvider;
         }

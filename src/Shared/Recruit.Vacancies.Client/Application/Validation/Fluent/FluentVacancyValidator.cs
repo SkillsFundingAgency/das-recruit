@@ -115,8 +115,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithMessage("Title must contain the word 'apprentice' or 'apprenticeship'")
                     .WithErrorCode("200")
              .ProfanityCheck(_profanityListProvider)
-             .WithMessage("Title must not contain a banned word or phrase.")
-             .WithErrorCode("4")
              .RunCondition(VacancyRuleSet.Title)
                 .WithRuleId(VacancyRuleSet.Title);
         }
