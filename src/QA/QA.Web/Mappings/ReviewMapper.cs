@@ -153,6 +153,8 @@ namespace Esfa.Recruit.Qa.Web.Mappings
 
             var programme = programmeTask.Result;
 
+            var currentVacancyResult = currentVacancy.Result;
+
             var historiesVm = GetReviewHistoriesViewModel(reviewHistoryTask.Result);
 
             var vm = new ReviewViewModel();
@@ -216,14 +218,12 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 vm.FieldIdentifiers = await GetFieldIdentifiersViewModel(review);
                 vm.ReviewerComment = review.ManualQaComment;
                 vm.ReviewHistories = historiesVm;
-                vm.IsResubmission = historiesVm.HasHistories;
+                vm.IsResubmission = review.SubmissionCount > 1;
 
                 vm.ReviewerName = review.ReviewedByUser.Name;
                 vm.ReviewedDate = review.ReviewedDate.GetValueOrDefault();
 
                 vm.ManualOutcome = review.ManualOutcome;
-
-                var currentVacancyResult = currentVacancy.Result;
 
                 if (review.Status == ReviewStatus.Closed)
                 {
