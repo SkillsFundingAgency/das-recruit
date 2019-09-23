@@ -1,4 +1,5 @@
-﻿using Esfa.Recruit.Vacancies.Client.Application.Providers;
+﻿using Esfa.Recruit.UnitTests.Vacancies.Client.Application.Rules.VacancyRules;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
@@ -18,7 +19,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation
         protected readonly IHtmlSanitizerService SanitizerService;
         protected readonly Mock<ITrainingProviderSummaryProvider> MockTrainingProviderSummaryProvider;
         protected readonly Mock<IBlockedOrganisationQuery> MockBlockedOrganisationRepo;
-        protected readonly Mock<IProfanityListProvider> MockProfanityListProvider;
+        protected readonly TestProfanityListProvider MockProfanityListProvider;
 
         protected VacancyValidationTestsBase()
         {
@@ -28,7 +29,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation
             SanitizerService = new HtmlSanitizerService(new Mock<ILogger<HtmlSanitizerService>>().Object);
             MockTrainingProviderSummaryProvider = new Mock<ITrainingProviderSummaryProvider>();
             MockBlockedOrganisationRepo = new Mock<IBlockedOrganisationQuery>();
-            MockProfanityListProvider = new Mock<IProfanityListProvider>();
+            MockProfanityListProvider = new TestProfanityListProvider();
         }
 
         protected IEntityValidator<Vacancy, VacancyRuleSet> Validator
@@ -39,7 +40,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation
                 var fluentValidator = new FluentVacancyValidator(timeProvider, MockMinimumWageService.Object, 
                     MockApprenticeshipProgrammeProvider.Object, MockQualificationsProvider.Object, SanitizerService, 
                     MockTrainingProviderSummaryProvider.Object, MockBlockedOrganisationRepo.Object,
-                    MockProfanityListProvider.Object);
+                    MockProfanityListProvider);
                 return new EntityValidator<Vacancy, VacancyRuleSet>(fluentValidator);
             }
         }
