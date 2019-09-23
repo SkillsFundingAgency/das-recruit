@@ -6,10 +6,10 @@
         <h1 class="govuk-heading-xl">Remove @Model.Name from the recruitment service</h1>
         <p class="govuk-body">Removing a training provider will do the following:</p>
         <ul class="govuk-list govuk-list--bullet">
-            <li asp-show="@Model.ShowPermissionsMessage">no longer be able to recruit on behalf of @Model.EmployerText </li>
-            <li asp-show="@Model.ShowPermissionsMessage">not be able to create or manage vacancies on the behalf of @Model.EmployerText</li>
+            <li asp-show="@Model.ShowPermissionsMessage">no longer be able to recruit apprentices</li>
+            <li asp-show="@Model.ShowPermissionsMessage">not be able to create or manage vacancies</li>
             <li>any vacancies created by @Model.Name will be transferred to the employer</li>
-            <li>no longer be able to access the recruitment service. Can still access the rest of the account</li>
+            <li>no longer be able to access the recruitment service. Can still access the rest of the apprenticeship services</li>
             <li>live vacancies using @Model.Name as the training provider will close</li>
         </ul>
         <form asp-route="@RouteNames.BlockProvider_Consent_Post">

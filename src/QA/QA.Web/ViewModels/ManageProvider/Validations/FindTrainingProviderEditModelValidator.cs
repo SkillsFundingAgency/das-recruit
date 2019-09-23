@@ -23,12 +23,12 @@ namespace Esfa.Recruit.QA.Web.ViewModels.ManageProvider.Validations
                 .NotEmpty()
                 .WithMessage("Please add a postcode to continue")
                 .ValidPostCode()
-                .WithMessage("Please add a valid postcode to continue");
+                .WithMessage("Please enter a valid postcode");
 
             RuleFor(vm => vm)
                 .MustAsync((m, model, cancellation) => DoesProviderExists(model, service))
                 .When(c => c.Ukprn != null && ValidationConstants.UkprnRegex.IsMatch(c.Ukprn) && !string.IsNullOrWhiteSpace(c.Postcode) && ValidationConstants.PostcodeRegex.IsMatch(c.Postcode))
-                .WithMessage("Please add a valid postcode and UKPRN to continue");
+                .WithMessage("The postcode provided doesn't match the training provider");
         }
 
         private async Task<bool> DoesProviderExists(FindTrainingProviderEditModel model, ITrainingProviderService service)
