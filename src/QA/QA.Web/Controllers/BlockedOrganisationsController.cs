@@ -15,11 +15,10 @@ namespace Esfa.Recruit.QA.Web.Controllers
     public class BlockedOrganisationsController : Controller
     {
         private readonly BlockedOrganisationsOrchestrator _orchestrator;
-        private readonly UserAuthorizationService _userAuthorizationService;
-        public BlockedOrganisationsController(UserAuthorizationService userAuthorizationService, BlockedOrganisationsOrchestrator orchestrator)
+
+        public BlockedOrganisationsController(BlockedOrganisationsOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
-            _userAuthorizationService = userAuthorizationService;
         }
 
         [HttpGet("", Name = RouteNames.BlockedOrganisations_Get)]

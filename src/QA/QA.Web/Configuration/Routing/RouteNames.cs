@@ -24,6 +24,9 @@
         public const string BlockProvider_Consent_Post = "BlockProvider_Consent_Post";
         public const string BlockProvider_Acknowledgement_Get = "BlockProvider_Acknowledgement_Get";
         public const string BlockProvider_AlreadyBlocked_Get = "BlockProvider_AlreadyBlocked_Get";
+        public const string UnBlockProvider_Confirm_Get = "UnBlockProvider_Confirm_Get";
+        public const string UnBlockProvider_Confirm_Post = "UnBlockProvider_Confirm_Post";
+        public const string UnBlockProvider_Acknowledgement_Get = "UnBlockProvider_Acknowledgement_Get";
         public const string WithdrawVacancy_FindVacancy_Get = "WithdrawVacancy_FindVacancy_Get";
         public const string WithdrawVacancy_FindVacancy_Post = "WithdrawVacancy_FindVacancy_Post";
         public const string WithdrawVacancy_AlreadyClosed_Get = "WithdrawVacancy_AlreadyClosed_Get";

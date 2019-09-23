@@ -37,7 +37,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var collection = GetCollection<BlockedOrganisation>();
 
             var result = await RetryPolicy.ExecuteAsync(_ =>
-                collection.Find(filter).SortBy(bo => bo.UpdatedDate).FirstOrDefaultAsync(),
+                collection.Find(filter)
+                    .SortByDescending(bo => bo.UpdatedDate).FirstOrDefaultAsync(),
             new Context(nameof(GetByOrganisationIdAsync)));
 
             return result;
