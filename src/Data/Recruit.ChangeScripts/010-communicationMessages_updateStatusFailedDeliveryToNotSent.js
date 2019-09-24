@@ -7,8 +7,8 @@
         "$set": { "status": "NotSent" }
     });
 
-    if (writeResult.hasWriteConcernError()) {
-        printjson(writeResult.writeConcernError);
+    if (writeResult.matchedCount !== writeResult.modifiedCount) {
+        printjson("Error occurred updating communicationMessages status field.");
         quit(14);
     }
 

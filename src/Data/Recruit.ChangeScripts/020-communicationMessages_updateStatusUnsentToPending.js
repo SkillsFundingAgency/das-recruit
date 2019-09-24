@@ -7,8 +7,8 @@
         "$set": { "status": "Pending" }
     });
 
-    if (writeResult.hasWriteConcernError()) {
-        printjson(writeResult.writeConcernError);
+    if (writeResult.matchedCount !== writeResult.modifiedCount) {
+        printjson("Error occurred updating vacancy with legalEntityId field.");
         quit(14);
     }
 
