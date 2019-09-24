@@ -31,13 +31,15 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                     _client, _vacancyClient, vrm, RouteNames.LegalEntityAgreement_SoftStop_Get);
 
             var legalEntityId = selectedLegalEntityId.HasValue ? selectedLegalEntityId.Value : vacancy.LegalEntityId;
-            
+
+            var legalEntity =
+                await _legalEntityAgreementService.GetLegalEntityAsync(vrm.EmployerAccountId, legalEntityId);
             return new LegalEntityAgreementSoftStopViewModel
             {                
                 HasLegalEntityAgreement = 
                     await _legalEntityAgreementService.HasLegalEntityAgreementAsync(
                         vacancy.EmployerAccountId, legalEntityId),
-                LegalEntityName = vacancy.LegalEntityName,
+                LegalEntityName = legalEntity.Name,
                 PageInfo = Utility.GetPartOnePageInfo(vacancy)
             };
         }
