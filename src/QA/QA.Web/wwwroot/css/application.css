@@ -467,3 +467,10 @@ mce-tinymce {
 .govuk-button--warning,.govuk-button--warning:link,.govuk-button--warning:visited,.govuk-button--warning:active,.govuk-button--warning:hover {
   color: #fff
 }
+
+/*** Additional error style ***/
+.govuk-error-summary__list span {
+    color: #b10e1e;
+    font-weight: 700;
+}
+
