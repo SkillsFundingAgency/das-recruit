@@ -19,7 +19,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
 
             var freeText = (string)context.PropertyValue;
 
-            if (profanityList.Result.Any(freeText.Contains))
+            if (freeText != null && profanityList.Result.Any(freeText.Contains))
                 return false;
             return true;
         }
