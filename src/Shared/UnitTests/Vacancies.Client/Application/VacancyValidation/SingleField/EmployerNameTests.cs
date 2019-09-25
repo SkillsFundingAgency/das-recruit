@@ -89,5 +89,21 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
             result.Errors.Any(e => e.ErrorCode == "406").Should().BeTrue();
             result.Errors.Any(e => e.ErrorCode == "407").Should().BeTrue();
         }
+
+        [Fact]
+        public void Anonymous_ShouldFailIfContainsWordsFromTheProfanityList()
+        {
+            var vacancy = new Vacancy()
+            {
+                EmployerName = "dangleberry company",
+                EmployerNameOption = EmployerNameOption.Anonymous,
+                AnonymousReason = "a valid reason"
+            };
+
+            var result = Validator.Validate(vacancy, VacancyRuleSet.EmployerNameOption);
+            result.HasErrors.Should().BeTrue();
+            result.Errors.Count.Should().Be(1);
+            result.Errors[0].ErrorCode.Should().Be("5");
+        }
     }
 }

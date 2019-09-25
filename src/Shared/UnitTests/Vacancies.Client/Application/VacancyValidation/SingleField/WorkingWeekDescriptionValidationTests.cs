@@ -88,5 +88,22 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
             result.Errors[0].ErrorCode.Should().Be("39");
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.WorkingWeekDescription);
         }
+
+        [Fact]
+        public void WorkingWeekDescription_ShouldFailIfContainsWordsFromTheProfanityList()
+        {
+            var vacancy = new Vacancy
+            {
+                Wage = new Wage
+                {
+                    WorkingWeekDescription = "a tomato can description for working week"
+                }
+            };
+            var result = Validator.Validate(vacancy, VacancyRuleSet.WorkingWeekDescription);
+            result.HasErrors.Should().BeTrue();
+            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Wage)}.{nameof(vacancy.Wage.WorkingWeekDescription)}");
+            result.Errors.Count.Should().Be(1);
+            result.Errors[0].ErrorCode.Should().Be("5");
+        }
     }
 }

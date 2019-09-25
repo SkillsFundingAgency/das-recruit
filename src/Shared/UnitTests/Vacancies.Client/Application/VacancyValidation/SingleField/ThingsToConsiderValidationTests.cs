@@ -56,5 +56,20 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
             result.Errors[0].ErrorCode.Should().Be("76");
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.ThingsToConsider);
         }
+
+        [Fact]
+        public void ThingsToConsider_ShouldFailIfContainsWordsFromTheProfanityList()
+        {
+            var vacancy = new Vacancy()
+            {
+                ThingsToConsider = "consider dangleberry"
+            };
+
+            var result = Validator.Validate(vacancy, VacancyRuleSet.ThingsToConsider);
+            result.HasErrors.Should().BeTrue();
+            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.ThingsToConsider));
+            result.Errors.Count.Should().Be(1);
+            result.Errors[0].ErrorCode.Should().Be("5");
+        }
     }
 }

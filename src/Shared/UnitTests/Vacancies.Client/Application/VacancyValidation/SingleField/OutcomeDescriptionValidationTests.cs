@@ -84,5 +84,20 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
                 result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.OutcomeDescription);
             }
         }
+
+        [Fact]
+        public void OutcomeDescription_ShouldFailIfContainsWordsFromTheProfanityList()
+        {
+            var vacancy = new Vacancy()
+            {
+                OutcomeDescription = "a employer description dangleberry"
+            };
+
+            var result = Validator.Validate(vacancy, VacancyRuleSet.OutcomeDescription);
+            result.HasErrors.Should().BeTrue();
+            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.OutcomeDescription));
+            result.Errors.Count.Should().Be(1);
+            result.Errors[0].ErrorCode.Should().Be("5");
+        }
     }
 }
