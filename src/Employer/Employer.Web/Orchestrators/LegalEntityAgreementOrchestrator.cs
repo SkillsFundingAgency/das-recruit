@@ -32,13 +32,19 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             var legalEntityId = selectedLegalEntityId.HasValue ? selectedLegalEntityId.Value : vacancy.LegalEntityId;
 
-            var legalEntity =
-                await _legalEntityAgreementService.GetLegalEntityAsync(vrm.EmployerAccountId, legalEntityId);
+            var legalEntityTask =
+                _legalEntityAgreementService.GetLegalEntityAsync(vrm.EmployerAccountId, legalEntityId);
+            var hasLegalEntityAgreementTask =
+                _legalEntityAgreementService.HasLegalEntityAgreementAsync(
+                    vacancy.EmployerAccountId, legalEntityId);
+            await Task.WhenAll(legalEntityTask, hasLegalEntityAgreementTask);
+
+            var legalEntity = legalEntityTask.Result;
+            var hasLegalEntityAgreement = hasLegalEntityAgreementTask.Result;
+
             return new LegalEntityAgreementSoftStopViewModel
             {                
-                HasLegalEntityAgreement = 
-                    await _legalEntityAgreementService.HasLegalEntityAgreementAsync(
-                        vacancy.EmployerAccountId, legalEntityId),
+                HasLegalEntityAgreement = hasLegalEntityAgreement,
                 LegalEntityName = legalEntity.Name,
                 PageInfo = Utility.GetPartOnePageInfo(vacancy)
             };
