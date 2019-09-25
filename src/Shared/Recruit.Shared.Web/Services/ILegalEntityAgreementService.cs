@@ -8,5 +8,6 @@ namespace Esfa.Recruit.Shared.Web.Services
     {
         Task<bool> HasLegalEntityAgreementAsync(string employerAccountId, long legalEntityId);
         Task<LegalEntity> GetLegalEntityAsync(string employerAccountId, long legalEntityId);
+        Task<bool> HasLegalEntityAgreementAsync(string employerAccountId, LegalEntity legalEntity);
     }
 }
