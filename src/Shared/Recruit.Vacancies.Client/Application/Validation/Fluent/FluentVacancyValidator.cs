@@ -330,7 +330,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                         .WithMessage("Working week details must not exceed {MaxLength} characters")
                         .WithErrorCode("39")
                     .ProfanityCheck(_profanityListProvider)
-                    .WithMessage("Working week must not contain a banned word or phrase.")
+                    .WithMessage("Working week details must not contain a banned word or phrase.")
                     .WithErrorCode("5")
                     .RunCondition(VacancyRuleSet.WorkingWeekDescription)
                     .WithRuleId(VacancyRuleSet.WorkingWeekDescription);

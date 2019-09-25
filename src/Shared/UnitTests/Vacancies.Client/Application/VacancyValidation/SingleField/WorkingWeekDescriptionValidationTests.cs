@@ -96,7 +96,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
             {
                 Wage = new Wage
                 {
-                    WorkingWeekDescription = "a tomato can description for working week"
+                    WorkingWeekDescription = "a tomato can description for working week dangleberry"
                 }
             };
             var result = Validator.Validate(vacancy, VacancyRuleSet.WorkingWeekDescription);
