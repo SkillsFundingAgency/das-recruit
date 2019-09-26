@@ -4,6 +4,7 @@ using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.LegalEntityAgreement;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
@@ -31,13 +32,18 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                     _client, _vacancyClient, vrm, RouteNames.LegalEntityAgreement_SoftStop_Get);
 
             var legalEntityId = selectedLegalEntityId.HasValue ? selectedLegalEntityId.Value : vacancy.LegalEntityId;
+
+            LegalEntity legalEntity = await
+                _legalEntityAgreementService.GetLegalEntityAsync(vrm.EmployerAccountId, legalEntityId);
+
+            var hasLegalEntityAgreement = await
+                _legalEntityAgreementService.HasLegalEntityAgreementAsync(
+                    vacancy.EmployerAccountId, legalEntity);
             
             return new LegalEntityAgreementSoftStopViewModel
             {                
-                HasLegalEntityAgreement = 
-                    await _legalEntityAgreementService.HasLegalEntityAgreementAsync(
-                        vacancy.EmployerAccountId, legalEntityId),
-                LegalEntityName = vacancy.LegalEntityName,
+                HasLegalEntityAgreement = hasLegalEntityAgreement,
+                LegalEntityName = legalEntity.Name,
                 PageInfo = Utility.GetPartOnePageInfo(vacancy)
             };
         }
@@ -50,7 +56,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return new LegalEntityAgreementHardStopViewModel
             {
                 HasLegalEntityAgreement = await _legalEntityAgreementService.HasLegalEntityAgreementAsync(
-                    vacancy.EmployerAccountId, vacancy.LegalEntityId),
+                    vacancy.EmployerAccountId, vacancy.LegalEntityId)
             };
         }
     }

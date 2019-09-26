@@ -18,9 +18,14 @@ namespace Esfa.Recruit.Shared.Web.Services
         {
             var legalEntity = await GetLegalEntityAsync(employerAccountId, legalEntityId);
 
-            if(legalEntity == null)
+             return await HasLegalEntityAgreementAsync(employerAccountId, legalEntity);
+        }
+
+        public async Task<bool> HasLegalEntityAgreementAsync(string employerAccountId, LegalEntity legalEntity)
+        {
+            if (legalEntity == null)
                 return false;
-            
+
             if (legalEntity.HasLegalEntityAgreement)
                 return true;
 
@@ -35,7 +40,7 @@ namespace Esfa.Recruit.Shared.Web.Services
             return hasLegalEntityAgreement;
         }
 
-        private async Task<LegalEntity> GetLegalEntityAsync(string employerAccountId, long legalEntityId)
+        public async Task<LegalEntity> GetLegalEntityAsync(string employerAccountId, long legalEntityId)
         {
             var employerData = await _client.GetEditVacancyInfoAsync(employerAccountId);
 
@@ -44,7 +49,7 @@ namespace Esfa.Recruit.Shared.Web.Services
             return legalEntity;
         }
 
-        private async Task<bool> CheckEmployerServiceForLegalEntityAgreementAsync(string employerAccountId, long legalEntityId)
+       private async Task<bool> CheckEmployerServiceForLegalEntityAgreementAsync(string employerAccountId, long legalEntityId)
         {
             var legalEntities = await _client.GetEmployerLegalEntitiesAsync(employerAccountId);
 
