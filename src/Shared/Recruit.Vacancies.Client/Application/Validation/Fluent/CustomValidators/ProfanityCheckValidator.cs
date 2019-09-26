@@ -1,5 +1,7 @@
 using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
+using Esfa.Recruit.Vacancies.Client.Application.Rules.Extensions;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Profanities;
 using FluentValidation.Validators;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators
@@ -19,8 +21,18 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
 
             var freeText = (string)context.PropertyValue;
 
-            if (freeText != null && profanityList.Result.Any(freeText.Contains))
-                return false;
+            foreach (var profanity in profanityList.Result)
+            {
+                if (freeText != null)
+                {
+                    var occurrences = freeText.CountOccurrences(profanity);
+
+                    if (occurrences > 0)
+                    {
+                        return false;
+                    }
+                }
+            }
             return true;
         }
     }

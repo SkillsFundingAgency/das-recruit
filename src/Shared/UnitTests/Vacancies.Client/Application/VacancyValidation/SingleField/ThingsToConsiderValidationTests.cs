@@ -57,19 +57,39 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.ThingsToConsider);
         }
 
-        [Fact]
-        public void ThingsToConsider_ShouldFailIfContainsWordsFromTheProfanityList()
+        [Theory]
+        [InlineData("some text bother")]
+        [InlineData("some text dang")]
+        [InlineData("some text drat")]
+        [InlineData("some text balderdash")]
+        public void ThingsToConsider_ShouldFailIfContainsWordsFromTheProfanityList(string freeText)
         {
             var vacancy = new Vacancy()
             {
-                ThingsToConsider = "consider dangleberry"
+                ThingsToConsider = freeText
             };
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.ThingsToConsider);
             result.HasErrors.Should().BeTrue();
             result.Errors[0].PropertyName.Should().Be(nameof(vacancy.ThingsToConsider));
             result.Errors.Count.Should().Be(1);
-            result.Errors[0].ErrorCode.Should().Be("5");
+            result.Errors[0].ErrorCode.Should().Be("613");
+        }
+
+        [Theory]
+        [InlineData("some textbother")]
+        [InlineData("some textdang")]
+        [InlineData("some textdrat")]
+        [InlineData("some textbalderdash")]
+        public void ThingsToConsider_Should_Not_FailIfContainsWordsFromTheProfanityList(string freeText)
+        {
+            var vacancy = new Vacancy()
+            {
+                ThingsToConsider = freeText
+            };
+
+            var result = Validator.Validate(vacancy, VacancyRuleSet.ThingsToConsider);
+            result.HasErrors.Should().BeFalse();
         }
     }
 }

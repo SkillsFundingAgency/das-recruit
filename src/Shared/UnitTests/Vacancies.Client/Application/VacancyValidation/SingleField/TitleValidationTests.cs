@@ -127,19 +127,39 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Title);
         }
 
-        [Fact]
-        public void Title_ShouldFailIfContainsWordsFromTheProfanityList()
+        [Theory]
+        [InlineData("some text bother apprentice")]
+        [InlineData("some text dang apprentice")]
+        [InlineData("some text drat apprentice")]
+        [InlineData("some text balderdash apprentice")]
+        public void Title_ShouldFailIfContainsWordsFromTheProfanityList(string freeText)
         {
             var vacancy = new Vacancy()
             {
-                Title = "vacancy title dangleberry apprentice"
+                Title = freeText
             };
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.Title);
             result.HasErrors.Should().BeTrue();
             result.Errors[0].PropertyName.Should().Be(nameof(vacancy.Title));
             result.Errors.Count.Should().Be(1);
-            result.Errors[0].ErrorCode.Should().Be("5");
+            result.Errors[0].ErrorCode.Should().Be("601");
+        }
+
+        [Theory]
+        [InlineData("some textbother apprentice")]
+        [InlineData("some textdang apprentice")]
+        [InlineData("some textdrat apprentice")]
+        [InlineData("some textbalderdash apprentice")]
+        public void Title_ShouldFail_Not_IfContainsWordsFromTheProfanityList(string freeText)
+        {
+            var vacancy = new Vacancy()
+            {
+                Title = freeText
+            };
+
+            var result = Validator.Validate(vacancy, VacancyRuleSet.Title);
+            result.HasErrors.Should().BeFalse();
         }
     }
 }
