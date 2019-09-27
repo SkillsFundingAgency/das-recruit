@@ -88,5 +88,44 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
             result.Errors[0].ErrorCode.Should().Be("39");
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.WorkingWeekDescription);
         }
+
+        [Theory]
+        [InlineData("some text bother")]
+        [InlineData("some text dang")]
+        [InlineData("some text drat")]
+        [InlineData("some text balderdash")]
+        public void WorkingWeekDescription_ShouldFailIfContainsWordsFromTheProfanityList(string freeText)
+        {
+            var vacancy = new Vacancy
+            {
+                Wage = new Wage
+                {
+                    WorkingWeekDescription = freeText
+                }
+            };
+            var result = Validator.Validate(vacancy, VacancyRuleSet.WorkingWeekDescription);
+            result.HasErrors.Should().BeTrue();
+            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Wage)}.{nameof(vacancy.Wage.WorkingWeekDescription)}");
+            result.Errors.Count.Should().Be(1);
+            result.Errors[0].ErrorCode.Should().Be("606");
+        }
+
+        [Theory]
+        [InlineData("some textbother")]
+        [InlineData("some textdang")]
+        [InlineData("some textdrat")]
+        [InlineData("some textbalderdash")]
+        public void WorkingWeekDescription_ShouldFail_Not_IfContainsWordsFromTheProfanityList(string freeText)
+        {
+            var vacancy = new Vacancy
+            {
+                Wage = new Wage
+                {
+                    WorkingWeekDescription = freeText
+                }
+            };
+            var result = Validator.Validate(vacancy, VacancyRuleSet.WorkingWeekDescription);
+            result.HasErrors.Should().BeFalse();
+        }
     }
 }

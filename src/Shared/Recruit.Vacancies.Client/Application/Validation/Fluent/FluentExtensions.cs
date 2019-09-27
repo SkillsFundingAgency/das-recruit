@@ -2,6 +2,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidato
 using FluentValidation;
 using FluentValidation.Internal;
 using System;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
@@ -25,6 +26,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         public static IRuleBuilderOptions<T, string> ValidUkprn<T>(this IRuleBuilder<T, string> rule)
         {
             return rule.SetValidator(new UkprnValidator());
+        }
+
+        public static IRuleBuilderOptions<T, string> ProfanityCheck<T>(this IRuleBuilder<T, string> rule, IProfanityListProvider profanityListProvider)
+        {
+            return rule.SetValidator(new ProfanityCheckValidator(profanityListProvider));
         }
 
         internal static bool BeValidWebUrl(string arg)

@@ -89,5 +89,43 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
             result.Errors.Any(e => e.ErrorCode == "406").Should().BeTrue();
             result.Errors.Any(e => e.ErrorCode == "407").Should().BeTrue();
         }
+
+        [Theory]
+        [InlineData("some text bother")]
+        [InlineData("some text dang")]
+        [InlineData("some text drat")]
+        [InlineData("some text balderdash")]
+        public void Anonymous_ShouldFailIfContainsWordsFromTheProfanityList(string freeText)
+        {
+            var vacancy = new Vacancy()
+            {
+                EmployerName = freeText,
+                EmployerNameOption = EmployerNameOption.Anonymous,
+                AnonymousReason = "a valid reason"
+            };
+
+            var result = Validator.Validate(vacancy, VacancyRuleSet.EmployerNameOption);
+            result.HasErrors.Should().BeTrue();
+            result.Errors.Count.Should().Be(1);
+            result.Errors[0].ErrorCode.Should().Be("603");
+        }
+
+        [Theory]
+        [InlineData("some textbother")]
+        [InlineData("some textdang")]
+        [InlineData("some textdrat")]
+        [InlineData("some textbalderdash")]
+        public void Anonymous_Should_Not_FailIfContainsWordsFromTheProfanityList(string freeText)
+        {
+            var vacancy = new Vacancy()
+            {
+                EmployerName = freeText,
+                EmployerNameOption = EmployerNameOption.Anonymous,
+                AnonymousReason = "a valid reason"
+            };
+
+            var result = Validator.Validate(vacancy, VacancyRuleSet.EmployerNameOption);
+            result.HasErrors.Should().BeFalse();
+        }
     }
 }

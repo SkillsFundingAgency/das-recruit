@@ -75,5 +75,40 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
             result.Errors[0].ErrorCode.Should().Be("78");
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.EmployerDescription);
         }
+
+        [Theory]
+        [InlineData("some text bother")]
+        [InlineData("some text dang")]
+        [InlineData("some text drat")]
+        [InlineData("some text balderdash")]
+        public void EmployerDescription_ShouldFailIfContainsWordsFromTheProfanityList(string freeText)
+        {
+            var vacancy = new Vacancy()
+            {
+                Description = freeText
+            };
+
+            var result = Validator.Validate(vacancy, VacancyRuleSet.Description);
+            result.HasErrors.Should().BeTrue();
+            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.Description));
+            result.Errors.Count.Should().Be(1);
+            result.Errors[0].ErrorCode.Should().Be("609");
+        }
+
+        [Theory]
+        [InlineData("some textbother")]
+        [InlineData("some textdang")]
+        [InlineData("some textdrat")]
+        [InlineData("some textbalderdash")]
+        public void EmployerDescription_Should_Not_FailIfContainsWordsFromTheProfanityList(string freeText)
+        {
+            var vacancy = new Vacancy()
+            {
+                Description = freeText
+            };
+
+            var result = Validator.Validate(vacancy, VacancyRuleSet.Description);
+            result.HasErrors.Should().BeFalse();
+        }
     }
 }

@@ -114,5 +114,40 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
             result.Errors[0].ErrorCode.Should().Be("15");
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.ShortDescription);
         }
+
+        [Theory]
+        [InlineData("some text bother random text random text random text random text")]
+        [InlineData("some text dang random text random text random text random text")]
+        [InlineData("some text drat random text random text random text random text")]
+        [InlineData("some text balderdash random text random text random text random text")]
+        public void ShortDescription_Should_Fail_IfContainsWordsFromTheProfanityList(string freeText)
+        {
+            var vacancy = new Vacancy()
+            {
+                ShortDescription = freeText
+            };
+
+            var result = Validator.Validate(vacancy, VacancyRuleSet.ShortDescription);
+            result.HasErrors.Should().BeTrue();
+            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.ShortDescription));
+            result.Errors.Count.Should().Be(1);
+            result.Errors[0].ErrorCode.Should().Be("605");
+        }
+
+        [Theory]
+        [InlineData("some textbother random text random text random text random text")]
+        [InlineData("some textdang random text random text random text random text")]
+        [InlineData("some textdrat random text random text random text random text")]
+        [InlineData("some textbalderdash random text random text random text random text")]
+        public void ShortDescription_Should_Not_Fail_IfContainsWordsFromTheProfanityList(string freeText)
+        {
+            var vacancy = new Vacancy()
+            {
+                ShortDescription = freeText
+            };
+
+            var result = Validator.Validate(vacancy, VacancyRuleSet.ShortDescription);
+            result.HasErrors.Should().BeFalse();
+        }
     }
 }
