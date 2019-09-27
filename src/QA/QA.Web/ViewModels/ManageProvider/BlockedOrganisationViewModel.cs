@@ -7,5 +7,6 @@ namespace Esfa.Recruit.QA.Web.ViewModels.ManageProvider
         public string Postcode { get; set; }
         public string BlockedOn { get; set; }
         public string BlockedBy { get; set; }
+        public string Ukprn { get; set; }
     }
 }

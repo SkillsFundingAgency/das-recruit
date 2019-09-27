@@ -38,7 +38,7 @@
                 @foreach (var organisation in Model.BlockedOrganisations)
                 {
                     <tr class="govuk-table__row">
-                        <td class="govuk-table__cell">@organisation.OrganisationName</td>
+                        <td class="govuk-table__cell">@organisation.OrganisationName (@organisation.Ukprn)</td>
                         <td class="govuk-table__cell">@organisation.Postcode</td>
                         <td class="govuk-table__cell">@organisation.BlockedOn</td>
                         <td class="govuk-table__cell">@organisation.BlockedBy</td>
