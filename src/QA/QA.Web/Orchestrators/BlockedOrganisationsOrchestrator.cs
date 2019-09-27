@@ -114,6 +114,7 @@ namespace Esfa.Recruit.QA.Web.Orchestrators
                 var prov = await _trainingProviderService.GetProviderAsync(ukprn);
                 vm.OrganisationName = prov?.Name;
                 vm.Postcode = prov?.Address?.Postcode;
+                vm.Ukprn = prov?.Ukprn.ToString();
             }
 
             return new BlockedOrganisationsViewModel { BlockedOrganisations = blockedOrganisationViewModels };

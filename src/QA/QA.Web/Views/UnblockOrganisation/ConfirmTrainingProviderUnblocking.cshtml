@@ -8,6 +8,7 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' asp-show="@ViewData.ModelState.IsValid == false" />
         <p class="govuk-body">
             Restoring access to the recruitment service will allow the training provider to create or manage vacancies on behalf of employers.
         </p>
