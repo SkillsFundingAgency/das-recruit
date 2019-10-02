@@ -8,7 +8,7 @@ namespace Communication.Core
 {
     public class AggregateCommunicationComposeQueuePublisher : IAggregateCommunicationComposeQueuePublisher
     {
-        private const string QueueName = "communication-messages-composer-queue";
+        private const string QueueName = "aggregate-communication-composer-requests-queue";
         private readonly string _storageConnectionString;
 
         public AggregateCommunicationComposeQueuePublisher(string storageConnectionString)
