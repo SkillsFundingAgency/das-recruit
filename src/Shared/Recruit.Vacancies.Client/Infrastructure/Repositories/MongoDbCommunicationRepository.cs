@@ -62,7 +62,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var filter = builder.Eq(cm => cm.RequestType, requestType) &
                         builder.Eq(cm => cm.Frequency, frequency) &
                         builder.Eq(cm => cm.Status, CommunicationMessageStatus.Pending) &
-                        builder.Gte(cm => cm.RequestDateTime, from);
+                        builder.Gte(cm => cm.RequestDateTime, from) &
                         builder.Lte(cm => cm.RequestDateTime, to);
             var collection = GetCollection<CommunicationMessage>();
             var result = await RetryPolicy.ExecuteAsync(_ =>
