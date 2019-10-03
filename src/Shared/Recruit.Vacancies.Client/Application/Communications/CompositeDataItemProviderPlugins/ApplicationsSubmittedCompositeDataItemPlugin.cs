@@ -39,7 +39,7 @@ namespace Recruit.Vacancies.Client.Application.Communications.CompositeDataItemP
                 var msg = messages.First(m => m.DataItems.Exists(di => di.Key == CommunicationConstants.DataItemKeys.Vacancy.VacancyReference && di.Value == vr));
                 var applicationCount = vacanciesAndNewApplicationCounts.First(va => va.Key == long.Parse(vr)).Value;
                 var vacancyTitle = msg.DataItems.Single(di => di.Key == CommunicationConstants.DataItemKeys.Vacancy.VacancyTitle).Value;
-                var employerName = msg.DataItems.Single(di => di.Key == CommunicationConstants.DataItemKeys.Vacancy.VacancyTitle).Value;
+                var employerName = msg.DataItems.Single(di => di.Key == CommunicationConstants.DataItemKeys.Vacancy.EmployerName).Value;
 
                 sb.AppendLine($"VAC{vr}: {vacancyTitle}");
                 sb.AppendLine(employerName);
