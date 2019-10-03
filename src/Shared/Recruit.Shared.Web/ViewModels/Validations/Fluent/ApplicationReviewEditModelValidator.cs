@@ -24,7 +24,7 @@ namespace Esfa.Recruit.Shared.Web.ViewModels.Validations.Fluent
                     .ValidFreeTextCharacters()
                     .WithMessage(ApplicationReviewValidator.CandidateFeedbackFreeTextCharacters)
                     .ProfanityCheck(profanityListProvider)
-                    .WithMessage("Feedback must not contain a banned word or phrase.")
+                    .WithMessage(ApplicationReviewValidator.CandidateFeedbackProfanityPhrases)
                     .WithErrorCode("617");
             });
         }

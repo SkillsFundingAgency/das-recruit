@@ -6,18 +6,22 @@ using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using FluentAssertions;
+using Moq;
 using Xunit;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.ApplicationReview
 {
     public class ApplicationReviewEditModelTests
     {
-        protected readonly TestProfanityListProvider MockProfanityListProvider;
+        protected readonly Mock<IProfanityListProvider> _mockProfanityListProvider;
 
         public ApplicationReviewEditModelTests()
         {
-            MockProfanityListProvider = new TestProfanityListProvider();
+            _mockProfanityListProvider = new Mock<IProfanityListProvider>();
+
+            _mockProfanityListProvider.Setup(x => x.GetProfanityListAsync()).Returns(GetProfanityListAsync());
         }
+
 
         [Fact]
         public void ShouldRequireOutcome()
@@ -27,7 +31,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.ApplicationRev
                 Outcome = null
             };
 
-            var validator = new ApplicationReviewEditModelValidator(MockProfanityListProvider);
+            var validator = new ApplicationReviewEditModelValidator(_mockProfanityListProvider.Object);
 
             var result = validator.Validate(m);
 
@@ -60,7 +64,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.ApplicationRev
                 CandidateFeedback = candidateFeedback
             };
 
-            var validator = new ApplicationReviewEditModelValidator(MockProfanityListProvider);
+            var validator = new ApplicationReviewEditModelValidator(_mockProfanityListProvider.Object);
 
             var result = validator.Validate(m);
 
@@ -80,7 +84,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.ApplicationRev
                 CandidateFeedback = feedback
             };
 
-            var validator = new ApplicationReviewEditModelValidator(MockProfanityListProvider);
+            var validator = new ApplicationReviewEditModelValidator(_mockProfanityListProvider.Object);
 
             var result = validator.Validate(m);
 
@@ -96,7 +100,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.ApplicationRev
                 CandidateFeedback = "?$@#()\"\'\\!,+-=_:;.&€£*%/[] \\A-Z \a-z \0-9 your comments will be sent to the candidate."
             };
 
-            var validator = new ApplicationReviewEditModelValidator(MockProfanityListProvider);
+            var validator = new ApplicationReviewEditModelValidator(_mockProfanityListProvider.Object);
 
             var result = validator.Validate(m);
 
@@ -116,19 +120,17 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.ApplicationRev
                 CandidateFeedback = feedback
             };
 
-            var validator = new ApplicationReviewEditModelValidator(MockProfanityListProvider);
+            var validator = new ApplicationReviewEditModelValidator(_mockProfanityListProvider.Object);
             var result = validator.Validate(m);
             result.IsValid.Should().BeFalse();
             result.Errors.Count.Should().Be(1);
             result.Errors[0].ErrorCode.Should().Be("617");
         }
-    }
-
-    public class TestProfanityListProvider : IProfanityListProvider
-    {
         public Task<IEnumerable<string>> GetProfanityListAsync()
         {
             return Task.FromResult<IEnumerable<string>>(new[] { "bother", "dang", "balderdash", "drat" });
         }
     }
+
+    
 }
