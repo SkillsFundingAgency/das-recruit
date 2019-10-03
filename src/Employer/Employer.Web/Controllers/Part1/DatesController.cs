@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
@@ -6,6 +7,7 @@ using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Dates;
 using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Vacancies.Client.Application.Validation;
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 {
@@ -40,6 +42,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             if (!ModelState.IsValid)
             {
                 var vm = await _orchestrator.GetDatesViewModelAsync(m);
+                vm.CanShowTrainingErrorHint = response.Errors.Errors.Any(e => e.ErrorCode == ErrorCodes.TrainingExpiryDate);
                 vm.PageInfo.SetWizard(wizard);
                 return View(vm);
             }

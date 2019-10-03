@@ -9,6 +9,7 @@ using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.Extensions.Logging;
 
@@ -16,18 +17,20 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
     public class DatesOrchestrator : EntityValidatingOrchestrator<Vacancy, DatesEditModel>
     {
-        private const VacancyRuleSet ValidationRules = VacancyRuleSet.ClosingDate | VacancyRuleSet.StartDate | VacancyRuleSet.StartDateEndDate;
+        private const VacancyRuleSet ValidationRules = VacancyRuleSet.ClosingDate | VacancyRuleSet.StartDate | VacancyRuleSet.StartDateEndDate | VacancyRuleSet.TrainingExpiryDate;
         private readonly IEmployerVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly ITimeProvider _timeProvider;
         private readonly IReviewSummaryService _reviewSummaryService;
+        private readonly IApprenticeshipProgrammeProvider _apprenticeshipProgrammeProvider;
 
-        public DatesOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<DatesOrchestrator> logger, ITimeProvider timeProvider, IReviewSummaryService reviewSummaryService) : base(logger)
+        public DatesOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<DatesOrchestrator> logger, ITimeProvider timeProvider, IReviewSummaryService reviewSummaryService, IApprenticeshipProgrammeProvider apprenticeshipProgrammeProvider) : base(logger)
         {
             _client = client;
             _vacancyClient = vacancyClient;
             _timeProvider = timeProvider;
             _reviewSummaryService = reviewSummaryService;
+            _apprenticeshipProgrammeProvider = apprenticeshipProgrammeProvider;
         }
         
         public async Task<DatesViewModel> GetDatesViewModelAsync(VacancyRouteModel vrm)
@@ -55,6 +58,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 vm.StartMonth = $"{vacancy.StartDate.Value.Month:00}";
                 vm.StartYear = $"{vacancy.StartDate.Value.Year}";
             }
+
+            await SetTrainingProgrammeAsync(vacancy, vm);
 
             if (vacancy.Status == VacancyStatus.Referred)
             {
@@ -96,6 +101,20 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 v => _vacancyClient.Validate(v, ValidationRules),
                 v => _vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
             );
+        }
+
+        private async Task SetTrainingProgrammeAsync(Vacancy vacancy, DatesViewModel vm)
+        {
+            if (string.IsNullOrEmpty(vacancy.ProgrammeId))
+                return;
+
+            var programme = await _apprenticeshipProgrammeProvider.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
+
+            if (programme?.EffectiveTo.HasValue == true)
+            {
+                vm.TrainingDescription = $"{programme.Title}, Level:{(int)programme.Level}";
+                vm.TrainingEffectiveToDate = programme.EffectiveTo.Value.AsGdsDate();
+            }
         }
 
         protected override EntityToViewModelPropertyMappings<Vacancy, DatesEditModel> DefineMappings()
