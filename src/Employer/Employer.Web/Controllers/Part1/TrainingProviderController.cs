@@ -101,7 +101,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         {
             return wizard
                 ? RedirectToRoute(RouteNames.NumberOfPositions_Get)
-                : RedirectToRoute(RouteNames.Vacancy_Preview_Get, null, Anchors.TrainingProviderSection);
+                : RedirectToRoute(RouteNames.Vacancy_Preview_Get);
         }
 
         public void AddTrainingProviderErrorsToModelState(TrainingProviderSelectionType selectionType, string ukprn, OrchestratorResponse response, ModelStateDictionary modelState)
