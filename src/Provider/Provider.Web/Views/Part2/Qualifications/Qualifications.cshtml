@@ -35,10 +35,11 @@
                             @qualification.Weighting.GetDisplayName()
                         </td>
                         <td class="govuk-table__cell" role="gridcell">
-                            <form asp-route="@RouteNames.Qualification_Delete_Post">
+                            <form asp-route="@RouteNames.Qualification_Delete_Post" class="govuk-!-display-inline">
                                 <input type="hidden" name="index" value="@i" />
                                 <button type="submit" class="button-fake-link govuk-link">Remove</button>
                             </form>
+                            <a asp-route="@RouteNames.Qualification_Edit_Get" asp-route-index="@i" class="govuk-link govuk-!-margin-left-1">Edit</a>
                         </td>
                     </tr>
                 }

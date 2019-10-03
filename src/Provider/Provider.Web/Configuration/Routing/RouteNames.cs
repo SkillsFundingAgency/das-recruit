@@ -55,7 +55,9 @@
         public const string ProviderContactDetails_Post = "ProviderContactDetails_Post";
         public const string Qualifications_Get = "Qualifications_Get";
         public const string Qualification_Add_Get = "Qualification_Add_Get";
+        public const string Qualification_Edit_Get = "Qualification_Edit_Get";
         public const string Qualification_Add_Post = "Qualification_Add_Post";
+        public const string Qualification_Edit_Post = "Qualification_Edit_Post";
         public const string Qualification_Delete_Post = "Qualification_Delete_Post";
         public const string ReportConfirmation_Get = "ReportConfirmation_Get";
         public const string ReportDashboard_DownloadCsv = "ReportDashboard_DownloadCsv";
