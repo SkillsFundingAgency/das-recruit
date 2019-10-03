@@ -666,7 +666,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
         private void TrainingExpiryDateValidation()
         {
-            When(x => x.ProgrammeId != null && !string.IsNullOrWhiteSpace(x.ProgrammeId) && x.StartDate.HasValue, () =>
+            When(x => !string.IsNullOrWhiteSpace(x.ProgrammeId) && x.StartDate.HasValue, () =>
             {
                 RuleFor(x => x)
                     .TrainingMustBeActiveForStartDate(_apprenticeshipProgrammesProvider)

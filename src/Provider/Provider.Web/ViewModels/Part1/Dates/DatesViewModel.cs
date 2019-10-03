@@ -59,5 +59,13 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Dates
         public PartOnePageInfoViewModel PageInfo { get; set; }
 
         public int CurrentYear { get; set; }
+
+        public string TrainingDescription { get; set; }
+        public string TrainingEffectiveToDate { get; set; }
+        public bool HasTrainingEffectiveToDate => string.IsNullOrEmpty(TrainingEffectiveToDate) == false;
+
+        public bool CanShowTrainingErrorHint { get; set; }
+        public bool CanShowTrainingHint => HasTrainingEffectiveToDate && CanShowTrainingErrorHint == false;
+
     }
 }
