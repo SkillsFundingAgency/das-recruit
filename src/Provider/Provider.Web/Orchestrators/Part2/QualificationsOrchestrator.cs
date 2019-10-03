@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
@@ -18,7 +19,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
 {
     public class QualificationsOrchestrator : EntityValidatingOrchestrator<Vacancy, QualificationEditModel>
     {
-        private const VacancyRuleSet ValidationRules = VacancyRuleSet.Qualifications;
         private readonly IProviderVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
@@ -58,62 +58,79 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
             return vm;
         }
 
-        public async Task<AddQualificationViewModel> GetAddQualificationViewModelAsync(VacancyRouteModel vrm)
+        public async Task<QualificationViewModel> GetQualificationViewModelForAddAsync(VacancyRouteModel vrm)
         {
             var vacancyTask = Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Qualification_Add_Get);
             var allQualificationsTask = _vacancyClient.GetCandidateQualificationsAsync();
 
             await Task.WhenAll(vacancyTask, allQualificationsTask);
 
-            var vm = new AddQualificationViewModel
-            {
-                Title = vacancyTask.Result.Title,
-                QualificationTypes = allQualificationsTask.Result,
-            };
+            var vm = GetQualificationViewModel(vacancyTask.Result, allQualificationsTask.Result);
 
             return vm;
         }
 
-        public async Task<AddQualificationViewModel> GetAddQualificationViewModelAsync(VacancyRouteModel vrm, QualificationEditModel m)
+        public async Task<QualificationViewModel> GetQualificationViewModelForEditAsync(VacancyRouteModel vrm, int index)
         {
-            var vm = await GetAddQualificationViewModelAsync(vrm);
+            var vacancyTask = Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Qualification_Edit_Get);
+            var allQualificationsTask = _vacancyClient.GetCandidateQualificationsAsync();
 
-            vm.QualificationType = m.QualificationType;
-            vm.Subject = m.Subject;
-            vm.Grade = m.Grade;
-            vm.Weighting = m.Weighting;
+            await Task.WhenAll(vacancyTask, allQualificationsTask);
+
+            var vacancy = vacancyTask.Result;
+
+            var vm = GetQualificationViewModel(vacancy, allQualificationsTask.Result);
+
+            ValidateIndex(index, vacancy.Qualifications);
+
+            var qualificationToEdit = vacancy.Qualifications[index];
+
+            vm.QualificationType = qualificationToEdit.QualificationType;
+            vm.Subject = qualificationToEdit.Subject;
+            vm.Grade = qualificationToEdit.Grade;
+            vm.Weighting = qualificationToEdit.Weighting;
 
             return vm;
         }
 
-        public async Task<OrchestratorResponse> PostAddQualificationEditModelAsync(VacancyRouteModel vrm, QualificationEditModel m, VacancyUser user)
+        public async Task<QualificationViewModel> GetQualificationViewModelForAddAsync(VacancyRouteModel vrm, QualificationEditModel m)
+        {
+            var vm = await GetQualificationViewModelForAddAsync(vrm);
+
+            SetQualificationViewModelFromEditModel(vm, m);
+
+            return vm;
+        }
+
+        public async Task<QualificationViewModel> GetQualificationViewModelForEditAsync(VacancyRouteModel vrm, QualificationEditModel m, int index)
+        {
+            var vm = await GetQualificationViewModelForEditAsync(vrm, index);
+
+            SetQualificationViewModelFromEditModel(vm, m);
+
+            return vm;
+        }
+
+        public async Task<OrchestratorResponse> PostQualificationEditModelForAddAsync(VacancyRouteModel vrm, QualificationEditModel m, VacancyUser user)
         {
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Qualification_Add_Post);
 
             if (vacancy.Qualifications == null)
                 vacancy.Qualifications = new List<Qualification>();
 
-            var qualification = new Qualification
-            {
-                QualificationType = m.QualificationType,
-                Grade = m.Grade,
-                Subject = m.Subject,
-                Weighting = m.Weighting
-            };
-
+            var qualification = new Qualification();
             vacancy.Qualifications.Add(qualification);
 
-            var allQualifications = await _vacancyClient.GetCandidateQualificationsAsync();
-            vacancy.Qualifications = vacancy.Qualifications.SortQualifications(allQualifications).ToList();
+            return await UpdateVacancyWithQualificationAsync(vacancy, qualification, m, user);
+        }
 
-            return await ValidateAndExecute(vacancy,
-                v => 
-                {
-                    var result = _vacancyClient.ValidateQualification(qualification);
-                    SyncErrorsAndModel(result.Errors, m);
-                    return result;
-                },
-                v => _vacancyClient.UpdateDraftVacancyAsync(v, user));
+        public async Task<OrchestratorResponse> PostQualificationEditModelForEditAsync(VacancyRouteModel vrm, QualificationEditModel m, VacancyUser user, int index)
+        {
+            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Qualification_Edit_Post);
+
+            var qualification = vacancy.Qualifications[index];
+
+            return await UpdateVacancyWithQualificationAsync(vacancy, qualification, m, user);
         }
 
         public async Task DeleteQualificationAsync(VacancyRouteModel vrm, int index, VacancyUser user)
@@ -152,6 +169,54 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
             //Remove other qualification errors
             errors.Where(e => e.PropertyName.StartsWith($"{qualificationPropertyName}[")).ToList()
                 .ForEach(r => errors.Remove(r));
+        }
+
+        private int ValidateIndex(int index, IEnumerable<Qualification> vacancyQualifications)
+        {
+            if (index >= 0 && index < vacancyQualifications.Count())
+                return index;
+
+            throw new ArgumentException($"Invalid qualification index: {index}");
+        }
+
+        private QualificationViewModel GetQualificationViewModel(Vacancy vacancy, IList<string> allQualifications)
+        {
+            var vm = new QualificationViewModel
+            {
+                Title = vacancy.Title,
+                QualificationTypes = allQualifications,
+                CancelRoute = vacancy.Qualifications?.Any() == true ? RouteNames.Qualifications_Get : RouteNames.Vacancy_Preview_Get
+            };
+
+            return vm;
+        }
+
+        private void SetQualificationViewModelFromEditModel(QualificationViewModel vm, QualificationEditModel m)
+        {
+            vm.QualificationType = m.QualificationType;
+            vm.Subject = m.Subject;
+            vm.Grade = m.Grade;
+            vm.Weighting = m.Weighting;
+        }
+
+        private async Task<OrchestratorResponse> UpdateVacancyWithQualificationAsync(Vacancy vacancy, Qualification qualification, QualificationEditModel m, VacancyUser user)
+        {
+            qualification.QualificationType = m.QualificationType;
+            qualification.Grade = m.Grade;
+            qualification.Subject = m.Subject;
+            qualification.Weighting = m.Weighting;
+
+            var allQualifications = await _vacancyClient.GetCandidateQualificationsAsync();
+            vacancy.Qualifications = vacancy.Qualifications.SortQualifications(allQualifications).ToList();
+
+            return await ValidateAndExecute(vacancy,
+                v =>
+                {
+                    var result = _vacancyClient.ValidateQualification(qualification);
+                    SyncErrorsAndModel(result.Errors, m);
+                    return result;
+                },
+                v => _vacancyClient.UpdateDraftVacancyAsync(v, user));
         }
 
         protected override EntityToViewModelPropertyMappings<Vacancy, QualificationEditModel> DefineMappings()
