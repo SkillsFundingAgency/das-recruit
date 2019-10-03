@@ -1,3 +1,4 @@
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using FluentValidation;
 
@@ -5,7 +6,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 {
     internal class ContactDetailValidator : AbstractValidator<ContactDetail> 
     {
-        internal ContactDetailValidator(long ruleId)
+        internal ContactDetailValidator(long ruleId, IProfanityListProvider profanityListProvider)
         {
             RuleFor(x => x.Name)
                 .MaximumLength(100)
@@ -14,6 +15,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .ValidFreeTextCharacters()
                     .WithMessage("Contact name contains some invalid characters")
                     .WithErrorCode("91")
+                .ProfanityCheck(profanityListProvider)
+                .WithMessage("Contact name must not contain a banned word or phrase.")
+                .WithErrorCode("615")
                 .WithRuleId(ruleId);
 
             RuleFor(x => x.Email)
@@ -27,6 +31,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithMessage("Email address must be in a valid format")
                     .WithErrorCode("94")
                     .When(v => !string.IsNullOrEmpty(v.Email))
+                .ProfanityCheck(profanityListProvider)
+                .WithMessage("Email address must not contain a banned word or phrase.")
+                .WithErrorCode("616")
                 .WithRuleId(ruleId);
 
             RuleFor(x => x.Phone)

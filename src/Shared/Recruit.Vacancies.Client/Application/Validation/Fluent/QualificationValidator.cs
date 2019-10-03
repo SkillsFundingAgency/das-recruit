@@ -11,8 +11,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
     /// </summary>
     internal class QualificationValidator : QualificationValidatorBase
     {
-        public QualificationValidator(IQualificationsProvider qualificationsProvider)
-            : base(qualificationsProvider)
+        public QualificationValidator(IQualificationsProvider qualificationsProvider, IProfanityListProvider profanityListProvider)
+            : base(qualificationsProvider,profanityListProvider)
         {
         }
     }
@@ -24,8 +24,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
     /// </summary>
     internal class VacancyQualificationsValidator : QualificationValidatorBase
     {
-        public VacancyQualificationsValidator(long ruleId, IQualificationsProvider qualificationsProvider)
-            : base(ruleId, qualificationsProvider)
+        public VacancyQualificationsValidator(long ruleId, IQualificationsProvider qualificationsProvider, IProfanityListProvider profanityListProvider)
+            : base(ruleId, qualificationsProvider,profanityListProvider)
         {
         }
     }
@@ -40,12 +40,12 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
     {
         private readonly IList<string> _qualificationTypes;
 
-        public QualificationValidatorBase(IQualificationsProvider qualificationsProvider)
-            : this(0, qualificationsProvider)
+        public QualificationValidatorBase(IQualificationsProvider qualificationsProvider, IProfanityListProvider profanityListProvider)
+            : this(0, qualificationsProvider, profanityListProvider)
         {
         }
 
-        public QualificationValidatorBase(long ruleId, IQualificationsProvider qualificationsProvider)
+        public QualificationValidatorBase(long ruleId, IQualificationsProvider qualificationsProvider, IProfanityListProvider profanityListProvider)
         {
             _qualificationTypes = qualificationsProvider.GetQualificationsAsync().Result ?? new List<string>();
             
@@ -69,6 +69,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .ValidFreeTextCharacters()
                     .WithMessage("Subject contains some invalid characters")
                     .WithErrorCode("6")
+                .ProfanityCheck(profanityListProvider)
+                .WithMessage("Subject must not contain a banned word or phrase.")
+                .WithErrorCode("618")
                 .WithRuleId(ruleId);
 
             RuleFor(x => x.Grade)
@@ -81,6 +84,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .ValidFreeTextCharacters()
                     .WithMessage("Grade contains some invalid characters")
                     .WithErrorCode("6")
+                .ProfanityCheck(profanityListProvider)
+                .WithMessage("Grade must not contain a banned word or phrase.")
+                .WithErrorCode("619")
                 .WithRuleId(ruleId);
 
             When(x => x.QualificationType != null && x.QualificationType.Contains("GCSE"), () =>
