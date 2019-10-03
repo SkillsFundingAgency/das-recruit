@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Shared.Web.ViewModels.Validations.Fluent;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using FluentAssertions;
@@ -12,6 +12,13 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.ApplicationRev
 {
     public class ApplicationReviewEditModelTests
     {
+        protected readonly TestProfanityListProvider MockProfanityListProvider;
+
+        public ApplicationReviewEditModelTests()
+        {
+            MockProfanityListProvider = new TestProfanityListProvider();
+        }
+
         [Fact]
         public void ShouldRequireOutcome()
         {
@@ -20,7 +27,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.ApplicationRev
                 Outcome = null
             };
 
-            var validator = new ApplicationReviewEditModelValidator();
+            var validator = new ApplicationReviewEditModelValidator(MockProfanityListProvider);
 
             var result = validator.Validate(m);
 
@@ -53,7 +60,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.ApplicationRev
                 CandidateFeedback = candidateFeedback
             };
 
-            var validator = new ApplicationReviewEditModelValidator();
+            var validator = new ApplicationReviewEditModelValidator(MockProfanityListProvider);
 
             var result = validator.Validate(m);
 
@@ -73,7 +80,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.ApplicationRev
                 CandidateFeedback = feedback
             };
 
-            var validator = new ApplicationReviewEditModelValidator();
+            var validator = new ApplicationReviewEditModelValidator(MockProfanityListProvider);
 
             var result = validator.Validate(m);
 
@@ -89,11 +96,39 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.ApplicationRev
                 CandidateFeedback = "?$@#()\"\'\\!,+-=_:;.&€£*%/[] \\A-Z \a-z \0-9 your comments will be sent to the candidate."
             };
 
-            var validator = new ApplicationReviewEditModelValidator();
+            var validator = new ApplicationReviewEditModelValidator(MockProfanityListProvider);
 
             var result = validator.Validate(m);
 
             result.IsValid.Should().BeFalse();
+        }
+
+        [Theory]
+        [InlineData(ApplicationReviewStatus.Unsuccessful, "Some candidate feedback bother")]
+        [InlineData(ApplicationReviewStatus.Unsuccessful, "dang Some candidate feedback")]
+        [InlineData(ApplicationReviewStatus.Unsuccessful, "Some candidate balderdash bother")]
+        [InlineData(ApplicationReviewStatus.Unsuccessful, "Some drat feedback bother")]
+        public void ShouldBeInvalid_ForProfanityWordsInFeedback(ApplicationReviewStatus outcome, string feedback)
+        {
+            var m = new ApplicationReviewEditModel
+            {
+                Outcome = outcome,
+                CandidateFeedback = feedback
+            };
+
+            var validator = new ApplicationReviewEditModelValidator(MockProfanityListProvider);
+            var result = validator.Validate(m);
+            result.IsValid.Should().BeFalse();
+            result.Errors.Count.Should().Be(1);
+            result.Errors[0].ErrorCode.Should().Be("617");
+        }
+    }
+
+    public class TestProfanityListProvider : IProfanityListProvider
+    {
+        public Task<IEnumerable<string>> GetProfanityListAsync()
+        {
+            return Task.FromResult<IEnumerable<string>>(new[] { "bother", "dang", "balderdash", "drat" });
         }
     }
 }
