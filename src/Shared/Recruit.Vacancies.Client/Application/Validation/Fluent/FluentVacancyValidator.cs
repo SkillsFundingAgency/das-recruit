@@ -149,7 +149,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                         .WithMessage("The trading name contains some invalid characters")
                         .WithErrorCode("403")
                     .ProfanityCheck(_profanityListProvider)
-                    .WithMessage("The trading name must not contain a banned word or phrase.")
+                    .WithMessage("Trading name must not contain a banned word or phrase.")
                     .WithErrorCode("602")
                     .RunCondition(VacancyRuleSet.TradingName)
                     .WithRuleId(VacancyRuleSet.TradingName)
@@ -167,7 +167,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithMessage("The description contains some invalid characters")
                     .WithErrorCode("407")
                     .ProfanityCheck(_profanityListProvider)
-                    .WithMessage("The description must not contain a banned word or phrase.")
+                    .WithMessage("Description must not contain a banned word or phrase.")
                     .WithErrorCode("603")
                     .RunCondition(VacancyRuleSet.EmployerNameOption)
                     .WithRuleId(VacancyRuleSet.EmployerNameOption)
@@ -185,7 +185,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithMessage("The reason contains some invalid characters")
                     .WithErrorCode("410")
                     .ProfanityCheck(_profanityListProvider)
-                    .WithMessage("The reason must not contain a banned word or phrase.")
+                    .WithMessage("Reason must not contain a banned word or phrase.")
                     .WithErrorCode("604")
                     .RunCondition(VacancyRuleSet.EmployerNameOption)
                     .WithRuleId(VacancyRuleSet.EmployerNameOption)
@@ -422,7 +422,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithMessage("Skill or quality must not exceed {MaxLength} characters")
                     .WithErrorCode("7")
                 .ProfanityCheck(_profanityListProvider)
-                .WithMessage("The Skill or quality must not contain a banned word or phrase.")
+                .WithMessage("Skill or quality must not contain a banned word or phrase.")
                 .WithErrorCode("608")
                 .WithRuleId(VacancyRuleSet.Skills);
         }
@@ -433,7 +433,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .Must(q => q != null && q.Count > 0)
                     .WithMessage("You must add a qualification")
                     .WithErrorCode("52")
-                .SetCollectionValidator(new VacancyQualificationsValidator((long)VacancyRuleSet.Qualifications, _qualificationsProvider))
+                .SetCollectionValidator(new VacancyQualificationsValidator((long)VacancyRuleSet.Qualifications, 
+                    _qualificationsProvider,_profanityListProvider))
                 .RunCondition(VacancyRuleSet.Qualifications)
                 .WithRuleId(VacancyRuleSet.Qualifications);
         }
@@ -557,7 +558,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithMessage("Application process contains some invalid characters")
                     .WithErrorCode("89")
                 .ProfanityCheck(_profanityListProvider)
-                .WithMessage("The Application process must not contain a banned word or phrase.")
+                .WithMessage("Application process must not contain a banned word or phrase.")
                 .WithErrorCode("612")
                 .RunCondition(VacancyRuleSet.ApplicationMethod)
                 .WithRuleId(VacancyRuleSet.ApplicationMethod);
@@ -568,7 +569,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             When(x => x.EmployerContact != null, () =>
             {
                 RuleFor(x => x.EmployerContact)
-                .SetValidator(new ContactDetailValidator((long)VacancyRuleSet.EmployerContactDetails))
+                    .SetValidator(new ContactDetailValidator((long)VacancyRuleSet.EmployerContactDetails,_profanityListProvider))
                 .RunCondition(VacancyRuleSet.EmployerContactDetails);
             });
         }
@@ -578,7 +579,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             When(x => x.ProviderContact != null, () =>
             {
                 RuleFor(x => x.ProviderContact)
-                .SetValidator(new ContactDetailValidator((long)VacancyRuleSet.ProviderContactDetails))
+                .SetValidator(new ContactDetailValidator((long)VacancyRuleSet.ProviderContactDetails,_profanityListProvider))
                 .RunCondition(VacancyRuleSet.ProviderContactDetails);
             });
         }
@@ -593,7 +594,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithMessage("Things to consider contains some invalid characters")
                     .WithErrorCode("76")
                 .ProfanityCheck(_profanityListProvider)
-                .WithMessage("The Things to consider must not contain a banned word or phrase.")
+                .WithMessage("Things to consider must not contain a banned word or phrase.")
                 .WithErrorCode("613")
                 .RunCondition(VacancyRuleSet.ThingsToConsider)
                 .WithRuleId(VacancyRuleSet.ThingsToConsider);
@@ -612,7 +613,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithMessage("Employer description contains some invalid characters")
                     .WithErrorCode("78")
                 .ProfanityCheck(_profanityListProvider)
-                .WithMessage("The Employer description must not contain a banned word or phrase.")
+                .WithMessage("Employer description must not contain a banned word or phrase.")
                 .WithErrorCode("614")
                 .RunCondition(VacancyRuleSet.EmployerDescription)
                 .WithRuleId(VacancyRuleSet.EmployerDescription);

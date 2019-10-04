@@ -19,13 +19,15 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
         {
             var profanityList = _profanityListProvider.GetProfanityListAsync();
 
-            var freeText = (string)context.PropertyValue;
+            var freeText = (string) context.PropertyValue;
+
+            var formatForParsing = freeText.FormatForParsing();
 
             foreach (var profanity in profanityList.Result)
             {
                 if (freeText != null)
                 {
-                    var occurrences = freeText.CountOccurrences(profanity);
+                    var occurrences = formatForParsing.CountOccurrences(profanity);
 
                     if (occurrences > 0)
                     {

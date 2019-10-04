@@ -1,4 +1,5 @@
 ﻿using Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using FluentValidation;
@@ -7,7 +8,7 @@ namespace Esfa.Recruit.Shared.Web.ViewModels.Validations.Fluent
 {
     public class ApplicationReviewEditModelValidator : AbstractValidator<IApplicationReviewEditModel>
     {
-        public ApplicationReviewEditModelValidator()
+        public ApplicationReviewEditModelValidator(IProfanityListProvider profanityListProvider)
         {
             RuleFor(x => x.Outcome)
                 .NotNull()
@@ -21,7 +22,10 @@ namespace Esfa.Recruit.Shared.Web.ViewModels.Validations.Fluent
                     .MaximumLength(ApplicationReviewValidator.CandidateFeedbackMaxLength)
                     .WithMessage(string.Format(ApplicationReviewValidator.CandidateFeedbackLength, ApplicationReviewValidator.CandidateFeedbackMaxLength))
                     .ValidFreeTextCharacters()
-                    .WithMessage(ApplicationReviewValidator.CandidateFeedbackFreeTextCharacters);
+                    .WithMessage(ApplicationReviewValidator.CandidateFeedbackFreeTextCharacters)
+                    .ProfanityCheck(profanityListProvider)
+                    .WithMessage(ApplicationReviewValidator.CandidateFeedbackProfanityPhrases)
+                    .WithErrorCode("617");
             });
         }
     }
