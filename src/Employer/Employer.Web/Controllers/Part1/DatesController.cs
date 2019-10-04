@@ -26,7 +26,20 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         {
             var vm = await _orchestrator.GetDatesViewModelAsync(vrm);
             vm.PageInfo.SetWizard(wizard);
+            AddSoftValidationErrorsToModelState(vm);
             return View(vm);
+        }
+
+        private void AddSoftValidationErrorsToModelState(DatesViewModel viewModel)
+        {
+            if (!viewModel.SoftValidationErrors.HasErrors)
+                return;
+
+            foreach (var error in viewModel.SoftValidationErrors.Errors)
+            {
+                viewModel.CanShowTrainingErrorHint = viewModel.SoftValidationErrors.Errors.Any(e => e.ErrorCode == ErrorCodes.TrainingExpiryDate); ;
+                ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+            }
         }
 
         [HttpPost("dates", Name = RouteNames.Dates_Post)]

@@ -2,6 +2,7 @@
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.ViewModels.Validations;
+using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using ErrMsg = Esfa.Recruit.Shared.Web.ViewModels.ValidationMessages.DateValidationMessages;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Dates
@@ -65,6 +66,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Dates
         public bool HasTrainingEffectiveToDate => string.IsNullOrEmpty(TrainingEffectiveToDate) == false;
 
         public bool CanShowTrainingErrorHint { get; set; }
-        public bool CanShowTrainingHint => HasTrainingEffectiveToDate && CanShowTrainingErrorHint == false;
+        public bool CanShowTrainingHint => HasTrainingEffectiveToDate && CanShowTrainingErrorHint;
+        public EntityValidationResult SoftValidationErrors { get; set; }
     }
 }
