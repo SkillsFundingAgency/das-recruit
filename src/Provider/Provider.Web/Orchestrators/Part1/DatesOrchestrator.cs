@@ -18,7 +18,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 {
     public class DatesOrchestrator : EntityValidatingOrchestrator<Vacancy, DatesEditModel>
     {
-        private const VacancyRuleSet ValdationRules = VacancyRuleSet.ClosingDate | VacancyRuleSet.StartDate | VacancyRuleSet.StartDateEndDate | VacancyRuleSet.TrainingExpiryDate;
+        private const VacancyRuleSet ValidationRules = VacancyRuleSet.ClosingDate | VacancyRuleSet.StartDate | VacancyRuleSet.StartDateEndDate | VacancyRuleSet.TrainingExpiryDate;
         private readonly IProviderVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly ITimeProvider _timeProvider;
@@ -68,6 +68,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                     ReviewFieldMappingLookups.GetDatesReviewFieldIndicators());
             }
 
+            vm.SoftValidationErrors = GetSoftValidationErrors(vacancy);
+
             return vm;
         }
 
@@ -100,7 +102,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             
             return await ValidateAndExecute(
                 vacancy, 
-                v => _vacancyClient.Validate(v, ValdationRules),
+                v => _vacancyClient.Validate(v, ValidationRules),
                 v => _vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
             );
         }
@@ -127,6 +129,13 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             mappings.Add(e => e.ClosingDate, vm => vm.ClosingDate);
 
             return mappings;
+        }
+
+        private EntityValidationResult GetSoftValidationErrors(Vacancy vacancy)
+        {
+            var result = _vacancyClient.Validate(vacancy, ValidationRules);
+            MapValidationPropertiesToViewModel(result);
+            return result;
         }
     }
 }
