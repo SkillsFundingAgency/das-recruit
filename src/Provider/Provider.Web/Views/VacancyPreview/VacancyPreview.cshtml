@@ -44,9 +44,11 @@
     <div class="govuk-grid-column-full">
         <partial asp-hide="@Model.CanHideValidationSummary" name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
         <div class="info-summary__header-bar" asp-show="@Model.HasIncompleteMandatorySections">
+            <h2 class="govuk-heading-m" asp-show="@Model.HasSoftValidationErrors">@Model.SoftValidationErrors.Errors.Count section needs updating and</h2>
             <h2 class="govuk-heading-m">@Model.IncompleteRequiredSectionCount required @Model.IncompleteRequiredSectionText to complete</h2>
         </div>
         <div class="info-summary__header-bar govuk-!-margin-bottom-6" asp-hide="@Model.HasIncompleteMandatorySections">
+            <h2 class="govuk-heading-m" asp-show="@Model.HasSoftValidationErrors">@Model.SoftValidationErrors.Errors.Count section needs updating and</h2>
             <h2 class="govuk-heading-m">You have completed all required sections</h2>
         </div>
         <div asp-show="@Model.ShowIncompleteSections" class="info-summary govuk-!-margin-top-0" role="alert">

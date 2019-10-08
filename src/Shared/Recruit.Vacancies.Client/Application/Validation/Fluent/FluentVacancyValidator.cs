@@ -234,7 +234,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithMessage("Overview of the vacancy contains some invalid characters")
                     .WithErrorCode("15")
                 .ProfanityCheck(_profanityListProvider)
-                .WithMessage("Overview must not contain a banned word or phrase.")
+                .WithMessage("Overview of the vacancy must not contain a banned word or phrase.")
                 .WithErrorCode("605")
                 .RunCondition(VacancyRuleSet.ShortDescription)
                 .WithRuleId(VacancyRuleSet.ShortDescription);
@@ -385,7 +385,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                         .WithMessage("Additional pay information contains some invalid characters")
                         .WithErrorCode("45")
                     .ProfanityCheck(_profanityListProvider)
-                    .WithMessage("Additional pay must not contain a banned word or phrase.")
+                    .WithMessage("Additional pay information must not contain a banned word or phrase.")
                     .WithErrorCode("607")
                     .RunCondition(VacancyRuleSet.Wage)
                     .WithRuleId(VacancyRuleSet.Wage);

@@ -54,10 +54,10 @@
                     <span esfa-validation-message-for="StartDate" class="govuk-error-message"></span>
 
                     <p asp-show="@Model.CanShowTrainingHint" class="govuk-hint">
-                        The start date must be before the @Model.TrainingDescription closes to new starters on @Model.TrainingEffectiveToDate
-                    </p>
-                    <p asp-show="@Model.CanShowTrainingErrorHint" class="govuk-hint">
-                        You may want to <a asp-route="@RouteNames.Training_Get" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link">find different apprenticeship training</a>.
+                        You may want to
+                        <a asp-route="@RouteNames.Training_Get" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link">
+                            find different apprenticeship training
+                        </a> that doesn't have an ending date .
                     </p>
 
                     <span class="govuk-hint">For example, @exampleStartingDate.AsInputHintDisplayDate()</span>

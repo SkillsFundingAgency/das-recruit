@@ -24,6 +24,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
         public async Task<IActionResult> Dates(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
         {
             var vm = await _orchestrator.GetDatesViewModelAsync(vrm);
+            AddSoftValidationErrorsToModelState(vm);
             vm.PageInfo.SetWizard(wizard);
             return View(vm);
         }
@@ -50,5 +51,17 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
                 ? RedirectToRoute(RouteNames.Duration_Get)
                 : RedirectToRoute(RouteNames.Vacancy_Preview_Get);
         }
+        private void AddSoftValidationErrorsToModelState(DatesViewModel viewModel)
+        {
+            if (!viewModel.SoftValidationErrors.HasErrors)
+                return;
+
+            foreach (var error in viewModel.SoftValidationErrors.Errors)
+            {
+                viewModel.CanShowTrainingErrorHint = viewModel.SoftValidationErrors.Errors.Any(e => e.ErrorCode == ErrorCodes.TrainingExpiryDate); ;
+                ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+            }
+        }
+
     }
 }

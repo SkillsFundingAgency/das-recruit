@@ -66,8 +66,15 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
                     ReviewFieldMappingLookups.GetDatesReviewFieldIndicators());
             }
-
+            vm.SoftValidationErrors = GetSoftValidationErrors(vacancy);
             return vm;
+        }
+
+        private EntityValidationResult GetSoftValidationErrors(Vacancy vacancy)
+        {
+            var result = _vacancyClient.Validate(vacancy, ValidationRules);
+            MapValidationPropertiesToViewModel(result);
+            return result;
         }
 
         public async Task<DatesViewModel> GetDatesViewModelAsync(DatesEditModel m)
