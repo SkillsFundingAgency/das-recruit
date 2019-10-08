@@ -65,7 +65,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Dates
         public bool HasTrainingEffectiveToDate => string.IsNullOrEmpty(TrainingEffectiveToDate) == false;
 
         public bool CanShowTrainingErrorHint { get; set; }
-        public bool CanShowTrainingHint => HasTrainingEffectiveToDate && CanShowTrainingErrorHint;
+        public bool CanShowTrainingHint => HasTrainingEffectiveToDate && CanShowTrainingErrorHint == false;
 
         public EntityValidationResult SoftValidationErrors { get; set; }
 
