@@ -53,7 +53,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
         }
         private void AddSoftValidationErrorsToModelState(DatesViewModel viewModel)
         {
-            if (!viewModel.SoftValidationErrors.HasErrors)
+            if (viewModel.SoftValidationErrors == null)
                 return;
 
             foreach (var error in viewModel.SoftValidationErrors.Errors)
