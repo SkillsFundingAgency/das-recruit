@@ -67,8 +67,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
                     ReviewFieldMappingLookups.GetDatesReviewFieldIndicators());
             }
-
-            vm.SoftValidationErrors = GetSoftValidationErrors(vacancy);
+            if (vacancy.StartDate.HasValue && vacancy.ClosingDate.HasValue)
+                vm.SoftValidationErrors = GetSoftValidationErrors(vacancy);
 
             return vm;
         }
