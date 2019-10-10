@@ -12,7 +12,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Employer.Web.Filters
 {
@@ -34,23 +33,19 @@ namespace Esfa.Recruit.Employer.Web.Filters
     /// </remarks>
     public class EmployerAccessCheckFilter : IAsyncActionFilter, IOrderedFilter
     {
-        private readonly ILogger<EmployerAccessCheckFilter> _logger;
         private readonly ILevyDeclarationCookieWriter _levyCookieWriter;
         private readonly IEoiAgreementCookieWriter _eoiCookieWriter;
         private readonly IEmployerAccountTypeCookieWriter _employerAccountTypeCookieWriter;
         private readonly IRecruitVacancyClient _recruitVacancyClient;
         private readonly IEmployerAccountProvider _employerAccountProvider;
-        private readonly string[] _allowedAccountTypes = new string[] { "levy", "nonlevy" };
+        private readonly string[] _allowedAccountTypes = { "levy", "nonlevy" };
 
-        public EmployerAccessCheckFilter(
-            ILogger<EmployerAccessCheckFilter> logger,
-            ILevyDeclarationCookieWriter levyCookieWriter,
+        public EmployerAccessCheckFilter(ILevyDeclarationCookieWriter levyCookieWriter,
             IRecruitVacancyClient recruitVacancyClient,
             IEmployerAccountProvider employerAccountProvider,
             IEoiAgreementCookieWriter eoiCookieWriter,
             IEmployerAccountTypeCookieWriter employerAccountTypeCookieWriter)
         {
-            _logger = logger;
             _levyCookieWriter = levyCookieWriter;
             _recruitVacancyClient = recruitVacancyClient;
             _employerAccountProvider = employerAccountProvider;
@@ -138,7 +133,7 @@ namespace Esfa.Recruit.Employer.Web.Filters
             string employerAccountId,
             bool requestIsForALevyPage)
         {
-            bool hasLevyDeclaration = false;
+            bool hasLevyDeclaration;
             if (GetCookieValueForUserAndEmployer(
                 context.HttpContext,
                 userId: userId,
@@ -178,7 +173,7 @@ namespace Esfa.Recruit.Employer.Web.Filters
             string userId,
             string employerAccountId)
         {
-            bool hasEoi = false;
+            bool hasEoi;
             if (GetCookieValueForUserAndEmployer(
                 context.HttpContext,
                 userId: userId,

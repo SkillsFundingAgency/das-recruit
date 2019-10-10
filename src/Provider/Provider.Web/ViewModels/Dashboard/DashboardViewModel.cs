@@ -5,7 +5,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using Humanizer;
 
-namespace Esfa.Recruit.Provider.Web.ViewModels
+namespace Esfa.Recruit.Provider.Web.ViewModels.Dashboard
 {
     public class DashboardViewModel
     {

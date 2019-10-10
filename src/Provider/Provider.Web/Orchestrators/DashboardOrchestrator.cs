@@ -2,8 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Services;
-using Esfa.Recruit.Provider.Web.ViewModels;
-using Esfa.Recruit.Shared.Web.Services;
+using Esfa.Recruit.Provider.Web.ViewModels.Dashboard;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;

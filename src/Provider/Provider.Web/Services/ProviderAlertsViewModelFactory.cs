@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;

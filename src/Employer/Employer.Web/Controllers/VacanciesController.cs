@@ -1,12 +1,9 @@
-using System;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Extensions;
-using Esfa.Recruit.Shared.Web.ViewModels;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Hosting;
 using Newtonsoft.Json;
 
