@@ -69,7 +69,7 @@
                         <a asp-show="@Model.HasSubmittedVacancy" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Submitted" class="govuk-link">
                             @FilteringOptions.Submitted.GetDisplayName()
                         </a>
-                        <span asp-hide="@Model.HasSubmittedVacancy">@FilteringOptions.Submitted</span>
+                        <span asp-hide="@Model.HasSubmittedVacancy">@FilteringOptions.Submitted.GetDisplayName()</span>
                     </h3>
                     <p class="govuk-body das-card--description">Vacancies that have been sent for review.</p>
                 </div>
@@ -124,7 +124,7 @@
                         <a asp-show="@Model.HasNewApplications" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.NewApplications" class="govuk-link">
                             New @Model.ApplicationTextLive
                         </a>
-                        <span asp-hide="@Model.HasNewApplications">@FilteringOptions.NewApplications.GetDisplayName()</span>
+                        <span asp-hide="@Model.HasNewApplications">New @Model.ApplicationTextLive</span>
                     </h3>
                     <span class="govuk-body das-card--description">Applications from Find an apprenticeship service.</span>
                     <ul class="das-card--tasks govuk-list" asp-show="@Model.ShowAllApplications">

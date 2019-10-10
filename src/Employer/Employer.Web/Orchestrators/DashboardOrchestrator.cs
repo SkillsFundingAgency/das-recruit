@@ -3,12 +3,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.ViewModels;
-using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Provider;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
