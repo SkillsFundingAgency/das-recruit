@@ -157,8 +157,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             var filterText = filteringOption == FilteringOptions.All ? string.Empty : $" {filteringOption.GetDisplayName().ToLowerInvariant()}";
             var vacancyText = filteringOption == FilteringOptions.ClosingSoon || filteringOption == FilteringOptions.ClosingSoonWithNoApplications ?
                 " live vacancy" : " vacancy";
-            var vacancyStatusPrefix = $"{totalVacancies}{filterText}{vacancyText}".ToQuantity(totalVacancies, ShowQuantityAs.None);
-
+            var vacancyStatusPrefix = $"{totalVacancies}{vacancyText}".ToQuantity(totalVacancies, ShowQuantityAs.None) + $"{filterText}";
             var searchSuffix = string.IsNullOrWhiteSpace(searchTerm) ? string.Empty : $" with '{searchTerm}'";
             
             return $"{vacancyStatusPrefix}{searchSuffix}";

@@ -67,7 +67,7 @@
                             <a asp-show="@Model.HasDraftVacancy" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Draft" class="govuk-link">
                                 @FilteringOptions.Draft @Model.VacancyTextDraft
                             </a>
-                            <p asp-hide="@Model.HasDraftVacancy">@FilteringOptions.Draft @Model.VacancyTextDraft</p>
+                            <span asp-hide="@Model.HasDraftVacancy">@FilteringOptions.Draft @Model.VacancyTextDraft</span>
                         </h3>
                         <p class="govuk-body das-card--description">Vacancies that need completing and sending for review.</p>
                     </div>
