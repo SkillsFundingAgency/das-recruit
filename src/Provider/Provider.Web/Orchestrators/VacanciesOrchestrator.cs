@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
-using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Provider.Web.Services;
 using Esfa.Recruit.Provider.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.Extensions;
@@ -154,12 +152,17 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
         private string GetFilterHeading(int totalVacancies, FilteringOptions filteringOption, string searchTerm)
         {
+            string vacancyStatusPrefix;
             var filterText = filteringOption == FilteringOptions.All ? string.Empty : $" {filteringOption.GetDisplayName().ToLowerInvariant()}";
-            var vacancyText = filteringOption == FilteringOptions.ClosingSoon || filteringOption == FilteringOptions.ClosingSoonWithNoApplications ?
+            var vacancyText = filteringOption == FilteringOptions.Live || filteringOption == FilteringOptions.ClosingSoon || filteringOption == FilteringOptions.ClosingSoonWithNoApplications ?
                 " live vacancy" : " vacancy";
-            var vacancyStatusPrefix = $"{totalVacancies}{vacancyText}".ToQuantity(totalVacancies, ShowQuantityAs.None) + $"{filterText}";
+            if (filteringOption == FilteringOptions.Live)
+                vacancyStatusPrefix = $"{totalVacancies}{vacancyText}".ToQuantity(totalVacancies, ShowQuantityAs.None);
+            else
+            {
+                vacancyStatusPrefix = $"{totalVacancies}{vacancyText}".ToQuantity(totalVacancies, ShowQuantityAs.None) + $"{filterText}";
+            }
             var searchSuffix = string.IsNullOrWhiteSpace(searchTerm) ? string.Empty : $" with '{searchTerm}'";
-            
             return $"{vacancyStatusPrefix}{searchSuffix}";
         }
     }

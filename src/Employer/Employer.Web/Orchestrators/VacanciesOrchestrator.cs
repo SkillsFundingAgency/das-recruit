@@ -6,14 +6,12 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Mappers;
-using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using Humanizer;
 using Esfa.Recruit.Employer.Web.ViewModels.Vacancies;
-using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Employer.Web.Services;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
@@ -154,13 +152,17 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         private string GetFilterHeading(int totalVacancies, FilteringOptions filteringOption, string searchTerm)
         {
+            string vacancyStatusPrefix;
             var filterText = filteringOption == FilteringOptions.All ? string.Empty : $" {filteringOption.GetDisplayName().ToLowerInvariant()}";
-            var vacancyText = filteringOption == FilteringOptions.ClosingSoon || filteringOption == FilteringOptions.ClosingSoonWithNoApplications ?
+            var vacancyText = filteringOption == FilteringOptions.Live || filteringOption == FilteringOptions.ClosingSoon || filteringOption == FilteringOptions.ClosingSoonWithNoApplications ?
                 " live vacancy" : " vacancy";
-            var vacancyStatusPrefix = $"{totalVacancies}{vacancyText}".ToQuantity(totalVacancies, ShowQuantityAs.None) + $"{filterText}";
-
+            if(filteringOption == FilteringOptions.Live)
+                vacancyStatusPrefix = $"{totalVacancies}{vacancyText}".ToQuantity(totalVacancies, ShowQuantityAs.None);
+            else
+            {
+                vacancyStatusPrefix = $"{totalVacancies}{vacancyText}".ToQuantity(totalVacancies, ShowQuantityAs.None) + $"{filterText}";
+            }
             var searchSuffix = string.IsNullOrWhiteSpace(searchTerm) ? string.Empty : $" with '{searchTerm}'";
-
             return $"{vacancyStatusPrefix}{searchSuffix}";
         }
     }
