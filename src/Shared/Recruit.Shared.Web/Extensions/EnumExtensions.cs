@@ -17,6 +17,12 @@ namespace Esfa.Recruit.Shared.Web.Extensions
             return displayName ?? enumValue.ToString();
         }
 
+        public static bool IsInLiveVacancyOptions(this Enum enumValue)
+        {
+            return enumValue.ToString() == FilteringOptions.ClosingSoon.ToString() ||
+                   enumValue.ToString() == FilteringOptions.ClosingSoonWithNoApplications.ToString();
+        }
+
         private static readonly Dictionary<Enum, string> DisplayNames = new Dictionary<Enum, string>
         {
             { WageType.FixedWage, "Fixed wage" },
@@ -31,7 +37,7 @@ namespace Esfa.Recruit.Shared.Web.Extensions
             { FilteringOptions.ClosingSoonWithNoApplications, "closing soon with no applications" },
             { FilteringOptions.AllApplications, "with applications" },
             { FilteringOptions.NewApplications, "with new applications" },
-            { FilteringOptions.Submitted, "Pending review" },
+            { FilteringOptions.Submitted, "Pending Review" },
             { FilteringOptions.Referred, "Rejected" }
         };
     }

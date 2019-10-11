@@ -152,16 +152,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         private string GetFilterHeading(int totalVacancies, FilteringOptions filteringOption, string searchTerm)
         {
-            string vacancyStatusPrefix;
-            var filterText = filteringOption == FilteringOptions.All ? string.Empty : $" {filteringOption.GetDisplayName().ToLowerInvariant()}";
-            var vacancyText = filteringOption == FilteringOptions.Live || filteringOption == FilteringOptions.ClosingSoon || filteringOption == FilteringOptions.ClosingSoonWithNoApplications ?
-                " live vacancy" : " vacancy";
-            if(filteringOption == FilteringOptions.Live)
-                vacancyStatusPrefix = $"{totalVacancies}{vacancyText}".ToQuantity(totalVacancies, ShowQuantityAs.None);
-            else
-            {
-                vacancyStatusPrefix = $"{totalVacancies}{vacancyText}".ToQuantity(totalVacancies, ShowQuantityAs.None) + $"{filterText}";
-            }
+            var filterText = filteringOption == FilteringOptions.All ? string.Empty : $"{filteringOption.GetDisplayName()}";
+            var vacancyText = filteringOption.IsInLiveVacancyOptions() ?
+                "live vacancy" : "Vacancy";
+            string vacancyStatusPrefix = string.IsNullOrWhiteSpace(filterText) ? $"{vacancyText}".ToQuantity(totalVacancies)
+                : $"{vacancyText}".ToQuantity(totalVacancies) + $" in {filterText} Status";
             var searchSuffix = string.IsNullOrWhiteSpace(searchTerm) ? string.Empty : $" with '{searchTerm}'";
             return $"{vacancyStatusPrefix}{searchSuffix}";
         }
