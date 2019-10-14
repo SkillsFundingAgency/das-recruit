@@ -44,8 +44,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 return new OrchestratorResponse(_notificationTypeIsRequiredForTheFirstTime);
             }
 
-            if (editModel.IsApplicationSubmittedSelected) editModel.NotificationFrequency = NotificationFrequency.Immediately;
-
             var preferences = GetDomainModel(editModel, vacancyUser.UserId);
 
             return await ValidateAndExecute(
