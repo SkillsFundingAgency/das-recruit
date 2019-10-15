@@ -8,7 +8,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 
-namespace Esfa.Recruit.Vacancies.Jobs
+namespace Esfa.Recruit.Vacancies.Jobs.Jobs
 {
     public class TransferVacanciesFromProviderJob
     {
