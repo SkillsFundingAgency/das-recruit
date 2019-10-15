@@ -20,7 +20,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using FluentValidation;
 using FluentValidation.Results;
-using SFA.DAS.EAS.Account.Api.Types;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
@@ -193,9 +192,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _messaging.SendCommandAsync(command);
         }
 
-        public Task<EmployerDashboard> GetDashboardAsync(string employerAccountId)
+        public async Task<EmployerDashboard> GetDashboardAsync(string employerAccountId, bool createIfNonExistent = false)
         {
-            return _reader.GetEmployerDashboardAsync(employerAccountId);
+            var dashboard = await _reader.GetEmployerDashboardAsync(employerAccountId);
+
+            if (dashboard == null && createIfNonExistent)
+            {
+                await GenerateDashboard(employerAccountId);
+                dashboard = await GetDashboardAsync(employerAccountId);
+            }
+
+            return dashboard;
         }
 
         public Task GenerateDashboard(string employerAccountId)
@@ -493,16 +500,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         public Task<int> GetVacancyCountForUserAsync(string userId)
         {
             return _vacancyQuery.GetVacancyCountForUserAsync(userId);
-        }
-
-        public Task UpdateUserAlertAsync(string idamsUserId, AlertType alertType, DateTime dismissedOn)
-        {
-            return _messaging.SendCommandAsync(new UpdateUserAlertCommand
-            {
-                IdamsUserId = idamsUserId,
-                AlertType = alertType,
-                DismissedOn = dismissedOn
-            });
         }
 
         public EntityValidationResult ValidateQualification(Qualification qualification)

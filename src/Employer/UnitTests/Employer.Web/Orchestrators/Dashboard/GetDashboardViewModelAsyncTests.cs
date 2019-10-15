@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Orchestrators;
-using Esfa.Recruit.Shared.Web.Services;
+using Esfa.Recruit.Employer.Web.Services;
+using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -16,119 +17,82 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Dashboard
 {
     public class GetDashboardViewModelAsyncTests
     {
-        const string EmployerAccountId = "ABCDE";
+        private const string employerAccountId = "XXXXXX";
+        private const string UserId = "user id";
+
+        private readonly DateTime _today = DateTime.Parse("2019-09-18");
+        private readonly VacancyUser _user = new VacancyUser { UserId = UserId };
 
         [Fact]
-        public async Task WhenHaveOver25Vacancies_ShouldShowPager()
+        public async Task WhenHasVacancies_ShouldReturnViewModelAsync()
         {
-            var vacancies = new List<VacancySummary>();
-            for (var i = 1; i <= 27; i++)
-            {
-                vacancies.Add(new VacancySummary
+            var vacancies = new List<VacancySummary>()
                 {
-                    Title = i.ToString(),
-                    Status = VacancyStatus.Submitted
-                });
-            }
+                    new VacancySummary{ClosingDate = _today.AddDays(4), Status = VacancyStatus.Live, ApplicationMethod = ApplicationMethod.ThroughFindAnApprenticeship, NoOfNewApplications = 0}, //Should be included in NoOfVacanciesClosingSoonWithNoApplications & NoOfVacanciesClosingSoon
+                    new VacancySummary{ClosingDate = _today.AddDays(5), Status = VacancyStatus.Live, ApplicationMethod = ApplicationMethod.ThroughFindAnApprenticeship, NoOfNewApplications = 0}, //Should be included in NoOfVacanciesClosingSoonWithNoApplications & NoOfVacanciesClosingSoon
+                    new VacancySummary{ClosingDate = _today.AddDays(6), Status = VacancyStatus.Live, ApplicationMethod = ApplicationMethod.ThroughFindAnApprenticeship, NoOfNewApplications = 0}, //Should NOT be included in NoOfVacanciesClosingSoonWithNoApplications OR NoOfVacanciesClosingSoon
+                    new VacancySummary{ClosingDate = _today.AddDays(5), Status = VacancyStatus.Live, ApplicationMethod = ApplicationMethod.ThroughFindAnApprenticeship, NoOfNewApplications = 100000}, //Should NOT be included in NoOfVacanciesClosingSoonWithNoApplications. Should be included in NoOfVacanciesClosingSoon
+                    new VacancySummary{ClosingDate = _today.AddDays(5), Status = VacancyStatus.Live}, //Should be included in NoOfVacanciesClosingSoon
+                    new VacancySummary{ClosingDate = _today.AddDays(6), Status = VacancyStatus.Live}, //Should NOT be included in NoOfVacanciesClosingSoon
+                };
 
-            var orch = GetOrchestrator(vacancies);
+            var orch = GetSut(vacancies);
 
-            var vm = await orch.GetDashboardViewModelAsync(EmployerAccountId, "Submitted", 2, new VacancyUser(), string.Empty);
+            var actualDashboard = await orch.GetDashboardViewModelAsync(employerAccountId, _user);
 
-            vm.ShowResultsTable.Should().BeTrue();
-            vm.HasVacancies.Should().BeTrue();
-            
-            vm.Pager.ShowPager.Should().BeTrue();
-
-            vm.Vacancies.Count.Should().Be(2);
-            vm.Vacancies[0].Title.Should().Be("26");
-            vm.Vacancies[1].Title.Should().Be("27");
-        }
-
-        [Fact]
-        public async Task WhenHave25OrUnderVacancies_ShouldNotShowPager()
-        {
-            var vacancies = new List<VacancySummary>();
-            for (var i = 1; i <= 25; i++)
-            {
-                vacancies.Add(new VacancySummary {
-                    Title = i.ToString(),
-                    Status = VacancyStatus.Submitted
-                });
-            }
-
-            var orch = GetOrchestrator(vacancies);
-
-            var vm = await orch.GetDashboardViewModelAsync(EmployerAccountId, "Submitted", 2, new VacancyUser(), string.Empty);
-
-            vm.ShowResultsTable.Should().BeTrue();
-            vm.HasVacancies.Should().BeTrue();
-
-            vm.Pager.ShowPager.Should().BeFalse();
-
-            vm.Vacancies.Count.Should().Be(25);
+            actualDashboard.EmployerAccountId.Should().Be(employerAccountId);
+            actualDashboard.Vacancies.Should().Equal(vacancies);
+            actualDashboard.HasAnyVacancies.Should().BeTrue();
+            actualDashboard.NoOfVacanciesClosingSoonWithNoApplications.Should().Be(2);
+            actualDashboard.NoOfVacanciesClosingSoon.Should().Be(4);
+            actualDashboard.Alerts.Should().NotBeNull();
         }
 
         [Fact]
-        public async Task SearchFilterResults_ShouldReturnSingleVacancy()
+        public async Task WhenHasNoVacancies_ShouldReturnViewModelAsync()
         {
-            var searchTerm = "VacancyTitle_22";
             var vacancies = new List<VacancySummary>();
-            for (var i = 1; i <= 25; i++)
-            {
-                vacancies.Add(new VacancySummary
-                {
-                    Title = "VacancyTitle_" + i,
-                    Status = VacancyStatus.Submitted
-                });
-            }
+                
+            var orch = GetSut(vacancies);
 
-            var orch = GetOrchestrator(vacancies);
-            var vm = await orch.GetDashboardViewModelAsync(EmployerAccountId, "Submitted", 2, new VacancyUser(), searchTerm);
-            vm.ShowResultsTable.Should().BeTrue();
-            vm.HasVacancies.Should().BeTrue();
-            vm.Vacancies.Count.Should().Be(1);
-            vm.Vacancies.FirstOrDefault().Title.Should().BeEquivalentTo(searchTerm);
+            var actualDashboard = await orch.GetDashboardViewModelAsync(employerAccountId, _user);
+
+            actualDashboard.EmployerAccountId.Should().Be(employerAccountId);
+            actualDashboard.Vacancies.Should().Equal(vacancies);
+            actualDashboard.HasAnyVacancies.Should().BeFalse();
+            actualDashboard.NoOfVacanciesClosingSoonWithNoApplications.Should().Be(0);
+            actualDashboard.NoOfVacanciesClosingSoon.Should().Be(0);
+            actualDashboard.Alerts.Should().NotBeNull();
         }
 
-        [Fact] 
-        public async Task SearchFilterResults_ShouldReturnAllMatchingVacancies()
-        {
-            var searchTerm = "VacancyTitle_";
-            var vacancies = new List<VacancySummary>();
-            for (var i = 1; i <= 25; i++)
-            {
-                vacancies.Add(new VacancySummary
-                {
-                    Title = "VacancyTitle_" + i,
-                    Status = VacancyStatus.Submitted
-                });
-            }
-
-            var orch = GetOrchestrator(vacancies);
-            var vm = await orch.GetDashboardViewModelAsync(EmployerAccountId, "Submitted", 2, new VacancyUser(), searchTerm);
-            vm.ShowResultsTable.Should().BeTrue();
-            vm.HasVacancies.Should().BeTrue();
-            vm.Vacancies.Count.Should().Be(vacancies.Count);
-            vm.Vacancies.All(x => x.Title.Contains(searchTerm));
-        }
-
-
-        private DashboardOrchestrator GetOrchestrator(List<VacancySummary> vacancies)
+        private DashboardOrchestrator GetSut(List<VacancySummary> vacancies)
         {
             var timeProviderMock = new Mock<ITimeProvider>();
+            timeProviderMock.Setup(t => t.Today).Returns(_today);
 
-            var clientMock = new Mock<IEmployerVacancyClient>();
-            clientMock.Setup(c => c.GetDashboardAsync(EmployerAccountId))
-                .Returns(Task.FromResult(new EmployerDashboard
-                {
-                    Vacancies = vacancies
-                }));
-            
-            var recruitClientMock = new Mock<IRecruitVacancyClient>();
-            recruitClientMock.Setup(c => c.GetUsersDetailsAsync(It.IsAny<string>())).ReturnsAsync(new User());
+            var dashboardProjection = new EmployerDashboard
+            {
+                Vacancies = vacancies
+            };
 
-            return new DashboardOrchestrator(clientMock.Object, timeProviderMock.Object, recruitClientMock.Object, new AlertViewModelService());
+            var vacancyClientMock = new Mock<IEmployerVacancyClient>();
+            vacancyClientMock.Setup(c => c.GetDashboardAsync(employerAccountId, true))
+                .ReturnsAsync(dashboardProjection);
+
+            var userDetails = new User();
+
+            var clientMock = new Mock<IRecruitVacancyClient>();
+            clientMock.Setup(c => c.GetUsersDetailsAsync(UserId))
+                .ReturnsAsync(userDetails);
+
+            var alertsViewModel = new AlertsViewModel(null, null, null, null);
+            var alertsFactoryMock = new Mock<IEmployerAlertsViewModelFactory>();
+            alertsFactoryMock.Setup(a => a.Create(vacancies, userDetails))
+                .Returns(alertsViewModel);
+
+            var orch = new DashboardOrchestrator(vacancyClientMock.Object, timeProviderMock.Object, clientMock.Object, alertsFactoryMock.Object);
+
+            return orch;
         }
     }
 }

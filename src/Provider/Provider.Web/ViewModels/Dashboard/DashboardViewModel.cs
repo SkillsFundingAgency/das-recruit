@@ -5,12 +5,11 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using Humanizer;
 
-namespace Esfa.Recruit.Provider.Web.ViewModels
+namespace Esfa.Recruit.Provider.Web.ViewModels.Dashboard
 {
     public class DashboardViewModel
     {
         public IList<VacancySummary> Vacancies { get; set; }
-        public bool HasAnyVacancies { get; internal set; }
         public AlertsViewModel Alerts { get; internal set; }
 
         public bool HasOneVacancy => Vacancies.Count == 1;
@@ -40,5 +39,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public string VacancyTextClosingSoonWithNoApplications => "vacancy".ToQuantity(NoOfVacanciesClosingSoonWithNoApplications, ShowQuantityAs.None);
         public bool ShowNoOfVacanciesClosingSoon => NoOfVacanciesClosingSoon > 0;
         public bool ShowNoOfVacanciesClosingSoonWithNoApplications => NoOfVacanciesClosingSoonWithNoApplications > 0;
+        public bool HasAnyVacancies => Vacancies.Any();
     }
 }

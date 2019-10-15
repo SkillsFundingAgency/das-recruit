@@ -2,12 +2,12 @@
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Extensions;
-using Esfa.Recruit.Provider.Web.Orchestrators;
+using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Provider.Web.Controllers
+namespace Esfa.Recruit.Provider.Web.Controllers
 {
     [Route(RoutePaths.AccountRoutePath)]
     public class AlertsController : Controller
@@ -20,11 +20,11 @@ namespace Provider.Web.Controllers
         }
 
         [HttpPost("dismiss-alert", Name = RouteNames.Alerts_Dismiss_Post)]
-        public async Task<IActionResult> DismissAlert([FromRoute] string employerAccountId, AlertDismissalEditModel model)
+        public async Task<IActionResult> DismissAlert(AlertDismissalEditModel model)
         {
             if (Enum.TryParse<AlertType>(model.AlertType, out var alertTypeEnum))
             {
-                await _orchestrator.DismissAlert(User.ToVacancyUser(), (AlertType)alertTypeEnum);
+                await _orchestrator.DismissAlert(User.ToVacancyUser(), alertTypeEnum);
             }
 
             if (!string.IsNullOrWhiteSpace(model.ReturnUrl))

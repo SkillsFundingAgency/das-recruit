@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
-using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Provider.Web.Services;
 using Esfa.Recruit.Provider.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.Extensions;
@@ -89,7 +87,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 Filter = filteringOption,
                 SearchTerm = searchTerm,
                 ResultsHeading = GetFilterHeading(filteredVacanciesTotal, filteringOption, searchTerm),
-                HasAnyVacancies = vacancies.Any(),
                 Alerts = alerts
             };
 
@@ -155,13 +152,12 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
         private string GetFilterHeading(int totalVacancies, FilteringOptions filteringOption, string searchTerm)
         {
-            var filterText = filteringOption == FilteringOptions.All ? string.Empty : $" {filteringOption.GetDisplayName().ToLowerInvariant()}";
-            var vacancyText = filteringOption == FilteringOptions.ClosingSoon || filteringOption == FilteringOptions.ClosingSoonWithNoApplications ?
-                " live vacancy" : " vacancy";
-            var vacancyStatusPrefix = $"{totalVacancies}{filterText}{vacancyText}".ToQuantity(totalVacancies, ShowQuantityAs.None);
-
+            var filterText = filteringOption == FilteringOptions.All ? string.Empty : $"{filteringOption.GetDisplayName()}";
+            var vacancyText = filteringOption.IsInLiveVacancyOptions() ?
+                "live vacancy" : "Vacancy";
+            string vacancyStatusPrefix = string.IsNullOrWhiteSpace(filterText) ? $"{vacancyText}".ToQuantity(totalVacancies)
+            : $"{vacancyText}".ToQuantity(totalVacancies) + $" in {filterText} Status";
             var searchSuffix = string.IsNullOrWhiteSpace(searchTerm) ? string.Empty : $" with '{searchTerm}'";
-            
             return $"{vacancyStatusPrefix}{searchSuffix}";
         }
     }

@@ -819,6 +819,97 @@ a[rel="external"]:hover:after {
   font-weight: 700;
 }
 
+/*** Start of cards ***/
+
+.das-card--row {
+    margin-right: -10px;
+    margin-left: -10px;
+}
+
+    .das-card--row .govuk-grid-column-one-third {
+        padding: 0 10px;
+        margin-bottom: 20px;
+    }
+
+@media (min-width: 48.0525em) {
+    .das-card--row {
+        display: flex;
+    }
+
+        .das-card--row .govuk-grid-column-one-third {
+            flex: 1;
+        }
+}
+
+.das-card {
+    background-color: #ffffff;
+    border: 1px solid #bfc1c3;
+    display: block;
+    height: 100%;
+    overflow: hidden;
+}
+
+    .das-card.das-card--error {
+        border-color: #b10e1e;
+        border-width: 3px;
+    }
+
+    .das-card.das-card--inactive {
+        background-color: #f8f8f8;
+    }
+
+    .das-card .das-card--content {
+        padding: 20px;
+    }
+
+    .das-card .das-card--heading {
+        margin-bottom: 10px;
+        font-size: 19px;
+        font-size: 1.1875rem;
+        line-height: 1.31579;
+    }
+
+        .das-card .das-card--heading a:visited {
+            color: #005ea5;
+        }
+
+    .das-card .das-card--stat {
+        font-size: 19px;
+        font-size: 1.1875rem;
+        line-height: 1.31579;
+    }
+
+@media (min-width: 48.0525em) {
+    .das-card .das-card--stat {
+        display: block;
+        font-size: 24px;
+        font-size: 1.5rem;
+        line-height: 1.25;
+    }
+}
+
+.das-card .das-card--description, .das-card .das-card--hint {
+    font-size: 16px;
+    font-size: 1rem;
+    line-height: 1.25;
+}
+
+.das-card .das-card--hint {
+    color: #6f777b;
+}
+
+.das-card .das-card--tasks li a {
+    font-size: 16px;
+    font-size: 1rem;
+    line-height: 1.25;
+}
+
+    .das-card .das-card--tasks li a:visited {
+        color: #005ea5;
+    }
+
+/*** End of cards ***/
+
 /*** search ***/
 .search-field {
   position: relative;

@@ -23,7 +23,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             return new LevySelectionOrchestratorResponse 
             {
-                RedirectRouteName = viewModel.ConfirmAsLevyPayer.Value ? RouteNames.Dashboard_Index_Get : RouteNames.NonLevyInfo_Get,
+                RedirectRouteName = viewModel.ConfirmAsLevyPayer.Value ? RouteNames.Dashboard_Get : RouteNames.NonLevyInfo_Get,
                 CreateLevyCookie = viewModel.ConfirmAsLevyPayer.Value
             };
         }

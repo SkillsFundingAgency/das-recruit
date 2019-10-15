@@ -1,6 +1,6 @@
 ﻿using Esfa.Recruit.Shared.Web.ViewModels.Alerts;
 
-namespace Esfa.Recruit.Employer.Web.ViewModels.Dashboard
+namespace Esfa.Recruit.Employer.Web.ViewModels
 {
     public class AlertsViewModel
     {
@@ -13,5 +13,16 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Dashboard
         public bool ShowBlockedProviderTransferredVacanciesAlert => BlockedProviderTransferredVacanciesAlert != null;
         public bool ShowBlockedProviderAlert => BlockedProviderAlert != null;
         public bool ShowWithdrawnByQaVacanciesAlert => WithdrawnByQaVacanciesAlert != null;
+
+        public AlertsViewModel(EmployerTransferredVacanciesAlertViewModel employerRevokedTransferredVacanciesAlert,
+            EmployerTransferredVacanciesAlertViewModel blockedProviderTransferredVacanciesAlert,
+            BlockedProviderAlertViewModel blockedProviderAlert,
+            WithdrawnVacanciesAlertViewModel withdrawnByQaVacanciesAlert)
+        {
+            EmployerRevokedTransferredVacanciesAlert = employerRevokedTransferredVacanciesAlert;
+            BlockedProviderTransferredVacanciesAlert = blockedProviderTransferredVacanciesAlert;
+            BlockedProviderAlert = blockedProviderAlert;
+            WithdrawnByQaVacanciesAlert = withdrawnByQaVacanciesAlert;
+        }
     }
 }

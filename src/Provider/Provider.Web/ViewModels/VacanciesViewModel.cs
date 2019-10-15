@@ -14,7 +14,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public PagerViewModel Pager { get; internal set; }
         public string ResultsHeading { get; internal set; }
         public bool IsFiltered => Filter != FilteringOptions.All;
-        public bool HasAnyVacancies {get; internal set;}
         public bool HasWarning => !string.IsNullOrEmpty(WarningMessage);
         public bool HasInfo => !string.IsNullOrEmpty(InfoMessage);
         public bool ShowResultsTable => Vacancies.Any();

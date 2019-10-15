@@ -5,12 +5,14 @@
     <div class="govuk-grid-column-full">
         <div class="info-summary">
             <p class="govuk-body">
-                <a asp-route="@RouteNames.Dashboard_Index_Get" asp-route-filter="@FilteringOptions.Transferred" class="govuk-link">@Model.CountCaption</a> from
+                <a asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Transferred" class="govuk-link">@Model.CountCaption</a> from
                 <span class="govuk-!-font-weight-bold">@Model.ProviderNamesCaption</span> after you turned off their permissions.
             </p>
             <p class="govuk-body">Live vacancies that have been transferred are now closed. Vacancies sent for review have been sent back to draft. You can clone closed vacancies if you want to republish them.</p>
-            <form asp-route="@RouteNames.Dashboard_DismissAlert_Post">
+            <form asp-route="@RouteNames.Alerts_Dismiss_Post">
                 <p class="govuk-body govuk-!-margin-bottom-0">
+                    @{ string returnUrl = ViewContext.HttpContext.Request.Path + ViewContext.HttpContext.Request.QueryString; }
+                    <input name="@nameof(AlertDismissalEditModel.ReturnUrl)" value="@returnUrl" type="hidden" />
                     <input name="@nameof(AlertDismissalEditModel.AlertType)" value="@AlertType.TransferredVacanciesEmployerRevokedPermission" type="hidden" />
                     <button type="submit" class="button-fake-link govuk-link govuk-link--no-visited-state">Dismiss this notification</button>
                 </p>

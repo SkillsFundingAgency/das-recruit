@@ -39,7 +39,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             await _orchestrator.DeleteVacancyAsync(m, User.ToVacancyUser());
             
-            return RedirectToRoute(RouteNames.Dashboard_Index_Get);
+            return RedirectToRoute(RouteNames.Vacancies_Get);
         }
 
         private async Task<IActionResult> GetDeleteVacancyConfirmationView(VacancyRouteModel vrm)

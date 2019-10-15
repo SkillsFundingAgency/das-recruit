@@ -1,6 +1,6 @@
 ﻿@using Esfa.Recruit.Vacancies.Client.Domain.Entities
 
-@model DashboardViewModel
+@model Esfa.Recruit.Provider.Web.ViewModels.Dashboard.DashboardViewModel
 
 @{
     var vacanciesSearchSuggestionsEndpointUrl = @Url.RouteUrl(RouteNames.VacanciesSearchSuggestions_Get, null, Context.Request.Scheme);
@@ -11,18 +11,18 @@
 }
 
     <div asp-hide="@Model.HasAnyVacancies">
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-one-half">
-            <h1 class="govuk-heading-xl">Recruitment</h1>
-            <p class="govuk-body">Your dashboard is empty, start by creating your first vacancy</p>
-            <p class="govuk-body">Vacancies will be approved or rejected within 24 hours.</p>
-        </div>
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-one-half">
+                <h1 class="govuk-heading-xl">Recruitment</h1>
+                <p class="govuk-body">Your dashboard is empty, start by creating your first vacancy</p>
+                <p class="govuk-body">Vacancies will be approved or rejected within 24 hours.</p>
+            </div>
 
-        <div class="govuk-grid-column-one-half ">
-            <a asp-route="@RouteNames.Employer_Get" class="govuk-button float-right clear govuk-!-margin-top-2 govuk-!-margin-bottom-4" esfa-automation="create-vacancy">Create vacancy</a>
-        </div>
-    </div>    
-</div>
+            <div class="govuk-grid-column-one-half ">
+                <a asp-route="@RouteNames.Employer_Get" class="govuk-button float-right clear govuk-!-margin-top-2 govuk-!-margin-bottom-4" esfa-automation="create-vacancy">Create vacancy</a>
+            </div>
+        </div>    
+    </div>
 
     <div asp-show="@Model.HasAnyVacancies">
         
@@ -67,7 +67,7 @@
                             <a asp-show="@Model.HasDraftVacancy" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Draft" class="govuk-link">
                                 @FilteringOptions.Draft @Model.VacancyTextDraft
                             </a>
-                            <p asp-hide="@Model.HasDraftVacancy">@FilteringOptions.Draft @Model.VacancyTextDraft</p>
+                            <span asp-hide="@Model.HasDraftVacancy">@FilteringOptions.Draft @Model.VacancyTextDraft</span>
                         </h3>
                         <p class="govuk-body das-card--description">Vacancies that need completing and sending for review.</p>
                     </div>
@@ -81,7 +81,7 @@
                             <a asp-show="@Model.HasSubmittedVacancy" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Submitted" class="govuk-link">
                                 @FilteringOptions.Submitted.GetDisplayName()
                             </a>
-                            <span asp-hide="@Model.HasSubmittedVacancy">@FilteringOptions.Submitted</span>
+                            <span asp-hide="@Model.HasSubmittedVacancy">@FilteringOptions.Submitted.GetDisplayName()</span>
                         </h3>
                         <p class="govuk-body das-card--description">Vacancies that have been sent for review.</p>
                     </div>
@@ -136,7 +136,7 @@
                             <a asp-show="@Model.HasNewApplications" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.NewApplications" class="govuk-link">
                                 New @Model.ApplicationTextLive
                             </a>
-                            <span asp-hide="@Model.HasNewApplications">@FilteringOptions.NewApplications.GetDisplayName()</span>
+                            <span asp-hide="@Model.HasNewApplications">New @Model.ApplicationTextLive</span>
                         </h3>
                         <span class="govuk-body das-card--description">Applications from Find an apprenticeship service.</span>
                         <ul class="das-card--tasks govuk-list" asp-show="@Model.ShowAllApplications">

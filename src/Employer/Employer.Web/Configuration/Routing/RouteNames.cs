@@ -2,6 +2,7 @@
 {
     public static class RouteNames
     {
+        public const string Alerts_Dismiss_Post = "Alerts_Dismiss_Post";
         public const string VacanciesSearchSuggestions_Get = "VacanciesSearchSuggestions_Get";
         public const string AboutEmployer_Get = "AboutEmployer_Get";
         public const string AboutEmployer_Post = "AboutEmployer_Post";
@@ -12,11 +13,12 @@
         public const string Considerations_Get = "Considerations_Get";
         public const string Considerations_Post = "Considerations_Post";
 
-        public const string Dashboard_Index_Get = "Dashboard_Index_Get";
+        public const string Dashboard_Get = "Dashboard_Get";
+
+        public const string Vacancies_Get = "Dashboard_Index_Get";
         public const string Dashboard_ChangePassword = "Dashboard_ChangePassword";
         public const string Dashboard_ChangeEmail = "Dashboard_ChangeEmail";
-        public const string Dashboard_DismissAlert_Post = "Dashboard_DismissAlert_Post";
-
+        
         public const string Dashboard_AccountsRename = "Dashboard_AccountsRename";
         public const string Dashboard_AccountsFinance = "Dashboard_AccountsFinance";
         public const string Dashboard_AccountsApprentices = "Dashboard_AccountsApprentices";
@@ -26,9 +28,6 @@
         public const string Dashboard_Account_Home = "Dashboard_Account_Home";
 
         public const string DismissOutageMessage_Post = "DismissOutageMessage_Post";
-
-        public const string EmployerDetails_Index_Get = "EmployerDetails_Index_Get";
-        public const string EmployerDetails_Index_Post = "EmployerDetails_Index_Post";
 
         public const string EmployerContactDetails_Get = "EmployerContactDetails_Get";
         public const string EmployerContactDetails_Post = "EmployerContactDetails_Post";
