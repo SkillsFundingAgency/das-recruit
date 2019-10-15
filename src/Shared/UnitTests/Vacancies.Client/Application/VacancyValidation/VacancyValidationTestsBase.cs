@@ -6,6 +6,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using Microsoft.Extensions.Logging;
 using Moq;
 
@@ -20,6 +21,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation
         protected readonly Mock<ITrainingProviderSummaryProvider> MockTrainingProviderSummaryProvider;
         protected readonly Mock<IBlockedOrganisationQuery> MockBlockedOrganisationRepo;
         protected readonly TestProfanityListProvider MockProfanityListProvider;
+        protected readonly Mock<IProviderRelationshipsService> MockProviderRelationshipsService;
 
         protected VacancyValidationTestsBase()
         {
@@ -30,6 +32,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation
             MockTrainingProviderSummaryProvider = new Mock<ITrainingProviderSummaryProvider>();
             MockBlockedOrganisationRepo = new Mock<IBlockedOrganisationQuery>();
             MockProfanityListProvider = new TestProfanityListProvider();
+            MockProviderRelationshipsService = new Mock<IProviderRelationshipsService>();
         }
 
         protected IEntityValidator<Vacancy, VacancyRuleSet> Validator
@@ -40,7 +43,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation
                 var fluentValidator = new FluentVacancyValidator(timeProvider, MockMinimumWageService.Object, 
                     MockApprenticeshipProgrammeProvider.Object, MockQualificationsProvider.Object, SanitizerService, 
                     MockTrainingProviderSummaryProvider.Object, MockBlockedOrganisationRepo.Object,
-                    MockProfanityListProvider);
+                    MockProfanityListProvider, MockProviderRelationshipsService.Object);
                 return new EntityValidator<Vacancy, VacancyRuleSet>(fluentValidator);
             }
         }
