@@ -6,6 +6,7 @@ using Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview;
+using Esfa.Recruit.Employer.Web.Exceptions;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
@@ -25,7 +26,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             var applicationReview = await Utility.GetAuthorisedApplicationReviewAsync(_vacancyClient, rm);
            
             if (applicationReview.IsWithdrawn)
-                throw new Exception($"Application has been withdrawn. ApplicationReviewId:{applicationReview.Id}");
+                throw new ApplicationWithdrawnException($"Application has been withdrawn. ApplicationReviewId:{applicationReview.Id}", rm.VacancyId);
 
             return applicationReview.ToViewModel();
         }

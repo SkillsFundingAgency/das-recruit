@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Text;
+using Esfa.Recruit.Proivder.Web.Exceptions;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Exceptions;
@@ -110,6 +111,11 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                     return MissingPermissions(long.Parse((string)ukprn));
                 }
 
+                if (exception is ApplicationWithdrawnException withdrawnException)
+                {
+                    return ApplicationWithdrawn(long.Parse((string)ukprn), withdrawnException);
+                }
+
                 _logger.LogError(exception, "Unhandled exception on path: {route}", routeWhereExceptionOccurred);
             }
 
@@ -186,6 +192,19 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         {
             Response.StatusCode = (int)HttpStatusCode.NotFound;
             return View(ViewNames.PageNotFound);
+        }
+
+        private IActionResult ApplicationWithdrawn(long ukprn, ApplicationWithdrawnException exception)
+        {
+            _logger.LogInformation(exception.Message);
+            Response.StatusCode = (int)HttpStatusCode.NotFound;
+            var returnLink = Url.RouteUrl(RouteNames.VacancyManage_Get, new VacancyRouteModel
+            {
+                Ukprn = ukprn,
+                VacancyId = exception.VacancyId
+            });
+
+            return View(ViewNames.ApplicationWithdrawn, returnLink);
         }
 
         private void AddDashboardMessage(string message)

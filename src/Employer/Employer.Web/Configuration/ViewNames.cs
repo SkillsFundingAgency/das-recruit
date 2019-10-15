@@ -21,5 +21,6 @@
         public const string AccessDenied = "AccessDenied";
         public const string PageNotFound = "PageNotFound";
         public const string BlockedEmployer = "BlockedEmployer";
+        public const string ApplicationWithdrawn = "ApplicationWithdrawn";
     }
 }
