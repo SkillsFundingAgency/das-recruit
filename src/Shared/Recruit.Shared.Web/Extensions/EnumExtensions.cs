@@ -17,10 +17,10 @@ namespace Esfa.Recruit.Shared.Web.Extensions
             return displayName ?? enumValue.ToString();
         }
 
-        public static bool IsInLiveVacancyOptions(this Enum enumValue)
+        public static bool IsInLiveVacancyOptions(this FilteringOptions enumValue)
         {
-            return enumValue.ToString() == FilteringOptions.ClosingSoon.ToString() ||
-                   enumValue.ToString() == FilteringOptions.ClosingSoonWithNoApplications.ToString();
+            return enumValue == FilteringOptions.ClosingSoon ||
+                   enumValue == FilteringOptions.ClosingSoonWithNoApplications;
         }
 
         private static readonly Dictionary<Enum, string> DisplayNames = new Dictionary<Enum, string>
