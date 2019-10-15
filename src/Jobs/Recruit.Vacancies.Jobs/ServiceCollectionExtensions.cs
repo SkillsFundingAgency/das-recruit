@@ -32,6 +32,7 @@ using System.Collections.Generic;
 using SFA.DAS.Encoding;
 using Esfa.Recruit.Vacancies.Client.Application.Communications.ParticipantResolverPlugins;
 using Recruit.Vacancies.Client.Application.Communications.CompositeDataItemProviderPlugins;
+using Esfa.Recruit.Vacancies.Jobs.Jobs;
 
 namespace Esfa.Recruit.Vacancies.Jobs
 {

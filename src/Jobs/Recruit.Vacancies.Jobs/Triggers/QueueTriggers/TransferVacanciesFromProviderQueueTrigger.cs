@@ -6,6 +6,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
 using Esfa.Recruit.Vacancies.Jobs.Configuration;
+using Esfa.Recruit.Vacancies.Jobs.Jobs;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -46,7 +47,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
                 {
                     var queueMessage = JsonConvert.DeserializeObject<TransferVacanciesFromProviderQueueMessage>(message);
 
-                    await _runner.Run(queueMessage.Ukprn, queueMessage.LegalEntityId, queueMessage.UserRef, queueMessage.UserEmailAddress, queueMessage.UserName, queueMessage.TransferReason);
+                    await _runner.Run(queueMessage.Ukprn, queueMessage.EmployerAccountId, queueMessage.LegalEntityId, queueMessage.UserRef, queueMessage.UserEmailAddress, queueMessage.UserName, queueMessage.TransferReason);
 
                     _logger.LogInformation("Finished queueing vacancies to transfer from provider.");
                 }

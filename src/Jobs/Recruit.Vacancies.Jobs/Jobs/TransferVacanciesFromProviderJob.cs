@@ -1,27 +1,36 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Queues;
 using Esfa.Recruit.Vacancies.Client.Application.Queues.Messages;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 
-namespace Esfa.Recruit.Vacancies.Jobs
+namespace Esfa.Recruit.Vacancies.Jobs.Jobs
 {
     public class TransferVacanciesFromProviderJob
     {
         private readonly IVacancyQuery _vacanciesQuery;
         private readonly IRecruitQueueService _queueService;
+        private readonly IQueryStoreReader _queryStoreReader;
 
-        public TransferVacanciesFromProviderJob(IVacancyQuery vacanciesQuery, IRecruitQueueService queueService)
+        public TransferVacanciesFromProviderJob(IVacancyQuery vacanciesQuery, IRecruitQueueService queueService, IQueryStoreReader queryStoreReader)
         {
             _vacanciesQuery = vacanciesQuery;
             _queueService = queueService;
+            _queryStoreReader = queryStoreReader;
         }
 
-        public async Task Run(long ukprn, long legalEntityId, Guid userRef, string userEmail, string userName, TransferReason transferReason)
+        public async Task Run(long ukprn, string employerAccountId, long legalEntityId, Guid userRef, string userEmail, string userName, TransferReason transferReason)
         {
-            var vacancies = await _vacanciesQuery.GetProviderOwnedVacanciesForLegalEntityAsync(ukprn, legalEntityId);
+            var vacanciesTask = _vacanciesQuery.GetProviderOwnedVacanciesForLegalEntityAsync(ukprn, legalEntityId);
+            var vacanciesWithoutLegalEntityIdTask = GetProviderOwnerVacanciesWithoutLegalEntityThatMustBeTransferred(ukprn, employerAccountId, legalEntityId);
+
+            await Task.WhenAll(vacanciesTask, vacanciesWithoutLegalEntityIdTask);
+
+            var vacancies = vacanciesTask.Result.Concat(vacanciesWithoutLegalEntityIdTask.Result);
 
             var tasks = vacancies.Select(vac => _queueService.AddMessageAsync(new TransferVacancyToLegalEntityQueueMessage
             {
@@ -31,8 +40,20 @@ namespace Esfa.Recruit.Vacancies.Jobs
                 UserName = userName,
                 TransferReason = transferReason
             }));
-
+            
             await Task.WhenAll(tasks);
+        }
+
+        private async Task<IEnumerable<Vacancy>> GetProviderOwnerVacanciesWithoutLegalEntityThatMustBeTransferred(long ukprn, string employerAccountId, long legalEntityId)
+        {
+            var employer = await _queryStoreReader.GetProviderEmployerVacancyDataAsync(ukprn, employerAccountId);
+            var remainingLegalEntitiesCount = employer?.LegalEntities.Count(l => l.LegalEntityId != legalEntityId) ?? 0;
+
+            //We should only transfer vacancies without a legalEntityId when the provider cannot choose another legal entity
+            if (remainingLegalEntitiesCount == 0)
+                return await _vacanciesQuery.GetProviderOwnedVacanciesForEmployerWithoutLegalEntityAsync(ukprn, employerAccountId);
+
+            return Enumerable.Empty<Vacancy>();
         }
     }
 }
