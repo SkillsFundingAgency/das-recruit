@@ -1,5 +1,7 @@
-﻿using Esfa.Recruit.Vacancies.Client.Application.Validation;
+﻿using System.Collections.Generic;
+using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using FluentAssertions;
 using Moq;
 using Xunit;
@@ -114,6 +116,61 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
             result.Errors[0].PropertyName.Should().Be(nameof(vacancy.TrainingProvider));
             result.Errors[0].ErrorCode.Should().Be("99");
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.TrainingProvider);
+        }
+
+        [Fact]
+        public void ErrorIfProviderVacancyDoesNotHaveEmployerPermission()
+        {
+            const long ukprn = 12345678;
+            const string employerAccountId = "employer-account-id";
+            const long legalEntityId = 1234;
+
+            var vacancy = new Vacancy
+            {
+                OwnerType = OwnerType.Provider,
+                TrainingProvider = new TrainingProvider { Ukprn = ukprn },
+                EmployerAccountId = employerAccountId,
+                LegalEntityId = legalEntityId
+            };
+
+            MockTrainingProviderSummaryProvider.Setup(p => p.GetAsync(ukprn)).ReturnsAsync(new TrainingProviderSummary());
+
+            MockProviderRelationshipsService.Setup(p => p.HasProviderGotEmployersPermissionAsync(ukprn, employerAccountId, legalEntityId))
+                .ReturnsAsync(false);
+
+            var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProvider);
+
+            result.HasErrors.Should().BeTrue();
+            result.Errors.Should().HaveCount(1);
+            result.Errors[0].PropertyName.Should().Be(string.Empty);
+            result.Errors[0].ErrorCode.Should().Be(ErrorCodes.TrainingProviderMustHaveEmployerPermission);
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.TrainingProvider);
+        }
+
+        [Fact]
+        public void ShouldNotErrorIfProviderVacancyHasEmployerPermission()
+        {
+            const long ukprn = 12345678;
+            const string employerAccountId = "employer-account-id";
+            const long legalEntityId = 1234;
+
+            var vacancy = new Vacancy
+            {
+                OwnerType = OwnerType.Provider,
+                TrainingProvider = new TrainingProvider { Ukprn = ukprn },
+                EmployerAccountId = employerAccountId,
+                LegalEntityId = legalEntityId
+            };
+
+            MockTrainingProviderSummaryProvider.Setup(p => p.GetAsync(ukprn)).ReturnsAsync(new TrainingProviderSummary());
+
+            MockProviderRelationshipsService.Setup(p => p.HasProviderGotEmployersPermissionAsync(ukprn, employerAccountId, legalEntityId))
+                .ReturnsAsync(true);
+
+            var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProvider);
+
+            result.HasErrors.Should().BeFalse();
+            result.Errors.Should().HaveCount(0);
         }
     }
 }

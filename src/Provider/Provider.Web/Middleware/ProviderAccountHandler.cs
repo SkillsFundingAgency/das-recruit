@@ -50,7 +50,7 @@ namespace Esfa.Recruit.Provider.Web.Middleware
                 {
                     if (HasDoneOncePerAuthorizedSessionActions(context) == false)
                     {
-                        var isProviderBlocked = await HasBeenBlockedOnRecruit(context, ukprnFromClaim);
+                        var isProviderBlocked = await HasBeenBlockedOnRecruit(ukprnFromClaim);
 
                         if (isProviderBlocked == false)
                         {
@@ -78,12 +78,11 @@ namespace Esfa.Recruit.Provider.Web.Middleware
             }
         }
 
-        private async Task<bool> HasBeenBlockedOnRecruit(AuthorizationHandlerContext context, string ukprnFromClaim)
+        private async Task<bool> HasBeenBlockedOnRecruit(string ukprnFromClaim)
         {
             var bo = await _blockedOrganisationsRepo.GetByOrganisationIdAsync(ukprnFromClaim);
             var isBlocked = (bo == null || bo.BlockedStatus == BlockedStatus.Unblocked) == false;
 
-            var mvcContext = (AuthorizationFilterContext)context.Resource;
             _dict.Add(TempDataKeys.IsBlockedProvider, isBlocked);
 
             return isBlocked;

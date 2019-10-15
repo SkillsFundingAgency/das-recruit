@@ -4,6 +4,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using FluentValidation;
 using FluentValidation.Internal;
 using FluentValidation.Results;
@@ -86,7 +87,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
             return ruleBuilder.CustomAsync(async (trainingProvider, context, cancellationToken) =>
             {
                 if (trainingProvider.Ukprn.HasValue && 
-                    await trainingProviderSummaryProvider.GetAsync(trainingProvider.Ukprn.Value) != null)
+                    (await trainingProviderSummaryProvider.GetAsync(trainingProvider.Ukprn.Value)) != null)
                 return;
 
                 var failure = new ValidationFailure(nameof(Vacancy.TrainingProvider), "The UKPRN is not valid or the associated provider is not active")
@@ -112,6 +113,27 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
                 var failure = new ValidationFailure(nameof(Vacancy.TrainingProvider), $"{trainingProvider.Name} can no longer be used as a training provider")
                 {
                     ErrorCode = ErrorCodes.TrainingProviderMustNotBeBlocked,
+                    CustomState = VacancyRuleSet.TrainingProvider
+                };
+                context.AddFailure(failure);
+            });
+        }
+
+        internal static IRuleBuilderInitial<Vacancy, Vacancy> TrainingProviderVacancyMustHaveEmployerPermission(this IRuleBuilder<Vacancy, Vacancy> ruleBuilder, IProviderRelationshipsService providerRelationshipService)
+        {
+            return ruleBuilder.CustomAsync(async (vacancy, context, cancellationToken) =>
+            {
+                if (vacancy.OwnerType != OwnerType.Provider)
+                    return;
+
+                var hasPermission = await providerRelationshipService.HasProviderGotEmployersPermissionAsync(vacancy.TrainingProvider.Ukprn.Value, vacancy.EmployerAccountId, vacancy.LegalEntityId);
+
+                if (hasPermission)
+                    return;
+                
+                var failure = new ValidationFailure(string.Empty, "Training provider does not have permission to create vacancies for this employer")
+                {
+                    ErrorCode = ErrorCodes.TrainingProviderMustHaveEmployerPermission,
                     CustomState = VacancyRuleSet.TrainingProvider
                 };
                 context.AddFailure(failure);

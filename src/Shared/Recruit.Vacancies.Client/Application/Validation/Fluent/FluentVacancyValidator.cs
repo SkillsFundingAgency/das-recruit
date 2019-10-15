@@ -3,6 +3,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators.VacancyValidators;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using FluentValidation;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
@@ -17,6 +18,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         private readonly ITrainingProviderSummaryProvider _trainingProviderSummaryProvider;
         private readonly IBlockedOrganisationQuery _blockedOrganisationRepo;
         private readonly IProfanityListProvider _profanityListProvider;
+        private readonly IProviderRelationshipsService _providerRelationshipService;
 
         public FluentVacancyValidator(
             ITimeProvider timeProvider, 
@@ -26,7 +28,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             IHtmlSanitizerService htmlSanitizerService, 
             ITrainingProviderSummaryProvider trainingProviderSummaryProvider, 
             IBlockedOrganisationQuery blockedOrganisationRepo, 
-            IProfanityListProvider profanityListProvider)
+            IProfanityListProvider profanityListProvider,
+            IProviderRelationshipsService providerRelationshipService)
         {
             _timeProvider = timeProvider;
             _minimumWageService = minimumWageService;
@@ -36,6 +39,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             _trainingProviderSummaryProvider = trainingProviderSummaryProvider;
             _blockedOrganisationRepo = blockedOrganisationRepo;
             _profanityListProvider = profanityListProvider;
+            _providerRelationshipService = providerRelationshipService;
 
             SingleFieldValidations();
 
@@ -639,6 +643,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithMessage("You must enter a training provider")
                     .WithErrorCode(ErrorCodes.TrainingProviderUkprnNotEmpty)
                 .SetValidator(trainingProviderValidator)
+                .RunCondition(VacancyRuleSet.TrainingProvider)
+                .WithRuleId(VacancyRuleSet.TrainingProvider);
+
+            RuleFor(x => x)
+                .TrainingProviderVacancyMustHaveEmployerPermission(_providerRelationshipService)
                 .RunCondition(VacancyRuleSet.TrainingProvider)
                 .WithRuleId(VacancyRuleSet.TrainingProvider);
         }
