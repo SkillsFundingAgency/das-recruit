@@ -42,9 +42,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.UnitTests.ExternalSystemEventHandlers
         private readonly Mock<IRecruitQueueService> _mockRecruitQueueService;
         private readonly Mock<IEmployerAccountProvider> _mockEmployerAccountProvider;
         private readonly Mock<IEncodingService> _mockEncoder;
-        private readonly Mock<IVacancyQuery> _mockVacancyQuery;
         private readonly Mock<IMessaging> _mockMessaging;
-        private readonly Mock<IQueryStoreReader> _mockQueryStoreReader;
         private readonly UpdatedPermissionsExternalSystemEventsHandler _sut;
 
         public UpdatedPermissionsExternalSystemEventHandlerTests()
@@ -54,13 +52,11 @@ namespace Esfa.Recruit.Vacancies.Jobs.UnitTests.ExternalSystemEventHandlers
             _mockRecruitQueueService = new Mock<IRecruitQueueService>();
             _mockEmployerAccountProvider = new Mock<IEmployerAccountProvider>();
             _mockEncoder = new Mock<IEncodingService>();
-            _mockVacancyQuery = new Mock<IVacancyQuery>();
             _mockMessaging = new Mock<IMessaging>();
-            _mockQueryStoreReader = new Mock<IQueryStoreReader>();
 
             _sut = new UpdatedPermissionsExternalSystemEventsHandler(Mock.Of<ILogger<UpdatedPermissionsExternalSystemEventsHandler>>(), _jobsConfig,
                                                         _mockRecruitQueueService.Object, _mockEmployerAccountProvider.Object,
-                                                        _mockEncoder.Object, _mockVacancyQuery.Object, _mockMessaging.Object, _mockQueryStoreReader.Object);
+                                                        _mockEncoder.Object, _mockMessaging.Object);
         }
 
         [Fact]
@@ -74,7 +70,6 @@ namespace Esfa.Recruit.Vacancies.Jobs.UnitTests.ExternalSystemEventHandlers
             _mockMessaging.VerifyNoOtherCalls();
             _mockEmployerAccountProvider.VerifyNoOtherCalls();
             _mockEncoder.VerifyNoOtherCalls();
-            _mockVacancyQuery.VerifyNoOtherCalls();
         }
 
         [Fact]
@@ -87,7 +82,6 @@ namespace Esfa.Recruit.Vacancies.Jobs.UnitTests.ExternalSystemEventHandlers
             _mockMessaging.VerifyNoOtherCalls();
             _mockEmployerAccountProvider.VerifyNoOtherCalls();
             _mockEncoder.VerifyNoOtherCalls();
-            _mockVacancyQuery.VerifyNoOtherCalls();
         }
 
         [Fact]
@@ -100,7 +94,6 @@ namespace Esfa.Recruit.Vacancies.Jobs.UnitTests.ExternalSystemEventHandlers
             _mockMessaging.VerifyNoOtherCalls();
             _mockEmployerAccountProvider.VerifyNoOtherCalls();
             _mockEncoder.VerifyNoOtherCalls();
-            _mockVacancyQuery.VerifyNoOtherCalls();
         }
 
         [Fact]
@@ -113,7 +106,6 @@ namespace Esfa.Recruit.Vacancies.Jobs.UnitTests.ExternalSystemEventHandlers
             _mockMessaging.VerifyNoOtherCalls();
             _mockEmployerAccountProvider.VerifyNoOtherCalls();
             _mockEncoder.VerifyNoOtherCalls();
-            _mockVacancyQuery.VerifyNoOtherCalls();
         }
 
         [Fact]

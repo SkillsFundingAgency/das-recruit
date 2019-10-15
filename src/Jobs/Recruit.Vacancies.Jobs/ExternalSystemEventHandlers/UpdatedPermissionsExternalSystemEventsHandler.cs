@@ -32,8 +32,8 @@ namespace Esfa.Recruit.Vacancies.Jobs.ExternalSystemEventHandlers
 
         public UpdatedPermissionsExternalSystemEventsHandler(ILogger<UpdatedPermissionsExternalSystemEventsHandler> logger, RecruitWebJobsSystemConfiguration jobsConfig,
                                                 IRecruitQueueService recruitQueueService,
-                                                IEmployerAccountProvider employerAccountProvider, IEncodingService encoder, IVacancyQuery vacancyQuery,
-                                                IMessaging messaging, IQueryStoreReader queryStoreReader)
+                                                IEmployerAccountProvider employerAccountProvider, IEncodingService encoder,
+                                                IMessaging messaging)
         {
             _logger = logger;
             _jobsConfig = jobsConfig;
