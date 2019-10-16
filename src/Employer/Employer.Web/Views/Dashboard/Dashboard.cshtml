@@ -12,9 +12,9 @@
 <partial asp-hide="@Model.HasAnyVacancies" name="_NoVacanciesContent" />
 
 <div asp-show="@Model.HasAnyVacancies">
-        
-    <partial name="@PartialNames.Alerts" for="Alerts"/>
-    
+
+    <partial name="@PartialNames.Alerts" for="Alerts" />
+
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-one-half">
             <h1 class="govuk-heading-xl">Recruitment</h1>
@@ -171,13 +171,13 @@
         <esfaFeatureEnabled name="@FeatureNames.SetNotificationPreferences">
             <div class="govuk-grid-column-one-third">
                 <h3 class="govuk-heading-s">
-                        
+
                     <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.ManageNotifications_Get">Manage your recruitment emails</a>
                 </h3>
                 <p class="govuk-body">Set up and manage the emails you’re sent about your vacancies and applications</p>
             </div>
         </esfaFeatureEnabled>
-        </div>
+    </div>
 </div>
 
 @section FooterJS
