@@ -10,6 +10,7 @@ using Esfa.Recruit.Provider.Web.Exceptions;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels;
 using Esfa.Recruit.Provider.Web.ViewModels.Error;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
@@ -28,12 +29,14 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         private readonly ILogger<ErrorController> _logger;
         private readonly ExternalLinksConfiguration _externalLinks;
         private readonly IRecruitVacancyClient _vacancyClient;
+        private readonly ITrainingProviderSummaryProvider _trainingProviderSummaryProvider;
 
-        public ErrorController(ILogger<ErrorController> logger, IOptions<ExternalLinksConfiguration> externalLinks, IRecruitVacancyClient vacancyClient)
+        public ErrorController(ILogger<ErrorController> logger, IOptions<ExternalLinksConfiguration> externalLinks, IRecruitVacancyClient vacancyClient, ITrainingProviderSummaryProvider trainingProviderSummaryProvider)
         {
             _logger = logger;
             _externalLinks = externalLinks.Value;
             _vacancyClient = vacancyClient;
+            _trainingProviderSummaryProvider = trainingProviderSummaryProvider;
         }
 
         [Route("error/{id?}")]
@@ -156,8 +159,8 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 bool ukprnIsNotListedInRoatp;
                 try
                 {
-                    var allProviders = _vacancyClient.GetAllTrainingProvidersAsync().Result;
-                    var provider = allProviders.SingleOrDefault(p => p.Ukprn == ukprn);
+                    var provider = _trainingProviderSummaryProvider.GetAsync(ukprn).Result;
+                    
                     ukprnIsNotListedInRoatp = provider == null;
                 }
                 catch (Exception)

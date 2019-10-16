@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -25,14 +26,16 @@ namespace Esfa.Recruit.Provider.Web.Middleware
         private readonly ITempDataProvider _tempDataProvider;
         private readonly Predicate<Claim> _ukprnClaimFinderPredicate = c => c.Type.Equals(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier);
         private readonly IDictionary<string, object> _dict = new Dictionary<string, object>();
+        private readonly ITrainingProviderSummaryProvider _trainingProviderSummaryProvider;
 
-        public ProviderAccountHandler(IHostingEnvironment hostingEnvironment, IProviderVacancyClient client, IRecruitVacancyClient vacancyClient, IBlockedOrganisationQuery blockedOrganisationsRepo, ITempDataProvider tempDataProvider)
+        public ProviderAccountHandler(IHostingEnvironment hostingEnvironment, IProviderVacancyClient client, IRecruitVacancyClient vacancyClient, IBlockedOrganisationQuery blockedOrganisationsRepo, ITempDataProvider tempDataProvider, ITrainingProviderSummaryProvider trainingProviderSummaryProvider)
         {
             _hostingEnvironment = hostingEnvironment;
             _client = client;
             _vacancyClient = vacancyClient;
             _blockedOrganisationsRepo = blockedOrganisationsRepo;
             _tempDataProvider = tempDataProvider;
+            _trainingProviderSummaryProvider = trainingProviderSummaryProvider;
         }
 
         protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, ProviderAccountRequirement requirement)
@@ -141,8 +144,8 @@ namespace Esfa.Recruit.Provider.Web.Middleware
                 if (ukprn == EsfaTestTrainingProvider.Ukprn)
                     return true;
 
-                var allProviders = await _vacancyClient.GetAllTrainingProvidersAsync();
-                var provider = allProviders.SingleOrDefault(p => p.Ukprn == ukprn);
+                var provider = await _trainingProviderSummaryProvider.GetAsync(ukprn);
+                
                 _dict.Add(TempDataKeys.ProviderName, provider.ProviderName);
 
                 return provider != null;

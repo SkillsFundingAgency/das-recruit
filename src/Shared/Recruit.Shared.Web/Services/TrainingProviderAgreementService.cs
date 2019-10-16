@@ -7,12 +7,12 @@ namespace Esfa.Recruit.Shared.Web.Services
     public class TrainingProviderAgreementService : ITrainingProviderAgreementService
     {
         private readonly IProviderVacancyClient _client;
-        private readonly IPasAccountClient _pasAccountClient;
+        private readonly IPasAccountProvider _pasAccountProvider;
 
-        public TrainingProviderAgreementService(IProviderVacancyClient client, IPasAccountClient pasAccountClient)
+        public TrainingProviderAgreementService(IProviderVacancyClient client, IPasAccountProvider pasAccountProvider)
         {
             _client = client;
-            _pasAccountClient = pasAccountClient;
+            _pasAccountProvider = pasAccountProvider;
         }
 
         public async Task<bool> HasAgreementAsync(long ukprn)
@@ -26,7 +26,7 @@ namespace Esfa.Recruit.Shared.Web.Services
                 return true;
 
             //Agreement may have been signed since the projection was created. Check PAS.
-            var hasAgreement = await _pasAccountClient.HasAgreementAsync(ukprn);
+            var hasAgreement = await _pasAccountProvider.HasAgreementAsync(ukprn);
 
             if (hasAgreement)
             {

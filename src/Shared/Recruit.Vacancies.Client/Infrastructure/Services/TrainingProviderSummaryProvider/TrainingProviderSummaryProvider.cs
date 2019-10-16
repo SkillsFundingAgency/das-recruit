@@ -2,19 +2,21 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Cache;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Microsoft.Extensions.Logging;
 using SFA.DAS.Providers.Api.Client;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProviderSummaryProvider
 {
+    /// <summary>
+    /// Returns providers from RoATP (Register of Apprenticeship Training Providers)
+    /// </summary>
     public class TrainingProviderSummaryProvider : ITrainingProviderSummaryProvider
     {
         private readonly IProviderApiClient _providerClient;
         private readonly ICache _cache;
         private readonly ITimeProvider _timeProvider;
-
 
         public TrainingProviderSummaryProvider(IProviderApiClient providerClient, ICache cache, ITimeProvider timeProvider)
         {
@@ -33,6 +35,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
 
         public async Task<TrainingProviderSummary> GetAsync(long ukprn)
         {
+            if (ukprn == EsfaTestTrainingProvider.Ukprn)
+                return new TrainingProviderSummary { Ukprn = EsfaTestTrainingProvider.Ukprn, ProviderName = EsfaTestTrainingProvider.Name };
+
             return (await FindAllAsync()).SingleOrDefault(p => p.Ukprn == ukprn);
         }
 

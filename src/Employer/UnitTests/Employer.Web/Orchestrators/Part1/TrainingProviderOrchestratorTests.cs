@@ -4,9 +4,11 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.TrainingProvider;
 using Esfa.Recruit.Shared.Web.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -135,16 +137,30 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
         private TrainingProviderOrchestrator GetTrainingProviderOrchestrator(Vacancy vacancy)
         {
             var mockClient = new Mock<IEmployerVacancyClient>();
-            mockClient.Setup(c => c.GetTrainingProviderAsync(88888888))
+
+            var mockTrainingProviderService = new Mock<ITrainingProviderService>();
+            mockTrainingProviderService.Setup(t => t.GetProviderAsync(88888888))
                 .ReturnsAsync(new TrainingProvider {Ukprn = 88888888});
 
             var mockRecruitClient = new Mock<IRecruitVacancyClient>();
             mockRecruitClient.Setup(c => c.GetVacancyAsync(VacancyId)).ReturnsAsync(vacancy);
-            mockRecruitClient.Setup(c => c.GetAllTrainingProvidersAsync()).ReturnsAsync(new List<TrainingProviderSummary>
+
+            var mockTrainingProviderSummaryProvider = new Mock<ITrainingProviderSummaryProvider>();
+
+            var mrEggTrainingProvider = new TrainingProviderSummary { ProviderName = "MR EGG", Ukprn = 88888888 };
+            var mrsEggTrainingProvider = new TrainingProviderSummary { ProviderName = "MRS EGG", Ukprn = 88888889 };
+
+            mockTrainingProviderSummaryProvider.Setup(p => p.FindAllAsync()).ReturnsAsync(new List<TrainingProviderSummary>
             {
-                new TrainingProviderSummary{ProviderName = "MR EGG", Ukprn = 88888888},
-                new TrainingProviderSummary{ProviderName = "MRS EGG", Ukprn = 88888889}
+                mrEggTrainingProvider,
+                mrsEggTrainingProvider
             });
+
+            mockTrainingProviderSummaryProvider.Setup(p => p.GetAsync(88888888))
+                .ReturnsAsync(mrEggTrainingProvider);
+
+            mockTrainingProviderSummaryProvider.Setup(p => p.GetAsync(88888889))
+                .ReturnsAsync(mrsEggTrainingProvider);
 
             mockRecruitClient.Setup(c => c.Validate(It.IsAny<Vacancy>(), VacancyRuleSet.TrainingProvider))
                 .Returns(new EntityValidationResult());
@@ -152,7 +168,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
             var mockLog = new Mock<ILogger<TrainingProviderOrchestrator>>();
             var mockReview = new Mock<IReviewSummaryService>();
 
-            return new TrainingProviderOrchestrator(mockClient.Object, mockRecruitClient.Object, mockLog.Object, mockReview.Object);
+            return new TrainingProviderOrchestrator(mockClient.Object, mockRecruitClient.Object, mockLog.Object, mockReview.Object, mockTrainingProviderSummaryProvider.Object, mockTrainingProviderService.Object);
         }
     }
 }
