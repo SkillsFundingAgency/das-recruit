@@ -12,7 +12,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies.SearchResu
         [Fact]
         public async Task WhenThereAreNoVacancies()
         {
-            var expectedMessage = "0 Vacancies with 'nurse'";
+            var expectedMessage = "0 vacancies with 'nurse'";
             var sut = GetSut(new List<VacancySummary>());
             var vm = await sut.GetVacanciesViewModelAsync(User, "All", 1, "nurse");
             vm.ResultsHeading.Should().Be(expectedMessage);
@@ -21,7 +21,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies.SearchResu
         [Fact]
         public async Task WhenThereIsOneVacancy()
         {
-            var expectedMessage = "1 Vacancy with 'nurse'";
+            var expectedMessage = "1 vacancy with 'nurse'";
             var sut = GetSut(GenerateVacancySummaries(1, "nurse", string.Empty,VacancyStatus.Live));
             var vm = await sut.GetVacanciesViewModelAsync(User, "All", 1, "nurse");
             vm.ResultsHeading.Should().Be(expectedMessage);
@@ -30,7 +30,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies.SearchResu
         [Fact]
         public async Task WhenThereIsMoreThanOneVacancy()
         {
-            var expectedMessage = "2 Vacancies with 'nurse'";
+            var expectedMessage = "2 vacancies with 'nurse'";
             var sut = GetSut(GenerateVacancySummaries(2, "nurse", string.Empty,VacancyStatus.Live));
             var vm = await sut.GetVacanciesViewModelAsync(User, "All", 1, "nurse");
             vm.ResultsHeading.Should().Be(expectedMessage);

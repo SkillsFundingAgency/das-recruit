@@ -5,14 +5,13 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Services;
 using Esfa.Recruit.Provider.Web.ViewModels;
-using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.Helpers;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
-using Humanizer;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators
 {
@@ -86,7 +85,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 Pager = pager,
                 Filter = filteringOption,
                 SearchTerm = searchTerm,
-                ResultsHeading = GetFilterHeading(filteredVacanciesTotal, filteringOption, searchTerm),
+                ResultsHeading = VacancyFilterHeadingHelper.GetFilterHeading(filteredVacanciesTotal, filteringOption, searchTerm),
                 Alerts = alerts
             };
 
@@ -148,17 +147,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             if (Enum.TryParse(typeof(FilteringOptions), filter, out var status))
                 return (FilteringOptions)status;
             return FilteringOptions.All;
-        }
-
-        private string GetFilterHeading(int totalVacancies, FilteringOptions filteringOption, string searchTerm)
-        {
-            var filterText = filteringOption == FilteringOptions.All ? string.Empty : $"{filteringOption.GetDisplayName()}";
-            var vacancyText = filteringOption.IsInLiveVacancyOptions() ?
-                "live vacancy" : "Vacancy";
-            string vacancyStatusPrefix = string.IsNullOrWhiteSpace(filterText) ? $"{vacancyText}".ToQuantity(totalVacancies)
-            : $"{vacancyText}".ToQuantity(totalVacancies) + $" in {filterText} Status";
-            var searchSuffix = string.IsNullOrWhiteSpace(searchTerm) ? string.Empty : $" with '{searchTerm}'";
-            return $"{vacancyStatusPrefix}{searchSuffix}";
         }
     }
 }

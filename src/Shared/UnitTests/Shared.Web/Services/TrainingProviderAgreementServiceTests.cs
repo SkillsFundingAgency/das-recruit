@@ -12,7 +12,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.Services
     public class TrainingProviderAgreementServiceTests
     {
         private Mock<IProviderVacancyClient> _clientMock;
-        private Mock<IPasAccountClient> _pasAccountClientMock;
+        private Mock<IPasAccountProvider> _pasAccountProviderMock;
 
         private const long Ukprn = 99999999;
 
@@ -24,7 +24,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.Services
             var result = await sut.HasAgreementAsync(Ukprn);
 
             result.Should().BeFalse();
-            _pasAccountClientMock.Verify(c => c.HasAgreementAsync(It.IsAny<long>()), Times.Never);
+            _pasAccountProviderMock.Verify(c => c.HasAgreementAsync(It.IsAny<long>()), Times.Never);
             _clientMock.Verify(c => c.SetupProviderAsync(It.IsAny<long>()), Times.Never);
         }
 
@@ -36,7 +36,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.Services
             var result = await sut.HasAgreementAsync(Ukprn);
 
             result.Should().BeTrue();
-            _pasAccountClientMock.Verify(c => c.HasAgreementAsync(It.IsAny<long>()), Times.Never);
+            _pasAccountProviderMock.Verify(c => c.HasAgreementAsync(It.IsAny<long>()), Times.Never);
             _clientMock.Verify(c => c.SetupProviderAsync(It.IsAny<long>()), Times.Never);
         }
 
@@ -48,8 +48,8 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.Services
             var result = await sut.HasAgreementAsync(Ukprn);
 
             result.Should().BeFalse();
-            _pasAccountClientMock.Verify(c => c.HasAgreementAsync(It.IsAny<long>()), Times.Once);
-            _pasAccountClientMock.Verify(c => c.HasAgreementAsync(Ukprn), Times.Once);
+            _pasAccountProviderMock.Verify(c => c.HasAgreementAsync(It.IsAny<long>()), Times.Once);
+            _pasAccountProviderMock.Verify(c => c.HasAgreementAsync(Ukprn), Times.Once);
             _clientMock.Verify(c => c.SetupProviderAsync(It.IsAny<long>()), Times.Never);
         }
 
@@ -61,8 +61,8 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.Services
             var result = await sut.HasAgreementAsync(Ukprn);
 
             result.Should().BeTrue();
-            _pasAccountClientMock.Verify(c => c.HasAgreementAsync(It.IsAny<long>()), Times.Once);
-            _pasAccountClientMock.Verify(c => c.HasAgreementAsync(Ukprn), Times.Once);
+            _pasAccountProviderMock.Verify(c => c.HasAgreementAsync(It.IsAny<long>()), Times.Once);
+            _pasAccountProviderMock.Verify(c => c.HasAgreementAsync(Ukprn), Times.Once);
             _clientMock.Verify(c => c.SetupProviderAsync(It.IsAny<long>()), Times.Once);
             _clientMock.Verify(c => c.SetupProviderAsync(Ukprn), Times.Once);
         }
@@ -80,14 +80,14 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.Services
                     });
             }
             
-            _pasAccountClientMock = new Mock<IPasAccountClient>();
+            _pasAccountProviderMock = new Mock<IPasAccountProvider>();
 
             if (pasHasAgreement.HasValue)
             {
-                _pasAccountClientMock.Setup(c => c.HasAgreementAsync(Ukprn)).ReturnsAsync(pasHasAgreement.Value);
+                _pasAccountProviderMock.Setup(c => c.HasAgreementAsync(Ukprn)).ReturnsAsync(pasHasAgreement.Value);
             }
             
-            var sut = new TrainingProviderAgreementService(_clientMock.Object, _pasAccountClientMock.Object);
+            var sut = new TrainingProviderAgreementService(_clientMock.Object, _pasAccountProviderMock.Object);
 
             return sut;
         }
