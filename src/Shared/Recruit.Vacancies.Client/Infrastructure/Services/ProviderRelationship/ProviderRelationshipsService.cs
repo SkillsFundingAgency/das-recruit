@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using SFA.DAS.EAS.Account.Api.Client;
 using SFA.DAS.Http;
 using SFA.DAS.Http.TokenGenerators;
 
@@ -20,14 +21,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
         private readonly ProviderRelationshipApiConfiguration _configuration;
         private readonly ILogger<ProviderRelationshipApiConfiguration> _logger;
         private readonly IEmployerAccountProvider _employerAccountProvider;
+        private readonly IAccountApiClient _accountApiClient;
 
         public ProviderRelationshipsService(IOptions<ProviderRelationshipApiConfiguration> configuration,
             ILogger<ProviderRelationshipApiConfiguration> logger,
-            IEmployerAccountProvider employerAccountProvider)
+            IEmployerAccountProvider employerAccountProvider,
+            IAccountApiClient accountApiClient)
         {
             _configuration = configuration.Value;
             _logger = logger;
             _employerAccountProvider = employerAccountProvider;
+            _accountApiClient = accountApiClient;
         }
 
         public async Task<IEnumerable<EmployerInfo>> GetLegalEntitiesForProviderAsync(long ukprn)
@@ -37,16 +41,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
             return await GetEmployerInfosAsync(providerPermissions);
         }
 
-        public async Task<int> GetNumberOfPermittedLegalEntitesForEmployerAsync(long ukprn, string accountPublicHashedId)
+        public async Task<bool> HasProviderGotEmployersPermissionAsync(long ukprn, string accountHashedId, long legalEntityId)
         {
-            var permittedLegalEntities = await GetProviderPermissionsforEmployer(ukprn, accountPublicHashedId);
-
-            return permittedLegalEntities.Count();
-        }
-
-        public async Task<bool> HasProviderGotEmployersPermissionAsync(long ukprn, string accountPublicHashedId, long legalEntityId)
-        {
-            var permittedLegalEntities = await GetProviderPermissionsforEmployer(ukprn, accountPublicHashedId);
+            var accountDetails = await _accountApiClient.GetAccount(accountHashedId);
+            var permittedLegalEntities = await GetProviderPermissionsforEmployer(ukprn, accountDetails.PublicHashedAccountId);
 
             if (permittedLegalEntities.Any() == false)
                 return false;
