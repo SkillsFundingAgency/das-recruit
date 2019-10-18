@@ -22,12 +22,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 }
             },
             {
-                '$match': { 
-                    '$or': [
-                    { 'candidateApplicationReview.isWithdrawn': {'$exists' : false} }, 
-                    { 'candidateApplicationReview.isWithdrawn': false }] }
-            },
-            {
                 '$project': {
                     'vacancyGuid': '$_id',
                     'vacancyReference': 1,
@@ -52,7 +46,36 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     'transferInfoProviderName': '$transferInfo.providerName',
                     'transferInfoTransferredDate': '$transferInfo.transferredDate',
                     'transferInfoReason': '$transferInfo.reason',
-                    'trainingProviderName': '$trainingProvider.name'
+                    'trainingProviderName': '$trainingProvider.name',
+                    'isApplicationWithdrawn': '$candidateApplicationReview.isWithdrawn'
+                }
+            },
+            {
+                '$project': {
+                    'vacancyGuid': 1,
+                    'vacancyReference': 1,
+                    'title': 1,
+                    'status': 1,
+                    'appStatus': { '$cond' : [ { '$eq': ['$isApplicationWithdrawn', true] }, 'withdrawn', '$appStatus' ]},
+                    'legalEntityId': 1,
+                    'legalEntityName': 1,
+                    'employerAccountId': 1,
+                    'employerName': 1,
+                    'ukprn': 1,
+                    'createdDate': 1,
+                    'closingDate': 1,
+                    'startDate': 1,
+                    'closedDate': 1,
+                    'closureReason': 1,
+                    'applicationMethod': 1,
+                    'programmeId': 1,
+                    'duration': 1,
+                    'durationUnit': 1,
+                    'transferInfoUkprn': 1,
+                    'transferInfoProviderName': 1,
+                    'transferInfoTransferredDate': 1,
+                    'transferInfoReason': 1,
+                    'trainingProviderName': 1
                 }
             },
             {
