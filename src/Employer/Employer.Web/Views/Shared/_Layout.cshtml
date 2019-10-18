@@ -3,34 +3,34 @@
 
 @functions
 {
-public bool ParseHideNavFromViewBag()
-{
-    if (ViewBag.ShowNav is bool)
+    public bool ParseHideNavFromViewBag()
     {
-        return ViewBag.ShowNav;
+        if (ViewBag.ShowNav is bool)
+        {
+            return ViewBag.ShowNav;
+        }
+
+        return true;
     }
 
-    return true;
-}
-
-public string GetTitle()
-{
-    const string defaultTitle = "Recruit an Apprentice";
-    if (ViewBag.Title != null)
-        return $"{defaultTitle} | {ViewBag.Title}";
-
-    return defaultTitle;
-}
-
-public bool IsErrorPage()
-{
-    if (ViewBag.IsErrorPage is bool)
+    public string GetTitle()
     {
-        return ViewBag.IsErrorPage;
+        const string defaultTitle = "Recruit an Apprentice";
+        if (ViewBag.Title != null)
+            return $"{defaultTitle} | {ViewBag.Title}";
+
+        return defaultTitle;
     }
 
-    return false;
-}
+    public bool IsErrorPage()
+    {
+        if (ViewBag.IsErrorPage is bool)
+        {
+            return ViewBag.IsErrorPage;
+        }
+
+        return false;
+    }
 }
 <!DOCTYPE html>
 <html lang="en" class="govuk-template app-html-class">
@@ -77,7 +77,7 @@ public bool IsErrorPage()
     </environment>
     <script nws-csp-add-nonce="true">document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
     <a href="#main-content" class="govuk-skip-link">Skip to main content</a>
- 
+
     <div asp-show="@ViewContext.ViewData[ViewDataKeys.CanShowOutageMessage] as bool?" id="global-outage-message" class="global-message">
         <p>@ViewContext.ViewData[ViewDataKeys.PlannedOutageMessage]</p>
         <form asp-route="@RouteNames.DismissOutageMessage_Post" novalidate>
@@ -102,22 +102,15 @@ public bool IsErrorPage()
                             <image src="/lib/govuk-frontend/dist/assets/images/govuk-logotype-crown.png" class="govuk-header__logotype-crown-fallback-image"></image>
                         </svg>
                         <span class="govuk-header__logotype-text">
-                        GOV.UK
+                            GOV.UK
                         </span>
                     </span>
                 </a>
             </div>
             <div class="govuk-header__content">
-                <esfaFeatureEnabled name="@FeatureNames.AllowLevyPayingEmployersOnly">
-                    <a href="@ExternalLinks.MaRoot" class="govuk-header__link govuk-header__link--service-name">
-                        Manage apprenticeships
-                    </a>
-                </esfaFeatureEnabled>
-                <esfaFeatureDisabled name="@FeatureNames.AllowLevyPayingEmployersOnly">
-                    <a asp-route="@RouteNames.Dashboard_Account_Home" class="govuk-header__link govuk-header__link--service-name">
-                        Manage apprenticeships
-                    </a>
-                </esfaFeatureDisabled>
+                <a href="@ExternalLinks.MaRoot" class="govuk-header__link govuk-header__link--service-name">
+                    Manage apprenticeships
+                </a>
             </div>
         </div>
     </header>
@@ -168,13 +161,13 @@ public bool IsErrorPage()
             </nav>
         </div>
     }
- 
+
     <div class="govuk-width-container">
         <div class="govuk-phase-banner">
             <p class="govuk-phase-banner__content">
                 <strong class="govuk-tag govuk-phase-banner__content__tag ">beta</strong>
                 <span class="govuk-phase-banner__text">
-                This is a new service – your <a class="govuk-link" href="https://www.smartsurvey.co.uk/s/DXKAB/" target="_blank">feedback</a> will help us to improve it.
+                    This is a new service – your <a class="govuk-link" href="https://www.smartsurvey.co.uk/s/DXKAB/" target="_blank">feedback</a> will help us to improve it.
                 </span>
             </p>
         </div>

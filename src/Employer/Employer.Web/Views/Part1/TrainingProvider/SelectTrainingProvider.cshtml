@@ -84,17 +84,14 @@
             <div class="govuk-form-group">
                 <input type="hidden" name="@nameof(SelectTrainingProviderEditModel.SelectionType)" id="selection-type" value="@TrainingProviderSelectionType.Ukprn" />
                 <input type="submit" value="Continue" esfa-automation="btn-continue" class="govuk-button" />
-                <div asp-show="@Model.ReferredFromMAHome_FromSavedFavourites">
-                    <a href="@_externalLinksHelper.EmployerFavouritesAccounts" class="govuk-link das-button-link" esfa-automation="cancel-link">Cancel</a>
+                <div asp-show="@Model.ReferredFromSavedFavourites">
+                    <a href="@_externalLinks.Value.EmployerFavouritesUrl" class="govuk-link das-button-link" esfa-automation="cancel-link">Cancel</a>
                     @*<a asp-show="@Model.PageInfo.IsNotWizard" href="@_externalLinksHelper.EmployerFavouritesAccounts" asp-fragment="@Anchors.TrainingProviderSection" class="govuk-link das-button-link" esfa-automation="cancel-link">Cancel</a>*@
                 </div>
-                <div asp-hide="@Model.ReferredFromMAHome_FromSavedFavourites">
+                <div asp-hide="@Model.ReferredFromSavedFavourites">
                     <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link das-button-link" esfa-automation="cancel-link">Cancel</a>
                     <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.TrainingProviderSection" class="govuk-link das-button-link" esfa-automation="cancel-link">Cancel</a>
                 </div>
-            </div>
-
-                
             </div>
         </form>
     </div>

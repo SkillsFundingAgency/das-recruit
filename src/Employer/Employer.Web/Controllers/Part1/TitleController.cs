@@ -50,7 +50,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                 return string.IsNullOrWhiteSpace(GetReferredProgrammeId(vm.VacancyId))
                     ? Url.RouteUrl(RouteNames.Dashboard_Account_Home)
                     : GenerateEmployerFavouriteUrl(vm);
-            return Url.RouteUrl(RouteNames.Dashboard_Index_Get);
+            return Url.RouteUrl(RouteNames.Vacancies_Get);
         }
 
         private string GenerateEmployerFavouriteUrl(TitleViewModel vm)

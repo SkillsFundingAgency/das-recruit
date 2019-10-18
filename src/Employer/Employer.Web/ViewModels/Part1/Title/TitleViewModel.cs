@@ -30,5 +30,11 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Title
         public string ReturnToMALink { get; set; }
         public string BackLinkText { get; set; }
         public string BackLinkRoute { get; set; }
+        public bool ReferredFromMa { get; set; }
+        public string ReferredUkprn { get; set; }
+        public string ReferredProgrammeId { get; set; }
+        public bool ReferredFromSavedFavourites => ReferredFromMa &
+                                                   (!string.IsNullOrEmpty(ReferredUkprn) ||
+                                                    !string.IsNullOrEmpty(ReferredProgrammeId));
     }
 }

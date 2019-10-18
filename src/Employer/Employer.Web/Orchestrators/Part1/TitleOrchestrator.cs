@@ -11,6 +11,7 @@ using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
@@ -22,13 +23,15 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
         private readonly IEmployerVacancyClient _employerVacancyClient;
+        private readonly ITrainingProviderService _trainingProviderService;
 
-        public TitleOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<TitleOrchestrator> logger, IReviewSummaryService reviewSummaryService, IEmployerVacancyClient employerVacancyClient) : base(logger)
+        public TitleOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<TitleOrchestrator> logger, IReviewSummaryService reviewSummaryService, IEmployerVacancyClient employerVacancyClient, ITrainingProviderService trainingProviderService) : base(logger)
         {
             _client = client;
             _vacancyClient = vacancyClient;
             _reviewSummaryService = reviewSummaryService;
             _employerVacancyClient = employerVacancyClient;
+            _trainingProviderService = trainingProviderService;
         }
 
         public TitleViewModel GetTitleViewModel()
@@ -132,7 +135,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         {
             if(long.TryParse(ukprn, out long validUkprn) == false)
                 return null;
-            return await _client.GetTrainingProviderAsync(validUkprn);
+            return await _trainingProviderService.GetProviderAsync(validUkprn);
         }
 
         private async Task<IApprenticeshipProgramme> GetProgramme(string programmeId)

@@ -24,7 +24,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         {
             var vm = await _orchestrator.GetCreateOptionsViewModelAsync(employerAccountId);
             var showReturnToMaLink = Convert.ToBoolean(TempData.Peek(TempDataKeys.ReferredFromMa));
-            vm.BackLinkRoute = showReturnToMaLink ? RouteNames.Dashboard_Account_Home : RouteNames.Dashboard_Index_Get;
+            vm.BackLinkRoute = showReturnToMaLink ? RouteNames.Dashboard_Account_Home : RouteNames.Vacancies_Get;
             vm.BackLinkText = showReturnToMaLink ? "Return to home" : "Return to your vacancies";
             if (vm.HasClonableVacancies == false)
                 return RedirectToRoute(RouteNames.CreateVacancy_Get);

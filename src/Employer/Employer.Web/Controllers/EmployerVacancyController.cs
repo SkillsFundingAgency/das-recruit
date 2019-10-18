@@ -58,7 +58,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         [HttpGet("employer-manage-vacancy", Name = RouteNames.EmployerManageVacancy_Get)]
         public IActionResult ManageVacancy()
         {
-            return RedirectToRoute(RouteNames.Dashboard_Index_Get);
+            return RedirectToRoute(RouteNames.Vacancies_Get);
         }        
     }
 }
