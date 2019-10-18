@@ -27,6 +27,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         public IActionResult Title()
         {
             var vm = _orchestrator.GetTitleViewModel();
+            PopulateModelFromTempData(vm);
             vm.PageInfo.SetWizard();
             vm.BackLinkText = SetBackText(vm);
             vm.BackLinkRoute = SetBackLinkRoute(vm);
@@ -63,6 +64,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         public async Task<IActionResult> Title(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
         {
             var vm = await _orchestrator.GetTitleViewModelAsync(vrm);
+            PopulateModelFromTempData(vm);
             vm.PageInfo.SetWizard(wizard);
             vm.BackLinkRoute = SetBackLinkRoute(vm);
             vm.BackLinkText = SetBackText(vm);
@@ -104,6 +106,13 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         }
 
         private void PopulateModelFromTempData(TitleEditModel m)
+        {
+            m.ReferredFromMa = Convert.ToBoolean(TempData.Peek(TempDataKeys.ReferredFromMa));
+            m.ReferredUkprn = GetReferredProviderUkprn(m.VacancyId);
+            m.ReferredProgrammeId = GetReferredProgrammeId(m.VacancyId);
+        }
+
+        private void PopulateModelFromTempData(TitleViewModel m)
         {
             m.ReferredFromMa = Convert.ToBoolean(TempData.Peek(TempDataKeys.ReferredFromMa));
             m.ReferredUkprn = GetReferredProviderUkprn(m.VacancyId);
