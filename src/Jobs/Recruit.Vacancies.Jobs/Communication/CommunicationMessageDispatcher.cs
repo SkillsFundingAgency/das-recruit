@@ -74,7 +74,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.Communication
 
         public async Task SendEmail(CommunicationMessage request)
         {
-            _logger.LogInformation($"Trying to send message of type {request.RequestType}");
+            _logger.LogInformation($"Trying to send message of type {request.RequestType} to {request.Recipient.UserId}");
 
             var email = new Email
             {
@@ -91,7 +91,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.Communication
 
             await _retryPolicy.ExecuteAsync(context => _dasNotifyClient.SendEmail(email),
                                             new Context(nameof(SendEmail)));
-            _logger.LogInformation($"Successfully sent message of type {request.RequestType}");
+            _logger.LogInformation($"Trying to send message of type {request.RequestType} to {request.Recipient.UserId}");
         }
 
         private RetryPolicy GetRetryPolicy()

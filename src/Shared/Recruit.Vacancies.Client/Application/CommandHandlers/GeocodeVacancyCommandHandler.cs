@@ -49,8 +49,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         }
 
         private Task<Geocode> GeocodePostcodeAsync(Vacancy vacancy)
-        {
-            _logger.LogInformation("Attempting to geocode for vacancyId:'{vacancyId}'", vacancy.Id);
+        {            
+            _logger.LogInformation("Attempting to geocode postcode:'{postcode}' for vacancyId:'{vacancyId}'", vacancy.EmployerLocation.Postcode, vacancy.Id);
 
             var geocodeService = _geocodeServiceFactory.GetGeocodeService();
             return geocodeService.Geocode(vacancy.EmployerLocation.Postcode);
