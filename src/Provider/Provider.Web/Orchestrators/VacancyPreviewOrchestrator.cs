@@ -94,12 +94,15 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             return await ValidateAndExecute(
                 vacancy,
                 v => ValidateVacancy(v, SubmitValidationRules),
-                v => SubmitActionAsync(v, user)
+                v => SubmitActionAsync(m, user)
                 );
         }
 
-        private async Task<SubmitVacancyResponse> SubmitActionAsync(Vacancy vacancy, VacancyUser user)
+        private async Task<SubmitVacancyResponse> SubmitActionAsync(SubmitEditModel submitEditModel, VacancyUser user)
         {
+            //Retrieve vacancy again in case it has changed
+            var vacancy = await Utility.GetAuthorisedVacancyAsync(_client, _vacancyClient, submitEditModel, RouteNames.Preview_Submit_Post);
+
             var hasLegalEntityAgreementTask = _legalEntityAgreementService.HasLegalEntityAgreementAsync(vacancy.EmployerAccountId, vacancy.LegalEntityId);
             var hasProviderAgreementTask = _trainingProviderAgreementService.HasAgreementAsync(vacancy.TrainingProvider.Ukprn.Value);
 

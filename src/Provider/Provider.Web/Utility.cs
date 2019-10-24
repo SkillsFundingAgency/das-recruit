@@ -44,7 +44,7 @@ namespace Esfa.Recruit.Provider.Web
 
         public static void CheckAuthorisedAccess(Vacancy vacancy, long ukprn)
         {
-            if (vacancy.TrainingProvider.Ukprn.Value != ukprn)
+            if (vacancy.TrainingProvider.Ukprn.Value != ukprn || vacancy.OwnerType != OwnerType.Provider)
                 throw new AuthorisationException(string.Format(ExceptionMessages.VacancyUnauthorisedAccessForProvider, ukprn, vacancy.TrainingProvider.Ukprn, vacancy.Title, vacancy.Id));
         }
 
