@@ -30,6 +30,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
                 Status = VacancyStatus.Draft,
                 VacancyReference = 1234567890
             };
+            vacancy.OwnerType = OwnerType.Employer;
             var user = new VacancyUser();
             var now = DateTime.Now;
             var message = new SubmitVacancyCommand(vacancy.Id, user, expectedDescription, OwnerType.Employer);
@@ -57,6 +58,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
                 Status = VacancyStatus.Draft,
                 VacancyReference = 1234567890
             };
+            vacancy.OwnerType= OwnerType.Provider;
             var user = new VacancyUser();
             var now = DateTime.Now;
             var message = new SubmitVacancyCommand(vacancy.Id, user, OwnerType.Provider);

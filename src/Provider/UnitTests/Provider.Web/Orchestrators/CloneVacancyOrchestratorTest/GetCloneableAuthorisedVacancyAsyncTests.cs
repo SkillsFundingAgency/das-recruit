@@ -18,8 +18,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.CloneVacancyOrchestr
 
         [Theory]
         [InlineData(VacancyStatus.Referred)]
-        [InlineData(VacancyStatus.Draft)]
-        public async Task WhenVacancyInInvalidState_ShouldThrowInvalidStateException(VacancyStatus status)
+        [InlineData(VacancyStatus.Draft)]         public async Task WhenVacancyInInvalidState_ShouldThrowInvalidStateException(VacancyStatus status)
         {
             var vacancy = SourceVacancy;
             vacancy.Status = status;

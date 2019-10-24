@@ -26,7 +26,8 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.CloneVacancyOrchestr
             TrainingProvider = TrainingProvider,
             Status = VacancyStatus.Live,
             StartDate = SourceStartDate,
-            ClosingDate = SourceClosingDate
+            ClosingDate = SourceClosingDate,
+            OwnerType = OwnerType.Provider
         };
         internal VacancyRouteModel VRM => new VacancyRouteModel
         {
