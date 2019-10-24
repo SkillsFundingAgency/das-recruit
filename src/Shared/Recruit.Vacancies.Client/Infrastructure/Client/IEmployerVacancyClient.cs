@@ -13,7 +13,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
     {
         Task<Guid> CreateVacancyAsync(string title, string employerAccountId, VacancyUser user);
         Task GenerateDashboard(string employerAccountId);
-        Task SubmitVacancyAsync(Guid vacancyId, string employerDescription, VacancyUser user);
         Task DeleteVacancyAsync(Guid vacancyId, VacancyUser user);
         Task<EmployerDashboard> GetDashboardAsync(string employerAccountId, bool createIfNonExistent = false);
         Task<EditVacancyInfo> GetEditVacancyInfoAsync(string employerAccountId);

@@ -44,8 +44,10 @@ namespace Esfa.Recruit.Provider.Web
 
         public static void CheckAuthorisedAccess(Vacancy vacancy, long ukprn)
         {
-            if (vacancy.TrainingProvider.Ukprn.Value != ukprn || vacancy.OwnerType != OwnerType.Provider)
+            if (vacancy.TrainingProvider.Ukprn.Value != ukprn)
                 throw new AuthorisationException(string.Format(ExceptionMessages.VacancyUnauthorisedAccessForProvider, ukprn, vacancy.TrainingProvider.Ukprn, vacancy.Title, vacancy.Id));
+            if (vacancy.OwnerType != OwnerType.Provider)
+                throw new AuthorisationException(string.Format(ExceptionMessages.UserIsNotTheOwner, OwnerType.Provider));
         }
 
         public static void CheckRouteIsValidForVacancy(Vacancy vacancy, string currentRouteName, VacancyRouteModel vrm)

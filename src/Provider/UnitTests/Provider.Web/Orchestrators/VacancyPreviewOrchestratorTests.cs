@@ -12,6 +12,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.PasAccount;
 using FluentAssertions;
@@ -29,7 +30,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators
         [InlineData(true, false, false)]
         [InlineData(false, true, false)]
         [InlineData(false, false, false)]
-        public async Task SubmitVacancyAsync_ShouldNotSubmitWhenMissingAgreements(bool hasLegalEntityAgreement, bool hasProviderAgreement, bool shouldBeSubmitted)
+        public async Task SubmitVacancyAsync_ShouldNotSubmitWhenMissingAgreements(
+            bool hasLegalEntityAgreement, bool hasProviderAgreement, bool shouldBeSubmitted)
         {
             var vacancyId = Guid.NewGuid();
             const long ukprn = 12345678;
@@ -44,9 +46,9 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators
             vacancy.IsDeleted = false;
             vacancy.EmployerAccountId = employerAccountId;
             vacancy.LegalEntityId = legalEntityId;
+            vacancy.OwnerType = OwnerType.Provider;
 
             var client = new Mock<IProviderVacancyClient>();
-            
 
             var vacancyClient = new Mock<IRecruitVacancyClient>();
             vacancyClient.Setup(c => c.GetVacancyAsync(vacancyId))
@@ -74,7 +76,11 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators
             agreementServiceMock.Setup(t => t.HasAgreementAsync(ukprn))
                 .ReturnsAsync(hasProviderAgreement);
 
-            var orch = new VacancyPreviewOrchestrator(client.Object, vacancyClient.Object, logger.Object, mapper, review.Object, legalEntityAgreement.Object, agreementServiceMock.Object);
+            var messagingMock = new Mock<IMessaging>();
+
+            var orch = new VacancyPreviewOrchestrator(
+                client.Object, vacancyClient.Object, logger.Object, mapper, review.Object, 
+                legalEntityAgreement.Object, agreementServiceMock.Object, messagingMock.Object);
 
             var m = new SubmitEditModel
             {
@@ -87,7 +93,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators
             var actualResponse = await orch.SubmitVacancyAsync(m, user);
 
             var submittedTimes = shouldBeSubmitted ? Times.Once() : Times.Never();
-            client.Verify(c => c.SubmitVacancyAsync(vacancyId, user), submittedTimes);
+            messagingMock.Verify(c => c.SendCommandAsync(It.IsAny<ICommand>()), submittedTimes);
 
             actualResponse.Data.IsSubmitted.Should().Be(shouldBeSubmitted);
             actualResponse.Data.HasLegalEntityAgreement.Should().Be(hasLegalEntityAgreement);
