@@ -151,7 +151,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
             var user = new VacancyUser();
             var now = DateTime.Now;
             var message = new SubmitVacancyCommand(vacancy.Id, user, OwnerType.Provider);
-            var expectedExceptionMessage = string.Format(SubmitVacancyCommandHandler.InvalidOwnerExceptionMessageFormat, vacancy.Id, message.SubmittedFrom, vacancy.OwnerType);
+            var expectedExceptionMessage = string.Format(SubmitVacancyCommandHandler.InvalidOwnerExceptionMessageFormat, vacancy.Id, message.SubmissionOwner, vacancy.OwnerType);
 
             var sut = GetSut(vacancy.Id, vacancy, now);
             var exception = await Assert.ThrowsAsync<InvalidOperationException>(async () => await sut.Handle(message, new CancellationToken()));

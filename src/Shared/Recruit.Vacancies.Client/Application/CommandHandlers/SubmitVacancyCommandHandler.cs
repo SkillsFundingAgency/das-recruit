@@ -18,7 +18,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         public const string VacancyNotFoundExceptionMessageFormat = "Vacancy {0} not found";
         public const string InvalidStateExceptionMessageFormat = "Unable to submit vacancy {0} due to vacancy having a status of {1}.";
         public const string InvalidOwnerExceptionMessageFormat = "The vacancy {0} owner has changed from {1} to {2} and hence cannot be submitted.";
-        public const string MissingReferenceNumberExceptionMessageFormat = "Cannot submit vacancy {0} without a vacancy reference";
+        public const string MissingReferenceNumberExceptionMessageFormat = "Cannot submit vacancy {0} without a vacancy reference number";
         private readonly ILogger<SubmitVacancyCommandHandler> _logger;
         private readonly IVacancyRepository _vacancyRepository;
         private readonly IMessaging _messaging;
@@ -54,8 +54,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             if(vacancy.CanSubmit == false)
                 throw new InvalidOperationException(string.Format(InvalidStateExceptionMessageFormat, vacancy.Id, vacancy.Status));
 
-            if(vacancy.OwnerType != message.SubmittedFrom)
-                throw new InvalidOperationException(string.Format(InvalidOwnerExceptionMessageFormat, vacancy.Id, message.SubmittedFrom, vacancy.OwnerType));
+            if(vacancy.OwnerType != message.SubmissionOwner)
+                throw new InvalidOperationException(string.Format(InvalidOwnerExceptionMessageFormat, vacancy.Id, message.SubmissionOwner, vacancy.OwnerType));
 
             var now = _timeProvider.Now;
 

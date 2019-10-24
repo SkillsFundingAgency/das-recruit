@@ -7,24 +7,24 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Commands
 {
     public class SubmitVacancyCommand : ICommand, IRequest
     {
-        public SubmitVacancyCommand(Guid vacancyId, VacancyUser user, OwnerType submittedFrom)
+        public SubmitVacancyCommand(Guid vacancyId, VacancyUser user, OwnerType submissionOwner)
         {
             VacancyId = vacancyId;
             User = user;
-            SubmittedFrom = submittedFrom;
+            SubmissionOwner = submissionOwner;
         }
 
-        public SubmitVacancyCommand(Guid vacancyId, VacancyUser user, string employerDescription, OwnerType submittedFrom)
+        public SubmitVacancyCommand(Guid vacancyId, VacancyUser user, string employerDescription, OwnerType submissionOwner)
         {
             VacancyId = vacancyId;
             User = user;
             EmployerDescription = employerDescription;
-            SubmittedFrom = submittedFrom;
+            SubmissionOwner = submissionOwner;
         }
 
         public Guid VacancyId { get;}
         public VacancyUser User { get; }
         public string EmployerDescription { get; }
-        public OwnerType SubmittedFrom { get; }
+        public OwnerType SubmissionOwner { get; }
     }
 }
