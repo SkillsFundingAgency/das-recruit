@@ -64,13 +64,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _messaging.SendCommandAsync(command);
         }
 
-        public Task SubmitVacancyAsync(Guid vacancyId, VacancyUser user)
-        {
-            var command = new SubmitVacancyCommand(vacancyId, user);
-
-            return _messaging.SendCommandAsync(command);
-        }
-
         public async Task<Guid> CreateProviderApplicationsReportAsync(long ukprn, DateTime fromDate, DateTime toDate, VacancyUser user, string reportName)
         {
             var reportId = Guid.NewGuid();

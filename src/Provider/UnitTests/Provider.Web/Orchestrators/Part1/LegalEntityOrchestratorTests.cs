@@ -72,7 +72,8 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Part1
                 Wage = new Wage
                 {
                     WageType = WageType.NationalMinimumWage
-                }
+                },
+                OwnerType = OwnerType.Provider
             };
         }
     }

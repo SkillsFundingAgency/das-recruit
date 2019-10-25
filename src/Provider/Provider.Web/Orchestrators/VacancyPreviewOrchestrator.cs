@@ -8,9 +8,11 @@ using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
+using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.Extensions.Logging;
 using ErrMsg = Esfa.Recruit.Shared.Web.ViewModels.ErrorMessages;
@@ -28,6 +30,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         private readonly IReviewSummaryService _reviewSummaryService;
         private readonly ILegalEntityAgreementService _legalEntityAgreementService;
         private readonly ITrainingProviderAgreementService _trainingProviderAgreementService;
+        private readonly IMessaging _messaging;
 
         public VacancyPreviewOrchestrator(
             IProviderVacancyClient client,
@@ -36,7 +39,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             DisplayVacancyViewModelMapper vacancyDisplayMapper, 
             IReviewSummaryService reviewSummaryService,
             ILegalEntityAgreementService legalEntityAgreementService,
-            ITrainingProviderAgreementService trainingProviderAgreementService) : base(logger)
+            ITrainingProviderAgreementService trainingProviderAgreementService,
+            IMessaging messaging) : base(logger)
         {
             _client = client;
             _vacancyClient = vacancyClient;
@@ -44,6 +48,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             _reviewSummaryService = reviewSummaryService;
             _legalEntityAgreementService = legalEntityAgreementService;
             _trainingProviderAgreementService = trainingProviderAgreementService;
+            _messaging = messaging;
         }
 
         public async Task<VacancyPreviewViewModel> GetVacancyPreviewViewModelAsync(VacancyRouteModel vrm)
@@ -94,7 +99,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             return await ValidateAndExecute(
                 vacancy,
                 v => ValidateVacancy(v, SubmitValidationRules),
-                v => SubmitActionAsync(v, user)
+                v => SubmitActionAsync(vacancy, user)
                 );
         }
 
@@ -114,7 +119,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
             if (response.HasLegalEntityAgreement && response.HasProviderAgreement)
             {
-                await _client.SubmitVacancyAsync(vacancy.Id, user);
+                var command = new SubmitVacancyCommand(vacancy.Id, user, OwnerType.Provider);
+
+                await _messaging.SendCommandAsync(command);
                 response.IsSubmitted = true;
             }
             

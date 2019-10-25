@@ -19,38 +19,125 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
     public class SubmitVacancyCommandHandlerTests
     {
         [Fact]
-        public async Task Handle_ShouldChangeEmployerDescriptionIfSpecifiedInCommand()
+        public async Task GivenEmployerDescription_ThenShouldUpdateVacancyWithThatDescripion()
         {
+            var expectedDescription = "updated description";
             var vacancy = new Vacancy
             {
                 Id = Guid.NewGuid(),
-                EmployerDescription = "initial description",
+                EmployerDescription = "old description",
                 IsDeleted = false,
                 Status = VacancyStatus.Draft,
                 VacancyReference = 1234567890
             };
-
+            vacancy.OwnerType = OwnerType.Employer;
             var user = new VacancyUser();
             var now = DateTime.Now;
+            var message = new SubmitVacancyCommand(vacancy.Id, user, expectedDescription, OwnerType.Employer);
 
-            var handler = GetSubmitVacancyCommandHandler(vacancy, now);
-
-            var message = new SubmitVacancyCommand(vacancy.Id, user, "updated description");
-
-            var cancel = new CancellationToken();
-            await handler.Handle(message, cancel);
+            var sut = GetSut(vacancy.Id, vacancy, now);
+            await sut.Handle(message, new CancellationToken());
 
             vacancy.Status.Should().Be(VacancyStatus.Submitted);
             vacancy.SubmittedDate.Should().Be(now);
             vacancy.SubmittedByUser.Should().Be(user);
             vacancy.LastUpdatedDate.Should().Be(now);
             vacancy.LastUpdatedByUser.Should().Be(user);
-
-            vacancy.EmployerDescription.Should().Be("updated description");
+            vacancy.EmployerDescription.Should().Be(expectedDescription);
         }
 
         [Fact]
-        public async Task Handle_ShouldNotChangeEmployerDescriptionIfNotSpecifiedInCommand()
+        public async Task ShouldNotChangeEmployerDescriptionIfNotSpecifiedInCommand()
+        {
+            var expectedDescription = "initial description";
+            var vacancy = new Vacancy
+            {
+                Id = Guid.NewGuid(),
+                EmployerDescription = expectedDescription,
+                IsDeleted = false,
+                Status = VacancyStatus.Draft,
+                VacancyReference = 1234567890
+            };
+            vacancy.OwnerType= OwnerType.Provider;
+            var user = new VacancyUser();
+            var now = DateTime.Now;
+            var message = new SubmitVacancyCommand(vacancy.Id, user, OwnerType.Provider);
+
+            var sut = GetSut(vacancy.Id, vacancy, now);
+            await sut.Handle(message, new CancellationToken());
+
+            vacancy.Status.Should().Be(VacancyStatus.Submitted);
+            vacancy.SubmittedDate.Should().Be(now);
+            vacancy.SubmittedByUser.Should().Be(user);
+            vacancy.LastUpdatedDate.Should().Be(now);
+            vacancy.LastUpdatedByUser.Should().Be(user);
+            vacancy.EmployerDescription.Should().Be(expectedDescription);
+        }
+
+        [Fact]
+        public async Task WhenVacancyNotFound_ShouldRaiseException()
+        {
+            var id = Guid.NewGuid();
+            var user = new VacancyUser();
+            var now = DateTime.Now;
+            var expectedExceptionMessage = string.Format(SubmitVacancyCommandHandler.VacancyNotFoundExceptionMessageFormat, id);
+            var message = new SubmitVacancyCommand(id, user, OwnerType.Provider);
+
+            var sut = GetSut(id, null, now);
+            var exception = await Assert.ThrowsAsync<ArgumentException>(async () => await sut.Handle(message, new CancellationToken()));
+
+            exception.Message.Should().Be(expectedExceptionMessage);
+        }
+
+        [Fact]
+        public async Task WhenStatusIsIncorrect_ShouldRaiseException()
+        {
+            var vacancy = new Vacancy
+            {
+                Id = Guid.NewGuid(),
+                EmployerDescription = "initial description",
+                IsDeleted = false,
+                Status = VacancyStatus.Live,
+                VacancyReference = 1234567890
+            };
+            vacancy.OwnerType = OwnerType.Employer;
+            var user = new VacancyUser();
+            var now = DateTime.Now;
+            var message = new SubmitVacancyCommand(vacancy.Id, user, OwnerType.Provider);
+            var expectedExceptionMessage = string.Format(SubmitVacancyCommandHandler.InvalidStateExceptionMessageFormat, vacancy.Id, vacancy.Status);
+
+            var sut = GetSut(vacancy.Id, vacancy, now);
+            var exception = await Assert.ThrowsAsync<InvalidOperationException>(async () => await sut.Handle(message, new CancellationToken()));
+
+            exception.Message.Should().Be(expectedExceptionMessage);
+        }
+
+        [Fact]
+        public async Task WhenReferenceNumberIsNotGenerated_ShouldRaiseException()
+        {
+            var vacancy = new Vacancy
+            {
+                Id = Guid.NewGuid(),
+                EmployerDescription = "initial description",
+                IsDeleted = false,
+                Status = VacancyStatus.Live,
+                VacancyReference = null
+            };
+            vacancy.OwnerType = OwnerType.Employer;
+            var user = new VacancyUser();
+            var now = DateTime.Now;
+            var message = new SubmitVacancyCommand(vacancy.Id, user, OwnerType.Provider);
+            var expectedExceptionMessage = string.Format(SubmitVacancyCommandHandler.MissingReferenceNumberExceptionMessageFormat, vacancy.Id);
+
+            var sut = GetSut(vacancy.Id, vacancy, now);
+            var exception = await Assert.ThrowsAsync<InvalidOperationException>(async () => await sut.Handle(message, new CancellationToken()));
+
+            exception.Message.Should().Be(expectedExceptionMessage);
+        }
+
+
+        [Fact]
+        public async Task WhenOwnerHasChanged_ShouldRaiseException()
         {
             var vacancy = new Vacancy
             {
@@ -60,32 +147,24 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
                 Status = VacancyStatus.Draft,
                 VacancyReference = 1234567890
             };
-
+            vacancy.OwnerType = OwnerType.Employer;
             var user = new VacancyUser();
             var now = DateTime.Now;
+            var message = new SubmitVacancyCommand(vacancy.Id, user, OwnerType.Provider);
+            var expectedExceptionMessage = string.Format(SubmitVacancyCommandHandler.InvalidOwnerExceptionMessageFormat, vacancy.Id, message.SubmissionOwner, vacancy.OwnerType);
 
-            var handler = GetSubmitVacancyCommandHandler(vacancy, now);
+            var sut = GetSut(vacancy.Id, vacancy, now);
+            var exception = await Assert.ThrowsAsync<InvalidOperationException>(async () => await sut.Handle(message, new CancellationToken()));
 
-            var message = new SubmitVacancyCommand(vacancy.Id, user);
-
-            var cancel = new CancellationToken();
-            await handler.Handle(message, cancel);
-
-            vacancy.Status.Should().Be(VacancyStatus.Submitted);
-            vacancy.SubmittedDate.Should().Be(now);
-            vacancy.SubmittedByUser.Should().Be(user);
-            vacancy.LastUpdatedDate.Should().Be(now);
-            vacancy.LastUpdatedByUser.Should().Be(user);
-
-            vacancy.EmployerDescription.Should().Be("initial description");
+            exception.Message.Should().Be(expectedExceptionMessage);
         }
 
-        public SubmitVacancyCommandHandler GetSubmitVacancyCommandHandler(Vacancy vacancy, DateTime now)
+        public SubmitVacancyCommandHandler GetSut(Guid id, Vacancy vacancy, DateTime now)
         {
             var mockLogger = new Mock<ILogger<SubmitVacancyCommandHandler>>();
 
             var mockRepository = new Mock<IVacancyRepository>();
-            mockRepository.Setup(r => r.GetVacancyAsync(vacancy.Id)).ReturnsAsync(vacancy);
+            mockRepository.Setup(r => r.GetVacancyAsync(id)).ReturnsAsync(vacancy);
 
             var mockMessaging = new Mock<IMessaging>();
 

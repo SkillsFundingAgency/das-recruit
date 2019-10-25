@@ -46,6 +46,8 @@ namespace Esfa.Recruit.Employer.Web
         {
             if (!vacancy.EmployerAccountId.Equals(employerAccountId, StringComparison.OrdinalIgnoreCase))
                 throw new AuthorisationException(string.Format(ExceptionMessages.VacancyUnauthorisedAccess, employerAccountId, vacancy.EmployerAccountId, vacancy.Title, vacancy.Id));
+            if (vacancy.OwnerType != OwnerType.Employer)
+                throw new AuthorisationException(string.Format(ExceptionMessages.UserIsNotTheOwner, OwnerType.Employer));
         }
 
         public static void CheckRouteIsValidForVacancy(Vacancy vacancy, string currentRouteName)
