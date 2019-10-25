@@ -37,6 +37,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Title
                                                    (!string.IsNullOrEmpty(ReferredUkprn) ||
                                                     !string.IsNullOrEmpty(ReferredProgrammeId));
 
-        public string TrainingDetailsText { get; set; }
+        public string TrainingTitle { get; set; }
     }
 }
