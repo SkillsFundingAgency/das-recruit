@@ -80,10 +80,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
         private bool ShowReferredFromMaBackLink()
         {
-            var referredFromMaHomeFromSavedFavourites = !string.IsNullOrWhiteSpace(Convert.ToString(TempData.Peek(TempDataKeys.ReferredUkprn)))
-                                                        || !string.IsNullOrWhiteSpace(Convert.ToString(TempData.Peek(TempDataKeys.ReferredProgrammeId)));
-            var referredFromMaHome = Convert.ToBoolean(TempData.Peek(TempDataKeys.ReferredFromMa));
-            return referredFromMaHomeFromSavedFavourites || referredFromMaHome;
+            return Convert.ToBoolean(TempData.Peek(TempDataKeys.ReferredFromMa));
         }
     }
 }
