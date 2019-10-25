@@ -32,14 +32,14 @@
                 </div>
             </div>
             <button type="submit" class="govuk-button save-button">@Model.PageInfo.SubmitButtonText</button>
-            <div asp-hide="Model.ReferredFromSavedFavourites">
+            <span asp-hide="Model.ReferredFromSavedFavourites">
                 <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link das-button-link">Cancel</a>
                 <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.TitleSection" class="govuk-link das-button-link">Cancel</a>
-            </div>
-            <div asp-show="Model.ReferredFromSavedFavourites">
+            </span>
+            <span asp-show="Model.ReferredFromSavedFavourites">
                 <a asp-show="@Model.PageInfo.IsWizard" href="@_externalLinksHelper.EmployerFavouritesHome" class="govuk-link das-button-link" esfa-automation="cancel-link">Cancel</a>
                 <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link das-button-link">Cancel</a>
-            </div>
+            </span>
         </form>
     </div>
 </div>

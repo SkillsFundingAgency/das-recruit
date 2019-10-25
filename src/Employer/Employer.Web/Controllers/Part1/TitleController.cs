@@ -37,6 +37,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         {
             var vm = await _orchestrator.GetTitleViewModelAsync(vrm);
             await PopulateModelFromTempData(vm);
+            vm.PageInfo.SetWizard();
             return View(vm);
         }
 
@@ -103,7 +104,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                 else
                 {
                     var training = await _orchestrator.GetProgramme(referenceProgrammeId);
-                    vm.TrainingTitle = training.Title + ", "+training.EducationLevelNumber;
+                    vm.TrainingTitle = training.Title + ", Level: "+training.EducationLevelNumber;
                     vm.BackLinkText = "Back to your saved favourites";
                     vm.BackLinkRoute = GenerateEmployerFavouriteUrl(vm);
                 }

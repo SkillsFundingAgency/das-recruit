@@ -1,6 +1,4 @@
-using System;
 using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators;
@@ -24,13 +22,5 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             var vm = await _orchestrator.GetDashboardViewModelAsync(employerAccountId, User.ToVacancyUser());
             return View(vm);
         }
-
-        //private bool ShowReferredFromMaBackLink()
-        //{
-        //    var referredFromMaHomeFromSavedFavourites = !string.IsNullOrWhiteSpace(Convert.ToString(TempData.Peek(TempDataKeys.ReferredUkprn)))
-        //                                                || !string.IsNullOrWhiteSpace(Convert.ToString(TempData.Peek(TempDataKeys.ReferredProgrammeId)));
-        //    var referredFromMaHome = Convert.ToBoolean(TempData.Peek(TempDataKeys.ReferredFromMa));
-        //    return referredFromMaHomeFromSavedFavourites || referredFromMaHome;
-        //}
     }
 }
