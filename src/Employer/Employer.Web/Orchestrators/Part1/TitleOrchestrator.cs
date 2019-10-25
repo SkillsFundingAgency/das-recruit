@@ -138,7 +138,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             return await _trainingProviderService.GetProviderAsync(validUkprn);
         }
 
-        private async Task<IApprenticeshipProgramme> GetProgramme(string programmeId)
+        public async Task<IApprenticeshipProgramme> GetProgramme(string programmeId)
         {
             var programmesTask = await _vacancyClient.GetActiveApprenticeshipProgrammesAsync();
             return programmesTask.SingleOrDefault(p => p.Id == programmeId);

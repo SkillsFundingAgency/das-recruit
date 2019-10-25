@@ -24,50 +24,19 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         }
         
         [HttpGet("create-vacancy", Name = RouteNames.CreateVacancy_Get)]
-        public IActionResult Title()
+        public async Task<IActionResult> Title()
         {
             var vm = _orchestrator.GetTitleViewModel();
-            PopulateModelFromTempData(vm);
+            await PopulateModelFromTempData(vm);
             vm.PageInfo.SetWizard();
-            vm.BackLinkText = SetBackText(vm);
-            vm.BackLinkRoute = SetBackLinkRoute(vm);
             return View(vm);
-        }
-
-        private string SetBackText(TitleViewModel vm)
-        {
-            var referredFromMa = Convert.ToBoolean(TempData.Peek(TempDataKeys.ReferredFromMa));
-            if (referredFromMa && vm.VacancyId == null)
-                return string.IsNullOrWhiteSpace(GetReferredProgrammeId(vm.VacancyId))
-                ? "Return to home"
-                : "Back to your saved favourites";
-            return "Return to your vacancies";
-        }
-
-        private string SetBackLinkRoute(TitleViewModel vm)
-        {
-            var referredFromMa = Convert.ToBoolean(TempData.Peek(TempDataKeys.ReferredFromMa));
-            if (referredFromMa && vm.VacancyId == null)
-                return string.IsNullOrWhiteSpace(GetReferredProgrammeId(vm.VacancyId))
-                    ? Url.RouteUrl(RouteNames.Dashboard_Account_Home)
-                    : GenerateEmployerFavouriteUrl(vm);
-            return Url.RouteUrl(RouteNames.Vacancies_Get);
-        }
-
-        private string GenerateEmployerFavouriteUrl(TitleViewModel vm)
-        {
-            return Url.RouteUrl(RouteNames.EmployerFavourites,
-                new {referredUkprn = GetReferredProviderUkprn(vm.VacancyId), referredProgrammeId = GetReferredProgrammeId(vm.VacancyId)});
         }
 
         [HttpGet(VacancyTitleRoute, Name = RouteNames.Title_Get)]
         public async Task<IActionResult> Title(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
         {
             var vm = await _orchestrator.GetTitleViewModelAsync(vrm);
-            PopulateModelFromTempData(vm);
-            vm.PageInfo.SetWizard(wizard);
-            vm.BackLinkRoute = SetBackLinkRoute(vm);
-            vm.BackLinkText = SetBackText(vm);
+            await PopulateModelFromTempData(vm);
             return View(vm);
         }
 
@@ -112,11 +81,44 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             m.ReferredProgrammeId = GetReferredProgrammeId(m.VacancyId);
         }
 
-        private void PopulateModelFromTempData(TitleViewModel m)
+        private async Task PopulateModelFromTempData(TitleViewModel vm)
         {
-            m.ReferredFromMa = Convert.ToBoolean(TempData.Peek(TempDataKeys.ReferredFromMa));
-            m.ReferredUkprn = GetReferredProviderUkprn(m.VacancyId);
-            m.ReferredProgrammeId = GetReferredProgrammeId(m.VacancyId);
+            await UpdateTextAndLinks(vm);
+            vm.ReferredFromMa = Convert.ToBoolean(TempData.Peek(TempDataKeys.ReferredFromMa));
+            vm.ReferredUkprn = GetReferredProviderUkprn(vm.VacancyId);
+            vm.ReferredProgrammeId = GetReferredProgrammeId(vm.VacancyId);
+        }
+
+        private async Task UpdateTextAndLinks(TitleViewModel vm)
+        {
+            var referredFromMa = Convert.ToBoolean(TempData.Peek(TempDataKeys.ReferredFromMa));
+            if (referredFromMa && vm.VacancyId == null)
+            {
+                var referenceProgrammeId = GetReferredProgrammeId(vm.VacancyId);
+                if (string.IsNullOrWhiteSpace(referenceProgrammeId))
+                {
+                    vm.BackLinkText = "Return to home";
+                    vm.BackLinkRoute = Url.RouteUrl(RouteNames.Dashboard_Account_Home);
+                }
+                else
+                {
+                    var training = await _orchestrator.GetProgramme(referenceProgrammeId);
+                    vm.TrainingTitle = training.Title + ", "+training.EducationLevelNumber;
+                    vm.BackLinkText = "Back to your saved favourites";
+                    vm.BackLinkRoute = GenerateEmployerFavouriteUrl(vm);
+                }
+            }
+            else
+            {
+                vm.BackLinkText = "Return to your vacancies";
+                vm.BackLinkRoute = Url.RouteUrl(RouteNames.Vacancies_Get);
+            }
+        }
+
+        private string GenerateEmployerFavouriteUrl(TitleViewModel vm)
+        {
+            return Url.RouteUrl(RouteNames.EmployerFavourites,
+                new { referredUkprn = GetReferredProviderUkprn(vm.VacancyId), referredProgrammeId = GetReferredProgrammeId(vm.VacancyId) });
         }
 
         private string GetReferredProgrammeId(Guid? vacancyId)
