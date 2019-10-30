@@ -229,7 +229,7 @@
       "type": "string"
     },
     "DasSharedNServiceBusConfiguration": {
-      "type" : "object"
+      "type": "object"
     },
     "CommunicationsConfiguration": {
       "type": "object"
@@ -243,6 +243,12 @@
     },
     "DasEncodings": {
       "type": "securestring"
+    },
+    "cosmosDatabase": {
+      "type": "string"
+    },
+    "containerArray": {
+      "type": "array"
     }
   },
   "variables": {
@@ -275,7 +281,8 @@
           }
         }
       },
-      "dependsOn": []
+      "dependsOn": [
+      ]
     },
     {
       "apiVersion": "2017-05-10",
@@ -296,7 +303,8 @@
           }
         }
       },
-      "dependsOn": []
+      "dependsOn": [
+      ]
     },
     {
       "apiVersion": "2017-05-10",
@@ -317,7 +325,8 @@
           }
         }
       },
-      "dependsOn": []
+      "dependsOn": [
+      ]
     },
     {
       "apiVersion": "2017-05-10",
@@ -344,7 +353,111 @@
           }
         }
       },
-      "dependsOn": []
+      "dependsOn": [
+      ]
+    },
+    {
+      "apiVersion": "2017-05-10",
+      "name": "cosmos-db-database-deployment",
+      "dependsOn": [
+        "[variables('CosmosDbName')]"
+      ],
+      "type": "Microsoft.Resources/deployments",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('deploymentUrlBase'),'cosmos-db.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "cosmosDbAccountName": {
+            "value": "[variables('cosmosDbName')]"
+          },
+          "cosmosDatabase": {
+            "value": "[parameters('cosmosDatabase')]"
+          },
+          "cosmosDBType": {
+            "value": "MongoDB"
+          }
+        }
+      }
+    },
+    {
+      "apiVersion": "2017-05-10",
+      "name": "[concat('cosmos-db2-container-', parameters('containerArray')[copyIndex()].containerName)]",
+      "dependsOn": [
+        "[variables('CosmosDbName')]",
+        "cosmos-db2-database-deployment"
+      ],
+      "type": "Microsoft.Resources/deployments",
+      "condition": "[greater(length(parameters('containerArray')), 0)]",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('deploymentUrlBase'),'cosmos-db.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "cosmosDbAccountName": {
+            "value": "[variables('cosmosDbName')]"
+          },
+          "cosmosDatabase": {
+            "value": "[parameters('cosmosDatabase')]"
+          },
+          "cosmosDBType": {
+            "value": "MongoDB"
+          },
+          "containerName": {
+            "value": "[parameters('containerArray')[copyIndex()].containerName]"
+          },
+          "partitionKey": {
+            "value": "[parameters('containerArray')[copyIndex()].partitionKey]"
+          }
+        }
+      },
+      "copy": {
+        "name": "containercopy",
+        "count": "[length(parameters('containerArray'))]"
+      }
+    },
+    {
+      "apiVersion": "2017-05-10",
+      "name": "[concat('cosmos-db2-container-settings-', parameters('containerArray')[copyIndex()].containerName)]",
+      "dependsOn": [
+        "[variables('CosmosDbName')]",
+        "cosmos-db2-database-deployment",
+        "[concat('cosmos-db2-container-', parameters('containerArray')[copyIndex()].containerName)]"
+      ],
+      "type": "Microsoft.Resources/deployments",
+      "condition": "[greater(length(parameters('containerArray')), 0)]",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('deploymentUrlBase'),'cosmos-db.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "cosmosDbAccountName": {
+            "value": "[variables('cosmosDbName')]"
+          },
+          "cosmosDatabase": {
+            "value": "[parameters('cosmosDatabase')]"
+          },
+          "cosmosDBType": {
+            "value": "MongoDB"
+          },
+          "containerName": {
+            "value": "[parameters('containerArray')[copyIndex()].containerName]"
+          },
+          "throughput": {
+            "value": "[parameters('containerArray')[copyIndex()].throughput]"
+          }
+        }
+      },
+      "copy": {
+        "name": "containercopy",
+        "count": "[length(parameters('containerArray'))]"
+      }
     },
     {
       "apiVersion": "2017-05-10",
@@ -835,7 +948,8 @@
           }
         }
       },
-      "dependsOn": []
+      "dependsOn": [
+      ]
     },
     {
       "apiVersion": "2017-05-10",
@@ -871,7 +985,8 @@
           }
         }
       },
-      "dependsOn": []
+      "dependsOn": [
+      ]
     },
     {
       "apiVersion": "2017-05-10",
@@ -1100,5 +1215,6 @@
       ]
     }
   ],
-  "outputs": {}
+  "outputs": {
+  }
 }
