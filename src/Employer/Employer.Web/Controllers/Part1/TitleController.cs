@@ -55,6 +55,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             if(!ModelState.IsValid)
             {
                 var vm = await _orchestrator.GetTitleViewModelAsync(m);
+                await PopulateModelFromTempData(vm);
                 vm.PageInfo.SetWizard(wizard);
                 return View(vm);
             }
@@ -111,8 +112,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             }
             else
             {
-                vm.BackLinkText = "Return to your vacancies";
-                vm.BackLinkRoute = Url.RouteUrl(RouteNames.Vacancies_Get);
+                vm.BackLinkText = "Back";
+                vm.BackLinkRoute = Url.RouteUrl(vm.BackLink);
             }
         }
 

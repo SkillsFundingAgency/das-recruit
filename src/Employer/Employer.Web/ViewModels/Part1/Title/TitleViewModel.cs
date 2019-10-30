@@ -9,8 +9,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Title
     public class TitleViewModel
     {
         [FromRoute]
-        public string EmployerAccountId { get; set; }
-        [FromRoute]
         public Guid? VacancyId { get; set; }
         public string Title { get; set; }
         public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
@@ -24,10 +22,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Title
         public string BackLink =>
             HasCloneableVacancies ? RouteNames.Vacancies_Get : RouteNames.CreateVacancyOptions_Get;
 
-        public bool ShowReturnToMALink { get; set; }
-        public bool ShowReturnToDashboardLink { get; set; }
-        public string ReturnToMALinkText { get; set; }
-        public string ReturnToMALink { get; set; }
         public string BackLinkText { get; set; }
         public string BackLinkRoute { get; set; }
         public bool ReferredFromMa { get; set; }
