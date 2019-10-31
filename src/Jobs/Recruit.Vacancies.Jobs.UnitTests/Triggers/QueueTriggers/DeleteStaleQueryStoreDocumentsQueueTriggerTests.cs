@@ -19,7 +19,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.UnitTests.Triggers.QueueTriggers
     {
         private const int Days = 90;
         private readonly Mock<ILogger<DeleteStaleQueryStoreDocumentsQueueTrigger>> _loggerMock = new Mock<ILogger<DeleteStaleQueryStoreDocumentsQueueTrigger>>();
-        private readonly RecruitWebJobsSystemConfiguration _jobsConfig = new RecruitWebJobsSystemConfiguration() { QueryStoreDocumentsStaleAfterDays = Days };
+        private readonly RecruitWebJobsSystemConfiguration _jobsConfig = new RecruitWebJobsSystemConfiguration() { QueryStoreDocumentsStaleByDays = Days };
         private readonly Mock<ITimeProvider> _timeProviderMock = new Mock<ITimeProvider>();
         private readonly Mock<IQueryStoreHouseKeepingService> _queryStoreHouseKeepingServiceMock = new Mock<IQueryStoreHouseKeepingService>();
 

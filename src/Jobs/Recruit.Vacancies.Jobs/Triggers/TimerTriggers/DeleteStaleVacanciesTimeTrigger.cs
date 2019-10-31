@@ -8,24 +8,24 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Jobs.Triggers.TimerTriggers
 {
-    public class DeleteStaleQueryStoreDocumentsTimeTrigger
+    public class DeleteStaleVacanciesTimeTrigger
     {
-        private readonly ILogger<DeleteStaleQueryStoreDocumentsTimeTrigger> _logger;
+        private readonly ILogger<DeleteStaleVacanciesTimeTrigger> _logger;
         private readonly IRecruitQueueService _queue;
         private readonly ITimeProvider _timeProvider;
 
-        public DeleteStaleQueryStoreDocumentsTimeTrigger(ILogger<DeleteStaleQueryStoreDocumentsTimeTrigger> logger, IRecruitQueueService queue, ITimeProvider timeProvider)
+        public DeleteStaleVacanciesTimeTrigger(ILogger<DeleteStaleVacanciesTimeTrigger> logger, IRecruitQueueService queue, ITimeProvider timeProvider)
         {
             _logger = logger;
             _queue = queue;
             _timeProvider = timeProvider;
         }
 
-        public Task DeleteReportsAsync([TimerTrigger(Schedules.WeeklyFourAmSunday)] TimerInfo timerInfo, TextWriter log)
+        public Task DeleteStaleVacanciesAsync([TimerTrigger(Schedules.WeeklySevenAmSunday)] TimerInfo timerInfo, TextWriter log)
         {
             _logger.LogInformation($"Timer trigger {this.GetType().Name} fired");
 
-            var message = new DeleteStaleQueryStoreDocumentsQueueMessage
+            var message = new DeleteStaleVacanciesQueueMessage
             {
                 CreatedByScheduleDate = _timeProvider.Today
             };

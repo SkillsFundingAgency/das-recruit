@@ -110,7 +110,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var builder = Builders<T>.Filter;
             var filter = builder.Eq(ProviderUkprnFieldName, ukprn) &
                         builder.Eq(OwnerTypeFieldName, OwnerType.Provider.ToString()) &
-                        builder.Ne(IsDeletedFieldName, true);
+                        builder.Eq(IsDeletedFieldName, false);
 
             var collection = GetCollection<T>();
 
@@ -119,6 +119,40 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
                     .Project<T>(GetProjection<T>())
                     .ToListAsync(),
             new Context(nameof(GetVacanciesByProviderAccountAsync)));
+
+            return result;
+        }
+
+        public async Task<IEnumerable<T>> GetDraftVacanciesCreatedBeforeAsync<T>(DateTime staleByDate)
+        {
+            var builder = Builders<T>.Filter;
+            var filter = builder.Eq("status", VacancyStatus.Draft.ToString()) &
+                        builder.Lt("createdDate", staleByDate) &
+                        builder.Eq(IsDeletedFieldName, false);
+                        var collection = GetCollection<T>();
+
+            var result = await RetryPolicy.ExecuteAsync(_ =>
+                    collection.Find(filter)
+                    .Project<T>(GetProjection<T>())
+                    .ToListAsync(),
+            new Context(nameof(GetDraftVacanciesCreatedBeforeAsync)));
+
+            return result;
+        }
+
+        public async Task<IEnumerable<T>> GetReferredVacanciesSubmittedBeforeAsync<T>(DateTime staleByDate)
+        {
+            var builder = Builders<T>.Filter;
+            var filter = builder.Eq("status", VacancyStatus.Referred.ToString()) &
+                        builder.Lt("submittedDate", staleByDate) &
+                        builder.Eq(IsDeletedFieldName, false);
+                        var collection = GetCollection<T>();
+
+            var result = await RetryPolicy.ExecuteAsync(_ =>
+                    collection.Find(filter)
+                    .Project<T>(GetProjection<T>())
+                    .ToListAsync(),
+            new Context(nameof(GetReferredVacanciesSubmittedBeforeAsync)));
 
             return result;
         }

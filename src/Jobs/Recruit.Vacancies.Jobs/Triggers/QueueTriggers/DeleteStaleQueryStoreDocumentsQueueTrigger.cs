@@ -26,6 +26,8 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
         private readonly IQueryStoreHouseKeepingService _queryStoreHouseKeepingService;
         private string JobName => GetType().Name;
 
+        private const int DefaultStaleByDays = 90;
+
         public DeleteStaleQueryStoreDocumentsQueueTrigger(ILogger<DeleteStaleQueryStoreDocumentsQueueTrigger> logger, 
             RecruitWebJobsSystemConfiguration jobsConfig,
             ITimeProvider timeProvider,
@@ -51,9 +53,9 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
 
                 var targetDate = payload?.CreatedByScheduleDate ?? _timeProvider.Today;
 
-                var deleteReportsCreatedBeforeDate = targetDate.AddDays(_jobsConfig.QueryStoreDocumentsStaleAfterDays * -1);
+                var documentsStaleByDate = targetDate.AddDays((_jobsConfig.QueryStoreDocumentsStaleByDays ?? DefaultStaleByDays) * -1);
                 
-                _logger.LogInformation($"Begining to delete query store stale documents that have not been updated since {deleteReportsCreatedBeforeDate.ToShortDateString()}");
+                _logger.LogInformation($"Begining to delete query store stale documents that have not been updated since {documentsStaleByDate.ToShortDateString()}");
 
                 var documentTypesToDelete = new [] 
                 {
@@ -66,12 +68,12 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
 
                 foreach (var viewType in documentTypesToDelete)
                 {
-                    var staleDocuments = await _queryStoreHouseKeepingService.GetStaleDocumentsAsync<QueryProjectionBase>(viewType, deleteReportsCreatedBeforeDate);
-                    _logger.LogInformation($"Found {staleDocuments.Count} query store documents for type {viewType} updated before {deleteReportsCreatedBeforeDate}");
+                    var staleDocuments = await _queryStoreHouseKeepingService.GetStaleDocumentsAsync<QueryProjectionBase>(viewType, documentsStaleByDate);
+                    _logger.LogInformation($"Found {staleDocuments.Count} query store documents for type {viewType} updated before {documentsStaleByDate}");
                     if (staleDocuments.Any())
                     {
                         var deletedCount = await _queryStoreHouseKeepingService.DeleteStaleDocumentsAsync<QueryProjectionBase>(viewType, staleDocuments.Select(s => s.Id));
-                        _logger.LogInformation($"Deleted {deletedCount} query store documents for type {viewType} updated before {deleteReportsCreatedBeforeDate}");
+                        _logger.LogInformation($"Deleted {deletedCount} query store documents for type {viewType} updated before {documentsStaleByDate}");
                     }
                 }
             }

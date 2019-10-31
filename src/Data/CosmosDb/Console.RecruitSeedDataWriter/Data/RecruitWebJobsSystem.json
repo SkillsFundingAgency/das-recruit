@@ -1,5 +1,7 @@
 {
     "_id" : "RecruitWebJobsSystem",
     "disabledJobs" : ["VacancyAnalyticsSummaryGeneratorJob"],
-    "queryStoreDocumentsStaleAfterDays" : 90
+    "queryStoreDocumentsStaleByDays" : 90,
+    "draftVacanciesStaleByDays" : 180,
+    "referredVacanciesStaleByDays" : 90
 }
