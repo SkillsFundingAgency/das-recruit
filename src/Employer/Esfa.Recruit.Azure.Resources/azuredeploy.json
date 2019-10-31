@@ -281,8 +281,7 @@
           }
         }
       },
-      "dependsOn": [
-      ]
+      "dependsOn": []
     },
     {
       "apiVersion": "2017-05-10",
@@ -303,8 +302,7 @@
           }
         }
       },
-      "dependsOn": [
-      ]
+      "dependsOn": []
     },
     {
       "apiVersion": "2017-05-10",
@@ -325,8 +323,7 @@
           }
         }
       },
-      "dependsOn": [
-      ]
+      "dependsOn": []
     },
     {
       "apiVersion": "2017-05-10",
@@ -353,8 +350,7 @@
           }
         }
       },
-      "dependsOn": [
-      ]
+      "dependsOn": []
     },
     {
       "apiVersion": "2017-05-10",
