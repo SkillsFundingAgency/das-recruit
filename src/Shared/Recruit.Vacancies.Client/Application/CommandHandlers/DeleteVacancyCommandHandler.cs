@@ -35,7 +35,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             
             var vacancy = await _repository.GetVacancyAsync(message.VacancyId);
 
-            if (vacancy == null || vacancy.CanDelete == false)
+            if (vacancy == null)
+            {
+                _logger.LogWarning($"Unable to find vacancy {{vacancyId}} for deletion", message.VacancyId);
+                return;
+            }
+
+            if (vacancy.CanDelete == false)
             {
                 _logger.LogWarning($"Unable to delete vacancy {{vacancyId}} due to vacancy having a status of {vacancy?.Status}.", message.VacancyId);
                 return;
@@ -45,9 +51,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             vacancy.IsDeleted = true;
             vacancy.DeletedDate = now;
-            vacancy.DeletedByUser = message.User;
             vacancy.LastUpdatedDate = now;
-            vacancy.LastUpdatedByUser = message.User;
+
+            if (message.User != null)
+            {
+                vacancy.DeletedByUser = message.User;
+                vacancy.LastUpdatedByUser = message.User;
+            }
 
             await _repository.UpdateAsync(vacancy);
 
