@@ -362,7 +362,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(variables('deploymentUrlBase'),'cosmos-db.json')]",
+          "uri": "[concat(variables('deploymentUrlBase'),'cosmos-db-database.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -380,17 +380,17 @@
     },
     {
       "apiVersion": "2017-05-10",
-      "name": "[concat('cosmos-db2-container-', parameters('containerArray')[copyIndex()].containerName)]",
+      "name": "[concat('cosmos-db-container-', parameters('containerArray')[copyIndex()].containerName)]",
       "dependsOn": [
         "[variables('CosmosDbName')]",
-        "cosmos-db2-database-deployment"
+        "cosmos-db-database-deployment"
       ],
       "type": "Microsoft.Resources/deployments",
       "condition": "[greater(length(parameters('containerArray')), 0)]",
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(variables('deploymentUrlBase'),'cosmos-db.json')]",
+          "uri": "[concat(variables('deploymentUrlBase'),'cosmos-db-container.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -418,18 +418,18 @@
     },
     {
       "apiVersion": "2017-05-10",
-      "name": "[concat('cosmos-db2-container-settings-', parameters('containerArray')[copyIndex()].containerName)]",
+      "name": "[concat('cosmos-db-container-settings-', parameters('containerArray')[copyIndex()].containerName)]",
       "dependsOn": [
         "[variables('CosmosDbName')]",
-        "cosmos-db2-database-deployment",
-        "[concat('cosmos-db2-container-', parameters('containerArray')[copyIndex()].containerName)]"
+        "cosmos-db-database-deployment",
+        "[concat('cosmos-db-container-', parameters('containerArray')[copyIndex()].containerName)]"
       ],
       "type": "Microsoft.Resources/deployments",
       "condition": "[greater(length(parameters('containerArray')), 0)]",
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(variables('deploymentUrlBase'),'cosmos-db.json')]",
+          "uri": "[concat(variables('deploymentUrlBase'),'cosmos-db-container-settings.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
