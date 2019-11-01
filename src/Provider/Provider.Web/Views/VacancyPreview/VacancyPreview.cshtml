@@ -261,6 +261,21 @@
             <p asp-show="@Model.HasSkills" class="govuk-body">@string.Join(", ", Model.Skills)</p>
             @EditLink(RouteNames.Skills_Get, Model.SkillsSectionState, "desired skills and personal qualities", "link-skills")
         </div>
+    </div>
+    <div class="govuk-grid-column-one-half">
+        <div class="@GetSectionClass(Model.ThingsToConsiderSectionState)">
+            <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.ThingsToConsider">
+                <img asp-show="@Model.ThingsToConsiderRequiresEdit" src="/img/red-cross.png" />
+                Things to consider (optional)
+            </h3>
+            <span esfa-validation-message-for="ThingsToConsider" class="govuk-error-message"></span>
+            <p asp-show="@Model.HasThingsToConsider" class="govuk-body">@Model.ThingsToConsider</p>
+            @EditLink(RouteNames.Considerations_Get, Model.ThingsToConsiderSectionState, "things to consider", "link-things-to-consider")
+        </div>
+    </div>
+</div>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
         <div class="@GetSectionClass(Model.QualificationsSectionState)">
             <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.Qualifications">
                 <img asp-show="@Model.QualificationsRequiresEdit" src="/img/red-cross.png" />
@@ -274,17 +289,6 @@
                 }
             </p>
             @EditLink(RouteNames.Qualifications_Get, Model.QualificationsSectionState, "qualifications", "link-qualifications")
-        </div>
-    </div>
-    <div class="govuk-grid-column-one-half">
-        <div class="@GetSectionClass(Model.ThingsToConsiderSectionState)">
-            <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.ThingsToConsider">
-                <img asp-show="@Model.ThingsToConsiderRequiresEdit" src="/img/red-cross.png" />
-                Things to consider (optional)
-            </h3>
-            <span esfa-validation-message-for="ThingsToConsider" class="govuk-error-message"></span>
-            <p asp-show="@Model.HasThingsToConsider" class="govuk-body">@Model.ThingsToConsider</p>
-            @EditLink(RouteNames.Considerations_Get, Model.ThingsToConsiderSectionState, "things to consider", "link-things-to-consider")
         </div>
     </div>
 </div>
