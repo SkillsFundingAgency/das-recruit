@@ -1,6 +1,12 @@
 ﻿@using Microsoft.Extensions.Options
 @inject IOptions<ExternalLinksConfiguration> _externalLinks
 
+<div asp-show="ViewBag.ShowReturnToMaLink" class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <a asp-route="@RouteNames.Dashboard_Account_Home" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Return to home</a>
+    </div>
+</div>
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-xl">Recruitment</h1>

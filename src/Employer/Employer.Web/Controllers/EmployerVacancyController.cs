@@ -18,7 +18,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         }
 
         [HttpGet("employer-create-vacancy", Name = RouteNames.EmployerCreateVacancy_Get)]        
-        public async Task<IActionResult> CreateVacancy([FromQuery]string ukprn, [FromQuery]string programmeId)
+        public async Task<IActionResult> CreateVacancy([FromRoute] string employerAccountId,[FromQuery]string ukprn, [FromQuery]string programmeId)
         {
             TempData[TempDataKeys.ReferredFromMa] = true;
 
@@ -33,8 +33,11 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             ManageTempData(provider, programme);
 
             if (provider == null && programme == null)
+            {
+                if (await _employerVacancyOrchestrator.HasNoVacancies(employerAccountId))
+                    return RedirectToRoute(RouteNames.Dashboard_Get);
                 return RedirectToRoute(RouteNames.CreateVacancyOptions_Get);
-            
+            }
             return RedirectToRoute(RouteNames.CreateVacancy_Get);
         }
 
@@ -58,6 +61,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         [HttpGet("employer-manage-vacancy", Name = RouteNames.EmployerManageVacancy_Get)]
         public IActionResult ManageVacancy()
         {
+            TempData[TempDataKeys.ReferredFromMa] = true;
             return RedirectToRoute(RouteNames.Vacancies_Get);
         }        
     }
