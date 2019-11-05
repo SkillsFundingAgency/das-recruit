@@ -6,7 +6,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Training
     public class ConfirmTrainingViewModel
     {
         public string TrainingTitle { get; set; }
-        public ApprenticeshipLevel Level { get; set; }
+        public ApprenticeshipLevel ApprenticeshipLevel { get; set; }
         public int DurationMonths { get; set; }
         public string ProgrammeType {get; set; }
         public string ProgrammeId { get; set; }

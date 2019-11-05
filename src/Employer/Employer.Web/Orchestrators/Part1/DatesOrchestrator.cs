@@ -120,7 +120,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
             if (programme?.EffectiveTo.HasValue == true)
             {
-                vm.TrainingDescription = $"{programme.Title}, Level:{(int)programme.Level}";
+                vm.TrainingDescription = $"{programme.Title}, Level:{(int)programme.ApprenticeshipLevel}";
                 vm.TrainingEffectiveToDate = programme.EffectiveTo.Value.AsGdsDate();
             }
         }

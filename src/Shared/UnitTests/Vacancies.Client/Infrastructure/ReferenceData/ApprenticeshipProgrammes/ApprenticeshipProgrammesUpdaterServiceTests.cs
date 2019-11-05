@@ -200,7 +200,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Infrastructure.ReferenceData.A
             apprenticeshipProgrammesReferenceData.Data.Count.Should().Be(3);
             apprenticeshipProgrammesReferenceData.Data.Where(ap => ap.ApprenticeshipType == TrainingType.Standard).Count().Should().Be(2);
             firstItem.Id.Equals(secondItem.Id).Should().BeFalse();
-            firstItem.Level.Equals(secondItem.Level).Should().BeFalse();
+            firstItem.ApprenticeshipLevel.Equals(secondItem.ApprenticeshipLevel).Should().BeFalse();
             firstItem.Title.Equals(secondItem.Title).Should().BeFalse();
         }
 
@@ -237,7 +237,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Infrastructure.ReferenceData.A
             apprenticeshipProgrammesReferenceData.Data.Count().Should().Be(3);
             apprenticeshipProgrammesReferenceData.Data.Where(ap => ap.ApprenticeshipType == TrainingType.Framework).Count().Should().Be(2);
             firstItem.Id.Equals(secondItem.Id).Should().BeFalse();
-            firstItem.Level.Equals(secondItem.Level).Should().BeFalse();
+            firstItem.ApprenticeshipLevel.Equals(secondItem.ApprenticeshipLevel).Should().BeFalse();
             firstItem.Title.Equals(secondItem.Title).Should().BeFalse();
         }
 

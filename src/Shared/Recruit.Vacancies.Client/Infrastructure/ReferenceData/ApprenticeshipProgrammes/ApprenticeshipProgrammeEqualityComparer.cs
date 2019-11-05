@@ -7,7 +7,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
         public bool Equals(ApprenticeshipProgramme x, ApprenticeshipProgramme y)
         {
             return x.Id.Equals(y.Id)
-                    && x.Level == y.Level
+                    && x.ApprenticeshipLevel == y.ApprenticeshipLevel
                     && x.ApprenticeshipType == y.ApprenticeshipType;
         }
 

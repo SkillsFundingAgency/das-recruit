@@ -100,7 +100,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
                 {
                     summary.TrainingTitle = programme.Title;
                     summary.TrainingType = programme.ApprenticeshipType;
-                    summary.TrainingLevel = programme.Level;
+                    summary.TrainingLevel = programme.ApprenticeshipLevel;
                 }
             }
         }

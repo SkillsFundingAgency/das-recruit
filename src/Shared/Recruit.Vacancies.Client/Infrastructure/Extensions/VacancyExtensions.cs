@@ -47,7 +47,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
             projectedVacancy.NumberOfPositions = vacancy.NumberOfPositions.GetValueOrDefault();
             projectedVacancy.OutcomeDescription = vacancy.OutcomeDescription;
             projectedVacancy.ProgrammeId = vacancy.ProgrammeId;
-            projectedVacancy.ProgrammeLevel = programme.Level.ToString();
+            projectedVacancy.ProgrammeLevel = programme.ApprenticeshipLevel.ToString();
             projectedVacancy.ProgrammeType = programme.ApprenticeshipType.ToString();
             projectedVacancy.Qualifications = vacancy.Qualifications.ToProjection();
             projectedVacancy.ShortDescription = vacancy.ShortDescription;

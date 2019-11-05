@@ -19,7 +19,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         private DateTime _now = DateTime.UtcNow;
         private ApprenticeshipProgramme _programme = new ApprenticeshipProgramme 
         {
-            Level = ApprenticeshipLevel.Advanced,
+            ApprenticeshipLevel = ApprenticeshipLevel.Advanced,
             ApprenticeshipType = TrainingType.Standard,
             EducationLevelNumber = 7
         };
@@ -119,7 +119,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             p.NumberOfPositions.Should().Be(v.NumberOfPositions.Value);
             p.OutcomeDescription.Should().Be(v.OutcomeDescription);
             p.ProgrammeId.Should().Be(v.ProgrammeId);
-            p.ProgrammeLevel.Should().Be(_programme.Level.ToString());
+            p.ProgrammeLevel.Should().Be(_programme.ApprenticeshipLevel.ToString());
             p.ProgrammeType.Should().Be(_programme.ApprenticeshipType.ToString());
             p.EducationLevelNumber.Should().Be(_programme.EducationLevelNumber);
             p.ShortDescription.Should().Be(v.ShortDescription);

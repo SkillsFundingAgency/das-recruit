@@ -15,7 +15,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
 
         public DateTime? EffectiveTo { get; set; }
 
-        public ApprenticeshipLevel Level { get; set; }
+        public ApprenticeshipLevel ApprenticeshipLevel { get; set; }
 
         public int Duration { get; set; }
 

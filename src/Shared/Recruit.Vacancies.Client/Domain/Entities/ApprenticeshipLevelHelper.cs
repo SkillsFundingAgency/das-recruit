@@ -4,7 +4,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
 {
     public static class ApprenticeshipLevelHelper
     {
-        //TODO: PeteM - TryRemapFromEducationLevel
         public static bool TryRemapFromInt(int value, out ApprenticeshipLevel result)
         {
             switch (value)
@@ -26,7 +25,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
             return false;
         }
 
-        //TODO: PeteM - RemapFromEducationLevel
         public static ApprenticeshipLevel RemapFromInt(int value)
         {
             if (TryRemapFromInt(value, out ApprenticeshipLevel result))

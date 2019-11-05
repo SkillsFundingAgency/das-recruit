@@ -168,7 +168,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 vm.ApplicationUrl = vacancy.ApplicationUrl;
                 vm.ClosingDate = vacancy.ClosingDate?.AsGdsDate();
                 vm.EducationLevelName =
-                    EducationLevelNumberHelper.GetEducationLevelNameOrDefault(programme.EducationLevelNumber, programme.Level);
+                    EducationLevelNumberHelper.GetEducationLevelNameOrDefault(programme.EducationLevelNumber, programme.ApprenticeshipLevel);
                 vm.EmployerContactName = vacancy.EmployerContact?.Name;
                 vm.EmployerContactEmail = vacancy.EmployerContact?.Email;
                 vm.EmployerContactTelephone = vacancy.EmployerContact?.Phone;
@@ -200,8 +200,8 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 vm.VacancyReferenceNumber = $"VAC{vacancy.VacancyReference}";
                 vm.TrainingTitle = programme.Title;
                 vm.TrainingType = programme.ApprenticeshipType.GetDisplayName();
-                vm.TrainingLevel = programme.Level.GetDisplayName();
-                vm.Level = programme.Level;
+                vm.TrainingLevel = programme.ApprenticeshipLevel.GetDisplayName();
+                vm.Level = programme.ApprenticeshipLevel;
                 vm.ExpectedDuration = (vacancy.Wage.DurationUnit.HasValue && vacancy.Wage.Duration.HasValue)
                     ? vacancy.Wage.DurationUnit.Value.GetDisplayName().ToQuantity(vacancy.Wage.Duration.Value)
                     : null;
