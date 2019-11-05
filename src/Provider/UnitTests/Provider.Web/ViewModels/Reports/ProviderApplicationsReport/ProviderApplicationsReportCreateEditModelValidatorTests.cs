@@ -114,7 +114,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Reports.Provid
             var result = validator.Validate(m);
 
             result.Errors.Count.Should().Be(1);
-            result.Errors[0].ErrorMessage.Should().Be("Date from must be less than Date to");
+            result.Errors[0].ErrorMessage.Should().Be("Date from must be earlier than Date to");
         }
 
         private ProviderApplicationsReportCreateEditModelValidator GetValidator()
