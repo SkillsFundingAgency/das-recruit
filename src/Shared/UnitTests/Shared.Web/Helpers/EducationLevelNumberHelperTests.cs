@@ -16,16 +16,16 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.Helpers
         [InlineData(7, "Level 7 (Master's degree)")]
         public void WhenEducationLevelNumberIsNotNull_ShouldReturnCorrectDescription(int level, string expectedDescription)
         {
-            string result = EducationLevelNumberHelper.GetEducationLevelNameOrDefault(level, ProgrammeLevel.Degree);
+            string result = EducationLevelNumberHelper.GetEducationLevelNameOrDefault(level, ApprenticeshipLevel.Degree);
             result.Should().Be(expectedDescription);
         }
 
         [Theory]
-        [InlineData(ProgrammeLevel.Intermediate, "Level 2 (Intermediate)")]
-        [InlineData(ProgrammeLevel.Advanced, "Level 3 (Advanced)")]
-        [InlineData(ProgrammeLevel.Higher, "Level 4 (Higher)")]
-        [InlineData(ProgrammeLevel.Degree, "Level 6 (Degree)")]
-        public void WhenEducationLevelNumberIsNull_ShouldReturnLevelName(ProgrammeLevel level, string expectedDescription)
+        [InlineData(ApprenticeshipLevel.Intermediate, "Level 2 (Intermediate)")]
+        [InlineData(ApprenticeshipLevel.Advanced, "Level 3 (Advanced)")]
+        [InlineData(ApprenticeshipLevel.Higher, "Level 4 (Higher)")]
+        [InlineData(ApprenticeshipLevel.Degree, "Level 6 (Degree)")]
+        public void WhenEducationLevelNumberIsNull_ShouldReturnLevelName(ApprenticeshipLevel level, string expectedDescription)
         {
             string result =
                 EducationLevelNumberHelper.GetEducationLevelNameOrDefault(null, level);
