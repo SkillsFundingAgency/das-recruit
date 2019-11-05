@@ -49,7 +49,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 CreatedByUser = message.User,
                 LastUpdatedDate = now,
                 LastUpdatedByUser = message.User,
-                IsDeleted = false
+                IsDeleted = false,
+                TrainingProvider = message.TrainingProvider,
+                ProgrammeId = message.ProgrammeId
             };
 
             await _repository.CreateAsync(vacancy);

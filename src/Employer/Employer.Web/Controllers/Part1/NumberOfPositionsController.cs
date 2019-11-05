@@ -1,4 +1,6 @@
+using System;
 using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
@@ -24,7 +26,17 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         {
             var vm = await _orchestrator.GetNumberOfPositionsViewModelAsync(vrm);
             vm.PageInfo.SetWizard(wizard);
+            vm.BackLinkRoute = GetBackLink(vrm.VacancyId);
             return View(vm);
+        }
+
+        private string GetBackLink(Guid vacancyId)
+        {
+            var referredUkprn = Convert.ToString(TempData.Peek(TempDataKeys.ReferredUkprn + vacancyId));
+            var referredProgrammeId = Convert.ToString(TempData.Peek(TempDataKeys.ReferredProgrammeId + vacancyId));
+            if (!string.IsNullOrWhiteSpace(referredUkprn) && !string.IsNullOrWhiteSpace(referredProgrammeId))
+                   return RouteNames.Title_Get;
+            return RouteNames.TrainingProvider_Select_Get;
         }
 
         [HttpPost("number-of-positions", Name = RouteNames.NumberOfPositions_Post)]

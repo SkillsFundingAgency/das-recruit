@@ -53,6 +53,9 @@
         public const string CreateVacancy_Get = "CreateVacancy_Get";
         public const string CreateVacancy_Post = "CreateVacancy_Post";
 
+        public const string EmployerCreateVacancy_Get = "EmployerCreateVacancy_Get";
+        public const string EmployerManageVacancy_Get = "EmployerManageVacancy_Get";
+
         public const string Title_Get = "Title_Get";
         public const string Title_Post = "Title_Post";
 
@@ -139,5 +142,7 @@
         public const string ConfirmUnsubscribeNotifications_Post = "ConfirmUnsubscribeNotifications_Post";
         public const string NotificationsUpdatedAcknowledgement_Get = "NotificationsUpdatedAcknowledgement_Get";
         public const string NotificationUnsubscribedAcknowledgement_Get = "NotificationUnsubscribedAcknowledgement_Get";
+
+        public const string EmployerFavourites = "EmployerFavourites";
     }
 }

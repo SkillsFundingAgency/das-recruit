@@ -1,5 +1,4 @@
-﻿using Esfa.Recruit.Employer.Web.ViewModels;
-using Esfa.Recruit.Employer.Web.ViewModels.Submitted;
+﻿using Esfa.Recruit.Employer.Web.ViewModels.Submitted;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using System.Threading.Tasks;
@@ -12,12 +11,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
     public class SubmittedOrchestrator
     {
-        private readonly IEmployerVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
 
-        public SubmittedOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient)
+        public SubmittedOrchestrator(IRecruitVacancyClient vacancyClient)
         {
-            _client = client;
             _vacancyClient = vacancyClient;
         }
 

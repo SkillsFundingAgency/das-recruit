@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators;
@@ -22,10 +23,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         public async Task<IActionResult> Options([FromRoute]string employerAccountId)
         {
             var vm = await _orchestrator.GetCreateOptionsViewModelAsync(employerAccountId);
-
-            if(vm.HasClonableVacancies == false)
-                return RedirectToRoute(@RouteNames.CreateVacancy_Get);
-
+            vm.ShowReturnToMaLink = Convert.ToBoolean(TempData.Peek(TempDataKeys.ReferredFromMa));
+            if (vm.HasClonableVacancies == false)
+                return RedirectToRoute(RouteNames.CreateVacancy_Get);
             return View(vm);
         }
 

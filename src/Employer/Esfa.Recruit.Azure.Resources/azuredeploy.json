@@ -93,7 +93,8 @@
         "CommitmentsSiteUrl": "",
         "ProviderCommitmentsSiteUrl": "",
         "SignProviderAgreementUrl": "",
-        "ReservationsSiteUrl": ""
+        "ReservationsSiteUrl": "",
+        "EmployerFavouritesUrl": ""		
       }
     },
     "Features": {
@@ -536,7 +537,11 @@
               {
                 "name": "ExternalLinks:CommitmentsSiteUrl",
                 "value": "[parameters('ExternalLinks').CommitmentsSiteUrl]"
-              },
+              },	
+			        {
+                "name": "ExternalLinks:EmployerFavouritesUrl",
+                "value": "[parameters('ExternalLinks').EmployerFavouritesUrl]"
+              },			  
               {
                 "name": "Features:AllowLevyPayingEmployersOnly",
                 "value": "[parameters('Features').AllowLevyPayingEmployersOnly]"

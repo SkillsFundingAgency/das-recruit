@@ -29,7 +29,7 @@ namespace Esfa.Recruit.Employer.Web
             applicationLifetime.ApplicationStopped.Register(() => logger.LogInformation("Host fully stopped. All requests processed."));
 
             app.UseStatusCodePagesWithReExecute("/error/{0}");
-
+            
             if (env.IsDevelopment())
             {
                 var configuration = (TelemetryConfiguration)app.ApplicationServices.GetService(typeof(TelemetryConfiguration));
@@ -43,11 +43,11 @@ namespace Esfa.Recruit.Employer.Web
 
                 app.UseHsts(hsts => hsts.MaxAge(365));
             }
-
+            
             // Add Content Security Policy
             app.UseCsp(options => options
                 .DefaultSources(s => s.Self())
-                .StyleSources(s =>
+                .StyleSources(s => 
                     {
                         s.Self()
                         .CustomSources("https://www.googletagmanager.com/",
@@ -78,19 +78,19 @@ namespace Esfa.Recruit.Employer.Web
                         }
                     }
                 )
-                .FontSources(s =>
+                .FontSources(s => 
                     s.Self()
                     .CustomSources("data:",
                                     "https://fonts.googleapis.com/")
                 )
-                .ConnectSources(s =>
+                .ConnectSources(s => 
                     s.Self()
                     .CustomSources("https://dc.services.visualstudio.com")
                 )
-                .ImageSources(s =>
+                .ImageSources(s => 
                     s.Self()
-                    .CustomSources("https://maps.googleapis.com",
-                                    "https://www.google-analytics.com",
+                    .CustomSources("https://maps.googleapis.com", 
+                                    "https://www.google-analytics.com", 
                                     "https://ssl.gstatic.com",
                                     "https://www.gstatic.com/",
                                     "data:")
@@ -115,7 +115,7 @@ namespace Esfa.Recruit.Employer.Web
                 opts.AllowSameHostRedirectsToHttps();
                 opts.AllowedDestinations(GetAllowableDestinations(_authConfig, externalLinks.Value));
             }); //Register this earlier if there's middleware that might redirect.
-
+            
             // Redirect requests to root to the MA site.
             app.UseRootRedirect(externalLinks.Value.ManageApprenticeshipSiteUrl);
             app.UseHttpsRedirection();
@@ -131,15 +131,18 @@ namespace Esfa.Recruit.Employer.Web
         private static string[] GetAllowableDestinations(AuthenticationConfiguration authConfig, ExternalLinksConfiguration linksConfig)
         {
             var destinations = new List<string>();
-
+            
             if (!string.IsNullOrWhiteSpace(authConfig?.Authority))
                 destinations.Add(authConfig.Authority.Replace("identity", string.Empty));
-
+            
             if (!string.IsNullOrWhiteSpace(linksConfig?.ManageApprenticeshipSiteUrl))
                 destinations.Add(linksConfig?.ManageApprenticeshipSiteUrl);
-
+            
             if (!string.IsNullOrWhiteSpace(linksConfig?.CommitmentsSiteUrl))
                 destinations.Add(linksConfig?.CommitmentsSiteUrl);
+
+            if (!string.IsNullOrWhiteSpace(linksConfig?.EmployerFavouritesUrl))
+                destinations.Add(linksConfig.EmployerFavouritesUrl);
 
             return destinations.ToArray();
         }

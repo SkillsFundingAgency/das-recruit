@@ -19,5 +19,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Vacancies
         public string SearchTerm { get; set; }
         public bool ShowResultsTable => Vacancies.Any();
         public bool IsFiltered => Filter != FilteringOptions.All;
+        public bool ShowReferredFromMaBackLink { get; set; }
     }
 }

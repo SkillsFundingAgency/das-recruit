@@ -82,5 +82,13 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             var url = string.Format(_linkHelper.Schemes, employerAccountId);
             return Redirect(url);
         }
+
+        [HttpGet(RoutePaths.AccountLevelServices + "/apprenticeships", Name = RouteNames.EmployerFavourites)]
+        public IActionResult EmployerFavouritesTrainingProviders(string employerAccountId, string referredUkprn, string referredProgrammeId)
+        {
+            var url = string.IsNullOrWhiteSpace(referredUkprn)
+                ? string.Format(_linkHelper.EmployerFavouritesApprenticeshipList, employerAccountId) : string.Format(_linkHelper.EmployerFavouritesTrainingProviders, employerAccountId, referredProgrammeId);
+            return Redirect(url);
+        }
     }
 }

@@ -11,6 +11,7 @@ using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
@@ -22,13 +23,15 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
         private readonly IEmployerVacancyClient _employerVacancyClient;
+        private readonly ITrainingProviderService _trainingProviderService;
 
-        public TitleOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<TitleOrchestrator> logger, IReviewSummaryService reviewSummaryService, IEmployerVacancyClient employerVacancyClient) : base(logger)
+        public TitleOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<TitleOrchestrator> logger, IReviewSummaryService reviewSummaryService, IEmployerVacancyClient employerVacancyClient, ITrainingProviderService trainingProviderService) : base(logger)
         {
             _client = client;
             _vacancyClient = vacancyClient;
             _reviewSummaryService = reviewSummaryService;
             _employerVacancyClient = employerVacancyClient;
+            _trainingProviderService = trainingProviderService;
         }
 
         public TitleViewModel GetTitleViewModel()
@@ -45,7 +48,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var dashboard = await _employerVacancyClient.GetDashboardAsync(vrm.EmployerAccountId);
             
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Title_Get);
-
             var vm = new TitleViewModel
             {
                 VacancyId = vacancy.Id,
@@ -53,7 +55,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 PageInfo = Utility.GetPartOnePageInfo(vacancy),
                 HasCloneableVacancies = dashboard.CloneableVacancies.Any()
             };
-
+            
             if (vacancy.Status == VacancyStatus.Referred)
             {
                 vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
@@ -84,17 +86,26 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         public async Task<OrchestratorResponse<Guid>> PostTitleEditModelAsync(TitleEditModel m, VacancyUser user)
         {
+            TrainingProvider provider = null;
+            IApprenticeshipProgramme programme = null;
             if (!m.VacancyId.HasValue) // Create if it's a new vacancy
             {
                 var newVacancy = new Vacancy
                 {
                     Title = m.Title
                 };
-
                 return await ValidateAndExecute(
                     newVacancy, 
                     v => _vacancyClient.Validate(v, ValidationRules),
-                    async v => await _client.CreateVacancyAsync(m.Title, m.EmployerAccountId, user));
+                    async v =>
+                    {
+                        if (m.ReferredFromSavedFavourites)
+                        {
+                            provider = await GetProvider(m.ReferredUkprn);
+                            programme = await GetProgramme(m.ReferredProgrammeId);
+                        }
+                        return await _client.CreateVacancyAsync(m.Title, m.EmployerAccountId, user, provider, programme?.Id);
+                    });
             }
 
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, 
@@ -118,6 +129,19 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var mappings = new EntityToViewModelPropertyMappings<Vacancy, TitleEditModel>();
             mappings.Add(e => e.Title, vm => vm.Title);
             return mappings;
+        }
+
+        private async Task<TrainingProvider> GetProvider(string ukprn)
+        {
+            if(long.TryParse(ukprn, out long validUkprn) == false)
+                return null;
+            return await _trainingProviderService.GetProviderAsync(validUkprn);
+        }
+
+        public async Task<IApprenticeshipProgramme> GetProgramme(string programmeId)
+        {
+            var programmesTask = await _vacancyClient.GetActiveApprenticeshipProgrammesAsync();
+            return programmesTask.SingleOrDefault(p => p.Id == programmeId);
         }
     }
 }

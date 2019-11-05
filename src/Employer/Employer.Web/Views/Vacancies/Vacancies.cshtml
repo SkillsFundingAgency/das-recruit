@@ -31,7 +31,8 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-        <a asp-route="@RouteNames.Dashboard_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Return to dashboard</a>
+        <a asp-hide="@Model.ShowReferredFromMaBackLink" asp-route="@RouteNames.Dashboard_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Return to dashboard</a>
+        <a asp-show="@Model.ShowReferredFromMaBackLink" asp-route="@RouteNames.Dashboard_Account_Home" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Return to home</a>
     </div>
 </div>
 
