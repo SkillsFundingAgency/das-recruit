@@ -11,9 +11,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
     public interface IEmployerVacancyClient
     {
-        Task<Guid> CreateVacancyAsync(string title, string employerAccountId, VacancyUser user);
+        Task<Guid> CreateVacancyAsync(string title, string employerAccountId, VacancyUser user, TrainingProvider provider = null, string programmeId = null);
         Task GenerateDashboard(string employerAccountId);
-        Task SubmitVacancyAsync(Guid vacancyId, string employerDescription, VacancyUser user);
         Task DeleteVacancyAsync(Guid vacancyId, VacancyUser user);
         Task<EmployerDashboard> GetDashboardAsync(string employerAccountId, bool createIfNonExistent = false);
         Task<EditVacancyInfo> GetEditVacancyInfoAsync(string employerAccountId);

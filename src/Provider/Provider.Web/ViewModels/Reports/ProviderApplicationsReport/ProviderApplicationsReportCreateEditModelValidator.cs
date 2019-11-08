@@ -8,7 +8,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Reports.ProviderApplicationsRepor
     {
         public ProviderApplicationsReportCreateEditModelValidator(ITimeProvider timeProvider)
         {
-
             RuleFor(x => x.DateRange)
                 .NotNull()
                 .WithMessage("You must select the time period for the report");
@@ -31,11 +30,13 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Reports.ProviderApplicationsRepor
                 RuleFor(x => x.ToDate)
                     .Cascade(CascadeMode.StopOnFirstFailure)
                     .Must(date => date.AsDateTimeUk() < timeProvider.NextDay)
-                    .WithMessage("Date to cannot be in the future");
+                    .WithMessage("Date to cannot be in the future")
+                    .Must((model, x) => model.ToDate.AsDateTimeUk() < model.FromDate.AsDateTimeUk().Value.AddMonths(3))
+                    .WithMessage("Enter a date within three months from the start date");
 
                 RuleFor(x => x.FromDate)
                     .Must((model, _) => model.FromDate.AsDateTimeUk() < model.ToDate.AsDateTimeUk())
-                    .WithMessage("Date from must be less than Date to");
+                    .WithMessage("Date from must be earlier than Date to");
             });
         }
     }

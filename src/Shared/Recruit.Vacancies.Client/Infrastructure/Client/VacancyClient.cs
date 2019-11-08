@@ -128,7 +128,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _employerService.GetEmployerDescriptionAsync(vacancy);
         }
 
-        public async Task<Guid> CreateVacancyAsync(string title, string employerAccountId, VacancyUser user)
+        public async Task<Guid> CreateVacancyAsync(string title, string employerAccountId, VacancyUser user, TrainingProvider provider = null, string programmeId = null)
         {
             var vacancyId = GenerateVacancyId();
 
@@ -141,6 +141,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 EmployerAccountId = employerAccountId,
                 Origin = SourceOrigin.EmployerWeb
             };
+            if (provider != null)
+                command.TrainingProvider = provider;
+
+            if (programmeId != null)
+                command.ProgrammeId = programmeId;
 
             await _messaging.SendCommandAsync(command);
 
@@ -165,13 +170,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private Guid GenerateVacancyId()
         {
             return Guid.NewGuid();
-        }
-
-        public Task SubmitVacancyAsync(Guid vacancyId, string employerDescription, VacancyUser user)
-        {
-            var command = new SubmitVacancyCommand(vacancyId, user, employerDescription);
-
-            return _messaging.SendCommandAsync(command);
         }
 
         public Task DeleteVacancyAsync(Guid vacancyId, VacancyUser user)

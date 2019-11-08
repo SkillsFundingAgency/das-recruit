@@ -136,6 +136,16 @@
                 <h3 class="govuk-heading-s">Desired skills and personal qualities</h3>
                 <p class="govuk-body">@string.Join(", ", Model.Skills)</p>
             </div>
+        </div>
+        <div class="govuk-grid-column-one-half">
+            <div id="@Anchors.ThingsToConsider">
+                <h3 class="govuk-heading-s">Things to consider (optional)</h3>
+                <p class="govuk-body">@Model.ThingsToConsider</p>
+            </div>
+        </div>
+    </div>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
             <div id="@Anchors.Qualifications">
                 <h3 class="govuk-heading-s">Qualifications</h3>
                 <p class="govuk-body">
@@ -144,12 +154,6 @@
                         @qualification<br />
                     }
                 </p>
-            </div>
-        </div>
-        <div class="govuk-grid-column-one-half">
-            <div id="@Anchors.ThingsToConsider">
-                <h3 class="govuk-heading-s">Things to consider (optional)</h3>
-                <p class="govuk-body">@Model.ThingsToConsider</p>
             </div>
         </div>
     </div>

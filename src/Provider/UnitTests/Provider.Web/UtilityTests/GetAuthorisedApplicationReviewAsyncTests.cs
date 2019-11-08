@@ -34,7 +34,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.UtilityTests
             new Vacancy()
             {
                 Id = _vacancyId,
-                TrainingProvider = new TrainingProvider { Ukprn = _applicationReviewUkprn }
+                TrainingProvider = new TrainingProvider { Ukprn = _applicationReviewUkprn },
+                OwnerType = OwnerType.Provider
             });
         }
 

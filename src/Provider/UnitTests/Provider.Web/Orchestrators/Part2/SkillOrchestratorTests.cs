@@ -196,7 +196,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part2
                     Duration = 1,
                     WageType = WageType.NationalMinimumWage
                 },
-                StartDate = DateTime.Now
+                StartDate = DateTime.Now,
+                OwnerType = OwnerType.Provider
             };
         }
 

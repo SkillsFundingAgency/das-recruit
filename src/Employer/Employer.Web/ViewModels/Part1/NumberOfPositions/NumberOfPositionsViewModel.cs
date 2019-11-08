@@ -13,5 +13,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.NumberOfPositions
         {
             nameof(NumberOfPositions)
         };
+        public string BackLinkRoute { get; set; }
     }
 }

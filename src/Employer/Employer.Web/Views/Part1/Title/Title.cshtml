@@ -1,11 +1,12 @@
 ﻿@using Esfa.Recruit.Shared.Web.Mappers
 @model Esfa.Recruit.Employer.Web.ViewModels.Part1.Title.TitleViewModel
+@inject ManageApprenticeshipsLinkHelper _externalLinksHelper;
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@Model.BackLink" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames}' />
         <partial name="@PartialNames.ReviewSummary" for="Review" />
+        <a href="@Model.BackLinkRoute" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">@Model.BackLinkText</a>
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">What do you want to call this vacancy?</h1>
     </div>
 </div>
@@ -14,18 +15,31 @@
     <div class="govuk-grid-column-two-thirds">
         <form asp-route="@Model.FormPostRouteName" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
             <div esfa-validation-marker-for="Title" class="govuk-form-group">
-                <p class="govuk-body">Use a title that relates to the apprenticeship training for this vacancy, this will help it get found in the Find an apprenticeship search.</p>
+                <p asp-hide="Model.ReferredFromSavedFavourites" class="govuk-body">
+                    Use a title that relates to the apprenticeship training for this vacancy, this will help it get found
+                    in the Find an apprenticeship search.
+                </p>
+                <p asp-show="Model.ReferredFromSavedFavourites" class="govuk-body">
+                    Use a title that relates to <span class="govuk-!-font-weight-bold">@Model.TrainingTitle</span> for this vacancy, this will help it get found
+                    in the Find an apprenticeship search.
+                </p>
                 <span class="govuk-hint">Must include the word ‘apprentice’ or ‘apprenticeship’ </span>
                 <span esfa-validation-message-for="Title" class="govuk-error-message"></span>
-                <input asp-for="Title" class="govuk-input character-count" type="text" data-val-length-max="100"/>
+                <input asp-for="Title" class="govuk-input character-count" type="text" data-val-length-max="100" />
                 <div>
                     <span class="govuk-body maxchar-count">100</span>
                     <span class="govuk-body maxchar-text"> characters remaining</span>
                 </div>
             </div>
             <button type="submit" class="govuk-button save-button">@Model.PageInfo.SubmitButtonText</button>
-            <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link das-button-link">Cancel</a>
-            <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.TitleSection" class="govuk-link das-button-link">Cancel</a>
+            <span asp-hide="Model.ReferredFromSavedFavourites">
+                <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link das-button-link">Cancel</a>
+                <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.TitleSection" class="govuk-link das-button-link">Cancel</a>
+            </span>
+            <span asp-show="Model.ReferredFromSavedFavourites">
+                <a asp-show="@Model.PageInfo.IsWizard" href="@Model.BackLinkRoute" class="govuk-link das-button-link" esfa-automation="cancel-link">Cancel</a>
+                <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link das-button-link">Cancel</a>
+            </span>
         </form>
     </div>
 </div>

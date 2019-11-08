@@ -8,6 +8,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.CreateVacancyOptions
     {
         public IEnumerable<ClonableVacancy> Vacancies { get; set; }
         public bool HasClonableVacancies => Vacancies.Any();
+        public bool ShowReturnToMaLink { get; set; }
     }
 
     public class ClonableVacancy

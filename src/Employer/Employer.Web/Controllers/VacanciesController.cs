@@ -1,3 +1,4 @@
+using System;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Orchestrators;
@@ -38,6 +39,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             if (TempData.ContainsKey(TempDataKeys.DashboardInfoMessage))
                 vm.InfoMessage = TempData[TempDataKeys.DashboardInfoMessage].ToString();
 
+            vm.ShowReferredFromMaBackLink = ShowReferredFromMaBackLink();
             return View(vm);
         }
 
@@ -74,6 +76,11 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 Filter = filter;
                 SearchTerm = searchTerm;
             }
+        }
+
+        private bool ShowReferredFromMaBackLink()
+        {
+            return Convert.ToBoolean(TempData.Peek(TempDataKeys.ReferredFromMa));
         }
     }
 }

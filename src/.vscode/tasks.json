@@ -189,7 +189,7 @@
             "type": "process",
             "args": [
                 "test",
-                "${workspaceFolder}/Jobs/Recruit.Vacancies.Jobs.Tests/Recruit.Vacancies.Jobs.Tests.csproj",
+                "${workspaceFolder}/Jobs/Recruit.Vacancies.Jobs.UnitTests/Recruit.Vacancies.Jobs.UnitTests.csproj",
                 "/p:GenerateFullPaths=true"
             ]
         }

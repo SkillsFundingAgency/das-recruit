@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
@@ -22,7 +23,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         private const string InvalidUkprnMessageFormat = "The UKPRN {0} is not valid or the associated provider is not active";
         private const string InvalidSearchTerm = "Please enter a training provider name or UKPRN";
 
-        public TrainingProviderController(TrainingProviderOrchestrator orchestrator, IRecruitVacancyClient vacancyClient)
+        public TrainingProviderController(TrainingProviderOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
         }
@@ -30,17 +31,27 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         [HttpGet("select-training-provider", Name = RouteNames.TrainingProvider_Select_Get)]
         public async Task<IActionResult> SelectTrainingProvider(VacancyRouteModel vrm, [FromQuery] string wizard = "true", [FromQuery] string clear = "", [FromQuery] long? ukprn = null)
         {
-            var vm = await _orchestrator.GetSelectTrainingProviderViewModelAsync(vrm, ukprn);
-            vm.PageInfo.SetWizard(wizard);
+           var vm = await _orchestrator.GetSelectTrainingProviderViewModelAsync(vrm, ukprn);
+           vm.PageInfo.SetWizard(wizard);
 
-            if (string.IsNullOrWhiteSpace(clear) == false)
-            {
-                vm.Ukprn = string.Empty;
-                vm.TrainingProviderSearch = string.Empty;
-                vm.IsTrainingProviderSelected = true;
-            }
-            
-            return View(vm);
+           if (string.IsNullOrWhiteSpace(clear) == false)
+           {
+               vm.Ukprn = string.Empty;
+               vm.TrainingProviderSearch = string.Empty;
+               vm.IsTrainingProviderSelected = true;
+           }
+           
+           vm.BackLinkRoute = GetBackLinkRoute(vrm.VacancyId);
+           return View(vm);
+        }
+
+        private string GetBackLinkRoute(Guid vacancyId)
+        {
+            var referredUkprn = Convert.ToString(TempData.Peek(TempDataKeys.ReferredUkprn + vacancyId));
+            var referredProgrammeId = Convert.ToString(TempData.Peek(TempDataKeys.ReferredProgrammeId + vacancyId));
+            if (!string.IsNullOrWhiteSpace(referredUkprn) || !string.IsNullOrWhiteSpace(referredProgrammeId))
+                return RouteNames.Title_Get;
+            return RouteNames.Training_Get;
         }
 
         [HttpPost("select-training-provider", Name = RouteNames.TrainingProvider_Select_Post)]

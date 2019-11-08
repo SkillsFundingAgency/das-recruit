@@ -13,5 +13,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.TrainingProvider
         public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
         public PartOnePageInfoViewModel PageInfo { get; set; }
         public ApprenticeshipProgrammeViewModel Programme { get; set; }
+        public string BackLinkRoute { get; set; }
+        public bool ReferredFromSavedFavourites { get; set; }
     }
 }

@@ -94,6 +94,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddTransient<NumberOfPositionsOrchestrator>();
             services.AddTransient<VacancyPreviewOrchestrator>();
             services.AddTransient<SubmittedOrchestrator>();
+            services.AddTransient<EmployerVacancyOrchestrator>();
             services.AddTransient<TrainingProviderOrchestrator>();
             services.AddTransient<DeleteVacancyOrchestrator>();
             services.AddTransient<ShortDescriptionOrchestrator>();

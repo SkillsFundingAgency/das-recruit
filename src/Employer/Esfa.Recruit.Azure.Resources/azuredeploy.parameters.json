@@ -69,7 +69,9 @@
         "ProviderApprenticeshipSiteUrl": "",
         "CommitmentsSiteUrl": "",
         "SignProviderAgreementUrl": "",
-        "ReservationsSiteUrl": ""
+        "ReservationsSiteUrl": "",
+        "EmployerFavouritesUrl": ""
+		    
       }
     },
     "Features": {
