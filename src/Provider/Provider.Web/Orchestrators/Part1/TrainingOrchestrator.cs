@@ -82,14 +82,14 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             return new ConfirmTrainingViewModel
             {
                 ProgrammeId = programme.Id,
-                Level = programme.Level,
+                ApprenticeshipLevel = programme.ApprenticeshipLevel,
                 TrainingTitle = programme.Title,
                 DurationMonths = programme.Duration,
                 ProgrammeType = programme.ApprenticeshipType.GetDisplayName(),
                 PageInfo = Utility.GetPartOnePageInfo(vacancyTask.Result),
                 TrainingEffectiveToDate = programme.EffectiveTo?.AsGdsDate(),
                 EducationLevelName =
-                    EducationLevelNumberHelper.GetEducationLevelNameOrDefault(programme.EducationLevelNumber, programme.Level)
+                    EducationLevelNumberHelper.GetEducationLevelNameOrDefault(programme.EducationLevelNumber, programme.ApprenticeshipLevel)
             };
         }
 

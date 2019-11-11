@@ -45,7 +45,7 @@ namespace Esfa.Recruit.Provider.Web.Mappings
             vm.CanSubmit = vacancy.CanSubmit;
             vm.ClosingDate = (vacancy.ClosedDate ?? vacancy.ClosingDate)?.AsGdsDate();
             vm.EducationLevelName =
-                EducationLevelNumberHelper.GetEducationLevelNameOrDefault(programme.EducationLevelNumber, programme.Level);
+                EducationLevelNumberHelper.GetEducationLevelNameOrDefault(programme.EducationLevelNumber, programme.ApprenticeshipLevel);
             vm.EmployerDescription = vacancy.EmployerDescription;
             vm.EmployerName = await _vacancyClient.GetEmployerNameAsync(vacancy);
             vm.EmployerWebsiteUrl = vacancy.EmployerWebsiteUrl;
@@ -85,7 +85,7 @@ namespace Esfa.Recruit.Provider.Web.Mappings
             {
                 vm.TrainingTitle = programme?.Title;
                 vm.TrainingType = programme?.ApprenticeshipType.GetDisplayName();
-                vm.TrainingLevel = programme?.Level.GetDisplayName();
+                vm.TrainingLevel = programme?.ApprenticeshipLevel.GetDisplayName();
             }
 
             if (vacancy.Wage != null)

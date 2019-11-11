@@ -33,7 +33,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         public DurationUnit DurationUnit { get; set; }
         public string TrainingTitle { get; set; }
         public TrainingType TrainingType { get; set; }
-        public ProgrammeLevel TrainingLevel { get; set; }
+        public ApprenticeshipLevel TrainingLevel { get; set; }
         public long? TransferInfoUkprn { get; set; }
         public string TransferInfoProviderName { get; set; }
         public DateTime? TransferInfoTransferredDate { get; set; }

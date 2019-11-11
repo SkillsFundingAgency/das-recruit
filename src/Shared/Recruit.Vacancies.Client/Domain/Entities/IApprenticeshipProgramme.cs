@@ -9,7 +9,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         string Title { get; }
         DateTime? EffectiveFrom { get; }
         DateTime? EffectiveTo { get; }
-        ProgrammeLevel Level { get; }
+        ApprenticeshipLevel ApprenticeshipLevel { get; }
         int Duration { get; }
         bool IsActive { get; set; }
         int? EducationLevelNumber { get; set; }

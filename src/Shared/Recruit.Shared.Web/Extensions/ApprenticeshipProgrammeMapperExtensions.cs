@@ -22,7 +22,7 @@ namespace Esfa.Recruit.Shared.Web.Extensions
         public static ApprenticeshipProgrammeViewModel ToViewModel(this IApprenticeshipProgramme programme)
         {
             string educationLevelName =
-                EducationLevelNumberHelper.GetEducationLevelNameOrDefault(programme.EducationLevelNumber, programme.Level);
+                EducationLevelNumberHelper.GetEducationLevelNameOrDefault(programme.EducationLevelNumber, programme.ApprenticeshipLevel);
 
             return new ApprenticeshipProgrammeViewModel
             {

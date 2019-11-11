@@ -121,6 +121,6 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         {
             return FieldIdentifiers.Single(f => f.FieldIdentifier == fieldIdentifer).FieldValueHasChanged ? CssFieldChanged : null;
         }
-        public ProgrammeLevel Level { get; set; }
+        public ApprenticeshipLevel Level { get; set; }
     }
 }

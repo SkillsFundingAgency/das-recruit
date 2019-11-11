@@ -69,9 +69,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             vm.CanShowDraftHeader = vacancy.Status == VacancyStatus.Draft;
             vm.SoftValidationErrors = GetSoftValidationErrors(vacancy);
             vm.EducationLevelName =
-                EducationLevelNumberHelper.GetEducationLevelNameOrDefault(programme.EducationLevelNumber, programme.Level);
+                EducationLevelNumberHelper.GetEducationLevelNameOrDefault(programme.EducationLevelNumber, programme.ApprenticeshipLevel);
 
-            if (programme != null) vm.Level = programme.Level;
+            if (programme != null) vm.ApprenticeshipLevel = programme.ApprenticeshipLevel;
 
             if (vacancy.Status == VacancyStatus.Referred)
             {

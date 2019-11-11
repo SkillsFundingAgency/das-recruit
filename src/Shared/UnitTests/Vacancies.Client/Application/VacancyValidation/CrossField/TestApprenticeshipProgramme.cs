@@ -15,7 +15,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
 
         public DateTime? EffectiveTo { get; set; }
 
-        public ProgrammeLevel Level  { get; set; }
+        public ApprenticeshipLevel ApprenticeshipLevel  { get; set; }
 
         public int Duration { get; set; }
 

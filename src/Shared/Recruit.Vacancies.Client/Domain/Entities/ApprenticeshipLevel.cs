@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
+﻿namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
 {
-    public enum ProgrammeLevel
+    public enum ApprenticeshipLevel
     {
         Unknown = 0,
         Intermediate = 2,
