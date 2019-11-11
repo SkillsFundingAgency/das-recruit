@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
@@ -10,7 +11,7 @@ using Polly;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 {
-    internal sealed class MongoQueryStore : MongoDbCollectionBase, IQueryStore
+    internal sealed class MongoQueryStore : MongoDbCollectionBase, IQueryStore, IQueryStoreHouseKeepingService
     {
         public MongoQueryStore(ILoggerFactory loggerFactory, IOptions<MongoDbConnectionDetails> details)
             : base(loggerFactory, MongoDbNames.RecruitDb, MongoDbCollectionNames.QueryStore, details)
@@ -103,6 +104,37 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             return RetryPolicy.ExecuteAsync(_ =>
                 collection.ReplaceOneAsync(filter, item, new UpdateOptions { IsUpsert = true }),
                 new Context(nameof(IQueryStore.UpsertAsync)));
+        }
+
+        public async Task<List<T>> GetStaleDocumentsAsync<T>(string typeName, DateTime documentsNotAccessedSinceDate) where T : QueryProjectionBase
+        {
+            var filterBuilder = Builders<T>.Filter;
+            
+            var filter = filterBuilder.Eq(d => d.ViewType, typeName)
+                        & filterBuilder.Lt(d => d.LastUpdated, documentsNotAccessedSinceDate);
+
+            var collection = GetCollection<T>();
+
+            return await RetryPolicy.ExecuteAsync(_ =>
+                collection.Find(filter).ToListAsync(),
+                new Context(nameof(IQueryStore.UpsertAsync)));
+        }
+
+        public async Task<long> DeleteStaleDocumentsAsync<T>(string typeName, IEnumerable<string> documentIds) where T : QueryProjectionBase
+        {
+            var filterBuilder = Builders<T>.Filter;
+            
+            var filter = 
+                filterBuilder.In(d => d.Id, documentIds)
+                & filterBuilder.Eq(d => d.ViewType, typeName);
+
+            var collection = GetCollection<T>();
+
+            var result = await RetryPolicy.ExecuteAsync(_ =>
+                collection.DeleteManyAsync(filter),
+                new Context(nameof(IQueryStore.UpsertAsync)));
+
+            return result.DeletedCount;
         }
     }
 }

@@ -9,5 +9,6 @@
         internal const string EveryFiveMinutes = "*/5 * * * *";
         internal const string EveryFifteenMinutes = "*/15 * * * *";
         internal const string Hourly = "0 0 */1 * * *";
+        internal const string WeeklyFourAmSunday = "0 4 * * SUN";
     }
 }
