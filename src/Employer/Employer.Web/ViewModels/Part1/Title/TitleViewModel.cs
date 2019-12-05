@@ -20,7 +20,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Title
         public PartOnePageInfoViewModel PageInfo { get; set; }
         public bool HasCloneableVacancies { get; set; }
         public string BackLink =>
-            HasCloneableVacancies ? RouteNames.Vacancies_Get : RouteNames.CreateVacancyOptions_Get;
+            HasCloneableVacancies ? RouteNames.Vacancies_Get : RouteNames.Dashboard_Get;
 
         public string BackLinkText { get; set; }
         public string BackLinkRoute { get; set; }
