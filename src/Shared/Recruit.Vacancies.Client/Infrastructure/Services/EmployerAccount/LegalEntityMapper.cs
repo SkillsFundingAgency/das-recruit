@@ -13,6 +13,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
             return new LegalEntity
             {
                 LegalEntityId = data.LegalEntityId,
+                AccountLegalEntityPublicHashedId = data.AccountLegalEntityPublicHashedId,
                 Name = data.Name,
                 Address = MapFromAddressLine(data.Address),
                 HasLegalEntityAgreement = data.Agreements.Any(a =>
