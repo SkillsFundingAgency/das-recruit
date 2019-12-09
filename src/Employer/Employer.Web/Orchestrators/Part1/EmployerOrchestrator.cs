@@ -135,7 +135,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 .ToList();
         }
 
-        private IEnumerable<OrganisationViewModel> BuildLegalEntityViewModels(EditVacancyInfo info, string employerAccountId)
+        private IEnumerable<OrganisationViewModel> BuildLegalEntityViewModels(EmployerEditVacancyInfo info, string employerAccountId)
         {
             if (info == null || !info.LegalEntities.Any())
             {

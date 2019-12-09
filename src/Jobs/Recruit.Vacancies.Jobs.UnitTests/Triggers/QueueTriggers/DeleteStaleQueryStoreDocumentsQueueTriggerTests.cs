@@ -31,7 +31,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.UnitTests.Triggers.QueueTriggers
             var sut = new DeleteStaleQueryStoreDocumentsQueueTrigger(_loggerMock.Object, _jobsConfig, _timeProviderMock.Object, _queryStoreHouseKeepingServiceMock.Object);
             var message = new DeleteStaleQueryStoreDocumentsQueueMessage() { CreatedByScheduleDate = DateTime.Today };
             await sut.DeleteStaleQueryStoreDocumentsAsync(JsonConvert.SerializeObject(message), null);
-            _queryStoreHouseKeepingServiceMock.Verify(s => s.GetStaleDocumentsAsync<QueryProjectionBase>(It.IsAny<string>(), DateTime.Today.AddDays(Days * -1)), Times.Exactly(5));
+            _queryStoreHouseKeepingServiceMock.Verify(s => s.GetStaleDocumentsAsync<QueryProjectionBase>(It.IsAny<string>(), DateTime.Today.AddDays(Days * -1)), Times.Exactly(4));
             _timeProviderMock.Verify(t => t.Today, Times.Never);
         }
 
@@ -44,7 +44,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.UnitTests.Triggers.QueueTriggers
             _queryStoreHouseKeepingServiceMock.Setup(s => s.DeleteStaleDocumentsAsync<QueryProjectionBase>(It.IsAny<string>(), It.IsAny<IEnumerable<string>>())).ReturnsAsync(0);
             var sut = new DeleteStaleQueryStoreDocumentsQueueTrigger(_loggerMock.Object, _jobsConfig, _timeProviderMock.Object, _queryStoreHouseKeepingServiceMock.Object);
             await sut.DeleteStaleQueryStoreDocumentsAsync("{}", null);
-            _queryStoreHouseKeepingServiceMock.Verify(s => s.GetStaleDocumentsAsync<QueryProjectionBase>(It.IsAny<string>(), targetDate.AddDays(Days * -1)), Times.Exactly(5));
+            _queryStoreHouseKeepingServiceMock.Verify(s => s.GetStaleDocumentsAsync<QueryProjectionBase>(It.IsAny<string>(), targetDate.AddDays(Days * -1)), Times.Exactly(4));
             _timeProviderMock.VerifyGet(t => t.Today);
         }
 
@@ -59,7 +59,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.UnitTests.Triggers.QueueTriggers
             _queryStoreHouseKeepingServiceMock.Setup(s => s.DeleteStaleDocumentsAsync<QueryProjectionBase>(viewType, It.IsAny<IEnumerable<string>>())).ReturnsAsync(1);
             var sut = new DeleteStaleQueryStoreDocumentsQueueTrigger(_loggerMock.Object, _jobsConfig, _timeProviderMock.Object, _queryStoreHouseKeepingServiceMock.Object);
             await sut.DeleteStaleQueryStoreDocumentsAsync("", null);
-            _queryStoreHouseKeepingServiceMock.Verify(s => s.GetStaleDocumentsAsync<QueryProjectionBase>(It.IsAny<string>(), DateTime.Today.AddDays(Days * -1)), Times.Exactly(5));
+            _queryStoreHouseKeepingServiceMock.Verify(s => s.GetStaleDocumentsAsync<QueryProjectionBase>(It.IsAny<string>(), DateTime.Today.AddDays(Days * -1)), Times.Exactly(4));
             _queryStoreHouseKeepingServiceMock.Verify(s => s.DeleteStaleDocumentsAsync<QueryProjectionBase>(It.IsAny<string>(), It.IsAny<IEnumerable<string>>()));
         }
 

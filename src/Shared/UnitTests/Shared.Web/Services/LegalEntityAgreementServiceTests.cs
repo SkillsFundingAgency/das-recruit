@@ -79,7 +79,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.Services
         {
             _clientMock = new Mock<IEmployerVacancyClient>();
             _clientMock.Setup(c => c.GetEditVacancyInfoAsync(employerAccountId)).Returns(Task.FromResult(
-                new EditVacancyInfo
+                new EmployerEditVacancyInfo
                 {
                     LegalEntities = new List<LegalEntity>
                     {

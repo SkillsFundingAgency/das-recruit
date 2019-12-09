@@ -71,7 +71,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
             }
         }
 
-
         public async Task<string> GetEmployerAccountPublicHashedIdAsync(long accountId)
         {
             try

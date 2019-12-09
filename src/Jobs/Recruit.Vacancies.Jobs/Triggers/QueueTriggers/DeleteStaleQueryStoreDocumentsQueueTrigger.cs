@@ -59,8 +59,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
 
                 var documentTypesToDelete = new [] 
                 {
-                    nameof(EditVacancyInfo), 
-                    nameof(ProviderEditVacancyInfo),
+                    "EditVacancyInfo", 
                     nameof(EmployerDashboard),
                     nameof(ProviderDashboard),
                     nameof(ClosedVacancy)
