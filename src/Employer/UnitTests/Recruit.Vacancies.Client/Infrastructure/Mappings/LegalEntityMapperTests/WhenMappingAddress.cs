@@ -4,7 +4,7 @@ using Xunit;
 
 namespace Esfa.Recruit.Employer.UnitTests.Recruit.Vacancies.Client.Infrastructure.Mappings
 {
-    public class LegalEntityMapperTests
+    public class WhenMappingAddress
     {
         [Fact]
         public void ShouldMapFullFivePartAddress()
