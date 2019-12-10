@@ -1,0 +1,78 @@
+@model Esfa.Recruit.Employer.Web.ViewModels.CloneVacancy.CloneVacancyWithNewDatesViewModel
+@{
+    var exampleClosingDate = DateTime.Now.AddMonths(2);
+    var exampleStartingDate = exampleClosingDate.AddDays(14);
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
+        <span class="govuk-caption-xl">Clone vacancy @("VAC" + Model.VacancyReference)</span>
+        <h1 class="govuk-heading-xl">@Model.Title</h1>
+        <div asp-show="Model.IsNewDatesForced" class="govuk-inset-text">The vacancy you are copying has a closing date or start date that is in the past. Add new dates.</div>
+        <form asp-route="@RouteNames.CloneVacancyWithNewDates_Post" novalidate>
+            <div esfa-validation-marker-for="ClosingDate" class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
+                    <span esfa-validation-message-for="ClosingDate" class="govuk-error-message"></span>
+                    <legend class="govuk-fieldset__legend govuk-!-font-weight-bold">Application closing date</legend>
+                    <span id="closing-hint" class="govuk-hint">
+                        For example, @exampleClosingDate.AsInputHintDisplayDate()
+                    </span>
+                    <div class="govuk-date-input">
+                        <div class="govuk-date-input__item">
+                            <div class="govuk-form-group">
+                                <label asp-for="ClosingDay" class="govuk-label govuk-date-input__label">Day</label>
+                                <input asp-for="ClosingDay" class="govuk-input govuk-date-input__input govuk-input--width-2" type="number" min="1" max="31">
+                            </div>
+                        </div>
+                        <div class="govuk-date-input__item">
+                            <div class="govuk-form-group">
+                                <label asp-for="ClosingMonth" class="govuk-label govuk-date-input__label">Month</label>
+                                <input asp-for="ClosingMonth" class="govuk-input govuk-date-input__input govuk-input--width-2" type="number" min="1" max="12">
+                            </div>
+                        </div>
+                        <div class="govuk-date-input__item">
+                            <div class="govuk-form-group">
+                                <label asp-for="ClosingYear" class="govuk-label govuk-date-input__label">Year</label>
+                                <input asp-for="ClosingYear" class="govuk-input govuk-date-input__input govuk-input--width-4" type="number" min="@Model.CurrentYear">
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+
+            <div esfa-validation-marker-for="StartDate" class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
+                    <span esfa-validation-message-for="StartDate" class="govuk-error-message"></span>
+                    <legend class="govuk-fieldset__legend govuk-!-font-weight-bold">When is the apprentice expected to start?</legend>
+                    <span id="start-hint" class="govuk-hint">
+                        For example, @exampleStartingDate.AsInputHintDisplayDate()
+                    </span>
+                    <div class="govuk-date-input">
+                        <div class="govuk-date-input__item">
+                            <div class="govuk-form-group">
+                                <label asp-for="StartDay" class="govuk-label govuk-date-input__label">Day</label>
+                                <input asp-for="StartDay" class="govuk-input govuk-date-input__input govuk-input--width-2" type="number" min="1" max="31">
+                            </div>
+                        </div>
+                        <div class="govuk-date-input__item">
+                            <div class="govuk-form-group">
+                                <label asp-for="StartMonth" class="govuk-label govuk-date-input__label">Month</label>
+                                <input asp-for="StartMonth" class="govuk-input govuk-date-input__input govuk-input--width-2" type="number" min="1" max="12">
+                            </div>
+                        </div>
+                        <div class="govuk-date-input__item">
+                            <div class="govuk-form-group">
+                                <label asp-for="StartYear" class="govuk-label govuk-date-input__label">Year</label>
+                                <input asp-for="StartYear" class="govuk-input govuk-date-input__input govuk-input--width-4" type="number" min="@Model.CurrentYear">
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+
+            <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Continue</button>
+            <a asp-route="@RouteNames.VacancyManage_Get" class="govuk-link das-button-link">Cancel</a>
+        </form>
+    </div>
+</div>

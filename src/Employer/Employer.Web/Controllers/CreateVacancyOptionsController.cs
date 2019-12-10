@@ -22,19 +22,26 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         [HttpGet("create-options", Name = RouteNames.CreateVacancyOptions_Get)]
         public async Task<IActionResult> Options([FromRoute]string employerAccountId)
         {
-            var vm = await _orchestrator.GetCreateOptionsViewModelAsync(employerAccountId);
-            vm.ShowReturnToMaLink = Convert.ToBoolean(TempData.Peek(TempDataKeys.ReferredFromMa));
-            if (vm.HasClonableVacancies == false)
-                return RedirectToRoute(RouteNames.CreateVacancy_Get);
+            bool shouldShowCloningChangingMessage =
+                string.IsNullOrWhiteSpace(Request.Cookies[CookieNames.HasSeenCloningMethodIsChangingMessage]);
+
+            var vm = await _orchestrator.GetCreateOptionsViewModelAsync(employerAccountId, shouldShowCloningChangingMessage);
+
+            if(vm.HasClonableVacancies == false)
+                return RedirectToRoute(@RouteNames.CreateVacancy_Get);
+
             return View(vm);
         }
 
         [HttpPost("create-options", Name = RouteNames.CreateVacancyOptions_Post)]
         public async Task<IActionResult> Options([FromRoute]string employerAccountId, CreateVacancyOptionsEditModel model)
         {
+            bool shouldShowCloningChangingMessage =
+                string.IsNullOrWhiteSpace(Request.Cookies[CookieNames.HasSeenCloningMethodIsChangingMessage]);
+
             if (!ModelState.IsValid)
             {
-                var vm = await _orchestrator.GetCreateOptionsViewModelAsync(employerAccountId);
+                var vm = await _orchestrator.GetCreateOptionsViewModelAsync(employerAccountId, shouldShowCloningChangingMessage);
                 return View(vm);
             }
 

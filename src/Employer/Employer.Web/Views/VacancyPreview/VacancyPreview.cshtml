@@ -34,62 +34,66 @@
         return VacancyPreviewHelper.ActionLink(Url, "Change", routeName, routeValues, screenReaderText, "govuk-body govuk-link", id);
     }
 }
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-        <div asp-show="@Model.IsTransferred">
-            <p class="govuk-inset-text">This vacancy was created by 
-                <span class="govuk-!-font-weight-bold">@Model.TransferredProviderName</span> 
-                and transferred to your account on @Model.TransferredOnDate
-            </p>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <div asp-show="Model.CanShowVacancyClonedStatusHeader" class="info-summary highlight-summary">
+                <p class="govuk-!-margin-bottom-0 govuk-body">@Model.VacancyClonedInfoMessage</p>
+            </div>
         </div>
 
-        <partial asp-hide="@Model.CanHideValidationSummary" name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }'/>
-        <div class="info-summary__header-bar" asp-show="@Model.HasIncompleteMandatorySections">
-            <h2 class="govuk-heading-m" asp-show="@Model.HasSoftValidationErrors">@Model.SoftValidationErrors.Errors.Count section needs updating and</h2>
-            <h2 class="govuk-heading-m">@Model.IncompleteRequiredSectionCount required @Model.IncompleteRequiredSectionText to complete</h2>
-        </div>
-        <div class="info-summary__header-bar govuk-!-margin-bottom-6" asp-hide="@Model.HasIncompleteMandatorySections">
-            <h2 class="govuk-heading-m" asp-show="@Model.HasSoftValidationErrors">@Model.SoftValidationErrors.Errors.Count section needs updating and</h2>
-            <h2 class="govuk-heading-m">You have completed all required sections</h2>
-        </div>
-        <div asp-show="@Model.ShowIncompleteSections" class="info-summary govuk-!-margin-top-0" role="alert">
-            <div asp-show="Model.HasSoftValidationErrors">
-                <p class="govuk-body">
-                    Sections you will need to update:
+        <div class="govuk-grid-column-full">
+            <div asp-show="@Model.IsTransferred">
+                <p class="govuk-inset-text">
+                    This vacancy was created by
+                    <span class="govuk-!-font-weight-bold">@Model.TransferredProviderName</span>
+                    and transferred to your account on @Model.TransferredOnDate
                 </p>
-                <ul class=" govuk-list govuk-error-summary__list govuk-!-margin-bottom-4">
-                    @foreach (var softError in Model.SoftValidationErrors.Errors.OrderBy(x => Model.OrderedFieldNames.IndexOf(x.PropertyName)))
-                    {
-                        var softErrorVm = new ErrorListItemViewModel(softError.PropertyName, softError.ErrorMessage);
-                        <partial name="@RecruitPartialNames.ErrorListItem" model="@softErrorVm" />
-                    }
-                </ul>
+            </div>
+            <partial asp-hide="@Model.CanHideValidationSummary" name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
+            <div class="info-summary__header-bar" asp-show="@Model.HasIncompleteMandatorySections">
+                <h2 class="govuk-heading-m">@Model.IncompleteRequiredSectionCount required @Model.IncompleteRequiredSectionText to complete</h2>
+            </div>
+            <div class="info-summary__header-bar govuk-!-margin-bottom-6" asp-hide="@Model.HasIncompleteMandatorySections">
+                <h2 class="govuk-heading-m">You have completed all required sections</h2>
+            </div>
+            <div asp-show="@Model.ShowIncompleteSections" class="info-summary govuk-!-margin-top-0" role="alert">
+                <div asp-show="Model.HasSoftValidationErrors">
+                    <p class="govuk-body">
+                        Sections you will need to update:
+                    </p>
+                    <ul class=" govuk-list govuk-error-summary__list govuk-!-margin-bottom-4">
+                        @foreach (var softError in Model.SoftValidationErrors.Errors.OrderBy(x => Model.OrderedFieldNames.IndexOf(x.PropertyName)))
+                        {
+                            var softErrorVm = new ErrorListItemViewModel(softError.PropertyName, softError.ErrorMessage);
+                            <partial name="@RecruitPartialNames.ErrorListItem" model="@softErrorVm" />
+                        }
+                    </ul>
+                </div>
+
+                <div asp-show="@Model.HasIncompleteMandatorySections">
+                    <p class="govuk-body">Sections you will need to complete:</p>
+                    <ul class="govuk-list">
+                        <li asp-hide="@Model.HasShortDescription"><a asp-fragment="@Anchors.ShortDescriptionSection" class="govuk-link summary-link">Brief overview</a></li>
+                        <li asp-hide="@Model.HasVacancyTrainingOutcomeDescriptions"><a asp-fragment="@Anchors.VacancyDescriptionSection" class="govuk-link summary-link">Description of the apprenticeship</a></li>
+                        <li asp-show="@Model.HasIncompleteSkillsSection"><a asp-fragment="@Anchors.Skills" class="govuk-link summary-link">Desired skills and personal qualities</a></li>
+                        <li asp-show="@Model.HasIncompleteQualificationsSection"><a asp-fragment="@Anchors.Qualifications" class="govuk-link summary-link">Qualifications</a></li>
+                        <li asp-show="@Model.HasIncompleteEmployerDescriptionSection"><a asp-fragment="@Anchors.EmployerDescription" class="govuk-link summary-link">Employer description</a></li>
+                        <li asp-show="@Model.HasIncompleteTrainingProviderSection"><a asp-fragment="@Anchors.TrainingProviderSection" class="govuk-link summary-link">Training provider</a></li>
+                        <li asp-show="@Model.HasIncompleteApplicationProcessSection"><a asp-fragment="@Anchors.ApplicationProcessSection" class="govuk-link summary-link">Application process</a></li>
+                    </ul>
+                </div>
+                <div asp-show="@Model.HasIncompleteOptionalSections">
+                    <p class="govuk-body">You may wish to complete these optional sections:</p>
+                    <ul class="govuk-list">
+                        <li asp-show="@Model.HasIncompleteThingsToConsiderSection"><a asp-fragment="@Anchors.ThingsToConsider" class="govuk-link summary-link">Things to consider</a></li>
+                        <li asp-show="@Model.HasIncompleteEmployerWebsiteUrlSection"><a asp-fragment="@Anchors.EmployerWebsiteUrl" class="govuk-link summary-link">Employer website</a></li>
+                        <li asp-show="@Model.HasIncompleteContactSection"><a asp-fragment="@Anchors.EmployerContact" class="govuk-link summary-link">Contact details</a></li>
+                    </ul>
+                </div>
             </div>
 
-            <div asp-show="@Model.HasIncompleteMandatorySections">
-                <p class="govuk-body">Sections you will need to complete:</p>
-                <ul class="govuk-list">
-                    <li asp-hide="@Model.HasShortDescription"><a asp-fragment="@Anchors.ShortDescriptionSection" class="govuk-link summary-link">Brief overview</a></li>
-                    <li asp-hide="@Model.HasVacancyTrainingOutcomeDescriptions"><a asp-fragment="@Anchors.VacancyDescriptionSection" class="govuk-link summary-link">Description of the apprenticeship</a></li>
-                    <li asp-show="@Model.HasIncompleteSkillsSection"><a asp-fragment="@Anchors.Skills" class="govuk-link summary-link">Desired skills and personal qualities</a></li>
-                    <li asp-show="@Model.HasIncompleteQualificationsSection"><a asp-fragment="@Anchors.Qualifications" class="govuk-link summary-link">Qualifications</a></li>
-                    <li asp-show="@Model.HasIncompleteEmployerDescriptionSection"><a asp-fragment="@Anchors.EmployerDescription" class="govuk-link summary-link">Employer description</a></li>
-                    <li asp-show="@Model.HasIncompleteTrainingProviderSection"><a asp-fragment="@Anchors.TrainingProviderSection" class="govuk-link summary-link">Training provider</a></li>
-                    <li asp-show="@Model.HasIncompleteApplicationProcessSection"><a asp-fragment="@Anchors.ApplicationProcessSection" class="govuk-link summary-link">Application process</a></li>
-                </ul>
-            </div>
-            <div asp-show="@Model.HasIncompleteOptionalSections">
-                <p class="govuk-body">You may wish to complete these optional sections:</p>
-                <ul class="govuk-list">
-                    <li asp-show="@Model.HasIncompleteThingsToConsiderSection"><a asp-fragment="@Anchors.ThingsToConsider" class="govuk-link summary-link">Things to consider</a></li>
-                    <li asp-show="@Model.HasIncompleteEmployerWebsiteUrlSection"><a asp-fragment="@Anchors.EmployerWebsiteUrl" class="govuk-link summary-link">Employer website</a></li>
-                    <li asp-show="@Model.HasIncompleteContactSection"><a asp-fragment="@Anchors.EmployerContact" class="govuk-link summary-link">Contact details</a></li>
-                </ul>
-            </div>
         </div>
-
     </div>
-</div>
 
 <div asp-show="@Model.Review.HasBeenReviewed" class="govuk-grid-row">
     <div class="govuk-grid-column-full">

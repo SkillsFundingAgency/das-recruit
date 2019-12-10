@@ -6,7 +6,7 @@ using Xunit;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using System.Threading.Tasks;
 
-namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.CloneVacancyOrchestratorTest
+namespace Esfa.Recruit.UnitTests.Employer.Web.Orchestrators.CloneVacancyOrchestratorTest
 {
     public class GetCloneVacancyDatesQuestionViewModelAsyncTests : CloneVacancyOrchestratorTestBase
     {

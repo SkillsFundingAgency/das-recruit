@@ -38,5 +38,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
         public bool IsVacancyLive => Status == VacancyStatus.Live;
         public bool IsVacancyClosed => Status == VacancyStatus.Closed;
         public bool IsTransferred => string.IsNullOrWhiteSpace(TransferredProviderName) == false && string.IsNullOrWhiteSpace(TransferredOnDate) == false;
+        public bool CanClone { get; internal set; }
     }
 }

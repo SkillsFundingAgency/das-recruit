@@ -22,11 +22,14 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             _vacancyClient = vacancyClient;
         }
 
-        public async Task<CreateVacancyOptionsViewModel> GetCreateOptionsViewModelAsync(string employerAccountId)
+        public async Task<CreateVacancyOptionsViewModel> GetCreateOptionsViewModelAsync(
+            string employerAccountId,
+            bool shouldShowCloningChangingMessage)
         {
             var dashboard = await _client.GetDashboardAsync(employerAccountId);
             var vm = MapFromDashboard(dashboard);
-            
+            vm.ShouldShowCloningChangingMessage = shouldShowCloningChangingMessage;
+
             return vm;
         }
 

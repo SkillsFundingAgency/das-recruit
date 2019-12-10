@@ -1,6 +1,6 @@
-using System.Threading.Tasks;
-using Esfa.Recruit.Provider.Web.RouteModel;
-using Esfa.Recruit.Provider.Web.ViewModels.CloneVacancy;
+﻿using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.RouteModel;
+using Esfa.Recruit.Employer.Web.ViewModels.CloneVacancy;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
@@ -13,17 +13,17 @@ using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using ErrorMessages = Esfa.Recruit.Shared.Web.ViewModels.ErrorMessages;
 
-namespace Esfa.Recruit.Provider.Web.Orchestrators
+namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
-	public class CloneVacancyOrchestrator : EntityValidatingOrchestrator<Vacancy, CloneVacancyWithNewDatesEditModel>
+    public class CloneVacancyOrchestrator : EntityValidatingOrchestrator<Vacancy, CloneVacancyWithNewDatesEditModel>
     {
-        private const VacancyRuleSet ValidationRules = VacancyRuleSet.ClosingDate | VacancyRuleSet.StartDate | VacancyRuleSet.StartDateEndDate ;
+        private const VacancyRuleSet ValidationRules = VacancyRuleSet.ClosingDate | VacancyRuleSet.StartDate | VacancyRuleSet.StartDateEndDate;
         public const string ChangeBothDatesTitle = "Change the closing date and start date";
         public const string ChangeEitherDatesTitle = "Change the closing date or start date";
         private readonly IRecruitVacancyClient _vacancyClient;
-		private readonly ITimeProvider _timeProvider;
+        private readonly ITimeProvider _timeProvider;
 
-        public CloneVacancyOrchestrator(IRecruitVacancyClient vacancyClient, 
+        public CloneVacancyOrchestrator(IRecruitVacancyClient vacancyClient,
             ITimeProvider timeProvider, ILogger<CloneVacancyOrchestrator> logger) : base(logger)
         {
             _vacancyClient = vacancyClient;
@@ -37,8 +37,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             if (IsNewDatesRequired(vacancy))
                 throw new InvalidStateException(string.Format(ErrorMessages.CannotCloneVacancyWithSameDates, vacancy.Title));
 
-            var vm = new CloneVacancyDatesQuestionViewModel 
+            var vm = new CloneVacancyDatesQuestionViewModel
             {
+                VacancyReference = vacancy.VacancyReference.GetValueOrDefault(),
                 StartDate = vacancy.StartDate?.AsGdsDate(),
                 ClosingDate = vacancy.ClosingDate?.AsGdsDate()
             };
@@ -51,10 +52,11 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             var vacancy = await GetCloneableAuthorisedVacancyAsync(vrm);
 
             var isNewDatesForced = IsNewDatesRequired(vacancy);
-            if(isNewDatesForced)
+            if (isNewDatesForced)
             {
-                return new CloneVacancyWithNewDatesViewModel 
+                return new CloneVacancyWithNewDatesViewModel
                 {
+                    VacancyReference = vacancy.VacancyReference.GetValueOrDefault(),
                     IsNewDatesForced = isNewDatesForced,
                     Title = ChangeBothDatesTitle,
                 };
@@ -63,6 +65,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             {
                 return new CloneVacancyWithNewDatesViewModel
                 {
+                    VacancyReference = vacancy.VacancyReference.GetValueOrDefault(),
                     IsNewDatesForced = isNewDatesForced,
                     Title = ChangeEitherDatesTitle,
                     ClosingDay = $"{vacancy.ClosingDate.Value.Day:00}",
@@ -100,12 +103,12 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             var vacancy = await GetCloneableAuthorisedVacancyAsync(model);
 
             var newVacancyId = await _vacancyClient.CloneVacancyAsync(
-                model.VacancyId.GetValueOrDefault(), 
-                user, 
-                SourceOrigin.ProviderWeb, 
-                vacancy.StartDate.GetValueOrDefault(), 
+                model.VacancyId,
+                user,
+                SourceOrigin.EmployerWeb,
+                vacancy.StartDate.GetValueOrDefault(),
                 vacancy.ClosingDate.GetValueOrDefault());
-            
+
             return newVacancyId;
         }
 
@@ -119,13 +122,13 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             vacancy.ClosingDate = closingDate;
 
             return await ValidateAndExecute(
-                vacancy, 
+                vacancy,
                 v => _vacancyClient.Validate(v, ValidationRules),
-                v => 
+                v =>
                     _vacancyClient.CloneVacancyAsync(
-                        model.VacancyId.GetValueOrDefault(),
+                        model.VacancyId,
                         user,
-                        SourceOrigin.ProviderWeb,
+                        SourceOrigin.EmployerWeb,
                         startDate.Value,
                         closingDate.Value)
                 );
@@ -133,9 +136,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
         public async Task<Vacancy> GetCloneableAuthorisedVacancyAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await _vacancyClient.GetVacancyAsync(vrm.VacancyId.GetValueOrDefault());
+            var vacancy = await _vacancyClient.GetVacancyAsync(vrm.VacancyId);
 
-            Utility.CheckAuthorisedAccess(vacancy, vrm.Ukprn);
+            Utility.CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
 
             if (!vacancy.CanClone)
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForCloning, vacancy.Title));
@@ -155,4 +158,5 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         }
 
     }
+
 }

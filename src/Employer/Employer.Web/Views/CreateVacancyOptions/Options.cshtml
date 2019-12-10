@@ -1,11 +1,26 @@
 ﻿@model Esfa.Recruit.Employer.Web.ViewModels.CreateVacancyOptions.CreateVacancyOptionsViewModel
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+        <div asp-show="@Model.ShouldShowCloningChangingMessage" class="info-summary">
+            <div class="govuk-heading-m">
+                Cloning vacancy
+            </div>
+            <p class="govuk-body">
+                This page will be removed soon. You will still be able to clone vacancies, from your vacancy list,
+                select 'manage' and 'clone vacancy'.
+            </p>
+            <form asp-route="@RouteNames.DismissCloningMethodChangingMessage_Post" novalidate>
+                <p class="govuk-body">
+                    <input type="hidden" id="returnUrl" name="returnUrl" value="@ViewContext.HttpContext.Request.Path" />
+                    <button type="submit" class="button-fake-link">Dismiss this notification</button>
+                </p>
+            </form>
+        </div>
         <a asp-show="@Model.ShowReturnToMaLink" asp-route="@RouteNames.Dashboard_Account_Home" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Return to home</a>
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
 
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Create vacancy</h1>
-        
+
         <p class="govuk-body">
             You can clone vacancies once they've been submitted.
             Vacancies will be approved or rejected within 24 hours.
@@ -21,20 +36,21 @@
                     <div class="govuk-radios">
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" asp-for="VacancyId" type="radio" value="@Guid.Empty" id="create-new" />
-                            <label class="govuk-label govuk-radios__label" for="create-new">Create new vacancy</label> 
+                            <label class="govuk-label govuk-radios__label" for="create-new">Create new vacancy</label>
                         </div>
                         @foreach (var item in Model.Vacancies)
                         {
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" asp-for="VacancyId" type="radio" value="@item.Id" id="@item.Id" /> 
-                                <label  class="govuk-label govuk-radios__label" for="@item.Id">@item.VacancyReference
-                                    <div class="govuk-hint">
-                                        @item.Summary
-                                    </div>
-                                </label>
-                            </div>    
-                        }
-                    </div>      
+                                <input class="govuk-radios__input" asp-for="VacancyId" type="radio" value="@item.Id" id="@item.Id" />
+                                <label class="govuk-label govuk-radios__label" for="@item.Id">
+                                    @item.VacancyReference
+                                <div class="govuk-hint">
+                                    @item.Summary
+                                </div>
+                            </label>
+                        </div>
+                    }
+                    </div>
                 </fieldset>
             </div>
             <div class="govuk-form-group">
