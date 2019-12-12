@@ -140,7 +140,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             //if cookie is found then update legal entity and name option from cookie
             if (employerInfoModel != null)
             {
-                vacancy.LegalEntityName = selectedOrganisation.Name;
+                vacancy.LegalEntityName = selectedOrganisation.Name; 
+                vacancy.AccountLegalEntityPublicHashedId = selectedOrganisation.AccountLegalEntityPublicHashedId;
                 vacancy.LegalEntityId = employerInfoModel.LegalEntityId.GetValueOrDefault();
                 vacancy.EmployerNameOption = employerInfoModel.EmployerIdentityOption?.ConvertToDomainOption();
                 vacancy.AnonymousReason = vacancy.IsAnonymous ? employerInfoModel.AnonymousReason : null;
