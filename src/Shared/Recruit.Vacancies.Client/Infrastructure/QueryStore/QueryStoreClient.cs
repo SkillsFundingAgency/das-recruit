@@ -82,7 +82,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 
         public Task UpdateEmployerVacancyDataAsync(string employerAccountId, IEnumerable<LegalEntity> legalEntities)
         {
-            var employerVacancyDataItem = new EditVacancyInfo
+            var employerVacancyDataItem = new EmployerEditVacancyInfo
             {
                 Id = QueryViewType.EditVacancyInfo.GetIdValue(employerAccountId),
                 LegalEntities = legalEntities,
@@ -105,11 +105,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             return _queryStore.UpsertAsync(providerVacancyDataItem);
         }
 
-        public Task<EditVacancyInfo> GetEmployerVacancyDataAsync(string employerAccountId)
+        public Task<EmployerEditVacancyInfo> GetEmployerVacancyDataAsync(string employerAccountId)
         {
             var key = QueryViewType.EditVacancyInfo.GetIdValue(employerAccountId);
 
-            return _queryStore.GetAsync<EditVacancyInfo>(QueryViewType.EditVacancyInfo.TypeName, key);
+            return _queryStore.GetAsync<EmployerEditVacancyInfo>(QueryViewType.EditVacancyInfo.TypeName, key);
         }
 
         public Task<ProviderEditVacancyInfo> GetProviderVacancyDataAsync(long ukprn)

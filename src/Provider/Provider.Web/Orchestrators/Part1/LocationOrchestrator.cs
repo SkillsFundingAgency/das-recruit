@@ -133,6 +133,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             if (employerInfoModel != null)
             {
                 vacancy.LegalEntityName = selectedOrganisation.Name;
+                vacancy.AccountLegalEntityPublicHashedId = selectedOrganisation.AccountLegalEntityPublicHashedId;
                 vacancy.LegalEntityId = employerInfoModel.LegalEntityId.GetValueOrDefault();
                 vacancy.EmployerNameOption = employerInfoModel.EmployerIdentityOption?.ConvertToDomainOption();
                 vacancy.AnonymousReason = vacancy.IsAnonymous ? employerInfoModel.AnonymousReason : null;

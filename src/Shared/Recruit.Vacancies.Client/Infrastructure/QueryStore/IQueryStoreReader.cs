@@ -12,7 +12,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
     public interface IQueryStoreReader
     {
         Task<EmployerDashboard> GetEmployerDashboardAsync(string employerAccountId);
-        Task<EditVacancyInfo> GetEmployerVacancyDataAsync(string employerAccountId);
+        Task<EmployerEditVacancyInfo> GetEmployerVacancyDataAsync(string employerAccountId);
         Task<ProviderEditVacancyInfo> GetProviderVacancyDataAsync(long ukprn);
         Task<EmployerInfo> GetProviderEmployerVacancyDataAsync(long ukprn, string employerAccountId);
         Task<VacancyApplications> GetVacancyApplicationsAsync(string vacancyReference);

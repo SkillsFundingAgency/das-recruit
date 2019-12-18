@@ -15,7 +15,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task GenerateDashboard(string employerAccountId);
         Task DeleteVacancyAsync(Guid vacancyId, VacancyUser user);
         Task<EmployerDashboard> GetDashboardAsync(string employerAccountId, bool createIfNonExistent = false);
-        Task<EditVacancyInfo> GetEditVacancyInfoAsync(string employerAccountId);
+        Task<EmployerEditVacancyInfo> GetEditVacancyInfoAsync(string employerAccountId);
         Task<IEnumerable<LegalEntity>> GetEmployerLegalEntitiesAsync(string employerAccountId);
         Task SetupEmployerAsync(string employerAccountId);
         Task SetApplicationReviewSuccessful(Guid applicationReviewId, VacancyUser user);

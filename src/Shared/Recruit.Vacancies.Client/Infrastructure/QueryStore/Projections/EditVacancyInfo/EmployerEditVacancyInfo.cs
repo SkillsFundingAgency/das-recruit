@@ -2,9 +2,9 @@
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo
 {
-    public class EditVacancyInfo : QueryProjectionBase
+    public class EmployerEditVacancyInfo : QueryProjectionBase
     {
-        public EditVacancyInfo()  : base(QueryViewType.EditVacancyInfo.TypeName)
+        public EmployerEditVacancyInfo()  : base(QueryViewType.EditVacancyInfo.TypeName)
         {
         }
 
