@@ -238,6 +238,22 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             return result.Where(r => r.HasValue).Select(r => r.Value);
         }
 
+        public async Task<IEnumerable<Guid>> GetAllVacancyIdsAsync()
+        {
+            var filter = Builders<Vacancy>.Filter.Empty;
+
+            var collection = GetCollection<Vacancy>();
+
+            var result = await RetryPolicy.ExecuteAsync(_ =>
+                    collection
+                        .Find(filter)
+                        .Project(v => v.Id)
+                        .ToListAsync(),
+                new Context(nameof(GetAllVacancyReferencesAsync)));
+
+            return result;
+        }
+
         public async Task<IEnumerable<ProviderVacancySummary>> GetVacanciesAssociatedToProvider(long ukprn)
         {
             var builder = Builders<Vacancy>.Filter;
@@ -283,7 +299,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             return result;
         }
 
-        
         public async Task<IEnumerable<Vacancy>> GetProviderOwnedVacanciesForEmployerWithoutLegalEntityAsync(long ukprn, string employerAccountId)
         {
             var builder = Builders<Vacancy>.Filter;

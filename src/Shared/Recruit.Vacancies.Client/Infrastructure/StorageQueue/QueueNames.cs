@@ -26,5 +26,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue
         public const string UpdateEmployerUserAccountQueueName = "update-employer-user-account-queue";
         public const string DeleteStaleQueryStoreDocumentsQueueName = "delete-stale-query-store-documents-queue";
         public const string DeleteStaleVacanciesQueueName = "delete-stale-vacancies-queue";
+        public const string BeginMigrationQueueName = "begin-migration";
+        public const string DataMigrationQueueName = "data-migration";
     }
 }
