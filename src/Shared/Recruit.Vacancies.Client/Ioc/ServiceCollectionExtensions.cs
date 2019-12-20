@@ -96,7 +96,7 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
         private static void RegisterAccountApiClientDeps(IServiceCollection services)
         {
             services.AddSingleton<IAccountApiConfiguration>(kernal => kernal.GetService<IOptions<AccountApiConfiguration>>().Value);
-            services.AddTransient<IAccountApiClient, AccountApiClient>();
+            services.AddSingleton<IAccountApiClient, AccountApiClient>();
         }
 
         private static void RegisterServiceDeps(IServiceCollection services, IConfiguration configuration)
