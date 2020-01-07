@@ -1,18 +1,17 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2036
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29613.14
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Employer.Web", "Employer.Web\Employer.Web.csproj", "{9C9261F7-B779-4BAC-BFC0-EA63375F718B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "UnitTests\UnitTests.csproj", "{6B9BE737-38C8-46FB-AB78-FF43B4044EF2}"
-EndProject
-Project("{151D2E53-A2C4-4D7D-83FE-D05416EBD58E}") = "Esfa.Recruit.Azure.Resources", "Esfa.Recruit.Azure.Resources\Esfa.Recruit.Azure.Resources.deployproj", "{D39E21A9-E8C6-461E-87AE-74180559F2A5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationTests", "IntegrationTests\IntegrationTests.csproj", "{723ADF83-C33B-49A4-BADC-E0EC1D94CD68}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{784BB04D-CF2D-4160-BC59-657FCB87464E}"
 	ProjectSection(SolutionItems) = preProject
 		..\README.md = ..\README.md
+		..\..\azure\template.json = ..\..\azure\template.json
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Recruit.Vacancies.Client", "..\Shared\Recruit.Vacancies.Client\Recruit.Vacancies.Client.csproj", "{A7DE9840-CA1D-4B8C-BDFB-D67B9AB8B6C0}"
@@ -55,16 +54,6 @@ Global
 		{6B9BE737-38C8-46FB-AB78-FF43B4044EF2}.Release|x64.Build.0 = Release|Any CPU
 		{6B9BE737-38C8-46FB-AB78-FF43B4044EF2}.Release|x86.ActiveCfg = Release|Any CPU
 		{6B9BE737-38C8-46FB-AB78-FF43B4044EF2}.Release|x86.Build.0 = Release|Any CPU
-		{D39E21A9-E8C6-461E-87AE-74180559F2A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D39E21A9-E8C6-461E-87AE-74180559F2A5}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{D39E21A9-E8C6-461E-87AE-74180559F2A5}.Debug|x64.Build.0 = Debug|Any CPU
-		{D39E21A9-E8C6-461E-87AE-74180559F2A5}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{D39E21A9-E8C6-461E-87AE-74180559F2A5}.Debug|x86.Build.0 = Debug|Any CPU
-		{D39E21A9-E8C6-461E-87AE-74180559F2A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D39E21A9-E8C6-461E-87AE-74180559F2A5}.Release|x64.ActiveCfg = Release|Any CPU
-		{D39E21A9-E8C6-461E-87AE-74180559F2A5}.Release|x64.Build.0 = Release|Any CPU
-		{D39E21A9-E8C6-461E-87AE-74180559F2A5}.Release|x86.ActiveCfg = Release|Any CPU
-		{D39E21A9-E8C6-461E-87AE-74180559F2A5}.Release|x86.Build.0 = Release|Any CPU
 		{723ADF83-C33B-49A4-BADC-E0EC1D94CD68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{723ADF83-C33B-49A4-BADC-E0EC1D94CD68}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{723ADF83-C33B-49A4-BADC-E0EC1D94CD68}.Debug|x64.ActiveCfg = Debug|Any CPU
