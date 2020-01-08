@@ -136,10 +136,6 @@
         public const string SubmitVacancyChanges_Post = "SubmitVacancyChanges_Post";
         public const string CancelVacancyChanges_Get = "CancelVacancyChanges_Get";
 
-        public const string LevyDeclaration_Get = "LevyDeclaration_Get";
-        public const string LevyDeclaration_Post = "LevyDeclaration_Post";
-        public const string NonLevyInfo_Get = "NonLevyInfo_Get";
-
         public const string BlockedEmployer_Get = "BlockedEmployer_Get";
 
         public const string ManageNotifications_Get = "ManageNotifications_Get";

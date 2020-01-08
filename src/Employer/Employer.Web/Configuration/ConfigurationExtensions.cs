@@ -79,8 +79,6 @@ namespace Esfa.Recruit.Employer.Web.Configuration
 
                 opts.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
 
-                opts.Filters.Add(typeof(EmployerAccessCheckFilter), 0);
-                
                 opts.Filters.AddService<PlannedOutageResultFilter>();
 
                 opts.AddTrimModelBinderProvider(loggerFactory);

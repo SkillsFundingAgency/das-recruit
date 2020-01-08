@@ -63,9 +63,6 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddTransient<IGeocodeImageService>(_ => new GoogleMapsGeocodeImageService(configuration.GetValue<string>("GoogleMapsPrivateKey")));
             services.AddTransient<IReviewSummaryService, ReviewSummaryService>();
             services.AddTransient<ILegalEntityAgreementService, LegalEntityAgreementService>();
-            services.AddTransient<ILevyDeclarationCookieWriter, LevyDeclarationCookieWriter>();
-            services.AddTransient<IEoiAgreementCookieWriter, EoiAgreementCookieWriter>();
-            services.AddTransient<IEmployerAccountTypeCookieWriter, EmployerAccountTypeCookieWriter>();
             services.AddTransient<AlertViewModelService>();
             services.AddTransient<IEmployerAlertsViewModelFactory, EmployerAlertsViewModelFactory>();
         }
@@ -108,7 +105,6 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddTransient<ApplicationReviewOrchestrator>();
             services.AddTransient<CreateVacancyOptionsOrchestrator>();
             services.AddTransient<EditVacancyDatesOrchestrator>();
-            services.AddTransient<LevyDeclarationOrchestrator>();
             services.AddTransient<ManageNotificationsOrchestrator>();
             services.AddTransient<DatesOrchestrator>();
             services.AddTransient<VacanciesSearchSuggestionsOrchestrator>();

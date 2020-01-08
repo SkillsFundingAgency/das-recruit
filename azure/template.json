@@ -92,7 +92,6 @@
     "Features": {
       "type": "object",
       "defaultValue": {
-        "AllowLevyPayingEmployersOnly": true,
         "SetNotificationPreferences": false
       }
     },
@@ -576,10 +575,6 @@
               {
                 "name": "ExternalLinks:EmployerFavouritesUrl",
                 "value": "[parameters('ExternalLinks').EmployerFavouritesUrl]"
-              },
-              {
-                "name": "Features:AllowLevyPayingEmployersOnly",
-                "value": "[parameters('Features').AllowLevyPayingEmployersOnly]"
               },
               {
                 "name": "Features:SetNotificationPreferences",
