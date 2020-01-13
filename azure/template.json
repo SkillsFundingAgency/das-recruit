@@ -1,5 +1,5 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
     "EnvironmentName": {
@@ -12,14 +12,6 @@
         "West Europe"
       ],
       "defaultValue": "West Europe"
-    },
-    "aseHostingEnvironmentName": {
-      "type": "string",
-      "defaultValue": ""
-    },
-    "aseResourceGroup": {
-      "type": "string",
-      "defaultValue": ""
     },
     "webJobAspSize": {
       "type": "string",
@@ -39,7 +31,7 @@
         "Standard",
         "Premium"
       ],
-      "defaultValue": "Standard"
+      "defaultValue": "Basic"
     },
     "EnvironmentFullName": {
       "type": "string"
@@ -94,7 +86,7 @@
         "ProviderCommitmentsSiteUrl": "",
         "SignProviderAgreementUrl": "",
         "ReservationsSiteUrl": "",
-        "EmployerFavouritesUrl": ""		
+        "EmployerFavouritesUrl": ""
       }
     },
     "Features": {
@@ -127,7 +119,7 @@
       "type": "bool",
       "defaultValue": false
     },
-    "SharedAppServicePlanName": {
+    "SharedFrontendAppServicePlanName": {
       "type": "string"
     },
     "SharedAppServicePlanResourceGroup": {
@@ -250,6 +242,17 @@
     },
     "containerArray": {
       "type": "array"
+    },
+    "sharedKeyvaultName": {
+      "type": "string"
+    },
+    "sharedKeyvaultResourceGroup": {
+      "type": "string"
+    },
+    "appServiceAllowedIps": {
+      "type": "array",
+      "defaultValue": [
+      ]
     }
   },
   "variables": {
@@ -282,7 +285,8 @@
           }
         }
       },
-      "dependsOn": []
+      "dependsOn": [
+      ]
     },
     {
       "apiVersion": "2017-05-10",
@@ -303,7 +307,8 @@
           }
         }
       },
-      "dependsOn": []
+      "dependsOn": [
+      ]
     },
     {
       "apiVersion": "2017-05-10",
@@ -324,7 +329,8 @@
           }
         }
       },
-      "dependsOn": []
+      "dependsOn": [
+      ]
     },
     {
       "apiVersion": "2017-05-10",
@@ -351,7 +357,8 @@
           }
         }
       },
-      "dependsOn": []
+      "dependsOn": [
+      ]
     },
     {
       "apiVersion": "2017-05-10",
@@ -457,6 +464,34 @@
       }
     },
     {
+      "condition": "[greater(length(parameters('EmployerCustomHostname')), 0)]",
+      "apiVersion": "2017-05-10",
+      "name": "Employer-Recruit-AppService-Certificate",
+      "resourceGroup": "[parameters('sharedAppServicePlanResourceGroup')]",
+      "type": "Microsoft.Resources/deployments",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('deploymentUrlBase'),'app-service-certificate.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "keyVaultCertificateName": {
+            "value": "[parameters('EmployerKeyvaultCertificateName')]"
+          },
+          "keyVaultName": {
+            "value": "[parameters('sharedKeyvaultName')]"
+          },
+          "keyVaultResourceGroup": {
+            "value": "[parameters('sharedKeyvaultResourceGroup')]"
+          },
+          "serverFarmId": {
+            "value": "[resourceId(parameters('sharedAppServicePlanResourceGroup'), 'Microsoft.Web/serverfarms', parameters('sharedFrontendAppServicePlanName'))]"
+          }
+        }
+      }
+    },
+    {
       "apiVersion": "2017-05-10",
       "name": "Employer-Recruit-AppService",
       "type": "Microsoft.Resources/deployments",
@@ -471,7 +506,7 @@
             "value": "[variables('EmployerRecruitAppServiceName')]"
           },
           "appServicePlanName": {
-            "value": "[parameters('SharedAppServicePlanName')]"
+            "value": "[parameters('SharedFrontendAppServicePlanName')]"
           },
           "appServicePlanResourceGroup": {
             "value": "[parameters('SharedAppServicePlanResourceGroup')]"
@@ -537,11 +572,11 @@
               {
                 "name": "ExternalLinks:CommitmentsSiteUrl",
                 "value": "[parameters('ExternalLinks').CommitmentsSiteUrl]"
-              },	
-			        {
+              },
+              {
                 "name": "ExternalLinks:EmployerFavouritesUrl",
                 "value": "[parameters('ExternalLinks').EmployerFavouritesUrl]"
-              },			  
+              },
               {
                 "name": "Features:AllowLevyPayingEmployersOnly",
                 "value": "[parameters('Features').AllowLevyPayingEmployersOnly]"
@@ -605,14 +640,46 @@
             "value": "[parameters('EmployerCustomHostname')]"
           },
           "certificateThumbprint": {
-            "value": "[reference(resourceId(parameters('sharedAppServicePlanResourceGroup'), 'Microsoft.Web/certificates', parameters('EmployerKeyvaultCertificateName')), '2016-03-01').Thumbprint]"
+            "value": "[if(greater(length(parameters('EmployerCustomHostname')), 0), reference('Employer-Recruit-AppService-Certificate', '2018-11-01').outputs.certificateThumbprint.value, '')]"
+          },
+          "ipSecurityRestrictions": {
+            "value": "[parameters('appServiceAllowedIps')]"
           }
         }
       },
       "dependsOn": [
         "[variables('EmployerRecruitAppServiceName')]",
-        "[variables('CosmosDbName')]"
+        "[variables('CosmosDbName')]",
+        "Employer-Recruit-AppService-Certificate"
       ]
+    },
+    {
+      "condition": "[greater(length(parameters('QAAppCustomHostname')), 0)]",
+      "apiVersion": "2017-05-10",
+      "name": "QA-App-AppService-Certificate",
+      "resourceGroup": "[parameters('sharedAppServicePlanResourceGroup')]",
+      "type": "Microsoft.Resources/deployments",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('deploymentUrlBase'),'app-service-certificate.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "keyVaultCertificateName": {
+            "value": "[parameters('QAAppKeyvaultCertificateName')]"
+          },
+          "keyVaultName": {
+            "value": "[parameters('sharedKeyvaultName')]"
+          },
+          "keyVaultResourceGroup": {
+            "value": "[parameters('sharedKeyvaultResourceGroup')]"
+          },
+          "serverFarmId": {
+            "value": "[resourceId(parameters('sharedAppServicePlanResourceGroup'), 'Microsoft.Web/serverfarms', parameters('sharedFrontendAppServicePlanName'))]"
+          }
+        }
+      }
     },
     {
       "apiVersion": "2017-05-10",
@@ -629,7 +696,7 @@
             "value": "[variables('QAAppServiceName')]"
           },
           "appServicePlanName": {
-            "value": "[parameters('SharedAppServicePlanName')]"
+            "value": "[parameters('SharedFrontendAppServicePlanName')]"
           },
           "appServicePlanResourceGroup": {
             "value": "[parameters('SharedAppServicePlanResourceGroup')]"
@@ -744,13 +811,45 @@
             "value": "[parameters('QAAppCustomHostname')]"
           },
           "certificateThumbprint": {
-            "value": "[reference(resourceId(parameters('sharedAppServicePlanResourceGroup'), 'Microsoft.Web/certificates', parameters('QAAppKeyvaultCertificateName')), '2016-03-01').Thumbprint]"
+            "value": "[if(greater(length(parameters('EmployerCustomHostname')), 0), reference('QA-App-AppService-Certificate', '2018-11-01').outputs.certificateThumbprint.value, '')]"
+          },
+          "ipSecurityRestrictions": {
+            "value": "[parameters('appServiceAllowedIps')]"
           }
         }
       },
       "dependsOn": [
-        "[variables('QAAppServiceName')]"
+        "[variables('QAAppServiceName')]",
+        "QA-App-AppService-Certificate"
       ]
+    },
+    {
+      "condition": "[greater(length(parameters('ProviderKeyvaultCertificateName')), 0)]",
+      "apiVersion": "2017-05-10",
+      "name": "Provider-Recruit-AppService-Certificate",
+      "resourceGroup": "[parameters('sharedAppServicePlanResourceGroup')]",
+      "type": "Microsoft.Resources/deployments",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('deploymentUrlBase'),'app-service-certificate.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "keyVaultCertificateName": {
+            "value": "[parameters('ProviderKeyvaultCertificateName')]"
+          },
+          "keyVaultName": {
+            "value": "[parameters('sharedKeyvaultName')]"
+          },
+          "keyVaultResourceGroup": {
+            "value": "[parameters('sharedKeyvaultResourceGroup')]"
+          },
+          "serverFarmId": {
+            "value": "[resourceId(parameters('sharedAppServicePlanResourceGroup'), 'Microsoft.Web/serverfarms', parameters('sharedFrontendAppServicePlanName'))]"
+          }
+        }
+      }
     },
     {
       "apiVersion": "2017-05-10",
@@ -767,7 +866,7 @@
             "value": "[variables('ProviderRecruitAppServiceName')]"
           },
           "appServicePlanName": {
-            "value": "[parameters('SharedAppServicePlanName')]"
+            "value": "[parameters('SharedFrontendAppServicePlanName')]"
           },
           "appServicePlanResourceGroup": {
             "value": "[parameters('SharedAppServicePlanResourceGroup')]"
@@ -925,12 +1024,16 @@
             "value": "[parameters('ProviderCustomHostname')]"
           },
           "certificateThumbprint": {
-            "value": "[reference(resourceId(parameters('sharedAppServicePlanResourceGroup'), 'Microsoft.Web/certificates', parameters('ProviderKeyvaultCertificateName')), '2016-03-01').Thumbprint]"
+            "value": "[if(greater(length(parameters('EmployerCustomHostname')), 0), reference('Provider-Recruit-AppService-Certificate', '2018-11-01').outputs.certificateThumbprint.value, '')]"
+          },
+          "ipSecurityRestrictions": {
+            "value": "[parameters('appServiceAllowedIps')]"
           }
         }
       },
       "dependsOn": [
-        "[variables('CosmosDbName')]"
+        "[variables('CosmosDbName')]",
+        "Provider-Recruit-AppService-Certificate"
       ]
     },
     {
@@ -968,12 +1071,6 @@
           },
           "aspLocation": {
             "value": "[parameters('webJobAspLocation')]"
-          },
-          "aseHostingEnvironmentName": {
-            "value": "[parameters('aseHostingEnvironmentName')]"
-          },
-          "aseResourceGroup": {
-            "value": "[parameters('aseResourceGroup')]"
           },
           "aspSize": {
             "value": "[parameters('webJobAspSize')]"
