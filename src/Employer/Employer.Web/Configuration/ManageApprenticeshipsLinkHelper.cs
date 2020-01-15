@@ -28,6 +28,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
         public string Teams => $"{_externalLinks.ManageApprenticeshipSiteUrl}{_maRoutes.ManageApprenticeshipSiteAccountsTeamsViewRoute}";
         public string Agreements => $"{_externalLinks.ManageApprenticeshipSiteUrl}{_maRoutes.ManageApprenticeshipSiteAccountsAgreementsRoute}";
         public string Schemes => $"{_externalLinks.ManageApprenticeshipSiteUrl}{_maRoutes.ManageApprenticeshipSiteAccountsSchemesRoute}";
+        public string CookieConsent => $"{_externalLinks.EmployerAccountsUrl}{_maRoutes.ManageApprenticeshipSiteCookieConsentRoute}";
         public string EmployerFavouritesHome => _externalLinks.EmployerFavouritesUrl;
         public string EmployerFavouritesTrainingProviders => $"{_externalLinks.EmployerFavouritesUrl}{_maRoutes.EmployerFavouritesSiteTrainingProvidersRoute}";
         public string EmployerFavouritesApprenticeshipList => $"{_externalLinks.EmployerFavouritesUrl}{_maRoutes.EmployerFavouritesSiteApprenticeshipListRoute}";

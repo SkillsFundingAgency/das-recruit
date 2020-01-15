@@ -10,5 +10,6 @@ namespace Esfa.Recruit.Employer.Web.Configuration
         public string CommitmentsSiteUrl { get; set; }
         public string NationalMinimumWageRates { get; set; }
         public string EmployerFavouritesUrl { get; set; }  
+        public string EmployerAccountsUrl { get; set; }
     }
 }
