@@ -32,6 +32,7 @@
         public const string Dashboard_AccountsAgreements = "Dashboard_AccountsAgreements";
         public const string Dashboard_AccountsSchemes = "Dashboard_AccountsSchemes";
         public const string Dashboard_Account_Home = "Dashboard_Account_Home";
+        public const string Dashboard_Account_CookieConsent = "Dashboard_Account_CookieConsent";
 
         public const string DismissCloningMethodChangingMessage_Post = "DismissCloningMethodChangingMessage_Post";
         public const string DismissOutageMessage_Post = "DismissOutageMessage_Post";
