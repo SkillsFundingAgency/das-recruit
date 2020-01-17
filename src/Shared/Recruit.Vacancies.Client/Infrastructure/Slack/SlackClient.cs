@@ -2,6 +2,7 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Exceptions;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -12,6 +13,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Slack
     {
         private readonly string _webhookUrl;
         private readonly HttpClient _httpClient;
+        private readonly ILogger<SlackClient> _logger;
 
         private readonly JsonSerializerSettings _jsonSerializerSettings = new JsonSerializerSettings
         {
@@ -19,12 +21,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Slack
             NullValueHandling = NullValueHandling.Ignore
         };
 
-        public SlackClient(IHttpClientFactory clientFactory, IOptions<SlackConfiguration> slackConfig)
+        public SlackClient(IHttpClientFactory clientFactory, IOptions<SlackConfiguration> slackConfig, ILogger<SlackClient> logger)
         {
             _httpClient = clientFactory.CreateClient();
             _httpClient.Timeout = new TimeSpan(0, 0, 30);
 
             _webhookUrl = slackConfig.Value.WebHookUrl;
+            _logger = logger;
         }
 
         public async Task PostAsync(SlackMessage message, SlackVacancyNotificationType emoji)
@@ -41,7 +44,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Slack
                 var success = content.Equals("ok", StringComparison.OrdinalIgnoreCase);
 
                 if (!success)
-                    throw new NotificationException($"Failed to send notification to Slack with url: {_webhookUrl}");
+                    _logger.LogWarning($"Failed to send notification to Slack with url: {_webhookUrl}");
             }
         }
 
