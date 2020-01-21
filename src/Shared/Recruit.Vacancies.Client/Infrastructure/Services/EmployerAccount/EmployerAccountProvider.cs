@@ -84,21 +84,5 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
                 throw;
             }
         }
-
-        public async Task<EmployerAccountDetails> GetEmployerAccountDetailsAsync(string employerAccountId)
-        {
-            try
-            {
-                var account = await _accountApiClient.GetAccount(employerAccountId);
-                return new EmployerAccountDetails(
-                    accountAgreementType: (AccountAgreementType)account.AccountAgreementType,
-                    apprenticeshipEmployerType: account.ApprenticeshipEmployerType);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Failed to retrieve account information for account Id: {employerAccountId}");
-                throw;
-            }
-        }
     }
 }
