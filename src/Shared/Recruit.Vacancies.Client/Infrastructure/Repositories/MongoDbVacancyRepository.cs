@@ -196,8 +196,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         {
             var filter = Builders<Vacancy>.Filter.Eq(v => v.Id, vacancy.Id);
             var collection = GetCollection<Vacancy>();
-            await RetryPolicy.ExecuteAsync(_ =>
-                collection.ReplaceOneAsync(filter, vacancy),
+            await RetryPolicy.ExecuteAsync(async _ =>
+                await collection.ReplaceOneAsync(filter, vacancy),
                 new Context(nameof(UpdateAsync)));
         }
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Queues;
 using Esfa.Recruit.Vacancies.Client.Application.Queues.Messages;
@@ -40,15 +41,19 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
             var tasks = new List<Task>();
             var vacancyIds = await _vacancyQuery.GetAllVacancyIdsAsync();
             _logger.LogInformation($"Found {vacancyIds.Count()} vacancies for ALE Id migration");
+            var serialNumber = 0;
             foreach (var vacancyId in vacancyIds)
-                tasks.Add(SendVacancyALEIdMigrationMessage(vacancyId));
+            {
+                if(serialNumber % 40 == 0) await Task.Delay(TimeSpan.FromSeconds(5));
+                tasks.Add(SendVacancyALEIdMigrationMessage(++serialNumber, vacancyId));
+            }
             await Task.WhenAll(tasks);
         }
 
-        private Task SendVacancyALEIdMigrationMessage(Guid vacancyId)
+        private Task SendVacancyALEIdMigrationMessage(int serialNumber, Guid vacancyId)
         {
             _logger.LogInformation($"Queueing up vacancy {vacancyId} for ALE Id migration");
-            var message = new DataMigrationQueueMessage {VacancyId = vacancyId};
+            var message = new DataMigrationQueueMessage(serialNumber, vacancyId);
             return _recruitQueueService.AddMessageAsync<DataMigrationQueueMessage>(message);
         }
     }
