@@ -86,9 +86,7 @@
         </form>
     </div>
 
-    <div class="app-cookie-banner js-cookie-banner">
-        <p class="govuk-width-container">GOV.UK uses cookies to make the site simpler. <a href="https://www.gov.uk/help/cookies">Find out more about cookies</a></p>
-    </div>
+    @Html.Partial("_CookieBanner")
 
     <header class="govuk-header " role="banner" data-module="header">
         <div class="govuk-header__container govuk-width-container">
@@ -216,6 +214,7 @@
     <script src="/lib/govuk-frontend/dist/govuk-frontend-2.5.0.min.js"></script>
     <script src="/lib/esfa-stacker/stacker.js"></script>
     <script asp-append-version="true" src="/javascripts/application.js"></script>
+    <script asp-append-version="true" src="/javascripts/cookiebanner.js"></script>
     @await RenderSectionAsync(RazorSections.FooterJS, required: false)
 </body>
 </html>

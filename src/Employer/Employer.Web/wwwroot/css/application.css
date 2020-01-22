@@ -953,3 +953,390 @@ a[rel="external"]:hover:after {
 }
 
 /*** end of search ***/
+/*cookie banner*/
+
+#global-cookie-message {
+    background: none;
+    padding: 0;
+}
+
+    #global-cookie-message p {
+        margin: 0 0 5px;
+        font-size: 16px;
+    }
+
+@media (min-width: 40.0625em) {
+    #global-cookie-message p {
+        font-size: 19px;
+    }
+}
+
+.govuk-button {
+    font-family: "nta", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.1875;
+    box-sizing: border-box;
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    margin-top: 0;
+    margin-bottom: 22px;
+    padding: 7px 10px;
+    border: 2px solid transparent;
+    border-radius: 0;
+    color: #ffffff;
+    background-color: #00823b;
+    box-shadow: 0 2px 0 #003418;
+    text-align: center;
+    vertical-align: top;
+    cursor: pointer;
+    -webkit-appearance: none;
+}
+
+@media print {
+    .govuk-button {
+        font-family: sans-serif;
+    }
+}
+
+@media (min-width: 40.0625em) {
+    .govuk-button {
+        font-size: 19px;
+        line-height: 1;
+    }
+}
+
+@media print {
+    .govuk-button {
+        font-size: 14pt;
+        line-height: 19px;
+    }
+}
+
+.govuk-button:focus {
+    outline: 3px solid #ffbf47;
+    outline-offset: 0;
+}
+
+@media (min-width: 40.0625em) {
+    .govuk-button {
+        margin-bottom: 32px;
+    }
+}
+
+@media (min-width: 40.0625em) {
+    .govuk-button {
+        width: auto;
+    }
+}
+
+.govuk-button:link, .govuk-button:visited, .govuk-button:active, .govuk-button:hover {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.govuk-button::-moz-focus-inner {
+    padding: 0;
+    border: 0;
+}
+
+.govuk-button:hover, .govuk-button:focus {
+    background-color: #00682f;
+}
+
+.govuk-button:active {
+    top: 2px;
+    box-shadow: none;
+}
+
+.govuk-button::before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    bottom: -4px;
+    left: -2px;
+    background: transparent;
+}
+
+.govuk-button:active::before {
+    top: -4px;
+}
+
+.govuk-width-container {
+    max-width: 960px;
+    margin: 0 15px;
+}
+
+@media (min-width: 40.0625em) {
+    .govuk-width-container {
+        margin: 0 30px;
+    }
+}
+
+@media (min-width: 1020px) {
+    .govuk-width-container {
+        margin: 0 auto;
+    }
+}
+
+.das-button--outline {
+    border-color: #00823b;
+    color: #00823b;
+    background-color: #fff;
+    box-shadow: 0 2px 0 #00823b;
+}
+
+    .das-button--outline, .das-button--outline:link, .das-button--outline:visited, .das-button--outline:active, .das-button--outline:hover {
+        color: #00823b;
+    }
+
+        .das-button--outline:hover, .das-button--outline:focus {
+            background: #f8f8f8;
+            color: #00823b;
+        }
+
+.js-enabled #global-cookie-message {
+    display: none;
+}
+
+.das-cookie-banner {
+    font-family: "nta", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-size: 14px;
+    font-size: 0.875rem;
+    line-height: 1.14286;
+    background-color: #fff;
+    border: 2px solid #0b0c0c;
+    padding: 15px 0;
+    box-sizing: border-box;
+    width: 100%;
+    position: relative;
+    z-index: 2;
+}
+
+@media print {
+    .das-cookie-banner {
+        font-family: sans-serif;
+    }
+}
+
+@media (min-width: 40.0625em) {
+    .das-cookie-banner {
+        font-size: 16px;
+        font-size: 1rem;
+        line-height: 1.25;
+    }
+}
+
+@media print {
+    .das-cookie-banner {
+        font-size: 14pt;
+        line-height: 1.2;
+    }
+}
+
+.das-cookie-banner__header {
+    color: #00823b;
+    margin-bottom: .3em;
+    display: none;
+}
+
+.das-cookie-banner__message {
+    display: inline-block;
+    margin-top: 0;
+    margin-bottom: 5px;
+    padding-right: 20px;
+    padding-bottom: 10px;
+    color: #00823b;
+}
+
+@media (min-width: 48.0625em) {
+    .das-cookie-banner__message {
+        margin: 0;
+    }
+}
+
+.das-cookie-banner__buttons:after {
+    content: "";
+    display: block;
+    clear: both;
+}
+
+@media (min-width: 20em) {
+    .das-cookie-banner__buttons {
+        margin: 0 -5px;
+    }
+}
+
+@media (min-width: 48.0625em) {
+    .das-cookie-banner__buttons {
+        display: inline-block;
+        padding-top: 5px;
+    }
+}
+
+.das-cookie-banner__button-wrap {
+    margin-bottom: 5px;
+    vertical-align: top;
+}
+
+@media (min-width: 20em) {
+    .das-cookie-banner__button-wrap {
+        width: 50%;
+        float: left;
+        padding: 0 5px;
+        box-sizing: border-box;
+    }
+}
+
+@media (min-width: 48.0625em) {
+    .das-cookie-banner__button-wrap {
+        float: none;
+        width: auto;
+        display: inline-block;
+        vertical-align: baseline;
+    }
+}
+
+.das-cookie-banner__button {
+    margin: 0;
+    width: 100%;
+}
+
+@media (min-width: 48.0625em) {
+    .das-cookie-banner__button {
+        vertical-align: baseline;
+    }
+}
+
+.das-cookie-banner__confirmation {
+    display: none;
+}
+
+.das-cookie-banner__hide-button {
+    font-family: "nta", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-size: 16px;
+    line-height: 1.25;
+    outline: 0;
+    border: 0;
+    background: none;
+    text-decoration: underline;
+    color: #005ea5;
+    padding: 0;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+@media print {
+    .das-cookie-banner__hide-button {
+        font-family: sans-serif;
+    }
+}
+
+@media (min-width: 40.0625em) {
+    .das-cookie-banner__hide-button {
+        font-size: 19px;
+        font-size: 1.1875rem;
+        line-height: 1.31579;
+    }
+}
+
+@media print {
+    .das-cookie-banner__hide-button {
+        font-size: 14pt;
+        line-height: 1.15;
+    }
+}
+
+.das-cookie-banner__hide-button:hover {
+    color: #2b8cc4;
+}
+
+.das-cookie-banner__hide-button:focus {
+    color: #0b0c0c;
+    background: #ffbf47;
+    outline: 3px solid #ffbf47;
+}
+
+@media (min-width: 48.0625em) {
+    .das-cookie-banner__hide-button {
+        position: absolute;
+        right: 5px;
+        top: 5px;
+        margin: 0;
+    }
+}
+
+/* Modal variation */
+#global-cookie-message.global-cookie-message--modal {
+    z-index: 10;
+}
+
+@media (min-width: 48.0625em) {
+    #global-cookie-message.global-cookie-message--modal {
+        position: fixed;
+        width: 40%;
+        left: 30%;
+        top: 50%;
+        margin-top: -150px;
+    }
+
+    .global-cookie-message--modal .das-cookie-banner {
+        padding: 30px 0;
+    }
+
+    .global-cookie-message--modal .das-cookie-banner__button-wrap {
+        width: 100%;
+    }
+}
+
+@media (min-width: 63.75em) {
+    .global-cookie-message--modal .das-cookie-banner {
+        padding: 30px;
+    }
+
+    .global-cookie-message--modal .das-cookie-banner__button-wrap {
+        width: auto;
+    }
+}
+
+.global-cookie-message--modal:before {
+    content: '';
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    background: rgba(0, 0, 0, 0.4);
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+}
+
+.global-cookie-message--modal .das-cookie-banner__header {
+    display: block;
+    margin-top: 0;
+}
+
+.global-cookie-message--modal .das-cookie-banner__hide-button {
+    position: relative;
+    top: auto;
+    left: auto;
+    margin-top: 15px;
+}
+
+.das-cookie-settings__confirmation {
+    display: none;
+}
+
+.js-enabled .das-cookie-settings__no-js {
+    display: none;
+}
