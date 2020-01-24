@@ -1,4 +1,6 @@
-﻿@inject ManageApprenticeshipsLinkHelper ExternalLinks
+﻿@using Microsoft.Extensions.Options
+@inject IOptions<ExternalLinksConfiguration> CookieExternalLinks
+
 <div id="global-cookie-message" data-module="cookie-banner" role="region" aria-label="cookie banner">
     <div class="das-cookie-banner">
         <div class="das-cookie-banner__wrapper govuk-width-container">
@@ -9,13 +11,13 @@
                     <button class="govuk-button das-button--outline das-cookie-banner__button" type="submit" data-accept-cookies="true" id="btn-cookie-accept">Accept cookies</button>
                 </div>
                 <div class="das-cookie-banner__button-wrap das-cookie-banner__button-settings">
-                    <a class="govuk-button das-button--outline das-cookie-banner__button" role="button" href="@ExternalLinks.CookieConsentWithHashedAccount" id="btn-cookie-settings">Cookie settings</a>
+                    <a class="govuk-button das-button--outline das-cookie-banner__button" role="button" href="@Url.ExternalUrlAction(CookieExternalLinks.Value.ManageApprenticeshipSiteUrl, "cookieConsent")" id="btn-cookie-settings">Cookie settings</a>
                 </div>
             </div>
         </div>
         <div class="das-cookie-banner__confirmation govuk-width-container" tabindex="-1">
             <p class="das-cookie-banner__confirmation-message">
-                You've accepted all cookies. You can <a class="govuk-link" href="@ExternalLinks.CookieConsentWithHashedAccount" id="link-cookie-settings">change your cookie settings</a> at any time.
+                You've accepted all cookies. You can <a class="govuk-link" href="@Url.ExternalUrlAction(CookieExternalLinks.Value.ManageApprenticeshipSiteUrl, "cookieConsent")" id="link-cookie-settings">change your cookie settings</a> at any time.
             </p>
             <button class="das-cookie-banner__hide-button" data-hide-cookie-banner="true" id="btn-hide-cookie-banner">Hide</button>
         </div>
