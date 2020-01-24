@@ -1,7 +1,5 @@
 ﻿@using Esfa.Recruit.Shared.Web.Configuration
-@using Microsoft.Extensions.Options
 @inject ManageApprenticeshipsLinkHelper ExternalLinks
-@inject IOptions<ExternalLinksConfiguration> CookieExternalLinks
 
 @functions
 {
@@ -191,8 +189,8 @@
                         <li class="govuk-footer__inline-list-item">
                             <a class="govuk-footer__link" href="@ExternalLinks.Privacy">Privacy</a>
                         </li>
-                        <li class="govuk-footer__inline-list-item">
-                            <a class="govuk-footer__link" href="@Url.ExternalUrlAction(CookieExternalLinks.Value.ManageApprenticeshipSiteUrl, "cookieConsent")">Cookies</a>
+                        <li class="govuk-footer__inline-list-item">                            
+                            <a class="govuk-footer__link" asp-route="@RouteNames.Dashboard_Account_CookieConsent">Cookies</a>
                         </li>
                         <li class="govuk-footer__inline-list-item">
                             Built by the <a href="http://gov.uk/sfa" target="_blank" class="govuk-footer__link">Education and Skills Funding Agency</a>

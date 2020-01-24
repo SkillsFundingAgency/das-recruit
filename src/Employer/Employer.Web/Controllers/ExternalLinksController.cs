@@ -86,7 +86,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         [HttpGet(RoutePaths.AccountRoutePath + "/cookieConsent", Name = RouteNames.Dashboard_Account_CookieConsent)]
         public IActionResult AccountsCookieConsent(string employerAccountId)
         {
-            var url = string.IsNullOrEmpty(employerAccountId) ? string.Format(_linkHelper.CookieConsentWithHashedAccount, employerAccountId) : string.Format(_linkHelper.CookieConsent, employerAccountId);
+            var url = !string.IsNullOrEmpty(employerAccountId) ? string.Format(_linkHelper.CookieConsentWithHashedAccount, employerAccountId) : _linkHelper.CookieConsent;
             return Redirect(url);
         }
 
