@@ -92,11 +92,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                     return AccessDenied();
                 }
 
-                if (exception is BlockedEmployerException)
-                {
-                    return RedirectToRoute(RouteNames.BlockedEmployer_Get, new { EmployerAccountId = employerAccountId });
-                }
-
                 if(exception is ApplicationWithdrawnException withdrawnException)
                 {
                     return ApplicationWithdrawn(employerAccountId.ToString(), withdrawnException);
@@ -132,15 +127,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             });
 
             return View(ViewNames.ApplicationWithdrawn, returnLink);
-        }
-
-        // Blocked employer url required for analytics reasons
-        [HttpGet("error/blocked-employer/{employerAccountId}", Name = RouteNames.BlockedEmployer_Get)]
-        public IActionResult BlockedEmployer(string employerAccountId)
-        {
-            _logger.LogInformation($"Handling redirection of blocked employer: {employerAccountId}.");
-            Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-            return View(ViewNames.BlockedEmployer);
         }
 
         private void AddDashboardMessage(string message)

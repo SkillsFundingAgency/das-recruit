@@ -7,6 +7,11 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
 using Microsoft.Azure.WebJobs;
 using System.Linq;
 using Microsoft.Extensions.Logging;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using System;
+using SFA.DAS.EAS.Account.Api.Types;
+using Polly;
+using System.Collections.Generic;
 
 namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
 {
@@ -34,23 +39,78 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
 
         private async Task PerformVacancyALEIdMigration(DataMigrationQueueMessage message)
         {
-            var vacancy = await _vacancyRepository.GetVacancyAsync(message.VacancyId);
-            if (vacancy == null || vacancy.LegalEntityId == 0 || string.IsNullOrWhiteSpace(vacancy.AccountLegalEntityPublicHashedId) == false)
+            var vacancyId = message.VacancyId;
+
+            _logger.LogInformation($"{message.SerialNumber}: Carrying out ALEId migration on vacancy {vacancyId} ");
+            Vacancy vacancy;
+            try
             {
-                _logger.LogWarning($"Bypassing vacancy {message.VacancyId}");
+                vacancy = await _vacancyRepository.GetVacancyAsync(vacancyId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"{message.SerialNumber}: Error fetching vacancy - Bypassing vacancy {vacancyId}");
                 return;
             }
-            var legalEntities = await _employerAccountProvider.GetLegalEntitiesConnectedToAccountAsync(vacancy.EmployerAccountId);
-            var selectedLegalEntity = legalEntities.FirstOrDefault(l => l.LegalEntityId == vacancy.LegalEntityId);
+
+            if (vacancy == null)
+            {
+                _logger.LogWarning($"{message.SerialNumber}: Not found - Bypassing vacancy {vacancyId}");
+                return;
+            }
+
+            if (vacancy.LegalEntityId == 0) 
+            {
+                _logger.LogWarning($"{message.SerialNumber}: Missing legalEntity - Bypassing vacancy {vacancyId}");
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(vacancy.AccountLegalEntityPublicHashedId) == false)
+            {
+                _logger.LogWarning($"{message.SerialNumber}: Already updated - Bypassing vacancy {vacancyId}");
+                return;
+            }
+
+            LegalEntityViewModel selectedLegalEntity;
+            try
+            {
+                var retryPolicy = GetApiRetryPolicy();
+                var legalEntities = await retryPolicy.ExecuteAsync(context => 
+                    _employerAccountProvider.GetLegalEntitiesConnectedToAccountAsync(vacancy.EmployerAccountId), 
+                    new Dictionary<string, object>() {{ "apiCall", "employer details" }});
+                selectedLegalEntity = legalEntities.FirstOrDefault(l => l.LegalEntityId == vacancy.LegalEntityId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"{message.SerialNumber}: Error fetching legal entity details - Bypassing vacancy {vacancyId}");
+                throw;
+            }
+
             if (selectedLegalEntity == null)
             {
-                _logger.LogError($"Unable to find legal entity for vacancy {message.VacancyId}");
+                _logger.LogError($"Unable to find legal entity for vacancy {vacancyId}");
                 return;
             }
-            _logger.LogInformation($"Updating vacancy: {vacancy.Id} setting AccountLegalEntityPublicHashedId: {selectedLegalEntity.AccountLegalEntityPublicHashedId}");
+
+            _logger.LogInformation($"Updating vacancy: {vacancyId} setting AccountLegalEntityPublicHashedId: {selectedLegalEntity.AccountLegalEntityPublicHashedId}");
             vacancy.AccountLegalEntityPublicHashedId = selectedLegalEntity.AccountLegalEntityPublicHashedId;
             await _vacancyRepository.UpdateAsync(vacancy);
-            _logger.LogInformation($"Successfully updated vacancy: {vacancy.Id} with AccountLegalEntityPublicHashedId: {selectedLegalEntity.AccountLegalEntityPublicHashedId}");
+            _logger.LogInformation($"Successfully updated vacancy: {vacancyId} with AccountLegalEntityPublicHashedId: {selectedLegalEntity.AccountLegalEntityPublicHashedId}");
+        }
+
+        private Polly.Retry.RetryPolicy GetApiRetryPolicy()
+        {
+            return Policy
+                    .Handle<Exception>()
+                    .WaitAndRetryAsync(new[]
+                    {
+                        TimeSpan.FromSeconds(1),
+                        TimeSpan.FromSeconds(5),
+                        TimeSpan.FromSeconds(10),
+                        TimeSpan.FromSeconds(15)
+                    }, (exception, timeSpan, retryCount, context) => {
+                        _logger.LogWarning(exception, $"Error connecting to Apprenticeships Api for {context["apiCall"]}. Retrying in {timeSpan.Seconds} secs...attempt: {retryCount}");
+                    });
         }
     }
 }
