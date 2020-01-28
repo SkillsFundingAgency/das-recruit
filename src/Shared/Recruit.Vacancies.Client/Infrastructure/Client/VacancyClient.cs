@@ -435,15 +435,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _userRepository.GetAsync(userId);
         }
 
-        public Task SaveLevyDeclarationAsync(string userId, string employerAccountId)
-        {
-            return _messaging.SendCommandAsync(new SaveUserLevyDeclarationCommand
-            {
-                UserId = userId,
-                EmployerAccountId = employerAccountId
-            });
-        }
-
         public Task<VacancyAnalyticsSummary> GetVacancyAnalyticsSummaryAsync(long vacancyReference)
         {
             return _reader.GetVacancyAnalyticsSummaryAsync(vacancyReference);

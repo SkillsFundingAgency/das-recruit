@@ -12,7 +12,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public string Email { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime LastSignedInDate { get; set; }
-        public IList<string> AccountsDeclaredAsLevyPayers { get; set; } = new List<string>();
         public IList<string> EmployerAccountIds { get; set; } = new List<string>();
         public long? Ukprn { get; set; }
         public DateTime? TransferredVacanciesEmployerRevokedPermissionAlertDismissedOn { get; set; }
