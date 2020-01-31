@@ -32,7 +32,7 @@
                         <div id="wage-type-national-minimum-wage-panel" class="govuk-radios__conditional govuk-radios__conditional--hidden">
                             <div class="govuk-form-group">
                                 <p class="govuk-body">
-                                    <span class="govuk-hint">As of @Model.MinimumWageStartFrom, National Minimum Wage is set at an hourly rate from @Model.NationalMinimumWageLowerBoundHourly to @Model.NationalMinimumWageUpperBoundHourly depending on the candidate's age.<br><br>
+                                    <span class="govuk-hint">From @Model.MinimumWageStartFrom, the National Minimum Wage is between @Model.NationalMinimumWageLowerBoundHourly and @Model.NationalMinimumWageUpperBoundHourly an hour, depending on the candidate's age.<br><br>
                                         On the vacancy this will be displayed as a yearly figure of @Model.NationalMinimumWageYearly</span>
                                 </p>
                             </div>
@@ -46,8 +46,8 @@
                             <div class="govuk-form-group">
                                 <p class="govuk-body">
                                     <span class="govuk-hint">
-                                        As of @Model.MinimumWageStartFrom, National Minimum Wage for apprentices is set at an hourly rate of @Model.ApprenticeshipMinimumWageHourly.<br><br>
-                                        On the vacancy this will be displayed as a yearly figure of @Model.ApprenticeshipMinimumWageYearly
+                                        From @Model.MinimumWageStartFrom, National Minimum Wage for apprentices is @Model.ApprenticeshipMinimumWageHourly an hour.<br><br>
+                                        On the vacancy, this will be displayed as a yearly wage of @Model.ApprenticeshipMinimumWageYearly
                                     </span>
                                 </p>
                             </div>
@@ -65,8 +65,8 @@
                                         This must be more than the <a href="@externalLinks.Value.NationalMinimumWageRates" rel="noopener" target="_blank" class="govuk-link">National Minimum Wage for apprentices.</a>
                                     </p>
                                     <p class="govuk-body govuk-hint">
-                                        As of @Model.MinimumWageStartFrom, National Minimum Wage for apprentices is set at an hourly rate of @Model.ApprenticeshipMinimumWageHourly, Based on working hours of @Model.WeeklyHours hours per week, you will need to set a yearly figure of at least
-                                        <span class="govuk-!-font-weight-bold">@Model.ApprenticeshipMinimumWageYearly</span>
+                                        From @Model.MinimumWageStartFrom, the National Minimum Wage for apprentices is @Model.ApprenticeshipMinimumWageHourly an hour.<br> <br>                                        
+                                        Based on @Model.WeeklyHours hours a week, you'll need to pay a yearly wage of at least <span class="govuk-!-font-weight-bold">@Model.ApprenticeshipMinimumWageYearly</span>
                                     </p>
                                     <span esfa-validation-message-for="FixedWageYearlyAmount" class="govuk-error-message"></span>
                                     <input asp-for="FixedWageYearlyAmount" class="govuk-input govuk-!-width-one-quarter" type="text">
