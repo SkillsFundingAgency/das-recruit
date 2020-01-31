@@ -47,7 +47,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
 
                     var errorMessage = (vacancy.Status == VacancyStatus.Live) ?
                         $"National Minimum Wage is changing from {wagePeriod.ValidFrom:d MMM yyyy}. So the fixed wage you entered before will no longer be valid. Change the date to before {wagePeriod.ValidFrom:d MMM yyyy} or to change the wage, create a new vacancy." :
-                        $"Yearly wage must be at least {minimumYearlyWageForApprentices}";
+                        $"Wage must be equal to or above the National Minimum Wage for apprentices (effective from {wagePeriod.ValidFrom:d MMM yyyy})";
 
                     var failure = new ValidationFailure(string.Empty, errorMessage)
                     {
