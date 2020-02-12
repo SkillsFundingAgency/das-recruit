@@ -48,7 +48,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 WageType = vacancy.Wage?.WageType,
                 FixedWageYearlyAmount = vacancy.Wage?.FixedWageYearlyAmount?.AsMoney(),
                 WageAdditionalInformation = vacancy.Wage?.WageAdditionalInformation,
-                MinimumWageStartFrom = wagePeriod.ValidFrom.ToMonthNameYearString(),
+                MinimumWageStartFrom = wagePeriod.ValidFrom.ToDayMonthYearString(),
                 NationalMinimumWageLowerBoundHourly = wagePeriod.NationalMinimumWageLowerBound.ToString("C"),
                 NationalMinimumWageUpperBoundHourly = wagePeriod.NationalMinimumWageUpperBound.ToString("C"),
                 NationalMinimumWageYearly = GetMinimumWageYearlyText(SFA.DAS.VacancyServices.Wage.WageType.NationalMinimum, vacancy.Wage?.WeeklyHours, vacancy.StartDate.Value),
