@@ -1,5 +1,8 @@
 ﻿@using Microsoft.Extensions.Options
 @inject IOptions<ExternalLinksConfiguration> externalLinks
+@{ 
+    ViewBag.Vpv = "/page-part1-training-help";
+}
 
 <a asp-route="@RouteNames.Training_First_Time_Get" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
 

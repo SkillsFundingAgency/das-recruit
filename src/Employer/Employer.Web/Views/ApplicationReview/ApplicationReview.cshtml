@@ -1,7 +1,9 @@
 ﻿@using System.Net
 @using Esfa.Recruit.Vacancies.Client.Domain.Entities
 @model Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview.ApplicationReviewViewModel
-
+@{ 
+    ViewBag.Vpv = "/page-application-review";
+}
 <div class="govuk-grid-row"> 
     <div class="govuk-grid-column-two-thirds">
         <div asp-show="@Model.ShowDisabilityStatusAlert" class="info-summary govuk-!-margin-top-6" role="alert" tabindex="-1">

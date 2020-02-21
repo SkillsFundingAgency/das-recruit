@@ -1,4 +1,8 @@
 ﻿@model Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview.ApplicationStatusConfirmationViewModel
+
+@{ 
+    ViewBag.Vpv = "/page-application-status-confirmation";
+}
 <div class="govuk-grid-row">    
     <div class="govuk-grid-column-two-thirds">
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />        

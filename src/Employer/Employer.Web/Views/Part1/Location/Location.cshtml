@@ -2,6 +2,9 @@
 @using Esfa.Recruit.Shared.Web.Configuration
 @using Microsoft.Extensions.Options
 @inject IOptions<PostcodeAnywhereConfiguration> PcaConfig
+@{ 
+    ViewBag.Vpv = "/page-part1-location";
+}
 
 @model LocationViewModel;
 <div class="govuk-grid-row">

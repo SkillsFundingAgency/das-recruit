@@ -8,6 +8,9 @@
     <AssemblyName>Esfa.Recruit.Employer.Web</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Filters\GoogleAnalyticsFilter.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="FluentValidation.AspNetCore" Version="7.5.2" />
     <PackageReference Include="Humanizer.Core.uk" Version="2.7.9" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
