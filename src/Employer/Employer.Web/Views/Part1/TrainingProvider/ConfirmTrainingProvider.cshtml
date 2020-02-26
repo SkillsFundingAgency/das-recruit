@@ -1,5 +1,8 @@
 ﻿@using Esfa.Recruit.Shared.Web.Mappers
 @model Esfa.Recruit.Employer.Web.ViewModels.Part1.TrainingProvider.ConfirmTrainingProviderViewModel
+@{ 
+    ViewBag.Vpv = "/page-part1-confirm-training-provider";
+}
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.TrainingProvider_Select_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>

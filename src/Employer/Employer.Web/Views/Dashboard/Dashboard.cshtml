@@ -9,6 +9,7 @@
         return count == 0 ? "das-card--inactive" : string.Empty;
     }
     ViewBag.ShowReturnToMaLink = Model.FromMaHome;
+    ViewBag.Vpv = "/page-dashboard";
 }
 
 <partial asp-hide="@Model.HasAnyVacancies" name="_NoVacanciesContent" />

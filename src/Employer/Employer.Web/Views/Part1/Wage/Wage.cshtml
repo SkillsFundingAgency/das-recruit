@@ -3,6 +3,9 @@
 @using Microsoft.Extensions.Options
 @model Esfa.Recruit.Employer.Web.ViewModels.Part1.Wage.WageViewModel
 @inject IOptions<ExternalLinksConfiguration> externalLinks
+@{ 
+    ViewBag.Vpv = "/page-part1-wage";
+}
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">

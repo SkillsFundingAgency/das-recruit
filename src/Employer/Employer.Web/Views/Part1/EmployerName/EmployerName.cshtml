@@ -1,6 +1,9 @@
 @using Esfa.Recruit.Employer.Web.ViewModels.Part1.EmployerName;
 @using Esfa.Recruit.Shared.Web.Mappers;
 @model EmployerNameViewModel;
+@{ 
+    ViewBag.Vpv = "/page-part1-employer-name";
+}
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <div asp-show="@Model.PageInfo.IsWizard">
