@@ -1,0 +1,38 @@
+﻿@using Microsoft.Extensions.Options
+@using  Esfa.Recruit.Employer.Web.Extensions
+
+@inject IOptions<ZendeskConfiguration> ZendeskConfig
+<script type="text/javascript">
+    window.zESettings = {
+        webWidget: {
+            contactForm: {
+                attachments: false
+            },
+            chat: {
+                menuOptions: {
+                    emailTranscript: false
+                }
+            },
+            helpCenter: {
+                filter: {
+                    section: @ZendeskConfig.Value.ZenDeskSectionId
+                }
+            }
+        }
+    };
+</script>
+
+<script id="ze-snippet" src="https://static.zdassets.com/ekr/snippet.js?key=@ZendeskConfig.Value.ZenDeskSnippetKey"></script>
+
+@Html.SetZenDeskLabels(!string.IsNullOrWhiteSpace(ViewBag?.ZenDeskLabel) ? new string[] { ViewBag.ZenDeskLabel } : new[] { $"recruit-{ViewBag.Title}" })
+
+<script type="text/javascript">
+    zE(function() {
+        zE.identify({
+            @*name: '@ViewBag.GaData.UserName',
+            email: '@ViewBag.GaData.UserEmail',
+            organization: '@ViewBag.GaData.Acc'*@
+        });
+    });
+</script>
+
