@@ -13,7 +13,7 @@ namespace Esfa.Recruit.Employer.Web.Extensions
                 .Select(label => $"'{EscapeApostrophes(label)}'"));
 
             // when there are no keywords default to empty string to prevent zen desk matching articles from the url
-            var apiCallString = "<script type=\"text/javascript\">zE('webWidget', 'helpCenter:setSuggestions', { labels: ["
+            var apiCallString = "<script nws-csp-add-nonce=\"true\" type=\"text/javascript\">zE('webWidget', 'helpCenter:setSuggestions', { labels: ["
                                 + (!string.IsNullOrEmpty(keywords) ? keywords : "''")
                                 + "] });</script>";
 

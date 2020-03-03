@@ -11,6 +11,7 @@ using System.Globalization;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Middleware;
 using Microsoft.ApplicationInsights.Extensibility;
+using Microsoft.IdentityModel.Logging;
 
 namespace Esfa.Recruit.Employer.Web
 {
@@ -43,8 +44,22 @@ namespace Esfa.Recruit.Employer.Web
 
                 app.UseHsts(hsts => hsts.MaxAge(365));
             }
-            
+
+            if (env.IsDevelopment())
+            {
+                IdentityModelEventSource.ShowPII = true;
+            }
             // Add Content Security Policy
+            app.Use(async (context, next) =>
+            {
+                context.Response.Headers["Content-Security-Policy"] =
+                    "default-src 'self' 'unsafe-inline' https://*.zdassets.com https://*.zendesk.com wss://*.zendesk.com wss://*.zopim.com; " +
+                    "img-src 'self' *.google-analytics.com https://*.zdassets.com https://*.zendesk.com wss://*.zendesk.com wss://*.zopim.com; " +
+                    "script-src 'self' 'unsafe-inline' " +
+                    "*.googletagmanager.com *.postcodeanywhere.co.uk *.google-analytics.com *.googleapis.com https://*.zdassets.com https://*.zendesk.com wss://*.zendesk.com wss://*.zopim.com; " +
+                    "font-src 'self' data:;";
+                await next();
+            });
             app.UseCsp(options => options
                 .DefaultSources(s => s.Self())
                 .StyleSources(s => 
@@ -53,7 +68,13 @@ namespace Esfa.Recruit.Employer.Web
                         .CustomSources("https://www.googletagmanager.com/",
                                         "https://www.tagmanager.google.com/",
                                         "https://tagmanager.google.com/",
-                                        "https://fonts.googleapis.com/");
+                                        "https://fonts.googleapis.com/",
+                                        "https://static.zdassets.com",
+                                        "https://esfa1567428279.zendesk.com",
+                                        "wss://esfa1567428279.zendesk.com",
+                                        "wss://widget-mediator.zopim.com",
+                                        "https://ekr.zdassets.com"
+                                        );
 
                         //Google tag manager uses inline styles when administering tags. This is done on PREPROD only
                         //TinyMCE uses inline styles
@@ -68,7 +89,10 @@ namespace Esfa.Recruit.Employer.Web
                                 "https://www.googletagmanager.com/",
                                 "https://www.tagmanager.google.com/",
                                 "https://tagmanager.google.com/",
-                                "https://services.postcodeanywhere.co.uk/");
+                                "https://services.postcodeanywhere.co.uk/",
+                                "https://static.zdassets.com",
+                                "https://widget-mediator.zopim.com",
+                                "https://ekr.zdassets.com");
 
                         //Google tag manager uses inline scripts when administering tags. This is done on PREPROD only
                         if (env.IsEnvironment(EnvironmentNames.PREPROD))
@@ -85,7 +109,10 @@ namespace Esfa.Recruit.Employer.Web
                 )
                 .ConnectSources(s => 
                     s.Self()
-                    .CustomSources("https://dc.services.visualstudio.com")
+                    .CustomSources(
+                        "https://esfa1567428279.zendesk.com",
+                        "https://ekr.zdassets.com",
+                       "https://dc.services.visualstudio.com")
                 )
                 .ImageSources(s => 
                     s.Self()
@@ -93,6 +120,8 @@ namespace Esfa.Recruit.Employer.Web
                                     "https://www.google-analytics.com", 
                                     "https://ssl.gstatic.com",
                                     "https://www.gstatic.com/",
+                                    "https://v2assets.zopim.io",
+                                    "https://static.zdassets.com",
                                     "data:")
                  )
                 .ReportUris(r => r.Uris("/ContentPolicyReport/Report")));
