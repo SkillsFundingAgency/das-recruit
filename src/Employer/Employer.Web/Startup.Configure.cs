@@ -92,7 +92,10 @@ namespace Esfa.Recruit.Employer.Web
                                 "https://services.postcodeanywhere.co.uk/",
                                 "https://static.zdassets.com",
                                 "https://widget-mediator.zopim.com",
-                                "https://ekr.zdassets.com");
+                                "https://ekr.zdassets.com",
+                                "https://esfa1567428279.zendesk.com",
+                                "wss://esfa1567428279.zendesk.com",
+                                "wss://widget-mediator.zopim.com");
 
                         //Google tag manager uses inline scripts when administering tags. This is done on PREPROD only
                         if (env.IsEnvironment(EnvironmentNames.PREPROD))
@@ -122,6 +125,10 @@ namespace Esfa.Recruit.Employer.Web
                                     "https://www.gstatic.com/",
                                     "https://v2assets.zopim.io",
                                     "https://static.zdassets.com",
+                                    "https://esfa1567428279.zendesk.com",
+                                    "https://ekr.zdassets.com",
+                                    "wss://esfa1567428279.zendesk.com",
+                                    "wss://widget-mediator.zopim.com",
                                     "data:")
                  )
                 .ReportUris(r => r.Uris("/ContentPolicyReport/Report")));
