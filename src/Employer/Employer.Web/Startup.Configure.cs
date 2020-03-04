@@ -73,7 +73,8 @@ namespace Esfa.Recruit.Employer.Web
                                         "https://esfa1567428279.zendesk.com",
                                         "wss://esfa1567428279.zendesk.com",
                                         "wss://widget-mediator.zopim.com",
-                                        "https://ekr.zdassets.com"
+                                        "https://ekr.zdassets.com",
+                                        "https://widget-mediator.zopim.com"
                                         );
 
                         //Google tag manager uses inline styles when administering tags. This is done on PREPROD only
