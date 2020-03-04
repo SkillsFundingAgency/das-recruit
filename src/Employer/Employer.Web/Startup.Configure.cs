@@ -30,7 +30,7 @@ namespace Esfa.Recruit.Employer.Web
             applicationLifetime.ApplicationStopped.Register(() => logger.LogInformation("Host fully stopped. All requests processed."));
 
             app.UseStatusCodePagesWithReExecute("/error/{0}");
-            
+
             if (env.IsDevelopment())
             {
                 var configuration = (TelemetryConfiguration)app.ApplicationServices.GetService(typeof(TelemetryConfiguration));
@@ -61,8 +61,20 @@ namespace Esfa.Recruit.Employer.Web
                 await next();
             });
             app.UseCsp(options => options
-                .DefaultSources(s => s.Self())
-                .StyleSources(s => 
+                .DefaultSources(s =>
+                {
+                    s.Self()
+                        .CustomSources("https://static.zdassets.com",
+                        "https://ekr.zdassets.com",
+                        "https://esfa1567428279.zendesk.com",
+                        "wss://esfa1567428279.zendesk.com",
+                        "wss://*.zopim.com",
+                        "https://*.zdassets.com",
+                        "https://*.zendesk.com",
+                        "wss://*.zendesk.com");
+                    //s.UnsafeInline();
+                })
+                .StyleSources(s =>
                     {
                         s.Self()
                         .CustomSources("https://www.googletagmanager.com/",
@@ -91,6 +103,10 @@ namespace Esfa.Recruit.Employer.Web
                                 "https://www.tagmanager.google.com/",
                                 "https://tagmanager.google.com/",
                                 "https://services.postcodeanywhere.co.uk/",
+                                "https://*.zdassets.com",
+                                "https://*.zendesk.com",
+                                "wss://*.zendesk.com",
+                                "wss://*.zopim.com",
                                 "https://static.zdassets.com",
                                 "https://widget-mediator.zopim.com",
                                 "https://ekr.zdassets.com",
@@ -106,22 +122,22 @@ namespace Esfa.Recruit.Employer.Web
                         }
                     }
                 )
-                .FontSources(s => 
+                .FontSources(s =>
                     s.Self()
                     .CustomSources("data:",
                                     "https://fonts.googleapis.com/")
                 )
-                .ConnectSources(s => 
+                .ConnectSources(s =>
                     s.Self()
                     .CustomSources(
                         "https://esfa1567428279.zendesk.com",
                         "https://ekr.zdassets.com",
                        "https://dc.services.visualstudio.com")
                 )
-                .ImageSources(s => 
+                .ImageSources(s =>
                     s.Self()
-                    .CustomSources("https://maps.googleapis.com", 
-                                    "https://www.google-analytics.com", 
+                    .CustomSources("https://maps.googleapis.com",
+                                    "https://www.google-analytics.com",
                                     "https://ssl.gstatic.com",
                                     "https://www.gstatic.com/",
                                     "https://v2assets.zopim.io",
@@ -148,11 +164,12 @@ namespace Esfa.Recruit.Employer.Web
 
             //Registered after static files, to set headers for dynamic content.
             app.UseXfo(xfo => xfo.Deny());
-            app.UseRedirectValidation(opts => {
+            app.UseRedirectValidation(opts =>
+            {
                 opts.AllowSameHostRedirectsToHttps();
                 opts.AllowedDestinations(GetAllowableDestinations(_authConfig, externalLinks.Value));
             }); //Register this earlier if there's middleware that might redirect.
-            
+
             // Redirect requests to root to the MA site.
             app.UseRootRedirect(externalLinks.Value.ManageApprenticeshipSiteUrl);
             app.UseHttpsRedirection();
@@ -168,13 +185,13 @@ namespace Esfa.Recruit.Employer.Web
         private static string[] GetAllowableDestinations(AuthenticationConfiguration authConfig, ExternalLinksConfiguration linksConfig)
         {
             var destinations = new List<string>();
-            
+
             if (!string.IsNullOrWhiteSpace(authConfig?.Authority))
                 destinations.Add(authConfig.Authority.Replace("identity", string.Empty));
-            
+
             if (!string.IsNullOrWhiteSpace(linksConfig?.ManageApprenticeshipSiteUrl))
                 destinations.Add(linksConfig?.ManageApprenticeshipSiteUrl);
-            
+
             if (!string.IsNullOrWhiteSpace(linksConfig?.CommitmentsSiteUrl))
                 destinations.Add(linksConfig?.CommitmentsSiteUrl);
 
