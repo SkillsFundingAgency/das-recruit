@@ -14,16 +14,16 @@ namespace Esfa.Recruit.Employer.Web.Extensions
         public static IHeaderViewModel GetHeaderViewModel(this IHtmlHelper html, bool hideMenu = false)
         {   
             var externalLinks = (html.ViewContext.HttpContext.RequestServices.GetService(typeof(IOptions<ExternalLinksConfiguration>)) as IOptions<ExternalLinksConfiguration>).Value;
-            var maRoutes = (html.ViewContext.HttpContext.RequestServices.GetService(typeof(IOptions<ManageApprenticeshipsRoutes>)) as IOptions<ManageApprenticeshipsRoutes>).Value;
             var authConfig = (html.ViewContext.HttpContext.RequestServices.GetService(typeof(IOptions<AuthenticationConfiguration>)) as IOptions<AuthenticationConfiguration>).Value;
             var requestRoot = html.ViewContext.HttpContext.Request.GetRequestUrlRoot();
             var requestPath = html.ViewContext.HttpContext.Request.Path;
+            var commitmentsSiteUrl = new Uri(externalLinks.CommitmentsSiteUrl);
 
             var headerModel = new HeaderViewModel(new HeaderConfiguration
             {
-                EmployerCommitmentsBaseUrl = externalLinks.CommitmentsSiteUrl,
+                EmployerCommitmentsBaseUrl = $"{commitmentsSiteUrl.Scheme}://{commitmentsSiteUrl.Host}/commitments",
                 EmployerFinanceBaseUrl = externalLinks.ManageApprenticeshipSiteUrl,
-                ManageApprenticeshipsBaseUrl = externalLinks.ManageApprenticeshipSiteUrl,
+                ManageApprenticeshipsBaseUrl = externalLinks.ManageApprenticeshipSiteUrl,                
                 AuthenticationAuthorityUrl = authConfig.Authority,
                 ClientId = authConfig.ClientId,
                 EmployerRecruitBaseUrl = requestRoot,
