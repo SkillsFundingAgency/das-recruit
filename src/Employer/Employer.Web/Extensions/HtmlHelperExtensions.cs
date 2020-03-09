@@ -22,7 +22,7 @@ namespace Esfa.Recruit.Employer.Web.Extensions
             var headerModel = new HeaderViewModel(new HeaderConfiguration
             {
                 EmployerCommitmentsBaseUrl = externalLinks.CommitmentsSiteUrl,
-                EmployerFinanceBaseUrl = $"{externalLinks.ManageApprenticeshipSiteUrl}{maRoutes.ManageApprenticeshipSiteAccountsFinanceRoute}",
+                EmployerFinanceBaseUrl = externalLinks.ManageApprenticeshipSiteUrl,
                 ManageApprenticeshipsBaseUrl = externalLinks.ManageApprenticeshipSiteUrl,
                 AuthenticationAuthorityUrl = authConfig.Authority,
                 ClientId = authConfig.ClientId,
