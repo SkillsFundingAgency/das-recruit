@@ -5,13 +5,17 @@
     var exampleStartingDate = exampleClosingDate.AddDays(14);
 }
 
+@{
+    ViewBag.GaData.Vpv = "/recruitment/provider/page-create-vacancy-important-dates";
+}
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Location_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
 
-        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }'/>
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
 
-        <partial name="@PartialNames.ReviewSummary" for="Review"/>
+        <partial name="@PartialNames.ReviewSummary" for="Review" />
 
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Important dates</h1>
 
@@ -28,19 +32,19 @@
                         <div class="govuk-date-input__item">
                             <div class="govuk-form-group">
                                 <label asp-for="ClosingDay" class="govuk-label govuk-date-input__label">Day</label>
-                                <input asp-for="ClosingDay" class="govuk-input govuk-date-input__input govuk-input--width-2" type="number" min="1" max="31" >
+                                <input asp-for="ClosingDay" class="govuk-input govuk-date-input__input govuk-input--width-2" type="number" min="1" max="31">
                             </div>
                         </div>
                         <div class="govuk-date-input__item">
                             <div class="govuk-form-group">
                                 <label asp-for="ClosingMonth" class="govuk-label govuk-date-input__label">Month</label>
-                                <input asp-for="ClosingMonth" class="govuk-input govuk-date-input__input govuk-input--width-2" type="number" min="1" max="12" >
+                                <input asp-for="ClosingMonth" class="govuk-input govuk-date-input__input govuk-input--width-2" type="number" min="1" max="12">
                             </div>
                         </div>
                         <div class="govuk-date-input__item">
                             <div class="govuk-form-group">
                                 <label asp-for="ClosingYear" class="govuk-label govuk-date-input__label">Year</label>
-                                <input asp-for="ClosingYear" class="govuk-input govuk-date-input__input govuk-input--width-4" type="number" min="@Model.CurrentYear" >
+                                <input asp-for="ClosingYear" class="govuk-input govuk-date-input__input govuk-input--width-4" type="number" min="@Model.CurrentYear">
                             </div>
                         </div>
                     </div>
@@ -89,7 +93,7 @@
                     <legend class="govuk-label govuk-!-font-weight-bold">Disability Confident (optional)</legend>
                     <div class="govuk-checkboxes">
                         <div class="govuk-checkboxes__item">
-                            <input asp-for="IsDisabilityConfident" class="govuk-checkboxes__input" type="checkbox" value="true" >
+                            <input asp-for="IsDisabilityConfident" class="govuk-checkboxes__input" type="checkbox" value="true">
                             <label asp-for="IsDisabilityConfident" class="govuk-label govuk-checkboxes__label">This vacancy is <a href="https://www.gov.uk/government/collections/disability-confident-campaign" class="govuk-link" rel="noopener" target="_blank" title="Disability Confident employer scheme and guidance (opens in a new window)">Disability Confident</a>.</label>
                         </div>
                     </div>

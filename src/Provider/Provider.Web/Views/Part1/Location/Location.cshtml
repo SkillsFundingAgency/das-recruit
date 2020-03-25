@@ -4,16 +4,20 @@
 @inject IOptions<PostcodeAnywhereConfiguration> PcaConfig
 @model LocationViewModel;
 
+@{
+    ViewBag.GaData.Vpv = "/recruitment/provider/page-create-vacancy-location";
+}
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <a asp-show="@Model.CanShowBackLink" asp-route="@RouteNames.EmployerName_Get" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
 
-        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }'/>
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
 
-        <partial name="@PartialNames.ReviewSummary" for="Review"/>
-        
+        <partial name="@PartialNames.ReviewSummary" for="Review" />
+
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Where will the apprentice work?</h1>
-        
+
         <div asp-show="@Model.IsAnonymousVacancy" class="govuk-inset-text">
             For anonymous vacancies we will not show the address on the vacancy. We will only show the first half of the postcode.
         </div>

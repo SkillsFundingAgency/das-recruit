@@ -1,6 +1,10 @@
 ﻿@using Esfa.Recruit.Shared.Web.Mappers
 @model Esfa.Recruit.Provider.Web.ViewModels.Part1.Training.ConfirmTrainingViewModel
 
+@{
+    ViewBag.GaData.Vpv = "/recruitment/provider/page-create-vacancy-confirm";
+}
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <a asp-route="@RouteNames.Training_Get" asp-route-programmeid="@Model.ProgrammeId" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>

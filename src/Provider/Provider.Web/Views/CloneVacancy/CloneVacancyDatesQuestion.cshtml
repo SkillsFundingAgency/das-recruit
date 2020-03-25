@@ -1,4 +1,9 @@
 @model Esfa.Recruit.Provider.Web.ViewModels.CloneVacancy.CloneVacancyDatesQuestionViewModel
+
+@{
+    ViewBag.GaData.Vpv = "/recruitment/provider/page-clone-vacancy-dates-question";
+}
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <partial name=@PartialNames.ValidationSummary model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
@@ -19,7 +24,7 @@
                     <span esfa-validation-message-for="HasConfirmedClone" class="govuk-error-message"></span>
                     <div class="govuk-radios govuk-radios--inline">
                         <div class="govuk-radios__item">
-                            <input asp-for="@Model.HasConfirmedClone" class="govuk-radios__input" id="change-dates-yes"  type="radio" value="true">
+                            <input asp-for="@Model.HasConfirmedClone" class="govuk-radios__input" id="change-dates-yes" type="radio" value="true">
                             <label class="govuk-label govuk-radios__label" for="change-dates-yes">
                                 Yes
                             </label>

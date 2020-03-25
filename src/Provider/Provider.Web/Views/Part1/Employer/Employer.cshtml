@@ -5,9 +5,13 @@
 
 @model EmployersViewModel
 
+@{
+    ViewBag.GaData.Vpv = "/recruitment/provider/page-employer";
+}
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }'/>
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
 
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Which of your employers do you want to create a vacancy for?</h1>
 
@@ -17,13 +21,13 @@
                 <fieldset class="govuk-fieldset">
                     <span esfa-validation-message-for="SelectedEmployerId" class="govuk-error-message"></span>
                     <div class="govuk-radios">
-                    @foreach (var employer in Model.Employers)
-                    {
-                        <div class="govuk-radios__item">
-                            <input asp-for="SelectedEmployerId" type="radio" value="@employer.Id" class="govuk-radios__input" id="emp-@employer.Id">
-                            <label for="emp-@employer.Id" class="govuk-label govuk-radios__label">@employer.Name</label>
-                        </div>
-                    }
+                        @foreach (var employer in Model.Employers)
+                        {
+                            <div class="govuk-radios__item">
+                                <input asp-for="SelectedEmployerId" type="radio" value="@employer.Id" class="govuk-radios__input" id="emp-@employer.Id">
+                                <label for="emp-@employer.Id" class="govuk-label govuk-radios__label">@employer.Name</label>
+                            </div>
+                        }
                     </div>
                 </fieldset>
             </div>

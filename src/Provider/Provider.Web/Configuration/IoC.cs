@@ -124,6 +124,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
         private static void RegisterFilterDeps(IServiceCollection services)
         {
             services.AddScoped<PlannedOutageResultFilter>();
+            services.AddScoped<GoogleAnalyticsFilter>();
         }
 
         private static void RegisterDynamicConfigurationDeps(IServiceCollection services)

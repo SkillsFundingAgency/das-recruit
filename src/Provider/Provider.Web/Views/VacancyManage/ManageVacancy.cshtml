@@ -1,4 +1,9 @@
 ﻿@model Esfa.Recruit.Provider.Web.ViewModels.VacancyManage.ManageVacancyViewModel
+
+@{ 
+    ViewBag.GaData.Vpv = "/recruitment/provider/page-manage-vacancy";
+}
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
         <div asp-show="@Model.CanShowApplicationReviewStatusHeader" class="info-summary govuk-!-margin-bottom-0">

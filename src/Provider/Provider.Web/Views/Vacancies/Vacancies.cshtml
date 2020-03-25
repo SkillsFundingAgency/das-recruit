@@ -1,6 +1,8 @@
 ﻿@using Esfa.Recruit.Vacancies.Client.Domain.Entities
 @model VacanciesViewModel
 @{
+    ViewBag.GaData.Vpv = "/recruitment/provider/page-vacancies";
+
     var vacanciesSearchSuggestionsEndpointUrl = @Url.RouteUrl(RouteNames.VacanciesSearchSuggestions_Get, null, Context.Request.Scheme);
     string GetLinkText(VacancySummaryViewModel vacancySummary)
     {
@@ -12,7 +14,7 @@
                 return "Edit and submit";
         }
         return "Manage";
-    }
+    }    
 }
 <partial name="@PartialNames.Alerts" for="Alerts" />
 

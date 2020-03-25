@@ -66,6 +66,7 @@
     <script src="@Url.Content("/lib/jquery/dist/jquery-3.3.1.min.js")"></script>
     <script src="@Url.Content("/lib/jquery-are-you-sure/jquery.are-you-sure.js")"></script>
     <environment exclude="@EnvironmentNames.GetTestEnvironmentNamesCommaDelimited()">
+        <partial name="@PartialNames.GoogleAnalyticsInfo" />
         <partial name="@PartialNames.GoogleTagManagerHead" />
     </environment>
     <script nws-csp-add-nonce="true">

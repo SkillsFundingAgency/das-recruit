@@ -2,6 +2,18 @@
 @using Microsoft.AspNetCore.Html
 @using Esfa.Recruit.Shared.Web.Mappers
 @model Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview.VacancyPreviewViewModel
+
+@{
+    if (Model.InfoMessage == InfoMessages.VacancyCloned)
+    {
+        ViewBag.GaData.Vpv = "/recruitment/provider/page-vacancy-successfully-cloned";
+    }
+    else
+    {
+        ViewBag.GaData.Vpv = "/recruitment/provider/page-create-vacancy-previewed";
+    }
+}
+
 @functions
 {
     const string EmptySectionClass = "preview-empty";
@@ -160,7 +172,7 @@
                 <p asp-show="@Model.HasWorkingWeekDescription" class="govuk-body">@Model.WorkingWeekDescription</p>
                 <span esfa-validation-message-for="HoursPerWeek" class="govuk-error-message"></span>
                 <p asp-show="@Model.HasHoursPerWeek" class="govuk-body">Total hours per week: @Model.HoursPerWeek</p>
-            
+
                 @EditLink(RouteNames.Duration_Get, Model.WorkingWeekSectionState, "working week", "link-working-week", new { wizard = false })
             </li>
             <li class="@GetSectionClass(Model.ExpectedDurationSectionState)">

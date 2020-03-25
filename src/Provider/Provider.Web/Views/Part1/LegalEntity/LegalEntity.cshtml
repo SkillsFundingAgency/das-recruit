@@ -1,12 +1,17 @@
 @using Esfa.Recruit.Shared.Web.Configuration;
 @model Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntity.LegalEntityViewModel;
+
+@{
+    ViewBag.GaData.Vpv = "/recruitment/provider/page-create-vacancy-which-organisation";
+}
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.NumberOfPositions_Get" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
 
-        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }'/>
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
 
-        <partial name="@PartialNames.ReviewSummary" for="Review"/>
+        <partial name="@PartialNames.ReviewSummary" for="Review" />
 
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Which organisation is this vacancy for?</h1>
 
@@ -42,13 +47,13 @@
                 <span asp-show="@Model.HasNoSearchResults" class="govuk-body">@Model.NoSearchResultsCaption</span>
                 <fieldset class="govuk-fieldset">
                     <div class="govuk-radios">
-                    @foreach (var organisation in Model.Organisations)
-                    {
-                        <div class="govuk-radios__item">
-                            <input asp-for="SelectedOrganisationId" type="radio" value="@organisation.Id" class="govuk-radios__input" id="org-@organisation.Id" esfa-automation="selected-organisation-id">
-                            <label for="org-@organisation.Id" class="govuk-label govuk-radios__label">@organisation.Name</label>
-                        </div>
-                    }
+                        @foreach (var organisation in Model.Organisations)
+                        {
+                            <div class="govuk-radios__item">
+                                <input asp-for="SelectedOrganisationId" type="radio" value="@organisation.Id" class="govuk-radios__input" id="org-@organisation.Id" esfa-automation="selected-organisation-id">
+                                <label for="org-@organisation.Id" class="govuk-label govuk-radios__label">@organisation.Name</label>
+                            </div>
+                        }
                         <input asp-show="@Model.CanOutputHiddenSelectedOrganisationIdField" type="hidden" asp-for="SelectedOrganisationId" />
                     </div>
                 </fieldset>
