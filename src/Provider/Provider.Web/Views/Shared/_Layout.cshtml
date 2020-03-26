@@ -73,6 +73,7 @@
         window.EsfaRecruit = {};
     </script>
     @RenderSection(RazorSections.HeadJS, required: false)
+    <partial name="@PartialNames.ZenDeskWidget" />
 </head>
 <body class="govuk-template__body">
     <environment exclude="@EnvironmentNames.GetTestEnvironmentNamesCommaDelimited()">

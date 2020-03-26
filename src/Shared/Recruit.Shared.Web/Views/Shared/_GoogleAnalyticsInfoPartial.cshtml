@@ -4,7 +4,7 @@
     var acc = ViewBag.GaData?.Acc != null ? ViewBag.GaData.Acc : null;
     var isAuthenticated = User.Identity.IsAuthenticated ? "True" : "False";
 }
-<script>
+<script nws-csp-add-nonce="true">
     window.dataLayer = window.dataLayer || [];
     dataLayer.push({
         'event': 'dataLoaded',

@@ -33,11 +33,9 @@ public string GetTitle()
     <!--[if !IE 8]><!-->
     <link href="/lib/govuk-frontend/dist/govuk-frontend-2.5.0.min.css" rel="stylesheet" />
     <!--<![endif]-->
-
     <!--[if IE 8]>
         <link href="/lib/govuk-frontend/dist/govuk-frontend-ie8-2.5.0.min.css" rel="stylesheet" />
     <![endif]-->
-
     <!--[if lt IE 9]>
         <script src="/lib/html5-shiv/html5shiv.js"></script>
     <![endif]-->
@@ -56,7 +54,7 @@ public string GetTitle()
         window.EsfaRecruit = {};
     </script>
     @RenderSection(RazorSections.HeadJS, required: false)
-
+    <partial name="@PartialNames.ZenDeskWidget" />
 </head>
 <body class="govuk-template__body">
     <environment exclude="@EnvironmentNames.GetTestEnvironmentNamesCommaDelimited()">
