@@ -65,7 +65,7 @@
 				"Tenant": ""
 			}
 		},
-		"ZenDeskConfiguration": {
+		"ZenDesk": {
 			"type": "object",
 			"defaultValue": {
 				"SnippetSectionId": "",
@@ -988,16 +988,16 @@
 								"value": "[parameters('ProviderRelationshipsApiConfiguration').Tenant]"
 							},
 							{
-								"name": "ZenDeskConfiguration:SnippetSectionId",
-								"value": "[parameters('ZenDeskConfiguration').SnippetSectionId]"
+								"name": "ZenDesk:SnippetSectionId",
+								"value": "[parameters('ZenDesk').SnippetSectionId]"
 							},
 							{
-								"name": "ZenDeskConfiguration:SnippetKey",
-								"value": "[parameters('ZenDeskConfiguration').SnippetKey]"
+								"name": "ZenDesk:SnippetKey",
+								"value": "[parameters('ZenDesk').SnippetKey]"
 							},
 							{
-								"name": "ZenDeskConfiguration:CobrowsingSnippetKey",
-								"value": "[parameters('ZenDeskConfiguration').CobrowsingSnippetKey]"
+								"name": "ZenDesk:CobrowsingSnippetKey",
+								"value": "[parameters('ZenDesk').CobrowsingSnippetKey]"
 							}
 						]
 					},
