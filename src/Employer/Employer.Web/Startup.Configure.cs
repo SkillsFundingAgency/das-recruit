@@ -49,79 +49,60 @@ namespace Esfa.Recruit.Employer.Web
             {
                 IdentityModelEventSource.ShowPII = true;
             }
-            // Add Content Security Policy
-            app.Use(async (context, next) =>
-            {
-                context.Response.Headers["Content-Security-Policy"] =
-                    "default-src 'self' 'unsafe-inline' https://*.zdassets.com https://*.zendesk.com wss://*.zendesk.com wss://*.zopim.com; " +
-                    "img-src 'self' *.google-analytics.com https://*.zdassets.com https://*.zendesk.com wss://*.zendesk.com wss://*.zopim.com; " +
-                    "script-src 'self' 'unsafe-inline' " +
-                    "*.googletagmanager.com *.postcodeanywhere.co.uk *.google-analytics.com *.googleapis.com https://*.zdassets.com https://*.zendesk.com wss://*.zendesk.com wss://*.zopim.com; " +
-                    "font-src 'self' data:;";
-                await next();
-            });
+            // Add Content Security Policy           
             app.UseCsp(options => options
                 .DefaultSources(s =>
                 {
                     s.Self()
-                        .CustomSources("https://static.zdassets.com",
-                        "https://ekr.zdassets.com",
-                        "https://esfa1567428279.zendesk.com",
-                        "wss://esfa1567428279.zendesk.com",
-                        "wss://*.zopim.com",
+                        .CustomSources(
                         "https://*.zdassets.com",
                         "https://*.zendesk.com",
-                        "wss://*.zendesk.com");
+                        "wss://*.zendesk.com",
+                        "wss://*.zopim.com",
+                        "https://embed-euw1.rcrsv.io/"
+                        );
                     //s.UnsafeInline();
                 })
                 .StyleSources(s =>
-                    {
-                        s.Self()
-                        .CustomSources("https://www.googletagmanager.com/",
-                                        "https://www.tagmanager.google.com/",
-                                        "https://tagmanager.google.com/",
-                                        "https://fonts.googleapis.com/",
-                                        "https://static.zdassets.com",
-                                        "https://esfa1567428279.zendesk.com",
-                                        "wss://esfa1567428279.zendesk.com",
-                                        "wss://widget-mediator.zopim.com",
-                                        "https://ekr.zdassets.com",
-                                        "https://widget-mediator.zopim.com"
-                                        );
+                {
+                    s.Self()
+                    .CustomSources("https://www.googletagmanager.com/",
+                                    "https://www.tagmanager.google.com/",
+                                    "https://tagmanager.google.com/",
+                                    "https://fonts.googleapis.com/",
+                                    "https://*.zdassets.com",
+                                    "https://*.zendesk.com",
+                                    "wss://*.zendesk.com",
+                                    "wss://*.zopim.com"
+                                    );
 
-                        //Google tag manager uses inline styles when administering tags. This is done on PREPROD only
-                        //TinyMCE uses inline styles
-                        s.UnsafeInline();
-                    }
+                    //Google tag manager uses inline styles when administering tags. This is done on PREPROD only
+                    //TinyMCE uses inline styles
+                    s.UnsafeInline();
+                }
                 )
                 .ScriptSources(s =>
-                    {
-                        s.Self()
-                            .CustomSources("https://az416426.vo.msecnd.net/scripts/a/ai.0.js",
-                                "https://www.google-analytics.com/analytics.js",
-                                "https://www.googletagmanager.com/",
-                                "https://www.tagmanager.google.com/",
-                                "https://tagmanager.google.com/",
-                                "https://services.postcodeanywhere.co.uk/",
-                                "https://*.zdassets.com",
-                                "https://*.zendesk.com",
-                                "wss://*.zendesk.com",
-                                "wss://*.zopim.com",
-                                "https://static.zdassets.com",
-                                "https://widget-mediator.zopim.com",
-                                "https://ekr.zdassets.com",
-                                "https://esfa1567428279.zendesk.com",
-                                "wss://esfa1567428279.zendesk.com",
-                                "wss://widget-mediator.zopim.com");
+                {
+                    s.Self()
+                        .CustomSources("https://az416426.vo.msecnd.net/scripts/a/ai.0.js",
+                                    "*.google-analytics.com",
+                                    "*.googleapis.com",
+                                    "*.googletagmanager.com/",
+                                    "*.postcodeanywhere.co.uk/",
+                                    "https://www.tagmanager.google.com/",
+                                    "https://*.zdassets.com",
+                                    "https://*.zendesk.com",
+                                    "wss://*.zendesk.com",
+                                    "wss://*.zopim.com",
+                                    "https://embed-euw1.rcrsv.io");
 
-                        //Google tag manager uses inline scripts when administering tags. This is done on PREPROD only
-                        if (env.IsEnvironment(EnvironmentNames.PREPROD))
-                        {
-                            s.UnsafeInline();
-                            s.UnsafeEval();
-                        }
+                    //Google tag manager uses inline scripts when administering tags. This is done on PREPROD only
+                    if (env.IsEnvironment(EnvironmentNames.PREPROD))
+                    {
+                        s.UnsafeInline();
+                        s.UnsafeEval();
                     }
-                )
+                })
                 .FontSources(s =>
                     s.Self()
                     .CustomSources("data:",
@@ -130,25 +111,29 @@ namespace Esfa.Recruit.Employer.Web
                 .ConnectSources(s =>
                     s.Self()
                     .CustomSources(
-                        "https://esfa1567428279.zendesk.com",
-                        "https://ekr.zdassets.com",
-                       "https://dc.services.visualstudio.com")
+                        "https://*.zendesk.com",
+                        "https://*.zdassets.com",
+                        "https://dc.services.visualstudio.com",
+                        "wss://*.zendesk.com",
+                        "wss://*.zopim.com",
+                        "https://embed-euw1.rcrsv.io")
                 )
                 .ImageSources(s =>
                     s.Self()
                     .CustomSources("https://maps.googleapis.com",
-                                    "https://www.google-analytics.com",
+                                    "*.google-analytics.com",
                                     "https://ssl.gstatic.com",
                                     "https://www.gstatic.com/",
-                                    "https://v2assets.zopim.io",
-                                    "https://static.zdassets.com",
-                                    "https://esfa1567428279.zendesk.com",
-                                    "https://ekr.zdassets.com",
-                                    "wss://esfa1567428279.zendesk.com",
-                                    "wss://widget-mediator.zopim.com",
+                                    "https://*.zopim.io",
+                                    "https://*.zdassets.com",
+                                    "https://*.zendesk.com",
+                                    "wss://*.zendesk.com",
+                                    "wss://*.zopim.com",
                                     "data:")
-                 )
+                )
                 .ReportUris(r => r.Uris("/ContentPolicyReport/Report")));
+
+
 
             //Registered before static files to always set header
             app.UseXContentTypeOptions();

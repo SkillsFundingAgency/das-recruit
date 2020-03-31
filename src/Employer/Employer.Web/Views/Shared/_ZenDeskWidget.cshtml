@@ -15,14 +15,14 @@
             },
             helpCenter: {
                 filter: {
-                    section: @ZendeskConfig.Value.ZenDeskSectionId
+                    section: @ZendeskConfig.Value.SectionId
                 }
             }
         }
     };
 </script>
 
-<script nws-csp-add-nonce="true" id="ze-snippet" src="https://static.zdassets.com/ekr/snippet.js?key=@ZendeskConfig.Value.ZenDeskSnippetKey"></script>
+<script nws-csp-add-nonce="true" id="ze-snippet" src="https://static.zdassets.com/ekr/snippet.js?key=@ZendeskConfig.Value.SnippetKey"></script>
 
 @Html.SetZenDeskLabels(!string.IsNullOrWhiteSpace(ViewBag?.ZenDeskLabel) ? new string[] { ViewBag.ZenDeskLabel } : new[] { $"recruit-{ViewBag.Title}" })
 

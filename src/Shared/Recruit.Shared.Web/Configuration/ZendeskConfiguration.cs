@@ -2,7 +2,7 @@
 {
     public sealed class ZendeskConfiguration
     {
-        public string ZenDeskSnippetKey { get; set; }
-        public string ZenDeskSectionId { get; set; }
+        public string SnippetKey { get; set; }
+        public string SectionId { get; set; }
     }
 }
