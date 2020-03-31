@@ -17,5 +17,7 @@ namespace Esfa.Recruit.Shared.Web.Views
         public const string ApplyThroughExternalApplicationSiteVacancyAnalytics = "_ApplyThroughExternalApplicationSiteVacancyAnalyticsSummaryPartial";
         public const string ApplyThroughFaaVacancyAnalytics = "_ApplyThroughFaaVacancyAnalyticsSummaryPartial";
         public const string ErrorListItem = "_ErrorListItemPartial";
+        public const string ZenDeskWidget = "_ZenDeskWidgetPartial";
+        public const string ZenDeskApi = "_ZenDeskApiPartial";
     }
 }
