@@ -1,8 +1,9 @@
 ﻿namespace Esfa.Recruit.Shared.Web.Configuration
 {
-    public sealed class ZendeskConfiguration
+    public class ZenDeskConfiguration
     {
         public string SnippetKey { get; set; }
         public string SectionId { get; set; }
+        public string CobrowsingSnippetKey { get; set; }
     }
 }

@@ -1,4 +1,6 @@
-﻿using Esfa.Recruit.Employer.Web.Extensions;
+﻿using System.Linq;
+using Esfa.Recruit.Employer.Web.Configuration.Routing;
+using Esfa.Recruit.Employer.Web.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
@@ -12,10 +14,11 @@ namespace Esfa.Recruit.Employer.Web.Filters
             if (controller != null)
             {
                 var user = controller.User.ToVacancyUser();
+                var accountIdFromUrl = controller.RouteData.Values[RouteValues.EmployerAccountId].ToString().ToUpper();
                 controller.ViewBag.GaData = new GaData
                 {
                     UserId = user.UserId,
-                    Acc = user.Ukprn.HasValue ? user.Ukprn.Value.ToString() : string.Empty
+                    Acc = accountIdFromUrl
                 };
             }
 
