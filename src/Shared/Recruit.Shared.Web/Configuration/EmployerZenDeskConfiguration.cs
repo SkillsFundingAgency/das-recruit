@@ -1,6 +1,6 @@
 ﻿namespace Esfa.Recruit.Shared.Web.Configuration
 {
-    public class ZenDeskConfiguration
+    public class EmployerZenDeskConfiguration
     {
         public string SnippetKey { get; set; }
         public string SectionId { get; set; }

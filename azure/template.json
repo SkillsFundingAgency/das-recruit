@@ -182,15 +182,15 @@
       "type": "string",
       "defaultValue": ""
     },
-	"ZendeskSnippetKey": {
+	"EmployerZendeskSnippetKey": {
       "type": "string",
       "defaultValue": ""
     },
-	"ZendeskSectionId": {
+	"EmployerZendeskSectionId": {
       "type": "string",
       "defaultValue": ""
     },
-	"ZendeskCobrowsingSnippetKey": {
+	"EmployerZendeskCobrowsingSnippetKey": {
       "type": "string",
       "defaultValue": ""
     },
@@ -929,16 +929,16 @@
                 "value": "[parameters('PostcodeAnywhereKey')]"
               },
 			  {
-                "name": "Zendesk:SnippetKey",
-                "value": "[parameters('ZendeskSnippetKey')]"
+                "name": "EmployerZendesk:SnippetKey",
+                "value": "[parameters('EmployerZendeskSnippetKey')]"
               },
 			  {
-                "name": "Zendesk:SectionId",
-                "value": "[parameters('ZendeskSectionId')]"
+                "name": "EmployerZendesk:SectionId",
+                "value": "[parameters('EmployerZendeskSectionId')]"
               },
 			  {
-                "name": "Zendesk:CobrowsingSnippetKey",
-                "value": "[parameters('ZendeskCobrowsingSnippetKey')]"
+                "name": "EmployerZendesk:CobrowsingSnippetKey",
+                "value": "[parameters('EmployerZendeskCobrowsingSnippetKey')]"
               },
               {
                 "name": "UseTableStorageQueryStore",
