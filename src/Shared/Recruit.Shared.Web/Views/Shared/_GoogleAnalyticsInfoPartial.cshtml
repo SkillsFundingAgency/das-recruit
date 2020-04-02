@@ -1,10 +1,16 @@
-﻿@using System.Web
-@using Microsoft.AspNetCore.Http
-
-<script>
+﻿@{ 
+    var vpv = ViewBag.GaData?.Vpv != null ? ViewBag.GaData.Vpv : ViewBag.Vpv;
+    var userId = ViewBag.GaData?.UserId != null ? ViewBag.GaData.UserId : null;
+    var acc = ViewBag.GaData?.Acc != null ? ViewBag.GaData.Acc : null;
+    var isAuthenticated = User.Identity.IsAuthenticated ? "True" : "False";
+}
+<script nws-csp-add-nonce="true">
     window.dataLayer = window.dataLayer || [];
     dataLayer.push({
-        'vpv': '@ViewBag.Vpv'
+        'event': 'dataLoaded',
+        'loggedIn': '@isAuthenticated',
+        'vpv': '@vpv',
+        'userID': '@userId',
+        'acc' : '@acc'
     });
-
 </script>

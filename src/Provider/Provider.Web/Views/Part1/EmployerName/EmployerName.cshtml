@@ -1,6 +1,11 @@
 @using Esfa.Recruit.Provider.Web.ViewModels.Part1.EmployerName;
 @using Esfa.Recruit.Shared.Web.Mappers;
 @model EmployerNameViewModel;
+
+@{
+    ViewBag.GaData.Vpv = "/recruitment/provider/page-create-vacancy-employer-name";
+}
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <div asp-show="@Model.PageInfo.IsWizard">
@@ -35,7 +40,7 @@
                         <div class="govuk-radios__item">
                             <input asp-for="SelectedEmployerIdentityOption" value="NewTradingName" data-aria-controls="trading-name-conditional" id="existing-trading-name" type="radio" class="govuk-radios__input">
                             <label for="existing-trading-name" class="govuk-label govuk-radios__label">
-                                    A<span asp-show="@Model.HasExistingTradingName"> different</span> trading name
+                                A<span asp-show="@Model.HasExistingTradingName"> different</span> trading name
                             </label>
                         </div>
                         <div class="govuk-radios__conditional" id="trading-name-conditional">

@@ -38,6 +38,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.Configure<GoogleAnalyticsConfiguration>(configuration.GetSection("GoogleAnalytics"));
             services.Configure<PostcodeAnywhereConfiguration>(configuration.GetSection("PostcodeAnywhere"));
             services.Configure<FaaConfiguration>(configuration.GetSection("FaaConfiguration"));
+            services.Configure<ZenDeskConfiguration>(configuration.GetSection("ZenDesk"));
             services.AddSingleton<ProviderApprenticeshipsLinkHelper>();
             services.AddFeatureToggle();
 
@@ -124,6 +125,8 @@ namespace Esfa.Recruit.Provider.Web.Configuration
         private static void RegisterFilterDeps(IServiceCollection services)
         {
             services.AddScoped<PlannedOutageResultFilter>();
+            services.AddScoped<GoogleAnalyticsFilter>();
+            services.AddScoped<ZendeskApiFilter>();
         }
 
         private static void RegisterDynamicConfigurationDeps(IServiceCollection services)

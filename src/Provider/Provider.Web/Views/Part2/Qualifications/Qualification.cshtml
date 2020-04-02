@@ -2,6 +2,11 @@
 @using Esfa.Recruit.Shared.Web.Mappers
 @using Esfa.Recruit.Vacancies.Client.Domain.Entities
 @model QualificationViewModel
+
+@{
+    ViewBag.GaData.Vpv = "/recruitment/provider/page-vacancy-applicant-qualifications";
+}
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
 
@@ -22,7 +27,7 @@
                     <option value="">Select from list</option>
                     @foreach (var qualificationType in Model.QualificationTypes)
                     {
-                        <option value="@qualificationType" selected="@(Model.QualificationType == @qualificationType)">@qualificationType</option>
+                    <option value="@qualificationType" selected="@(Model.QualificationType == @qualificationType)">@qualificationType</option>
                     }
                 </select>
             </div>

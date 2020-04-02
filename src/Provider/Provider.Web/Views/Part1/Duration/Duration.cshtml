@@ -1,14 +1,19 @@
 @using Esfa.Recruit.Shared.Web.Mappers
 @using Esfa.Recruit.Vacancies.Client.Domain.Entities
 @model Esfa.Recruit.Provider.Web.ViewModels.Part1.Duration.DurationViewModel
+
+@{
+    ViewBag.GaData.Vpv = "/recruitment/provider/page-create-vacancy-duration";
+}
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        
+
         <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dates_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
 
-        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }'/>
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
 
-        <partial name="@PartialNames.ReviewSummary" for="Review"/>
+        <partial name="@PartialNames.ReviewSummary" for="Review" />
 
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Duration and working hours</h1>
 
@@ -52,7 +57,7 @@
                 <input asp-for="WeeklyHours" class="govuk-input govuk-input--width-2" type="number" step=".25" min="16" max="48">
                 <span class="govuk-body">hours</span>
             </div>
-            
+
             <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">@Model.PageInfo.SubmitButtonText</button>
 
             <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link das-button-link">Cancel</a>

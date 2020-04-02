@@ -1,6 +1,10 @@
 @using Esfa.Recruit.Shared.Web.Mappers
 @model Esfa.Recruit.Provider.Web.ViewModels.Part1.Title.TitleViewModel
 
+@{
+    ViewBag.GaData.Vpv = "/recruitment/provider/page-create-vacancy";
+}
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <a asp-show="@Model.PageInfo.IsWizard" asp-route="@Model.BackLink" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>

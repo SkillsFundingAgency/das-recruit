@@ -9,6 +9,9 @@ namespace Esfa.Recruit.Shared.Web.Views
         public const string GoogleTagManagerHead = "_GoogleTagManagerHeadPartial";
         public const string GoogleAnalyticsInfo = "_GoogleAnalyticsInfoPartial";
         public const string GoogleTagManagerBody = "_GoogleTagManagerBodyPartial";
+        public const string ZenDeskWidget = "_ZenDeskWidgetPartial";
+        public const string ZenDeskApi = "_ZenDeskApiPartial";        
+
         public const string Pager = "_PagerPartial";
         public const string ValidationSummary = "_ValidationSummaryPartial";
         public const string ApplyThroughExternalApplicationSiteVacancyAnalytics = "_ApplyThroughExternalApplicationSiteVacancyAnalyticsSummaryPartial";

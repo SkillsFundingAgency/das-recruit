@@ -8,7 +8,10 @@ namespace Esfa.Recruit.Provider.Web.Views
         public const string DisabilityConfident = RecruitPartialNames.DisabilityConfident;
         public const string GetHelpContactDetails = RecruitPartialNames.GetHelpContactDetails;
         public const string GoogleTagManagerHead = RecruitPartialNames.GoogleTagManagerHead;
+        public const string GoogleAnalyticsInfo = RecruitPartialNames.GoogleAnalyticsInfo;
         public const string GoogleTagManagerBody = RecruitPartialNames.GoogleTagManagerBody;
+        public const string ZenDeskWidget = RecruitPartialNames.ZenDeskWidget;
+        public const string ZenDeskApi = RecruitPartialNames.ZenDeskApi;        
         public const string Pager = RecruitPartialNames.Pager;
         public const string ValidationSummary = RecruitPartialNames.ValidationSummary;
         public const string ReviewSummary = "_ReviewSummaryPartial";

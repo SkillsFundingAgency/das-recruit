@@ -1,5 +1,9 @@
 ﻿@model Esfa.Recruit.Provider.Web.ViewModels.Submitted.VacancySubmittedConfirmationViewModel
 
+@{
+    ViewBag.GaData.Vpv = "/recruitment/provider/page-vacancy-submitted-for-approval";
+}
+
 <h1 class="govuk-heading-l">@Model.Title</h1>
 
 <div class="govuk-grid-row">
@@ -25,7 +29,7 @@
         <div asp-show="@Model.HasNotificationsSet">
             <p class="govuk-body">We’ll check the vacancy and let you know by email within one working day if you need to make any edits. <esfaFeatureEnabled name="@FeatureNames.SetNotificationPreferences"><a asp-route="@RouteNames.ManageNotifications_Get">Manage your recruitment emails</a>.</esfaFeatureEnabled></p>
             <p class="govuk-body">When the vacancy is approved, it will appear on the Find an apprenticeship service.</p>
-        </div>        
+        </div>
         <div asp-hide="@Model.HasNotificationsSet">
             <p class="govuk-body">We’ll check the vacancy and tell you within one working day on the dashboard if you need to make any edits. <esfaFeatureEnabled name="@FeatureNames.SetNotificationPreferences">Visit <a asp-route="@RouteNames.ManageNotifications_Get">Manage your recruitment emails</a> if you’d also like to get an email.</esfaFeatureEnabled></p>
             <p class="govuk-body">When the vacancy is approved, it will appear on the Find an apprenticeship service.</p>

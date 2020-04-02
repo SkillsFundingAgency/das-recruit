@@ -71,6 +71,8 @@ namespace Esfa.Recruit.Provider.Web.Configuration
                 opts.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
 
                 opts.Filters.AddService<PlannedOutageResultFilter>();
+                opts.Filters.AddService<GoogleAnalyticsFilter>();
+                opts.Filters.AddService<ZendeskApiFilter>();
 
                 opts.AddTrimModelBinderProvider(loggerFactory);
             })
