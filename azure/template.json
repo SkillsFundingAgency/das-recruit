@@ -948,7 +948,7 @@
 							{
 								"name": "ZenDesk:CobrowsingSnippetKey",
 								"value": "[parameters('ZenDesk').CobrowsingSnippetKey]"
-							}
+							},
               {
                 "name": "UseTableStorageQueryStore",
                 "value": "[parameters('UseTableStorageQueryStore')]"
