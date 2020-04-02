@@ -182,18 +182,15 @@
       "type": "string",
       "defaultValue": ""
     },
-	"EmployerZendeskSnippetKey": {
-      "type": "string",
-      "defaultValue": ""
-    },
-	"EmployerZendeskSectionId": {
-      "type": "string",
-      "defaultValue": ""
-    },
-	"EmployerZendeskCobrowsingSnippetKey": {
-      "type": "string",
-      "defaultValue": ""
-    },
+	  "ZenDesk": {
+			"type": "object",
+			"defaultValue": {
+        "EmployerSnippetSectionId": "",
+        "ProviderSnippetSectionId": "",
+				"SnippetKey": "",
+				"CobrowsingSnippetKey": ""
+			}
+		},
     "FaaConfiguration": {
       "type": "object",
       "defaultValue": {
@@ -611,7 +608,19 @@
               {
                 "name": "UseTableStorageQueryStore",
                 "value": "[parameters('UseTableStorageQueryStore')]"
-              }
+              },
+              {
+								"name": "ZenDesk:SnippetSectionId",
+								"value": "[parameters('ZenDesk').EmployerSnippetSectionId]"
+							},
+							{
+								"name": "ZenDesk:SnippetKey",
+								"value": "[parameters('ZenDesk').SnippetKey]"
+							},
+							{
+								"name": "ZenDesk:CobrowsingSnippetKey",
+								"value": "[parameters('ZenDesk').CobrowsingSnippetKey]"
+							}
             ]
           },
           "appServiceConnectionStrings": {
@@ -928,18 +937,18 @@
                 "name": "PostcodeAnywhere:Key",
                 "value": "[parameters('PostcodeAnywhereKey')]"
               },
-			  {
-                "name": "EmployerZendesk:SnippetKey",
-                "value": "[parameters('EmployerZendeskSnippetKey')]"
-              },
-			  {
-                "name": "EmployerZendesk:SectionId",
-                "value": "[parameters('EmployerZendeskSectionId')]"
-              },
-			  {
-                "name": "EmployerZendesk:CobrowsingSnippetKey",
-                "value": "[parameters('EmployerZendeskCobrowsingSnippetKey')]"
-              },
+              {
+								"name": "ZenDesk:SnippetSectionId",
+								"value": "[parameters('ZenDesk').ProviderSnippetSectionId]"
+							},
+							{
+								"name": "ZenDesk:SnippetKey",
+								"value": "[parameters('ZenDesk').SnippetKey]"
+							},
+							{
+								"name": "ZenDesk:CobrowsingSnippetKey",
+								"value": "[parameters('ZenDesk').CobrowsingSnippetKey]"
+							}
               {
                 "name": "UseTableStorageQueryStore",
                 "value": "[parameters('UseTableStorageQueryStore')]"

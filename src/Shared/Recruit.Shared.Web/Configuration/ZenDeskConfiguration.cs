@@ -3,7 +3,7 @@
     public class ZenDeskConfiguration
     {
         public string SnippetKey { get; set; }
-        public string SectionId { get; set; }
+        public string SnippetSectionId { get; set; }
         public string CobrowsingSnippetKey { get; set; }
     }
 }

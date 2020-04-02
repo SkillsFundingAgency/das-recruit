@@ -40,7 +40,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.Configure<GoogleAnalyticsConfiguration>(configuration.GetSection("GoogleAnalytics"));
             services.Configure<PostcodeAnywhereConfiguration>(configuration.GetSection("PostcodeAnywhere"));
             services.Configure<FaaConfiguration>(configuration.GetSection("FaaConfiguration"));
-            services.Configure<ZenDeskConfiguration>(configuration.GetSection("EmployerZendesk"));
+            services.Configure<ZenDeskConfiguration>(configuration.GetSection("ZenDesk"));
 
             services.AddFeatureToggle();
 
