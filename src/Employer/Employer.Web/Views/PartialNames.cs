@@ -17,7 +17,8 @@ namespace Esfa.Recruit.Employer.Web.Views
         public const string ValidationSummary = RecruitPartialNames.ValidationSummary;
         public const string ReviewSummary = "_ReviewSummaryPartial";
         public const string Pager = RecruitPartialNames.Pager;
-
+        public const string ZenDeskWidget = RecruitPartialNames.ZenDeskWidget;
+        public const string ZenDeskApi = RecruitPartialNames.ZenDeskApi;
         public const string Alerts = "_Alerts";
         public const string WithdrawnByQaVacanciesAlert = "_WithdrawnByQaVacanciesAlert";
         public const string BlockedProviderAlert = "_BlockedProviderAlert";

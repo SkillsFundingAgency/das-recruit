@@ -8,13 +8,11 @@
     <AssemblyName>Esfa.Recruit.Employer.Web</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="Filters\GoogleAnalyticsFilter.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="FluentValidation.AspNetCore" Version="7.5.2" />
     <PackageReference Include="Humanizer.Core.uk" Version="2.7.9" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.10" />
+    <PackageReference Include="NWebsec.AspNetCore.Core" Version="2.0.0" />
     <PackageReference Include="NWebsec.AspNetCore.Middleware" Version="2.0.0" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="4.9.0" />
     <PackageReference Include="NWebsec.AspNetCore.Mvc.TagHelpers" Version="2.0.0" />
