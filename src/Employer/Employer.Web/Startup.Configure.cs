@@ -107,7 +107,8 @@ namespace Esfa.Recruit.Employer.Web
                 .FontSources(s =>
                     s.Self()
                     .CustomSources("data:",
-                                    "https://fonts.googleapis.com/")
+                                    "https://fonts.googleapis.com/",
+                                    "https://assets-ukdoe.rcrsv.io/")
                 )
                 .ConnectSources(s =>
                     s.Self()
