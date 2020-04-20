@@ -116,7 +116,7 @@ namespace Esfa.Recruit.Provider.Web
                         "https://dc.services.visualstudio.com",
                         "wss://*.zendesk.com",
                         "wss://*.zopim.com",
-                        "https://*.rcrsv.io"")
+                        "https://*.rcrsv.io")
                 )
                 .ImageSources(s =>
                     s.Self()
