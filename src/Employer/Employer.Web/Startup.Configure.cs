@@ -59,7 +59,7 @@ namespace Esfa.Recruit.Employer.Web
                         "https://*.zendesk.com",
                         "wss://*.zendesk.com",
                         "wss://*.zopim.com",
-                        "https://embed-euw1.rcrsv.io/"
+                        "https://*.rcrsv.io"
                         );
                     //s.UnsafeInline();
                 })
@@ -94,7 +94,7 @@ namespace Esfa.Recruit.Employer.Web
                                     "https://*.zendesk.com",
                                     "wss://*.zendesk.com",
                                     "wss://*.zopim.com",
-                                    "https://embed-euw1.rcrsv.io");
+                                    "https://*.rcrsv.io");
 
                     //Google tag manager uses inline scripts when administering tags. This is done on PREPROD only
                     if (env.IsEnvironment(EnvironmentNames.PREPROD))
