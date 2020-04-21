@@ -1,0 +1,27 @@
+﻿@using Microsoft.Extensions.Options
+
+@inject IOptions<ZenDeskConfiguration> ZendeskConfig
+<script nws-csp-add-nonce="true" type="text/javascript">
+    window.zESettings = {
+        webWidget: {
+            contactForm: {
+                attachments: false
+            },
+            chat: {
+                menuOptions: {
+                    emailTranscript: false
+                }
+            },
+            helpCenter: {
+                filter: {
+                    section: @ZendeskConfig.Value.SnippetSectionId
+                }
+            }
+        }
+    };
+</script>
+
+<script nws-csp-add-nonce="true" id="ze-snippet" src="https://static.zdassets.com/ekr/snippet.js?key=@ZendeskConfig.Value.SnippetKey"></script>
+
+@Html.SetZenDeskLabels(!string.IsNullOrWhiteSpace(ViewBag?.ZenDeskLabel) ? new string[] { ViewBag.ZenDeskLabel } : new[] { $"recruit-{ViewBag.Title}" })
+

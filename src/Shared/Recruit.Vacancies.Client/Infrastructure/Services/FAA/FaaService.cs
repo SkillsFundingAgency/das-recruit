@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Runtime.Serialization;
+using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using Microsoft.Azure.ServiceBus;
@@ -24,7 +25,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.FAA
         {
             TopicClient topicClient = CreateTopicClient(ApplicationStatusSummaryTopicName);
 
-            var brokeredMessage = CreateBrokeredMessage(message);
+            var brokeredMessage = CreateMessage(message);
 
             return topicClient.SendAsync(brokeredMessage);
         }
@@ -32,26 +33,18 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.FAA
         public Task PublishVacancyStatusSummaryAsync(FaaVacancyStatusSummary message)
         {
             TopicClient topicClient = CreateTopicClient(UpdateApprenticeshipVacancyStatus);
-            var brokeredMessage = CreateBrokeredMessage(message);
+            var brokeredMessage = CreateMessage(message);
             return topicClient.SendAsync(brokeredMessage);
         }
 
-        private static Message CreateBrokeredMessage<T>(T message) where T : class
+        private static Message CreateMessage<T>(T messageObject) where T : class
         {
-            var json = JsonConvert.SerializeObject(message);
-
-            //Creates a message that is compatible with .NET 4.5 BrokeredMessage subscribers
-            Message brokeredMessage;
-            var ser = new DataContractSerializer(typeof(string));
-            using (var ms = new MemoryStream())
+            string json = JsonConvert.SerializeObject(messageObject);
+            var message = new Message(Encoding.UTF8.GetBytes(json))
             {
-                var binaryDictionaryWriter = XmlDictionaryWriter.CreateBinaryWriter(ms);
-                ser.WriteObject(binaryDictionaryWriter, json);
-                binaryDictionaryWriter.Flush();
-                brokeredMessage = new Message(ms.ToArray());
-            }
-            
-            return brokeredMessage;
+                ContentType = "application/json"
+            };
+            return message;
         }
 
         private TopicClient CreateTopicClient(string topicName)
