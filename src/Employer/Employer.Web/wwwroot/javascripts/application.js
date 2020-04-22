@@ -236,7 +236,7 @@ $(function () {
 
 //back link
 function historyBack() {
-    window.history.back();
+    history.back();
 }
 var el = document.getElementById('goBack');
 if (el) {

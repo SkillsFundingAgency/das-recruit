@@ -11,6 +11,7 @@
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames}' />
         <partial name="@PartialNames.ReviewSummary" for="Review" />
         <a href="#" id='goBack' class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">@Model.BackLinkText</a>
+        <noscript> <style type="text/css"> .govuk-back-link { display: none; } </style> </noscript>
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">What do you want to call this vacancy?</h1>
     </div>
 </div>
@@ -47,7 +48,3 @@
         </form>
     </div>
 </div>
-
-<noscript> <style type="text/css"> .govuk-back-link { display: none; } </style> </noscript>
-
-
