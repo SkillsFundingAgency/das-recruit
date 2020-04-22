@@ -233,3 +233,12 @@ $(function () {
     handleAnchorClicks();
     window.GOVUKFrontend.initAll()
 });
+
+//back link
+function historyBack() {
+    window.history.back();
+}
+var el = document.getElementById('goBack');
+if (el) {
+    el.addEventListener('click', historyBack, false);
+}
