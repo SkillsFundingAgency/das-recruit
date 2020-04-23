@@ -58,7 +58,7 @@ namespace Esfa.Recruit.Provider.Web
                         "https://*.zendesk.com",
                         "wss://*.zendesk.com",
                         "wss://*.zopim.com",
-                        "https://embed-euw1.rcrsv.io/"
+                        "https://*.rcrsv.io"
                         );
                     //s.UnsafeInline();
                 })
@@ -72,7 +72,8 @@ namespace Esfa.Recruit.Provider.Web
                                       "https://*.zdassets.com",
                                       "https://*.zendesk.com",
                                       "wss://*.zendesk.com",
-                                      "wss://*.zopim.com"
+                                      "wss://*.zopim.com",
+                                      "https://*.rcrsv.io"
                                       );
                       
                       //Google tag manager uses inline styles when administering tags. This is done on PREPROD only
@@ -93,7 +94,7 @@ namespace Esfa.Recruit.Provider.Web
                                     "https://*.zendesk.com",
                                     "wss://*.zendesk.com",
                                     "wss://*.zopim.com",
-                                    "https://embed-euw1.rcrsv.io");
+                                    "https://*.rcrsv.io");
 
                         //Google tag manager uses inline scripts when administering tags. This is done on PREPROD only
                     if (env.IsEnvironment(EnvironmentNames.PREPROD))
@@ -105,7 +106,8 @@ namespace Esfa.Recruit.Provider.Web
                 .FontSources(s =>
                     s.Self()
                     .CustomSources("data:",
-                                    "https://fonts.googleapis.com/")
+                                    "https://fonts.googleapis.com/",
+                                    "https://assets-ukdoe.rcrsv.io/")
                 )
                 .ConnectSources(s =>
                     s.Self()
@@ -115,7 +117,7 @@ namespace Esfa.Recruit.Provider.Web
                         "https://dc.services.visualstudio.com",
                         "wss://*.zendesk.com",
                         "wss://*.zopim.com",
-                        "https://embed-euw1.rcrsv.io")
+                        "https://*.rcrsv.io")
                 )
                 .ImageSources(s =>
                     s.Self()
