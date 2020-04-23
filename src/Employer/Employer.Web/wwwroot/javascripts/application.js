@@ -234,11 +234,11 @@ $(function () {
     window.GOVUKFrontend.initAll()
 });
 
-//back link
-function historyBack() {
-    history.back();
-}
-var el = document.getElementById('goBack');
-if (el) {
-    el.addEventListener('click', historyBack, false);
-}
+jQuery(document).ready(function () { //remove this line and update HTML to das-js-back-link if adding das js lib
+    var goBack = jQuery('#goBack');
+    var backTxt = goBack.data('txt');
+    goBack.find('.js-back-link').html('<a href="#" class="govuk-back-link"></a>').end().find('.govuk-back-link').text(backTxt).on('click', function (e) {
+        e.preventDefault();
+        window.history.back();
+    });
+});
