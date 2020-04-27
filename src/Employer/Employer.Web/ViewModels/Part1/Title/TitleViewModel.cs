@@ -19,18 +19,14 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Title
         public string FormPostRouteName => VacancyId.HasValue ? RouteNames.Title_Post : RouteNames.CreateVacancy_Post;
         public PartOnePageInfoViewModel PageInfo { get; set; }
         public bool HasCloneableVacancies { get; set; }
-        public string BackLink =>
-            HasCloneableVacancies ? RouteNames.Vacancies_Get : RouteNames.Dashboard_Get;
-
-        public string BackLinkText { get; set; }
-        public string BackLinkRoute { get; set; }
+        public string CancelLink => HasCloneableVacancies ? RouteNames.Vacancies_Get : RouteNames.Dashboard_Get;
+        public string CancelLinkRoute { get; set; }
         public bool ReferredFromMa { get; set; }
         public string ReferredUkprn { get; set; }
         public string ReferredProgrammeId { get; set; }
         public bool ReferredFromSavedFavourites => ReferredFromMa &
                                                    (!string.IsNullOrEmpty(ReferredUkprn) ||
                                                     !string.IsNullOrEmpty(ReferredProgrammeId));
-
         public string TrainingTitle { get; set; }
     }
 }

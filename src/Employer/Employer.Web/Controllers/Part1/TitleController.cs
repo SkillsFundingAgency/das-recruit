@@ -98,20 +98,17 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                 if(!string.IsNullOrWhiteSpace(vm.ReferredProgrammeId))
                 {
                     var training = await _orchestrator.GetProgramme(vm.ReferredProgrammeId);
-                    vm.TrainingTitle = training.Title + ", Level: " + training.EducationLevelNumber;
-                    vm.BackLinkText = "Back to your saved favourites";
-                    vm.BackLinkRoute = GenerateEmployerFavouriteUrl(vm);
+                    vm.TrainingTitle = training.Title + ", Level: " + training.EducationLevelNumber;                    
+                    vm.CancelLinkRoute = GenerateEmployerFavouriteUrl(vm);
                 }
                 else
-                {
-                    vm.BackLinkText = "Return to home";
-                    vm.BackLinkRoute = Url.RouteUrl(RouteNames.Dashboard_Account_Home);
+                {                    
+                    vm.CancelLinkRoute = Url.RouteUrl(RouteNames.Dashboard_Account_Home);
                 }
             }
             else
-            {
-                vm.BackLinkText = "Back";
-                vm.BackLinkRoute = Url.RouteUrl(vm.BackLink);
+            {                
+                vm.CancelLinkRoute = Url.RouteUrl(vm.CancelLink);
             }
         }
 
