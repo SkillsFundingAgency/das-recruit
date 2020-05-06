@@ -902,6 +902,10 @@
                 "value": "[parameters('SlackWebhook')]"
               },
               {
+                "name": "ApplicationInsights:InstrumentationKey",
+                "value": "[reference(variables('ProviderRecruitAppServiceName')).outputs.InstrumentationKey.value]"
+              },	              
+              {
                 "name": "Slack:FindAnApprenticeshipDetailPrefixUrl",
                 "value": "[parameters('FindAnApprenticeshipDetailPrefixUrl')]"
               },
