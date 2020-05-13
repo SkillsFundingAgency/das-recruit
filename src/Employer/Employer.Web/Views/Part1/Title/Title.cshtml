@@ -1,19 +1,18 @@
 ﻿@using Esfa.Recruit.Shared.Web.Mappers
 @model Esfa.Recruit.Employer.Web.ViewModels.Part1.Title.TitleViewModel
 @inject ManageApprenticeshipsLinkHelper _externalLinksHelper;
-@{ 
+@{
     ViewBag.Vpv = "/recruitment/employer/page-part1-title";
     ViewBag.ZenDeskLabel = "recruit-what-do-you-want-to-call-this-vacancy";
 }
 
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames}' />
-        <partial name="@PartialNames.ReviewSummary" for="Review" />
-        <a href="@Model.BackLinkRoute" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">@Model.BackLinkText</a>
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">What do you want to call this vacancy?</h1>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames}' />
+            <partial name="@PartialNames.ReviewSummary" for="Review" />                       
+            <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">What do you want to call this vacancy?</h1>
+        </div>       
     </div>
-</div>
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -37,11 +36,11 @@
             </div>
             <button type="submit" class="govuk-button save-button">@Model.PageInfo.SubmitButtonText</button>
             <span asp-hide="Model.ReferredFromSavedFavourites">
-                <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link das-button-link">Cancel</a>
+                <a asp-show="@Model.PageInfo.IsWizard" href="@Model.CancelLinkRoute" class="govuk-link das-button-link">Cancel</a>
                 <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.TitleSection" class="govuk-link das-button-link">Cancel</a>
             </span>
             <span asp-show="Model.ReferredFromSavedFavourites">
-                <a asp-show="@Model.PageInfo.IsWizard" href="@Model.BackLinkRoute" class="govuk-link das-button-link" esfa-automation="cancel-link">Cancel</a>
+                <a asp-show="@Model.PageInfo.IsWizard" href="@Model.CancelLinkRoute" class="govuk-link das-button-link" esfa-automation="cancel-link">Cancel</a>
                 <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link das-button-link">Cancel</a>
             </span>
         </form>
