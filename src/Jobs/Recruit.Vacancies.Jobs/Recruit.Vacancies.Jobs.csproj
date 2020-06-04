@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.2</TargetFramework>
@@ -34,10 +34,8 @@
     <PackageReference Include="SFA.DAS.Notifications.Api.Types" Version="2.2.1" />
     <PackageReference Include="SFA.DAS.ProviderRelationships.Messages" Version="3.2.1" />
     <PackageReference Include="System.Data.SqlClient" Version="4.7.0" />
-    <PackageReference Include="SFA.DAS.NServiceBus" Version="10.0.1" />
+    <PackageReference Include="SFA.DAS.NServiceBus" Version="15.0.25" />
     <PackageReference Include="SFA.DAS.EmployerAccounts.Messages" Version="1.6.2515" />
-    <PackageReference Include="NServiceBus" Version="7.1.10" />
-    <PackageReference Include="NServiceBus.MSDependencyInjection" Version="0.1.4" />
     <PackageReference Include="Humanizer.Core.uk" Version="2.7.9" />
 
     <ProjectReference Include="..\..\Communication\Communication.Core\Communication.Core.csproj" />
