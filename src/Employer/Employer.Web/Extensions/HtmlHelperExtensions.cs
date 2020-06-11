@@ -35,8 +35,8 @@ namespace Esfa.Recruit.Employer.Web.Extensions
             {
                 User = html.ViewContext.HttpContext.User,
                 HashedAccountId = html.ViewContext.RouteData.Values["employerAccountId"]?.ToString()
-            },
-            useLegacyStyles: true);
+            }
+            );
             
             headerModel.SelectMenu("recruitment");
 
@@ -61,7 +61,7 @@ namespace Esfa.Recruit.Employer.Web.Extensions
                 User = html.ViewContext.HttpContext.User,
                 HashedAccountId = html.ViewContext.RouteData.Values["employerAccountId"]?.ToString()
             },
-            useLegacyStyles: true);
+            );
         }
     }
 }
