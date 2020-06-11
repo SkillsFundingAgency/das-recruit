@@ -90,6 +90,13 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             return Redirect(url);
         }
 
+        [HttpGet(RoutePaths.AccountRoutePath + "/cookieConsent/details", Name = RouteNames.Dashboard_Account_CookieConsent_Details)]
+        public IActionResult AccountsCookieConsentDetails(string employerAccountId)
+        {
+            var url = !string.IsNullOrEmpty(employerAccountId) ? string.Format(_linkHelper.CookieConsentWithHashedAccount, employerAccountId) : _linkHelper.CookieConsent;
+            return Redirect(url + "/details");
+        }
+
         [HttpGet(RoutePaths.AccountLevelServices + "/apprenticeships", Name = RouteNames.EmployerFavourites)]
         public IActionResult EmployerFavouritesTrainingProviders(string employerAccountId, string referredUkprn, string referredProgrammeId)
         {
