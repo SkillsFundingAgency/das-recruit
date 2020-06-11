@@ -960,7 +960,7 @@ a[rel="external"]:hover:after {
 
 .das-cookie-banner {
   display: none;
-  font-family: "GDS Transport", Arial, sans-serif;
+  font-family: nta,Arial,sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-size: 14px;
@@ -1004,7 +1004,8 @@ a[rel="external"]:hover:after {
   color: #0b0c0c; }
   @media (min-width: 48.0625em) {
     .das-cookie-banner__message {
-      margin: 0; } }
+      margin: 0;
+    font-size: 19px; } }
 
 .das-cookie-banner__service-name {
   display: inline-block; }
@@ -1050,7 +1051,7 @@ a[rel="external"]:hover:after {
   margin: 0; }
 
 .das-cookie-banner__hide-button {
-  font-family: "GDS Transport", Arial, sans-serif;
+  font-family: nta,Arial,sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-size: 16px;
@@ -1091,3 +1092,306 @@ a[rel="external"]:hover:after {
 
 .das-cookie-settings__confirmation {
   display: none; }
+
+
+ 
+
+/* DAS Employer header and navigation */ 
+
+.das-account-header {
+  font-family: nta,Arial,sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  font-size: 16px;
+  font-size: 1rem;
+  line-height: 1.25;
+  color: #fff;
+  padding: 5px 0; }
+  @media print {
+    .das-account-header {
+      font-family: sans-serif; } }
+  @media (min-width: 40.0625em) {
+    .das-account-header {
+      font-size: 19px;
+      font-size: 1.1875rem;
+      line-height: 1.31579; } }
+  @media print {
+    .das-account-header {
+      font-size: 14pt;
+      line-height: 1.15; } }
+  @media (min-width: 40.0625em) {
+    .das-account-header {
+      padding: 0; } }
+  .das-account-header > .govuk-width-container:after {
+    content: "";
+    display: block;
+    clear: both; }
+
+.das-account-header--provider {
+  background: #f47738; }
+
+.das-account-header--employer {
+  background: #6f72af; }
+
+.das-account-header__title {
+  margin: 0 -15px;
+  padding: 10px 15px;
+  font-weight: 700; }
+  @media (min-width: 40.0625em) {
+    .das-account-header__title {
+      float: left;
+      padding: 8px 15px; } }
+
+.das-account__title {
+  font-weight: 400;
+  color: #6f777b;
+  margin-bottom: 5px; }
+  @media (min-width: 40.0625em) {
+    .das-account__title {
+      margin-bottom: 0; } }
+
+.das-account__account-name {
+  margin: 0;
+  word-wrap: break-word;
+  word-break: break-all;
+  word-break: break-word;
+  max-width: 100%; }
+  @media (min-width: 48.0625em) {
+    .das-account__account-name {
+      font-size: 48px; } }
+
+.das-navigation {
+  color: #0b0c0c;
+  font-family: nta,Arial,sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  font-size: 16px;
+  font-size: 1rem;
+  line-height: 1.25;
+  border-bottom: 1px solid #6f777b; }
+  @media print {
+    .das-navigation {
+      color: #000000; } }
+  @media print {
+    .das-navigation {
+      font-family: sans-serif; } }
+  @media (min-width: 40.0625em) {
+    .das-navigation {
+      font-size: 19px;
+      font-size: 1.1875rem;
+      line-height: 1.31579; } }
+  @media print {
+    .das-navigation {
+      font-size: 14pt;
+      line-height: 1.15; } }
+
+.das-navigation__list {
+  list-style: none;
+  padding: 0;
+  margin: 0 -15px;
+  position: relative; }
+  .das-navigation__list:after {
+    content: "";
+    display: block;
+    clear: both; }
+
+.das-navigation__list-item {
+  float: left; }
+
+.das-navigation__link {
+  display: block;
+  padding: 10px 15px 8px;
+  color: #005ea5;
+  display: block; }
+  .das-navigation__link:focus {
+    outline: 3px solid #ffbf47;
+    outline-offset: 0; }
+  @media (min-width: 40.0625em) {
+    .das-navigation__link {
+      display: inline-block; } }
+
+.das-navigation__link--current {
+  position: relative;
+  text-decoration: none;
+  font-weight: 700;
+  color: #0b0c0c; }
+  .das-navigation__link--current:after {
+    background: #005ea5;
+    bottom: -1px;
+    content: "";
+    display: block;
+    left: 0;
+    top: 0;
+    width: 5px;
+    position: absolute;
+    z-index: 0; }
+    @media (min-width: 40.0625em) {
+      .das-navigation__link--current:after {
+        top: auto;
+        bottom: 0;
+        left: 15px;
+        right: 15px;
+        width: auto;
+        height: 5px; } }
+
+.das-navigation__priority-list {
+  background: #ccc;
+  list-style: none;
+  padding-left: 0;
+  clear: both; }
+  .das-navigation__priority-list > .das-navigation__list-item {
+    width: 100%;
+    border-top: 1px solid #ccc; }
+
+.das-navigation__priority-button {
+  display: block;
+  padding: 10px 15px 8px;
+  padding-right: 35px;
+  color: #005ea5;
+  position: absolute;
+  top: 0;
+  right: 0; }
+  .das-navigation__priority-button:focus {
+    outline: 3px solid #ffbf47;
+    outline-offset: 0; }
+  .das-navigation__priority-button:after {
+    position: absolute;
+    right: 15px;
+    top: 17px;
+    border-color: transparent;
+    border-width: 10px;
+    border-style: solid;
+    width: 0;
+    height: 0;
+    content: "";
+    border-width: 10px 5.77367px 0 5.77367px;
+    border-color: #005ea5 transparent transparent transparent; }
+  .das-navigation__priority-button.open:after {
+    top: 15px;
+    border-color: transparent;
+    border-width: 10px;
+    border-style: solid;
+    width: 0;
+    height: 0;
+    content: "";
+    border-width: 0 5.77367px 10px 5.77367px;
+    border-color: transparent transparent #005ea5 transparent; }
+
+
+    .das-user-navigation {
+      margin: 0 -15px; }
+      @media (min-width: 40.0625em) {
+        .das-user-navigation {
+          float: right; } }
+    
+    .das-user-navigation__list {
+      list-style: none;
+      padding: 0;
+      margin: 0; }
+    
+    @media (min-width: 40.0625em) {
+      .das-user-navigation__list-item {
+        float: left;
+        position: relative; } }
+    
+    .das-user-navigation__link {
+      color: #fff;
+      text-decoration: none;
+      display: block;
+      padding: 10px 15px;
+      font-size: 16px;
+      border: 1px solid transparent; }
+      .das-user-navigation__link:focus {
+        outline: 3px solid #ffbf47;
+        outline-offset: 0; }
+      .das-user-navigation__link:hover {
+        text-decoration: underline; }
+      .das-user-navigation__list-item--has-sub-menu .das-user-navigation__link {
+        padding-right: 32px;
+        position: relative; }
+        .das-user-navigation__list-item--has-sub-menu .das-user-navigation__link:after {
+          position: absolute;
+          right: 15px;
+          top: 17px;
+          border-color: transparent;
+          border-width: 8px;
+          border-style: solid;
+          width: 0;
+          height: 0;
+          content: "";
+          border-width: 8px 4.61894px 0 4.61894px;
+          border-color: #fff transparent transparent transparent; }
+          @media (min-width: 40.0625em) {
+            .govuk-header .das-user-navigation__list-item--has-sub-menu .das-user-navigation__link:after {
+              top: 20px; } }
+      .das-user-navigation__sub-menu--open .das-user-navigation__link:after {
+        top: 15px;
+        border-color: transparent;
+        border-width: 8px;
+        border-style: solid;
+        width: 0;
+        height: 0;
+        content: "";
+        border-width: 0 4.61894px 8px 4.61894px;
+        border-color: transparent transparent #005ea5 transparent; }
+        @media (min-width: 40.0625em) {
+          .govuk-header .das-user-navigation__sub-menu--open .das-user-navigation__link:after {
+            top: 18px; } }
+      @media (min-width: 40.0625em) {
+        .govuk-header .das-user-navigation__link {
+          position: relative;
+          margin-top: -10px;
+          padding-top: 15px;
+          padding-bottom: 15px; } }
+    
+    .das-user-navigation__sub-menu {
+      background: #6f777b;
+      list-style: none;
+      padding: 10px;
+      margin: 0;
+      z-index: 1; }
+      @media (min-width: 48.0625em) {
+        .das-user-navigation__sub-menu {
+          position: absolute;
+          top: 100%;
+          right: 0;
+          padding: 10px 20px;
+          background: #fff;
+          margin-top: -1px;
+          border: 1px solid #bfc1c3; } }
+    
+    @media (min-width: 48.0625em) {
+      .das-user-navigation__sub-menu-list-item {
+        border-bottom: 1px solid #bfc1c3; }
+        .das-user-navigation__sub-menu-list-item:last-child {
+          border-bottom: none; } }
+    
+    .das-user-navigation__sub-menu-link {
+      color: #fff;
+      text-decoration: none;
+      display: block;
+      padding: 8px 15px;
+      font-size: 15px; }
+      .das-user-navigation__sub-menu-link:focus {
+        outline: 3px solid #ffbf47;
+        outline-offset: 0; }
+      .das-user-navigation__sub-menu-link:hover {
+        text-decoration: underline; }
+      @media (min-width: 48.0625em) {
+        .das-user-navigation__sub-menu-link {
+          color: #005ea5;
+          text-decoration: underline;
+          white-space: nowrap;
+          font-size: inherit;
+          margin: 0 -15px;
+          padding: 10px 15px; } }
+    
+    .das-user-navigation__sub-menu--open > a {
+      background: #fff;
+      color: #005ea5;
+      position: relative;
+      z-index: 2;
+      border: 1px solid #bfc1c3;
+      border-bottom: 1px solid #fff; }
