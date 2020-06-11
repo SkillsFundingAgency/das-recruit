@@ -1,71 +1,115 @@
-// Legacy JavaScript from DAS
-var sfa;
-sfa = sfa || {};
-//Floating menus
-sfa.navigation = {
-    elems: {
-        userNav: $("nav#user-nav > ul"),
-        levyNav: $("ul#global-nav-links")
-    },
-    init: function() {
-        this.setupMenus(this.elems.userNav);
-        this.setupEvents(this.elems.userNav)
-    },
-    setupMenus: function(n) {
-        n.find("ul").addClass("js-hidden").attr("aria-hidden", "true")
-    },
-    setupEvents: function(n) {
-        var t = this;
-        n.find("li.has-sub-menu > a").on("click", function(n) {
-            var i = $(this);
-            t.toggleMenu(i, i.next("ul"));
-            n.stopPropagation();
-            n.preventDefault()
-        });
-        n.find("li.has-sub-menu > ul > li > a").on("focusout", function() {
-            var n = $(this);
-            $(this).parent().is(":last-child") && t.toggleMenu(n, n.next("ul"))
-        })
-    },
-    toggleMenu: function(n, t) {
-        var i = n.parent();
-        i.hasClass("open") ? (i.removeClass("open"),
-        t.addClass("js-hidden").attr("aria-hidden", "true")) : (this.closeAllOpenMenus(),
-        i.addClass("open"),
-        t.removeClass("js-hidden").attr("aria-hidden", "false"))
-    },
-    closeAllOpenMenus: function() {
-        this.elems.userNav.find("li.has-sub-menu.open").removeClass("open").find("ul").addClass("js-hidden").attr("aria-hidden", "true");
-        this.elems.levyNav.find("li.open").removeClass("open").addClass("js-hidden").attr("aria-hidden", "true")
-    },
-    linkSettings: function() {
-        var n = $("a#link-settings")
-          , t = this;
-        this.toggleUserMenu();
-        n.attr("aria-hidden", "false");
-        n.on("click touchstart", function(n) {
-            var i = $(this).attr("href");
-            $(this).toggleClass("open");
-            t.toggleUserMenu();
-            n.preventDefault()
-        })
-    },
-    toggleUserMenu: function() {
-        var n = this.elems.userNav.parent();
-        n.hasClass("close") ? n.removeClass("close").attr("aria-hidden", "false") : n.addClass("close").attr("aria-hidden", "true")
-    }
+var navLinksContainer = document.getElementsByClassName('das-navigation__list');
+var navLinksListItems = document.getElementsByClassName('das-navigation__list-item');
+var availableSpace, currentVisibleLinks, numOfVisibleItems, requiredSpace, currentHiddenLinks;
+var totalSpace = 0;
+var breakWidths = [];
+
+var addMenuButton = function () {
+  var priorityLi = $('<li />').addClass('das-navigation__priority-list-item govuk-visually-hidden').attr('id', 'priority-list-menu');
+  var priorityUl = $('<ul />').addClass('das-navigation__priority-list govuk-visually-hidden');
+  var priorityBut = $('<a />')
+    .addClass('das-navigation__priority-button')
+    .attr('href', '#')
+    .text('More')
+    .on('click', function(e) {
+      $(menuLinksContainer).toggleClass('govuk-visually-hidden');
+      $(this).toggleClass('open');
+      e.preventDefault();
+    });
+  priorityLi.append(priorityBut, priorityUl).appendTo($(navLinksContainer).eq(0));
+  return priorityUl;
 };
 
-//Legacy floating header script
-$(window).scroll(function () {
-    if ($(window).scrollTop() >= 110) {
-        $('.floating-menu').addClass('fixed-header');
-        $('.js-float').addClass('width-adjust');
+var checkSpaceForPriorityLinks = function () {
+  availableSpace = navLinksContainer[0].offsetWidth - 80;
+  currentVisibleLinks = document.querySelectorAll('.das-navigation__list > .das-navigation__list-item');
+  currentHiddenLinks = document.querySelectorAll('.das-navigation__priority-list > .das-navigation__list-item');
+  numOfVisibleItems = currentVisibleLinks.length;
+  requiredSpace = breakWidths[numOfVisibleItems - 1];
+
+  if (requiredSpace > availableSpace) {
+    numOfVisibleItems -= 1;
+    var lastVisibleLink = currentVisibleLinks[numOfVisibleItems];
+    menuLinksContainer[0].insertBefore(lastVisibleLink, menuLinksContainer[0].childNodes[0]);
+    $('#priority-list-menu').removeClass('govuk-visually-hidden');
+    checkSpaceForPriorityLinks();
+  } else if (availableSpace > breakWidths[numOfVisibleItems]) {
+    if (currentHiddenLinks.length > 0) {
+      var firstLink = currentHiddenLinks[0];
+      var priorityListItem = document.getElementsByClassName('das-navigation__priority-list-item');
+      navLinksContainer[0].insertBefore(firstLink, priorityListItem[0])
+      if (currentHiddenLinks.length === 1) {
+        $('#priority-list-menu').addClass('govuk-visually-hidden');
+      }
     }
-    else {
-        $('.floating-menu').removeClass('fixed-header');
-        $('.js-float').removeClass('width-adjust');
+    numOfVisibleItems += 1;
+  }
+};
+
+if (navLinksContainer.length > 0) {
+  var menuLinksContainer  = addMenuButton();
+  for (var i = 0; i < navLinksListItems.length; i++) {
+    var width = navLinksListItems[i].offsetWidth;
+    totalSpace += width;
+    breakWidths.push(totalSpace);
+  }
+  checkSpaceForPriorityLinks();
+}
+
+$(window).resize(function() {
+  if (navLinksContainer.length > 0)
+    checkSpaceForPriorityLinks();
+});
+
+var dasJs = dasJs || {};
+
+dasJs.userNavigation = {
+  elems: {
+    settingsMenu: $('#das-user-navigation > ul')
+  },
+  init: function () {
+    this.setupMenus(this.elems.settingsMenu);
+    this.setupEvents(this.elems.settingsMenu);
+  },
+  setupMenus: function (menu) {
+    menu.find('ul').attr("aria-expanded", "false");
+  },
+  setupEvents: function (menu) {
+    var that = this;
+    var subMenuLi = menu.find('li.das-user-navigation__list-item--has-sub-menu');
+    subMenuLi.find('> a').on('click', function (e) {
+      var $that = $(this);
+      that.toggleMenu($that, $that.next('ul'));
+      e.stopPropagation();
+      e.preventDefault();
+    });
+  },
+  toggleMenu: function (link, subMenu) {
+    var $li = link.parent();
+    if ($li.hasClass("das-user-navigation__sub-menu--open")) {
+      $li.removeClass("das-user-navigation__sub-menu--open");
+      subMenu.addClass("js-hidden").attr("aria-expanded", "false");
+    } else {
+      this.closeAllOpenMenus();
+      $li.addClass("das-user-navigation__sub-menu--open");
+      subMenu.removeClass("js-hidden").attr("aria-expanded", "true");
     }
+  },
+  closeAllOpenMenus: function () {
+    $('li.das-user-navigation__list-item--has-sub-menu').each(function () {
+      var listItem = $(this);
+      var subMenu = $(this).children('ul');
+      var openClass = 'das-user-navigation__sub-menu--open';
+      if (listItem.hasClass(openClass)) {
+        listItem.removeClass(openClass);
+        subMenu.addClass("js-hidden").attr("aria-expanded", "false");
+      }
+    });
+  }
+}
+
+$(document).click(function() {
+  dasJs.userNavigation.closeAllOpenMenus();
 });
 
 /* -----------------------
@@ -224,9 +268,9 @@ function setEditorMaxLength(element, tinyMceEditor) {
 }
 
 $(function () {
-    //Legacy menu script
-    sfa.navigation.init();
-    $('ul#global-nav-links').collapsableNav();
+    if ($('#das-user-navigation')) {
+        dasJs.userNavigation.init();
+    }
     // Dirty forms handling
     $('form').areYouSure();
     //handle anchor clicks to account for floating menu
