@@ -87,7 +87,7 @@
             <button type="submit" class="govuk-button-fake-link">Dismiss</button>
         </form>
     </div>
-    @Html.Partial("_CookieBanner")
+    @Html.Partial("_CookieBanner", Html.GetCookieBannerViewModel())
     @Html.Partial("_Header", Html.GetHeaderViewModel())
 
     <div class="govuk-width-container">
