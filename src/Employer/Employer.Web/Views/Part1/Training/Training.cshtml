@@ -15,8 +15,8 @@
         <form asp-route="@RouteNames.Training_Post" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
 
             <p class="govuk-body">
-                If you haven't found appropriate training for the vacancy, you can
-                <a class="govuk-link" href="@externalLinks.Value.FindApprenticeshipTrainingUrl" target="_blank">Find apprenticeship training here (opens in new tab)</a>.
+                If you have not found training for this apprenticeship, you can ​use the
+                <a class="govuk-link" href="@externalLinks.Value.FindApprenticeshipTrainingUrl" target="_blank">Find apprenticeship training service (opens in new tab or window)</a>.
             </p>
             <div esfa-validation-marker-for="SelectedProgrammeId" class="govuk-form-group">
                 <label asp-for="SelectedProgrammeId" class="govuk-label govuk-!-font-weight-bold">

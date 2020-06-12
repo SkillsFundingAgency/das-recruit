@@ -57,7 +57,7 @@ namespace Esfa.Recruit.Shared.Web.ViewModels
 
         public static class CreateVacancyOptionsConfirmationMessages
         {
-            public const string SelectionRequired = "You must select either 'Create new vacancy' or clone one of your existing vacancies.";
+            public const string SelectionRequired = "Select whether you want to create a new advert or clone one of your existing adverts";
         }
 
         public static class UnsubscribeNotificationsConfirmationMessages

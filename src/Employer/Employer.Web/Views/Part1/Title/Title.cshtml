@@ -10,7 +10,7 @@
         <div class="govuk-grid-column-two-thirds">
             <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames}' />
             <partial name="@PartialNames.ReviewSummary" for="Review" />                       
-            <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">What do you want to call this vacancy?</h1>
+            <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">What do you want to call this advert?</h1>
         </div>       
     </div>
 
@@ -19,12 +19,10 @@
         <form asp-route="@Model.FormPostRouteName" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
             <div esfa-validation-marker-for="Title" class="govuk-form-group">
                 <p asp-hide="Model.ReferredFromSavedFavourites" class="govuk-body">
-                    Use a title that relates to the apprenticeship training for this vacancy, this will help it get found
-                    in the Find an apprenticeship search.
+                    To make sure your advert appears in search results, use a title that relates to the apprenticeship training.
                 </p>
                 <p asp-show="Model.ReferredFromSavedFavourites" class="govuk-body">
-                    Use a title that relates to <span class="govuk-!-font-weight-bold">@Model.TrainingTitle</span> for this vacancy, this will help it get found
-                    in the Find an apprenticeship search.
+                    To make sure your advert appears in search results, use a title that relates to the <span class="govuk-!-font-weight-bold">@Model.TrainingTitle</span>.
                 </p>
                 <span class="govuk-hint">Must include the word ‘apprentice’ or ‘apprenticeship’ </span>
                 <span esfa-validation-message-for="Title" class="govuk-error-message"></span>

@@ -10,21 +10,21 @@
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
 
         <h1 class="govuk-heading-xl">Have you already found apprenticeship training?</h1>
-        <p class="govuk-body">If you are looking to take on apprentices, you will need to provide training through an registered provider. If you haven't found training yet, we can help you to find it.</p>
+        <p class="govuk-body">If you’re looking to take on apprentices, you’ll need to provide training through a registered provider. If you haven't found training yet, we can help you to find it.</p>
         <form asp-route="@RouteNames.Training_First_Time_Post" novalidate>
             <fieldset class="govuk-fieldset">
                 <div class="govuk-radios" data-module="radios">
                     <div class="govuk-radios__item">
                         <input asp-for="HasFoundTraining" id="has_training_yes" class="govuk-radios__input" type="radio" value="true">
                         <label class="govuk-label govuk-radios__label" for="has_training_yes">
-                            Yes, I found appropriate training
+                            Yes, I’ve already found training
                         </label>
                     </div>
 
                     <div class="govuk-radios__item ">
                         <input asp-for="HasFoundTraining" id="has_training_no" class="govuk-radios__input" type="radio" value="false">
                         <label class="govuk-label govuk-radios__label" for="has_training_no">
-                            No, help me find one
+                            No, help me find training
                         </label>
                     </div>
                 </div>
