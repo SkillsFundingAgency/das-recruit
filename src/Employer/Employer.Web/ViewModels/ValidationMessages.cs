@@ -18,7 +18,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
 
         public static class TrainingProviderValidationMessages
         {
-            public const string IsTrainingProviderSelectedNotNull = "Please select an option to continue";
+            public const string IsTrainingProviderSelectedNotNull = "Select yes if you’ve found a training provider";
             public const string UkprnNotEmpty = "You must provide a UKPRN";
             public const string UkprnIsValid = "UKPRN is not recognised";
             public const string TrainingProviderSearchNotEmpty = "Please select a training provider";
