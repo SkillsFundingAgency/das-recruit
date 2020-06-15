@@ -9,7 +9,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.AddressLine1)
                 .NotEmpty()
-                    .WithMessage("You must provide an address")
+                    .WithMessage("Enter the address where the apprentice will work")
                     .WithErrorCode("5")
                 .ValidFreeTextCharacters()
                     .WithMessage("Address line 1 contains some invalid characters")
@@ -48,7 +48,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
             RuleFor(x => x.Postcode)
                 .NotEmpty()
-                    .WithMessage("You must provide a postcode")
+                    .WithMessage("Enter the postcode")
                     .WithErrorCode("8")
                 .ValidPostCode()
                     .When(x => !string.IsNullOrEmpty(x.Postcode), ApplyConditionTo.CurrentValidator)
