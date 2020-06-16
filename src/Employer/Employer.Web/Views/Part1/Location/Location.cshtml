@@ -80,7 +80,10 @@
                 </fieldset>
             </div>
             <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">@Model.PageInfo.SubmitButtonText</button>
-            <a asp-route="@RouteNames.Location_Cancel" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link das-button-link">Cancel</a>
+
+            <div class="govuk-body">
+                <a asp-route="@RouteNames.Location_Cancel" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link das-button-link">Cancel</a>
+            </div>
         </form>
     </div>
 </div>

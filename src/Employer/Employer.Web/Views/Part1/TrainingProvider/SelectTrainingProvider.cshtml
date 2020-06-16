@@ -84,11 +84,11 @@
                         </div>
                     </div>
                 </div>
-                </div>
             </div>
+           
             <div class="govuk-form-group">
                 <input type="hidden" name="@nameof(SelectTrainingProviderEditModel.SelectionType)" id="selection-type" value="@TrainingProviderSelectionType.Ukprn" />
-                <input type="submit" value="Continue" esfa-automation="btn-continue" class="govuk-button" />
+                <input type="submit" value="Save and continue" esfa-automation="btn-continue" class="govuk-button" />
 
                 <div class="govuk-body">
                     <span asp-show="@Model.ReferredFromSavedFavourites">
@@ -100,8 +100,7 @@
                         <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.TrainingProviderSection" class="govuk-link" esfa-automation="cancel-link">Cancel</a>
                     </span>
                 </div>
-                
-            </div>
+             </div>
         </form>
     </div>
 </div>
