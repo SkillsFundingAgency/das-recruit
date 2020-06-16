@@ -43,8 +43,8 @@
                     <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.TitleSection" class="govuk-link">Cancel</a>
                 </span>
                 <span asp-show="Model.ReferredFromSavedFavourites">
-                    <a asp-show="@Model.PageInfo.IsWizard" href="@Model.CancelLinkRoute" class="govuk-link " esfa-automation="cancel-link">Cancel</a>
-                    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link ">Cancel</a>
+                    <a asp-show="@Model.PageInfo.IsWizard" href="@Model.CancelLinkRoute" class="govuk-link" esfa-automation="cancel-link">Cancel</a>
+                    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link">Cancel</a>
                 </span>
             </div>
             
