@@ -34,15 +34,20 @@
                     <span class="govuk-body maxchar-text"> characters remaining</span>
                 </div>
             </div>
+
             <button type="submit" class="govuk-button save-button">@Model.PageInfo.SubmitButtonText</button>
-            <span asp-hide="Model.ReferredFromSavedFavourites">
-                <a asp-show="@Model.PageInfo.IsWizard" href="@Model.CancelLinkRoute" class="govuk-link das-button-link">Cancel</a>
-                <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.TitleSection" class="govuk-link das-button-link">Cancel</a>
-            </span>
-            <span asp-show="Model.ReferredFromSavedFavourites">
-                <a asp-show="@Model.PageInfo.IsWizard" href="@Model.CancelLinkRoute" class="govuk-link das-button-link" esfa-automation="cancel-link">Cancel</a>
-                <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link das-button-link">Cancel</a>
-            </span>
+
+            <div class="govuk-body">
+                <span asp-hide="Model.ReferredFromSavedFavourites">
+                    <a asp-show="@Model.PageInfo.IsWizard" href="@Model.CancelLinkRoute" class="govuk-link">Cancel</a>
+                    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.TitleSection" class="govuk-link">Cancel</a>
+                </span>
+                <span asp-show="Model.ReferredFromSavedFavourites">
+                    <a asp-show="@Model.PageInfo.IsWizard" href="@Model.CancelLinkRoute" class="govuk-link " esfa-automation="cancel-link">Cancel</a>
+                    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link ">Cancel</a>
+                </span>
+            </div>
+            
         </form>
     </div>
 </div>
