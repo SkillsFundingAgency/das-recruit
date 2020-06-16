@@ -36,10 +36,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var programmesTask = _vacancyClient.GetActiveApprenticeshipProgrammesAsync();
             var isUsersFirstVacancyTask = IsUsersFirstVacancy(user.UserId);
 
-            var vacancyres = vacancyTask.Result;
-            var programmesRes = programmesTask.Result;
-            var isUserFirstVacancyRes = isUsersFirstVacancyTask.Result;
-
             await Task.WhenAll(vacancyTask, programmesTask, isUsersFirstVacancyTask);
 
             var vacancy = vacancyTask.Result;
