@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.ViewModels.Validations;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -9,7 +8,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Wage
 {
     public class WageViewModel
     {
-        [Required(ErrorMessage = ErrMsg.NotSelected.WageRadio)]
         public WageType? WageType { get; set; }
 
         [TypeOfMoney(ErrorMessage = ErrMsg.TypeOfMoney.FixedWageYearlyAmount)]

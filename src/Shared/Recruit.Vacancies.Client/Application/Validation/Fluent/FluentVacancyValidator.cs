@@ -286,10 +286,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             {
                 RuleFor(x => x.Wage.DurationUnit)
                     .NotEmpty()
-                    .WithMessage("You must state the expected duration")
+                    .WithMessage("Enter how long the whole apprenticeship is, including work and training")
                     .WithErrorCode("34")
                     .IsInEnum()
-                    .WithMessage("You must state the expected duration")
+                    .WithMessage("Enter how long the whole apprenticeship is, including work and training")
                     .WithErrorCode("34")
                     .RunCondition(VacancyRuleSet.Duration)
                     .WithRuleId(VacancyRuleSet.Duration);
@@ -297,10 +297,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 RuleFor(x => x.Wage.Duration)
                     .Cascade(CascadeMode.StopOnFirstFailure)
                     .NotEmpty()
-                    .WithMessage("You must state the expected duration")
+                    .WithMessage("Enter how long the whole apprenticeship is, including work and training")
                     .WithErrorCode("34")
                     .GreaterThan(0)
-                    .WithMessage("You must state the expected duration")
+                    .WithMessage("Enter how long the whole apprenticeship is, including work and training")
                     .WithErrorCode("34")
                     .Must((vacancy, value) =>
                     {
@@ -325,7 +325,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 RuleFor(x => x.Wage.WorkingWeekDescription)
                     .Cascade(CascadeMode.StopOnFirstFailure)
                     .NotEmpty()
-                        .WithMessage("You must include details of the working week")
+                        .WithMessage("Enter details about the working week")
                         .WithErrorCode("37")
                     .ValidFreeTextCharacters()
                         .WithMessage("Working week details contains some invalid characters")
@@ -347,7 +347,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             {
                 RuleFor(x => x.Wage.WeeklyHours)
                     .NotEmpty()
-                        .WithMessage("You must state the total working hours per week")
+                        .WithMessage("Enter how many hours the apprentice will work each week, including training")
                         .WithErrorCode("40")
                     .GreaterThanOrEqualTo(16)
                         .WithMessage("The total hours a week must be at least {ComparisonValue}")
@@ -364,7 +364,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.Wage)
                 .NotNull()
-                    .WithMessage("You must select a wage")
+                    .WithMessage("Select how much you'd like to pay the apprentice")
                     .WithErrorCode("46")
                 .RunCondition(VacancyRuleSet.Wage)
                 .WithRuleId(VacancyRuleSet.Wage);
@@ -373,10 +373,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             {
                 RuleFor(x => x.Wage.WageType)
                     .NotEmpty()
-                        .WithMessage("You must select a wage")
+                        .WithMessage("Select how much you'd like to pay the apprentice")
                         .WithErrorCode("46")
                     .IsInEnum()
-                        .WithMessage("You must select a wage")
+                        .WithMessage("Select how much you'd like to pay the apprentice")
                         .WithErrorCode("46")
                     .RunCondition(VacancyRuleSet.Wage)
                     .WithRuleId(VacancyRuleSet.Wage);

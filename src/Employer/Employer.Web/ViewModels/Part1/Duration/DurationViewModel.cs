@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.ViewModels.Validations;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -9,16 +8,13 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Duration
 {
     public class DurationViewModel
     {
-        [Required(ErrorMessage = ErrMsg.BlankInput.ApprenticeshipDuration)]
         [TypeOfInteger(ErrorMessage = ErrMsg.TypeOfInteger.Duration)]
         public string Duration { get; set; }
 
         public DurationUnit DurationUnit { get; set; }
 
-        [Required(ErrorMessage = ErrMsg.BlankInput.WorkingWeekDescription)]
         public string WorkingWeekDescription { get; set; }
 
-        [Required(ErrorMessage = ErrMsg.BlankInput.WeeklyHours)]
         [TypeOfDecimal(2, ErrorMessage = ErrMsg.TypeOfDecimal.WeeklyHours)]
         public string WeeklyHours { get; set; }
 
