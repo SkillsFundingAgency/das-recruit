@@ -9,16 +9,16 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <a asp-route="@RouteNames.Wage_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Preview your vacancy</h1>
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Preview your advert</h1>
         <p class="govuk-body">
-            Review the details that will appear in your vacancy. Once this is approved it will appear on
-            <a href="@ExternalLinks.Value.FindAnApprenticeshipUrl" class="govuk-link" target="_blank">find an apprentice service (opens in new tab).</a>
+            Review the details that will appear in your advert. You can still make changes if you need to.
         </p>
         <p class="govuk-body">
-            You can change any of the details.
+            Once we've approved your advert, it will appear on
+            <a href="@ExternalLinks.Value.FindAnApprenticeshipUrl" class="govuk-link" target="_blank">Find an apprentice service (opens in new tab or window).</a>
         </p>
         <div class="govuk-form-group govuk-!-margin-top-6">
-            <a asp-route="@RouteNames.Vacancy_Preview_Get" esfa-automation="link-continue" class="govuk-button" esfa-automation="continue-button">Preview vacancy</a>
+            <a asp-route="@RouteNames.Vacancy_Preview_Get" esfa-automation="link-continue" class="govuk-button" esfa-automation="continue-button">Preview advert</a>
         </div>
     </div>
 </div>

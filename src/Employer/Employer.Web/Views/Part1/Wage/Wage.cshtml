@@ -23,8 +23,8 @@
             
             <div esfa-validation-marker-for="WageType" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
-                    <div class="govuk-body">Pay will show as a yearly figure on your vacancy. 
-                        <a href="@externalLinks.Value.NationalMinimumWageRates" rel="noopener" target="_blank" class="govuk-link">National Minimum Wage for apprentices.</a>
+                    <div class="govuk-body">Pay will show as a yearly figure on your advert. 
+                        <a href="@externalLinks.Value.NationalMinimumWageRates" rel="noopener" target="_blank" class="govuk-link">National Minimum Wage for apprentices (opens in a new tab or window).</a>
                     </div>
                     
                     <span esfa-validation-message-for="WageType" class="govuk-error-message"></span>
@@ -37,7 +37,7 @@
                             <div class="govuk-form-group">
                                 <p class="govuk-body">
                                     <span class="govuk-hint">From @Model.MinimumWageStartFrom, National Minimum Wage is between @Model.NationalMinimumWageLowerBoundHourly and @Model.NationalMinimumWageUpperBoundHourly an hour, depending on the candidate's age.<br><br>
-                                        On the vacancy, this will be displayed as a yearly wage of @Model.NationalMinimumWageYearly</span>
+                                        On the advert, this will be displayed as a yearly wage of @Model.NationalMinimumWageYearly</span>
                                 </p>
                             </div>
                         </div>
@@ -51,7 +51,7 @@
                                 <p class="govuk-body">
                                     <span class="govuk-hint">
                                         From @Model.MinimumWageStartFrom, the National Minimum Wage for apprentices is @Model.ApprenticeshipMinimumWageHourly an hour.<br><br>
-                                        On the vacancy, this will be displayed as a yearly wage of @Model.ApprenticeshipMinimumWageYearly
+                                        On the advert, this will be displayed as a yearly wage of @{@Model.ApprenticeshipMinimumWageYearly}.
                                     </span>
                                 </p>
                             </div>
@@ -85,7 +85,7 @@
             <div class="govuk-character-count">
                 <div esfa-validation-marker-for="WageAdditionalInformation" class="govuk-form-group">
                     <label asp-for="WageAdditionalInformation" class="govuk-label govuk-!-font-weight-bold">Extra information about pay (optional)</label>
-                    <span class="govuk-hint">For example bonus schemes, performance increases or benefits</span>
+                    <span class="govuk-hint">For example, bonus schemes, performance increases or benefits</span>
                     <span esfa-validation-message-for="WageAdditionalInformation" class="govuk-error-message"></span>
                     <textarea asp-for="WageAdditionalInformation" class="govuk-textarea character-count" rows="5" data-val-length-max="250"></textarea>
                     <span class="govuk-body maxchar-count">250</span>
@@ -95,8 +95,10 @@
 
             <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">@Model.PageInfo.SubmitButtonText</button>
 
-            <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link das-button-link">Cancel</a>
-            <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.ApprenticeshipSummarySection" class="govuk-link das-button-link">Cancel</a>
+            <div class="govuk-body">
+                <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link">Cancel</a>
+                <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.ApprenticeshipSummarySection" class="govuk-link">Cancel</a>
+            </div>
         </form>
     </div>
 </div>

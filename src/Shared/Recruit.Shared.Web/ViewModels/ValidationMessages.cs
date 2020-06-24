@@ -30,6 +30,13 @@ namespace Esfa.Recruit.Shared.Web.ViewModels
             {
                 public const string WeeklyHours = "Hours per week must be a number";
             }
+
+            public static class BlankInput
+            {
+                public const string ApprenticeshipDuration = "Enter how long the whole apprenticeship is, including work and training";
+                public const string WorkingWeekDescription = "Enter details about the working week";
+                public const string WeeklyHours = "Enter how many hours the apprentice will work each week, includingtraining";
+            }
         }
 
         public static class WageValidationMessages
@@ -37,6 +44,11 @@ namespace Esfa.Recruit.Shared.Web.ViewModels
             public static class TypeOfMoney
             {
                 public const string FixedWageYearlyAmount = "Fixed wage must be a number";
+            }
+
+            public static class NotSelected
+            {
+                public const string WageRadio = "Select how much you'd like to pay the apprentice";
             }
         }
 

@@ -32,7 +32,7 @@
                     <span esfa-validation-message-for="Duration" class="govuk-error-message"></span>
                     <input asp-for="Duration" class="govuk-input govuk-input--width-2" type="number" min="1" >
                     <select asp-for="DurationUnit" class="govuk-select duration-unit-select">
-                        <option value="@DurationUnit.Month">Month(s)</option>
+                        <option value="@DurationUnit.Month">Months</option>
                         <option value="@DurationUnit.Year">Year(s)</option>
                     </select>
                 </fieldset>
@@ -59,8 +59,10 @@
             
             <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">@Model.PageInfo.SubmitButtonText</button>
 
-            <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link das-button-link">Cancel</a>
-            <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.ApprenticeshipSummarySection" class="govuk-link das-button-link">Cancel</a>
+            <div class="govuk-body">
+                <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link">Cancel</a>
+                <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.ApprenticeshipSummarySection" class="govuk-link">Cancel</a>
+            </div>
         </form>
     </div>
 </div>
