@@ -33,7 +33,7 @@ namespace Esfa.Recruit.Shared.Web.UnitTests.Extensions
 
             var actual = wage.ToText(new DateTime(2018, 5, 1));
 
-            actual.Should().Be("£8,202.01 - £15,290.89");
+            actual.Should().Be("£8,202.01 to £15,290.89");
         }
 
         [Fact]
