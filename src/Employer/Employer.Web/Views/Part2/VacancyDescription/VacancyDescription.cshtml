@@ -17,7 +17,7 @@
         <form asp-route="@RouteNames.VacancyDescription_Index_Post">
             <div esfa-validation-marker-for="VacancyDescription" class="govuk-form-group">
                 <label asp-for="VacancyDescription" class="govuk-label govuk-!-font-weight-bold">What will the apprentice be doing?</label>
-                <span class="govuk-hint">Describe what an average day or week will be like and what tasks they could be doing.</span>
+                <span class="govuk-hint">Describe what an average day or week will be like and what tasks the apprentice could be doing.</span>
                 <span esfa-validation-message-for="VacancyDescription" class="govuk-error-message"></span>
                 <textarea asp-for="VacancyDescription" class="govuk-textarea html-editor" rows="5" data-val-length-max="500"></textarea>
                 <span class="govuk-body maxchar-count">500</span>
@@ -25,12 +25,13 @@
             </div>
             <div esfa-validation-marker-for="TrainingDescription" class="govuk-form-group">
                 <label asp-for="TrainingDescription" class="govuk-label govuk-!-font-weight-bold">What training will the apprentice take and what qualification will the apprentice get at the end?</label>
-                <p class="govuk-body">You must include information about the following:</p>
-                <ul class="govuk-list govuk-list--bullet">
+                <p class="govuk-body govuk-hint">You must include information about the following:</p>
+                <ul class="govuk-list govuk-list--bullet govuk-hint">
                     <li>
-                        the qualification they will get at the end. You may want to have a look at the <a class="govuk-link" target="_blank" href="https://www.gov.uk/what-different-qualification-levels-mean/list-of-qualification-levels">types of qualifications available (opens in new tab).</a>
+                        the qualification they’ll get at the end - you can <a class="govuk-link" target="_blank" href="https://www.gov.uk/what-different-qualification-levels-mean/list-of-qualification-levels">view the types of qualifications available (opens in a new tab or window)</a>
                     </li>
-                    <li>where and when the apprentice will do their training. If you can, add detail about the location of the training. It would also be helpful to include if it is a day a week or block release </li>
+                    <li>where and when the apprentice will do their training - if you can, add details about the location of the training </li>
+                    <li>whether the training will be one day a week or block release</li>
                 </ul>
                 <span esfa-validation-message-for="TrainingDescription" class="govuk-error-message"></span>
                 <textarea asp-for="TrainingDescription" class="govuk-textarea html-editor" rows="5" data-val-length-max="500"></textarea>
@@ -38,7 +39,7 @@
                 <span class="govuk-body maxchar-text"> characters remaining</span>
             </div>
             <div esfa-validation-marker-for="OutcomeDescription" class="govuk-form-group">
-                <label asp-for="OutcomeDescription" class="govuk-label govuk-!-font-weight-bold">What is the expected career progression after this apprenticeship?</label>
+                <label asp-for="OutcomeDescription" class="govuk-label govuk-!-font-weight-bold">What's the expected career progression after this apprenticeship?</label>
                 <span class="govuk-hint">You may want to mention specific routes they could take once qualified</span>
                 <span esfa-validation-message-for="OutcomeDescription" class="govuk-error-message"></span>
                 <textarea asp-for="OutcomeDescription" class="govuk-textarea html-editor" rows="5" data-val-length-max="500"></textarea>
@@ -47,7 +48,9 @@
             </div>
             <div class="govuk-form-group">
                 <input type="submit" value="Save and continue" esfa-automation="btn-continue" class="govuk-button save-button" />
-                <a asp-route="@RouteNames.Vacancy_Preview_Get" esfa-automation="link-cancel" class="govuk-link das-button-link">Cancel</a>
+                <div>
+                    <a asp-route="@RouteNames.Vacancy_Preview_Get" esfa-automation="link-cancel" class="govuk-link das-button-link">Cancel</a>
+                </div>
             </div>
         </form>
     </div>
