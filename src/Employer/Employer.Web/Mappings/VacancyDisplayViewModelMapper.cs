@@ -95,7 +95,7 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             if (vacancy.Wage != null)
             {
                 vm.ExpectedDuration = (vacancy.Wage.DurationUnit.HasValue && vacancy.Wage.Duration.HasValue)
-                    ? vacancy.Wage.DurationUnit.Value.GetDisplayName().ToQuantity(vacancy.Wage.Duration.Value)
+                    ? vacancy.Wage.DurationUnit.Value.GetDisplayName().ToLower().ToQuantity(vacancy.Wage.Duration.Value)
                     : null;
                 vm.HoursPerWeek = $"{vacancy.Wage.WeeklyHours:0.##}";
                 vm.WageInfo = vacancy.Wage.WageAdditionalInformation;
