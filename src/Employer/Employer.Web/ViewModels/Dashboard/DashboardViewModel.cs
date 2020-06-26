@@ -16,16 +16,16 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Dashboard
         public bool HasOneVacancy => Vacancies.Count == 1;
         public Guid CurrentVacancyId => HasOneVacancy ? Vacancies.Single().Id : new Guid();
         public int VacancyCountDraft => Vacancies.Count(v => v.Status == VacancyStatus.Draft);
-        public string VacancyTextDraft => "vacancy".ToQuantity(VacancyCountDraft, ShowQuantityAs.None);
+        public string VacancyTextDraft => "advert".ToQuantity(VacancyCountDraft, ShowQuantityAs.None);
         public bool HasDraftVacancy => VacancyCountDraft > 0;
         public int VacancyCountLive => Vacancies.Count(v => v.Status == VacancyStatus.Live);
-        public string VacancyTextLive => "vacancy".ToQuantity(VacancyCountLive, ShowQuantityAs.None);
+        public string VacancyTextLive => "advert".ToQuantity(VacancyCountLive, ShowQuantityAs.None);
         public bool HasLiveVacancy => VacancyCountLive > 0;
         public int VacancyCountClosed => Vacancies.Count(v => v.Status == VacancyStatus.Closed);
-        public string VacancyTextClosed => "vacancy".ToQuantity(VacancyCountClosed, ShowQuantityAs.None);
+        public string VacancyTextClosed => "advert".ToQuantity(VacancyCountClosed, ShowQuantityAs.None);
         public bool HasClosedVacancy => VacancyCountClosed > 0;
         public int VacancyCountReferred => Vacancies.Count(v => v.Status == VacancyStatus.Referred);
-        public string VacancyTextReferred => "vacancy".ToQuantity(VacancyCountReferred, ShowQuantityAs.None);
+        public string VacancyTextReferred => "advert".ToQuantity(VacancyCountReferred, ShowQuantityAs.None);
         public bool HasReferredVacancy => VacancyCountReferred > 0;
         public int VacancyCountSubmitted => Vacancies.Count(v => v.Status == VacancyStatus.Submitted);
         public bool HasSubmittedVacancy => VacancyCountSubmitted > 0;
@@ -35,9 +35,9 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Dashboard
         public bool ShowAllApplications => AllApplications > 0;
         public string ApplicationTextLive => "application".ToQuantity(NoOfNewApplications, ShowQuantityAs.None);
         public int NoOfVacanciesClosingSoon { get; set; }
-        public string VacancyTextClosingSoon => "vacancy".ToQuantity(NoOfVacanciesClosingSoon, ShowQuantityAs.None);
+        public string VacancyTextClosingSoon => "advert".ToQuantity(NoOfVacanciesClosingSoon, ShowQuantityAs.None);
         public int NoOfVacanciesClosingSoonWithNoApplications { get; set; }
-        public string VacancyTextClosingSoonWithNoApplications => "vacancy".ToQuantity(NoOfVacanciesClosingSoonWithNoApplications, ShowQuantityAs.None);
+        public string VacancyTextClosingSoonWithNoApplications => "advert".ToQuantity(NoOfVacanciesClosingSoonWithNoApplications, ShowQuantityAs.None);
         public bool ShowNoOfVacanciesClosingSoon => NoOfVacanciesClosingSoon > 0;
         public bool ShowNoOfVacanciesClosingSoonWithNoApplications => NoOfVacanciesClosingSoonWithNoApplications > 0;
         public bool HasAnyVacancies => Vacancies.Any();
