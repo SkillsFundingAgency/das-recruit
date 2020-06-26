@@ -13,7 +13,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
 
         public static class TrainingFirstVacancyValidationMessages
         {
-            public const string HasFoundTraining = "Please select an option to continue.";
+            public const string HasFoundTraining = "Select whether you’ve already found apprenticeship training";
         }
 
         public static class TrainingProviderValidationMessages
