@@ -466,7 +466,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.TrainingDescription)
                 .NotEmpty()
-                    .WithMessage("Enter the training the apprentice will take and the qualification theapprentice will get")
+                    .WithMessage("Enter the training the apprentice will take and the qualification the apprentice will get")
                     .WithErrorCode("54")
                 .MaximumLength(1000)
                     .WithMessage("Training to be provided description must not exceed {MaxLength} characters")
