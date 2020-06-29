@@ -410,7 +410,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.Skills)
                 .Must(s => s != null && s.Count > 0)
-                    .WithMessage("Select the skills and personal qualities you’d like the applicant to have")
+                    .WithMessage("Select the skills and personal qualities you'd like the applicant to have")
                     .WithErrorCode("51")
                 .RunCondition(VacancyRuleSet.Skills)
                 .WithRuleId(VacancyRuleSet.Skills);
