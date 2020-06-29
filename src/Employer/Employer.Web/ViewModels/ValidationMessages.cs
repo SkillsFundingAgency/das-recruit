@@ -4,7 +4,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
     {
         public static class LocationPreferenceMessages
         {
-            public const string SelectionRequired = "You must select a work address";
+            public const string SelectionRequired = "Select where the apprentice will work";
         }
         public static class EmployerSelectionValidationMessages
         {
