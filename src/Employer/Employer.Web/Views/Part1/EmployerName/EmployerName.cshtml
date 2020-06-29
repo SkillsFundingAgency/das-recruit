@@ -48,10 +48,10 @@
                             <span esfa-validation-message-for="NewTradingName" class="govuk-error-message"></span>
                             <div class="govuk-form-group">
                                 <div asp-hide="@Model.HasExistingTradingName">
-                                    <label asp-for="NewTradingName" class="govuk-label" for="NewTradingName">Enter trading name</label>
+                                    <label asp-for="NewTradingName" class="govuk-label govuk-!-font-weight-bold" for="NewTradingName">Enter trading name</label>
                                 </div>
                                 <div asp-show="@Model.HasExistingTradingName">
-                                    <label asp-for="NewTradingName" class="govuk-label" for="NewTradingName">Add a new trading name</label>
+                                    <label asp-for="NewTradingName" class="govuk-label govuk-!-font-weight-bold" for="NewTradingName">Add a new trading name</label>
                                     <span class="govuk-hint">This will also change the trading name on all your adverts that are in draft or rejected.</span>
                                 </div>
                                 <input asp-for="NewTradingName" class="govuk-input govuk-input--width-20" id="NewTradingName" name="NewTradingName" type="text">
