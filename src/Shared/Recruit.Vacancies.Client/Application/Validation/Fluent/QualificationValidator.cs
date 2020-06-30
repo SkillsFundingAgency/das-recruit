@@ -61,7 +61,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
             RuleFor(x => x.Subject)
                 .NotEmpty()
-                    .WithMessage("Provide a subject")
+                    .WithMessage("Enter the subject")
                     .WithErrorCode("54")
                 .MaximumLength(50)
                     .WithMessage("The qualification must not exceed {MaxLength} characters")
@@ -76,7 +76,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
             RuleFor(x => x.Grade)
                 .NotEmpty()
-                    .WithMessage("Provide a grade")
+                    .WithMessage("Enter the grade")
                     .WithErrorCode("55")
                 .MaximumLength(30)
                     .WithMessage("The grade should be no longer than {MaxLength} characters")
@@ -100,7 +100,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
             RuleFor(x => x.Weighting)
                 .NotEmpty()
-                    .WithMessage("Select if this is a desired or an essential qualification")
+                    .WithMessage("Select if this qualification is essential or desirable")
                     .WithErrorCode("56")
                 .WithRuleId(ruleId);
         }
