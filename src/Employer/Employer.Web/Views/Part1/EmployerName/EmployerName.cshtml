@@ -96,7 +96,9 @@
             </div>
 
             <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Save and continue</button>
-            <a asp-route="@RouteNames.EmployerName_Cancel" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link das-button-link">Cancel</a>
+            <div class="govuk-body">
+                <a asp-route="@RouteNames.EmployerName_Cancel" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link">Cancel</a>
+            </div>
         </form>
     </div>
 </div>

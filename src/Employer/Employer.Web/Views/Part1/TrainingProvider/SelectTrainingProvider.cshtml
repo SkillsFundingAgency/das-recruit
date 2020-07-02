@@ -53,7 +53,7 @@
                             <div class="govuk-form-group js-hidden" id="js-search">
                                 <span class="govuk-hint">
                                     Enter the training provider name or reference number (UKPRN).<br>
-                                    UKPRN is 8 numbers. For example 12345678.
+                                    UKPRN is 8 numbers. For example, 12345678.
                                 </span>
                                 <span esfa-validation-message-for="TrainingProviderSearch" class="govuk-error-message"></span>
                                 <input asp-for="TrainingProviderSearch" type="text" class="govuk-input search-input" />
@@ -87,14 +87,16 @@
             <div class="govuk-form-group">
                 <input type="hidden" name="@nameof(SelectTrainingProviderEditModel.SelectionType)" id="selection-type" value="@TrainingProviderSelectionType.Ukprn" />
                 <input type="submit" value="Save and continue" esfa-automation="btn-continue" class="govuk-button" />
-                <span asp-show="@Model.ReferredFromSavedFavourites">
-                    <a href="@_externalLinks.Value.EmployerFavouritesUrl" class="govuk-link das-button-link" esfa-automation="cancel-link">Cancel</a>
-                    @*<a asp-show="@Model.PageInfo.IsNotWizard" href="@_externalLinksHelper.EmployerFavouritesAccounts" asp-fragment="@Anchors.TrainingProviderSection" class="govuk-link das-button-link" esfa-automation="cancel-link">Cancel</a>*@
-                </span>
-                <span asp-hide="@Model.ReferredFromSavedFavourites">
-                    <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link das-button-link" esfa-automation="cancel-link">Cancel</a>
-                    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.TrainingProviderSection" class="govuk-link das-button-link" esfa-automation="cancel-link">Cancel</a>
-                </span>
+                <div class="govuk-body">
+                    <span asp-show="@Model.ReferredFromSavedFavourites">
+                        <a href="@_externalLinks.Value.EmployerFavouritesUrl" class="govuk-link" esfa-automation="cancel-link">Cancel</a>
+                        @*<a asp-show="@Model.PageInfo.IsNotWizard" href="@_externalLinksHelper.EmployerFavouritesAccounts" asp-fragment="@Anchors.TrainingProviderSection" class="govuk-link" esfa-automation="cancel-link">Cancel</a>*@
+                    </span>
+                    <span asp-hide="@Model.ReferredFromSavedFavourites">
+                        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link" esfa-automation="cancel-link">Cancel</a>
+                        <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.TrainingProviderSection" class="govuk-link" esfa-automation="cancel-link">Cancel</a>
+                    </span>
+                </div>
             </div>
         </form>
     </div>
