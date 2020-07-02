@@ -410,7 +410,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.Skills)
                 .Must(s => s != null && s.Count > 0)
-                    .WithMessage("You must include a skill or quality")
+                    .WithMessage("Select the skills and personal qualities you'd like the applicant to have")
                     .WithErrorCode("51")
                 .RunCondition(VacancyRuleSet.Skills)
                 .WithRuleId(VacancyRuleSet.Skills);
@@ -447,7 +447,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.Description)
                 .NotEmpty()
-                    .WithMessage("You must provide information on what the apprenticeship will involve")
+                    .WithMessage("Enter what the apprentice will be doing")
                     .WithErrorCode("53")
                 .MaximumLength(1000)
                     .WithMessage("What the apprenticeship involves must not exceed {MaxLength} characters")
@@ -466,7 +466,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.TrainingDescription)
                 .NotEmpty()
-                    .WithMessage("You must provide information on the training to be provided")
+                    .WithMessage("Enter the training the apprentice will take and the qualification the apprentice will get")
                     .WithErrorCode("54")
                 .MaximumLength(1000)
                     .WithMessage("Training to be provided description must not exceed {MaxLength} characters")
@@ -485,7 +485,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.OutcomeDescription)
                 .NotEmpty()
-                    .WithMessage("You must provide information on what to expect at the end of the apprenticeship")
+                    .WithMessage("Enter the expected career progression after this apprenticeship")
                     .WithErrorCode("55")
                 .MaximumLength(1000)
                     .WithMessage("What is the expected career progression after this apprenticeship description must not exceed {MaxLength} characters")
