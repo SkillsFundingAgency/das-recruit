@@ -24,7 +24,7 @@
                 <p asp-show="Model.ReferredFromSavedFavourites" class="govuk-body">
                     To make sure your advert appears in search results, use a title that relates to the <span class="govuk-!-font-weight-bold">@Model.TrainingTitle</span>.
                 </p>
-                <span class="govuk-hint">You must include the word ‘apprentice’ or ‘apprenticeship’ </span>
+                <span class="govuk-hint">You must include the word ‘apprentice’ or ‘apprenticeship’.</span>
                 <span esfa-validation-message-for="Title" class="govuk-error-message"></span>
                 <input asp-for="Title" class="govuk-input character-count" type="text" data-val-length-max="100" />
                 <div>
