@@ -6,47 +6,45 @@
     <div class="govuk-grid-column-two-thirds">
         <div asp-show="@Model.ShouldShowCloningChangingMessage" class="info-summary">
             <div class="govuk-heading-m">
-                Cloning vacancy
+                Cloning an advert
             </div>
             <p class="govuk-body">
-                This page will be removed soon. You will still be able to clone vacancies, from your vacancy list,
-                select 'manage' and 'clone vacancy'.
+                We’re removing this page soon, but you’ll still be able to copy your previous adverts. From your list of adverts, select ‘manage’ then ‘clone advert’.
             </p>
             <form asp-route="@RouteNames.DismissCloningMethodChangingMessage_Post" novalidate>
                 <p class="govuk-body">
                     <input type="hidden" id="returnUrl" name="returnUrl" value="@ViewContext.HttpContext.Request.Path" />
-                    <button type="submit" class="button-fake-link">Dismiss this notification</button>
+                    <button type="submit" class="button-fake-link">Hide notification</button>
                 </p>
             </form>
         </div>
         <a asp-show="@Model.ShowReturnToMaLink" asp-route="@RouteNames.Dashboard_Account_Home" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Return to home</a>
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
 
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Create vacancy</h1>
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Create an advert</h1>
 
         <p class="govuk-body">
-            You can clone vacancies once they've been submitted.
-            Vacancies will be approved or rejected within 24 hours.
+            We’ll approve or reject your advert within 24 hours. You can clone an advert once you’ve submitted it.
         </p>
         <form asp-route="@RouteNames.CreateVacancyOptions_Post">
             <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                         <h1 class="govuk-fieldset__heading">
-                            Do you want to create a new vacancy or clone an existing vacancy?
+                            Do you want to create a new advert?
                         </h1>
                     </legend>
                     <div class="govuk-radios">
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" asp-for="VacancyId" type="radio" value="@Guid.Empty" id="create-new" />
-                            <label class="govuk-label govuk-radios__label" for="create-new">Create new vacancy</label>
+                            <label class="govuk-label govuk-radios__label" for="create-new">Yes, create new advert</label>
                         </div>
                         @foreach (var item in Model.Vacancies)
                         {
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" asp-for="VacancyId" type="radio" value="@item.Id" id="@item.Id" />
                                 <label class="govuk-label govuk-radios__label" for="@item.Id">
-                                    @item.VacancyReference
+                                    No, clone @item.VacancyReference
                                 <div class="govuk-hint">
                                     @item.Summary
                                 </div>
@@ -57,7 +55,7 @@
                 </fieldset>
             </div>
             <div class="govuk-form-group">
-                <input type="submit" value="Continue" class="govuk-button" esfa-automation="continue-button" />
+                <input type="submit" value="Save and continue" class="govuk-button" esfa-automation="continue-button" />
             </div>
         </form>
     </div>

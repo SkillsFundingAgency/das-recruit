@@ -64,8 +64,9 @@
             <partial name="@PartialNames.Pager" model="@Model.Pager" />
 
             <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Continue</button>
-
-            <a asp-route="@RouteNames.Employer_Cancel" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link das-button-link">Cancel</a>
+            <div class="govuk-body">
+                <a asp-route="@RouteNames.Employer_Cancel" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link">Cancel</a>
+            </div>
         </form>
     </div>
 </div>

@@ -69,7 +69,7 @@
                                         <input asp-for="AddressLine4" class="govuk-input" maxlength="100" />
                                     </div>
                                     <div esfa-validation-marker-for="Postcode" class="govuk-form-group address-item govuk-form-group">
-                                        <label asp-for="Postcode" class="govuk-label govuk-!-font-weight-bold">Postcode</label>
+                                        <label asp-for="Postcode" class="govuk-label govuk-!-font-weight-bold">Enter Postcode</label>
                                         <span esfa-validation-message-for="Postcode" class="govuk-error-message"></span>
                                         <input asp-for="Postcode" class="govuk-input govuk-input--width-10 postcode-lookup" maxlength="8" />
                                     </div>
@@ -80,7 +80,9 @@
                 </fieldset>
             </div>
             <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">@Model.PageInfo.SubmitButtonText</button>
-            <a asp-route="@RouteNames.Location_Cancel" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link das-button-link">Cancel</a>
+            <div class="govuk-body">
+                <a asp-route="@RouteNames.Location_Cancel" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link">Cancel</a>
+            </div>
         </form>
     </div>
 </div>

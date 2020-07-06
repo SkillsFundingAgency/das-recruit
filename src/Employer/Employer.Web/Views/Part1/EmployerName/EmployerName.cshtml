@@ -19,7 +19,7 @@
 
         <partial name="@PartialNames.ReviewSummary" for="Review"/>
 
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">What employer name do you want to go on the vacancy?</h1>
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Which employer name do you want on your advert?</h1>
 
         <form asp-route="@RouteNames.EmployerName_Post" asp-route-wizard="@Model.PageInfo.IsWizard">
             <div class="govuk-form-group" id="@FieldIdentifiers.EmployerName">
@@ -48,11 +48,11 @@
                             <span esfa-validation-message-for="NewTradingName" class="govuk-error-message"></span>
                             <div class="govuk-form-group">
                                 <div asp-hide="@Model.HasExistingTradingName">
-                                    <label asp-for="NewTradingName" class="govuk-label govuk-!-font-weight-bold" for="NewTradingName">Trading name</label>
+                                    <label asp-for="NewTradingName" class="govuk-label govuk-!-font-weight-bold" for="NewTradingName">Enter trading name</label>
                                 </div>
                                 <div asp-show="@Model.HasExistingTradingName">
                                     <label asp-for="NewTradingName" class="govuk-label govuk-!-font-weight-bold" for="NewTradingName">Add a new trading name</label>
-                                    <span class="govuk-hint">This will also change the trading name on all your vacancies that are in draft or rejected.</span>
+                                    <span class="govuk-hint">This will also change the trading name on all your adverts that are in draft or rejected.</span>
                                 </div>
                                 <input asp-for="NewTradingName" class="govuk-input govuk-input--width-20" id="NewTradingName" name="NewTradingName" type="text">
                             </div>
@@ -61,8 +61,8 @@
                         <div class="govuk-radios__item">
                             <input asp-for="SelectedEmployerIdentityOption" value="Anonymous" data-aria-controls="anonymous-conditional" id="anonymous" class="govuk-radios__input" type="radio" >
                             <label class="govuk-label govuk-radios__label" for="anonymous">
-                                Do not display a name (Be anonymous)
-                                <span class="govuk-hint">This could mean fewer people see your vacancy</span>
+                                I do not want an employer name on my advert (be anonymous)
+                                <span class="govuk-hint">This could mean fewer people view your advert.</span>
                             </label>
                         </div>
                         <div class="govuk-radios__conditional" id="anonymous-conditional">
@@ -70,7 +70,7 @@
                                 <fieldset class="govuk-fieldset">
                                     <div class="govuk-form-group">
                                         <label class="govuk-label" asp-for="AnonymousName">
-                                            Brief description of what the employer does
+                                            Enter a brief description of what the employer does
                                         </label>
                                         <span class="govuk-hint">For example, car manufacturer or clothing retailer.</span>
                                         <span esfa-validation-message-for="AnonymousName" class="govuk-error-message"></span>
@@ -78,9 +78,9 @@
                                     </div>
                                     <div class="govuk-form-group">
                                         <label class="govuk-label" asp-for="AnonymousReason">
-                                            Reason for being anonymous
+                                            Why do you want your advert to be anonymous?
                                         </label>
-                                        <span class="govuk-hint"> This will help our vacancy reviewers validate your request to remain anonymous. This information will not be displayed on the advert.</span>
+                                        <span class="govuk-hint">This information will not show on your advert. We'll use it to help us decide whether you can be anonymous.</span>
                                         <span esfa-validation-message-for="AnonymousReason" class="govuk-error-message"></span>
                                         <textarea asp-for="AnonymousReason" data-val-length-max="200" class="govuk-textarea govuk-!-width-three-quarters character-count" rows="5" type="text"></textarea>
                                         <div>
@@ -95,9 +95,10 @@
                 </fieldset>
             </div>
 
-            <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Continue</button>
-
-            <a asp-route="@RouteNames.EmployerName_Cancel" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link das-button-link">Cancel</a>
+            <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Save and continue</button>
+            <div class="govuk-body">
+                <a asp-route="@RouteNames.EmployerName_Cancel" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link">Cancel</a>
+            </div>
         </form>
     </div>
 </div>

@@ -16,7 +16,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
     public class TrainingController : Controller
     {
         private readonly TrainingOrchestrator _orchestrator;
-        private const string InvalidTraining = "Please select a training programme";
+        private const string InvalidTraining = "Select the training the apprentice will take";
 
         public TrainingController(TrainingOrchestrator orchestrator)
         {

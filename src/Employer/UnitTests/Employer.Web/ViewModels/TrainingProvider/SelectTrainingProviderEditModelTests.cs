@@ -21,7 +21,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.TrainingProvid
             result.IsValid.Should().BeFalse();
             result.Errors.Count.Should().Be(1);
             result.Errors[0].PropertyName.Should().Be(nameof(SelectTrainingProviderEditModel.IsTrainingProviderSelected));
-            result.Errors[0].ErrorMessage.Should().Be("Please select an option to continue");
+            result.Errors[0].ErrorMessage.Should().Be("Select yes if you’ve found a training provider");
         }
 
         [Theory]
