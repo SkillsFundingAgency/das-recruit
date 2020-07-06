@@ -20,51 +20,54 @@
 
         <form asp-route="@RouteNames.Skills_Post" id="skillsForm">
             <fieldset class="govuk-fieldset">
-                <legend class="govuk-heading-s" id="@Anchors.SkillsHeading">Select skills and personal qualities applicants need for this apprenticeship</legend>
 
-                <div class="body-text govuk-hint">Select all that apply or add your own</div>
+                <div class="body-text govuk-hint">Select all that apply or add your own.</div>
+                <div esfa-validation-marker-for="Skills" class="govuk-form-group">
+                    <span esfa-validation-message-for="Skills" class="govuk-error-message"></span>
+                    <div class="two-column-checkbox-container">
+                        <fieldset class="govuk-fieldset two-column-checkbox">
+                            <div class="govuk-checkboxes">
+                                @for (var i = 0; i < Model.Column1Checkboxes.Count; i++)
+                                {
+                                    var checkbox = Model.Column1Checkboxes[i];
+                                    <div class="govuk-checkboxes__item">
+                                        <input name="Skills" id="col1-@i" class="govuk-checkboxes__input" type="checkbox" value="@checkbox.Value" checked="@checkbox.Selected">
+                                        <label class="govuk-label govuk-checkboxes__label" for="col1-@i">@checkbox.Name</label>
+                                    </div>
+                                }
+                            </div>
+                        </fieldset>
+                        <fieldset class="govuk-fieldset two-column-checkbox">
+                            <div class="govuk-checkboxes">
+                                @for (var i = 0; i < Model.Column2Checkboxes.Count; i++)
+                                {
+                                    var checkbox = Model.Column2Checkboxes[i];
+                                    <div class="govuk-checkboxes__item">
+                                        <input name="Skills" id="col2-@i" class="govuk-checkboxes__input" type="checkbox" value="@checkbox.Value" checked="@checkbox.Selected">
+                                        <label class="govuk-label govuk-checkboxes__label" for="col2-@i">@checkbox.Name</label>
+                                    </div>
+                                }
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>    
 
-                <span esfa-validation-message-for="Skills" class="govuk-error-message"></span>
-                <div class="two-column-checkbox-container">
-                    <fieldset class="govuk-fieldset two-column-checkbox">
-                        <div class="govuk-checkboxes">
-                            @for (var i = 0; i < Model.Column1Checkboxes.Count; i++)
-                            {
-                                var checkbox = Model.Column1Checkboxes[i];
-                                <div class="govuk-checkboxes__item">
-                                    <input name="Skills" id="col1-@i" class="govuk-checkboxes__input" type="checkbox" value="@checkbox.Value" checked="@checkbox.Selected">
-                                    <label class="govuk-label govuk-checkboxes__label" for="col1-@i">@checkbox.Name</label>
-                                </div>
-                            }
-                        </div>
-                    </fieldset>
-                    <fieldset class="govuk-fieldset two-column-checkbox">
-                        <div class="govuk-checkboxes">
-                            @for (var i = 0; i < Model.Column2Checkboxes.Count; i++)
-                            {
-                                var checkbox = Model.Column2Checkboxes[i];
-                                <div class="govuk-checkboxes__item">
-                                    <input name="Skills" id="col2-@i" class="govuk-checkboxes__input" type="checkbox" value="@checkbox.Value" checked="@checkbox.Selected">
-                                    <label class="govuk-label govuk-checkboxes__label" for="col2-@i">@checkbox.Name</label>
-                                </div>
-                            }
-                        </div>
-                    </fieldset>
-                </div>
             </fieldset>
 
-            <p class="govuk-body govuk-!-margin-bottom-0">or</p>
+            <p class="govuk-body govuk-!-margin-bottom-5">or</p>
             <div esfa-validation-marker-for="AddCustomSkillName" class="govuk-form-group">
                 <label asp-for="AddCustomSkillName" class="govuk-label govuk-!-font-weight-bold">Add a new desired skill or personal quality</label>
                 <span esfa-validation-message-for="AddCustomSkillName" class="govuk-error-message"></span>
 
                 <input asp-for="AddCustomSkillName" value="@Model.AddCustomSkillName" type="text" class="govuk-input govuk-!-width-one-half" maxlength="30">
 
-                <button name="AddCustomSkillAction" id="add-custom-skill" value="AddCustomSkill" type="submit" class="govuk-button button-secondary save-button">+ Add this skill</button>
+                <button name="AddCustomSkillAction" id="add-custom-skill" value="AddCustomSkill" type="submit" class="govuk-button save-button">Add this skill</button>
             </div>
             <div class="govuk-form-group">
                 <button type="submit" esfa-automation="btn-continue" class="govuk-button save-button">Save and continue</button>
-                <a asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="reqAndProspects" esfa-automation="link-cancel" class="govuk-link das-button-link">Cancel</a>
+                <div>
+                    <a asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="reqAndProspects" esfa-automation="link-cancel" class="govuk-link das-button-link">Cancel</a>
+                </div>
             </div>
         </form>
     </div>

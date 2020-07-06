@@ -131,7 +131,7 @@
         <div class="@GetSectionClass(Model.ClosingDateSectionState)">
             <h3 class="govuk-heading-s govuk-!-margin-top-0" id="@Anchors.ClosingDate">
                 <img asp-show="@Model.ClosingDateRequiresEdit" src="/img/red-cross.png" />
-                Closing Date
+                Closing date
             </h3>
             <span esfa-validation-message-for="ClosingDate" class="govuk-error-message"></span>
             <p asp-show="@Model.HasClosingDate" class="govuk-body">@Model.ClosingDate</p>
@@ -438,7 +438,7 @@
         <h2 asp-show="@Model.ShowGeneralApplicationProcessSectionTitle" class="govuk-heading-l">Application process</h2>
         <h2 asp-show="@Model.HasSpecifiedThroughExternalApplicationMethod" class="govuk-heading-l">Employer's application instructions</h2>
         <div asp-show="@Model.HasNotSpecifiedApplicationMethod" class="@GetSectionClass(Model.ApplicationMethodSectionState)">
-            <h2 id="@Anchors.ApplicationMethod" class="govuk-heading-s govuk-!-margin-top-4">How will the candidates apply for this vacancy?</h2>
+            <h2 id="@Anchors.ApplicationMethod" class="govuk-heading-s govuk-!-margin-top-4">How will the candidates apply for this apprenticeship?</h2>
             <span esfa-validation-message-for="ApplicationMethod" class="govuk-error-message"></span>
             @EditLink(RouteNames.ApplicationProcess_Get, Model.ApplicationMethodSectionState, "application method","link-application-method")
         </div>
@@ -481,14 +481,23 @@
 </div>
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-        <div class="govuk-form-group inline">
-            <div class="govuk-form-group">
-                <form asp-show="@Model.CanSubmit" asp-route="@RouteNames.Preview_Submit_Post" class="form-inline">
-                    <input type="submit" value="@Model.SubmitButtonText" class="govuk-button" esfa-automation="submit-button" />
-                </form>
-                <a asp-route="@RouteNames.Vacancies_Get" class="govuk-link das-button-link" esfa-automation="dashboard-link">Return to dashboard</a>
-                <a asp-show="@Model.CanDelete" asp-route="@RouteNames.DeleteVacancy_Get" class="govuk-button delete-button" esfa-automation="delete-button">Delete</a>
-            </div>
+        <a asp-show="@Model.CanDelete" asp-route="@RouteNames.DeleteVacancy_Get" class="govuk-button delete-button" esfa-automation="delete-button">Delete advert</a>
+    </div>
+</div>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+    </div>
+</div>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <div class="govuk-body">
+            <form asp-show="@Model.CanSubmit" asp-route="@RouteNames.Preview_Submit_Post" class="form-inline">
+                <input type="submit" value="@Model.SubmitButtonText" class="govuk-button" esfa-automation="submit-button" />
+            </form>
+        </div>
+        <div class="govuk-body">
+            <a asp-route="@RouteNames.Vacancies_Get" class="govuk-link" esfa-automation="dashboard-link">Save and return to dashboard</a>
         </div>
     </div>
 </div>

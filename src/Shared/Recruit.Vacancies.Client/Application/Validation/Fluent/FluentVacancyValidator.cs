@@ -107,7 +107,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
          RuleFor(x => x.Title)
              .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty()
-                    .WithMessage("Enter the title of this vacancy")
+                    .WithMessage("Enter the title of this advert")
                     .WithErrorCode("1")
                 .MaximumLength(100)
                     .WithMessage("Title must not exceed {MaxLength} characters")
@@ -129,7 +129,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.EmployerName)
                 .NotEmpty()
-                    .WithMessage("You must select one organisation")
+                    .WithMessage("Select the employer name you want on your advert")
                     .WithErrorCode("4")
                 .RunCondition(VacancyRuleSet.EmployerName)
                 .WithRuleId(VacancyRuleSet.EmployerName);
@@ -144,7 +144,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             When(v => v.EmployerNameOption == EmployerNameOption.TradingName, () => 
                 RuleFor(x => x.EmployerName)
                     .NotEmpty()
-                        .WithMessage("You must provide the trading name")
+                        .WithMessage("Enter the trading name")
                         .WithErrorCode("401")
                     .MaximumLength(100)
                         .WithMessage("The trading name must not exceed {MaxLength} characters")
@@ -162,7 +162,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             When(v => v.EmployerNameOption == EmployerNameOption.Anonymous, () =>
                 RuleFor(x => x.EmployerName)
                     .NotEmpty()
-                    .WithMessage("You must provide a description")
+                    .WithMessage("Enter a brief description of what the employer does")
                     .WithErrorCode("405")
                     .MaximumLength(100)
                     .WithMessage("The description must not be more than {MaxLength} characters")
@@ -180,7 +180,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             When(v => v.EmployerNameOption == EmployerNameOption.Anonymous, () =>
                 RuleFor(x => x.AnonymousReason)
                     .NotEmpty()
-                    .WithMessage("You must provide a reason")
+                    .WithMessage("Enter why you want your advert to be anonymous")
                     .WithErrorCode("408")
                     .MaximumLength(200)
                     .WithMessage("The reason must not be more than {MaxLength} characters")
@@ -197,7 +197,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
             RuleFor(x => x.EmployerNameOption)
                 .NotEmpty()
-                    .WithMessage("You must select an employer name")
+                    .WithMessage("Select the employer name you want on your advert")
                     .WithErrorCode("404")
                 .RunCondition(VacancyRuleSet.EmployerNameOption)
                 .WithRuleId(VacancyRuleSet.EmployerNameOption);
@@ -215,7 +215,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.NumberOfPositions)
                 .Must(x => x.HasValue && x.Value > 0)
-                    .WithMessage("Enter the number of positions")
+                    .WithMessage("Enter the number of positions for this apprenticeship")
                     .WithErrorCode("10")
                 .RunCondition(VacancyRuleSet.NumberOfPositions)
                 .WithRuleId(VacancyRuleSet.NumberOfPositions);
@@ -226,19 +226,19 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             RuleFor(x => x.ShortDescription)
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty()
-                .WithMessage("You must provide an overview of the vacancy")
+                .WithMessage("Enter a short description of the apprenticeship")
                     .WithErrorCode("12")
                 .MaximumLength(350)
-                    .WithMessage("Overview of the vacancy must not exceed {MaxLength} characters")
+                    .WithMessage("Short description of the apprenticeship must not exceed {MaxLength} characters")
                     .WithErrorCode("13")
                 .MinimumLength(50)
-                    .WithMessage("Overview of the vacancy must be at least {MinLength} characters")
+                    .WithMessage("Short description of the apprenticeship must be at least {MinLength} characters")
                     .WithErrorCode("14")
                 .ValidFreeTextCharacters()
-                    .WithMessage("Overview of the vacancy contains some invalid characters")
+                    .WithMessage("Short description of the apprenticeship contains some invalid characters")
                     .WithErrorCode("15")
                 .ProfanityCheck(_profanityListProvider)
-                .WithMessage("Overview of the vacancy must not contain a banned word or phrase.")
+                .WithMessage("Short description of the apprenticeship must not contain a banned word or phrase.")
                 .WithErrorCode("605")
                 .RunCondition(VacancyRuleSet.ShortDescription)
                 .WithRuleId(VacancyRuleSet.ShortDescription);
@@ -248,7 +248,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.ClosingDate)
                 .NotNull()
-                    .WithMessage("You must provide the closing date for applications")
+                    .WithMessage("Enter an application closing date")
                     .WithErrorCode("16")
                 .GreaterThan(v => _timeProvider.Now.Date.AddDays(1).AddTicks(-1))
                     .WithMessage("Closing date for applications cannot be today or earlier.")
@@ -261,7 +261,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.StartDate)
                 .NotNull()
-                .WithMessage("You must provide a possible apprenticeship start date")
+                .WithMessage("Enter when you expect the apprentice to start")
                     .WithErrorCode("20")
                 .GreaterThan(v => _timeProvider.Now.Date.AddDays(1).AddTicks(-1))
                 .WithMessage("Possible apprenticeship start date can't be today or earlier. We advise using a date more than two weeks from now.")
@@ -410,7 +410,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.Skills)
                 .Must(s => s != null && s.Count > 0)
-                    .WithMessage("You must include a skill or quality")
+                    .WithMessage("Select the skills and personal qualities you'd like the applicant to have")
                     .WithErrorCode("51")
                 .RunCondition(VacancyRuleSet.Skills)
                 .WithRuleId(VacancyRuleSet.Skills);
@@ -447,7 +447,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.Description)
                 .NotEmpty()
-                    .WithMessage("You must provide information on what the apprenticeship will involve")
+                    .WithMessage("Enter what the apprentice will be doing")
                     .WithErrorCode("53")
                 .MaximumLength(1000)
                     .WithMessage("What the apprenticeship involves must not exceed {MaxLength} characters")
@@ -466,7 +466,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.TrainingDescription)
                 .NotEmpty()
-                    .WithMessage("You must provide information on the training to be provided")
+                    .WithMessage("Enter the training the apprentice will take and the qualification the apprentice will get")
                     .WithErrorCode("54")
                 .MaximumLength(1000)
                     .WithMessage("Training to be provided description must not exceed {MaxLength} characters")
@@ -485,7 +485,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.OutcomeDescription)
                 .NotEmpty()
-                    .WithMessage("You must provide information on what to expect at the end of the apprenticeship")
+                    .WithMessage("Enter the expected career progression after this apprenticeship")
                     .WithErrorCode("55")
                 .MaximumLength(1000)
                     .WithMessage("What is the expected career progression after this apprenticeship description must not exceed {MaxLength} characters")

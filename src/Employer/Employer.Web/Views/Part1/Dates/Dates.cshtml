@@ -92,16 +92,17 @@
                     <div class="govuk-checkboxes">
                         <div class="govuk-checkboxes__item">
                             <input asp-for="IsDisabilityConfident" class="govuk-checkboxes__input" type="checkbox" value="true" >
-                            <label asp-for="IsDisabilityConfident" class="govuk-label govuk-checkboxes__label">This vacancy is <a href="https://www.gov.uk/government/collections/disability-confident-campaign" class="govuk-link" rel="noopener" target="_blank" title="Disability Confident employer scheme and guidance (opens in a new window)">Disability Confident</a>.</label>
+                            <label asp-for="IsDisabilityConfident" class="govuk-label govuk-checkboxes__label">This advert is <a href="https://www.gov.uk/government/collections/disability-confident-campaign" class="govuk-link" rel="noopener" target="_blank" title="Disability Confident employer scheme and guidance (opens in a new window)">Disability Confident</a>.</label>
                         </div>
                     </div>
                 </fieldset>
             </div>
 
             <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">@Model.PageInfo.SubmitButtonText</button>
-
-            <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link das-button-link">Cancel</a>
-            <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.ApprenticeshipSummarySection" class="govuk-link das-button-link">Cancel</a>
+            <div class="govuk-body">
+                <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link">Cancel</a>
+                <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.ApprenticeshipSummarySection" class="govuk-link">Cancel</a>
+            </div>
         </form>
     </div>
 </div>
