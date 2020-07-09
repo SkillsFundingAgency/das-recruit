@@ -24,15 +24,15 @@
                         <span class="govuk-visually-hidden"> (enter a numeric value and then select Month(s) or Year(s) in the next field)</span>
                     </label>
                     <span class="govuk-hint">
-                        The apprenticeship must last at least 12 months
+                        The apprenticeship must last for at least 12 months.
                     </span>
                     <span asp-show="@Model.ShowTraining" class="govuk-hint">
-                        For @Model.TrainingTitle, Typical length is @Model.TrainingDurationMonths months
+                        For @Model.TrainingTitle, typical length is @Model.TrainingDurationMonths months.
                     </span>
                     <span esfa-validation-message-for="Duration" class="govuk-error-message"></span>
                     <input asp-for="Duration" class="govuk-input govuk-input--width-2" type="number" min="1" >
                     <select asp-for="DurationUnit" class="govuk-select duration-unit-select">
-                        <option value="@DurationUnit.Month">Month(s)</option>
+                        <option value="@DurationUnit.Month">Months</option>
                         <option value="@DurationUnit.Year">Year(s)</option>
                     </select>
                 </fieldset>
@@ -41,9 +41,10 @@
             <div class="govuk-character-count">
                 <div esfa-validation-marker-for="WorkingWeekDescription" class="govuk-form-group">
                     <label asp-for="WorkingWeekDescription" class="govuk-label govuk-!-font-weight-bold">Details of working week</label>
-                    <span class="govuk-hint">For example, Monday to Friday 9am to 5pm, shifts, may work evenings and weekends</span>
+                    <span class="govuk-hint">For example, Monday to Friday 9am to 5pm, shifts, may work evenings and weekends.</span>
                     <span esfa-validation-message-for="WorkingWeekDescription" class="govuk-error-message"></span>
                     <textarea asp-for="WorkingWeekDescription" class="govuk-textarea character-count" rows="5" data-val-length-max="250"></textarea>
+                    <span class="govuk-body">You have </span>
                     <span class="govuk-body maxchar-count">250</span>
                     <span class="govuk-body maxchar-text"> characters remaining</span>
                 </div>
