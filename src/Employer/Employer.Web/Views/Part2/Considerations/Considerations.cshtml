@@ -18,7 +18,7 @@
         <form asp-route="@RouteNames.Considerations_Post">
             <div esfa-validation-marker-for="ThingsToConsider" class="govuk-form-group">
                 <label asp-for="ThingsToConsider" class="govuk-visually-hidden">Things to consider (optional)</label>
-                <span class="govuk-hint">For example, if the vacancy will involve working outdoors, or lifting heavy objects</span>
+                <span class="govuk-hint">For example, the apprenticeship will involve working outdoors or lifting heavy objects.</span>
                 <span esfa-validation-message-for="ThingsToConsider" class="govuk-error-message"></span>
                 <textarea asp-for="ThingsToConsider" class="govuk-textarea character-count" rows="5" data-val-length-max="350"></textarea>
                 <span class="govuk-body maxchar-count">350</span>
@@ -26,7 +26,9 @@
             </div>
             <div class="govuk-form-group">
                 <input type="submit" value="Save and continue" esfa-automation="btn-continue" class="govuk-button save-button" />
-                <a asp-route="@RouteNames.Vacancy_Preview_Get" esfa-automation="link-cancel" class="govuk-link das-button-link">Cancel</a>
+                <p class="govuk-body">
+                    <a asp-route="@RouteNames.Vacancy_Preview_Get" esfa-automation="link-cancel" class="govuk-link">Cancel</a>
+                </p>
             </div>
         </form>
     </div>
