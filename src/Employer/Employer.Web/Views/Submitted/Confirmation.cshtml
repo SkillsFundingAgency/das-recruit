@@ -3,6 +3,7 @@
 @inject IOptions<ExternalLinksConfiguration> ExternalLinks
 @{
     ViewBag.Vpv = "/recruitment/employer/page-vacancy-submitted-confirmation";
+    ViewBag.Title = "Advert submitted for approval";
 }
 
 <h1 class="govuk-heading-l">@Model.Title</h1>
@@ -27,11 +28,11 @@
         </div>
         <h2 class="govuk-heading-m">Next steps</h2>
         <div asp-show="@Model.HasNotificationsSet">
-            <p class="govuk-body">We’ll check the advert and let you know by email within one working day if you need to make any edits. <esfaFeatureEnabled name="@FeatureNames.SetNotificationPreferences"><a asp-route="@RouteNames.ManageNotifications_Get" class="govuk-link">Manage your recruitment emails</a>.</esfaFeatureEnabled></p>
+            <p class="govuk-body">We’ll check the advert within one working day and let you know by email if you need to make any edits. <esfaFeatureEnabled name="@FeatureNames.SetNotificationPreferences"><a asp-route="@RouteNames.ManageNotifications_Get" class="govuk-link">Manage your emails</a>.</esfaFeatureEnabled></p>
             <p class="govuk-body">When we approve your advert, it will appear on the <a href="@ExternalLinks.Value.FindAnApprenticeshipUrl" class="govuk-link" target="_blank">​Find an apprenticeship service (opens in a new tab or window)</a>.</p>
         </div>
         <div asp-hide="@Model.HasNotificationsSet">
-            <p class="govuk-body">We’ll check the advert within one working day and tell you on the dashboard if you need to make any edits. <esfaFeatureEnabled name="@FeatureNames.SetNotificationPreferences">Visit <a asp-route="@RouteNames.ManageNotifications_Get" class="govuk-link">Manage your recruitment emails</a> if you’d also like to get an email.</esfaFeatureEnabled></p>
+            <p class="govuk-body">We’ll check the advert within one working day and tell you on the dashboard if you need to make any edits. <esfaFeatureEnabled name="@FeatureNames.SetNotificationPreferences">You can <a asp-route="@RouteNames.ManageNotifications_Get" class="govuk-link">manage your emails</a> if you’d also like to get an email.</esfaFeatureEnabled></p>
             <p class="govuk-body">When we approve your advert, it will appear on the <a href="@ExternalLinks.Value.FindAnApprenticeshipUrl" class="govuk-link" target="_blank">​Find an apprenticeship service (opens in a new tab or window)</a>.</p>
         </div>
         <div class="govuk-form-group inline">
