@@ -26,7 +26,7 @@
                 Advert resubmitted for approval
             </h1>
         </div>
-        <h2 class="govuk-heading-m">Next steps</h2>
+        <h2 class="govuk-heading-m">What happens next</h2>
         <div asp-show="@Model.HasNotificationsSet">
             <p class="govuk-body">We’ll check the advert within one working day and let you know by email if you need to make any edits. <esfaFeatureEnabled name="@FeatureNames.SetNotificationPreferences"><a asp-route="@RouteNames.ManageNotifications_Get" class="govuk-link">Manage your emails</a>.</esfaFeatureEnabled></p>
             <p class="govuk-body">When we approve your advert, it will appear on the <a href="@ExternalLinks.Value.FindAnApprenticeshipUrl" class="govuk-link" target="_blank">​Find an apprenticeship service (opens in a new tab or window)</a>.</p>
