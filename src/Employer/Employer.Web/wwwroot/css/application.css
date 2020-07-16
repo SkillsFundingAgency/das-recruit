@@ -1395,3 +1395,9 @@ a[rel="external"]:hover:after {
       z-index: 2;
       border: 1px solid #bfc1c3;
       border-bottom: 1px solid #fff; }
+
+ 
+/*** govuk confirmation panel ***/
+.govuk-panel--confirmation {
+    background: #00703c;
+}

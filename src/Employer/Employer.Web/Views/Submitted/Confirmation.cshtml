@@ -1,6 +1,9 @@
 ﻿@model Esfa.Recruit.Employer.Web.ViewModels.Submitted.VacancySubmittedConfirmationViewModel
-@{ 
+@using Microsoft.Extensions.Options
+@inject IOptions<ExternalLinksConfiguration> ExternalLinks
+@{
     ViewBag.Vpv = "/recruitment/employer/page-vacancy-submitted-confirmation";
+    ViewBag.Title = "Advert submitted for approval";
 }
 
 <h1 class="govuk-heading-l">@Model.Title</h1>
@@ -9,33 +12,35 @@
     <div class="govuk-grid-column-two-thirds">
         <div asp-hide="@Model.IsResubmit" class="govuk-panel govuk-panel--confirmation">
             <h1 class="govuk-panel__title">
-                Vacancy submitted for approval
+                Advert submitted for approval
             </h1>
             <div class="govuk-panel__body">
                 <p asp-show="@Model.HasVacancyReference">
-                    The vacancy reference number is <br>
+                    The advert reference number is <br>
                     <strong class="govuk-!-font-weight-bold">VAC@(Model.VacancyReference)</strong>
                 </p>
             </div>
         </div>
         <div asp-show="@Model.IsResubmit" class="govuk-panel govuk-panel--confirmation">
             <h1 class="govuk-panel__title">
-                Vacancy resubmitted for approval
+                Advert resubmitted for approval
             </h1>
         </div>
-        <h2 class="govuk-heading-m">Next steps</h2>
+        <h2 class="govuk-heading-m">What happens next</h2>
         <div asp-show="@Model.HasNotificationsSet">
-            <p class="govuk-body">We’ll check the vacancy and let you know by email within one working day if you need to make any edits. <esfaFeatureEnabled name="@FeatureNames.SetNotificationPreferences"><a asp-route="@RouteNames.ManageNotifications_Get">Manage your recruitment emails</a>.</esfaFeatureEnabled></p>
-            <p class="govuk-body">When the vacancy is approved, it will appear on the Find an apprenticeship service.</p>
+            <p class="govuk-body">We’ll check the advert within one working day and let you know by email if you need to make any edits. <esfaFeatureEnabled name="@FeatureNames.SetNotificationPreferences"><a asp-route="@RouteNames.ManageNotifications_Get" class="govuk-link">Manage your emails</a>.</esfaFeatureEnabled></p>
+            <p class="govuk-body">When we approve your advert, it will appear on the <a href="@ExternalLinks.Value.FindAnApprenticeshipUrl" class="govuk-link" target="_blank">​Find an apprenticeship service (opens in a new tab or window)</a>.</p>
         </div>
         <div asp-hide="@Model.HasNotificationsSet">
-            <p class="govuk-body">We’ll check the vacancy and tell you within one working day on the dashboard if you need to make any edits. <esfaFeatureEnabled name="@FeatureNames.SetNotificationPreferences">Visit <a asp-route="@RouteNames.ManageNotifications_Get">Manage your recruitment emails</a> if you’d also like to get an email.</esfaFeatureEnabled></p>
-            <p class="govuk-body">When the vacancy is approved, it will appear on the Find an apprenticeship service.</p>
+            <p class="govuk-body">We’ll check the advert within one working day and tell you on the dashboard if you need to make any edits. <esfaFeatureEnabled name="@FeatureNames.SetNotificationPreferences">You can <a asp-route="@RouteNames.ManageNotifications_Get" class="govuk-link">manage your emails</a> if you’d also like to get an email.</esfaFeatureEnabled></p>
+            <p class="govuk-body">When we approve your advert, it will appear on the <a href="@ExternalLinks.Value.FindAnApprenticeshipUrl" class="govuk-link" target="_blank">​Find an apprenticeship service (opens in a new tab or window)</a>.</p>
         </div>
         <div class="govuk-form-group inline">
             <div class="govuk-form-group">
-                <a asp-route="@RouteNames.Dashboard_Get" class="govuk-button">Return to dashboard</a>
-                <a asp-route="@RouteNames.CreateVacancyOptions_Get" class="govuk-link das-button-link">Create another vacancy</a>
+                <a asp-route="@RouteNames.CreateVacancyOptions_Get" class="govuk-button">Create another advert</a>
+                <p class="govuk-body">
+                    <a asp-route="@RouteNames.Dashboard_Get" class="govuk-link">Return to dashboard</a>
+                </p>
             </div>
         </div>
     </div>
