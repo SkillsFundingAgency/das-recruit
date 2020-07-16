@@ -504,10 +504,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.ApplicationMethod)
                     .NotEmpty()
-                        .WithMessage("You must select an application method")
+                        .WithMessage("Select how you'd like to recieve applications")
                         .WithErrorCode("85")
                     .IsInEnum()
-                        .WithMessage("You must select an application method")
+                        .WithMessage("Select how you'd like to recieve applications")
                         .WithErrorCode("85")
                     .RunCondition(VacancyRuleSet.ApplicationMethod)
                     .WithRuleId(VacancyRuleSet.ApplicationMethod);
@@ -540,13 +540,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.ApplicationUrl)
                 .NotEmpty()
-                    .WithMessage("Enter a valid website address")
+                    .WithMessage("Enter the web address applicants should use to apply for this apprenticeship")
                     .WithErrorCode("85")
                 .MaximumLength(200)
                     .WithMessage("The website address must not exceed {MaxLength} characters")
                     .WithErrorCode("84")
                 .Must(FluentExtensions.BeValidWebUrl)
-                    .WithMessage("Enter a valid website address")
+                    .WithMessage("Enter the web address applicants should use to apply for this apprenticeship")
                     .WithErrorCode("86")
                 .RunCondition(VacancyRuleSet.ApplicationMethod)
                 .WithRuleId(VacancyRuleSet.ApplicationMethod);
