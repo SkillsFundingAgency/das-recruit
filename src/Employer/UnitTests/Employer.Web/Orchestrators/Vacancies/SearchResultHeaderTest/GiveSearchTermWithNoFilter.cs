@@ -5,7 +5,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using FluentAssertions;
 using Xunit;
 
-namespace Esfa.Recruit.UnitTests.Employer.Web.Orchestrators.Vacancies.SearchResultHeaderTest
+namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Vacancies.SearchResultHeaderTest
 {
     public class GiveSearchTermWithNoFilter : SearchResultHeaderTestBase
     {
