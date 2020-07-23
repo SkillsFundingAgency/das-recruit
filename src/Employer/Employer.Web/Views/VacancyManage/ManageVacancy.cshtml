@@ -1,5 +1,5 @@
 ﻿@model Esfa.Recruit.Employer.Web.ViewModels.VacancyManage.ManageVacancyViewModel
-@{ 
+@{
     ViewBag.Vpv = "/recruitment/employer/page-manage-vacancy";
 }
 <div class="govuk-grid-row">
@@ -95,7 +95,8 @@
 
 <div asp-show="@Model.CanShowVacancyAnalytics" class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-        <h2 class="govuk-heading-l govuk-!-margin-top-9">Advert analytics
+        <h2 class="govuk-heading-l govuk-!-margin-top-9">
+            Advert analytics
             <span asp-show="@Model.HasAnalytics" class="govuk-caption-l">Showing stats from @Model.AnalyticsSummary.PeriodCaption</span>
         </h2>
         <p asp-show="@Model.HasAnalytics" class="govuk-body">Analytics show the total amount and the change from the previous 7 days</p>
@@ -115,9 +116,7 @@
     </div>
 </div>
 <div class="govuk-body">
-    @*<div class="govuk-grid-column-full">*@
-        <div class="govuk-!-margin-top-6">
-            <a asp-route="@RouteNames.Vacancies_Get" class="govuk-link">Return to dashboard</a>
-        </div>
-    @*</div>*@
+    <div class="govuk-!-margin-top-6">
+        <a asp-route="@RouteNames.Vacancies_Get" class="govuk-link">Return to dashboard</a>
+    </div>
 </div>
