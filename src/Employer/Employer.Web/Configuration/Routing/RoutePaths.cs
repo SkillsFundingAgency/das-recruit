@@ -5,7 +5,7 @@
         public const string Services = "services";
         public const string AccountLevelServices = "services/{employerAccountId:minlength(6)}";
         public const string AccountRoutePath = "accounts/{employerAccountId:minlength(6)}";
-        public const string VacanciesRoutePath = AccountRoutePath + "/your-adverts";
+        public const string VacanciesRoutePath = AccountRoutePath + "/vacancies";
 
         public const string VacancyRoutePath = "vacancies/{vacancyId:guid}";
         public const string AccountVacancyRoutePath = AccountRoutePath + "/" + VacancyRoutePath;
