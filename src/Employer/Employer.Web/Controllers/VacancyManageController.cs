@@ -26,7 +26,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             _hostingEnvironment = hostingEnvironment;
         }
 
-        [HttpGet("manage-advert", Name = RouteNames.VacancyManage_Get)]
+        [HttpGet("manage", Name = RouteNames.VacancyManage_Get)]
         public async Task<IActionResult> ManageVacancy(VacancyRouteModel vrm)
         {
             EnsureProposedChangesCookiesAreCleared(vrm.VacancyId);
