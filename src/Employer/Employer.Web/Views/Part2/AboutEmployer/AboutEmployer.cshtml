@@ -2,6 +2,7 @@
 @{ 
     ViewBag.Vpv = "/recruitment/employer/page-part2-about-employer";
     ViewBag.ZenDeskLabel = "recruit-about-employer";
+    ViewBag.Title = "Add some information about your organisation";
 }
 
 <div class="govuk-grid-row">
@@ -31,7 +32,9 @@
             </div>
             <div class="govuk-form-group">
                 <input type="submit" value="Save and continue" esfa-automation="btn-continue" class="govuk-button save-button" />
-                <a asp-route="@RouteNames.Vacancy_Preview_Get" esfa-automation="cancel" class="govuk-link das-button-link">Cancel</a>
+                <div class="govuk-body">
+                    <a asp-route="@RouteNames.Vacancy_Preview_Get" esfa-automation="cancel" class="govuk-link">Cancel</a>
+                </div>
             </div>
         </form>
     </div>

@@ -608,7 +608,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.EmployerDescription)
                 .NotEmpty()
-                    .WithMessage("You must provide an employer description")
+                    .WithMessage("Enter details about your organisation")
                     .WithErrorCode("80")
                 .MaximumLength(500)
                     .WithMessage("Employer description must not exceed {MaxLength} characters")
