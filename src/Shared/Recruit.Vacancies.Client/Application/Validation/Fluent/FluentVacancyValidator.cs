@@ -504,10 +504,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.ApplicationMethod)
                     .NotEmpty()
-                        .WithMessage("Select how you'd like to recieve applications")
+                        .WithMessage("Select how you'd like to receive applications")
                         .WithErrorCode("85")
                     .IsInEnum()
-                        .WithMessage("Select how you'd like to recieve applications")
+                        .WithMessage("Select how you'd like to receive applications")
                         .WithErrorCode("85")
                     .RunCondition(VacancyRuleSet.ApplicationMethod)
                     .WithRuleId(VacancyRuleSet.ApplicationMethod);
