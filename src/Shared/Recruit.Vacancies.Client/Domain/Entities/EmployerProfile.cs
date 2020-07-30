@@ -19,6 +19,11 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         {
             return string.Format(IdFormat, employerAccountId, legalEntityId);
         }
+        public static string GetId(string employerAccountId, string accountLegalEntityPublicHashedId)
+        {
+            return string.Format(IdFormat, employerAccountId, accountLegalEntityPublicHashedId);
+        }
         public IList<Address> OtherLocations { get; set; } = new List<Address>();
+        public string AccountLegalEntityPublicHashedId { get; set; }
     }
 }

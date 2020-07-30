@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,6 +6,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -17,28 +17,33 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         private readonly ILogger<RefreshEmployerProfilesCommandHandler> _logger;
         private readonly IEmployerProfileRepository _employerProfileRepository;
         private readonly ITimeProvider _time;
+        private readonly IEmployerVacancyClient _employerVacancyClient;
 
         public RefreshEmployerProfilesCommandHandler(
             ILogger<RefreshEmployerProfilesCommandHandler> logger,
             IEmployerProfileRepository employerProfileRepository,
-            ITimeProvider time)
+            ITimeProvider time, IEmployerVacancyClient employerVacancyClient)
         {
             _logger = logger;
             _employerProfileRepository = employerProfileRepository;
             _time = time;
+            _employerVacancyClient = employerVacancyClient;
         }
 
         public async Task Handle(RefreshEmployerProfilesCommand message, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Refreshing Employer Profiles for {employerAccountId}", message.EmployerAccountId);
-
+            var employerVacancyInfoTask =
+                _employerVacancyClient.GetEditVacancyInfoAsync(message.EmployerAccountId);
             var tasks = new List<Task>();
-
+            var editVacancyInfo = employerVacancyInfoTask.Result;
             // Get all current profiles for the employer
             var profiles = await _employerProfileRepository.GetEmployerProfilesForEmployerAsync(message.EmployerAccountId);
 
             foreach (var legalEntity in message.LegalEntityIds)
             {
+                var selectedOrganisation =
+                    editVacancyInfo.LegalEntities.Single(l => l.LegalEntityId == legalEntity);
                 if (!profiles.Any(x => x.LegalEntityId == legalEntity))
                 {
                     var currentTime = _time.Now;
@@ -48,7 +53,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                     {
                         EmployerAccountId = message.EmployerAccountId,
                         LegalEntityId = legalEntity,
-                        CreatedDate = currentTime
+                        CreatedDate = currentTime,
+                        AccountLegalEntityPublicHashedId = selectedOrganisation.AccountLegalEntityPublicHashedId
                     };
 
                     _logger.LogInformation("Adding new profile for employer account: {employerAccountId} and legal entity id: {legalEntityId}", message.EmployerAccountId, legalEntity);

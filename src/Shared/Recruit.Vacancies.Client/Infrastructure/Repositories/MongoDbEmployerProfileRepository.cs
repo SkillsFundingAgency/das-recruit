@@ -56,7 +56,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         {
             var builder = Builders<EmployerProfile>.Filter;
             var filter = builder.Eq(x => x.EmployerAccountId, profile.EmployerAccountId) &
-                         builder.Eq(x => x.LegalEntityId, profile.LegalEntityId);
+                         builder.Eq(x => x.LegalEntityId, profile.LegalEntityId) &
+                         builder.Eq(x => x.AccountLegalEntityPublicHashedId, profile.AccountLegalEntityPublicHashedId);
 
             var collection = GetCollection<EmployerProfile>();
 

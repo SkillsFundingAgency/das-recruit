@@ -193,7 +193,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
         {
             var providerData = await _providerVacancyClient.GetProviderEditVacancyInfoAsync(ukprn);
             var employerInfo = providerData.Employers.Single(e => e.EmployerAccountId == vacancy.EmployerAccountId);
-            var legalEntity = employerInfo.LegalEntities.First(l => l.LegalEntityId == employerProfile.LegalEntityId);
+            var legalEntity = employerInfo.LegalEntities.First(l => l.AccountLegalEntityPublicHashedId == employerProfile.AccountLegalEntityPublicHashedId);
             var locations = new List<Address>();
             locations.Add(legalEntity.Address.ConvertToDomainAddress());
             locations.AddRange(employerProfile.OtherLocations);
