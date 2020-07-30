@@ -52,7 +52,7 @@ namespace Esfa.Recruit.Shared.Web.ViewModels
 
         public static class CloneVacancyConfirmationMessages
         {
-            public const string SelectionRequired = "You must select one option";
+            public const string SelectionRequired = "Select whether the new advert has the same closing date and start date";
         }
 
         public static class CreateVacancyOptionsConfirmationMessages

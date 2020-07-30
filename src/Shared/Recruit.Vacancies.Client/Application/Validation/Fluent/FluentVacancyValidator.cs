@@ -504,10 +504,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.ApplicationMethod)
                     .NotEmpty()
-                        .WithMessage("Select how you'd like to recieve applications")
+                        .WithMessage("Select how you'd like to receive applications")
                         .WithErrorCode("85")
                     .IsInEnum()
-                        .WithMessage("Select how you'd like to recieve applications")
+                        .WithMessage("Select how you'd like to receive applications")
                         .WithErrorCode("85")
                     .RunCondition(VacancyRuleSet.ApplicationMethod)
                     .WithRuleId(VacancyRuleSet.ApplicationMethod);
@@ -608,7 +608,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.EmployerDescription)
                 .NotEmpty()
-                    .WithMessage("You must provide an employer description")
+                    .WithMessage("Enter details about your organisation")
                     .WithErrorCode("80")
                 .MaximumLength(500)
                     .WithMessage("Employer description must not exceed {MaxLength} characters")
