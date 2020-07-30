@@ -2,13 +2,14 @@
 
 @{ 
     ViewBag.Vpv = "/recruitment/employer/page-clone-vacancy-dates-question";
+    ViewBag.Title = "Does the new advert have the same closing date and start date?";
 }
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <partial name=@PartialNames.ValidationSummary model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
-        <span class="govuk-caption-xl">Clone vacancy @("VAC" + Model.VacancyReference)</span>
+        <span class="govuk-caption-xl">Clone advert @("VAC" + Model.VacancyReference)</span>
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
-            Does the new vacancy have the same closing date and start date?
+            Does the new advert have the same closing date and start date?
         </h1>
         <p class="govuk-body">
             <span class="govuk-!-font-weight-bold">Possible start date</span>
@@ -39,8 +40,10 @@
                 </fieldset>
             </div>
             <div class="govuk-form-group">
-                <button type="submit" class="govuk-button  save-button" esfa-automation="continue-button">Continue</button>
-                <a asp-route="@RouteNames.VacancyManage_Get" class="govuk-link das-button-link" esfa-automation="cancel-link">Cancel</a>
+                <button type="submit" class="govuk-button  save-button" esfa-automation="continue-button">Save and continue</button>
+                <div class="govuk-body">
+                    <a asp-route="@RouteNames.VacancyManage_Get" class="govuk-link" esfa-automation="cancel-link">Cancel</a>
+                </div>
             </div>
         </form>
     </div>
