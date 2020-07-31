@@ -42,15 +42,15 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(
                 _employerVacancyClient, _recruitVacancyClient, vrm, RouteNames.Employer_Get);
 
-            var legalEntityId = employerInfoModel.LegalEntityId.GetValueOrDefault();
+            var accountLegalEntityPublicHashedId = employerInfoModel.AccountLegalEntityPublicHashedId;
                 
             var getEmployerDataTask = _employerVacancyClient.GetEditVacancyInfoAsync(vrm.EmployerAccountId);
-            var getEmployerProfileTask = _recruitVacancyClient.GetEmployerProfileAsync(vrm.EmployerAccountId, legalEntityId);
+            var getEmployerProfileTask = _recruitVacancyClient.GetEmployerProfileAsync(vrm.EmployerAccountId, accountLegalEntityPublicHashedId);
             await Task.WhenAll(getEmployerDataTask, getEmployerProfileTask);
             var editVacancyInfo = getEmployerDataTask.Result;
             var employerProfile = getEmployerProfileTask.Result;
 
-            var legalEntity = editVacancyInfo.LegalEntities.Single(l => l.LegalEntityId == legalEntityId);
+            var legalEntity = editVacancyInfo.LegalEntities.Single(l => l.AccountLegalEntityPublicHashedId == accountLegalEntityPublicHashedId);
 
             var vm = new EmployerNameViewModel 
             {

@@ -5,7 +5,7 @@ using FluentAssertions;
 using Moq;
 using Xunit;
 
-namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services.EmployerService
+namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.Services.EmployerService
 {
     public class GetEmployerDescriptionTests
     {
@@ -27,7 +27,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services.EmployerS
                 AboutOrganisation = employerProfileAboutOrganisation
             };
 
-            _mockEmployerProfileRepository.Setup(pr => pr.GetAsync(It.IsAny<string>(), It.IsAny<long>())).ReturnsAsync(profile);
+            _mockEmployerProfileRepository.Setup(pr => pr.GetAsync(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(profile);
 
             var sut = GetSut();
 

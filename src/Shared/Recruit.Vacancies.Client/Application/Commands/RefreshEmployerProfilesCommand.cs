@@ -7,6 +7,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Commands
     public class RefreshEmployerProfilesCommand : ICommand, IRequest
     {
         public string EmployerAccountId { get; set; }
-        public IEnumerable<long> LegalEntityIds { get; set; }
+        public IEnumerable<string> AccountLegalEntityPublicHashedIds { get; set; }
     }
 }

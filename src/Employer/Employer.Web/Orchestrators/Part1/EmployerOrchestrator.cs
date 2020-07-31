@@ -33,7 +33,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             _logger = logger;
         }
 
-        public async Task<EmployerViewModel> GetEmployerViewModelAsync(VacancyRouteModel vrm, string searchTerm, int? requestedPageNo, long? selectedLegalEntityId = 0)
+        public async Task<EmployerViewModel> GetEmployerViewModelAsync(VacancyRouteModel vrm, string searchTerm, int? requestedPageNo, string accountLegalEntityPublicHashedId)
         {
             const int NotFoundIndex = -1;
             var setPage = requestedPageNo.HasValue ? requestedPageNo.Value : 1;
@@ -49,17 +49,17 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var vm = new EmployerViewModel
             {
                 TotalNumberOfLegalEntities = legalEntities.Count(),
-                SelectedOrganisationId = vacancy.LegalEntityId,
                 PageInfo = Utility.GetPartOnePageInfo(vacancy),
-                SearchTerm = searchTerm
+                SearchTerm = searchTerm,
+                AccountLegalEntityPublicHashedId = vacancy.AccountLegalEntityPublicHashedId
             };
 
-            if (vacancy.LegalEntityId != 0 && (selectedLegalEntityId.HasValue == false || selectedLegalEntityId == 0))
-            {
-                selectedLegalEntityId = vacancy.LegalEntityId;
-            }
+            //if (vacancy.LegalEntityId != 0 && (selectedLegalEntityId.HasValue == false || selectedLegalEntityId == 0))
+            //{
+            //    selectedLegalEntityId = vacancy.LegalEntityId;
+            //}
 
-            vm.IsPreviouslySelectedLegalEntityStillValid = selectedLegalEntityId.HasValue && legalEntities.Any(le => le.Id == selectedLegalEntityId);
+            vm.IsPreviouslySelectedLegalEntityStillValid = !string.IsNullOrEmpty(accountLegalEntityPublicHashedId) && legalEntities.Any(le => le.Id == accountLegalEntityPublicHashedId);
 
             var filteredLegalEntities = legalEntities
                 .Where(le => string.IsNullOrEmpty(searchTerm) || le.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
@@ -69,8 +69,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var filteredLegalEntitiesTotal = filteredLegalEntities.Count();
 
             var totalNumberOfPages = PagingHelper.GetTotalNoOfPages(MaxLegalEntitiesPerPage, filteredLegalEntitiesTotal);
-            var indexOfSelectedLegalEntity = selectedLegalEntityId.HasValue
-                                                ? filteredLegalEntities.FindIndex(le => le.Id == selectedLegalEntityId.Value) + 1
+            var indexOfSelectedLegalEntity = !string.IsNullOrEmpty(accountLegalEntityPublicHashedId)
+                                                ? filteredLegalEntities.FindIndex(le => le.Id == accountLegalEntityPublicHashedId) + 1
                                                 : NotFoundIndex;
 
             setPage = GetPageNo(requestedPageNo, setPage, totalNumberOfPages, indexOfSelectedLegalEntity);
@@ -82,13 +82,13 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             vm.VacancyEmployerInfoModel = new VacancyEmployerInfoModel()
             {
                 VacancyId = vacancy.Id,
-                LegalEntityId = vacancy.LegalEntityId == 0 ? (long?)null : vacancy.LegalEntityId
+                AccountLegalEntityPublicHashedId = vacancy.AccountLegalEntityPublicHashedId 
             };
 
-            if (vm.VacancyEmployerInfoModel.LegalEntityId == null && vm.HasOnlyOneOrganisation)
-            {
-                vm.VacancyEmployerInfoModel.LegalEntityId = vm.Organisations.First().Id;
-            }
+            //if (vm.VacancyEmployerInfoModel.AccountLegalEntityPublicHashedId == null && vm.HasOnlyOneOrganisation)
+            //{
+            //    vm.VacancyEmployerInfoModel.AccountLegalEntityPublicHashedId = vm.Organisations.First().Id;
+            //}
 
             if (vacancy.EmployerNameOption.HasValue)
             {
@@ -148,7 +148,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         private OrganisationViewModel ConvertToOrganisationViewModel(LegalEntity data)
         {
-            return new OrganisationViewModel { Id = data.LegalEntityId, Name = data.Name};
+            return new OrganisationViewModel { Id = data.AccountLegalEntityPublicHashedId, Name = data.Name};
         }
     }
 }

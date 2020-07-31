@@ -22,7 +22,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntity
             nameof(SelectedOrganisationId)
         };
 
-        public long? SelectedOrganisationId { get; internal set; }
+        public string SelectedOrganisationId { get; internal set; }
 
         public VacancyEmployerInfoModel VacancyEmployerInfoModel { get; internal set; }
 
@@ -37,18 +37,18 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntity
         public int TotalNumberOfLegalEntities { get; internal set; }
 
         public bool IsPreviouslySelectedLegalEntityStillValid { get; internal set; }
-        public bool HasPreviouslyPersistedLegalEntity => SelectedOrganisationId.Value > 0;
+        public bool HasPreviouslyPersistedLegalEntity => !string.IsNullOrEmpty(SelectedOrganisationId);
         public bool IsSelectedOrganisationInPagedOrganisations
                         => IsPreviouslySelectedLegalEntityStillValid
                             && HasPreviouslyPersistedLegalEntity
-                            && Organisations.Any(org => org.Id == SelectedOrganisationId.Value);
+                            && Organisations.Any(org => org.Id == SelectedOrganisationId);
 
-        public bool CanOutputHiddenSelectedOrganisationIdField => SelectedOrganisationId.Value > 0 && IsSelectedOrganisationInPagedOrganisations == false;
+        public bool CanOutputHiddenSelectedOrganisationIdField => !string.IsNullOrEmpty(SelectedOrganisationId) && IsSelectedOrganisationInPagedOrganisations == false;
     }
 
     public class OrganisationViewModel
     {
-        public long Id { get; set; }
+        public string Id { get; set; }
         public string Name { get; set; }
     }
 }

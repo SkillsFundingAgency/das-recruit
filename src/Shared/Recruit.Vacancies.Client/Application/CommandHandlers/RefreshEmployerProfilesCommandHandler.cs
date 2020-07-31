@@ -40,11 +40,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             // Get all current profiles for the employer
             var profiles = await _employerProfileRepository.GetEmployerProfilesForEmployerAsync(message.EmployerAccountId);
 
-            foreach (var legalEntity in message.LegalEntityIds)
+            foreach (var accountLegalEntityPublicHashedId in message.AccountLegalEntityPublicHashedIds)
             {
                 var selectedOrganisation =
-                    editVacancyInfo.LegalEntities.Single(l => l.LegalEntityId == legalEntity);
-                if (!profiles.Any(x => x.LegalEntityId == legalEntity))
+                    editVacancyInfo.LegalEntities.Single(l => l.AccountLegalEntityPublicHashedId == accountLegalEntityPublicHashedId);
+                if (!profiles.Any(x => x.AccountLegalEntityPublicHashedId == accountLegalEntityPublicHashedId))
                 {
                     var currentTime = _time.Now;
 
@@ -52,18 +52,15 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                     var newProfile = new EmployerProfile
                     {
                         EmployerAccountId = message.EmployerAccountId,
-                        LegalEntityId = legalEntity,
                         CreatedDate = currentTime,
                         AccountLegalEntityPublicHashedId = selectedOrganisation.AccountLegalEntityPublicHashedId
                     };
 
-                    _logger.LogInformation("Adding new profile for employer account: {employerAccountId} and legal entity id: {legalEntityId}", message.EmployerAccountId, legalEntity);
+                    _logger.LogInformation("Adding new profile for employer account: {employerAccountId} and Account LegalEntityPublicHashed id: {accountLegalEntityPublicHashedId}", message.EmployerAccountId, accountLegalEntityPublicHashedId);
                     tasks.Add(_employerProfileRepository.CreateAsync(newProfile));
                 }
             }
-
             await Task.WhenAll(tasks);
-
             _logger.LogInformation($"Added {tasks.Count} new profile/s for {{employerAccountId}}", message.EmployerAccountId);
         }
     }

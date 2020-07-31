@@ -25,15 +25,15 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         {
             var info = GetVacancyEmployerInfoCookie(vrm.VacancyId);
 
-            var vm = await _orchestrator.GetEmployerViewModelAsync(vrm, searchTerm, page, info?.LegalEntityId);
+            var vm = await _orchestrator.GetEmployerViewModelAsync(vrm, searchTerm, page, info?.AccountLegalEntityPublicHashedId);
 
-            if (info == null || !info.LegalEntityId.HasValue)
+            if (info == null || !string.IsNullOrEmpty(info.AccountLegalEntityPublicHashedId))
             {
                 SetVacancyEmployerInfoCookie(vm.VacancyEmployerInfoModel);
             }
             else
             {
-                vm.SelectedOrganisationId = info.LegalEntityId;
+                vm.AccountLegalEntityPublicHashedId = info.AccountLegalEntityPublicHashedId;
             }
 
             if (vm.HasOnlyOneOrganisation)
@@ -54,22 +54,22 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             {
                 //something went wrong, the matching cookie was not found
                 //Redirect the user with validation error to allow them to continue
-                ModelState.AddModelError(nameof(EmployerEditModel.SelectedOrganisationId),
+                ModelState.AddModelError(nameof(EmployerEditModel.AccountLegalEntityPublicHashedId),
                     ValidationMessages.EmployerSelectionValidationMessages.EmployerSelectionRequired);
             }
 
             if (!ModelState.IsValid)
             {
-                var vm = await _orchestrator.GetEmployerViewModelAsync(m, m.SearchTerm, m.Page, info?.LegalEntityId);
+                var vm = await _orchestrator.GetEmployerViewModelAsync(m, m.SearchTerm, m.Page, info?.AccountLegalEntityPublicHashedId);
                 SetVacancyEmployerInfoCookie(vm.VacancyEmployerInfoModel);
                 vm.Pager.OtherRouteValues.Add(nameof(wizard), wizard.ToString());
                 vm.PageInfo.SetWizard(wizard);
                 return View(vm);
             }
 
-            if (info.LegalEntityId != m.SelectedOrganisationId)
+            if (info.AccountLegalEntityPublicHashedId != m.AccountLegalEntityPublicHashedId)
             {
-                info.LegalEntityId = m.SelectedOrganisationId;
+                info.AccountLegalEntityPublicHashedId = m.AccountLegalEntityPublicHashedId;
                 info.HasLegalEntityChanged = true;
                 info.EmployerIdentityOption = null;
                 info.NewTradingName = null;

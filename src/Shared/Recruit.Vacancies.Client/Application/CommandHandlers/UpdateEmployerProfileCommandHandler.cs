@@ -32,8 +32,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             await _employerProfileRepository.UpdateAsync(message.Profile);
 
             _logger.LogInformation("Update Employer profile for employer account: {employerAccountId} and " +
-                                   "legal entity: {legalEntityId} AccountLegalEntityPublicHashedId:{AccountLegalEntityPublicHashedId}", message.Profile.EmployerAccountId,
-                                    message.Profile.LegalEntityId, message.Profile.AccountLegalEntityPublicHashedId);
+                                   "AccountLegalEntityPublicHashedId:{AccountLegalEntityPublicHashedId}", message.Profile.EmployerAccountId,
+                                    message.Profile.AccountLegalEntityPublicHashedId);
         }
     }
 }

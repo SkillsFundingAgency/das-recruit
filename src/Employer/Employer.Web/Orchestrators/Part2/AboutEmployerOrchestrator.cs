@@ -82,7 +82,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         private async Task UpdateEmployerProfileAsync(Vacancy vacancy, string employerDescription, VacancyUser user)
         {
             var employerProfile =
-                await _vacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.LegalEntityId);
+                await _vacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId);
 
             if (employerProfile == null)
             {

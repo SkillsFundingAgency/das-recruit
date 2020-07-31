@@ -24,7 +24,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         public async Task<IActionResult> LegalEntityAgreementSoftStop(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
         {
             var info = GetVacancyEmployerInfoCookie(vrm.VacancyId);
-            var vm = await _orchestrator.GetLegalEntityAgreementSoftStopViewModelAsync(vrm, info.LegalEntityId);
+            var vm = await _orchestrator.GetLegalEntityAgreementSoftStopViewModelAsync(vrm, info.AccountLegalEntityPublicHashedId);
             vm.PageInfo.SetWizard(wizard);
 
             if (vm.HasLegalEntityAgreement == false)

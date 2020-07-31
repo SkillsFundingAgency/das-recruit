@@ -105,7 +105,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
         private async Task<SubmitVacancyResponse> SubmitActionAsync(Vacancy vacancy, VacancyUser user)
         {
-            var hasLegalEntityAgreementTask = _legalEntityAgreementService.HasLegalEntityAgreementAsync(vacancy.EmployerAccountId, vacancy.LegalEntityId);
+            var hasLegalEntityAgreementTask = _legalEntityAgreementService.HasLegalEntityAgreementAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId);
             var hasProviderAgreementTask = _trainingProviderAgreementService.HasAgreementAsync(vacancy.TrainingProvider.Ukprn.Value);
 
             await Task.WhenAll(hasLegalEntityAgreementTask, hasProviderAgreementTask);

@@ -25,16 +25,16 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         }
 
         public async Task<LegalEntityAgreementSoftStopViewModel> GetLegalEntityAgreementSoftStopViewModelAsync(
-            VacancyRouteModel vrm, long? selectedLegalEntityId)
+            VacancyRouteModel vrm, string selectedAccountLegalEntityPublicHashedId)
         {
             var vacancy = await
                 Utility.GetAuthorisedVacancyForEditAsync(
                     _client, _vacancyClient, vrm, RouteNames.LegalEntityAgreement_SoftStop_Get);
 
-            var legalEntityId = selectedLegalEntityId.HasValue ? selectedLegalEntityId.Value : vacancy.LegalEntityId;
+            var accountLegalEntityPublicHashedId = string.IsNullOrEmpty(selectedAccountLegalEntityPublicHashedId) ? selectedAccountLegalEntityPublicHashedId : vacancy.AccountLegalEntityPublicHashedId;
 
             LegalEntity legalEntity = await
-                _legalEntityAgreementService.GetLegalEntityAsync(vrm.EmployerAccountId, legalEntityId);
+                _legalEntityAgreementService.GetLegalEntityAsync(vrm.EmployerAccountId, accountLegalEntityPublicHashedId);
 
             var hasLegalEntityAgreement = await
                 _legalEntityAgreementService.HasLegalEntityAgreementAsync(
@@ -56,7 +56,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return new LegalEntityAgreementHardStopViewModel
             {
                 HasLegalEntityAgreement = await _legalEntityAgreementService.HasLegalEntityAgreementAsync(
-                    vacancy.EmployerAccountId, vacancy.LegalEntityId)
+                    vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId)
             };
         }
     }

@@ -17,13 +17,13 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer
 
         public PartOnePageInfoViewModel PageInfo { get; internal set; }
         public PagerViewModel Pager { get; internal set; }
-
+        public string AccountLegalEntityPublicHashedId { get; set; }
         public IList<string> OrderedFieldNames => new List<string>
         {
-            nameof(SelectedOrganisationId)
+            nameof(AccountLegalEntityPublicHashedId)
         };
 
-        public long? SelectedOrganisationId { get; internal set; }
+        public string SelectedOrganisationId { get; internal set; }
 
         public VacancyEmployerInfoModel VacancyEmployerInfoModel { get; internal set; }
 
@@ -38,18 +38,18 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer
         public int TotalNumberOfLegalEntities { get; internal set; }
 
         public bool IsPreviouslySelectedLegalEntityStillValid { get; internal set; }
-        public bool HasPreviouslyPersistedLegalEntity => SelectedOrganisationId.Value > 0;
+        public bool HasPreviouslyPersistedLegalEntity => !string.IsNullOrEmpty(AccountLegalEntityPublicHashedId);
         public bool IsSelectedOrganisationInPagedOrganisations
                         => IsPreviouslySelectedLegalEntityStillValid
                             && HasPreviouslyPersistedLegalEntity
-                            && Organisations.Any(org => org.Id == SelectedOrganisationId.Value);
+                            && Organisations.Any(org => org.Id == AccountLegalEntityPublicHashedId);
 
-        public bool CanOutputHiddenSelectedOrganisationIdField => SelectedOrganisationId.Value > 0 && IsSelectedOrganisationInPagedOrganisations == false;
+        public bool CanOutputHiddenSelectedOrganisationIdField => !string.IsNullOrEmpty(AccountLegalEntityPublicHashedId) && IsSelectedOrganisationInPagedOrganisations == false;
     }
 
     public class OrganisationViewModel
     {
-        public long Id { get; set; }
+        public string Id { get; set; }
         public string Name { get; set; }
     }
 }
