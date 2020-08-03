@@ -40,7 +40,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Services
             _clientMock.Verify(c => c.GetEmployerLegalEntitiesAsync(EmployerAccountId), Times.Never);
         }
 
-        [Fact] public void HasLegalEntityAgreementAsync_ShouldCheckEmployerServiceWhenHasNoAgreement()
+        [Fact]
+        public void HasLegalEntityAgreementAsync_ShouldCheckEmployerServiceWhenHasNoAgreement()
         {
             var sut = GetLegalEntityAgreementService(EmployerAccountId, LegalEntityId, false, LegalEntityId, true);
 
@@ -51,7 +52,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Services
             _clientMock.Verify(c => c.SetupEmployerAsync(EmployerAccountId), Times.Once);
         }
 
-        [Fact] public void HasLegalEntityAgreementAsync_ShouldReturnFalseWhenEmployerServiceLegalEntityHasNoAgreement()
+        [Fact]
+        public void HasLegalEntityAgreementAsync_ShouldReturnFalseWhenEmployerServiceLegalEntityHasNoAgreement()
         {
             var sut = GetLegalEntityAgreementService(EmployerAccountId, LegalEntityId, false, LegalEntityId, false);
 
@@ -82,7 +84,11 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Services
                 {
                     LegalEntities = new List<LegalEntity>
                     {
-                        new LegalEntity{LegalEntityId = legalEntityId, HasLegalEntityAgreement = hasLegalEntityAgreement}
+                        new LegalEntity{
+                            LegalEntityId = legalEntityId,
+                            HasLegalEntityAgreement = hasLegalEntityAgreement,
+                            AccountLegalEntityPublicHashedId = AccountLegalEntityPublicHashedId
+                        }
                     }
                 }));
 
@@ -91,8 +97,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Services
                 {
                     new LegalEntity
                     {
-                    LegalEntityId = employerServiceLegalEntityId,
-                    HasLegalEntityAgreement = employerServiceHasLegalEntityAgreement
+                        LegalEntityId = employerServiceLegalEntityId,
+                        HasLegalEntityAgreement = employerServiceHasLegalEntityAgreement
                     }
                 }
                 .AsEnumerable()));
