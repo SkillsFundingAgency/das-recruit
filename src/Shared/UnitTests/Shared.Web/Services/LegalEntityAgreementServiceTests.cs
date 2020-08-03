@@ -97,6 +97,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.Services
                 {
                     new LegalEntity
                     {
+                        LegalEntityId = employerServiceLegalEntityId,
                         AccountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId,
                         HasLegalEntityAgreement = employerServiceHasLegalEntityAgreement
                     }
