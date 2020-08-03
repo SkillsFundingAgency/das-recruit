@@ -15,6 +15,7 @@
         return "Manage";
     }
     ViewBag.Vpv = "/recruitment/employer/page-vacancies";
+    ViewBag.Title = "Your adverts";
 }
 
 <partial name="@PartialNames.Alerts" for="Alerts" />
@@ -39,11 +40,11 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-half">
-        <h1 class="govuk-heading-l govuk-!-margin-bottom-6">Vacancies</h1>
+        <h1 class="govuk-heading-l govuk-!-margin-bottom-6">Your Adverts</h1>
     </div>
 
     <div class="govuk-grid-column-one-half ">
-        <a asp-route="@RouteNames.CreateVacancyOptions_Get" class="govuk-button float-right clear govuk-!-margin-bottom-6" esfa-automation="create-vacancy">Create vacancy</a>
+        <a asp-route="@RouteNames.CreateVacancyOptions_Get" class="govuk-button float-right clear govuk-!-margin-bottom-6" esfa-automation="create-vacancy">Create an advert</a>
     </div>
 </div>
 
@@ -51,15 +52,15 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-one-third">
             <div class="govuk-form-group">
-                <label asp-for="Filter" class="govuk-label">Filter vacancies by</label>
+                <label asp-for="Filter" class="govuk-label">Filter adverts by</label>
                 <select asp-for="Filter" class="govuk-select">
                     <optgroup label="Status">
-                        <option value="@FilteringOptions.All">all vacancies</option>
-                        <option value="@FilteringOptions.Live">live vacancies</option>
-                        <option value="@FilteringOptions.Referred">rejected vacancies</option>
-                        <option value="@FilteringOptions.Submitted">vacancies pending review</option>
-                        <option value="@FilteringOptions.Draft">draft vacancies</option>
-                        <option value="@FilteringOptions.Closed">closed vacancies</option>
+                        <option value="@FilteringOptions.All">all adverts</option>
+                        <option value="@FilteringOptions.Live">live adverts</option>
+                        <option value="@FilteringOptions.Referred">rejected adverts</option>
+                        <option value="@FilteringOptions.Submitted">adverts pending review</option>
+                        <option value="@FilteringOptions.Draft">draft adverts</option>
+                        <option value="@FilteringOptions.Closed">closed adverts</option>
                     </optgroup>
                     <optgroup label="Other">
                         <option value="@FilteringOptions.NewApplications">with new applications</option>
@@ -78,9 +79,9 @@
                     <div class="form-group search-field">
                         <div class="search-input-with-button">
                             <label class="govuk-label" for="search">
-                                Search vacancies
+                                Search adverts
                             </label>
-                            <input id="search-input" asp-for="SearchTerm" placeholder="Search by title, reference number or employer" class="govuk-input search-input" maxlength="200">
+                            <input id="search-input" asp-for="SearchTerm" placeholder="Search by advert title, reference number or employer" class="govuk-input search-input" maxlength="200">
                         </div>
                         <div class="search-submit">
                             <!-- hide button for no js version -->
@@ -95,9 +96,9 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
         <h3 class="govuk-heading-m">
-            @Model.ResultsHeading <a asp-show="@Model.IsFiltered" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="All" class="govuk-!-font-weight-regular govuk-component__link govuk-!-font-size-19">Show all vacancies</a>
+            @Model.ResultsHeading <a asp-show="@Model.IsFiltered" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="All" class="govuk-!-font-weight-regular govuk-component__link govuk-!-font-size-19">Show all adverts</a>
         </h3>
-        <p asp-hide="@Model.ShowResultsTable" class="govuk-body">No vacancies match the criteria</p>
+        <p asp-hide="@Model.ShowResultsTable" class="govuk-body">No adverts match the criteria</p>
     </div>
 </div>
 <div asp-show="@Model.ShowResultsTable">
@@ -106,12 +107,12 @@
             <table class="govuk-table responsive das-table--small">
                 <thead class="govuk-table__head">
                     <tr class="govuk-table__row">
-                        <th class="govuk-table__header">Vacancy title</th>
-                        <th class="govuk-table__header">Vacancy ref</th>
+                        <th class="govuk-table__header">Advert title</th>
+                        <th class="govuk-table__header">Advert reference number</th>
                         <th class="govuk-table__header">Applications</th>
-                        <th class="govuk-table__header">Closing</th>
+                        <th class="govuk-table__header">Closing date</th>
                         <th class="govuk-table__header">Status</th>
-                        <th class="govuk-table__header"></th>
+                        <th class="govuk-table__header">Action</th>
                     </tr>
                 </thead>
                 <tbody class="govuk-table__body">
