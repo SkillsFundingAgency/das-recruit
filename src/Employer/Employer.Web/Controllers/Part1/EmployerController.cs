@@ -33,7 +33,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             }
             else
             {
-                vm.AccountLegalEntityPublicHashedId = info.AccountLegalEntityPublicHashedId;
+                vm.SelectedOrganisationId = info.AccountLegalEntityPublicHashedId;
             }
 
             if (vm.HasOnlyOneOrganisation)
@@ -54,7 +54,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             {
                 //something went wrong, the matching cookie was not found
                 //Redirect the user with validation error to allow them to continue
-                ModelState.AddModelError(nameof(EmployerEditModel.AccountLegalEntityPublicHashedId),
+                ModelState.AddModelError(nameof(EmployerEditModel.SelectedOrganisationId),
                     ValidationMessages.EmployerSelectionValidationMessages.EmployerSelectionRequired);
             }
 
@@ -67,9 +67,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                 return View(vm);
             }
 
-            if (info.AccountLegalEntityPublicHashedId != m.AccountLegalEntityPublicHashedId)
+            if (info.AccountLegalEntityPublicHashedId != m.SelectedOrganisationId)
             {
-                info.AccountLegalEntityPublicHashedId = m.AccountLegalEntityPublicHashedId;
+                info.AccountLegalEntityPublicHashedId = m.SelectedOrganisationId;
                 info.HasLegalEntityChanged = true;
                 info.EmployerIdentityOption = null;
                 info.NewTradingName = null;

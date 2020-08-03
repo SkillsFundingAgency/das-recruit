@@ -17,10 +17,9 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer
 
         public PartOnePageInfoViewModel PageInfo { get; internal set; }
         public PagerViewModel Pager { get; internal set; }
-        public string AccountLegalEntityPublicHashedId { get; set; }
         public IList<string> OrderedFieldNames => new List<string>
         {
-            nameof(AccountLegalEntityPublicHashedId)
+            nameof(SelectedOrganisationId )
         };
 
         public string SelectedOrganisationId { get; internal set; }
@@ -38,13 +37,13 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer
         public int TotalNumberOfLegalEntities { get; internal set; }
 
         public bool IsPreviouslySelectedLegalEntityStillValid { get; internal set; }
-        public bool HasPreviouslyPersistedLegalEntity => !string.IsNullOrEmpty(AccountLegalEntityPublicHashedId);
+        public bool HasPreviouslyPersistedLegalEntity => !string.IsNullOrEmpty(SelectedOrganisationId);
         public bool IsSelectedOrganisationInPagedOrganisations
                         => IsPreviouslySelectedLegalEntityStillValid
                             && HasPreviouslyPersistedLegalEntity
-                            && Organisations.Any(org => org.Id == AccountLegalEntityPublicHashedId);
+                            && Organisations.Any(org => org.Id == SelectedOrganisationId);
 
-        public bool CanOutputHiddenSelectedOrganisationIdField => !string.IsNullOrEmpty(AccountLegalEntityPublicHashedId) && IsSelectedOrganisationInPagedOrganisations == false;
+        public bool CanOutputHiddenSelectedOrganisationIdField => !string.IsNullOrEmpty(SelectedOrganisationId) && IsSelectedOrganisationInPagedOrganisations == false;
     }
 
     public class OrganisationViewModel

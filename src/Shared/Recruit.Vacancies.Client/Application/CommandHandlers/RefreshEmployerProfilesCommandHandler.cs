@@ -45,7 +45,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 var selectedOrganisation =
                     editVacancyInfo.LegalEntities.Single(l => l.AccountLegalEntityPublicHashedId == accountLegalEntityPublicHashedId);
                 if (!profiles.Any(x => x.AccountLegalEntityPublicHashedId == accountLegalEntityPublicHashedId))
-                {
+                { 
                     var currentTime = _time.Now;
 
                     // Create new profile

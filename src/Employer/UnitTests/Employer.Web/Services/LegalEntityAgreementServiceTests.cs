@@ -14,6 +14,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Services
     {
         const string EmployerAccountId = "ABCDEF";
         const long LegalEntityId = 1234;
+        const string AccountLegalEntityPublicHashedId = "ABCDEF";
 
         private Mock<IEmployerVacancyClient> _clientMock;
 
@@ -22,7 +23,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Services
         {
             var sut = GetLegalEntityAgreementService(EmployerAccountId, 5678, true, 5678, true);
 
-            var result = sut.HasLegalEntityAgreementAsync(EmployerAccountId, LegalEntityId).Result;
+            var result = sut.HasLegalEntityAgreementAsync(EmployerAccountId, AccountLegalEntityPublicHashedId).Result;
 
             result.Should().BeFalse();
             _clientMock.Verify(c => c.GetEmployerLegalEntitiesAsync(EmployerAccountId), Times.Never);
@@ -33,7 +34,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Services
         {
             var sut = GetLegalEntityAgreementService(EmployerAccountId, LegalEntityId, true, LegalEntityId, true);
 
-            var result = sut.HasLegalEntityAgreementAsync(EmployerAccountId, LegalEntityId).Result;
+            var result = sut.HasLegalEntityAgreementAsync(EmployerAccountId, AccountLegalEntityPublicHashedId).Result;
 
             result.Should().BeTrue();
             _clientMock.Verify(c => c.GetEmployerLegalEntitiesAsync(EmployerAccountId), Times.Never);
@@ -43,7 +44,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Services
         {
             var sut = GetLegalEntityAgreementService(EmployerAccountId, LegalEntityId, false, LegalEntityId, true);
 
-            var result = sut.HasLegalEntityAgreementAsync(EmployerAccountId, LegalEntityId).Result;
+            var result = sut.HasLegalEntityAgreementAsync(EmployerAccountId, AccountLegalEntityPublicHashedId).Result;
 
             result.Should().BeTrue();
             _clientMock.Verify(c => c.GetEmployerLegalEntitiesAsync(EmployerAccountId), Times.Once);
@@ -54,7 +55,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Services
         {
             var sut = GetLegalEntityAgreementService(EmployerAccountId, LegalEntityId, false, LegalEntityId, false);
 
-            var result = sut.HasLegalEntityAgreementAsync(EmployerAccountId, LegalEntityId).Result;
+            var result = sut.HasLegalEntityAgreementAsync(EmployerAccountId, AccountLegalEntityPublicHashedId).Result;
 
             result.Should().BeFalse();
             _clientMock.Verify(c => c.GetEmployerLegalEntitiesAsync(EmployerAccountId), Times.Once);
@@ -66,7 +67,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Services
         {
             var sut = GetLegalEntityAgreementService(EmployerAccountId, LegalEntityId, false, 5678, true);
 
-            var result = sut.HasLegalEntityAgreementAsync(EmployerAccountId, LegalEntityId).Result;
+            var result = sut.HasLegalEntityAgreementAsync(EmployerAccountId, AccountLegalEntityPublicHashedId).Result;
 
             result.Should().BeFalse();
             _clientMock.Verify(c => c.GetEmployerLegalEntitiesAsync(EmployerAccountId), Times.Once);
