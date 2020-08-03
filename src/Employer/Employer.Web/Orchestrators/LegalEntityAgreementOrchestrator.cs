@@ -31,7 +31,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 Utility.GetAuthorisedVacancyForEditAsync(
                     _client, _vacancyClient, vrm, RouteNames.LegalEntityAgreement_SoftStop_Get);
 
-            var accountLegalEntityPublicHashedId = string.IsNullOrEmpty(selectedAccountLegalEntityPublicHashedId) ? selectedAccountLegalEntityPublicHashedId : vacancy.AccountLegalEntityPublicHashedId;
+            var accountLegalEntityPublicHashedId = !string.IsNullOrEmpty(selectedAccountLegalEntityPublicHashedId) ? selectedAccountLegalEntityPublicHashedId : vacancy.AccountLegalEntityPublicHashedId;
 
             LegalEntity legalEntity = await
                 _legalEntityAgreementService.GetLegalEntityAsync(vrm.EmployerAccountId, accountLegalEntityPublicHashedId);
