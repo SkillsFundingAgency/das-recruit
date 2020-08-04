@@ -2,11 +2,12 @@
 @using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 @{ 
     ViewBag.Vpv = "/recruitment/employer/page-manage-notifications";
+    ViewBag.Title = "Manage your emails";
 }
 
 @model ManageNotificationsViewModel
 <div class="govuk-grid-row">
-    <h1 class="govuk-heading-l govuk-!-margin-bottom-6">Manage your recruitment emails</h1>
+    <h1 class="govuk-heading-l govuk-!-margin-bottom-6">Manage your emails</h1>
 </div>
 
 <div class="govuk-grid-row">
@@ -16,18 +17,18 @@
                 <fieldset class="govuk-fieldset" aria-describedby="when-conditional-hint">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                         <h2 class="govuk-fieldset__heading">
-                        When do you want to be sent recruitment emails?
+                        When do you want to receive emails about your adverts and applications?
                         </h2>
                     </legend>
                     <span id="when-conditional-hint" class="govuk-hint">
-                        Choose when you’d like emails
+                        Select all that apply.
                     </span>
                     <div class="govuk-checkboxes" data-module="checkboxes">
                         <span esfa-validation-message-for="HasAnySubscription" class="govuk-error-message"></span>
                         <div class="govuk-checkboxes__item">
                             <input class="govuk-checkboxes__input" asp-for="IsVacancyRejectedSelected" id="notifications-rejected" type="checkbox">
                             <label class="govuk-label govuk-checkboxes__label" for="notifications-rejected">
-                                <span class="govuk-visually-hidden">Get notifications when </span>Vacancies are rejected after review
+                                <span class="govuk-visually-hidden">Get notifications </span>When an advert is rejected after review
                             </label>
                         </div>
                         <div asp-hide="true">
@@ -41,7 +42,7 @@
                         <div class="govuk-checkboxes__item govuk-checkboxes--conditional">
                             <input class="govuk-checkboxes__input" asp-for="IsApplicationSubmittedSelected" id="notifications-new" type="checkbox" data-aria-controls="conditional-when-conditional">
                             <label class="govuk-label govuk-checkboxes__label" for="notifications-new">
-                                <span class="govuk-visually-hidden">Get notifications when </span>There are new applications
+                                <span class="govuk-visually-hidden">Get notifications </span>When you have new applications
                             </label>
                         </div>
                         <div>
@@ -49,7 +50,7 @@
                                 <fieldset class="govuk-fieldset" aria-describedby="when-conditional-hint">
                                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
                                         <h1 class="govuk-fieldset__heading">
-                                            How often do you want to be sent new application emails?
+                                            How often do you want to receive emails about new applications?
                                         </h1>
                                     </legend>
                                     <span esfa-validation-message-for="NotificationFrequency" class="govuk-error-message"></span>
@@ -83,7 +84,7 @@
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                     <h2 class="govuk-fieldset__heading">
-                        What emails would you like to receive?
+                        Which adverts do you want to receive emails about?
                     </h2>
                     </legend>
                     <div class="govuk-radios" data-module="radios">
@@ -91,13 +92,13 @@
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" value="UserSubmittedVacancies" id="notification-scope-user-submitted" asp-for="NotificationScope" type="radio">
                             <label class="govuk-label govuk-radios__label" for="notification-scope-user-submitted">
-                                Only emails about vacancies you have submitted
+                                Only the adverts you submitted
                             </label>
                         </div>
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" value="OrganisationVacancies" id="notification-scope-organisation" asp-for="NotificationScope" type="radio">
                             <label class="govuk-label govuk-radios__label" for="notification-scope-organisation">
-                                Emails about all vacancies for your organisation
+                                All apprenticeship adverts for your organisation
                             </label>
                         </div>
                     </div>
@@ -105,10 +106,13 @@
             </div>
             <div class="govuk-form-group">
                 <p asp-show="@Model.HasAnySubscription" class="govuk-body">
-                    <a asp-route="@RouteNames.ConfirmUnsubscribeNotifications_Get" class="govuk-link">Unsubscribe from all recruitment emails</a>
+                    <a asp-route="@RouteNames.ConfirmUnsubscribeNotifications_Get" class="govuk-link">Unsubscribe from all emails about adverts and applications</a>
                 </p>
                 <button class="govuk-button submit" type="submit">Save and continue</button>
-                <a asp-route="@RouteNames.Dashboard_Get" class="govuk-link das-button-link">Return to dashboard</a>
+
+                <div class="govuk-body">
+                    <a asp-route="@RouteNames.Dashboard_Get" class="govuk-link">Return to dashboard</a>
+                </div>
             </div>
         </form>
     </div>

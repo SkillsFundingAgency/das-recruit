@@ -25,7 +25,7 @@ namespace UnitTests.Employer.Web.Orchestrators.ManageNotificationsOrchestratorTe
             var result =await sut.UpdateUserNotificationPreferencesAsync(new ManageNotificationsEditModel(), new VacancyUser());
             result.Errors.HasErrors.Should().BeTrue();
             result.Errors.Errors.Count.Should().Be(1);
-            result.Errors.Errors.First().ErrorMessage.Should().Be("Choose when you’d like to receive emails");
+            result.Errors.Errors.First().ErrorMessage.Should().Be("Select when you want to receive emails about your adverts and applications");
         }
         
         private ManageNotificationsOrchestrator GetSut()
