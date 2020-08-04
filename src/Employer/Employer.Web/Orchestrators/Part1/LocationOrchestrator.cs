@@ -121,7 +121,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var vacancy = vacancyTask.Result;
             var editVacancyInfo = employerVacancyInfoTask.Result;
 
-            var accountLegalEntityPublicHashedId = employerInfoModel?.AccountLegalEntityPublicHashedId != null
+            var accountLegalEntityPublicHashedId = !string.IsNullOrEmpty(employerInfoModel?.AccountLegalEntityPublicHashedId)
                 ? employerInfoModel.AccountLegalEntityPublicHashedId
                 : vacancy.AccountLegalEntityPublicHashedId;
 
@@ -185,6 +185,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             EmployerProfile employerProfile, Address address, VacancyUser user)
         {
             var updateProfile = false;
+            if (string.IsNullOrEmpty(employerProfile.AccountLegalEntityPublicHashedId) && !string.IsNullOrEmpty(employerInfoModel?.AccountLegalEntityPublicHashedId)) 
+            {
+                updateProfile = true;
+                employerProfile.AccountLegalEntityPublicHashedId = employerInfoModel.AccountLegalEntityPublicHashedId;
+            }
             if (employerInfoModel != null && employerInfoModel.EmployerIdentityOption == EmployerIdentityOption.NewTradingName)
             {
                 updateProfile = true;

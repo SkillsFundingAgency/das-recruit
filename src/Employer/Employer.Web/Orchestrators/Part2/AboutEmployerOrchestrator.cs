@@ -5,6 +5,7 @@ using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Employer.Web.ViewModels.AboutEmployer;
+using Esfa.Recruit.Employer.Web.ViewModels.Part2.AboutEmployer;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
@@ -86,7 +87,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
             if (employerProfile == null)
             {
-                throw new NullReferenceException($"No Employer Profile was found for employerAccount: {vacancy.EmployerAccountId}, legalEntity: {vacancy.LegalEntityId}");
+                throw new NullReferenceException($"No Employer Profile was found for employerAccount: {vacancy.EmployerAccountId}, " +
+                                                 $"accountLegalEntityPublicHashedId : {vacancy.AccountLegalEntityPublicHashedId}");
             }
 
             if (employerProfile.AboutOrganisation != employerDescription)
