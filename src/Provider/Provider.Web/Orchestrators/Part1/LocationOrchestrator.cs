@@ -62,8 +62,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(
                 _providerVacancyClient, _recruitVacancyClient, vrm, RouteNames.Location_Get);
 
-            var accountLegalEntityPublicHashedId = employerInfoModel?.AccountLegalEntityPublicHashedId ?? vacancy.AccountLegalEntityPublicHashedId;
-
+            var accountLegalEntityPublicHashedId = !string.IsNullOrEmpty(employerInfoModel?.AccountLegalEntityPublicHashedId)
+                ? employerInfoModel.AccountLegalEntityPublicHashedId : vacancy.AccountLegalEntityPublicHashedId; 
+            
             var vm = new LocationViewModel();
             vm.PageInfo = Utility.GetPartOnePageInfo(vacancy);
 
@@ -111,7 +112,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_providerVacancyClient,
                 _recruitVacancyClient, locationEditModel, RouteNames.Location_Post);
-            var accountLegalEntityPublicHashedId = employerInfoModel?.AccountLegalEntityPublicHashedId ?? vacancy.AccountLegalEntityPublicHashedId;
+            var accountLegalEntityPublicHashedId = !string.IsNullOrEmpty(employerInfoModel?.AccountLegalEntityPublicHashedId) 
+                ? employerInfoModel.AccountLegalEntityPublicHashedId : vacancy.AccountLegalEntityPublicHashedId;
 
             var employerVacancyInfoTask = _providerVacancyClient.GetProviderEmployerVacancyDataAsync(ukprn, vacancy.EmployerAccountId);
             var employerProfileTask = _recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, accountLegalEntityPublicHashedId);
