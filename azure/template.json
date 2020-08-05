@@ -1255,10 +1255,6 @@
               {
                 "name": "PasAccountApiConfiguration:Tenant",
                 "value": "[parameters('PasAccountApiConfiguration').Tenant]"
-              },
-              {
-                "name": "Encodings",
-                "value": "[string(parameters('DasEncodings'))]"
               }
             ]
           },
