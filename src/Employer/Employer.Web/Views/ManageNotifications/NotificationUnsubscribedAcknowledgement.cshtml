@@ -1,15 +1,17 @@
 @{ 
     ViewBag.Vpv = "/recruitment/employer/page-notification-unsubscribed-acknowledgement";
+    ViewBag.Title = "You’ve successfully unsubscribed from all advert and recruitment emails";
 }
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <div class="govuk-panel govuk-panel--confirmation">
             <h1 class="govuk-panel__title">
-                You’ve successfully unsubscribed from recruitment emails
+                You’ve successfully unsubscribed from all advert and recruitment emails
             </h1>
         </div>
-        <p>You’ll no longer get emails when you have updates to your vacancies. You can view updates on your recruitment dashboard.</p>
+        <p>You will not receive emails when there are updates to your adverts or when you have new applications.</p> 
+        <p>You can view updates on your recruitment dashboard.</p>
         <a asp-route="@RouteNames.Dashboard_Get" class="govuk-button govuk-!-margin-bottom-6" esfa-automation="create-vacancy">Return to dashboard</a>
     </div>
 </div>
