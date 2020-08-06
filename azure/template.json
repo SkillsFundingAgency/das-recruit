@@ -1258,7 +1258,7 @@
               },
               {
                 "name": "Encodings",
-                "value": "[parameters('DasEncodings')]"
+                "value": "[string(parameters('DasEncodings'))]"
               }
             ]
           },
