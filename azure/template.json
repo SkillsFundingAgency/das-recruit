@@ -1119,230 +1119,216 @@
       ]
     },
     {
-      "apiVersion": "2017-05-10",
-      "name": "WebJob-AppService",
-      "type": "Microsoft.Resources/deployments",
+      "name": "[variables('WebJobAppServiceName')]",
+      "type": "Microsoft.Web/sites",
+      "kind": "app",
+      "apiVersion": "2018-11-01",
+      "location": "[resourceGroup().location]",
+      "identity": {
+        "type": "SystemAssigned"
+      },
       "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(variables('deploymentUrlBase'),'app-service.json')]",
-          "contentVersion": "1.0.0.0"
+        "serverFarmId": "[resourceId(resourceGroup().name, 'Microsoft.Web/serverfarms', variables('webJobAppServicePlanName'))]",
+        "clientAffinityEnabled": false,
+        "siteConfig": {
+          "alwaysOn": true,
+          "appSettings": [
+            {
+              "name": "ASPNETCORE_ENVIRONMENT",
+              "value": "[toUpper(parameters('EnvironmentFullName'))]"
+            },
+            {
+              "name": "ApprenticeshipProgrammesApiBaseUrl",
+              "value": "[parameters('ApprenticeshipProgrammesApiBaseUrl')]"
+            },
+            {
+              "name": "AccountApiConfiguration:ApiBaseUrl",
+              "value": "[parameters('AccountApiConfiguration').ApiBaseUrl]"
+            },
+            {
+              "name": "AccountApiConfiguration:ClientId",
+              "value": "[parameters('AccountApiConfiguration').ClientId]"
+            },
+            {
+              "name": "AccountApiConfiguration:ClientSecret",
+              "value": "[parameters('AccountApiConfiguration').ClientSecret]"
+            },
+            {
+              "name": "AccountApiConfiguration:IdentifierUri",
+              "value": "[parameters('AccountApiConfiguration').IdentifierUri]"
+            },
+            {
+              "name": "AccountApiConfiguration:Tenant",
+              "value": "[parameters('AccountApiConfiguration').Tenant]"
+            },
+            {
+              "name": "ProviderRelationshipsApiConfiguration:ApiBaseUrl",
+              "value": "[parameters('ProviderRelationshipsApiConfiguration').ApiBaseUrl]"
+            },
+            {
+              "name": "ProviderRelationshipsApiConfiguration:ClientId",
+              "value": "[parameters('ProviderRelationshipsApiConfiguration').ClientId]"
+            },
+            {
+              "name": "ProviderRelationshipsApiConfiguration:ClientSecret",
+              "value": "[parameters('ProviderRelationshipsApiConfiguration').ClientSecret]"
+            },
+            {
+              "name": "ProviderRelationshipsApiConfiguration:IdentifierUri",
+              "value": "[parameters('ProviderRelationshipsApiConfiguration').IdentifierUri]"
+            },
+            {
+              "name": "ProviderRelationshipsApiConfiguration:Tenant",
+              "value": "[parameters('ProviderRelationshipsApiConfiguration').Tenant]"
+            },
+            {
+              "name": "VacancyApiConfiguration:ApiSearchBaseUrl",
+              "value": "[parameters('VacancyApiConfiguration').ApiSearchBaseUrl]"
+            },
+            {
+              "name": "VacancyApiConfiguration:ApiReadSubscriptionKey",
+              "value": "[parameters('VacancyApiConfiguration').ApiReadSubscriptionKey]"
+            },
+            {
+              "name": "Slack:WebhookUrl",
+              "value": "[parameters('SlackWebhook')]"
+            },
+            {
+              "name": "Slack:FindAnApprenticeshipDetailPrefixUrl",
+              "value": "[parameters('FindAnApprenticeshipDetailPrefixUrl')]"
+            },
+            {
+              "name": "FaaConfiguration:StorageConnectionString",
+              "value": "[parameters('FaaConfiguration').StorageConnectionString]"
+            },
+            {
+              "name": "Geocode:PostcodeAnywhereKey",
+              "value": "[parameters('GeocodePostcodeAnywhereKey')]"
+            },
+            {
+              "name": "DasSharedNServiceBusConfiguration:ConnectionString",
+              "value": "[parameters('DasSharedNServiceBusConfiguration').ConnectionString]"
+            },
+            {
+              "name": "DasSharedNServiceBusConfiguration:NServiceBusLicense",
+              "value": "[parameters('DasSharedNServiceBusConfiguration').NServiceBusLicense]"
+            },
+            {
+              "name": "CommunicationsConfiguration:EmployersApprenticeshipServiceUrl",
+              "value": "[parameters('CommunicationsConfiguration').EmployersApprenticeshipServiceUrl]"
+            },
+            {
+              "name": "CommunicationsConfiguration:ProvidersApprenticeshipServiceUrl",
+              "value": "[parameters('CommunicationsConfiguration').ProvidersApprenticeshipServiceUrl]"
+            },
+            {
+              "name": "NotificationsApiClientConfiguration:ApiBaseUrl",
+              "value": "[parameters('NotificationsApiClientConfiguration').ApiBaseUrl]"
+            },
+            {
+              "name": "NotificationsApiClientConfiguration:ClientToken",
+              "value": "[parameters('NotificationsApiClientConfiguration').ClientToken]"
+            },
+            {
+              "name": "PasAccountApiConfiguration:ApiBaseUrl",
+              "value": "[parameters('PasAccountApiConfiguration').ApiBaseUrl]"
+            },
+            {
+              "name": "PasAccountApiConfiguration:ClientId",
+              "value": "[parameters('PasAccountApiConfiguration').ClientId]"
+            },
+            {
+              "name": "PasAccountApiConfiguration:ClientSecret",
+              "value": "[parameters('PasAccountApiConfiguration').ClientSecret]"
+            },
+            {
+              "name": "PasAccountApiConfiguration:IdentifierUri",
+              "value": "[parameters('PasAccountApiConfiguration').IdentifierUri]"
+            },
+            {
+              "name": "PasAccountApiConfiguration:Tenant",
+              "value": "[parameters('PasAccountApiConfiguration').Tenant]"
+            },
+            {
+              "name": "Encodings",
+              "value": "[string(parameters('DasEncodings'))]"
+            }
+          ],
+          "connectionStrings": [
+            {
+              "name": "ConfigurationStorageConnectionString",
+              "connectionString": "[parameters('ConfigurationStorageConnectionString')]",
+              "type": "Custom"
+            },
+            {
+              "name": "Redis",
+              "connectionString": "[parameters('LoggingRedisConnectionString')]",
+              "type": "Custom"
+            },
+            {
+              "name": "MongoDb",
+              "connectionString": "[concat('mongodb://', variables('CosmosDbName'), ':', reference(variables('CosmosDbName')).outputs.PrimaryMasterKey.value,'@', variables('CosmosDbName'), '.documents.azure.com:10255/?ssl=true&replicaSet=globaldb')]",
+              "type": "Custom"
+            },
+            {
+              "name": "QueueStorage",
+              "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
+              "type": "Custom"
+            },
+            {
+              "name": "CommunicationsStorage",
+              "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
+              "type": "Custom"
+            },
+            {
+              "name": "AzureWebJobsDashboard",
+              "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
+              "type": "Custom"
+            },
+            {
+              "name": "AzureWebJobsStorage",
+              "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
+              "type": "Custom"
+            },
+            {
+              "name": "EmployerAccountsSqlDbConnectionString",
+              "connectionString": "[parameters('EmployerAccountsSqlDbConnectionString')]",
+              "type": "Custom"
+            },
+            {
+              "name": "EmployerFinanceSqlDbConnectionString",
+              "connectionString": "[parameters('EmployerFinanceSqlDbConnectionString')]",
+              "type": "Custom"
+            },
+            {
+              "name": "VacancyAnalyticEventsSqlDbConnectionString",
+              "connectionString": "[parameters('VacancyAnalyticEventsSqlDbConnectionString')]",
+              "type": "Custom"
+            },
+            {
+              "name": "TableStorage",
+              "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
+              "type": "Custom"
+            }
+          ],
+          "virtualApplications": [
+            {
+              "virtualPath": "/",
+              "physicalPath": "site\\wwwroot"
+            },
+            {
+              "virtualPath": "/Recruit.Vacancies.Jobs",
+              "physicalPath": "site\\wwwroot\\app_data\\jobs\\continuous\\Recruit.Vacancies.Jobs"
+            }
+          ]
         },
-        "parameters": {
-          "appServiceName": {
-            "value": "[variables('WebJobAppServiceName')]"
-          },
-          "appServicePlanName": {
-            "value": "[variables('webJobAppServicePlanName')]"
-          },
-          "appServicePlanResourceGroup": {
-            "value": "[resourceGroup().name]"
-          },
-          "appServiceAppSettings": {
-            "value": [
-              {
-                "name": "ASPNETCORE_ENVIRONMENT",
-                "value": "[toUpper(parameters('EnvironmentFullName'))]"
-              },
-              {
-                "name": "ApprenticeshipProgrammesApiBaseUrl",
-                "value": "[parameters('ApprenticeshipProgrammesApiBaseUrl')]"
-              },
-              {
-                "name": "AccountApiConfiguration:ApiBaseUrl",
-                "value": "[parameters('AccountApiConfiguration').ApiBaseUrl]"
-              },
-              {
-                "name": "AccountApiConfiguration:ClientId",
-                "value": "[parameters('AccountApiConfiguration').ClientId]"
-              },
-              {
-                "name": "AccountApiConfiguration:ClientSecret",
-                "value": "[parameters('AccountApiConfiguration').ClientSecret]"
-              },
-              {
-                "name": "AccountApiConfiguration:IdentifierUri",
-                "value": "[parameters('AccountApiConfiguration').IdentifierUri]"
-              },
-              {
-                "name": "AccountApiConfiguration:Tenant",
-                "value": "[parameters('AccountApiConfiguration').Tenant]"
-              },
-              {
-                "name": "ProviderRelationshipsApiConfiguration:ApiBaseUrl",
-                "value": "[parameters('ProviderRelationshipsApiConfiguration').ApiBaseUrl]"
-              },
-              {
-                "name": "ProviderRelationshipsApiConfiguration:ClientId",
-                "value": "[parameters('ProviderRelationshipsApiConfiguration').ClientId]"
-              },
-              {
-                "name": "ProviderRelationshipsApiConfiguration:ClientSecret",
-                "value": "[parameters('ProviderRelationshipsApiConfiguration').ClientSecret]"
-              },
-              {
-                "name": "ProviderRelationshipsApiConfiguration:IdentifierUri",
-                "value": "[parameters('ProviderRelationshipsApiConfiguration').IdentifierUri]"
-              },
-              {
-                "name": "ProviderRelationshipsApiConfiguration:Tenant",
-                "value": "[parameters('ProviderRelationshipsApiConfiguration').Tenant]"
-              },
-              {
-                "name": "VacancyApiConfiguration:ApiSearchBaseUrl",
-                "value": "[parameters('VacancyApiConfiguration').ApiSearchBaseUrl]"
-              },
-              {
-                "name": "VacancyApiConfiguration:ApiReadSubscriptionKey",
-                "value": "[parameters('VacancyApiConfiguration').ApiReadSubscriptionKey]"
-              },
-              {
-                "name": "Slack:WebhookUrl",
-                "value": "[parameters('SlackWebhook')]"
-              },
-              {
-                "name": "Slack:FindAnApprenticeshipDetailPrefixUrl",
-                "value": "[parameters('FindAnApprenticeshipDetailPrefixUrl')]"
-              },
-              {
-                "name": "FaaConfiguration:StorageConnectionString",
-                "value": "[parameters('FaaConfiguration').StorageConnectionString]"
-              },
-              {
-                "name": "Geocode:PostcodeAnywhereKey",
-                "value": "[parameters('GeocodePostcodeAnywhereKey')]"
-              },
-              {
-                "name": "DasSharedNServiceBusConfiguration:ConnectionString",
-                "value": "[parameters('DasSharedNServiceBusConfiguration').ConnectionString]"
-              },
-              {
-                "name": "DasSharedNServiceBusConfiguration:NServiceBusLicense",
-                "value": "[parameters('DasSharedNServiceBusConfiguration').NServiceBusLicense]"
-              },
-              {
-                "name": "CommunicationsConfiguration:EmployersApprenticeshipServiceUrl",
-                "value": "[parameters('CommunicationsConfiguration').EmployersApprenticeshipServiceUrl]"
-              },
-              {
-                "name": "CommunicationsConfiguration:ProvidersApprenticeshipServiceUrl",
-                "value": "[parameters('CommunicationsConfiguration').ProvidersApprenticeshipServiceUrl]"
-              },
-              {
-                "name": "NotificationsApiClientConfiguration:ApiBaseUrl",
-                "value": "[parameters('NotificationsApiClientConfiguration').ApiBaseUrl]"
-              },
-              {
-                "name": "NotificationsApiClientConfiguration:ClientToken",
-                "value": "[parameters('NotificationsApiClientConfiguration').ClientToken]"
-              },
-              {
-                "name": "PasAccountApiConfiguration:ApiBaseUrl",
-                "value": "[parameters('PasAccountApiConfiguration').ApiBaseUrl]"
-              },
-              {
-                "name": "PasAccountApiConfiguration:ClientId",
-                "value": "[parameters('PasAccountApiConfiguration').ClientId]"
-              },
-              {
-                "name": "PasAccountApiConfiguration:ClientSecret",
-                "value": "[parameters('PasAccountApiConfiguration').ClientSecret]"
-              },
-              {
-                "name": "PasAccountApiConfiguration:IdentifierUri",
-                "value": "[parameters('PasAccountApiConfiguration').IdentifierUri]"
-              },
-              {
-                "name": "PasAccountApiConfiguration:Tenant",
-                "value": "[parameters('PasAccountApiConfiguration').Tenant]"
-              },
-              {
-                "name": "Encodings",
-                "value": "[string(parameters('DasEncodings'))]"
-              }
-            ]
-          },
-          "appServiceConnectionStrings": {
-            "value": [
-              {
-                "name": "ConfigurationStorageConnectionString",
-                "connectionString": "[parameters('ConfigurationStorageConnectionString')]",
-                "type": "Custom"
-              },
-              {
-                "name": "Redis",
-                "connectionString": "[parameters('LoggingRedisConnectionString')]",
-                "type": "Custom"
-              },
-              {
-                "name": "MongoDb",
-                "connectionString": "[concat('mongodb://', variables('CosmosDbName'), ':', reference(variables('CosmosDbName')).outputs.PrimaryMasterKey.value,'@', variables('CosmosDbName'), '.documents.azure.com:10255/?ssl=true&replicaSet=globaldb')]",
-                "type": "Custom"
-              },
-              {
-                "name": "QueueStorage",
-                "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
-                "type": "Custom"
-              },
-              {
-                "name": "CommunicationsStorage",
-                "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
-                "type": "Custom"
-              },
-              {
-                "name": "AzureWebJobsDashboard",
-                "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
-                "type": "Custom"
-              },
-              {
-                "name": "AzureWebJobsStorage",
-                "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
-                "type": "Custom"
-              },
-              {
-                "name": "EmployerAccountsSqlDbConnectionString",
-                "connectionString": "[parameters('EmployerAccountsSqlDbConnectionString')]",
-                "type": "Custom"
-              },
-              {
-                "name": "EmployerFinanceSqlDbConnectionString",
-                "connectionString": "[parameters('EmployerFinanceSqlDbConnectionString')]",
-                "type": "Custom"
-              },
-              {
-                "name": "VacancyAnalyticEventsSqlDbConnectionString",
-                "connectionString": "[parameters('VacancyAnalyticEventsSqlDbConnectionString')]",
-                "type": "Custom"
-              },
-              {
-                "name": "TableStorage",
-                "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
-                "type": "Custom"
-              }
-            ]
-          },
-          "appServiceVirtualApplications": {
-            "value": [
-              {
-                "virtualPath": "/",
-                "physicalPath": "site\\wwwroot"
-              },
-              {
-                "virtualPath": "/Recruit.Vacancies.Jobs",
-                "physicalPath": "site\\wwwroot\\app_data\\jobs\\continuous\\Recruit.Vacancies.Jobs"
-              }
-            ]
-          },
-          "deployStagingSlot": {
-            "value": false
-          }
-        }
+        "httpsOnly": true
       },
       "dependsOn": [
         "[variables('StorageAccountName')]",
         "[variables('webJobAppServicePlanName')]",
         "[variables('CosmosDbName')]"
-      ]
+      ]     
     }
   ],
   "outputs": {
