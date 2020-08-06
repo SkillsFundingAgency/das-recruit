@@ -2,21 +2,24 @@
 @using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 @{ 
     ViewBag.Vpv = "/recruitment/employer/page-manage-notifications";
+    ViewBag.Title = "Manage your emails";
 }
 
 @model ManageNotificationsViewModel
-<div class="govuk-grid-row">
-    <h1 class="govuk-heading-l govuk-!-margin-bottom-6">Manage your emails</h1>
-</div>
 
 <div class="govuk-grid-row">
     <div class="govuk-gird-column-two-thirds">
+
+        <partial name=@PartialNames.ValidationSummary model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
+
+        <h1 class="govuk-heading-l govuk-!-margin-bottom-6">Manage your emails</h1>
+
         <form method="post">
-            <div class="govuk-form-group">
+            <div esfa-validation-marker-for="HasAnySubscription" class="govuk-form-group">
                 <fieldset class="govuk-fieldset" aria-describedby="when-conditional-hint">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                         <h2 class="govuk-fieldset__heading">
-                        When do you want to receive emails about your adverts and applications?
+                            When do you want to receive emails about your adverts and applications?
                         </h2>
                     </legend>
                     <span id="when-conditional-hint" class="govuk-hint">
@@ -45,7 +48,7 @@
                             </label>
                         </div>
                         <div>
-                            <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-when-conditional">
+                            <div esfa-validation-marker-for="NotificationFrequency" class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-when-conditional">
                                 <fieldset class="govuk-fieldset" aria-describedby="when-conditional-hint">
                                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
                                         <h1 class="govuk-fieldset__heading">
@@ -61,7 +64,7 @@
                                             </label>
                                         </div>
                                         <div class="govuk-radios__item">
-                                            <input class="govuk-radios__input" value="@NotificationFrequency.Daily" asp-for="NotificationFrequency" id="notification-frequency-daily" type="radio" >
+                                            <input class="govuk-radios__input" value="@NotificationFrequency.Daily" asp-for="NotificationFrequency" id="notification-frequency-daily" type="radio">
                                             <label class="govuk-label govuk-radios__label" for="notification-frequency-daily">
                                                 @NotificationFrequency.Daily
                                             </label>
@@ -79,12 +82,12 @@
                     </div>
                 </fieldset>
             </div>
-            <div class="govuk-form-group">
+            <div esfa-validation-marker-for="NotificationScope" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                    <h2 class="govuk-fieldset__heading">
-                        Which adverts do you want to receive emails about?
-                    </h2>
+                        <h2 class="govuk-fieldset__heading">
+                            Which adverts do you want to receive emails about?
+                        </h2>
                     </legend>
                     <div class="govuk-radios" data-module="radios">
                         <span esfa-validation-message-for="NotificationScope" class="govuk-error-message"></span>
