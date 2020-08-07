@@ -1251,7 +1251,7 @@
             },
             {
               "name": "Encodings",
-              "value": "[string(parameters('DasEncodings'))]"
+              "value": "[parameters('DasEncodings')]"
             }
           ],
           "connectionStrings": [
