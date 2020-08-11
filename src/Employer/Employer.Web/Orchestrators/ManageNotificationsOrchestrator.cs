@@ -13,7 +13,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
     {
         private readonly IRecruitVacancyClient _recruitVacancyClient;
 
-        private const string NotificationTypesIsRequiredForTheFirstTime = "Choose when you’d like to receive emails";
+        private const string NotificationTypesIsRequiredForTheFirstTime = "Select when you want to receive emails about your adverts and applications";
         private readonly EntityValidationResult _notificationTypeIsRequiredForTheFirstTime = new EntityValidationResult
         {
             Errors = new[] 
