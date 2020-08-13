@@ -12,7 +12,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 RuleFor(t => t.NotificationScope)
                     .NotNull()
                     .WithErrorCode("1101")
-                    .WithMessage("Choose what emails you’d like to receive");
+                    .WithMessage("Select which adverts you want to receive emails about");
             });
             
             When(n => (n.NotificationTypes & NotificationTypes.ApplicationSubmitted) == NotificationTypes.ApplicationSubmitted, () =>
@@ -20,7 +20,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 RuleFor(s => s.NotificationFrequency)
                     .NotNull()
                     .WithErrorCode("1102")
-                    .WithMessage("Choose how often you’d like new application emails");
+                    .WithMessage("Select how often you want to receive emails about new applications");
             });
         }
     }

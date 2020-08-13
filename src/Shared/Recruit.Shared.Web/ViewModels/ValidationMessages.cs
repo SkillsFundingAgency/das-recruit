@@ -62,7 +62,7 @@ namespace Esfa.Recruit.Shared.Web.ViewModels
 
         public static class UnsubscribeNotificationsConfirmationMessages
         {
-            public const string SelectionRequired =  "Please confirm if you’d like to unsubscribe";
+            public const string SelectionRequired = "Select yes if you want to stop receiving emails about adverts and applications";
         }
     }
 }
