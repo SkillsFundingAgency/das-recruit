@@ -1,33 +1,42 @@
 @model Esfa.Recruit.Employer.Web.ViewModels.ManageNotifications.ManageNotificationsAcknowledgementViewModel
 @{ 
     ViewBag.Vpv = "/recruitment/employer/page-notifications-updated-acknowledgement";
+    ViewBag.Title = "You’ve successfully saved your email preferences";
 }
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <div class="govuk-panel govuk-panel--confirmation">
             <h1 class="govuk-panel__title">
-                You’ve successfully saved your recruitment email preferences
+                You’ve successfully saved your email preferences
             </h1>
         </div>
 
-        <p asp-show="@Model.IsUserSubmittedVacanciesSelected">We'll send emails to <b>@Model.UserEmail</b> when your submitted vacancies:</p>
-        <p asp-hide="@Model.IsUserSubmittedVacanciesSelected">We'll send emails to <b>@Model.UserEmail</b> when vacancies:</p>
+        <div class="govuk-body">
 
-        <ul class="govuk-list govuk-list--bullet">
-            <li asp-show="@Model.IsVacancyRejectedSelected">
-                are rejected after review
-            </li>
+            @*User submitted and only one option selected*@
+            <p asp-show="(Model.IsUserSubmittedVacanciesSelected && Model.IsVacancyRejectedSelected && !Model.IsApplicationSubmittedSelected)"> We'll email <b>@Model.UserEmail</b> about any adverts you submit. You'll get emails when an advert is rejected after review. </p>
+            <p asp-show="(Model.IsUserSubmittedVacanciesSelected && !Model.IsVacancyRejectedSelected && Model.IsApplicationSubmittedSelected)"> We'll email <b>@Model.UserEmail</b> about any adverts you submit. You'll get emails when you receive new applications (@Model.Frequency). </p>
 
-            <li asp-show="@Model.IsVacancyClosingSoonSelected">
-                are closing soon
-            </li>
-            
-            <li asp-show="@Model.IsApplicationSubmittedSelected">
-                receive new applications (@Model.Frequency)
-            </li>
-        </ul>
+            @*All organisation and only one option selected*@
+            <p asp-show="(!Model.IsUserSubmittedVacanciesSelected && Model.IsVacancyRejectedSelected && !Model.IsApplicationSubmittedSelected)"> We'll email <b>@Model.UserEmail</b> about all apprenticeship adverts for your organisation. You'll get emails when an advert is rejected after review. </p>
+            <p asp-show="(!Model.IsUserSubmittedVacanciesSelected && !Model.IsVacancyRejectedSelected && Model.IsApplicationSubmittedSelected)"> We'll email <b>@Model.UserEmail</b> about all apprenticeship adverts for your organisation. You'll get emails when you receive new applications (@Model.Frequency). </p>
 
+            <div asp-show="Model.IsVacancyRejectedSelected && Model.IsApplicationSubmittedSelected">
+                <p asp-show="Model.IsUserSubmittedVacanciesSelected"> We'll email <b>@Model.UserEmail</b> about any adverts you submit. You'll get emails when: </p>
+                <p asp-show="!Model.IsUserSubmittedVacanciesSelected"> We'll email <b>@Model.UserEmail</b> about all apprenticeship adverts for your organisation. You'll get emails when: </p>
+
+                <ul class="govuk-list govuk-list--bullet">
+                    <li>
+                        an advert is rejected after review
+                    </li>
+                    <li>
+                        you receive new applications (@Model.Frequency)
+                    </li>
+                </ul>
+            </div>
+        </div>
+      
         <a asp-route="@RouteNames.Dashboard_Get" class="govuk-button govuk-!-margin-bottom-6" esfa-automation="create-vacancy">Return to dashboard</a>
     </div>
 </div>
