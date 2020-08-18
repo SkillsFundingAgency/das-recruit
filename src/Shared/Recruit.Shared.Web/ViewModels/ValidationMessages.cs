@@ -42,7 +42,7 @@ namespace Esfa.Recruit.Shared.Web.ViewModels
 
         public static class DeleteVacancyConfirmationMessages
         {
-            public const string SelectionRequired = "You must select one option";
+            public const string SelectionRequired = "Select yes if you want to delete this advert";
         }
 
         public static class CloseVacancyConfirmationMessages
