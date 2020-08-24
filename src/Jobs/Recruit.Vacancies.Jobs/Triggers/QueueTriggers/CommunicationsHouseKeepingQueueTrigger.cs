@@ -3,18 +3,17 @@ using System.IO;
 using System.Threading.Tasks;
 using Communication.Types;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
-using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Application.Queues.Messages;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
 using Esfa.Recruit.Vacancies.Jobs.Configuration;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
 {
     public class CommunicationsHouseKeepingQueueTrigger
     {
-        private const int DeleteReportAfterTimeSpanDays = 7;
-
         private readonly ILogger<CommunicationsHouseKeepingQueueTrigger> _logger;
         private readonly RecruitWebJobsSystemConfiguration _jobsConfig;
         private readonly ITimeProvider _timeProvider;
@@ -43,7 +42,11 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
                     return;
                 }
 
-                var deleteCommunicationsMessagesBefore180Days = DateTime.UtcNow.AddDays(-180);
+                var payload = JsonConvert.DeserializeObject<CommunicationsHouseKeepingQueueMessage>(message);
+
+                var targetDate = payload?.CreatedByScheduleDate ?? _timeProvider.Today;
+
+                var deleteCommunicationsMessagesBefore180Days = targetDate.AddDays(-180);
 
                 await _communicationRepository.HardDelete(deleteCommunicationsMessagesBefore180Days);
 
