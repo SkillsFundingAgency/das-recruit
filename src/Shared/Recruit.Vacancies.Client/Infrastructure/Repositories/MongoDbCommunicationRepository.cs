@@ -86,5 +86,18 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
                 collection.UpdateManyAsync(filter, updateDef),
                 new Context(nameof(UpdateScheduledMessagesAsSentAsync)));
         }
+
+        public Task HardDelete(DateTime dispatchDateTime)
+        {
+            var builder = Builders<CommunicationMessage>.Filter;
+            var filter = (builder.Eq(cm => cm.Status, CommunicationMessageStatus.Sent) |
+                        builder.Eq(cm => cm.Status, CommunicationMessageStatus.NotSent)) &
+                        builder.Lte(cm => cm.DispatchDateTime, dispatchDateTime);
+            var collection = GetCollection<CommunicationMessage>();
+
+            return RetryPolicy.ExecuteAsync(_ =>
+                collection.DeleteManyAsync(filter),
+                new Context(nameof(HardDelete)));
+        }
     }
 }
