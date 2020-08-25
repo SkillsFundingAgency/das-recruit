@@ -22,7 +22,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.CloneVacancyOrchestr
         internal Vacancy SourceVacancy => new Vacancy
         {
             Id = SourceVacancyId,
-            LegalEntityId = 1,
+            AccountLegalEntityPublicHashedId = "1",
             TrainingProvider = TrainingProvider,
             Status = VacancyStatus.Live,
             StartDate = SourceStartDate,

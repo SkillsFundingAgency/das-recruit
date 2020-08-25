@@ -52,7 +52,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.Jobs
 
             //We should only transfer vacancies without a legalEntityId when the provider cannot choose another legal entity
             if (remainingLegalEntitiesCount == 0)
-                return await _vacanciesQuery.GetProviderOwnedVacanciesForEmployerWithoutLegalEntityAsync(ukprn, employerAccountId);
+                return await _vacanciesQuery.GetProviderOwnedVacanciesForEmployerWithoutAccountLegalEntityPublicHashedIdAsync(ukprn, employerAccountId);
 
             return Enumerable.Empty<Vacancy>();
         }

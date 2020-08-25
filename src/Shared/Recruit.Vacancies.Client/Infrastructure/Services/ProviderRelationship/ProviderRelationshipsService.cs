@@ -41,7 +41,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
             return await GetEmployerInfosAsync(providerPermissions);
         }
 
-        public async Task<bool> HasProviderGotEmployersPermissionAsync(long ukprn, string accountHashedId, long legalEntityId)
+        public async Task<bool> HasProviderGotEmployersPermissionAsync(long ukprn, string accountHashedId, string accountLegalEntityPublicHashedId)
         {
             var accountDetails = await _accountApiClient.GetAccount(accountHashedId);
             var permittedLegalEntities = await GetProviderPermissionsforEmployer(ukprn, accountDetails.PublicHashedAccountId);
@@ -56,7 +56,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
                     ple => ple.AccountLegalEntityPublicHashedId,
                     ale => ale.AccountLegalEntityPublicHashedId,
                     (ple, ale) => ale)
-                .Any(l => l.LegalEntityId == legalEntityId);
+                .Any(l => l.AccountLegalEntityPublicHashedId == accountLegalEntityPublicHashedId);
 
             return hasPermission;
         }

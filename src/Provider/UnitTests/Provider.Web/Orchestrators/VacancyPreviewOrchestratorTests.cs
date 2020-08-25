@@ -46,7 +46,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators
             vacancy.IsDeleted = false;
             vacancy.EmployerAccountId = employerAccountId;
             vacancy.AccountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId;
-            vacancy.LegalEntityId = legalEntityId;
             vacancy.OwnerType = OwnerType.Provider;
 
             var client = new Mock<IProviderVacancyClient>();

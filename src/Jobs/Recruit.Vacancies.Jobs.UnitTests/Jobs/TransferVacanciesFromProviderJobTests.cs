@@ -62,7 +62,7 @@ namespace Recruit.Vacancies.Jobs.UnitTests.Jobs
             await _sut.Run(Ukprn, EmployerAccountId, AccountLegalEntityPublicHashedId, Guid.NewGuid(), string.Empty, string.Empty, TransferReason.EmployerRevokedPermission);
 
             _mockRecruitQueueService.Verify(x => x.AddMessageAsync(It.IsAny<TransferVacancyToLegalEntityQueueMessage>()), Times.Never);
-            _mockVacancyQuery.Verify(x => x.GetProviderOwnedVacanciesForEmployerWithoutLegalEntityAsync(It.IsAny<long>(), It.IsAny<string>()), Times.Never);
+            _mockVacancyQuery.Verify(x => x.GetProviderOwnedVacanciesForEmployerWithoutAccountLegalEntityPublicHashedIdAsync(It.IsAny<long>(), It.IsAny<string>()), Times.Never);
         }
 
         [Fact]
@@ -94,7 +94,7 @@ namespace Recruit.Vacancies.Jobs.UnitTests.Jobs
             _mockQueryStoreReader.Setup(q => q.GetProviderEmployerVacancyDataAsync(Ukprn, EmployerAccountId))
                 .ReturnsAsync(employerInfo);
 
-            _mockVacancyQuery.Setup(x => x.GetProviderOwnedVacanciesForEmployerWithoutLegalEntityAsync(Ukprn, EmployerAccountId))
+            _mockVacancyQuery.Setup(x => x.GetProviderOwnedVacanciesForEmployerWithoutAccountLegalEntityPublicHashedIdAsync(Ukprn, EmployerAccountId))
                 .ReturnsAsync(new Fixture().CreateMany<Vacancy>(NoOfVacanciesWithoutLegalEntity));
 
             await _sut.Run(Ukprn, EmployerAccountId, AccountLegalEntityPublicHashedId, userRef, UserEmail, UserName, TransferReason.EmployerRevokedPermission);
@@ -137,7 +137,7 @@ namespace Recruit.Vacancies.Jobs.UnitTests.Jobs
             
             await _sut.Run(Ukprn, EmployerAccountId, AccountLegalEntityPublicHashedId, userRef, UserEmail, UserName, TransferReason.EmployerRevokedPermission);
 
-            _mockVacancyQuery.Verify(x => x.GetProviderOwnedVacanciesForEmployerWithoutLegalEntityAsync(It.IsAny<long>(), It.IsAny<string>()), Times.Never);
+            _mockVacancyQuery.Verify(x => x.GetProviderOwnedVacanciesForEmployerWithoutAccountLegalEntityPublicHashedIdAsync(It.IsAny<long>(), It.IsAny<string>()), Times.Never);
             _mockRecruitQueueService.Verify(x => x.AddMessageAsync(It.IsAny<TransferVacancyToLegalEntityQueueMessage>()), Times.Exactly(NoOfMatchingVacancies));
         }
     }
