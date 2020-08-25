@@ -20,7 +20,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Services
         [Fact]
         public void HasLegalEntityAgreementAsync_ShouldReturnFalseIfNoMatchingLegalEntity()
         {
-            var sut = GetLegalEntityAgreementService(EmployerAccountId, true, true, "5678");
+            var sut = GetLegalEntityAgreementService(EmployerAccountId, true, "5678",true, "5678");
 
             var result = sut.HasLegalEntityAgreementAsync(EmployerAccountId, AccountLegalEntityPublicHashedId).Result;
 
@@ -31,7 +31,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Services
         [Fact]
         public void HasLegalEntityAgreementAsync_ShouldNotCheckEmployerServiceWhenHasAgreement()
         {
-            var sut = GetLegalEntityAgreementService(EmployerAccountId, true, true, AccountLegalEntityPublicHashedId);
+            var sut = GetLegalEntityAgreementService(EmployerAccountId, true, AccountLegalEntityPublicHashedId,true, AccountLegalEntityPublicHashedId);
 
             var result = sut.HasLegalEntityAgreementAsync(EmployerAccountId, AccountLegalEntityPublicHashedId).Result;
 
@@ -42,7 +42,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Services
         [Fact]
         public void HasLegalEntityAgreementAsync_ShouldCheckEmployerServiceWhenHasNoAgreement()
         {
-            var sut = GetLegalEntityAgreementService(EmployerAccountId, false, true, AccountLegalEntityPublicHashedId);
+            var sut = GetLegalEntityAgreementService(EmployerAccountId, false, AccountLegalEntityPublicHashedId,true, AccountLegalEntityPublicHashedId);
 
             var result = sut.HasLegalEntityAgreementAsync(EmployerAccountId, AccountLegalEntityPublicHashedId).Result;
 
@@ -54,7 +54,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Services
         [Fact]
         public void HasLegalEntityAgreementAsync_ShouldReturnFalseWhenEmployerServiceLegalEntityHasNoAgreement()
         {
-            var sut = GetLegalEntityAgreementService(EmployerAccountId, false, false, AccountLegalEntityPublicHashedId);
+            var sut = GetLegalEntityAgreementService(EmployerAccountId, false, AccountLegalEntityPublicHashedId,false, AccountLegalEntityPublicHashedId);
 
             var result = sut.HasLegalEntityAgreementAsync(EmployerAccountId, AccountLegalEntityPublicHashedId).Result;
 
@@ -66,7 +66,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Services
         [Fact]
         public void HasLegalEntityAgreementAsync_ShouldReturnFalseWhenEmployerServiceCantLocateLegalEntity()
         {
-            var sut = GetLegalEntityAgreementService(EmployerAccountId, false, true, AccountLegalEntityPublicHashedId);
+            var sut = GetLegalEntityAgreementService(EmployerAccountId, false, "5678", true, AccountLegalEntityPublicHashedId);
 
             var result = sut.HasLegalEntityAgreementAsync(EmployerAccountId, AccountLegalEntityPublicHashedId).Result;
 
@@ -76,7 +76,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Services
         }
 
         private LegalEntityAgreementService GetLegalEntityAgreementService(string employerAccountId, 
-            bool hasLegalEntityAgreement,
+            bool hasLegalEntityAgreement, string employerServiceAccountLegalEntityPublicHashedId,
             bool employerServiceHasLegalEntityAgreement, string accountLegalEntityPublicHashedId)
         {
             _clientMock = new Mock<IEmployerVacancyClient>();
@@ -98,7 +98,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Services
                     new LegalEntity
                     {
                         HasLegalEntityAgreement = employerServiceHasLegalEntityAgreement,
-                        AccountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId
+                        AccountLegalEntityPublicHashedId = employerServiceAccountLegalEntityPublicHashedId
                     }
                 }
                 .AsEnumerable()));
