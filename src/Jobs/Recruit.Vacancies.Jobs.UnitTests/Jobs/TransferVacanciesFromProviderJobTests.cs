@@ -13,7 +13,7 @@ using Esfa.Recruit.Vacancies.Jobs.Jobs;
 using Moq;
 using Xunit;
 
-namespace Esfa.Recruit.Vacancies.Jobs.UnitTests.Jobs
+namespace Recruit.Vacancies.Jobs.UnitTests.Jobs
 {
     public class TransferVacanciesFromProviderJobTests
     {
@@ -35,25 +35,31 @@ namespace Esfa.Recruit.Vacancies.Jobs.UnitTests.Jobs
         public async Task GivenRequest_WhenNoMatchingVacanciesToTransfer_AndProviderHasManyLegalEntityPermissions_ThenShouldNotQueueAnyTransfers()
         {
             const long Ukprn = 1;
-            const long LegalEntityId = 2;
+            const string AccountLegalEntityPublicHashedId = "2";
             const string EmployerAccountId = "employer-account-id";
 
-            _mockVacancyQuery.Setup(x => x.GetProviderOwnedVacanciesForLegalEntityAsync(Ukprn, LegalEntityId))
+            _mockVacancyQuery.Setup(x => x.GetProviderOwnedVacanciesForLegalEntityAsync(Ukprn, AccountLegalEntityPublicHashedId))
                                 .ReturnsAsync(Enumerable.Empty<Vacancy>());
 
             var employerInfo = new EmployerInfo
             {
                 LegalEntities = new List<LegalEntity>
                 {
-                    new LegalEntity{LegalEntityId = LegalEntityId},
-                    new LegalEntity{LegalEntityId = 12345}
+                    new LegalEntity
+                    {
+                        AccountLegalEntityPublicHashedId = "2"
+                    },
+                    new LegalEntity
+                    {
+                        AccountLegalEntityPublicHashedId = "12345"
+                    }
                 }
             };
 
             _mockQueryStoreReader.Setup(q => q.GetProviderEmployerVacancyDataAsync(Ukprn, EmployerAccountId))
                 .ReturnsAsync(employerInfo);
 
-            await _sut.Run(Ukprn, EmployerAccountId, LegalEntityId, Guid.NewGuid(), string.Empty, string.Empty, TransferReason.EmployerRevokedPermission);
+            await _sut.Run(Ukprn, EmployerAccountId, AccountLegalEntityPublicHashedId, Guid.NewGuid(), string.Empty, string.Empty, TransferReason.EmployerRevokedPermission);
 
             _mockRecruitQueueService.Verify(x => x.AddMessageAsync(It.IsAny<TransferVacancyToLegalEntityQueueMessage>()), Times.Never);
             _mockVacancyQuery.Verify(x => x.GetProviderOwnedVacanciesForEmployerWithoutLegalEntityAsync(It.IsAny<long>(), It.IsAny<string>()), Times.Never);
@@ -68,17 +74,20 @@ namespace Esfa.Recruit.Vacancies.Jobs.UnitTests.Jobs
             const string UserEmail = "test@test.com";
             const string UserName = "John Smith";
             const long Ukprn = 1;
-            const long LegalEntityId = 2;
+            const string AccountLegalEntityPublicHashedId = "2";
             const string EmployerAccountId = "employer-account-id";
 
-            _mockVacancyQuery.Setup(x => x.GetProviderOwnedVacanciesForLegalEntityAsync(Ukprn, LegalEntityId))
+            _mockVacancyQuery.Setup(x => x.GetProviderOwnedVacanciesForLegalEntityAsync(Ukprn, AccountLegalEntityPublicHashedId))
                 .ReturnsAsync(new Fixture().CreateMany<Vacancy>(NoOfMatchingVacancies));
 
             var employerInfo = new EmployerInfo
             {
                 LegalEntities = new List<LegalEntity>
                 {
-                    new LegalEntity{LegalEntityId = LegalEntityId}
+                    new LegalEntity
+                    {
+                        AccountLegalEntityPublicHashedId = AccountLegalEntityPublicHashedId
+                    }
                 }
             };
 
@@ -88,7 +97,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.UnitTests.Jobs
             _mockVacancyQuery.Setup(x => x.GetProviderOwnedVacanciesForEmployerWithoutLegalEntityAsync(Ukprn, EmployerAccountId))
                 .ReturnsAsync(new Fixture().CreateMany<Vacancy>(NoOfVacanciesWithoutLegalEntity));
 
-            await _sut.Run(Ukprn, EmployerAccountId, LegalEntityId, userRef, UserEmail, UserName, TransferReason.EmployerRevokedPermission);
+            await _sut.Run(Ukprn, EmployerAccountId, AccountLegalEntityPublicHashedId, userRef, UserEmail, UserName, TransferReason.EmployerRevokedPermission);
 
             var expectedCallCount = NoOfMatchingVacancies + NoOfVacanciesWithoutLegalEntity;
             _mockRecruitQueueService.Verify(x => x.AddMessageAsync(It.IsAny<TransferVacancyToLegalEntityQueueMessage>()), Times.Exactly(expectedCallCount));
@@ -102,25 +111,31 @@ namespace Esfa.Recruit.Vacancies.Jobs.UnitTests.Jobs
             const string UserEmail = "test@test.com";
             const string UserName = "John Smith";
             const long Ukprn = 1;
-            const long LegalEntityId = 2;
+            const string AccountLegalEntityPublicHashedId = "2";
             const string EmployerAccountId = "employer-account-id";
 
-            _mockVacancyQuery.Setup(x => x.GetProviderOwnedVacanciesForLegalEntityAsync(Ukprn, LegalEntityId))
+            _mockVacancyQuery.Setup(x => x.GetProviderOwnedVacanciesForLegalEntityAsync(Ukprn, AccountLegalEntityPublicHashedId))
                 .ReturnsAsync(new Fixture().CreateMany<Vacancy>(NoOfMatchingVacancies));
 
             var employerInfo = new EmployerInfo
             {
                 LegalEntities = new List<LegalEntity>
                 {
-                    new LegalEntity{LegalEntityId = LegalEntityId},
-                    new LegalEntity{LegalEntityId = 1234}
+                    new LegalEntity
+                    {
+                        AccountLegalEntityPublicHashedId = AccountLegalEntityPublicHashedId
+                    },
+                    new LegalEntity
+                    {
+                        AccountLegalEntityPublicHashedId = "1234"
+                    }
                 }
             };
 
             _mockQueryStoreReader.Setup(q => q.GetProviderEmployerVacancyDataAsync(Ukprn, EmployerAccountId))
                 .ReturnsAsync(employerInfo);
             
-            await _sut.Run(Ukprn, EmployerAccountId, LegalEntityId, userRef, UserEmail, UserName, TransferReason.EmployerRevokedPermission);
+            await _sut.Run(Ukprn, EmployerAccountId, AccountLegalEntityPublicHashedId, userRef, UserEmail, UserName, TransferReason.EmployerRevokedPermission);
 
             _mockVacancyQuery.Verify(x => x.GetProviderOwnedVacanciesForEmployerWithoutLegalEntityAsync(It.IsAny<long>(), It.IsAny<string>()), Times.Never);
             _mockRecruitQueueService.Verify(x => x.AddMessageAsync(It.IsAny<TransferVacancyToLegalEntityQueueMessage>()), Times.Exactly(NoOfMatchingVacancies));

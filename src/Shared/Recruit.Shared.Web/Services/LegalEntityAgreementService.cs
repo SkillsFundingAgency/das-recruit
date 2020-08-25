@@ -30,7 +30,7 @@ namespace Esfa.Recruit.Shared.Web.Services
                 return true;
 
             //Agreement may have been signed since the projection was created. Check Employer Service.
-            var hasLegalEntityAgreement = await CheckEmployerServiceForLegalEntityAgreementAsync(employerAccountId, legalEntity.LegalEntityId);
+            var hasLegalEntityAgreement = await CheckEmployerServiceForLegalEntityAgreementAsync(employerAccountId, legalEntity.AccountLegalEntityPublicHashedId);
 
             if (hasLegalEntityAgreement)
             {
@@ -49,11 +49,11 @@ namespace Esfa.Recruit.Shared.Web.Services
             return legalEntity;
         }
 
-       private async Task<bool> CheckEmployerServiceForLegalEntityAgreementAsync(string employerAccountId, long legalEntityId)
+       private async Task<bool> CheckEmployerServiceForLegalEntityAgreementAsync(string employerAccountId, string accountLegalEntityPublicHashedId)
         {
             var legalEntities = await _client.GetEmployerLegalEntitiesAsync(employerAccountId);
 
-            var legalEntity = legalEntities.SingleOrDefault(e => e.LegalEntityId == legalEntityId);
+            var legalEntity = legalEntities.SingleOrDefault(e => e.AccountLegalEntityPublicHashedId == accountLegalEntityPublicHashedId);
 
             return legalEntity?.HasLegalEntityAgreement ?? false;
         }

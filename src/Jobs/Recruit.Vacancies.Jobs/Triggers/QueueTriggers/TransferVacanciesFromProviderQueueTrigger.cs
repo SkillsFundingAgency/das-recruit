@@ -47,7 +47,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
                 {
                     var queueMessage = JsonConvert.DeserializeObject<TransferVacanciesFromProviderQueueMessage>(message);
 
-                    await _runner.Run(queueMessage.Ukprn, queueMessage.EmployerAccountId, queueMessage.LegalEntityId, queueMessage.UserRef, queueMessage.UserEmailAddress, queueMessage.UserName, queueMessage.TransferReason);
+                    await _runner.Run(queueMessage.Ukprn, queueMessage.EmployerAccountId, queueMessage.AccountLegalEntityPublicHashedId, queueMessage.UserRef, queueMessage.UserEmailAddress, queueMessage.UserName, queueMessage.TransferReason);
 
                     _logger.LogInformation("Finished queueing vacancies to transfer from provider.");
                 }

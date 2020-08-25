@@ -7,7 +7,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Events
     {
         public long Ukprn { get; set; }
         public string EmployerAccountId { get; set; }
-        public long LegalEntityId { get; set; }
         public string AccountLegalEntityPublicHashedId { get; set; }
     }
 }

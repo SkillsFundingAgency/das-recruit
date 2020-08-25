@@ -8,7 +8,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections
         public Guid Id { get; set; }
         public string Title { get; set; }
         public long? VacancyReference { get; set; }
-        public long? LegalEntityId { get; set; }
         public string LegalEntityName { get; set; }
         public string EmployerAccountId { get; set; }
         public string EmployerName { get; set; }

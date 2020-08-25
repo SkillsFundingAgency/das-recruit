@@ -19,7 +19,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Repositories
         Task<IEnumerable<long>> GetAllVacancyReferencesAsync();
         Task<IEnumerable<Guid>> GetAllVacancyIdsAsync();
         Task<IEnumerable<ProviderVacancySummary>> GetVacanciesAssociatedToProvider(long ukprn);
-        Task<IEnumerable<Vacancy>> GetProviderOwnedVacanciesForLegalEntityAsync(long ukprn, long legalEntityId);
+        Task<IEnumerable<Vacancy>> GetProviderOwnedVacanciesForLegalEntityAsync(long ukprn, string accountLegalEntityPublicHashedId);
         Task<IEnumerable<Vacancy>> GetProviderOwnedVacanciesForEmployerWithoutLegalEntityAsync(long ukprn, string employerAccountId);
         Task<IEnumerable<T>> GetDraftVacanciesCreatedBeforeAsync<T>(DateTime staleDate);
         Task<IEnumerable<T>> GetReferredVacanciesSubmittedBeforeAsync<T>(DateTime staleDate);

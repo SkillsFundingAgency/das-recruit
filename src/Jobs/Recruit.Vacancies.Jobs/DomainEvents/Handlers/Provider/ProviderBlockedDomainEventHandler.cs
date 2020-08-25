@@ -78,12 +78,12 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider
 
                 foreach (var legalEntity in employer.LegalEntities)
                 {
-                    _logger.LogInformation($"Queuing to revoke provider {ukprn} permission on account {employer.EmployerAccountId} for legal entity {legalEntity.LegalEntityId}.");
+                    _logger.LogInformation($"Queuing to revoke provider {ukprn} permission on account {employer.EmployerAccountId} " +
+                                           $"for AccountLegalEntityPublicHashedId {legalEntity.AccountLegalEntityPublicHashedId}.");
                     var providerBlockedOnLegalEntityEvent = new ProviderBlockedOnLegalEntityEvent()
                     {
                         Ukprn = ukprn,
                         EmployerAccountId = employer.EmployerAccountId,
-                        LegalEntityId = legalEntity.LegalEntityId,
                         AccountLegalEntityPublicHashedId = legalEntity.AccountLegalEntityPublicHashedId
                     };
 

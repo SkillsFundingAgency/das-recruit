@@ -7,11 +7,12 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
+using Esfa.Recruit.Vacancies.Jobs.UnitTests.DomainEvents.Handlers.Provider.ProviderBlockedDomainEventHandlerTests;
 using Moq;
 using Newtonsoft.Json;
 using Xunit;
 
-namespace Esfa.Recruit.Vacancies.Jobs.UnitTests.DomainEvents.Handlers.Provider.ProviderBlockedDomainEventHandlerTests
+namespace Recruit.Vacancies.Jobs.UnitTests.DomainEvents.Handlers.Provider.ProviderBlockedDomainEventHandlerTests
 {
     public class HandleAsyncTests : ProviderBlockedDomainEventHandlerTestBase
     {
@@ -157,8 +158,8 @@ namespace Esfa.Recruit.Vacancies.Jobs.UnitTests.DomainEvents.Handlers.Provider.P
                         EmployerAccountId = _employerAccount1,
                         LegalEntities = new List<LegalEntity>() 
                         {
-                            new LegalEntity() { LegalEntityId = 1, AccountLegalEntityPublicHashedId = _legalEntity1 },
-                            new LegalEntity() { LegalEntityId = 2, AccountLegalEntityPublicHashedId = _legalEntity2 }
+                            new LegalEntity() { AccountLegalEntityPublicHashedId = _legalEntity1 },
+                            new LegalEntity() { AccountLegalEntityPublicHashedId = _legalEntity2 }
                         }
                     },
                     new EmployerInfo { EmployerAccountId = _employerAccount3 } 
