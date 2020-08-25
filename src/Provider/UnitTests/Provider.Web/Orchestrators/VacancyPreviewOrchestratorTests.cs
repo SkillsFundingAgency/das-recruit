@@ -37,7 +37,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators
             const long ukprn = 12345678;
             const string employerAccountId = "ABCDEF";
             const long legalEntityId = 1234;
-
+            const string accountLegalEntityPublicHashedId = "XVYABD";
             var fixture = new Fixture();
             var vacancy = fixture.Create<Vacancy>();
             vacancy.Id = vacancyId;
@@ -45,6 +45,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators
             vacancy.Status = VacancyStatus.Draft;
             vacancy.IsDeleted = false;
             vacancy.EmployerAccountId = employerAccountId;
+            vacancy.AccountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId;
             vacancy.LegalEntityId = legalEntityId;
             vacancy.OwnerType = OwnerType.Provider;
 
@@ -69,7 +70,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators
             var review = new Mock<IReviewSummaryService>();
 
             var legalEntityAgreement = new Mock<ILegalEntityAgreementService>();
-            legalEntityAgreement.Setup(l => l.HasLegalEntityAgreementAsync(employerAccountId, legalEntityId))
+            legalEntityAgreement.Setup(l => l.HasLegalEntityAgreementAsync(employerAccountId, accountLegalEntityPublicHashedId))
                 .ReturnsAsync(hasLegalEntityAgreement);
 
             var agreementServiceMock = new Mock<ITrainingProviderAgreementService>();

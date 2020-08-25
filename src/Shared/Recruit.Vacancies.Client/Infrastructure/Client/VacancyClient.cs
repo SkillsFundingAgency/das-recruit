@@ -286,9 +286,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _messaging.SendCommandAsync(command);
         }
 
-        public Task<EmployerProfile> GetEmployerProfileAsync(string employerAccountId, long legalEntityId)
+        public Task<EmployerProfile> GetEmployerProfileAsync(string employerAccountId, string accountLegalEntityPublicHashedId)
         {
-            return _employerProfileRepository.GetAsync(employerAccountId, legalEntityId);
+            return _employerProfileRepository.GetAsync(employerAccountId, accountLegalEntityPublicHashedId);
         }
 
         public Task UpdateEmployerProfileAsync(EmployerProfile employerProfile, VacancyUser user)
@@ -422,12 +422,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _vacancyReviewQuery.GetCurrentReferredVacancyReviewAsync(vacancyReference);
         }
 
-        public Task RefreshEmployerProfiles(string employerAccountId, IEnumerable<long> legalEntityIds)
+        public Task RefreshEmployerProfiles(string employerAccountId, IEnumerable<string> accountLegalEntityPublicHashedIds)
         {
             return _messaging.SendCommandAsync(new RefreshEmployerProfilesCommand
             {
                 EmployerAccountId = employerAccountId,
-                LegalEntityIds = legalEntityIds
+                AccountLegalEntityPublicHashedIds = accountLegalEntityPublicHashedIds
             });
         }
         public Task<User> GetUsersDetailsAsync(string userId)

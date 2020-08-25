@@ -28,10 +28,12 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         {
             message.Profile.LastUpdatedDate = _time.Now;
             message.Profile.LastUpdatedBy = message.User;
-            
+
             await _employerProfileRepository.UpdateAsync(message.Profile);
 
-            _logger.LogInformation("Update Employer profile for employer account: {employerAccountId} and legal entity: {legalEntityId} ", message.Profile.EmployerAccountId, message.Profile.LegalEntityId);
+            _logger.LogInformation("Update Employer profile for employer account: {employerAccountId} and " +
+                                   "AccountLegalEntityPublicHashedId:{AccountLegalEntityPublicHashedId}", message.Profile.EmployerAccountId,
+                                    message.Profile.AccountLegalEntityPublicHashedId);
         }
     }
 }

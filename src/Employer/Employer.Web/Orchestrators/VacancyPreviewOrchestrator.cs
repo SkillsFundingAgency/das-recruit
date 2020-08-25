@@ -115,7 +115,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         {
             var response = new SubmitVacancyResponse
             {
-                HasLegalEntityAgreement = await _legalEntityAgreementService.HasLegalEntityAgreementAsync(vacancy.EmployerAccountId, vacancy.LegalEntityId),
+                HasLegalEntityAgreement = await _legalEntityAgreementService.HasLegalEntityAgreementAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId),
                 IsSubmitted = false
             };
 

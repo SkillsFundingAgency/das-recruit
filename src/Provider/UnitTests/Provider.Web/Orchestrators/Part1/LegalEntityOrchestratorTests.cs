@@ -23,7 +23,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Part1
         private readonly LegalEntityOrchestrator _orchestrator;
         private readonly Vacancy _testVacancy;
         private readonly VacancyRouteModel _testRouteModel = new VacancyRouteModel { Ukprn = TestUkprn, VacancyId = Guid.NewGuid() };
-
+        private readonly string AccountLegalEntityPublicHashedId = "ABCEFG";
         public LegalEntityOrchestratorTests()
         {
             _mockLogger = new Mock<ILogger<LegalEntityOrchestrator>>();
@@ -49,7 +49,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Part1
 
             _mockVacancyClient.Setup(x => x.GetVacancyAsync(It.IsAny<Guid>())).ReturnsAsync(_testVacancy);
 
-            var result = await _orchestrator.GetLegalEntityViewModelAsync(_testRouteModel, TestUkprn, "", 1);
+            var result = await _orchestrator.GetLegalEntityViewModelAsync(_testRouteModel, TestUkprn, "", 1, AccountLegalEntityPublicHashedId);
 
             result.Organisations.Count().Should().Be(0);
         }
