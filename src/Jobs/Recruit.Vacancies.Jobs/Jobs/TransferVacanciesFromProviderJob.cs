@@ -50,7 +50,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.Jobs
             var remainingLegalEntitiesCount = employer?.LegalEntities.Count(
                                                   l => l.AccountLegalEntityPublicHashedId != accountLegalEntityPublicHashedId) ?? 0;
 
-            //We should only transfer vacancies without a legalEntityId when the provider cannot choose another legal entity
+            //We should only transfer vacancies without a accountLegalEntityPublicHashedId when the provider cannot choose another legal entity
             if (remainingLegalEntitiesCount == 0)
                 return await _vacanciesQuery.GetProviderOwnedVacanciesForEmployerWithoutAccountLegalEntityPublicHashedIdAsync(ukprn, employerAccountId);
 
