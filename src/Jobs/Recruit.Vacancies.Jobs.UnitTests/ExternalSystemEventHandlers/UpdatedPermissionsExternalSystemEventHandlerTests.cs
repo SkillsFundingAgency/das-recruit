@@ -7,8 +7,6 @@ using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Queues;
 using Esfa.Recruit.Vacancies.Client.Application.Queues.Messages;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
-using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
 using Esfa.Recruit.Vacancies.Jobs.Configuration;
 using Esfa.Recruit.Vacancies.Jobs.ExternalSystemEventHandlers;
@@ -21,7 +19,7 @@ using SFA.DAS.ProviderRelationships.Messages.Events;
 using SFA.DAS.ProviderRelationships.Types.Models;
 using Xunit;
 
-namespace Esfa.Recruit.Vacancies.Jobs.UnitTests.ExternalSystemEventHandlers
+namespace Recruit.Vacancies.Jobs.UnitTests.ExternalSystemEventHandlers
 {
     public class UpdatedPermissionsExternalSystemEventHandlerTests
     {
