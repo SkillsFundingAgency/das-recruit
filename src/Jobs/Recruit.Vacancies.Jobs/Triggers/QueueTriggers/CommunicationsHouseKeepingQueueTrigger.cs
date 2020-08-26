@@ -18,7 +18,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
         private readonly RecruitWebJobsSystemConfiguration _jobsConfig;
         private readonly ITimeProvider _timeProvider;
         private readonly ICommunicationRepository _communicationRepository;
-
+        private const int DefaultStaleByDays = 180;
         private string JobName => GetType().Name;
 
         public CommunicationsHouseKeepingQueueTrigger(ILogger<CommunicationsHouseKeepingQueueTrigger> logger,
@@ -45,8 +45,8 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
                 var payload = JsonConvert.DeserializeObject<CommunicationsHouseKeepingQueueMessage>(message);
 
                 var targetDate = payload?.CreatedByScheduleDate ?? _timeProvider.Today;
-
-                var deleteCommunicationsMessagesBefore180Days = targetDate.AddDays(-180);
+                
+                var deleteCommunicationsMessagesBefore180Days = targetDate.AddDays((_jobsConfig.HardDeleteCommunicationMessagesStaleByDays ?? DefaultStaleByDays) * -1);                
 
                 await _communicationRepository.HardDelete(deleteCommunicationsMessagesBefore180Days);
 

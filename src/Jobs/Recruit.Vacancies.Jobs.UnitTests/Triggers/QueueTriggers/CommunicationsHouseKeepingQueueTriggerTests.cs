@@ -14,8 +14,9 @@ namespace Recruit.Vacancies.Jobs.UnitTests.Triggers.QueueTriggers
 {
     public class CommunicationsHouseKeepingQueueTriggerTests
     {
+        private const int Days = 180;
         private readonly Mock<ILogger<CommunicationsHouseKeepingQueueTrigger>> _loggerMock = new Mock<ILogger<CommunicationsHouseKeepingQueueTrigger>>();
-        private readonly RecruitWebJobsSystemConfiguration _jobsConfig = new RecruitWebJobsSystemConfiguration() {  };
+        private readonly RecruitWebJobsSystemConfiguration _jobsConfig = new RecruitWebJobsSystemConfiguration() { HardDeleteCommunicationMessagesStaleByDays = Days };
         private readonly Mock<ITimeProvider> _timeProviderMock = new Mock<ITimeProvider>();
         private readonly Mock<ICommunicationRepository> _communicationRepositoryMock = new Mock<ICommunicationRepository>();
 

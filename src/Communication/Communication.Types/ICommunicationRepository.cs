@@ -12,6 +12,6 @@ namespace Communication.Types
         Task UpdateAsync(CommunicationMessage commMsg);
         Task<IEnumerable<CommunicationMessage>> GetScheduledMessagesSinceAsync(string requestType, DeliveryFrequency frequency, DateTime from, DateTime to);
         Task UpdateScheduledMessagesAsSentAsync(IEnumerable<Guid> msgIds, Guid aggregatedMessageId);
-        Task HardDelete(DateTime dispatchDateTime);
+        Task HardDelete(DateTime hardDeleteCommunicationMessagesStaleDateTime);
     }
 }
