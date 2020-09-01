@@ -25,7 +25,6 @@ namespace UnitTests.Recruit.Vacancies.Client.Infrastructure.Mappings.LegalEntity
             var actual = LegalEntityMapper.MapFromAccountApiLegalEntity(expected);
 
             // Assert
-            actual.LegalEntityId.Should().Be(expected.LegalEntityId);
             actual.AccountLegalEntityPublicHashedId.Should().Be(expected.AccountLegalEntityPublicHashedId);
             actual.Name.Should().Be(expected.Name);
             actual.HasLegalEntityAgreement.Should().BeFalse();

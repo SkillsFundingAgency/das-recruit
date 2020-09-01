@@ -280,13 +280,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             return result;
         }
 
-        public async Task<IEnumerable<Vacancy>> GetProviderOwnedVacanciesForLegalEntityAsync(long ukprn, long legalEntityId)
+        public async Task<IEnumerable<Vacancy>> GetProviderOwnedVacanciesForLegalEntityAsync(long ukprn, string accountLegalEntityPublicHashedId)
         {
             var builder = Builders<Vacancy>.Filter;
             var filter = builder.Eq(v => v.IsDeleted, false) &
                          builder.Eq(v => v.OwnerType, OwnerType.Provider) &
                          builder.Eq(v => v.TrainingProvider.Ukprn, ukprn) &
-                         builder.Eq(v => v.LegalEntityId, legalEntityId);
+                         builder.Eq(v => v.AccountLegalEntityPublicHashedId, accountLegalEntityPublicHashedId);
 
             var collection = GetCollection<Vacancy>();
 
@@ -299,14 +299,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             return result;
         }
 
-        public async Task<IEnumerable<Vacancy>> GetProviderOwnedVacanciesForEmployerWithoutLegalEntityAsync(long ukprn, string employerAccountId)
+        public async Task<IEnumerable<Vacancy>> GetProviderOwnedVacanciesForEmployerWithoutAccountLegalEntityPublicHashedIdAsync(long ukprn, string employerAccountId)
         {
             var builder = Builders<Vacancy>.Filter;
             var filter = builder.Eq(v => v.IsDeleted, false) &
                          builder.Eq(v => v.OwnerType, OwnerType.Provider) &
                          builder.Eq(v => v.TrainingProvider.Ukprn, ukprn) &
                          builder.Eq(v => v.EmployerAccountId, employerAccountId) &
-                         builder.Eq(v => v.LegalEntityId, 0);
+                         builder.Eq(v => v.AccountLegalEntityPublicHashedId, "0");
 
             var collection = GetCollection<Vacancy>();
 
@@ -314,7 +314,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
                     collection.Aggregate()
                         .Match(filter)
                         .ToListAsync(),
-                new Context(nameof(GetProviderOwnedVacanciesForEmployerWithoutLegalEntityAsync)));
+                new Context(nameof(GetProviderOwnedVacanciesForEmployerWithoutAccountLegalEntityPublicHashedIdAsync)));
 
             return result;
         }

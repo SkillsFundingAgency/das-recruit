@@ -9,32 +9,24 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public string EmployerAccountId { get; set; }
         public long? VacancyReference { get; set; }
         public VacancyStatus Status { get; set; }
-
         public OwnerType OwnerType { get; set; }
         public SourceOrigin SourceOrigin { get; set; }
         public SourceType SourceType { get; set; }
         public long? SourceVacancyReference { get; set; }
-
         public DateTime? ClosedDate { get; set; }
         public VacancyUser ClosedByUser { get; set; }
-
         public DateTime? CreatedDate { get; set; }
         public VacancyUser CreatedByUser { get; set; }
-
         public DateTime? SubmittedDate { get; set; }
         public VacancyUser SubmittedByUser { get; set; }
-
         public DateTime? ApprovedDate { get; set; }
-
         public DateTime? LiveDate { get; set; }
 
         public DateTime? LastUpdatedDate { get; set; }
         public VacancyUser LastUpdatedByUser { get; set; }
-        
         public bool IsDeleted { get; set; }
         public DateTime? DeletedDate { get; set; }
         public VacancyUser DeletedByUser { get; set; }
-        
         public string AnonymousReason { get; set; }
         public string ApplicationInstructions { get; set; }
         public ApplicationMethod? ApplicationMethod { get; set; }
@@ -50,7 +42,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public string LegalEntityName { get; set; }
         public string EmployerWebsiteUrl { get; set; }
         public GeoCodeMethod? GeoCodeMethod { get; set; }
-        public long LegalEntityId { get; set; }
         public string AccountLegalEntityPublicHashedId { get; set; }
         public int? NumberOfPositions { get; set; }
         public string OutcomeDescription { get; set; }
@@ -68,27 +59,21 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public ClosureReason? ClosureReason { get; set; }
         public string ClosureExplanation { get; set; }
         public TransferInfo TransferInfo { get; set; }
-
         public bool CanClose => Status == VacancyStatus.Live;
-
         public bool CanClone => Status == 
             VacancyStatus.Live || Status == VacancyStatus.Closed || Status == VacancyStatus.Submitted;
-
-
         /// <summary>
         /// We can only delete draft vacancies that have not been deleted
         /// </summary>
         public bool CanDelete => (Status == VacancyStatus.Draft ||
                                   Status == VacancyStatus.Referred)
                                  && IsDeleted == false;
-
         /// <summary>
         /// We can only edit draft & referred vacancies that have not been deleted
         /// </summary>
         public bool CanEdit => (Status == VacancyStatus.Draft || 
                                 Status == VacancyStatus.Referred ) 
                                && IsDeleted == false;
-
         /// <summary>
         /// The vacancy is being edited
         /// We can only submit draft & referred vacancies that have not been deleted

@@ -141,7 +141,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
             var reviewSummaryTask = _reviewSummaryService.GetReviewSummaryViewModelAsync(review.Id,
                     ReviewFieldMappingLookups.GetPreviewReviewFieldIndicators());
 
-            var anonymousApprovedCountTask = vacancy.IsAnonymous ? _vacancyClient.GetAnonymousApprovedCountAsync(vacancy.LegalEntityId) : Task.FromResult(0);
+            var anonymousApprovedCountTask = vacancy.IsAnonymous ? _vacancyClient.GetAnonymousApprovedCountAsync(vacancy.AccountLegalEntityPublicHashedId) : Task.FromResult(0);
 
             await Task.WhenAll(
                 currentVacancy,programmeTask,

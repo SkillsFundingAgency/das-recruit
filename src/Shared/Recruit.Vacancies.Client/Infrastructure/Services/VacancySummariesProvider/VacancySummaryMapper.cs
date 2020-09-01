@@ -13,7 +13,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 Id = vacSummaryDetail.VacancyGuid,
                 Title = vacSummaryDetail.Title,
                 VacancyReference = vacSummaryDetail.VacancyReference,
-                LegalEntityId = vacSummaryDetail.LegalEntityId,
                 LegalEntityName = vacSummaryDetail.LegalEntityName,
                 EmployerAccountId = vacSummaryDetail.EmployerAccountId,
                 EmployerName = vacSummaryDetail.EmployerName,

@@ -23,10 +23,10 @@ namespace Esfa.Recruit.Vacancies.Jobs.Jobs
             _queryStoreReader = queryStoreReader;
         }
 
-        public async Task Run(long ukprn, string employerAccountId, long legalEntityId, Guid userRef, string userEmail, string userName, TransferReason transferReason)
+        public async Task Run(long ukprn, string employerAccountId, string accountLegalEntityPublicHashedId, Guid userRef, string userEmail, string userName, TransferReason transferReason)
         {
-            var vacanciesTask = _vacanciesQuery.GetProviderOwnedVacanciesForLegalEntityAsync(ukprn, legalEntityId);
-            var vacanciesWithoutLegalEntityIdTask = GetProviderOwnerVacanciesWithoutLegalEntityThatMustBeTransferred(ukprn, employerAccountId, legalEntityId);
+            var vacanciesTask = _vacanciesQuery.GetProviderOwnedVacanciesForLegalEntityAsync(ukprn, accountLegalEntityPublicHashedId);
+            var vacanciesWithoutLegalEntityIdTask = GetProviderOwnerVacanciesWithoutLegalEntityThatMustBeTransferred(ukprn, employerAccountId, accountLegalEntityPublicHashedId);
 
             await Task.WhenAll(vacanciesTask, vacanciesWithoutLegalEntityIdTask);
 
@@ -44,14 +44,15 @@ namespace Esfa.Recruit.Vacancies.Jobs.Jobs
             await Task.WhenAll(tasks);
         }
 
-        private async Task<IEnumerable<Vacancy>> GetProviderOwnerVacanciesWithoutLegalEntityThatMustBeTransferred(long ukprn, string employerAccountId, long legalEntityId)
+        private async Task<IEnumerable<Vacancy>> GetProviderOwnerVacanciesWithoutLegalEntityThatMustBeTransferred(long ukprn, string employerAccountId, string accountLegalEntityPublicHashedId)
         {
             var employer = await _queryStoreReader.GetProviderEmployerVacancyDataAsync(ukprn, employerAccountId);
-            var remainingLegalEntitiesCount = employer?.LegalEntities.Count(l => l.LegalEntityId != legalEntityId) ?? 0;
+            var remainingLegalEntitiesCount = employer?.LegalEntities.Count(
+                                                  l => l.AccountLegalEntityPublicHashedId != accountLegalEntityPublicHashedId) ?? 0;
 
-            //We should only transfer vacancies without a legalEntityId when the provider cannot choose another legal entity
+            //We should only transfer vacancies without a accountLegalEntityPublicHashedId when the provider cannot choose another legal entity
             if (remainingLegalEntitiesCount == 0)
-                return await _vacanciesQuery.GetProviderOwnedVacanciesForEmployerWithoutLegalEntityAsync(ukprn, employerAccountId);
+                return await _vacanciesQuery.GetProviderOwnedVacanciesForEmployerWithoutAccountLegalEntityPublicHashedIdAsync(ukprn, employerAccountId);
 
             return Enumerable.Empty<Vacancy>();
         }

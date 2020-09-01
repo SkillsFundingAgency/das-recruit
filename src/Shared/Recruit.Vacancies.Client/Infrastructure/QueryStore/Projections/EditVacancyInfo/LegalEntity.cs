@@ -2,7 +2,6 @@
 {
     public class LegalEntity
     {
-        public long LegalEntityId { get; set; }
         public string Name { get; set; }
         public Address Address { get; set; }
         public bool HasLegalEntityAgreement { get; set; }

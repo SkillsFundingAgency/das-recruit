@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using FluentAssertions;
 using Moq;
 using Xunit;
 
-namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.SingleField
+namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation.SingleField
 {
     public class TrainingProviderUkprnValidationTests : VacancyValidationTestsBase
     {
@@ -123,19 +122,19 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
         {
             const long ukprn = 12345678;
             const string employerAccountId = "employer-account-id";
-            const long legalEntityId = 1234;
+            const string accountLegalEntityPublicHashedId = "1234";
 
             var vacancy = new Vacancy
             {
                 OwnerType = OwnerType.Provider,
                 TrainingProvider = new TrainingProvider { Ukprn = ukprn },
                 EmployerAccountId = employerAccountId,
-                LegalEntityId = legalEntityId
+                AccountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId
             };
 
             MockTrainingProviderSummaryProvider.Setup(p => p.GetAsync(ukprn)).ReturnsAsync(new TrainingProviderSummary());
 
-            MockProviderRelationshipsService.Setup(p => p.HasProviderGotEmployersPermissionAsync(ukprn, employerAccountId, legalEntityId))
+            MockProviderRelationshipsService.Setup(p => p.HasProviderGotEmployersPermissionAsync(ukprn, employerAccountId, accountLegalEntityPublicHashedId))
                 .ReturnsAsync(false);
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProvider);
@@ -152,19 +151,19 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
         {
             const long ukprn = 12345678;
             const string employerAccountId = "employer-account-id";
-            const long legalEntityId = 1234;
+            const string accountLegalEntityPublicHashedId = "1234";
 
             var vacancy = new Vacancy
             {
                 OwnerType = OwnerType.Provider,
                 TrainingProvider = new TrainingProvider { Ukprn = ukprn },
                 EmployerAccountId = employerAccountId,
-                LegalEntityId = legalEntityId
+                AccountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId
             };
 
             MockTrainingProviderSummaryProvider.Setup(p => p.GetAsync(ukprn)).ReturnsAsync(new TrainingProviderSummary());
 
-            MockProviderRelationshipsService.Setup(p => p.HasProviderGotEmployersPermissionAsync(ukprn, employerAccountId, legalEntityId))
+            MockProviderRelationshipsService.Setup(p => p.HasProviderGotEmployersPermissionAsync(ukprn, employerAccountId, accountLegalEntityPublicHashedId))
                 .ReturnsAsync(true);
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProvider);
