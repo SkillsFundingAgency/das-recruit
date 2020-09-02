@@ -14,9 +14,9 @@ namespace Esfa.Recruit.Shared.Web.Services
             _client = client;
         }
 
-        public async Task<bool> HasLegalEntityAgreementAsync(string employerAccountId, long legalEntityId)
+        public async Task<bool> HasLegalEntityAgreementAsync(string employerAccountId, string accountLegalEntityPublicHashedId)
         {
-            var legalEntity = await GetLegalEntityAsync(employerAccountId, legalEntityId);
+            var legalEntity = await GetLegalEntityAsync(employerAccountId, accountLegalEntityPublicHashedId);
 
              return await HasLegalEntityAgreementAsync(employerAccountId, legalEntity);
         }
@@ -30,7 +30,7 @@ namespace Esfa.Recruit.Shared.Web.Services
                 return true;
 
             //Agreement may have been signed since the projection was created. Check Employer Service.
-            var hasLegalEntityAgreement = await CheckEmployerServiceForLegalEntityAgreementAsync(employerAccountId, legalEntity.LegalEntityId);
+            var hasLegalEntityAgreement = await CheckEmployerServiceForLegalEntityAgreementAsync(employerAccountId, legalEntity.AccountLegalEntityPublicHashedId);
 
             if (hasLegalEntityAgreement)
             {
@@ -40,20 +40,20 @@ namespace Esfa.Recruit.Shared.Web.Services
             return hasLegalEntityAgreement;
         }
 
-        public async Task<LegalEntity> GetLegalEntityAsync(string employerAccountId, long legalEntityId)
+        public async Task<LegalEntity> GetLegalEntityAsync(string employerAccountId, string accountLegalEntityPublicHashedId)
         {
             var employerData = await _client.GetEditVacancyInfoAsync(employerAccountId);
 
-            var legalEntity = employerData.LegalEntities.SingleOrDefault(l => l.LegalEntityId == legalEntityId);
+            var legalEntity = employerData.LegalEntities.SingleOrDefault(l => l.AccountLegalEntityPublicHashedId == accountLegalEntityPublicHashedId);
 
             return legalEntity;
         }
 
-       private async Task<bool> CheckEmployerServiceForLegalEntityAgreementAsync(string employerAccountId, long legalEntityId)
+       private async Task<bool> CheckEmployerServiceForLegalEntityAgreementAsync(string employerAccountId, string accountLegalEntityPublicHashedId)
         {
             var legalEntities = await _client.GetEmployerLegalEntitiesAsync(employerAccountId);
 
-            var legalEntity = legalEntities.SingleOrDefault(e => e.LegalEntityId == legalEntityId);
+            var legalEntity = legalEntities.SingleOrDefault(e => e.AccountLegalEntityPublicHashedId == accountLegalEntityPublicHashedId);
 
             return legalEntity?.HasLegalEntityAgreement ?? false;
         }

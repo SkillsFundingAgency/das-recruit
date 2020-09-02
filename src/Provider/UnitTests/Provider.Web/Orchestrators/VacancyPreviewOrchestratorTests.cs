@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using AutoFixture;
 using Esfa.Recruit.Provider.Web.Configuration;
@@ -8,13 +6,10 @@ using Esfa.Recruit.Provider.Web.Mappings;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Shared.Web.Services;
-using Esfa.Recruit.Vacancies.Client.Application.Providers;
-using Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.PasAccount;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -36,8 +31,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators
             var vacancyId = Guid.NewGuid();
             const long ukprn = 12345678;
             const string employerAccountId = "ABCDEF";
-            const long legalEntityId = 1234;
-
+            const string accountLegalEntityPublicHashedId = "XVYABD";
             var fixture = new Fixture();
             var vacancy = fixture.Create<Vacancy>();
             vacancy.Id = vacancyId;
@@ -45,7 +39,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators
             vacancy.Status = VacancyStatus.Draft;
             vacancy.IsDeleted = false;
             vacancy.EmployerAccountId = employerAccountId;
-            vacancy.LegalEntityId = legalEntityId;
+            vacancy.AccountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId;
             vacancy.OwnerType = OwnerType.Provider;
 
             var client = new Mock<IProviderVacancyClient>();
@@ -69,7 +63,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators
             var review = new Mock<IReviewSummaryService>();
 
             var legalEntityAgreement = new Mock<ILegalEntityAgreementService>();
-            legalEntityAgreement.Setup(l => l.HasLegalEntityAgreementAsync(employerAccountId, legalEntityId))
+            legalEntityAgreement.Setup(l => l.HasLegalEntityAgreementAsync(employerAccountId, accountLegalEntityPublicHashedId))
                 .ReturnsAsync(hasLegalEntityAgreement);
 
             var agreementServiceMock = new Mock<ITrainingProviderAgreementService>();

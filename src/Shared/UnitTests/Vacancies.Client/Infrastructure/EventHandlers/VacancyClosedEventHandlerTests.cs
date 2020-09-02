@@ -74,7 +74,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             _vacancy = new Vacancy
             {
                 Id = Guid.NewGuid(),
-                LegalEntityId = 299792458,
+                AccountLegalEntityPublicHashedId = "299792458",
                 ProgrammeId = "42",
                 EmployerLocation = new Address(),
                 Qualifications = new List<Qualification>(),

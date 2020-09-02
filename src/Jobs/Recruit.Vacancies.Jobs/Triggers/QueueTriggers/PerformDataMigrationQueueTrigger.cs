@@ -59,9 +59,9 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
                 return;
             }
 
-            if (vacancy.LegalEntityId == 0) 
+            if (vacancy.AccountLegalEntityPublicHashedId == "0") 
             {
-                _logger.LogWarning($"{message.SerialNumber}: Missing legalEntity - Bypassing vacancy {vacancyId}");
+                _logger.LogWarning($"{message.SerialNumber}: Missing AccountLegalEntityPublicHashedId - Bypassing vacancy {vacancyId}");
                 return;
             }
 
@@ -78,7 +78,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
                 var legalEntities = await retryPolicy.ExecuteAsync(context => 
                     _employerAccountProvider.GetLegalEntitiesConnectedToAccountAsync(vacancy.EmployerAccountId), 
                     new Dictionary<string, object>() {{ "apiCall", "employer details" }});
-                selectedLegalEntity = legalEntities.FirstOrDefault(l => l.LegalEntityId == vacancy.LegalEntityId);
+                selectedLegalEntity = legalEntities.FirstOrDefault(l => l.AccountLegalEntityPublicHashedId == vacancy.AccountLegalEntityPublicHashedId);
             }
             catch (Exception ex)
             {

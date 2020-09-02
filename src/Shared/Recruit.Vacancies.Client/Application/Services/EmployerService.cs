@@ -23,7 +23,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
 
             if (vacancy.EmployerNameOption == EmployerNameOption.TradingName) 
             {
-                var profile = await _employerProfileRepository.GetAsync(vacancy.EmployerAccountId, vacancy.LegalEntityId);
+                var profile = await _employerProfileRepository.GetAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId);
                 return profile.TradingName;
             }
 
@@ -35,7 +35,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
             if (!vacancy.CanEdit)
                 return vacancy.EmployerDescription;
 
-            var profile = await _employerProfileRepository.GetAsync(vacancy.EmployerAccountId, vacancy.LegalEntityId);
+            var profile = await _employerProfileRepository.GetAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId);
             return profile?.AboutOrganisation ?? string.Empty;
         }
     }

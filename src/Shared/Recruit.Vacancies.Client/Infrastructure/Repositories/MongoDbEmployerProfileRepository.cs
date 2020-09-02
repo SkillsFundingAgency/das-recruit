@@ -25,10 +25,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
                 new Context(nameof(CreateAsync)));
         }
 
-        public async Task<EmployerProfile> GetAsync(string employerAccountId, long legalEntityId)
+        public async Task<EmployerProfile> GetAsync(string employerAccountId, string accountLegalEntityPublicHashedId)
         {
             var builder = Builders<EmployerProfile>.Filter;
-            var filter = builder.Eq(x => x.Id, EmployerProfile.GetId(employerAccountId, legalEntityId));
+            var filter = builder.Eq(x => x.Id, EmployerProfile.GetId(employerAccountId, accountLegalEntityPublicHashedId));
 
             var collection = GetCollection<EmployerProfile>();
 
@@ -56,7 +56,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         {
             var builder = Builders<EmployerProfile>.Filter;
             var filter = builder.Eq(x => x.EmployerAccountId, profile.EmployerAccountId) &
-                         builder.Eq(x => x.LegalEntityId, profile.LegalEntityId);
+                         builder.Eq(x => x.AccountLegalEntityPublicHashedId, profile.AccountLegalEntityPublicHashedId);
 
             var collection = GetCollection<EmployerProfile>();
 

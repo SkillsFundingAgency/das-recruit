@@ -6,8 +6,8 @@ namespace Esfa.Recruit.Shared.Web.Services
 {
     public interface ILegalEntityAgreementService
     {
-        Task<bool> HasLegalEntityAgreementAsync(string employerAccountId, long legalEntityId);
-        Task<LegalEntity> GetLegalEntityAsync(string employerAccountId, long legalEntityId);
+        Task<bool> HasLegalEntityAgreementAsync(string employerAccountId, string accountLegalEntityPublicHashedId);
+        Task<LegalEntity> GetLegalEntityAsync(string employerAccountId, string accountLegalEntityPublicHashedId);
         Task<bool> HasLegalEntityAgreementAsync(string employerAccountId, LegalEntity legalEntity);
     }
 }

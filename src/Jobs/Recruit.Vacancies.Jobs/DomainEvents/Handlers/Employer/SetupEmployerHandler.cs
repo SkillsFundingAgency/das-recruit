@@ -33,7 +33,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Employer
 
                 var vacancyDataTask =  _projectionService.UpdateEmployerVacancyDataAsync(@event.EmployerAccountId, legalEntities);
 
-                var employerProfilesTask = _client.RefreshEmployerProfiles(@event.EmployerAccountId, legalEntities.Select(x => x.LegalEntityId));
+                var employerProfilesTask = _client.RefreshEmployerProfiles(@event.EmployerAccountId, legalEntities.Select(x => x.AccountLegalEntityPublicHashedId));
 
                 await Task.WhenAll(vacancyDataTask, employerProfilesTask);
 

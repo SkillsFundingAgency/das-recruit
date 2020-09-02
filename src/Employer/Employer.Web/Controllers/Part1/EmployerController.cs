@@ -25,15 +25,15 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         {
             var info = GetVacancyEmployerInfoCookie(vrm.VacancyId);
 
-            var vm = await _orchestrator.GetEmployerViewModelAsync(vrm, searchTerm, page, info?.LegalEntityId);
+            var vm = await _orchestrator.GetEmployerViewModelAsync(vrm, searchTerm, page, info?.AccountLegalEntityPublicHashedId);
 
-            if (info == null || !info.LegalEntityId.HasValue)
+            if (info == null || !string.IsNullOrEmpty(info.AccountLegalEntityPublicHashedId))
             {
                 SetVacancyEmployerInfoCookie(vm.VacancyEmployerInfoModel);
             }
             else
             {
-                vm.SelectedOrganisationId = info.LegalEntityId;
+                vm.SelectedOrganisationId = info.AccountLegalEntityPublicHashedId;
             }
 
             if (vm.HasOnlyOneOrganisation)
@@ -60,16 +60,16 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 
             if (!ModelState.IsValid)
             {
-                var vm = await _orchestrator.GetEmployerViewModelAsync(m, m.SearchTerm, m.Page, info?.LegalEntityId);
+                var vm = await _orchestrator.GetEmployerViewModelAsync(m, m.SearchTerm, m.Page, info?.AccountLegalEntityPublicHashedId);
                 SetVacancyEmployerInfoCookie(vm.VacancyEmployerInfoModel);
                 vm.Pager.OtherRouteValues.Add(nameof(wizard), wizard.ToString());
                 vm.PageInfo.SetWizard(wizard);
                 return View(vm);
             }
 
-            if (info.LegalEntityId != m.SelectedOrganisationId)
+            if (info.AccountLegalEntityPublicHashedId != m.SelectedOrganisationId)
             {
-                info.LegalEntityId = m.SelectedOrganisationId;
+                info.AccountLegalEntityPublicHashedId = m.SelectedOrganisationId;
                 info.HasLegalEntityChanged = true;
                 info.EmployerIdentityOption = null;
                 info.NewTradingName = null;

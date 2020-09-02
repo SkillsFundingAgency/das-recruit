@@ -28,7 +28,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task UnassignVacancyReviewAsync(Guid reviewId);
         Task<VacancyReview> GetCurrentReferredVacancyReviewAsync(long vacancyReference);
         Task<List<VacancyReview>> GetVacancyReviewHistoryAsync(long vacancyReference);
-        Task<int> GetAnonymousApprovedCountAsync(long legalEntityId);
+        Task<int> GetAnonymousApprovedCountAsync(string accountLegalEntityPublicHashedId);
         Task<Guid> CreateApplicationsReportAsync(DateTime fromDate, DateTime toDate, VacancyUser user, string reportName);
         Task<List<ReportSummary>> GetReportsAsync();
         Task<Report> GetReportAsync(Guid reportId);

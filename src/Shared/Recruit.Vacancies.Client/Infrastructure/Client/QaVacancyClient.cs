@@ -186,9 +186,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 .ToList();
         }
 
-        public Task<int> GetAnonymousApprovedCountAsync(long legalEntityId)
+        public Task<int> GetAnonymousApprovedCountAsync(string accountLegalEntityPublicHashedId)
         {
-            return _vacancyReviewQuery.GetAnonymousApprovedCountAsync(legalEntityId);
+            return _vacancyReviewQuery.GetAnonymousApprovedCountAsync(accountLegalEntityPublicHashedId);
         }
 
         public async Task<Guid> CreateApplicationsReportAsync(DateTime fromDate, DateTime toDate, VacancyUser user, string reportName)

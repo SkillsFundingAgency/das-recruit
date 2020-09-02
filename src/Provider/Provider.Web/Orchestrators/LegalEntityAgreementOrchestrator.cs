@@ -31,7 +31,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             return new LegalEntityAgreementHardStopViewModel
             {
                 HasLegalEntityAgreement = await _legalEntityAgreementService.HasLegalEntityAgreementAsync(
-                    vacancy.EmployerAccountId, vacancy.LegalEntityId),
+                    vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId),
                 LegalEntityName = vacancy.LegalEntityName
             };
         }

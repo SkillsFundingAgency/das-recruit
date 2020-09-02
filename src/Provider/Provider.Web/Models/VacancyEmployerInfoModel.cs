@@ -6,7 +6,7 @@ namespace Esfa.Recruit.Provider.Web.Models
     public class VacancyEmployerInfoModel
     {
         public Guid? VacancyId { get; set; }
-        public long? LegalEntityId { get; set; }
+        public string AccountLegalEntityPublicHashedId { get; set; }
         public EmployerIdentityOption? EmployerIdentityOption { get; set; }
         public string NewTradingName { get; set; }
         public bool HasLegalEntityChanged { get; set;}

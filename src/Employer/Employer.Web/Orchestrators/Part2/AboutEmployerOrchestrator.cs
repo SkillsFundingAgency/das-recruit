@@ -82,11 +82,12 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         private async Task UpdateEmployerProfileAsync(Vacancy vacancy, string employerDescription, VacancyUser user)
         {
             var employerProfile =
-                await _vacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.LegalEntityId);
+                await _vacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId);
 
             if (employerProfile == null)
             {
-                throw new NullReferenceException($"No Employer Profile was found for employerAccount: {vacancy.EmployerAccountId}, legalEntity: {vacancy.LegalEntityId}");
+                throw new NullReferenceException($"No Employer Profile was found for employerAccount: {vacancy.EmployerAccountId}, " +
+                                                 $"accountLegalEntityPublicHashedId : {vacancy.AccountLegalEntityPublicHashedId}");
             }
 
             if (employerProfile.AboutOrganisation != employerDescription)
