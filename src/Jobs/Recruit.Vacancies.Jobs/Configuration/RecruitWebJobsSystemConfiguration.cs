@@ -9,5 +9,6 @@ namespace Esfa.Recruit.Vacancies.Jobs.Configuration
         public int? QueryStoreDocumentsStaleByDays { get; set; }
         public int? DraftVacanciesStaleByDays { get; set; }
         public int? ReferredVacanciesStaleByDays { get; set; }
+        public int? HardDeleteCommunicationMessagesStaleByDays { get; set; }
     }
 }

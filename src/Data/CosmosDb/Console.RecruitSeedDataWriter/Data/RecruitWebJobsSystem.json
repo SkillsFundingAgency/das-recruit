@@ -3,5 +3,6 @@
     "disabledJobs" : ["VacancyAnalyticsSummaryGeneratorJob"],
     "queryStoreDocumentsStaleByDays" : 90,
     "draftVacanciesStaleByDays" : 180,
-    "referredVacanciesStaleByDays" : 90
+    "referredVacanciesStaleByDays" : 90,
+	  "hardDeleteCommunicationMessagesStaleByDays" : 180
 }
