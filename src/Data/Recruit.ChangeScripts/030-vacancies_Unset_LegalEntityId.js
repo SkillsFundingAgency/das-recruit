@@ -31,7 +31,7 @@
                 $match: query
             },
             {
-                $sort: { "createdData": 1 }
+                $sort: { "createdDate": 1 }
             },
             {
                 $limit: batchUpdateLimit
@@ -48,7 +48,7 @@
             
             var updateDocument = {
                 $unset: {
-                    "legalEntityId": 1
+                    "legalEntityId": ""
                 }};
             
             let writeResult = coll.update({
