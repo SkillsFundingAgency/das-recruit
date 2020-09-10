@@ -31,7 +31,7 @@
               $match: query
           },
           {
-              $sort: { "createdDate": 1 }
+              $sort: { "createdData": 1 }
           },
           {
               $limit: batchUpdateLimit
