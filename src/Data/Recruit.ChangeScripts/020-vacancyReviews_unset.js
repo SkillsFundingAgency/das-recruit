@@ -1,4 +1,3 @@
-
 {
     
     function toGUID(hex) {
@@ -14,8 +13,8 @@
   print("Start Unsetting LegalEntityId for existing data.");
   
   
-  var coll = db.vacancies;    
-  const query = { "legalEntityId": { $exists : true}, },
+  var coll = db.vacancyReviews;    
+  const query = { "vacancySnapshot.legalEntityId": { $exists : true}, },
   batchUpdateLimit = 500;
   
   let passThrough = 1,
@@ -31,7 +30,7 @@
               $match: query
           },
           {
-              $sort: { "createdData": 1 }
+              $sort: { "createdDate": 1 }
           },
           {
               $limit: batchUpdateLimit
@@ -48,7 +47,7 @@
           
           var updateDocument = {
               $unset: {
-                  "legalEntityId": ""
+                  "vacancySnapshot.legalEntityId": 1
               }};
           
           let writeResult = coll.update({
@@ -68,5 +67,5 @@
       passThrough++;
   } while (passThrough <= maxLoops && coll.count(query) > 0);
 
-  print("Finished updating Vacancies unsetting LegalEntityId for existing data.");
+  print("Finished updating VacancyReviews unsetting LegalEntityId for existing data.");
 }
