@@ -1,10 +1,10 @@
 ﻿@model Esfa.Recruit.Employer.Web.ViewModels.EditVacancyDates.EditVacancyDatesViewModel
-@{ 
+@{
     ViewBag.Vpv = "/recruitment/employer/page-edit-vacancy-dates";
 }
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-xl">Edit vacancy dates</h1>
+        <h1 class="govuk-heading-xl">Edit advert dates</h1>
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
         <div class="govuk-form-group govuk-!-margin-top-6">
             <form asp-route="@RouteNames.VacancyEditDates_Post" novalidate>
@@ -47,7 +47,7 @@
                                     <li>the apprenticeship training you chose may no longer be available</li>
                                     <li>the fixed wage may no longer be valid, depending on National Minimum Wage changes</li>
                                 </ul>
-                                <p>To change the apprenticeship training or wage on the vacancy, you will need to create a new vacancy</p>
+                                <p>To change the apprenticeship training or wage on the advert, you will need to create a new advert.</p>
                             </div>
                         </details>
                     </fieldset>
@@ -85,7 +85,9 @@
                     <p class="govuk-body">@Model.ProgrammeName</p>
                 </div>
                 <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Preview changes</button>
-                <a asp-route="@RouteNames.VacancyEdit_Get" class="govuk-link das-button-link">Cancel</a>
+                <div class="govuk-body">
+                    <a asp-route="@RouteNames.VacancyEdit_Get" class="govuk-link das-button-link">Cancel</a>
+                </div>
             </form>
         </div>
     </div>
