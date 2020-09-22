@@ -25,7 +25,7 @@
                     @{ string returnUrl = ViewContext.HttpContext.Request.Path + ViewContext.HttpContext.Request.QueryString; }
                     <input name="@nameof(AlertDismissalEditModel.ReturnUrl)" value="@returnUrl" type="hidden" />
                     <input name="@nameof(AlertDismissalEditModel.AlertType)" value="@AlertType.ClosedVacanciesWithdrawnByQa" type="hidden" />
-                    <button type="submit" class="button-fake-link govuk-link govuk-link--no-visited-state">Dismiss this notification</button>
+                    <button type="submit" class="button-fake-link govuk-link govuk-link--no-visited-state">Hide notification</button>
                 </p>
             </form>
         </div>
