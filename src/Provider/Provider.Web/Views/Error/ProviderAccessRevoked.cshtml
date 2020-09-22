@@ -11,11 +11,11 @@
             <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
             <strong class="govuk-warning-text__text">
                 <span class="govuk-warning-text__assistive">Warning</span>
-                @Model.ProviderName is removed from the recruitment service. All adverts you created have been transferred to the employers.
+                @Model.ProviderName is removed from the recruitment service. All vacancies you created have been transferred to the employers.
             </strong>
         </div>
 
-        <p class="govuk-body">If you need to discuss this further, you can contact our helpdesk on </p>
+        <p class="govuk-body">If you wish to discuss this further, you can contact our helpdesk on:</p>
         <partial name="@RecruitPartialNames.ContactDetailsListPartial" />
         <p><a asp-route="@RouteNames.Dashboard_Account_Home" class="govuk-button">Return to homepage</a></p>
     </div>
