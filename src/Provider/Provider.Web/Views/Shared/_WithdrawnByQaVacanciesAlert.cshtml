@@ -6,10 +6,12 @@
         <div class="warning-summary">
             <p class="govuk-body">
                 <span asp-hide="@Model.HasMultipleClosedVacancies">
-                    1 vacancy has issues and has been closed. It can no longer be found on the Find an apprenticeship service.
+                    Your @Model.ClosedVacancies.FirstOrDefault() advert has issues, was closed and has been removed from 
+                    the Find an apprenticeship service.
                 </span>
                 <span asp-show="@Model.HasMultipleClosedVacancies">
-                    @Model.ClosedVacanciesCount vacancies have issues and have been closed. They can no longer be found on the Find an apprenticeship service.
+                    The following adverts have issues, were closed and have been removed from the Find an 
+                    apprenticeship service:
                 </span>
             </p>
 
@@ -20,7 +22,7 @@
                 }
             </ul>
 
-            <p class="govuk-body">If you wish to discuss this further you can contact our helpdesk on @RecruitViewConstants.HelpdeskPhoneNumber</p>
+            <p class="govuk-body">If you need to discuss this further, you can contact our helpdesk on @RecruitViewConstants.HelpdeskPhoneNumber</p>
             <form asp-route="@RouteNames.Alerts_Dismiss_Post">
                 <p class="govuk-body govuk-!-margin-bottom-0">
                     @{ string returnUrl = ViewContext.HttpContext.Request.Path + ViewContext.HttpContext.Request.QueryString; }

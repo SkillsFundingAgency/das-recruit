@@ -33,7 +33,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
                     CommunicationConstants.RequestType.ProviderBlockedEmployerNotificationForTransferredVacancies, 
                     CommunicationConstants.ParticipantResolverNames.EmployerParticipantsResolverName, 
                     CommunicationConstants.ServiceName);
-                var text = "vacancy".ToQuantity(noOfVacancies) + (noOfVacancies == 1 ? " has been transferred" : " have been transferred");
+                var text = "advert".ToQuantity(noOfVacancies) + (noOfVacancies == 1 ? " has been transferred" : " have been transferred");
                 communicationRequest.DataItems.Add(new CommunicationDataItem(CommunicationConstants.DataItemKeys.Employer.VacanciesTransferredCountText, text));
                 communicationRequest.AddEntity(CommunicationConstants.EntityTypes.Provider, ukprn);
                 communicationRequest.AddEntity(CommunicationConstants.EntityTypes.Employer, employerAccountId);
