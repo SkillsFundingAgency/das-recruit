@@ -9,8 +9,17 @@ namespace Esfa.Recruit.Shared.Web.ViewModels.Alerts
     {
         public int TransferredVacanciesCount { get; internal set; }
         public List<string> TransferredVacanciesProviderNames { get; internal set; }
+        public string CountCaption => GetCaptionCount();
 
-        public string CountCaption => $"{"advert".ToQuantity(TransferredVacanciesCount)} {(TransferredVacanciesCount == 1 ? "One advert has" : "have")} been transferred";
+        private string GetCaptionCount()
+        {
+            if (TransferredVacanciesCount == 1)
+            {
+                return $"{"advert".ToQuantity(TransferredVacanciesCount, ShowQuantityAs.Words)} has been transferred";
+            }
+            return $"{"advert".ToQuantity(TransferredVacanciesCount)} have been transferred";
+        }
+
         public string ProviderNamesCaption => TransferredVacanciesProviderNames.Humanize().RemoveOxfordComma();
         public bool HasTransfersFromMultipleProviders => TransferredVacanciesProviderNames.Count() > 1;
     }
