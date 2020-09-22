@@ -9,12 +9,11 @@
                     Your @Model.ClosedVacancies.FirstOrDefault() advert has issues, was closed and has been removed from the Find an apprenticeship service.
                 </span>
                 <span asp-show="@Model.HasMultipleClosedVacancies">
-                    The following adverts have issues, were closed and have been removed from the Find an 
+                    The following adverts have issues, were closed and have been removed from the Find an
                     apprenticeship service:
                 </span>
             </p>
-
-            <ul class="govuk-body">
+            <ul asp-show="@Model.HasMultipleClosedVacancies" class="govuk-body">
                 @foreach (var vacancy in Model.ClosedVacancies)
                 {
                     <li>@vacancy</li>
