@@ -8,12 +8,12 @@
                     @Html.Raw(Model.LegalEntityNamesCaption)
                 </span>
                 <span asp-hide="@Model.HasTransfersToMultipleEmployers">
-                    has switched off your permission to create and manage adverts on their behalf.
-                    Any adverts created for this employer have been transferred to them.
+                    has switched off your permission to create and manage vacancies on their behalf.
+                    Any vacancies created for this employer have been transferred to them.
                 </span>
                 <span asp-show="@Model.HasTransfersToMultipleEmployers">
-                    have switched off your permission to create and manage adverts on their behalf.
-                    Any adverts created for these employers have been transferred to them.
+                    have switched off your permission to create and manage vacancies on their behalf.
+                    Any vacancies created for these employers have been transferred to them.
                 </span>
             </p>
             
