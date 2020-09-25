@@ -17,7 +17,7 @@
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Where will the apprentice work?</h1>
         
         <div asp-show="@Model.IsAnonymousVacancy" class="govuk-inset-text">
-            For anonymous vacancies we will not show the address on the vacancy. We will only show the first half of the postcode.
+            For anonymous adverts we will not show the address on the advert. We will only show the first half of the postcode.
         </div>
 
         <form asp-route="@RouteNames.Location_Post" asp-route-wizard="@Model.PageInfo.IsWizard">
@@ -70,7 +70,7 @@
                                         <input asp-for="AddressLine4" class="govuk-input" maxlength="100" />
                                     </div>
                                     <div esfa-validation-marker-for="Postcode" class="govuk-form-group address-item govuk-form-group">
-                                        <label asp-for="Postcode" class="govuk-label govuk-!-font-weight-bold">Enter Postcode</label>
+                                        <label asp-for="Postcode" class="govuk-label govuk-!-font-weight-bold">Enter postcode</label>
                                         <span esfa-validation-message-for="Postcode" class="govuk-error-message"></span>
                                         <input asp-for="Postcode" class="govuk-input govuk-input--width-10 postcode-lookup" maxlength="8" />
                                     </div>

@@ -62,7 +62,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 filteredVacanciesTotal,
                 VacanciesPerPage,
                 page,
-                "Showing {0} to {1} of {2} vacancies",
+                "Showing {0} to {1} of {2} adverts",
                 RouteNames.Vacancies_Get,
                 new Dictionary<string, string>
                 {

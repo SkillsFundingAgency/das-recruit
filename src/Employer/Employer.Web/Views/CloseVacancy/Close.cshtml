@@ -9,7 +9,7 @@
         <form asp-route="@RouteNames.CloseVacancy_Post">
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--m govuk-!-margin-top-6 govuk-!-margin-bottom-6">
                 <h3 class="govuk-fieldset__heading">
-                    Are you sure you want to close this vacancy on Find an apprenticeship?
+                    Are you sure you want to close this advert on Find an apprenticeship?
                 </h3>
             </legend>
             <div esfa-validation-marker-for="ConfirmClose" class="govuk-form-group">
@@ -18,17 +18,17 @@
                     <div class="govuk-radios">
                         <div class="govuk-radios__item">
                             <input asp-for="@Model.ConfirmClose" type="radio" value="true" class="govuk-radios__input" id="close-yes" />
-                            <label class="govuk-label govuk-radios__label" for="close-yes">Yes, close this vacancy now</label>
+                            <label class="govuk-label govuk-radios__label" for="close-yes">Yes, close this advert now</label>
                         </div>
                         <div class="govuk-radios__item">
                             <input asp-for="@Model.ConfirmClose" type="radio" value="false" class="govuk-radios__input" id="close-no" />
-                            <label class="govuk-label govuk-radios__label" for="close-no">No, take me back to manage vacancy</label>
+                            <label class="govuk-label govuk-radios__label" for="close-no">No, take me back to manage advert</label>
                         </div>
                     </div>
                 </fieldset>
             </div>
             <div class="govuk-inset-text govuk-body">
-                This action cannot be undone and it will take up to an hour for the vacancy to stop showing on Find an apprenticeship.
+                This action cannot be undone and it will take up to an hour for the advert to stop showing on Find an apprenticeship.
             </div>
             <div class="govuk-form-group">
                 <input type="submit" value="Continue" class="govuk-button" />
