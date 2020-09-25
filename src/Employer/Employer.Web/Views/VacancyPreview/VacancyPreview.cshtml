@@ -337,7 +337,7 @@
             </h3>
             <img asp-show="@Model.IsDisabilityConfident" src="~/img/disability-confident_545x172.png" class="disability-confident-logo" alt="A logo confirming that the employer is registered as disability confident" esfa-automation="disability-confident-logo" />
             <partial name="@PartialNames.DisabilityConfident" for="IsDisabilityConfident" />
-            <p asp-show="@Model.IsNotDisabilityConfident" class="govuk-hint">This vacancy is not Disability Confident<br />This will not appear on the vacancy when it goes live</p>
+            <p asp-show="@Model.IsNotDisabilityConfident" class="govuk-hint">This advert is not Disability Confident<br />This will not appear on the advert when it goes live</p>
             @EditLink(RouteNames.Dates_Get, Model.TrainingSectionState, "disability confident", "link-standard", new { wizard = false })
         </div>
         <div class="@GetSectionClass(Model.EmployerWebsiteUrlSectionState)">
