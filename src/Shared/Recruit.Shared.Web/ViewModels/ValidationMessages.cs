@@ -47,7 +47,7 @@ namespace Esfa.Recruit.Shared.Web.ViewModels
 
         public static class CloseVacancyConfirmationMessages
         {
-            public const string SelectionRequired = "You must select one option";
+            public const string SelectionRequired = "Select yes if you want to close this advert on Find an apprenticeship";
         }
 
         public static class CloneVacancyConfirmationMessages
