@@ -2,6 +2,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
 {
     public sealed class ExternalLinksConfiguration
     {
+        public string ManageApprenticeshipSiteUrl { get; set; }
         public string ProviderApprenticeshipSiteUrl { get; set; }
         public string ProviderApprenticeshipSiteFeedbackUrl { get; set; }
         public string FindAnApprenticeshipUrl { get; set; }
