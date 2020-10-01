@@ -3,6 +3,7 @@
 @model SkillsViewModel
 @{ 
     ViewBag.Vpv = "/recruitment/employer/page-part2-skills";
+    ViewBag.Title = "What skills and personal qualities would you like the applicant to have?";
     ViewBag.ZenDeskLabel = "recruit-which-skills-and-personal-qualities-would-you-like-the-applicant-to-have";
 }
 
@@ -15,7 +16,7 @@
 
         <h1 class="govuk-heading-xl">
             <span class="govuk-caption-l">@Model.Title</span>
-            Which skills and personal qualities would you like the applicant to have?
+            What skills and personal qualities would you like the applicant to have?
         </h1>
 
         <form asp-route="@RouteNames.Skills_Post" id="skillsForm">
