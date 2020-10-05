@@ -57,6 +57,16 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             return Redirect(url);
         }
 
+        [HttpGet("provider-cookie-settings", Name = RouteNames.ProviderCookieSettings)]
+        public IActionResult CookieSettings()
+        {
+            return Redirect(_linkHelper.CookieSettings);
+        }
+        [HttpGet("provider-cookie-details", Name = RouteNames.ProviderCookieDetails)]
+        public IActionResult CookieDetails()
+        {
+            return Redirect(_linkHelper.CookieDetails);
+        }
         [AllowAnonymous]
         [HttpGet("help", Name = RouteNames.Dashboard_Help)]
         public IActionResult Help()
