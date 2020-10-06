@@ -1,32 +1,33 @@
 ﻿@using Esfa.Recruit.Shared.Web.Mappers
 @model Esfa.Recruit.Employer.Web.ViewModels.LegalEntityAgreement.LegalEntityAgreementSoftStopViewModel
-@{ 
-    ViewBag.Vpv = "/recruitment/employer/page-legal-entity-agreement-soft-stop";
-}
+@{ ViewBag.Vpv = "/recruitment/employer/page-legal-entity-agreement-soft-stop";
+    ViewBag.Title = "Agreement not accepted"; }
 
 <div class="govuk-grid-row employer-agreement-container">
     <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-l govuk-!-margin-bottom-8">Agreement not signed</h1>
+        <h1 class="govuk-heading-l govuk-!-margin-bottom-8">Agreement not accepted</h1>
 
         <div class="notice govuk-!-margin-bottom-8 govuk-warning-text">
             <span class="govuk-warning-text__icon das-warning-text__icon--top" aria-hidden="true">!</span>
-            
+
             <span class="govuk-warning-text__assistive">Warning</span>
             <p>
                 <strong class="govuk-warning-text__text">
-                    @Model.LegalEntityName doesn’t have a signed agreement with the Education and Skills Funding Agency (ESFA).
-                Without a signed agreement you can create a draft vacancy, but won’t be able to submit for posting on Find an apprenticeship.
+                    @Model.LegalEntityName does not have an accepted agreement with the Education and
+                    Skills Funding Agency (ESFA). Without an accepted agreement,
+                    you can create a draft advert, but cannot post it on Find an apprenticeship.
                 </strong>
             </p>
             <p>
                 <strong class="govuk-warning-text__text">
-                    Only account owners can sign ESFA agreements. If you’re not sure who the owner is, you can
-                <a asp-route="@RouteNames.Dashboard_AccountsAgreements" class="govuk-link">check your team details.</a>
+                    Only account owners can accept ESFA agreements. If you’re not sure who the owner is, you can
+                    <a asp-route="@RouteNames.Dashboard_AccountsAgreements" class="govuk-link">check your team details.</a>
                 </strong>
             </p>
         </div>
-        
-        <a asp-route="@RouteNames.Dashboard_AccountsAgreements" class="govuk-button">Review agreement</a>        
-        <a asp-route="@RouteNames.Location_Get" class="govuk-link das-button-link">Continue anyway</a>
+        <a asp-route="@RouteNames.Dashboard_AccountsAgreements" class="govuk-button">Review agreement</a>
+        <div class="govuk-body">
+            <a asp-route="@RouteNames.Location_Get" class="govuk-link">Continue anyway</a>
+        </div>
     </div>
 </div>
