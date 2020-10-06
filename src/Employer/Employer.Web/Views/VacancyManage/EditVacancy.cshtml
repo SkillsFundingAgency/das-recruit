@@ -1,6 +1,7 @@
 ﻿@model Esfa.Recruit.Employer.Web.ViewModels.VacancyManage.EditVacancyViewModel
 @{ 
     ViewBag.Vpv = "/recruitment/employer/page-edit-vacancy";
+    ViewBag.Title = "Edit advert";
 }
 
 <div class="govuk-grid-row">
@@ -32,6 +33,6 @@
             <button type="submit" class="govuk-button save-button">Publish</button>
         </form>
         <a asp-show="@Model.HasChanges" asp-route="@RouteNames.CancelVacancyChanges_Get" class="govuk-link das-button-link">Cancel</a>
-        <a asp-show="@Model.IsUnchanged" asp-route="@RouteNames.VacancyManage_Get" class="govuk-button">Return to manage vacancy</a>
+        <a asp-show="@Model.IsUnchanged" asp-route="@RouteNames.VacancyManage_Get" class="govuk-button">Return to manage advert</a>
     </div>
 </div>    
