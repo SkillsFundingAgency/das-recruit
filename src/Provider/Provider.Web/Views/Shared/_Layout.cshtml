@@ -91,9 +91,7 @@
         </form>
     </div>
 
-    <div class="app-cookie-banner js-cookie-banner">
-        <p class="govuk-width-container">GOV.UK uses cookies to make the site simpler. <a href="https://www.gov.uk/help/cookies">Find out more about cookies</a></p>
-    </div>
+    @Html.Partial("_CookieBanner")
 
     <header class="govuk-header das-header--no-border das-header--provider-legacy" role="banner" data-module="header">
         <div class="govuk-header__container govuk-width-container">
@@ -103,7 +101,7 @@
             </div>
             <div class="govuk-header__content">
                 <a href="@RouteNames.Dashboard_Account_Home" class="govuk-header__link govuk-header__link--service-name">
-                Apprenticeships
+                    Apprenticeships
                 </a>
             </div>
         </div>
@@ -161,7 +159,7 @@
             <p class="govuk-phase-banner__content">
                 <strong class="govuk-tag govuk-phase-banner__content__tag ">beta</strong>
                 <span class="govuk-phase-banner__text">
-                This is a new service – your <a class="govuk-link" href="https://www.smartsurvey.co.uk/s/KK1KM" target="_blank">feedback</a> will help us to improve it.
+                    This is a new service – your <a class="govuk-link" href="https://www.smartsurvey.co.uk/s/KK1KM" target="_blank">feedback</a> will help us to improve it.
                 </span>
             </p>
         </div>
@@ -183,7 +181,10 @@
                             <a asp-route="@RouteNames.Dashboard_Feedback" class="govuk-footer__link" target="_blank">Feedback</a>
                         </li>
                         <li class="govuk-footer__inline-list-item">
-                            <a asp-route="@RouteNames.Dashboard_Privacy" class="govuk-footer__link">Privacy and cookies</a>
+                            <a asp-route="@RouteNames.Dashboard_Privacy" class="govuk-footer__link">Privacy</a>
+                        </li>
+                        <li class="govuk-footer__inline-list-item">
+                            <a asp-route="@RouteNames.ProviderCookieSettings" class="govuk-footer__link">Cookies</a>
                         </li>
                         <li class="govuk-footer__inline-list-item">
                             <a asp-route="@RouteNames.Dashboard_TermsAndConditions" class="govuk-footer__link">Terms and conditions</a>
@@ -209,6 +210,7 @@
     <script src="/lib/govuk-frontend/dist/govuk-frontend-2.5.0.min.js"></script>
     <script asp-append-version="true" src="/lib/esfa-provider-menu/navigation.js"></script>
     <script asp-append-version="true" src="/javascripts/application.js"></script>
+    <script asp-append-version="true" src="/javascripts/cookiebanner.js"></script>
     @await RenderSectionAsync(RazorSections.FooterJS, required: false)
 </body>
 </html>
