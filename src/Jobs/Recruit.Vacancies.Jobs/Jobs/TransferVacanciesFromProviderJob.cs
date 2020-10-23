@@ -34,7 +34,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.Jobs
 
             var tasks = vacancies.Select(vac => _queueService.AddMessageAsync(new TransferVacancyToLegalEntityQueueMessage
             {
-                VacancyReference = vac.VacancyReference.Value,
+                VacancyReference = vac.VacancyReference.GetValueOrDefault(),
                 UserRef = userRef,
                 UserEmailAddress = userEmail,
                 UserName = userName,
