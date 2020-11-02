@@ -49,15 +49,22 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                     var currentTime = _time.Now;
 
                     // Create new profile
-                    var newProfile = new EmployerProfile
+                    if (selectedOrganisation != null)
                     {
-                        EmployerAccountId = message.EmployerAccountId,
-                        CreatedDate = currentTime,
-                        AccountLegalEntityPublicHashedId = selectedOrganisation.AccountLegalEntityPublicHashedId
-                    };
+                        var newProfile = new EmployerProfile
+                        {
+                            EmployerAccountId = message.EmployerAccountId,
+                            CreatedDate = currentTime,
+                            AccountLegalEntityPublicHashedId = selectedOrganisation.AccountLegalEntityPublicHashedId
+                        };
 
-                    _logger.LogInformation("Adding new profile for employer account: {employerAccountId} and Account LegalEntityPublicHashed id: {accountLegalEntityPublicHashedId}", message.EmployerAccountId, accountLegalEntityPublicHashedId);
-                    tasks.Add(_employerProfileRepository.CreateAsync(newProfile));
+                        _logger.LogInformation("Adding new profile for employer account: {employerAccountId} and AccountLegalEntityPublicHashed id: {accountLegalEntityPublicHashedId}", message.EmployerAccountId, accountLegalEntityPublicHashedId);
+                        tasks.Add(_employerProfileRepository.CreateAsync(newProfile));
+                    }
+                    _logger.LogError("Failed to add new profile for employer account: {employerAccountId} and " +
+                                     "AccountLegalEntityPublicHashed id: {accountLegalEntityPublicHashedId}" +
+                                     "as EmployerEditVacancyInfo.LegalEntity was not found for AccountLegalEntityPublicHashed id: { accountLegalEntityPublicHashedId}"
+                        , message.EmployerAccountId, accountLegalEntityPublicHashedId);
                 }
             }
             await Task.WhenAll(tasks);
