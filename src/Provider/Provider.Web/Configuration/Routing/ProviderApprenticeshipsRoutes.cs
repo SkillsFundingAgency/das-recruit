@@ -8,6 +8,8 @@ namespace Esfa.Recruit.Provider.Web.Configuration.Routing
         public string ProviderApprenticeshipSiteManageFundingRoute { get; set; }
         public string ProviderApprenticeshipSiteOrganisationAgreementsRoute { get; set; }
         public string ProviderApprenticeshipSiteNotificationSettingsRoute { get; set; }
+        public string ProviderApprenticeshipSiteCookieDetails { get; set; }
+        public string ProviderApprenticeshipSiteCookieSettings { get; set; }
         public string ProviderApprenticeshipSiteHelp { get; set; }
         public string ProviderApprenticeshipSitePrivacy { get; set; }
         public string ProviderApprenticeshipSiteTermsAndConditions { get; set; }

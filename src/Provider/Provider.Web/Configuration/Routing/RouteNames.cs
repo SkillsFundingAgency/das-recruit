@@ -53,6 +53,8 @@
         public const string ProviderApplicationsReportCreate_Post = "ProviderApplicationsReportCreate_Post";
         public const string ProviderContactDetails_Get = "ProviderContactDetails_Get";
         public const string ProviderContactDetails_Post = "ProviderContactDetails_Post";
+        public const string ProviderCookieDetails = "ProviderCookieDetails";
+        public const string ProviderCookieSettings = "ProviderCookieSettings";
         public const string Qualifications_Get = "Qualifications_Get";
         public const string Qualification_Add_Get = "Qualification_Add_Get";
         public const string Qualification_Edit_Get = "Qualification_Edit_Get";

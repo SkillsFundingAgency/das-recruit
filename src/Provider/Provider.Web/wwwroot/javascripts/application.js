@@ -287,8 +287,7 @@ function setEditorMaxLength(element, tinyMceEditor) {
 }
 
 $(function () {
-    // Add cookie message
-	CookieBanner.addCookieMessage();
+    
     //Legacy menu script
     sfa.navigation.init();
     // Dirty forms handling
