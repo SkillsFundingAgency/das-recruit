@@ -5,21 +5,10 @@
     <div class="govuk-grid-column-full">
         <div class="warning-summary">
             <p class="govuk-body">
-                @Model.CountCaption
-                <span asp-show="@Model.HasMultipleBlockedProviders">
-                    Training providers <span class="govuk-!-font-weight-bold">@Model.BlockedProviderNamesCaption</span> are no longer able to manage or recruit apprentices.
-                </span>
-                <span asp-hide="@Model.HasMultipleBlockedProviders">
-                    Training provider <span class="govuk-!-font-weight-bold">@Model.BlockedProviderNamesCaption</span> is no longer able to manage or recruit apprentices.
-                </span>
-            </p>
-            
-            <ul class="govuk-body">
-                @foreach (var vacancy in Model.ClosedVacancies)
-                {
-                    <li>@vacancy</li>
-                }
-            </ul>
+                <a asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Transferred" class="govuk-link">@Model.CountCaption</a> from <span class="govuk-!-font-weight-bold">@Model.BlockedProviderNamesCaption</span> because they’re no longer able to manage or recruit apprentices.
+</p>
+
+            <p>Any transferred live adverts have been closed. Transferred adverts pending review have been returned to draft.</p>
 
             <p class="govuk-body">If you need to discuss this further, you can contact our helpdesk on @RecruitViewConstants.HelpdeskPhoneNumber.</p>
             <form asp-route="@RouteNames.Alerts_Dismiss_Post">
