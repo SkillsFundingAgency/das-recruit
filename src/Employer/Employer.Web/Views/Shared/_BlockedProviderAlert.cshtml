@@ -6,9 +6,8 @@
         <div class="warning-summary">
             <p class="govuk-body">
                 <a asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Transferred" class="govuk-link">@Model.CountCaption</a> from <span class="govuk-!-font-weight-bold">@Model.BlockedProviderNamesCaption</span> because they’re no longer able to manage or recruit apprentices.
-</p>
-
-            <p>Any transferred live adverts have been closed. Transferred adverts pending review have been returned to draft.</p>
+            </p>
+            <p class="govuk-body">Any transferred live adverts have been closed. Transferred adverts pending review have been returned to draft.</p>
 
             <p class="govuk-body">If you need to discuss this further, you can contact our helpdesk on @RecruitViewConstants.HelpdeskPhoneNumber.</p>
             <form asp-route="@RouteNames.Alerts_Dismiss_Post">

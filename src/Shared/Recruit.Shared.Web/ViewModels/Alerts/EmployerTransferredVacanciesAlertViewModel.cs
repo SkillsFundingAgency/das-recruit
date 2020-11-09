@@ -15,7 +15,7 @@ namespace Esfa.Recruit.Shared.Web.ViewModels.Alerts
         {
             if (TransferredVacanciesCount == 1)
             {
-                return $"{"advert".ToQuantity(TransferredVacanciesCount, ShowQuantityAs.Words)} has been transferred";
+                return $"{"advert".ToQuantity(TransferredVacanciesCount, ShowQuantityAs.Words).Transform(To.SentenceCase)} has been transferred";
             }
             return $"{"advert".ToQuantity(TransferredVacanciesCount)} have been transferred";
         }
