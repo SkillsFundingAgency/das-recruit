@@ -23,7 +23,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
         internal static Address MapFromAddressLine(string address)
         {
             const string splitChar = ",";
-            var hasPostcode = ValidationConstants.PostcodeRegex.IsMatch(address);
+            var hasPostcode = address != null && ValidationConstants.PostcodeRegex.IsMatch(address);
 
             if (!string.IsNullOrWhiteSpace(address) && address.Contains(splitChar) && hasPostcode)
             {
