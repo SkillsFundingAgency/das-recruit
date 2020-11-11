@@ -5,29 +5,17 @@
     <div class="govuk-grid-column-full">
         <div class="warning-summary">
             <p class="govuk-body">
-                @Model.CountCaption
-                <span asp-show="@Model.HasMultipleBlockedProviders">
-                    Training providers <span class="govuk-!-font-weight-bold">@Model.BlockedProviderNamesCaption</span> are no longer able to manage or recruit apprentices.
-                </span>
-                <span asp-hide="@Model.HasMultipleBlockedProviders">
-                    Training provider <span class="govuk-!-font-weight-bold">@Model.BlockedProviderNamesCaption</span> is no longer able to manage or recruit apprentices.
-                </span>
+                <a asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Transferred" class="govuk-link">@Model.CountCaption</a> from <span class="govuk-!-font-weight-bold">@Model.BlockedProviderNamesCaption</span> because they’re no longer able to manage or recruit apprentices.
             </p>
-            
-            <ul class="govuk-body">
-                @foreach (var vacancy in Model.ClosedVacancies)
-                {
-                    <li>@vacancy</li>
-                }
-            </ul>
+            <p class="govuk-body">Any transferred live adverts have been closed. Transferred adverts pending review have been returned to draft.</p>
 
-            <p class="govuk-body">If you wish to discuss this further you can contact our helpdesk on @RecruitViewConstants.HelpdeskPhoneNumber</p>
+            <p class="govuk-body">If you need to discuss this further, you can contact our helpdesk on @RecruitViewConstants.HelpdeskPhoneNumber.</p>
             <form asp-route="@RouteNames.Alerts_Dismiss_Post">
                 <p class="govuk-body govuk-!-margin-bottom-0">
                     @{ string returnUrl = ViewContext.HttpContext.Request.Path + ViewContext.HttpContext.Request.QueryString; }
                     <input name="@nameof(AlertDismissalEditModel.ReturnUrl)" value="@returnUrl" type="hidden" />
                     <input name="@nameof(AlertDismissalEditModel.AlertType)" value="@AlertType.ClosedVacanciesBlockedProvider" type="hidden" />
-                    <button type="submit" class="button-fake-link govuk-link govuk-link--no-visited-state">Dismiss this notification</button>
+                    <button type="submit" class="button-fake-link govuk-link govuk-link--no-visited-state">Hide notification</button>
                 </p>
             </form>
         </div>
