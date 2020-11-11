@@ -7,6 +7,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Queues.Messages;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
+using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Jobs.Jobs
 {
@@ -15,33 +16,45 @@ namespace Esfa.Recruit.Vacancies.Jobs.Jobs
         private readonly IVacancyQuery _vacanciesQuery;
         private readonly IRecruitQueueService _queueService;
         private readonly IQueryStoreReader _queryStoreReader;
+        private readonly ILogger<TransferVacanciesFromProviderJob> _logger;
 
-        public TransferVacanciesFromProviderJob(IVacancyQuery vacanciesQuery, IRecruitQueueService queueService, IQueryStoreReader queryStoreReader)
+        public TransferVacanciesFromProviderJob(IVacancyQuery vacanciesQuery, IRecruitQueueService queueService, IQueryStoreReader queryStoreReader, ILogger<TransferVacanciesFromProviderJob> logger)
         {
             _vacanciesQuery = vacanciesQuery;
             _queueService = queueService;
             _queryStoreReader = queryStoreReader;
+            _logger = logger;
         }
 
         public async Task Run(long ukprn, string employerAccountId, string accountLegalEntityPublicHashedId, Guid userRef, string userEmail, string userName, TransferReason transferReason)
         {
-            var vacanciesTask = _vacanciesQuery.GetProviderOwnedVacanciesForLegalEntityAsync(ukprn, accountLegalEntityPublicHashedId);
-            var vacanciesWithoutLegalEntityIdTask = GetProviderOwnerVacanciesWithoutLegalEntityThatMustBeTransferred(ukprn, employerAccountId, accountLegalEntityPublicHashedId);
-
-            await Task.WhenAll(vacanciesTask, vacanciesWithoutLegalEntityIdTask);
-
-            var vacancies = vacanciesTask.Result.Concat(vacanciesWithoutLegalEntityIdTask.Result);
-
-            var tasks = vacancies.Select(vac => _queueService.AddMessageAsync(new TransferVacancyToLegalEntityQueueMessage
+            try
             {
-                VacancyReference = vac.VacancyReference.Value,
-                UserRef = userRef,
-                UserEmailAddress = userEmail,
-                UserName = userName,
-                TransferReason = transferReason
-            }));
+                var vacanciesTask = _vacanciesQuery.GetProviderOwnedVacanciesForLegalEntityAsync(ukprn, accountLegalEntityPublicHashedId);
+                var vacanciesWithoutLegalEntityIdTask = GetProviderOwnerVacanciesWithoutLegalEntityThatMustBeTransferred(ukprn, employerAccountId, accountLegalEntityPublicHashedId);
+
+                await Task.WhenAll(vacanciesTask, vacanciesWithoutLegalEntityIdTask);
+
+                var vacancies = vacanciesTask.Result.Concat(vacanciesWithoutLegalEntityIdTask.Result);
+
+                var tasks = vacancies.Select(vac => 
+                    _queueService.AddMessageAsync(new TransferVacancyToLegalEntityQueueMessage
+                {
+                    VacancyReference = vac.VacancyReference.Value,
+                    UserRef = userRef,
+                    UserEmailAddress = userEmail,
+                    UserName = userName,
+                    TransferReason = transferReason
+                }));
+
+                await Task.WhenAll(tasks);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Exception while transferring vacancies when handling Provider " +
+                                     $"permission being revoked by Employer.");
+            }
             
-            await Task.WhenAll(tasks);
         }
 
         private async Task<IEnumerable<Vacancy>> GetProviderOwnerVacanciesWithoutLegalEntityThatMustBeTransferred(long ukprn, string employerAccountId, string accountLegalEntityPublicHashedId)

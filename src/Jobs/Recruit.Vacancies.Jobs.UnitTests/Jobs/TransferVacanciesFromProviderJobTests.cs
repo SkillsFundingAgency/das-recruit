@@ -10,6 +10,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Jobs.Jobs;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
 
@@ -28,7 +29,7 @@ namespace Recruit.Vacancies.Jobs.UnitTests.Jobs
             _mockRecruitQueueService = new Mock<IRecruitQueueService>();
             _mockQueryStoreReader = new Mock<IQueryStoreReader>();
 
-            _sut = new TransferVacanciesFromProviderJob(_mockVacancyQuery.Object, _mockRecruitQueueService.Object, _mockQueryStoreReader.Object);
+            _sut = new TransferVacanciesFromProviderJob(_mockVacancyQuery.Object, _mockRecruitQueueService.Object, _mockQueryStoreReader.Object, Mock.Of<ILogger<TransferVacanciesFromProviderJob>>());
         }
 
         [Fact]

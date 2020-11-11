@@ -45,14 +45,13 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
                 try
                 {
                     var queueMessage = JsonConvert.DeserializeObject<TransferVacancyToLegalEntityQueueMessage>(message);
-
+                    _logger.LogInformation($"Begin queueing vacancy to transfer with VacancyReference {queueMessage.VacancyReference}.");
                     await _runner.Run(queueMessage.VacancyReference, queueMessage.UserRef, queueMessage.UserEmailAddress, queueMessage.UserName, queueMessage.TransferReason);
-
-                    _logger.LogInformation("Finished queuing vacancy to transfer.");
+                    _logger.LogInformation($"Finished queueing vacancy to transfer with VacancyReference {queueMessage.VacancyReference}.");
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Unable to queue vacancy to transfer.");
+                    _logger.LogError(ex, "Unable to queue vacancy to transfer with VacancyReference {queueMessage.VacancyReference}.");
                     throw;
                 }
             }
