@@ -27,7 +27,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.ExternalSystemEventHandlers
         private readonly IEncodingService _encoder;
         private readonly RecruitWebJobsSystemConfiguration _jobsConfig;
         private readonly IMessaging _messaging;
-        
+
         private string ExternalSystemEventHandlerName => GetType().Name;
 
         public UpdatedPermissionsExternalSystemEventsHandler(ILogger<UpdatedPermissionsExternalSystemEventsHandler> logger, RecruitWebJobsSystemConfiguration jobsConfig,
@@ -45,56 +45,47 @@ namespace Esfa.Recruit.Vacancies.Jobs.ExternalSystemEventHandlers
 
         public async Task Handle(UpdatedPermissionsEvent message, IMessageHandlerContext context)
         {
-            try
+            if (_jobsConfig.DisabledJobs.Contains(ExternalSystemEventHandlerName))
             {
-                if (_jobsConfig.DisabledJobs.Contains(ExternalSystemEventHandlerName))
-                {
-                    _logger.LogDebug($"{ExternalSystemEventHandlerName} is disabled, skipping ...");
-                    return;
-                }
-
-                _logger.LogInformation($"Attempting to process {nameof(UpdatedPermissionsEvent)} : {{@eventMessage}}", message);
-
-                if (message.UserRef.HasValue == false)
-                {
-                    _logger.LogInformation($"Not handling Provider {nameof(Operation.Recruitment)} Permission being revoked as it is a consequence of Provider being blocked by QA on Recruit.");
-                    return;
-                }
-
-                if (message.GrantedOperations.Contains(Operation.Recruitment) == false)
-                {
-                    var employerAccountId = _encoder.Encode(message.AccountId, EncodingType.AccountId);
-                    _logger.LogInformation($"Employer with employerAccountId {employerAccountId} has revoked provider permission for provider {message.Ukprn}");
-                    var legalEntity = await GetAssociatedLegalEntityAsync(message, employerAccountId);
-                    if (legalEntity == null)
-                    {
-                        throw new Exception($"Could not find matching Account Legal Entity Id {message.AccountLegalEntityId} for Employer Account {message.AccountId}");
-                    }
-                    _logger.LogInformation($"Associated legalEntity is {legalEntity}");
-
-                    _logger.LogInformation($"Adding TransferVacanciesFromProviderQueueMessage for Provider {message.Ukprn} and EmployerAccountId {employerAccountId}");
-
-                    await _recruitQueueService.AddMessageAsync(new TransferVacanciesFromProviderQueueMessage
-                    {
-                        Ukprn = message.Ukprn,
-                        EmployerAccountId = employerAccountId,
-                        UserRef = message.UserRef.Value,
-                        UserEmailAddress = message.UserEmailAddress,
-                        UserName = $"{message.UserFirstName} {message.UserLastName}",
-                        TransferReason = TransferReason.EmployerRevokedPermission
-                    });
-
-                    _logger.LogInformation($"Added TransferVacanciesFromProviderQueueMessage for Provider {message.Ukprn} and EmployerAccountId {employerAccountId} successfully.");
-
-                    await _messaging.SendCommandAsync(new SetupProviderCommand(message.Ukprn));
-                }
+                _logger.LogDebug($"{ExternalSystemEventHandlerName} is disabled, skipping ...");
+                return;
             }
-            catch (Exception ex)
+
+            _logger.LogInformation($"Attempting to process {nameof(UpdatedPermissionsEvent)} : {{@eventMessage}}", message);
+
+            if (message.UserRef.HasValue == false)
             {
-                _logger.LogError(ex,"Exception while handling Provider " +
-                                 $"permission being revoked as it is a consequence of Provider being blocked by Employer.");
+                _logger.LogInformation($"Not handling Provider {nameof(Operation.Recruitment)} Permission being revoked as it is a consequence of Provider being blocked by QA on Recruit.");
+                return;
             }
-            
+
+            if (message.GrantedOperations.Contains(Operation.Recruitment) == false)
+            {
+                var employerAccountId = _encoder.Encode(message.AccountId, EncodingType.AccountId);
+                _logger.LogInformation($"Employer with employerAccountId {employerAccountId} has revoked provider permission for provider {message.Ukprn}");
+                var legalEntity = await GetAssociatedLegalEntityAsync(message, employerAccountId);
+                if (legalEntity == null)
+                {
+                    throw new Exception($"Could not find matching Account Legal Entity Id {message.AccountLegalEntityId} for Employer Account {message.AccountId}");
+                }
+                _logger.LogInformation($"Associated legalEntity is {legalEntity}");
+
+                _logger.LogInformation($"Adding TransferVacanciesFromProviderQueueMessage for Provider {message.Ukprn} and EmployerAccountId {employerAccountId}");
+
+                await _recruitQueueService.AddMessageAsync(new TransferVacanciesFromProviderQueueMessage
+                {
+                    Ukprn = message.Ukprn,
+                    EmployerAccountId = employerAccountId,
+                    UserRef = message.UserRef.Value,
+                    UserEmailAddress = message.UserEmailAddress,
+                    UserName = $"{message.UserFirstName} {message.UserLastName}",
+                    TransferReason = TransferReason.EmployerRevokedPermission
+                });
+
+                _logger.LogInformation($"Added TransferVacanciesFromProviderQueueMessage for Provider {message.Ukprn} and EmployerAccountId {employerAccountId} successfully.");
+
+                await _messaging.SendCommandAsync(new SetupProviderCommand(message.Ukprn));
+            }
         }
 
         private async Task<LegalEntity> GetAssociatedLegalEntityAsync(UpdatedPermissionsEvent message, string employerAccountId)
